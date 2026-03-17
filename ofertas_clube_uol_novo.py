@@ -1,5 +1,5 @@
 # ------------------------------
-# ofertas_clube_uol_novo.py
+# ofertas_clube_uol_novo.py (CORRIGIDO)
 # Clube UOL Bot - Versão Simplificada com Título da Página
 # ------------------------------
 
@@ -40,9 +40,9 @@ def load_history():
         if os.path.exists(HISTORY_FILE):
             with open(HISTORY_FILE, 'r') as f:
                 data = json.load(f)
-                # Mantém apenas os últimos 100 IDs para não crescer muito
-                if len(data.get("ids", [])) > 100:
-                    data["ids"] = data["ids"][-100:]
+                # Mantém apenas os últimos 200 IDs
+                if len(data.get("ids", [])) > 200:
+                    data["ids"] = data["ids"][-200:]
                 return data
     except:
         pass
@@ -58,7 +58,7 @@ def human_like_delay(min_seconds=1, max_seconds=3):
     time.sleep(random.uniform(min_seconds, max_seconds))
 
 def setup_driver():
-    """Configura Chrome com anti-detecção"""
+    """Configura Chrome com anti-detecção e ignorando erros de SSL"""
     chrome_options = Options()
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
@@ -68,6 +68,11 @@ def setup_driver():
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
+    
+    # Ignorar erros de certificado SSL (resolve o "Your connection is not private")
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--allow-running-insecure-content')
+    chrome_options.add_argument('--ignore-ssl-errors=yes')
     
     # User Agent aleatório
     user_agent = random.choice(USER_AGENTS)
@@ -89,7 +94,10 @@ def extract_page_title(driver):
         # Tenta pegar o H1 da página (geralmente tem o título completo)
         h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
         if h1_elements and h1_elements[0].text.strip():
-            return h1_elements[0].text.strip()
+            title = h1_elements[0].text.strip()
+            # Remove "Clube UOL" se estiver no título
+            title = re.sub(r'\s*[–—-]\s*Clube UOL\s*$', '', title)
+            return title
         
         # Se não achar H1, pega o título da página
         title = driver.title
@@ -100,34 +108,43 @@ def extract_page_title(driver):
         return None
 
 def extract_validity(driver):
-    """Extrai apenas a validade do benefício"""
+    """Extrai apenas a validade do benefício - VERSÃO CORRIGIDA"""
     try:
-        # Procura por validade em vários formatos
-        validity_selectors = [
-            ".validity", 
-            "[class*='validade']", 
-            ".date", 
-            "time", 
-            "[class*='prazo']",
-            "[class*='valido']",
-            ".periodo",
-            "p:contains('válido')",
-            "span:contains('válido')"
+        # Procura por validade em textos - método mais simples e robusto
+        page_text = driver.find_element(By.TAG_NAME, "body").text
+        
+        # Padrões comuns de validade
+        patterns = [
+            r'[Vv]álido até[^.!?]*[.!?]',
+            r'[Vv]alidade[^.!?]*[.!?]',
+            r'[Bb]enefício válido[^.!?]*[.!?]',
+            r'[Pp]romoção válida[^.!?]*[.!?]',
+            r'[Cc]upom válido[^.!?]*[.!?]',
+            r'[Dd]esconto válido[^.!?]*[.!?]',
+            r'[Vv]álido de[^.!?]*[.!?]',
+            r'[Vv]álido para compras[^.!?]*[.!?]'
         ]
         
-        for selector in validity_selectors:
-            elems = driver.find_elements(By.CSS_SELECTOR, selector)
-            if elems:
-                text = elems[0].text.strip()
-                # Filtra apenas textos que parecem validade
-                if any(word in text.lower() for word in ['válido', 'validade', 'até', 'de', 'a partir de']):
-                    return text[:100]
+        for pattern in patterns:
+            match = re.search(pattern, page_text)
+            if match:
+                return match.group(0).strip()
         
-        # Procura em parágrafos que contenham "válido"
-        paragraphs = driver.find_elements(By.CSS_SELECTOR, "p")
+        # Se não achou com padrões, procura por palavras-chave em elementos específicos
+        keywords = ['válido', 'validade', 'até', 'válida']
+        
+        # Procura em parágrafos
+        paragraphs = driver.find_elements(By.TAG_NAME, "p")
         for p in paragraphs:
             text = p.text.strip()
-            if "válido" in text.lower() and len(text) < 150:
+            if any(keyword in text.lower() for keyword in keywords) and len(text) < 200:
+                return text
+        
+        # Procura em spans
+        spans = driver.find_elements(By.TAG_NAME, "span")
+        for span in spans:
+            text = span.text.strip()
+            if any(keyword in text.lower() for keyword in keywords) and len(text) < 200:
                 return text
                 
     except Exception as e:
@@ -163,8 +180,8 @@ def build_caption(page_title, validity, link):
         return None  # Não conseguiu título, não envia
     
     # 2. Validade (se encontrou)
-    if validity:
-        # Remove palavras repetitivas se necessário
+    if validity and len(validity) > 5:
+        # Limpa a validade se necessário
         validity_clean = re.sub(r'^(benef[ií]cio\s+v[aá]lido\s*:\s*)', '', validity, flags=re.IGNORECASE)
         parts.append(f"📅 {validity_clean}")
     
@@ -285,13 +302,24 @@ def fetch_offers_from_main_page():
                 if img_url and img_url.startswith('//'):
                     img_url = 'https:' + img_url
                 
+                # Cria ID baseado no link (mais estável)
+                # Extrai o ID da URL (ex: /beneficio/123-nome-da-oferta)
+                offer_id_match = re.search(r'/beneficio/([^/]+)', link)
+                if offer_id_match:
+                    offer_id = offer_id_match.group(1)
+                else:
+                    # Fallback: hash do link
+                    offer_id = str(hash(link))[:20]
+                
                 offers.append({
+                    "id": offer_id,
                     "preview_title": preview_title,
                     "link": link,
                     "imagem_url": img_url
                 })
                 
                 print(f"     Preview: {preview_title[:50]}...")
+                print(f"     ID: {offer_id}")
                 
             except Exception as e:
                 print(f"  ⚠️ Erro na oferta {i+1}: {e}")
@@ -318,12 +346,33 @@ def process_offer_details(offer):
         
         human_like_delay(2, 4)
         
-        # Extrai título da página (já vem com parceiro)
-        page_title = extract_page_title(driver)
-        if page_title:
-            print(f"  📌 Título da página: {page_title[:50]}...")
+        # Verifica se a página carregou corretamente
+        page_title = driver.title
         
-        # Extrai apenas a validade
+        # Se for página de erro SSL, ainda assim tenta extrair algo
+        if "Your connection is not private" in page_title:
+            print(f"  ⚠️ Página com erro SSL, mas vamos tentar extrair título mesmo assim")
+            
+            # Tenta encontrar algum título na página mesmo com erro
+            try:
+                # Às vezes o conteúdo carrega mesmo com erro SSL
+                h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
+                if h1_elements and h1_elements[0].text.strip():
+                    page_title = h1_elements[0].text.strip()
+                else:
+                    # Usa o preview title como fallback
+                    page_title = offer['preview_title']
+            except:
+                page_title = offer['preview_title']
+        else:
+            # Extrai título da página normalmente
+            page_title = extract_page_title(driver)
+            if not page_title:
+                page_title = offer['preview_title']
+        
+        print(f"  📌 Título da página: {page_title[:50]}...")
+        
+        # Extrai validade
         validity = extract_validity(driver)
         if validity:
             print(f"  📅 Validade: {validity[:50]}...")
@@ -332,7 +381,8 @@ def process_offer_details(offer):
         
     except Exception as e:
         print(f"  ⚠️ Erro ao processar página: {e}")
-        return None, None
+        # Em caso de erro, usa o preview title
+        return offer['preview_title'], None
         
     finally:
         if driver:
@@ -341,7 +391,7 @@ def process_offer_details(offer):
 def executar_bot():
     """Função principal"""
     print("=" * 70)
-    print(f"🤖 Clube UOL Bot - NOVA VERSÃO - {datetime.now()}")
+    print(f"🤖 Clube UOL Bot - NOVA VERSÃO (CORRIGIDA) - {datetime.now()}")
     print("=" * 70)
     
     # Carrega histórico
@@ -359,20 +409,8 @@ def executar_bot():
     
     print(f"\n📊 Total de ofertas encontradas: {len(offers)}")
     
-    # Cria IDs e filtra novas
-    offers_with_ids = []
-    for offer in offers:
-        # Cria ID baseado no link (mais estável que título)
-        offer_id = re.sub(r'[^a-zA-Z0-9]', '', offer['link'].split('/')[-1])[:30]
-        if not offer_id:  # Se não conseguir extrair do link, usa título
-            offer_id = re.sub(r'[^a-z0-9]', '', offer['preview_title'].lower())[:30]
-        
-        offers_with_ids.append({
-            "id": offer_id,
-            **offer
-        })
-    
-    new_offers = [o for o in offers_with_ids if o['id'] not in seen_ids]
+    # Filtra novas ofertas
+    new_offers = [o for o in offers if o['id'] not in seen_ids]
     
     if not new_offers:
         print("\n📭 Nenhuma oferta nova")
@@ -382,15 +420,19 @@ def executar_bot():
     
     # Processa cada nova oferta
     successful = 0
+    processed_ids = set(seen_ids)  # Começa com os IDs já vistos
+    
     for i, offer in enumerate(new_offers, 1):
         print(f"\n{'='*50}")
         print(f"📦 Processando oferta {i}/{len(new_offers)}")
         print(f"{'='*50}")
         print(f"Preview: {offer['preview_title']}")
+        print(f"ID: {offer['id']}")
         
         # Baixa imagem
         if not offer.get('imagem_url'):
             print("❌ Sem URL de imagem, pulando...")
+            processed_ids.add(offer['id'])  # Marca como processado mesmo sem imagem
             continue
         
         print("\n📥 Baixando imagem...")
@@ -398,33 +440,32 @@ def executar_bot():
         
         if not img_path:
             print("❌ Falha ao baixar imagem")
+            processed_ids.add(offer['id'])  # Marca como processado mesmo com falha
             continue
         
         # Acessa página da oferta para detalhes
         page_title, validity = process_offer_details(offer)
         
-        # Se não conseguiu título da página, usa o preview mesmo
-        if not page_title:
-            page_title = offer['preview_title']
-            print(f"  ⚠️ Usando título da página principal")
-        
-        # Constrói legenda simplificada
+        # Constrói legenda
         caption = build_caption(page_title, validity, offer['link'])
         
         if not caption:
             print("❌ Falha ao construir legenda")
             if os.path.exists(img_path):
                 os.remove(img_path)
+            processed_ids.add(offer['id'])  # Marca como processado mesmo com falha
             continue
         
         # Envia para o Telegram
         print("\n📤 Enviando para o Telegram...")
         if send_to_telegram_with_image(img_path, caption):
             successful += 1
-            # Adiciona ao histórico apenas se enviou com sucesso
-            seen_ids.add(offer['id'])
+            print(f"✅ Oferta enviada com sucesso!")
         else:
-            print("❌ Falha no envio")
+            print(f"❌ Falha no envio")
+        
+        # Marca como processado (independente de sucesso ou falha no envio)
+        processed_ids.add(offer['id'])
         
         # Limpa arquivo temporário
         if os.path.exists(img_path):
@@ -436,14 +477,15 @@ def executar_bot():
             print(f"\n⏱️ Aguardando {pausa} segundos...")
             human_like_delay(pausa, pausa+1)
     
-    # Atualiza histórico
-    if successful > 0:
-        history["ids"] = list(seen_ids)
+    # Atualiza histórico com TODOS os IDs processados
+    if processed_ids:
+        history["ids"] = list(processed_ids)
         save_history(history)
-        print(f"\n✅ Histórico atualizado com {len(seen_ids)} IDs")
+        print(f"\n✅ Histórico atualizado com {len(processed_ids)} IDs")
     
     print("\n" + "=" * 70)
-    print(f"✅ Bot concluído! {successful}/{len(new_offers)} ofertas enviadas")
+    print(f"✅ Bot concluído! {successful}/{len(new_offers)} ofertas enviadas com sucesso")
+    print(f"📊 {len(processed_ids)} IDs no histórico")
     print("=" * 70)
 
 if __name__ == "__main__":
