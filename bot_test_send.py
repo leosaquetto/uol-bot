@@ -1,5 +1,5 @@
 # ------------------------------
-# Clube UOL Bot - TESTE DE ENVIO REAL (só 2 ofertas)
+# Clube UOL Bot - TESTE DE ENVIO REAL (CORRIGIDO)
 # ------------------------------
 
 import requests
@@ -12,6 +12,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 # CONFIGURAÇÕES
@@ -63,7 +65,7 @@ def send_to_telegram(offer):
             message += f"🏷️ *Parceiro:* {partner}\n"
         message += f"\n🔗 [Acessar oferta]({offer['link']})\n"
         
-        print(f"\n📤 Enviando:")
+        print(f"\n📤 Mensagem que será enviada:")
         print(message)
         
         url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
@@ -79,15 +81,15 @@ def send_to_telegram(offer):
             print(f"✅ Enviado com sucesso!")
             return True
         else:
-            print(f"❌ Erro: {response.text}")
+            print(f"❌ Erro da API Telegram: {response.text}")
             return False
             
     except Exception as e:
-        print(f"❌ Erro: {e}")
+        print(f"❌ Erro no envio: {e}")
         return False
 
 def fetch_two_offers():
-    """Pega apenas 2 ofertas para teste"""
+    """Pega apenas 2 ofertas para teste (usando mesmo seletor do teste2)"""
     driver = None
     try:
         print("🌐 Iniciando Chrome...")
@@ -96,12 +98,28 @@ def fetch_two_offers():
         print(f"📱 Carregando URL...")
         driver.get(TARGET_URL)
         
+        # Aguarda carregar
         time.sleep(5)
+        
+        # Rola a página
         driver.execute_script("window.scrollBy(0, 1500);")
         time.sleep(3)
         
-        # Pega containers
+        # Usa o MESMO seletor que funcionou no teste2
+        print("🔍 Buscando containers com seletor 'div.beneficio'...")
         containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
+        
+        print(f"📦 Containers encontrados: {len(containers)}")
+        
+        if not containers:
+            # Tenta outros seletores como fallback
+            print("⚠️ Tentando outros seletores...")
+            selectors = ["article", ".card-oferta", "[class*='offer']"]
+            for selector in selectors:
+                containers = driver.find_elements(By.CSS_SELECTOR, selector)
+                if containers:
+                    print(f"✅ Seletor alternativo funcionou: {selector} - {len(containers)} encontrados")
+                    break
         
         if not containers:
             print("❌ Nenhum container encontrado")
@@ -111,24 +129,34 @@ def fetch_two_offers():
         for i, container in enumerate(containers[:2]):  # Só 2 ofertas
             try:
                 # Título
-                title_elem = container.find_element(By.CSS_SELECTOR, ".titulo, h2, h3, p")
-                title = title_elem.text.strip()
+                title_selectors = [".titulo", "h2", "h3", "p", ".name", "[class*='title']"]
+                title = None
+                for sel in title_selectors:
+                    elems = container.find_elements(By.CSS_SELECTOR, sel)
+                    if elems:
+                        title = elems[0].text.strip()
+                        break
+                
+                if not title:
+                    continue
                 
                 # Link
-                link_elem = container.find_element(By.CSS_SELECTOR, "a")
-                link = link_elem.get_attribute("href")
+                link = TARGET_URL
+                link_elems = container.find_elements(By.CSS_SELECTOR, "a")
+                if link_elems:
+                    link = link_elems[0].get_attribute("href")
                 
                 print(f"\n📦 Oferta {i+1}: {title[:50]}...")
                 offers.append({"title": title, "link": link})
                 
             except Exception as e:
-                print(f"  ⚠️ Erro: {e}")
+                print(f"  ⚠️ Erro no container: {e}")
                 continue
         
         return offers
         
     except Exception as e:
-        print(f"❌ Erro: {e}")
+        print(f"❌ Erro geral: {e}")
         return []
         
     finally:
@@ -144,10 +172,10 @@ def run_test():
     offers = fetch_two_offers()
     
     if not offers:
-        print("❌ Nenhuma oferta para testar")
+        print("\n❌ Nenhuma oferta para testar")
         return
     
-    print(f"\n📊 Enviando {len(offers)} oferta(s) para o canal...")
+    print(f"\n📊 Enviando {len(offers)} oferta(s) para o canal @leouol...")
     
     # Envia cada uma
     for i, offer in enumerate(offers, 1):
@@ -162,10 +190,16 @@ def run_test():
         print(f"Título limpo: {clean}")
         
         # Envia de verdade!
-        send_to_telegram(offer)
+        success = send_to_telegram(offer)
+        
+        if success:
+            print(f"✅ Oferta {i} enviada!")
+        else:
+            print(f"❌ Falha ao enviar oferta {i}")
         
         if i < len(offers):
-            time.sleep(3)  # Pausa entre mensagens
+            print("\n⏱️ Aguardando 3 segundos...")
+            time.sleep(3)
     
     print("\n" + "=" * 60)
     print("✅ Teste concluído! Verifique o canal @leouol")
