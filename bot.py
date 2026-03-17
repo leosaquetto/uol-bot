@@ -1,15 +1,20 @@
 # ------------------------------
-# Clube UOL Bot - Versão Python para GitHub Actions
+# Clube UOL Bot - Versão Selenium para GitHub Actions
 # ------------------------------
 
 import requests
 import json
 import os
 import time
-from datetime import datetime
 import re
+from datetime import datetime
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-# CONFIGURAÇÕES (via Secrets do GitHub)
+# CONFIGURAÇÕES
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
 TARGET_URL = "https://clube.uol.com.br/?order=new"
@@ -48,51 +53,79 @@ def send_to_telegram(offer):
         print(f"Erro ao enviar: {e}")
         return False
 
-def extract_offers_from_html(html):
-    """Extrai ofertas do HTML da página"""
-    offers = []
+def setup_driver():
+    """Configura o Chrome driver para o GitHub Actions"""
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Roda sem abrir janela
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
     
-    # Padrões para encontrar os containers de oferta
-    patterns = [
-        r'<article.*?>(.*?)</article>',
-        r'<div class="beneficio.*?>(.*?)</div>',
-        r'<div class="card.*?>(.*?)</div>'
-    ]
-    
-    # Por enquanto, vamos usar uma abordagem mais simples:
-    # Acessar a URL e usar uma API headless é complexo no GitHub Actions
-    
-    print("ATENÇÃO: Para GitHub Actions, precisamos de uma abordagem diferente!")
-    print("O Python não consegue executar JavaScript como o WebView do Scriptable.")
-    print("\nOPÇÕES:")
-    print("1. Usar Selenium (mais pesado, pode consumir muitos minutos)")
-    print("2. Encontrar uma API do Clube UOL (se existir)")
-    print("3. Manter no celular com automação iOS (recomendado! ✅)")
-    
-    return []
+    driver = webdriver.Chrome(options=chrome_options)
+    return driver
 
 def fetch_offers():
-    """Busca ofertas do site"""
+    """Busca ofertas usando Selenium (executa JavaScript)"""
+    driver = None
     try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+        print("🌐 Iniciando Chrome...")
+        driver = setup_driver()
         
-        response = requests.get(TARGET_URL, headers=headers, timeout=30)
+        print(f"📱 Carregando URL: {TARGET_URL}")
+        driver.get(TARGET_URL)
         
-        if response.status_code == 200:
-            return extract_offers_from_html(response.text)
-        else:
-            print(f"Erro HTTP: {response.status_code}")
-            return []
-            
+        # Rola a página para carregar as imagens
+        driver.execute_script("window.scrollBy(0, 1000);")
+        time.sleep(2)
+        
+        # Espera os containers carregarem
+        wait = WebDriverWait(driver, 10)
+        containers = wait.until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 
+                "div.beneficio, article, .card-oferta, [class*='offer'], [class*='card']"))
+        )
+        
+        print(f"📦 Containers encontrados: {len(containers)}")
+        
+        offers = []
+        for container in containers[:8]:  # Pega até 8 ofertas
+            try:
+                # Título
+                title_elem = container.find_element(By.CSS_SELECTOR, 
+                    ".titulo, h2, h3, p, .name, [class*='title']")
+                title = title_elem.text.strip()
+                
+                # Link
+                link_elem = container.find_element(By.CSS_SELECTOR, "a")
+                link = link_elem.get_attribute("href")
+                
+                if title and link:
+                    offers.append({
+                        "title": title,
+                        "link": link
+                    })
+                    print(f"  ✅ {title[:50]}...")
+                    
+            except Exception as e:
+                continue
+        
+        return offers
+        
     except Exception as e:
-        print(f"Erro na requisição: {e}")
+        print(f"❌ Erro no Selenium: {e}")
         return []
+        
+    finally:
+        if driver:
+            driver.quit()
 
 def run_bot():
     """Função principal"""
+    print("=" * 50)
     print(f"🤖 Bot UOL iniciado - {datetime.now()}")
+    print("=" * 50)
     
     # Carrega histórico
     history = load_history()
@@ -100,14 +133,14 @@ def run_bot():
     print(f"📋 IDs no histórico: {len(seen_ids)}")
     
     # Busca ofertas
-    print("🔍 Buscando ofertas...")
+    print("\n🔍 Buscando ofertas...")
     current_offers = fetch_offers()
     
     if not current_offers:
         print("❌ Nenhuma oferta encontrada")
         return
     
-    print(f"📊 Total: {len(current_offers)} ofertas")
+    print(f"\n📊 Total: {len(current_offers)} ofertas")
     
     # Cria IDs e filtra novas
     offers_with_ids = []
@@ -122,11 +155,14 @@ def run_bot():
     new_offers = [o for o in offers_with_ids if o['id'] not in seen_ids]
     
     if new_offers:
-        print(f"🎉 {len(new_offers)} nova(s) oferta(s)!")
+        print(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
         
         for i, offer in enumerate(new_offers, 1):
-            print(f"📤 ({i}/{len(new_offers)}) {offer['title'][:50]}...")
-            send_to_telegram(offer)
+            print(f"\n📤 ({i}/{len(new_offers)}) {offer['title'][:50]}...")
+            if send_to_telegram(offer):
+                print(f"  ✅ Enviado")
+            else:
+                print(f"  ❌ Falha no envio")
             
             if i < len(new_offers):
                 time.sleep(2)
@@ -134,11 +170,13 @@ def run_bot():
         # Atualiza histórico
         all_ids = [o['id'] for o in offers_with_ids]
         save_history({"lastIds": all_ids})
-        print("✅ Concluído!")
+        print("\n✅ Concluído!")
     else:
-        print("📭 Nenhuma oferta nova")
+        print("\n📭 Nenhuma oferta nova")
     
+    print("\n" + "=" * 50)
     print(f"✅ Bot finalizado - {datetime.now()}")
+    print("=" * 50)
 
 if __name__ == "__main__":
     run_bot()
