@@ -9,13 +9,15 @@ jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Dá permissão de escrita
     
     steps:
       - name: 📥 Baixar código
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}  # Importante para ter permissão de push
+          token: ${{ secrets.GITHUB_TOKEN }}  # Usa o token padrão
       
       - name: 🔄 Restaurar ou criar histórico
         run: |
@@ -53,12 +55,12 @@ jobs:
           git config --global user.email "bot@leouol.com"
           git config --global user.name "BOT LEOUOL"
           
-          # Verifica se o arquivo existe e se houve mudança
+          # Verifica se o arquivo existe
           if [ -f historico_leouol.json ]; then
-            # Adiciona o arquivo (se for novo ou modificado)
+            # Adiciona o arquivo
             git add historico_leouol.json
             
-            # Tenta commitar (só funciona se houve mudança)
+            # Tenta commitar (só se houver mudança)
             if git diff --staged --quiet; then
               echo "📊 Histórico não mudou"
             else
@@ -68,5 +70,5 @@ jobs:
               git show --stat
             fi
           else
-            echo "❌ Arquivo de histórico não encontrado (isso é um erro)"
+            echo "❌ Arquivo de histórico não encontrado"
           fi
