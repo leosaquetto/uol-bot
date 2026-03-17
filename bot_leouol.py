@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO CORRIGIDA - Com normalização de links
+# VERSÃO COM COMENTÁRIOS - Envia oferta + descrição completa
 # ------------------------------
 
 import requests
@@ -27,8 +27,9 @@ TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
 MAX_CAPTION_LENGTH = 1024
-MAX_OFFERS_PER_RUN = 8      # 🔹 MANTIDO 8 (recomendado)
+MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
+MAX_COMMENT_LENGTH = 4096  # Limite do Telegram para mensagens de texto
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -38,24 +39,20 @@ USER_AGENTS = [
 ]
 
 # ==============================================
-# FUNÇÃO PARA NORMALIZAR LINKS (NOVA!)
+# FUNÇÃO PARA NORMALIZAR LINKS
 # ==============================================
 def normalize_link(link):
-    """Remove acentos e caracteres especiais do link para comparação"""
     try:
-        # Remove acentos (ex: seleção → selecao)
         link = unicodedata.normalize('NFKD', link).encode('ASCII', 'ignore').decode('ASCII')
-        # Remove caracteres especiais, mantendo apenas o essencial
         link = re.sub(r'[^a-zA-Z0-9/:.%_-]', '', link)
         return link
     except:
-        return link  # Se falhar, retorna original
+        return link
 
 # ==============================================
 # FUNÇÕES DE HISTÓRICO
 # ==============================================
 def load_history():
-    """Carrega histórico de IDs já enviados"""
     try:
         if os.path.exists(HISTORY_FILE):
             with open(HISTORY_FILE, 'r') as f:
@@ -68,7 +65,6 @@ def load_history():
     return {"ids": []}
 
 def save_history(history):
-    """Salva histórico com limite de tamanho"""
     try:
         if len(history.get("ids", [])) > MAX_HISTORY_SIZE:
             history["ids"] = history["ids"][-MAX_HISTORY_SIZE:]
@@ -167,6 +163,64 @@ def extract_validity(driver):
     return None
 
 # ==============================================
+# NOVA FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA DA PÁGINA
+# ==============================================
+def extract_full_description(driver):
+    """Extrai TODO o texto relevante da página da oferta"""
+    try:
+        # Tenta encontrar o conteúdo principal
+        main_selectors = [
+            "main",
+            "article",
+            ".content",
+            ".description",
+            "[class*='descricao']",
+            "[class*='beneficio']",
+            "div[class*='info']"
+        ]
+        
+        full_text = []
+        
+        # Tenta cada seletor de conteúdo principal
+        for selector in main_selectors:
+            elements = driver.find_elements(By.CSS_SELECTOR, selector)
+            for elem in elements:
+                text = elem.text.strip()
+                if text and len(text) > 50:  # Se encontrar texto relevante
+                    full_text.append(text)
+        
+        # Se não encontrou com seletores, pega parágrafos importantes
+        if not full_text:
+            paragraphs = driver.find_elements(By.TAG_NAME, "p")
+            for p in paragraphs:
+                text = p.text.strip()
+                if text and len(text) > 30:
+                    full_text.append(text)
+        
+        # Junta tudo com quebras de linha
+        result = "\n\n".join(full_text)
+        
+        # Remove linhas muito curtas ou repetitivas
+        lines = result.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            line = line.strip()
+            if line and len(line) > 15 and "Clube UOL" not in line:
+                cleaned_lines.append(line)
+        
+        result = "\n".join(cleaned_lines)
+        
+        # Limita ao tamanho máximo do Telegram
+        if len(result) > MAX_COMMENT_LENGTH - 100:  # Reserva espaço para cabeçalho
+            result = result[:MAX_COMMENT_LENGTH-150] + "...\n\n[Descrição truncada devido ao limite do Telegram]"
+        
+        return result if result else "Descrição detalhada não disponível."
+        
+    except Exception as e:
+        print(f"  ⚠️ Erro ao extrair descrição completa: {e}")
+        return "Descrição detalhada não disponível."
+
+# ==============================================
 # DOWNLOAD DA IMAGEM
 # ==============================================
 def download_image(img_url):
@@ -186,7 +240,7 @@ def download_image(img_url):
     return None
 
 # ==============================================
-# CONSTRUÇÃO DA LEGENDA
+# CONSTRUÇÃO DA LEGENDA PRINCIPAL
 # ==============================================
 def build_caption(page_title, validity, link):
     parts = []
@@ -201,6 +255,7 @@ def build_caption(page_title, validity, link):
         parts.append(f"📅 {validity_clean}")
     
     parts.append(f"🔗 [Acessar oferta]({link})")
+    parts.append("💬 *Veja os detalhes completos nos comentários abaixo*")
     
     caption = "\n\n".join(parts)
     
@@ -216,27 +271,62 @@ def build_caption(page_title, validity, link):
     return caption
 
 # ==============================================
-# ENVIO PARA O TELEGRAM (VERSÃO ORIGINAL - ATIVADA!)
+# ENVIO PRINCIPAL + COMENTÁRIO (NOVA VERSÃO!)
 # ==============================================
-def send_to_telegram(img_path, caption):
-    """Envia a imagem com legenda para o Telegram"""
+def send_offer_with_details(img_path, main_caption, full_description, link):
+    """Envia a imagem com legenda + comentário com descrição completa"""
+    
     try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
+        # 1️⃣ ENVIA A FOTO COM LEGENDA PRINCIPAL
+        photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
         
         with open(img_path, 'rb') as photo:
             files = {'photo': photo}
             data = {
                 'chat_id': TELEGRAM_CHAT_ID,
-                'caption': caption,
+                'caption': main_caption,
                 'parse_mode': 'Markdown'
             }
-            response = requests.post(url, data=data, files=files, timeout=30)
+            photo_response = requests.post(photo_url, data=data, files=files, timeout=30)
         
-        if response.ok:
-            print(f"✅ Enviado com sucesso!")
+        if not photo_response.ok:
+            print(f"❌ Erro ao enviar foto: {photo_response.text}")
+            return False
+        
+        # Pega o message_id da mensagem enviada
+        message_id = photo_response.json()['result']['message_id']
+        print(f"✅ Foto enviada (ID: {message_id})")
+        
+        # 2️⃣ PREPARA O TEXTO DO COMENTÁRIO
+        # Limpa a descrição para evitar problemas com Markdown
+        full_description = full_description.replace('_', '\\_').replace('*', '\\*').replace('`', '\\`')
+        
+        comment_text = (
+            f"📋 *DESCRIÇÃO COMPLETA DA OFERTA*\n\n"
+            f"{full_description}\n\n"
+            f"🔗 [Link original da oferta]({link})"
+        )
+        
+        # Garante que não ultrapasse o limite
+        if len(comment_text) > MAX_COMMENT_LENGTH:
+            comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n*Descrição truncada*"
+        
+        # 3️⃣ ENVIA O COMENTÁRIO
+        comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        comment_data = {
+            'chat_id': TELEGRAM_CHAT_ID,
+            'text': comment_text,
+            'parse_mode': 'Markdown',
+            'reply_to_message_id': message_id  # 🔥 ISSO FAZ SER COMENTÁRIO!
+        }
+        
+        comment_response = requests.post(comment_url, data=comment_data, timeout=30)
+        
+        if comment_response.ok:
+            print("✅ Descrição completa enviada como comentário!")
             return True
         else:
-            print(f"❌ Erro Telegram: {response.text}")
+            print(f"❌ Erro ao enviar comentário: {comment_response.text}")
             return False
             
     except Exception as e:
@@ -244,7 +334,98 @@ def send_to_telegram(img_path, caption):
         return False
 
 # ==============================================
-# PROCESSAMENTO DE CADA OFERTA
+# BUSCA OFERTAS NA PÁGINA PRINCIPAL
+# ==============================================
+def fetch_offers():
+    """Pega as 8 ofertas mais recentes da página principal"""
+    driver = None
+    try:
+        print("🌐 Iniciando Chrome...")
+        driver = setup_driver()
+        
+        print(f"📱 Acessando: {TARGET_URL}")
+        driver.get(TARGET_URL)
+        
+        human_like_delay(3, 5)
+        
+        driver.execute_script("window.scrollBy(0, 800);")
+        human_like_delay(1, 2)
+        driver.execute_script("window.scrollBy(0, 800);")
+        human_like_delay(1, 2)
+        
+        containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
+        print(f"📦 Total de ofertas na página: {len(containers)}")
+        
+        if not containers:
+            print("❌ Nenhuma oferta encontrada")
+            return []
+        
+        offers = []
+        for i, container in enumerate(containers[:MAX_OFFERS_PER_RUN]):
+            try:
+                title_elem = container.find_element(By.CSS_SELECTOR, ".titulo, h2, h3, p")
+                preview_title = title_elem.text.strip()
+                
+                if not preview_title:
+                    continue
+                
+                link_elem = container.find_element(By.CSS_SELECTOR, "a")
+                link = link_elem.get_attribute("href")
+                
+                normalized_link = normalize_link(link)
+                
+                # Imagem
+                img_url = None
+                elements_with_bg = container.find_elements(By.CSS_SELECTOR, "[style*='background']")
+                for el in elements_with_bg:
+                    style = el.get_attribute("style")
+                    match = re.search(r'url\(["\']?(.*?)["\']?\)', style)
+                    if match:
+                        img_url = match.group(1)
+                        print(f"  📸 Oferta {i+1}: Imagem (background)")
+                        break
+                
+                if not img_url:
+                    imgs = container.find_elements(By.CSS_SELECTOR, "img[data-src]")
+                    if imgs:
+                        img_url = imgs[0].get_attribute("data-src")
+                        print(f"  📸 Oferta {i+1}: Imagem (data-src)")
+                
+                if not img_url:
+                    imgs = container.find_elements(By.CSS_SELECTOR, "img")
+                    if imgs:
+                        img_url = imgs[0].get_attribute("src")
+                        print(f"  📸 Oferta {i+1}: Imagem (fallback)")
+                
+                if img_url and img_url.startswith('//'):
+                    img_url = 'https:' + img_url
+                
+                offers.append({
+                    "id": normalized_link,
+                    "preview_title": preview_title,
+                    "link": link,
+                    "imagem_url": img_url
+                })
+                
+                print(f"     Título: {preview_title[:50]}...")
+                print(f"     ID: {normalized_link[:60]}...")
+                
+            except Exception as e:
+                print(f"  ⚠️ Erro na oferta {i+1}: {e}")
+                continue
+        
+        return offers
+        
+    except Exception as e:
+        print(f"❌ Erro geral: {e}")
+        return []
+        
+    finally:
+        if driver:
+            driver.quit()
+
+# ==============================================
+# PROCESSAMENTO DE CADA OFERTA (ATUALIZADO)
 # ==============================================
 def process_offer(offer):
     print(f"\n🔍 Acessando página: {offer['preview_title'][:50]}...")
@@ -273,28 +454,32 @@ def process_offer(offer):
             if not page_title:
                 page_title = offer['preview_title']
         
-        print(f"  📌 Título: {page_title[:50]}...")
+        print(f"  📌 Título da página: {page_title[:50]}...")
         
         validity = extract_validity(driver)
         if validity:
             print(f"  📅 Validade: {validity[:50]}...")
         
-        return page_title, validity
+        # 🔥 NOVO: Extrai descrição completa
+        full_description = extract_full_description(driver)
+        print(f"  📋 Descrição completa: {len(full_description)} caracteres")
+        
+        return page_title, validity, full_description
         
     except Exception as e:
         print(f"  ⚠️ Erro: {e}")
-        return offer['preview_title'], None
+        return offer['preview_title'], None, "Descrição não disponível devido a erro."
         
     finally:
         if driver:
             driver.quit()
 
 # ==============================================
-# FUNÇÃO PRINCIPAL COM RETENTATIVAS
+# FUNÇÃO PRINCIPAL
 # ==============================================
 def main():
     print("=" * 70)
-    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (COM RETENTATIVAS)")
+    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (COM COMENTÁRIOS)")
     print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 70)
     
@@ -302,14 +487,12 @@ def main():
     seen_ids = set(history.get("ids", []))
     print(f"📋 IDs no histórico: {len(seen_ids)} (limite {MAX_HISTORY_SIZE})")
     
-    # 🎯 IMPLEMENTAÇÃO DAS RETENTATIVAS
     max_attempts = 3
     attempt = 1
     offers = []
     
     while attempt <= max_attempts:
         print(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
-        
         offers = fetch_offers()
         
         if offers:
@@ -317,15 +500,12 @@ def main():
             break
         else:
             print(f"⚠️ Tentativa {attempt} falhou (0 ofertas)")
-            
             if attempt < max_attempts:
-                wait_time = random.randint(10, 20)  # Espera 10-20 segundos
+                wait_time = random.randint(10, 20)
                 print(f"⏱️ Aguardando {wait_time} segundos antes de tentar novamente...")
                 time.sleep(wait_time)
-            
             attempt += 1
     
-    # Se depois de todas tentativas ainda der 0
     if not offers:
         print("❌ Todas as tentativas falharam. Site pode estar fora do ar.")
         return
@@ -363,21 +543,24 @@ def main():
             processed_ids.add(offer['id'])
             continue
         
-        page_title, validity = process_offer(offer)
+        # 🔥 Processa a página e pega TUDO
+        page_title, validity, full_description = process_offer(offer)
         
-        caption = build_caption(page_title, validity, offer['link'])
+        # Constrói legenda principal (resumida)
+        main_caption = build_caption(page_title, validity, offer['link'])
         
-        if not caption:
+        if not main_caption:
             print("❌ Falha na legenda")
             if os.path.exists(img_path):
                 os.remove(img_path)
             processed_ids.add(offer['id'])
             continue
         
-        print("\n📤 Enviando...")
-        if send_to_telegram(img_path, caption):
+        # 📤 Envia com imagem + comentário
+        print("\n📤 Enviando oferta com descrição completa...")
+        if send_offer_with_details(img_path, main_caption, full_description, offer['link']):
             successful += 1
-            print(f"✅ Oferta enviada!")
+            print(f"✅ Oferta enviada com sucesso!")
         else:
             print(f"❌ Falha no envio")
         
@@ -397,7 +580,7 @@ def main():
             print(f"\n✅ Histórico atualizado: {len(processed_ids)} IDs")
     
     print("\n" + "=" * 70)
-    print(f"✅ FINALIZADO! {successful}/{len(new_offers)} enviadas")
+    print(f"✅ FINALIZADO! {successful}/{len(new_offers)} ofertas enviadas com descrição completa")
     print("=" * 70)
 
 if __name__ == "__main__":
