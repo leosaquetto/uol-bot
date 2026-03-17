@@ -259,7 +259,7 @@ def send_to_telegram(img_path, caption):
     #     return False
 
 # ==============================================
-# BUSCA OFERTAS NA PÁGINA PRINCIPAL (VERSÃO CORRIGIDA)
+# BUSCA OFERTAS NA PÁGINA PRINCIPAL (VERSÃO SIMPLIFICADA)
 # ==============================================
 def fetch_offers():
     """Pega as 8 ofertas mais recentes da página principal"""
@@ -267,55 +267,42 @@ def fetch_offers():
     try:
         print("🌐 Iniciando Chrome...")
         driver = setup_driver()
-
+        
         print(f"📱 Acessando: {TARGET_URL}")
         driver.get(TARGET_URL)
-
+        
         human_like_delay(3, 5)
-
+        
         driver.execute_script("window.scrollBy(0, 800);")
         human_like_delay(1, 2)
         driver.execute_script("window.scrollBy(0, 800);")
         human_like_delay(1, 2)
-
+        
         containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
         print(f"📦 Total de ofertas na página: {len(containers)}")
-
+        
         if not containers:
             print("❌ Nenhuma oferta encontrada")
             return []
-
+        
         offers = []
         for i, container in enumerate(containers[:MAX_OFFERS_PER_RUN]):
             try:
-                # Título da oferta (prévia)
+                # Título da oferta
                 title_elem = container.find_element(By.CSS_SELECTOR, ".titulo, h2, h3, p")
                 preview_title = title_elem.text.strip()
-
+                
                 if not preview_title:
                     continue
-
+                
                 # Link da oferta
                 link_elem = container.find_element(By.CSS_SELECTOR, "a")
                 link = link_elem.get_attribute("href")
-
-                # --- NOVO: Criar um ID ESTÁVEL baseado no título e no parceiro ---
-                # Tenta extrair o nome do parceiro do próprio preview_title
-                # Ex: "Título por Parceiro" ou "Título - Parceiro"
-                partner_name = "desconhecido"
-                partner_match = re.search(r'[Pp]or\s+([A-Za-z0-9\s]+)$|[-–]\s*([A-Za-z0-9\s]+)$', preview_title)
-                if partner_match:
-                    partner_name = partner_match.group(1) or partner_match.group(2)
-                    partner_name = re.sub(r'\s+', '', partner_name).lower()[:15]
-
-                # Limpa o título para criar uma base segura
-                title_clean = re.sub(r'[^a-zA-Z0-9]', '', preview_title).lower()[:30]
-
-                # Combina título limpo + parceiro para criar um ID único e estável
-                offer_id = f"{title_clean}_{partner_name}"
-                # ------------------------------------------
-
-                # IMAGEM GRANDE (mantém igual)
+                
+                # 🎯 ID = O PRÓPRIO LINK (sem hash, sem mágica)
+                offer_id = link
+                
+                # Imagem
                 img_url = None
                 elements_with_bg = container.find_elements(By.CSS_SELECTOR, "[style*='background']")
                 for el in elements_with_bg:
@@ -325,42 +312,42 @@ def fetch_offers():
                         img_url = match.group(1)
                         print(f"  📸 Oferta {i+1}: Imagem (background)")
                         break
-
+                
                 if not img_url:
                     imgs = container.find_elements(By.CSS_SELECTOR, "img[data-src]")
                     if imgs:
                         img_url = imgs[0].get_attribute("data-src")
                         print(f"  📸 Oferta {i+1}: Imagem (data-src)")
-
+                
                 if not img_url:
                     imgs = container.find_elements(By.CSS_SELECTOR, "img")
                     if imgs:
                         img_url = imgs[0].get_attribute("src")
                         print(f"  📸 Oferta {i+1}: Imagem (fallback)")
-
+                
                 if img_url and img_url.startswith('//'):
                     img_url = 'https:' + img_url
-
+                
                 offers.append({
                     "id": offer_id,
                     "preview_title": preview_title,
                     "link": link,
                     "imagem_url": img_url
                 })
-
+                
                 print(f"     Título: {preview_title[:50]}...")
-                print(f"     ID: {offer_id}")
-
+                print(f"     ID: {offer_id[:60]}...")  # Mostra só começo do link
+                
             except Exception as e:
                 print(f"  ⚠️ Erro na oferta {i+1}: {e}")
                 continue
-
+        
         return offers
-
+        
     except Exception as e:
         print(f"❌ Erro geral: {e}")
         return []
-
+        
     finally:
         if driver:
             driver.quit()
