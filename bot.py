@@ -1,5 +1,5 @@
 # ------------------------------
-# Clube UOL Bot - Versão Selenium para GitHub Actions
+# Clube UOL Bot - Versão Selenium para GitHub Actions (CORRIGIDA)
 # ------------------------------
 
 import requests
@@ -10,9 +10,11 @@ import re
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 
 # CONFIGURAÇÕES
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
@@ -56,18 +58,21 @@ def send_to_telegram(offer):
 def setup_driver():
     """Configura o Chrome driver para o GitHub Actions"""
     chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Roda sem abrir janela
+    chrome_options.add_argument("--headless=new")  # Nova versão do headless
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36")
     
-    driver = webdriver.Chrome(options=chrome_options)
+    # Usa o webdriver-manager para gerenciar o chromedriver
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
 
 def fetch_offers():
-    """Busca ofertas usando Selenium (executa JavaScript)"""
+    """Busca ofertas usando Selenium"""
     driver = None
     try:
         print("🌐 Iniciando Chrome...")
@@ -76,39 +81,66 @@ def fetch_offers():
         print(f"📱 Carregando URL: {TARGET_URL}")
         driver.get(TARGET_URL)
         
+        # Aguarda a página carregar
+        time.sleep(3)
+        
         # Rola a página para carregar as imagens
         driver.execute_script("window.scrollBy(0, 1000);")
         time.sleep(2)
         
-        # Espera os containers carregarem
-        wait = WebDriverWait(driver, 10)
-        containers = wait.until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 
-                "div.beneficio, article, .card-oferta, [class*='offer'], [class*='card']"))
-        )
+        # Tenta encontrar os containers
+        selectors = [
+            "div.beneficio",
+            "article",
+            ".card-oferta",
+            "[class*='offer']",
+            "[class*='card']",
+            ".product-card"
+        ]
         
-        print(f"📦 Containers encontrados: {len(containers)}")
+        containers = []
+        for selector in selectors:
+            elements = driver.find_elements(By.CSS_SELECTOR, selector)
+            if elements:
+                containers = elements
+                print(f"📦 Encontrados {len(containers)} containers com seletor: {selector}")
+                break
+        
+        if not containers:
+            print("❌ Nenhum container encontrado")
+            # Debug: mostra o título da página
+            print(f"Título da página: {driver.title}")
+            return []
         
         offers = []
-        for container in containers[:8]:  # Pega até 8 ofertas
+        for container in containers[:8]:
             try:
                 # Título
-                title_elem = container.find_element(By.CSS_SELECTOR, 
-                    ".titulo, h2, h3, p, .name, [class*='title']")
-                title = title_elem.text.strip()
+                title_selectors = [".titulo", "h2", "h3", "p", ".name", "[class*='title']"]
+                title = None
+                for selector in title_selectors:
+                    elements = container.find_elements(By.CSS_SELECTOR, selector)
+                    if elements:
+                        title = elements[0].text.strip()
+                        break
+                
+                if not title:
+                    continue
                 
                 # Link
-                link_elem = container.find_element(By.CSS_SELECTOR, "a")
-                link = link_elem.get_attribute("href")
+                link = TARGET_URL
+                link_elements = container.find_elements(By.CSS_SELECTOR, "a")
+                if link_elements:
+                    link = link_elements[0].get_attribute("href")
                 
-                if title and link:
-                    offers.append({
-                        "title": title,
-                        "link": link
-                    })
-                    print(f"  ✅ {title[:50]}...")
+                print(f"  ✅ {title[:50]}...")
+                offers.append({
+                    "title": title,
+                    "link": link
+                })
                     
             except Exception as e:
+                print(f"  ⚠️ Erro em container: {e}")
                 continue
         
         return offers
@@ -180,4 +212,3 @@ def run_bot():
 
 if __name__ == "__main__":
     run_bot()
-    
