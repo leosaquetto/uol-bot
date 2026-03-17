@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO COM COMENTÁRIOS - Envia oferta + descrição completa
+# VERSÃO COM COMENTÁRIOS EM GRUPO - Canal + Grupo separado
 # ------------------------------
 
 import requests
@@ -23,13 +23,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 # CONFIGURAÇÕES
 # ==============================================
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
+CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal (ex: @leosaquettoof)
+GRUPO_COMENTARIOS_ID = "@leouolchat"  # 🔥 GRUPO PARA OS COMENTÁRIOS
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
 MAX_CAPTION_LENGTH = 1024
 MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
-MAX_COMMENT_LENGTH = 4096  # Limite do Telegram para mensagens de texto
+MAX_COMMENT_LENGTH = 4096
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -163,56 +164,76 @@ def extract_validity(driver):
     return None
 
 # ==============================================
-# NOVA FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA DA PÁGINA
+# FUNÇÃO MELHORADA - Extrai descrição LIMPA (sem repetições)
 # ==============================================
 def extract_full_description(driver):
-    """Extrai TODO o texto relevante da página da oferta"""
+    """Extrai descrição limpa, sem repetições e formatada"""
     try:
-        # Tenta encontrar o conteúdo principal
-        main_selectors = [
-            "main",
-            "article",
-            ".content",
-            ".description",
-            "[class*='descricao']",
-            "[class*='beneficio']",
-            "div[class*='info']"
-        ]
+        description_parts = []
+        seen_texts = set()  # Para evitar repetições
         
-        full_text = []
+        # 1. Descrição do parceiro
+        partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner", "p:contains('Sobre o parceiro')"]
+        for selector in partner_selectors:
+            try:
+                elems = driver.find_elements(By.CSS_SELECTOR, selector)
+                for elem in elems:
+                    text = elem.text.strip()
+                    if text and len(text) > 20 and text not in seen_texts:
+                        seen_texts.add(text)
+                        description_parts.append(f"🏢 *Sobre o parceiro:*\n{text}")
+                        break
+            except:
+                continue
         
-        # Tenta cada seletor de conteúdo principal
-        for selector in main_selectors:
-            elements = driver.find_elements(By.CSS_SELECTOR, selector)
-            for elem in elements:
-                text = elem.text.strip()
-                if text and len(text) > 50:  # Se encontrar texto relevante
-                    full_text.append(text)
+        # 2. Benefício
+        benefit_selectors = [".benefit-description", "[class*='beneficio'] p", ".offer-description", "p:contains('Benefício')"]
+        for selector in benefit_selectors:
+            try:
+                elems = driver.find_elements(By.CSS_SELECTOR, selector)
+                for elem in elems:
+                    text = elem.text.strip()
+                    if text and len(text) > 15 and text not in seen_texts:
+                        seen_texts.add(text)
+                        description_parts.append(f"🎁 *Benefício:*\n{text}")
+                        break
+            except:
+                continue
         
-        # Se não encontrou com seletores, pega parágrafos importantes
-        if not full_text:
+        # 3. Regras
+        rule_selectors = [".rules", "[class*='regras']", ".terms", "li", "p:contains('Regra')"]
+        for selector in rule_selectors:
+            try:
+                elems = driver.find_elements(By.CSS_SELECTOR, selector)
+                for elem in elems:
+                    text = elem.text.strip()
+                    if text and ("regra" in text.lower() or "não é válido" in text.lower()) and len(text) > 15 and text not in seen_texts:
+                        seen_texts.add(text)
+                        description_parts.append(f"📋 *Regra:*\n{text}")
+            except:
+                continue
+        
+        # 4. Validade (se não veio na legenda)
+        validity_text = extract_validity(driver)
+        if validity_text and validity_text not in seen_texts:
+            seen_texts.add(validity_text)
+            description_parts.append(f"⏳ *Validade:*\n{validity_text}")
+        
+        # Se não encontrou nada, pega parágrafos únicos
+        if len(description_parts) < 2:
             paragraphs = driver.find_elements(By.TAG_NAME, "p")
-            for p in paragraphs:
+            for p in paragraphs[:8]:
                 text = p.text.strip()
-                if text and len(text) > 30:
-                    full_text.append(text)
+                if text and len(text) > 30 and text not in seen_texts and "Clube UOL" not in text:
+                    seen_texts.add(text)
+                    description_parts.append(text)
         
-        # Junta tudo com quebras de linha
-        result = "\n\n".join(full_text)
+        # Junta tudo com quebras de linha duplas
+        result = "\n\n".join(description_parts)
         
-        # Remove linhas muito curtas ou repetitivas
-        lines = result.split('\n')
-        cleaned_lines = []
-        for line in lines:
-            line = line.strip()
-            if line and len(line) > 15 and "Clube UOL" not in line:
-                cleaned_lines.append(line)
-        
-        result = "\n".join(cleaned_lines)
-        
-        # Limita ao tamanho máximo do Telegram
-        if len(result) > MAX_COMMENT_LENGTH - 100:  # Reserva espaço para cabeçalho
-            result = result[:MAX_COMMENT_LENGTH-150] + "...\n\n[Descrição truncada devido ao limite do Telegram]"
+        # Limita ao tamanho máximo
+        if len(result) > MAX_COMMENT_LENGTH - 150:
+            result = result[:MAX_COMMENT_LENGTH-200] + "...\n\n*Descrição truncada devido ao limite do Telegram*"
         
         return result if result else "Descrição detalhada não disponível."
         
@@ -255,7 +276,7 @@ def build_caption(page_title, validity, link):
         parts.append(f"📅 {validity_clean}")
     
     parts.append(f"🔗 [Acessar oferta]({link})")
-    parts.append("💬 *Veja os detalhes completos nos comentários abaixo*")
+    parts.append(f"💬 *Comentários e detalhes completos no grupo* [@leouolchat](https://t.me/leouolchat)")
     
     caption = "\n\n".join(parts)
     
@@ -271,19 +292,19 @@ def build_caption(page_title, validity, link):
     return caption
 
 # ==============================================
-# ENVIO PRINCIPAL + COMENTÁRIO (NOVA VERSÃO!)
+# ENVIO PRINCIPAL (CANAL) + COMENTÁRIO (GRUPO)
 # ==============================================
 def send_offer_with_details(img_path, main_caption, full_description, link):
-    """Envia a imagem com legenda + comentário com descrição completa"""
+    """Envia a imagem no CANAL + comentário no GRUPO"""
     
     try:
-        # 1️⃣ ENVIA A FOTO COM LEGENDA PRINCIPAL
+        # 1️⃣ ENVIA A FOTO NO CANAL PRINCIPAL
         photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
         
         with open(img_path, 'rb') as photo:
             files = {'photo': photo}
             data = {
-                'chat_id': TELEGRAM_CHAT_ID,
+                'chat_id': CANAL_ID,  # 🔥 CANAL PRINCIPAL
                 'caption': main_caption,
                 'parse_mode': 'Markdown'
             }
@@ -293,12 +314,11 @@ def send_offer_with_details(img_path, main_caption, full_description, link):
             print(f"❌ Erro ao enviar foto: {photo_response.text}")
             return False
         
-        # Pega o message_id da mensagem enviada
+        # Pega o message_id da mensagem no CANAL
         message_id = photo_response.json()['result']['message_id']
-        print(f"✅ Foto enviada (ID: {message_id})")
+        print(f"✅ Foto enviada no canal (ID: {message_id})")
         
-        # 2️⃣ PREPARA O TEXTO DO COMENTÁRIO
-        # Limpa a descrição para evitar problemas com Markdown
+        # 2️⃣ PREPARA O TEXTO DO COMENTÁRIO (LIMPO)
         full_description = full_description.replace('_', '\\_').replace('*', '\\*').replace('`', '\\`')
         
         comment_text = (
@@ -307,23 +327,22 @@ def send_offer_with_details(img_path, main_caption, full_description, link):
             f"🔗 [Link original da oferta]({link})"
         )
         
-        # Garante que não ultrapasse o limite
         if len(comment_text) > MAX_COMMENT_LENGTH:
             comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n*Descrição truncada*"
         
-        # 3️⃣ ENVIA O COMENTÁRIO
+        # 3️⃣ ENVIA O COMENTÁRIO NO GRUPO, respondendo à mensagem do canal
         comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
         comment_data = {
-            'chat_id': TELEGRAM_CHAT_ID,
+            'chat_id': GRUPO_COMENTARIOS_ID,  # 🔥 GRUPO DE COMENTÁRIOS
             'text': comment_text,
             'parse_mode': 'Markdown',
-            'reply_to_message_id': message_id  # 🔥 ISSO FAZ SER COMENTÁRIO!
+            'reply_to_message_id': message_id  # 🔥 ISSO LIGA AO CANAL!
         }
         
         comment_response = requests.post(comment_url, data=comment_data, timeout=30)
         
         if comment_response.ok:
-            print("✅ Descrição completa enviada como comentário!")
+            print(f"✅ Descrição completa enviada no grupo (link: t.me/leouolchat/{comment_response.json()['result']['message_id']})")
             return True
         else:
             print(f"❌ Erro ao enviar comentário: {comment_response.text}")
@@ -460,7 +479,7 @@ def process_offer(offer):
         if validity:
             print(f"  📅 Validade: {validity[:50]}...")
         
-        # 🔥 NOVO: Extrai descrição completa
+        # Extrai descrição completa (melhorada)
         full_description = extract_full_description(driver)
         print(f"  📋 Descrição completa: {len(full_description)} caracteres")
         
@@ -479,7 +498,7 @@ def process_offer(offer):
 # ==============================================
 def main():
     print("=" * 70)
-    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (COM COMENTÁRIOS)")
+    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (CANAL + GRUPO)")
     print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 70)
     
@@ -543,10 +562,8 @@ def main():
             processed_ids.add(offer['id'])
             continue
         
-        # 🔥 Processa a página e pega TUDO
         page_title, validity, full_description = process_offer(offer)
         
-        # Constrói legenda principal (resumida)
         main_caption = build_caption(page_title, validity, offer['link'])
         
         if not main_caption:
@@ -556,7 +573,6 @@ def main():
             processed_ids.add(offer['id'])
             continue
         
-        # 📤 Envia com imagem + comentário
         print("\n📤 Enviando oferta com descrição completa...")
         if send_offer_with_details(img_path, main_caption, full_description, offer['link']):
             successful += 1
@@ -580,7 +596,7 @@ def main():
             print(f"\n✅ Histórico atualizado: {len(processed_ids)} IDs")
     
     print("\n" + "=" * 70)
-    print(f"✅ FINALIZADO! {successful}/{len(new_offers)} ofertas enviadas com descrição completa")
+    print(f"✅ FINALIZADO! {successful}/{len(new_offers)} ofertas enviadas")
     print("=" * 70)
 
 if __name__ == "__main__":
