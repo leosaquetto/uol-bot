@@ -1,0 +1,23 @@
+name: UOL Bot
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # A CADA 5 MINUTOS (máximo permitido)
+    # - cron: '*/10 * * * *' # A cada 10 minutos
+    # - cron: '*/15 * * * *' # A cada 15 minutos
+    # - cron: '*/30 * * * *' # A cada 30 minutos
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests beautifulsoup4 lxml
+      - run: python bot.py
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
