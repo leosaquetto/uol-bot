@@ -1,0 +1,35 @@
+# uol_ofertas.yml
+name: Buscar Ofertas Clube UOL
+
+on:
+  schedule:
+    # A cada 15 minutos (reduzido para não levantar suspeitas)
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  buscar-ofertas:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+      
+      - name: Instalar Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Instalar dependências
+        run: |
+          pip install requests selenium webdriver-manager
+          
+      - name: Executar bot de ofertas
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python ofertas_clube_uol.py
