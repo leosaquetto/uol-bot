@@ -231,34 +231,32 @@ def build_caption(page_title, validity, link):
     
     print(f"📝 Legenda: {len(caption)} caracteres")
     return caption
-
 # ==============================================
-# ENVIO PARA O TELEGRAM
+# ENVIO PARA O TELEGRAM (COMENTADO PARA TESTES)
 # ==============================================
 def send_to_telegram(img_path, caption):
-    """Envia a imagem com legenda para o Telegram"""
-    try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
-        
-        with open(img_path, 'rb') as photo:
-            files = {'photo': photo}
-            data = {
-                'chat_id': TELEGRAM_CHAT_ID,
-                'caption': caption,
-                'parse_mode': 'Markdown'
-            }
-            response = requests.post(url, data=data, files=files, timeout=30)
-        
-        if response.ok:
-            print(f"✅ Enviado com sucesso!")
-            return True
-        else:
-            print(f"❌ Erro Telegram: {response.text}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ Erro no envio: {e}")
-        return False
+    """Envia a imagem com legenda para o Telegram (DESATIVADO PARA TESTES)"""
+    print("🔴 MODO TESTE - Envio desativado")
+    print(f"📤 Simulação de envio:")
+    print(f"   Chat: {TELEGRAM_CHAT_ID}")
+    print(f"   Legenda: {caption[:100]}...")
+    return True  # Simula sucesso
+    
+    # Código original comentado:
+    # try:
+    #     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
+    #     with open(img_path, 'rb') as photo:
+    #         files = {'photo': photo}
+    #         data = {
+    #             'chat_id': TELEGRAM_CHAT_ID,
+    #             'caption': caption,
+    #             'parse_mode': 'Markdown'
+    #         }
+    #         response = requests.post(url, data=data, files=files, timeout=30)
+    #     return response.ok
+    # except Exception as e:
+    #     print(f"❌ Erro no envio: {e}")
+    #     return False
 
 # ==============================================
 # BUSCA OFERTAS NA PÁGINA PRINCIPAL
