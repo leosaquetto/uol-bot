@@ -425,7 +425,7 @@ def fetch_offers():
             driver.quit()
 
 # ==============================================
-# PROCESSAMENTO DE CADA OFERTA (ATUALIZADO)
+# PROCESSAMENTO DE CADA OFERTA
 # ==============================================
 def process_offer(offer):
     print(f"\n🔍 Acessando página: {offer['preview_title'][:50]}...")
