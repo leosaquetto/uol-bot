@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# Envia novas ofertas do Clube UOL para o Telegram
+# VERSÃO CORRIGIDA - Com normalização de links
 # ------------------------------
 
 import requests
@@ -9,6 +9,7 @@ import os
 import time
 import re
 import random
+import unicodedata
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -25,11 +26,10 @@ TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
-MAX_CAPTION_LENGTH = 1024  # Limite do Telegram para fotos
-MAX_OFFERS_PER_RUN = 8      # Pega apenas as 8 ofertas mais recentes
-MAX_HISTORY_SIZE = 200       # Mantém apenas os últimos 200 IDs
+MAX_CAPTION_LENGTH = 1024
+MAX_OFFERS_PER_RUN = 8      # 🔹 MANTIDO 8 (recomendado)
+MAX_HISTORY_SIZE = 200
 
-# Lista de User Agents para parecer um navegador real
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
@@ -38,7 +38,21 @@ USER_AGENTS = [
 ]
 
 # ==============================================
-# FUNÇÕES DE HISTÓRICO (CORRIGIDAS COM LIMITE)
+# FUNÇÃO PARA NORMALIZAR LINKS (NOVA!)
+# ==============================================
+def normalize_link(link):
+    """Remove acentos e caracteres especiais do link para comparação"""
+    try:
+        # Remove acentos (ex: seleção → selecao)
+        link = unicodedata.normalize('NFKD', link).encode('ASCII', 'ignore').decode('ASCII')
+        # Remove caracteres especiais, mantendo apenas o essencial
+        link = re.sub(r'[^a-zA-Z0-9/:.%_-]', '', link)
+        return link
+    except:
+        return link  # Se falhar, retorna original
+
+# ==============================================
+# FUNÇÕES DE HISTÓRICO
 # ==============================================
 def load_history():
     """Carrega histórico de IDs já enviados"""
@@ -46,20 +60,16 @@ def load_history():
         if os.path.exists(HISTORY_FILE):
             with open(HISTORY_FILE, 'r') as f:
                 data = json.load(f)
-                # Garante que o histórico não ultrapasse o limite
                 if len(data.get("ids", [])) > MAX_HISTORY_SIZE:
                     data["ids"] = data["ids"][-MAX_HISTORY_SIZE:]
                 return data
     except Exception as e:
         print(f"⚠️ Erro ao carregar histórico: {e}")
-    
-    # Retorna histórico vazio se não existir ou der erro
     return {"ids": []}
 
 def save_history(history):
     """Salva histórico com limite de tamanho"""
     try:
-        # Aplica limite antes de salvar
         if len(history.get("ids", [])) > MAX_HISTORY_SIZE:
             history["ids"] = history["ids"][-MAX_HISTORY_SIZE:]
         
@@ -76,47 +86,31 @@ def save_history(history):
 # FUNÇÕES DE COMPORTAMENTO HUMANO
 # ==============================================
 def human_like_delay(min_seconds=1, max_seconds=3):
-    """Pausa com comportamento humano (aleatório)"""
     time.sleep(random.uniform(min_seconds, max_seconds))
 
 # ==============================================
-# CONFIGURAÇÃO DO CHROME (COM CORREÇÃO SSL)
+# CONFIGURAÇÃO DO CHROME
 # ==============================================
 def setup_driver():
-    """Configura o Chrome com todas as correções anti-detecção e SSL"""
     chrome_options = Options()
-    
-    # Modo headless (sem interface gráfica)
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
-    
-    # Tamanho de tela realista
     chrome_options.add_argument("--window-size=1920,1080")
-    
-    # Remove vestígios de automação
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
-    
-    # CORREÇÃO: Ignorar erros de certificado SSL
     chrome_options.add_argument('--ignore-certificate-errors')
     chrome_options.add_argument('--allow-running-insecure-content')
     chrome_options.add_argument('--ignore-ssl-errors=yes')
     
-    # User Agent aleatório
     user_agent = random.choice(USER_AGENTS)
     chrome_options.add_argument(f"user-agent={user_agent}")
-    
-    # Idioma português do Brasil
     chrome_options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en;q=0.8")
     
-    # Inicia o Chrome
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
-    
-    # Script para esconder que é um robô
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     
     return driver
@@ -125,17 +119,12 @@ def setup_driver():
 # EXTRAÇÃO DE DADOS DA PÁGINA
 # ==============================================
 def extract_page_title(driver):
-    """Extrai o título da página da oferta"""
     try:
-        # Tenta pegar o H1 da página
         h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
         if h1_elements and h1_elements[0].text.strip():
             title = h1_elements[0].text.strip()
-            # Remove "Clube UOL" se estiver no título
             title = re.sub(r'\s*[–—-]\s*Clube UOL\s*$', '', title)
             return title
-        
-        # Se não achar H1, pega o título da página
         title = driver.title
         title = re.sub(r'\s*[–—-]\s*Clube UOL\s*$', '', title)
         return title.strip()
@@ -143,12 +132,9 @@ def extract_page_title(driver):
         return None
 
 def extract_validity(driver):
-    """Extrai apenas a validade do benefício"""
     try:
-        # Pega todo o texto da página
         page_text = driver.find_element(By.TAG_NAME, "body").text
         
-        # Padrões comuns de validade
         patterns = [
             r'[Vv]álido até[^.!?]*[.!?]',
             r'[Vv]alidade[^.!?]*[.!?]',
@@ -167,7 +153,6 @@ def extract_validity(driver):
             if match:
                 return match.group(0).strip()
         
-        # Se não achou com padrões, procura em parágrafos
         keywords = ['válido', 'validade', 'até', 'válida']
         paragraphs = driver.find_elements(By.TAG_NAME, "p")
         
@@ -185,7 +170,6 @@ def extract_validity(driver):
 # DOWNLOAD DA IMAGEM
 # ==============================================
 def download_image(img_url):
-    """Baixa a imagem da oferta"""
     try:
         headers = {
             'User-Agent': random.choice(USER_AGENTS),
@@ -205,7 +189,6 @@ def download_image(img_url):
 # CONSTRUÇÃO DA LEGENDA
 # ==============================================
 def build_caption(page_title, validity, link):
-    """Constrói a legenda da mensagem"""
     parts = []
     
     if page_title:
@@ -231,8 +214,9 @@ def build_caption(page_title, validity, link):
     
     print(f"📝 Legenda: {len(caption)} caracteres")
     return caption
+
 # ==============================================
-# ENVIO PARA O TELEGRAM (COMENTADO PARA TESTES)
+# ENVIO PARA O TELEGRAM (MODO TESTE)
 # ==============================================
 def send_to_telegram(img_path, caption):
     """Envia a imagem com legenda para o Telegram (DESATIVADO PARA TESTES)"""
@@ -241,25 +225,9 @@ def send_to_telegram(img_path, caption):
     print(f"   Chat: {TELEGRAM_CHAT_ID}")
     print(f"   Legenda: {caption[:100]}...")
     return True  # Simula sucesso
-    
-    # Código original comentado:
-    # try:
-    #     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
-    #     with open(img_path, 'rb') as photo:
-    #         files = {'photo': photo}
-    #         data = {
-    #             'chat_id': TELEGRAM_CHAT_ID,
-    #             'caption': caption,
-    #             'parse_mode': 'Markdown'
-    #         }
-    #         response = requests.post(url, data=data, files=files, timeout=30)
-    #     return response.ok
-    # except Exception as e:
-    #     print(f"❌ Erro no envio: {e}")
-    #     return False
 
 # ==============================================
-# BUSCA OFERTAS NA PÁGINA PRINCIPAL (VERSÃO SIMPLIFICADA)
+# BUSCA OFERTAS NA PÁGINA PRINCIPAL (VERSÃO CORRIGIDA)
 # ==============================================
 def fetch_offers():
     """Pega as 8 ofertas mais recentes da página principal"""
@@ -288,19 +256,17 @@ def fetch_offers():
         offers = []
         for i, container in enumerate(containers[:MAX_OFFERS_PER_RUN]):
             try:
-                # Título da oferta
                 title_elem = container.find_element(By.CSS_SELECTOR, ".titulo, h2, h3, p")
                 preview_title = title_elem.text.strip()
                 
                 if not preview_title:
                     continue
                 
-                # Link da oferta
                 link_elem = container.find_element(By.CSS_SELECTOR, "a")
                 link = link_elem.get_attribute("href")
                 
-                # 🎯 ID = O PRÓPRIO LINK (sem hash, sem mágica)
-                offer_id = link
+                # 🎯 NOVO: Normaliza o link para remover acentos
+                normalized_link = normalize_link(link)
                 
                 # Imagem
                 img_url = None
@@ -329,14 +295,14 @@ def fetch_offers():
                     img_url = 'https:' + img_url
                 
                 offers.append({
-                    "id": offer_id,
+                    "id": normalized_link,  # 🎯 USA O LINK NORMALIZADO!
                     "preview_title": preview_title,
                     "link": link,
                     "imagem_url": img_url
                 })
                 
                 print(f"     Título: {preview_title[:50]}...")
-                print(f"     ID: {offer_id[:60]}...")  # Mostra só começo do link
+                print(f"     ID: {normalized_link[:60]}...")
                 
             except Exception as e:
                 print(f"  ⚠️ Erro na oferta {i+1}: {e}")
@@ -356,7 +322,6 @@ def fetch_offers():
 # PROCESSAMENTO DE CADA OFERTA
 # ==============================================
 def process_offer(offer):
-    """Acessa a página da oferta e extrai título e validade"""
     print(f"\n🔍 Acessando página: {offer['preview_title'][:50]}...")
     
     driver = None
@@ -403,18 +368,15 @@ def process_offer(offer):
 # FUNÇÃO PRINCIPAL
 # ==============================================
 def main():
-    """Função principal do bot"""
     print("=" * 70)
-    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas")
+    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (VERSÃO CORRIGIDA)")
     print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 70)
     
-    # Carrega histórico
     history = load_history()
     seen_ids = set(history.get("ids", []))
     print(f"📋 IDs no histórico: {len(seen_ids)} (limite {MAX_HISTORY_SIZE})")
     
-    # Busca ofertas
     print("\n🔍 Buscando ofertas...")
     offers = fetch_offers()
     
@@ -483,7 +445,6 @@ def main():
             print(f"\n⏱️ Aguardando {pausa}s...")
             human_like_delay(pausa, pausa+1)
     
-    # Atualiza histórico
     if processed_ids:
         history["ids"] = list(processed_ids)
         if save_history(history):
