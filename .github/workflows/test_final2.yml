@@ -1,0 +1,29 @@
+name: UOL Bot - TESTE FINAL 2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-final2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Instalar Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Instalar dependências
+        run: |
+          pip install requests selenium webdriver-manager
+          
+      - name: Executar teste final 2
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python bot_test_send_final2.py
