@@ -290,11 +290,11 @@ def process_offer(offer):
             driver.quit()
 
 # ==============================================
-# FUNÇÃO PRINCIPAL
+# FUNÇÃO PRINCIPAL COM RETENTATIVAS
 # ==============================================
 def main():
     print("=" * 70)
-    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (VERSÃO CORRIGIDA)")
+    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (COM RETENTATIVAS)")
     print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 70)
     
@@ -302,11 +302,32 @@ def main():
     seen_ids = set(history.get("ids", []))
     print(f"📋 IDs no histórico: {len(seen_ids)} (limite {MAX_HISTORY_SIZE})")
     
-    print("\n🔍 Buscando ofertas...")
-    offers = fetch_offers()
+    # 🎯 IMPLEMENTAÇÃO DAS RETENTATIVAS
+    max_attempts = 3
+    attempt = 1
+    offers = []
     
+    while attempt <= max_attempts:
+        print(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
+        
+        offers = fetch_offers()
+        
+        if offers:
+            print(f"✅ Sucesso na tentativa {attempt}!")
+            break
+        else:
+            print(f"⚠️ Tentativa {attempt} falhou (0 ofertas)")
+            
+            if attempt < max_attempts:
+                wait_time = random.randint(10, 20)  # Espera 10-20 segundos
+                print(f"⏱️ Aguardando {wait_time} segundos antes de tentar novamente...")
+                time.sleep(wait_time)
+            
+            attempt += 1
+    
+    # Se depois de todas tentativas ainda der 0
     if not offers:
-        print("❌ Nenhuma oferta encontrada")
+        print("❌ Todas as tentativas falharam. Site pode estar fora do ar.")
         return
     
     print(f"\n📊 Encontradas: {len(offers)} ofertas")
