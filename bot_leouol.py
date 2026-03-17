@@ -216,107 +216,32 @@ def build_caption(page_title, validity, link):
     return caption
 
 # ==============================================
-# ENVIO PARA O TELEGRAM (MODO TESTE)
+# ENVIO PARA O TELEGRAM (VERSÃO ORIGINAL - ATIVADA!)
 # ==============================================
 def send_to_telegram(img_path, caption):
-    """Envia a imagem com legenda para o Telegram (DESATIVADO PARA TESTES)"""
-    print("🔴 MODO TESTE - Envio desativado")
-    print(f"📤 Simulação de envio:")
-    print(f"   Chat: {TELEGRAM_CHAT_ID}")
-    print(f"   Legenda: {caption[:100]}...")
-    return True  # Simula sucesso
-
-# ==============================================
-# BUSCA OFERTAS NA PÁGINA PRINCIPAL (VERSÃO CORRIGIDA)
-# ==============================================
-def fetch_offers():
-    """Pega as 8 ofertas mais recentes da página principal"""
-    driver = None
+    """Envia a imagem com legenda para o Telegram"""
     try:
-        print("🌐 Iniciando Chrome...")
-        driver = setup_driver()
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
         
-        print(f"📱 Acessando: {TARGET_URL}")
-        driver.get(TARGET_URL)
+        with open(img_path, 'rb') as photo:
+            files = {'photo': photo}
+            data = {
+                'chat_id': TELEGRAM_CHAT_ID,
+                'caption': caption,
+                'parse_mode': 'Markdown'
+            }
+            response = requests.post(url, data=data, files=files, timeout=30)
         
-        human_like_delay(3, 5)
-        
-        driver.execute_script("window.scrollBy(0, 800);")
-        human_like_delay(1, 2)
-        driver.execute_script("window.scrollBy(0, 800);")
-        human_like_delay(1, 2)
-        
-        containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
-        print(f"📦 Total de ofertas na página: {len(containers)}")
-        
-        if not containers:
-            print("❌ Nenhuma oferta encontrada")
-            return []
-        
-        offers = []
-        for i, container in enumerate(containers[:MAX_OFFERS_PER_RUN]):
-            try:
-                title_elem = container.find_element(By.CSS_SELECTOR, ".titulo, h2, h3, p")
-                preview_title = title_elem.text.strip()
-                
-                if not preview_title:
-                    continue
-                
-                link_elem = container.find_element(By.CSS_SELECTOR, "a")
-                link = link_elem.get_attribute("href")
-                
-                # 🎯 NOVO: Normaliza o link para remover acentos
-                normalized_link = normalize_link(link)
-                
-                # Imagem
-                img_url = None
-                elements_with_bg = container.find_elements(By.CSS_SELECTOR, "[style*='background']")
-                for el in elements_with_bg:
-                    style = el.get_attribute("style")
-                    match = re.search(r'url\(["\']?(.*?)["\']?\)', style)
-                    if match:
-                        img_url = match.group(1)
-                        print(f"  📸 Oferta {i+1}: Imagem (background)")
-                        break
-                
-                if not img_url:
-                    imgs = container.find_elements(By.CSS_SELECTOR, "img[data-src]")
-                    if imgs:
-                        img_url = imgs[0].get_attribute("data-src")
-                        print(f"  📸 Oferta {i+1}: Imagem (data-src)")
-                
-                if not img_url:
-                    imgs = container.find_elements(By.CSS_SELECTOR, "img")
-                    if imgs:
-                        img_url = imgs[0].get_attribute("src")
-                        print(f"  📸 Oferta {i+1}: Imagem (fallback)")
-                
-                if img_url and img_url.startswith('//'):
-                    img_url = 'https:' + img_url
-                
-                offers.append({
-                    "id": normalized_link,  # 🎯 USA O LINK NORMALIZADO!
-                    "preview_title": preview_title,
-                    "link": link,
-                    "imagem_url": img_url
-                })
-                
-                print(f"     Título: {preview_title[:50]}...")
-                print(f"     ID: {normalized_link[:60]}...")
-                
-            except Exception as e:
-                print(f"  ⚠️ Erro na oferta {i+1}: {e}")
-                continue
-        
-        return offers
-        
+        if response.ok:
+            print(f"✅ Enviado com sucesso!")
+            return True
+        else:
+            print(f"❌ Erro Telegram: {response.text}")
+            return False
+            
     except Exception as e:
-        print(f"❌ Erro geral: {e}")
-        return []
-        
-    finally:
-        if driver:
-            driver.quit()
+        print(f"❌ Erro no envio: {e}")
+        return False
 
 # ==============================================
 # PROCESSAMENTO DE CADA OFERTA
