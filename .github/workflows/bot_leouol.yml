@@ -2,7 +2,7 @@ name: BOT LEOUOL
 
 on:
   schedule:
-    # Executa a cada 15 minutos (menos frequente para não levantar suspeitas)
+    # Executa a cada 15 minutos
     - cron: '*/15 * * * *'
   workflow_dispatch:  # Permite execução manual
 
@@ -14,6 +14,19 @@ jobs:
     steps:
       - name: 📥 Baixar código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Pega todo o histórico para poder commitar
+      
+      - name: 🔄 Restaurar histórico
+        run: |
+          # Se o arquivo não existir, cria um vazio
+          if [ ! -f historico_leouol.json ]; then
+            echo '{"ids": []}' > historico_leouol.json
+            echo "✅ Arquivo de histórico criado"
+          else
+            echo "✅ Arquivo de histórico encontrado"
+            cat historico_leouol.json
+          fi
       
       - name: 🌐 Instalar Chrome
         run: |
@@ -34,3 +47,22 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python bot_leouol.py
+      
+      - name: 💾 Salvar histórico no repositório
+        run: |
+          # Configura o git
+          git config --global user.email "bot@leouol.com"
+          git config --global user.name "BOT LEOUOL"
+          
+          # Verifica se o arquivo mudou
+          if git diff --quiet historico_leouol.json; then
+            echo "📊 Histórico não mudou"
+          else
+            # Mostra as mudanças
+            echo "📊 Histórico atualizado:"
+            git diff historico_leouol.json
+            git add historico_leouol.json
+            git commit -m "🤖 Atualiza histórico [skip ci]"
+            git push
+            echo "✅ Histórico salvo no repositório"
+          fi
