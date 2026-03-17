@@ -27,6 +27,7 @@ TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
 MAX_CAPTION_LENGTH = 1024  # Limite do Telegram para fotos
 MAX_OFFERS_PER_RUN = 8      # Pega apenas as 8 ofertas mais recentes
+MAX_HISTORY_SIZE = 200       # Mantém apenas os últimos 200 IDs
 
 # Lista de User Agents para parecer um navegador real
 USER_AGENTS = [
@@ -37,7 +38,7 @@ USER_AGENTS = [
 ]
 
 # ==============================================
-# FUNÇÕES DE HISTÓRICO
+# FUNÇÕES DE HISTÓRICO (CORRIGIDAS COM LIMITE)
 # ==============================================
 def load_history():
     """Carrega histórico de IDs já enviados"""
@@ -45,18 +46,31 @@ def load_history():
         if os.path.exists(HISTORY_FILE):
             with open(HISTORY_FILE, 'r') as f:
                 data = json.load(f)
-                # Mantém apenas os últimos 200 IDs
-                if len(data.get("ids", [])) > 200:
-                    data["ids"] = data["ids"][-200:]
+                # Garante que o histórico não ultrapasse o limite
+                if len(data.get("ids", [])) > MAX_HISTORY_SIZE:
+                    data["ids"] = data["ids"][-MAX_HISTORY_SIZE:]
                 return data
-    except:
-        pass
+    except Exception as e:
+        print(f"⚠️ Erro ao carregar histórico: {e}")
+    
+    # Retorna histórico vazio se não existir ou der erro
     return {"ids": []}
 
 def save_history(history):
-    """Salva histórico"""
-    with open(HISTORY_FILE, 'w') as f:
-        json.dump(history, f, indent=2)
+    """Salva histórico com limite de tamanho"""
+    try:
+        # Aplica limite antes de salvar
+        if len(history.get("ids", [])) > MAX_HISTORY_SIZE:
+            history["ids"] = history["ids"][-MAX_HISTORY_SIZE:]
+        
+        with open(HISTORY_FILE, 'w') as f:
+            json.dump(history, f, indent=2)
+        
+        print(f"✅ Histórico salvo: {len(history['ids'])} IDs (limite {MAX_HISTORY_SIZE})")
+        return True
+    except Exception as e:
+        print(f"⚠️ Erro ao salvar histórico: {e}")
+        return False
 
 # ==============================================
 # FUNÇÕES DE COMPORTAMENTO HUMANO
@@ -87,12 +101,11 @@ def setup_driver():
     chrome_options.add_experimental_option('useAutomationExtension', False)
     
     # CORREÇÃO: Ignorar erros de certificado SSL
-    # Isso resolve o problema "Your connection is not private"
     chrome_options.add_argument('--ignore-certificate-errors')
     chrome_options.add_argument('--allow-running-insecure-content')
     chrome_options.add_argument('--ignore-ssl-errors=yes')
     
-    # User Agent aleatório (parece um navegador real)
+    # User Agent aleatório
     user_agent = random.choice(USER_AGENTS)
     chrome_options.add_argument(f"user-agent={user_agent}")
     
@@ -114,7 +127,7 @@ def setup_driver():
 def extract_page_title(driver):
     """Extrai o título da página da oferta"""
     try:
-        # Tenta pegar o H1 da página (geralmente tem o título completo)
+        # Tenta pegar o H1 da página
         h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
         if h1_elements and h1_elements[0].text.strip():
             title = h1_elements[0].text.strip()
@@ -124,7 +137,6 @@ def extract_page_title(driver):
         
         # Se não achar H1, pega o título da página
         title = driver.title
-        # Remove "Clube UOL" do título se estiver no final
         title = re.sub(r'\s*[–—-]\s*Clube UOL\s*$', '', title)
         return title.strip()
     except:
@@ -136,7 +148,7 @@ def extract_validity(driver):
         # Pega todo o texto da página
         page_text = driver.find_element(By.TAG_NAME, "body").text
         
-        # Padrões comuns de validade em português
+        # Padrões comuns de validade
         patterns = [
             r'[Vv]álido até[^.!?]*[.!?]',
             r'[Vv]alidade[^.!?]*[.!?]',
@@ -150,13 +162,12 @@ def extract_validity(driver):
             r'[Vv]álido de \d{1,2}/\d{1,2}/\d{4}'
         ]
         
-        # Tenta cada padrão
         for pattern in patterns:
             match = re.search(pattern, page_text)
             if match:
                 return match.group(0).strip()
         
-        # Se não achou com padrões, procura por palavras-chave em parágrafos
+        # Se não achou com padrões, procura em parágrafos
         keywords = ['válido', 'validade', 'até', 'válida']
         paragraphs = driver.find_elements(By.TAG_NAME, "p")
         
@@ -197,28 +208,20 @@ def build_caption(page_title, validity, link):
     """Constrói a legenda da mensagem"""
     parts = []
     
-    # 1. Título da página (já vem com parceiro incluso)
     if page_title:
         parts.append(f"*{page_title}*")
     else:
-        return None  # Não conseguiu título, não envia
+        return None
     
-    # 2. Validade (se encontrou)
     if validity and len(validity) > 5:
-        # Limpa a validade se necessário
         validity_clean = re.sub(r'^(benef[ií]cio\s+v[aá]lido\s*:\s*)', '', validity, flags=re.IGNORECASE)
         parts.append(f"📅 {validity_clean}")
     
-    # 3. Link
     parts.append(f"🔗 [Acessar oferta]({link})")
     
-    # Junta tudo com quebras de linha
     caption = "\n\n".join(parts)
     
-    # Verifica limite de caracteres do Telegram
     if len(caption) > MAX_CAPTION_LENGTH:
-        print(f"⚠️ Legenda com {len(caption)} caracteres, ajustando...")
-        # Trunca mantendo o link
         link_pos = caption.rfind("🔗 [Acessar oferta]")
         if link_pos > 0:
             truncated = caption[:MAX_CAPTION_LENGTH - len(caption[link_pos:]) - 3] + "..."
@@ -270,16 +273,13 @@ def fetch_offers():
         print(f"📱 Acessando: {TARGET_URL}")
         driver.get(TARGET_URL)
         
-        # Comportamento humano
         human_like_delay(3, 5)
         
-        # Scroll suave (como um humano faria)
         driver.execute_script("window.scrollBy(0, 800);")
         human_like_delay(1, 2)
         driver.execute_script("window.scrollBy(0, 800);")
         human_like_delay(1, 2)
         
-        # Encontra os containers de oferta
         containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
         print(f"📦 Total de ofertas na página: {len(containers)}")
         
@@ -287,25 +287,20 @@ def fetch_offers():
             print("❌ Nenhuma oferta encontrada")
             return []
         
-        # Pega apenas as 8 primeiras (mais recentes)
         offers = []
         for i, container in enumerate(containers[:MAX_OFFERS_PER_RUN]):
             try:
-                # Título da oferta (prévia)
                 title_elem = container.find_element(By.CSS_SELECTOR, ".titulo, h2, h3, p")
                 preview_title = title_elem.text.strip()
                 
                 if not preview_title:
                     continue
                 
-                # Link da oferta
                 link_elem = container.find_element(By.CSS_SELECTOR, "a")
                 link = link_elem.get_attribute("href")
                 
-                # IMAGEM GRANDE
                 img_url = None
                 
-                # 1. Tenta background image (funciona bem)
                 elements_with_bg = container.find_elements(By.CSS_SELECTOR, "[style*='background']")
                 for el in elements_with_bg:
                     style = el.get_attribute("style")
@@ -315,31 +310,25 @@ def fetch_offers():
                         print(f"  📸 Oferta {i+1}: Imagem (background)")
                         break
                 
-                # 2. Tenta data-src (lazy loading)
                 if not img_url:
                     imgs = container.find_elements(By.CSS_SELECTOR, "img[data-src]")
                     if imgs:
                         img_url = imgs[0].get_attribute("data-src")
                         print(f"  📸 Oferta {i+1}: Imagem (data-src)")
                 
-                # 3. Fallback: qualquer imagem
                 if not img_url:
                     imgs = container.find_elements(By.CSS_SELECTOR, "img")
                     if imgs:
                         img_url = imgs[0].get_attribute("src")
                         print(f"  📸 Oferta {i+1}: Imagem (fallback)")
                 
-                # Ajusta URL da imagem
                 if img_url and img_url.startswith('//'):
                     img_url = 'https:' + img_url
                 
-                # Cria um ID único para a oferta (baseado no link)
-                # Ex: /beneficio/123-nome-da-oferta
                 offer_id_match = re.search(r'/beneficio/([^/]+)', link)
                 if offer_id_match:
                     offer_id = offer_id_match.group(1)
                 else:
-                    # Fallback: hash do link
                     offer_id = str(hash(link))[:20]
                 
                 offers.append({
@@ -380,12 +369,10 @@ def process_offer(offer):
         
         human_like_delay(2, 4)
         
-        # Verifica se é página de erro SSL
         page_title = driver.title
         
         if "Your connection is not private" in page_title:
             print(f"  ⚠️ Página com erro SSL (ignorado)")
-            # Tenta encontrar algum título mesmo com erro
             try:
                 h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
                 if h1_elements and h1_elements[0].text.strip():
@@ -395,14 +382,12 @@ def process_offer(offer):
             except:
                 page_title = offer['preview_title']
         else:
-            # Extrai título normalmente
             page_title = extract_page_title(driver)
             if not page_title:
                 page_title = offer['preview_title']
         
         print(f"  📌 Título: {page_title[:50]}...")
         
-        # Extrai validade
         validity = extract_validity(driver)
         if validity:
             print(f"  📅 Validade: {validity[:50]}...")
@@ -430,9 +415,9 @@ def main():
     # Carrega histórico
     history = load_history()
     seen_ids = set(history.get("ids", []))
-    print(f"📋 IDs no histórico: {len(seen_ids)}")
+    print(f"📋 IDs no histórico: {len(seen_ids)} (limite {MAX_HISTORY_SIZE})")
     
-    # Busca ofertas na página principal
+    # Busca ofertas
     print("\n🔍 Buscando ofertas...")
     offers = fetch_offers()
     
@@ -442,7 +427,6 @@ def main():
     
     print(f"\n📊 Encontradas: {len(offers)} ofertas")
     
-    # Filtra apenas as novas
     new_offers = [o for o in offers if o['id'] not in seen_ids]
     
     if not new_offers:
@@ -451,9 +435,8 @@ def main():
     
     print(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
     
-    # Processa cada nova oferta
     successful = 0
-    processed_ids = set(seen_ids)  # Começa com os já vistos
+    processed_ids = set(seen_ids)
     
     for i, offer in enumerate(new_offers, 1):
         print(f"\n{'='*50}")
@@ -462,7 +445,6 @@ def main():
         print(f"Título: {offer['preview_title']}")
         print(f"ID: {offer['id']}")
         
-        # Baixa a imagem
         if not offer.get('imagem_url'):
             print("❌ Sem imagem")
             processed_ids.add(offer['id'])
@@ -476,10 +458,8 @@ def main():
             processed_ids.add(offer['id'])
             continue
         
-        # Processa a página da oferta
         page_title, validity = process_offer(offer)
         
-        # Constrói a legenda
         caption = build_caption(page_title, validity, offer['link'])
         
         if not caption:
@@ -489,7 +469,6 @@ def main():
             processed_ids.add(offer['id'])
             continue
         
-        # Envia para o Telegram
         print("\n📤 Enviando...")
         if send_to_telegram(img_path, caption):
             successful += 1
@@ -497,14 +476,11 @@ def main():
         else:
             print(f"❌ Falha no envio")
         
-        # Marca como processada
         processed_ids.add(offer['id'])
         
-        # Limpa arquivo temporário
         if os.path.exists(img_path):
             os.remove(img_path)
         
-        # Pausa entre ofertas
         if i < len(new_offers):
             pausa = random.randint(3, 6)
             print(f"\n⏱️ Aguardando {pausa}s...")
@@ -513,8 +489,8 @@ def main():
     # Atualiza histórico
     if processed_ids:
         history["ids"] = list(processed_ids)
-        save_history(history)
-        print(f"\n✅ Histórico atualizado: {len(processed_ids)} IDs")
+        if save_history(history):
+            print(f"\n✅ Histórico atualizado: {len(processed_ids)} IDs")
     
     print("\n" + "=" * 70)
     print(f"✅ FINALIZADO! {successful}/{len(new_offers)} enviadas")
