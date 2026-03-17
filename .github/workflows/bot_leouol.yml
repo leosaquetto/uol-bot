@@ -2,9 +2,8 @@ name: BOT LEOUOL
 
 on:
   schedule:
-    # Executa a cada 15 minutos
     - cron: '*/15 * * * *'
-  workflow_dispatch:  # Permite execução manual
+  workflow_dispatch:
 
 jobs:
   run-bot:
@@ -15,14 +14,14 @@ jobs:
       - name: 📥 Baixar código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Pega todo o histórico para poder commitar
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}  # Importante para ter permissão de push
       
-      - name: 🔄 Restaurar histórico
+      - name: 🔄 Restaurar ou criar histórico
         run: |
-          # Se o arquivo não existir, cria um vazio
           if [ ! -f historico_leouol.json ]; then
             echo '{"ids": []}' > historico_leouol.json
-            echo "✅ Arquivo de histórico criado"
+            echo "✅ Arquivo de histórico criado (vazio)"
           else
             echo "✅ Arquivo de histórico encontrado"
             cat historico_leouol.json
@@ -54,15 +53,20 @@ jobs:
           git config --global user.email "bot@leouol.com"
           git config --global user.name "BOT LEOUOL"
           
-          # Verifica se o arquivo mudou
-          if git diff --quiet historico_leouol.json; then
-            echo "📊 Histórico não mudou"
-          else
-            # Mostra as mudanças
-            echo "📊 Histórico atualizado:"
-            git diff historico_leouol.json
+          # Verifica se o arquivo existe e se houve mudança
+          if [ -f historico_leouol.json ]; then
+            # Adiciona o arquivo (se for novo ou modificado)
             git add historico_leouol.json
-            git commit -m "🤖 Atualiza histórico [skip ci]"
-            git push
-            echo "✅ Histórico salvo no repositório"
+            
+            # Tenta commitar (só funciona se houve mudança)
+            if git diff --staged --quiet; then
+              echo "📊 Histórico não mudou"
+            else
+              git commit -m "🤖 Atualiza histórico do bot [skip ci]"
+              git push
+              echo "✅ Histórico salvo no repositório!"
+              git show --stat
+            fi
+          else
+            echo "❌ Arquivo de histórico não encontrado (isso é um erro)"
           fi
