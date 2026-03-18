@@ -163,13 +163,8 @@ def extract_validity(driver):
     
     return None
 
-# ==============================================
-# FUNÇÃO: EXTRAIR URL DO LOGO DO PARCEIRO
-# ==============================================
 def extract_logo_url(driver):
-    """Extrai a URL do logo do parceiro na página"""
     try:
-        # Seletores comuns para logos
         logo_selectors = [
             "img[class*='logo']",
             "img[alt*='logo']",
@@ -183,7 +178,6 @@ def extract_logo_url(driver):
         for selector in logo_selectors:
             elements = driver.find_elements(By.CSS_SELECTOR, selector)
             for elem in elements:
-                # Tenta pegar src ou data-src
                 src = elem.get_attribute("src") or elem.get_attribute("data-src")
                 if src and ('.png' in src or '.jpg' in src or '.jpeg' in src or '.svg' in src):
                     if src.startswith('//'):
@@ -196,13 +190,19 @@ def extract_logo_url(driver):
         return None
 
 # ==============================================
-# FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA (MELHORADA)
+# FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA (ATUALIZADA PARA HTML)
 # ==============================================
+def escape_html(text):
+    """Substitui caracteres sensíveis do HTML para evitar quebras de formatação."""
+    if not text:
+        return ""
+    return str(text).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
 def extract_full_description(driver):
-    """Extrai descrição limpa, sem repetições e formatada"""
+    """Extrai descrição limpa e formatada para HTML"""
     try:
         description_parts = []
-        seen_texts = set()  # Para evitar repetições
+        seen_texts = set()
         
         # 1. Descrição do parceiro
         partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner"]
@@ -213,7 +213,8 @@ def extract_full_description(driver):
                     text = elem.text.strip()
                     if text and len(text) > 20 and text not in seen_texts:
                         seen_texts.add(text)
-                        description_parts.append(f"🏢 *Sobre o parceiro:*\n{text}")
+                        safe_text = escape_html(text)
+                        description_parts.append(f"🏢 <b>Sobre o parceiro:</b>\n{safe_text}")
                         break
             except:
                 continue
@@ -227,7 +228,8 @@ def extract_full_description(driver):
                     text = elem.text.strip()
                     if text and len(text) > 15 and text not in seen_texts:
                         seen_texts.add(text)
-                        description_parts.append(f"🎁 *Benefício:*\n{text}")
+                        safe_text = escape_html(text)
+                        description_parts.append(f"🎁 <b>Benefício:</b>\n{safe_text}")
                         break
             except:
                 continue
@@ -241,7 +243,8 @@ def extract_full_description(driver):
                     text = elem.text.strip()
                     if text and ("regra" in text.lower() or "não é válido" in text.lower()) and len(text) > 15 and text not in seen_texts:
                         seen_texts.add(text)
-                        description_parts.append(f"📋 *Regra:*\n{text}")
+                        safe_text = escape_html(text)
+                        description_parts.append(f"📋 <b>Regra:</b>\n{safe_text}")
             except:
                 continue
         
@@ -249,7 +252,8 @@ def extract_full_description(driver):
         validity_text = extract_validity(driver)
         if validity_text and validity_text not in seen_texts:
             seen_texts.add(validity_text)
-            description_parts.append(f"⏳ *Validade:*\n{validity_text}")
+            safe_text = escape_html(validity_text)
+            description_parts.append(f"⏳ <b>Validade:</b>\n{safe_text}")
         
         # Se não encontrou nada, pega parágrafos únicos
         if len(description_parts) < 2:
@@ -258,14 +262,15 @@ def extract_full_description(driver):
                 text = p.text.strip()
                 if text and len(text) > 30 and text not in seen_texts and "Clube UOL" not in text:
                     seen_texts.add(text)
-                    description_parts.append(text)
+                    safe_text = escape_html(text)
+                    description_parts.append(safe_text)
         
         # Junta tudo com quebras de linha duplas
         result = "\n\n".join(description_parts)
         
         # Limita ao tamanho máximo
         if len(result) > MAX_COMMENT_LENGTH - 150:
-            result = result[:MAX_COMMENT_LENGTH-200] + "...\n\n*Descrição truncada devido ao limite do Telegram*"
+            result = result[:MAX_COMMENT_LENGTH-200] + "...\n\n<i>Descrição truncada devido ao limite do Telegram</i>"
         
         return result if result else "Descrição detalhada não disponível."
         
@@ -293,26 +298,28 @@ def download_image(img_url):
     return None
 
 # ==============================================
-# CONSTRUÇÃO DA LEGENDA PRINCIPAL (CANAL)
+# CONSTRUÇÃO DA LEGENDA PRINCIPAL (ATUALIZADA PARA HTML)
 # ==============================================
 def build_caption(page_title, validity, link):
     parts = []
     
     if page_title:
-        parts.append(f"*{page_title}*")
+        safe_title = escape_html(page_title)
+        parts.append(f"<b>{safe_title}</b>")
     else:
         return None
     
     if validity and len(validity) > 5:
         validity_clean = re.sub(r'^(benef[ií]cio\s+v[aá]lido\s*:\s*)', '', validity, flags=re.IGNORECASE)
-        parts.append(f"📅 {validity_clean}")
+        safe_validity = escape_html(validity_clean)
+        parts.append(f"📅 {safe_validity}")
     
-    parts.append(f"🔗 [Acessar oferta]({link})")
+    parts.append(f"🔗 <a href='{link}'>Acessar oferta</a>")
     
     caption = "\n\n".join(parts)
     
     if len(caption) > MAX_CAPTION_LENGTH:
-        link_pos = caption.rfind("🔗 [Acessar oferta]")
+        link_pos = caption.rfind("🔗 <a href=")
         if link_pos > 0:
             truncated = caption[:MAX_CAPTION_LENGTH - len(caption[link_pos:]) - 3] + "..."
             caption = truncated + "\n\n" + caption[link_pos:]
@@ -323,10 +330,10 @@ def build_caption(page_title, validity, link):
     return caption
 
 # ==============================================
-# FUNÇÃO CORRIGIDA - Envia comentário no grupo respondendo ao canal
+# FUNÇÃO CORRIGIDA - Envio de comentário e logo via HTML e Reply Parameters
 # ==============================================
 def send_logo_and_description(logo_url, full_description, link, channel_message_id):
-    """Envia logo e descrição no GRUPO, respondendo à mensagem do CANAL"""
+    """Envia logo e descrição no GRUPO referenciando adequadamente o ID do CANAL"""
     
     try:
         # 1️⃣ BAIXA O LOGO (se existir)
@@ -344,31 +351,32 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
             except Exception as e:
                 print(f"  ⚠️ Erro ao baixar logo: {e}")
 
-        # 2️⃣ PREPARA TEXTO DA DESCRIÇÃO (SEM Markdown problemático)
-        description_text = full_description
-        description_text = description_text.replace('_', ' ').replace('*', '·').replace('`', "'")
-        description_text = re.sub(r'\*+', '·', description_text)
-        description_text = re.sub(r'_+', ' ', description_text)
-        
+        # 2️⃣ PREPARA TEXTO DA DESCRIÇÃO (FORMATO HTML)
         comment_text = (
-            f"📋 *DESCRIÇÃO COMPLETA DA OFERTA*\n\n"
-            f"{description_text}\n\n"
-            f"🔗 Link original:\n{link}"
+            f"📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
+            f"{full_description}\n\n"
+            f"🔗 <a href='{link}'>Link original</a>"
         )
         
         if len(comment_text) > MAX_COMMENT_LENGTH:
-            comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n*Descrição truncada*"
+            comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n<i>Descrição truncada</i>"
 
-        # 3️⃣ ENVIA O LOGO PRIMEIRO (se existir) - TAMBÉM COMO RESPOSTA!
+        # Dicionário de parâmetros de resposta multi-chat
+        reply_params = json.dumps({
+            "chat_id": CANAL_ID,
+            "message_id": channel_message_id
+        })
+
+        # 3️⃣ ENVIA O LOGO PRIMEIRO (se existir)
         if logo_path:
             photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
             with open(logo_path, 'rb') as photo:
                 files = {'photo': photo}
                 data = {
                     'chat_id': GRUPO_COMENTARIOS_ID,
-                    'caption': "🏢 *Logo do parceiro*",
-                    'parse_mode': 'Markdown',
-                    'reply_to_message_id': channel_message_id  # 🔥 Responde à mensagem do CANAL!
+                    'caption': "🏢 <b>Logo do parceiro</b>",
+                    'parse_mode': 'HTML',
+                    'reply_parameters': reply_params # 🔥 Solução correta para "not found"
                 }
                 logo_response = requests.post(photo_url, data=data, files=files, timeout=30)
                 
@@ -380,32 +388,33 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
             if os.path.exists(logo_path):
                 os.remove(logo_path)
 
-        # 4️⃣ ENVIA A DESCRIÇÃO (também como resposta)
+        # 4️⃣ ENVIA A DESCRIÇÃO NO FORMATO HTML
         comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
         comment_data = {
             'chat_id': GRUPO_COMENTARIOS_ID,
             'text': comment_text,
-            'parse_mode': 'Markdown',
-            'reply_to_message_id': channel_message_id  # 🔥 Responde à mensagem do CANAL!
+            'parse_mode': 'HTML',
+            'reply_parameters': reply_params, # 🔥 Solução correta para "not found"
+            'disable_web_page_preview': True
         }
         
         comment_response = requests.post(comment_url, data=comment_data, timeout=30)
         
         if comment_response.ok:
             print("  ✅ Descrição enviada como comentário no grupo")
-            
-            # Mostra o link do comentário
             message_id = comment_response.json()['result']['message_id']
             print(f"  🔗 Link do comentário: https://t.me/{GRUPO_COMENTARIOS_ID.replace('@', '')}/{message_id}")
             return True
         else:
             print(f"  ❌ Erro ao enviar descrição: {comment_response.text}")
             
-            # Tenta sem Markdown se deu erro de parse
+            # Tenta enviar sem nenhuma formatação caso a API recuse o HTML por algum detalhe obscuro
             if "can't parse entities" in comment_response.text:
-                print("  ⚠️ Tentando novamente sem Markdown...")
+                print("  ⚠️ Tentando novamente sem formatação HTML...")
                 comment_data['parse_mode'] = None
-                comment_data['text'] = comment_text.replace('*', '').replace('_', '').replace('`', '')
+                # Limpa tags HTML simples num fallback rápido
+                clean_text = re.sub('<[^<]+>', '', comment_text)
+                comment_data['text'] = clean_text
                 comment_response = requests.post(comment_url, data=comment_data, timeout=30)
                 
                 if comment_response.ok:
@@ -415,11 +424,11 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
             return False
             
     except Exception as e:
-        print(f"  ❌ Erro no envio: {e}")
+        print(f"  ❌ Erro no envio do comentário: {e}")
         return False
 
 # ==============================================
-# FUNÇÃO PRINCIPAL DE ENVIO
+# FUNÇÃO PRINCIPAL DE ENVIO (ATUALIZADA PARA HTML)
 # ==============================================
 def send_offer_with_details(img_path, main_caption, logo_url, full_description, link):
     """Envia a imagem no CANAL + logo e descrição no GRUPO"""
@@ -433,33 +442,32 @@ def send_offer_with_details(img_path, main_caption, logo_url, full_description, 
             data = {
                 'chat_id': CANAL_ID,
                 'caption': main_caption,
-                'parse_mode': 'Markdown'
+                'parse_mode': 'HTML'
             }
             photo_response = requests.post(photo_url, data=data, files=files, timeout=30)
         
         if not photo_response.ok:
-            print(f"❌ Erro ao enviar foto: {photo_response.text}")
+            print(f"❌ Erro ao enviar foto pro canal: {photo_response.text}")
             return False
         
         message_id = photo_response.json()['result']['message_id']
         print(f"✅ Foto enviada no canal (ID: {message_id})")
         
-        # 2️⃣ DÁ UM TEMPO PARA A MENSAGEM PROPAGAR
-        print("  ⏱️ Aguardando 2 segundos para sincronização...")
-        time.sleep(2)
+        # 2️⃣ DÁ UM TEMPO PARA A MENSAGEM PROPAGAR E SINCRONIZAR O GRUPO
+        print("  ⏱️ Aguardando 3 segundos para sincronização de fórum/grupo...")
+        time.sleep(3)
         
-        # 3️⃣ ENVIA LOGO + DESCRIÇÃO NO GRUPO
+        # 3️⃣ ENVIA LOGO + DESCRIÇÃO NO GRUPO COMO RESPOSTA AO CANAL
         return send_logo_and_description(logo_url, full_description, link, message_id)
             
     except Exception as e:
-        print(f"❌ Erro no envio: {e}")
+        print(f"❌ Erro geral no fluxo de envio: {e}")
         return False
 
 # ==============================================
 # BUSCA OFERTAS NA PÁGINA PRINCIPAL
 # ==============================================
 def fetch_offers():
-    """Pega as 8 ofertas mais recentes da página principal"""
     driver = None
     try:
         print("🌐 Iniciando Chrome...")
@@ -496,7 +504,6 @@ def fetch_offers():
                 
                 normalized_link = normalize_link(link)
                 
-                # Imagem
                 img_url = None
                 elements_with_bg = container.find_elements(By.CSS_SELECTOR, "[style*='background']")
                 for el in elements_with_bg:
@@ -547,7 +554,7 @@ def fetch_offers():
             driver.quit()
 
 # ==============================================
-# PROCESSAMENTO DE CADA OFERTA (ATUALIZADO)
+# PROCESSAMENTO DE CADA OFERTA
 # ==============================================
 def process_offer(offer):
     print(f"\n🔍 Acessando página: {offer['preview_title'][:50]}...")
@@ -582,10 +589,7 @@ def process_offer(offer):
         if validity:
             print(f"  📅 Validade: {validity[:50]}...")
         
-        # 🔥 NOVO: Extrai logo do parceiro
         logo_url = extract_logo_url(driver)
-        
-        # Extrai descrição completa
         full_description = extract_full_description(driver)
         print(f"  📋 Descrição completa: {len(full_description)} caracteres")
         
@@ -669,7 +673,6 @@ def main():
             continue
         
         page_title, validity, logo_url, full_description = process_offer(offer)
-        
         main_caption = build_caption(page_title, validity, offer['link'])
         
         if not main_caption:
