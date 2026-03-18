@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# Versão revisada para estabilidade
+# VERSÃO ULTRA ROBUSTA - Com fallback progressivo
 # Canal + thread de comentários no Telegram
 # ------------------------------
 
@@ -28,16 +28,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 # ==============================================
 # FIX: Forçar versão compatível do ChromeDriver
 # ==============================================
-# Detecta a versão do Chrome instalada e força o undetected-chromedriver a usar a versão correta
 import subprocess
 try:
-    # Tenta pegar a versão do Chrome instalado
     chrome_version_output = subprocess.check_output(['google-chrome', '--version']).decode().strip()
     chrome_version = re.search(r'(\d+)\.', chrome_version_output).group(1)
     os.environ['CHROME_VERSION'] = chrome_version
     print(f"✅ Chrome detectado: versão {chrome_version}")
 except:
-    # Fallback para versão 145 (atual do GitHub Actions)
     os.environ['CHROME_VERSION'] = '145'
     print("⚠️ Usando fallback para Chrome versão 145")
 
@@ -57,15 +54,18 @@ MAX_COMMENT_LENGTH = 4096
 MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
 
-LIST_WAIT_SECONDS = 18
-DETAIL_WAIT_SECONDS = 12
-PAGE_LOAD_TIMEOUT = 35
+# Timeouts - aumentados para mais robustez
+LIST_WAIT_SECONDS = 30  # Aumentado de 18
+DETAIL_WAIT_SECONDS = 20  # Aumentado de 12
+PAGE_LOAD_TIMEOUT = 45  # Aumentado de 35
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0",  # Firefox
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",  # Firefox
 ]
 
 # ==============================================
@@ -74,8 +74,18 @@ USER_AGENTS = [
 def log(msg: str) -> None:
     print(msg, flush=True)
 
-def human_like_delay(min_seconds: float = 1.0, max_seconds: float = 2.5) -> None:
-    time.sleep(random.uniform(min_seconds, max_seconds))
+def human_like_delay(action="simple"):
+    """Delays que simulam comportamento humano real"""
+    if action == "scroll":
+        time.sleep(random.uniform(0.3, 0.8))
+    elif action == "click":
+        time.sleep(random.uniform(0.1, 0.3))
+    elif action == "read":
+        time.sleep(random.uniform(2.0, 4.0))
+    elif action == "page_load":
+        time.sleep(random.uniform(1.5, 3.0))
+    else:
+        time.sleep(random.uniform(0.5, 1.5))
 
 def ensure_env() -> None:
     missing = []
@@ -101,7 +111,18 @@ def build_http_session() -> requests.Session:
     session.mount("https://", adapter)
     session.headers.update({
         "User-Agent": random.choice(USER_AGENTS),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Sec-Ch-Ua": '"Not_A Brand";v="8", "Chromium";v="124", "Google Chrome";v="124"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "Upgrade-Insecure-Requests": "1",
+        "Connection": "keep-alive",
     })
     return session
 
@@ -126,7 +147,6 @@ def normalize_spaces(text: Optional[str]) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 def normalize_link(link: str) -> str:
-    """Normaliza URL sem destruir sua estrutura."""
     try:
         parsed = urlparse(link.strip())
         scheme = parsed.scheme or "https"
@@ -146,7 +166,7 @@ def is_possible_block_page(driver) -> bool:
         signals = [
             "cloudflare", "access denied", "forbidden", 
             "attention required", "your connection is not private",
-            "verifique se você é humano", "captcha",
+            "verifique se você é humano", "captcha", "just a moment",
         ]
         return any(s in title or s in body for s in signals)
     except Exception:
@@ -188,39 +208,109 @@ def save_history(history: Dict[str, List[str]]) -> bool:
         return False
 
 # ==============================================
-# CHROME
+# CHROME - COM MÚLTIPLOS NÍVEIS DE STEALTH
 # ==============================================
-def setup_driver():
+def apply_stealth_js(driver):
+    """Aplica múltiplos patches JavaScript para esconder automação"""
+    try:
+        stealth_js = """
+        // Remove webdriver property
+        Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+        
+        // Adiciona plugins falsos
+        Object.defineProperty(navigator, 'plugins', {
+            get: () => [1, 2, 3, 4, 5]
+        });
+        
+        // Simular idiomas reais
+        Object.defineProperty(navigator, 'languages', {
+            get: () => ['pt-BR', 'pt', 'en-US', 'en']
+        });
+        
+        // Simular hardware real
+        window.chrome = { runtime: {} };
+        
+        // Sobrescrever permissoes
+        const originalQuery = window.navigator.permissions.query;
+        window.navigator.permissions.query = (parameters) => (
+            parameters.name === 'notifications' ?
+                Promise.resolve({ state: Notification.permission }) :
+                originalQuery(parameters)
+        );
+        
+        // Remover vestigios de automação
+        delete window.cdc_adoQpoasnfaaypNdKZ3E;
+        delete window.cdc_adoQpoasnfaaypNdKZ3F;
+        """
+        driver.execute_script(stealth_js)
+        log("  ✅ Patches stealth aplicados")
+    except Exception as e:
+        log(f"  ⚠️ Erro ao aplicar stealth JS: {e}")
+
+def setup_driver(stealth_level=1):
+    """
+    Configura driver com diferentes níveis de stealth
+    level 1: básico
+    level 2: médio (com stealth JS)
+    level 3: avançado (com todas as proteções)
+    """
     options = uc.ChromeOptions()
+    
+    # Opções básicas sempre presentes
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-popup-blocking")
-    options.add_argument("--window-size=1366,768")
     options.add_argument("--lang=pt-BR")
-    options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
-    options.add_argument(f"--user-agent={random.choice(USER_AGENTS)}")
     
-    # Pega a versão do Chrome detectada
+    # Tamanho de janela variável (evita fingerprinting)
+    if stealth_level >= 2:
+        window_sizes = ["1920,1080", "1366,768", "1440,900", "1536,864"]
+        options.add_argument(f"--window-size={random.choice(window_sizes)}")
+    else:
+        options.add_argument("--window-size=1366,768")
+    
+    # User-Agent variável
+    options.add_argument(f"--user-agent={random.choice(USER_AGENTS)}")
+    options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
+    
+    # Stealth nível 2 e 3
+    if stealth_level >= 2:
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+    
+    # Stealth nível 3 - argumentos extras
+    if stealth_level >= 3:
+        options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
+        options.add_argument("--disable-features=VizDisplayCompositor")
+        options.add_argument("--disable-features=IsolateOrigins,site-per-process")
+        options.add_argument("--disable-site-isolation-trials")
+    
     chrome_version = int(os.environ.get('CHROME_VERSION', '145'))
     
-    # FORÇA a versão manualmente - isso é CRÍTICO!
-    driver = uc.Chrome(
-        options=options, 
-        headless=True, 
-        version_main=chrome_version,  # ← ISSO É ESSENCIAL!
-        driver_executable_path=None    # Deixa o uc baixar o driver correto
-    )
-    
-    driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
-    return driver
+    try:
+        driver = uc.Chrome(
+            options=options, 
+            headless=True, 
+            version_main=chrome_version
+        )
+        driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
+        
+        # Aplica stealth JS para níveis 2 e 3
+        if stealth_level >= 2:
+            apply_stealth_js(driver)
+        
+        return driver
+    except Exception as e:
+        log(f"⚠️ Erro ao criar driver com stealth level {stealth_level}: {e}")
+        raise
 
 def safe_get(driver, url: str, wait_after: Tuple[float, float] = (1.2, 2.2)) -> bool:
     try:
         driver.get(url)
-        human_like_delay(*wait_after)
+        human_like_delay("page_load")
         return True
     except Exception as e:
         log(f"⚠️ Erro ao abrir {url}: {e}")
@@ -291,7 +381,6 @@ def extract_full_description(driver) -> str:
             seen.add(key)
             parts.append(f"{prefix}\n{escape_html(clean)}")
         
-        # Parceiro
         partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner"]
         for selector in partner_selectors:
             for elem in driver.find_elements(By.CSS_SELECTOR, selector):
@@ -302,7 +391,6 @@ def extract_full_description(driver) -> str:
             if parts:
                 break
         
-        # Benefício
         benefit_selectors = [".benefit-description", "[class*='beneficio'] p", ".offer-description"]
         for selector in benefit_selectors:
             for elem in driver.find_elements(By.CSS_SELECTOR, selector):
@@ -311,12 +399,10 @@ def extract_full_description(driver) -> str:
                     add_block("🎁 <b>Benefício:</b>", text)
                     break
         
-        # Validade
         validity = extract_validity(driver)
         if validity:
             add_block("⏳ <b>Validade:</b>", validity)
         
-        # Regras
         for elem in driver.find_elements(By.CSS_SELECTOR, ".rules, [class*='regras'], .terms, li"):
             text = normalize_spaces(elem.text)
             if not text:
@@ -325,7 +411,6 @@ def extract_full_description(driver) -> str:
             if ("regra" in low or "não é válido" in low or "nao e valido" in low or "exceto" in low) and len(text) > 15:
                 add_block("📋 <b>Regra:</b>", text)
         
-        # Fallback para parágrafos
         if len(parts) < 2:
             for p in driver.find_elements(By.TAG_NAME, "p")[:10]:
                 text = normalize_spaces(p.text)
@@ -432,7 +517,7 @@ def send_description_comment(full_description: str, link: str, channel_message_i
     group_message_id = None
     offset = None
     
-    for _ in range(6):
+    for _ in range(8):  # Aumentado de 6 para 8 tentativas
         time.sleep(3)
         updates = get_updates(offset=offset)
         if updates:
@@ -445,9 +530,7 @@ def send_description_comment(full_description: str, link: str, channel_message_i
             if chat_id != str(GRUPO_COMENTARIOS_ID):
                 continue
             
-            # Verifica se é o post encaminhado automaticamente
             if msg.get("is_automatic_forward"):
-                # Tenta diferentes formas de obter o ID original
                 forward_origin = msg.get("forward_origin", {})
                 if isinstance(forward_origin, dict):
                     origin_message_id = forward_origin.get("message_id")
@@ -460,7 +543,6 @@ def send_description_comment(full_description: str, link: str, channel_message_i
                     group_message_id = msg.get("message_id")
                     break
             
-            # Fallback: verifica se tem link para o canal
             if not group_message_id:
                 entities = msg.get("entities", [])
                 for entity in entities:
@@ -497,7 +579,6 @@ def send_description_comment(full_description: str, link: str, channel_message_i
         log("  ✅ Comentário enviado com sucesso!")
         return True
     
-    # Fallback sem HTML
     log("  ⚠️ Tentando fallback sem HTML...")
     fallback_data = {
         "chat_id": GRUPO_COMENTARIOS_ID,
@@ -555,7 +636,6 @@ def send_offer_with_details(img_path: str, main_caption: str, full_description: 
 # ==============================================
 def extract_offer_image(container) -> Optional[str]:
     try:
-        # Tenta background-image
         for el in container.find_elements(By.CSS_SELECTOR, "[style*='background']"):
             style = el.get_attribute("style") or ""
             match = re.search(r'url\(["\']?(.*?)["\']?\)', style)
@@ -565,7 +645,6 @@ def extract_offer_image(container) -> Optional[str]:
                     return "https:" + img_url
                 return img_url
         
-        # Tenta imagens
         for selector in ["img[data-src]", "img[src]"]:
             imgs = container.find_elements(By.CSS_SELECTOR, selector)
             for img in imgs:
@@ -584,6 +663,7 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
         if not safe_get(driver, TARGET_URL):
             return []
         
+        # Aguarda com timeout aumentado
         try:
             WebDriverWait(driver, LIST_WAIT_SECONDS).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
@@ -596,11 +676,10 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
             log("⚠️ Página parece ter retornado bloqueio/challenge.")
             return []
         
-        # Scroll suave
-        driver.execute_script("window.scrollBy(0, 700);")
-        human_like_delay(0.8, 1.5)
-        driver.execute_script("window.scrollBy(0, 700);")
-        human_like_delay(0.8, 1.5)
+        # Scroll mais natural
+        for _ in range(3):
+            driver.execute_script("window.scrollBy(0, 400);")
+            human_like_delay("scroll")
         
         containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
         if not containers:
@@ -611,7 +690,6 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
         
         for container in containers[:MAX_OFFERS_PER_RUN * 2]:
             try:
-                # Título
                 preview_title = ""
                 for selector in [".titulo", "h2", "h3", "p"]:
                     elems = container.find_elements(By.CSS_SELECTOR, selector)
@@ -623,7 +701,6 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
                 if not preview_title:
                     continue
                 
-                # Link
                 a_elems = container.find_elements(By.CSS_SELECTOR, "a[href]")
                 if not a_elems:
                     continue
@@ -637,7 +714,6 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
                     continue
                 seen_run_ids.add(offer_id)
                 
-                # Imagem
                 img_url = extract_offer_image(container)
                 
                 offers.append({
@@ -664,6 +740,9 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         if not safe_get(driver, offer["link"], wait_after=(1.0, 2.0)):
             return offer["preview_title"], None, "Descrição não disponível devido a erro de navegação."
         
+        # Delay após carregar
+        human_like_delay("read")
+        
         try:
             WebDriverWait(driver, DETAIL_WAIT_SECONDS).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "h1, p, .partner-description, .benefit-description"))
@@ -686,7 +765,7 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         return offer["preview_title"], None, "Descrição não disponível devido a erro."
 
 # ==============================================
-# FUNÇÃO PRINCIPAL
+# FUNÇÃO PRINCIPAL - COM FALLBACK PROGRESSIVO
 # ==============================================
 def main():
     log("=" * 72)
@@ -703,89 +782,99 @@ def main():
     driver = None
     offers = []
     
-    try:
-        driver = setup_driver()
-        
-        max_attempts = 3
-        for attempt in range(1, max_attempts + 1):
-            log(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
-            offers = fetch_offers(driver)
+    # Tenta com níveis progressivos de stealth
+    for stealth_level in [1, 2, 3]:
+        try:
+            log(f"\n🛡️ Tentando com stealth level {stealth_level}...")
+            
+            if driver:
+                try:
+                    driver.quit()
+                except:
+                    pass
+            
+            driver = setup_driver(stealth_level=stealth_level)
+            
+            max_attempts = 3
+            for attempt in range(1, max_attempts + 1):
+                log(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
+                offers = fetch_offers(driver)
+                if offers:
+                    break
+                if attempt < max_attempts:
+                    wait_time = random.randint(15, 30)
+                    log(f"⏳ Aguardando {wait_time}s antes da próxima tentativa...")
+                    time.sleep(wait_time)
+            
             if offers:
                 break
-            if attempt < max_attempts:
-                time.sleep(random.randint(12, 24))
+            else:
+                log(f"⚠️ Stealth level {stealth_level} não funcionou, tentando próximo nível...")
+                
+        except Exception as e:
+            log(f"⚠️ Erro com stealth level {stealth_level}: {e}")
+            continue
+    
+    if not offers:
+        log("\n📭 Nenhuma oferta encontrada após todas as tentativas.")
+        return
+    
+    new_offers = [o for o in offers if o["id"] not in seen_ids]
+    if not new_offers:
+        log("\n📭 Nenhuma oferta nova.")
+        return
+    
+    log(f"\n🎉 {len(new_offers)} nova(s) oferta(s) encontrada(s)!")
+    
+    processed_ids = set(seen_ids)
+    success_count = 0
+    
+    for idx, offer in enumerate(new_offers, start=1):
+        log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}\n{'=' * 50}")
         
-        if not offers:
-            log("\n📭 Nenhuma oferta encontrada na listagem.")
-            return
-        
-        new_offers = [o for o in offers if o["id"] not in seen_ids]
-        if not new_offers:
-            log("\n📭 Nenhuma oferta nova.")
-            return
-        
-        log(f"\n🎉 {len(new_offers)} nova(s) oferta(s) encontrada(s)!")
-        
-        processed_ids = set(seen_ids)
-        success_count = 0
-        
-        for idx, offer in enumerate(new_offers, start=1):
-            log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}\n{'=' * 50}")
+        try:
+            if not offer.get("imagem_url"):
+                log("⚠️ Oferta sem imagem. Marcando como vista.")
+                processed_ids.add(offer["id"])
+                continue
             
-            try:
-                if not offer.get("imagem_url"):
-                    log("⚠️ Oferta sem imagem. Marcando como vista.")
-                    processed_ids.add(offer["id"])
-                    continue
-                
-                img_path = download_image(offer["imagem_url"])
-                if not img_path:
-                    log("⚠️ Não foi possível baixar a imagem. Marcando como vista.")
-                    processed_ids.add(offer["id"])
-                    continue
-                
-                page_title, validity, full_description = process_offer(driver, offer)
-                main_caption = build_caption(page_title, validity, offer["link"])
-                
-                if not main_caption:
-                    log("⚠️ Caption inválida. Marcando como vista.")
-                    processed_ids.add(offer["id"])
-                    Path(img_path).unlink(missing_ok=True)
-                    continue
-                
-                log("\n📤 Enviando oferta e comentário...")
-                ok = send_offer_with_details(img_path, main_caption, full_description, offer["link"])
-                if ok:
-                    success_count += 1
-                    log("✅ Oferta publicada com sucesso.")
-                else:
-                    log("⚠️ Falha no envio da oferta.")
-                
+            img_path = download_image(offer["imagem_url"])
+            if not img_path:
+                log("⚠️ Não foi possível baixar a imagem. Marcando como vista.")
+                processed_ids.add(offer["id"])
+                continue
+            
+            page_title, validity, full_description = process_offer(driver, offer)
+            main_caption = build_caption(page_title, validity, offer["link"])
+            
+            if not main_caption:
+                log("⚠️ Caption inválida. Marcando como vista.")
                 processed_ids.add(offer["id"])
                 Path(img_path).unlink(missing_ok=True)
-                
-                if idx < len(new_offers):
-                    human_like_delay(2.0, 4.5)
+                continue
             
-            except Exception as e:
-                log(f"⚠️ Erro inesperado nesta oferta: {e}")
-                processed_ids.add(offer["id"])
+            log("\n📤 Enviando oferta e comentário...")
+            ok = send_offer_with_details(img_path, main_caption, full_description, offer["link"])
+            if ok:
+                success_count += 1
+                log("✅ Oferta publicada com sucesso.")
+            else:
+                log("⚠️ Falha no envio da oferta.")
+            
+            processed_ids.add(offer["id"])
+            Path(img_path).unlink(missing_ok=True)
+            
+            if idx < len(new_offers):
+                time.sleep(random.uniform(3, 6))
         
-        history["ids"] = list(processed_ids)[-MAX_HISTORY_SIZE:]
-        save_history(history)
-        
-        log(f"\n🏁 Finalizado. Sucessos: {success_count}/{len(new_offers)}")
+        except Exception as e:
+            log(f"⚠️ Erro inesperado nesta oferta: {e}")
+            processed_ids.add(offer["id"])
     
-    except WebDriverException as e:
-        log(f"❌ Erro do Chrome/WebDriver: {e}")
-    except Exception as e:
-        log(f"❌ Erro geral: {e}")
-    finally:
-        if driver:
-            try:
-                driver.quit()
-            except Exception:
-                pass
+    history["ids"] = list(processed_ids)[-MAX_HISTORY_SIZE:]
+    save_history(history)
+    
+    log(f"\n🏁 Finalizado. Sucessos: {success_count}/{len(new_offers)}")
 
 if __name__ == "__main__":
     main()
