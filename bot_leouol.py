@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO FINAL - Canal + Grupo com Logo do Parceiro (CORRIGIDA + ANTI-BLOQUEIO)
+# VERSÃO FINAL - Canal + Grupo Privado com Logo do Parceiro
 # ------------------------------
 
 import requests
@@ -24,8 +24,9 @@ from selenium.common.exceptions import TimeoutException
 # CONFIGURAÇÕES
 # ==============================================
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal (vem do secret)
-GRUPO_COMENTARIOS_ID = "@leouolchat"  # Grupo para os comentários
+CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal (ex: -3723320790)
+GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIOS_ID', '-3802235343')  # Grupo para os comentários
+
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
 MAX_CAPTION_LENGTH = 1024
@@ -95,11 +96,9 @@ def setup_driver():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
-    # Resoluções variadas para parecer mais com usuários reais
     window_sizes = ["1920,1080", "1366,768", "1440,900", "1536,864"]
     chrome_options.add_argument(f"--window-size={random.choice(window_sizes)}")
     
-    # Flags avançadas anti-detecção
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
@@ -114,7 +113,6 @@ def setup_driver():
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
     
-    # Sobrescreve variáveis do navegador que os sites usam para detectar bots
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": user_agent})
     
@@ -201,13 +199,11 @@ def extract_logo_url(driver):
 # FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA (HTML)
 # ==============================================
 def escape_html(text):
-    """Substitui caracteres sensíveis do HTML para evitar quebras de formatação."""
     if not text:
         return ""
     return str(text).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 def extract_full_description(driver):
-    """Extrai descrição limpa e formatada para HTML"""
     try:
         description_parts = []
         seen_texts = set()
@@ -397,7 +393,16 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
         if comment_response.ok:
             print("  ✅ Descrição enviada como comentário no grupo")
             message_id = comment_response.json()['result']['message_id']
-            print(f"  🔗 Link do comentário: https://t.me/{GRUPO_COMENTARIOS_ID.replace('@', '')}/{message_id}")
+            
+            # Formatação do link dependendo se é username (@) ou ID numérico privado (-)
+            group_str = str(GRUPO_COMENTARIOS_ID)
+            if group_str.startswith('@'):
+                link_url = f"https://t.me/{group_str.replace('@', '')}/{message_id}"
+            else:
+                clean_id = group_str.replace('-100', '').replace('-', '')
+                link_url = f"https://t.me/c/{clean_id}/{message_id}"
+                
+            print(f"  🔗 Link do comentário: {link_url}")
             return True
         else:
             print(f"  ❌ Erro ao enviar descrição: {comment_response.text}")
@@ -463,7 +468,6 @@ def fetch_offers():
         print(f"📱 Acessando: {TARGET_URL}")
         driver.get(TARGET_URL)
         
-        # O bot vai tentar esperar até 15 segundos para que as ofertas carreguem dinamicamente
         try:
             print("⏳ Aguardando carregamento dinâmico das ofertas...")
             WebDriverWait(driver, 15).until(
@@ -567,13 +571,12 @@ def process_offer(offer):
         driver = setup_driver()
         driver.get(offer['link'])
         
-        # Adiciona espera explícita na página interna também
         try:
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "h1, .partner-description, .benefit-description"))
             )
         except TimeoutException:
-            pass # Continua mesmo se não achar, para tentar pegar fallback
+            pass
             
         human_like_delay(1, 3)
         
@@ -641,7 +644,7 @@ def main():
         else:
             print(f"⚠️ Tentativa {attempt} falhou (0 ofertas)")
             if attempt < max_attempts:
-                wait_time = random.randint(15, 30) # Aumentado o tempo de espera entre falhas
+                wait_time = random.randint(15, 30)
                 print(f"⏱️ Aguardando {wait_time} segundos antes de tentar novamente para despistar o anti-bot...")
                 time.sleep(wait_time)
             attempt += 1
