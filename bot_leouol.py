@@ -26,6 +26,22 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # ==============================================
+# FIX: Forçar versão compatível do ChromeDriver
+# ==============================================
+# Detecta a versão do Chrome instalada e força o undetected-chromedriver a usar a versão correta
+import subprocess
+try:
+    # Tenta pegar a versão do Chrome instalado
+    chrome_version_output = subprocess.check_output(['google-chrome', '--version']).decode().strip()
+    chrome_version = re.search(r'(\d+)\.', chrome_version_output).group(1)
+    os.environ['CHROME_VERSION'] = chrome_version
+    print(f"✅ Chrome detectado: versão {chrome_version}")
+except:
+    # Fallback para versão 145 (atual do GitHub Actions)
+    os.environ['CHROME_VERSION'] = '145'
+    print("⚠️ Usando fallback para Chrome versão 145")
+
+# ==============================================
 # CONFIGURAÇÕES
 # ==============================================
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
