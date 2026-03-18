@@ -288,11 +288,12 @@ def setup_driver(stealth_level=1):
     options.add_argument(f"--user-agent={random.choice(USER_AGENTS)}")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     
-    # Stealth nível 2 e 3
+    # Stealth nível 2 e 3 - APENAS argumentos de linha de comando!
     if stealth_level >= 2:
         options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
+        # REMOVA estas linhas que causam erro:
+        # options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # options.add_experimental_option('useAutomationExtension', False)
     
     # Stealth nível 3 - argumentos extras
     if stealth_level >= 3:
@@ -312,7 +313,7 @@ def setup_driver(stealth_level=1):
         )
         driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
         
-        # Aplica stealth JS para níveis 2 e 3
+        # Aplica stealth JS para níveis 2 e 3 (isso substitui as experimental_options)
         if stealth_level >= 2:
             apply_stealth_js(driver)
         
