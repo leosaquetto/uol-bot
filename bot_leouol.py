@@ -203,8 +203,17 @@ def setup_driver():
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     options.add_argument(f"--user-agent={random.choice(USER_AGENTS)}")
     
-    # Remove version_main fixo - deixa o undetected-chromedriver detectar automaticamente
-    driver = uc.Chrome(options=options, headless=True)
+    # Pega a versão do Chrome detectada
+    chrome_version = int(os.environ.get('CHROME_VERSION', '145'))
+    
+    # FORÇA a versão manualmente - isso é CRÍTICO!
+    driver = uc.Chrome(
+        options=options, 
+        headless=True, 
+        version_main=chrome_version,  # ← ISSO É ESSENCIAL!
+        driver_executable_path=None    # Deixa o uc baixar o driver correto
+    )
+    
     driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
     return driver
 
