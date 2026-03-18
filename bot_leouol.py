@@ -44,9 +44,9 @@ MAX_COMMENT_LENGTH = 4096
 MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
 
-LIST_WAIT_SECONDS = 15
-DETAIL_WAIT_SECONDS = 10
-PAGE_LOAD_TIMEOUT = 25
+LIST_WAIT_SECONDS = 20
+DETAIL_WAIT_SECONDS = 12
+PAGE_LOAD_TIMEOUT = 30
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
@@ -194,16 +194,32 @@ def get_chrome_major_version() -> int:
     return 145
 
 
+def is_privacy_error_page(driver) -> bool:
+    try:
+        title = (driver.title or "").lower()
+        body = driver.find_element(By.TAG_NAME, "body").text.lower()
+        return (
+            "privacy error" in title
+            or "your connection is not private" in body
+            or "net::err_cert_authority_invalid" in body
+        )
+    except Exception:
+        return False
+
+
 def is_possible_block_page(driver) -> bool:
     try:
         title = (driver.title or "").lower()
         body = driver.find_element(By.TAG_NAME, "body").text.lower()
+
+        if is_privacy_error_page(driver):
+            return False
+
         signals = [
             "cloudflare",
             "access denied",
             "forbidden",
             "attention required",
-            "your connection is not private",
             "verifique se você é humano",
             "captcha",
             "just a moment",
@@ -262,6 +278,12 @@ def setup_driver():
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     options.add_argument(f"--user-agent={USER_AGENTS[0]}")
 
+    # correção do erro de certificado
+    options.add_argument("--ignore-certificate-errors")
+    options.add_argument("--ignore-ssl-errors=yes")
+    options.add_argument("--allow-running-insecure-content")
+    options.add_argument("--test-type")
+
     driver = uc.Chrome(
         options=options,
         headless=True,
@@ -271,11 +293,52 @@ def setup_driver():
     return driver
 
 
+def try_bypass_privacy_error(driver) -> None:
+    try:
+        if not is_privacy_error_page(driver):
+            return
+
+        log("⚠️ Tela de certificado detectada. Tentando prosseguir...")
+
+        try:
+            driver.execute_script("document.getElementById('details-button')?.click();")
+            time.sleep(1)
+        except Exception:
+            pass
+
+        try:
+            driver.execute_script("document.getElementById('proceed-link')?.click();")
+            time.sleep(2)
+        except Exception:
+            pass
+
+        # fallback por teclado/JS em algumas versões
+        try:
+            driver.execute_script("""
+                const details = document.querySelector('#details-button');
+                if (details) details.click();
+                const proceed = document.querySelector('#proceed-link');
+                if (proceed) proceed.click();
+            """)
+            time.sleep(2)
+        except Exception:
+            pass
+
+    except Exception as e:
+        log(f"⚠️ Erro ao tentar contornar tela de certificado: {e}")
+
+
 def safe_get(driver, url: str, label: str) -> bool:
     try:
         driver.get(url)
         human_delay(1.0, 1.8)
+
+        if is_privacy_error_page(driver):
+            try_bypass_privacy_error(driver)
+            human_delay(1.0, 2.0)
+
         return True
+
     except Exception as e:
         log(f"⚠️ Erro ao abrir {url}: {e}")
         save_debug_text(f"{label}_error", str(e))
@@ -595,6 +658,18 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
     if not safe_get(driver, TARGET_URL, "listagem"):
         return []
 
+    if is_privacy_error_page(driver):
+        log("⚠️ Ainda ficou preso na tela de certificado.")
+        save_debug_screenshot(driver, "listagem_privacy_error")
+        save_debug_html(driver, "listagem_privacy_error")
+        try:
+            title = driver.title or ""
+            body_text = driver.find_element(By.TAG_NAME, "body").text[:4000]
+            save_debug_text("listagem_privacy_error_info", f"TITLE:\n{title}\n\nBODY:\n{body_text}")
+        except Exception:
+            pass
+        return []
+
     try:
         WebDriverWait(driver, LIST_WAIT_SECONDS).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
@@ -681,6 +756,11 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
     if not safe_get(driver, offer["link"], "detalhe"):
         return offer["preview_title"], None, "Descrição não disponível devido a erro de navegação."
 
+    if is_privacy_error_page(driver):
+        save_debug_screenshot(driver, "detalhe_privacy_error")
+        save_debug_html(driver, "detalhe_privacy_error")
+        return offer["preview_title"], None, "Descrição não disponível."
+
     human_delay(0.8, 1.6)
 
     try:
@@ -725,7 +805,7 @@ def main():
         driver = setup_driver()
 
         offers = []
-        for attempt in range(1, 3 + 1):
+        for attempt in range(1, 4):
             log(f"\n🔄 Tentativa {attempt}/3 de buscar ofertas...")
             offers = fetch_offers(driver)
             if offers:
