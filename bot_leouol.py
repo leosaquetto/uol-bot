@@ -1,22 +1,29 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO FINAL - Comentário Real na Thread
-# ATUALIZADO: Reply Dinâmico + Descrição Clean
+# Versão revisada para estabilidade
+# Canal + thread de comentários no Telegram
 # ------------------------------
 
-import requests
 import json
 import os
-import time
-import re
 import random
+import re
+import time
 import unicodedata
 from datetime import datetime
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from html import escape
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+from urllib.parse import urlparse, urlunparse
+
+import requests
 import undetected_chromedriver as uc
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 # ==============================================
 # CONFIGURAÇÕES
@@ -27,66 +34,145 @@ GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-3802235343')
 
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
+TMP_DIR = Path("/tmp")
+
 MAX_CAPTION_LENGTH = 1024
+MAX_COMMENT_LENGTH = 4096
 MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
-MAX_COMMENT_LENGTH = 4096
+
+LIST_WAIT_SECONDS = 18
+DETAIL_WAIT_SECONDS = 12
+PAGE_LOAD_TIMEOUT = 35
 
 USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
 ]
 
 # ==============================================
-# FUNÇÃO PARA NORMALIZAR LINKS
+# UTILITÁRIOS
 # ==============================================
-def normalize_link(link):
+def log(msg: str) -> None:
+    print(msg, flush=True)
+
+def human_like_delay(min_seconds: float = 1.0, max_seconds: float = 2.5) -> None:
+    time.sleep(random.uniform(min_seconds, max_seconds))
+
+def ensure_env() -> None:
+    missing = []
+    if not TELEGRAM_TOKEN:
+        missing.append("TELEGRAM_TOKEN")
+    if not CANAL_ID:
+        missing.append("TELEGRAM_CHAT_ID")
+    if missing:
+        raise RuntimeError(f"Variáveis de ambiente ausentes: {', '.join(missing)}")
+
+def build_http_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        connect=3,
+        read=3,
+        backoff_factor=1.2,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET", "POST"],
+    )
+    adapter = HTTPAdapter(max_retries=retry, pool_connections=10, pool_maxsize=10)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    session.headers.update({
+        "User-Agent": random.choice(USER_AGENTS),
+        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    })
+    return session
+
+HTTP = build_http_session()
+
+def escape_html(text: Optional[str]) -> str:
+    return escape(text or "", quote=False)
+
+def strip_html(text: str) -> str:
+    return re.sub(r"<[^>]+>", "", text or "").strip()
+
+def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
+    if len(text) <= max_len:
+        return text
+    if max_len <= len(suffix):
+        return suffix[:max_len]
+    return text[: max_len - len(suffix)] + suffix
+
+def normalize_spaces(text: Optional[str]) -> str:
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", text).strip()
+
+def normalize_link(link: str) -> str:
+    """Normaliza URL sem destruir sua estrutura."""
     try:
-        link = unicodedata.normalize('NFKD', link).encode('ASCII', 'ignore').decode('ASCII')
-        link = re.sub(r'[^a-zA-Z0-9/:.%_-]', '', link)
-        return link
-    except:
+        parsed = urlparse(link.strip())
+        scheme = parsed.scheme or "https"
+        netloc = parsed.netloc.lower()
+        path = unicodedata.normalize("NFKD", parsed.path).encode("ASCII", "ignore").decode("ASCII")
+        path = re.sub(r"//+", "/", path)
+        path = re.sub(r"[^a-zA-Z0-9/_\-.~:%]", "", path)
+        normalized = urlunparse((scheme, netloc, path.rstrip("/"), "", "", ""))
+        return normalized
+    except Exception:
         return link
 
-# ==============================================
-# FUNÇÕES DE HISTÓRICO
-# ==============================================
-def load_history():
+def is_possible_block_page(driver) -> bool:
     try:
-        if os.path.exists(HISTORY_FILE):
-            with open(HISTORY_FILE, 'r') as f:
-                data = json.load(f)
-                if len(data.get("ids", [])) > MAX_HISTORY_SIZE:
-                    data["ids"] = data["ids"][-MAX_HISTORY_SIZE:]
-                return data
-    except Exception as e:
-        print(f"⚠️ Erro ao carregar histórico: {e}")
-    return {"ids": []}
-
-def save_history(history):
-    try:
-        if len(history.get("ids", [])) > MAX_HISTORY_SIZE:
-            history["ids"] = history["ids"][-MAX_HISTORY_SIZE:]
-        
-        with open(HISTORY_FILE, 'w') as f:
-            json.dump(history, f, indent=2)
-        
-        print(f"✅ Histórico salvo: {len(history['ids'])} IDs (limite {MAX_HISTORY_SIZE})")
-        return True
-    except Exception as e:
-        print(f"⚠️ Erro ao salvar histórico: {e}")
+        title = (driver.title or "").lower()
+        body = driver.find_element(By.TAG_NAME, "body").text.lower()
+        signals = [
+            "cloudflare", "access denied", "forbidden", 
+            "attention required", "your connection is not private",
+            "verifique se você é humano", "captcha",
+        ]
+        return any(s in title or s in body for s in signals)
+    except Exception:
         return False
 
 # ==============================================
-# FUNÇÕES DE COMPORTAMENTO HUMANO
+# HISTÓRICO
 # ==============================================
-def human_like_delay(min_seconds=1, max_seconds=3):
-    time.sleep(random.uniform(min_seconds, max_seconds))
+def load_history() -> Dict[str, List[str]]:
+    path = Path(HISTORY_FILE)
+    if not path.exists():
+        return {"ids": []}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        ids = data.get("ids", [])
+        if not isinstance(ids, list):
+            return {"ids": []}
+        ids = [str(x) for x in ids][-MAX_HISTORY_SIZE:]
+        return {"ids": ids}
+    except Exception as e:
+        log(f"⚠️ Erro ao carregar histórico: {e}")
+        return {"ids": []}
+
+def save_history(history: Dict[str, List[str]]) -> bool:
+    try:
+        ids = history.get("ids", [])
+        ids = [str(x) for x in ids][-MAX_HISTORY_SIZE:]
+        temp_path = Path(f"{HISTORY_FILE}.tmp")
+        final_path = Path(HISTORY_FILE)
+        temp_path.write_text(
+            json.dumps({"ids": ids}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        temp_path.replace(final_path)
+        log(f"✅ Histórico salvo: {len(ids)} IDs")
+        return True
+    except Exception as e:
+        log(f"⚠️ Erro ao salvar histórico: {e}")
+        return False
 
 # ==============================================
-# CONFIGURAÇÃO DO CHROME (UNDETECTED)
+# CHROME
 # ==============================================
 def setup_driver():
     options = uc.ChromeOptions()
@@ -94,450 +180,587 @@ def setup_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    
-    window_sizes = ["1920,1080", "1366,768", "1440,900", "1536,864"]
-    options.add_argument(f"--window-size={random.choice(window_sizes)}")
-    
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--allow-running-insecure-content')
-    options.add_argument('--ignore-ssl-errors=yes')
-    
-    user_agent = random.choice(USER_AGENTS)
-    options.add_argument(f"user-agent={user_agent}")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-popup-blocking")
+    options.add_argument("--window-size=1366,768")
+    options.add_argument("--lang=pt-BR")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
+    options.add_argument(f"--user-agent={random.choice(USER_AGENTS)}")
     
-    driver = uc.Chrome(options=options, version_main=145)
+    # Remove version_main fixo - deixa o undetected-chromedriver detectar automaticamente
+    driver = uc.Chrome(options=options, headless=True)
+    driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
     return driver
 
-# ==============================================
-# EXTRAÇÃO DE DADOS DA PÁGINA
-# ==============================================
-def extract_page_title(driver):
+def safe_get(driver, url: str, wait_after: Tuple[float, float] = (1.2, 2.2)) -> bool:
     try:
-        h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
-        if h1_elements and h1_elements[0].text.strip():
-            title = h1_elements[0].text.strip()
-            title = re.sub(r'\s*[–—-]\s*Clube UOL\s*$', '', title)
-            return title
-        title = driver.title
-        title = re.sub(r'\s*[–—-]\s*Clube UOL\s*$', '', title)
-        return title.strip()
-    except:
-        return None
-
-def extract_validity(driver):
-    try:
-        page_text = driver.find_element(By.TAG_NAME, "body").text
-        patterns = [
-            r'[Vv]álido até[^.!?]*[.!?]', r'[Vv]alidade[^.!?]*[.!?]',
-            r'[Bb]enefício válido[^.!?]*[.!?]', r'[Pp]romoção válida[^.!?]*[.!?]',
-            r'[Cc]upom válido[^.!?]*[.!?]', r'[Dd]esconto válido[^.!?]*[.!?]',
-            r'[Vv]álido de[^.!?]*[.!?]', r'[Vv]álido para compras[^.!?]*[.!?]',
-            r'[Vv]álido até \d{1,2}/\d{1,2}/\d{4}', r'[Vv]álido de \d{1,2}/\d{1,2}/\d{4}'
-        ]
-        
-        for pattern in patterns:
-            match = re.search(pattern, page_text)
-            if match:
-                return match.group(0).strip()
-        
-        keywords = ['válido', 'validade', 'até', 'válida']
-        paragraphs = driver.find_elements(By.TAG_NAME, "p")
-        
-        for p in paragraphs:
-            text = p.text.strip()
-            if any(keyword in text.lower() for keyword in keywords) and len(text) < 200:
-                return text
-                
+        driver.get(url)
+        human_like_delay(*wait_after)
+        return True
     except Exception as e:
-        print(f"  ⚠️ Erro ao extrair validade: {e}")
+        log(f"⚠️ Erro ao abrir {url}: {e}")
+        return False
+
+# ==============================================
+# EXTRAÇÃO
+# ==============================================
+def extract_page_title(driver, fallback: str = "") -> str:
+    try:
+        selectors = ["h1", ".titulo", "title"]
+        for selector in selectors:
+            try:
+                if selector == "title":
+                    text = normalize_spaces(driver.title)
+                else:
+                    elems = driver.find_elements(By.CSS_SELECTOR, selector)
+                    text = normalize_spaces(elems[0].text) if elems else ""
+                if text:
+                    text = re.sub(r"\s*[–—-]\s*Clube UOL\s*$", "", text, flags=re.IGNORECASE)
+                    return text
+            except Exception:
+                continue
+    except Exception:
+        pass
+    return fallback
+
+def extract_validity(driver) -> Optional[str]:
+    try:
+        body = driver.find_element(By.TAG_NAME, "body").text
+        patterns = [
+            r"[Vv]álido até[^.!?\n]*[.!?]?",
+            r"[Vv]alidade[^.!?\n]*[.!?]?",
+            r"[Bb]enefício válido[^.!?\n]*[.!?]?",
+            r"[Pp]romoção válida[^.!?\n]*[.!?]?",
+            r"[Cc]upom válido[^.!?\n]*[.!?]?",
+            r"[Dd]esconto válido[^.!?\n]*[.!?]?",
+            r"[Vv]álido de[^.!?\n]*[.!?]?",
+            r"[Vv]álido para compras[^.!?\n]*[.!?]?",
+            r"[Vv]álido até \d{1,2}/\d{1,2}/\d{2,4}",
+            r"[Vv]álido de \d{1,2}/\d{1,2}/\d{2,4}",
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, body)
+            if match:
+                return normalize_spaces(match.group(0))
+        keywords = ["válido", "validade", "até", "válida"]
+        for p in driver.find_elements(By.TAG_NAME, "p"):
+            text = normalize_spaces(p.text)
+            if text and len(text) < 220 and any(k in text.lower() for k in keywords):
+                return text
+    except Exception as e:
+        log(f"  ⚠️ Erro ao extrair validade: {e}")
     return None
 
-def escape_html(text):
-    if not text: return ""
-    return str(text).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-
-def extract_full_description(driver):
+def extract_full_description(driver) -> str:
     try:
-        description_parts = []
-        seen_texts = set()
+        parts = []
+        seen = set()
         
+        def add_block(prefix: str, text: str) -> None:
+            clean = normalize_spaces(text)
+            if not clean:
+                return
+            key = clean.lower()
+            if key in seen:
+                return
+            seen.add(key)
+            parts.append(f"{prefix}\n{escape_html(clean)}")
+        
+        # Parceiro
         partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner"]
         for selector in partner_selectors:
-            try:
-                elems = driver.find_elements(By.CSS_SELECTOR, selector)
-                for elem in elems:
-                    text = elem.text.strip()
-                    if text and len(text) > 20 and text not in seen_texts:
-                        seen_texts.add(text)
-                        description_parts.append(f"🏢 <b>Sobre o parceiro:</b>\n{escape_html(text)}")
-                        break
-            except: continue
+            for elem in driver.find_elements(By.CSS_SELECTOR, selector):
+                text = elem.text.strip()
+                if len(text) > 20:
+                    add_block("🏢 <b>Sobre o parceiro:</b>", text)
+                    break
+            if parts:
+                break
         
+        # Benefício
         benefit_selectors = [".benefit-description", "[class*='beneficio'] p", ".offer-description"]
         for selector in benefit_selectors:
-            try:
-                elems = driver.find_elements(By.CSS_SELECTOR, selector)
-                for elem in elems:
-                    text = elem.text.strip()
-                    if text and len(text) > 15 and text not in seen_texts:
-                        seen_texts.add(text)
-                        description_parts.append(f"🎁 <b>Benefício:</b>\n{escape_html(text)}")
-                        break
-            except: continue
+            for elem in driver.find_elements(By.CSS_SELECTOR, selector):
+                text = elem.text.strip()
+                if len(text) > 15:
+                    add_block("🎁 <b>Benefício:</b>", text)
+                    break
         
-        rule_selectors = [".rules", "[class*='regras']", ".terms", "li"]
-        for selector in rule_selectors:
-            try:
-                elems = driver.find_elements(By.CSS_SELECTOR, selector)
-                for elem in elems:
-                    text = elem.text.strip()
-                    if text and ("regra" in text.lower() or "não é válido" in text.lower()) and len(text) > 15 and text not in seen_texts:
-                        seen_texts.add(text)
-                        description_parts.append(f"📋 <b>Regra:</b>\n{escape_html(text)}")
-            except: continue
+        # Validade
+        validity = extract_validity(driver)
+        if validity:
+            add_block("⏳ <b>Validade:</b>", validity)
         
-        validity_text = extract_validity(driver)
-        if validity_text and validity_text not in seen_texts:
-            seen_texts.add(validity_text)
-            description_parts.append(f"⏳ <b>Validade:</b>\n{escape_html(validity_text)}")
+        # Regras
+        for elem in driver.find_elements(By.CSS_SELECTOR, ".rules, [class*='regras'], .terms, li"):
+            text = normalize_spaces(elem.text)
+            if not text:
+                continue
+            low = text.lower()
+            if ("regra" in low or "não é válido" in low or "nao e valido" in low or "exceto" in low) and len(text) > 15:
+                add_block("📋 <b>Regra:</b>", text)
         
-        if len(description_parts) < 2:
-            for p in driver.find_elements(By.TAG_NAME, "p")[:8]:
-                text = p.text.strip()
-                if text and len(text) > 30 and text not in seen_texts and "Clube UOL" not in text:
-                    seen_texts.add(text)
-                    description_parts.append(escape_html(text))
+        # Fallback para parágrafos
+        if len(parts) < 2:
+            for p in driver.find_elements(By.TAG_NAME, "p")[:10]:
+                text = normalize_spaces(p.text)
+                if text and len(text) > 30 and "clube uol" not in text.lower():
+                    add_block("📝 <b>Detalhes:</b>", text)
         
-        result = "\n\n".join(description_parts)
-        if len(result) > MAX_COMMENT_LENGTH - 150:
-            result = result[:MAX_COMMENT_LENGTH-200] + "...\n\n<i>Descrição truncada devido ao limite do Telegram</i>"
+        result = "\n\n".join(parts).strip()
+        if not result:
+            return "Descrição detalhada não disponível."
         
-        return result if result else "Descrição detalhada não disponível."
+        return truncate_text(
+            result,
+            MAX_COMMENT_LENGTH - 180,
+            "...\n\n<i>Descrição truncada devido ao limite do Telegram</i>",
+        )
     except Exception as e:
-        print(f"  ⚠️ Erro ao extrair descrição completa: {e}")
+        log(f"  ⚠️ Erro ao extrair descrição completa: {e}")
         return "Descrição detalhada não disponível."
 
 # ==============================================
-# DOWNLOAD DA IMAGEM PRINCIPAL E LEGENDA
+# DOWNLOAD DE IMAGEM
 # ==============================================
-def download_image(img_url):
+def download_image(img_url: str) -> Optional[str]:
     try:
-        headers = {'User-Agent': random.choice(USER_AGENTS), 'Referer': 'https://clube.uol.com.br/'}
-        response = requests.get(img_url, headers=headers, timeout=15)
-        if response.status_code == 200:
-            temp_path = f"/tmp/leouol_{random.randint(1000,9999)}.jpg"
-            with open(temp_path, 'wb') as f:
-                f.write(response.content)
-            return temp_path
+        headers = {
+            "User-Agent": random.choice(USER_AGENTS),
+            "Referer": "https://clube.uol.com.br/",
+            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+        }
+        response = HTTP.get(img_url, headers=headers, timeout=20)
+        if response.ok and response.content:
+            TMP_DIR.mkdir(parents=True, exist_ok=True)
+            temp_path = TMP_DIR / f"leouol_{random.randint(1000, 9999)}.jpg"
+            temp_path.write_bytes(response.content)
+            return str(temp_path)
     except Exception as e:
-        print(f"Erro ao baixar imagem: {e}")
+        log(f"⚠️ Erro ao baixar imagem: {e}")
     return None
 
-def build_caption(page_title, validity, link):
-    parts = []
-    if page_title:
-        parts.append(f"<b>{escape_html(page_title)}</b>")
-    else:
+def build_caption(page_title: str, validity: Optional[str], link: str) -> Optional[str]:
+    page_title = normalize_spaces(page_title)
+    if not page_title:
         return None
     
+    parts = [f"<b>{escape_html(page_title)}</b>"]
+    
     if validity and len(validity) > 5:
-        validity_clean = re.sub(r'^(benef[ií]cio\s+v[aá]lido\s*:\s*)', '', validity, flags=re.IGNORECASE)
-        parts.append(f"📅 {escape_html(validity_clean)}")
+        validity_clean = re.sub(
+            r"^(benef[ií]cio\s+v[aá]lido\s*:\s*)",
+            "",
+            validity,
+            flags=re.IGNORECASE,
+        )
+        parts.append(f"📅 {escape_html(normalize_spaces(validity_clean))}")
     
-    parts.append(f"🔗 <a href='{link}'>Acessar oferta</a>")
+    parts.append(f"🔗 <a href='{escape_html(link)}'>Acessar oferta</a>")
+    
     caption = "\n\n".join(parts)
+    if len(caption) <= MAX_CAPTION_LENGTH:
+        return caption
     
-    if len(caption) > MAX_CAPTION_LENGTH:
-        link_pos = caption.rfind("🔗 <a href=")
-        if link_pos > 0:
-            caption = caption[:MAX_CAPTION_LENGTH - len(caption[link_pos:]) - 3] + "...\n\n" + caption[link_pos:]
-        else:
-            caption = caption[:MAX_CAPTION_LENGTH-3] + "..."
-    return caption
+    link_block = f"🔗 <a href='{escape_html(link)}'>Acessar oferta</a>"
+    room = MAX_CAPTION_LENGTH - len(link_block) - 4
+    short_title = truncate_text(f"<b>{escape_html(page_title)}</b>", max(room, 20))
+    return f"{short_title}\n\n{link_block}"
 
 # ==============================================
-# TELEGRAM: LÓGICA DE COMENTÁRIO EM THREAD
+# TELEGRAM
 # ==============================================
-def clear_telegram_updates():
-    """Limpa atualizações pendentes para não influenciar a busca do novo post do grupo"""
+def telegram_api(method: str, data=None, files=None, timeout: int = 30) -> Optional[dict]:
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
     try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates"
-        resp = requests.get(f"{url}?offset=-1", timeout=10).json()
-        if resp.get("ok") and resp.get("result"):
-            last_id = resp["result"][0]["update_id"]
-            requests.get(f"{url}?offset={last_id + 1}", timeout=10)
+        response = HTTP.post(url, data=data, files=files, timeout=timeout)
+        payload = response.json()
+        if not payload.get("ok"):
+            log(f"⚠️ Telegram {method} falhou: {payload}")
+        return payload
+    except Exception as e:
+        log(f"⚠️ Erro de requisição Telegram ({method}): {e}")
+        return None
+
+def get_updates(offset: Optional[int] = None) -> List[dict]:
+    params = {"timeout": 0}
+    if offset is not None:
+        params["offset"] = offset
+    payload = telegram_api("getUpdates", data=params, timeout=15)
+    if payload and payload.get("ok"):
+        return payload.get("result", [])
+    return []
+
+def clear_telegram_updates() -> None:
+    try:
+        updates = get_updates()
+        if not updates:
+            return
+        last_id = updates[-1]["update_id"]
+        telegram_api("getUpdates", data={"offset": last_id + 1}, timeout=10)
     except Exception:
         pass
 
-def send_description_comment(full_description, link, channel_message_id):
-    print("  ⏳ Aguardando sincronização da thread do grupo...")
-    group_message_id = None
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates"
+def send_description_comment(full_description: str, link: str, channel_message_id: int) -> bool:
+    log("  ⏳ Aguardando thread do grupo...")
     
-    # Loop de tentativas para o Bot pescar o encaminhamento que o Telegram faz do canal para o grupo
-    for attempt in range(5):
+    group_message_id = None
+    offset = None
+    
+    for _ in range(6):
         time.sleep(3)
-        try:
-            resp = requests.get(url, timeout=10).json()
-            if resp.get("ok"):
-                for update in resp.get("result", []):
-                    msg = update.get("message", {})
-                    chat_id = str(msg.get("chat", {}).get("id"))
-                    
-                    if chat_id == str(GRUPO_COMENTARIOS_ID):
-                        # Verifica se é encaminhamento automático (Thread Root)
-                        if msg.get("is_automatic_forward"):
-                            origin = msg.get("forward_origin", {})
-                            if origin.get("message_id") == channel_message_id:
-                                group_message_id = msg.get("message_id")
-                                requests.get(f"{url}?offset={update['update_id'] + 1}", timeout=5)
-                                break
-                            
-                            # Fallback 
-                            if msg.get("forward_from_message_id") == channel_message_id:
-                                group_message_id = msg.get("message_id")
-                                requests.get(f"{url}?offset={update['update_id'] + 1}", timeout=5)
-                                break
-                if group_message_id:
+        updates = get_updates(offset=offset)
+        if updates:
+            offset = updates[-1]["update_id"] + 1
+        
+        for update in updates:
+            msg = update.get("message", {})
+            chat_id = str(msg.get("chat", {}).get("id"))
+            
+            if chat_id != str(GRUPO_COMENTARIOS_ID):
+                continue
+            
+            # Verifica se é o post encaminhado automaticamente
+            if msg.get("is_automatic_forward"):
+                # Tenta diferentes formas de obter o ID original
+                forward_origin = msg.get("forward_origin", {})
+                if isinstance(forward_origin, dict):
+                    origin_message_id = forward_origin.get("message_id")
+                else:
+                    origin_message_id = None
+                
+                forward_from_msg_id = msg.get("forward_from_message_id")
+                
+                if origin_message_id == channel_message_id or forward_from_msg_id == channel_message_id:
+                    group_message_id = msg.get("message_id")
                     break
-        except Exception as e:
-            print(f"  ⚠️ Erro no polling de updates: {e}")
-
-    # Monta a resposta
+            
+            # Fallback: verifica se tem link para o canal
+            if not group_message_id:
+                entities = msg.get("entities", [])
+                for entity in entities:
+                    if entity.get("type") == "text_link" and str(channel_message_id) in entity.get("url", ""):
+                        group_message_id = msg.get("message_id")
+                        break
+        
+        if group_message_id:
+            break
+    
     if group_message_id:
-        print(f"  ✅ Post original capturado (ID do Grupo: {group_message_id}). Entrando na aba de comentários...")
-        reply_params = json.dumps({"message_id": group_message_id})
+        log(f"  ✅ Thread encontrada no grupo (ID: {group_message_id})")
     else:
-        print("  ⚠️ Aviso: Telegram demorou a criar a thread. Comentário ficará solto no grupo.")
-        reply_params = None
-
+        log("  ⚠️ Thread não encontrada a tempo. Comentário será enviado sem reply.")
+    
     comment_text = (
-        f"📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
+        "📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
         f"{full_description}\n\n"
-        f"🔗 <a href='{link}'>Link original</a>"
+        f"🔗 <a href='{escape_html(link)}'>Link original</a>"
     )
-
-    comment_data = {
-        'chat_id': GRUPO_COMENTARIOS_ID,
-        'text': comment_text,
-        'parse_mode': 'HTML',
-        'disable_web_page_preview': True
+    
+    data = {
+        "chat_id": GRUPO_COMENTARIOS_ID,
+        "text": truncate_text(comment_text, MAX_COMMENT_LENGTH),
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
     }
     
-    if reply_params:
-        comment_data['reply_parameters'] = reply_params
+    if group_message_id:
+        data["reply_parameters"] = json.dumps({"message_id": group_message_id})
+    
+    payload = telegram_api("sendMessage", data=data, timeout=35)
+    if payload and payload.get("ok"):
+        log("  ✅ Comentário enviado com sucesso!")
+        return True
+    
+    # Fallback sem HTML
+    log("  ⚠️ Tentando fallback sem HTML...")
+    fallback_data = {
+        "chat_id": GRUPO_COMENTARIOS_ID,
+        "text": truncate_text(strip_html(comment_text), MAX_COMMENT_LENGTH),
+        "disable_web_page_preview": True,
+    }
+    if group_message_id:
+        fallback_data["reply_parameters"] = json.dumps({"message_id": group_message_id})
+    
+    payload = telegram_api("sendMessage", data=fallback_data, timeout=35)
+    return bool(payload and payload.get("ok"))
 
-    comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+def send_offer_with_details(img_path: str, main_caption: str, full_description: str, link: str) -> bool:
     try:
-        response = requests.post(comment_url, data=comment_data, timeout=30)
-        if response.ok:
-            print("  ✅ Descrição publicada na thread com sucesso!")
-            return True
-        else:
-            print(f"  ❌ Erro ao comentar: {response.text}")
-            if "can't parse entities" in response.text:
-                comment_data['parse_mode'] = None
-                comment_data['text'] = re.sub('<[^<]+>', '', comment_text)
-                response = requests.post(comment_url, data=comment_data, timeout=30)
-                if response.ok: return True
-            return False
-    except Exception as e:
-        print(f"  ❌ Falha requisição de comentário: {e}")
-        return False
-
-# ==============================================
-# FUNÇÃO PRINCIPAL DE ENVIO
-# ==============================================
-def send_offer_with_details(img_path, main_caption, full_description, link):
-    try:
-        # Limpa atualizações antigas para focar apenas neste novo post
         clear_telegram_updates()
         
-        photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
-        with open(img_path, 'rb') as photo:
-            files = {'photo': photo}
-            data = {
-                'chat_id': CANAL_ID,
-                'caption': main_caption,
-                'parse_mode': 'HTML'
-            }
-            photo_response = requests.post(photo_url, data=data, files=files, timeout=30)
+        with open(img_path, "rb") as photo:
+            payload = telegram_api(
+                "sendPhoto",
+                data={
+                    "chat_id": CANAL_ID,
+                    "caption": main_caption,
+                    "parse_mode": "HTML",
+                },
+                files={"photo": photo},
+                timeout=40,
+            )
         
-        if not photo_response.ok:
-            print(f"❌ Erro ao enviar foto pro canal: {photo_response.text}")
-            return False
+        if not payload or not payload.get("ok"):
+            log("❌ Falha ao enviar foto para o canal. Tentando enviar só texto...")
+            text_payload = telegram_api(
+                "sendMessage",
+                data={
+                    "chat_id": CANAL_ID,
+                    "text": strip_html(main_caption),
+                    "disable_web_page_preview": False,
+                },
+                timeout=30,
+            )
+            if not text_payload or not text_payload.get("ok"):
+                return False
+            message_id = text_payload["result"]["message_id"]
+        else:
+            message_id = payload["result"]["message_id"]
         
-        message_id = photo_response.json()['result']['message_id']
-        print(f"✅ Foto principal enviada no canal (ID: {message_id})")
-        
+        log(f"✅ Oferta enviada ao canal (ID: {message_id})")
         return send_description_comment(full_description, link, message_id)
-            
+    
     except Exception as e:
-        print(f"❌ Erro geral no fluxo de envio: {e}")
+        log(f"❌ Erro geral no envio: {e}")
         return False
 
 # ==============================================
-# BUSCA OFERTAS NA PÁGINA PRINCIPAL
+# BUSCA DE OFERTAS
 # ==============================================
-def fetch_offers():
-    driver = None
+def extract_offer_image(container) -> Optional[str]:
     try:
-        print("🌐 Iniciando Chrome Undetected...")
-        driver = setup_driver()
-        driver.get(TARGET_URL)
+        # Tenta background-image
+        for el in container.find_elements(By.CSS_SELECTOR, "[style*='background']"):
+            style = el.get_attribute("style") or ""
+            match = re.search(r'url\(["\']?(.*?)["\']?\)', style)
+            if match:
+                img_url = match.group(1)
+                if img_url.startswith("//"):
+                    return "https:" + img_url
+                return img_url
+        
+        # Tenta imagens
+        for selector in ["img[data-src]", "img[src]"]:
+            imgs = container.find_elements(By.CSS_SELECTOR, selector)
+            for img in imgs:
+                img_url = img.get_attribute("data-src") or img.get_attribute("src")
+                if img_url:
+                    if img_url.startswith("//"):
+                        return "https:" + img_url
+                    return img_url
+    except Exception:
+        pass
+    return None
+
+def fetch_offers(driver) -> List[Dict[str, str]]:
+    try:
+        log("🌐 Abrindo listagem de ofertas...")
+        if not safe_get(driver, TARGET_URL):
+            return []
         
         try:
-            WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio")))
+            WebDriverWait(driver, LIST_WAIT_SECONDS).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
+            )
         except TimeoutException:
-            driver.refresh()
-            try:
-                WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio")))
-            except:
-                return []
+            log("⚠️ Listagem não carregou a tempo.")
+            return []
         
-        driver.execute_script("window.scrollBy(0, 800);")
-        human_like_delay(1, 2)
-        driver.execute_script("window.scrollBy(0, 800);")
-        human_like_delay(1, 2)
+        if is_possible_block_page(driver):
+            log("⚠️ Página parece ter retornado bloqueio/challenge.")
+            return []
+        
+        # Scroll suave
+        driver.execute_script("window.scrollBy(0, 700);")
+        human_like_delay(0.8, 1.5)
+        driver.execute_script("window.scrollBy(0, 700);")
+        human_like_delay(0.8, 1.5)
         
         containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
-        if not containers: return []
+        if not containers:
+            return []
         
         offers = []
-        for i, container in enumerate(containers[:MAX_OFFERS_PER_RUN]):
+        seen_run_ids = set()
+        
+        for container in containers[:MAX_OFFERS_PER_RUN * 2]:
             try:
-                preview_title = container.find_element(By.CSS_SELECTOR, ".titulo, h2, h3, p").text.strip()
-                if not preview_title: continue
+                # Título
+                preview_title = ""
+                for selector in [".titulo", "h2", "h3", "p"]:
+                    elems = container.find_elements(By.CSS_SELECTOR, selector)
+                    if elems:
+                        preview_title = normalize_spaces(elems[0].text)
+                        if preview_title:
+                            break
                 
-                link = container.find_element(By.CSS_SELECTOR, "a").get_attribute("href")
-                normalized_link = normalize_link(link)
+                if not preview_title:
+                    continue
                 
-                img_url = None
-                for el in container.find_elements(By.CSS_SELECTOR, "[style*='background']"):
-                    match = re.search(r'url\(["\']?(.*?)["\']?\)', el.get_attribute("style"))
-                    if match:
-                        img_url = match.group(1); break
-                if not img_url:
-                    imgs = container.find_elements(By.CSS_SELECTOR, "img[data-src]")
-                    if imgs: img_url = imgs[0].get_attribute("data-src")
-                if not img_url:
-                    imgs = container.find_elements(By.CSS_SELECTOR, "img")
-                    if imgs: img_url = imgs[0].get_attribute("src")
+                # Link
+                a_elems = container.find_elements(By.CSS_SELECTOR, "a[href]")
+                if not a_elems:
+                    continue
                 
-                if img_url and img_url.startswith('//'): img_url = 'https:' + img_url
+                link = a_elems[0].get_attribute("href")
+                if not link:
+                    continue
                 
-                offers.append({"id": normalized_link, "preview_title": preview_title, "link": link, "imagem_url": img_url})
-            except Exception as e:
+                offer_id = normalize_link(link)
+                if offer_id in seen_run_ids:
+                    continue
+                seen_run_ids.add(offer_id)
+                
+                # Imagem
+                img_url = extract_offer_image(container)
+                
+                offers.append({
+                    "id": offer_id,
+                    "preview_title": preview_title,
+                    "link": link,
+                    "imagem_url": img_url or "",
+                })
+            except Exception:
                 continue
-        return offers
+        
+        return offers[:MAX_OFFERS_PER_RUN]
     except Exception as e:
-        print(f"❌ Erro geral ao buscar ofertas: {e}")
+        log(f"❌ Erro geral ao buscar ofertas: {e}")
         return []
-    finally:
-        if driver: driver.quit()
 
 # ==============================================
-# PROCESSAMENTO DE CADA OFERTA
+# PROCESSAMENTO DE OFERTA
 # ==============================================
-def process_offer(offer):
-    print(f"\n🔍 Acessando página: {offer['preview_title'][:50]}...")
-    driver = None
+def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], str]:
+    log(f"\n🔍 Acessando página: {offer['preview_title'][:60]}...")
+    
     try:
-        driver = setup_driver()
-        driver.get(offer['link'])
+        if not safe_get(driver, offer["link"], wait_after=(1.0, 2.0)):
+            return offer["preview_title"], None, "Descrição não disponível devido a erro de navegação."
         
-        try: WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "h1, .partner-description, .benefit-description")))
-        except TimeoutException: pass
-        human_like_delay(1, 3)
+        try:
+            WebDriverWait(driver, DETAIL_WAIT_SECONDS).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "h1, p, .partner-description, .benefit-description"))
+            )
+        except TimeoutException:
+            pass
         
-        page_title = driver.title
-        if "Your connection is not private" in page_title or "Cloudflare" in page_title:
-            try:
-                h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
-                page_title = h1_elements[0].text.strip() if h1_elements else offer['preview_title']
-            except: page_title = offer['preview_title']
-        else:
-            page_title = extract_page_title(driver) or offer['preview_title']
+        if is_possible_block_page(driver):
+            log("  ⚠️ Página de detalhe parece ser challenge/bloqueio.")
+            return offer["preview_title"], None, "Descrição não disponível."
         
+        page_title = extract_page_title(driver, fallback=offer["preview_title"])
         validity = extract_validity(driver)
         full_description = extract_full_description(driver)
         
         return page_title, validity, full_description
-        
+    
     except Exception as e:
-        print(f"  ⚠️ Erro: {e}")
-        return offer['preview_title'], None, "Descrição não disponível devido a erro."
-    finally:
-        if driver: driver.quit()
+        log(f"  ⚠️ Erro ao processar oferta: {e}")
+        return offer["preview_title"], None, "Descrição não disponível devido a erro."
 
 # ==============================================
 # FUNÇÃO PRINCIPAL
 # ==============================================
 def main():
-    print("=" * 70)
-    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (CANAL + THREAD DE COMENTÁRIOS)")
-    print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
-    print("=" * 70)
+    log("=" * 72)
+    log("🤖 BOT LEOUOL - Clube UOL Ofertas")
+    log("📢 Canal + thread de comentários")
+    log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+    log("=" * 72)
+    
+    ensure_env()
     
     history = load_history()
     seen_ids = set(history.get("ids", []))
     
-    max_attempts = 3
-    attempt = 1
+    driver = None
     offers = []
     
-    while attempt <= max_attempts:
-        print(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
-        offers = fetch_offers()
-        if offers: break
-        if attempt < max_attempts: time.sleep(random.randint(15, 30))
-        attempt += 1
-    
-    if not offers: return
-    
-    new_offers = [o for o in offers if o['id'] not in seen_ids]
-    if not new_offers:
-        print("\n📭 Nenhuma oferta nova")
-        return
-    
-    print(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
-    successful = 0
-    processed_ids = set(seen_ids)
-    
-    for i, offer in enumerate(new_offers, 1):
-        print(f"\n{'='*50}\n📦 Oferta {i}/{len(new_offers)}\n{'='*50}")
+    try:
+        driver = setup_driver()
         
-        if not offer.get('imagem_url'):
-            processed_ids.add(offer['id'])
-            continue
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            log(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
+            offers = fetch_offers(driver)
+            if offers:
+                break
+            if attempt < max_attempts:
+                time.sleep(random.randint(12, 24))
         
-        img_path = download_image(offer['imagem_url'])
-        if not img_path:
-            processed_ids.add(offer['id'])
-            continue
+        if not offers:
+            log("\n📭 Nenhuma oferta encontrada na listagem.")
+            return
         
-        page_title, validity, full_description = process_offer(offer)
-        main_caption = build_caption(page_title, validity, offer['link'])
+        new_offers = [o for o in offers if o["id"] not in seen_ids]
+        if not new_offers:
+            log("\n📭 Nenhuma oferta nova.")
+            return
         
-        if not main_caption:
-            if os.path.exists(img_path): os.remove(img_path)
-            processed_ids.add(offer['id'])
-            continue
+        log(f"\n🎉 {len(new_offers)} nova(s) oferta(s) encontrada(s)!")
         
-        print("\n📤 Postando Oferta + Descrição nos comentários...")
-        if send_offer_with_details(img_path, main_caption, full_description, offer['link']):
-            successful += 1
+        processed_ids = set(seen_ids)
+        success_count = 0
+        
+        for idx, offer in enumerate(new_offers, start=1):
+            log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}\n{'=' * 50}")
             
-        processed_ids.add(offer['id'])
-        if os.path.exists(img_path): os.remove(img_path)
+            try:
+                if not offer.get("imagem_url"):
+                    log("⚠️ Oferta sem imagem. Marcando como vista.")
+                    processed_ids.add(offer["id"])
+                    continue
+                
+                img_path = download_image(offer["imagem_url"])
+                if not img_path:
+                    log("⚠️ Não foi possível baixar a imagem. Marcando como vista.")
+                    processed_ids.add(offer["id"])
+                    continue
+                
+                page_title, validity, full_description = process_offer(driver, offer)
+                main_caption = build_caption(page_title, validity, offer["link"])
+                
+                if not main_caption:
+                    log("⚠️ Caption inválida. Marcando como vista.")
+                    processed_ids.add(offer["id"])
+                    Path(img_path).unlink(missing_ok=True)
+                    continue
+                
+                log("\n📤 Enviando oferta e comentário...")
+                ok = send_offer_with_details(img_path, main_caption, full_description, offer["link"])
+                if ok:
+                    success_count += 1
+                    log("✅ Oferta publicada com sucesso.")
+                else:
+                    log("⚠️ Falha no envio da oferta.")
+                
+                processed_ids.add(offer["id"])
+                Path(img_path).unlink(missing_ok=True)
+                
+                if idx < len(new_offers):
+                    human_like_delay(2.0, 4.5)
+            
+            except Exception as e:
+                log(f"⚠️ Erro inesperado nesta oferta: {e}")
+                processed_ids.add(offer["id"])
         
-        if i < len(new_offers): human_like_delay(3, 6)
-    
-    if processed_ids:
-        history["ids"] = list(processed_ids)
+        history["ids"] = list(processed_ids)[-MAX_HISTORY_SIZE:]
         save_history(history)
+        
+        log(f"\n🏁 Finalizado. Sucessos: {success_count}/{len(new_offers)}")
+    
+    except WebDriverException as e:
+        log(f"❌ Erro do Chrome/WebDriver: {e}")
+    except Exception as e:
+        log(f"❌ Erro geral: {e}")
+    finally:
+        if driver:
+            try:
+                driver.quit()
+            except Exception:
+                pass
 
 if __name__ == "__main__":
     main()
