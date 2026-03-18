@@ -104,8 +104,7 @@ jobs:
         with:
           name: bot-leouol-debug-${{ github.run_id }}
           path: |
-            debug/**
+            debug/**/*.txt
             historico_leouol.json
-            /tmp/leouol_*.jpg
           if-no-files-found: ignore
-          retention-days: 5
+          retention-days: 3
