@@ -9,23 +9,19 @@ concurrency:
   group: bot-leouol
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: ubuntu-latest
-    # para manter no GitHub-hosted, deixe assim
-    # se for migrar para self-hosted, troque por:
-    # runs-on: [self-hosted, linux, x64]
-
-    timeout-minutes: 6
-
-    permissions:
-      contents: write
-
-    env:
-      PYTHONUNBUFFERED: "1"
-      PIP_DISABLE_PIP_VERSION_CHECK: "1"
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    timeout-minutes: 4
 
     steps:
       - name: 📥 Baixar código
@@ -112,3 +108,4 @@ jobs:
             historico_leouol.json
             /tmp/leouol_*.jpg
           if-no-files-found: ignore
+          retention-days: 5
