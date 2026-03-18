@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO FINAL - Canal + Grupo com Logo do Parceiro (CORRIGIDA)
+# VERSÃO FINAL - Canal + Grupo com Logo do Parceiro (CORRIGIDA + ANTI-BLOQUEIO)
 # ------------------------------
 
 import requests
@@ -18,6 +18,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import TimeoutException
 
 # ==============================================
 # CONFIGURAÇÕES
@@ -86,7 +87,7 @@ def human_like_delay(min_seconds=1, max_seconds=3):
     time.sleep(random.uniform(min_seconds, max_seconds))
 
 # ==============================================
-# CONFIGURAÇÃO DO CHROME
+# CONFIGURAÇÃO DO CHROME (OTIMIZADO ANTI-BOT)
 # ==============================================
 def setup_driver():
     chrome_options = Options()
@@ -94,7 +95,11 @@ def setup_driver():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--window-size=1920,1080")
+    # Resoluções variadas para parecer mais com usuários reais
+    window_sizes = ["1920,1080", "1366,768", "1440,900", "1536,864"]
+    chrome_options.add_argument(f"--window-size={random.choice(window_sizes)}")
+    
+    # Flags avançadas anti-detecção
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
@@ -104,11 +109,14 @@ def setup_driver():
     
     user_agent = random.choice(USER_AGENTS)
     chrome_options.add_argument(f"user-agent={user_agent}")
-    chrome_options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en;q=0.8")
+    chrome_options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
+    
+    # Sobrescreve variáveis do navegador que os sites usam para detectar bots
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": user_agent})
     
     return driver
 
@@ -190,7 +198,7 @@ def extract_logo_url(driver):
         return None
 
 # ==============================================
-# FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA (ATUALIZADA PARA HTML)
+# FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA (HTML)
 # ==============================================
 def escape_html(text):
     """Substitui caracteres sensíveis do HTML para evitar quebras de formatação."""
@@ -204,7 +212,6 @@ def extract_full_description(driver):
         description_parts = []
         seen_texts = set()
         
-        # 1. Descrição do parceiro
         partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner"]
         for selector in partner_selectors:
             try:
@@ -219,7 +226,6 @@ def extract_full_description(driver):
             except:
                 continue
         
-        # 2. Benefício
         benefit_selectors = [".benefit-description", "[class*='beneficio'] p", ".offer-description"]
         for selector in benefit_selectors:
             try:
@@ -234,7 +240,6 @@ def extract_full_description(driver):
             except:
                 continue
         
-        # 3. Regras
         rule_selectors = [".rules", "[class*='regras']", ".terms", "li"]
         for selector in rule_selectors:
             try:
@@ -248,14 +253,12 @@ def extract_full_description(driver):
             except:
                 continue
         
-        # 4. Validade (se não veio na legenda)
         validity_text = extract_validity(driver)
         if validity_text and validity_text not in seen_texts:
             seen_texts.add(validity_text)
             safe_text = escape_html(validity_text)
             description_parts.append(f"⏳ <b>Validade:</b>\n{safe_text}")
         
-        # Se não encontrou nada, pega parágrafos únicos
         if len(description_parts) < 2:
             paragraphs = driver.find_elements(By.TAG_NAME, "p")
             for p in paragraphs[:8]:
@@ -265,10 +268,8 @@ def extract_full_description(driver):
                     safe_text = escape_html(text)
                     description_parts.append(safe_text)
         
-        # Junta tudo com quebras de linha duplas
         result = "\n\n".join(description_parts)
         
-        # Limita ao tamanho máximo
         if len(result) > MAX_COMMENT_LENGTH - 150:
             result = result[:MAX_COMMENT_LENGTH-200] + "...\n\n<i>Descrição truncada devido ao limite do Telegram</i>"
         
@@ -298,7 +299,7 @@ def download_image(img_url):
     return None
 
 # ==============================================
-# CONSTRUÇÃO DA LEGENDA PRINCIPAL (ATUALIZADA PARA HTML)
+# CONSTRUÇÃO DA LEGENDA PRINCIPAL (HTML)
 # ==============================================
 def build_caption(page_title, validity, link):
     parts = []
@@ -330,13 +331,10 @@ def build_caption(page_title, validity, link):
     return caption
 
 # ==============================================
-# FUNÇÃO CORRIGIDA - Envio de comentário e logo via HTML e Reply Parameters
+# Envio de comentário e logo via HTML e Reply
 # ==============================================
 def send_logo_and_description(logo_url, full_description, link, channel_message_id):
-    """Envia logo e descrição no GRUPO referenciando adequadamente o ID do CANAL"""
-    
     try:
-        # 1️⃣ BAIXA O LOGO (se existir)
         logo_path = None
         if logo_url:
             print("  📥 Baixando logo do parceiro...")
@@ -351,7 +349,6 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
             except Exception as e:
                 print(f"  ⚠️ Erro ao baixar logo: {e}")
 
-        # 2️⃣ PREPARA TEXTO DA DESCRIÇÃO (FORMATO HTML)
         comment_text = (
             f"📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
             f"{full_description}\n\n"
@@ -361,13 +358,11 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
         if len(comment_text) > MAX_COMMENT_LENGTH:
             comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n<i>Descrição truncada</i>"
 
-        # Dicionário de parâmetros de resposta multi-chat
         reply_params = json.dumps({
             "chat_id": CANAL_ID,
             "message_id": channel_message_id
         })
 
-        # 3️⃣ ENVIA O LOGO PRIMEIRO (se existir)
         if logo_path:
             photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
             with open(logo_path, 'rb') as photo:
@@ -376,7 +371,7 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
                     'chat_id': GRUPO_COMENTARIOS_ID,
                     'caption': "🏢 <b>Logo do parceiro</b>",
                     'parse_mode': 'HTML',
-                    'reply_parameters': reply_params # 🔥 Solução correta para "not found"
+                    'reply_parameters': reply_params
                 }
                 logo_response = requests.post(photo_url, data=data, files=files, timeout=30)
                 
@@ -388,13 +383,12 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
             if os.path.exists(logo_path):
                 os.remove(logo_path)
 
-        # 4️⃣ ENVIA A DESCRIÇÃO NO FORMATO HTML
         comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
         comment_data = {
             'chat_id': GRUPO_COMENTARIOS_ID,
             'text': comment_text,
             'parse_mode': 'HTML',
-            'reply_parameters': reply_params, # 🔥 Solução correta para "not found"
+            'reply_parameters': reply_params,
             'disable_web_page_preview': True
         }
         
@@ -408,11 +402,9 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
         else:
             print(f"  ❌ Erro ao enviar descrição: {comment_response.text}")
             
-            # Tenta enviar sem nenhuma formatação caso a API recuse o HTML por algum detalhe obscuro
             if "can't parse entities" in comment_response.text:
                 print("  ⚠️ Tentando novamente sem formatação HTML...")
                 comment_data['parse_mode'] = None
-                # Limpa tags HTML simples num fallback rápido
                 clean_text = re.sub('<[^<]+>', '', comment_text)
                 comment_data['text'] = clean_text
                 comment_response = requests.post(comment_url, data=comment_data, timeout=30)
@@ -428,13 +420,10 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
         return False
 
 # ==============================================
-# FUNÇÃO PRINCIPAL DE ENVIO (ATUALIZADA PARA HTML)
+# FUNÇÃO PRINCIPAL DE ENVIO
 # ==============================================
 def send_offer_with_details(img_path, main_caption, logo_url, full_description, link):
-    """Envia a imagem no CANAL + logo e descrição no GRUPO"""
-    
     try:
-        # 1️⃣ ENVIA A FOTO NO CANAL PRINCIPAL
         photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
         
         with open(img_path, 'rb') as photo:
@@ -453,11 +442,9 @@ def send_offer_with_details(img_path, main_caption, logo_url, full_description, 
         message_id = photo_response.json()['result']['message_id']
         print(f"✅ Foto enviada no canal (ID: {message_id})")
         
-        # 2️⃣ DÁ UM TEMPO PARA A MENSAGEM PROPAGAR E SINCRONIZAR O GRUPO
         print("  ⏱️ Aguardando 3 segundos para sincronização de fórum/grupo...")
         time.sleep(3)
         
-        # 3️⃣ ENVIA LOGO + DESCRIÇÃO NO GRUPO COMO RESPOSTA AO CANAL
         return send_logo_and_description(logo_url, full_description, link, message_id)
             
     except Exception as e:
@@ -465,7 +452,7 @@ def send_offer_with_details(img_path, main_caption, logo_url, full_description, 
         return False
 
 # ==============================================
-# BUSCA OFERTAS NA PÁGINA PRINCIPAL
+# BUSCA OFERTAS NA PÁGINA PRINCIPAL (COM ESPERA EXPLÍCITA E REFRESH)
 # ==============================================
 def fetch_offers():
     driver = None
@@ -476,7 +463,24 @@ def fetch_offers():
         print(f"📱 Acessando: {TARGET_URL}")
         driver.get(TARGET_URL)
         
-        human_like_delay(3, 5)
+        # O bot vai tentar esperar até 15 segundos para que as ofertas carreguem dinamicamente
+        try:
+            print("⏳ Aguardando carregamento dinâmico das ofertas...")
+            WebDriverWait(driver, 15).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
+            )
+        except TimeoutException:
+            print("⚠️ Tempo excedido. Tentando recarregar a página (Refresh)...")
+            driver.refresh()
+            try:
+                WebDriverWait(driver, 15).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
+                )
+            except TimeoutException:
+                print("❌ Página carregou, mas as ofertas não apareceram. Possível bloqueio.")
+                return []
+        
+        human_like_delay(2, 4)
         
         driver.execute_script("window.scrollBy(0, 800);")
         human_like_delay(1, 2)
@@ -487,7 +491,6 @@ def fetch_offers():
         print(f"📦 Total de ofertas na página: {len(containers)}")
         
         if not containers:
-            print("❌ Nenhuma oferta encontrada")
             return []
         
         offers = []
@@ -546,7 +549,7 @@ def fetch_offers():
         return offers
         
     except Exception as e:
-        print(f"❌ Erro geral: {e}")
+        print(f"❌ Erro geral ao buscar ofertas: {e}")
         return []
         
     finally:
@@ -564,7 +567,15 @@ def process_offer(offer):
         driver = setup_driver()
         driver.get(offer['link'])
         
-        human_like_delay(2, 4)
+        # Adiciona espera explícita na página interna também
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "h1, .partner-description, .benefit-description"))
+            )
+        except TimeoutException:
+            pass # Continua mesmo se não achar, para tentar pegar fallback
+            
+        human_like_delay(1, 3)
         
         page_title = driver.title
         
@@ -630,13 +641,13 @@ def main():
         else:
             print(f"⚠️ Tentativa {attempt} falhou (0 ofertas)")
             if attempt < max_attempts:
-                wait_time = random.randint(10, 20)
-                print(f"⏱️ Aguardando {wait_time} segundos antes de tentar novamente...")
+                wait_time = random.randint(15, 30) # Aumentado o tempo de espera entre falhas
+                print(f"⏱️ Aguardando {wait_time} segundos antes de tentar novamente para despistar o anti-bot...")
                 time.sleep(wait_time)
             attempt += 1
     
     if not offers:
-        print("❌ Todas as tentativas falharam. Site pode estar fora do ar.")
+        print("❌ Todas as tentativas falharam. Site bloqueou o acesso ou está demorando muito para carregar.")
         return
     
     print(f"\n📊 Encontradas: {len(offers)} ofertas")
