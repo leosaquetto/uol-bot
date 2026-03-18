@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# Versão focada em robustez, velocidade e debug
+# Modo otimizado: 1 tentativa, falha rápida, debug
 # ------------------------------
 
 import json
@@ -44,9 +44,9 @@ MAX_COMMENT_LENGTH = 4096
 MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
 
-LIST_WAIT_SECONDS = 20
-DETAIL_WAIT_SECONDS = 12
-PAGE_LOAD_TIMEOUT = 30
+LIST_WAIT_SECONDS = 12
+DETAIL_WAIT_SECONDS = 10
+PAGE_LOAD_TIMEOUT = 20
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
@@ -113,17 +113,17 @@ def ensure_env() -> None:
         raise RuntimeError(f"Variáveis ausentes: {', '.join(missing)}")
 
 
-def human_delay(min_s: float = 0.7, max_s: float = 1.6) -> None:
+def human_delay(min_s: float = 0.7, max_s: float = 1.4) -> None:
     time.sleep(random.uniform(min_s, max_s))
 
 
 def build_http_session() -> requests.Session:
     session = requests.Session()
     retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        backoff_factor=1.0,
+        total=2,
+        connect=2,
+        read=2,
+        backoff_factor=0.8,
         status_forcelist=[429, 500, 502, 503, 504],
         allowed_methods=["GET", "POST"],
         raise_on_status=False,
@@ -207,6 +207,21 @@ def is_privacy_error_page(driver) -> bool:
         return False
 
 
+def is_human_verification_page(driver) -> bool:
+    try:
+        title = (driver.title or "").lower()
+        body = driver.find_element(By.TAG_NAME, "body").text.lower()
+        signals = [
+            "human verification",
+            "vamos confirmar que você é humano",
+            "conclua a verificação de segurança antes de continuar",
+            "iniciar",
+        ]
+        return any(s in title or s in body for s in signals)
+    except Exception:
+        return False
+
+
 def is_possible_block_page(driver) -> bool:
     try:
         title = (driver.title or "").lower()
@@ -224,6 +239,7 @@ def is_possible_block_page(driver) -> bool:
             "captcha",
             "just a moment",
             "temporarily blocked",
+            "human verification",
         ]
         return any(s in title or s in body for s in signals)
     except Exception:
@@ -278,7 +294,6 @@ def setup_driver():
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     options.add_argument(f"--user-agent={USER_AGENTS[0]}")
 
-    # correção do erro de certificado
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--ignore-ssl-errors=yes")
     options.add_argument("--allow-running-insecure-content")
@@ -312,7 +327,6 @@ def try_bypass_privacy_error(driver) -> None:
         except Exception:
             pass
 
-        # fallback por teclado/JS em algumas versões
         try:
             driver.execute_script("""
                 const details = document.querySelector('#details-button');
@@ -331,11 +345,11 @@ def try_bypass_privacy_error(driver) -> None:
 def safe_get(driver, url: str, label: str) -> bool:
     try:
         driver.get(url)
-        human_delay(1.0, 1.8)
+        human_delay(0.8, 1.4)
 
         if is_privacy_error_page(driver):
             try_bypass_privacy_error(driver)
-            human_delay(1.0, 2.0)
+            human_delay(0.8, 1.5)
 
         return True
 
@@ -456,7 +470,7 @@ def download_image(img_url: str) -> Optional[str]:
             "Referer": "https://clube.uol.com.br/",
             "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
         }
-        response = HTTP.get(img_url, headers=headers, timeout=15)
+        response = HTTP.get(img_url, headers=headers, timeout=12)
         if response.ok and response.content:
             TMP_DIR.mkdir(parents=True, exist_ok=True)
             temp_path = TMP_DIR / f"leouol_{random.randint(1000, 9999)}.jpg"
@@ -552,6 +566,11 @@ def send_description_comment(full_description: str, link: str, channel_message_i
 
         if group_message_id:
             break
+
+    if group_message_id:
+        log(f"✅ Thread encontrada no grupo (ID: {group_message_id})")
+    else:
+        log("⚠️ Thread não encontrada a tempo. Comentário será enviado sem reply.")
 
     comment_text = (
         "📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
@@ -670,6 +689,18 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
             pass
         return []
 
+    if is_human_verification_page(driver):
+        log("⚠️ Human Verification detectado. Encerrando tentativa rapidamente.")
+        save_debug_screenshot(driver, "listagem_human_verification")
+        save_debug_html(driver, "listagem_human_verification")
+        try:
+            title = driver.title or ""
+            body_text = driver.find_element(By.TAG_NAME, "body").text[:4000]
+            save_debug_text("listagem_human_verification_info", f"TITLE:\n{title}\n\nBODY:\n{body_text}")
+        except Exception:
+            pass
+        return []
+
     try:
         WebDriverWait(driver, LIST_WAIT_SECONDS).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
@@ -695,9 +726,9 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
         return []
 
     driver.execute_script("window.scrollBy(0, 500);")
-    human_delay(0.6, 1.2)
+    human_delay(0.5, 0.9)
     driver.execute_script("window.scrollBy(0, 500);")
-    human_delay(0.6, 1.2)
+    human_delay(0.5, 0.9)
 
     containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
     if not containers:
@@ -761,7 +792,12 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         save_debug_html(driver, "detalhe_privacy_error")
         return offer["preview_title"], None, "Descrição não disponível."
 
-    human_delay(0.8, 1.6)
+    if is_human_verification_page(driver):
+        save_debug_screenshot(driver, "detalhe_human_verification")
+        save_debug_html(driver, "detalhe_human_verification")
+        return offer["preview_title"], None, "Descrição não disponível."
+
+    human_delay(0.6, 1.1)
 
     try:
         WebDriverWait(driver, DETAIL_WAIT_SECONDS).until(
@@ -804,16 +840,8 @@ def main():
     try:
         driver = setup_driver()
 
-        offers = []
-        for attempt in range(1, 4):
-            log(f"\n🔄 Tentativa {attempt}/3 de buscar ofertas...")
-            offers = fetch_offers(driver)
-            if offers:
-                break
-            if attempt < 3:
-                wait_time = random.randint(8, 15)
-                log(f"⏳ Aguardando {wait_time}s antes da próxima tentativa...")
-                time.sleep(wait_time)
+        log("\n🔄 Tentativa única de buscar ofertas...")
+        offers = fetch_offers(driver)
 
         if not offers:
             log("\n📭 Nenhuma oferta encontrada.")
@@ -864,7 +892,7 @@ def main():
                 Path(img_path).unlink(missing_ok=True)
 
                 if idx < len(new_offers):
-                    human_delay(1.5, 3.0)
+                    human_delay(1.0, 2.0)
 
             except Exception as e:
                 log(f"⚠️ Erro inesperado nesta oferta: {e}")
