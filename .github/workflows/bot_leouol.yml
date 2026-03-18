@@ -60,11 +60,11 @@ jobs:
             google-chrome --version
           fi
 
-      - name: 📦 Instalar dependências
-        shell: bash
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+- name: 📦 Instalar dependências (leve)
+  shell: bash
+  run: |
+    python -m pip install --upgrade pip
+    pip install requests selenium undetected-chromedriver --only-binary :all:
 
       - name: 🤖 Executar BOT LEOUOL
         env:
