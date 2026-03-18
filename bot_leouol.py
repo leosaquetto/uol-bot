@@ -1,6 +1,7 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
 # VERSÃO FINAL - Canal + Grupo Privado com Logo do Parceiro
+# ATUALIZADO: Evadir Anti-Bots com Undetected Chromedriver
 # ------------------------------
 
 import requests
@@ -11,14 +12,11 @@ import re
 import random
 import unicodedata
 from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
+import undetected_chromedriver as uc
 
 # ==============================================
 # CONFIGURAÇÕES
@@ -88,33 +86,29 @@ def human_like_delay(min_seconds=1, max_seconds=3):
     time.sleep(random.uniform(min_seconds, max_seconds))
 
 # ==============================================
-# CONFIGURAÇÃO DO CHROME (OTIMIZADO ANTI-BOT)
+# CONFIGURAÇÃO DO CHROME (OTIMIZADO ANTI-BOT COM UC)
 # ==============================================
 def setup_driver():
-    chrome_options = Options()
-    chrome_options.add_argument("--headless=new")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-gpu")
-    window_sizes = ["1920,1080", "1366,768", "1440,900", "1536,864"]
-    chrome_options.add_argument(f"--window-size={random.choice(window_sizes)}")
+    options = uc.ChromeOptions()
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
     
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    chrome_options.add_experimental_option('useAutomationExtension', False)
-    chrome_options.add_argument('--ignore-certificate-errors')
-    chrome_options.add_argument('--allow-running-insecure-content')
-    chrome_options.add_argument('--ignore-ssl-errors=yes')
+    window_sizes = ["1920,1080", "1366,768", "1440,900", "1536,864"]
+    options.add_argument(f"--window-size={random.choice(window_sizes)}")
+    
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--allow-running-insecure-content')
+    options.add_argument('--ignore-ssl-errors=yes')
     
     user_agent = random.choice(USER_AGENTS)
-    chrome_options.add_argument(f"user-agent={user_agent}")
-    chrome_options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
+    options.add_argument(f"user-agent={user_agent}")
+    options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-    
-    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-    driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": user_agent})
+    # Inicia o undetected_chromedriver
+    driver = uc.Chrome(options=options, version_main=None)
     
     return driver
 
@@ -462,7 +456,7 @@ def send_offer_with_details(img_path, main_caption, logo_url, full_description, 
 def fetch_offers():
     driver = None
     try:
-        print("🌐 Iniciando Chrome...")
+        print("🌐 Iniciando Chrome Undetected...")
         driver = setup_driver()
         
         print(f"📱 Acessando: {TARGET_URL}")
@@ -481,7 +475,7 @@ def fetch_offers():
                     EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
                 )
             except TimeoutException:
-                print("❌ Página carregou, mas as ofertas não apareceram. Possível bloqueio.")
+                print("❌ Página carregou, mas as ofertas não apareceram. Possível bloqueio de IP/Anti-bot.")
                 return []
         
         human_like_delay(2, 4)
@@ -582,8 +576,8 @@ def process_offer(offer):
         
         page_title = driver.title
         
-        if "Your connection is not private" in page_title:
-            print(f"  ⚠️ Página com erro SSL (ignorado)")
+        if "Your connection is not private" in page_title or "Cloudflare" in page_title:
+            print(f"  ⚠️ Página com erro de SSL ou Anti-bot bloqueando os detalhes internos")
             try:
                 h1_elements = driver.find_elements(By.CSS_SELECTOR, "h1")
                 if h1_elements and h1_elements[0].text.strip():
