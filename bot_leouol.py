@@ -1,7 +1,7 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
 # VERSÃO FINAL - Canal + Grupo Privado com Logo do Parceiro
-# ATUALIZADO: Evadir Anti-Bots com Undetected Chromedriver
+# ATUALIZADO: Undetected Chromedriver + Secrets Corrigidos
 # ------------------------------
 
 import requests
@@ -22,8 +22,12 @@ import undetected_chromedriver as uc
 # CONFIGURAÇÕES
 # ==============================================
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal (ex: -3723320790)
-GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIOS_ID', '-3802235343')  # Grupo para os comentários
+CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal: -3723320790
+GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-3802235343')  # Grupo: -3802235343
+
+# DEBUG - REMOVER DEPOIS QUE FUNCIONAR
+print(f"🔍 DEBUG - CANAL_ID: '{CANAL_ID}'")
+print(f"🔍 DEBUG - GRUPO_COMENTARIOS_ID: '{GRUPO_COMENTARIOS_ID}'")
 
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
@@ -86,7 +90,7 @@ def human_like_delay(min_seconds=1, max_seconds=3):
     time.sleep(random.uniform(min_seconds, max_seconds))
 
 # ==============================================
-# CONFIGURAÇÃO DO CHROME (OTIMIZADO ANTI-BOT COM UC)
+# CONFIGURAÇÃO DO CHROME (UNDETECTED)
 # ==============================================
 def setup_driver():
     options = uc.ChromeOptions()
@@ -107,7 +111,7 @@ def setup_driver():
     options.add_argument(f"user-agent={user_agent}")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     
-    # 🔥 FORÇA A VERSÃO 145 do ChromeDriver
+    # Força a versão 145 do ChromeDriver (compatível com o Chrome do GitHub)
     driver = uc.Chrome(options=options, version_main=145)
     
     return driver
@@ -451,7 +455,7 @@ def send_offer_with_details(img_path, main_caption, logo_url, full_description, 
         return False
 
 # ==============================================
-# BUSCA OFERTAS NA PÁGINA PRINCIPAL (COM ESPERA EXPLÍCITA E REFRESH)
+# BUSCA OFERTAS NA PÁGINA PRINCIPAL
 # ==============================================
 def fetch_offers():
     driver = None
@@ -619,6 +623,10 @@ def main():
     print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (CANAL + GRUPO COM LOGO)")
     print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 70)
+    
+    # DEBUG - Mostra os IDs dos chats
+    print(f"🔍 CANAL_ID: '{CANAL_ID}'")
+    print(f"🔍 GRUPO_COMENTARIOS_ID: '{GRUPO_COMENTARIOS_ID}'")
     
     history = load_history()
     seen_ids = set(history.get("ids", []))
