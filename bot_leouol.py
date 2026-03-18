@@ -1,13 +1,14 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO ULTRA ROBUSTA - Com fallback progressivo
-# Canal + thread de comentários no Telegram
+# Versão focada em robustez, velocidade e debug
 # ------------------------------
 
 import json
 import os
 import random
 import re
+import shutil
+import subprocess
 import time
 import unicodedata
 from datetime import datetime
@@ -25,82 +26,83 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-# ==============================================
-# FIX: Forçar versão compatível do ChromeDriver
-# ==============================================
-import subprocess
-try:
-    # Tenta diferentes nomes para o Chrome (ubuntu pode ser google-chrome-stable)
-    chrome_cmds = ['google-chrome', 'google-chrome-stable', 'chrome', 'chromium-browser']
-    chrome_version = None
-    
-    for cmd in chrome_cmds:
-        try:
-            chrome_version_output = subprocess.check_output([cmd, '--version'], stderr=subprocess.DEVNULL).decode().strip()
-            chrome_version = re.search(r'(\d+)\.', chrome_version_output).group(1)
-            print(f"✅ Chrome detectado: {cmd} versão {chrome_version}")
-            break
-        except:
-            continue
-    
-    if chrome_version:
-        os.environ['CHROME_VERSION'] = chrome_version
-    else:
-        os.environ['CHROME_VERSION'] = '145'
-        print("⚠️ Usando fallback para Chrome versão 145")
-except Exception as e:
-    os.environ['CHROME_VERSION'] = '145'
-    print(f"⚠️ Erro ao detectar Chrome: {e}. Usando fallback 145")
 
 # ==============================================
-# CONFIGURAÇÕES
+# CONFIG
 # ==============================================
-TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')
-GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-1003802235343')
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+CANAL_ID = os.environ.get("TELEGRAM_CHAT_ID")
+GRUPO_COMENTARIOS_ID = os.environ.get("GRUPO_COMENTARIO_ID", "-1003802235343")
 
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
 TMP_DIR = Path("/tmp")
+DEBUG_DIR = Path("debug")
 
 MAX_CAPTION_LENGTH = 1024
 MAX_COMMENT_LENGTH = 4096
 MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
 
-# Timeouts - aumentados para mais robustez
-LIST_WAIT_SECONDS = 30  # Aumentado de 18
-DETAIL_WAIT_SECONDS = 20  # Aumentado de 12
-PAGE_LOAD_TIMEOUT = 45  # Aumentado de 35
+LIST_WAIT_SECONDS = 15
+DETAIL_WAIT_SECONDS = 10
+PAGE_LOAD_TIMEOUT = 25
 
 USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
 ]
 
+
 # ==============================================
-# UTILITÁRIOS
+# LOG / DEBUG
 # ==============================================
 def log(msg: str) -> None:
     print(msg, flush=True)
 
-def human_like_delay(action="simple"):
-    """Delays que simulam comportamento humano real"""
-    if action == "scroll":
-        time.sleep(random.uniform(0.3, 0.8))
-    elif action == "click":
-        time.sleep(random.uniform(0.1, 0.3))
-    elif action == "read":
-        time.sleep(random.uniform(2.0, 4.0))
-    elif action == "page_load":
-        time.sleep(random.uniform(1.5, 3.0))
-    else:
-        time.sleep(random.uniform(0.5, 1.5))
 
+def ensure_debug_dir() -> None:
+    DEBUG_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def timestamp() -> str:
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+def save_debug_html(driver, name: str) -> None:
+    try:
+        ensure_debug_dir()
+        path = DEBUG_DIR / f"{timestamp()}_{name}.html"
+        path.write_text(driver.page_source, encoding="utf-8")
+        log(f"📝 HTML salvo em {path}")
+    except Exception as e:
+        log(f"⚠️ Falha ao salvar HTML de debug: {e}")
+
+
+def save_debug_screenshot(driver, name: str) -> None:
+    try:
+        ensure_debug_dir()
+        path = DEBUG_DIR / f"{timestamp()}_{name}.png"
+        driver.save_screenshot(str(path))
+        log(f"📸 Screenshot salva em {path}")
+    except Exception as e:
+        log(f"⚠️ Falha ao salvar screenshot: {e}")
+
+
+def save_debug_text(name: str, text: str) -> None:
+    try:
+        ensure_debug_dir()
+        path = DEBUG_DIR / f"{timestamp()}_{name}.txt"
+        path.write_text(text, encoding="utf-8")
+        log(f"📝 Texto salvo em {path}")
+    except Exception as e:
+        log(f"⚠️ Falha ao salvar texto de debug: {e}")
+
+
+# ==============================================
+# UTIL
+# ==============================================
 def ensure_env() -> None:
     missing = []
     if not TELEGRAM_TOKEN:
@@ -108,7 +110,12 @@ def ensure_env() -> None:
     if not CANAL_ID:
         missing.append("TELEGRAM_CHAT_ID")
     if missing:
-        raise RuntimeError(f"Variáveis de ambiente ausentes: {', '.join(missing)}")
+        raise RuntimeError(f"Variáveis ausentes: {', '.join(missing)}")
+
+
+def human_delay(min_s: float = 0.7, max_s: float = 1.6) -> None:
+    time.sleep(random.uniform(min_s, max_s))
+
 
 def build_http_session() -> requests.Session:
     session = requests.Session()
@@ -116,37 +123,33 @@ def build_http_session() -> requests.Session:
         total=3,
         connect=3,
         read=3,
-        backoff_factor=1.2,
+        backoff_factor=1.0,
         status_forcelist=[429, 500, 502, 503, 504],
         allowed_methods=["GET", "POST"],
+        raise_on_status=False,
     )
     adapter = HTTPAdapter(max_retries=retry, pool_connections=10, pool_maxsize=10)
     session.mount("http://", adapter)
     session.mount("https://", adapter)
-    session.headers.update({
-        "User-Agent": random.choice(USER_AGENTS),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Sec-Ch-Ua": '"Not_A Brand";v="8", "Chromium";v="124", "Google Chrome";v="124"',
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": '"Windows"',
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1",
-        "Upgrade-Insecure-Requests": "1",
-        "Connection": "keep-alive",
-    })
+    session.headers.update(
+        {
+            "User-Agent": USER_AGENTS[0],
+            "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+        }
+    )
     return session
 
+
 HTTP = build_http_session()
+
 
 def escape_html(text: Optional[str]) -> str:
     return escape(text or "", quote=False)
 
+
 def strip_html(text: str) -> str:
     return re.sub(r"<[^>]+>", "", text or "").strip()
+
 
 def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
     if len(text) <= max_len:
@@ -155,10 +158,12 @@ def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
         return suffix[:max_len]
     return text[: max_len - len(suffix)] + suffix
 
+
 def normalize_spaces(text: Optional[str]) -> str:
     if not text:
         return ""
     return re.sub(r"\s+", " ", text).strip()
+
 
 def normalize_link(link: str) -> str:
     try:
@@ -168,23 +173,46 @@ def normalize_link(link: str) -> str:
         path = unicodedata.normalize("NFKD", parsed.path).encode("ASCII", "ignore").decode("ASCII")
         path = re.sub(r"//+", "/", path)
         path = re.sub(r"[^a-zA-Z0-9/_\-.~:%]", "", path)
-        normalized = urlunparse((scheme, netloc, path.rstrip("/"), "", "", ""))
-        return normalized
+        return urlunparse((scheme, netloc, path.rstrip("/"), "", "", ""))
     except Exception:
         return link
+
+
+def get_chrome_major_version() -> int:
+    for binary in ["google-chrome", "google-chrome-stable", "chromium-browser", "chromium"]:
+        if shutil.which(binary):
+            try:
+                out = subprocess.check_output([binary, "--version"], text=True).strip()
+                match = re.search(r"(\d+)\.", out)
+                if match:
+                    version = int(match.group(1))
+                    log(f"✅ Chrome detectado: {binary} versão {version}")
+                    return version
+            except Exception:
+                continue
+    log("⚠️ Não foi possível detectar Chrome. Usando fallback 145.")
+    return 145
+
 
 def is_possible_block_page(driver) -> bool:
     try:
         title = (driver.title or "").lower()
         body = driver.find_element(By.TAG_NAME, "body").text.lower()
         signals = [
-            "cloudflare", "access denied", "forbidden", 
-            "attention required", "your connection is not private",
-            "verifique se você é humano", "captcha", "just a moment",
+            "cloudflare",
+            "access denied",
+            "forbidden",
+            "attention required",
+            "your connection is not private",
+            "verifique se você é humano",
+            "captcha",
+            "just a moment",
+            "temporarily blocked",
         ]
         return any(s in title or s in body for s in signals)
     except Exception:
         return False
+
 
 # ==============================================
 # HISTÓRICO
@@ -198,160 +226,85 @@ def load_history() -> Dict[str, List[str]]:
         ids = data.get("ids", [])
         if not isinstance(ids, list):
             return {"ids": []}
-        ids = [str(x) for x in ids][-MAX_HISTORY_SIZE:]
-        return {"ids": ids}
+        return {"ids": [str(x) for x in ids][-MAX_HISTORY_SIZE:]}
     except Exception as e:
         log(f"⚠️ Erro ao carregar histórico: {e}")
         return {"ids": []}
 
+
 def save_history(history: Dict[str, List[str]]) -> bool:
     try:
-        ids = history.get("ids", [])
-        ids = [str(x) for x in ids][-MAX_HISTORY_SIZE:]
-        temp_path = Path(f"{HISTORY_FILE}.tmp")
-        final_path = Path(HISTORY_FILE)
-        temp_path.write_text(
-            json.dumps({"ids": ids}, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-        temp_path.replace(final_path)
+        ids = [str(x) for x in history.get("ids", [])][-MAX_HISTORY_SIZE:]
+        tmp = Path(f"{HISTORY_FILE}.tmp")
+        final = Path(HISTORY_FILE)
+        tmp.write_text(json.dumps({"ids": ids}, ensure_ascii=False, indent=2), encoding="utf-8")
+        tmp.replace(final)
         log(f"✅ Histórico salvo: {len(ids)} IDs")
         return True
     except Exception as e:
         log(f"⚠️ Erro ao salvar histórico: {e}")
         return False
 
-# ==============================================
-# CHROME - COM MÚLTIPLOS NÍVEIS DE STEALTH
-# ==============================================
-def apply_stealth_js(driver):
-    """Aplica múltiplos patches JavaScript para esconder automação"""
-    try:
-        stealth_js = """
-        // Remove webdriver property
-        Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-        
-        // Adiciona plugins falsos
-        Object.defineProperty(navigator, 'plugins', {
-            get: () => [1, 2, 3, 4, 5]
-        });
-        
-        // Simular idiomas reais
-        Object.defineProperty(navigator, 'languages', {
-            get: () => ['pt-BR', 'pt', 'en-US', 'en']
-        });
-        
-        // Simular hardware real
-        window.chrome = { runtime: {} };
-        
-        // Sobrescrever permissoes
-        const originalQuery = window.navigator.permissions.query;
-        window.navigator.permissions.query = (parameters) => (
-            parameters.name === 'notifications' ?
-                Promise.resolve({ state: Notification.permission }) :
-                originalQuery(parameters)
-        );
-        
-        // Remover vestigios de automação
-        delete window.cdc_adoQpoasnfaaypNdKZ3E;
-        delete window.cdc_adoQpoasnfaaypNdKZ3F;
-        """
-        driver.execute_script(stealth_js)
-        log("  ✅ Patches stealth aplicados")
-    except Exception as e:
-        log(f"  ⚠️ Erro ao aplicar stealth JS: {e}")
 
-def setup_driver(stealth_level=1):
-    """
-    Configura driver com diferentes níveis de stealth
-    level 1: básico
-    level 2: médio (com stealth JS)
-    level 3: avançado (com todas as proteções)
-    """
+# ==============================================
+# DRIVER
+# ==============================================
+def setup_driver():
+    chrome_major = get_chrome_major_version()
+
     options = uc.ChromeOptions()
-    
-    # Opções básicas sempre presentes
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1366,768")
     options.add_argument("--lang=pt-BR")
-    
-    # Tamanho de janela variável (evita fingerprinting)
-    if stealth_level >= 2:
-        window_sizes = ["1920,1080", "1366,768", "1440,900", "1536,864"]
-        options.add_argument(f"--window-size={random.choice(window_sizes)}")
-    else:
-        options.add_argument("--window-size=1366,768")
-    
-    # User-Agent variável
-    options.add_argument(f"--user-agent={random.choice(USER_AGENTS)}")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
-    
-    # Stealth nível 2 e 3 - APENAS argumentos de linha de comando!
-    if stealth_level >= 2:
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        # REMOVA estas linhas que causam erro:
-        # options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        # options.add_experimental_option('useAutomationExtension', False)
-    
-    # Stealth nível 3 - argumentos extras
-    if stealth_level >= 3:
-        options.add_argument("--disable-web-security")
-        options.add_argument("--allow-running-insecure-content")
-        options.add_argument("--disable-features=VizDisplayCompositor")
-        options.add_argument("--disable-features=IsolateOrigins,site-per-process")
-        options.add_argument("--disable-site-isolation-trials")
-    
-    chrome_version = int(os.environ.get('CHROME_VERSION', '145'))
-    
-    try:
-        driver = uc.Chrome(
-            options=options, 
-            headless=True, 
-            version_main=chrome_version
-        )
-        driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
-        
-        # Aplica stealth JS para níveis 2 e 3 (isso substitui as experimental_options)
-        if stealth_level >= 2:
-            apply_stealth_js(driver)
-        
-        return driver
-    except Exception as e:
-        log(f"⚠️ Erro ao criar driver com stealth level {stealth_level}: {e}")
-        raise
+    options.add_argument(f"--user-agent={USER_AGENTS[0]}")
 
-def safe_get(driver, url: str, wait_after: Tuple[float, float] = (1.2, 2.2)) -> bool:
+    driver = uc.Chrome(
+        options=options,
+        headless=True,
+        version_main=chrome_major,
+    )
+    driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
+    return driver
+
+
+def safe_get(driver, url: str, label: str) -> bool:
     try:
         driver.get(url)
-        human_like_delay("page_load")
+        human_delay(1.0, 1.8)
         return True
     except Exception as e:
         log(f"⚠️ Erro ao abrir {url}: {e}")
+        save_debug_text(f"{label}_error", str(e))
+        try:
+            save_debug_screenshot(driver, f"{label}_nav_fail")
+            save_debug_html(driver, f"{label}_nav_fail")
+        except Exception:
+            pass
         return False
+
 
 # ==============================================
 # EXTRAÇÃO
 # ==============================================
 def extract_page_title(driver, fallback: str = "") -> str:
     try:
-        selectors = ["h1", ".titulo", "title"]
-        for selector in selectors:
-            try:
-                if selector == "title":
-                    text = normalize_spaces(driver.title)
-                else:
-                    elems = driver.find_elements(By.CSS_SELECTOR, selector)
-                    text = normalize_spaces(elems[0].text) if elems else ""
+        for selector in ["h1", ".titulo"]:
+            elems = driver.find_elements(By.CSS_SELECTOR, selector)
+            if elems:
+                text = normalize_spaces(elems[0].text)
                 if text:
-                    text = re.sub(r"\s*[–—-]\s*Clube UOL\s*$", "", text, flags=re.IGNORECASE)
-                    return text
-            except Exception:
-                continue
+                    return re.sub(r"\s*[–—-]\s*Clube UOL\s*$", "", text, flags=re.IGNORECASE)
+        title = normalize_spaces(driver.title)
+        if title:
+            return re.sub(r"\s*[–—-]\s*Clube UOL\s*$", "", title, flags=re.IGNORECASE)
     except Exception:
         pass
     return fallback
+
 
 def extract_validity(driver) -> Optional[str]:
     try:
@@ -363,29 +316,21 @@ def extract_validity(driver) -> Optional[str]:
             r"[Pp]romoção válida[^.!?\n]*[.!?]?",
             r"[Cc]upom válido[^.!?\n]*[.!?]?",
             r"[Dd]esconto válido[^.!?\n]*[.!?]?",
-            r"[Vv]álido de[^.!?\n]*[.!?]?",
-            r"[Vv]álido para compras[^.!?\n]*[.!?]?",
-            r"[Vv]álido até \d{1,2}/\d{1,2}/\d{2,4}",
-            r"[Vv]álido de \d{1,2}/\d{1,2}/\d{2,4}",
         ]
         for pattern in patterns:
             match = re.search(pattern, body)
             if match:
                 return normalize_spaces(match.group(0))
-        keywords = ["válido", "validade", "até", "válida"]
-        for p in driver.find_elements(By.TAG_NAME, "p"):
-            text = normalize_spaces(p.text)
-            if text and len(text) < 220 and any(k in text.lower() for k in keywords):
-                return text
     except Exception as e:
-        log(f"  ⚠️ Erro ao extrair validade: {e}")
+        log(f"⚠️ Erro ao extrair validade: {e}")
     return None
+
 
 def extract_full_description(driver) -> str:
     try:
         parts = []
         seen = set()
-        
+
         def add_block(prefix: str, text: str) -> None:
             clean = normalize_spaces(text)
             if not clean:
@@ -395,67 +340,60 @@ def extract_full_description(driver) -> str:
                 return
             seen.add(key)
             parts.append(f"{prefix}\n{escape_html(clean)}")
-        
-        partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner"]
-        for selector in partner_selectors:
-            for elem in driver.find_elements(By.CSS_SELECTOR, selector):
+
+        for selector in [".partner-description", "[class*='parceiro'] p", ".about-partner"]:
+            elems = driver.find_elements(By.CSS_SELECTOR, selector)
+            for elem in elems:
                 text = elem.text.strip()
                 if len(text) > 20:
                     add_block("🏢 <b>Sobre o parceiro:</b>", text)
                     break
             if parts:
                 break
-        
-        benefit_selectors = [".benefit-description", "[class*='beneficio'] p", ".offer-description"]
-        for selector in benefit_selectors:
-            for elem in driver.find_elements(By.CSS_SELECTOR, selector):
+
+        for selector in [".benefit-description", "[class*='beneficio'] p", ".offer-description"]:
+            elems = driver.find_elements(By.CSS_SELECTOR, selector)
+            for elem in elems:
                 text = elem.text.strip()
                 if len(text) > 15:
                     add_block("🎁 <b>Benefício:</b>", text)
                     break
-        
+
         validity = extract_validity(driver)
         if validity:
             add_block("⏳ <b>Validade:</b>", validity)
-        
-        for elem in driver.find_elements(By.CSS_SELECTOR, ".rules, [class*='regras'], .terms, li"):
-            text = normalize_spaces(elem.text)
-            if not text:
-                continue
-            low = text.lower()
-            if ("regra" in low or "não é válido" in low or "nao e valido" in low or "exceto" in low) and len(text) > 15:
-                add_block("📋 <b>Regra:</b>", text)
-        
+
         if len(parts) < 2:
             for p in driver.find_elements(By.TAG_NAME, "p")[:10]:
                 text = normalize_spaces(p.text)
                 if text and len(text) > 30 and "clube uol" not in text.lower():
                     add_block("📝 <b>Detalhes:</b>", text)
-        
+
         result = "\n\n".join(parts).strip()
         if not result:
             return "Descrição detalhada não disponível."
-        
+
         return truncate_text(
             result,
             MAX_COMMENT_LENGTH - 180,
             "...\n\n<i>Descrição truncada devido ao limite do Telegram</i>",
         )
     except Exception as e:
-        log(f"  ⚠️ Erro ao extrair descrição completa: {e}")
+        log(f"⚠️ Erro ao extrair descrição completa: {e}")
         return "Descrição detalhada não disponível."
 
+
 # ==============================================
-# DOWNLOAD DE IMAGEM
+# IMAGEM / CAPTION
 # ==============================================
 def download_image(img_url: str) -> Optional[str]:
     try:
         headers = {
-            "User-Agent": random.choice(USER_AGENTS),
+            "User-Agent": USER_AGENTS[0],
             "Referer": "https://clube.uol.com.br/",
             "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
         }
-        response = HTTP.get(img_url, headers=headers, timeout=20)
+        response = HTTP.get(img_url, headers=headers, timeout=15)
         if response.ok and response.content:
             TMP_DIR.mkdir(parents=True, exist_ok=True)
             temp_path = TMP_DIR / f"leouol_{random.randint(1000, 9999)}.jpg"
@@ -465,32 +403,26 @@ def download_image(img_url: str) -> Optional[str]:
         log(f"⚠️ Erro ao baixar imagem: {e}")
     return None
 
+
 def build_caption(page_title: str, validity: Optional[str], link: str) -> Optional[str]:
     page_title = normalize_spaces(page_title)
     if not page_title:
         return None
-    
+
     parts = [f"<b>{escape_html(page_title)}</b>"]
-    
     if validity and len(validity) > 5:
-        validity_clean = re.sub(
-            r"^(benef[ií]cio\s+v[aá]lido\s*:\s*)",
-            "",
-            validity,
-            flags=re.IGNORECASE,
-        )
-        parts.append(f"📅 {escape_html(normalize_spaces(validity_clean))}")
-    
+        parts.append(f"📅 {escape_html(normalize_spaces(validity))}")
     parts.append(f"🔗 <a href='{escape_html(link)}'>Acessar oferta</a>")
-    
+
     caption = "\n\n".join(parts)
     if len(caption) <= MAX_CAPTION_LENGTH:
         return caption
-    
+
     link_block = f"🔗 <a href='{escape_html(link)}'>Acessar oferta</a>"
     room = MAX_CAPTION_LENGTH - len(link_block) - 4
     short_title = truncate_text(f"<b>{escape_html(page_title)}</b>", max(room, 20))
     return f"{short_title}\n\n{link_block}"
+
 
 # ==============================================
 # TELEGRAM
@@ -504,8 +436,9 @@ def telegram_api(method: str, data=None, files=None, timeout: int = 30) -> Optio
             log(f"⚠️ Telegram {method} falhou: {payload}")
         return payload
     except Exception as e:
-        log(f"⚠️ Erro de requisição Telegram ({method}): {e}")
+        log(f"⚠️ Erro Telegram ({method}): {e}")
         return None
+
 
 def get_updates(offset: Optional[int] = None) -> List[dict]:
     params = {"timeout": 0}
@@ -516,85 +449,67 @@ def get_updates(offset: Optional[int] = None) -> List[dict]:
         return payload.get("result", [])
     return []
 
+
 def clear_telegram_updates() -> None:
     try:
         updates = get_updates()
-        if not updates:
-            return
-        last_id = updates[-1]["update_id"]
-        telegram_api("getUpdates", data={"offset": last_id + 1}, timeout=10)
+        if updates:
+            last_id = updates[-1]["update_id"]
+            telegram_api("getUpdates", data={"offset": last_id + 1}, timeout=10)
     except Exception:
         pass
 
+
 def send_description_comment(full_description: str, link: str, channel_message_id: int) -> bool:
-    log("  ⏳ Aguardando thread do grupo...")
-    
+    log("⏳ Aguardando thread do grupo...")
     group_message_id = None
     offset = None
-    
-    for _ in range(8):
+
+    for _ in range(6):
         time.sleep(3)
         updates = get_updates(offset=offset)
         if updates:
             offset = updates[-1]["update_id"] + 1
-        
+
         for update in updates:
             msg = update.get("message", {})
             chat_id = str(msg.get("chat", {}).get("id"))
-            
+
             if chat_id != str(GRUPO_COMENTARIOS_ID):
                 continue
-            
+
             if msg.get("is_automatic_forward"):
-                forward_origin = msg.get("forward_origin", {})
-                if isinstance(forward_origin, dict):
-                    origin_message_id = forward_origin.get("message_id")
-                else:
-                    origin_message_id = None
-                
+                forward_origin = msg.get("forward_origin", {}) or {}
+                origin_message_id = forward_origin.get("message_id")
                 forward_from_msg_id = msg.get("forward_from_message_id")
-                
+
                 if origin_message_id == channel_message_id or forward_from_msg_id == channel_message_id:
                     group_message_id = msg.get("message_id")
                     break
-            
-            if not group_message_id:
-                entities = msg.get("entities", [])
-                for entity in entities:
-                    if entity.get("type") == "text_link" and str(channel_message_id) in entity.get("url", ""):
-                        group_message_id = msg.get("message_id")
-                        break
-        
+
         if group_message_id:
             break
-    
-    if group_message_id:
-        log(f"  ✅ Thread encontrada no grupo (ID: {group_message_id})")
-    else:
-        log("  ⚠️ Thread não encontrada a tempo. Comentário será enviado sem reply.")
-    
+
     comment_text = (
         "📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
         f"{full_description}\n\n"
         f"🔗 <a href='{escape_html(link)}'>Link original</a>"
     )
-    
+
     data = {
         "chat_id": GRUPO_COMENTARIOS_ID,
         "text": truncate_text(comment_text, MAX_COMMENT_LENGTH),
         "parse_mode": "HTML",
         "disable_web_page_preview": True,
     }
-    
+
     if group_message_id:
         data["reply_parameters"] = json.dumps({"message_id": group_message_id})
-    
+
     payload = telegram_api("sendMessage", data=data, timeout=35)
     if payload and payload.get("ok"):
-        log("  ✅ Comentário enviado com sucesso!")
         return True
-    
-    log("  ⚠️ Tentando fallback sem HTML...")
+
     fallback_data = {
         "chat_id": GRUPO_COMENTARIOS_ID,
         "text": truncate_text(strip_html(comment_text), MAX_COMMENT_LENGTH),
@@ -602,14 +517,15 @@ def send_description_comment(full_description: str, link: str, channel_message_i
     }
     if group_message_id:
         fallback_data["reply_parameters"] = json.dumps({"message_id": group_message_id})
-    
+
     payload = telegram_api("sendMessage", data=fallback_data, timeout=35)
     return bool(payload and payload.get("ok"))
+
 
 def send_offer_with_details(img_path: str, main_caption: str, full_description: str, link: str) -> bool:
     try:
         clear_telegram_updates()
-        
+
         with open(img_path, "rb") as photo:
             payload = telegram_api(
                 "sendPhoto",
@@ -621,9 +537,9 @@ def send_offer_with_details(img_path: str, main_caption: str, full_description: 
                 files={"photo": photo},
                 timeout=40,
             )
-        
+
         if not payload or not payload.get("ok"):
-            log("❌ Falha ao enviar foto para o canal. Tentando enviar só texto...")
+            log("❌ Falha ao enviar foto. Tentando só texto...")
             text_payload = telegram_api(
                 "sendMessage",
                 data={
@@ -638,16 +554,17 @@ def send_offer_with_details(img_path: str, main_caption: str, full_description: 
             message_id = text_payload["result"]["message_id"]
         else:
             message_id = payload["result"]["message_id"]
-        
+
         log(f"✅ Oferta enviada ao canal (ID: {message_id})")
         return send_description_comment(full_description, link, message_id)
-    
+
     except Exception as e:
         log(f"❌ Erro geral no envio: {e}")
         return False
 
+
 # ==============================================
-# BUSCA DE OFERTAS
+# OFERTAS
 # ==============================================
 def extract_offer_image(container) -> Optional[str]:
     try:
@@ -659,7 +576,7 @@ def extract_offer_image(container) -> Optional[str]:
                 if img_url.startswith("//"):
                     return "https:" + img_url
                 return img_url
-        
+
         for selector in ["img[data-src]", "img[src]"]:
             imgs = container.find_elements(By.CSS_SELECTOR, selector)
             for img in imgs:
@@ -672,112 +589,122 @@ def extract_offer_image(container) -> Optional[str]:
         pass
     return None
 
+
 def fetch_offers(driver) -> List[Dict[str, str]]:
+    log("🌐 Abrindo listagem de ofertas...")
+    if not safe_get(driver, TARGET_URL, "listagem"):
+        return []
+
     try:
-        log("🌐 Abrindo listagem de ofertas...")
-        if not safe_get(driver, TARGET_URL):
-            return []
-        
+        WebDriverWait(driver, LIST_WAIT_SECONDS).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
+        )
+    except TimeoutException:
+        log("⚠️ Listagem não carregou a tempo.")
+        save_debug_screenshot(driver, "listagem_timeout")
+        save_debug_html(driver, "listagem_timeout")
+
         try:
-            WebDriverWait(driver, LIST_WAIT_SECONDS).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
-            )
-        except TimeoutException:
-            log("⚠️ Listagem não carregou a tempo.")
-            return []
-        
-        if is_possible_block_page(driver):
-            log("⚠️ Página parece ter retornado bloqueio/challenge.")
-            return []
-        
-        for _ in range(3):
-            driver.execute_script("window.scrollBy(0, 400);")
-            human_like_delay("scroll")
-        
-        containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
-        if not containers:
-            return []
-        
-        offers = []
-        seen_run_ids = set()
-        
-        for container in containers[:MAX_OFFERS_PER_RUN * 2]:
-            try:
-                preview_title = ""
-                for selector in [".titulo", "h2", "h3", "p"]:
-                    elems = container.find_elements(By.CSS_SELECTOR, selector)
-                    if elems:
-                        preview_title = normalize_spaces(elems[0].text)
-                        if preview_title:
-                            break
-                
-                if not preview_title:
-                    continue
-                
-                a_elems = container.find_elements(By.CSS_SELECTOR, "a[href]")
-                if not a_elems:
-                    continue
-                
-                link = a_elems[0].get_attribute("href")
-                if not link:
-                    continue
-                
-                offer_id = normalize_link(link)
-                if offer_id in seen_run_ids:
-                    continue
-                seen_run_ids.add(offer_id)
-                
-                img_url = extract_offer_image(container)
-                
-                offers.append({
+            title = driver.title or ""
+            body_text = driver.find_element(By.TAG_NAME, "body").text[:4000]
+            save_debug_text("listagem_timeout_info", f"TITLE:\n{title}\n\nBODY:\n{body_text}")
+        except Exception:
+            pass
+
+        return []
+
+    if is_possible_block_page(driver):
+        log("⚠️ Página parece bloqueio/challenge.")
+        save_debug_screenshot(driver, "listagem_block")
+        save_debug_html(driver, "listagem_block")
+        return []
+
+    driver.execute_script("window.scrollBy(0, 500);")
+    human_delay(0.6, 1.2)
+    driver.execute_script("window.scrollBy(0, 500);")
+    human_delay(0.6, 1.2)
+
+    containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
+    if not containers:
+        save_debug_screenshot(driver, "listagem_sem_cards")
+        save_debug_html(driver, "listagem_sem_cards")
+        return []
+
+    offers = []
+    seen_run_ids = set()
+
+    for container in containers[: MAX_OFFERS_PER_RUN * 2]:
+        try:
+            preview_title = ""
+            for selector in [".titulo", "h2", "h3", "p"]:
+                elems = container.find_elements(By.CSS_SELECTOR, selector)
+                if elems:
+                    preview_title = normalize_spaces(elems[0].text)
+                    if preview_title:
+                        break
+
+            if not preview_title:
+                continue
+
+            a_elems = container.find_elements(By.CSS_SELECTOR, "a[href]")
+            if not a_elems:
+                continue
+
+            link = a_elems[0].get_attribute("href")
+            if not link:
+                continue
+
+            offer_id = normalize_link(link)
+            if offer_id in seen_run_ids:
+                continue
+            seen_run_ids.add(offer_id)
+
+            img_url = extract_offer_image(container)
+
+            offers.append(
+                {
                     "id": offer_id,
                     "preview_title": preview_title,
                     "link": link,
                     "imagem_url": img_url or "",
-                })
-            except Exception:
-                continue
-        
-        return offers[:MAX_OFFERS_PER_RUN]
-    except Exception as e:
-        log(f"❌ Erro geral ao buscar ofertas: {e}")
-        return []
-
-# ==============================================
-# PROCESSAMENTO DE OFERTA
-# ==============================================
-def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], str]:
-    log(f"\n🔍 Acessando página: {offer['preview_title'][:60]}...")
-    
-    try:
-        if not safe_get(driver, offer["link"], wait_after=(1.0, 2.0)):
-            return offer["preview_title"], None, "Descrição não disponível devido a erro de navegação."
-        
-        human_like_delay("read")
-        
-        try:
-            WebDriverWait(driver, DETAIL_WAIT_SECONDS).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "h1, p, .partner-description, .benefit-description"))
+                }
             )
-        except TimeoutException:
-            pass
-        
-        if is_possible_block_page(driver):
-            log("  ⚠️ Página de detalhe parece ser challenge/bloqueio.")
-            return offer["preview_title"], None, "Descrição não disponível."
-        
-        page_title = extract_page_title(driver, fallback=offer["preview_title"])
-        validity = extract_validity(driver)
-        full_description = extract_full_description(driver)
-        
-        return page_title, validity, full_description
-    
-    except Exception as e:
-        log(f"  ⚠️ Erro ao processar oferta: {e}")
-        return offer["preview_title"], None, "Descrição não disponível devido a erro."
+        except Exception:
+            continue
+
+    return offers[:MAX_OFFERS_PER_RUN]
+
+
+def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], str]:
+    log(f"🔍 Acessando página: {offer['preview_title'][:60]}...")
+
+    if not safe_get(driver, offer["link"], "detalhe"):
+        return offer["preview_title"], None, "Descrição não disponível devido a erro de navegação."
+
+    human_delay(0.8, 1.6)
+
+    try:
+        WebDriverWait(driver, DETAIL_WAIT_SECONDS).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "h1, p, .partner-description, .benefit-description"))
+        )
+    except TimeoutException:
+        save_debug_screenshot(driver, "detalhe_timeout")
+        save_debug_html(driver, "detalhe_timeout")
+
+    if is_possible_block_page(driver):
+        save_debug_screenshot(driver, "detalhe_block")
+        save_debug_html(driver, "detalhe_block")
+        return offer["preview_title"], None, "Descrição não disponível."
+
+    page_title = extract_page_title(driver, fallback=offer["preview_title"])
+    validity = extract_validity(driver)
+    full_description = extract_full_description(driver)
+
+    return page_title, validity, full_description
+
 
 # ==============================================
-# FUNÇÃO PRINCIPAL - COM FALLBACK PROGRESSIVO E LIMPEZA FINAL
+# MAIN
 # ==============================================
 def main():
     log("=" * 72)
@@ -785,122 +712,103 @@ def main():
     log("📢 Canal + thread de comentários")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 72)
-    
+
     ensure_env()
-    
+    ensure_debug_dir()
+
     history = load_history()
     seen_ids = set(history.get("ids", []))
-    
+
     driver = None
-    offers = []
-    
+
     try:
-        # Tenta com níveis progressivos de stealth
-        for stealth_level in [1, 2, 3]:
-            try:
-                log(f"\n🛡️ Tentando com stealth level {stealth_level}...")
-                
-                if driver:
-                    try:
-                        driver.quit()
-                    except:
-                        pass
-                
-                driver = setup_driver(stealth_level=stealth_level)
-                
-                max_attempts = 3
-                for attempt in range(1, max_attempts + 1):
-                    log(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
-                    offers = fetch_offers(driver)
-                    if offers:
-                        break
-                    if attempt < max_attempts:
-                        wait_time = random.randint(15, 30)
-                        log(f"⏳ Aguardando {wait_time}s antes da próxima tentativa...")
-                        time.sleep(wait_time)
-                
-                if offers:
-                    log(f"✅ Stealth level {stealth_level} funcionou!")
-                    break
-                else:
-                    log(f"⚠️ Stealth level {stealth_level} não encontrou ofertas, tentando próximo nível...")
-                    
-            except Exception as e:
-                log(f"⚠️ Erro com stealth level {stealth_level}: {e}")
-                continue
-        
+        driver = setup_driver()
+
+        offers = []
+        for attempt in range(1, 3 + 1):
+            log(f"\n🔄 Tentativa {attempt}/3 de buscar ofertas...")
+            offers = fetch_offers(driver)
+            if offers:
+                break
+            if attempt < 3:
+                wait_time = random.randint(8, 15)
+                log(f"⏳ Aguardando {wait_time}s antes da próxima tentativa...")
+                time.sleep(wait_time)
+
         if not offers:
-            log("\n📭 Nenhuma oferta encontrada após todas as tentativas.")
+            log("\n📭 Nenhuma oferta encontrada.")
             return
-        
+
         new_offers = [o for o in offers if o["id"] not in seen_ids]
         if not new_offers:
             log("\n📭 Nenhuma oferta nova.")
             return
-        
-        log(f"\n🎉 {len(new_offers)} nova(s) oferta(s) encontrada(s)!")
-        
+
+        log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
+
         processed_ids = set(seen_ids)
         success_count = 0
-        
+
         for idx, offer in enumerate(new_offers, start=1):
             log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}\n{'=' * 50}")
-            
+
             try:
                 if not offer.get("imagem_url"):
                     log("⚠️ Oferta sem imagem. Marcando como vista.")
                     processed_ids.add(offer["id"])
                     continue
-                
+
                 img_path = download_image(offer["imagem_url"])
                 if not img_path:
-                    log("⚠️ Não foi possível baixar a imagem. Marcando como vista.")
+                    log("⚠️ Não foi possível baixar imagem. Marcando como vista.")
                     processed_ids.add(offer["id"])
                     continue
-                
+
                 page_title, validity, full_description = process_offer(driver, offer)
                 main_caption = build_caption(page_title, validity, offer["link"])
-                
+
                 if not main_caption:
-                    log("⚠️ Caption inválida. Marcando como vista.")
-                    processed_ids.add(offer["id"])
                     Path(img_path).unlink(missing_ok=True)
+                    processed_ids.add(offer["id"])
                     continue
-                
-                log("\n📤 Enviando oferta e comentário...")
+
+                log("📤 Enviando oferta e comentário...")
                 ok = send_offer_with_details(img_path, main_caption, full_description, offer["link"])
                 if ok:
                     success_count += 1
                     log("✅ Oferta publicada com sucesso.")
                 else:
                     log("⚠️ Falha no envio da oferta.")
-                
+
                 processed_ids.add(offer["id"])
                 Path(img_path).unlink(missing_ok=True)
-                
+
                 if idx < len(new_offers):
-                    time.sleep(random.uniform(3, 6))
-            
+                    human_delay(1.5, 3.0)
+
             except Exception as e:
                 log(f"⚠️ Erro inesperado nesta oferta: {e}")
                 processed_ids.add(offer["id"])
-        
+
         history["ids"] = list(processed_ids)[-MAX_HISTORY_SIZE:]
         save_history(history)
-        
+
         log(f"\n🏁 Finalizado. Sucessos: {success_count}/{len(new_offers)}")
-    
+
+    except WebDriverException as e:
+        log(f"❌ Erro do Chrome/WebDriver: {e}")
+        save_debug_text("webdriver_error", str(e))
     except Exception as e:
         log(f"❌ Erro geral: {e}")
-    
+        save_debug_text("general_error", str(e))
     finally:
-        # 🧹 LIMPEZA FINAL - ESSENCIAL PARA NÃO VAZAR MEMÓRIA!
         if driver:
             try:
                 driver.quit()
-                log("🧹 Driver encerrado e memória liberada.")
+                log("🧹 Driver encerrado.")
             except Exception as e:
                 log(f"⚠️ Erro ao fechar driver: {e}")
+
 
 if __name__ == "__main__":
     main()
