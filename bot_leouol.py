@@ -30,7 +30,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 # ==============================================
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')
-GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-3802235343')
+GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-1003802235343')
 
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
