@@ -13,7 +13,11 @@ jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    # para manter no GitHub-hosted, deixe assim
+    # se for migrar para self-hosted, troque por:
+    # runs-on: [self-hosted, linux, x64]
+
+    timeout-minutes: 6
 
     permissions:
       contents: write
@@ -64,7 +68,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          pip install requests selenium webdriver-manager undetected-chromedriver
+          pip install -r requirements.txt
 
       - name: 🤖 Executar BOT LEOUOL
         env:
@@ -76,6 +80,7 @@ jobs:
           python bot_leouol.py
 
       - name: 💾 Salvar histórico no repositório
+        if: always()
         shell: bash
         run: |
           git config --global user.email "bot@leouol.com"
@@ -96,14 +101,14 @@ jobs:
           git commit -m "🤖 Atualiza histórico do bot [skip ci]"
           git push
           echo "✅ Histórico salvo no repositório!"
-          git show --stat --oneline HEAD
 
-      - name: 📎 Upload de logs de falha
-        if: failure()
+      - name: 📎 Upload de debug
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: bot-leouol-debug-${{ github.run_id }}
           path: |
+            debug/**
             historico_leouol.json
             /tmp/leouol_*.jpg
           if-no-files-found: ignore
