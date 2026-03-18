@@ -107,8 +107,8 @@ def setup_driver():
     options.add_argument(f"user-agent={user_agent}")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     
-    # Inicia o undetected_chromedriver
-    driver = uc.Chrome(options=options, version_main=None)
+    # 🔥 Removeu version_main=None - agora detecta automaticamente!
+    driver = uc.Chrome(options=options)
     
     return driver
 
