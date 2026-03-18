@@ -30,13 +30,27 @@ from selenium.webdriver.support.ui import WebDriverWait
 # ==============================================
 import subprocess
 try:
-    chrome_version_output = subprocess.check_output(['google-chrome', '--version']).decode().strip()
-    chrome_version = re.search(r'(\d+)\.', chrome_version_output).group(1)
-    os.environ['CHROME_VERSION'] = chrome_version
-    print(f"✅ Chrome detectado: versão {chrome_version}")
-except:
+    # Tenta diferentes nomes para o Chrome (ubuntu pode ser google-chrome-stable)
+    chrome_cmds = ['google-chrome', 'google-chrome-stable', 'chrome', 'chromium-browser']
+    chrome_version = None
+    
+    for cmd in chrome_cmds:
+        try:
+            chrome_version_output = subprocess.check_output([cmd, '--version'], stderr=subprocess.DEVNULL).decode().strip()
+            chrome_version = re.search(r'(\d+)\.', chrome_version_output).group(1)
+            print(f"✅ Chrome detectado: {cmd} versão {chrome_version}")
+            break
+        except:
+            continue
+    
+    if chrome_version:
+        os.environ['CHROME_VERSION'] = chrome_version
+    else:
+        os.environ['CHROME_VERSION'] = '145'
+        print("⚠️ Usando fallback para Chrome versão 145")
+except Exception as e:
     os.environ['CHROME_VERSION'] = '145'
-    print("⚠️ Usando fallback para Chrome versão 145")
+    print(f"⚠️ Erro ao detectar Chrome: {e}. Usando fallback 145")
 
 # ==============================================
 # CONFIGURAÇÕES
@@ -64,8 +78,8 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0",  # Firefox
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",  # Firefox
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",
 ]
 
 # ==============================================
@@ -517,7 +531,7 @@ def send_description_comment(full_description: str, link: str, channel_message_i
     group_message_id = None
     offset = None
     
-    for _ in range(8):  # Aumentado de 6 para 8 tentativas
+    for _ in range(8):
         time.sleep(3)
         updates = get_updates(offset=offset)
         if updates:
@@ -663,7 +677,6 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
         if not safe_get(driver, TARGET_URL):
             return []
         
-        # Aguarda com timeout aumentado
         try:
             WebDriverWait(driver, LIST_WAIT_SECONDS).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div.beneficio"))
@@ -676,7 +689,6 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
             log("⚠️ Página parece ter retornado bloqueio/challenge.")
             return []
         
-        # Scroll mais natural
         for _ in range(3):
             driver.execute_script("window.scrollBy(0, 400);")
             human_like_delay("scroll")
@@ -740,7 +752,6 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         if not safe_get(driver, offer["link"], wait_after=(1.0, 2.0)):
             return offer["preview_title"], None, "Descrição não disponível devido a erro de navegação."
         
-        # Delay após carregar
         human_like_delay("read")
         
         try:
@@ -765,7 +776,7 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         return offer["preview_title"], None, "Descrição não disponível devido a erro."
 
 # ==============================================
-# FUNÇÃO PRINCIPAL - COM FALLBACK PROGRESSIVO
+# FUNÇÃO PRINCIPAL - COM FALLBACK PROGRESSIVO E LIMPEZA FINAL
 # ==============================================
 def main():
     log("=" * 72)
@@ -782,99 +793,113 @@ def main():
     driver = None
     offers = []
     
-    # Tenta com níveis progressivos de stealth
-    for stealth_level in [1, 2, 3]:
-        try:
-            log(f"\n🛡️ Tentando com stealth level {stealth_level}...")
-            
-            if driver:
-                try:
-                    driver.quit()
-                except:
-                    pass
-            
-            driver = setup_driver(stealth_level=stealth_level)
-            
-            max_attempts = 3
-            for attempt in range(1, max_attempts + 1):
-                log(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
-                offers = fetch_offers(driver)
-                if offers:
-                    break
-                if attempt < max_attempts:
-                    wait_time = random.randint(15, 30)
-                    log(f"⏳ Aguardando {wait_time}s antes da próxima tentativa...")
-                    time.sleep(wait_time)
-            
-            if offers:
-                break
-            else:
-                log(f"⚠️ Stealth level {stealth_level} não funcionou, tentando próximo nível...")
+    try:
+        # Tenta com níveis progressivos de stealth
+        for stealth_level in [1, 2, 3]:
+            try:
+                log(f"\n🛡️ Tentando com stealth level {stealth_level}...")
                 
-        except Exception as e:
-            log(f"⚠️ Erro com stealth level {stealth_level}: {e}")
-            continue
-    
-    if not offers:
-        log("\n📭 Nenhuma oferta encontrada após todas as tentativas.")
-        return
-    
-    new_offers = [o for o in offers if o["id"] not in seen_ids]
-    if not new_offers:
-        log("\n📭 Nenhuma oferta nova.")
-        return
-    
-    log(f"\n🎉 {len(new_offers)} nova(s) oferta(s) encontrada(s)!")
-    
-    processed_ids = set(seen_ids)
-    success_count = 0
-    
-    for idx, offer in enumerate(new_offers, start=1):
-        log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}\n{'=' * 50}")
+                if driver:
+                    try:
+                        driver.quit()
+                    except:
+                        pass
+                
+                driver = setup_driver(stealth_level=stealth_level)
+                
+                max_attempts = 3
+                for attempt in range(1, max_attempts + 1):
+                    log(f"\n🔄 Tentativa {attempt}/{max_attempts} de buscar ofertas...")
+                    offers = fetch_offers(driver)
+                    if offers:
+                        break
+                    if attempt < max_attempts:
+                        wait_time = random.randint(15, 30)
+                        log(f"⏳ Aguardando {wait_time}s antes da próxima tentativa...")
+                        time.sleep(wait_time)
+                
+                if offers:
+                    log(f"✅ Stealth level {stealth_level} funcionou!")
+                    break
+                else:
+                    log(f"⚠️ Stealth level {stealth_level} não encontrou ofertas, tentando próximo nível...")
+                    
+            except Exception as e:
+                log(f"⚠️ Erro com stealth level {stealth_level}: {e}")
+                continue
         
-        try:
-            if not offer.get("imagem_url"):
-                log("⚠️ Oferta sem imagem. Marcando como vista.")
-                processed_ids.add(offer["id"])
-                continue
+        if not offers:
+            log("\n📭 Nenhuma oferta encontrada após todas as tentativas.")
+            return
+        
+        new_offers = [o for o in offers if o["id"] not in seen_ids]
+        if not new_offers:
+            log("\n📭 Nenhuma oferta nova.")
+            return
+        
+        log(f"\n🎉 {len(new_offers)} nova(s) oferta(s) encontrada(s)!")
+        
+        processed_ids = set(seen_ids)
+        success_count = 0
+        
+        for idx, offer in enumerate(new_offers, start=1):
+            log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}\n{'=' * 50}")
             
-            img_path = download_image(offer["imagem_url"])
-            if not img_path:
-                log("⚠️ Não foi possível baixar a imagem. Marcando como vista.")
-                processed_ids.add(offer["id"])
-                continue
-            
-            page_title, validity, full_description = process_offer(driver, offer)
-            main_caption = build_caption(page_title, validity, offer["link"])
-            
-            if not main_caption:
-                log("⚠️ Caption inválida. Marcando como vista.")
+            try:
+                if not offer.get("imagem_url"):
+                    log("⚠️ Oferta sem imagem. Marcando como vista.")
+                    processed_ids.add(offer["id"])
+                    continue
+                
+                img_path = download_image(offer["imagem_url"])
+                if not img_path:
+                    log("⚠️ Não foi possível baixar a imagem. Marcando como vista.")
+                    processed_ids.add(offer["id"])
+                    continue
+                
+                page_title, validity, full_description = process_offer(driver, offer)
+                main_caption = build_caption(page_title, validity, offer["link"])
+                
+                if not main_caption:
+                    log("⚠️ Caption inválida. Marcando como vista.")
+                    processed_ids.add(offer["id"])
+                    Path(img_path).unlink(missing_ok=True)
+                    continue
+                
+                log("\n📤 Enviando oferta e comentário...")
+                ok = send_offer_with_details(img_path, main_caption, full_description, offer["link"])
+                if ok:
+                    success_count += 1
+                    log("✅ Oferta publicada com sucesso.")
+                else:
+                    log("⚠️ Falha no envio da oferta.")
+                
                 processed_ids.add(offer["id"])
                 Path(img_path).unlink(missing_ok=True)
-                continue
+                
+                if idx < len(new_offers):
+                    time.sleep(random.uniform(3, 6))
             
-            log("\n📤 Enviando oferta e comentário...")
-            ok = send_offer_with_details(img_path, main_caption, full_description, offer["link"])
-            if ok:
-                success_count += 1
-                log("✅ Oferta publicada com sucesso.")
-            else:
-                log("⚠️ Falha no envio da oferta.")
-            
-            processed_ids.add(offer["id"])
-            Path(img_path).unlink(missing_ok=True)
-            
-            if idx < len(new_offers):
-                time.sleep(random.uniform(3, 6))
+            except Exception as e:
+                log(f"⚠️ Erro inesperado nesta oferta: {e}")
+                processed_ids.add(offer["id"])
         
-        except Exception as e:
-            log(f"⚠️ Erro inesperado nesta oferta: {e}")
-            processed_ids.add(offer["id"])
+        history["ids"] = list(processed_ids)[-MAX_HISTORY_SIZE:]
+        save_history(history)
+        
+        log(f"\n🏁 Finalizado. Sucessos: {success_count}/{len(new_offers)}")
     
-    history["ids"] = list(processed_ids)[-MAX_HISTORY_SIZE:]
-    save_history(history)
+    except Exception as e:
+        log(f"❌ Erro geral: {e}")
     
-    log(f"\n🏁 Finalizado. Sucessos: {success_count}/{len(new_offers)}")
+    finally:
+        # 🧹 LIMPEZA FINAL - ESSENCIAL PARA NÃO VAZAR MEMÓRIA!
+        if driver:
+            try:
+                driver.quit()
+                log("🧹 Driver encerrado e memória liberada.")
+            except Exception as e:
+                log(f"⚠️ Erro ao fechar driver: {e}")
 
 if __name__ == "__main__":
     main()
