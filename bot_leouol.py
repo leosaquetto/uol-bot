@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO FINAL - Canal + Grupo com Logo do Parceiro
+# VERSÃO FINAL - Canal + Grupo com Logo do Parceiro (CORRIGIDA)
 # ------------------------------
 
 import requests
@@ -308,7 +308,6 @@ def build_caption(page_title, validity, link):
         parts.append(f"📅 {validity_clean}")
     
     parts.append(f"🔗 [Acessar oferta]({link})")
-    parts.append(f"💬 *Comentários e detalhes completos no grupo* [@leouolchat](https://t.me/leouolchat)")
     
     caption = "\n\n".join(parts)
     
@@ -324,10 +323,10 @@ def build_caption(page_title, validity, link):
     return caption
 
 # ==============================================
-# FUNÇÃO: ENVIAR LOGO + DESCRIÇÃO NO GRUPO
+# FUNÇÃO CORRIGIDA - Envia comentário no grupo respondendo ao canal
 # ==============================================
-def send_logo_and_description(logo_url, full_description, link, reply_to_message_id):
-    """Envia o logo (se existir) e a descrição no grupo"""
+def send_logo_and_description(logo_url, full_description, link, channel_message_id):
+    """Envia logo e descrição no GRUPO, respondendo à mensagem do CANAL"""
     
     try:
         # 1️⃣ BAIXA O LOGO (se existir)
@@ -345,7 +344,22 @@ def send_logo_and_description(logo_url, full_description, link, reply_to_message
             except Exception as e:
                 print(f"  ⚠️ Erro ao baixar logo: {e}")
 
-        # 2️⃣ SE TIVER LOGO, ENVIA PRIMEIRO
+        # 2️⃣ PREPARA TEXTO DA DESCRIÇÃO (SEM Markdown problemático)
+        description_text = full_description
+        description_text = description_text.replace('_', ' ').replace('*', '·').replace('`', "'")
+        description_text = re.sub(r'\*+', '·', description_text)
+        description_text = re.sub(r'_+', ' ', description_text)
+        
+        comment_text = (
+            f"📋 *DESCRIÇÃO COMPLETA DA OFERTA*\n\n"
+            f"{description_text}\n\n"
+            f"🔗 Link original:\n{link}"
+        )
+        
+        if len(comment_text) > MAX_COMMENT_LENGTH:
+            comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n*Descrição truncada*"
+
+        # 3️⃣ ENVIA O LOGO PRIMEIRO (se existir) - TAMBÉM COMO RESPOSTA!
         if logo_path:
             photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
             with open(logo_path, 'rb') as photo:
@@ -354,48 +368,50 @@ def send_logo_and_description(logo_url, full_description, link, reply_to_message
                     'chat_id': GRUPO_COMENTARIOS_ID,
                     'caption': "🏢 *Logo do parceiro*",
                     'parse_mode': 'Markdown',
-                    'reply_to_message_id': reply_to_message_id
+                    'reply_to_message_id': channel_message_id  # 🔥 Responde à mensagem do CANAL!
                 }
                 logo_response = requests.post(photo_url, data=data, files=files, timeout=30)
                 
                 if logo_response.ok:
-                    print("  ✅ Logo enviado no grupo")
+                    print("  ✅ Logo enviado como comentário no grupo")
                 else:
                     print(f"  ⚠️ Erro ao enviar logo: {logo_response.text}")
             
-            # Limpa arquivo temporário
             if os.path.exists(logo_path):
                 os.remove(logo_path)
 
-        # 3️⃣ PREPARA TEXTO DA DESCRIÇÃO
-        description_text = full_description.replace('_', '\\_').replace('*', '\\*')
-        
-        # Adiciona o link COMPLETO (sem hyperlink)
-        comment_text = (
-            f"📋 *DESCRIÇÃO COMPLETA DA OFERTA*\n\n"
-            f"{description_text}\n\n"
-            f"🔗 Link original:\n{link}"  # 🔥 URL COMPLETA, sem hyperlink
-        )
-        
-        if len(comment_text) > MAX_COMMENT_LENGTH:
-            comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n*Descrição truncada*"
-
-        # 4️⃣ ENVIA A DESCRIÇÃO
+        # 4️⃣ ENVIA A DESCRIÇÃO (também como resposta)
         comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
         comment_data = {
             'chat_id': GRUPO_COMENTARIOS_ID,
             'text': comment_text,
             'parse_mode': 'Markdown',
-            'reply_to_message_id': reply_to_message_id
+            'reply_to_message_id': channel_message_id  # 🔥 Responde à mensagem do CANAL!
         }
         
         comment_response = requests.post(comment_url, data=comment_data, timeout=30)
         
         if comment_response.ok:
-            print("  ✅ Descrição enviada no grupo")
+            print("  ✅ Descrição enviada como comentário no grupo")
+            
+            # Mostra o link do comentário
+            message_id = comment_response.json()['result']['message_id']
+            print(f"  🔗 Link do comentário: https://t.me/{GRUPO_COMENTARIOS_ID.replace('@', '')}/{message_id}")
             return True
         else:
             print(f"  ❌ Erro ao enviar descrição: {comment_response.text}")
+            
+            # Tenta sem Markdown se deu erro de parse
+            if "can't parse entities" in comment_response.text:
+                print("  ⚠️ Tentando novamente sem Markdown...")
+                comment_data['parse_mode'] = None
+                comment_data['text'] = comment_text.replace('*', '').replace('_', '').replace('`', '')
+                comment_response = requests.post(comment_url, data=comment_data, timeout=30)
+                
+                if comment_response.ok:
+                    print("  ✅ Descrição enviada como comentário (sem formatação)")
+                    return True
+            
             return False
             
     except Exception as e:
@@ -428,7 +444,11 @@ def send_offer_with_details(img_path, main_caption, logo_url, full_description, 
         message_id = photo_response.json()['result']['message_id']
         print(f"✅ Foto enviada no canal (ID: {message_id})")
         
-        # 2️⃣ ENVIA LOGO + DESCRIÇÃO NO GRUPO
+        # 2️⃣ DÁ UM TEMPO PARA A MENSAGEM PROPAGAR
+        print("  ⏱️ Aguardando 2 segundos para sincronização...")
+        time.sleep(2)
+        
+        # 3️⃣ ENVIA LOGO + DESCRIÇÃO NO GRUPO
         return send_logo_and_description(logo_url, full_description, link, message_id)
             
     except Exception as e:
