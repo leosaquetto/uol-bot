@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# VERSÃO COM COMENTÁRIOS EM GRUPO - Canal + Grupo separado
+# VERSÃO FINAL - Canal + Grupo com Logo do Parceiro
 # ------------------------------
 
 import requests
@@ -23,8 +23,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 # CONFIGURAÇÕES
 # ==============================================
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal (ex: @leosaquettoof)
-GRUPO_COMENTARIOS_ID = "@leouolchat"  # 🔥 GRUPO PARA OS COMENTÁRIOS
+CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal (vem do secret)
+GRUPO_COMENTARIOS_ID = "@leouolchat"  # Grupo para os comentários
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
 MAX_CAPTION_LENGTH = 1024
@@ -164,7 +164,39 @@ def extract_validity(driver):
     return None
 
 # ==============================================
-# FUNÇÃO MELHORADA - Extrai descrição LIMPA (sem repetições)
+# FUNÇÃO: EXTRAIR URL DO LOGO DO PARCEIRO
+# ==============================================
+def extract_logo_url(driver):
+    """Extrai a URL do logo do parceiro na página"""
+    try:
+        # Seletores comuns para logos
+        logo_selectors = [
+            "img[class*='logo']",
+            "img[alt*='logo']",
+            ".partner-logo img",
+            "[class*='parceiro'] img",
+            ".beneficio-header img",
+            "header img",
+            "figure img"
+        ]
+        
+        for selector in logo_selectors:
+            elements = driver.find_elements(By.CSS_SELECTOR, selector)
+            for elem in elements:
+                # Tenta pegar src ou data-src
+                src = elem.get_attribute("src") or elem.get_attribute("data-src")
+                if src and ('.png' in src or '.jpg' in src or '.jpeg' in src or '.svg' in src):
+                    if src.startswith('//'):
+                        src = 'https:' + src
+                    print(f"  🖼️ Logo encontrado: {src[:50]}...")
+                    return src
+        return None
+    except Exception as e:
+        print(f"  ⚠️ Erro ao extrair logo: {e}")
+        return None
+
+# ==============================================
+# FUNÇÃO: EXTRAIR DESCRIÇÃO COMPLETA (MELHORADA)
 # ==============================================
 def extract_full_description(driver):
     """Extrai descrição limpa, sem repetições e formatada"""
@@ -173,7 +205,7 @@ def extract_full_description(driver):
         seen_texts = set()  # Para evitar repetições
         
         # 1. Descrição do parceiro
-        partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner", "p:contains('Sobre o parceiro')"]
+        partner_selectors = [".partner-description", "[class*='parceiro'] p", ".about-partner"]
         for selector in partner_selectors:
             try:
                 elems = driver.find_elements(By.CSS_SELECTOR, selector)
@@ -187,7 +219,7 @@ def extract_full_description(driver):
                 continue
         
         # 2. Benefício
-        benefit_selectors = [".benefit-description", "[class*='beneficio'] p", ".offer-description", "p:contains('Benefício')"]
+        benefit_selectors = [".benefit-description", "[class*='beneficio'] p", ".offer-description"]
         for selector in benefit_selectors:
             try:
                 elems = driver.find_elements(By.CSS_SELECTOR, selector)
@@ -201,7 +233,7 @@ def extract_full_description(driver):
                 continue
         
         # 3. Regras
-        rule_selectors = [".rules", "[class*='regras']", ".terms", "li", "p:contains('Regra')"]
+        rule_selectors = [".rules", "[class*='regras']", ".terms", "li"]
         for selector in rule_selectors:
             try:
                 elems = driver.find_elements(By.CSS_SELECTOR, selector)
@@ -242,7 +274,7 @@ def extract_full_description(driver):
         return "Descrição detalhada não disponível."
 
 # ==============================================
-# DOWNLOAD DA IMAGEM
+# DOWNLOAD DA IMAGEM PRINCIPAL
 # ==============================================
 def download_image(img_url):
     try:
@@ -261,7 +293,7 @@ def download_image(img_url):
     return None
 
 # ==============================================
-# CONSTRUÇÃO DA LEGENDA PRINCIPAL
+# CONSTRUÇÃO DA LEGENDA PRINCIPAL (CANAL)
 # ==============================================
 def build_caption(page_title, validity, link):
     parts = []
@@ -292,10 +324,89 @@ def build_caption(page_title, validity, link):
     return caption
 
 # ==============================================
-# ENVIO PRINCIPAL (CANAL) + COMENTÁRIO (GRUPO)
+# FUNÇÃO: ENVIAR LOGO + DESCRIÇÃO NO GRUPO
 # ==============================================
-def send_offer_with_details(img_path, main_caption, full_description, link):
-    """Envia a imagem no CANAL + comentário no GRUPO"""
+def send_logo_and_description(logo_url, full_description, link, reply_to_message_id):
+    """Envia o logo (se existir) e a descrição no grupo"""
+    
+    try:
+        # 1️⃣ BAIXA O LOGO (se existir)
+        logo_path = None
+        if logo_url:
+            print("  📥 Baixando logo do parceiro...")
+            try:
+                headers = {'User-Agent': random.choice(USER_AGENTS)}
+                response = requests.get(logo_url, headers=headers, timeout=10)
+                if response.status_code == 200:
+                    logo_path = f"/tmp/logo_{random.randint(1000,9999)}.jpg"
+                    with open(logo_path, 'wb') as f:
+                        f.write(response.content)
+                    print("  ✅ Logo baixado")
+            except Exception as e:
+                print(f"  ⚠️ Erro ao baixar logo: {e}")
+
+        # 2️⃣ SE TIVER LOGO, ENVIA PRIMEIRO
+        if logo_path:
+            photo_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
+            with open(logo_path, 'rb') as photo:
+                files = {'photo': photo}
+                data = {
+                    'chat_id': GRUPO_COMENTARIOS_ID,
+                    'caption': "🏢 *Logo do parceiro*",
+                    'parse_mode': 'Markdown',
+                    'reply_to_message_id': reply_to_message_id
+                }
+                logo_response = requests.post(photo_url, data=data, files=files, timeout=30)
+                
+                if logo_response.ok:
+                    print("  ✅ Logo enviado no grupo")
+                else:
+                    print(f"  ⚠️ Erro ao enviar logo: {logo_response.text}")
+            
+            # Limpa arquivo temporário
+            if os.path.exists(logo_path):
+                os.remove(logo_path)
+
+        # 3️⃣ PREPARA TEXTO DA DESCRIÇÃO
+        description_text = full_description.replace('_', '\\_').replace('*', '\\*')
+        
+        # Adiciona o link COMPLETO (sem hyperlink)
+        comment_text = (
+            f"📋 *DESCRIÇÃO COMPLETA DA OFERTA*\n\n"
+            f"{description_text}\n\n"
+            f"🔗 Link original:\n{link}"  # 🔥 URL COMPLETA, sem hyperlink
+        )
+        
+        if len(comment_text) > MAX_COMMENT_LENGTH:
+            comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n*Descrição truncada*"
+
+        # 4️⃣ ENVIA A DESCRIÇÃO
+        comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        comment_data = {
+            'chat_id': GRUPO_COMENTARIOS_ID,
+            'text': comment_text,
+            'parse_mode': 'Markdown',
+            'reply_to_message_id': reply_to_message_id
+        }
+        
+        comment_response = requests.post(comment_url, data=comment_data, timeout=30)
+        
+        if comment_response.ok:
+            print("  ✅ Descrição enviada no grupo")
+            return True
+        else:
+            print(f"  ❌ Erro ao enviar descrição: {comment_response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"  ❌ Erro no envio: {e}")
+        return False
+
+# ==============================================
+# FUNÇÃO PRINCIPAL DE ENVIO
+# ==============================================
+def send_offer_with_details(img_path, main_caption, logo_url, full_description, link):
+    """Envia a imagem no CANAL + logo e descrição no GRUPO"""
     
     try:
         # 1️⃣ ENVIA A FOTO NO CANAL PRINCIPAL
@@ -304,7 +415,7 @@ def send_offer_with_details(img_path, main_caption, full_description, link):
         with open(img_path, 'rb') as photo:
             files = {'photo': photo}
             data = {
-                'chat_id': CANAL_ID,  # 🔥 CANAL PRINCIPAL
+                'chat_id': CANAL_ID,
                 'caption': main_caption,
                 'parse_mode': 'Markdown'
             }
@@ -314,39 +425,11 @@ def send_offer_with_details(img_path, main_caption, full_description, link):
             print(f"❌ Erro ao enviar foto: {photo_response.text}")
             return False
         
-        # Pega o message_id da mensagem no CANAL
         message_id = photo_response.json()['result']['message_id']
         print(f"✅ Foto enviada no canal (ID: {message_id})")
         
-        # 2️⃣ PREPARA O TEXTO DO COMENTÁRIO (LIMPO)
-        full_description = full_description.replace('_', '\\_').replace('*', '\\*').replace('`', '\\`')
-        
-        comment_text = (
-            f"📋 *DESCRIÇÃO COMPLETA DA OFERTA*\n\n"
-            f"{full_description}\n\n"
-            f"🔗 [Link original da oferta]({link})"
-        )
-        
-        if len(comment_text) > MAX_COMMENT_LENGTH:
-            comment_text = comment_text[:MAX_COMMENT_LENGTH-50] + "...\n\n*Descrição truncada*"
-        
-        # 3️⃣ ENVIA O COMENTÁRIO NO GRUPO, respondendo à mensagem do canal
-        comment_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-        comment_data = {
-            'chat_id': GRUPO_COMENTARIOS_ID,  # 🔥 GRUPO DE COMENTÁRIOS
-            'text': comment_text,
-            'parse_mode': 'Markdown',
-            'reply_to_message_id': message_id  # 🔥 ISSO LIGA AO CANAL!
-        }
-        
-        comment_response = requests.post(comment_url, data=comment_data, timeout=30)
-        
-        if comment_response.ok:
-            print(f"✅ Descrição completa enviada no grupo (link: t.me/leouolchat/{comment_response.json()['result']['message_id']})")
-            return True
-        else:
-            print(f"❌ Erro ao enviar comentário: {comment_response.text}")
-            return False
+        # 2️⃣ ENVIA LOGO + DESCRIÇÃO NO GRUPO
+        return send_logo_and_description(logo_url, full_description, link, message_id)
             
     except Exception as e:
         print(f"❌ Erro no envio: {e}")
@@ -444,7 +527,7 @@ def fetch_offers():
             driver.quit()
 
 # ==============================================
-# PROCESSAMENTO DE CADA OFERTA
+# PROCESSAMENTO DE CADA OFERTA (ATUALIZADO)
 # ==============================================
 def process_offer(offer):
     print(f"\n🔍 Acessando página: {offer['preview_title'][:50]}...")
@@ -479,15 +562,18 @@ def process_offer(offer):
         if validity:
             print(f"  📅 Validade: {validity[:50]}...")
         
-        # Extrai descrição completa (melhorada)
+        # 🔥 NOVO: Extrai logo do parceiro
+        logo_url = extract_logo_url(driver)
+        
+        # Extrai descrição completa
         full_description = extract_full_description(driver)
         print(f"  📋 Descrição completa: {len(full_description)} caracteres")
         
-        return page_title, validity, full_description
+        return page_title, validity, logo_url, full_description
         
     except Exception as e:
         print(f"  ⚠️ Erro: {e}")
-        return offer['preview_title'], None, "Descrição não disponível devido a erro."
+        return offer['preview_title'], None, None, "Descrição não disponível devido a erro."
         
     finally:
         if driver:
@@ -498,7 +584,7 @@ def process_offer(offer):
 # ==============================================
 def main():
     print("=" * 70)
-    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (CANAL + GRUPO)")
+    print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (CANAL + GRUPO COM LOGO)")
     print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 70)
     
@@ -562,7 +648,7 @@ def main():
             processed_ids.add(offer['id'])
             continue
         
-        page_title, validity, full_description = process_offer(offer)
+        page_title, validity, logo_url, full_description = process_offer(offer)
         
         main_caption = build_caption(page_title, validity, offer['link'])
         
@@ -573,8 +659,8 @@ def main():
             processed_ids.add(offer['id'])
             continue
         
-        print("\n📤 Enviando oferta com descrição completa...")
-        if send_offer_with_details(img_path, main_caption, full_description, offer['link']):
+        print("\n📤 Enviando oferta com logo e descrição...")
+        if send_offer_with_details(img_path, main_caption, logo_url, full_description, offer['link']):
             successful += 1
             print(f"✅ Oferta enviada com sucesso!")
         else:
