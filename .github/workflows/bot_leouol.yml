@@ -20,7 +20,7 @@ env:
 jobs:
   run-bot:
     name: Buscar Ofertas
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 4
 
     steps:
