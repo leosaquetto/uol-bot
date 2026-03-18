@@ -1,27 +1,24 @@
 name: BOT LEOUOL
 
 on:
-  schedule:
-    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 concurrency:
   group: bot-leouol
   cancel-in-progress: true
 
-permissions:
-  contents: write
-
-env:
-  PYTHONUNBUFFERED: "1"
-  PIP_DISABLE_PIP_VERSION_CHECK: "1"
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-
 jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: [self-hosted, macOS]
-    timeout-minutes: 4
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    env:
+      PYTHONUNBUFFERED: "1"
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
 
     steps:
       - name: 📥 Baixar código
@@ -41,30 +38,27 @@ jobs:
         run: |
           if [ ! -f historico_leouol.json ]; then
             echo '{"ids": []}' > historico_leouol.json
-            echo "✅ Arquivo de histórico criado (vazio)"
+            echo "✅ Arquivo de histórico criado"
           else
             echo "✅ Arquivo de histórico encontrado"
             cat historico_leouol.json
           fi
 
-      - name: 🌐 Garantir Chrome
+      - name: 🌐 Verificar Chrome
         shell: bash
         run: |
-          if command -v google-chrome >/dev/null 2>&1; then
-            echo "✅ Chrome já disponível:"
-            google-chrome --version
+          if [ -d "/Applications/Google Chrome.app" ]; then
+            /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version
           else
-            echo "⚠️ Chrome não encontrado. Instalando..."
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
-            google-chrome --version
+            echo "Google Chrome não encontrado no Mac"
+            exit 1
           fi
 
-- name: 📦 Instalar dependências (leve)
-  shell: bash
-  run: |
-    python -m pip install --upgrade pip
-    pip install requests selenium undetected-chromedriver --only-binary :all:
+      - name: 📦 Instalar dependências
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: 🤖 Executar BOT LEOUOL
         env:
@@ -97,14 +91,3 @@ jobs:
           git commit -m "🤖 Atualiza histórico do bot [skip ci]"
           git push
           echo "✅ Histórico salvo no repositório!"
-
-      - name: 📎 Upload de debug
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bot-leouol-debug-${{ github.run_id }}
-          path: |
-            debug/**/*.txt
-            historico_leouol.json
-          if-no-files-found: ignore
-          retention-days: 3
