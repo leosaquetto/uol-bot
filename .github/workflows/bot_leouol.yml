@@ -2,24 +2,42 @@ name: BOT LEOUOL
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: "*/15 * * * *"
   workflow_dispatch:
+
+concurrency:
+  group: bot-leouol
+  cancel-in-progress: true
 
 jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: ubuntu-latest
+    timeout-minutes: 8
+
     permissions:
       contents: write
-    
+
+    env:
+      PYTHONUNBUFFERED: "1"
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
     steps:
       - name: 📥 Baixar código
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
       - name: 🔄 Restaurar ou criar histórico
+        shell: bash
         run: |
           if [ ! -f historico_leouol.json ]; then
             echo '{"ids": []}' > historico_leouol.json
@@ -28,44 +46,64 @@ jobs:
             echo "✅ Arquivo de histórico encontrado"
             cat historico_leouol.json
           fi
-      
-      - name: 🌐 Instalar Chrome
+
+      - name: 🌐 Garantir Chrome
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-      
-      - name: 🐍 Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "✅ Chrome já disponível:"
+            google-chrome --version
+          else
+            echo "⚠️ Chrome não encontrado. Instalando..."
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+            google-chrome --version
+          fi
+
       - name: 📦 Instalar dependências
+        shell: bash
         run: |
+          python -m pip install --upgrade pip
           pip install requests selenium webdriver-manager undetected-chromedriver
-      
+
       - name: 🤖 Executar BOT LEOUOL
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
-        run: python bot_leouol.py
-      
+        shell: bash
+        run: |
+          python bot_leouol.py
+
       - name: 💾 Salvar histórico no repositório
+        shell: bash
         run: |
           git config --global user.email "bot@leouol.com"
           git config --global user.name "BOT LEOUOL"
-          
-          if [ -f historico_leouol.json ]; then
-            git add historico_leouol.json
-            
-            if git diff --staged --quiet; then
-              echo "📊 Histórico não mudou"
-            else
-              git commit -m "🤖 Atualiza histórico do bot [skip ci]"
-              git push
-              echo "✅ Histórico salvo no repositório!"
-              git show --stat
-            fi
-          else
+
+          if [ ! -f historico_leouol.json ]; then
             echo "❌ Arquivo de histórico não encontrado"
+            exit 0
           fi
+
+          git add historico_leouol.json
+
+          if git diff --staged --quiet; then
+            echo "📊 Histórico não mudou"
+            exit 0
+          fi
+
+          git commit -m "🤖 Atualiza histórico do bot [skip ci]"
+          git push
+          echo "✅ Histórico salvo no repositório!"
+          git show --stat --oneline HEAD
+
+      - name: 📎 Upload de logs de falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bot-leouol-debug-${{ github.run_id }}
+          path: |
+            historico_leouol.json
+            /tmp/leouol_*.jpg
+          if-no-files-found: ignore
