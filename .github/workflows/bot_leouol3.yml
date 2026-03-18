@@ -69,25 +69,25 @@ jobs:
         run: |
           python bot_leouol.py
 
-      - name: 💾 Salvar histórico no repositório
-        if: always()
-        shell: bash
-        run: |
-          git config --global user.email "bot@leouol.com"
-          git config --global user.name "BOT LEOUOL"
-
-          if [ ! -f historico_leouol.json ]; then
-            echo "❌ Arquivo de histórico não encontrado"
-            exit 0
-          fi
-
-          git add historico_leouol.json
-
-          if git diff --staged --quiet; then
-            echo "📊 Histórico não mudou"
-            exit 0
-          fi
-
-          git commit -m "🤖 Atualiza histórico do bot [skip ci]"
-          git push
-          echo "✅ Histórico salvo no repositório!"
+     # - name: 💾 Salvar histórico no repositório
+#   if: always()
+#   shell: bash
+#   run: |
+#     git config --global user.email "bot@leouol.com"
+#     git config --global user.name "BOT LEOUOL"
+#
+#     if [ ! -f historico_leouol.json ]; then
+#       echo "❌ Arquivo de histórico não encontrado"
+#       exit 0
+#     fi
+#
+#     git add historico_leouol.json
+#
+#     if git diff --staged --quiet; then
+#       echo "📊 Histórico não mudou"
+#       exit 0
+#     fi
+#
+#     git commit -m "🤖 Atualiza histórico do bot [skip ci]"
+#     git push
+ #         echo "✅ Histórico salvo no repositório!"
