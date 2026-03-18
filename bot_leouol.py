@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# Modo otimizado: 1 tentativa, falha rápida, debug
+# Modo otimizado: 1 tentativa, falha rápida, debug leve
 # ------------------------------
 
 import json
@@ -70,26 +70,6 @@ def timestamp() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
-def save_debug_html(driver, name: str) -> None:
-    try:
-        ensure_debug_dir()
-        path = DEBUG_DIR / f"{timestamp()}_{name}.html"
-        path.write_text(driver.page_source, encoding="utf-8")
-        log(f"📝 HTML salvo em {path}")
-    except Exception as e:
-        log(f"⚠️ Falha ao salvar HTML de debug: {e}")
-
-
-def save_debug_screenshot(driver, name: str) -> None:
-    try:
-        ensure_debug_dir()
-        path = DEBUG_DIR / f"{timestamp()}_{name}.png"
-        driver.save_screenshot(str(path))
-        log(f"📸 Screenshot salva em {path}")
-    except Exception as e:
-        log(f"⚠️ Falha ao salvar screenshot: {e}")
-
-
 def save_debug_text(name: str, text: str) -> None:
     try:
         ensure_debug_dir()
@@ -98,6 +78,15 @@ def save_debug_text(name: str, text: str) -> None:
         log(f"📝 Texto salvo em {path}")
     except Exception as e:
         log(f"⚠️ Falha ao salvar texto de debug: {e}")
+
+
+def save_page_text_debug(driver, name: str) -> None:
+    try:
+        title = driver.title or ""
+        body_text = driver.find_element(By.TAG_NAME, "body").text[:4000]
+        save_debug_text(name, f"TITLE:\n{title}\n\nBODY:\n{body_text}")
+    except Exception as e:
+        log(f"⚠️ Falha ao capturar texto da página: {e}")
 
 
 # ==============================================
@@ -215,7 +204,6 @@ def is_human_verification_page(driver) -> bool:
             "human verification",
             "vamos confirmar que você é humano",
             "conclua a verificação de segurança antes de continuar",
-            "iniciar",
         ]
         return any(s in title or s in body for s in signals)
     except Exception:
@@ -356,11 +344,6 @@ def safe_get(driver, url: str, label: str) -> bool:
     except Exception as e:
         log(f"⚠️ Erro ao abrir {url}: {e}")
         save_debug_text(f"{label}_error", str(e))
-        try:
-            save_debug_screenshot(driver, f"{label}_nav_fail")
-            save_debug_html(driver, f"{label}_nav_fail")
-        except Exception:
-            pass
         return False
 
 
@@ -679,26 +662,12 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
 
     if is_privacy_error_page(driver):
         log("⚠️ Ainda ficou preso na tela de certificado.")
-        save_debug_screenshot(driver, "listagem_privacy_error")
-        save_debug_html(driver, "listagem_privacy_error")
-        try:
-            title = driver.title or ""
-            body_text = driver.find_element(By.TAG_NAME, "body").text[:4000]
-            save_debug_text("listagem_privacy_error_info", f"TITLE:\n{title}\n\nBODY:\n{body_text}")
-        except Exception:
-            pass
+        save_page_text_debug(driver, "listagem_privacy_error_info")
         return []
 
     if is_human_verification_page(driver):
         log("⚠️ Human Verification detectado. Encerrando tentativa rapidamente.")
-        save_debug_screenshot(driver, "listagem_human_verification")
-        save_debug_html(driver, "listagem_human_verification")
-        try:
-            title = driver.title or ""
-            body_text = driver.find_element(By.TAG_NAME, "body").text[:4000]
-            save_debug_text("listagem_human_verification_info", f"TITLE:\n{title}\n\nBODY:\n{body_text}")
-        except Exception:
-            pass
+        save_page_text_debug(driver, "listagem_human_verification_info")
         return []
 
     try:
@@ -707,22 +676,12 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
         )
     except TimeoutException:
         log("⚠️ Listagem não carregou a tempo.")
-        save_debug_screenshot(driver, "listagem_timeout")
-        save_debug_html(driver, "listagem_timeout")
-
-        try:
-            title = driver.title or ""
-            body_text = driver.find_element(By.TAG_NAME, "body").text[:4000]
-            save_debug_text("listagem_timeout_info", f"TITLE:\n{title}\n\nBODY:\n{body_text}")
-        except Exception:
-            pass
-
+        save_page_text_debug(driver, "listagem_timeout_info")
         return []
 
     if is_possible_block_page(driver):
         log("⚠️ Página parece bloqueio/challenge.")
-        save_debug_screenshot(driver, "listagem_block")
-        save_debug_html(driver, "listagem_block")
+        save_page_text_debug(driver, "listagem_block_info")
         return []
 
     driver.execute_script("window.scrollBy(0, 500);")
@@ -732,8 +691,7 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
 
     containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
     if not containers:
-        save_debug_screenshot(driver, "listagem_sem_cards")
-        save_debug_html(driver, "listagem_sem_cards")
+        save_page_text_debug(driver, "listagem_sem_cards_info")
         return []
 
     offers = []
@@ -788,13 +746,11 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         return offer["preview_title"], None, "Descrição não disponível devido a erro de navegação."
 
     if is_privacy_error_page(driver):
-        save_debug_screenshot(driver, "detalhe_privacy_error")
-        save_debug_html(driver, "detalhe_privacy_error")
+        save_page_text_debug(driver, "detalhe_privacy_error_info")
         return offer["preview_title"], None, "Descrição não disponível."
 
     if is_human_verification_page(driver):
-        save_debug_screenshot(driver, "detalhe_human_verification")
-        save_debug_html(driver, "detalhe_human_verification")
+        save_page_text_debug(driver, "detalhe_human_verification_info")
         return offer["preview_title"], None, "Descrição não disponível."
 
     human_delay(0.6, 1.1)
@@ -804,12 +760,10 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
             EC.presence_of_element_located((By.CSS_SELECTOR, "h1, p, .partner-description, .benefit-description"))
         )
     except TimeoutException:
-        save_debug_screenshot(driver, "detalhe_timeout")
-        save_debug_html(driver, "detalhe_timeout")
+        save_page_text_debug(driver, "detalhe_timeout_info")
 
     if is_possible_block_page(driver):
-        save_debug_screenshot(driver, "detalhe_block")
-        save_debug_html(driver, "detalhe_block")
+        save_page_text_debug(driver, "detalhe_block_info")
         return offer["preview_title"], None, "Descrição não disponível."
 
     page_title = extract_page_title(driver, fallback=offer["preview_title"])
