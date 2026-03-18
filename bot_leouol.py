@@ -107,8 +107,8 @@ def setup_driver():
     options.add_argument(f"user-agent={user_agent}")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
     
-    # 🔥 Removeu version_main=None - agora detecta automaticamente!
-    driver = uc.Chrome(options=options)
+    # 🔥 FORÇA A VERSÃO 145 do ChromeDriver
+    driver = uc.Chrome(options=options, version_main=145)
     
     return driver
 
