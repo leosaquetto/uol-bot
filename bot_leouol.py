@@ -22,12 +22,8 @@ import undetected_chromedriver as uc
 # CONFIGURAÇÕES
 # ==============================================
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
-CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')  # Canal principal: -3723320790
-GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-3802235343')  # Grupo: -3802235343
-
-# DEBUG - REMOVER DEPOIS QUE FUNCIONAR
-print(f"🔍 DEBUG - CANAL_ID: '{CANAL_ID}'")
-print(f"🔍 DEBUG - GRUPO_COMENTARIOS_ID: '{GRUPO_COMENTARIOS_ID}'")
+CANAL_ID = os.environ.get('TELEGRAM_CHAT_ID')
+GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-3802235343')
 
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
@@ -392,7 +388,6 @@ def send_logo_and_description(logo_url, full_description, link, channel_message_
             print("  ✅ Descrição enviada como comentário no grupo")
             message_id = comment_response.json()['result']['message_id']
             
-            # Formatação do link dependendo se é username (@) ou ID numérico privado (-)
             group_str = str(GRUPO_COMENTARIOS_ID)
             if group_str.startswith('@'):
                 link_url = f"https://t.me/{group_str.replace('@', '')}/{message_id}"
@@ -623,10 +618,6 @@ def main():
     print(f"🤖 BOT LEOUOL - Clube UOL Ofertas (CANAL + GRUPO COM LOGO)")
     print(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 70)
-    
-    # DEBUG - Mostra os IDs dos chats
-    print(f"🔍 CANAL_ID: '{CANAL_ID}'")
-    print(f"🔍 GRUPO_COMENTARIOS_ID: '{GRUPO_COMENTARIOS_ID}'")
     
     history = load_history()
     seen_ids = set(history.get("ids", []))
