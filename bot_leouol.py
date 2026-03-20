@@ -1,6 +1,6 @@
 # ------------------------------
 # BOT LEOUOL - Clube UOL Ofertas
-# Modo otimizado: 1 tentativa, falha rápida, debug leve
+# Modo PRO: Evasão Avançada (Non-Headless + Randomização)
 # ------------------------------
 
 import json
@@ -26,7 +26,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-
 # ==============================================
 # CONFIG
 # ==============================================
@@ -44,16 +43,17 @@ MAX_COMMENT_LENGTH = 4096
 MAX_OFFERS_PER_RUN = 8
 MAX_HISTORY_SIZE = 200
 
-LIST_WAIT_SECONDS = 12
-DETAIL_WAIT_SECONDS = 10
-PAGE_LOAD_TIMEOUT = 20
+LIST_WAIT_SECONDS = 15
+DETAIL_WAIT_SECONDS = 12
+PAGE_LOAD_TIMEOUT = 30
 
+# User-Agents modernos e variados para dificultar o fingerprint
 USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
 ]
-
 
 # ==============================================
 # LOG / DEBUG
@@ -61,14 +61,11 @@ USER_AGENTS = [
 def log(msg: str) -> None:
     print(msg, flush=True)
 
-
 def ensure_debug_dir() -> None:
     DEBUG_DIR.mkdir(parents=True, exist_ok=True)
 
-
 def timestamp() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S")
-
 
 def save_debug_text(name: str, text: str) -> None:
     try:
@@ -79,7 +76,6 @@ def save_debug_text(name: str, text: str) -> None:
     except Exception as e:
         log(f"⚠️ Falha ao salvar texto de debug: {e}")
 
-
 def save_page_text_debug(driver, name: str) -> None:
     try:
         title = driver.title or ""
@@ -87,7 +83,6 @@ def save_page_text_debug(driver, name: str) -> None:
         save_debug_text(name, f"TITLE:\n{title}\n\nBODY:\n{body_text}")
     except Exception as e:
         log(f"⚠️ Falha ao capturar texto da página: {e}")
-
 
 # ==============================================
 # UTIL
@@ -101,10 +96,8 @@ def ensure_env() -> None:
     if missing:
         raise RuntimeError(f"Variáveis ausentes: {', '.join(missing)}")
 
-
-def human_delay(min_s: float = 0.7, max_s: float = 1.4) -> None:
+def human_delay(min_s: float = 1.0, max_s: float = 2.5) -> None:
     time.sleep(random.uniform(min_s, max_s))
-
 
 def build_http_session() -> requests.Session:
     session = requests.Session()
@@ -122,23 +115,19 @@ def build_http_session() -> requests.Session:
     session.mount("https://", adapter)
     session.headers.update(
         {
-            "User-Agent": USER_AGENTS[0],
+            "User-Agent": random.choice(USER_AGENTS),
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
         }
     )
     return session
 
-
 HTTP = build_http_session()
-
 
 def escape_html(text: Optional[str]) -> str:
     return escape(text or "", quote=False)
 
-
 def strip_html(text: str) -> str:
     return re.sub(r"<[^>]+>", "", text or "").strip()
-
 
 def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
     if len(text) <= max_len:
@@ -147,12 +136,10 @@ def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
         return suffix[:max_len]
     return text[: max_len - len(suffix)] + suffix
 
-
 def normalize_spaces(text: Optional[str]) -> str:
     if not text:
         return ""
     return re.sub(r"\s+", " ", text).strip()
-
 
 def normalize_link(link: str) -> str:
     try:
@@ -166,7 +153,6 @@ def normalize_link(link: str) -> str:
     except Exception:
         return link
 
-
 def get_chrome_major_version() -> int:
     for binary in ["google-chrome", "google-chrome-stable", "chromium-browser", "chromium"]:
         if shutil.which(binary):
@@ -179,9 +165,8 @@ def get_chrome_major_version() -> int:
                     return version
             except Exception:
                 continue
-    log("⚠️ Não foi possível detectar Chrome. Usando fallback 145.")
-    return 145
-
+    log("⚠️ Não foi possível detectar Chrome.")
+    return 122 # Fallback seguro
 
 def is_privacy_error_page(driver) -> bool:
     try:
@@ -195,7 +180,6 @@ def is_privacy_error_page(driver) -> bool:
     except Exception:
         return False
 
-
 def is_human_verification_page(driver) -> bool:
     try:
         title = (driver.title or "").lower()
@@ -208,7 +192,6 @@ def is_human_verification_page(driver) -> bool:
         return any(s in title or s in body for s in signals)
     except Exception:
         return False
-
 
 def is_possible_block_page(driver) -> bool:
     try:
@@ -233,7 +216,6 @@ def is_possible_block_page(driver) -> bool:
     except Exception:
         return False
 
-
 # ==============================================
 # HISTÓRICO
 # ==============================================
@@ -251,7 +233,6 @@ def load_history() -> Dict[str, List[str]]:
         log(f"⚠️ Erro ao carregar histórico: {e}")
         return {"ids": []}
 
-
 def save_history(history: Dict[str, List[str]]) -> bool:
     try:
         ids = [str(x) for x in history.get("ids", [])][-MAX_HISTORY_SIZE:]
@@ -265,36 +246,59 @@ def save_history(history: Dict[str, List[str]]) -> bool:
         log(f"⚠️ Erro ao salvar histórico: {e}")
         return False
 
-
 # ==============================================
-# DRIVER
+# DRIVER - Foco em Evasão Pro
 # ==============================================
 def setup_driver():
     chrome_major = get_chrome_major_version()
 
     options = uc.ChromeOptions()
-    options.add_argument("--headless=new")
+    
+    # Técnicas de Evasão
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1366,768")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--disable-infobars")
+    
+    # Randomizando o tamanho da janela para evitar fingerprinting de viewport
+    width = random.randint(1300, 1920)
+    height = random.randint(700, 1080)
+    options.add_argument(f"--window-size={width},{height}")
+    
     options.add_argument("--lang=pt-BR")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
-    options.add_argument(f"--user-agent={USER_AGENTS[0]}")
+    
+    # Randomiza o User-Agent
+    ua = random.choice(USER_AGENTS)
+    options.add_argument(f"--user-agent={ua}")
 
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--ignore-ssl-errors=yes")
     options.add_argument("--allow-running-insecure-content")
-    options.add_argument("--test-type")
 
+    # Inicialização do UC. Notar que Headless está FALSE.
+    # O Xvfb no workflow vai absorver a janela visual.
     driver = uc.Chrome(
         options=options,
-        headless=True,
+        headless=False, 
         version_main=chrome_major,
     )
+    
+    # Injeta JS para esconder variáveis que gritam "SOU UM ROBÔ"
+    driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        "source": """
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined
+            });
+            window.navigator.chrome = {
+                runtime: {},
+            };
+        """
+    })
+
     driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
     return driver
-
 
 def try_bypass_privacy_error(driver) -> None:
     try:
@@ -314,30 +318,17 @@ def try_bypass_privacy_error(driver) -> None:
             time.sleep(2)
         except Exception:
             pass
-
-        try:
-            driver.execute_script("""
-                const details = document.querySelector('#details-button');
-                if (details) details.click();
-                const proceed = document.querySelector('#proceed-link');
-                if (proceed) proceed.click();
-            """)
-            time.sleep(2)
-        except Exception:
-            pass
-
     except Exception as e:
         log(f"⚠️ Erro ao tentar contornar tela de certificado: {e}")
-
 
 def safe_get(driver, url: str, label: str) -> bool:
     try:
         driver.get(url)
-        human_delay(0.8, 1.4)
+        human_delay(1.5, 3.0) # Espera humana mais natural
 
         if is_privacy_error_page(driver):
             try_bypass_privacy_error(driver)
-            human_delay(0.8, 1.5)
+            human_delay(1.0, 2.0)
 
         return True
 
@@ -345,7 +336,6 @@ def safe_get(driver, url: str, label: str) -> bool:
         log(f"⚠️ Erro ao abrir {url}: {e}")
         save_debug_text(f"{label}_error", str(e))
         return False
-
 
 # ==============================================
 # EXTRAÇÃO
@@ -365,7 +355,6 @@ def extract_page_title(driver, fallback: str = "") -> str:
         pass
     return fallback
 
-
 def extract_validity(driver) -> Optional[str]:
     try:
         body = driver.find_element(By.TAG_NAME, "body").text
@@ -384,7 +373,6 @@ def extract_validity(driver) -> Optional[str]:
     except Exception as e:
         log(f"⚠️ Erro ao extrair validade: {e}")
     return None
-
 
 def extract_full_description(driver) -> str:
     try:
@@ -442,14 +430,13 @@ def extract_full_description(driver) -> str:
         log(f"⚠️ Erro ao extrair descrição completa: {e}")
         return "Descrição detalhada não disponível."
 
-
 # ==============================================
 # IMAGEM / CAPTION
 # ==============================================
 def download_image(img_url: str) -> Optional[str]:
     try:
         headers = {
-            "User-Agent": USER_AGENTS[0],
+            "User-Agent": random.choice(USER_AGENTS),
             "Referer": "https://clube.uol.com.br/",
             "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
         }
@@ -462,7 +449,6 @@ def download_image(img_url: str) -> Optional[str]:
     except Exception as e:
         log(f"⚠️ Erro ao baixar imagem: {e}")
     return None
-
 
 def build_caption(page_title: str, validity: Optional[str], link: str) -> Optional[str]:
     page_title = normalize_spaces(page_title)
@@ -483,7 +469,6 @@ def build_caption(page_title: str, validity: Optional[str], link: str) -> Option
     short_title = truncate_text(f"<b>{escape_html(page_title)}</b>", max(room, 20))
     return f"{short_title}\n\n{link_block}"
 
-
 # ==============================================
 # TELEGRAM
 # ==============================================
@@ -499,7 +484,6 @@ def telegram_api(method: str, data=None, files=None, timeout: int = 30) -> Optio
         log(f"⚠️ Erro Telegram ({method}): {e}")
         return None
 
-
 def get_updates(offset: Optional[int] = None) -> List[dict]:
     params = {"timeout": 0}
     if offset is not None:
@@ -509,7 +493,6 @@ def get_updates(offset: Optional[int] = None) -> List[dict]:
         return payload.get("result", [])
     return []
 
-
 def clear_telegram_updates() -> None:
     try:
         updates = get_updates()
@@ -518,7 +501,6 @@ def clear_telegram_updates() -> None:
             telegram_api("getUpdates", data={"offset": last_id + 1}, timeout=10)
     except Exception:
         pass
-
 
 def send_description_comment(full_description: str, link: str, channel_message_id: int) -> bool:
     log("⏳ Aguardando thread do grupo...")
@@ -586,7 +568,6 @@ def send_description_comment(full_description: str, link: str, channel_message_i
     payload = telegram_api("sendMessage", data=fallback_data, timeout=35)
     return bool(payload and payload.get("ok"))
 
-
 def send_offer_with_details(img_path: str, main_caption: str, full_description: str, link: str) -> bool:
     try:
         clear_telegram_updates()
@@ -627,7 +608,6 @@ def send_offer_with_details(img_path: str, main_caption: str, full_description: 
         log(f"❌ Erro geral no envio: {e}")
         return False
 
-
 # ==============================================
 # OFERTAS
 # ==============================================
@@ -654,7 +634,6 @@ def extract_offer_image(container) -> Optional[str]:
         pass
     return None
 
-
 def fetch_offers(driver) -> List[Dict[str, str]]:
     log("🌐 Abrindo listagem de ofertas...")
     if not safe_get(driver, TARGET_URL, "listagem"):
@@ -666,7 +645,7 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
         return []
 
     if is_human_verification_page(driver):
-        log("⚠️ Human Verification detectado. Encerrando tentativa rapidamente.")
+        log("⚠️ Human Verification detectado. Encerrando tentativa.")
         save_page_text_debug(driver, "listagem_human_verification_info")
         return []
 
@@ -684,10 +663,11 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
         save_page_text_debug(driver, "listagem_block_info")
         return []
 
+    # Scroll para simular ação humana
     driver.execute_script("window.scrollBy(0, 500);")
-    human_delay(0.5, 0.9)
+    human_delay(1.0, 1.5)
     driver.execute_script("window.scrollBy(0, 500);")
-    human_delay(0.5, 0.9)
+    human_delay(1.0, 1.5)
 
     containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio")
     if not containers:
@@ -738,7 +718,6 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
 
     return offers[:MAX_OFFERS_PER_RUN]
 
-
 def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], str]:
     log(f"🔍 Acessando página: {offer['preview_title'][:60]}...")
 
@@ -753,7 +732,7 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         save_page_text_debug(driver, "detalhe_human_verification_info")
         return offer["preview_title"], None, "Descrição não disponível."
 
-    human_delay(0.6, 1.1)
+    human_delay(1.5, 2.5)
 
     try:
         WebDriverWait(driver, DETAIL_WAIT_SECONDS).until(
@@ -772,14 +751,13 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
 
     return page_title, validity, full_description
 
-
 # ==============================================
 # MAIN
 # ==============================================
 def main():
     log("=" * 72)
     log("🤖 BOT LEOUOL - Clube UOL Ofertas")
-    log("📢 Canal + thread de comentários")
+    log("📢 Modo PRO Evasão")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 72)
 
@@ -798,7 +776,7 @@ def main():
         offers = fetch_offers(driver)
 
         if not offers:
-            log("\n📭 Nenhuma oferta encontrada.")
+            log("\n📭 Nenhuma oferta encontrada (Pode ser bloqueio).")
             return
 
         new_offers = [o for o in offers if o["id"] not in seen_ids]
@@ -838,39 +816,28 @@ def main():
                 ok = send_offer_with_details(img_path, main_caption, full_description, offer["link"])
                 if ok:
                     success_count += 1
-                    log("✅ Oferta publicada com sucesso.")
-                else:
-                    log("⚠️ Falha no envio da oferta.")
-
-                processed_ids.add(offer["id"])
+                    processed_ids.add(offer["id"])
+                    
+                # Deleta a imagem logo após usar para economizar espaço
                 Path(img_path).unlink(missing_ok=True)
-
-                if idx < len(new_offers):
-                    human_delay(1.0, 2.0)
-
+                
             except Exception as e:
-                log(f"⚠️ Erro inesperado nesta oferta: {e}")
-                processed_ids.add(offer["id"])
+                log(f"❌ Erro processando oferta {offer['id']}: {e}")
 
-        history["ids"] = list(processed_ids)[-MAX_HISTORY_SIZE:]
+        # Salva histórico apenas das que foram enviadas com sucesso
+        history["ids"] = list(processed_ids)
         save_history(history)
+        
+        log(f"\n✅ Fim. {success_count} ofertas processadas com sucesso.")
 
-        log(f"\n🏁 Finalizado. Sucessos: {success_count}/{len(new_offers)}")
-
-    except WebDriverException as e:
-        log(f"❌ Erro do Chrome/WebDriver: {e}")
-        save_debug_text("webdriver_error", str(e))
     except Exception as e:
-        log(f"❌ Erro geral: {e}")
-        save_debug_text("general_error", str(e))
+        log(f"💥 Erro fatal: {e}")
     finally:
         if driver:
             try:
                 driver.quit()
-                log("🧹 Driver encerrado.")
-            except Exception as e:
-                log(f"⚠️ Erro ao fechar driver: {e}")
-
+            except:
+                pass
 
 if __name__ == "__main__":
     main()
