@@ -21,7 +21,7 @@ jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 6 # Aumentado levemente porque evasão exige delays maiores
 
     steps:
       - name: 📥 Baixar código
@@ -47,15 +47,18 @@ jobs:
             cat historico_leouol.json
           fi
 
-      - name: 🌐 Garantir Chrome
+      - name: 🌐 Garantir Chrome e Xvfb
         shell: bash
         run: |
+          # Instalando o Xvfb para rodar o Chrome fora do modo headless
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          
           if command -v google-chrome >/dev/null 2>&1; then
             echo "✅ Chrome já disponível:"
             google-chrome --version
           else
             echo "⚠️ Chrome não encontrado. Instalando..."
-            sudo apt-get update
             sudo apt-get install -y google-chrome-stable
             google-chrome --version
           fi
@@ -73,7 +76,8 @@ jobs:
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         shell: bash
         run: |
-          python bot_leouol.py
+          # A MÁGICA: Rode o bot DENTRO do Xvfb (Display virtual)
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" python bot_leouol.py
 
       - name: 💾 Salvar histórico no repositório
         if: always()
