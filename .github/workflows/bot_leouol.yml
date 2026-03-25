@@ -2,7 +2,7 @@ name: BOT LEOUOL
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/20 * * * *"  # A cada 20 minutos
   workflow_dispatch:
 
 concurrency:
@@ -12,16 +12,11 @@ concurrency:
 permissions:
   contents: write
 
-env:
-  PYTHONUNBUFFERED: "1"
-  PIP_DISABLE_PIP_VERSION_CHECK: "1"
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-
 jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 8
 
     steps:
       - name: 📥 Baixar código
@@ -41,26 +36,18 @@ jobs:
         run: |
           if [ ! -f historico_leouol.json ]; then
             echo '{"ids": []}' > historico_leouol.json
-            echo "✅ Arquivo de histórico criado (vazio)"
+            echo "✅ Arquivo de histórico criado"
           else
             echo "✅ Arquivo de histórico encontrado"
             cat historico_leouol.json
           fi
 
-      - name: 🌐 Garantir Chrome e Xvfb
+      - name: 🌐 Instalar Chrome
         shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb
-          
-          if command -v google-chrome >/dev/null 2>&1; then
-            echo "✅ Chrome já disponível:"
-            google-chrome --version
-          else
-            echo "⚠️ Chrome não encontrado. Instalando..."
-            sudo apt-get install -y google-chrome-stable
-            google-chrome --version
-          fi
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
 
       - name: 📦 Instalar dependências
         shell: bash
@@ -72,10 +59,8 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         shell: bash
-        run: |
-          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" python bot_leouol.py
+        run: python bot_leouol.py
 
       - name: 💾 Salvar histórico no repositório
         if: always()
