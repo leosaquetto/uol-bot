@@ -25,6 +25,7 @@ from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
 
 # ==============================================
 # CONFIG
@@ -47,13 +48,9 @@ LIST_WAIT_SECONDS = 15
 DETAIL_WAIT_SECONDS = 12
 PAGE_LOAD_TIMEOUT = 30
 
-# User-Agents modernos e variados para dificultar o fingerprint
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-]
+# User-Agent estático usado APENAS para a biblioteca requests baixar imagens.
+# O Selenium usará o User-Agent nativo do navegador instalado.
+REQUESTS_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
 
 # ==============================================
 # LOG / DEBUG
@@ -99,6 +96,19 @@ def ensure_env() -> None:
 def human_delay(min_s: float = 1.0, max_s: float = 2.5) -> None:
     time.sleep(random.uniform(min_s, max_s))
 
+def simulate_human_mouse(driver):
+    """Realiza movimentos erráticos de mouse para enganar verificações de bots."""
+    try:
+        body = driver.find_element(By.TAG_NAME, "body")
+        action = ActionChains(driver)
+        for _ in range(random.randint(2, 4)):
+            x_offset = random.randint(-100, 100)
+            y_offset = random.randint(-100, 100)
+            action.move_to_element_with_offset(body, x_offset, y_offset).perform()
+            time.sleep(random.uniform(0.1, 0.4))
+    except Exception:
+        pass
+
 def build_http_session() -> requests.Session:
     session = requests.Session()
     retry = Retry(
@@ -115,7 +125,7 @@ def build_http_session() -> requests.Session:
     session.mount("https://", adapter)
     session.headers.update(
         {
-            "User-Agent": random.choice(USER_AGENTS),
+            "User-Agent": REQUESTS_USER_AGENT,
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
         }
     )
@@ -257,7 +267,6 @@ def setup_driver():
     # Técnicas de Evasão
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-infobars")
     
@@ -268,10 +277,10 @@ def setup_driver():
     
     options.add_argument("--lang=pt-BR")
     options.add_argument("--accept-lang=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7")
-    
-    # Randomiza o User-Agent
-    ua = random.choice(USER_AGENTS)
-    options.add_argument(f"--user-agent={ua}")
+
+    # ATENÇÃO: User-Agent removido de propósito! 
+    # Deixaremos o navegador e o undetected_chromedriver usarem o original.
+    # Discrepâncias aqui são a principal causa de bloqueio no Cloudflare.
 
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--ignore-ssl-errors=yes")
@@ -285,18 +294,6 @@ def setup_driver():
         version_main=chrome_major,
     )
     
-    # Injeta JS para esconder variáveis que gritam "SOU UM ROBÔ"
-    driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
-        "source": """
-            Object.defineProperty(navigator, 'webdriver', {
-                get: () => undefined
-            });
-            window.navigator.chrome = {
-                runtime: {},
-            };
-        """
-    })
-
     driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
     return driver
 
@@ -324,7 +321,9 @@ def try_bypass_privacy_error(driver) -> None:
 def safe_get(driver, url: str, label: str) -> bool:
     try:
         driver.get(url)
-        human_delay(1.5, 3.0) # Espera humana mais natural
+        human_delay(1.5, 3.0) # Espera humana inicial
+        simulate_human_mouse(driver) # Movimento de mouse na tentativa de passar o challenge invisível
+        human_delay(0.5, 1.5)
 
         if is_privacy_error_page(driver):
             try_bypass_privacy_error(driver)
@@ -436,7 +435,7 @@ def extract_full_description(driver) -> str:
 def download_image(img_url: str) -> Optional[str]:
     try:
         headers = {
-            "User-Agent": random.choice(USER_AGENTS),
+            "User-Agent": REQUESTS_USER_AGENT,
             "Referer": "https://clube.uol.com.br/",
             "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
         }
@@ -666,6 +665,7 @@ def fetch_offers(driver) -> List[Dict[str, str]]:
     # Scroll para simular ação humana
     driver.execute_script("window.scrollBy(0, 500);")
     human_delay(1.0, 1.5)
+    simulate_human_mouse(driver)
     driver.execute_script("window.scrollBy(0, 500);")
     human_delay(1.0, 1.5)
 
@@ -733,6 +733,7 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
         return offer["preview_title"], None, "Descrição não disponível."
 
     human_delay(1.5, 2.5)
+    simulate_human_mouse(driver)
 
     try:
         WebDriverWait(driver, DETAIL_WAIT_SECONDS).until(
@@ -757,7 +758,7 @@ def process_offer(driver, offer: Dict[str, str]) -> Tuple[str, Optional[str], st
 def main():
     log("=" * 72)
     log("🤖 BOT LEOUOL - Clube UOL Ofertas")
-    log("📢 Modo PRO Evasão")
+    log("📢 Modo PRO Evasão (Corrigido UA & Moves)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 72)
 
