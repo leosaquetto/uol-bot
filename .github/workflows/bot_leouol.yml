@@ -21,7 +21,7 @@ jobs:
   run-bot:
     name: Buscar Ofertas
     runs-on: ubuntu-latest
-    timeout-minutes: 6 # Aumentado levemente porque evasão exige delays maiores
+    timeout-minutes: 6
 
     steps:
       - name: 📥 Baixar código
@@ -50,7 +50,6 @@ jobs:
       - name: 🌐 Garantir Chrome e Xvfb
         shell: bash
         run: |
-          # Instalando o Xvfb para rodar o Chrome fora do modo headless
           sudo apt-get update
           sudo apt-get install -y xvfb
           
@@ -76,7 +75,6 @@ jobs:
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         shell: bash
         run: |
-          # A MÁGICA: Rode o bot DENTRO do Xvfb (Display virtual)
           xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" python bot_leouol.py
 
       - name: 💾 Salvar histórico no repositório
@@ -92,23 +90,9 @@ jobs:
           fi
 
           git add historico_leouol.json
-
-          if git diff --staged --quiet; then
-            echo "📊 Histórico não mudou"
-            exit 0
+          if git diff-index --quiet HEAD; then
+            echo "Nenhuma mudança no histórico para commitar."
+          else
+            git commit -m "Atualiza histórico de ofertas [skip ci]"
+            git push
           fi
-
-          git commit -m "🤖 Atualiza histórico do bot [skip ci]"
-          git push
-          echo "✅ Histórico salvo no repositório!"
-
-      - name: 📎 Upload de debug
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bot-leouol-debug-${{ github.run_id }}
-          path: |
-            debug/**/*.txt
-            historico_leouol.json
-          if-no-files-found: ignore
-          retention-days: 3
