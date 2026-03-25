@@ -396,13 +396,57 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
         return None
 
 def send_description_comment(full_description: str, link: str, channel_message_id: int) -> bool:
-    """Envia descrição completa como comentário no formato original"""
+    """Envia descrição completa como comentário no grupo (com pescaria do ID)"""
+    log("⏳ Enviando comentário com descrição completa...")
+    
+    # Aguarda o Telegram processar o forward da mensagem para o grupo
+    log("⏳ Aguardando 3 segundos para o forward...")
+    time.sleep(3)
+    
+    # Busca o ID da mensagem no grupo
+    group_message_id = None
+    
+    try:
+        url_updates = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates"
+        
+        # Pega as últimas 10 atualizações
+        response = requests.get(url_updates, params={"limit": 10}, timeout=10)
+        updates = response.json()
+        
+        if updates.get("ok"):
+            # Procura de trás pra frente (mais recentes primeiro)
+            for update in reversed(updates.get("result", [])):
+                msg = update.get("message", {})
+                
+                # Verifica se é uma mensagem no grupo de comentários
+                chat_id = str(msg.get("chat", {}).get("id"))
+                if chat_id != str(GRUPO_COMENTARIOS_ID):
+                    continue
+                
+                # Verifica se é um forward automático do canal
+                is_automatic_forward = msg.get("is_automatic_forward", False)
+                forward_from_msg_id = msg.get("forward_from_message_id")
+                
+                # Se for o forward da nossa mensagem
+                if is_automatic_forward and forward_from_msg_id == channel_message_id:
+                    group_message_id = msg.get("message_id")
+                    log(f"✅ ID encontrado no grupo: {group_message_id}")
+                    break
+        
+        if not group_message_id:
+            log("⚠️ Não foi possível encontrar o ID da mensagem no grupo")
+            
+    except Exception as e:
+        log(f"⚠️ Erro ao buscar ID no grupo: {e}")
+    
+    # Monta o texto do comentário
     comment_text = (
         "📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
         f"{full_description}\n\n"
         f"🔗 <a href='{escape_html(link)}'>Link original</a>"
     )
     
+    # Prepara os dados para envio
     data = {
         "chat_id": GRUPO_COMENTARIOS_ID,
         "text": truncate_text(comment_text, MAX_COMMENT_LENGTH),
@@ -410,21 +454,26 @@ def send_description_comment(full_description: str, link: str, channel_message_i
         "disable_web_page_preview": True,
     }
     
-    if channel_message_id:
-        data["reply_parameters"] = json.dumps({"message_id": channel_message_id})
+    # Se encontrou o ID, adiciona como reply
+    if group_message_id:
+        data["reply_to_message_id"] = group_message_id
+        log(f"💬 Enviando comentário como reply ao ID {group_message_id}")
+    else:
+        log("💬 Enviando comentário sem reply (fallback)")
     
+    # Envia o comentário
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     
     try:
         response = requests.post(url, data=data, timeout=35)
         if response.ok:
-            log("✅ Comentário enviado")
+            log("✅ Comentário enviado com sucesso!")
             return True
         else:
-            log(f"⚠️ Erro: {response.text}")
+            log(f"❌ Erro ao enviar comentário: {response.text}")
             return False
     except Exception as e:
-        log(f"⚠️ Erro: {e}")
+        log(f"❌ Erro: {e}")
         return False
 
 # ==============================================
