@@ -2,7 +2,7 @@ name: BOT LEOUOL
 
 on:
   schedule:
-    - cron: "0 */12 * * *"  # A cada 12 horas (00:00 e 12:00 UTC)
+    - cron: "0 */3 * * *"  # A cada 12 horas (00:00 e 12:00 UTC)
   workflow_dispatch:
 
 concurrency:
