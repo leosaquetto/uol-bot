@@ -396,48 +396,60 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
         return None
 
 def send_description_comment(full_description: str, link: str, channel_message_id: int) -> bool:
-    """Envia descrição completa como comentário no grupo (com pescaria do ID)"""
+    """Envia descrição completa como comentário no grupo (com pescaria do ID adaptada)"""
     log("⏳ Enviando comentário com descrição completa...")
     
-    # Aguarda o Telegram processar o forward da mensagem para o grupo
-    log("⏳ Aguardando 3 segundos para o forward...")
-    time.sleep(3)
-    
-    # Busca o ID da mensagem no grupo
     group_message_id = None
+    max_retries = 3
     
-    try:
-        url_updates = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates"
+    # Loop de retentativas para dar tempo do Telegram fazer o encaminhamento automático
+    for attempt in range(max_retries):
+        log(f"⏳ Aguardando 3 segundos para o forward (Tentativa {attempt+1}/{max_retries})...")
+        time.sleep(3)
         
-        # Pega as últimas 10 atualizações
-        response = requests.get(url_updates, params={"limit": 10}, timeout=10)
-        updates = response.json()
-        
-        if updates.get("ok"):
-            # Procura de trás pra frente (mais recentes primeiro)
-            for update in reversed(updates.get("result", [])):
-                msg = update.get("message", {})
-                
-                # Verifica se é uma mensagem no grupo de comentários
-                chat_id = str(msg.get("chat", {}).get("id"))
-                if chat_id != str(GRUPO_COMENTARIOS_ID):
-                    continue
-                
-                # Verifica se é um forward automático do canal
-                is_automatic_forward = msg.get("is_automatic_forward", False)
-                forward_from_msg_id = msg.get("forward_from_message_id")
-                
-                # Se for o forward da nossa mensagem
-                if is_automatic_forward and forward_from_msg_id == channel_message_id:
-                    group_message_id = msg.get("message_id")
-                    log(f"✅ ID encontrado no grupo: {group_message_id}")
-                    break
-        
-        if not group_message_id:
-            log("⚠️ Não foi possível encontrar o ID da mensagem no grupo")
+        try:
+            url_updates = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates"
             
-    except Exception as e:
-        log(f"⚠️ Erro ao buscar ID no grupo: {e}")
+            # Removido o limit=10 para não correr risco de a mensagem ficar fora do buffer recente
+            response = requests.get(url_updates, timeout=10)
+            updates = response.json()
+            
+            if updates.get("ok"):
+                # Procura de trás pra frente (mais recentes primeiro)
+                for update in reversed(updates.get("result", [])):
+                    msg = update.get("message", {})
+                    
+                    # Verifica se é uma mensagem no grupo de comentários
+                    chat_id = str(msg.get("chat", {}).get("id"))
+                    if chat_id != str(GRUPO_COMENTARIOS_ID):
+                        continue
+                    
+                    # Verifica se é um forward automático do canal
+                    is_automatic_forward = msg.get("is_automatic_forward", False)
+                    
+                    # --- COMPATIBILIDADE COM A API TELEGRAM 7.0+ ---
+                    forward_from_msg_id = msg.get("forward_from_message_id")
+                    
+                    # Se não vier o ID antigo, procura no novo objeto forward_origin
+                    if not forward_from_msg_id and "forward_origin" in msg:
+                        origin = msg.get("forward_origin", {})
+                        if origin.get("type") == "channel":
+                            forward_from_msg_id = origin.get("message_id")
+                    
+                    # Se for o forward da nossa mensagem
+                    if is_automatic_forward and forward_from_msg_id == channel_message_id:
+                        group_message_id = msg.get("message_id")
+                        break
+                        
+        except Exception as e:
+            log(f"⚠️ Erro ao buscar ID no grupo: {e}")
+            
+        if group_message_id:
+            log(f"✅ ID encontrado no grupo: {group_message_id}")
+            break
+
+    if not group_message_id:
+        log("⚠️ Não foi possível encontrar o ID da mensagem no grupo")
     
     # Monta o texto do comentário
     comment_text = (
