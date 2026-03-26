@@ -1,0 +1,333 @@
+name: BOT LEOUOL - Consumer
+
+on:
+  push:
+    paths:
+      - 'pending_offers.json'  # Quando Scriptable adiciona ofertas
+  schedule:
+    - cron: "*/10 * * * *"  # A cada 10 minutos também verifica
+  workflow_dispatch:
+
+concurrency:
+  group: bot-leouol
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  process-offers:
+    name: Processar e Enviar Ofertas
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Baixar código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Instalar dependências
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: 🤖 Processar ofertas pendentes
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
+        run: |
+          python - << 'EOF'
+import json
+import requests
+import os
+import time
+import re
+from pathlib import Path
+from bs4 import BeautifulSoup
+
+# ==============================================
+# CONFIGURAÇÕES
+# ==============================================
+TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
+TELEGRAM_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
+GRUPO_COMENTARIOS_ID = os.environ.get('GRUPO_COMENTARIO_ID', '-1003802235343')
+OFFERS_FILE = 'pending_offers.json'
+HISTORY_FILE = 'historico_leouol.json'
+MAX_COMMENT_LENGTH = 4096
+
+# User-Agents para download
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+]
+
+# ==============================================
+# FUNÇÕES UTILITÁRIAS
+# ==============================================
+def log(msg):
+    print(f"[{__import__('datetime').datetime.now().strftime('%H:%M:%S')}] {msg}")
+
+def escape_html(text):
+    if not text:
+        return ""
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;")
+
+def normalize_spaces(text):
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", text).strip()
+
+def truncate_text(text, max_len, suffix="..."):
+    if len(text) <= max_len:
+        return text
+    if max_len <= len(suffix):
+        return suffix[:max_len]
+    return text[:max_len - len(suffix)] + suffix
+
+# ==============================================
+# EXTRAÇÃO DE DETALHES DA OFERTA
+# ==============================================
+def extract_offer_details(url, preview_title):
+    """Extrai título, validade e descrição da página da oferta"""
+    headers = {
+        "User-Agent": __import__('random').choice(USER_AGENTS),
+        "Referer": "https://clube.uol.com.br/",
+        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, timeout=15)
+        if response.status_code != 200:
+            return preview_title, None, "Descrição não disponível"
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Título
+        h1 = soup.find('h1')
+        page_title = normalize_spaces(h1.text) if h1 else preview_title
+        
+        # Validade
+        validity = None
+        body_text = soup.get_text()
+        patterns = [
+            r"[Bb]enefício válido de[^.!?\n]*[.!?]?",
+            r"[Vv]álido até[^.!?\n]*[.!?]?",
+            r"\d{2}/\d{2}/\d{4}.*?\d{2}/\d{2}/\d{4}",
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, body_text)
+            if match:
+                validity = normalize_spaces(match.group(0))
+                break
+        
+        # Descrição completa (texto puro)
+        description_parts = []
+        seen = set()
+        
+        selectors = [
+            ".partner-description",
+            ".benefit-description",
+            ".offer-description",
+            "[class*='descricao']",
+            "p"
+        ]
+        
+        for selector in selectors:
+            elements = soup.select(selector)
+            for elem in elements:
+                text = normalize_spaces(elem.get_text())
+                if text and len(text) > 30:
+                    key = text[:100].lower()
+                    if key not in seen:
+                        seen.add(key)
+                        description_parts.append(text)
+        
+        full_description = "\n\n".join(description_parts) if description_parts else "Descrição detalhada não disponível."
+        full_description = truncate_text(full_description, MAX_COMMENT_LENGTH - 150, "...")
+        
+        return page_title, validity, full_description
+        
+    except Exception as e:
+        log(f"  ⚠️ Erro ao extrair detalhes: {e}")
+        return preview_title, None, "Descrição não disponível"
+
+# ==============================================
+# ENVIO PARA TELEGRAM
+# ==============================================
+def send_photo(img_url, caption):
+    """Baixa imagem e envia para o canal"""
+    try:
+        # Baixa imagem
+        headers = {
+            "User-Agent": __import__('random').choice(USER_AGENTS),
+            "Referer": "https://clube.uol.com.br/"
+        }
+        img_response = requests.get(img_url, headers=headers, timeout=15)
+        if img_response.status_code != 200:
+            log(f"  ⚠️ Falha ao baixar imagem: {img_response.status_code}")
+            return None
+        
+        # Envia para o Telegram
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
+        files = {'photo': ('image.jpg', img_response.content)}
+        data = {
+            'chat_id': TELEGRAM_CHAT_ID,
+            'caption': caption,
+            'parse_mode': 'HTML'
+        }
+        response = requests.post(url, data=data, files=files, timeout=30)
+        
+        if response.ok:
+            result = response.json()
+            return result.get('result', {}).get('message_id')
+        else:
+            log(f"  ❌ Erro ao enviar: {response.text}")
+            return None
+            
+    except Exception as e:
+        log(f"  ❌ Erro: {e}")
+        return None
+
+def send_comment(description, link, message_id):
+    """Envia descrição completa como comentário"""
+    comment_text = (
+        "📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n"
+        f"{description}\n\n"
+        f"🔗 <a href='{escape_html(link)}'>Link original</a>"
+    )
+    
+    data = {
+        "chat_id": GRUPO_COMENTARIOS_ID,
+        "text": truncate_text(comment_text, MAX_COMMENT_LENGTH),
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+        "reply_to_message_id": message_id
+    }
+    
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    
+    try:
+        response = requests.post(url, data=data, timeout=35)
+        if response.ok:
+            return True
+        else:
+            log(f"  ⚠️ Erro no comentário: {response.text}")
+            return False
+    except Exception as e:
+        log(f"  ❌ Erro: {e}")
+        return False
+
+# ==============================================
+# PROCESSAMENTO PRINCIPAL
+# ==============================================
+log("=" * 60)
+log("🤖 BOT LEOUOL - Consumer")
+log("=" * 60)
+
+# Verifica se há ofertas pendentes
+if not os.path.exists(OFFERS_FILE):
+    log("📭 Nenhuma oferta pendente")
+    exit(0)
+
+with open(OFFERS_FILE, 'r') as f:
+    data = json.load(f)
+
+offers = data.get('offers', [])
+
+if not offers:
+    log("📭 Nenhuma oferta pendente")
+    exit(0)
+
+log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
+
+# Carrega histórico para não enviar duplicado
+history = {"ids": []}
+if os.path.exists(HISTORY_FILE):
+    with open(HISTORY_FILE, 'r') as f:
+        history = json.load(f)
+
+seen_ids = set(history.get('ids', []))
+
+success_count = 0
+processed_ids = set(seen_ids)
+
+for idx, offer in enumerate(offers, 1):
+    log(f"\n{'=' * 50}")
+    log(f"📦 Oferta {idx}/{len(offers)}")
+    log(f"🏷️ {offer['preview_title'][:80]}")
+    
+    # Verifica se já foi enviada
+    if offer['id'] in seen_ids:
+        log("  ⏭️ Oferta já enviada anteriormente, ignorando")
+        continue
+    
+    # Verifica imagem
+    if not offer.get('img_url'):
+        log("  ⚠️ Sem imagem, ignorando")
+        processed_ids.add(offer['id'])
+        continue
+    
+    # Extrai detalhes da página da oferta
+    page_title, validity, full_description = extract_offer_details(
+        offer['link'], offer['preview_title']
+    )
+    
+    # Monta caption
+    caption_parts = [f"<b>{escape_html(page_title)}</b>"]
+    if validity:
+        caption_parts.append(f"📅 {escape_html(validity)}")
+    caption_parts.append(f"🔗 <a href='{escape_html(offer['link'])}'>Acessar oferta</a>")
+    caption_parts.append("💬 Veja os detalhes completos nos comentários abaixo")
+    caption = "\n\n".join(caption_parts)
+    
+    # Envia foto
+    log("  📤 Enviando...")
+    message_id = send_photo(offer['img_url'], caption)
+    
+    if message_id:
+        # Envia comentário
+        success = send_comment(full_description, offer['link'], message_id)
+        if success:
+            success_count += 1
+            processed_ids.add(offer['id'])
+            log(f"  ✅ Oferta {idx} enviada com sucesso!")
+        else:
+            log(f"  ⚠️ Foto enviada mas comentário falhou")
+            processed_ids.add(offer['id'])
+    else:
+        log(f"  ❌ Falha ao enviar foto")
+    
+    time.sleep(2)
+
+# Atualiza histórico
+history['ids'] = list(processed_ids)
+with open(HISTORY_FILE, 'w') as f:
+    json.dump(history, f, ensure_ascii=False, indent=2)
+
+log(f"\n✅ Fim. {success_count}/{len(offers)} ofertas enviadas.")
+EOF
+
+      - name: 💾 Limpar ofertas processadas
+        if: always()
+        shell: bash
+        run: |
+          git config --global user.email "bot@leouol.com"
+          git config --global user.name "BOT LEOUOL"
+          
+          # Limpa o arquivo de pendentes
+          echo '{"last_update": "", "offers": []}' > pending_offers.json
+          
+          git add pending_offers.json historico_leouol.json
+          if git diff-index --quiet HEAD; then
+            echo "Nenhuma mudança para commitar"
+          else
+            git commit -m "Limpa ofertas processadas [skip ci]"
+            git push
+          fi
