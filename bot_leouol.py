@@ -88,14 +88,18 @@ def load_history() -> Dict[str, List[str]]:
     if not path.exists(): return {"ids": []}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-        ids = [get_offer_id(str(x)) for x in data.get("ids", []) if isinstance(data.get("ids", []), list)]
+        ids = data.get("ids", [])
+        if not isinstance(ids, list):
+            return {"ids": []}
+        ids = [get_offer_id(str(x)) for x in ids]
         return {"ids": list(dict.fromkeys(ids))[-MAX_HISTORY_SIZE:]}
     except Exception:
         return {"ids": []}
 
 def save_history(history: Dict[str, List[str]]) -> bool:
     try:
-        ids = list(dict.fromkeys([get_offer_id(str(x)) for x in history.get("ids", [])]))[-MAX_HISTORY_SIZE:]
+        ids = [get_offer_id(str(x)) for x in history.get("ids", [])]
+        ids = list(dict.fromkeys(ids))[-MAX_HISTORY_SIZE:]
         Path(HISTORY_FILE).write_text(json.dumps({"ids": ids}, ensure_ascii=False, indent=2), encoding="utf-8")
         log(f"✅ Histórico salvo: {len(ids)} IDs")
         return True
@@ -157,7 +161,6 @@ if not IS_CONSUMER:
         except:
             return "Descrição detalhada não disponível."
 
-    # SOLUÇÃO DA IMAGEM: Filtra 'beneficios' e ignora 'parceiros'
     def extract_offer_image(container) -> Optional[str]:
         try:
             imgs = container.find_elements(By.CSS_SELECTOR, "img")
@@ -167,11 +170,9 @@ if not IS_CONSUMER:
                 src = img.get_attribute("data-src") or img.get_attribute("src")
                 if not src or "data:image" in src: continue
                 
-                # Se achou a imagem certa da pasta beneficios, retorna na hora!
                 if "beneficios/" in src:
                     return src if not src.startswith("//") else "https:" + src
                 
-                # Guarda as que NÃO são da logo (parceiros) como plano B
                 if "parceiros/" not in src:
                     fallback_img = src if not src.startswith("//") else "https:" + src
             
@@ -187,19 +188,16 @@ if not IS_CONSUMER:
             driver.get(url)
             human_delay(2, 4)
             
-            # Busca containers baseados nas suas novas seleções!
             containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio, [data-categoria='Ingressos Exclusivos'], .item")
             log(f"📦 Containers encontrados nesta página: {len(containers)}")
             
             for container in containers:
                 try:
-                    # TÍTULO
                     title_elem = container.find_elements(By.CSS_SELECTOR, ".titulo, h2, h3")
                     if not title_elem: continue
                     preview_title = normalize_spaces(title_elem[0].text)
                     if not preview_title: continue
                     
-                    # LINK (SOLUÇÃO DO LINK VAZIO: Foco em 'a.btn' ou no href do card)
                     link_elem = container.find_elements(By.CSS_SELECTOR, "a.btn, .btn")
                     if not link_elem:
                         link_elem = container.find_elements(By.CSS_SELECTOR, "a")
@@ -213,7 +211,6 @@ if not IS_CONSUMER:
                     if offer_id in seen_ids: continue
                     seen_ids.add(offer_id)
                     
-                    # IMAGEM
                     img_url = extract_offer_image(container)
                     
                     offers.append({
@@ -232,7 +229,7 @@ if not IS_CONSUMER:
     def process_offer_details(driver, offer: Dict) -> Tuple[str, Optional[str], str]:
         try:
             driver.get(offer['link'])
-            human_delay(1, 2) # Muito mais rápido agora
+            human_delay(1, 2)
             
             page_title = extract_page_title(driver, offer['preview_title'])
             validity = extract_validity(driver)
@@ -312,8 +309,6 @@ def download_image(img_url: str) -> Optional[str]:
 def build_caption(title: str, validity: Optional[str], link: str) -> str:
     parts = [f"<b>{escape_html(title)}</b>"]
     if validity: parts.append(f"📅 {escape_html(validity)}")
-    
-    # AGORA O LINK É GARANTIDO:
     parts.append(f"🔗 <a href='{escape_html(link)}'>Acessar oferta</a>")
     parts.append(f"💬 Veja os detalhes completos nos comentários abaixo")
     return truncate_text("\n\n".join(parts), MAX_CAPTION_LENGTH)
@@ -351,10 +346,109 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
     except: return False
 
 # ==============================================
+# FUNÇÃO CONSUMER (para processar pending_offers.json)
+# ==============================================
+def run_consumer():
+    log("=" * 70)
+    log("🤖 BOT LEOUOL - Consumer (Processando pendentes)")
+    log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+    log("=" * 70)
+    
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        log("❌ Variáveis TELEGRAM_TOKEN e TELEGRAM_CHAT_ID são obrigatórias")
+        return
+    
+    history = load_history()
+    seen_ids = set(history.get("ids", []))
+    
+    pending_file = Path("pending_offers.json")
+    if not pending_file.exists():
+        log("📭 Nenhuma oferta pendente")
+        return
+    
+    with open(pending_file, 'r') as f:
+        data = json.load(f)
+    
+    offers = data.get("offers", [])
+    if not offers:
+        log("📭 Nenhuma oferta pendente")
+        return
+    
+    log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
+    
+    processed_ids = set(seen_ids)
+    success_count = 0
+    failed_ids = []
+    
+    for idx, offer in enumerate(offers, 1):
+        log(f"\n{'=' * 50}")
+        log(f"📦 Oferta {idx}/{len(offers)}")
+        log(f"🏷️ {offer.get('title', offer.get('preview_title', ''))[:80]}")
+        
+        if offer["id"] in seen_ids:
+            log("  ⏭️ Oferta já enviada anteriormente")
+            processed_ids.add(offer["id"])
+            continue
+        
+        if not offer.get("img_url"):
+            log("  ⚠️ Sem imagem, ignorando")
+            processed_ids.add(offer["id"])
+            continue
+        
+        img_path = download_image(offer["img_url"])
+        if not img_path:
+            log("  ⚠️ Falha ao baixar imagem")
+            processed_ids.add(offer["id"])
+            continue
+        
+        page_title = offer.get("title", offer.get("preview_title", "Oferta"))
+        validity = offer.get("validity")
+        full_description = offer.get("description", "Descrição não disponível")
+        
+        caption = build_caption(page_title, validity, offer["link"])
+        message_id = send_photo_to_channel(img_path, caption)
+        
+        if message_id:
+            success = send_description_comment(full_description, offer["link"], message_id)
+            if success:
+                success_count += 1
+                processed_ids.add(offer["id"])
+                log(f"  ✅ Oferta {idx} enviada!")
+            else:
+                log(f"  ⚠️ Foto enviada mas comentário falhou")
+                processed_ids.add(offer["id"])
+        else:
+            log(f"  ❌ Falha ao enviar foto")
+            failed_ids.append(offer["id"])
+        
+        try:
+            Path(img_path).unlink(missing_ok=True)
+        except:
+            pass
+        
+        time.sleep(2)
+    
+    history["ids"] = list(processed_ids)
+    save_history(history)
+    
+    remaining_offers = [o for o in offers if o["id"] in failed_ids]
+    
+    if remaining_offers:
+        log(f"⚠️ {len(remaining_offers)} ofertas falharam, mantendo no pending")
+        with open(pending_file, 'w') as f:
+            json.dump({"last_update": datetime.now().isoformat(), "offers": remaining_offers}, f, indent=2)
+    else:
+        with open(pending_file, 'w') as f:
+            json.dump({"last_update": datetime.now().isoformat(), "offers": []}, f, indent=2)
+        log("✅ Arquivo pending_offers.json limpo")
+    
+    log(f"\n✅ Fim. {success_count}/{len(offers)} ofertas enviadas.")
+
+# ==============================================
 # ENTRY POINT
 # ==============================================
 if __name__ == "__main__":
-    if IS_CONSUMER:
+    if len(sys.argv) > 1 and sys.argv[1] == "--pending":
         run_consumer()
     else:
         run_fallback_scraper()
