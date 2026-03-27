@@ -1,8 +1,8 @@
-name: BOT LEOUOL
+name: BOT LEOUOL - Fallback (5 min)
 
 on:
   schedule:
-    - cron: "17 18 * * *"  # 18:17 UTC = 15:17 Brasília - Horário "quebrado"
+    - cron: "*/5 * * * *"  # ⬅️ A CADA 5 MINUTOS (mínimo do GitHub)
   workflow_dispatch:
 
 concurrency:
@@ -14,9 +14,9 @@ permissions:
 
 jobs:
   run-bot:
-    name: Buscar Ofertas
+    name: Buscar Ofertas (Ingressos)
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 3
 
     steps:
       - name: 📥 Baixar código
@@ -31,15 +31,11 @@ jobs:
           python-version: "3.11"
           cache: "pip"
 
-      - name: 🔄 Restaurar ou criar histórico
+      - name: 🔄 Restaurar histórico
         shell: bash
         run: |
           if [ ! -f historico_leouol.json ]; then
             echo '{"ids": []}' > historico_leouol.json
-            echo "✅ Arquivo de histórico criado"
-          else
-            echo "✅ Arquivo de histórico encontrado"
-            cat historico_leouol.json
           fi
 
       - name: 🌐 Instalar Chrome
@@ -47,37 +43,25 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
-          google-chrome --version
 
       - name: 📦 Instalar dependências
         shell: bash
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install requests selenium webdriver-manager
 
-      - name: 🤖 Executar BOT LEOUOL
+      - name: 🤖 Executar BOT
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         shell: bash
         run: python bot_leouol.py
 
-      - name: 💾 Salvar histórico no repositório
+      - name: 💾 Salvar histórico
         if: always()
         shell: bash
         run: |
           git config --global user.email "bot@leouol.com"
           git config --global user.name "BOT LEOUOL"
-
-          if [ ! -f historico_leouol.json ]; then
-            echo "❌ Arquivo de histórico não encontrado"
-            exit 0
-          fi
-
           git add historico_leouol.json
-          if git diff-index --quiet HEAD; then
-            echo "Nenhuma mudança no histórico para commitar."
-          else
-            git commit -m "Atualiza histórico de ofertas [skip ci]"
-            git push
-          fi
+          git diff-index --quiet HEAD || git commit -m "Atualiza histórico [skip ci]" && git push
