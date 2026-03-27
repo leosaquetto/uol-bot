@@ -1,11 +1,11 @@
 # bot_leouol.py
 # consumer do pending_offers.json + envio para telegram
-# versão final:
+# versão final estável:
 # - processa tudo que estiver no pending
-# - localiza somente o espelhamento automático real no grupo vinculado
-# - espera de 3 em 3 segundos, até 6 tentativas
+# - tenta localizar o espelhamento real por forward_origin / forward_from_message_id
+# - fallback por caption, mas SOMENTE em mensagens recentes da janela atual
 # - envia logo do parceiro por upload local
-# - envia descrição completa como reply da mensagem espelhada
+# - envia descrição completa em reply na thread correta
 # - limpa pending apenas do que foi enviado com sucesso
 # - compatível com: python bot_leouol.py --pending
 
@@ -42,6 +42,8 @@ USER_AGENT = (
     "Chrome/123.0.0.0 Safari/537.36"
 )
 
+# janela de tolerância para achar a mensagem espelhada recente
+RECENT_WINDOW_SECONDS = 90
 
 # ==============================================
 # utilidades
@@ -112,6 +114,15 @@ def safe_json_load(path: Path, fallback):
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return fallback
+
+
+def strip_html_for_compare(text: Optional[str]) -> str:
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", " ", str(text))
+    text = unescape(text)
+    text = re.sub(r"\s+", " ", text).strip().lower()
+    return text
 
 
 # ==============================================
@@ -288,8 +299,8 @@ def build_caption(title: str, validity: Optional[str], link: str) -> str:
     if validity:
         parts.append(f"📅 {escape_html(validity)}")
 
-    parts.append(f"🔗 <a href=\"{escape_html(link)}\">Acessar oferta</a>")
-    parts.append("💬 Veja os detalhes completos nos comentários abaixo")
+    parts.append(f"🔗 <a href=\"{escape_html(link)}\">acessar oferta</a>")
+    parts.append("💬 veja os detalhes completos nos comentários abaixo")
 
     return truncate_text("\n\n".join(parts), MAX_CAPTION_LENGTH)
 
@@ -302,7 +313,7 @@ def build_comment_text(description: str, validity: Optional[str], link: str) -> 
     if validity:
         parts.extend(["", f"📅 {escape_html(validity)}"])
 
-    parts.extend(["", f"🔗 <a href=\"{escape_html(link)}\">Link original</a>"])
+    parts.extend(["", f"🔗 <a href=\"{escape_html(link)}\">link original</a>"])
 
     return truncate_text("\n".join(parts), MAX_COMMENT_LENGTH)
 
@@ -351,17 +362,23 @@ def _extract_origin_message_id(msg: Dict) -> Optional[int]:
 
 def find_group_mirror_message_id(
     channel_message_id: int,
+    expected_caption: str,
+    sent_at_ts: int,
     attempts: int = 6,
     delay: int = 3,
 ) -> Optional[int]:
     """
-    localiza a mensagem espelhada no grupo vinculado.
-    só aceita o forward automático real do post recém-enviado.
+    ordem:
+    1. tenta pelo metadado real de forward
+    2. fallback por caption, mas apenas em mensagens recentes da janela atual
     """
 
+    expected_caption_cmp = strip_html_for_compare(expected_caption)
+
     for attempt in range(1, attempts + 1):
+        wait_time = 3 if attempt < attempts else 5
         log(f"   ⏳ aguardando espelhamento no grupo ({attempt}/{attempts})...")
-        time.sleep(delay)
+        time.sleep(wait_time)
 
         try:
             response = requests.get(
@@ -376,6 +393,8 @@ def find_group_mirror_message_id(
             data = response.json()
             updates = data.get("result", [])
 
+            recent_candidates = []
+
             for update in reversed(updates):
                 for key in ("message", "edited_message", "channel_post", "edited_channel_post"):
                     msg = update.get(key, {})
@@ -386,13 +405,42 @@ def find_group_mirror_message_id(
                     if chat_id != str(GRUPO_COMENTARIO_ID):
                         continue
 
+                    msg_id = msg.get("message_id")
+                    msg_date = int(msg.get("date", 0))
+                    if msg_date < sent_at_ts - 10:
+                        continue
+                    if msg_date > sent_at_ts + RECENT_WINDOW_SECONDS:
+                        continue
+
                     is_auto = msg.get("is_automatic_forward", False)
                     origin_message_id = _extract_origin_message_id(msg)
-                    msg_id = msg.get("message_id")
 
                     if is_auto and origin_message_id == channel_message_id:
                         log(f"   ✅ id espelhado encontrado no grupo por forward correto: {msg_id}")
                         return msg_id
+
+                    caption = msg.get("caption") or msg.get("text") or ""
+                    caption_cmp = strip_html_for_compare(caption)
+
+                    recent_candidates.append({
+                        "message_id": msg_id,
+                        "date": msg_date,
+                        "caption_cmp": caption_cmp,
+                    })
+
+            # fallback seguro: só mensagens recentes da janela atual
+            for candidate in recent_candidates:
+                cap = candidate["caption_cmp"]
+                if not cap or not expected_caption_cmp:
+                    continue
+
+                if cap == expected_caption_cmp:
+                    log(f"   ✅ id espelhado encontrado no grupo por caption recente exata: {candidate['message_id']}")
+                    return candidate["message_id"]
+
+                if expected_caption_cmp[:120] and expected_caption_cmp[:120] in cap:
+                    log(f"   ✅ id espelhado encontrado no grupo por caption recente aproximada: {candidate['message_id']}")
+                    return candidate["message_id"]
 
         except Exception as e:
             log(f"   ⚠️ erro ao consultar getUpdates: {e}")
@@ -441,17 +489,14 @@ def send_description_comment(
     validity: Optional[str],
     link: str,
     channel_message_id: int,
+    caption: str,
+    sent_at_ts: int,
     partner_img_url: Optional[str] = None,
 ) -> bool:
-    """
-    fluxo:
-    1. acha a mensagem espelhada real no grupo
-    2. opcionalmente manda a logo do parceiro em reply
-    3. manda a descrição completa em reply
-    """
-
     group_msg_id = find_group_mirror_message_id(
         channel_message_id=channel_message_id,
+        expected_caption=caption,
+        sent_at_ts=sent_at_ts,
         attempts=6,
         delay=3,
     )
@@ -553,6 +598,7 @@ def run_consumer() -> None:
             continue
 
         caption = build_caption(title, validity, link)
+        sent_at_ts = int(time.time())
         channel_message_id = send_photo_to_channel(img_path, caption)
 
         try:
@@ -570,6 +616,8 @@ def run_consumer() -> None:
             validity=validity,
             link=link,
             channel_message_id=channel_message_id,
+            caption=caption,
+            sent_at_ts=sent_at_ts,
             partner_img_url=partner_img_url,
         )
 
