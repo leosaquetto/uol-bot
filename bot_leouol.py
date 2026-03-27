@@ -354,4 +354,7 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
 # ENTRY POINT
 # ==============================================
 if __name__ == "__main__":
-    run_fallback_scraper()
+    if IS_CONSUMER:
+        run_consumer()
+    else:
+        run_fallback_scraper()
