@@ -5,6 +5,7 @@
 # - aguarda e localiza SOMENTE pelo ID de encaminhamento automático
 # - usa apenas reply_to_message_id (sem message_thread_id)
 # - limpa pending apenas do que foi enviado com sucesso
+# NOVO: Encadeia Logo do Parceiro -> Descrição Completa nos comentários
 
 import json
 import os
@@ -267,7 +268,7 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
                 timeout=REQUEST_TIMEOUT,
             )
         if not response.ok:
-            log(f"   ❌ falha sendPhoto: {response.text}")
+            log(f"   ❌ falha sendPhoto (canal): {response.text}")
             return None
 
         data = response.json()
@@ -275,7 +276,33 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
         log(f"   ✅ foto enviada ao canal (message_id {message_id})")
         return message_id
     except Exception as e:
-        log(f"   ❌ erro sendPhoto: {e}")
+        log(f"   ❌ erro sendPhoto (canal): {e}")
+        return None
+
+
+def send_photo_to_group(img_path: str, reply_to_id: int) -> Optional[int]:
+    """Envia uma foto (logo) como reply nos comentários do grupo."""
+    try:
+        with open(img_path, "rb") as photo:
+            response = requests.post(
+                telegram_api("sendPhoto"),
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "reply_to_message_id": reply_to_id,
+                },
+                files={"photo": photo},
+                timeout=REQUEST_TIMEOUT,
+            )
+        if not response.ok:
+            log(f"   ⚠️ falha ao postar logo no grupo: {response.text}")
+            return None
+
+        data = response.json()
+        message_id = data.get("result", {}).get("message_id")
+        log(f"   ✅ logo do parceiro postada no grupo (message_id {message_id})")
+        return message_id
+    except Exception as e:
+        log(f"   ⚠️ erro ao postar logo no grupo: {e}")
         return None
 
 
@@ -284,10 +311,6 @@ def find_group_mirror_message(
     attempts: int = 10,
     delay: float = 3.0,
 ) -> Optional[int]:
-    """
-    Localiza o ID da mensagem no grupo usando EXCLUSIVAMENTE
-    a origem do encaminhamento (forward_origin).
-    """
     last_update_id = None
 
     for attempt in range(1, attempts + 1):
@@ -347,35 +370,25 @@ def find_group_mirror_message(
     return None
 
 
-def send_description_comment(
+def send_text_comment(
     description: str,
     validity: Optional[str],
     link: str,
-    channel_message_id: int,
+    reply_to_id: int,
 ) -> bool:
-    mirror_id = find_group_mirror_message(
-        channel_message_id=channel_message_id,
-        attempts=10,
-        delay=3.0,
-    )
-
-    if not mirror_id:
-        log("   ❌ não foi possível localizar a mensagem espelhada no grupo. Mantendo no pending.")
-        return False
-
+    """Envia a descrição em texto respondendo a um ID específico da thread."""
     text = build_comment_text(description, validity, link)
 
-    # PAYLOAD ENXUTO: apenas reply_to_message_id
     data = {
         "chat_id": GRUPO_COMENTARIO_ID,
         "text": truncate_text(text, MAX_COMMENT_LENGTH),
         "parse_mode": "HTML",
         "disable_web_page_preview": True,
-        "reply_to_message_id": mirror_id,
+        "reply_to_message_id": reply_to_id,
     }
 
     try:
-        log(f"   💬 enviando comentário como reply ao ID {mirror_id}")
+        log(f"   💬 enviando texto de descrição como reply ao ID {reply_to_id}")
         resp = requests.post(
             telegram_api("sendMessage"),
             data=data,
@@ -383,14 +396,14 @@ def send_description_comment(
         )
 
         if resp.ok:
-            log("   ✅ comentário enviado com sucesso!")
+            log("   ✅ texto de descrição enviado com sucesso!")
             return True
 
-        log(f"   ❌ erro ao enviar comentário: {resp.text}")
+        log(f"   ❌ erro ao enviar texto de descrição: {resp.text}")
         return False
 
     except Exception as e:
-        log(f"   ❌ exceção ao enviar comentário: {e}")
+        log(f"   ❌ exceção ao enviar texto de descrição: {e}")
         return False
 
 # ==============================================
@@ -435,19 +448,19 @@ def run_consumer() -> None:
         log(f"🏷️ {title[:50]}")
 
         if not link or not img_url:
-            log("   ⚠️ oferta sem link ou imagem, mantendo no pending")
+            log("   ⚠️ oferta sem link ou imagem principal, mantendo no pending")
             failed_offers.append(offer)
             continue
 
         img_path = download_image(img_url)
         if not img_path:
-            log("   ⚠️ falha ao baixar imagem, mantendo no pending")
+            log("   ⚠️ falha ao baixar imagem principal, mantendo no pending")
             failed_offers.append(offer)
             continue
 
         caption = build_caption(title, validity, link)
         
-        # Envia foto ao canal
+        # 1. Envia foto (banner) ao canal principal
         channel_message_id = send_photo_to_channel(img_path, caption)
 
         try:
@@ -456,25 +469,56 @@ def run_consumer() -> None:
             pass
 
         if not channel_message_id:
-            log("   ❌ falha ao postar foto, mantendo no pending")
+            log("   ❌ falha ao postar foto no canal, mantendo no pending")
             failed_offers.append(offer)
             continue
 
-        # Envia comentário pro grupo
-        comment_ok = send_description_comment(
+        # 2. Localiza a mensagem espelhada no grupo de discussão
+        mirror_id = find_group_mirror_message(
+            channel_message_id=channel_message_id,
+            attempts=10,
+            delay=3.0,
+        )
+
+        if not mirror_id:
+            log("   ❌ não foi possível localizar o forward no grupo. Mantendo no pending.")
+            failed_offers.append(offer)
+            continue
+
+        # A partir daqui, nosso alvo primário para reply é o mirror_id
+        current_reply_target = mirror_id
+
+        # 3. Tenta baixar e enviar a logo do parceiro nos comentários
+        partner_img_url = offer.get("partner_img_url")
+        if partner_img_url:
+            logo_path = download_image(partner_img_url)
+            if logo_path:
+                logo_msg_id = send_photo_to_group(logo_path, current_reply_target)
+                if logo_msg_id:
+                    # Se postou a logo com sucesso, a descrição vai dar reply nela! (encadeamento)
+                    current_reply_target = logo_msg_id
+                
+                try:
+                    Path(logo_path).unlink(missing_ok=True)
+                except:
+                    pass
+
+        # 4. Envia o texto da descrição completa
+        comment_ok = send_text_comment(
             description=description,
             validity=validity,
             link=link,
-            channel_message_id=channel_message_id,
+            reply_to_id=current_reply_target,
         )
 
         if not comment_ok:
+            # Se falhou a descrição, aborta para tentar de novo no próximo run
             failed_offers.append(offer)
             continue
 
         processed_keys.add(offer_key)
         success_count += 1
-        log(f"   ✅ Oferta {index} concluída!")
+        log(f"   ✅ Oferta {index} concluída com sucesso na thread!")
         time.sleep(2)
 
     save_history({"ids": list(processed_keys)})
