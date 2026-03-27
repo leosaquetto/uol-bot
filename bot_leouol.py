@@ -56,10 +56,11 @@ def escape_html(text: str) -> str:
 
 def get_offer_id(link: str) -> str:
     try:
-        link_clean = link.split('?')[0]
-        return link_clean.rstrip('/').split('/')[-1]
+        # Retorna a URL COMPLETA como ID (sem query string)
+        parsed = urlparse(link)
+        return f"{parsed.scheme}://{parsed.netloc}{parsed.path}".rstrip('/')
     except:
-        return link
+        return link.split('?')[0]
 
 def load_history():
     path = Path(HISTORY_FILE)
