@@ -1,4 +1,4 @@
-# bot_leouol.py - Versão CORRIGIDA (com URLs completas e fallback de imagem)
+# bot_leouol.py - Versão Final com Normalização de IDs
 
 import sys
 import requests
@@ -8,11 +8,12 @@ import time
 import re
 import random
 import urllib3
+import unicodedata
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
-# Suprime os avisos de conexão insegura no terminal por usar verify=False
+# Suprime os avisos de conexão insegura
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ==============================================
@@ -38,6 +39,34 @@ HEADERS = {
 }
 
 # ==============================================
+# FUNÇÃO DE NORMALIZAÇÃO
+# ==============================================
+def normalize_slug(slug: str) -> str:
+    """Normaliza o slug para comparação (remove acentos, etc.)"""
+    # Remove acentos
+    slug = unicodedata.normalize('NFKD', slug).encode('ASCII', 'ignore').decode('ASCII')
+    # Tudo minúsculo
+    slug = slug.lower()
+    # Remove tudo que não é letra, número ou traço
+    slug = re.sub(r'[^a-z0-9-]', '', slug)
+    # Remove traços duplicados
+    slug = re.sub(r'-+', '-', slug)
+    # Remove traços no início e fim
+    slug = slug.strip('-')
+    return slug
+
+def get_offer_id(link: str) -> str:
+    """Retorna ID normalizado para comparação"""
+    try:
+        parsed = urlparse(link)
+        path_parts = parsed.path.rstrip('/').split('/')
+        slug = path_parts[-1] if path_parts else ''
+        return normalize_slug(slug)
+    except:
+        slug = link.split('?')[0].split('/')[-1] if '/' in link else link
+        return normalize_slug(slug)
+
+# ==============================================
 # FUNÇÕES UTILITÁRIAS
 # ==============================================
 def log(msg: str) -> None:
@@ -55,27 +84,22 @@ def escape_html(text: str) -> str:
     if not text: return ""
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;")
 
-def get_offer_id(link: str) -> str:
-    try:
-        # Retorna a URL COMPLETA como ID (sem query string)
-        parsed = urlparse(link)
-        return f"{parsed.scheme}://{parsed.netloc}{parsed.path}".rstrip('/')
-    except:
-        return link.split('?')[0]
-
 def load_history():
     path = Path(HISTORY_FILE)
     if not path.exists(): return {"ids": []}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
         ids = data.get("ids", [])
-        return {"ids": list(dict.fromkeys([get_offer_id(str(x)) for x in ids]))[-MAX_HISTORY_SIZE:]}
+        # Normaliza os IDs do histórico
+        normalized_ids = [get_offer_id(str(x)) for x in ids]
+        return {"ids": list(dict.fromkeys(normalized_ids))[-MAX_HISTORY_SIZE:]}
     except Exception:
         return {"ids": []}
 
 def save_history(history):
     try:
-        ids = list(dict.fromkeys([get_offer_id(str(x)) for x in history.get("ids", [])]))[-MAX_HISTORY_SIZE:]
+        # Salva os IDs originais (URLs completas)
+        ids = history.get("ids", [])
         Path(HISTORY_FILE).write_text(json.dumps({"ids": ids}, ensure_ascii=False, indent=2), encoding="utf-8")
         log(f"✅ Histórico salvo: {len(ids)} IDs")
         return True
@@ -87,7 +111,7 @@ def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
     return text[:max_len - len(suffix)] + suffix
 
 # ==============================================
-# SCRAPER - EXATAMENTE IGUAL AO SCRIPTABLE
+# SCRAPER
 # ==============================================
 def fetch_offers():
     offers = []
@@ -103,9 +127,8 @@ def fetch_offers():
         blocks = re.split(r'<div[^>]*data-categoria=[\'"]', html, flags=re.IGNORECASE)
         log(f"📦 Blocos encontrados: {len(blocks) - 1}")
         
-        for block in blocks[1:]:  # Pula o primeiro (cabeçalho)
+        for block in blocks[1:]:
             try:
-                # 1. LINK
                 link_match = re.search(r'<a[^>]*href="([^"]+)"', block, re.IGNORECASE)
                 if not link_match: continue
                 link = link_match.group(1)
@@ -115,7 +138,6 @@ def fetch_offers():
                 if link in seen_links: continue
                 seen_links.add(link)
                 
-                # 2. TÍTULO
                 title = ""
                 title_match = re.search(r'class="[^"]*titulo[^"]*"[^>]*>([\s\S]*?)</', block, re.IGNORECASE)
                 if title_match:
@@ -126,7 +148,6 @@ def fetch_offers():
                 
                 if not title: continue
                 
-                # 3. IMAGEM (Regex otimizado para aspas simples e duplas)
                 img_url = ""
                 img_matches = re.finditer(r'<img[^>]*data-src=[\'"]([^\'"]+)[\'"]', block, re.IGNORECASE)
                 srcs = [m.group(1) for m in img_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
@@ -143,6 +164,7 @@ def fetch_offers():
                 
                 offers.append({
                     "id": get_offer_id(link),
+                    "original_link": link,
                     "preview_title": title,
                     "link": link,
                     "img_url": img_url
@@ -163,13 +185,11 @@ def process_offer_details(offer):
         res = requests.get(offer['link'], headers=HEADERS, timeout=15, verify=False)
         html = res.text
         
-        # TÍTULO
         page_title = offer['preview_title']
         h2_match = re.search(r'<h2[^>]*>([\s\S]*?)</h2>', html, re.IGNORECASE)
         if h2_match:
             page_title = clean_text(re.sub(r'<[^>]+>', '', h2_match.group(1)))
             
-        # IMAGEM DETALHE (Plano B igual ao Scriptable)
         detail_img_url = ""
         img_detail_match = re.search(r'<img[^>]*class="[^"]*responsive[^"]*"[^>]*src=[\'"]([^\'"]+)[\'"]', html, re.IGNORECASE)
         if img_detail_match:
@@ -182,7 +202,6 @@ def process_offer_details(offer):
         if detail_img_url and detail_img_url.startswith("/"):
             detail_img_url = "https://clube.uol.com.br" + detail_img_url
 
-        # VALIDADE
         validity = None
         for pattern in [r"[Bb]enefício válido de[^.!?\n]*[.!?]?", r"[Vv]álido até[^.!?\n]*[.!?]?", r"\d{2}/\d{2}/\d{4}.*?\d{2}/\d{2}/\d{4}"]:
             match = re.search(pattern, html)
@@ -190,7 +209,6 @@ def process_offer_details(offer):
                 validity = clean_text(re.sub(r'<[^>]+>', '', match.group(0)))
                 break
                 
-        # DESCRIÇÃO
         full_desc = "Descrição detalhada não disponível."
         info_match = re.search(r'class="[^"]*info-beneficio[^"]*"[^>]*>([\s\S]*?)(?:<script|<footer|class="[^"]*box-compartilhar)', html, re.IGNORECASE)
         
@@ -200,15 +218,12 @@ def process_offer_details(offer):
             raw = re.sub(r'</p>', '\n\n', raw, flags=re.IGNORECASE)
             raw = re.sub(r'</div>', '\n', raw, flags=re.IGNORECASE)
             raw = re.sub(r'<li[^>]*>', '\n• ', raw, flags=re.IGNORECASE)
-            
             raw = re.sub(r'<[^>]+>', ' ', raw)
             raw = clean_text(raw)
             raw = re.sub(r'•\s+', '• ', raw)
-            
             lixo_idx = raw.find("Enviar cupons por e-mail")
             if lixo_idx != -1:
                 raw = raw[:lixo_idx].strip()
-                
             if len(raw) > 20:
                 full_desc = raw
                 
@@ -246,33 +261,25 @@ def send_photo_to_channel(img_path, caption):
     except: return None
 
 def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
-    """Envia descrição completa como comentário"""
-    
     log("   💬 Preparando comentário...")
-    
-    # Aguarda o forward do Telegram
     time.sleep(3)
     
-    # Tenta encontrar o ID da mensagem no grupo de comentários
     group_msg_id = None
     try:
         updates = requests.get(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates", timeout=10).json()
         for update in reversed(updates.get("result", [])):
             msg = update.get("message", {})
             if str(msg.get("chat", {}).get("id")) == str(GRUPO_COMENTARIOS_ID):
-                # API nova (Telegram 7.0+)
                 forward_origin = msg.get("forward_origin", {})
                 if forward_origin.get("type") == "channel" and forward_origin.get("message_id") == channel_msg_id:
                     group_msg_id = msg.get("message_id")
                     break
-                # API antiga (fallback)
                 if msg.get("forward_from_message_id") == channel_msg_id:
                     group_msg_id = msg.get("message_id")
                     break
     except Exception as e:
         log(f"   ⚠️ Erro ao buscar ID: {e}")
     
-    # Monta o texto do comentário
     comment_text = f"📋 <b>DESCRIÇÃO COMPLETA</b>\n\n{desc}\n\n🔗 <a href='{escape_html(link)}'>Link original</a>"
     
     data = {
@@ -291,10 +298,10 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
     try:
         response = requests.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage", data=data, timeout=35)
         if response.ok:
-            log(f"   ✅ Comentário enviado com sucesso!")
+            log(f"   ✅ Comentário enviado!")
             return True
         else:
-            log(f"   ❌ Erro no comentário: {response.text}")
+            log(f"   ❌ Erro: {response.text}")
             return False
     except Exception as e:
         log(f"   ❌ Erro: {e}")
@@ -305,7 +312,7 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
 # ==============================================
 def run_scraper():
     log("=" * 70)
-    log("🤖 BOT LEOUOL - Otimizado (Requests Puro + Regex + Fallback Imagem)")
+    log("🤖 BOT LEOUOL - Scraper (Normalizado)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 70)
     
@@ -324,26 +331,23 @@ def run_scraper():
     log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
     processed_ids = set(seen_ids)
     success_count = 0
-    failed_ids = []  # <-- ADICIONADO
+    failed_ids = []
     
     for idx, offer in enumerate(new_offers, 1):
         log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}: {offer['preview_title']}")
         
-        # 1. Abre os detalhes da oferta primeiro!
         page_title, validity, full_desc, detail_img_url = process_offer_details(offer)
-        
-        # 2. Tenta a imagem dos detalhes, se falhar usa a da página inicial
         final_img_url = detail_img_url or offer.get("img_url")
         
         if not final_img_url:
-            log("⚠️ Sem imagem na página inicial nem nos detalhes, pulando...")
-            failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
+            log("⚠️ Sem imagem, mantendo no pending")
+            failed_ids.append(offer["id"])
             continue
             
         img_path = download_image(final_img_url)
         if not img_path: 
-            log("⚠️ Falha ao baixar a imagem final, pulando...")
-            failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
+            log("⚠️ Falha ao baixar imagem, mantendo no pending")
+            failed_ids.append(offer["id"])
             continue
         
         caption = build_caption(page_title, validity, offer["link"])
@@ -353,25 +357,24 @@ def run_scraper():
             success = send_description_comment(full_desc, offer["link"], message_id)
             if success:
                 success_count += 1
-                processed_ids.add(offer["id"])  # SÓ ADICIONA SE TUDO DEU CERTO
+                processed_ids.add(offer["id"])
                 log(f"  ✅ Oferta {idx} enviada!")
             else:
                 log(f"  ⚠️ Foto enviada mas comentário falhou")
-                failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
+                failed_ids.append(offer["id"])
         else:
             log(f"  ❌ Falha ao enviar foto")
-            failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
+            failed_ids.append(offer["id"])
         
         try: Path(img_path).unlink(missing_ok=True)
         except: pass
     
-    # Atualiza histórico APENAS com IDs que foram enviados com sucesso
-    history["ids"] = list(processed_ids)
+    # Atualiza histórico
+    history["ids"] = [o["original_link"] for o in new_offers if o["id"] in processed_ids]
     save_history(history)
     
-    # Atualiza pending_offers.json APENAS com as ofertas que falharam
+    # Atualiza pending
     if failed_ids:
-        # Carrega pending existente
         pending_file = Path("pending_offers.json")
         existing_offers = []
         if pending_file.exists():
@@ -379,11 +382,10 @@ def run_scraper():
                 existing = json.load(f)
                 existing_offers = existing.get("offers", [])
         
-        # Combina as que falharam
         all_failed = []
-        existing_ids = set([o.get("id") for o in existing_offers])
+        existing_ids = set([get_offer_id(o.get("link", "")) for o in existing_offers])
         for o in existing_offers:
-            if o.get("id") in failed_ids:
+            if get_offer_id(o.get("link", "")) in failed_ids:
                 all_failed.append(o)
         for o in new_offers:
             if o["id"] in failed_ids and o["id"] not in existing_ids:
@@ -391,9 +393,8 @@ def run_scraper():
         
         with open(pending_file, 'w') as f:
             json.dump({"last_update": datetime.now().isoformat(), "offers": all_failed}, f, indent=2)
-        log(f"⚠️ {len(failed_ids)} ofertas falharam e continuam no pending")
+        log(f"⚠️ {len(failed_ids)} ofertas continuam no pending")
     else:
-        # Limpa pending se não houver falhas
         with open("pending_offers.json", 'w') as f:
             json.dump({"last_update": "", "offers": []}, f, indent=2)
         log("✅ pending_offers.json limpo")
@@ -402,7 +403,7 @@ def run_scraper():
 
 def run_consumer():
     log("=" * 70)
-    log("🤖 BOT LEOUOL - Consumer (Processando pendentes do Scriptable)")
+    log("🤖 BOT LEOUOL - Consumer (Processando pendentes)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 70)
     
@@ -424,34 +425,31 @@ def run_consumer():
     
     log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
     
-    processed_ids = set(seen_ids)  # IDs que já estão no histórico
+    processed_ids = set(seen_ids)
     success_count = 0
-    failed_ids = []  # IDs que falharam e devem continuar no pending
+    failed_ids = []
     
     for idx, offer in enumerate(offers, 1):
         log(f"\n{'=' * 50}")
         log(f"📦 Oferta {idx}/{len(offers)}")
         log(f"🏷️ {offer.get('title', offer.get('preview_title', ''))[:80]}")
         
-        # Pula se já está no histórico
-        if offer["id"] in seen_ids:
+        if get_offer_id(offer["link"]) in seen_ids:
             log("  ⏭️ Oferta já enviada anteriormente")
-            processed_ids.add(offer["id"])
+            processed_ids.add(get_offer_id(offer["link"]))
             continue
         
-        # Verifica imagem
         if not offer.get("img_url"):
             log("  ⚠️ Sem imagem, mantendo no pending")
-            failed_ids.append(offer["id"])
+            failed_ids.append(offer["link"])
             continue
         
         img_path = download_image(offer["img_url"])
         if not img_path:
             log("  ⚠️ Falha ao baixar imagem, mantendo no pending")
-            failed_ids.append(offer["id"])
+            failed_ids.append(offer["link"])
             continue
         
-        # Usa os dados já extraídos pelo Scriptable
         page_title = offer.get("title", offer.get("preview_title", "Oferta"))
         validity = offer.get("validity")
         full_description = offer.get("description", "Descrição não disponível")
@@ -460,21 +458,18 @@ def run_consumer():
         message_id = send_photo_to_channel(img_path, caption)
         
         if message_id:
-            # Tenta enviar o comentário
             comment_success = send_description_comment(full_description, offer["link"], message_id)
-            
             if comment_success:
                 success_count += 1
-                processed_ids.add(offer["id"])  # Só adiciona ao histórico se o comentário foi enviado
-                log(f"  ✅ Oferta {idx} enviada com sucesso (foto + comentário)!")
+                processed_ids.add(get_offer_id(offer["link"]))
+                log(f"  ✅ Oferta {idx} enviada!")
             else:
-                log(f"  ⚠️ Foto enviada, mas comentário falhou")
-                failed_ids.append(offer["id"])  # Mantém no pending
+                log(f"  ⚠️ Foto enviada mas comentário falhou")
+                failed_ids.append(offer["link"])
         else:
             log(f"  ❌ Falha ao enviar foto")
-            failed_ids.append(offer["id"])  # Mantém no pending
+            failed_ids.append(offer["link"])
         
-        # Limpa imagem temporária
         try:
             Path(img_path).unlink(missing_ok=True)
         except:
@@ -482,19 +477,18 @@ def run_consumer():
         
         time.sleep(2)
     
-    # Atualiza histórico APENAS com IDs que foram enviados com sucesso (foto + comentário)
-    history["ids"] = list(processed_ids)
+    # Atualiza histórico (salva URLs originais)
+    history["ids"] = [o["original_link"] for o in offers if get_offer_id(o["link"]) in processed_ids]
     save_history(history)
     
-    # Atualiza pending_offers.json APENAS com as ofertas que falharam
-    remaining_offers = [o for o in offers if o["id"] in failed_ids]
+    remaining_offers = [o for o in offers if o["link"] in failed_ids]
     with open(pending_file, 'w') as f:
         json.dump({"last_update": datetime.now().isoformat(), "offers": remaining_offers}, f, indent=2)
     
     if remaining_offers:
-        log(f"⚠️ {len(remaining_offers)} ofertas falharam e continuam no pending")
+        log(f"⚠️ {len(remaining_offers)} ofertas continuam no pending")
     else:
-        log("✅ pending_offers.json limpo com sucesso")
+        log("✅ pending_offers.json limpo")
     
     log(f"\n✅ Consumer Finalizado: {success_count}/{len(offers)} enviadas.")
 
