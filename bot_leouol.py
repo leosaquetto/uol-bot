@@ -319,19 +319,39 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
             return None
 
         data = response.json()
-        msg_id = data.get("result", {}).get("message_id")
-        log(f"   ✅ foto enviada ao canal (message_id {msg_id})")
-        return msg_id
+        message_id = data.get("result", {}).get("message_id")
+        log(f"   ✅ foto enviada ao canal (message_id {message_id})")
+        return message_id
     except Exception as e:
         log(f"   ❌ erro sendPhoto: {e}")
         return None
 
 
-def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, delay: int = 3) -> Optional[int]:
+def strip_html_for_compare(text: Optional[str]) -> str:
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", " ", str(text))
+    text = unescape(text)
+    text = re.sub(r"\s+", " ", text).strip().lower()
+    return text
+
+
+def find_group_mirror_message_id(
+    channel_message_id: int,
+    expected_caption: str,
+    attempts: int = 6,
+    delay: int = 3
+) -> Optional[int]:
     """
     tenta descobrir qual mensagem apareceu no grupo vinculado
     correspondente ao post do canal.
+
+    ordem:
+    1. match exato por forward_origin / forward_from_message_id
+    2. fallback por caption parecida no grupo
     """
+
+    expected_caption_cmp = strip_html_for_compare(expected_caption)
 
     for attempt in range(1, attempts + 1):
         log(f"   ⏳ aguardando espelhamento no grupo ({attempt}/{attempts})...")
@@ -343,33 +363,77 @@ def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, del
                 timeout=REQUEST_TIMEOUT,
             )
             if not response.ok:
+                log(f"   ⚠️ getUpdates falhou: {response.text}")
                 continue
 
             data = response.json()
             updates = data.get("result", [])
 
+            recent_group_candidates = []
+
             for update in reversed(updates):
-                msg = update.get("message", {})
-                if not msg:
-                    continue
+                for key in ("message", "edited_message", "channel_post", "edited_channel_post"):
+                    msg = update.get(key, {})
+                    if not msg:
+                        continue
 
-                chat_id = str(msg.get("chat", {}).get("id", ""))
-                if chat_id != str(GRUPO_COMENTARIO_ID):
-                    continue
+                    chat_id = str(msg.get("chat", {}).get("id", ""))
+                    if chat_id != str(GRUPO_COMENTARIO_ID):
+                        continue
 
-                is_auto = msg.get("is_automatic_forward", False)
+                    msg_id = msg.get("message_id")
+                    caption = msg.get("caption") or msg.get("text") or ""
+                    caption_cmp = strip_html_for_compare(caption)
 
-                origin_message_id = msg.get("forward_from_message_id")
-
-                if not origin_message_id:
+                    # tentativa 1: campos de forward
                     forward_origin = msg.get("forward_origin", {}) or {}
-                    if isinstance(forward_origin, dict):
-                        origin_message_id = forward_origin.get("message_id")
+                    origin_message_id = forward_origin.get("message_id")
+                    legacy_forward_id = msg.get("forward_from_message_id")
+                    is_auto = msg.get("is_automatic_forward", False)
 
-                if is_auto and origin_message_id == channel_message_id:
-                    group_msg_id = msg.get("message_id")
-                    log(f"   ✅ id encontrado no grupo: {group_msg_id}")
-                    return group_msg_id
+                    if is_auto and (
+                        origin_message_id == channel_message_id
+                        or legacy_forward_id == channel_message_id
+                    ):
+                        log(f"   ✅ id espelhado encontrado no grupo por forward: {msg_id}")
+                        return msg_id
+
+                    # guarda candidato para fallback
+                    recent_group_candidates.append({
+                        "message_id": msg_id,
+                        "caption": caption,
+                        "caption_cmp": caption_cmp,
+                        "date": msg.get("date"),
+                        "is_automatic_forward": is_auto,
+                        "origin_message_id": origin_message_id,
+                        "legacy_forward_id": legacy_forward_id,
+                    })
+
+            # tentativa 2: fallback por caption parecida
+            for candidate in recent_group_candidates:
+                cap = candidate["caption_cmp"]
+                if not cap or not expected_caption_cmp:
+                    continue
+
+                if cap == expected_caption_cmp:
+                    log(
+                        f"   ✅ id espelhado encontrado no grupo por caption exata: "
+                        f'{candidate["message_id"]}'
+                    )
+                    return candidate["message_id"]
+
+                if (
+                    expected_caption_cmp[:120] and
+                    expected_caption_cmp[:120] in cap
+                ) or (
+                    cap[:120] and
+                    cap[:120] in expected_caption_cmp
+                ):
+                    log(
+                        f"   ✅ id espelhado encontrado no grupo por caption aproximada: "
+                        f'{candidate["message_id"]}'
+                    )
+                    return candidate["message_id"]
 
         except Exception as e:
             log(f"   ⚠️ erro ao consultar getUpdates: {e}")
@@ -377,39 +441,75 @@ def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, del
     return None
 
 
-def send_description_comment(description: str, validity: Optional[str], link: str, channel_message_id: int) -> bool:
+def send_description_comment(
+    description: str,
+    validity: Optional[str],
+    link: str,
+    channel_message_id: int,
+    caption: str,
+    partner_img_url: Optional[str] = None,
+) -> bool:
     """
-    envia a descrição completa como comentário no grupo vinculado ao canal.
-    se achar a mensagem espelhada, responde nela.
+    envia comentário no grupo vinculado.
+    ordem:
+    1. acha a mensagem espelhada no grupo
+    2. opcionalmente manda a logo do parceiro em reply
+    3. manda a descrição completa em reply
     """
 
-    group_msg_id = find_group_mirror_message_id(channel_message_id=channel_message_id)
+    group_msg_id = find_group_mirror_message_id(
+        channel_message_id=channel_message_id,
+        expected_caption=caption,
+        attempts=6,
+        delay=3,
+    )
 
     if not group_msg_id:
         log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
         return False
 
-    text = build_comment_text(description=description, validity=validity, link=link)
+    # 1) logo do parceiro opcional
+    if partner_img_url:
+        try:
+            logo_resp = requests.post(
+                telegram_api("sendPhoto"),
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "photo": partner_img_url,
+                    "reply_to_message_id": group_msg_id,
+                    "allow_sending_without_reply": "true",
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if logo_resp.ok:
+                log("   ✅ logo do parceiro enviada no reply")
+            else:
+                log(f"   ⚠️ falha ao enviar logo do parceiro: {logo_resp.text}")
+        except Exception as e:
+            log(f"   ⚠️ erro ao enviar logo do parceiro: {e}")
+
+    # 2) descrição completa
+    text = build_comment_text(description, validity, link)
 
     data = {
         "chat_id": GRUPO_COMENTARIO_ID,
-        "text": text,
+        "text": truncate_text(text, MAX_COMMENT_LENGTH),
         "parse_mode": "HTML",
         "disable_web_page_preview": True,
         "reply_to_message_id": group_msg_id,
+        "allow_sending_without_reply": "true",
     }
-
-    log(f"   💬 enviando comentário como resposta ao id {group_msg_id}")
 
     try:
         resp = requests.post(
             telegram_api("sendMessage"),
             data=data,
-            timeout=REQUEST_TIMEOUT,
+            timeout=30,
         )
 
         if resp.ok:
-            log("   ✅ comentário enviado com sucesso!")
+            log(f"   ✅ comentário enviado como reply ao id {group_msg_id}")
             return True
 
         log(f"   ❌ erro ao enviar comentário: {resp.text}")
@@ -493,11 +593,13 @@ def run_consumer() -> None:
             continue
 
         comment_ok = send_description_comment(
-            description=description,
-            validity=validity,
-            link=link,
-            channel_message_id=channel_message_id,
-        )
+    description=description,
+    validity=validity,
+    link=link,
+    channel_message_id=channel_message_id,
+    caption=caption,
+    partner_img_url=offer.get("partner_img_url"),
+)
 
         if not comment_ok:
             failed_offers.append(offer)
