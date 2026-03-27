@@ -6,7 +6,7 @@ on:
     paths:
       - pending_offers.json
   schedule:
-    - cron: "*/10 * * * *"  # A cada 10 minutos
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
           python-version: "3.11"
           cache: "pip"
 
-      - name: Install dependencies
+      - name: Install dependencies (consumer only)
         run: |
           pip install requests
 
@@ -47,7 +47,6 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
           
-          # Verificar se há mudanças para commitar
           if [[ -n $(git status --porcelain) ]]; then
             git add historico_leouol.json pending_offers.json 2>/dev/null || true
             git commit -m "Atualiza histórico e pending [skip ci]" || echo "Nada para commitar"
