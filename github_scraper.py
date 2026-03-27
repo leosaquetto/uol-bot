@@ -4,8 +4,11 @@ import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+import certifi
 import requests
+import urllib3
 from bs4 import BeautifulSoup
+from requests.exceptions import SSLError
 
 BASE_URL = "https://clube.uol.com.br"
 LIST_URL = f"{BASE_URL}/?order=new"
@@ -20,6 +23,8 @@ USER_AGENT = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/123.0.0.0 Safari/537.36"
 )
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def log(msg: str) -> None:
@@ -164,9 +169,17 @@ def get_html(url: str) -> str:
         "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
         "Referer": BASE_URL + "/",
     }
-    r = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
-    r.raise_for_status()
-    return r.text
+    session = requests.Session()
+
+    try:
+        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=certifi.where())
+        r.raise_for_status()
+        return r.text
+    except SSLError as e:
+        log(f"ssl falhou com verificação padrão, tentando fallback sem verify: {e}")
+        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=False)
+        r.raise_for_status()
+        return r.text
 
 
 def extract_all_img_meta(block) -> List[Dict[str, Any]]:
