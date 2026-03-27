@@ -4,16 +4,14 @@ on:
   push:
     paths:
       - pending_offers.json
+      - bot_leouol.py
+      - .github/workflows/bot_leouol_consumer.yml
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
-
-concurrency:
-  group: bot-leouol-consumer
-  cancel-in-progress: false
 
 jobs:
   process-offers:
@@ -33,29 +31,25 @@ jobs:
           python-version: "3.11"
           cache: "pip"
 
-      - name: garantir arquivos base
-        shell: bash
+      - name: garantir arquivos json
         run: |
           [ -f historico_leouol.json ] || echo '{"ids":[]}' > historico_leouol.json
           [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
 
-      - name: install dependencies
-        shell: bash
+      - name: instalar dependências
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-consumer.txt
 
-      - name: process pending offers
+      - name: processar pending offers
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
-        shell: bash
         run: python bot_leouol.py --pending
 
-      - name: commit and push changes
+      - name: commitar mudanças
         if: always()
-        shell: bash
         run: |
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
