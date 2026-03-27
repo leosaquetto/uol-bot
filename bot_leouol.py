@@ -380,13 +380,13 @@ def run_consumer():
         # Verifica imagem
         if not offer.get("img_url"):
             log("  ⚠️ Sem imagem, mantendo no pending")
-            failed_ids.append(offer["id"])  # Mantém no pending
+            failed_ids.append(offer["id"])
             continue
         
         img_path = download_image(offer["img_url"])
         if not img_path:
             log("  ⚠️ Falha ao baixar imagem, mantendo no pending")
-            failed_ids.append(offer["id"])  # Mantém no pending
+            failed_ids.append(offer["id"])
             continue
         
         # Usa os dados já extraídos pelo Scriptable
@@ -394,17 +394,22 @@ def run_consumer():
         validity = offer.get("validity")
         full_description = offer.get("description", "Descrição não disponível")
         
+        # Monta legenda
         caption = build_caption(page_title, validity, offer["link"])
+        
+        # 1. Envia foto
         message_id = send_photo_to_channel(img_path, caption)
         
         if message_id:
-            success = send_description_comment(full_description, offer["link"], message_id)
-            if success:
+            # 2. Envia comentário (descrição completa)
+            comment_success = send_description_comment(full_description, offer["link"], message_id)
+            
+            if comment_success:
                 success_count += 1
-                processed_ids.add(offer["id"])
-                log(f"  ✅ Oferta {idx} enviada com sucesso!")
+                processed_ids.add(offer["id"])  # Só adiciona ao histórico se comentário foi enviado
+                log(f"  ✅ Oferta {idx} enviada com sucesso (foto + comentário)!")
             else:
-                log(f"  ⚠️ Foto enviada mas comentário falhou")
+                log(f"  ⚠️ Foto enviada, mas comentário falhou")
                 failed_ids.append(offer["id"])  # Mantém no pending
         else:
             log(f"  ❌ Falha ao enviar foto")
@@ -418,7 +423,7 @@ def run_consumer():
         
         time.sleep(2)
     
-    # Atualiza histórico APENAS com IDs que foram enviados com sucesso
+    # Atualiza histórico APENAS com IDs que foram enviados com sucesso (foto + comentário)
     history["ids"] = list(processed_ids)
     save_history(history)
     
