@@ -24,7 +24,9 @@ from typing import Any
 from urllib.parse import urljoin, urlparse
 
 import requests
+import urllib3
 from bs4 import BeautifulSoup
+from requests.exceptions import SSLError
 
 # ==============================================
 # configurações
@@ -51,6 +53,9 @@ DEFAULT_HEADERS = {
     "Pragma": "no-cache",
     "Referer": BASE_URL + "/",
 }
+
+# desabilita apenas o warning quando precisarmos usar verify=False no fallback
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ==============================================
 # utilidades
@@ -222,9 +227,16 @@ def build_session() -> requests.Session:
 
 
 def get_html(session: requests.Session, url: str) -> str:
-    response = session.get(url, timeout=REQUEST_TIMEOUT)
-    response.raise_for_status()
-    return response.text
+    try:
+        response = session.get(url, timeout=REQUEST_TIMEOUT, verify=True)
+        response.raise_for_status()
+        return response.text
+    except SSLError as e:
+        log(f"⚠️ ssl falhou em {url}: {e}")
+        log("⚠️ tentando novamente com verify=False")
+        response = session.get(url, timeout=REQUEST_TIMEOUT, verify=False)
+        response.raise_for_status()
+        return response.text
 
 
 # ==============================================
