@@ -1,11 +1,6 @@
 name: BOT LEOUOL CONSUMER
 
 on:
-  push:
-    paths:
-      - pending_offers.json
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 concurrency:
