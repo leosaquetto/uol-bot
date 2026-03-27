@@ -32,7 +32,7 @@ jobs:
 
       - name: Install dependencies (consumer only)
         run: |
-          pip install requests
+          pip install -r requirements-consumer.txt
 
       - name: Process pending offers
         env:
