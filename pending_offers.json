@@ -1,4 +1,16 @@
 {
-  "last_update": null,
-  "offers": []
+  "last_update": "2026-03-27T06:20:00Z",
+  "offers": [
+    {
+      "id": "teste-oferta-123",
+      "original_link": "https://clube.uol.com.br/teste",
+      "preview_title": "TESTE OFERTA",
+      "title": "TESTE OFERTA",
+      "link": "https://clube.uol.com.br/teste",
+      "img_url": "https://via.placeholder.com/600x400.png",
+      "validity": "teste",
+      "description": "isso é um teste do bot",
+      "scraped_at": "2026-03-27T06:20:00Z"
+    }
+  ]
 }
