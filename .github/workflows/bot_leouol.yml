@@ -1,8 +1,16 @@
-name: BOT LEOUOL - Scraper (5 min)
+name: BOT LEOUOL - Scraper
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # ⬅️ Roda lindamente a cada 5 minutos
+    # 07:00 às 20:00 Brasília (10:00 às 23:00 UTC) - a cada 5 minutos
+    - cron: "*/5 10-23 * * *"
+    
+    # 21:00 às 23:00 Brasília (00:00 às 02:00 UTC) - a cada 5 minutos
+    - cron: "*/5 0-2 * * *"
+    
+    # 00:00 às 06:00 Brasília (03:00 às 09:00 UTC) - a cada 1 hora
+    - cron: "0 3-9 * * *"
+    
   workflow_dispatch:
 
 concurrency:
@@ -14,7 +22,7 @@ permissions:
 
 jobs:
   run-bot:
-    name: Buscar Ofertas (Ingressos)
+    name: Buscar Ofertas
     runs-on: ubuntu-latest
     timeout-minutes: 3
 
