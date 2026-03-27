@@ -394,19 +394,16 @@ def run_consumer():
         validity = offer.get("validity")
         full_description = offer.get("description", "Descrição não disponível")
         
-        # Monta legenda
         caption = build_caption(page_title, validity, offer["link"])
-        
-        # 1. Envia foto
         message_id = send_photo_to_channel(img_path, caption)
         
         if message_id:
-            # 2. Envia comentário (descrição completa)
+            # Tenta enviar o comentário
             comment_success = send_description_comment(full_description, offer["link"], message_id)
             
             if comment_success:
                 success_count += 1
-                processed_ids.add(offer["id"])  # Só adiciona ao histórico se comentário foi enviado
+                processed_ids.add(offer["id"])  # Só adiciona ao histórico se o comentário foi enviado
                 log(f"  ✅ Oferta {idx} enviada com sucesso (foto + comentário)!")
             else:
                 log(f"  ⚠️ Foto enviada, mas comentário falhou")
