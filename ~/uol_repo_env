@@ -1,7 +1,0 @@
-cat > ~/uol_repo_env <<'EOF'
-export GITHUB_PAT="MEU_TOKEN"
-export GITHUB_REPO="leosaquetto/uol-bot"
-export GITHUB_BRANCH="main"
-EOF
-
-chmod 600 ~/uol_repo_env
