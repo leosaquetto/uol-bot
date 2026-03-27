@@ -1,4 +1,4 @@
-# bot_leouol.py - Versão Ultra Rápida (com SSL fix)
+# bot_leouol.py - Versão Ultra Rápida (com URL principal)
 
 import sys
 import requests
@@ -17,9 +17,9 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GRUPO_COMENTARIOS_ID = os.environ.get("GRUPO_COMENTARIO_ID", "-1003802235343")
 
+# USAR A MESMA URL QUE O SCRIPTABLE USA!
 TARGET_URLS = [
-    "https://clube.uol.com.br/?categoria=ingressosexclusivos",
-    "https://clube.uol.com.br/campanhasdeingresso/"
+    "https://clube.uol.com.br/?order=new",  # URL principal que funciona
 ]
 
 HISTORY_FILE = "historico_leouol.json"
@@ -96,50 +96,55 @@ def fetch_offers():
     for url in TARGET_URLS:
         log(f"\n🌐 Buscando ofertas em: {url}")
         try:
-            # ⚠️ ADICIONE verify=False para ignorar erro SSL
             res = requests.get(url, headers=HEADERS, timeout=15, verify=False)
             html = res.text
             
-            # Fatiar o HTML inteiro em blocos onde cada oferta começa
+            # Fatiar o HTML igual ao Scriptable
             blocks = re.split(r'<div[^>]*data-categoria=[\'"]', html, flags=re.IGNORECASE)
-            if len(blocks) <= 1: continue
+            if len(blocks) <= 1:
+                # Fallback: tenta outro padrão
+                blocks = re.split(r'<div\s+class="beneficio[^"]*">', html, flags=re.IGNORECASE)
             
-            for block in blocks[1:]:
-                # 1. LINK
-                link_match = re.search(r'<a[^>]*href="([^"]+)"', block, re.IGNORECASE)
-                if not link_match: continue
-                link = link_match.group(1)
-                if link == "#" or "javascript" in link or "minhas-recompensas" in link: continue
-                if link.startswith("/"): link = "https://clube.uol.com.br" + link
-                
-                if link in seen_links: continue
-                seen_links.add(link)
-                
-                # 2. TÍTULO
-                title = ""
-                title_match = re.search(r'class="[^"]*titulo[^"]*"[^>]*>([\s\S]*?)</', block, re.IGNORECASE)
-                if title_match:
-                    title = clean_text(re.sub(r'<[^>]+>', '', title_match.group(1)))
-                else:
-                    btn_match = re.search(r'<a[^>]*class="[^"]*btn[^"]*"[^>]*>([\s\S]*?)</', block, re.IGNORECASE)
-                    if btn_match: title = clean_text(re.sub(r'<[^>]+>', '', btn_match.group(1)))
-                
-                # 3. IMAGEM
-                img_url = ""
-                img_matches = re.finditer(r'<img[^>]*data-src="([^"]+)"', block, re.IGNORECASE)
-                srcs = [m.group(1) for m in img_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
-                
-                if srcs:
-                    img_url = srcs[0]
-                else:
-                    src_matches = re.finditer(r'<img[^>]*src="([^"]+)"', block, re.IGNORECASE)
-                    srcs = [m.group(1) for m in src_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
-                    if srcs: img_url = srcs[0]
-                
-                if img_url and img_url.startswith("/"):
-                    img_url = "https://clube.uol.com.br" + img_url
+            log(f"📦 Blocos encontrados: {len(blocks)}")
+            
+            for block in blocks[1:]:  # Pula o primeiro bloco (cabeçalho)
+                try:
+                    # 1. LINK
+                    link_match = re.search(r'<a[^>]*href="([^"]+)"', block, re.IGNORECASE)
+                    if not link_match: continue
+                    link = link_match.group(1)
+                    if link == "#" or "javascript" in link or "minhas-recompensas" in link: continue
+                    if link.startswith("/"): link = "https://clube.uol.com.br" + link
                     
-                if title and link:
+                    if link in seen_links: continue
+                    seen_links.add(link)
+                    
+                    # 2. TÍTULO
+                    title = ""
+                    title_match = re.search(r'class="[^"]*titulo[^"]*"[^>]*>([\s\S]*?)</', block, re.IGNORECASE)
+                    if title_match:
+                        title = clean_text(re.sub(r'<[^>]+>', '', title_match.group(1)))
+                    else:
+                        btn_match = re.search(r'<a[^>]*class="[^"]*btn[^"]*"[^>]*>([\s\S]*?)</', block, re.IGNORECASE)
+                        if btn_match: title = clean_text(re.sub(r'<[^>]+>', '', btn_match.group(1)))
+                    
+                    if not title: continue
+                    
+                    # 3. IMAGEM
+                    img_url = ""
+                    img_matches = re.finditer(r'<img[^>]*data-src="([^"]+)"', block, re.IGNORECASE)
+                    srcs = [m.group(1) for m in img_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
+                    
+                    if srcs:
+                        img_url = srcs[0]
+                    else:
+                        src_matches = re.finditer(r'<img[^>]*src="([^"]+)"', block, re.IGNORECASE)
+                        srcs = [m.group(1) for m in src_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
+                        if srcs: img_url = srcs[0]
+                    
+                    if img_url and img_url.startswith("/"):
+                        img_url = "https://clube.uol.com.br" + img_url
+                        
                     offers.append({
                         "id": get_offer_id(link),
                         "preview_title": title,
@@ -147,6 +152,10 @@ def fetch_offers():
                         "img_url": img_url
                     })
                     log(f"  🎫 Encontrado: {title[:40]}...")
+                    
+                except Exception as e:
+                    continue
+                    
         except Exception as e:
             log(f"❌ Erro ao buscar {url}: {e}")
             
@@ -155,7 +164,6 @@ def fetch_offers():
 def process_offer_details(offer):
     log(f"   🔍 Acessando detalhes: {offer['preview_title'][:40]}...")
     try:
-        # ⚠️ ADICIONE verify=False para ignorar erro SSL
         res = requests.get(offer['link'], headers=HEADERS, timeout=15, verify=False)
         html = res.text
         
@@ -201,7 +209,7 @@ def process_offer_details(offer):
         return offer['preview_title'], None, "Descrição não disponível"
 
 # ==============================================
-# FUNÇÕES DE TELEGRAM (MANTIDAS IGUAIS)
+# FUNÇÕES DE TELEGRAM
 # ==============================================
 def download_image(img_url: str) -> str:
     try:
@@ -270,7 +278,7 @@ def run_scraper():
     new_offers = [o for o in offers if o["id"] not in seen_ids]
     
     if not new_offers:
-        log("📭 Nenhuma oferta nova nas categorias de ingresso.")
+        log("📭 Nenhuma oferta nova.")
         return
         
     log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
