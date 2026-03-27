@@ -6,12 +6,12 @@
 # - usa apenas reply_to_message_id (sem message_thread_id)
 # - limpa pending apenas do que foi enviado com sucesso
 # - limpa blocos residuais de formulário na descrição
+# - mantém um feed persistente com as últimas ofertas completas para widget
 # NOVO: Encadeia Logo do Parceiro -> Descrição Completa nos comentários
 
 import json
 import os
 import re
-import sys
 import time
 from datetime import datetime, timezone
 from html import unescape
@@ -29,8 +29,10 @@ GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
 
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
+LATEST_FILE = "latest_offers.json"
 
 MAX_HISTORY_SIZE = 500
+MAX_LATEST_OFFERS = 10
 MAX_CAPTION_LENGTH = 1024
 MAX_COMMENT_LENGTH = 4096
 REQUEST_TIMEOUT = 30
@@ -152,8 +154,20 @@ def normalize_offer_key(value: str) -> str:
         return raw
     return "-".join(parts)
 
+
+def compact_offer_for_latest(offer: Dict) -> Dict:
+    return {
+        "id": offer.get("id"),
+        "title": offer.get("title") or offer.get("preview_title") or "oferta",
+        "link": offer.get("link") or offer.get("original_link") or "",
+        "img_url": offer.get("img_url") or "",
+        "partner_img_url": offer.get("partner_img_url") or "",
+        "validity": clean_multiline_text(offer.get("validity") or ""),
+        "scraped_at": offer.get("scraped_at") or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    }
+
 # ==============================================
-# histórico e pending
+# histórico, pending e latest
 # ==============================================
 def load_history() -> Dict[str, List[str]]:
     path = Path(HISTORY_FILE)
@@ -227,6 +241,52 @@ def save_pending(offers: List[Dict]) -> bool:
     except Exception as e:
         log(f"   ❌ erro ao salvar pending: {e}")
         return False
+
+
+def load_latest_offers() -> Dict:
+    path = Path(LATEST_FILE)
+    if not path.exists():
+        return {"last_update": None, "offers": []}
+    data = safe_json_load(path, {"last_update": None, "offers": []})
+    offers = data.get("offers", [])
+    if not isinstance(offers, list):
+        offers = []
+    return {"last_update": data.get("last_update"), "offers": offers}
+
+
+def save_latest_offers(offers: List[Dict]) -> bool:
+    try:
+        payload = {
+            "last_update": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "offers": offers[:MAX_LATEST_OFFERS],
+        }
+        Path(LATEST_FILE).write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        log(f"   ✅ latest_offers salvo: {len(payload['offers'])} ofertas")
+        return True
+    except Exception as e:
+        log(f"   ❌ erro ao salvar latest_offers: {e}")
+        return False
+
+
+def update_latest_offers(processed_offers: List[Dict]) -> bool:
+    latest = load_latest_offers()
+    existing = latest.get("offers", [])
+
+    combined: List[Dict] = []
+    seen = set()
+
+    for offer in processed_offers + existing:
+        compact = compact_offer_for_latest(offer)
+        key = normalize_offer_key(compact.get("id") or compact.get("link") or compact.get("title"))
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        combined.append(compact)
+
+    return save_latest_offers(combined[:MAX_LATEST_OFFERS])
 
 # ==============================================
 # telegram
@@ -433,6 +493,7 @@ def run_consumer() -> None:
 
     success_count = 0
     failed_offers: List[Dict] = []
+    newly_processed_offers: List[Dict] = []
 
     for index, offer in enumerate(offers, start=1):
         log_separator()
@@ -498,12 +559,15 @@ def run_consumer() -> None:
             continue
 
         processed_keys.add(offer_key)
+        newly_processed_offers.append(offer)
         success_count += 1
         log(f"   ✅ Oferta {index} concluída com sucesso na thread!")
         time.sleep(2)
 
     save_history({"ids": list(processed_keys)})
     save_pending(failed_offers)
+    if newly_processed_offers:
+        update_latest_offers(newly_processed_offers)
 
     log("\n" + "=" * 60)
     log(f"✅ Fim. {success_count}/{len(offers)} ofertas processadas com sucesso.")
