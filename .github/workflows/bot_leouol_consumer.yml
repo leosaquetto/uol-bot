@@ -3,7 +3,7 @@ name: BOT LEOUOL - Consumer
 on:
   push:
     paths:
-      - 'pending_offers.json'
+      - pending_offers.json
   workflow_dispatch:
 
 permissions:
@@ -15,99 +15,33 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Baixar código
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configurar Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Instalar dependências
+      - name: Install requests
         run: pip install requests
 
-      - name: Enviar ofertas para Telegram
+      - name: Send to Telegram
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python -c "
-import json
-import requests
-import os
-import time
+          python send_offers.py
 
-TOKEN = os.environ['TELEGRAM_TOKEN']
-CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
-
-with open('pending_offers.json', 'r') as f:
-    data = json.load(f)
-
-offers = data.get('offers', [])
-print(f'📦 {len(offers)} ofertas para enviar')
-
-for i, offer in enumerate(offers, 1):
-    title = offer.get('title', offer.get('preview_title', 'Oferta'))
-    validity = offer.get('validity', '')
-    link = offer.get('link', '')
-    img_url = offer.get('img_url', '')
-    description = offer.get('description', '')
-    
-    print(f'\n📌 Oferta {i}: {title[:50]}')
-    
-    caption = f'<b>{title}</b>'
-    if validity:
-        caption += f'\n\n📅 {validity}'
-    caption += f'\n\n🔗 <a href=\"{link}\">Acessar oferta</a>'
-    caption += f'\n\n💬 Veja os detalhes completos nos comentários abaixo'
-    
-    if img_url:
-        try:
-            img = requests.get(img_url, timeout=15)
-            files = {'photo': ('img.jpg', img.content)}
-            data = {'chat_id': CHAT_ID, 'caption': caption, 'parse_mode': 'HTML'}
-            r = requests.post(f'https://api.telegram.org/bot{TOKEN}/sendPhoto', data=data, files=files, timeout=30)
-            
-            if r.ok:
-                msg_id = r.json()['result']['message_id']
-                print(f'  ✅ Foto enviada (ID: {msg_id})')
-                
-                if description:
-                    comment = f'📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n{description}\n\n🔗 <a href=\"{link}\">Link original</a>'
-                    comment_data = {
-                        'chat_id': CHAT_ID,
-                        'text': comment[:4096],
-                        'parse_mode': 'HTML',
-                        'reply_to_message_id': msg_id
-                    }
-                    r2 = requests.post(f'https://api.telegram.org/bot{TOKEN}/sendMessage', data=comment_data, timeout=30)
-                    if r2.ok:
-                        print(f'  ✅ Comentário enviado')
-                    else:
-                        print(f'  ⚠️ Erro comentário: {r2.text}')
-            else:
-                print(f'  ❌ Erro: {r.text}')
-        except Exception as e:
-            print(f'  ❌ Erro: {e}')
-    else:
-        data = {'chat_id': CHAT_ID, 'text': caption, 'parse_mode': 'HTML', 'disable_web_page_preview': True}
-        r = requests.post(f'https://api.telegram.org/bot{TOKEN}/sendMessage', data=data, timeout=30)
-        print(f'  ✅ Texto enviado' if r.ok else f'  ❌ Erro: {r.text}')
-    
-    time.sleep(1)
-
-print('\n✅ Fim')
-"
-
-      - name: Limpar ofertas processadas
+      - name: Cleanup
         if: always()
         run: |
           echo '{"last_update": "", "offers": []}' > pending_offers.json
-          git config --global user.email "bot@leouol.com"
-          git config --global user.name "BOT LEOUOL"
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
           git add pending_offers.json
-          git diff-index --quiet HEAD || git commit -m "Limpa ofertas processadas [skip ci]"
+          git diff-index --quiet HEAD || git commit -m "Cleanup [skip ci]"
           git push
