@@ -493,10 +493,12 @@ def run_consumer() -> None:
         if partner_img_url:
             logo_path = download_image(partner_img_url)
             if logo_path:
+                # Envia a logo como reply na mensagem principal
                 logo_msg_id = send_photo_to_group(logo_path, current_reply_target)
-                if logo_msg_id:
-                    # Se postou a logo com sucesso, a descrição vai dar reply nela! (encadeamento)
-                    current_reply_target = logo_msg_id
+                
+                # A linha de reatribuição (current_reply_target = logo_msg_id) foi removida.
+                # Assim, o current_reply_target continua apontando para o mirror_id
+                # e o texto da descrição (passo 4) cairá em paralelo à imagem, não em cascata.
                 
                 try:
                     Path(logo_path).unlink(missing_ok=True)
