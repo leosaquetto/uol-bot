@@ -152,6 +152,7 @@ def extract_all_img_meta(block) -> List[Dict[str, Any]]:
         full_src = absolutize_url(src)
         class_names = " ".join(img.get("class", [])).lower()
         title = (img.get("title") or "").strip().lower()
+        alt = (img.get("alt") or "").strip().lower()
 
         width = 0
         height = 0
@@ -170,14 +171,18 @@ def extract_all_img_meta(block) -> List[Dict[str, Any]]:
             {
                 "src": full_src,
                 "title": title,
+                "alt": alt,
                 "class_name": class_names,
                 "width": width,
                 "height": height,
+                "is_partner_path": "/parceiros/" in full_src,
+                "is_benefit_path": "/beneficios/" in full_src,
                 "is_partner_like": (
                     "/parceiros/" in full_src
                     or "logo" in class_names
                     or "brand" in class_names
                     or "parceiro" in class_names
+                    or "logo" in alt
                     or bool(title)
                     or (0 < width <= 220)
                     or (0 < height <= 120)
@@ -194,20 +199,21 @@ def choose_images_from_block(block) -> Dict[str, str]:
     partner_img_url = ""
     img_url = ""
 
-    partner_candidates = [img for img in all_imgs if img["is_partner_like"]]
-    main_candidates = [img for img in all_imgs if not img["is_partner_like"]]
+    benefit_candidates = [img for img in all_imgs if img["is_benefit_path"]]
+    if benefit_candidates:
+        img_url = benefit_candidates[-1]["src"]
 
+    partner_candidates = [img for img in all_imgs if img["is_partner_like"] or img["is_partner_path"]]
     if partner_candidates:
         partner_img_url = partner_candidates[0]["src"]
 
-    if main_candidates:
-        img_url = main_candidates[-1]["src"]
+    if not img_url:
+        non_partner_candidates = [img for img in all_imgs if not img["is_partner_path"] and not img["is_partner_like"]]
+        if non_partner_candidates:
+            img_url = non_partner_candidates[-1]["src"]
 
-    if not img_url and all_imgs:
-        non_partner_path = [
-            img for img in all_imgs
-            if "/parceiros/" not in img["src"]
-        ]
+    if not img_url:
+        non_partner_path = [img for img in all_imgs if not img["is_partner_path"]]
         if non_partner_path:
             img_url = non_partner_path[-1]["src"]
 
@@ -221,12 +227,10 @@ def choose_images_from_block(block) -> Dict[str, str]:
         img_url = all_imgs[-1]["src"]
 
     if img_url and partner_img_url and img_url == partner_img_url:
-        non_partner_path = [
-            img for img in all_imgs
-            if img["src"] != partner_img_url and "/parceiros/" not in img["src"]
-        ]
-        if non_partner_path:
-            img_url = non_partner_path[-1]["src"]
+        for img in all_imgs:
+            if img["src"] != partner_img_url and not img["is_partner_path"]:
+                img_url = img["src"]
+                break
 
     return {
         "img_url": img_url,
@@ -315,8 +319,11 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                 all_imgs.append(src)
 
         detail_img_url = ""
+        benefit_imgs = [src for src in all_imgs if "/beneficios/" in src]
         non_partner_imgs = [src for src in all_imgs if "/parceiros/" not in src]
-        if non_partner_imgs:
+        if benefit_imgs:
+            detail_img_url = benefit_imgs[-1]
+        elif non_partner_imgs:
             detail_img_url = non_partner_imgs[-1]
         elif all_imgs:
             detail_img_url = all_imgs[-1]
