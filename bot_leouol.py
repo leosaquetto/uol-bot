@@ -1,7 +1,4 @@
-# bot_leouol.py - Versão Ultra Rápida (Foco em Ingressos)
-# ==============================================
-# IMPORTAÇÕES CONDICIONAIS
-# ==============================================
+# bot_leouol.py - Versão Ultra Rápida (Foco em Ingressos sem Selenium)
 import sys
 import requests
 import json
@@ -11,27 +8,6 @@ import re
 import random
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-
-# Verifica se é modo consumer (não precisa de selenium)
-IS_CONSUMER = len(sys.argv) > 1 and sys.argv[1] == "--pending"
-
-if not IS_CONSUMER:
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.chrome import ChromeDriverManager
-else:
-    webdriver = None
-    Options = None
-    Service = None
-    By = None
-    WebDriverWait = None
-    EC = None
-    ChromeDriverManager = None
 
 # ==============================================
 # CONFIGURAÇÕES
@@ -40,7 +16,6 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GRUPO_COMENTARIOS_ID = os.environ.get("GRUPO_COMENTARIO_ID", "-1003802235343")
 
-# NOVAS URLs DIRETAS PARA INGRESSOS (Muito mais rápido, sem scroll infinito)
 TARGET_URLS = [
     "https://clube.uol.com.br/?categoria=ingressosexclusivos",
     "https://clube.uol.com.br/campanhasdeingresso/"
@@ -52,11 +27,12 @@ MAX_HISTORY_SIZE = 200
 MAX_CAPTION_LENGTH = 1024
 MAX_COMMENT_LENGTH = 4096
 
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-]
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://clube.uol.com.br/"
+}
 
 # ==============================================
 # FUNÇÕES UTILITÁRIAS
@@ -68,13 +44,16 @@ def log(msg: str) -> None:
 def human_delay(min_s: float = 0.5, max_s: float = 1.5) -> None:
     time.sleep(random.uniform(min_s, max_s))
 
-def normalize_spaces(text: Optional[str]) -> str:
+def clean_text(text: str) -> str:
     if not text: return ""
-    return re.sub(r"\s+", " ", text).strip()
+    cleaned = re.sub(r'[ \t]+', ' ', text)
+    cleaned = re.sub(r'\n\s*\n+', '\n\n', cleaned)
+    cleaned = re.sub(r'^ +| +$', '', cleaned, flags=re.MULTILINE)
+    return cleaned.strip()
 
 def escape_html(text: str) -> str:
     if not text: return ""
-    return (text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;"))
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;")
 
 def get_offer_id(link: str) -> str:
     try:
@@ -83,23 +62,19 @@ def get_offer_id(link: str) -> str:
     except:
         return link
 
-def load_history() -> Dict[str, List[str]]:
+def load_history():
     path = Path(HISTORY_FILE)
     if not path.exists(): return {"ids": []}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
         ids = data.get("ids", [])
-        if not isinstance(ids, list):
-            return {"ids": []}
-        ids = [get_offer_id(str(x)) for x in ids]
-        return {"ids": list(dict.fromkeys(ids))[-MAX_HISTORY_SIZE:]}
+        return {"ids": list(dict.fromkeys([get_offer_id(str(x)) for x in ids]))[-MAX_HISTORY_SIZE:]}
     except Exception:
         return {"ids": []}
 
-def save_history(history: Dict[str, List[str]]) -> bool:
+def save_history(history):
     try:
-        ids = [get_offer_id(str(x)) for x in history.get("ids", [])]
-        ids = list(dict.fromkeys(ids))[-MAX_HISTORY_SIZE:]
+        ids = list(dict.fromkeys([get_offer_id(str(x)) for x in history.get("ids", [])]))[-MAX_HISTORY_SIZE:]
         Path(HISTORY_FILE).write_text(json.dumps({"ids": ids}, ensure_ascii=False, indent=2), encoding="utf-8")
         log(f"✅ Histórico salvo: {len(ids)} IDs")
         return True
@@ -111,209 +86,138 @@ def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
     return text[:max_len - len(suffix)] + suffix
 
 # ==============================================
-# FUNÇÕES DO SCRAPER (SELENIUM)
+# SCRAPER - LÓGICA IDÊNTICA AO SCRIPTABLE
 # ==============================================
-if not IS_CONSUMER:
-    def setup_driver():
-        chrome_options = Options()
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--headless=new")
-        chrome_options.add_argument("--window-size=1920,1080")
-        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-        chrome_options.add_argument(f"--user-agent={random.choice(USER_AGENTS)}")
-        
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
-        driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-        return driver
-
-    def extract_page_title(driver, preview_title) -> str:
+def fetch_offers():
+    offers = []
+    seen_links = set()
+    
+    for url in TARGET_URLS:
+        log(f"\n🌐 Buscando ofertas em: {url}")
         try:
-            h1 = driver.find_elements(By.CSS_SELECTOR, "h1")
-            if h1 and h1[0].text:
-                return normalize_spaces(h1[0].text)
-        except: pass
-        return preview_title
-
-    def extract_validity(driver) -> Optional[str]:
-        try:
-            body = driver.find_element(By.TAG_NAME, "body").text
-            for pattern in [r"[Bb]enefício válido de[^.!?\n]*[.!?]?", r"[Vv]álido até[^.!?\n]*[.!?]?", r"\d{2}/\d{2}/\d{4}.*?\d{2}/\d{2}/\d{4}"]:
-                match = re.search(pattern, body)
-                if match: return normalize_spaces(match.group(0))
-        except: pass
-        return None
-
-    def extract_full_description(driver) -> str:
-        try:
-            text_parts, seen = [], set()
-            for selector in [".partner-description", ".benefit-description", "p"]:
-                for elem in driver.find_elements(By.CSS_SELECTOR, selector):
-                    text = normalize_spaces(elem.text)
-                    if text and len(text) > 20:
-                        if text[:100].lower() not in seen:
-                            seen.add(text[:100].lower())
-                            text_parts.append(text)
-            if text_parts: return truncate_text("\n\n".join(text_parts), MAX_COMMENT_LENGTH - 150)
-            return truncate_text(normalize_spaces(driver.find_element(By.TAG_NAME, "body").text), MAX_COMMENT_LENGTH - 150)
-        except:
-            return "Descrição detalhada não disponível."
-
-    def extract_offer_image(container) -> Optional[str]:
-        try:
-            imgs = container.find_elements(By.CSS_SELECTOR, "img")
-            fallback_img = None
+            res = requests.get(url, headers=HEADERS, timeout=15)
+            html = res.text
             
-            for img in imgs:
-                src = img.get_attribute("data-src") or img.get_attribute("src")
-                if not src or "data:image" in src: continue
+            # Fatiar o HTML inteiro em blocos onde cada oferta começa
+            blocks = re.split(r'<div[^>]*data-categoria=[\'"]', html, flags=re.IGNORECASE)
+            if len(blocks) <= 1: continue
+            
+            for block in blocks[1:]:
+                # 1. LINK
+                link_match = re.search(r'<a[^>]*href="([^"]+)"', block, re.IGNORECASE)
+                if not link_match: continue
+                link = link_match.group(1)
+                if link == "#" or "javascript" in link or "minhas-recompensas" in link: continue
+                if link.startswith("/"): link = "https://clube.uol.com.br" + link
                 
-                if "beneficios/" in src:
-                    return src if not src.startswith("//") else "https:" + src
+                if link in seen_links: continue
+                seen_links.add(link)
                 
-                if "parceiros/" not in src:
-                    fallback_img = src if not src.startswith("//") else "https:" + src
-            
-            return fallback_img
-        except: return None
-
-    def fetch_offers(driver) -> List[Dict[str, str]]:
-        offers = []
-        seen_ids = set()
-        
-        for url in TARGET_URLS:
-            log(f"\n🌐 Carregando URL Direta: {url}")
-            driver.get(url)
-            human_delay(2, 4)
-            
-            containers = driver.find_elements(By.CSS_SELECTOR, "div.beneficio, [data-categoria='Ingressos Exclusivos'], .item")
-            log(f"📦 Containers encontrados nesta página: {len(containers)}")
-            
-            for container in containers:
-                try:
-                    title_elem = container.find_elements(By.CSS_SELECTOR, ".titulo, h2, h3")
-                    if not title_elem: continue
-                    preview_title = normalize_spaces(title_elem[0].text)
-                    if not preview_title: continue
+                # 2. TÍTULO
+                title = ""
+                title_match = re.search(r'class="[^"]*titulo[^"]*"[^>]*>([\s\S]*?)</', block, re.IGNORECASE)
+                if title_match:
+                    title = clean_text(re.sub(r'<[^>]+>', '', title_match.group(1)))
+                else:
+                    btn_match = re.search(r'<a[^>]*class="[^"]*btn[^"]*"[^>]*>([\s\S]*?)</', block, re.IGNORECASE)
+                    if btn_match: title = clean_text(re.sub(r'<[^>]+>', '', btn_match.group(1)))
+                
+                # 3. IMAGEM
+                img_url = ""
+                img_matches = re.finditer(r'<img[^>]*data-src="([^"]+)"', block, re.IGNORECASE)
+                srcs = [m.group(1) for m in img_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
+                
+                if srcs:
+                    img_url = srcs[0]
+                else:
+                    src_matches = re.finditer(r'<img[^>]*src="([^"]+)"', block, re.IGNORECASE)
+                    srcs = [m.group(1) for m in src_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
+                    if srcs: img_url = srcs[0]
+                
+                if img_url and img_url.startswith("/"):
+                    img_url = "https://clube.uol.com.br" + img_url
                     
-                    link_elem = container.find_elements(By.CSS_SELECTOR, "a.btn, .btn")
-                    if not link_elem:
-                        link_elem = container.find_elements(By.CSS_SELECTOR, "a")
-                    
-                    if not link_elem: continue
-                    
-                    link = link_elem[0].get_attribute("href")
-                    if not link or "javascript" in link: continue
-                    
-                    offer_id = get_offer_id(link)
-                    if offer_id in seen_ids: continue
-                    seen_ids.add(offer_id)
-                    
-                    img_url = extract_offer_image(container)
-                    
+                if title and link:
                     offers.append({
-                        "id": offer_id,
-                        "preview_title": preview_title,
+                        "id": get_offer_id(link),
+                        "preview_title": title,
                         "link": link,
                         "img_url": img_url
                     })
-                    log(f"  🎫 Achei: {preview_title[:50]}...")
-                    
-                except Exception as e:
-                    continue
-                    
-        return offers[:MAX_OFFERS_PER_RUN]
+                    log(f"  🎫 Encontrado: {title[:40]}...")
+        except Exception as e:
+            log(f"❌ Erro ao buscar {url}: {e}")
+            
+    return offers[:MAX_OFFERS_PER_RUN]
 
-    def process_offer_details(driver, offer: Dict) -> Tuple[str, Optional[str], str]:
-        try:
-            driver.get(offer['link'])
-            human_delay(1, 2)
-            
-            page_title = extract_page_title(driver, offer['preview_title'])
-            validity = extract_validity(driver)
-            full_description = extract_full_description(driver)
-            return page_title, validity, full_description
-        except:
-            return offer['preview_title'], None, "Descrição não disponível"
-
-    def run_fallback_scraper():
-        log("=" * 70)
-        log("🤖 BOT LEOUOL - Otimizado para Ingressos (V2)")
-        log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
-        log("=" * 70)
-        
-        if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID: return
-        
-        history = load_history()
-        seen_ids = set(history.get("ids", []))
-        driver = None
-        
-        try:
-            driver = setup_driver()
-            offers = fetch_offers(driver)
-            new_offers = [o for o in offers if o["id"] not in seen_ids]
-            
-            if not new_offers:
-                log("📭 Nenhuma oferta nova nas categorias de ingresso.")
-                return
-            
-            log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
-            processed_ids, success_count = set(seen_ids), 0
-            
-            for idx, offer in enumerate(new_offers, 1):
-                log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}: {offer['preview_title']}")
-                
-                if not offer.get("img_url"):
-                    log("⚠️ Sem imagem, pulando...")
-                    processed_ids.add(offer["id"])
-                    continue
-                
-                img_path = download_image(offer["img_url"])
-                page_title, validity, full_description = process_offer_details(driver, offer)
-                
-                caption = build_caption(page_title, validity, offer["link"])
-                message_id = send_photo_to_channel(img_path, caption)
-                
-                if message_id and send_description_comment(full_description, offer["link"], message_id):
-                    success_count += 1
-                    log(f"✅ Oferta enviada com sucesso!")
-                else:
-                    log(f"❌ Falha ao enviar")
-                    
-                processed_ids.add(offer["id"])
-                try: Path(img_path).unlink(missing_ok=True)
-                except: pass
-            
-            history["ids"] = list(processed_ids)
-            save_history(history)
-            log(f"\n✅ Fim. {success_count}/{len(new_offers)} enviadas.")
-            
-        finally:
-            if driver: driver.quit()
-
-# ==============================================
-# FUNÇÕES COMPARTILHADAS (Telegram e afins)
-# ==============================================
-def download_image(img_url: str) -> Optional[str]:
+def process_offer_details(offer):
+    log(f"   🔍 Acessando detalhes: {offer['preview_title'][:40]}...")
     try:
-        response = requests.get(img_url, headers={'User-Agent': random.choice(USER_AGENTS)}, timeout=10)
-        if response.ok:
+        res = requests.get(offer['link'], headers=HEADERS, timeout=15)
+        html = res.text
+        
+        # TÍTULO
+        page_title = offer['preview_title']
+        h2_match = re.search(r'<h2[^>]*>([\s\S]*?)</h2>', html, re.IGNORECASE)
+        if h2_match:
+            page_title = clean_text(re.sub(r'<[^>]+>', '', h2_match.group(1)))
+            
+        # VALIDADE
+        validity = None
+        for pattern in [r"[Bb]enefício válido de[^.!?\n]*[.!?]?", r"[Vv]álido até[^.!?\n]*[.!?]?", r"\d{2}/\d{2}/\d{4}.*?\d{2}/\d{2}/\d{4}"]:
+            match = re.search(pattern, html)
+            if match:
+                validity = clean_text(re.sub(r'<[^>]+>', '', match.group(0)))
+                break
+                
+        # DESCRIÇÃO
+        full_desc = "Descrição detalhada não disponível."
+        info_match = re.search(r'class="[^"]*info-beneficio[^"]*"[^>]*>([\s\S]*?)(?:<script|<footer|class="[^"]*box-compartilhar)', html, re.IGNORECASE)
+        
+        if info_match:
+            raw = info_match.group(1)
+            raw = re.sub(r'<br\s*/?>', '\n', raw, flags=re.IGNORECASE)
+            raw = re.sub(r'</p>', '\n\n', raw, flags=re.IGNORECASE)
+            raw = re.sub(r'</div>', '\n', raw, flags=re.IGNORECASE)
+            raw = re.sub(r'<li[^>]*>', '\n• ', raw, flags=re.IGNORECASE)
+            
+            raw = re.sub(r'<[^>]+>', ' ', raw)
+            raw = clean_text(raw)
+            raw = re.sub(r'•\s+', '• ', raw)
+            
+            lixo_idx = raw.find("Enviar cupons por e-mail")
+            if lixo_idx != -1:
+                raw = raw[:lixo_idx].strip()
+                
+            if len(raw) > 20:
+                full_desc = raw
+                
+        return page_title, validity, full_desc
+    except Exception as e:
+        log(f"   ⚠️ Erro nos detalhes: {e}")
+        return offer['preview_title'], None, "Descrição não disponível"
+
+# ==============================================
+# FUNÇÕES DE TELEGRAM (MANTIDAS IGUAIS)
+# ==============================================
+def download_image(img_url: str) -> str:
+    try:
+        res = requests.get(img_url, headers=HEADERS, timeout=10)
+        if res.ok:
             path = f"/tmp/leouol_{int(time.time())}.jpg"
-            Path(path).write_bytes(response.content)
+            Path(path).write_bytes(res.content)
             return path
     except: pass
     return None
 
-def build_caption(title: str, validity: Optional[str], link: str) -> str:
+def build_caption(title, validity, link):
     parts = [f"<b>{escape_html(title)}</b>"]
     if validity: parts.append(f"📅 {escape_html(validity)}")
     parts.append(f"🔗 <a href='{escape_html(link)}'>Acessar oferta</a>")
     parts.append(f"💬 Veja os detalhes completos nos comentários abaixo")
     return truncate_text("\n\n".join(parts), MAX_CAPTION_LENGTH)
 
-def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
+def send_photo_to_channel(img_path, caption):
     try:
         url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
         with open(img_path, 'rb') as photo:
@@ -321,7 +225,7 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
         return res.json().get("result", {}).get("message_id") if res.ok else None
     except: return None
 
-def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
+def send_description_comment(desc, link, channel_msg_id):
     group_msg_id = None
     for _ in range(3):
         time.sleep(3)
@@ -346,109 +250,109 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
     except: return False
 
 # ==============================================
-# FUNÇÃO CONSUMER (para processar pending_offers.json)
+# FLUXOS PRINCIPAIS
 # ==============================================
-def run_consumer():
+def run_scraper():
     log("=" * 70)
-    log("🤖 BOT LEOUOL - Consumer (Processando pendentes)")
+    log("🤖 BOT LEOUOL - Otimizado (Requests Puro + Regex)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 70)
     
-    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
-        log("❌ Variáveis TELEGRAM_TOKEN e TELEGRAM_CHAT_ID são obrigatórias")
-        return
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID: return
     
     history = load_history()
     seen_ids = set(history.get("ids", []))
     
-    pending_file = Path("pending_offers.json")
-    if not pending_file.exists():
-        log("📭 Nenhuma oferta pendente")
+    offers = fetch_offers()
+    new_offers = [o for o in offers if o["id"] not in seen_ids]
+    
+    if not new_offers:
+        log("📭 Nenhuma oferta nova nas categorias de ingresso.")
         return
-    
-    with open(pending_file, 'r') as f:
-        data = json.load(f)
-    
-    offers = data.get("offers", [])
-    if not offers:
-        log("📭 Nenhuma oferta pendente")
-        return
-    
-    log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
-    
-    processed_ids = set(seen_ids)
-    success_count = 0
-    failed_ids = []
-    
-    for idx, offer in enumerate(offers, 1):
-        log(f"\n{'=' * 50}")
-        log(f"📦 Oferta {idx}/{len(offers)}")
-        log(f"🏷️ {offer.get('title', offer.get('preview_title', ''))[:80]}")
         
-        if offer["id"] in seen_ids:
-            log("  ⏭️ Oferta já enviada anteriormente")
-            processed_ids.add(offer["id"])
-            continue
+    log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
+    processed_ids, success_count = set(seen_ids), 0
+    
+    for idx, offer in enumerate(new_offers, 1):
+        log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}: {offer['preview_title']}")
         
         if not offer.get("img_url"):
-            log("  ⚠️ Sem imagem, ignorando")
+            log("⚠️ Sem imagem, pulando...")
             processed_ids.add(offer["id"])
             continue
-        
+            
         img_path = download_image(offer["img_url"])
-        if not img_path:
-            log("  ⚠️ Falha ao baixar imagem")
+        if not img_path: continue
+        
+        page_title, validity, full_desc = process_offer_details(offer)
+        caption = build_caption(page_title, validity, offer["link"])
+        
+        message_id = send_photo_to_channel(img_path, caption)
+        if message_id and send_description_comment(full_desc, offer["link"], message_id):
+            success_count += 1
+            log(f"✅ Oferta enviada com sucesso!")
+        else:
+            log(f"❌ Falha ao enviar")
+            
+        processed_ids.add(offer["id"])
+        try: Path(img_path).unlink(missing_ok=True)
+        except: pass
+        
+    history["ids"] = list(processed_ids)
+    save_history(history)
+    log(f"\n✅ Fim. {success_count}/{len(new_offers)} enviadas.")
+
+def run_consumer():
+    # Mantive intacto para processar os envios que chegam pelo Scriptable do celular!
+    log("=" * 70)
+    log("🤖 BOT LEOUOL - Consumer (Processando pendentes do Scriptable)")
+    log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+    log("=" * 70)
+    
+    history = load_history()
+    seen_ids = set(history.get("ids", []))
+    pending_file = Path("pending_offers.json")
+    
+    if not pending_file.exists(): return
+    with open(pending_file, 'r') as f: data = json.load(f)
+    offers = data.get("offers", [])
+    if not offers: return
+    
+    log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
+    processed_ids, success_count, failed_ids = set(seen_ids), 0, []
+    
+    for idx, offer in enumerate(offers, 1):
+        if offer["id"] in seen_ids or not offer.get("img_url"):
             processed_ids.add(offer["id"])
             continue
+            
+        img_path = download_image(offer["img_url"])
+        if not img_path: continue
         
         page_title = offer.get("title", offer.get("preview_title", "Oferta"))
-        validity = offer.get("validity")
-        full_description = offer.get("description", "Descrição não disponível")
-        
-        caption = build_caption(page_title, validity, offer["link"])
+        caption = build_caption(page_title, offer.get("validity"), offer["link"])
         message_id = send_photo_to_channel(img_path, caption)
         
-        if message_id:
-            success = send_description_comment(full_description, offer["link"], message_id)
-            if success:
-                success_count += 1
-                processed_ids.add(offer["id"])
-                log(f"  ✅ Oferta {idx} enviada!")
-            else:
-                log(f"  ⚠️ Foto enviada mas comentário falhou")
-                processed_ids.add(offer["id"])
+        if message_id and send_description_comment(offer.get("description", ""), offer["link"], message_id):
+            success_count += 1
+            processed_ids.add(offer["id"])
         else:
-            log(f"  ❌ Falha ao enviar foto")
             failed_ids.append(offer["id"])
-        
-        try:
-            Path(img_path).unlink(missing_ok=True)
-        except:
-            pass
-        
+            
+        try: Path(img_path).unlink(missing_ok=True)
+        except: pass
         time.sleep(2)
-    
+        
     history["ids"] = list(processed_ids)
     save_history(history)
     
     remaining_offers = [o for o in offers if o["id"] in failed_ids]
-    
-    if remaining_offers:
-        log(f"⚠️ {len(remaining_offers)} ofertas falharam, mantendo no pending")
-        with open(pending_file, 'w') as f:
-            json.dump({"last_update": datetime.now().isoformat(), "offers": remaining_offers}, f, indent=2)
-    else:
-        with open(pending_file, 'w') as f:
-            json.dump({"last_update": datetime.now().isoformat(), "offers": []}, f, indent=2)
-        log("✅ Arquivo pending_offers.json limpo")
-    
-    log(f"\n✅ Fim. {success_count}/{len(offers)} ofertas enviadas.")
+    with open(pending_file, 'w') as f:
+        json.dump({"last_update": datetime.now().isoformat(), "offers": remaining_offers}, f, indent=2)
+    log(f"\n✅ Consumer Finalizado: {success_count}/{len(offers)} enviadas.")
 
-# ==============================================
-# ENTRY POINT
-# ==============================================
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--pending":
         run_consumer()
     else:
-        run_fallback_scraper()
+        run_scraper()
