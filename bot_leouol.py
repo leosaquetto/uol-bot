@@ -2,7 +2,9 @@
 # consumer do pending_offers.json + envio para telegram
 # versão corrigida:
 # - processa tudo que estiver no pending
-# - mantém comentário no grupo vinculado ao canal
+# - tenta localizar a mensagem espelhada no grupo de discussões
+# - envia comentário na thread correta usando message_thread_id
+# - envia logo do parceiro por upload de arquivo (não por url direta)
 # - normaliza ids do histórico
 # - limpa pending apenas do que foi enviado com sucesso
 # - compatível com python bot_leouol.py --pending
@@ -12,7 +14,7 @@ import os
 import re
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 from html import unescape
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -62,7 +64,6 @@ def normalize_spaces(text: Optional[str]) -> str:
 def clean_multiline_text(text: Optional[str]) -> str:
     if not text:
         return ""
-
     text = str(text)
     text = unescape(text)
     text = text.replace("\r\n", "\n").replace("\r", "\n")
@@ -89,8 +90,6 @@ def clean_multiline_text(text: Optional[str]) -> str:
 def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
     if len(text) <= max_len:
         return text
-    if max_len <= len(suffix):
-        return suffix[:max_len]
     return text[: max_len - len(suffix)] + suffix
 
 
@@ -111,6 +110,15 @@ def safe_json_load(path: Path, fallback):
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return fallback
+
+
+def strip_html_for_compare(text: Optional[str]) -> str:
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", " ", str(text))
+    text = unescape(text)
+    text = re.sub(r"\s+", " ", text).strip().lower()
+    return text
 
 
 # ==============================================
@@ -233,7 +241,7 @@ def load_pending() -> Dict:
 def save_pending(offers: List[Dict]) -> bool:
     try:
         payload = {
-            "last_update": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "last_update": datetime.utcnow().isoformat() + "Z",
             "offers": offers,
         }
         Path(PENDING_FILE).write_text(
@@ -254,12 +262,15 @@ def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
-def download_image(img_url: str, prefix: str = "leouol") -> Optional[str]:
+def download_image(img_url: str) -> Optional[str]:
     if not img_url:
         return None
 
     try:
-        headers = {"User-Agent": USER_AGENT}
+        headers = {
+            "User-Agent": USER_AGENT,
+            "Referer": "https://clube.uol.com.br/",
+        }
         response = requests.get(img_url, headers=headers, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
 
@@ -269,10 +280,8 @@ def download_image(img_url: str, prefix: str = "leouol") -> Optional[str]:
             suffix = ".png"
         elif ".webp" in lower:
             suffix = ".webp"
-        elif ".jpeg" in lower:
-            suffix = ".jpeg"
 
-        path = f"/tmp/{prefix}_{int(time.time() * 1000)}{suffix}"
+        path = f"/tmp/leouol_{int(time.time() * 1000)}{suffix}"
         Path(path).write_bytes(response.content)
         return path
     except Exception as e:
@@ -334,20 +343,19 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
 
 def find_group_mirror_message_id(
     channel_message_id: int,
+    expected_caption: str,
     attempts: int = 6,
-    delay: int = 3
+    delay: int = 3,
 ) -> Optional[int]:
     """
-    tenta descobrir qual mensagem apareceu no grupo vinculado
-    correspondente ao post do canal.
+    tenta descobrir qual mensagem apareceu no grupo vinculado correspondente ao post do canal.
 
-    regra:
-    - aceita apenas forward automático real
-    - confere se veio do canal correto
-    - casa pelo message_id original do post no canal
+    ordem:
+    1. match por forward_origin / forward_from_message_id
+    2. fallback por caption parecida
     """
 
-    expected_channel_chat_id = str(TELEGRAM_CHAT_ID)
+    expected_caption_cmp = strip_html_for_compare(expected_caption)
 
     for attempt in range(1, attempts + 1):
         log(f"   ⏳ aguardando espelhamento no grupo ({attempt}/{attempts})...")
@@ -365,6 +373,8 @@ def find_group_mirror_message_id(
             data = response.json()
             updates = data.get("result", [])
 
+            recent_group_candidates = []
+
             for update in reversed(updates):
                 for key in ("message", "edited_message", "channel_post", "edited_channel_post"):
                     msg = update.get(key, {})
@@ -375,81 +385,48 @@ def find_group_mirror_message_id(
                     if chat_id != str(GRUPO_COMENTARIO_ID):
                         continue
 
-                    if not msg.get("is_automatic_forward", False):
-                        continue
-
                     msg_id = msg.get("message_id")
+                    caption = msg.get("caption") or msg.get("text") or ""
+                    caption_cmp = strip_html_for_compare(caption)
 
-                    origin_message_id = None
-                    origin_chat_id = None
-
-                    # api mais nova
                     forward_origin = msg.get("forward_origin", {}) or {}
-                    if isinstance(forward_origin, dict):
-                        origin_message_id = forward_origin.get("message_id")
+                    origin_message_id = forward_origin.get("message_id")
+                    legacy_forward_id = msg.get("forward_from_message_id")
+                    is_auto = msg.get("is_automatic_forward", False)
 
-                        chat_data = forward_origin.get("chat", {}) or {}
-                        sender_chat_data = forward_origin.get("sender_chat", {}) or {}
-
-                        if chat_data.get("id") is not None:
-                            origin_chat_id = str(chat_data.get("id"))
-                        elif sender_chat_data.get("id") is not None:
-                            origin_chat_id = str(sender_chat_data.get("id"))
-
-                    # api antiga
-                    if origin_message_id is None:
-                        origin_message_id = msg.get("forward_from_message_id")
-
-                    forward_from_chat = msg.get("forward_from_chat", {}) or {}
-                    if origin_chat_id is None and forward_from_chat.get("id") is not None:
-                        origin_chat_id = str(forward_from_chat.get("id"))
-
-                    if origin_chat_id and origin_chat_id != expected_channel_chat_id:
-                        continue
-
-                    if origin_message_id == channel_message_id:
-                        log(f"   ✅ id espelhado encontrado no grupo por forward real: {msg_id}")
+                    if is_auto and (
+                        origin_message_id == channel_message_id
+                        or legacy_forward_id == channel_message_id
+                    ):
+                        log(f"   ✅ id espelhado encontrado no grupo por forward: {msg_id}")
                         return msg_id
+
+                    recent_group_candidates.append({
+                        "message_id": msg_id,
+                        "caption_cmp": caption_cmp,
+                    })
+
+            for candidate in recent_group_candidates:
+                cap = candidate["caption_cmp"]
+                if not cap or not expected_caption_cmp:
+                    continue
+
+                if cap == expected_caption_cmp:
+                    log(f"   ✅ id espelhado encontrado no grupo por caption exata: {candidate['message_id']}")
+                    return candidate["message_id"]
+
+                if (
+                    expected_caption_cmp[:120] and expected_caption_cmp[:120] in cap
+                ) or (
+                    cap[:120] and cap[:120] in expected_caption_cmp
+                ):
+                    log(f"   ✅ id espelhado encontrado no grupo por caption aproximada: {candidate['message_id']}")
+                    return candidate["message_id"]
 
         except Exception as e:
             log(f"   ⚠️ erro ao consultar getUpdates: {e}")
 
     return None
-
-
-def send_partner_logo_reply(group_msg_id: int, partner_img_url: Optional[str]) -> None:
-    if not partner_img_url:
-        return
-
-    logo_path = download_image(partner_img_url, prefix="partner_logo")
-    if not logo_path:
-        log("   ⚠️ não foi possível baixar a logo do parceiro")
-        return
-
-    try:
-        with open(logo_path, "rb") as photo:
-            resp = requests.post(
-                telegram_api("sendPhoto"),
-                data={
-                    "chat_id": GRUPO_COMENTARIO_ID,
-                    "reply_to_message_id": group_msg_id,
-                    "allow_sending_without_reply": "true",
-                },
-                files={"photo": photo},
-                timeout=REQUEST_TIMEOUT,
-            )
-
-        if resp.ok:
-            log("   ✅ logo do parceiro enviada no reply")
-        else:
-            log(f"   ⚠️ falha ao enviar logo do parceiro: {resp.text}")
-    except Exception as e:
-        log(f"   ⚠️ erro ao enviar logo do parceiro: {e}")
-    finally:
-        try:
-            Path(logo_path).unlink(missing_ok=True)
-        except Exception:
-            pass
 
 
 def send_description_comment(
@@ -461,8 +438,7 @@ def send_description_comment(
     partner_img_url: Optional[str] = None,
 ) -> bool:
     """
-    envia comentário no grupo vinculado.
-    para virar comentário real do canal, precisa entrar na thread da mensagem espelhada.
+    envia comentário na thread correta do grupo vinculado ao canal.
     """
 
     group_msg_id = find_group_mirror_message_id(
@@ -476,7 +452,6 @@ def send_description_comment(
         log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
         return False
 
-    # 1) logo do parceiro opcional
     if partner_img_url:
         try:
             logo_path = download_image(partner_img_url)
@@ -509,7 +484,6 @@ def send_description_comment(
         except Exception as e:
             log(f"   ⚠️ erro ao enviar logo do parceiro: {e}")
 
-    # 2) descrição completa
     text = build_comment_text(description, validity, link)
 
     data = {
@@ -526,7 +500,7 @@ def send_description_comment(
         resp = requests.post(
             telegram_api("sendMessage"),
             data=data,
-            timeout=30,
+            timeout=REQUEST_TIMEOUT,
         )
 
         if resp.ok:
@@ -576,6 +550,7 @@ def run_consumer() -> None:
         title = offer.get("title") or offer.get("preview_title") or "oferta"
         link = offer.get("link") or offer.get("original_link") or ""
         img_url = offer.get("img_url") or ""
+        partner_img_url = offer.get("partner_img_url") or ""
         validity = offer.get("validity")
         description = offer.get("description") or "descrição não disponível."
 
@@ -594,7 +569,7 @@ def run_consumer() -> None:
             failed_offers.append(offer)
             continue
 
-        img_path = download_image(img_url, prefix="offer")
+        img_path = download_image(img_url)
         if not img_path:
             log("   ⚠️ falha ao baixar imagem, mantendo no pending")
             failed_offers.append(offer)
@@ -618,7 +593,8 @@ def run_consumer() -> None:
             validity=validity,
             link=link,
             channel_message_id=channel_message_id,
-            partner_img_url=offer.get("partner_img_url"),
+            caption=caption,
+            partner_img_url=partner_img_url,
         )
 
         if not comment_ok:
