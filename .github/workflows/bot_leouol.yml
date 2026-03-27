@@ -29,6 +29,13 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Alinhar com origin/main
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
       - name: Configurar python
         uses: actions/setup-python@v5
         with:
@@ -52,6 +59,13 @@ jobs:
             echo "pending_offers.json encontrado"
           fi
 
+          if [ ! -f latest_offers.json ]; then
+            echo '{"last_update":null,"offers":[]}' > latest_offers.json
+            echo "latest_offers.json criado"
+          else
+            echo "latest_offers.json encontrado"
+          fi
+
       - name: Instalar dependencias
         shell: bash
         run: |
@@ -70,10 +84,6 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
-          git fetch origin main
-          git checkout main
-          git reset --hard origin/main
-
           [ -f historico_leouol.json ] || echo '{"ids":[]}' > historico_leouol.json
           [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
           [ -f latest_offers.json ] || echo '{"last_update":null,"offers":[]}' > latest_offers.json
@@ -91,7 +101,6 @@ jobs:
           }
 
           git push origin HEAD:main
-          
           echo "alteracoes enviadas"
 
       - name: Upload debug
@@ -102,5 +111,6 @@ jobs:
           path: |
             historico_leouol.json
             pending_offers.json
+            latest_offers.json
           if-no-files-found: ignore
           retention-days: 3
