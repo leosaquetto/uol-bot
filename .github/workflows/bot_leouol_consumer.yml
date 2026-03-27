@@ -1,3 +1,4 @@
+# .github/workflows/bot_leouol_consumer.yml
 name: BOT LEOUOL - Consumer
 
 on:
@@ -40,12 +41,17 @@ jobs:
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         run: python bot_leouol.py --pending
 
-      - name: Cleanup
+      - name: Commit and push changes (if any)
         if: always()
         run: |
-          echo '{"last_update": "", "offers": []}' > pending_offers.json
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
-          git add pending_offers.json
-          git diff-index --quiet HEAD || git commit -m "Cleanup [skip ci]"
-          git push
+          
+          # Verificar se há mudanças para commitar
+          if [[ -n $(git status --porcelain) ]]; then
+            git add historico_leouol.json pending_offers.json 2>/dev/null || true
+            git commit -m "Atualiza histórico e pending [skip ci]" || echo "Nada para commitar"
+            git push || echo "Nada para push"
+          else
+            echo "Nenhuma mudança detectada"
+          fi
