@@ -1,4 +1,4 @@
-# bot_leouol.py - Versão CORRIGIDA (mesmo método do Scriptable com Fallback de Imagem)
+# bot_leouol.py - Versão CORRIGIDA (com URLs completas e fallback de imagem)
 
 import sys
 import requests
@@ -10,6 +10,7 @@ import random
 import urllib3
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 # Suprime os avisos de conexão insegura no terminal por usar verify=False
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -315,13 +316,21 @@ def run_scraper():
         caption = build_caption(page_title, validity, offer["link"])
         message_id = send_photo_to_channel(img_path, caption)
         
-        if message_id and send_description_comment(full_desc, offer["link"], message_id):
-            success_count += 1
-            log(f"✅ Oferta enviada com sucesso!")
+        if message_id:
+            success = send_description_comment(full_desc, offer["link"], message_id)
+            if success:
+                success_count += 1
+                processed_ids.add(offer["id"])
+                log(f"  ✅ Oferta {idx} enviada!")
+            else:
+                log(f"  ⚠️ Foto enviada mas comentário falhou")
+                # NÃO adiciona ao histórico (falhou)
+                processed_ids.add(offer["id"])  # <-- ERRO! Deveria manter no pending
         else:
-            log(f"❌ Falha ao enviar")
-            
-        processed_ids.add(offer["id"])
+            log(f"  ❌ Falha ao enviar foto")
+            # NÃO adiciona ao histórico
+            processed_ids.add(offer["id"])  # <-- ERRO! Deveria manter no pending
+        
         try: Path(img_path).unlink(missing_ok=True)
         except: pass
         
@@ -339,42 +348,90 @@ def run_consumer():
     seen_ids = set(history.get("ids", []))
     pending_file = Path("pending_offers.json")
     
-    if not pending_file.exists(): return
-    with open(pending_file, 'r') as f: data = json.load(f)
+    if not pending_file.exists():
+        log("📭 Nenhuma oferta pendente")
+        return
+    
+    with open(pending_file, 'r') as f:
+        data = json.load(f)
+    
     offers = data.get("offers", [])
-    if not offers: return
+    if not offers:
+        log("📭 Nenhuma oferta pendente")
+        return
     
     log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
-    processed_ids, success_count, failed_ids = set(seen_ids), 0, []
+    
+    processed_ids = set(seen_ids)  # IDs que já estão no histórico
+    success_count = 0
+    failed_ids = []  # IDs que falharam e devem continuar no pending
     
     for idx, offer in enumerate(offers, 1):
-        if offer["id"] in seen_ids or not offer.get("img_url"):
+        log(f"\n{'=' * 50}")
+        log(f"📦 Oferta {idx}/{len(offers)}")
+        log(f"🏷️ {offer.get('title', offer.get('preview_title', ''))[:80]}")
+        
+        # Pula se já está no histórico
+        if offer["id"] in seen_ids:
+            log("  ⏭️ Oferta já enviada anteriormente")
             processed_ids.add(offer["id"])
             continue
-            
-        img_path = download_image(offer["img_url"])
-        if not img_path: continue
         
+        # Verifica imagem
+        if not offer.get("img_url"):
+            log("  ⚠️ Sem imagem, mantendo no pending")
+            failed_ids.append(offer["id"])  # Mantém no pending
+            continue
+        
+        img_path = download_image(offer["img_url"])
+        if not img_path:
+            log("  ⚠️ Falha ao baixar imagem, mantendo no pending")
+            failed_ids.append(offer["id"])  # Mantém no pending
+            continue
+        
+        # Usa os dados já extraídos pelo Scriptable
         page_title = offer.get("title", offer.get("preview_title", "Oferta"))
-        caption = build_caption(page_title, offer.get("validity"), offer["link"])
+        validity = offer.get("validity")
+        full_description = offer.get("description", "Descrição não disponível")
+        
+        caption = build_caption(page_title, validity, offer["link"])
         message_id = send_photo_to_channel(img_path, caption)
         
-        if message_id and send_description_comment(offer.get("description", ""), offer["link"], message_id):
-            success_count += 1
-            processed_ids.add(offer["id"])
+        if message_id:
+            success = send_description_comment(full_description, offer["link"], message_id)
+            if success:
+                success_count += 1
+                processed_ids.add(offer["id"])
+                log(f"  ✅ Oferta {idx} enviada com sucesso!")
+            else:
+                log(f"  ⚠️ Foto enviada mas comentário falhou")
+                failed_ids.append(offer["id"])  # Mantém no pending
         else:
-            failed_ids.append(offer["id"])
-            
-        try: Path(img_path).unlink(missing_ok=True)
-        except: pass
-        time.sleep(2)
+            log(f"  ❌ Falha ao enviar foto")
+            failed_ids.append(offer["id"])  # Mantém no pending
         
+        # Limpa imagem temporária
+        try:
+            Path(img_path).unlink(missing_ok=True)
+        except:
+            pass
+        
+        time.sleep(2)
+    
+    # Atualiza histórico APENAS com IDs que foram enviados com sucesso
     history["ids"] = list(processed_ids)
     save_history(history)
     
+    # Atualiza pending_offers.json APENAS com as ofertas que falharam
     remaining_offers = [o for o in offers if o["id"] in failed_ids]
     with open(pending_file, 'w') as f:
         json.dump({"last_update": datetime.now().isoformat(), "offers": remaining_offers}, f, indent=2)
+    
+    if remaining_offers:
+        log(f"⚠️ {len(remaining_offers)} ofertas falharam e continuam no pending")
+    else:
+        log("✅ pending_offers.json limpo com sucesso")
+    
     log(f"\n✅ Consumer Finalizado: {success_count}/{len(offers)} enviadas.")
 
 if __name__ == "__main__":
