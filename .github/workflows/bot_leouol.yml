@@ -1,8 +1,8 @@
-name: BOT LEOUOL - Fallback (5 min)
+name: BOT LEOUOL - Scraper (5 min)
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # ⬅️ A CADA 5 MINUTOS (mínimo do GitHub)
+    - cron: "*/5 * * * *"  # ⬅️ Roda lindamente a cada 5 minutos
   workflow_dispatch:
 
 concurrency:
@@ -38,16 +38,10 @@ jobs:
             echo '{"ids": []}' > historico_leouol.json
           fi
 
-      - name: 🌐 Instalar Chrome
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
       - name: 📦 Instalar dependências
         shell: bash
         run: |
-          pip install requests selenium webdriver-manager
+          pip install -r requirements.txt
 
       - name: 🤖 Executar BOT
         env:
