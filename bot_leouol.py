@@ -5,6 +5,7 @@
 # - aguarda e localiza SOMENTE pelo ID de encaminhamento automático
 # - usa apenas reply_to_message_id (sem message_thread_id)
 # - limpa pending apenas do que foi enviado com sucesso
+# - limpa blocos residuais de formulário na descrição
 # NOVO: Encadeia Logo do Parceiro -> Descrição Completa nos comentários
 
 import json
@@ -55,6 +56,7 @@ def log_separator() -> None:
 def clean_multiline_text(text: Optional[str]) -> str:
     if not text:
         return ""
+
     text = str(text)
     text = unescape(text)
     text = text.replace("\r\n", "\n").replace("\r", "\n")
@@ -63,6 +65,27 @@ def clean_multiline_text(text: Optional[str]) -> str:
     text = re.sub(r"\n{3,}", "\n\n", text)
     text = re.sub(r"•\s*\n\s*", "• ", text)
     text = re.sub(r"\n\s*•\s*", "\n• ", text)
+    text = text.strip()
+
+    cut_markers = [
+        "Enviar cupons por e-mail",
+        "Preencha os campos abaixo",
+        "para enviar os seus cupons resgatados por e-mail",
+        "E-mail\n\nMensagem\n\nEnviar",
+    ]
+    for marker in cut_markers:
+        idx = text.find(marker)
+        if idx != -1:
+            text = text[:idx].rstrip()
+            break
+
+    text = re.sub(r"\s+([,.;:!?])", r"\1", text)
+    text = re.sub(r"\bREGRAS DE RESGATE\s+:", "REGRAS DE RESGATE:", text)
+    text = re.sub(r"\bproibida\s+\.", "proibida.", text, flags=re.I)
+    text = re.sub(r"\bresgatados\s+\.", "resgatados.", text, flags=re.I)
+    text = re.sub(r"\b23:59\s+\.", "23:59.", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+
     return text.strip()
 
 
@@ -100,8 +123,7 @@ def slugify_piece(text: str) -> str:
     replacements = {
         "á": "a", "à": "a", "ã": "a", "â": "a",
         "é": "e", "ê": "e", "í": "i",
-        "ó": "o", "ô": "o", "õ": "o",
-        "ú": "u", "ç": "c",
+        "ó": "o", "ô": "o", "õ": "o", "ú": "u", "ç": "c",
     }
     for src, dst in replacements.items():
         text = text.replace(src, dst)
@@ -241,7 +263,7 @@ def download_image(img_url: str) -> Optional[str]:
 def build_caption(title: str, validity: Optional[str], link: str) -> str:
     parts = [f"<b>{escape_html(title)}</b>"]
     if validity:
-        parts.append(f"📅 {escape_html(validity)}")
+        parts.append(f"📅 {escape_html(clean_multiline_text(validity))}")
     parts.append(f"🔗 <a href=\"{escape_html(link)}\">acessar oferta</a>")
     parts.append("💬 veja os detalhes completos nos comentários abaixo")
     return truncate_text("\n\n".join(parts), MAX_CAPTION_LENGTH)
@@ -251,7 +273,7 @@ def build_comment_text(description: str, validity: Optional[str], link: str) -> 
     desc = clean_multiline_text(description)
     parts = ["📋 <b>descrição completa</b>", "", escape_html(desc)]
     if validity:
-        parts.extend(["", f"📅 {escape_html(validity)}"])
+        parts.extend(["", f"📅 {escape_html(clean_multiline_text(validity))}"])
     parts.extend(["", f"🔗 <a href=\"{escape_html(link)}\">link original</a>"])
     return truncate_text("\n".join(parts), MAX_COMMENT_LENGTH)
 
@@ -307,11 +329,7 @@ def send_photo_to_group(img_path: str, reply_to_id: int) -> Optional[int]:
         return None
 
 
-def find_group_mirror_message(
-    channel_message_id: int,
-    attempts: int = 10,
-    delay: float = 3.0,
-) -> Optional[int]:
+def find_group_mirror_message(channel_message_id: int, attempts: int = 10, delay: float = 3.0) -> Optional[int]:
     last_update_id = None
 
     for attempt in range(1, attempts + 1):
@@ -327,12 +345,7 @@ def find_group_mirror_message(
             if last_update_id:
                 params["offset"] = last_update_id + 1
 
-            response = requests.get(
-                telegram_api("getUpdates"),
-                params=params,
-                timeout=REQUEST_TIMEOUT,
-            )
-
+            response = requests.get(telegram_api("getUpdates"), params=params, timeout=REQUEST_TIMEOUT)
             if not response.ok:
                 continue
 
@@ -369,12 +382,7 @@ def find_group_mirror_message(
     return None
 
 
-def send_text_comment(
-    description: str,
-    validity: Optional[str],
-    link: str,
-    reply_to_id: int,
-) -> bool:
+def send_text_comment(description: str, validity: Optional[str], link: str, reply_to_id: int) -> bool:
     text = build_comment_text(description, validity, link)
 
     data = {
@@ -387,11 +395,7 @@ def send_text_comment(
 
     try:
         log(f"   💬 enviando texto de descrição como reply ao ID {reply_to_id}")
-        resp = requests.post(
-            telegram_api("sendMessage"),
-            data=data,
-            timeout=REQUEST_TIMEOUT,
-        )
+        resp = requests.post(telegram_api("sendMessage"), data=data, timeout=REQUEST_TIMEOUT)
 
         if resp.ok:
             log("   ✅ texto de descrição enviado com sucesso!")
@@ -418,7 +422,6 @@ def run_consumer() -> None:
 
     history = load_history()
     processed_keys = set(history.get("ids", []))
-
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
 
@@ -469,11 +472,7 @@ def run_consumer() -> None:
             failed_offers.append(offer)
             continue
 
-        mirror_id = find_group_mirror_message(
-            channel_message_id=channel_message_id,
-            attempts=10,
-            delay=3.0,
-        )
+        mirror_id = find_group_mirror_message(channel_message_id=channel_message_id, attempts=10, delay=3.0)
 
         if not mirror_id:
             log("   ❌ não foi possível localizar o forward no grupo. Mantendo no pending.")
@@ -492,12 +491,7 @@ def run_consumer() -> None:
                 except Exception:
                     pass
 
-        comment_ok = send_text_comment(
-            description=description,
-            validity=validity,
-            link=link,
-            reply_to_id=current_reply_target,
-        )
+        comment_ok = send_text_comment(description=description, validity=validity, link=link, reply_to_id=current_reply_target)
 
         if not comment_ok:
             failed_offers.append(offer)
