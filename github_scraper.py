@@ -8,10 +8,11 @@ import certifi
 import requests
 import urllib3
 from bs4 import BeautifulSoup
-from requests.exceptions import SSLError
+from requests.exceptions import HTTPError, SSLError
 
 BASE_URL = "https://clube.uol.com.br"
 LIST_URL = f"{BASE_URL}/?order=new"
+FALLBACK_LIST_URL = f"{BASE_URL}/"
 
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
@@ -19,9 +20,8 @@ PENDING_FILE = "pending_offers.json"
 REQUEST_TIMEOUT = 30
 
 USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/123.0.0.0 Safari/537.36"
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+    "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
 )
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -163,23 +163,44 @@ def is_likely_benefit_banner(url: Optional[str]) -> bool:
     )
 
 
-def get_html(url: str) -> str:
-    headers = {
+def build_headers(referer: Optional[str] = None) -> Dict[str, str]:
+    return {
         "User-Agent": USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Referer": BASE_URL + "/",
+        "Referer": referer or (BASE_URL + "/"),
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
     }
-    session = requests.Session()
 
+
+def fetch_with_fallback(session: requests.Session, url: str, referer: Optional[str] = None) -> str:
+    headers = build_headers(referer)
     try:
-        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=certifi.where())
+        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=certifi.where(), allow_redirects=True)
         r.raise_for_status()
         return r.text
     except SSLError as e:
         log(f"ssl falhou com verificação padrão, tentando fallback sem verify: {e}")
-        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=False)
+        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=False, allow_redirects=True)
         r.raise_for_status()
         return r.text
+
+
+def get_html(url: str) -> str:
+    session = requests.Session()
+
+    try:
+        return fetch_with_fallback(session, url, BASE_URL + "/")
+    except HTTPError as e:
+        response = getattr(e, "response", None)
+        status_code = getattr(response, "status_code", None)
+        if url == LIST_URL and status_code == 405:
+            log("lista com ?order=new retornou 405, tentando fallback pela home")
+            return fetch_with_fallback(session, FALLBACK_LIST_URL, BASE_URL + "/")
+        raise
 
 
 def extract_all_img_meta(block) -> List[Dict[str, Any]]:
