@@ -1,15 +1,10 @@
 # bot_leouol.py
 # consumer do pending_offers.json + envio para telegram
-# versão corrigida:
+# versão corrigida final:
 # - processa tudo que estiver no pending
-# - envia foto ao canal
-# - tenta localizar o espelhamento real por forward_origin / forward_from_message_id
-# - fallback por caption, mas somente em mensagens recentes da janela atual
-# - envia descrição completa em reply na thread correta
-# - usa message_thread_id quando o telegram devolver
-# - não envia logo do parceiro neste teste
+# - aguarda e localiza SOMENTE pelo ID de encaminhamento automático
+# - usa apenas reply_to_message_id (sem message_thread_id)
 # - limpa pending apenas do que foi enviado com sucesso
-# - compatível com: python bot_leouol.py --pending
 
 import json
 import os
@@ -44,10 +39,6 @@ USER_AGENT = (
     "Chrome/123.0.0.0 Safari/537.36"
 )
 
-# janela de tolerância para achar a mensagem espelhada recente
-RECENT_WINDOW_PAST_SECONDS = 20
-RECENT_WINDOW_FUTURE_SECONDS = 150
-
 # ==============================================
 # utilidades
 # ==============================================
@@ -58,12 +49,6 @@ def log(msg: str) -> None:
 
 def log_separator() -> None:
     print("-" * 60, flush=True)
-
-
-def normalize_spaces(text: Optional[str]) -> str:
-    if not text:
-        return ""
-    return re.sub(r"\s+", " ", str(text)).strip()
 
 
 def clean_multiline_text(text: Optional[str]) -> str:
@@ -77,18 +62,6 @@ def clean_multiline_text(text: Optional[str]) -> str:
     text = re.sub(r"\n{3,}", "\n\n", text)
     text = re.sub(r"•\s*\n\s*", "• ", text)
     text = re.sub(r"\n\s*•\s*", "\n• ", text)
-    text = text.strip()
-
-    lixo = [
-        "Enviar cupons por e-mail",
-        "Preencha os campos abaixo",
-        "E-mail\n\nMensagem\n\nEnviar",
-    ]
-    for marker in lixo:
-        idx = text.find(marker)
-        if idx != -1:
-            text = text[:idx].rstrip()
-
     return text.strip()
 
 
@@ -118,37 +91,22 @@ def safe_json_load(path: Path, fallback):
     except Exception:
         return fallback
 
-
-def strip_html_for_compare(text: Optional[str]) -> str:
-    if not text:
-        return ""
-    text = re.sub(r"<[^>]+>", " ", str(text))
-    text = unescape(text)
-    text = re.sub(r"\s+", " ", text).strip().lower()
-    return text
-
-
 # ==============================================
 # normalização
 # ==============================================
 def slugify_piece(text: str) -> str:
     text = unescape(text or "").lower().strip()
-
     replacements = {
         "á": "a", "à": "a", "ã": "a", "â": "a",
-        "é": "e", "ê": "e",
-        "í": "i",
+        "é": "e", "ê": "e", "í": "i",
         "ó": "o", "ô": "o", "õ": "o",
-        "ú": "u",
-        "ç": "c",
+        "ú": "u", "ç": "c",
     }
     for src, dst in replacements.items():
         text = text.replace(src, dst)
-
     text = re.sub(r"[^a-z0-9\-_\/]+", "-", text)
     text = re.sub(r"-{2,}", "-", text)
-    text = text.strip("-/")
-    return text
+    return text.strip("-/")
 
 
 def get_offer_id(link: str) -> str:
@@ -163,31 +121,26 @@ def normalize_offer_key(value: str) -> str:
     raw = str(value or "").strip()
     if not raw:
         return ""
-
     if raw.startswith("http://") or raw.startswith("https://"):
         raw = get_offer_id(raw)
-
     raw = slugify_piece(raw)
     parts = [p for p in raw.split("-") if p]
     if not parts:
         return raw
-
     return "-".join(parts)
 
-
 # ==============================================
-# histórico
+# histórico e pending
 # ==============================================
 def load_history() -> Dict[str, List[str]]:
     path = Path(HISTORY_FILE)
     if not path.exists():
         return {"ids": []}
-
     data = safe_json_load(path, {"ids": []})
     ids = data.get("ids", [])
     if not isinstance(ids, list):
         ids = []
-
+    
     normalized = []
     seen = set()
     for item in ids:
@@ -195,7 +148,6 @@ def load_history() -> Dict[str, List[str]]:
         if key and key not in seen:
             seen.add(key)
             normalized.append(key)
-
     return {"ids": normalized[-MAX_HISTORY_SIZE:]}
 
 
@@ -204,7 +156,6 @@ def save_history(history: Dict[str, List[str]]) -> bool:
         ids = history.get("ids", [])
         if not isinstance(ids, list):
             ids = []
-
         cleaned = []
         seen = set()
         for item in ids:
@@ -212,37 +163,27 @@ def save_history(history: Dict[str, List[str]]) -> bool:
             if key and key not in seen:
                 seen.add(key)
                 cleaned.append(key)
-
         cleaned = cleaned[-MAX_HISTORY_SIZE:]
-
         Path(HISTORY_FILE).write_text(
             json.dumps({"ids": cleaned}, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-        log(f"✅ histórico salvo: {len(cleaned)} ids")
+        log(f"   ✅ histórico salvo: {len(cleaned)} IDs")
         return True
     except Exception as e:
-        log(f"❌ erro ao salvar histórico: {e}")
+        log(f"   ❌ erro ao salvar histórico: {e}")
         return False
 
 
-# ==============================================
-# pending
-# ==============================================
 def load_pending() -> Dict:
     path = Path(PENDING_FILE)
     if not path.exists():
         return {"last_update": None, "offers": []}
-
     data = safe_json_load(path, {"last_update": None, "offers": []})
     offers = data.get("offers", [])
     if not isinstance(offers, list):
         offers = []
-
-    return {
-        "last_update": data.get("last_update"),
-        "offers": offers,
-    }
+    return {"last_update": data.get("last_update"), "offers": offers}
 
 
 def save_pending(offers: List[Dict]) -> bool:
@@ -255,12 +196,14 @@ def save_pending(offers: List[Dict]) -> bool:
             json.dumps(payload, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-        log(f"✅ pending salvo: {len(offers)} ofertas")
+        if not offers:
+            log("   ✅ arquivo pending_offers.json limpo")
+        else:
+            log(f"   ✅ pending salvo com {len(offers)} ofertas restantes")
         return True
     except Exception as e:
-        log(f"❌ erro ao salvar pending: {e}")
+        log(f"   ❌ erro ao salvar pending: {e}")
         return False
-
 
 # ==============================================
 # telegram
@@ -269,44 +212,9 @@ def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
-def check_webhook_status() -> None:
-    """
-    getUpdates não funciona se houver webhook ativo.
-    isso ajuda a diagnosticar fila vazia.
-    """
-    try:
-        response = requests.get(
-            telegram_api("getWebhookInfo"),
-            timeout=REQUEST_TIMEOUT,
-        )
-        if not response.ok:
-            log(f"⚠️ não foi possível verificar webhook: {response.text}")
-            return
-
-        data = response.json()
-        info = data.get("result", {}) or {}
-        url = info.get("url") or ""
-        pending_count = info.get("pending_update_count", 0)
-
-        if url:
-            log("⚠️ webhook ativo detectado")
-            log(f"   url: {url}")
-            log(
-                "   enquanto houver webhook ativo, getUpdates não vai funcionar "
-                "para localizar o espelhamento do post"
-            )
-            log(f"   pending_update_count: {pending_count}")
-        else:
-            log("✅ sem webhook ativo, getUpdates pode ser usado normalmente")
-
-    except Exception as e:
-        log(f"⚠️ erro ao verificar webhook: {e}")
-
-
 def download_image(img_url: str) -> Optional[str]:
     if not img_url:
         return None
-
     try:
         headers = {
             "User-Agent": USER_AGENT,
@@ -315,16 +223,9 @@ def download_image(img_url: str) -> Optional[str]:
         response = requests.get(img_url, headers=headers, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
 
-        lower = img_url.lower()
         suffix = ".jpg"
-        content_type = response.headers.get("Content-Type", "").lower()
-
-        if ".png" in lower or "image/png" in content_type:
-            suffix = ".png"
-        elif ".webp" in lower or "image/webp" in content_type:
-            suffix = ".webp"
-        elif ".jpeg" in lower:
-            suffix = ".jpeg"
+        if ".png" in img_url.lower(): suffix = ".png"
+        elif ".webp" in img_url.lower(): suffix = ".webp"
 
         path = f"/tmp/leouol_{int(time.time() * 1000)}{suffix}"
         Path(path).write_bytes(response.content)
@@ -336,26 +237,19 @@ def download_image(img_url: str) -> Optional[str]:
 
 def build_caption(title: str, validity: Optional[str], link: str) -> str:
     parts = [f"<b>{escape_html(title)}</b>"]
-
     if validity:
         parts.append(f"📅 {escape_html(validity)}")
-
     parts.append(f"🔗 <a href=\"{escape_html(link)}\">acessar oferta</a>")
     parts.append("💬 veja os detalhes completos nos comentários abaixo")
-
     return truncate_text("\n\n".join(parts), MAX_CAPTION_LENGTH)
 
 
 def build_comment_text(description: str, validity: Optional[str], link: str) -> str:
     desc = clean_multiline_text(description)
-
     parts = ["📋 <b>descrição completa</b>", "", escape_html(desc)]
-
     if validity:
         parts.extend(["", f"📅 {escape_html(validity)}"])
-
     parts.extend(["", f"🔗 <a href=\"{escape_html(link)}\">link original</a>"])
-
     return truncate_text("\n".join(parts), MAX_COMMENT_LENGTH)
 
 
@@ -372,7 +266,6 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
                 files={"photo": photo},
                 timeout=REQUEST_TIMEOUT,
             )
-
         if not response.ok:
             log(f"   ❌ falha sendPhoto: {response.text}")
             return None
@@ -381,7 +274,6 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
         message_id = data.get("result", {}).get("message_id")
         log(f"   ✅ foto enviada ao canal (message_id {message_id})")
         return message_id
-
     except Exception as e:
         log(f"   ❌ erro sendPhoto: {e}")
         return None
@@ -389,62 +281,46 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
 
 def find_group_mirror_message(
     channel_message_id: int,
-    expected_caption: str,
-    sent_at_ts: int,
-    attempts: int = 8,
+    attempts: int = 10,
     delay: float = 3.0,
-) -> Optional[Dict]:
+) -> Optional[int]:
     """
-    retorna os dados da mensagem espelhada no grupo:
-    {
-        "message_id": int,
-        "message_thread_id": Optional[int],
-        "is_topic_message": bool,
-        "matched_by": str,
-    }
+    Localiza o ID da mensagem no grupo usando EXCLUSIVAMENTE
+    a origem do encaminhamento (forward_origin).
     """
-
-    expected_caption_cmp = strip_html_for_compare(expected_caption)
+    last_update_id = None
 
     for attempt in range(1, attempts + 1):
-        log(f"   ⏳ aguardando espelhamento no grupo ({attempt}/{attempts})...")
+        log(f"   ⏳ aguardando {delay} segundos para o forward (Tentativa {attempt}/{attempts})...")
         time.sleep(delay)
 
         try:
+            params = {
+                "limit": 100,
+                "timeout": 0,
+                "allowed_updates": json.dumps(["message"]),
+            }
+            if last_update_id:
+                params["offset"] = last_update_id + 1
+
             response = requests.get(
                 telegram_api("getUpdates"),
-                params={
-                    "limit": 100,
-                    "timeout": 0,
-                    "allowed_updates": json.dumps([
-                        "message",
-                        "edited_message",
-                        "channel_post",
-                        "edited_channel_post",
-                    ]),
-                },
+                params=params,
                 timeout=REQUEST_TIMEOUT,
             )
 
             if not response.ok:
-                log(f"   ⚠️ getUpdates falhou: {response.text}")
                 continue
 
             data = response.json()
             updates = data.get("result", [])
-            recent_group_candidates = []
 
-            if not updates:
-                log("   ⚠️ getUpdates voltou sem updates nesta tentativa")
-                continue
+            for update in updates:
+                update_id = update.get("update_id")
+                if update_id:
+                    last_update_id = update_id
 
-            for update in reversed(updates):
-                msg = None
-                for key in ("message", "edited_message", "channel_post", "edited_channel_post"):
-                    if update.get(key):
-                        msg = update[key]
-                        break
-
+                msg = update.get("message")
                 if not msg:
                     continue
 
@@ -453,83 +329,17 @@ def find_group_mirror_message(
                     continue
 
                 msg_id = msg.get("message_id")
-                msg_date = int(msg.get("date", 0))
-                msg_thread_id = msg.get("message_thread_id")
-                is_topic_message = bool(msg.get("is_topic_message", False))
-
-                if msg_date < sent_at_ts - RECENT_WINDOW_PAST_SECONDS:
-                    continue
-                if msg_date > sent_at_ts + RECENT_WINDOW_FUTURE_SECONDS:
-                    continue
-
-                caption = msg.get("caption") or msg.get("text") or ""
-                caption_cmp = strip_html_for_compare(caption)
-
+                
+                # Checa a origem do forward
                 forward_origin = msg.get("forward_origin", {}) or {}
                 origin_message_id = forward_origin.get("message_id")
                 legacy_forward_id = msg.get("forward_from_message_id")
                 is_auto = msg.get("is_automatic_forward", False)
 
-                # prioridade total: forward real
-                if (
-                    (is_auto or origin_message_id or legacy_forward_id)
-                    and (
-                        origin_message_id == channel_message_id
-                        or legacy_forward_id == channel_message_id
-                    )
-                ):
-                    log(
-                        f"   ✅ espelhamento encontrado por forward: "
-                        f"msg_id={msg_id} thread_id={msg_thread_id}"
-                    )
-                    return {
-                        "message_id": msg_id,
-                        "message_thread_id": msg_thread_id,
-                        "is_topic_message": is_topic_message,
-                        "matched_by": "forward",
-                    }
-
-                recent_group_candidates.append({
-                    "message_id": msg_id,
-                    "message_thread_id": msg_thread_id,
-                    "is_topic_message": is_topic_message,
-                    "caption_cmp": caption_cmp,
-                })
-
-            # fallback por caption, só na janela recente
-            for candidate in recent_group_candidates:
-                cap = candidate["caption_cmp"]
-                if not cap or not expected_caption_cmp:
-                    continue
-
-                if cap == expected_caption_cmp:
-                    log(
-                        f"   ✅ espelhamento encontrado por caption exata: "
-                        f"msg_id={candidate['message_id']} "
-                        f"thread_id={candidate['message_thread_id']}"
-                    )
-                    return {
-                        **candidate,
-                        "matched_by": "caption_exact",
-                    }
-
-                prefix_expected = expected_caption_cmp[:140]
-                prefix_cap = cap[:140]
-
-                if (
-                    prefix_expected and prefix_expected in cap
-                ) or (
-                    prefix_cap and prefix_cap in expected_caption_cmp
-                ):
-                    log(
-                        f"   ✅ espelhamento encontrado por caption aproximada: "
-                        f"msg_id={candidate['message_id']} "
-                        f"thread_id={candidate['message_thread_id']}"
-                    )
-                    return {
-                        **candidate,
-                        "matched_by": "caption_partial",
-                    }
+                if (is_auto or origin_message_id or legacy_forward_id):
+                    if origin_message_id == channel_message_id or legacy_forward_id == channel_message_id:
+                        log(f"   ✅ ID encontrado no grupo: {msg_id}")
+                        return msg_id
 
         except Exception as e:
             log(f"   ⚠️ erro ao consultar getUpdates: {e}")
@@ -542,36 +352,30 @@ def send_description_comment(
     validity: Optional[str],
     link: str,
     channel_message_id: int,
-    caption: str,
-    sent_at_ts: int,
 ) -> bool:
-    mirror = find_group_mirror_message(
+    mirror_id = find_group_mirror_message(
         channel_message_id=channel_message_id,
-        expected_caption=caption,
-        sent_at_ts=sent_at_ts,
-        attempts=8,
+        attempts=10,
         delay=3.0,
     )
 
-    if not mirror:
-        log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
+    if not mirror_id:
+        log("   ❌ não foi possível localizar a mensagem espelhada no grupo. Mantendo no pending.")
         return False
 
     text = build_comment_text(description, validity, link)
 
+    # PAYLOAD ENXUTO: apenas reply_to_message_id
     data = {
         "chat_id": GRUPO_COMENTARIO_ID,
         "text": truncate_text(text, MAX_COMMENT_LENGTH),
         "parse_mode": "HTML",
         "disable_web_page_preview": True,
-        "reply_to_message_id": mirror["message_id"],
+        "reply_to_message_id": mirror_id,
     }
 
-    # força para dentro da thread quando o telegram devolver este campo
-    if mirror.get("message_thread_id"):
-        data["message_thread_id"] = mirror["message_thread_id"]
-
     try:
+        log(f"   💬 enviando comentário como reply ao ID {mirror_id}")
         resp = requests.post(
             telegram_api("sendMessage"),
             data=data,
@@ -579,14 +383,7 @@ def send_description_comment(
         )
 
         if resp.ok:
-            body = resp.json().get("result", {})
-            log(
-                "   ✅ comentário enviado "
-                f"(match={mirror.get('matched_by')}, "
-                f"reply_to={mirror['message_id']}, "
-                f"thread_id={mirror.get('message_thread_id')}, "
-                f"sent_message_id={body.get('message_id')})"
-            )
+            log("   ✅ comentário enviado com sucesso!")
             return True
 
         log(f"   ❌ erro ao enviar comentário: {resp.text}")
@@ -596,20 +393,17 @@ def send_description_comment(
         log(f"   ❌ exceção ao enviar comentário: {e}")
         return False
 
-
 # ==============================================
 # consumer
 # ==============================================
 def run_consumer() -> None:
-    log("=" * 70)
-    log("🤖 bot leouol - consumer do pending")
-    log("=" * 70)
+    log("=" * 60)
+    log("🤖 BOT LEOUOL - Consumer (Processando pendentes)")
+    log("=" * 60)
 
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID or not GRUPO_COMENTARIO_ID:
         log("❌ TELEGRAM_TOKEN, TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórios")
         return
-
-    check_webhook_status()
 
     history = load_history()
     processed_keys = set(history.get("ids", []))
@@ -617,18 +411,18 @@ def run_consumer() -> None:
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
 
-    log(f"📦 pending atual: {len(offers)} ofertas")
-
     if not offers:
-        log("📭 nada para enviar")
+        log("📭 nenhuma oferta pendente")
         return
+
+    log(f"🎉 {len(offers)} ofertas pendentes encontradas!\n")
 
     success_count = 0
     failed_offers: List[Dict] = []
 
     for index, offer in enumerate(offers, start=1):
         log_separator()
-        log(f"📌 oferta {index}/{len(offers)}")
+        log(f"📦 Oferta {index}/{len(offers)}")
 
         offer_id = offer.get("id") or get_offer_id(offer.get("link", ""))
         title = offer.get("title") or offer.get("preview_title") or "oferta"
@@ -636,61 +430,42 @@ def run_consumer() -> None:
         img_url = offer.get("img_url") or ""
         validity = offer.get("validity")
         description = offer.get("description") or "descrição não disponível."
-
-        # neste teste, ignora completamente logo do parceiro
-        partner_img_url = ""
-
         offer_key = normalize_offer_key(offer_id or link or title)
 
-        log(f"   id: {offer_id}")
-        log(f"   título: {title}")
+        log(f"🏷️ {title[:50]}")
 
-        if not link:
-            log("   ⚠️ oferta sem link, mantendo no pending")
+        if not link or not img_url:
+            log("   ⚠️ oferta sem link ou imagem, mantendo no pending")
             failed_offers.append(offer)
             continue
 
-        if not img_url:
-            log("   ⚠️ oferta sem imagem, mantendo no pending")
-            failed_offers.append(offer)
-            continue
-
-        # 1) baixar imagem
         img_path = download_image(img_url)
         if not img_path:
             log("   ⚠️ falha ao baixar imagem, mantendo no pending")
             failed_offers.append(offer)
             continue
 
-        # 2) montar caption
         caption = build_caption(title, validity, link)
-
-        # 3) definir sent_at_ts
-        sent_at_ts = int(time.time())
-
-        # 4) enviar foto ao canal
+        
+        # Envia foto ao canal
         channel_message_id = send_photo_to_channel(img_path, caption)
 
-        # 5) apagar arquivo temporário
         try:
             Path(img_path).unlink(missing_ok=True)
-        except Exception as e:
-            log(f"   ⚠️ não foi possível apagar arquivo temporário: {e}")
+        except:
+            pass
 
-        # 6) checar channel_message_id
         if not channel_message_id:
             log("   ❌ falha ao postar foto, mantendo no pending")
             failed_offers.append(offer)
             continue
 
-        # 7) chamar send_description_comment(...)
+        # Envia comentário pro grupo
         comment_ok = send_description_comment(
             description=description,
             validity=validity,
             link=link,
             channel_message_id=channel_message_id,
-            caption=caption,
-            sent_at_ts=sent_at_ts,
         )
 
         if not comment_ok:
@@ -699,26 +474,14 @@ def run_consumer() -> None:
 
         processed_keys.add(offer_key)
         success_count += 1
-        log("   ✅ enviada com sucesso")
-
-        # variável mantida aqui só para deixar explícito que está desativada neste teste
-        if partner_img_url:
-            log("   ℹ️ logo do parceiro ignorada neste teste")
-
+        log(f"   ✅ Oferta {index} concluída!")
         time.sleep(2)
 
     save_history({"ids": list(processed_keys)})
     save_pending(failed_offers)
 
-    log_separator()
-    log(f"✅ fim. {success_count}/{len(offers)} ofertas enviadas")
+    log("\n" + "=" * 60)
+    log(f"✅ Fim. {success_count}/{len(offers)} ofertas processadas com sucesso.")
 
-
-# ==============================================
-# entry point
-# ==============================================
 if __name__ == "__main__":
-    if "--pending" in sys.argv:
-        run_consumer()
-    else:
-        run_consumer()
+    run_consumer()
