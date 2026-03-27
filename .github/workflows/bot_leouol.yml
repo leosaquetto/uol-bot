@@ -67,21 +67,31 @@ jobs:
         if: always()
         shell: bash
         run: |
-          git config --global user.email "bot@leouol.com"
-          git config --global user.name "BOT LEOUOL"
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
+
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
 
           [ -f historico_leouol.json ] || echo '{"ids":[]}' > historico_leouol.json
           [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
+          [ -f latest_offers.json ] || echo '{"last_update":null,"offers":[]}' > latest_offers.json
 
-          git add historico_leouol.json pending_offers.json
+          git add historico_leouol.json pending_offers.json latest_offers.json 2>/dev/null || true
 
-          if git diff --staged --quiet; then
-            echo "nenhum arquivo mudou"
+          if git diff --cached --quiet; then
+            echo "nenhuma mudança detectada"
             exit 0
           fi
 
-          git commit -m "scraper atualiza historico e pending [skip ci]"
-          git push
+          git commit -m "scraper atualiza pending [skip ci]" || {
+            echo "nada para commitar"
+            exit 0
+          }
+
+          git push origin HEAD:main
+          
           echo "alteracoes enviadas"
 
       - name: Upload debug
