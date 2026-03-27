@@ -1,334 +1,325 @@
 # bot_leouol.py
-# consumer do pending_offers.json para envio ao telegram
+# consumer do pending_offers.json
+# envia no formato de TEXTO + preview do link
+# sem upload de imagem e sem comentário automático separado
 
 import json
 import os
+import re
 import time
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import urlparse
+from typing import Dict, List, Optional
 
 import requests
 
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "").strip()
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
-GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID", "").strip()
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
-PENDING_FILE = "pending_offers.json"
 HISTORY_FILE = "historico_leouol.json"
+PENDING_FILE = "pending_offers.json"
 
-MAX_OFFERS_PER_RUN = 10
 MAX_HISTORY_SIZE = 500
-MAX_CAPTION_LENGTH = 1024
-MAX_COMMENT_LENGTH = 4096
+MAX_MESSAGE_LENGTH = 4096
+
+# quanto da descrição vai no post principal
+MAX_DESCRIPTION_IN_POST = 2600
 
 
+# ==============================================
+# utilitários
+# ==============================================
 def log(msg: str) -> None:
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}", flush=True)
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    print(f"[{timestamp}] {msg}", flush=True)
 
 
-def get_offer_id(link: str) -> str:
-    try:
-        parsed = urlparse(link)
-        path = parsed.path.rstrip("/")
-        parts = path.split("/")
-        return parts[-1] if parts and parts[-1] else link
-    except Exception:
-        return str(link).split("?")[0].rstrip("/").split("/")[-1]
+def normalize_spaces(text: Optional[str]) -> str:
+    if not text:
+        return ""
+    return re.sub(r"[ \t]+", " ", text).strip()
 
 
-def clean_text(text: str) -> str:
-    return " ".join(str(text or "").split()).strip()
+def clean_description(text: Optional[str]) -> str:
+    if not text:
+        return ""
+
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    # remove excesso de espaços sem destruir completamente os parágrafos
+    lines = [re.sub(r"[ \t]+", " ", line).strip() for line in text.split("\n")]
+
+    cleaned_lines: List[str] = []
+    previous_blank = False
+
+    for line in lines:
+        if not line:
+            if not previous_blank:
+                cleaned_lines.append("")
+            previous_blank = True
+            continue
+
+        previous_blank = False
+        cleaned_lines.append(line)
+
+    text = "\n".join(cleaned_lines).strip()
+
+    # corta o lixo final do formulário, se aparecer
+    markers = [
+        "enviar cupons por e-mail",
+        "preencha os campos abaixo",
+        "e-mail",
+        "mensagem",
+        "enviar",
+    ]
+
+    lower_text = text.lower()
+    for marker in markers:
+        idx = lower_text.find(marker)
+        if idx != -1:
+            text = text[:idx].strip()
+            lower_text = text.lower()
+            break
+
+    return text.strip()
 
 
 def escape_html(text: str) -> str:
+    if not text:
+        return ""
     return (
-        str(text or "")
-        .replace("&", "&amp;")
+        text.replace("&", "&amp;")
         .replace("<", "&lt;")
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
 
 
+def get_offer_id(link: str) -> str:
+    try:
+        clean = link.split("?")[0].rstrip("/")
+        return clean.split("/")[-1]
+    except Exception:
+        return link
+
+
 def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
-    text = str(text or "")
     if len(text) <= max_len:
         return text
-    return text[: max_len - len(suffix)] + suffix
+    return text[: max_len - len(suffix)].rstrip() + suffix
 
 
-def read_json_file(path_str: str, default):
-    path = Path(path_str)
+# ==============================================
+# histórico / pending
+# ==============================================
+def load_history() -> Dict[str, List[str]]:
+    path = Path(HISTORY_FILE)
     if not path.exists():
-        return default
+        return {"ids": []}
+
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except Exception as e:
-        log(f"⚠️ erro lendo {path_str}: {e}")
-        return default
+        data = json.loads(path.read_text(encoding="utf-8"))
+        ids = data.get("ids", [])
+        if not isinstance(ids, list):
+            return {"ids": []}
+
+        normalized = []
+        for item in ids:
+            normalized.append(get_offer_id(str(item)))
+
+        normalized = list(dict.fromkeys(normalized))[-MAX_HISTORY_SIZE:]
+        return {"ids": normalized}
+    except Exception:
+        return {"ids": []}
 
 
-def write_json_file(path_str: str, payload) -> bool:
+def save_history(history: Dict[str, List[str]]) -> bool:
     try:
-        Path(path_str).write_text(
-            json.dumps(payload, ensure_ascii=False, indent=2),
-            encoding="utf-8"
+        ids = history.get("ids", [])
+        ids = [get_offer_id(str(x)) for x in ids]
+        ids = list(dict.fromkeys(ids))[-MAX_HISTORY_SIZE:]
+
+        Path(HISTORY_FILE).write_text(
+            json.dumps({"ids": ids}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
         )
+        log(f"✅ histórico salvo: {len(ids)} ids")
         return True
     except Exception as e:
-        log(f"❌ erro escrevendo {path_str}: {e}")
+        log(f"❌ erro ao salvar histórico: {e}")
         return False
 
 
-def load_history():
-    payload = read_json_file(HISTORY_FILE, {"ids": []})
+def load_pending() -> Dict:
+    path = Path(PENDING_FILE)
+    if not path.exists():
+        return {"last_update": None, "offers": []}
 
-    if isinstance(payload, list):
-        original_urls = [x for x in payload if x]
-    elif isinstance(payload, dict):
-        original_urls = payload.get("ids", []) or []
-    else:
-        original_urls = []
-
-    return {"original_urls": [u for u in original_urls if u]}
-
-
-def save_history(history) -> bool:
     try:
-        unique = {}
-        for url in history.get("original_urls", []):
-            if not url:
-                continue
-            unique[get_offer_id(url)] = url
+        data = json.loads(path.read_text(encoding="utf-8"))
+        offers = data.get("offers", [])
+        if not isinstance(offers, list):
+            offers = []
+        return {
+            "last_update": data.get("last_update"),
+            "offers": offers,
+        }
+    except Exception:
+        return {"last_update": None, "offers": []}
 
-        ids = list(unique.values())[-MAX_HISTORY_SIZE:]
-        ok = write_json_file(HISTORY_FILE, {"ids": ids})
-        if ok:
-            log(f"✅ histórico salvo: {len(ids)} ids")
-        return ok
+
+def save_pending(offers: List[Dict]) -> bool:
+    try:
+        payload = {
+            "last_update": datetime.now().isoformat(),
+            "offers": offers,
+        }
+        Path(PENDING_FILE).write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        log(f"✅ pending salvo: {len(offers)} ofertas")
+        return True
     except Exception as e:
-        log(f"❌ erro em save_history: {e}")
+        log(f"❌ erro ao salvar pending: {e}")
         return False
 
 
-def append_history_from_offers(history, offers):
-    original_urls = history.get("original_urls", []) or []
-    for offer in offers:
-        url = offer.get("original_link") or offer.get("link")
-        if url:
-            original_urls.append(url)
-    history["original_urls"] = original_urls
-    return history
+# ==============================================
+# telegram
+# ==============================================
+def build_channel_text(
+    title: str,
+    validity: Optional[str],
+    description: str,
+    link: str,
+) -> str:
+    title = normalize_spaces(title) or "oferta"
+    validity = normalize_spaces(validity or "")
+    description = clean_description(description)
 
+    if description:
+        description = truncate_text(description, MAX_DESCRIPTION_IN_POST)
+    else:
+        description = "descrição não disponível."
 
-def load_pending():
-    payload = read_json_file(PENDING_FILE, {"last_update": None, "offers": []})
-
-    if not isinstance(payload, dict):
-        payload = {"last_update": None, "offers": []}
-
-    offers = payload.get("offers", [])
-    if not isinstance(offers, list):
-        offers = []
-
-    clean_offers = []
-    for offer in offers:
-        if isinstance(offer, dict) and (offer.get("link") or offer.get("original_link")):
-            clean_offers.append(offer)
-
-    payload["offers"] = clean_offers
-    return payload
-
-
-def save_pending(payload) -> bool:
-    payload["last_update"] = datetime.utcnow().isoformat() + "Z"
-    ok = write_json_file(PENDING_FILE, payload)
-    if ok:
-        log(f"✅ pending salvo: {len(payload.get('offers', []))} ofertas")
-    return ok
-
-
-def telegram_api_url(method: str) -> str:
-    return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
-
-
-def build_caption(offer: dict) -> str:
-    title = escape_html(offer.get("title") or offer.get("preview_title") or "oferta")
-    validity = clean_text(offer.get("validity") or "")
-    description = clean_text(offer.get("description") or "")
-    link = offer.get("link") or offer.get("original_link") or ""
-
-    parts = [f"<b>{title}</b>"]
+    parts: List[str] = [f"<b>{escape_html(title)}</b>"]
 
     if validity:
         parts.append(f"<i>{escape_html(validity)}</i>")
 
-    if description:
-        parts.append(escape_html(truncate_text(description, 700)))
+    parts.append(escape_html(description))
 
-    if link:
-        parts.append(f'<a href="{escape_html(link)}">abrir oferta</a>')
+    # manter o link clicável e com preview
+    parts.append(f"<a href=\"{escape_html(link)}\">abrir oferta</a>")
 
-    return truncate_text("\n\n".join(parts), MAX_CAPTION_LENGTH)
-
-
-def build_comment_text(offer: dict) -> str:
-    title = escape_html(offer.get("title") or offer.get("preview_title") or "oferta")
-    description = clean_text(offer.get("description") or "")
-    link = offer.get("link") or offer.get("original_link") or ""
-
-    body = f"<b>{title}</b>\n\n{escape_html(truncate_text(description, 3500))}"
-    if link:
-        body += f'\n\n<a href="{escape_html(link)}">abrir oferta</a>'
-
-    return truncate_text(body, MAX_COMMENT_LENGTH)
+    text = "\n\n".join(parts)
+    return truncate_text(text, MAX_MESSAGE_LENGTH)
 
 
-def send_main_message(offer: dict):
-    caption = build_caption(offer)
-    img_url = offer.get("img_url") or ""
-    link = offer.get("link") or offer.get("original_link") or ""
-
-    if img_url:
-        payload = {
+def send_message_to_channel(text: str) -> Optional[int]:
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        data = {
             "chat_id": TELEGRAM_CHAT_ID,
-            "photo": img_url,
-            "caption": caption,
+            "text": text,
             "parse_mode": "HTML",
             "disable_web_page_preview": False,
         }
-        response = requests.post(telegram_api_url("sendPhoto"), data=payload, timeout=30)
-        data = response.json()
-        if data.get("ok"):
-            return True, data
-        log(f"⚠️ sendPhoto falhou para {link}: {data}")
+        response = requests.post(url, data=data, timeout=30)
 
-    payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": caption,
-        "parse_mode": "HTML",
-        "disable_web_page_preview": False,
-    }
-    response = requests.post(telegram_api_url("sendMessage"), data=payload, timeout=30)
-    data = response.json()
+        if not response.ok:
+            log(f"❌ telegram sendMessage falhou: {response.status_code} | {response.text}")
+            return None
 
-    if data.get("ok"):
-        return True, data
-
-    log(f"❌ sendMessage falhou para {link}: {data}")
-    return False, data
-
-
-def send_comment_if_configured(parent_message_data, offer: dict):
-    if not GRUPO_COMENTARIO_ID:
-        return True
-
-    try:
-        message = parent_message_data.get("result", {})
-        message_id = message.get("message_id")
-        if not message_id:
-            return True
-
-        payload = {
-            "chat_id": GRUPO_COMENTARIO_ID,
-            "text": build_comment_text(offer),
-            "parse_mode": "HTML",
-            "reply_to_message_id": message_id
-        }
-
-        response = requests.post(telegram_api_url("sendMessage"), data=payload, timeout=30)
-        data = response.json()
-
-        if not data.get("ok"):
-            log(f"⚠️ comentário não enviado: {data}")
-
-        return True
+        payload = response.json()
+        return payload.get("result", {}).get("message_id")
     except Exception as e:
-        log(f"⚠️ erro no comentário: {e}")
-        return True
+        log(f"❌ erro ao enviar mensagem ao telegram: {e}")
+        return None
 
 
-def validate_env() -> bool:
-    if not TELEGRAM_TOKEN:
-        log("❌ TELEGRAM_TOKEN não configurado")
-        return False
-    if not TELEGRAM_CHAT_ID:
-        log("❌ TELEGRAM_CHAT_ID não configurado")
-        return False
-    return True
-
-
-def dedupe_offers(offers: list) -> list:
-    unique = {}
-    for offer in offers:
-        link = offer.get("link") or offer.get("original_link")
-        if not link:
-            continue
-        unique[get_offer_id(link)] = offer
-    return list(unique.values())
-
-
-def main():
+# ==============================================
+# consumer principal
+# ==============================================
+def run_consumer() -> None:
     log("=" * 60)
     log("🤖 bot leouol - consumer do pending")
     log("=" * 60)
 
-    if not validate_env():
-        raise SystemExit(1)
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        log("❌ TELEGRAM_TOKEN e TELEGRAM_CHAT_ID são obrigatórios")
+        return
 
-    pending = load_pending()
     history = load_history()
+    seen_ids = set(history.get("ids", []))
 
-    offers = dedupe_offers(pending.get("offers", []))
+    pending_data = load_pending()
+    offers = pending_data.get("offers", [])
+
     log(f"📦 pending atual: {len(offers)} ofertas")
 
     if not offers:
         log("📭 nada para enviar")
         return
 
-    batch = offers[:MAX_OFFERS_PER_RUN]
-    remaining = offers[MAX_OFFERS_PER_RUN:]
+    success_count = 0
+    failed_ids = []
+    processed_ids = set(seen_ids)
 
-    sent_success = []
-    sent_failed = []
-
-    for index, offer in enumerate(batch, start=1):
+    for index, offer in enumerate(offers, start=1):
+        offer_id = get_offer_id(str(offer.get("id") or offer.get("link", "")))
+        title = offer.get("title") or offer.get("preview_title") or "oferta"
+        validity = offer.get("validity")
+        description = offer.get("description") or ""
         link = offer.get("link") or offer.get("original_link") or ""
-        slug = get_offer_id(link)
-        log(f"📌 {index}/{len(batch)} | {slug}")
 
-        try:
-            ok, parent_message_data = send_main_message(offer)
-            if ok:
-                send_comment_if_configured(parent_message_data, offer)
-                sent_success.append(offer)
-                log(f"✅ enviada: {slug}")
-            else:
-                sent_failed.append(offer)
-                log(f"❌ falhou: {slug}")
-        except Exception as e:
-            sent_failed.append(offer)
-            log(f"❌ exceção ao enviar {slug}: {e}")
+        log("-" * 60)
+        log(f"📌 oferta {index}/{len(offers)}")
+        log(f"   id: {offer_id}")
+        log(f"   título: {title[:80]}")
+
+        if not link:
+            log("   ⚠️ sem link, pulando")
+            processed_ids.add(offer_id)
+            continue
+
+        if offer_id in seen_ids:
+            log("   ⏭️ já estava no histórico, pulando")
+            processed_ids.add(offer_id)
+            continue
+
+        message_text = build_channel_text(title, validity, description, link)
+        message_id = send_message_to_channel(message_text)
+
+        if message_id:
+            log(f"   ✅ enviado com sucesso (message_id: {message_id})")
+            processed_ids.add(offer_id)
+            success_count += 1
+        else:
+            log("   ❌ falha no envio")
+            failed_ids.append(offer_id)
 
         time.sleep(2)
 
-    pending["offers"] = dedupe_offers(sent_failed + remaining)
+    history["ids"] = list(processed_ids)
+    save_history(history)
 
-    if not save_pending(pending):
-        raise SystemExit(1)
+    remaining_offers = []
+    failed_set = set(failed_ids)
+    for offer in offers:
+        offer_id = get_offer_id(str(offer.get("id") or offer.get("link", "")))
+        if offer_id in failed_set:
+            remaining_offers.append(offer)
 
-    if sent_success:
-        history = append_history_from_offers(history, sent_success)
-        if not save_history(history):
-            raise SystemExit(1)
+    save_pending(remaining_offers)
 
     log("-" * 60)
-    log(f"✅ enviadas com sucesso: {len(sent_success)}")
-    log(f"⚠️ falharam: {len(sent_failed)}")
-    log(f"📦 restantes no pending: {len(pending['offers'])}")
-    log("🏁 fim")
+    log(f"✅ fim. {success_count}/{len(offers)} ofertas enviadas")
 
 
+# ==============================================
+# entry point
+# ==============================================
 if __name__ == "__main__":
-    main()
+    run_consumer()
