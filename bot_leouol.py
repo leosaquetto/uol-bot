@@ -2,12 +2,12 @@
 # consumer do pending_offers.json + envio para telegram
 # versão corrigida final:
 # - processa tudo que estiver no pending
+# - pula oferta já presente no histórico antes de enviar
 # - aguarda e localiza SOMENTE pelo ID de encaminhamento automático
 # - usa apenas reply_to_message_id (sem message_thread_id)
-# - limpa pending apenas do que foi enviado com sucesso
+# - limpa pending apenas do que falhou
 # - limpa blocos residuais de formulário na descrição
 # - mantém um feed persistente com as últimas ofertas completas para widget
-# NOVO: Encadeia Logo do Parceiro -> Descrição Completa nos comentários
 
 import json
 import os
@@ -20,9 +20,6 @@ from typing import Dict, List, Optional
 
 import requests
 
-# ==============================================
-# configurações
-# ==============================================
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
@@ -43,9 +40,7 @@ USER_AGENT = (
     "Chrome/123.0.0.0 Safari/537.36"
 )
 
-# ==============================================
-# utilidades
-# ==============================================
+
 def log(msg: str) -> None:
     timestamp = datetime.now().strftime("%H:%M:%S")
     print(f"[{timestamp}] {msg}", flush=True)
@@ -117,9 +112,7 @@ def safe_json_load(path: Path, fallback):
     except Exception:
         return fallback
 
-# ==============================================
-# normalização
-# ==============================================
+
 def slugify_piece(text: str) -> str:
     text = unescape(text or "").lower().strip()
     replacements = {
@@ -166,9 +159,7 @@ def compact_offer_for_latest(offer: Dict) -> Dict:
         "scraped_at": offer.get("scraped_at") or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     }
 
-# ==============================================
-# histórico, pending e latest
-# ==============================================
+
 def load_history() -> Dict[str, List[str]]:
     path = Path(HISTORY_FILE)
     if not path.exists():
@@ -288,9 +279,7 @@ def update_latest_offers(processed_offers: List[Dict]) -> bool:
 
     return save_latest_offers(combined[:MAX_LATEST_OFFERS])
 
-# ==============================================
-# telegram
-# ==============================================
+
 def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
@@ -468,9 +457,7 @@ def send_text_comment(description: str, validity: Optional[str], link: str, repl
         log(f"   ❌ exceção ao enviar texto de descrição: {e}")
         return False
 
-# ==============================================
-# consumer
-# ==============================================
+
 def run_consumer() -> None:
     log("=" * 60)
     log("🤖 BOT LEOUOL - Consumer (Processando pendentes)")
@@ -508,6 +495,10 @@ def run_consumer() -> None:
         offer_key = normalize_offer_key(offer_id or link or title)
 
         log(f"🏷️ {title[:50]}")
+
+        if offer_key in processed_keys:
+            log("   ⏭️ oferta já está no histórico, pulando")
+            continue
 
         if not link or not img_url:
             log("   ⚠️ oferta sem link ou imagem principal, mantendo no pending")
@@ -571,6 +562,7 @@ def run_consumer() -> None:
 
     log("\n" + "=" * 60)
     log(f"✅ Fim. {success_count}/{len(offers)} ofertas processadas com sucesso.")
+
 
 if __name__ == "__main__":
     run_consumer()
