@@ -1,4 +1,5 @@
-# bot_leouol.py - Versão Ultra Rápida (Foco em Ingressos sem Selenium)
+# bot_leouol.py - Versão Ultra Rápida (com SSL fix)
+
 import sys
 import requests
 import json
@@ -95,7 +96,8 @@ def fetch_offers():
     for url in TARGET_URLS:
         log(f"\n🌐 Buscando ofertas em: {url}")
         try:
-            res = requests.get(url, headers=HEADERS, timeout=15)
+            # ⚠️ ADICIONE verify=False para ignorar erro SSL
+            res = requests.get(url, headers=HEADERS, timeout=15, verify=False)
             html = res.text
             
             # Fatiar o HTML inteiro em blocos onde cada oferta começa
@@ -153,7 +155,8 @@ def fetch_offers():
 def process_offer_details(offer):
     log(f"   🔍 Acessando detalhes: {offer['preview_title'][:40]}...")
     try:
-        res = requests.get(offer['link'], headers=HEADERS, timeout=15)
+        # ⚠️ ADICIONE verify=False para ignorar erro SSL
+        res = requests.get(offer['link'], headers=HEADERS, timeout=15, verify=False)
         html = res.text
         
         # TÍTULO
@@ -202,7 +205,7 @@ def process_offer_details(offer):
 # ==============================================
 def download_image(img_url: str) -> str:
     try:
-        res = requests.get(img_url, headers=HEADERS, timeout=10)
+        res = requests.get(img_url, headers=HEADERS, timeout=10, verify=False)
         if res.ok:
             path = f"/tmp/leouol_{int(time.time())}.jpg"
             Path(path).write_bytes(res.content)
@@ -303,7 +306,6 @@ def run_scraper():
     log(f"\n✅ Fim. {success_count}/{len(new_offers)} enviadas.")
 
 def run_consumer():
-    # Mantive intacto para processar os envios que chegam pelo Scriptable do celular!
     log("=" * 70)
     log("🤖 BOT LEOUOL - Consumer (Processando pendentes do Scriptable)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
