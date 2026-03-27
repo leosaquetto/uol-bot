@@ -8,96 +8,69 @@ on:
     - cron: "*/10 * * * *"
   workflow_dispatch:
 
-concurrency:
-  group: bot-leouol-consumer
-  cancel-in-progress: true
-
 permissions:
   contents: write
 
-env:
-  PYTHONUNBUFFERED: "1"
-  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+concurrency:
+  group: bot-leouol-consumer
+  cancel-in-progress: false
 
 jobs:
   process-offers:
-    name: Processar pending e enviar telegram
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: 📥 baixar código
+      - name: checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🐍 configurar python
+      - name: setup python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
-      - name: 📄 garantir arquivos json
+      - name: garantir arquivos base
         shell: bash
         run: |
-          if [ ! -f historico_leouol.json ]; then
-            echo '{"ids":[]}' > historico_leouol.json
-            echo "✅ historico_leouol.json criado"
-          else
-            echo "✅ historico_leouol.json encontrado"
-          fi
+          [ -f historico_leouol.json ] || echo '{"ids":[]}' > historico_leouol.json
+          [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
 
-          if [ ! -f pending_offers.json ]; then
-            echo '{"last_update":null,"offers":[]}' > pending_offers.json
-            echo "✅ pending_offers.json criado"
-          else
-            echo "✅ pending_offers.json encontrado"
-          fi
-
-      - name: 📦 instalar dependências
+      - name: install dependencies
         shell: bash
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-consumer.txt
 
-      - name: 🤖 processar pending offers
+      - name: process pending offers
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         shell: bash
-        run: |
-          python bot_leouol.py
+        run: python bot_leouol.py --pending
 
-      - name: 💾 commitar histórico e pending
+      - name: commit and push changes
         if: always()
         shell: bash
         run: |
-          git config --global user.email "bot@leouol.com"
-          git config --global user.name "BOT LEOUOL"
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
 
-          [ -f historico_leouol.json ] || echo '{"ids":[]}' > historico_leouol.json
-          [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
+          git add historico_leouol.json pending_offers.json 2>/dev/null || true
 
-          git add historico_leouol.json pending_offers.json
-
-          if git diff --staged --quiet; then
-            echo "📊 nenhum arquivo mudou"
+          if git diff --cached --quiet; then
+            echo "nenhuma mudança detectada"
             exit 0
           fi
 
-          git commit -m "🤖 consumer atualiza histórico e pending [skip ci]"
-          git push
-          echo "✅ alterações enviadas"
+          git commit -m "Atualiza histórico e pending [skip ci]" || {
+            echo "nada para commitar"
+            exit 0
+          }
 
-      - name: 📎 upload de debug
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bot-leouol-consumer-debug-${{ github.run_id }}
-          path: |
-            historico_leouol.json
-            pending_offers.json
-          if-no-files-found: ignore
-          retention-days: 3
+          git pull --rebase origin main
+          git push
