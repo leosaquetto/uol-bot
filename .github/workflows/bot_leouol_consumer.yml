@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - pending_offers.json
+  schedule:
+    - cron: "*/10 * * * *"  # A cada 10 minutos
   workflow_dispatch:
 
 permissions:
