@@ -1,20 +1,18 @@
 # bot_leouol.py
 # consumer do pending_offers.json + envio para telegram
-# versão:
+# versão corrigida:
 # - processa tudo que estiver no pending
-# - não pula por já estar no histórico
-# - envia:
-#   1) foto principal no canal
-#   2) logo do parceiro no grupo vinculado, em reply
-#   3) descrição completa no grupo vinculado, em reply
-# - usa forward_origin + fallback antigo para achar a mensagem espelhada
-# - limpa pending só do que foi enviado com sucesso
+# - mantém comentário no grupo vinculado ao canal
+# - normaliza ids do histórico
+# - limpa pending apenas do que foi enviado com sucesso
+# - compatível com python bot_leouol.py --pending
 
 import json
 import os
 import re
+import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 from html import unescape
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -64,37 +62,32 @@ def normalize_spaces(text: Optional[str]) -> str:
 def clean_multiline_text(text: Optional[str]) -> str:
     if not text:
         return ""
+    text = str(text)
+    text = unescape(text)
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n[ \t]+", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"•\s*\n\s*", "• ", text)
+    text = re.sub(r"\n\s*•\s*", "\n• ", text)
+    text = text.strip()
 
-    t = str(text)
-    t = unescape(t)
-    t = t.replace("\r\n", "\n").replace("\r", "\n")
-    t = re.sub(r"[ \t]+", " ", t)
-    t = re.sub(r"\n[ \t]+", "\n", t)
-    t = re.sub(r"[ \t]+\n", "\n", t)
-    t = re.sub(r"\n{3,}", "\n\n", t)
-    t = re.sub(r"•\s*\n\s*", "• ", t)
-    t = re.sub(r"\n\s*•\s*", "\n• ", t)
-    t = t.strip()
-
-    lixos = [
+    lixo = [
         "Enviar cupons por e-mail",
         "Preencha os campos abaixo",
         "E-mail\n\nMensagem\n\nEnviar",
     ]
-
-    for marker in lixos:
-        idx = t.find(marker)
+    for marker in lixo:
+        idx = text.find(marker)
         if idx != -1:
-            t = t[:idx].rstrip()
+            text = text[:idx].rstrip()
 
-    return t.strip()
+    return text.strip()
 
 
 def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
     if len(text) <= max_len:
         return text
-    if max_len <= len(suffix):
-        return suffix[:max_len]
     return text[: max_len - len(suffix)] + suffix
 
 
@@ -118,7 +111,7 @@ def safe_json_load(path: Path, fallback):
 
 
 # ==============================================
-# normalização de chave
+# normalização
 # ==============================================
 def slugify_piece(text: str) -> str:
     text = unescape(text or "").lower().strip()
@@ -179,7 +172,6 @@ def load_history() -> Dict[str, List[str]]:
 
     normalized = []
     seen = set()
-
     for item in ids:
         key = normalize_offer_key(str(item))
         if key and key not in seen:
@@ -197,7 +189,6 @@ def save_history(history: Dict[str, List[str]]) -> bool:
 
         cleaned = []
         seen = set()
-
         for item in ids:
             key = normalize_offer_key(str(item))
             if key and key not in seen:
@@ -239,7 +230,7 @@ def load_pending() -> Dict:
 def save_pending(offers: List[Dict]) -> bool:
     try:
         payload = {
-            "last_update": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "last_update": datetime.utcnow().isoformat() + "Z",
             "offers": offers,
         }
         Path(PENDING_FILE).write_text(
@@ -265,10 +256,7 @@ def download_image(img_url: str) -> Optional[str]:
         return None
 
     try:
-        headers = {
-            "User-Agent": USER_AGENT,
-            "Referer": "https://clube.uol.com.br/",
-        }
+        headers = {"User-Agent": USER_AGENT}
         response = requests.get(img_url, headers=headers, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
 
@@ -288,8 +276,6 @@ def download_image(img_url: str) -> Optional[str]:
 
 
 def build_caption(title: str, validity: Optional[str], link: str) -> str:
-    title = normalize_spaces(title) or "oferta"
-
     parts = [f"<b>{escape_html(title)}</b>"]
 
     if validity:
@@ -302,13 +288,8 @@ def build_caption(title: str, validity: Optional[str], link: str) -> str:
 
 
 def build_comment_text(description: str, validity: Optional[str], link: str) -> str:
-    desc = clean_multiline_text(description) or "descrição não disponível."
-
-    parts = [
-        "📋 <b>descrição completa</b>",
-        "",
-        escape_html(desc),
-    ]
+    desc = clean_multiline_text(description)
+    parts = ["📋 <b>descrição completa</b>", "", escape_html(desc)]
 
     if validity:
         parts.extend(["", f"📅 {escape_html(validity)}"])
@@ -320,9 +301,10 @@ def build_comment_text(description: str, validity: Optional[str], link: str) -> 
 
 def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
     try:
+        url = telegram_api("sendPhoto")
         with open(img_path, "rb") as photo:
             response = requests.post(
-                telegram_api("sendPhoto"),
+                url,
                 data={
                     "chat_id": TELEGRAM_CHAT_ID,
                     "caption": caption,
@@ -333,27 +315,24 @@ def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
             )
 
         if not response.ok:
-            log(f"   ❌ falha sendPhoto canal: {response.text}")
+            log(f"   ❌ falha sendPhoto: {response.text}")
             return None
 
         data = response.json()
-        result = data.get("result", {})
-        message_id = result.get("message_id")
-
-        if message_id:
-            log(f"   ✅ foto enviada ao canal (message_id {message_id})")
-        return message_id
-
+        msg_id = data.get("result", {}).get("message_id")
+        log(f"   ✅ foto enviada ao canal (message_id {msg_id})")
+        return msg_id
     except Exception as e:
-        log(f"   ❌ erro sendPhoto canal: {e}")
+        log(f"   ❌ erro sendPhoto: {e}")
         return None
 
 
 def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, delay: int = 3) -> Optional[int]:
     """
     tenta descobrir qual mensagem apareceu no grupo vinculado
-    correspondente ao post do canal
+    correspondente ao post do canal.
     """
+
     for attempt in range(1, attempts + 1):
         log(f"   ⏳ aguardando espelhamento no grupo ({attempt}/{attempts})...")
         time.sleep(delay)
@@ -363,7 +342,6 @@ def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, del
                 telegram_api("getUpdates"),
                 timeout=REQUEST_TIMEOUT,
             )
-
             if not response.ok:
                 continue
 
@@ -372,8 +350,10 @@ def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, del
 
             for update in reversed(updates):
                 msg = update.get("message", {})
-                chat_id = str(msg.get("chat", {}).get("id", ""))
+                if not msg:
+                    continue
 
+                chat_id = str(msg.get("chat", {}).get("id", ""))
                 if chat_id != str(GRUPO_COMENTARIO_ID):
                     continue
 
@@ -388,16 +368,8 @@ def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, del
 
                 if is_auto and origin_message_id == channel_message_id:
                     group_msg_id = msg.get("message_id")
-                    if group_msg_id:
-                        log(f"   ✅ id espelhado encontrado no grupo: {group_msg_id}")
-                        return group_msg_id
-
-                # fallback mais permissivo
-                if origin_message_id == channel_message_id:
-                    group_msg_id = msg.get("message_id")
-                    if group_msg_id:
-                        log(f"   ✅ id encontrado no grupo via fallback: {group_msg_id}")
-                        return group_msg_id
+                    log(f"   ✅ id encontrado no grupo: {group_msg_id}")
+                    return group_msg_id
 
         except Exception as e:
             log(f"   ⚠️ erro ao consultar getUpdates: {e}")
@@ -405,55 +377,42 @@ def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, del
     return None
 
 
-def send_photo_to_group_reply(img_path: str, reply_to_message_id: int, caption: str = "") -> bool:
-    try:
-        payload = {
-            "chat_id": GRUPO_COMENTARIO_ID,
-            "reply_to_message_id": reply_to_message_id,
-        }
-        if caption:
-            payload["caption"] = truncate_text(caption, MAX_CAPTION_LENGTH)
-            payload["parse_mode"] = "HTML"
+def send_description_comment(description: str, validity: Optional[str], link: str, channel_message_id: int) -> bool:
+    """
+    envia a descrição completa como comentário no grupo vinculado ao canal.
+    se achar a mensagem espelhada, responde nela.
+    """
 
-        with open(img_path, "rb") as photo:
-            response = requests.post(
-                telegram_api("sendPhoto"),
-                data=payload,
-                files={"photo": photo},
-                timeout=REQUEST_TIMEOUT,
-            )
+    group_msg_id = find_group_mirror_message_id(channel_message_id=channel_message_id)
 
-        if response.ok:
-            log("   ✅ logo do parceiro enviada no grupo")
-            return True
-
-        log(f"   ⚠️ erro ao enviar logo do parceiro: {response.text}")
+    if not group_msg_id:
+        log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
         return False
 
-    except Exception as e:
-        log(f"   ⚠️ exceção ao enviar logo do parceiro: {e}")
-        return False
+    text = build_comment_text(description=description, validity=validity, link=link)
 
+    data = {
+        "chat_id": GRUPO_COMENTARIO_ID,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+        "reply_to_message_id": group_msg_id,
+    }
 
-def send_text_reply(reply_to_message_id: int, text: str) -> bool:
+    log(f"   💬 enviando comentário como resposta ao id {group_msg_id}")
+
     try:
-        response = requests.post(
+        resp = requests.post(
             telegram_api("sendMessage"),
-            data={
-                "chat_id": GRUPO_COMENTARIO_ID,
-                "text": text,
-                "parse_mode": "HTML",
-                "disable_web_page_preview": True,
-                "reply_to_message_id": reply_to_message_id,
-            },
+            data=data,
             timeout=REQUEST_TIMEOUT,
         )
 
-        if response.ok:
-            log("   ✅ comentário enviado com sucesso")
+        if resp.ok:
+            log("   ✅ comentário enviado com sucesso!")
             return True
 
-        log(f"   ❌ erro ao enviar comentário: {response.text}")
+        log(f"   ❌ erro ao enviar comentário: {resp.text}")
         return False
 
     except Exception as e:
@@ -465,9 +424,9 @@ def send_text_reply(reply_to_message_id: int, text: str) -> bool:
 # consumer
 # ==============================================
 def run_consumer() -> None:
-    log("=" * 60)
+    log("=" * 70)
     log("🤖 bot leouol - consumer do pending")
-    log("=" * 60)
+    log("=" * 70)
 
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID or not GRUPO_COMENTARIO_ID:
         log("❌ TELEGRAM_TOKEN, TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórios")
@@ -496,7 +455,6 @@ def run_consumer() -> None:
         title = offer.get("title") or offer.get("preview_title") or "oferta"
         link = offer.get("link") or offer.get("original_link") or ""
         img_url = offer.get("img_url") or ""
-        partner_img_url = offer.get("partner_img_url") or ""
         validity = offer.get("validity")
         description = offer.get("description") or "descrição não disponível."
 
@@ -511,57 +469,37 @@ def run_consumer() -> None:
             continue
 
         if not img_url:
-            log("   ⚠️ oferta sem imagem principal, mantendo no pending")
+            log("   ⚠️ oferta sem imagem, mantendo no pending")
             failed_offers.append(offer)
             continue
 
-        main_img_path = download_image(img_url)
-        if not main_img_path:
-            log("   ⚠️ falha ao baixar imagem principal, mantendo no pending")
+        img_path = download_image(img_url)
+        if not img_path:
+            log("   ⚠️ falha ao baixar imagem, mantendo no pending")
             failed_offers.append(offer)
             continue
 
         caption = build_caption(title, validity, link)
-        channel_message_id = send_photo_to_channel(main_img_path, caption)
+        channel_message_id = send_photo_to_channel(img_path, caption)
 
         try:
-            Path(main_img_path).unlink(missing_ok=True)
+            Path(img_path).unlink(missing_ok=True)
         except Exception:
             pass
 
         if not channel_message_id:
-            log("   ❌ falha ao postar foto no canal, mantendo no pending")
+            log("   ❌ falha ao postar foto, mantendo no pending")
             failed_offers.append(offer)
             continue
 
-        group_msg_id = find_group_mirror_message_id(channel_message_id)
-        if not group_msg_id:
-            log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
-            failed_offers.append(offer)
-            continue
-
-        # logo do parceiro em mensagem separada
-        if partner_img_url:
-            partner_img_path = download_image(partner_img_url)
-            if partner_img_path:
-                _ = send_photo_to_group_reply(
-                    img_path=partner_img_path,
-                    reply_to_message_id=group_msg_id,
-                    caption=""
-                )
-                try:
-                    Path(partner_img_path).unlink(missing_ok=True)
-                except Exception:
-                    pass
-            else:
-                log("   ⚠️ não consegui baixar a logo do parceiro, seguindo sem ela")
-
-        # descrição completa em mensagem separada
-        comment_text = build_comment_text(description, validity, link)
-        comment_ok = send_text_reply(group_msg_id, comment_text)
+        comment_ok = send_description_comment(
+            description=description,
+            validity=validity,
+            link=link,
+            channel_message_id=channel_message_id,
+        )
 
         if not comment_ok:
-            log("   ❌ foto enviada mas comentário falhou, mantendo no pending")
             failed_offers.append(offer)
             continue
 
@@ -582,4 +520,7 @@ def run_consumer() -> None:
 # entry point
 # ==============================================
 if __name__ == "__main__":
-    run_consumer()
+    if "--pending" in sys.argv:
+        run_consumer()
+    else:
+        run_consumer()
