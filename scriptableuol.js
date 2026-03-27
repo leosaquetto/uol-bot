@@ -11,7 +11,7 @@
 // ==============================================
 // configurações
 // ==============================================
-const GITHUB_TOKEN = "hidden"
+const GITHUB_TOKEN = args.widgetParameter || ""
 const REPO_OWNER = "leosaquetto"
 const REPO_NAME = "uol-bot"
 
