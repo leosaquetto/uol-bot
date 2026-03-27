@@ -1,6 +1,11 @@
-name: BOT LEOUOL CONSUMER
+name: BOT LEOUOL - Consumer
 
 on:
+  push:
+    paths:
+      - pending_offers.json
+  schedule:
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -11,8 +16,8 @@ permissions:
   contents: write
 
 env:
-  PYTHONUNBUFFERED: '1'
-  PIP_DISABLE_PIP_VERSION_CHECK: '1'
+  PYTHONUNBUFFERED: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
 
 jobs:
   process-offers:
@@ -21,51 +26,50 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Baixar codigo
+      - name: 📥 baixar código
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configurar python
+      - name: 🐍 configurar python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
 
-      - name: Garantir arquivos json
+      - name: 📄 garantir arquivos json
         shell: bash
         run: |
           if [ ! -f historico_leouol.json ]; then
             echo '{"ids":[]}' > historico_leouol.json
-            echo "historico_leouol.json criado"
+            echo "✅ historico_leouol.json criado"
           else
-            echo "historico_leouol.json encontrado"
+            echo "✅ historico_leouol.json encontrado"
           fi
 
           if [ ! -f pending_offers.json ]; then
             echo '{"last_update":null,"offers":[]}' > pending_offers.json
-            echo "pending_offers.json criado"
+            echo "✅ pending_offers.json criado"
           else
-            echo "pending_offers.json encontrado"
+            echo "✅ pending_offers.json encontrado"
           fi
 
-      - name: Instalar dependencias
+      - name: 📦 instalar dependências
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-consumer.txt
 
-      - name: Processar pending offers
+      - name: 🤖 processar pending offers
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         shell: bash
         run: |
           python bot_leouol.py
 
-      - name: Commitar historico e pending
+      - name: 💾 commitar histórico e pending
         if: always()
         shell: bash
         run: |
@@ -78,15 +82,15 @@ jobs:
           git add historico_leouol.json pending_offers.json
 
           if git diff --staged --quiet; then
-            echo "nenhum arquivo mudou"
+            echo "📊 nenhum arquivo mudou"
             exit 0
           fi
 
-          git commit -m "consumer atualiza historico e pending [skip ci]"
+          git commit -m "🤖 consumer atualiza histórico e pending [skip ci]"
           git push
-          echo "alteracoes enviadas"
+          echo "✅ alterações enviadas"
 
-      - name: Upload debug
+      - name: 📎 upload de debug
         if: always()
         uses: actions/upload-artifact@v4
         with:
