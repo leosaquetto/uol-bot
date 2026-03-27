@@ -13,6 +13,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: bot-leouol-consumer-main
+  cancel-in-progress: false
+
 jobs:
   process-offers:
     runs-on: ubuntu-latest
@@ -54,6 +58,10 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
           git add historico_leouol.json pending_offers.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
@@ -66,5 +74,4 @@ jobs:
             exit 0
           }
 
-          git pull --rebase origin main
-          git push
+          git push origin HEAD:main
