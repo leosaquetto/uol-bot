@@ -1,4 +1,4 @@
-# bot_leouol.py - Versão Definitiva (Anti-Block + Histórico Seguro)
+# bot_leouol.py - Versão Definitiva (Anti-Block + Histórico Seguro 500)
 
 import sys
 import requests
@@ -25,7 +25,7 @@ TARGET_URL = "https://clube.uol.com.br/?order=new"
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
 MAX_OFFERS_PER_RUN = 10
-MAX_HISTORY_SIZE = 200
+MAX_HISTORY_SIZE = 500 # LIMITE AUMENTADO PARA 500
 MAX_CAPTION_LENGTH = 1024
 MAX_COMMENT_LENGTH = 4096
 
@@ -64,21 +64,27 @@ def get_offer_id(link: str) -> str:
         return link.split('?')[0].rstrip('/').split('/')[-1]
 
 def load_history():
+    """Carrega o histórico preservando as URLs completas em memória."""
     path = Path(HISTORY_FILE)
-    if not path.exists(): return {"ids": []}
+    if not path.exists(): return {"original_urls": []}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-        # Extrai o slug certinho do histórico para montar a lista de verificação
-        ids = [get_offer_id(str(x)) for x in data.get("ids", [])]
-        return {"ids": list(dict.fromkeys(ids))[-MAX_HISTORY_SIZE:]}
+        # Mantém as URLs originais intactas. A conversão para slug será feita na hora da validação.
+        return {"original_urls": data.get("ids", [])}
     except Exception:
-        return {"ids": []}
+        return {"original_urls": []}
 
 def save_history(history):
+    """Salva o histórico no JSON, filtrando as duplicidades rigorosamente pelo ID (slug)."""
     try:
-        ids = list(dict.fromkeys(history.get("ids", [])))[-MAX_HISTORY_SIZE:]
+        unique_dict = {}
+        for url in history.get("original_urls", []):
+            unique_dict[get_offer_id(url)] = url
+            
+        # Pega as últimas 500 URLs desduplicadas
+        ids = list(unique_dict.values())[-MAX_HISTORY_SIZE:]
         Path(HISTORY_FILE).write_text(json.dumps({"ids": ids}, ensure_ascii=False, indent=2), encoding="utf-8")
-        log(f"✅ Histórico salvo: {len(ids)} IDs")
+        log(f"✅ Histórico salvo: {len(ids)} IDs desduplicados")
         return True
     except:
         return False
@@ -95,9 +101,7 @@ def fetch_offers():
     seen_links = set()
     
     log(f"\n🌐 Buscando ofertas em: {TARGET_URL}")
-    
     try:
-        # Pulo do gato: impersonate emula perfeitamente o Chrome, burlando o firewall do UOL
         res = cffi_requests.get(TARGET_URL, headers=HEADERS, timeout=15, impersonate="chrome110")
         html = res.text
         log(f"✅ Página baixada: {len(html)} caracteres")
@@ -215,7 +219,6 @@ def process_offer_details(offer):
 # ==============================================
 def download_image(img_url: str) -> str:
     try:
-        # Usa o requests tradicional pois baixar imagem não costuma dar block de firewall
         res = requests.get(img_url, headers=HEADERS, timeout=10)
         if res.ok:
             path = f"/tmp/leouol_{int(time.time())}.jpg"
@@ -243,7 +246,6 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
     log("   💬 Aguardando o Telegram rotear a mensagem para o grupo...")
     group_msg_id = None
     
-    # Aumentei as tentativas e o delay para dar tempo do Telegram enviar a postagem para os comentários
     for _ in range(5):
         time.sleep(5)
         try:
@@ -252,13 +254,11 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
                 msg = update.get("message", {})
                 if str(msg.get("chat", {}).get("id")) == str(GRUPO_COMENTARIOS_ID):
                     
-                    # 1. Padrão Novo do Telegram (forward_origin)
                     origin = msg.get("forward_origin", {})
                     if origin.get("type") == "channel" and origin.get("message_id") == channel_msg_id:
                         group_msg_id = msg.get("message_id")
                         break
                         
-                    # 2. Padrão Antigo (forward_from_message_id)
                     if msg.get("forward_from_message_id") == channel_msg_id:
                         group_msg_id = msg.get("message_id")
                         break
@@ -301,7 +301,8 @@ def run_scraper():
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID: return
     
     history = load_history()
-    seen_ids = set(history.get("ids", []))
+    # Pega apenas os IDs em formato slug para validar as novas ofertas
+    seen_ids = set(get_offer_id(url) for url in history.get("original_urls", []))
     
     offers = fetch_offers()
     new_offers = [o for o in offers if o["id"] not in seen_ids]
@@ -311,7 +312,7 @@ def run_scraper():
         return
         
     log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
-    processed_ids = set(seen_ids)
+    processed_ids = set()
     success_count = 0
     failed_links = []
     
@@ -350,8 +351,9 @@ def run_scraper():
         try: Path(img_path).unlink(missing_ok=True)
         except: pass
     
-    # Atualiza histórico guardando o original_link
-    history["ids"] = [o["original_link"] for o in new_offers if o["id"] in processed_ids] + list(seen_ids)
+    # Atualiza histórico adicionando APENAS as novas URLs originais 
+    new_urls = [o["original_link"] for o in new_offers if o["id"] in processed_ids]
+    history["original_urls"].extend(new_urls)
     save_history(history)
     
     # Atualiza pending_offers.json (Zera se tudo deu certo)
@@ -376,7 +378,7 @@ def run_consumer():
     log("=" * 70)
     
     history = load_history()
-    seen_ids = set(history.get("ids", []))
+    seen_ids = set(get_offer_id(url) for url in history.get("original_urls", []))
     pending_file = Path(PENDING_FILE)
     
     if not pending_file.exists():
@@ -392,7 +394,7 @@ def run_consumer():
         return
     
     log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
-    processed_ids = set(seen_ids)
+    processed_ids = set()
     success_count = 0
     failed_links = []
     
@@ -441,8 +443,9 @@ def run_consumer():
         except: pass
         time.sleep(2)
     
-    # Atualiza histórico
-    history["ids"] = [o.get("original_link", o["link"]) for o in offers if get_offer_id(o["link"]) in processed_ids] + list(seen_ids)
+    # Atualiza histórico adicionando APENAS as novas URLs originais das ofertas pendentes processadas com sucesso
+    new_urls = [o.get("original_link", o["link"]) for o in offers if get_offer_id(o["link"]) in processed_ids]
+    history["original_urls"].extend(new_urls)
     save_history(history)
     
     # Se todas foram enviadas, esvazia o pending
