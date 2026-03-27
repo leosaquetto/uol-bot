@@ -43,7 +43,6 @@ import time
 TOKEN = os.environ['TELEGRAM_TOKEN']
 CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
 
-# Carrega ofertas
 with open('pending_offers.json', 'r') as f:
     data = json.load(f)
 
@@ -51,7 +50,6 @@ offers = data.get('offers', [])
 print(f'📦 {len(offers)} ofertas para enviar')
 
 for i, offer in enumerate(offers, 1):
-    # Usa os dados que o Scriptable já extraiu
     title = offer.get('title', offer.get('preview_title', 'Oferta'))
     validity = offer.get('validity', '')
     link = offer.get('link', '')
@@ -60,14 +58,12 @@ for i, offer in enumerate(offers, 1):
     
     print(f'\n📌 Oferta {i}: {title[:50]}')
     
-    # Monta legenda da foto
     caption = f'<b>{title}</b>'
     if validity:
         caption += f'\n\n📅 {validity}'
     caption += f'\n\n🔗 <a href=\"{link}\">Acessar oferta</a>'
     caption += f'\n\n💬 Veja os detalhes completos nos comentários abaixo'
     
-    # Envia foto
     if img_url:
         try:
             img = requests.get(img_url, timeout=15)
@@ -79,7 +75,6 @@ for i, offer in enumerate(offers, 1):
                 msg_id = r.json()['result']['message_id']
                 print(f'  ✅ Foto enviada (ID: {msg_id})')
                 
-                # Envia comentário com descrição completa
                 if description:
                     comment = f'📋 <b>DESCRIÇÃO COMPLETA DA OFERTA</b>\n\n{description}\n\n🔗 <a href=\"{link}\">Link original</a>'
                     comment_data = {
@@ -98,7 +93,6 @@ for i, offer in enumerate(offers, 1):
         except Exception as e:
             print(f'  ❌ Erro: {e}')
     else:
-        # Sem imagem, envia só texto
         data = {'chat_id': CHAT_ID, 'text': caption, 'parse_mode': 'HTML', 'disable_web_page_preview': True}
         r = requests.post(f'https://api.telegram.org/bot{TOKEN}/sendMessage', data=data, timeout=30)
         print(f'  ✅ Texto enviado' if r.ok else f'  ❌ Erro: {r.text}')
