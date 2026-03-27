@@ -1,107 +1,516 @@
-import requests
+# bot_leouol.py
+# consumer do pending_offers.json + envio para telegram
+# versão corrigida:
+# - processa TUDO que estiver no pending, mesmo que já esteja no histórico
+# - mantém comentário no grupo vinculado ao canal
+# - normaliza ids do histórico para evitar duplicações bizarras
+# - limpa pending apenas do que foi processado com sucesso
+
 import json
 import os
+import re
 import time
 from datetime import datetime
+from html import unescape
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
-TOKEN = os.getenv("TELEGRAM_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+import requests
 
-def log(msg):
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
+# ==============================================
+# configurações
+# ==============================================
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
 
-def load_json(path, default):
-    if not os.path.exists(path):
-        return default
-    with open(path, "r") as f:
-        return json.load(f)
+HISTORY_FILE = "historico_leouol.json"
+PENDING_FILE = "pending_offers.json"
 
-def save_json(path, data):
-    with open(path, "w") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+MAX_HISTORY_SIZE = 500
+MAX_CAPTION_LENGTH = 1024
+MAX_COMMENT_LENGTH = 4096
 
-def normalize_id(link):
-    if not link:
+REQUEST_TIMEOUT = 30
+
+USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/123.0.0.0 Safari/537.36"
+)
+
+# ==============================================
+# utilidades
+# ==============================================
+def log(msg: str) -> None:
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    print(f"[{timestamp}] {msg}", flush=True)
+
+
+def log_separator() -> None:
+    print("-" * 60, flush=True)
+
+
+def normalize_spaces(text: Optional[str]) -> str:
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", str(text)).strip()
+
+
+def clean_multiline_text(text: Optional[str]) -> str:
+    if not text:
+        return ""
+    text = str(text)
+    text = unescape(text)
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n[ \t]+", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"•\s*\n\s*", "• ", text)
+    text = re.sub(r"\n\s*•\s*", "\n• ", text)
+    text = text.strip()
+
+    # corta o formulário inútil do fim
+    lixo = [
+        "Enviar cupons por e-mail",
+        "Preencha os campos abaixo",
+        "E-mail\n\nMensagem\n\nEnviar",
+    ]
+    for marker in lixo:
+        idx = text.find(marker)
+        if idx != -1:
+            text = text[:idx].rstrip()
+
+    return text.strip()
+
+
+def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
+    if len(text) <= max_len:
+        return text
+    return text[: max_len - len(suffix)] + suffix
+
+
+def escape_html(text: str) -> str:
+    if not text:
+        return ""
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#39;")
+    )
+
+
+def safe_json_load(path: Path, fallback):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return fallback
+
+
+# ==============================================
+# normalização de chave da oferta
+# ==============================================
+def slugify_piece(text: str) -> str:
+    text = unescape(text or "").lower().strip()
+
+    replacements = {
+        "á": "a", "à": "a", "ã": "a", "â": "a",
+        "é": "e", "ê": "e",
+        "í": "i",
+        "ó": "o", "ô": "o", "õ": "o",
+        "ú": "u",
+        "ç": "c",
+    }
+    for src, dst in replacements.items():
+        text = text.replace(src, dst)
+
+    text = re.sub(r"[^a-z0-9\-_/]+", "-", text)
+    text = re.sub(r"-{2,}", "-", text)
+    text = text.strip("-/")
+    return text
+
+
+def get_offer_id(link: str) -> str:
+    try:
+        clean_link = str(link).split("?")[0].rstrip("/")
+        return clean_link.split("/")[-1]
+    except Exception:
+        return str(link or "").strip()
+
+
+def normalize_offer_key(value: str) -> str:
+    """
+    gera uma chave estável para comparar histórico e pending.
+    prioridade:
+    - último segmento da url
+    - id cru
+    - normalização do texto
+    """
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+
+    if raw.startswith("http://") or raw.startswith("https://"):
+        raw = get_offer_id(raw)
+
+    raw = slugify_piece(raw)
+
+    # remove caudas muito variáveis e sujeira final, preservando boa parte do slug
+    parts = [p for p in raw.split("-") if p]
+    if not parts:
+        return raw
+
+    return "-".join(parts)
+
+
+# ==============================================
+# histórico
+# ==============================================
+def load_history() -> Dict[str, List[str]]:
+    path = Path(HISTORY_FILE)
+    if not path.exists():
+        return {"ids": []}
+
+    data = safe_json_load(path, {"ids": []})
+    ids = data.get("ids", [])
+    if not isinstance(ids, list):
+        ids = []
+
+    normalized = []
+    seen = set()
+    for item in ids:
+        key = normalize_offer_key(str(item))
+        if key and key not in seen:
+            seen.add(key)
+            normalized.append(key)
+
+    return {"ids": normalized[-MAX_HISTORY_SIZE:]}
+
+
+def save_history(history: Dict[str, List[str]]) -> bool:
+    try:
+        ids = history.get("ids", [])
+        if not isinstance(ids, list):
+            ids = []
+
+        cleaned = []
+        seen = set()
+        for item in ids:
+            key = normalize_offer_key(str(item))
+            if key and key not in seen:
+                seen.add(key)
+                cleaned.append(key)
+
+        cleaned = cleaned[-MAX_HISTORY_SIZE:]
+
+        Path(HISTORY_FILE).write_text(
+            json.dumps({"ids": cleaned}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        log(f"✅ histórico salvo: {len(cleaned)} ids")
+        return True
+    except Exception as e:
+        log(f"❌ erro ao salvar histórico: {e}")
+        return False
+
+
+# ==============================================
+# pending
+# ==============================================
+def load_pending() -> Dict:
+    path = Path(PENDING_FILE)
+    if not path.exists():
+        return {"last_update": None, "offers": []}
+
+    data = safe_json_load(path, {"last_update": None, "offers": []})
+    offers = data.get("offers", [])
+    if not isinstance(offers, list):
+        offers = []
+
+    return {
+        "last_update": data.get("last_update"),
+        "offers": offers,
+    }
+
+
+def save_pending(offers: List[Dict]) -> bool:
+    try:
+        payload = {
+            "last_update": datetime.utcnow().isoformat() + "Z",
+            "offers": offers,
+        }
+        Path(PENDING_FILE).write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        log(f"✅ pending salvo: {len(offers)} ofertas")
+        return True
+    except Exception as e:
+        log(f"❌ erro ao salvar pending: {e}")
+        return False
+
+
+# ==============================================
+# telegram
+# ==============================================
+def telegram_api(method: str) -> str:
+    return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
+
+
+def download_image(img_url: str) -> Optional[str]:
+    if not img_url:
         return None
-    slug = link.split("?")[0].rstrip("/").split("/")[-1]
-    return slug.lower().strip()
 
-def send_photo(photo, caption):
-    url = f"https://api.telegram.org/bot{TOKEN}/sendPhoto"
-    r = requests.post(url, data={
-        "chat_id": CHAT_ID,
-        "photo": photo,
-        "caption": caption,
-        "parse_mode": "HTML"
-    })
-    return r.json()
+    try:
+        headers = {"User-Agent": USER_AGENT}
+        response = requests.get(img_url, headers=headers, timeout=REQUEST_TIMEOUT)
+        response.raise_for_status()
 
-def send_comment(text, reply_to):
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    requests.post(url, data={
-        "chat_id": CHAT_ID,
-        "text": text,
-        "reply_to_message_id": reply_to,
-        "parse_mode": "HTML"
-    })
+        suffix = ".jpg"
+        if ".png" in img_url.lower():
+            suffix = ".png"
+        elif ".webp" in img_url.lower():
+            suffix = ".webp"
 
-def format_caption(o):
-    return f"""<b>{o['title']}</b>
+        path = f"/tmp/leouol_{int(time.time() * 1000)}{suffix}"
+        Path(path).write_bytes(response.content)
+        return path
+    except Exception as e:
+        log(f"   ⚠️ falha ao baixar imagem: {e}")
+        return None
 
-🔗 <a href="{o['link']}">Acessar oferta</a>
 
-💬 Veja os detalhes completos nos comentários abaixo"""
+def build_caption(title: str, validity: Optional[str], link: str) -> str:
+    parts = [f"<b>{escape_html(title)}</b>"]
 
-def format_comment(o):
-    return f"""<b>{o['title']}</b>
+    if validity:
+        parts.append(f"📅 {escape_html(validity)}")
 
-🔗 {o['link']}"""
+    parts.append(f"🔗 <a href=\"{escape_html(link)}\">Acessar oferta</a>")
+    parts.append("💬 Veja os detalhes completos nos comentários abaixo")
 
-def main():
-    log("consumer iniciado")
+    return truncate_text("\n\n".join(parts), MAX_CAPTION_LENGTH)
 
-    historico = load_json("historico_leouol.json", {"ids": []})
-    pending = load_json("pending_offers.json", {"last_update": None, "offers": []})
 
-    historico_ids = set(historico["ids"])
+def build_comment_text(description: str, validity: Optional[str], link: str) -> str:
+    desc = clean_multiline_text(description)
+    parts = ["📋 <b>descrição completa</b>", "", escape_html(desc)]
 
-    enviados = 0
-    novos_pending = []
+    if validity:
+        parts.extend(["", f"📅 {escape_html(validity)}"])
 
-    for o in pending["offers"]:
-        oid = normalize_id(o["link"])
+    parts.extend(["", f"🔗 <a href=\"{escape_html(link)}\">Link original</a>"])
 
-        if oid in historico_ids:
-            log(f"já existe: {oid}")
+    return truncate_text("\n".join(parts), MAX_COMMENT_LENGTH)
+
+
+def send_photo_to_channel(img_path: str, caption: str) -> Optional[int]:
+    try:
+        url = telegram_api("sendPhoto")
+        with open(img_path, "rb") as photo:
+            response = requests.post(
+                url,
+                data={
+                    "chat_id": TELEGRAM_CHAT_ID,
+                    "caption": caption,
+                    "parse_mode": "HTML",
+                },
+                files={"photo": photo},
+                timeout=REQUEST_TIMEOUT,
+            )
+
+        if not response.ok:
+            log(f"   ❌ falha sendPhoto: {response.text}")
+            return None
+
+        data = response.json()
+        return data.get("result", {}).get("message_id")
+    except Exception as e:
+        log(f"   ❌ erro sendPhoto: {e}")
+        return None
+
+
+def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, delay: int = 3) -> Optional[int]:
+    """
+    tenta descobrir qual mensagem apareceu no grupo vinculado
+    correspondente ao post do canal
+    """
+    for attempt in range(1, attempts + 1):
+        try:
+            time.sleep(delay)
+
+            response = requests.get(
+                telegram_api("getUpdates"),
+                timeout=REQUEST_TIMEOUT,
+            )
+            if not response.ok:
+                continue
+
+            data = response.json()
+            updates = data.get("result", [])
+
+            for update in reversed(updates):
+                msg = update.get("message", {})
+                chat_id = str(msg.get("chat", {}).get("id", ""))
+
+                if chat_id != str(GRUPO_COMENTARIO_ID):
+                    continue
+
+                forward_origin = msg.get("forward_origin", {}) or {}
+                origin_message_id = forward_origin.get("message_id")
+
+                if origin_message_id == channel_message_id:
+                    return msg.get("message_id")
+
+                # fallback legado
+                if msg.get("forward_from_message_id") == channel_message_id:
+                    return msg.get("message_id")
+
+        except Exception:
+            pass
+
+    return None
+
+
+def send_description_comment(
+    description: str,
+    validity: Optional[str],
+    link: str,
+    channel_message_id: int,
+) -> bool:
+    try:
+        group_message_id = find_group_mirror_message_id(channel_message_id)
+
+        text = build_comment_text(description, validity, link)
+
+        payload = {
+            "chat_id": GRUPO_COMENTARIO_ID,
+            "text": text,
+            "parse_mode": "HTML",
+            "disable_web_page_preview": True,
+        }
+
+        if group_message_id:
+            payload["reply_to_message_id"] = group_message_id
+            payload["allow_sending_without_reply"] = True
+
+        response = requests.post(
+            telegram_api("sendMessage"),
+            data=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if not response.ok:
+            log(f"   ❌ falha sendMessage: {response.text}")
+            return False
+
+        return True
+    except Exception as e:
+        log(f"   ❌ erro ao enviar comentário: {e}")
+        return False
+
+
+# ==============================================
+# consumer
+# ==============================================
+def run_consumer() -> None:
+    log("=" * 60)
+    log("🤖 bot leouol - consumer do pending")
+    log("=" * 60)
+
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID or not GRUPO_COMENTARIO_ID:
+        log("❌ TELEGRAM_TOKEN, TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórios")
+        return
+
+    history = load_history()
+    processed_keys = set(history.get("ids", []))
+
+    pending_data = load_pending()
+    offers = pending_data.get("offers", [])
+
+    log(f"📦 pending atual: {len(offers)} ofertas")
+
+    if not offers:
+        log("📭 nada para enviar")
+        return
+
+    success_count = 0
+    failed_offers: List[Dict] = []
+
+    for index, offer in enumerate(offers, start=1):
+        log_separator()
+        log(f"📌 oferta {index}/{len(offers)}")
+
+        offer_id = offer.get("id") or get_offer_id(offer.get("link", ""))
+        title = offer.get("title") or offer.get("preview_title") or "oferta"
+        link = offer.get("link") or offer.get("original_link") or ""
+        img_url = offer.get("img_url") or ""
+        validity = offer.get("validity")
+        description = offer.get("description") or "descrição não disponível."
+
+        offer_key = normalize_offer_key(offer_id or link or title)
+
+        log(f"   id: {offer_id}")
+        log(f"   título: {title}")
+
+        if not link:
+            log("   ⚠️ oferta sem link, mantendo no pending")
+            failed_offers.append(offer)
             continue
 
-        log(f"enviando: {o['title']}")
+        if not img_url:
+            log("   ⚠️ oferta sem imagem, mantendo no pending")
+            failed_offers.append(offer)
+            continue
 
-        caption = format_caption(o)
-        res = send_photo(o["image"], caption)
+        img_path = download_image(img_url)
+        if not img_path:
+            log("   ⚠️ falha ao baixar imagem, mantendo no pending")
+            failed_offers.append(offer)
+            continue
+
+        caption = build_caption(title, validity, link)
+        channel_message_id = send_photo_to_channel(img_path, caption)
 
         try:
-            msg_id = res["result"]["message_id"]
-        except:
-            log("erro telegram")
-            novos_pending.append(o)
+            Path(img_path).unlink(missing_ok=True)
+        except Exception:
+            pass
+
+        if not channel_message_id:
+            log("   ❌ falha ao postar foto, mantendo no pending")
+            failed_offers.append(offer)
             continue
+
+        comment_ok = send_description_comment(
+            description=description,
+            validity=validity,
+            link=link,
+            channel_message_id=channel_message_id,
+        )
+
+        if not comment_ok:
+            log("   ❌ foto enviada mas comentário falhou, mantendo no pending")
+            failed_offers.append(offer)
+            continue
+
+        processed_keys.add(offer_key)
+        success_count += 1
+        log("   ✅ enviada com sucesso")
 
         time.sleep(2)
 
-        comment = format_comment(o)
-        send_comment(comment, msg_id)
+    save_history({"ids": list(processed_keys)})
+    save_pending(failed_offers)
 
-        historico_ids.add(oid)
-        enviados += 1
+    log_separator()
+    log(f"✅ fim. {success_count}/{len(offers)} ofertas enviadas")
 
-    historico["ids"] = list(historico_ids)
-    pending["offers"] = novos_pending
 
-    save_json("historico_leouol.json", historico)
-    save_json("pending_offers.json", pending)
-
-    log(f"fim: {enviados} enviados")
-
+# ==============================================
+# entry point
+# ==============================================
 if __name__ == "__main__":
-    main()
+    run_consumer()
