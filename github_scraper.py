@@ -123,6 +123,41 @@ def uniq_by(items: List[Dict[str, Any]], key_fn) -> List[Dict[str, Any]]:
     return out
 
 
+def is_bad_banner_url(url: Optional[str]) -> bool:
+    u = str(url or "").lower()
+    if not u:
+        return True
+    return (
+        "loader.gif" in u
+        or "/static/images/loader.gif" in u
+        or "/parceiros/" in u
+        or "/rodape/" in u
+        or "icon-instagram" in u
+        or "icon-facebook" in u
+        or "icon-twitter" in u
+        or "icon-youtube" in u
+        or "instagram.png" in u
+        or "facebook.png" in u
+        or "twitter.png" in u
+        or "youtube.png" in u
+        or "share-" in u
+        or "social" in u
+        or "logo-uol" in u
+        or "logo_uol" in u
+    )
+
+
+def is_likely_benefit_banner(url: Optional[str]) -> bool:
+    u = str(url or "").lower()
+    if not u or is_bad_banner_url(u):
+        return False
+    return (
+        "/beneficios/" in u
+        or "/campanhasdeingresso/" in u
+        or "cloudfront.net" in u
+    )
+
+
 def get_html(url: str) -> str:
     headers = {
         "User-Agent": USER_AGENT,
@@ -153,9 +188,6 @@ def extract_all_img_meta(block) -> List[Dict[str, Any]]:
         class_names = " ".join(img.get("class", [])).lower()
         title = (img.get("title") or "").strip().lower()
         alt = (img.get("alt") or "").strip().lower()
-
-        width = 0
-        height = 0
 
         try:
             width = int(img.get("width") or 0)
@@ -199,37 +231,29 @@ def choose_images_from_block(block) -> Dict[str, str]:
     partner_img_url = ""
     img_url = ""
 
-    benefit_candidates = [img for img in all_imgs if img["is_benefit_path"]]
-    if benefit_candidates:
-        img_url = benefit_candidates[-1]["src"]
-
     partner_candidates = [img for img in all_imgs if img["is_partner_like"] or img["is_partner_path"]]
     if partner_candidates:
         partner_img_url = partner_candidates[0]["src"]
 
-    if not img_url:
-        non_partner_candidates = [img for img in all_imgs if not img["is_partner_path"] and not img["is_partner_like"]]
-        if non_partner_candidates:
-            img_url = non_partner_candidates[-1]["src"]
+    banner_candidates = [
+        img for img in all_imgs
+        if (not partner_img_url or img["src"] != partner_img_url) and is_likely_benefit_banner(img["src"])
+    ]
+    if banner_candidates:
+        img_url = banner_candidates[-1]["src"]
 
     if not img_url:
-        non_partner_path = [img for img in all_imgs if not img["is_partner_path"]]
-        if non_partner_path:
-            img_url = non_partner_path[-1]["src"]
+        fallback_candidates = [
+            img for img in all_imgs
+            if (not partner_img_url or img["src"] != partner_img_url) and not is_bad_banner_url(img["src"])
+        ]
+        if fallback_candidates:
+            img_url = fallback_candidates[-1]["src"]
 
     if not partner_img_url and len(all_imgs) >= 2:
         for img in all_imgs:
             if img["src"] != img_url:
                 partner_img_url = img["src"]
-                break
-
-    if not img_url and all_imgs:
-        img_url = all_imgs[-1]["src"]
-
-    if img_url and partner_img_url and img_url == partner_img_url:
-        for img in all_imgs:
-            if img["src"] != partner_img_url and not img["is_partner_path"]:
-                img_url = img["src"]
                 break
 
     return {
@@ -309,8 +333,10 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
         ]:
             m = regex.search(html)
             if m:
-                page_title = clean_text(re.sub(r"<[^>]+>", " ", m.group(1)))
-                break
+                candidate_title = clean_text(re.sub(r"<[^>]+>", " ", m.group(1)))
+                if candidate_title:
+                    page_title = candidate_title
+                    break
 
         all_imgs = []
         for m in re.finditer(r'<img[^>]+(?:data-src|data-original|data-lazy|src)=["\']([^"\']+)["\']', html, re.I):
@@ -319,14 +345,13 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                 all_imgs.append(src)
 
         detail_img_url = ""
-        benefit_imgs = [src for src in all_imgs if "/beneficios/" in src]
-        non_partner_imgs = [src for src in all_imgs if "/parceiros/" not in src]
-        if benefit_imgs:
-            detail_img_url = benefit_imgs[-1]
-        elif non_partner_imgs:
-            detail_img_url = non_partner_imgs[-1]
-        elif all_imgs:
-            detail_img_url = all_imgs[-1]
+        detail_candidates = [src for src in all_imgs if is_likely_benefit_banner(src)]
+        if detail_candidates:
+            detail_img_url = detail_candidates[-1]
+        else:
+            fallback_detail = [src for src in all_imgs if not is_bad_banner_url(src)]
+            if fallback_detail:
+                detail_img_url = fallback_detail[-1]
 
         validity = None
         for regex in [
@@ -410,14 +435,26 @@ def main() -> None:
         final_title = details["title"] or offer["title"]
         final_partner = absolutize_url(offer.get("partner_img_url") or "")
 
-        final_img = absolutize_url(details["detail_img_url"] or offer["img_url"] or "")
-        if final_img and final_partner and final_img == final_partner:
-            final_img = ""
-
-        if final_img and "/parceiros/" in final_img:
+        final_img = absolutize_url(details["detail_img_url"] or "")
+        if (
+            not final_img
+            or is_bad_banner_url(final_img)
+            or final_img == final_partner
+        ):
             fallback_img = absolutize_url(offer.get("img_url") or "")
-            if fallback_img and "/parceiros/" not in fallback_img and fallback_img != final_partner:
+            if (
+                fallback_img
+                and not is_bad_banner_url(fallback_img)
+                and fallback_img != final_partner
+            ):
                 final_img = fallback_img
+
+        if (
+            not final_img
+            or is_bad_banner_url(final_img)
+            or final_img == final_partner
+        ):
+            final_img = ""
 
         complete.append({
             "id": offer["id"],
