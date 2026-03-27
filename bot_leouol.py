@@ -374,41 +374,95 @@ def find_group_mirror_message_id(channel_message_id: int, attempts: int = 6, del
     return None
 
 
-def send_description_comment(
-    description: str,
-    validity: Optional[str],
-    link: str,
-    channel_message_id: int,
-) -> bool:
+def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
+    """
+    envia a descrição completa como comentário no grupo vinculado ao canal.
+    tenta descobrir a mensagem espelhada automaticamente no grupo e responder nela.
+    """
+
+    group_msg_id = None
+    max_attempts = 4
+
+    for attempt in range(1, max_attempts + 1):
+        log(f"  ⏳ aguardando espelhamento no grupo ({attempt}/{max_attempts})...")
+        time.sleep(3)
+
+        try:
+            updates_resp = requests.get(
+                f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates",
+                timeout=15,
+            )
+            updates = updates_resp.json()
+
+            if not updates.get("ok"):
+                continue
+
+            for update in reversed(updates.get("result", [])):
+                msg = update.get("message", {})
+                if not msg:
+                    continue
+
+                chat_id = str(msg.get("chat", {}).get("id"))
+                if chat_id != str(GRUPO_COMENTARIOS_ID):
+                    continue
+
+                # telegram antigo
+                origin_id = msg.get("forward_from_message_id")
+
+                # telegram mais novo
+                if not origin_id:
+                    forward_origin = msg.get("forward_origin", {})
+                    if isinstance(forward_origin, dict):
+                        origin_id = forward_origin.get("message_id")
+
+                is_auto = msg.get("is_automatic_forward", False)
+
+                if is_auto and origin_id == channel_msg_id:
+                    group_msg_id = msg.get("message_id")
+                    log(f"  ✅ id espelhado encontrado no grupo: {group_msg_id}")
+                    break
+
+            if group_msg_id:
+                break
+
+        except Exception as e:
+            log(f"  ⚠️ erro ao consultar getUpdates: {e}")
+
+    text = (
+        f"📋 <b>descrição completa</b>\n\n"
+        f"{desc}\n\n"
+        f"🔗 <a href='{escape_html(link)}'>Link original</a>"
+    )
+
+    data = {
+        "chat_id": GRUPO_COMENTARIOS_ID,
+        "text": truncate_text(text, MAX_COMMENT_LENGTH),
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+    }
+
+    if group_msg_id:
+        data["reply_to_message_id"] = group_msg_id
+        log(f"  💬 enviando comentário como resposta ao id {group_msg_id}")
+    else:
+        log("  ⚠️ não achei o id espelhado; enviando no grupo sem reply")
+
     try:
-        group_message_id = find_group_mirror_message_id(channel_message_id)
-
-        text = build_comment_text(description, validity, link)
-
-        payload = {
-            "chat_id": GRUPO_COMENTARIO_ID,
-            "text": text,
-            "parse_mode": "HTML",
-            "disable_web_page_preview": True,
-        }
-
-        if group_message_id:
-            payload["reply_to_message_id"] = group_message_id
-            payload["allow_sending_without_reply"] = True
-
-        response = requests.post(
-            telegram_api("sendMessage"),
-            data=payload,
-            timeout=REQUEST_TIMEOUT,
+        resp = requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+            data=data,
+            timeout=30,
         )
 
-        if not response.ok:
-            log(f"   ❌ falha sendMessage: {response.text}")
-            return False
+        if resp.ok:
+            log("  ✅ comentário enviado com sucesso")
+            return True
 
-        return True
+        log(f"  ❌ erro ao enviar comentário: {resp.text}")
+        return False
+
     except Exception as e:
-        log(f"   ❌ erro ao enviar comentário: {e}")
+        log(f"  ❌ exceção ao enviar comentário: {e}")
         return False
 
 
