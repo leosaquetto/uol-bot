@@ -134,8 +134,9 @@ def get_html(url: str) -> str:
     return r.text
 
 
-def extract_all_img_urls(block) -> List[str]:
-    urls = []
+def extract_all_img_meta(block) -> List[Dict[str, Any]]:
+    imgs: List[Dict[str, Any]] = []
+
     for img in block.select("img"):
         src = (
             img.get("data-src")
@@ -144,29 +145,88 @@ def extract_all_img_urls(block) -> List[str]:
             or img.get("src")
             or ""
         ).strip()
+
         if not src or src.startswith("data:image"):
             continue
-        urls.append(absolutize_url(src))
 
-    deduped = []
-    seen = set()
-    for url in urls:
-        if url not in seen:
-            seen.add(url)
-            deduped.append(url)
-    return deduped
+        full_src = absolutize_url(src)
+        class_names = " ".join(img.get("class", [])).lower()
+        title = (img.get("title") or "").strip().lower()
+
+        width = 0
+        height = 0
+
+        try:
+            width = int(img.get("width") or 0)
+        except Exception:
+            width = 0
+
+        try:
+            height = int(img.get("height") or 0)
+        except Exception:
+            height = 0
+
+        imgs.append(
+            {
+                "src": full_src,
+                "title": title,
+                "class_name": class_names,
+                "width": width,
+                "height": height,
+                "is_partner_like": (
+                    "/parceiros/" in full_src
+                    or "logo" in class_names
+                    or "brand" in class_names
+                    or "parceiro" in class_names
+                    or bool(title)
+                    or (0 < width <= 220)
+                    or (0 < height <= 120)
+                ),
+            }
+        )
+
+    return uniq_by(imgs, lambda x: x["src"])
 
 
 def choose_images_from_block(block) -> Dict[str, str]:
-    all_imgs = extract_all_img_urls(block)
+    all_imgs = extract_all_img_meta(block)
+
     partner_img_url = ""
     img_url = ""
 
-    if len(all_imgs) == 1:
-        img_url = all_imgs[0]
-    elif len(all_imgs) >= 2:
-        partner_img_url = all_imgs[0]
-        img_url = all_imgs[-1]
+    partner_candidates = [img for img in all_imgs if img["is_partner_like"]]
+    main_candidates = [img for img in all_imgs if not img["is_partner_like"]]
+
+    if partner_candidates:
+        partner_img_url = partner_candidates[0]["src"]
+
+    if main_candidates:
+        img_url = main_candidates[-1]["src"]
+
+    if not img_url and all_imgs:
+        non_partner_path = [
+            img for img in all_imgs
+            if "/parceiros/" not in img["src"]
+        ]
+        if non_partner_path:
+            img_url = non_partner_path[-1]["src"]
+
+    if not partner_img_url and len(all_imgs) >= 2:
+        for img in all_imgs:
+            if img["src"] != img_url:
+                partner_img_url = img["src"]
+                break
+
+    if not img_url and all_imgs:
+        img_url = all_imgs[-1]["src"]
+
+    if img_url and partner_img_url and img_url == partner_img_url:
+        non_partner_path = [
+            img for img in all_imgs
+            if img["src"] != partner_img_url and "/parceiros/" not in img["src"]
+        ]
+        if non_partner_path:
+            img_url = non_partner_path[-1]["src"]
 
     return {
         "img_url": img_url,
@@ -211,6 +271,9 @@ def parse_offers(html: str) -> List[Dict[str, Any]]:
             images = choose_images_from_block(block)
             offer_id = get_offer_id(link)
 
+            log(f"     main url: {images['img_url'] or 'vazia'}")
+            log(f"     partner url: {images['partner_img_url'] or 'vazia'}")
+
             offers.append({
                 "id": offer_id,
                 "original_link": link,
@@ -250,7 +313,13 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
             src = absolutize_url(m.group(1))
             if src and not src.startswith("data:image"):
                 all_imgs.append(src)
-        detail_img_url = all_imgs[-1] if all_imgs else ""
+
+        detail_img_url = ""
+        non_partner_imgs = [src for src in all_imgs if "/parceiros/" not in src]
+        if non_partner_imgs:
+            detail_img_url = non_partner_imgs[-1]
+        elif all_imgs:
+            detail_img_url = all_imgs[-1]
 
         validity = None
         for regex in [
@@ -332,8 +401,16 @@ def main() -> None:
     for offer in candidates:
         details = extract_offer_details(offer["link"], offer["preview_title"])
         final_title = details["title"] or offer["title"]
-        final_img = absolutize_url(details["detail_img_url"] or offer["img_url"] or "")
         final_partner = absolutize_url(offer.get("partner_img_url") or "")
+
+        final_img = absolutize_url(details["detail_img_url"] or offer["img_url"] or "")
+        if final_img and final_partner and final_img == final_partner:
+            final_img = ""
+
+        if final_img and "/parceiros/" in final_img:
+            fallback_img = absolutize_url(offer.get("img_url") or "")
+            if fallback_img and "/parceiros/" not in fallback_img and fallback_img != final_partner:
+                final_img = fallback_img
 
         complete.append({
             "id": offer["id"],
@@ -360,11 +437,6 @@ def main() -> None:
     pending["last_update"] = datetime.utcnow().isoformat() + "Z"
 
     save_json(PENDING_FILE, pending)
-
-    # importante:
-    # não grava no histórico aqui.
-    # o histórico deve continuar sendo responsabilidade do consumer,
-    # apenas após envio real no telegram.
 
     log(f"adicionadas ao pending: {len(complete)}")
     log("finalizado")
