@@ -1,40 +1,20 @@
-name: BOT LEOUOL - Scraper
+name: BOT LEOUOL - Manual Backup
 
 on:
-  schedule:
-    - cron: "0 * * * *"  # A cada 1 hora (no minuto 0)
   workflow_dispatch:
-
-concurrency:
-  group: bot-leouol
-  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
-  run-bot:
-    name: Buscar Ofertas
+  disabled-backup:
+    name: Workflow manual de backup
     runs-on: ubuntu-latest
-    timeout-minutes: 3
-
     steps:
-      - name: 📥 Baixar código
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 🐍 Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: 🔄 Restaurar histórico
-        shell: bash
+      - name: Aviso
         run: |
-          if [ ! -f historico_leouol.json ]; then
+          echo "este workflow ficou apenas como backup manual."
+          echo "o fluxo automático correto agora está em .github/workflows/bot_leouol_consumer.yml"          if [ ! -f historico_leouol.json ]; then
             echo '{"ids": []}' > historico_leouol.json
           fi
 
