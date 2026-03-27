@@ -5,7 +5,7 @@ on:
     paths:
       - pending_offers.json
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -87,7 +87,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "🤖 atualiza histórico e pending [skip ci]"
+          git commit -m "🤖 consumer atualiza histórico e pending [skip ci]"
           git push
           echo "✅ alterações enviadas"
 
@@ -95,7 +95,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bot-leouol-debug-${{ github.run_id }}
+          name: bot-leouol-consumer-debug-${{ github.run_id }}
           path: |
             historico_leouol.json
             pending_offers.json
