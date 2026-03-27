@@ -1,4 +1,4 @@
-# bot_leouol.py - Versão Final com Normalização de IDs
+# bot_leouol.py - Versão Definitiva (Anti-Block + Histórico Seguro)
 
 import sys
 import requests
@@ -6,15 +6,12 @@ import json
 import os
 import time
 import re
-import random
-import urllib3
-import unicodedata
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
-# Suprime os avisos de conexão insegura
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# A mágica do bypass: curl_cffi emula a impressão digital de um navegador real para evitar bloqueios do UOL
+from curl_cffi import requests as cffi_requests
 
 # ==============================================
 # CONFIGURAÇÕES
@@ -26,48 +23,21 @@ GRUPO_COMENTARIOS_ID = os.environ.get("GRUPO_COMENTARIO_ID", "-1003802235343")
 TARGET_URL = "https://clube.uol.com.br/?order=new"
 
 HISTORY_FILE = "historico_leouol.json"
+PENDING_FILE = "pending_offers.json"
 MAX_OFFERS_PER_RUN = 10
 MAX_HISTORY_SIZE = 200
 MAX_CAPTION_LENGTH = 1024
 MAX_COMMENT_LENGTH = 4096
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
     "Referer": "https://clube.uol.com.br/"
 }
 
 # ==============================================
-# FUNÇÃO DE NORMALIZAÇÃO
-# ==============================================
-def normalize_slug(slug: str) -> str:
-    """Normaliza o slug para comparação (remove acentos, etc.)"""
-    # Remove acentos
-    slug = unicodedata.normalize('NFKD', slug).encode('ASCII', 'ignore').decode('ASCII')
-    # Tudo minúsculo
-    slug = slug.lower()
-    # Remove tudo que não é letra, número ou traço
-    slug = re.sub(r'[^a-z0-9-]', '', slug)
-    # Remove traços duplicados
-    slug = re.sub(r'-+', '-', slug)
-    # Remove traços no início e fim
-    slug = slug.strip('-')
-    return slug
-
-def get_offer_id(link: str) -> str:
-    """Retorna ID normalizado para comparação"""
-    try:
-        parsed = urlparse(link)
-        path_parts = parsed.path.rstrip('/').split('/')
-        slug = path_parts[-1] if path_parts else ''
-        return normalize_slug(slug)
-    except:
-        slug = link.split('?')[0].split('/')[-1] if '/' in link else link
-        return normalize_slug(slug)
-
-# ==============================================
-# FUNÇÕES UTILITÁRIAS
+# FUNÇÕES UTILITÁRIAS E PADRONIZAÇÃO DE ID
 # ==============================================
 def log(msg: str) -> None:
     timestamp = datetime.now().strftime("%H:%M:%S")
@@ -84,22 +54,29 @@ def escape_html(text: str) -> str:
     if not text: return ""
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;")
 
+def get_offer_id(link: str) -> str:
+    """Extrai estritamente o final do link (slug) para bater exatamente com o Scriptable."""
+    try:
+        parsed = urlparse(link)
+        path_parts = parsed.path.rstrip('/').split('/')
+        return path_parts[-1] if path_parts else link
+    except:
+        return link.split('?')[0].rstrip('/').split('/')[-1]
+
 def load_history():
     path = Path(HISTORY_FILE)
     if not path.exists(): return {"ids": []}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-        ids = data.get("ids", [])
-        # Normaliza os IDs do histórico
-        normalized_ids = [get_offer_id(str(x)) for x in ids]
-        return {"ids": list(dict.fromkeys(normalized_ids))[-MAX_HISTORY_SIZE:]}
+        # Extrai o slug certinho do histórico para montar a lista de verificação
+        ids = [get_offer_id(str(x)) for x in data.get("ids", [])]
+        return {"ids": list(dict.fromkeys(ids))[-MAX_HISTORY_SIZE:]}
     except Exception:
         return {"ids": []}
 
 def save_history(history):
     try:
-        # Salva os IDs originais (URLs completas)
-        ids = history.get("ids", [])
+        ids = list(dict.fromkeys(history.get("ids", [])))[-MAX_HISTORY_SIZE:]
         Path(HISTORY_FILE).write_text(json.dumps({"ids": ids}, ensure_ascii=False, indent=2), encoding="utf-8")
         log(f"✅ Histórico salvo: {len(ids)} IDs")
         return True
@@ -111,7 +88,7 @@ def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
     return text[:max_len - len(suffix)] + suffix
 
 # ==============================================
-# SCRAPER
+# SCRAPER - USANDO CURL_CFFI PARA BYPASS
 # ==============================================
 def fetch_offers():
     offers = []
@@ -120,7 +97,8 @@ def fetch_offers():
     log(f"\n🌐 Buscando ofertas em: {TARGET_URL}")
     
     try:
-        res = requests.get(TARGET_URL, headers=HEADERS, timeout=15, verify=False)
+        # Pulo do gato: impersonate emula perfeitamente o Chrome, burlando o firewall do UOL
+        res = cffi_requests.get(TARGET_URL, headers=HEADERS, timeout=15, impersonate="chrome110")
         html = res.text
         log(f"✅ Página baixada: {len(html)} caracteres")
         
@@ -171,18 +149,18 @@ def fetch_offers():
                 })
                 log(f"  🎫 Encontrado: {title[:40]}...")
                 
-            except Exception as e:
+            except Exception:
                 continue
                 
     except Exception as e:
-        log(f"❌ Erro: {e}")
+        log(f"❌ Erro ao buscar ofertas: {e}")
         
     return offers[:MAX_OFFERS_PER_RUN]
 
 def process_offer_details(offer):
     log(f"   🔍 Acessando detalhes: {offer['preview_title'][:40]}...")
     try:
-        res = requests.get(offer['link'], headers=HEADERS, timeout=15, verify=False)
+        res = cffi_requests.get(offer['link'], headers=HEADERS, timeout=15, impersonate="chrome110")
         html = res.text
         
         page_title = offer['preview_title']
@@ -237,7 +215,8 @@ def process_offer_details(offer):
 # ==============================================
 def download_image(img_url: str) -> str:
     try:
-        res = requests.get(img_url, headers=HEADERS, timeout=10, verify=False)
+        # Usa o requests tradicional pois baixar imagem não costuma dar block de firewall
+        res = requests.get(img_url, headers=HEADERS, timeout=10)
         if res.ok:
             path = f"/tmp/leouol_{int(time.time())}.jpg"
             Path(path).write_bytes(res.content)
@@ -261,27 +240,34 @@ def send_photo_to_channel(img_path, caption):
     except: return None
 
 def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
-    log("   💬 Preparando comentário...")
-    time.sleep(3)
-    
+    log("   💬 Aguardando o Telegram rotear a mensagem para o grupo...")
     group_msg_id = None
-    try:
-        updates = requests.get(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates", timeout=10).json()
-        for update in reversed(updates.get("result", [])):
-            msg = update.get("message", {})
-            if str(msg.get("chat", {}).get("id")) == str(GRUPO_COMENTARIOS_ID):
-                forward_origin = msg.get("forward_origin", {})
-                if forward_origin.get("type") == "channel" and forward_origin.get("message_id") == channel_msg_id:
-                    group_msg_id = msg.get("message_id")
-                    break
-                if msg.get("forward_from_message_id") == channel_msg_id:
-                    group_msg_id = msg.get("message_id")
-                    break
-    except Exception as e:
-        log(f"   ⚠️ Erro ao buscar ID: {e}")
     
+    # Aumentei as tentativas e o delay para dar tempo do Telegram enviar a postagem para os comentários
+    for _ in range(5):
+        time.sleep(5)
+        try:
+            updates = requests.get(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates", timeout=10).json()
+            for update in reversed(updates.get("result", [])):
+                msg = update.get("message", {})
+                if str(msg.get("chat", {}).get("id")) == str(GRUPO_COMENTARIOS_ID):
+                    
+                    # 1. Padrão Novo do Telegram (forward_origin)
+                    origin = msg.get("forward_origin", {})
+                    if origin.get("type") == "channel" and origin.get("message_id") == channel_msg_id:
+                        group_msg_id = msg.get("message_id")
+                        break
+                        
+                    # 2. Padrão Antigo (forward_from_message_id)
+                    if msg.get("forward_from_message_id") == channel_msg_id:
+                        group_msg_id = msg.get("message_id")
+                        break
+        except Exception as e:
+            log(f"   ⚠️ Erro ao buscar ID: {e}")
+            
+        if group_msg_id: break
+
     comment_text = f"📋 <b>DESCRIÇÃO COMPLETA</b>\n\n{desc}\n\n🔗 <a href='{escape_html(link)}'>Link original</a>"
-    
     data = {
         "chat_id": GRUPO_COMENTARIOS_ID,
         "text": truncate_text(comment_text, MAX_COMMENT_LENGTH),
@@ -291,20 +277,16 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
     
     if group_msg_id:
         data["reply_to_message_id"] = group_msg_id
-        log(f"   💬 Enviando como reply ao ID {group_msg_id}")
+        log(f"   💬 Enviando comentário como resposta...")
     else:
-        log(f"   💬 Enviando sem reply (fallback)")
+        log(f"   💬 ID do grupo não encontrado. Enviando comentário solto no grupo.")
     
     try:
         response = requests.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage", data=data, timeout=35)
         if response.ok:
-            log(f"   ✅ Comentário enviado!")
             return True
-        else:
-            log(f"   ❌ Erro: {response.text}")
-            return False
-    except Exception as e:
-        log(f"   ❌ Erro: {e}")
+        return False
+    except Exception:
         return False
 
 # ==============================================
@@ -312,7 +294,7 @@ def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
 # ==============================================
 def run_scraper():
     log("=" * 70)
-    log("🤖 BOT LEOUOL - Scraper (Normalizado)")
+    log("🤖 BOT LEOUOL - Scraper (Anti-Block Ativo)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 70)
     
@@ -331,7 +313,7 @@ def run_scraper():
     log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
     processed_ids = set(seen_ids)
     success_count = 0
-    failed_ids = []
+    failed_links = []
     
     for idx, offer in enumerate(new_offers, 1):
         log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}: {offer['preview_title']}")
@@ -340,76 +322,62 @@ def run_scraper():
         final_img_url = detail_img_url or offer.get("img_url")
         
         if not final_img_url:
-            log("⚠️ Sem imagem, mantendo no pending")
-            failed_ids.append(offer["id"])
+            log("⚠️ Sem imagem, mantendo como pendente")
+            failed_links.append(offer["link"])
             continue
             
         img_path = download_image(final_img_url)
         if not img_path: 
-            log("⚠️ Falha ao baixar imagem, mantendo no pending")
-            failed_ids.append(offer["id"])
+            log("⚠️ Falha ao baixar imagem, mantendo como pendente")
+            failed_links.append(offer["link"])
             continue
         
         caption = build_caption(page_title, validity, offer["link"])
         message_id = send_photo_to_channel(img_path, caption)
         
         if message_id:
-            success = send_description_comment(full_desc, offer["link"], message_id)
-            if success:
+            if send_description_comment(full_desc, offer["link"], message_id):
                 success_count += 1
                 processed_ids.add(offer["id"])
                 log(f"  ✅ Oferta {idx} enviada!")
             else:
-                log(f"  ⚠️ Foto enviada mas comentário falhou")
-                failed_ids.append(offer["id"])
+                log(f"  ⚠️ Foto enviada, mas comentário falhou")
+                failed_links.append(offer["link"])
         else:
             log(f"  ❌ Falha ao enviar foto")
-            failed_ids.append(offer["id"])
+            failed_links.append(offer["link"])
         
         try: Path(img_path).unlink(missing_ok=True)
         except: pass
     
-    # Atualiza histórico
-    history["ids"] = [o["original_link"] for o in new_offers if o["id"] in processed_ids]
+    # Atualiza histórico guardando o original_link
+    history["ids"] = [o["original_link"] for o in new_offers if o["id"] in processed_ids] + list(seen_ids)
     save_history(history)
     
-    # Atualiza pending
-    if failed_ids:
-        pending_file = Path("pending_offers.json")
-        existing_offers = []
-        if pending_file.exists():
-            with open(pending_file, 'r') as f:
-                existing = json.load(f)
-                existing_offers = existing.get("offers", [])
-        
-        all_failed = []
-        existing_ids = set([get_offer_id(o.get("link", "")) for o in existing_offers])
-        for o in existing_offers:
-            if get_offer_id(o.get("link", "")) in failed_ids:
-                all_failed.append(o)
-        for o in new_offers:
-            if o["id"] in failed_ids and o["id"] not in existing_ids:
-                all_failed.append(o)
-        
+    # Atualiza pending_offers.json (Zera se tudo deu certo)
+    pending_file = Path(PENDING_FILE)
+    if failed_links:
+        all_failed = [o for o in new_offers if o["link"] in failed_links]
         with open(pending_file, 'w') as f:
             json.dump({"last_update": datetime.now().isoformat(), "offers": all_failed}, f, indent=2)
-        log(f"⚠️ {len(failed_ids)} ofertas continuam no pending")
+        log(f"⚠️ {len(failed_links)} ofertas foram para o pending")
     else:
-        with open("pending_offers.json", 'w') as f:
-            json.dump({"last_update": "", "offers": []}, f, indent=2)
-        log("✅ pending_offers.json limpo")
-    
+        if pending_file.exists():
+            with open(pending_file, 'w') as f:
+                json.dump({"last_update": datetime.now().isoformat(), "offers": []}, f, indent=2)
+            log("✅ Arquivo pending_offers.json limpo")
+            
     log(f"\n✅ Fim. {success_count}/{len(new_offers)} enviadas.")
 
 def run_consumer():
     log("=" * 70)
-    log("🤖 BOT LEOUOL - Consumer (Processando pendentes)")
+    log("🤖 BOT LEOUOL - Consumer (Processando pendentes do Scriptable)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 70)
     
     history = load_history()
     seen_ids = set(history.get("ids", []))
-    pending_file = Path("pending_offers.json")
+    pending_file = Path(PENDING_FILE)
     
     if not pending_file.exists():
         log("📭 Nenhuma oferta pendente")
@@ -424,30 +392,30 @@ def run_consumer():
         return
     
     log(f"🎉 {len(offers)} ofertas pendentes encontradas!")
-    
     processed_ids = set(seen_ids)
     success_count = 0
-    failed_ids = []
+    failed_links = []
     
     for idx, offer in enumerate(offers, 1):
         log(f"\n{'=' * 50}")
         log(f"📦 Oferta {idx}/{len(offers)}")
         log(f"🏷️ {offer.get('title', offer.get('preview_title', ''))[:80]}")
         
-        if get_offer_id(offer["link"]) in seen_ids:
-            log("  ⏭️ Oferta já enviada anteriormente")
-            processed_ids.add(get_offer_id(offer["link"]))
+        offer_id = get_offer_id(offer["link"])
+        if offer_id in seen_ids:
+            log("  ⏭️ Oferta já enviada anteriormente (removendo do pending)")
+            processed_ids.add(offer_id)
             continue
         
         if not offer.get("img_url"):
             log("  ⚠️ Sem imagem, mantendo no pending")
-            failed_ids.append(offer["link"])
+            failed_links.append(offer["link"])
             continue
         
         img_path = download_image(offer["img_url"])
         if not img_path:
-            log("  ⚠️ Falha ao baixar imagem, mantendo no pending")
-            failed_ids.append(offer["link"])
+            log("  ⚠️ Falha ao baixar imagem")
+            failed_links.append(offer["link"])
             continue
         
         page_title = offer.get("title", offer.get("preview_title", "Oferta"))
@@ -458,37 +426,34 @@ def run_consumer():
         message_id = send_photo_to_channel(img_path, caption)
         
         if message_id:
-            comment_success = send_description_comment(full_description, offer["link"], message_id)
-            if comment_success:
+            if send_description_comment(full_description, offer["link"], message_id):
                 success_count += 1
-                processed_ids.add(get_offer_id(offer["link"]))
+                processed_ids.add(offer_id)
                 log(f"  ✅ Oferta {idx} enviada!")
             else:
                 log(f"  ⚠️ Foto enviada mas comentário falhou")
-                failed_ids.append(offer["link"])
+                failed_links.append(offer["link"])
         else:
             log(f"  ❌ Falha ao enviar foto")
-            failed_ids.append(offer["link"])
+            failed_links.append(offer["link"])
         
-        try:
-            Path(img_path).unlink(missing_ok=True)
-        except:
-            pass
-        
+        try: Path(img_path).unlink(missing_ok=True)
+        except: pass
         time.sleep(2)
     
-    # Atualiza histórico (salva URLs originais)
-    history["ids"] = [o["original_link"] for o in offers if get_offer_id(o["link"]) in processed_ids]
+    # Atualiza histórico
+    history["ids"] = [o.get("original_link", o["link"]) for o in offers if get_offer_id(o["link"]) in processed_ids] + list(seen_ids)
     save_history(history)
     
-    remaining_offers = [o for o in offers if o["link"] in failed_ids]
+    # Se todas foram enviadas, esvazia o pending
+    remaining_offers = [o for o in offers if o["link"] in failed_links]
     with open(pending_file, 'w') as f:
         json.dump({"last_update": datetime.now().isoformat(), "offers": remaining_offers}, f, indent=2)
     
     if remaining_offers:
         log(f"⚠️ {len(remaining_offers)} ofertas continuam no pending")
     else:
-        log("✅ pending_offers.json limpo")
+        log("✅ Arquivo pending_offers.json limpo!")
     
     log(f"\n✅ Consumer Finalizado: {success_count}/{len(offers)} enviadas.")
 
