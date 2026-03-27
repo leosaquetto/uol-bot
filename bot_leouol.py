@@ -245,29 +245,60 @@ def send_photo_to_channel(img_path, caption):
         return res.json().get("result", {}).get("message_id") if res.ok else None
     except: return None
 
-def send_description_comment(desc, link, channel_msg_id):
+def send_description_comment(desc: str, link: str, channel_msg_id: int) -> bool:
+    """Envia descrição completa como comentário"""
+    
+    log("   💬 Preparando comentário...")
+    
+    # Aguarda o forward do Telegram
+    time.sleep(3)
+    
+    # Tenta encontrar o ID da mensagem no grupo de comentários
     group_msg_id = None
-    for _ in range(3):
-        time.sleep(3)
-        try:
-            updates = requests.get(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates", timeout=10).json()
-            for update in reversed(updates.get("result", [])):
-                msg = update.get("message", {})
-                if str(msg.get("chat", {}).get("id")) == str(GRUPO_COMENTARIOS_ID):
-                    origin_id = msg.get("forward_origin", {}).get("message_id") or msg.get("forward_from_message_id")
-                    if origin_id == channel_msg_id:
-                        group_msg_id = msg.get("message_id")
-                        break
-        except: pass
-        if group_msg_id: break
-
-    text = f"📋 <b>DESCRIÇÃO COMPLETA</b>\n\n{desc}\n\n🔗 <a href='{escape_html(link)}'>Link original</a>"
-    data = {"chat_id": GRUPO_COMENTARIOS_ID, "text": truncate_text(text, MAX_COMMENT_LENGTH), "parse_mode": "HTML", "disable_web_page_preview": True}
-    if group_msg_id: data["reply_to_message_id"] = group_msg_id
+    try:
+        updates = requests.get(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates", timeout=10).json()
+        for update in reversed(updates.get("result", [])):
+            msg = update.get("message", {})
+            if str(msg.get("chat", {}).get("id")) == str(GRUPO_COMENTARIOS_ID):
+                # API nova (Telegram 7.0+)
+                forward_origin = msg.get("forward_origin", {})
+                if forward_origin.get("type") == "channel" and forward_origin.get("message_id") == channel_msg_id:
+                    group_msg_id = msg.get("message_id")
+                    break
+                # API antiga (fallback)
+                if msg.get("forward_from_message_id") == channel_msg_id:
+                    group_msg_id = msg.get("message_id")
+                    break
+    except Exception as e:
+        log(f"   ⚠️ Erro ao buscar ID: {e}")
+    
+    # Monta o texto do comentário
+    comment_text = f"📋 <b>DESCRIÇÃO COMPLETA</b>\n\n{desc}\n\n🔗 <a href='{escape_html(link)}'>Link original</a>"
+    
+    data = {
+        "chat_id": GRUPO_COMENTARIOS_ID,
+        "text": truncate_text(comment_text, MAX_COMMENT_LENGTH),
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+    }
+    
+    if group_msg_id:
+        data["reply_to_message_id"] = group_msg_id
+        log(f"   💬 Enviando como reply ao ID {group_msg_id}")
+    else:
+        log(f"   💬 Enviando sem reply (fallback)")
     
     try:
-        return requests.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage", data=data, timeout=30).ok
-    except: return False
+        response = requests.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage", data=data, timeout=35)
+        if response.ok:
+            log(f"   ✅ Comentário enviado com sucesso!")
+            return True
+        else:
+            log(f"   ❌ Erro no comentário: {response.text}")
+            return False
+    except Exception as e:
+        log(f"   ❌ Erro: {e}")
+        return False
 
 # ==============================================
 # FLUXOS PRINCIPAIS
@@ -291,7 +322,9 @@ def run_scraper():
         return
         
     log(f"\n🎉 {len(new_offers)} nova(s) oferta(s)!")
-    processed_ids, success_count = set(seen_ids), 0
+    processed_ids = set(seen_ids)
+    success_count = 0
+    failed_ids = []  # <-- ADICIONADO
     
     for idx, offer in enumerate(new_offers, 1):
         log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}: {offer['preview_title']}")
@@ -304,13 +337,13 @@ def run_scraper():
         
         if not final_img_url:
             log("⚠️ Sem imagem na página inicial nem nos detalhes, pulando...")
-            processed_ids.add(offer["id"])
+            failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
             continue
             
         img_path = download_image(final_img_url)
         if not img_path: 
             log("⚠️ Falha ao baixar a imagem final, pulando...")
-            processed_ids.add(offer["id"])
+            failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
             continue
         
         caption = build_caption(page_title, validity, offer["link"])
@@ -320,22 +353,51 @@ def run_scraper():
             success = send_description_comment(full_desc, offer["link"], message_id)
             if success:
                 success_count += 1
-                processed_ids.add(offer["id"])
+                processed_ids.add(offer["id"])  # SÓ ADICIONA SE TUDO DEU CERTO
                 log(f"  ✅ Oferta {idx} enviada!")
             else:
                 log(f"  ⚠️ Foto enviada mas comentário falhou")
-                # NÃO adiciona ao histórico (falhou)
-                processed_ids.add(offer["id"])  # <-- ERRO! Deveria manter no pending
+                failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
         else:
             log(f"  ❌ Falha ao enviar foto")
-            # NÃO adiciona ao histórico
-            processed_ids.add(offer["id"])  # <-- ERRO! Deveria manter no pending
+            failed_ids.append(offer["id"])  # <-- CORRETO: mantém no pending
         
         try: Path(img_path).unlink(missing_ok=True)
         except: pass
-        
+    
+    # Atualiza histórico APENAS com IDs que foram enviados com sucesso
     history["ids"] = list(processed_ids)
     save_history(history)
+    
+    # Atualiza pending_offers.json APENAS com as ofertas que falharam
+    if failed_ids:
+        # Carrega pending existente
+        pending_file = Path("pending_offers.json")
+        existing_offers = []
+        if pending_file.exists():
+            with open(pending_file, 'r') as f:
+                existing = json.load(f)
+                existing_offers = existing.get("offers", [])
+        
+        # Combina as que falharam
+        all_failed = []
+        existing_ids = set([o.get("id") for o in existing_offers])
+        for o in existing_offers:
+            if o.get("id") in failed_ids:
+                all_failed.append(o)
+        for o in new_offers:
+            if o["id"] in failed_ids and o["id"] not in existing_ids:
+                all_failed.append(o)
+        
+        with open(pending_file, 'w') as f:
+            json.dump({"last_update": datetime.now().isoformat(), "offers": all_failed}, f, indent=2)
+        log(f"⚠️ {len(failed_ids)} ofertas falharam e continuam no pending")
+    else:
+        # Limpa pending se não houver falhas
+        with open("pending_offers.json", 'w') as f:
+            json.dump({"last_update": "", "offers": []}, f, indent=2)
+        log("✅ pending_offers.json limpo")
+    
     log(f"\n✅ Fim. {success_count}/{len(new_offers)} enviadas.")
 
 def run_consumer():
