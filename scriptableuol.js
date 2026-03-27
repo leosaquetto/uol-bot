@@ -145,9 +145,31 @@ function isBadBannerUrl(url) {
   if (!u) return true
   return (
     u.includes("loader.gif") ||
-    u.endsWith("/loader.gif") ||
     u.includes("/static/images/loader.gif") ||
-    u.includes("/parceiros/")
+    u.includes("/parceiros/") ||
+    u.includes("/rodape/") ||
+    u.includes("icon-instagram") ||
+    u.includes("icon-facebook") ||
+    u.includes("icon-twitter") ||
+    u.includes("icon-youtube") ||
+    u.includes("instagram.png") ||
+    u.includes("facebook.png") ||
+    u.includes("twitter.png") ||
+    u.includes("youtube.png") ||
+    u.includes("share-") ||
+    u.includes("social") ||
+    u.includes("logo-uol") ||
+    u.includes("logo_uol")
+  )
+}
+
+function isLikelyBenefitBanner(url) {
+  const u = String(url || "").toLowerCase()
+  if (!u || isBadBannerUrl(u)) return false
+  return (
+    u.includes("/beneficios/") ||
+    u.includes("/campanhasdeingresso/") ||
+    u.includes("cloudfront.net")
   )
 }
 
@@ -162,14 +184,11 @@ async function githubRequest(url, method = "GET", body = null) {
   const req = new Request(url)
   req.method = method
 
-  const authKey = "Author" + "ization"
-  const tokenPrefix = ["to", "ken "].join("")
-
   req.headers = {
     "User-Agent": "Scriptable",
-    "Accept": "application/vnd.github+json"
+    "Accept": "application/vnd.github+json",
+    "Authorization": `token ${String(GITHUB_TOKEN || "").trim()}`
   }
-  req.headers[authKey] = `${tokenPrefix}${GITHUB_TOKEN}`
 
   if (body !== null) {
     req.headers["Content-Type"] = "application/json"
@@ -382,7 +401,7 @@ function chooseImagesFromBlock(blockHtml) {
   )
 
   const bannerCandidates = uniqImgs.filter(img =>
-    (!partner || img.src !== partner.src) && !isBadBannerUrl(img.src)
+    (!partner || img.src !== partner.src) && isLikelyBenefitBanner(img.src)
   )
 
   let main = bannerCandidates.length ? bannerCandidates[bannerCandidates.length - 1] : null
@@ -548,9 +567,15 @@ async function extractOfferDetails(url, previewTitle) {
     }
 
     let detailImgUrl = ""
-    const allImgs = extractAllImageUrls(html).filter(url => !isBadBannerUrl(url))
-    if (allImgs.length) {
-      detailImgUrl = allImgs[allImgs.length - 1]
+    const allImgs = extractAllImageUrls(html)
+    const detailCandidates = allImgs.filter(url => isLikelyBenefitBanner(url))
+    if (detailCandidates.length) {
+      detailImgUrl = detailCandidates[detailCandidates.length - 1]
+    } else {
+      const fallbackDetail = allImgs.filter(url => !isBadBannerUrl(url))
+      if (fallbackDetail.length) {
+        detailImgUrl = fallbackDetail[fallbackDetail.length - 1]
+      }
     }
 
     let validity = null
