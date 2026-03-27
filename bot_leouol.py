@@ -457,18 +457,17 @@ def send_description_comment(
     validity: Optional[str],
     link: str,
     channel_message_id: int,
+    caption: str,
     partner_img_url: Optional[str] = None,
 ) -> bool:
     """
     envia comentário no grupo vinculado.
-    ordem:
-    1. acha a mensagem espelhada no grupo
-    2. opcionalmente manda a logo do parceiro em reply
-    3. manda a descrição completa em reply
+    para virar comentário real do canal, precisa entrar na thread da mensagem espelhada.
     """
 
     group_msg_id = find_group_mirror_message_id(
         channel_message_id=channel_message_id,
+        expected_caption=caption,
         attempts=6,
         delay=3,
     )
@@ -477,10 +476,40 @@ def send_description_comment(
         log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
         return False
 
-    # opcional: manda a logo antes
+    # 1) logo do parceiro opcional
     if partner_img_url:
-        send_partner_logo_reply(group_msg_id, partner_img_url)
+        try:
+            logo_path = download_image(partner_img_url)
 
+            if logo_path:
+                with open(logo_path, "rb") as photo:
+                    logo_resp = requests.post(
+                        telegram_api("sendPhoto"),
+                        data={
+                            "chat_id": GRUPO_COMENTARIO_ID,
+                            "message_thread_id": group_msg_id,
+                            "reply_to_message_id": group_msg_id,
+                            "allow_sending_without_reply": "true",
+                        },
+                        files={"photo": photo},
+                        timeout=REQUEST_TIMEOUT,
+                    )
+
+                try:
+                    Path(logo_path).unlink(missing_ok=True)
+                except Exception:
+                    pass
+
+                if logo_resp.ok:
+                    log("   ✅ logo do parceiro enviada na thread")
+                else:
+                    log(f"   ⚠️ falha ao enviar logo do parceiro: {logo_resp.text}")
+            else:
+                log("   ⚠️ não foi possível baixar a logo do parceiro")
+        except Exception as e:
+            log(f"   ⚠️ erro ao enviar logo do parceiro: {e}")
+
+    # 2) descrição completa
     text = build_comment_text(description, validity, link)
 
     data = {
@@ -488,6 +517,7 @@ def send_description_comment(
         "text": truncate_text(text, MAX_COMMENT_LENGTH),
         "parse_mode": "HTML",
         "disable_web_page_preview": True,
+        "message_thread_id": group_msg_id,
         "reply_to_message_id": group_msg_id,
         "allow_sending_without_reply": "true",
     }
@@ -496,11 +526,11 @@ def send_description_comment(
         resp = requests.post(
             telegram_api("sendMessage"),
             data=data,
-            timeout=REQUEST_TIMEOUT,
+            timeout=30,
         )
 
         if resp.ok:
-            log(f"   ✅ comentário enviado como reply ao id {group_msg_id}")
+            log(f"   ✅ comentário enviado na thread do id {group_msg_id}")
             return True
 
         log(f"   ❌ erro ao enviar comentário: {resp.text}")
