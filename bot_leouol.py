@@ -1,4 +1,4 @@
-# bot_leouol.py - Versão CORRIGIDA (mesmo método do Scriptable)
+# bot_leouol.py - Versão CORRIGIDA (mesmo método do Scriptable com Fallback de Imagem)
 
 import sys
 import requests
@@ -7,8 +7,12 @@ import os
 import time
 import re
 import random
+import urllib3
 from datetime import datetime
 from pathlib import Path
+
+# Suprime os avisos de conexão insegura no terminal por usar verify=False
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ==============================================
 # CONFIGURAÇÕES
@@ -94,10 +98,8 @@ def fetch_offers():
         html = res.text
         log(f"✅ Página baixada: {len(html)} caracteres")
         
-        # === MESMO MÉTODO DO SCRIPTABLE ===
-        # Fatiar o HTML em blocos onde cada oferta começa com data-categoria
         blocks = re.split(r'<div[^>]*data-categoria=[\'"]', html, flags=re.IGNORECASE)
-        log(f"📦 Blocos encontrados: {len(blocks)}")
+        log(f"📦 Blocos encontrados: {len(blocks) - 1}")
         
         for block in blocks[1:]:  # Pula o primeiro (cabeçalho)
             try:
@@ -122,17 +124,15 @@ def fetch_offers():
                 
                 if not title: continue
                 
-                # 3. IMAGEM
+                # 3. IMAGEM (Regex otimizado para aspas simples e duplas)
                 img_url = ""
-                # Tenta data-src
-                img_matches = re.finditer(r'<img[^>]*data-src="([^"]+)"', block, re.IGNORECASE)
+                img_matches = re.finditer(r'<img[^>]*data-src=[\'"]([^\'"]+)[\'"]', block, re.IGNORECASE)
                 srcs = [m.group(1) for m in img_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
                 
                 if srcs:
                     img_url = srcs[0]
                 else:
-                    # Tenta src
-                    src_matches = re.finditer(r'<img[^>]*src="([^"]+)"', block, re.IGNORECASE)
+                    src_matches = re.finditer(r'<img[^>]*src=[\'"]([^\'"]+)[\'"]', block, re.IGNORECASE)
                     srcs = [m.group(1) for m in src_matches if "data:image" not in m.group(1) and "/parceiros/" not in m.group(1)]
                     if srcs: img_url = srcs[0]
                 
@@ -167,6 +167,19 @@ def process_offer_details(offer):
         if h2_match:
             page_title = clean_text(re.sub(r'<[^>]+>', '', h2_match.group(1)))
             
+        # IMAGEM DETALHE (Plano B igual ao Scriptable)
+        detail_img_url = ""
+        img_detail_match = re.search(r'<img[^>]*class="[^"]*responsive[^"]*"[^>]*src=[\'"]([^\'"]+)[\'"]', html, re.IGNORECASE)
+        if img_detail_match:
+            detail_img_url = img_detail_match.group(1)
+        else:
+            data_src_match = re.search(r'<img[^>]*class="[^"]*responsive[^"]*"[^>]*data-src=[\'"]([^\'"]+)[\'"]', html, re.IGNORECASE)
+            if data_src_match:
+                detail_img_url = data_src_match.group(1)
+        
+        if detail_img_url and detail_img_url.startswith("/"):
+            detail_img_url = "https://clube.uol.com.br" + detail_img_url
+
         # VALIDADE
         validity = None
         for pattern in [r"[Bb]enefício válido de[^.!?\n]*[.!?]?", r"[Vv]álido até[^.!?\n]*[.!?]?", r"\d{2}/\d{2}/\d{4}.*?\d{2}/\d{2}/\d{4}"]:
@@ -197,10 +210,10 @@ def process_offer_details(offer):
             if len(raw) > 20:
                 full_desc = raw
                 
-        return page_title, validity, full_desc
+        return page_title, validity, full_desc, detail_img_url
     except Exception as e:
         log(f"   ⚠️ Erro nos detalhes: {e}")
-        return offer['preview_title'], None, "Descrição não disponível"
+        return offer['preview_title'], None, "Descrição não disponível", ""
 
 # ==============================================
 # FUNÇÕES DE TELEGRAM
@@ -259,7 +272,7 @@ def send_description_comment(desc, link, channel_msg_id):
 # ==============================================
 def run_scraper():
     log("=" * 70)
-    log("🤖 BOT LEOUOL - Otimizado (Requests Puro + Regex)")
+    log("🤖 BOT LEOUOL - Otimizado (Requests Puro + Regex + Fallback Imagem)")
     log(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     log("=" * 70)
     
@@ -281,18 +294,26 @@ def run_scraper():
     for idx, offer in enumerate(new_offers, 1):
         log(f"\n{'=' * 50}\n📦 Oferta {idx}/{len(new_offers)}: {offer['preview_title']}")
         
-        if not offer.get("img_url"):
-            log("⚠️ Sem imagem, pulando...")
+        # 1. Abre os detalhes da oferta primeiro!
+        page_title, validity, full_desc, detail_img_url = process_offer_details(offer)
+        
+        # 2. Tenta a imagem dos detalhes, se falhar usa a da página inicial
+        final_img_url = detail_img_url or offer.get("img_url")
+        
+        if not final_img_url:
+            log("⚠️ Sem imagem na página inicial nem nos detalhes, pulando...")
             processed_ids.add(offer["id"])
             continue
             
-        img_path = download_image(offer["img_url"])
-        if not img_path: continue
+        img_path = download_image(final_img_url)
+        if not img_path: 
+            log("⚠️ Falha ao baixar a imagem final, pulando...")
+            processed_ids.add(offer["id"])
+            continue
         
-        page_title, validity, full_desc = process_offer_details(offer)
         caption = build_caption(page_title, validity, offer["link"])
-        
         message_id = send_photo_to_channel(img_path, caption)
+        
         if message_id and send_description_comment(full_desc, offer["link"], message_id):
             success_count += 1
             log(f"✅ Oferta enviada com sucesso!")
