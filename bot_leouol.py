@@ -48,7 +48,6 @@ USER_AGENT = (
     "Chrome/123.0.0.0 Safari/537.36"
 )
 
-# janela de tolerância para achar a mensagem espelhada recente
 RECENT_WINDOW_SECONDS = 90
 
 HASHTAG_RULES = {
