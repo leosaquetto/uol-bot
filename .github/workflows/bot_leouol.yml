@@ -60,10 +60,51 @@ jobs:
           fi
 
           if [ ! -f daily_log.json ]; then
-            echo '{"date":"","message_id":null,"content":""}' > daily_log.json
+            echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","lines":[]}' > daily_log.json
             echo "daily_log.json criado"
           else
             echo "daily_log.json encontrado"
+          fi
+
+          if [ ! -f status_runtime.json ]; then
+            cat > status_runtime.json <<'EOF'
+          {
+            "scriptable": {
+              "last_started_at": "",
+              "last_finished_at": "",
+              "status": "",
+              "summary": "",
+              "offers_seen": 0,
+              "new_offers": 0,
+              "pending_count": 0,
+              "last_error": ""
+            },
+            "scraper": {
+              "last_started_at": "",
+              "last_finished_at": "",
+              "status": "",
+              "summary": "",
+              "offers_seen": 0,
+              "new_offers": 0,
+              "pending_count": 0,
+              "last_error": ""
+            },
+            "consumer": {
+              "last_started_at": "",
+              "last_finished_at": "",
+              "status": "",
+              "summary": "",
+              "processed": 0,
+              "sent": 0,
+              "failed": 0,
+              "pending_count": 0,
+              "last_error": ""
+            }
+          }
+          EOF
+            echo "status_runtime.json criado"
+          else
+            echo "status_runtime.json encontrado"
           fi
 
       - name: instalar dependências
@@ -86,9 +127,45 @@ jobs:
           [ -f historico_leouol.json ] || echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
           [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
           [ -f latest_offers.json ] || echo '{"last_update":null,"offers":[]}' > latest_offers.json
-          [ -f daily_log.json ] || echo '{"date":"","message_id":null,"content":""}' > daily_log.json
+          [ -f daily_log.json ] || echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","lines":[]}' > daily_log.json
 
-          git add historico_leouol.json pending_offers.json latest_offers.json daily_log.json 2>/dev/null || true
+          [ -f status_runtime.json ] || cat > status_runtime.json <<'EOF'
+          {
+            "scriptable": {
+              "last_started_at": "",
+              "last_finished_at": "",
+              "status": "",
+              "summary": "",
+              "offers_seen": 0,
+              "new_offers": 0,
+              "pending_count": 0,
+              "last_error": ""
+            },
+            "scraper": {
+              "last_started_at": "",
+              "last_finished_at": "",
+              "status": "",
+              "summary": "",
+              "offers_seen": 0,
+              "new_offers": 0,
+              "pending_count": 0,
+              "last_error": ""
+            },
+            "consumer": {
+              "last_started_at": "",
+              "last_finished_at": "",
+              "status": "",
+              "summary": "",
+              "processed": 0,
+              "sent": 0,
+              "failed": 0,
+              "pending_count": 0,
+              "last_error": ""
+            }
+          }
+          EOF
+
+          git add historico_leouol.json pending_offers.json latest_offers.json daily_log.json status_runtime.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "nenhuma mudança detectada"
