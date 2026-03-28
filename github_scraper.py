@@ -8,7 +8,7 @@ import certifi
 import requests
 import urllib3
 from bs4 import BeautifulSoup
-from requests.exceptions import HTTPError, SSLError
+from requests.exceptions import HTTPError, RequestException, SSLError
 
 BASE_URL = "https://clube.uol.com.br"
 LIST_URL = f"{BASE_URL}/?order=new"
@@ -122,8 +122,7 @@ def normalize_offer_key(value: str) -> str:
     if raw.startswith("http://") or raw.startswith("https://"):
         raw = get_offer_id(raw)
 
-    raw = normalize_text_key(raw)
-    return raw
+    return normalize_text_key(raw)
 
 
 def pick_description_anchor(description: str) -> str:
@@ -155,7 +154,7 @@ def pick_description_anchor(description: str) -> str:
             continue
         if len(low) < 12:
             continue
-        if any(low.startswith(x) for x in blacklist_starts):
+        if any(low.startswith(normalize_text_key(x)) for x in blacklist_starts):
             continue
         filtered.append(low)
 
@@ -238,31 +237,61 @@ def build_headers(referer: Optional[str] = None) -> Dict[str, str]:
     }
 
 
-def fetch_with_fallback(session: requests.Session, url: str, referer: Optional[str] = None) -> str:
+def fetch_once(session: requests.Session, url: str, referer: Optional[str], verify_value) -> requests.Response:
     headers = build_headers(referer)
+    response = session.get(
+        url,
+        headers=headers,
+        timeout=REQUEST_TIMEOUT,
+        verify=verify_value,
+        allow_redirects=True,
+    )
+    return response
+
+
+def fetch_with_fallback(session: requests.Session, url: str, referer: Optional[str] = None) -> Optional[str]:
     try:
-        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=certifi.where(), allow_redirects=True)
+        r = fetch_once(session, url, referer, certifi.where())
         r.raise_for_status()
         return r.text
     except SSLError as e:
         log(f"ssl falhou com verificação padrão, tentando fallback sem verify: {e}")
-        r = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, verify=False, allow_redirects=True)
-        r.raise_for_status()
-        return r.text
+        try:
+            r = fetch_once(session, url, referer, False)
+            r.raise_for_status()
+            return r.text
+        except HTTPError as http_e:
+            status_code = getattr(http_e.response, "status_code", None)
+            log(f"fallback sem verify retornou http {status_code} para {url}")
+            return None
+        except RequestException as req_e:
+            log(f"fallback sem verify falhou para {url}: {req_e}")
+            return None
+    except HTTPError as e:
+        status_code = getattr(e.response, "status_code", None)
+        log(f"http {status_code} ao buscar {url}")
+        return None
+    except RequestException as e:
+        log(f"erro de rede ao buscar {url}: {e}")
+        return None
 
 
-def get_html(url: str) -> str:
+def get_html(url: str) -> Optional[str]:
     session = requests.Session()
 
-    try:
-        return fetch_with_fallback(session, url, BASE_URL + "/")
-    except HTTPError as e:
-        response = getattr(e, "response", None)
-        status_code = getattr(response, "status_code", None)
-        if url == LIST_URL and status_code == 405:
-            log("lista com ?order=new retornou 405, tentando fallback pela home")
-            return fetch_with_fallback(session, FALLBACK_LIST_URL, BASE_URL + "/")
-        raise
+    candidates = [
+        (url, BASE_URL + "/"),
+    ]
+
+    if url == LIST_URL:
+        candidates.append((FALLBACK_LIST_URL, BASE_URL + "/"))
+
+    for candidate_url, referer in candidates:
+        html = fetch_with_fallback(session, candidate_url, referer)
+        if html:
+            return html
+
+    return None
 
 
 def extract_all_img_meta(block) -> List[Dict[str, Any]]:
@@ -395,6 +424,9 @@ def parse_offers(html: str) -> List[Dict[str, Any]]:
             images = choose_images_from_block(block)
             offer_id = get_offer_id(link)
 
+            log(f"     main url: {images['img_url'] or 'vazia'}")
+            log(f"     partner url: {images['partner_img_url'] or 'vazia'}")
+
             offers.append({
                 "id": offer_id,
                 "original_link": link,
@@ -418,6 +450,14 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
 
     try:
         html = get_html(full_url)
+        if not html:
+            log("erro ao extrair detalhes: html indisponível")
+            return {
+                "title": preview_title,
+                "validity": None,
+                "description": "descrição não disponível.",
+                "detail_img_url": "",
+            }
 
         page_title = preview_title
         for regex in [
@@ -543,6 +583,10 @@ def main() -> None:
     pending_keys, pending_dedupe = extract_pending_sets(pending)
 
     html = get_html(LIST_URL)
+    if not html:
+        log("não foi possível obter html da lista nesta rodada; encerrando sem alterações")
+        return
+
     offers = parse_offers(html)
 
     log(f"total encontradas: {len(offers)}")
