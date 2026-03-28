@@ -1,7 +1,7 @@
 {
   "date": "28/03/2026",
   "message_id": 443,
-  "last_success_check": "28/03/2026 às 17:00",
+  "last_success_check": "28/03/2026 às 20:58",
   "last_new_offer_at": "",
   "pending_count": 0,
   "last_consumer_run": "28/03/2026 às 17:45",
@@ -17,6 +17,8 @@
     "[17:31] consumer: 📦 pending atual: 0",
     "[17:31] consumer: 📭 pending vazio",
     "[17:45] consumer: 📦 pending atual: 0",
-    "[17:45] consumer: 📭 pending vazio"
+    "[17:45] consumer: 📭 pending vazio",
+    "[20:58] scraper: ▶️ rodada iniciada",
+    "[20:58] scraper: 💤 sem ofertas novas"
   ]
 }
