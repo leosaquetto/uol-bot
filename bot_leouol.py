@@ -1,5 +1,5 @@
 # bot_leouol.py
-# consumer do pending_offers.json + envio para telegram
+# consumer do pending_offers.json + envio para telegram + dashboard diário
 
 import json
 import os
@@ -20,11 +20,13 @@ GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
 LATEST_FILE = "latest_offers.json"
+DAILY_LOG_FILE = "daily_log.json"
 
 MAX_HISTORY_SIZE = 500
 MAX_DEDUPE_HISTORY_SIZE = 1000
 MAX_CAPTION_LENGTH = 1024
 MAX_COMMENT_LENGTH = 4096
+MAX_DASHBOARD_LENGTH = 3900
 REQUEST_TIMEOUT = 30
 
 USER_AGENT = (
@@ -89,6 +91,14 @@ def log(msg: str) -> None:
 
 def log_separator() -> None:
     print("-" * 60, flush=True)
+
+
+def now_br_date() -> str:
+    return datetime.now().strftime("%d/%m/%Y")
+
+
+def now_br_time() -> str:
+    return datetime.now().strftime("%H:%M")
 
 
 def clean_multiline_text(text: Optional[str]) -> str:
@@ -380,6 +390,113 @@ def save_latest(offers: List[Dict]) -> bool:
         return False
 
 
+def load_daily_log() -> Dict:
+    path = Path(DAILY_LOG_FILE)
+    if not path.exists():
+        return {"date": "", "message_id": None, "content": ""}
+
+    data = safe_json_load(path, {"date": "", "message_id": None, "content": ""})
+    if not isinstance(data, dict):
+        return {"date": "", "message_id": None, "content": ""}
+
+    return {
+        "date": str(data.get("date") or ""),
+        "message_id": data.get("message_id"),
+        "content": str(data.get("content") or ""),
+    }
+
+
+def save_daily_log(data: Dict) -> bool:
+    try:
+        Path(DAILY_LOG_FILE).write_text(
+            json.dumps(data, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        log("✅ daily_log.json salvo")
+        return True
+    except Exception as e:
+        log(f"❌ erro ao salvar daily_log.json: {e}")
+        return False
+
+
+def telegram_api(method: str) -> str:
+    return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
+
+
+def update_daily_dashboard(source: str, status_line: str) -> None:
+    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
+        return
+
+    today = now_br_date()
+    hour = now_br_time()
+
+    state = load_daily_log()
+    line = f"[{hour}] {source}: {status_line}"
+
+    if state["date"] != today or not state["message_id"]:
+        content = f"📊 <b>relatório diário uol - {today}</b>\n\n{escape_html(line)}"
+
+        try:
+            resp = requests.post(
+                telegram_api("sendMessage"),
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "text": content,
+                    "parse_mode": "HTML",
+                    "disable_notification": "true",
+                    "disable_web_page_preview": "true",
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            if resp.ok:
+                data = resp.json()
+                state = {
+                    "date": today,
+                    "message_id": data.get("result", {}).get("message_id"),
+                    "content": content,
+                }
+                save_daily_log(state)
+                log("✅ dashboard diário criado")
+            else:
+                log(f"⚠️ falha ao criar dashboard diário: {resp.text}")
+        except Exception as e:
+            log(f"⚠️ erro ao criar dashboard diário: {e}")
+        return
+
+    plain_old = state["content"]
+    updated = f"{plain_old}\n{escape_html(line)}"
+
+    if len(updated) > MAX_DASHBOARD_LENGTH:
+        lines = updated.splitlines()
+        header = lines[:2]
+        body = lines[2:]
+        if len(body) > 20:
+            body = ["[... logs antigos cortados ...]"] + body[-18:]
+        updated = "\n".join(header + body)
+        updated = truncate_text(updated, MAX_DASHBOARD_LENGTH)
+
+    try:
+        resp = requests.post(
+            telegram_api("editMessageText"),
+            data={
+                "chat_id": GRUPO_COMENTARIO_ID,
+                "message_id": state["message_id"],
+                "text": updated,
+                "parse_mode": "HTML",
+                "disable_web_page_preview": "true",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+        if resp.ok:
+            state["content"] = updated
+            save_daily_log(state)
+            log("✅ dashboard diário atualizado")
+        else:
+            log(f"⚠️ falha ao editar dashboard diário: {resp.text}")
+    except Exception as e:
+        log(f"⚠️ erro ao editar dashboard diário: {e}")
+
+
 def build_smart_hashtags(title: str, description: str, link: str) -> List[str]:
     title_text = (title or "").lower()
     full_text = f"{title}\n{description}".lower()
@@ -479,10 +596,6 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
     out.extend(["", f"🔗 {escape_html(link)}"])
 
     return truncate_text("\n".join(out), MAX_COMMENT_LENGTH)
-
-
-def telegram_api(method: str) -> str:
-    return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
 def download_image(img_url: str) -> Optional[str]:
@@ -774,9 +887,11 @@ def run_consumer() -> None:
     offers = pending_data.get("offers", [])
 
     log(f"📦 pending atual: {len(offers)} ofertas")
+    update_daily_dashboard("consumer", f"📦 pending atual: {len(offers)}")
 
     if not offers:
         log("📭 nada para enviar")
+        update_daily_dashboard("consumer", "📭 pending vazio")
         return
 
     success_count = 0
@@ -873,6 +988,11 @@ def run_consumer() -> None:
     })
     save_pending(failed_offers)
     save_latest(successful_offers)
+
+    update_daily_dashboard(
+        "consumer",
+        f"✅ enviadas: {success_count} | ❌ pendentes: {len(failed_offers)}"
+    )
 
     log_separator()
     log(f"✅ fim. {success_count}/{len(offers)} ofertas enviadas")
