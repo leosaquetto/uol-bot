@@ -288,8 +288,6 @@ def telegram_api(method: str) -> str:
 
 def build_dashboard_text(state: Dict) -> str:
     today = state["date"] or now_br_date()
-
-
     last_success = state["last_success_check"] or "—"
     last_new = state["last_new_offer_at"] or "—"
     pending_count = state["pending_count"]
@@ -307,16 +305,65 @@ def build_dashboard_text(state: Dict) -> str:
     ]
 
 
-    lines = state.get("lines", [])
-    body = [escape_html(x) for x in lines[-20:]] if lines else ["sem registros ainda"]
+    groups: Dict[str, List[str]] = {
+        "consumer": [],
+        "scraper": [],
+        "scriptable": [],
+        "outros": [],
+    }
+
+
+    for raw_line in state.get("lines", [])[-30:]:
+        line = str(raw_line or "").strip()
+        if not line:
+            continue
+
+
+        if "]: " in line:
+            _, rest = line.split("]: ", 1)
+        else:
+            rest = line
+
+
+        if ": " in rest:
+            source, message = rest.split(": ", 1)
+            source = source.strip().lower()
+            rendered = line.replace(f"{source}: ", "", 1)
+        else:
+            source = "outros"
+            rendered = line
+
+
+        if source not in groups:
+            source = "outros"
+
+
+        groups[source].append(escape_html(rendered))
+
+
+    body: List[str] = []
+    ordered_sources = ["consumer", "scraper", "scriptable", "outros"]
+
+
+    for source in ordered_sources:
+        entries = groups[source]
+        if not entries:
+            continue
+        body.append(f"<b>{escape_html(source)}</b>")
+        body.extend(entries)
+        body.append("")
+
+
+    if not body:
+        body = ["sem registros ainda"]
+    elif body[-1] == "":
+        body.pop()
 
 
     text = "\n".join(header + body)
     if len(text) > 3900:
         text = text[:3900]
     return text
-
-
 
 
 def sync_daily_dashboard(state: Dict) -> None:
