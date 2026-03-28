@@ -37,9 +37,10 @@ jobs:
 
       - name: garantir arquivos json
         run: |
-          [ -f historico_leouol.json ] || echo '{"ids":[]}' > historico_leouol.json
+          [ -f historico_leouol.json ] || echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
           [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
           [ -f latest_offers.json ] || echo '{"last_update":null,"offers":[]}' > latest_offers.json
+          [ -f daily_log.json ] || echo '{"date":"","message_id":null,"content":""}' > daily_log.json
 
       - name: instalar dependências
         run: |
@@ -59,14 +60,14 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
-          git add historico_leouol.json pending_offers.json latest_offers.json 2>/dev/null || true
+          git add historico_leouol.json pending_offers.json latest_offers.json daily_log.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "nenhuma mudança detectada"
             exit 0
           fi
 
-          git commit -m "Atualiza histórico e pending [skip ci]" || {
+          git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || {
             echo "nada para commitar"
             exit 0
           }
