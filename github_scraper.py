@@ -1,9 +1,10 @@
 import json
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from zoneinfo import ZoneInfo
 
 
 import certifi
@@ -40,28 +41,37 @@ USER_AGENT = (
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+BR_TZ = ZoneInfo("America/Sao_Paulo")
+
+
+
+
+def now_br() -> datetime:
+    return datetime.now(BR_TZ)
+
+
 
 
 def log(msg: str) -> None:
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}", flush=True)
+    print(f"[{now_br().strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
 
 
 def now_br_date() -> str:
-    return datetime.now().strftime("%d/%m/%Y")
+    return now_br().strftime("%d/%m/%Y")
 
 
 
 
 def now_br_time() -> str:
-    return datetime.now().strftime("%H:%M")
+    return now_br().strftime("%H:%M")
 
 
 
 
 def now_br_datetime() -> str:
-    return datetime.now().strftime("%d/%m/%Y às %H:%M")
+    return now_br().strftime("%d/%m/%Y às %H:%M")
 
 
 
@@ -1212,7 +1222,7 @@ def main() -> None:
             "validity": details["validity"],
             "description": details["description"],
             "dedupe_key": dedupe_key,
-            "scraped_at": datetime.utcnow().isoformat() + "Z",
+            "scraped_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         })
 
 
@@ -1242,7 +1252,7 @@ def main() -> None:
             or normalize_offer_key(o.get("id") or o.get("link"))
         )
     )
-    pending["last_update"] = datetime.utcnow().isoformat() + "Z"
+    pending["last_update"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
     save_json(PENDING_FILE, pending)
