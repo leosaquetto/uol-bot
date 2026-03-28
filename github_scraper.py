@@ -91,27 +91,10 @@ def get_offer_id(link: str) -> str:
         return str(link or "").strip()
 
 
-def canonicalize_known_slug_issues(raw: str) -> str:
-    if not raw:
-        return ""
-
-    replacements = {
-        "teatro-joo-caetano": "teatro-joao-caetano",
-    }
-
-    for wrong, right in replacements.items():
-        raw = raw.replace(wrong, right)
-
-    return raw
-
-
-def normalize_offer_key(value: str) -> str:
+def normalize_text_key(value: Optional[str]) -> str:
     raw = str(value or "").strip().lower()
     if not raw:
         return ""
-
-    if raw.startswith("http://") or raw.startswith("https://"):
-        raw = get_offer_id(raw)
 
     replacements = {
         "á": "a", "à": "a", "ã": "a", "â": "a",
@@ -124,11 +107,75 @@ def normalize_offer_key(value: str) -> str:
     for src, dst in replacements.items():
         raw = raw.replace(src, dst)
 
-    raw = re.sub(r"[^a-z0-9\-_\/]+", "-", raw)
+    raw = re.sub(r"https?://", "", raw)
+    raw = re.sub(r"[^a-z0-9]+", "-", raw)
     raw = re.sub(r"-{2,}", "-", raw)
-    raw = raw.strip("-/")
-    raw = canonicalize_known_slug_issues(raw)
+    raw = raw.strip("-")
     return raw
+
+
+def normalize_offer_key(value: str) -> str:
+    raw = str(value or "").strip().lower()
+    if not raw:
+        return ""
+
+    if raw.startswith("http://") or raw.startswith("https://"):
+        raw = get_offer_id(raw)
+
+    raw = normalize_text_key(raw)
+    return raw
+
+
+def pick_description_anchor(description: str) -> str:
+    if not description:
+        return ""
+
+    lines = [clean_text(x) for x in str(description).splitlines()]
+    filtered = []
+
+    blacklist_starts = (
+        "beneficio valido",
+        "válido até",
+        "local",
+        "quando",
+        "importante",
+        "regras de resgate",
+        "atencao",
+        "atenção",
+        "enviar cupons por e-mail",
+        "preencha os campos abaixo",
+        "e-mail",
+        "mensagem",
+        "enviar",
+    )
+
+    for line in lines:
+        low = normalize_text_key(line)
+        if not low:
+            continue
+        if len(low) < 12:
+            continue
+        if any(low.startswith(x) for x in blacklist_starts):
+            continue
+        filtered.append(low)
+
+    if not filtered:
+        return ""
+
+    return filtered[0][:160]
+
+
+def build_dedupe_key(
+    title: str,
+    validity: Optional[str],
+    description: str,
+) -> str:
+    title_key = normalize_text_key(title)
+    validity_key = normalize_text_key(validity or "")
+    desc_key = pick_description_anchor(description)
+
+    parts = [x for x in [title_key, validity_key, desc_key] if x]
+    return "|".join(parts)
 
 
 def uniq_by(items: List[Dict[str, Any]], key_fn) -> List[Dict[str, Any]]:
@@ -348,9 +395,6 @@ def parse_offers(html: str) -> List[Dict[str, Any]]:
             images = choose_images_from_block(block)
             offer_id = get_offer_id(link)
 
-            log(f"     main url: {images['img_url'] or 'vazia'}")
-            log(f"     partner url: {images['partner_img_url'] or 'vazia'}")
-
             offers.append({
                 "id": offer_id,
                 "original_link": link,
@@ -445,20 +489,58 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
         }
 
 
+def extract_history_sets(history_data: Dict[str, Any]) -> tuple[set, set]:
+    ids = history_data.get("ids", [])
+    dedupe_keys = history_data.get("dedupe_keys", [])
+
+    if not isinstance(ids, list):
+        ids = []
+    if not isinstance(dedupe_keys, list):
+        dedupe_keys = []
+
+    id_set = {normalize_offer_key(x) for x in ids if normalize_offer_key(x)}
+    dedupe_set = {str(x).strip() for x in dedupe_keys if str(x).strip()}
+
+    return id_set, dedupe_set
+
+
+def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set]:
+    offers = pending_data.get("offers", [])
+    if not isinstance(offers, list):
+        offers = []
+
+    id_set = set()
+    dedupe_set = set()
+
+    for o in offers:
+        offer_key = normalize_offer_key(o.get("id") or o.get("link"))
+        if offer_key:
+            id_set.add(offer_key)
+
+        dedupe_key = str(o.get("dedupe_key") or "").strip()
+        if not dedupe_key:
+            dedupe_key = build_dedupe_key(
+                title=o.get("title") or o.get("preview_title") or "",
+                validity=o.get("validity"),
+                description=o.get("description") or "",
+            )
+        if dedupe_key:
+            dedupe_set.add(dedupe_key)
+
+    return id_set, dedupe_set
+
+
 def main() -> None:
     log("iniciando scraper")
 
-    historico = load_json(HISTORY_FILE, {"ids": []})
+    historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": []})
     pending = load_json(PENDING_FILE, {"last_update": None, "offers": []})
-
-    if not isinstance(historico.get("ids"), list):
-        historico["ids"] = []
 
     if not isinstance(pending.get("offers"), list):
         pending["offers"] = []
 
-    historico_keys = set(normalize_offer_key(x) for x in historico["ids"])
-    pending_keys = set(normalize_offer_key(o.get("id") or o.get("link")) for o in pending["offers"])
+    historico_keys, historico_dedupe = extract_history_sets(historico)
+    pending_keys, pending_dedupe = extract_pending_sets(pending)
 
     html = get_html(LIST_URL)
     offers = parse_offers(html)
@@ -466,26 +548,10 @@ def main() -> None:
     log(f"total encontradas: {len(offers)}")
 
     candidates = []
-    seen_new_keys = set()
+    seen_new_offer_keys = set()
+    seen_new_dedupe_keys = set()
 
     for offer in offers:
-        key = normalize_offer_key(offer.get("id") or offer.get("link"))
-        if not key:
-            continue
-        if key in historico_keys:
-            continue
-        if key in pending_keys:
-            continue
-        if key in seen_new_keys:
-            continue
-
-        seen_new_keys.add(key)
-        candidates.append(offer)
-
-    log(f"novas fora de histórico/pending: {len(candidates)}")
-
-    complete = []
-    for offer in candidates:
         details = extract_offer_details(offer["link"], offer["preview_title"])
         final_title = details["title"] or offer["title"]
         final_partner = absolutize_url(offer.get("partner_img_url") or "")
@@ -511,7 +577,28 @@ def main() -> None:
         ):
             final_img = ""
 
-        complete.append({
+        offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
+        dedupe_key = build_dedupe_key(
+            title=final_title,
+            validity=details["validity"],
+            description=details["description"],
+        )
+
+        if not offer_key and not dedupe_key:
+            continue
+
+        if offer_key and (offer_key in historico_keys or offer_key in pending_keys or offer_key in seen_new_offer_keys):
+            continue
+
+        if dedupe_key and (dedupe_key in historico_dedupe or dedupe_key in pending_dedupe or dedupe_key in seen_new_dedupe_keys):
+            continue
+
+        if offer_key:
+            seen_new_offer_keys.add(offer_key)
+        if dedupe_key:
+            seen_new_dedupe_keys.add(dedupe_key)
+
+        candidates.append({
             "id": offer["id"],
             "original_link": offer["original_link"],
             "preview_title": offer["preview_title"] or final_title,
@@ -521,23 +608,29 @@ def main() -> None:
             "partner_img_url": final_partner,
             "validity": details["validity"],
             "description": details["description"],
+            "dedupe_key": dedupe_key,
             "scraped_at": datetime.utcnow().isoformat() + "Z",
         })
 
-    if not complete:
+    log(f"novas fora de histórico/pending: {len(candidates)}")
+
+    if not candidates:
         log("nenhuma oferta nova para adicionar")
         return
 
-    pending["offers"].extend(complete)
+    pending["offers"].extend(candidates)
     pending["offers"] = uniq_by(
         pending["offers"],
-        lambda o: normalize_offer_key(o.get("id") or o.get("link"))
+        lambda o: (
+            str(o.get("dedupe_key") or "").strip()
+            or normalize_offer_key(o.get("id") or o.get("link"))
+        )
     )
     pending["last_update"] = datetime.utcnow().isoformat() + "Z"
 
     save_json(PENDING_FILE, pending)
 
-    log(f"adicionadas ao pending: {len(complete)}")
+    log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
 
 
