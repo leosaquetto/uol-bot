@@ -1,0 +1,33 @@
+{
+  "scriptable": {
+    "last_started_at": "",
+    "last_finished_at": "",
+    "status": "",
+    "summary": "",
+    "offers_seen": 0,
+    "new_offers": 0,
+    "pending_count": 0,
+    "last_error": ""
+  },
+  "scraper": {
+    "last_started_at": "",
+    "last_finished_at": "",
+    "status": "",
+    "summary": "",
+    "offers_seen": 0,
+    "new_offers": 0,
+    "pending_count": 0,
+    "last_error": ""
+  },
+  "consumer": {
+    "last_started_at": "",
+    "last_finished_at": "",
+    "status": "",
+    "summary": "",
+    "processed": 0,
+    "sent": 0,
+    "failed": 0,
+    "pending_count": 0,
+    "last_error": ""
+  }
+}
