@@ -44,6 +44,10 @@ def now_br_time() -> str:
     return datetime.now().strftime("%H:%M")
 
 
+def now_br_datetime() -> str:
+    return datetime.now().strftime("%d/%m/%Y às %H:%M")
+
+
 def load_json(path: str, default: Any) -> Any:
     if not os.path.exists(path):
         return default
@@ -97,18 +101,35 @@ def escape_html(text: str) -> str:
 
 def load_daily_log() -> Dict:
     path = Path(DAILY_LOG_FILE)
+    default = {
+        "date": "",
+        "message_id": None,
+        "last_success_check": "",
+        "last_new_offer_at": "",
+        "pending_count": 0,
+        "last_consumer_run": "",
+        "lines": [],
+    }
     if not path.exists():
-        return {"date": "", "message_id": None, "content": ""}
+        return default
 
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
-        data = {"date": "", "message_id": None, "content": ""}
+        data = default
+
+    lines = data.get("lines", [])
+    if not isinstance(lines, list):
+        lines = []
 
     return {
         "date": str(data.get("date") or ""),
         "message_id": data.get("message_id"),
-        "content": str(data.get("content") or ""),
+        "last_success_check": str(data.get("last_success_check") or ""),
+        "last_new_offer_at": str(data.get("last_new_offer_at") or ""),
+        "pending_count": int(data.get("pending_count") or 0),
+        "last_consumer_run": str(data.get("last_consumer_run") or ""),
+        "lines": [str(x) for x in lines][-30:],
     }
 
 
@@ -123,24 +144,51 @@ def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
-def update_daily_dashboard(source: str, status_line: str) -> None:
+def build_dashboard_text(state: Dict) -> str:
+    today = state["date"] or now_br_date()
+
+    last_success = state["last_success_check"] or "—"
+    last_new = state["last_new_offer_at"] or "—"
+    pending_count = state["pending_count"]
+    last_consumer = state["last_consumer_run"] or "—"
+
+    header = [
+        f"📊 <b>relatório diário uol - {escape_html(today)}</b>",
+        "",
+        f"última verificação com sucesso: {escape_html(last_success)}",
+        f"última oferta nova encontrada: {escape_html(last_new)}",
+        f"pending atual: {escape_html(str(pending_count))}",
+        f"última execução do consumer: {escape_html(last_consumer)}",
+        "",
+    ]
+
+    lines = state.get("lines", [])
+    body = [escape_html(x) for x in lines[-20:]] if lines else ["sem registros ainda"]
+
+    text = "\n".join(header + body)
+    if len(text) > 3900:
+        text = text[:3900]
+    return text
+
+
+def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
 
-    today = now_br_date()
-    hour = now_br_time()
+    text = build_dashboard_text(state)
 
-    state = load_daily_log()
-    line = f"[{hour}] {source}: {status_line}"
+    if state["date"] != now_br_date() or not state["message_id"]:
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = state.get("lines", [])[-20:]
+        text = build_dashboard_text(state)
 
-    if state["date"] != today or not state["message_id"]:
-        content = f"📊 <b>relatório diário uol - {today}</b>\n\n{escape_html(line)}"
         try:
             resp = requests.post(
                 telegram_api("sendMessage"),
                 data={
                     "chat_id": GRUPO_COMENTARIO_ID,
-                    "text": content,
+                    "text": text,
                     "parse_mode": "HTML",
                     "disable_notification": "true",
                     "disable_web_page_preview": "true",
@@ -149,24 +197,13 @@ def update_daily_dashboard(source: str, status_line: str) -> None:
             )
             if resp.ok:
                 data = resp.json()
-                state = {
-                    "date": today,
-                    "message_id": data.get("result", {}).get("message_id"),
-                    "content": content,
-                }
+                state["message_id"] = data.get("result", {}).get("message_id")
                 save_daily_log(state)
+            else:
+                log(f"falha ao criar dashboard diário: {resp.text}")
         except Exception as e:
             log(f"falha ao criar dashboard diário: {e}")
         return
-
-    updated = f"{state['content']}\n{escape_html(line)}"
-    if len(updated) > 3900:
-        lines = updated.splitlines()
-        header = lines[:2]
-        body = lines[2:]
-        if len(body) > 20:
-            body = ["[... logs antigos cortados ...]"] + body[-18:]
-        updated = "\n".join(header + body)
 
     try:
         resp = requests.post(
@@ -174,17 +211,69 @@ def update_daily_dashboard(source: str, status_line: str) -> None:
             data={
                 "chat_id": GRUPO_COMENTARIO_ID,
                 "message_id": state["message_id"],
-                "text": updated,
+                "text": text,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": "true",
             },
             timeout=REQUEST_TIMEOUT,
         )
         if resp.ok:
-            state["content"] = updated
             save_daily_log(state)
+        else:
+            log(f"falha ao editar dashboard diário: {resp.text}")
     except Exception as e:
         log(f"falha ao editar dashboard diário: {e}")
+
+
+def append_dashboard_line(source: str, status_line: str) -> None:
+    state = load_daily_log()
+
+    if state["date"] != now_br_date():
+        state = {
+            "date": now_br_date(),
+            "message_id": None,
+            "last_success_check": "",
+            "last_new_offer_at": state.get("last_new_offer_at", ""),
+            "pending_count": 0,
+            "last_consumer_run": state.get("last_consumer_run", ""),
+            "lines": [],
+        }
+
+    line = f"[{now_br_time()}] {source}: {status_line}"
+    state["lines"].append(line)
+    state["lines"] = state["lines"][-30:]
+
+    sync_daily_dashboard(state)
+
+
+def set_dashboard_success_check() -> None:
+    state = load_daily_log()
+    if state["date"] != now_br_date():
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = []
+    state["last_success_check"] = now_br_datetime()
+    sync_daily_dashboard(state)
+
+
+def set_dashboard_last_new_offer() -> None:
+    state = load_daily_log()
+    if state["date"] != now_br_date():
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = []
+    state["last_new_offer_at"] = now_br_datetime()
+    sync_daily_dashboard(state)
+
+
+def set_dashboard_pending_count(count: int) -> None:
+    state = load_daily_log()
+    if state["date"] != now_br_date():
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = []
+    state["pending_count"] = count
+    sync_daily_dashboard(state)
 
 
 def absolutize_url(url: Optional[str]) -> str:
@@ -682,7 +771,7 @@ def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set]:
 
 def main() -> None:
     log("iniciando scraper")
-    update_daily_dashboard("scraper", "▶️ rodada iniciada")
+    append_dashboard_line("scraper", "▶️ rodada iniciada")
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": []})
     pending = load_json(PENDING_FILE, {"last_update": None, "offers": []})
@@ -696,8 +785,10 @@ def main() -> None:
     html = get_html(LIST_URL)
     if not html:
         log("não foi possível obter html da lista nesta rodada; encerrando sem alterações")
-        update_daily_dashboard("scraper", "⚠️ html indisponível / 405 / ssl")
+        append_dashboard_line("scraper", "⚠️ html indisponível / 405 / ssl")
         return
+
+    set_dashboard_success_check()
 
     offers = parse_offers(html)
     log(f"total encontradas: {len(offers)}")
@@ -771,7 +862,8 @@ def main() -> None:
 
     if not candidates:
         log("nenhuma oferta nova para adicionar")
-        update_daily_dashboard("scraper", "💤 sem ofertas novas")
+        set_dashboard_pending_count(len(pending.get("offers", [])))
+        append_dashboard_line("scraper", "💤 sem ofertas novas")
         return
 
     pending["offers"].extend(candidates)
@@ -786,7 +878,10 @@ def main() -> None:
 
     save_json(PENDING_FILE, pending)
 
-    update_daily_dashboard("scraper", f"✅ novas no pending: {len(candidates)}")
+    set_dashboard_last_new_offer()
+    set_dashboard_pending_count(len(pending["offers"]))
+    append_dashboard_line("scraper", f"✅ novas no pending: {len(candidates)}")
+
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
 
