@@ -18,6 +18,7 @@ FALLBACK_LIST_URL = f"{BASE_URL}/"
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
 DAILY_LOG_FILE = "daily_log.json"
+STATUS_RUNTIME_FILE = "status_runtime.json"
 
 REQUEST_TIMEOUT = 30
 
@@ -138,6 +139,100 @@ def save_daily_log(data: Dict) -> None:
         json.dumps(data, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+
+
+def load_status_runtime() -> Dict:
+    path = Path(STATUS_RUNTIME_FILE)
+    default = {
+        "scriptable": {
+            "last_started_at": "",
+            "last_finished_at": "",
+            "status": "",
+            "summary": "",
+            "offers_seen": 0,
+            "new_offers": 0,
+            "pending_count": 0,
+            "last_error": "",
+        },
+        "scraper": {
+            "last_started_at": "",
+            "last_finished_at": "",
+            "status": "",
+            "summary": "",
+            "offers_seen": 0,
+            "new_offers": 0,
+            "pending_count": 0,
+            "last_error": "",
+        },
+        "consumer": {
+            "last_started_at": "",
+            "last_finished_at": "",
+            "status": "",
+            "summary": "",
+            "processed": 0,
+            "sent": 0,
+            "failed": 0,
+            "pending_count": 0,
+            "last_error": "",
+        },
+    }
+    if not path.exists():
+        return default
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        data = default
+
+    for key, value in default.items():
+        if key not in data or not isinstance(data[key], dict):
+            data[key] = value
+
+    return data
+
+
+def save_status_runtime(data: Dict) -> None:
+    Path(STATUS_RUNTIME_FILE).write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
+def status_scraper_start() -> None:
+    status = load_status_runtime()
+    status["scraper"] = {
+        "last_started_at": now_br_datetime(),
+        "last_finished_at": status["scraper"].get("last_finished_at", ""),
+        "status": "running",
+        "summary": "scraper iniciado",
+        "offers_seen": 0,
+        "new_offers": 0,
+        "pending_count": status["scraper"].get("pending_count", 0),
+        "last_error": "",
+    }
+    save_status_runtime(status)
+
+
+def status_scraper_finish(
+    summary: str,
+    status_value: str,
+    offers_seen: int,
+    new_offers: int,
+    pending_count: int,
+    last_error: str = "",
+) -> None:
+    status = load_status_runtime()
+    status["scraper"] = {
+        "last_started_at": status["scraper"].get("last_started_at", ""),
+        "last_finished_at": now_br_datetime(),
+        "status": status_value,
+        "summary": summary,
+        "offers_seen": offers_seen,
+        "new_offers": new_offers,
+        "pending_count": pending_count,
+        "last_error": last_error,
+    }
+    save_status_runtime(status)
 
 
 def telegram_api(method: str) -> str:
@@ -771,6 +866,7 @@ def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set]:
 
 def main() -> None:
     log("iniciando scraper")
+    status_scraper_start()
     append_dashboard_line("scraper", "▶️ rodada iniciada")
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": []})
@@ -786,6 +882,14 @@ def main() -> None:
     if not html:
         log("não foi possível obter html da lista nesta rodada; encerrando sem alterações")
         append_dashboard_line("scraper", "⚠️ html indisponível / 405 / ssl")
+        status_scraper_finish(
+            summary="html indisponível / 405 / ssl",
+            status_value="erro",
+            offers_seen=0,
+            new_offers=0,
+            pending_count=len(pending.get("offers", [])),
+            last_error="falha ao obter html da lista",
+        )
         return
 
     set_dashboard_success_check()
@@ -864,6 +968,14 @@ def main() -> None:
         log("nenhuma oferta nova para adicionar")
         set_dashboard_pending_count(len(pending.get("offers", [])))
         append_dashboard_line("scraper", "💤 sem ofertas novas")
+        status_scraper_finish(
+            summary="sem ofertas novas",
+            status_value="sem_novidade",
+            offers_seen=len(offers),
+            new_offers=0,
+            pending_count=len(pending.get("offers", [])),
+            last_error="",
+        )
         return
 
     pending["offers"].extend(candidates)
@@ -881,6 +993,15 @@ def main() -> None:
     set_dashboard_last_new_offer()
     set_dashboard_pending_count(len(pending["offers"]))
     append_dashboard_line("scraper", f"✅ novas no pending: {len(candidates)}")
+
+    status_scraper_finish(
+        summary=f"novas no pending: {len(candidates)}",
+        status_value="ok",
+        offers_seen=len(offers),
+        new_offers=len(candidates),
+        pending_count=len(pending["offers"]),
+        last_error="",
+    )
 
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
