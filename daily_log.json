@@ -1,5 +1,12 @@
 {
   "date": "28/03/2026",
   "message_id": 443,
-  "content": "\n[19:59] consumer: 📦 pending atual: 0\n[19:59] consumer: 📭 pending vazio"
+  "last_success_check": "",
+  "last_new_offer_at": "",
+  "pending_count": 0,
+  "last_consumer_run": "28/03/2026 às 19:59",
+  "lines": [
+    "[19:59] consumer: 📦 pending atual: 0",
+    "[19:59] consumer: 📭 pending vazio"
+  ]
 }
