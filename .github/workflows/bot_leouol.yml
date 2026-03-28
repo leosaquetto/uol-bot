@@ -1,52 +1,45 @@
 name: BOT LEOUOL SCRAPER
 
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
-
-concurrency:
-  group: bot-leouol-scraper
-  cancel-in-progress: true
+  schedule:
+    - cron: "*/10 * * * *"
 
 permissions:
   contents: write
 
-env:
-  PYTHONUNBUFFERED: '1'
-  PIP_DISABLE_PIP_VERSION_CHECK: '1'
+concurrency:
+  group: bot-leouol-scraper-main
+  cancel-in-progress: false
 
 jobs:
-  run-scraper:
-    name: Buscar ofertas
+  buscar-ofertas:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: Baixar codigo
+      - name: checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Alinhar com origin/main
-        shell: bash
+      - name: garantir branch atualizada
         run: |
           git fetch origin main
           git checkout main
           git reset --hard origin/main
 
-      - name: Configurar python
+      - name: setup python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
 
-      - name: Garantir arquivos json
-        shell: bash
+      - name: garantir arquivos json
         run: |
           if [ ! -f historico_leouol.json ]; then
-            echo '{"ids":[]}' > historico_leouol.json
+            echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
             echo "historico_leouol.json criado"
           else
             echo "historico_leouol.json encontrado"
@@ -66,51 +59,46 @@ jobs:
             echo "latest_offers.json encontrado"
           fi
 
-      - name: Instalar dependencias
-        shell: bash
+          if [ ! -f daily_log.json ]; then
+            echo '{"date":"","message_id":null,"content":""}' > daily_log.json
+            echo "daily_log.json criado"
+          else
+            echo "daily_log.json encontrado"
+          fi
+
+      - name: instalar dependências
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Executar scraper automatico
-        shell: bash
-        run: |
-          python github_scraper.py
+      - name: rodar scraper
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
+        run: python github_scraper.py
 
-      - name: Commitar historico e pending
+      - name: commitar mudanças
         if: always()
-        shell: bash
         run: |
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
-          [ -f historico_leouol.json ] || echo '{"ids":[]}' > historico_leouol.json
+          [ -f historico_leouol.json ] || echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
           [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
           [ -f latest_offers.json ] || echo '{"last_update":null,"offers":[]}' > latest_offers.json
+          [ -f daily_log.json ] || echo '{"date":"","message_id":null,"content":""}' > daily_log.json
 
-          git add historico_leouol.json pending_offers.json latest_offers.json 2>/dev/null || true
+          git add historico_leouol.json pending_offers.json latest_offers.json daily_log.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "nenhuma mudança detectada"
             exit 0
           fi
 
-          git commit -m "scraper atualiza pending [skip ci]" || {
+          git commit -m "scraper atualiza pending e dashboard [skip ci]" || {
             echo "nada para commitar"
             exit 0
           }
 
           git push origin HEAD:main
           echo "alteracoes enviadas"
-
-      - name: Upload debug
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bot-leouol-scraper-debug-${{ github.run_id }}
-          path: |
-            historico_leouol.json
-            pending_offers.json
-            latest_offers.json
-          if-no-files-found: ignore
-          retention-days: 3
