@@ -8,11 +8,14 @@ import re
 import sys
 import time
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from html import unescape
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
+
+BR_TZ = ZoneInfo("America/Sao_Paulo")
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
@@ -86,8 +89,12 @@ SECTION_EMOJIS = {
 }
 
 
+def now_br() -> datetime:
+    return datetime.now(BR_TZ)
+
+
 def log(msg: str) -> None:
-    timestamp = datetime.now().strftime("%H:%M:%S")
+    timestamp = now_br().strftime("%H:%M:%S")
     print(f"[{timestamp}] {msg}", flush=True)
 
 
@@ -96,15 +103,15 @@ def log_separator() -> None:
 
 
 def now_br_date() -> str:
-    return datetime.now().strftime("%d/%m/%Y")
+    return now_br().strftime("%d/%m/%Y")
 
 
 def now_br_time() -> str:
-    return datetime.now().strftime("%H:%M")
+    return now_br().strftime("%H:%M")
 
 
 def now_br_datetime() -> str:
-    return datetime.now().strftime("%d/%m/%Y às %H:%M")
+    return now_br().strftime("%d/%m/%Y às %H:%M")
 
 
 def clean_multiline_text(text: Optional[str]) -> str:
@@ -559,7 +566,7 @@ def build_dashboard_text(state: Dict) -> str:
     header = [
         f"📊 <b>relatório diário uol - {escape_html(today)}</b>",
         "",
-        f"última verificação com sucesso: {escape_html(last_success)}",
+        f"última leitura do site sem bloqueio: {escape_html(last_success)}",
         f"última oferta nova encontrada: {escape_html(last_new)}",
         f"pending atual: {escape_html(str(pending_count))}",
         f"última execução do consumer: {escape_html(last_consumer)}",
