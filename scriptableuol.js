@@ -1,5 +1,5 @@
 // scriptable - clube uol scraper
-// versão robusta:
+// versão robusta + deduplicação estrutural:
 // - lê histórico e pending do github com decode base64 correto
 // - aborta se não conseguir ler o estado remoto, para não floodar
 // - não grava no histórico aqui; histórico fica só com o consumer
@@ -7,11 +7,12 @@
 // - tenta extrair banner principal + logo do parceiro
 // - enriquece com título, validade e descrição
 // - evita depender de nth-child
+// - deduplica por offer_key e também por dedupe_key semântica
 
 // ==============================================
 // configurações
 // ==============================================
-const GITHUB_TOKEN = args.widgetParameter || ""
+const GITHUB_TOKEN = "xxx"
 const REPO_OWNER = "leosaquetto"
 const REPO_NAME = "uol-bot"
 
@@ -77,13 +78,9 @@ function getOfferId(link) {
   }
 }
 
-function normalizeOfferKey(value) {
+function normalizeTextKey(value) {
   let raw = String(value || "").trim().toLowerCase()
   if (!raw) return ""
-
-  if (raw.startsWith("http://") || raw.startsWith("https://")) {
-    raw = getOfferId(raw)
-  }
 
   const map = {
     "á": "a", "à": "a", "ã": "a", "â": "a",
@@ -98,10 +95,68 @@ function normalizeOfferKey(value) {
     raw = raw.replaceAll(k, map[k])
   })
 
-  raw = raw.replace(/[^a-z0-9\-_\/]+/g, "-")
+  raw = raw.replace(/https?:\/\//g, "")
+  raw = raw.replace(/[^a-z0-9]+/g, "-")
   raw = raw.replace(/-+/g, "-")
-  raw = raw.replace(/^[-/]+|[-/]+$/g, "")
+  raw = raw.replace(/^-+|-+$/g, "")
   return raw
+}
+
+function normalizeOfferKey(value) {
+  let raw = String(value || "").trim().toLowerCase()
+  if (!raw) return ""
+
+  if (raw.startsWith("http://") || raw.startsWith("https://")) {
+    raw = getOfferId(raw)
+  }
+
+  raw = normalizeTextKey(raw)
+  return raw
+}
+
+function pickDescriptionAnchor(description) {
+  if (!description) return ""
+
+  const lines = String(description)
+    .split("\n")
+    .map(x => cleanText(x))
+    .filter(Boolean)
+
+  const blacklistStarts = [
+    "beneficio-valido",
+    "valido-ate",
+    "local",
+    "quando",
+    "importante",
+    "regras-de-resgate",
+    "atencao",
+    "atenção",
+    "enviar-cupons-por-e-mail",
+    "preencha-os-campos-abaixo",
+    "e-mail",
+    "mensagem",
+    "enviar"
+  ]
+
+  const filtered = []
+
+  for (const line of lines) {
+    const low = normalizeTextKey(line)
+    if (!low) continue
+    if (low.length < 12) continue
+    if (blacklistStarts.some(x => low.startsWith(normalizeTextKey(x)))) continue
+    filtered.push(low)
+  }
+
+  if (!filtered.length) return ""
+  return filtered[0].slice(0, 160)
+}
+
+function buildDedupeKey(title, validity, description) {
+  const titleKey = normalizeTextKey(title || "")
+  const validityKey = normalizeTextKey(validity || "")
+  const descKey = pickDescriptionAnchor(description || "")
+  return [titleKey, validityKey, descKey].filter(Boolean).join("|")
 }
 
 function absolutizeUrl(url) {
@@ -296,7 +351,7 @@ async function loadHistoryStrict() {
   }
 
   if (!result.content) {
-    return { ids: [] }
+    return { ids: [], dedupe_keys: [] }
   }
 
   if (!Array.isArray(result.content.ids)) {
@@ -304,7 +359,15 @@ async function loadHistoryStrict() {
     return null
   }
 
-  return result.content
+  if (result.content.dedupe_keys && !Array.isArray(result.content.dedupe_keys)) {
+    log(`❌ formato inválido em dedupe_keys de ${HISTORY_FILE}`)
+    return null
+  }
+
+  return {
+    ids: Array.isArray(result.content.ids) ? result.content.ids : [],
+    dedupe_keys: Array.isArray(result.content.dedupe_keys) ? result.content.dedupe_keys : []
+  }
 }
 
 async function loadPendingStrict() {
@@ -630,6 +693,40 @@ async function extractOfferDetails(url, previewTitle) {
   }
 }
 
+function extractHistorySets(history) {
+  const ids = Array.isArray(history.ids) ? history.ids : []
+  const dedupeKeys = Array.isArray(history.dedupe_keys) ? history.dedupe_keys : []
+
+  const idSet = new Set(ids.map(x => normalizeOfferKey(x)).filter(Boolean))
+  const dedupeSet = new Set(dedupeKeys.map(x => String(x || "").trim()).filter(Boolean))
+
+  return { idSet, dedupeSet }
+}
+
+function extractPendingSets(pending) {
+  const offers = Array.isArray(pending.offers) ? pending.offers : []
+
+  const idSet = new Set()
+  const dedupeSet = new Set()
+
+  for (const o of offers) {
+    const offerKey = normalizeOfferKey(o.id || o.link)
+    if (offerKey) idSet.add(offerKey)
+
+    let dedupeKey = String(o.dedupe_key || "").trim()
+    if (!dedupeKey) {
+      dedupeKey = buildDedupeKey(
+        o.title || o.preview_title || "",
+        o.validity || "",
+        o.description || ""
+      )
+    }
+    if (dedupeKey) dedupeSet.add(dedupeKey)
+  }
+
+  return { idSet, dedupeSet }
+}
+
 async function saveCompleteOffers(offers) {
   const history = await loadHistoryStrict()
   const pending = await loadPendingStrict()
@@ -639,13 +736,44 @@ async function saveCompleteOffers(offers) {
     return false
   }
 
-  const historyKeys = new Set((history.ids || []).map(x => normalizeOfferKey(x)))
-  const pendingKeys = new Set((pending.offers || []).map(o => normalizeOfferKey(o.id || o.link)))
+  const historySets = extractHistorySets(history)
+  const pendingSets = extractPendingSets(pending)
 
-  const freshOffers = offers.filter(o => {
-    const key = normalizeOfferKey(o.id || o.link)
-    return key && !historyKeys.has(key) && !pendingKeys.has(key)
-  })
+  const freshOffers = []
+  const seenOfferKeys = new Set()
+  const seenDedupeKeys = new Set()
+
+  for (const o of offers) {
+    const offerKey = normalizeOfferKey(o.id || o.link)
+    const dedupeKey = String(o.dedupe_key || "").trim()
+
+    if (
+      offerKey &&
+      (
+        historySets.idSet.has(offerKey) ||
+        pendingSets.idSet.has(offerKey) ||
+        seenOfferKeys.has(offerKey)
+      )
+    ) {
+      continue
+    }
+
+    if (
+      dedupeKey &&
+      (
+        historySets.dedupeSet.has(dedupeKey) ||
+        pendingSets.dedupeSet.has(dedupeKey) ||
+        seenDedupeKeys.has(dedupeKey)
+      )
+    ) {
+      continue
+    }
+
+    if (offerKey) seenOfferKeys.add(offerKey)
+    if (dedupeKey) seenDedupeKeys.add(dedupeKey)
+
+    freshOffers.push(o)
+  }
 
   if (freshOffers.length === 0) {
     log("📭 nenhuma oferta nova para adicionar ao pending")
@@ -653,7 +781,12 @@ async function saveCompleteOffers(offers) {
   }
 
   const merged = [...(pending.offers || []), ...freshOffers]
-  const ok = await savePending(merged)
+  const deduped = uniqBy(
+    merged,
+    o => String(o.dedupe_key || "").trim() || normalizeOfferKey(o.id || o.link)
+  )
+
+  const ok = await savePending(deduped)
 
   if (!ok) {
     log("❌ não consegui salvar o pending no github")
@@ -685,6 +818,7 @@ async function main() {
     }
 
     log(`📚 histórico atual: ${(history.ids || []).length} ids`)
+    log(`🧠 dedupe_keys atuais: ${(history.dedupe_keys || []).length}`)
     log(`📦 pending atual: ${(pending.offers || []).length} ofertas`)
 
     const allOffers = await scrapeOffersList()
@@ -694,28 +828,14 @@ async function main() {
       return
     }
 
-    const historyKeys = new Set((history.ids || []).map(x => normalizeOfferKey(x)))
-    const pendingKeys = new Set((pending.offers || []).map(o => normalizeOfferKey(o.id || o.link)))
-
-    const candidateOffers = allOffers.filter(o => {
-      const key = normalizeOfferKey(o.id || o.link)
-      return key && !historyKeys.has(key) && !pendingKeys.has(key)
-    })
-
-    if (candidateOffers.length === 0) {
-      log("📭 nenhuma oferta nova fora do histórico/pending")
-      return
-    }
-
-    log(`🎉 ${candidateOffers.length} ofertas novas detectadas`)
     log("📋 extraindo detalhes...")
     logSeparator()
 
     const completeOffers = []
 
-    for (let i = 0; i < candidateOffers.length; i++) {
-      const offer = candidateOffers[i]
-      log(`📌 oferta ${i + 1}/${candidateOffers.length}`)
+    for (let i = 0; i < allOffers.length; i++) {
+      const offer = allOffers[i]
+      log(`📌 oferta ${i + 1}/${allOffers.length}`)
       log(`   id: ${offer.id}`)
 
       const details = await extractOfferDetails(offer.link, offer.preview_title)
@@ -748,6 +868,12 @@ async function main() {
         finalImgUrl = ""
       }
 
+      const dedupeKey = buildDedupeKey(
+        finalTitle,
+        details.validity,
+        details.description
+      )
+
       log(`   🖼️ banner final: ${finalImgUrl || "vazio"}`)
       log(`   🏷️ logo final: ${finalPartnerImgUrl || "vazio"}`)
 
@@ -761,6 +887,7 @@ async function main() {
         partner_img_url: finalPartnerImgUrl,
         validity: details.validity,
         description: details.description,
+        dedupe_key: dedupeKey,
         scraped_at: new Date().toISOString()
       })
 
@@ -787,3 +914,9 @@ async function main() {
 }
 
 await main()
+
+if (config.runsWithSiri || args.shortcutParameter !== undefined) {
+  Script.setShortcutOutput("ok")
+}
+
+Script.complete()
