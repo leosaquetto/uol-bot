@@ -4,7 +4,7 @@
   "last_success_check": "28/03/2026 às 18:57",
   "last_new_offer_at": "",
   "pending_count": 0,
-  "last_consumer_run": "28/03/2026 às 18:48",
+  "last_consumer_run": "28/03/2026 às 19:15",
   "lines": [
     "[17:24] consumer: 📦 pending atual: 0",
     "[17:24] consumer: 📭 pending vazio",
@@ -25,6 +25,8 @@
     "[18:48] consumer: 📦 pending atual: 0",
     "[18:48] consumer: 📭 pending vazio",
     "[18:57] scraper: ▶️ rodada iniciada",
-    "[18:57] scraper: 💤 sem ofertas novas"
+    "[18:57] scraper: 💤 sem ofertas novas",
+    "[19:15] consumer: 📦 pending atual: 0",
+    "[19:15] consumer: 📭 pending vazio"
   ]
 }
