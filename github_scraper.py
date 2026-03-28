@@ -2,6 +2,7 @@ import json
 import os
 import re
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import certifi
@@ -16,8 +17,12 @@ FALLBACK_LIST_URL = f"{BASE_URL}/"
 
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
+DAILY_LOG_FILE = "daily_log.json"
 
 REQUEST_TIMEOUT = 30
+
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
 
 USER_AGENT = (
     "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
@@ -29,6 +34,14 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def log(msg: str) -> None:
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}", flush=True)
+
+
+def now_br_date() -> str:
+    return datetime.now().strftime("%d/%m/%Y")
+
+
+def now_br_time() -> str:
+    return datetime.now().strftime("%H:%M")
 
 
 def load_json(path: str, default: Any) -> Any:
@@ -68,6 +81,110 @@ def html_to_text(html: str) -> str:
     text = re.sub(r"</li>", "", text, flags=re.I)
     text = re.sub(r"<[^>]+>", " ", text)
     return clean_text(text)
+
+
+def escape_html(text: str) -> str:
+    if not text:
+        return ""
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#39;")
+    )
+
+
+def load_daily_log() -> Dict:
+    path = Path(DAILY_LOG_FILE)
+    if not path.exists():
+        return {"date": "", "message_id": None, "content": ""}
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        data = {"date": "", "message_id": None, "content": ""}
+
+    return {
+        "date": str(data.get("date") or ""),
+        "message_id": data.get("message_id"),
+        "content": str(data.get("content") or ""),
+    }
+
+
+def save_daily_log(data: Dict) -> None:
+    Path(DAILY_LOG_FILE).write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
+def telegram_api(method: str) -> str:
+    return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
+
+
+def update_daily_dashboard(source: str, status_line: str) -> None:
+    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
+        return
+
+    today = now_br_date()
+    hour = now_br_time()
+
+    state = load_daily_log()
+    line = f"[{hour}] {source}: {status_line}"
+
+    if state["date"] != today or not state["message_id"]:
+        content = f"📊 <b>relatório diário uol - {today}</b>\n\n{escape_html(line)}"
+        try:
+            resp = requests.post(
+                telegram_api("sendMessage"),
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "text": content,
+                    "parse_mode": "HTML",
+                    "disable_notification": "true",
+                    "disable_web_page_preview": "true",
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            if resp.ok:
+                data = resp.json()
+                state = {
+                    "date": today,
+                    "message_id": data.get("result", {}).get("message_id"),
+                    "content": content,
+                }
+                save_daily_log(state)
+        except Exception as e:
+            log(f"falha ao criar dashboard diário: {e}")
+        return
+
+    updated = f"{state['content']}\n{escape_html(line)}"
+    if len(updated) > 3900:
+        lines = updated.splitlines()
+        header = lines[:2]
+        body = lines[2:]
+        if len(body) > 20:
+            body = ["[... logs antigos cortados ...]"] + body[-18:]
+        updated = "\n".join(header + body)
+
+    try:
+        resp = requests.post(
+            telegram_api("editMessageText"),
+            data={
+                "chat_id": GRUPO_COMENTARIO_ID,
+                "message_id": state["message_id"],
+                "text": updated,
+                "parse_mode": "HTML",
+                "disable_web_page_preview": "true",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+        if resp.ok:
+            state["content"] = updated
+            save_daily_log(state)
+    except Exception as e:
+        log(f"falha ao editar dashboard diário: {e}")
 
 
 def absolutize_url(url: Optional[str]) -> str:
@@ -164,15 +281,10 @@ def pick_description_anchor(description: str) -> str:
     return filtered[0][:160]
 
 
-def build_dedupe_key(
-    title: str,
-    validity: Optional[str],
-    description: str,
-) -> str:
+def build_dedupe_key(title: str, validity: Optional[str], description: str) -> str:
     title_key = normalize_text_key(title)
     validity_key = normalize_text_key(validity or "")
     desc_key = pick_description_anchor(description)
-
     parts = [x for x in [title_key, validity_key, desc_key] if x]
     return "|".join(parts)
 
@@ -333,7 +445,6 @@ def extract_all_img_meta(block) -> List[Dict[str, Any]]:
                 "width": width,
                 "height": height,
                 "is_partner_path": "/parceiros/" in full_src,
-                "is_benefit_path": "/beneficios/" in full_src,
                 "is_partner_like": (
                     "/parceiros/" in full_src
                     or "logo" in class_names
@@ -451,7 +562,6 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
     try:
         html = get_html(full_url)
         if not html:
-            log("erro ao extrair detalhes: html indisponível")
             return {
                 "title": preview_title,
                 "validity": None,
@@ -572,6 +682,7 @@ def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set]:
 
 def main() -> None:
     log("iniciando scraper")
+    update_daily_dashboard("scraper", "▶️ rodada iniciada")
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": []})
     pending = load_json(PENDING_FILE, {"last_update": None, "offers": []})
@@ -585,10 +696,10 @@ def main() -> None:
     html = get_html(LIST_URL)
     if not html:
         log("não foi possível obter html da lista nesta rodada; encerrando sem alterações")
+        update_daily_dashboard("scraper", "⚠️ html indisponível / 405 / ssl")
         return
 
     offers = parse_offers(html)
-
     log(f"total encontradas: {len(offers)}")
 
     candidates = []
@@ -660,6 +771,7 @@ def main() -> None:
 
     if not candidates:
         log("nenhuma oferta nova para adicionar")
+        update_daily_dashboard("scraper", "💤 sem ofertas novas")
         return
 
     pending["offers"].extend(candidates)
@@ -674,6 +786,7 @@ def main() -> None:
 
     save_json(PENDING_FILE, pending)
 
+    update_daily_dashboard("scraper", f"✅ novas no pending: {len(candidates)}")
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
 
