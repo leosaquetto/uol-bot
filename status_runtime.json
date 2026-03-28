@@ -10,14 +10,14 @@
     "last_error": ""
   },
   "scraper": {
-    "last_started_at": "",
-    "last_finished_at": "",
-    "status": "",
-    "summary": "",
+    "last_started_at": "28/03/2026 às 20:29",
+    "last_finished_at": "28/03/2026 às 20:29",
+    "status": "erro",
+    "summary": "html indisponível / 405 / ssl",
     "offers_seen": 0,
     "new_offers": 0,
     "pending_count": 0,
-    "last_error": ""
+    "last_error": "falha ao obter html da lista"
   },
   "consumer": {
     "last_started_at": "28/03/2026 às 20:24",
