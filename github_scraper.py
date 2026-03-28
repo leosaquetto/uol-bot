@@ -136,6 +136,7 @@ def load_daily_log() -> Dict:
         "last_new_offer_at": "",
         "pending_count": 0,
         "last_consumer_run": "",
+        "last_rendered_text": "",
         "lines": [],
     }
     if not path.exists():
@@ -159,7 +160,8 @@ def load_daily_log() -> Dict:
         "last_success_check": str(data.get("last_success_check") or ""),
         "last_new_offer_at": str(data.get("last_new_offer_at") or ""),
         "pending_count": int(data.get("pending_count") or 0),
-        "last_consumer_run": str(data.get("last_consumer_run") or ""),
+        "last_consumer_run": str(data        "last_rendered_text": str(data.get("last_rendered_text") or ""),
+.get("last_consumer_run") or ""),
         "lines": [str(x) for x in lines][-30:],
     }
 
@@ -394,11 +396,16 @@ def sync_daily_dashboard(state: Dict) -> None:
                 timeout=REQUEST_TIMEOUT,
             )
             if resp.ok:
-                data = resp.json()
+                       state["last_rendered_text"] = text
+         data = resp.json()
                 state["message_id"] = data.get("result", {}).get("message_id")
                 save_daily_log(state)
             else:
-                log(f"falha ao criar dashboard diário: {resp.text}")
+                log(f"falha ao criar dashboard diário: {resp.text}    current_text = str(state.get("last_rendered_text") or "")
+    if current_text == text:
+        save_daily_log(state)
+        return
+")
         except Exception as e:
             log(f"falha ao criar dashboard diário: {e}")
         return
@@ -408,13 +415,15 @@ def sync_daily_dashboard(state: Dict) -> None:
         resp = requests.post(
             telegram_api("editMessageText"),
             data={
-                "chat_id": GRUPO_COMENTARIO_ID,
+                   state["last_rendered_text"] = text
+         "chat_id": GRUPO_COMENTARIO_ID,
                 "message_id": state["message_id"],
                 "text": text,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": "true",
             },
-            timeout=REQUEST_TIMEOUT,
+            timeout=REQUEST                state["last_rendered_text"] = text
+_TIMEOUT,
         )
         if resp.ok:
             save_daily_log(state)
@@ -438,7 +447,8 @@ def sync_daily_dashboard(state: Dict) -> None:
 
 
 
-def append_dashboard_line(source: str, status_line: str) -> None:
+def append_dashboard_line(source: st            "last_rendered_text": "",
+r, status_line: str) -> None:
     state = load_daily_log()
 
 
@@ -449,7 +459,8 @@ def append_dashboard_line(source: str, status_line: str) -> None:
             "last_success_check": "",
             "last_new_offer_at": state.get("last_new_offer_at", ""),
             "pending_count": 0,
-            "last_consumer_run": state.get("last_consumer_run", ""),
+            "last_consum        state["last_rendered_text"] = ""
+er_run": state.get("last_consumer_run", ""),
             "lines": [],
         }
 
@@ -464,14 +475,16 @@ def append_dashboard_line(source: str, status_line: str) -> None:
 
 
 
-def set_dashboard_success_check() -> None:
+def set_dash        state["last_rendered_text"] = ""
+board_success_check() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = []
     state["last_success_check"] = now_br_datetime()
-    sync_daily_dashboard(state)
+    sync_daily        state["last_rendered_text"] = ""
+_dashboard(state)
 
 
 
