@@ -33,18 +33,21 @@ USER_AGENT = (
     "Chrome/123.0.0.0 Safari/537.36"
 )
 
-HASHTAG_RULES = {
+HASHTAG_RULES_BODY = {
     "#ingresso": ["ingresso", "ingressos"],
     "#show": ["c6fest", "lollapalooza", "carnauol", "show"],
     "#teatro": ["teatro"],
+    "#entretenimentoviagens": ["cinema", "ingressos", "espetáculo", "espetaculo"],
+    "#standup": ["stand-up", "stand up", "comediante", "humor"],
+}
+
+HASHTAG_RULES_TITLE_ONLY = {
     "#servicos": ["terapia"],
     "#beleza": ["depilação", "depilacao", "axilas", "beleza", "barba"],
     "#comerbeber": ["bloomin onion", "cinnamon oblivion", "vinho", "vinhos", "sobremesa"],
     "#compraspresentes": ["ovo de páscoa", "ovo de pascoa", "vivara"],
     "#educacao": ["graduações", "graduacoes", "graduação", "graduacao", "ead", "aprender", "enem"],
     "#eletrodomesticoseletronicos": ["dell", "lg"],
-    "#entretenimentoviagens": ["cinema", "ingressos", "espetáculo", "espetaculo"],
-    "#standup": ["stand-up", "stand up", "comediante", "humor"],
 }
 
 SILENT_HASHTAGS = {
@@ -378,15 +381,22 @@ def save_latest(offers: List[Dict]) -> bool:
 
 
 def build_smart_hashtags(title: str, description: str, link: str) -> List[str]:
-    text = f"{title}\n{description}".lower()
+    title_text = (title or "").lower()
+    full_text = f"{title}\n{description}".lower()
     tags = []
 
     if "/campanhasdeingresso/" in (link or "").lower():
         tags.append("#campanhasdeingresso")
 
-    for tag, keywords in HASHTAG_RULES.items():
+    for tag, keywords in HASHTAG_RULES_BODY.items():
         for kw in keywords:
-            if kw.lower() in text:
+            if kw.lower() in full_text:
+                tags.append(tag)
+                break
+
+    for tag, keywords in HASHTAG_RULES_TITLE_ONLY.items():
+        for kw in keywords:
+            if kw.lower() in title_text:
                 tags.append(tag)
                 break
 
@@ -428,7 +438,7 @@ def build_caption(title: str, description: str, validity: Optional[str], link: s
         body.append(f"📅 {escape_html(validity)}")
 
     body.append(f"🔗 {escape_html(link)}")
-    body.append("💬 veja os detalhes completos nos comentários abaixo")
+    body.append("💬 Veja os detalhes completos dentro dos comentários.")
 
     full = "\n".join(parts) + "\n\n" + "\n\n".join(body)
     return truncate_text(full, MAX_CAPTION_LENGTH)
@@ -529,6 +539,48 @@ def send_photo_to_channel(img_path: str, caption: str, disable_notification: boo
     except Exception as e:
         log(f"   ❌ erro sendPhoto: {e}")
         return None
+
+
+def send_partner_photo_reply(
+    partner_img_url: str,
+    reply_to_message_id: int,
+    disable_notification: bool,
+) -> bool:
+    if not partner_img_url:
+        return True
+
+    img_path = download_image(partner_img_url)
+    if not img_path:
+        log("   ⚠️ não consegui baixar a imagem do parceiro")
+        return False
+
+    try:
+        with open(img_path, "rb") as photo:
+            response = requests.post(
+                telegram_api("sendPhoto"),
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "reply_to_message_id": reply_to_message_id,
+                    "disable_notification": "true" if disable_notification else "false",
+                },
+                files={"photo": photo},
+                timeout=REQUEST_TIMEOUT,
+            )
+
+        if not response.ok:
+            log(f"   ❌ falha ao enviar foto do parceiro: {response.text}")
+            return False
+
+        log("   ✅ foto do parceiro enviada nos comentários")
+        return True
+    except Exception as e:
+        log(f"   ❌ erro ao enviar foto do parceiro: {e}")
+        return False
+    finally:
+        try:
+            Path(img_path).unlink(missing_ok=True)
+        except Exception:
+            pass
 
 
 def find_group_mirror_message_id(
@@ -639,6 +691,7 @@ def send_description_comment(
     description: str,
     validity: Optional[str],
     link: str,
+    partner_img_url: str,
     channel_message_id: int,
     caption: str,
     sent_at_ts: int,
@@ -655,6 +708,15 @@ def send_description_comment(
     if not group_msg_id:
         log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
         return False
+
+    if partner_img_url:
+        partner_ok = send_partner_photo_reply(
+            partner_img_url=partner_img_url,
+            reply_to_message_id=group_msg_id,
+            disable_notification=disable_notification,
+        )
+        if not partner_ok:
+            log("   ⚠️ seguindo sem a imagem do parceiro")
 
     text = build_comment_text(title, description, validity, link)
 
@@ -729,6 +791,7 @@ def run_consumer() -> None:
         title = offer.get("title") or offer.get("preview_title") or "oferta"
         link = offer.get("link") or offer.get("original_link") or ""
         img_url = offer.get("img_url") or ""
+        partner_img_url = offer.get("partner_img_url") or ""
         validity = offer.get("validity")
         description = offer.get("description") or "descrição não disponível."
 
@@ -782,6 +845,7 @@ def run_consumer() -> None:
             description=description,
             validity=validity,
             link=link,
+            partner_img_url=partner_img_url,
             channel_message_id=channel_message_id,
             caption=caption,
             sent_at_ts=sent_at_ts,
