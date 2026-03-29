@@ -1,5 +1,6 @@
 name: BOT LEOUOL - Consumer
 
+
 on:
   push:
     paths:
@@ -10,83 +11,39 @@ on:
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
+
 permissions:
   contents: write
+
 
 concurrency:
   group: bot-leouol-consumer-main
   cancel-in-progress: false
+
 
 jobs:
   process-offers:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+
     steps:
       - name: checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v5
 
-      - name: garantir branch atualizada
-        run: |
-          git fetch origin main
-          git checkout main
-          git reset --hard origin/main
 
       - name: setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: "pip"
 
-      - name: garantir arquivos json
-        run: |
-          [ -f historico_leouol.json ] || echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
-          [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
-          [ -f latest_offers.json ] || echo '{"last_update":null,"offers":[]}' > latest_offers.json
-          [ -f daily_log.json ] || echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","lines":[]}' > daily_log.json
-          [ -f status_runtime.json ] || cat > status_runtime.json <<'EOF'
-          {
-            "scriptable": {
-              "last_started_at": "",
-              "last_finished_at": "",
-              "status": "",
-              "summary": "",
-              "offers_seen": 0,
-              "new_offers": 0,
-              "pending_count": 0,
-              "last_error": ""
-            },
-            "scraper": {
-              "last_started_at": "",
-              "last_finished_at": "",
-              "status": "",
-              "summary": "",
-              "offers_seen": 0,
-              "new_offers": 0,
-              "pending_count": 0,
-              "last_error": ""
-            },
-            "consumer": {
-              "last_started_at": "",
-              "last_finished_at": "",
-              "status": "",
-              "summary": "",
-              "processed": 0,
-              "sent": 0,
-              "failed": 0,
-              "pending_count": 0,
-              "last_error": ""
-            }
-          }
-          EOF
 
       - name: instalar dependências
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-consumer.txt
+
 
       - name: processar pending offers
         env:
@@ -95,63 +52,21 @@ jobs:
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         run: python bot_leouol.py --pending
 
+
       - name: commitar mudanças
         if: always()
         run: |
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
-          [ -f historico_leouol.json ] || echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
-          [ -f pending_offers.json ] || echo '{"last_update":null,"offers":[]}' > pending_offers.json
-          [ -f latest_offers.json ] || echo '{"last_update":null,"offers":[]}' > latest_offers.json
-          [ -f daily_log.json ] || echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","lines":[]}' > daily_log.json
 
-          [ -f status_runtime.json ] || cat > status_runtime.json <<'EOF'
-          {
-            "scriptable": {
-              "last_started_at": "",
-              "last_finished_at": "",
-              "status": "",
-              "summary": "",
-              "offers_seen": 0,
-              "new_offers": 0,
-              "pending_count": 0,
-              "last_error": ""
-            },
-            "scraper": {
-              "last_started_at": "",
-              "last_finished_at": "",
-              "status": "",
-              "summary": "",
-              "offers_seen": 0,
-              "new_offers": 0,
-              "pending_count": 0,
-              "last_error": ""
-            },
-            "consumer": {
-              "last_started_at": "",
-              "last_finished_at": "",
-              "status": "",
-              "summary": "",
-              "processed": 0,
-              "sent": 0,
-              "failed": 0,
-              "pending_count": 0,
-              "last_error": ""
-            }
-          }
-          EOF
+          git add .
 
-          git add historico_leouol.json pending_offers.json latest_offers.json daily_log.json status_runtime.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
-            echo "nenhuma mudança detectada"
             exit 0
           fi
 
-          git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || {
-            echo "nada para commitar"
-            exit 0
-          }
 
-          git push origin HEAD:main
+          git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || exit 0
+          git push
