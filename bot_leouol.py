@@ -725,17 +725,23 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
         return ("⚪ Sem dados", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or ""))
     if source == "scraper":
         last_success = str(status_block.get("last_success_at") or "").strip()
-        if status_value in {"ok", "sem_novidade"}:
+        if status_value == "ok":
             return ("🟢 Online", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
+        if status_value == "sem_novidade":
+            return ("⚪ Ocioso", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
         if status_value == "erro":
-            extra = f"Último sucesso: {last_success}" if last_success else "Sem sucesso recente registrado"
-            return ("🟡 Pendente", f"{extra} ({detail})", str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
+            extra = f"Último sucesso sem bloqueio: {last_success}" if last_success else "Sem sucesso sem bloqueio registrado"
+            return ("🟡 Bloqueado", f"{extra} • {detail}", str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
         return ("⚪ Sem dados", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
     if source == "consumer":
         if status_value == "running":
             return ("🔵 Ativo", detail, str(status_block.get("last_started_at") or status_block.get("last_finished_at") or ""))
-        if status_value in {"ok", "sem_novidade", "parcial"}:
-            return ("🔵 Ativo", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or status_block.get("last_success_at") or ""))
+        if status_value == "ok":
+            return ("✅ Concluído", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or status_block.get("last_success_at") or ""))
+        if status_value == "sem_novidade":
+            return ("⚪ Ocioso", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or status_block.get("last_success_at") or ""))
+        if status_value == "parcial":
+            return ("🟡 Parcial", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or status_block.get("last_success_at") or ""))
         if status_value == "erro":
             err = str(status_block.get("last_error") or detail or "Erro")
             return ("🔴 Erro", err, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or ""))
@@ -777,6 +783,10 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     co = status.get("consumer", {})
 
 
+    if sc_time == "—" and (sc.get("summary") or sc.get("status") or sc.get("last_finished_at") or sc.get("last_started_at")):
+        sc_msg = str(sc.get("summary") or "Sem log recente.").strip() or "Sem log recente."
+
+
     s_status, s_detail, s_dt = map_operation_status("scriptable", st, s_msg)
     sc_status, sc_detail, sc_dt = map_operation_status("scraper", sc, sc_msg)
     c_status, c_detail, c_dt = map_operation_status("consumer", co, c_msg)
@@ -785,7 +795,10 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     # tempo relativo + fixo
     def fmt(dt_str):
         rel = format_relative_time(dt_str)
-        return f"{rel} ({dt_str})" if dt_str else rel
+        dt = parse_br_datetime(dt_str)
+        if not dt:
+            return rel
+        return f"{str(rel).lower()}, às {dt.strftime('%H:%M')}"
 
 
     # última oferta
@@ -799,13 +812,14 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
 
     dash = [
         f"📊 <b>MONITOR CLUBE UOL</b> — <i>[{escape_html(today)}]</i>",
+        f"<i>atualizado às {escape_html(now_br_time())}</i>",
         "",
         "<b>⚡ ESTADO DAS OPERAÇÕES</b>",
-        f"• <b>Scriptable:</b> {s_status} ({escape_html(fmt(s_dt))})",
+        f"• <b>📱 Scriptable:</b> {s_status} ({escape_html(fmt(s_dt))})",
         f"  └ <i>{escape_html(s_detail)}</i>",
-        f"• <b>Scraper:</b> {sc_status} ({escape_html(fmt(sc_dt))})",
+        f"• <b>🤖 Scraper:</b> {sc_status} ({escape_html(fmt(sc_dt))})",
         f"  └ <i>{escape_html(sc_detail)}</i>",
-        f"• <b>Consumer:</b> {c_status} ({escape_html(fmt(c_dt))})",
+        f"• <b>📦 Consumer:</b> {c_status} ({escape_html(fmt(c_dt))})",
         f"  └ <i>{escape_html(c_detail)}</i>",
         "",
         "<b>🎯 ÚLTIMA OFERTA REGISTRADA</b>",
@@ -813,8 +827,7 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
         f"• Detectada em: {escape_html(last_at)}",
         "",
         "<b>📦 FILA DE PROCESSAMENTO</b>",
-        f"• <b>Pending:</b> {pending_count} ofertas",
-        f"• <b>Status:</b> {'📭 Vazia' if pending_count == 0 else '📥 Em fila'}",
+        f"• {'📭 Vazia' if pending_count == 0 else f'📥 {pending_count} oferta(s) em fila'}",
         "",
         "---",
         "<b>📝 LOGS DE EXECUÇÃO</b>",
@@ -1453,6 +1466,7 @@ def run_consumer() -> None:
             status_value="sem_novidade",
             last_error="",
         )
+        sync_daily_dashboard(load_daily_log())
         return
 
 
@@ -1604,6 +1618,7 @@ def run_consumer() -> None:
         status_value=status_value,
         last_error="",
     )
+    sync_daily_dashboard(load_daily_log())
 
 
     log_separator()
