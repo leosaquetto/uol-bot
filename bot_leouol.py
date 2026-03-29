@@ -568,7 +568,7 @@ def parse_br_datetime(value: str) -> Optional[datetime]:
     if not raw or raw == "—":
         return None
 
-        for fmt in ("%d/%m/%Y às %H:%M", "%d/%m/%Y %H:%M"):
+    for fmt in ("%d/%m/%Y às %H:%M", "%d/%m/%Y %H:%M"):
         try:
             return datetime.strptime(raw, fmt).replace(tzinfo=BR_TZ)
         except Exception:
