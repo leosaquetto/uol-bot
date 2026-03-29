@@ -679,7 +679,7 @@ def format_relative_time(value: str) -> str:
     delta = now_br() - dt
     seconds = max(int(delta.total_seconds()), 0)
     if seconds < 60:
-        return "Há poucos segundos"
+        return "Agora"
     minutes = seconds // 60
     if minutes < 60:
         return f"Há {minutes}min"
@@ -702,6 +702,16 @@ def extract_latest_line(lines: List[str], source: str) -> str:
 
 
 
+def extract_recent_lines(lines: List[str], source: str, limit: int = 4) -> List[str]:
+    selected = []
+    for line in lines:
+        if f"] {source}:" in line:
+            selected.append(line)
+    return selected[-limit:]
+
+
+
+
 def parse_dashboard_line(line: str, source: str) -> Tuple[str, str]:
     if not line:
         return ("—", "Sem atualização registrada.")
@@ -709,6 +719,35 @@ def parse_dashboard_line(line: str, source: str) -> Tuple[str, str]:
     if not match:
         return ("—", line)
     return (match.group(1), match.group(2).strip() or "Sem atualização registrada.")
+
+
+
+
+def format_recent_log_line(source: str, line: str, fallback_dt: str = "") -> str:
+    log_time, log_msg = parse_dashboard_line(line, source)
+    if log_time == "—" and fallback_dt:
+        parsed = parse_br_datetime(fallback_dt)
+        if parsed:
+            log_time = parsed.strftime("%H:%M")
+    lower_msg = str(log_msg).lower()
+    if source == "scriptable":
+        if "sem ofertas novas" in lower_msg or "nenhuma oferta nova" in lower_msg:
+            log_msg = "💤 Varredura completa: sem novidades."
+        elif "rodada iniciada" in lower_msg:
+            log_msg = "⚡ Nova rodada iniciada no iOS."
+    elif source == "scraper":
+        if "sem ofertas novas" in lower_msg:
+            log_msg = "⚪ Em espera (aguardando trigger)."
+        elif "cloudflare" in lower_msg or "405" in lower_msg or "ssl" in lower_msg or "bloqueio" in lower_msg:
+            log_msg = "⚠️ Sob restrição (check cloudflare)."
+    elif source == "consumer":
+        if "pending vazio" in lower_msg:
+            log_msg = "✅ Fila limpa e enviada."
+        elif "enviadas:" in lower_msg:
+            log_msg = "🚚 Processamento concluído."
+        elif "pending atual:" in lower_msg:
+            log_msg = "📦 Fila recebida para processamento."
+    return f"  └ 🕒 {log_time} {log_msg}"
 
 
 
@@ -751,6 +790,51 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
 
 
 
+
+
+
+
+def tg_emoji(tag: str) -> str:
+    mapping = {
+        "monitor": '<tg-emoji emoji-id="5431577498364158238">📊</tg-emoji>',
+        "scriptable": '<tg-emoji emoji-id="5407025283456835913">📱</tg-emoji>',
+        "online": '<tg-emoji emoji-id="5188234920639632382">🟢</tg-emoji>',
+        "ocioso": '<tg-emoji emoji-id="5451959871257713464">💤</tg-emoji>',
+        "scraper": '<tg-emoji emoji-id="5372981976804366741">🤖</tg-emoji>',
+        "espera": '<tg-emoji emoji-id="5451732530048802485">⏳</tg-emoji>',
+        "sucesso": '<tg-emoji emoji-id="5427009714745517609">✅</tg-emoji>',
+        "captura": '<tg-emoji emoji-id="5350460637182993292">🎯</tg-emoji>',
+        "vazio": '<tg-emoji emoji-id="5352896944496728039">📭</tg-emoji>',
+        "atividade": '<tg-emoji emoji-id="5334882760735598374">📝</tg-emoji>',
+        "alerta": '<tg-emoji emoji-id="5447644880824181073">⚠️</tg-emoji>',
+        "bussola": '<tg-emoji emoji-id="5433825729060018456">🧭</tg-emoji>',
+        "foguete": '<tg-emoji emoji-id="5445284980978621387">🚀</tg-emoji>',
+    }
+    return mapping.get(tag, "")
+
+
+
+
+def compute_monitor_mood(scriptable_status: str, scraper_status: str, consumer_status: str, pending_count: int) -> str:
+    if "Bloqueado" in scraper_status or "restrição" in scraper_status.lower() or "Erro" in scraper_status:
+        return "Atenção no scraper"
+    if pending_count > 0 or "Ativo" in consumer_status:
+        return "Fila aquecida"
+    if "Online" in scriptable_status and ("Ocioso" in scraper_status or "espera" in scraper_status.lower()) and ("Ocioso" in consumer_status or "Pronto" in consumer_status):
+        return "Tudo calmo"
+    return "Monitorando normalmente"
+
+
+
+
+def compute_monitor_confidence(scriptable_status: str, scraper_status: str, consumer_status: str) -> str:
+    if "Erro" in scriptable_status or "Erro" in scraper_status or "Erro" in consumer_status:
+        return "Revisar agora"
+    if "Bloqueado" in scraper_status or "restrição" in scraper_status.lower():
+        return "Parcial"
+    if "Online" in scriptable_status:
+        return "Alta"
+    return "Moderada"
 
 
 
@@ -835,7 +919,8 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
         dt = parse_br_datetime(dt_str)
         if not dt:
             return rel
-        return f"{str(rel).lower()} às {dt.strftime('%H:%M')}"
+        rel_txt = 'agora' if str(rel).lower() == 'agora' else str(rel).lower()
+        return f"{rel_txt} às {dt.strftime('%H:%M')}"
 
 
     # última oferta
@@ -846,29 +931,38 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
 
 
     dash = [
-        f"📊 <b>MONITOR CLUBE UOL</b> [{escape_html(today)}]",
+        f"{tg_emoji('monitor')} <b>Monitor Clube Uol</b> [{escape_html(today)}]",
         f"<code>Atualizado {escape_html(now_br_time())}</code>",
         "",
-        "<b>⚡ ESTADO DAS OPERAÇÕES</b>",
-        f"• <b>📱 Scriptable:</b> {s_status} ({escape_html(fmt(s_dt))})",
-        f"  └ <i>Status: {escape_html(s_detail)}</i>",
-        f"• <b>🤖 Scraper:</b> {sc_status} ({escape_html(fmt(sc_dt))})",
-        f"  └ <i>Status: {escape_html(sc_detail)}</i>",
-        f"• <b>📦 Consumer:</b> {c_status} ({escape_html(fmt(c_dt))})",
-        f"  └ <i>Status: {escape_html(c_detail)}</i>",
+        f"<i>🌤️ Humor do sistema: {compute_monitor_mood(s_status, sc_status, c_status, pending_count)}</i>",
+        f"<i>{tg_emoji('bussola')} Leitura do ambiente: {compute_monitor_confidence(s_status, sc_status, c_status)}</i>",
         "",
-        "<b>🎯 ÚLTIMA OFERTA REGISTRADA</b>",
+        "<b>Estado das operações</b>",
+        f"• <b>{tg_emoji('scriptable')} Scriptable:</b> {s_status} ({escape_html(fmt(s_dt))})",
+        f"  └ <i>{'💤 Sem ofertas novas no iOS' if ('nenhuma oferta nova' in str(s_detail).lower() or 'sem ofertas novas' in str(s_detail).lower()) else escape_html(s_detail)}{' • sustentando o monitor' if ('Online' in s_status and ('Em espera' in (('🟠 Sob restrição' if 'Bloqueado' in sc_status else sc_status).replace('⚪ Ocioso', '⚪ Em espera')) or 'restrição' in (('🟠 Sob restrição' if 'Bloqueado' in sc_status else sc_status).lower()))) else ''}</i>",
+        f"• <b>{tg_emoji('scraper')} Scraper:</b> {('🟠 Sob restrição' if 'Bloqueado' in sc_status else sc_status).replace('⚪ Ocioso', '⚪ Em espera')} ({escape_html(fmt(sc_dt))})",
+        f"  └ <i>{('⏳ Sem novidades há ' + str(format_relative_time(sc_dt)).lower().replace('há ', '') + ' • aguardando próxima leitura') if ('sem ofertas novas' in str(sc_detail).lower() and format_relative_time(sc_dt) not in {'Sem dados', 'Agora'}) else ('⏳ Aguardando próxima leitura' if 'sem ofertas novas' in str(sc_detail).lower() else ('⚠️ ' + escape_html(sc_detail) if 'check cloudflare' in str(sc_detail).lower() else escape_html(sc_detail)))}</i>",
+        f"• <b>📦 Consumer:</b> {('📦 Pronto' if 'Ocioso' in c_status and pending_count == 0 else c_status)} ({escape_html(fmt(c_dt))})",
+        f"  └ <i>{'✅ Fila processada' if 'pending vazio' in str(c_detail).lower() else escape_html(c_detail)}</i>",
+        "",
+        f"<b>{tg_emoji('captura')} Última captura</b>",
         f"• <code>{escape_html(last_title)}</code>",
-        f"• Detectada em: {escape_html(last_at)}",
+        f"• 🕒 Detectada em: {escape_html(last_at)}",
         "",
-        "<b>📦 FILA DE PROCESSAMENTO</b>",
-        f"• <b>Status:</b> {'🚀 ' + str(pending_count) + ' ofertas aguardando' if pending_count > 0 else '📭 Fila limpa'}",
+        "<b>Fila de processamento</b>",
+        f"• <b>Status:</b> {(tg_emoji('foguete') + ' ' + str(pending_count) + ' ofertas aguardando') if pending_count > 0 else (tg_emoji('vazio') + ' Fila limpa')}",
         "",
-        "---",
-        "<b>📝 LOGS DE EXECUÇÃO</b>",
-        f"<code>📱 [Scriptable] {s_time} - {escape_html(s_msg)}</code>",
-        f"<code>🤖 [Scraper]    {sc_time} - {escape_html(sc_msg)}</code>",
-        f"<code>📦 [Consumer]   {c_time} - {escape_html(c_msg)}</code>",
+        "",
+        f"<b>{tg_emoji('atividade')} Atividade recente</b>",
+        "",
+        f"{tg_emoji('scriptable')} Scriptable",
+        *[format_recent_log_line("scriptable", l, s_dt) for l in extract_recent_lines(lines, "scriptable")],
+        "",
+        f"{tg_emoji('scraper')} Scraper",
+        *[format_recent_log_line("scraper", l, sc_dt) for l in extract_recent_lines(lines, "scraper")],
+        "",
+        f"📦 Consumer • pronto para agir",
+        *[format_recent_log_line("consumer", l, c_dt) for l in extract_recent_lines(lines, "consumer")],
     ]
 
 
@@ -923,11 +1017,24 @@ def sync_daily_dashboard(state: Dict) -> None:
 
 
     try:
+        # apagar mensagem anterior para manter só o monitor atual
+        try:
+            requests.post(
+                telegram_api("deleteMessage"),
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "message_id": state["message_id"],
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+        except Exception:
+            pass
+
+
         resp = requests.post(
-            telegram_api("editMessageText"),
+            telegram_api("sendMessage"),
             data={
                 "chat_id": GRUPO_COMENTARIO_ID,
-                "message_id": state["message_id"],
                 "text": text,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": "true",
@@ -935,6 +1042,8 @@ def sync_daily_dashboard(state: Dict) -> None:
             timeout=REQUEST_TIMEOUT,
         )
         if resp.ok:
+            data = resp.json()
+            state["message_id"] = data.get("result", {}).get("message_id")
             save_daily_log(state)
             log("✅ dashboard diário atualizado")
         else:
