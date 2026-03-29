@@ -693,21 +693,20 @@ def build_dashboard_text(state: Dict) -> str:
 
 
     body = []
-
-
+    labels = {
+        "scriptable": "scriptable",
+        "scraper": "scraper",
+        "consumer": "consumer",
+    }
     for source in ["scriptable", "scraper", "consumer"]:
         source_lines = grouped[source]
         if not source_lines:
             continue
-
-
-        body.append(f"<b>{source}</b>")
-        for line in source_lines[-10:]:
-            cleaned = re.sub(rf"\] {source}: ", "] ", line)
-            body.append(escape_html(cleaned))
+        last_line = source_lines[-1]
+        cleaned = re.sub(rf"\] {source}: ", "] ", last_line)
+        body.append(f"<b>{labels[source]}</b>")
+        body.append(escape_html(cleaned))
         body.append("")
-
-
     if not body:
         body = ["sem registros ainda"]
 
@@ -797,8 +796,13 @@ def append_dashboard_line(source: str, status_line: str) -> None:
 
 
     line = f"[{now_br_time()}] {source}: {status_line}"
-    state["lines"].append(line)
-    state["lines"] = state["lines"][-30:]
+    filtered_lines = []
+    for existing in state.get("lines", []):
+        if f"] {source}:" in existing:
+            continue
+        filtered_lines.append(existing)
+    filtered_lines.append(line)
+    state["lines"] = filtered_lines[-12:]
 
 
     sync_daily_dashboard(state)
