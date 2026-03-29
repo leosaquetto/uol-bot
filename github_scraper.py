@@ -253,14 +253,16 @@ def save_status_runtime(data: Dict) -> None:
 
 def status_scraper_start() -> None:
     status = load_status_runtime()
+    prev = status.get("scraper", {})
     status["scraper"] = {
         "last_started_at": now_br_datetime(),
-        "last_finished_at": status["scraper"].get("last_finished_at", ""),
+        "last_finished_at": prev.get("last_finished_at", ""),
+        "last_success_at": prev.get("last_success_at", ""),
         "status": "running",
         "summary": "scraper iniciado",
         "offers_seen": 0,
         "new_offers": 0,
-        "pending_count": status["scraper"].get("pending_count", 0),
+        "pending_count": prev.get("pending_count", 0),
         "last_error": "",
     }
     save_status_runtime(status)
@@ -277,9 +279,14 @@ def status_scraper_finish(
     last_error: str = "",
 ) -> None:
     status = load_status_runtime()
+    prev = status.get("scraper", {})
+    last_success_at = prev.get("last_success_at", "")
+    if status_value in ("ok", "sem_novidade"):
+        last_success_at = now_br_datetime()
     status["scraper"] = {
-        "last_started_at": status["scraper"].get("last_started_at", ""),
+        "last_started_at": prev.get("last_started_at", ""),
         "last_finished_at": now_br_datetime(),
+        "last_success_at": last_success_at,
         "status": status_value,
         "summary": summary,
         "offers_seen": offers_seen,
@@ -300,79 +307,119 @@ def telegram_api(method: str) -> str:
 
 def build_dashboard_text(state: Dict) -> str:
     today = state["date"] or now_br_date()
-    last_success = state["last_success_check"] or "—"
     last_new = state["last_new_offer_at"] or "—"
-    pending_count = state["pending_count"]
+    pending_count = state.get("pending_count", 0)
     last_consumer = state["last_consumer_run"] or "—"
 
+    status = load_status_runtime()
+    sc = status.get("scraper", {})
+    s = status.get("scriptable", {})
+    co = status.get("consumer", {})
 
-    header = [
-        f"📊 <b>relatório diário uol - {escape_html(today)}</b>",
+    def fmt_time(dt_str: str) -> str:
+        raw = str(dt_str or "").strip()
+        if not raw or raw == "—":
+            return ""
+        if " às " in raw:
+            return raw.split(" às ")[-1]
+        return raw
+
+    # Scraper status
+    sc_status_val = str(sc.get("status", "")).strip().lower()
+    sc_finished = sc.get("last_finished_at", "") or sc.get("last_started_at", "")
+    sc_success = sc.get("last_success_at", "")
+    if sc_status_val == "erro":
+        sc_icon = "⚠️"
+        sc_label = "Bloqueado"
+        sc_note = f" (último sucesso: {fmt_time(sc_success) or '—'})" if sc_success else ""
+    elif sc_status_val == "ok":
+        sc_icon = "✅"
+        sc_label = "Online"
+        new_c = sc.get("new_offers", 0) or 0
+        sc_note = f" ({new_c} novas)" if new_c else ""
+    elif sc_status_val == "sem_novidade":
+        sc_icon = "⚪"
+        sc_label = "Em espera"
+        sc_note = ""
+    elif sc_status_val == "running":
+        sc_icon = "🔵"
+        sc_label = "Rodando"
+        sc_note = ""
+    else:
+        sc_icon = "⚪"
+        sc_label = "Sem dados"
+        sc_note = ""
+
+    # Scriptable status — detect stale "running"
+    s_status_val = str(s.get("status", "")).strip().lower()
+    s_finished = s.get("last_finished_at", "") or s.get("last_started_at", "")
+    if s_status_val == "running":
+        started = s.get("last_started_at", "")
+        finished = s.get("last_finished_at", "")
+        if not finished or (started and finished and started > finished):
+            s_icon = "⚠️"
+            s_label = "Status incerto"
+        else:
+            s_icon = "🔵"
+            s_label = "Rodando"
+    elif s_status_val in ("ok", "sem_novidade"):
+        s_icon = "🟢"
+        s_label = "Online"
+    elif s_status_val == "erro":
+        s_icon = "🔴"
+        s_label = "Erro"
+    else:
+        s_icon = "⚪"
+        s_label = "Sem dados"
+
+    # Consumer status
+    co_status_val = str(co.get("status", "")).strip().lower()
+    co_finished = co.get("last_finished_at", "") or co.get("last_started_at", "")
+    co_summary = str(co.get("summary", "")).strip()
+    if co_status_val == "sem_novidade":
+        co_icon = "✅"
+        co_label = "Fila limpa"
+        co_note = ""
+    elif co_status_val == "ok":
+        co_icon = "✅"
+        co_label = "Concluído"
+        co_note = f" — {co_summary}" if co_summary else ""
+    elif co_status_val == "running":
+        co_icon = "🔵"
+        co_label = "Ativo"
+        co_note = ""
+    elif co_status_val == "parcial":
+        co_icon = "🟡"
+        co_label = "Parcial"
+        co_note = f" — {co_summary}" if co_summary else ""
+    elif co_status_val == "erro":
+        co_icon = "🔴"
+        co_label = "Erro"
+        co_note = f" — {co.get('last_error', '') or co_summary}"
+    else:
+        co_icon = "⚪"
+        co_label = "Sem dados"
+        co_note = ""
+
+    pending_line = f"🚀 {pending_count} oferta(s) aguardando" if pending_count > 0 else "📭 Limpa"
+
+    def fmt_line(icon: str, label: str, note: str, dt: str) -> str:
+        time_part = f" <i>({escape_html(fmt_time(dt))})</i>" if fmt_time(dt) else ""
+        return f"{icon} {escape_html(label)}{escape_html(note)}{time_part}"
+
+    body = [
+        f"📊 <b>Relatório diário — {escape_html(today)}</b>",
         "",
-        f"última verificação com sucesso: {escape_html(last_success)}",
-        f"última oferta nova encontrada: {escape_html(last_new)}",
-        f"pending atual: {escape_html(str(pending_count))}",
-        f"última execução do consumer: {escape_html(last_consumer)}",
+        f"📱 <b>Scriptable:</b> " + fmt_line(s_icon, s_label, "", s_finished),
+        f"🤖 <b>Scraper:</b> " + fmt_line(sc_icon, sc_label, sc_note, sc_finished),
+        f"📦 <b>Consumer:</b> " + fmt_line(co_icon, co_label, co_note, co_finished),
         "",
+        f"🎯 <b>Última oferta nova:</b> {escape_html(last_new)}",
+        f"📬 <b>Fila:</b> {escape_html(pending_line)}",
+        f"🕐 <b>Último consumer:</b> {escape_html(last_consumer)}",
     ]
 
-
-    groups: Dict[str, List[str]] = {
-        "consumer": [],
-        "scraper": [],
-        "scriptable": [],
-        "outros": [],
-    }
-
-
-    for raw_line in state.get("lines", [])[-30:]:
-        line = str(raw_line or "").strip()
-        if not line:
-            continue
-
-
-        if "]: " in line:
-            _, rest = line.split("]: ", 1)
-        else:
-            rest = line
-
-
-        if ": " in rest:
-            source, _message = rest.split(": ", 1)
-            source = source.strip().lower()
-            rendered = line.replace(f"{source}: ", "", 1)
-        else:
-            source = "outros"
-            rendered = line
-
-
-        if source not in groups:
-            source = "outros"
-
-
-        groups[source].append(escape_html(rendered))
-
-
-    body: List[str] = []
-    ordered_sources = ["consumer", "scraper", "scriptable", "outros"]
-
-
-    for source in ordered_sources:
-        entries = groups[source]
-        if not entries:
-            continue
-        body.append(f"<b>{escape_html(source)}</b>")
-        body.extend(entries)
-        body.append("")
-
-
-    if not body:
-        body = ["sem registros ainda"]
-    elif body[-1] == "":
-        body.pop()
-
-
-    text = "\n".join(header + body)
+    text = "\n".join(body)
     if len(text) > 3900:
         text = text[:3900]
     return text
@@ -464,7 +511,6 @@ def sync_daily_dashboard(state: Dict) -> None:
 def append_dashboard_line(source: str, status_line: str) -> None:
     state = load_daily_log()
 
-
     if state["date"] != now_br_date():
         state = {
             "date": now_br_date(),
@@ -477,11 +523,10 @@ def append_dashboard_line(source: str, status_line: str) -> None:
             "lines": [],
         }
 
-
     line = f"[{now_br_time()}] {source}: {status_line}"
-    state["lines"].append(line)
-    state["lines"] = state["lines"][-30:]
-
+    filtered = [l for l in state.get("lines", []) if f"] {source}:" not in l]
+    filtered.append(line)
+    state["lines"] = filtered[-30:]
 
     sync_daily_dashboard(state)
 
