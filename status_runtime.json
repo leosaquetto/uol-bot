@@ -20,9 +20,9 @@
     "last_error": "falha ao obter html da lista"
   },
   "consumer": {
-    "last_started_at": "29/03/2026 às 10:17",
-    "last_finished_at": "29/03/2026 às 10:17",
-    "last_success_at": "29/03/2026 às 10:17",
+    "last_started_at": "29/03/2026 às 11:02",
+    "last_finished_at": "29/03/2026 às 11:02",
+    "last_success_at": "29/03/2026 às 11:02",
     "status": "sem_novidade",
     "summary": "pending vazio",
     "processed": 0,
@@ -30,5 +30,10 @@
     "failed": 0,
     "pending_count": 0,
     "last_error": ""
+  },
+  "global": {
+    "last_offer_title": "",
+    "last_offer_at": "",
+    "last_offer_id": ""
   }
 }
