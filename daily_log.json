@@ -1,10 +1,10 @@
 {
   "date": "29/03/2026",
-  "message_id": 460,
+  "message_id": 461,
   "last_success_check": "29/03/2026 às 00:48",
   "last_new_offer_at": "",
   "pending_count": 0,
-  "last_consumer_run": "29/03/2026 às 00:37",
+  "last_consumer_run": "29/03/2026 às 00:50",
   "lines": [
     "[00:00] scriptable: ▶️ rodada iniciada",
     "[00:00] scriptable: 💤 sem ofertas novas",
@@ -12,8 +12,8 @@
     "[00:20] scriptable: 💤 sem ofertas novas",
     "[00:32] scraper: ▶️ rodada iniciada",
     "[00:33] scraper: 💤 sem ofertas novas",
-    "[00:37] consumer: 📭 pending vazio",
     "[00:48] scriptable: ▶️ rodada iniciada",
-    "[00:48] scriptable: 💤 sem ofertas novas"
+    "[00:48] scriptable: 💤 sem ofertas novas",
+    "[00:50] consumer: 📭 pending vazio"
   ]
 }
