@@ -882,12 +882,32 @@ def get_last_offer_snapshot(status: Dict) -> Tuple[str, str]:
 
 
 
+def format_elapsed_since(value: str) -> str:
+    dt = parse_br_datetime(value)
+    if not dt:
+        return "sem oferta nova recente"
+    delta = now_br() - dt
+    seconds = max(int(delta.total_seconds()), 0)
+    if seconds < 60:
+        return f"{seconds}s sem oferta nova"
+    minutes = seconds // 60
+    if minutes < 60:
+        return f"{minutes}min sem oferta nova"
+    hours = minutes // 60
+    rem_minutes = minutes % 60
+    if hours < 24:
+        return f"{hours}h{rem_minutes:02d}m sem oferta nova"
+    days = hours // 24
+    rem_hours = hours % 24
+    return f"{days}d{rem_hours:02d}h sem oferta nova"
+
+
+
+
 def format_monitor_dashboard(state: Dict, status: Dict) -> str:
-    today = state.get("date") or now_br_date()
     lines = state.get("lines", [])
 
 
-    # extrair logs
     s_line = extract_latest_line(lines, "scriptable")
     sc_line = extract_latest_line(lines, "scraper")
     c_line = extract_latest_line(lines, "consumer")
@@ -898,7 +918,6 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     c_time, c_msg = parse_dashboard_line(c_line, "consumer")
 
 
-    # status estruturado
     st = status.get("scriptable", {})
     sc = status.get("scraper", {})
     co = status.get("consumer", {})
@@ -913,57 +932,42 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     c_status, c_detail, c_dt = map_operation_status("consumer", co, c_msg)
 
 
-    # tempo relativo + fixo
-    def fmt(dt_str):
+    def fmt(dt_str: str) -> str:
         rel = format_relative_time(dt_str)
         dt = parse_br_datetime(dt_str)
         if not dt:
-            return rel
-        rel_txt = 'agora' if str(rel).lower() == 'agora' else str(rel).lower()
+            return str(rel).lower() if rel != "Sem dados" else rel
+        rel_txt = "agora" if str(rel).lower() == "agora" else str(rel).lower()
         return f"{rel_txt} às {dt.strftime('%H:%M')}"
 
 
-    # última oferta
     last_title, last_at = get_last_offer_snapshot(status)
-
-
     pending_count = state.get("pending_count", 0)
 
 
+    scraper_line_status = ("🟠 Sob restrição" if "Bloqueado" in sc_status else sc_status).replace("⚪ Ocioso", "⚪ Em espera")
+    consumer_line_status = "✅ Pronto" if pending_count == 0 and ("Ocioso" in c_status or "Concluído" in c_status or "sem_novidade" in str(co.get("status", "")).lower()) else c_status
+
+
     dash = [
-        f"{tg_emoji('monitor')} <b>Monitor Clube Uol</b> [{escape_html(today)}]",
-        f"<code>Atualizado {escape_html(now_br_time())}</code>",
+        f"{tg_emoji('monitor')} <b>Monitor Clube Uol</b> ({escape_html(now_br_time())})",
         "",
-        f"<b>⚡ Estado das operações</b>",
-        f"• <b>{tg_emoji('scriptable')} Scriptable</b>",
-        f"  └ {s_status} <i>({escape_html(fmt(s_dt))})</i>",
-        f"  └ <i>{'💤 Sem ofertas novas no iOS' if ('nenhuma oferta nova' in str(s_detail).lower() or 'sem ofertas novas' in str(s_detail).lower()) else escape_html(s_detail)}{' • sustentando o monitor' if ('Online' in s_status and ('Em espera' in (('🟠 Sob restrição' if 'Bloqueado' in sc_status else sc_status).replace('⚪ Ocioso', '⚪ Em espera')) or 'restrição' in (('🟠 Sob restrição' if 'Bloqueado' in sc_status else sc_status).lower()))) else ''}</i>",
+        f"{tg_emoji('scriptable')} <b>Scriptable</b> {escape_html(s_status)} <i>({escape_html(fmt(s_dt))})</i>",
+        f"{tg_emoji('scraper')} <b>Scraper</b> {escape_html(scraper_line_status)} <i>({escape_html(fmt(sc_dt))})</i>",
+        f"📦 <b>Consumer</b> {escape_html(consumer_line_status)} <i>({escape_html(fmt(c_dt))})</i>",
         "",
-        f"• <b>{tg_emoji('scraper')} Scraper</b>",
-        f"  └ {('🟠 Sob restrição' if 'Bloqueado' in sc_status else sc_status).replace('⚪ Ocioso', '⚪ Em espera')} <i>({escape_html(fmt(sc_dt))})</i>",
-        f"  └ <i>{('⏳ Sem novidades há ' + str(format_relative_time(sc_dt)).lower().replace('há ', '') + ' • aguardando próxima leitura') if ('sem ofertas novas' in str(sc_detail).lower() and format_relative_time(sc_dt) not in {'Sem dados', 'Agora'}) else ('⏳ Aguardando próxima leitura' if 'sem ofertas novas' in str(sc_detail).lower() else ('⚠️ ' + escape_html(sc_detail) if 'check cloudflare' in str(sc_detail).lower() else escape_html(sc_detail)))}</i>",
+        f"{tg_emoji('captura')} <b>Última captura</b> 🕒 {escape_html(last_at)}",
+        f"↳ <code>{escape_html(last_title)}</code>",
+        f"⏳ <i>{escape_html(format_elapsed_since(last_at))}</i>",
         "",
-        f"• <b>📦 Consumer</b>",
-        f"  └ {('📦 Pronto' if 'Ocioso' in c_status and pending_count == 0 else c_status)} <i>({escape_html(fmt(c_dt))})</i>",
-        f"  └ <i>{'✅ Fila processada' if 'pending vazio' in str(c_detail).lower() else escape_html(c_detail)}</i>",
+        f"📦 <b>Fila de processamento:</b> {(tg_emoji('foguete') + ' ' + str(pending_count) + ' ofertas aguardando') if pending_count > 0 else (tg_emoji('vazio') + ' Limpa')}",
         "",
-        f"<b>{tg_emoji('captura')} Última captura</b>",
-        f"• <code>{escape_html(last_title)}</code>",
-        f"• 🕒 Detectada em: {escape_html(last_at)}",
-        "",
-        "<b>📦 Fila de processamento</b>",
-        f"• {(tg_emoji('foguete') + ' ' + str(pending_count) + ' ofertas aguardando') if pending_count > 0 else (tg_emoji('vazio') + ' Fila limpa')}",
-        "",
-
-
-        f"<i>🌤️ Humor do sistema: {compute_monitor_mood(s_status, sc_status, c_status, pending_count)}</i>",
-        f"<i>{tg_emoji('bussola')} Leitura do ambiente: {compute_monitor_confidence(s_status, sc_status, c_status)}</i>",
+        f"🌤️ <b>Humor do sistema:</b> {escape_html(compute_monitor_mood(s_status, sc_status, c_status, pending_count))}",
+        f"{tg_emoji('bussola')} <b>Leitura do ambiente:</b> {escape_html(compute_monitor_confidence(s_status, sc_status, c_status))}",
     ]
 
 
     return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
-
-
 
 
 
