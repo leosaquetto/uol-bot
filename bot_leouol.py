@@ -563,6 +563,7 @@ def load_status_runtime() -> Dict:
         "consumer": {
             "last_started_at": "",
             "last_finished_at": "",
+            "last_success_at": "",
             "status": "",
             "summary": "",
             "processed": 0,
@@ -570,6 +571,11 @@ def load_status_runtime() -> Dict:
             "failed": 0,
             "pending_count": 0,
             "last_error": "",
+        },
+        "global": {
+            "last_offer_title": "",
+            "last_offer_at": "",
+            "last_offer_id": "",
         },
     }
     if not path.exists():
@@ -611,6 +617,7 @@ def status_consumer_start(pending_count: int) -> None:
     status["consumer"] = {
         "last_started_at": now_br_datetime(),
         "last_finished_at": status["consumer"].get("last_finished_at", ""),
+        "last_success_at": status["consumer"].get("last_success_at", ""),
         "status": "running",
         "summary": "consumer iniciado",
         "processed": 0,
@@ -637,6 +644,7 @@ def status_consumer_finish(
     status["consumer"] = {
         "last_started_at": status["consumer"].get("last_started_at", ""),
         "last_finished_at": now_br_datetime(),
+        "last_success_at": now_br_datetime() if last_error == "" else status["consumer"].get("last_success_at", ""),
         "status": status_value,
         "summary": summary,
         "processed": processed,
@@ -650,69 +658,177 @@ def status_consumer_finish(
 
 
 
+def parse_br_datetime(value: str) -> Optional[datetime]:
+    raw = str(value or "").strip()
+    if not raw or raw == "—":
+        return None
+    for fmt in ("%d/%m/%Y às %H:%M", "%d/%m/%Y %H:%M"):
+        try:
+            return datetime.strptime(raw, fmt).replace(tzinfo=BR_TZ)
+        except Exception:
+            pass
+    return None
+
+
+
+
+def format_relative_time(value: str) -> str:
+    dt = parse_br_datetime(value)
+    if not dt:
+        return "Sem dados"
+    delta = now_br() - dt
+    seconds = max(int(delta.total_seconds()), 0)
+    if seconds < 60:
+        return "Há poucos segundos"
+    minutes = seconds // 60
+    if minutes < 60:
+        return f"Há {minutes}min"
+    hours = minutes // 60
+    if hours < 24:
+        return f"Há {hours}h"
+    days = hours // 24
+    return f"Há {days}d"
+
+
+
+
+def extract_latest_line(lines: List[str], source: str) -> str:
+    latest = ""
+    for line in lines:
+        if f"] {source}:" in line:
+            latest = line
+    return latest
+
+
+
+
+def parse_dashboard_line(line: str, source: str) -> Tuple[str, str]:
+    if not line:
+        return ("—", "Sem atualização registrada.")
+    match = re.match(rf"^\[(\d{{2}}:\d{{2}})\] {source}:\s*(.*)$", line)
+    if not match:
+        return ("—", line)
+    return (match.group(1), match.group(2).strip() or "Sem atualização registrada.")
+
+
+
+
+def map_operation_status(source: str, status_block: Dict, fallback_detail: str) -> Tuple[str, str, str]:
+    status_value = str(status_block.get("status") or "").strip().lower()
+    detail = str(status_block.get("summary") or fallback_detail or "Sem atualização registrada.").strip()
+    if source == "scriptable":
+        if status_value in {"ok", "running", "sem_novidade"}:
+            return ("🟢 Online", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or ""))
+        if status_value == "erro":
+            err = str(status_block.get("last_error") or detail or "Erro")
+            return ("🔴 Erro", err, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or ""))
+        return ("⚪ Sem dados", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or ""))
+    if source == "scraper":
+        last_success = str(status_block.get("last_success_at") or "").strip()
+        if status_value in {"ok", "sem_novidade"}:
+            return ("🟢 Online", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
+        if status_value == "erro":
+            extra = f"Último sucesso: {last_success}" if last_success else "Sem sucesso recente registrado"
+            return ("🟡 Pendente", f"{extra} ({detail})", str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
+        return ("⚪ Sem dados", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
+    if source == "consumer":
+        if status_value == "running":
+            return ("🔵 Ativo", detail, str(status_block.get("last_started_at") or status_block.get("last_finished_at") or ""))
+        if status_value in {"ok", "sem_novidade", "parcial"}:
+            return ("🔵 Ativo", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or status_block.get("last_success_at") or ""))
+        if status_value == "erro":
+            err = str(status_block.get("last_error") or detail or "Erro")
+            return ("🔴 Erro", err, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or ""))
+        return ("⚪ Sem dados", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or ""))
+    return ("⚪ Sem dados", detail, "")
+
+
+
+
+
+
+
+
 def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
 
 
-def build_dashboard_text(state: Dict) -> str:
-    today = state["date"] or now_br_date()
+def format_monitor_dashboard(state: Dict, status: Dict) -> str:
+    today = state.get("date") or now_br_date()
+    lines = state.get("lines", [])
 
 
-    last_success = state["last_success_check"] or "—"
-    last_new = state["last_new_offer_at"] or "—"
-    pending_count = state["pending_count"]
-    last_consumer = state["last_consumer_run"] or "—"
+    # extrair logs
+    s_line = extract_latest_line(lines, "scriptable")
+    sc_line = extract_latest_line(lines, "scraper")
+    c_line = extract_latest_line(lines, "consumer")
 
 
-    header = [
-        f"📊 <b>relatório diário uol - {escape_html(today)}</b>",
+    s_time, s_msg = parse_dashboard_line(s_line, "scriptable")
+    sc_time, sc_msg = parse_dashboard_line(sc_line, "scraper")
+    c_time, c_msg = parse_dashboard_line(c_line, "consumer")
+
+
+    # status estruturado
+    st = status.get("scriptable", {})
+    sc = status.get("scraper", {})
+    co = status.get("consumer", {})
+
+
+    s_status, s_detail, s_dt = map_operation_status("scriptable", st, s_msg)
+    sc_status, sc_detail, sc_dt = map_operation_status("scraper", sc, sc_msg)
+    c_status, c_detail, c_dt = map_operation_status("consumer", co, c_msg)
+
+
+    # tempo relativo + fixo
+    def fmt(dt_str):
+        rel = format_relative_time(dt_str)
+        return f"{rel} ({dt_str})" if dt_str else rel
+
+
+    # última oferta
+    global_block = status.get("global", {})
+    last_title = global_block.get("last_offer_title") or "Não disponível"
+    last_at = global_block.get("last_offer_at") or "—"
+
+
+    pending_count = state.get("pending_count", 0)
+
+
+    dash = [
+        f"📊 <b>MONITOR CLUBE UOL</b> — <i>[{escape_html(today)}]</i>",
         "",
-        f"última leitura do site sem bloqueio: {escape_html(last_success)}",
-        f"última oferta nova encontrada: {escape_html(last_new)}",
-        f"pending atual: {escape_html(str(pending_count))}",
-        f"última execução do consumer: {escape_html(last_consumer)}",
+        "<b>⚡ ESTADO DAS OPERAÇÕES</b>",
+        f"• <b>Scriptable:</b> {s_status} ({escape_html(fmt(s_dt))})",
+        f"  └ <i>{escape_html(s_detail)}</i>",
+        f"• <b>Scraper:</b> {sc_status} ({escape_html(fmt(sc_dt))})",
+        f"  └ <i>{escape_html(sc_detail)}</i>",
+        f"• <b>Consumer:</b> {c_status} ({escape_html(fmt(c_dt))})",
+        f"  └ <i>{escape_html(c_detail)}</i>",
         "",
+        "<b>🎯 ÚLTIMA OFERTA REGISTRADA</b>",
+        f"• <code>{escape_html(last_title)}</code>",
+        f"• Detectada em: {escape_html(last_at)}",
+        "",
+        "<b>📦 FILA DE PROCESSAMENTO</b>",
+        f"• <b>Pending:</b> {pending_count} ofertas",
+        f"• <b>Status:</b> {'📭 Vazia' if pending_count == 0 else '📥 Em fila'}",
+        "",
+        "---",
+        "<b>📝 LOGS DE EXECUÇÃO</b>",
+        f"<code>[Scriptable]</code> {s_time} - {escape_html(s_msg)}",
+        f"<code>[Scraper]</code> {sc_time} - {escape_html(sc_msg)}",
+        f"<code>[Consumer]</code> {c_time} - {escape_html(c_msg)}",
     ]
 
 
-    lines = state.get("lines", [])
-    grouped = {
-        "scriptable": [],
-        "scraper": [],
-        "consumer": [],
-    }
+    return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
 
-    for line in lines:
-        for source in grouped.keys():
-            if f"] {source}:" in line:
-                grouped[source].append(line)
-                break
 
 
-    body = []
-    labels = {
-        "scriptable": "scriptable",
-        "scraper": "scraper",
-        "consumer": "consumer",
-    }
-    for source in ["scriptable", "scraper", "consumer"]:
-        source_lines = grouped[source]
-        if not source_lines:
-            continue
-        last_line = source_lines[-1]
-        cleaned = re.sub(rf"\] {source}: ", "] ", last_line)
-        body.append(f"<b>{labels[source]}</b>")
-        body.append(escape_html(cleaned))
-        body.append("")
-    if not body:
-        body = ["sem registros ainda"]
-
-
-    text = "\n".join(header + body)
-    return truncate_text(text, MAX_DASHBOARD_LENGTH)
 
 
 
@@ -722,14 +838,16 @@ def sync_daily_dashboard(state: Dict) -> None:
         return
 
 
-    text = build_dashboard_text(state)
+    status = load_status_runtime()
+    text = format_monitor_dashboard(state, status)
 
 
     if state["date"] != now_br_date() or not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-20:]
-        text = build_dashboard_text(state)
+        status = load_status_runtime()
+        text = format_monitor_dashboard(state, status)
 
 
         try:
@@ -1450,6 +1568,15 @@ def run_consumer() -> None:
     })
     save_pending(failed_offers)
     save_latest(successful_offers)
+    if successful_offers:
+        latest_offer = successful_offers[-1]
+        status = load_status_runtime()
+        status["global"] = {
+            "last_offer_title": latest_offer.get("title") or latest_offer.get("preview_title") or "",
+            "last_offer_at": now_br_datetime(),
+            "last_offer_id": latest_offer.get("id") or get_offer_id(latest_offer.get("link", "")),
+        }
+        save_status_runtime(status)
 
 
     set_dashboard_pending_count(len(failed_offers))
