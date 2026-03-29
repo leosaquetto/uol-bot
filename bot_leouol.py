@@ -730,8 +730,8 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
         if status_value == "sem_novidade":
             return ("⚪ Ocioso", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
         if status_value == "erro":
-            extra = f"Último sucesso sem bloqueio: {last_success}" if last_success else "Sem sucesso sem bloqueio registrado"
-            return ("🟡 Bloqueado", f"{extra} • {detail}", str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
+            extra = f"Último sucesso às {last_success.split(' às ')[-1]}" if last_success else "Sem sucesso recente"
+            return ("🟡 Bloqueado", f"{extra} (check cloudflare)", str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
         return ("⚪ Sem dados", detail, str(status_block.get("last_finished_at") or status_block.get("last_started_at") or last_success))
     if source == "consumer":
         if status_value == "running":
@@ -757,6 +757,43 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
 
 def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
+
+
+
+
+def get_last_offer_snapshot(status: Dict) -> Tuple[str, str]:
+    global_block = status.get("global", {}) or {}
+    title = str(global_block.get("last_offer_title") or "").strip()
+    detected_at = str(global_block.get("last_offer_at") or "").strip()
+
+
+    if title and detected_at:
+        return title, detected_at
+
+
+    latest = safe_json_load(Path(LATEST_FILE), {"offers": []})
+    latest_offers = latest.get("offers", []) if isinstance(latest, dict) else []
+    if isinstance(latest_offers, list) and latest_offers:
+        last_offer = latest_offers[-1] or {}
+        latest_title = str(last_offer.get("title") or last_offer.get("preview_title") or "").strip()
+        latest_detected = str(last_offer.get("scraped_at") or "").strip()
+        if latest_title:
+            if latest_detected:
+                try:
+                    dt = datetime.fromisoformat(latest_detected.replace("Z", "+00:00")).astimezone(BR_TZ)
+                    return latest_title, dt.strftime("%d/%m às %H:%M")
+                except Exception:
+                    pass
+            return latest_title, detected_at or "—"
+
+
+    history = safe_json_load(Path(HISTORY_FILE), {"ids": []})
+    history_ids = history.get("ids", []) if isinstance(history, dict) else []
+    if isinstance(history_ids, list) and history_ids:
+        return str(history_ids[-1]).strip(), detected_at or "—"
+
+
+    return "Não disponível", "—"
 
 
 
@@ -798,42 +835,40 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
         dt = parse_br_datetime(dt_str)
         if not dt:
             return rel
-        return f"{str(rel).lower()}, às {dt.strftime('%H:%M')}"
+        return f"{str(rel).lower()} às {dt.strftime('%H:%M')}"
 
 
     # última oferta
-    global_block = status.get("global", {})
-    last_title = global_block.get("last_offer_title") or "Não disponível"
-    last_at = global_block.get("last_offer_at") or "—"
+    last_title, last_at = get_last_offer_snapshot(status)
 
 
     pending_count = state.get("pending_count", 0)
 
 
     dash = [
-        f"📊 <b>MONITOR CLUBE UOL</b> — <i>[{escape_html(today)}]</i>",
-        f"<i>atualizado às {escape_html(now_br_time())}</i>",
+        f"📊 <b>MONITOR CLUBE UOL</b> [{escape_html(today)}]",
+        f"<code>Atualizado {escape_html(now_br_time())}</code>",
         "",
         "<b>⚡ ESTADO DAS OPERAÇÕES</b>",
         f"• <b>📱 Scriptable:</b> {s_status} ({escape_html(fmt(s_dt))})",
-        f"  └ <i>{escape_html(s_detail)}</i>",
+        f"  └ <i>Status: {escape_html(s_detail)}</i>",
         f"• <b>🤖 Scraper:</b> {sc_status} ({escape_html(fmt(sc_dt))})",
-        f"  └ <i>{escape_html(sc_detail)}</i>",
+        f"  └ <i>Status: {escape_html(sc_detail)}</i>",
         f"• <b>📦 Consumer:</b> {c_status} ({escape_html(fmt(c_dt))})",
-        f"  └ <i>{escape_html(c_detail)}</i>",
+        f"  └ <i>Status: {escape_html(c_detail)}</i>",
         "",
         "<b>🎯 ÚLTIMA OFERTA REGISTRADA</b>",
         f"• <code>{escape_html(last_title)}</code>",
         f"• Detectada em: {escape_html(last_at)}",
         "",
         "<b>📦 FILA DE PROCESSAMENTO</b>",
-        f"• {'📭 Vazia' if pending_count == 0 else f'📥 {pending_count} oferta(s) em fila'}",
+        f"• <b>Status:</b> {'🚀 ' + str(pending_count) + ' ofertas aguardando' if pending_count > 0 else '📭 Fila limpa'}",
         "",
         "---",
         "<b>📝 LOGS DE EXECUÇÃO</b>",
-        f"<code>[Scriptable]</code> {s_time} - {escape_html(s_msg)}",
-        f"<code>[Scraper]</code> {sc_time} - {escape_html(sc_msg)}",
-        f"<code>[Consumer]</code> {c_time} - {escape_html(c_msg)}",
+        f"<code>📱 [Scriptable] {s_time} - {escape_html(s_msg)}</code>",
+        f"<code>🤖 [Scraper]    {sc_time} - {escape_html(sc_msg)}</code>",
+        f"<code>📦 [Consumer]   {c_time} - {escape_html(c_msg)}</code>",
     ]
 
 
