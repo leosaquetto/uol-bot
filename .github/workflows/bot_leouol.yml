@@ -1,15 +1,10 @@
-name: BOT LEOUOL - Consumer
+name: BOT LEOUOL SCRAPER
 
 
 on:
-  push:
-    paths:
-      - pending_offers.json
-      - bot_leouol.py
-      - .github/workflows/bot_leouol_consumer.yml
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
 
 
 permissions:
@@ -17,24 +12,90 @@ permissions:
 
 
 concurrency:
-  group: bot-leouol-consumer-main
+  group: bot-leouol-scraper-main
   cancel-in-progress: false
 
 
 jobs:
-  process-offers:
+  buscar-ofertas:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
 
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: garantir branch atualizada
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
 
 
       - name: setup python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
+          python-version: "3.11"
+          cache: "pip"
+
+
+      - name: garantir arquivos json
+        run: |
+          if [ ! -f historico_leouol.json ]; then
+            echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
+          fi
+
+
+          if [ ! -f pending_offers.json ]; then
+            echo '{"last_update":null,"offers":[]}' > pending_offers.json
+          fi
+
+
+          if [ ! -f latest_offers.json ]; then
+            echo '{"last_update":null,"offers":[]}' > latest_offers.json
+          fi
+
+
+          if [ ! -f daily_log.json ]; then
+            echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","lines":[]}' > daily_log.json
+          fi
+
+
+      - name: instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+
+      - name: rodar scraper
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
+        run: python github_scraper.py
+
+
+      - name: commitar mudanças
+        if: always()
+        run: |
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
+
+
+          git add .
+
+
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+
+
+          git commit -m "scraper atualiza pending e dashboard [skip ci]" || exit 0
+          git push origin HEAD:main        with:
           python-version: "3.11"
           cache: "pip"
 
