@@ -1,16 +1,11 @@
 {
   "date": "29/03/2026",
-  "message_id": 469,
+  "message_id": 470,
   "last_success_check": "29/03/2026 às 04:40",
   "last_new_offer_at": "",
   "pending_count": 0,
-  "last_consumer_run": "29/03/2026 às 05:23",
-  "last_rendered_text": "📊 <b>relatório diário uol - 29/03/2026</b>\n\núltima verificação com sucesso: 29/03/2026 às 04:40\núltima oferta nova encontrada: —\npending atual: 0\núltima execução do consumer: 29/03/2026 às 05:23\n\n<b>outros</b>\n💤 sem ofertas novas\n▶️ rodada iniciada\n💤 sem ofertas novas\n▶️ rodada iniciada\n💤 sem ofertas novas\n▶️ rodada iniciada\n⚠️ html indisponível / 405 / ssl\n▶️ rodada iniciada\n💤 sem ofertas novas\n▶️ rodada iniciada\n💤 sem ofertas novas\n📭 pending vazio\n▶️ rodada iniciada\n⚠️ html indisponível / 405 / ssl\n▶️ rodada iniciada\n⚠️ html indisponível / 405 / ssl",
+  "last_consumer_run": "29/03/2026 às 06:05",
   "lines": [
-    "[00:48] scriptable: 💤 sem ofertas novas",
-    "[01:06] scriptable: ▶️ rodada iniciada",
-    "[01:07] scriptable: 💤 sem ofertas novas",
-    "[01:50] scriptable: ▶️ rodada iniciada",
     "[01:50] scriptable: 💤 sem ofertas novas",
     "[02:27] scraper: ▶️ rodada iniciada",
     "[02:27] scraper: ⚠️ html indisponível / 405 / ssl",
@@ -18,10 +13,10 @@
     "[03:42] scraper: 💤 sem ofertas novas",
     "[04:40] scraper: ▶️ rodada iniciada",
     "[04:40] scraper: 💤 sem ofertas novas",
-    "[05:23] consumer: 📭 pending vazio",
     "[05:24] scraper: ▶️ rodada iniciada",
     "[05:24] scraper: ⚠️ html indisponível / 405 / ssl",
     "[06:04] scraper: ▶️ rodada iniciada",
-    "[06:04] scraper: ⚠️ html indisponível / 405 / ssl"
+    "[06:04] scraper: ⚠️ html indisponível / 405 / ssl",
+    "[06:05] consumer: 📭 pending vazio"
   ]
 }
