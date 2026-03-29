@@ -667,6 +667,12 @@ def parse_br_datetime(value: str) -> Optional[datetime]:
             return datetime.strptime(raw, fmt).replace(tzinfo=BR_TZ)
         except Exception:
             pass
+    for fmt in ("%d/%m às %H:%M", "%d/%m %H:%M"):
+        try:
+            partial = datetime.strptime(raw, fmt)
+            return partial.replace(year=now_br().year, tzinfo=BR_TZ)
+        except Exception:
+            pass
     return None
 
 
