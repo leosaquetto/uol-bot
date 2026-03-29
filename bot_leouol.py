@@ -136,6 +136,7 @@ def clean_multiline_text(text: Optional[str]) -> str:
         idx = text.find(marker)
         if idx != -1:
             text = text[:idx].rstrip()
+
     return text.strip()
 
 
@@ -210,16 +211,20 @@ def normalize_offer_key(value: str) -> str:
     raw = str(value or "").strip()
     if not raw:
         return ""
+
     if raw.startswith("http://") or raw.startswith("https://"):
         raw = get_offer_id(raw)
+
     return normalize_text_key(raw)
 
 
 def pick_description_anchor(description: str) -> str:
     if not description:
         return ""
+
     lines = [clean_multiline_text(x) for x in str(description).splitlines()]
     filtered = []
+
     blacklist_starts = (
         "beneficio-valido",
         "valido-ate",
@@ -234,6 +239,7 @@ def pick_description_anchor(description: str) -> str:
         "mensagem",
         "enviar",
     )
+
     for line in lines:
         low = normalize_text_key(line)
         if not low:
@@ -243,8 +249,10 @@ def pick_description_anchor(description: str) -> str:
         if any(low.startswith(x) for x in blacklist_starts):
             continue
         filtered.append(low)
+
     if not filtered:
         return ""
+
     return filtered[0][:160]
 
 
@@ -256,6 +264,7 @@ def build_dedupe_key(
     title_key = normalize_text_key(title)
     validity_key = normalize_text_key(validity or "")
     desc_key = pick_description_anchor(description)
+
     parts = [x for x in [title_key, validity_key, desc_key] if x]
     return "|".join(parts)
 
@@ -456,6 +465,7 @@ def load_status_runtime() -> Dict:
         "scraper": {
             "last_started_at": "",
             "last_finished_at": "",
+            "last_success_at": "",
             "status": "",
             "summary": "",
             "offers_seen": 0,
@@ -491,6 +501,10 @@ def load_status_runtime() -> Dict:
     for key, value in default.items():
         if key not in data or not isinstance(data[key], dict):
             data[key] = value
+
+    if "last_success_at" not in data["scraper"]:
+        data["scraper"]["last_success_at"] = ""
+
     return data
 
 
@@ -558,14 +572,14 @@ def parse_br_datetime(value: str) -> Optional[datetime]:
         try:
             return datetime.strptime(raw, fmt).replace(tzinfo=BR_TZ)
         except Exception:
-            continue
+            pass
 
     for fmt in ("%d/%m às %H:%M", "%d/%m %H:%M"):
         try:
             partial = datetime.strptime(raw, fmt)
             return partial.replace(year=now_br().year, tzinfo=BR_TZ)
         except Exception:
-            continue
+            pass
 
     return None
 
@@ -625,7 +639,6 @@ def format_recent_log_line(source: str, line: str, fallback_dt: str = "") -> str
         parsed = parse_br_datetime(fallback_dt)
         if parsed:
             log_time = parsed.strftime("%H:%M")
-
     lower_msg = str(log_msg).lower()
     if source == "scriptable":
         if "sem ofertas novas" in lower_msg or "nenhuma oferta nova" in lower_msg:
@@ -644,7 +657,6 @@ def format_recent_log_line(source: str, line: str, fallback_dt: str = "") -> str
             log_msg = "🚚 Processamento concluído."
         elif "pending atual:" in lower_msg:
             log_msg = "📦 Fila recebida para processamento."
-
     return f"  └ 🕒 {log_time} {log_msg}"
 
 
@@ -784,6 +796,7 @@ def format_elapsed_since(value: str) -> str:
 
 def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     lines = state.get("lines", [])
+
     s_line = extract_latest_line(lines, "scriptable")
     sc_line = extract_latest_line(lines, "scraper")
     c_line = extract_latest_line(lines, "consumer")
@@ -833,8 +846,8 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
         f"🌤️ <b>Humor do sistema:</b> {escape_html(compute_monitor_mood(s_status, sc_status, c_status, pending_count))}",
         f"{tg_emoji('bussola')} <b>Leitura do ambiente:</b> {escape_html(compute_monitor_confidence(s_status, sc_status, c_status))}",
     ]
-    return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
+    return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
@@ -849,6 +862,7 @@ def sync_daily_dashboard(state: Dict) -> None:
         state["lines"] = state.get("lines", [])[-20:]
         status = load_status_runtime()
         text = format_monitor_dashboard(state, status)
+
         try:
             resp = requests.post(
                 telegram_api("sendMessage"),
@@ -862,9 +876,12 @@ def sync_daily_dashboard(state: Dict) -> None:
             )
             if resp.ok:
                 data = resp.json()
-                state["message_id"] = data.get("result", {}).get("message_id")
-                save_daily_log(state)
-                log("✅ dashboard diário criado")
+                if data.get("ok"):
+                    state["message_id"] = data.get("result", {}).get("message_id")
+                    save_daily_log(state)
+                    log("✅ dashboard diário criado")
+                else:
+                    log(f"⚠️ telegram recusou criação do dashboard diário: {data}")
             else:
                 log(f"⚠️ falha ao criar dashboard diário: {resp.text}")
         except Exception as e:
@@ -872,11 +889,10 @@ def sync_daily_dashboard(state: Dict) -> None:
         return
 
     try:
-        # apagar mensagem anterior para manter só o monitor atual
-        # no iOS, mesmo silencioso, mensagem nova ainda pode aparecer no resumo com sino cortado.
-        # mantemos delete + resend silencioso, mas só chamando este sync no fim do ciclo.
+        delete_ok = False
+
         try:
-            requests.post(
+            delete_resp = requests.post(
                 telegram_api("deleteMessage"),
                 data={
                     "chat_id": GRUPO_COMENTARIO_ID,
@@ -884,8 +900,20 @@ def sync_daily_dashboard(state: Dict) -> None:
                 },
                 timeout=REQUEST_TIMEOUT,
             )
-        except Exception:
-            pass
+
+            if delete_resp.ok:
+                delete_data = delete_resp.json()
+                delete_ok = bool(delete_data.get("ok"))
+                if not delete_ok:
+                    log(f"⚠️ telegram não apagou o dashboard anterior: {delete_data}")
+            else:
+                log(f"⚠️ falha HTTP ao apagar dashboard anterior: {delete_resp.text}")
+        except Exception as e:
+            log(f"⚠️ erro ao apagar dashboard anterior: {e}")
+
+        if not delete_ok:
+            log("⚠️ dashboard anterior não foi apagado; não vou criar outro para evitar duplicata")
+            return
 
         resp = requests.post(
             telegram_api("sendMessage"),
@@ -897,19 +925,25 @@ def sync_daily_dashboard(state: Dict) -> None:
             },
             timeout=REQUEST_TIMEOUT,
         )
+
         if resp.ok:
             data = resp.json()
-            state["message_id"] = data.get("result", {}).get("message_id")
-            save_daily_log(state)
-            log("✅ dashboard diário atualizado")
+            if data.get("ok"):
+                state["message_id"] = data.get("result", {}).get("message_id")
+                save_daily_log(state)
+                log("✅ dashboard diário atualizado")
+            else:
+                log(f"⚠️ telegram recusou recriação do dashboard diário: {data}")
         else:
-            log(f"⚠️ falha ao editar dashboard diário: {resp.text}")
+            log(f"⚠️ falha ao recriar dashboard diário: {resp.text}")
+
     except Exception as e:
-        log(f"⚠️ erro ao editar dashboard diário: {e}")
+        log(f"⚠️ erro ao atualizar dashboard diário: {e}")
 
 
 def append_dashboard_line(source: str, status_line: str) -> None:
     state = load_daily_log()
+
     if state["date"] != now_br_date():
         state = {
             "date": now_br_date(),
@@ -929,6 +963,7 @@ def append_dashboard_line(source: str, status_line: str) -> None:
         filtered_lines.append(existing)
     filtered_lines.append(line)
     state["lines"] = filtered_lines[-12:]
+
     save_daily_log(state)
 
 
@@ -1001,12 +1036,14 @@ def build_caption(title: str, description: str, validity: Optional[str], link: s
     decorated_title = decorate_main_title(title, link)
 
     parts = [f"<b>{escape_html(decorated_title)}</b>"]
+
     if tags:
         parts.append(escape_html(" ".join(tags)))
 
     body = []
     if validity:
         body.append(f"📅 {escape_html(validity)}")
+
     body.append(f"🔗 {escape_html(link)}")
     body.append("💬 Veja os detalhes completos dentro dos comentários.")
 
@@ -1019,6 +1056,7 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
     lines = desc.splitlines()
 
     out = [f"📋 <b>{escape_html(title)}</b>", ""]
+
     for raw_line in lines:
         line = raw_line.strip()
         if not line:
@@ -1029,9 +1067,11 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
         if section_match:
             label = section_match.group(1).strip()
             rest = section_match.group(2).strip()
+
             key = label[:-1].strip().lower()
             emoji = SECTION_EMOJIS.get(key, "")
             prefix = f"{emoji} " if emoji else ""
+
             rendered = f"{prefix}<b>{escape_html(label)}</b>"
             if rest:
                 rendered += f" {escape_html(rest)}"
@@ -1042,6 +1082,7 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
 
     if validity:
         out.extend(["", f"📅 {escape_html(validity)}"])
+
     out.extend(["", f"🔗 {escape_html(link)}"])
 
     return truncate_text("\n".join(out), MAX_COMMENT_LENGTH)
@@ -1050,6 +1091,7 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
 def download_image(img_url: str) -> Optional[str]:
     if not img_url:
         return None
+
     try:
         headers = {
             "User-Agent": USER_AGENT,
@@ -1096,6 +1138,7 @@ def send_photo_to_channel(img_path: str, caption: str, disable_notification: boo
         message_id = data.get("result", {}).get("message_id")
         log(f"   ✅ foto enviada ao canal (message_id {message_id})")
         return message_id
+
     except Exception as e:
         log(f"   ❌ erro sendPhoto: {e}")
         return None
@@ -1133,9 +1176,11 @@ def send_partner_photo_reply(
 
         log("   ✅ foto do parceiro enviada nos comentários")
         return True
+
     except Exception as e:
         log(f"   ❌ erro ao enviar foto do parceiro: {e}")
         return False
+
     finally:
         try:
             Path(img_path).unlink(missing_ok=True)
@@ -1171,6 +1216,7 @@ def find_group_mirror_message_id(
                 },
                 timeout=REQUEST_TIMEOUT,
             )
+
             if not response.ok:
                 log(f"   ⚠️ getUpdates falhou: {response.text}")
                 continue
@@ -1191,6 +1237,7 @@ def find_group_mirror_message_id(
 
                     msg_id = msg.get("message_id")
                     msg_date = int(msg.get("date", 0))
+
                     if msg_date < sent_at_ts - 20:
                         continue
                     if msg_date > sent_at_ts + 180:
@@ -1223,9 +1270,11 @@ def find_group_mirror_message_id(
                 cap = candidate["caption_cmp"]
                 if not cap or not expected_caption_cmp:
                     continue
+
                 if cap == expected_caption_cmp:
                     log(f"   ✅ id espelhado encontrado no grupo por caption recente exata: {candidate['message_id']}")
                     return candidate["message_id"]
+
                 if (
                     expected_caption_cmp[:120]
                     and expected_caption_cmp[:120] in cap
@@ -1260,6 +1309,7 @@ def send_description_comment(
         attempts=8,
         delay=4.0,
     )
+
     if not group_msg_id:
         log("   ❌ não foi possível localizar a mensagem espelhada no grupo, mantendo no pending")
         return False
@@ -1274,6 +1324,7 @@ def send_description_comment(
             log("   ⚠️ seguindo sem a imagem do parceiro")
 
     text = build_comment_text(title, description, validity, link)
+
     data = {
         "chat_id": GRUPO_COMENTARIO_ID,
         "text": truncate_text(text, MAX_COMMENT_LENGTH),
@@ -1289,12 +1340,14 @@ def send_description_comment(
             data=data,
             timeout=REQUEST_TIMEOUT,
         )
+
         if resp.ok:
             log(f"   ✅ comentário enviado como reply ao id {group_msg_id}")
             return True
 
         log(f"   ❌ erro ao enviar comentário: {resp.text}")
         return False
+
     except Exception as e:
         log(f"   ❌ exceção ao enviar comentário: {e}")
         return False
@@ -1303,8 +1356,10 @@ def send_description_comment(
 def history_sets(history: Dict[str, List[str]]) -> Tuple[set, set]:
     ids = history.get("ids", [])
     dedupe_keys = history.get("dedupe_keys", [])
+
     id_set = {normalize_offer_key(x) for x in ids if normalize_offer_key(x)}
     dedupe_set = {str(x).strip() for x in dedupe_keys if str(x).strip()}
+
     return id_set, dedupe_set
 
 
@@ -1328,8 +1383,8 @@ def run_consumer() -> None:
 
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
-
     status_consumer_start(len(offers))
+
     set_dashboard_last_consumer_run()
 
     history = load_history()
@@ -1426,6 +1481,7 @@ def run_consumer() -> None:
             sent_at_ts=sent_at_ts,
             disable_notification=disable_notification,
         )
+
         if not comment_ok:
             failed_offers.append(offer)
             continue
@@ -1438,6 +1494,7 @@ def run_consumer() -> None:
         successful_offers.append(offer)
         success_count += 1
         log("   ✅ enviada com sucesso")
+
         time.sleep(2)
 
     save_history({
