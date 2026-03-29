@@ -1,22 +1,11 @@
 {
   "date": "29/03/2026",
-  "message_id": 475,
-  "last_success_check": "29/03/2026 às 08:03",
+  "message_id": null,
+  "last_success_check": "",
   "last_new_offer_at": "",
   "pending_count": 0,
-  "last_consumer_run": "29/03/2026 às 08:59",
+  "last_consumer_run": "",
   "lines": [
-    "[06:04] scraper: ▶️ rodada iniciada",
-    "[06:04] scraper: ⚠️ html indisponível / 405 / ssl",
-    "[06:50] scraper: ▶️ rodada iniciada",
-    "[06:50] scraper: ⚠️ html indisponível / 405 / ssl",
-    "[07:30] scraper: ▶️ rodada iniciada",
-    "[07:31] scraper: 💤 sem ofertas novas",
-    "[08:00] scriptable: ▶️ rodada iniciada",
-    "[08:03] scraper: ▶️ rodada iniciada",
-    "[08:03] scraper: 💤 sem ofertas novas",
-    "[08:58] scraper: ▶️ rodada iniciada",
-    "[08:58] scraper: ⚠️ html indisponível / 405 / ssl",
-    "[08:59] consumer: 📭 pending vazio"
+    "[09:00] scriptable: 💤 sem ofertas novas"
   ]
 }
