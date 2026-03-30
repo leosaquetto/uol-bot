@@ -1,22 +1,25 @@
 {
   "ids": [
-    "pjt-2-ingressos-08-04-teatro-joao-caetano",
     "pjs-2-ingressos-05-04-teatro-joo-caetano",
-    "pjr-2-ingressos-04-04-teatro-joo-caetano",
-    "pev-50-off-no-par-de-ingressos",
-    "pjt-2-ingressos-08-04-teatro-joo-caetano",
-    "pjp-2-ingressos-02-04-teatro-joo-caetano",
-    "pjs-2-ingressos-05-04-teatro-joao-caetano",
-    "pjq-2-ingressos-03-04-teatro-joo-caetano",
-    "pfi-40-off-no-ingresso-do-espetculo",
-    "pex-50-off-no-par-de-ingressos",
-    "pfj-50-off-em-at-4-ingressos",
     "pjr-2-ingressos-04-04-teatro-joao-caetano",
+    "pex-50-off-no-par-de-ingressos",
+    "pjs-2-ingressos-05-04-teatro-joao-caetano",
+    "pfj-50-off-em-at-4-ingressos",
     "pew-50-off-no-par-de-ingressos",
-    "pey-50-off-no-par-de-ingressos",
-    "pjq-2-ingressos-03-04-teatro-joao-caetano",
+    "pev-50-off-no-par-de-ingressos",
     "pjp-2-ingressos-02-04-teatro-joao-caetano",
-    "pjl-2-ingressos-28-03-sky-hall-sp"
+    "pjr-2-ingressos-04-04-teatro-joo-caetano",
+    "pjq-2-ingressos-03-04-teatro-joo-caetano",
+    "pjt-2-ingressos-08-04-teatro-joo-caetano",
+    "pfi-40-off-no-ingresso-do-espetculo",
+    "pjp-2-ingressos-02-04-teatro-joo-caetano",
+    "pjq-2-ingressos-03-04-teatro-joao-caetano",
+    "pjx-2-ingressos-10-04-casa-natura-musical",
+    "pjl-2-ingressos-28-03-sky-hall-sp",
+    "pjt-2-ingressos-08-04-teatro-joao-caetano",
+    "pey-50-off-no-par-de-ingressos"
   ],
-  "dedupe_keys": []
+  "dedupe_keys": [
+    "2-ingressos-10-04-casa-natura-musical|beneficio-valido-de-30-03-2026-15-06-ate-09-04-2026-23-59|assinante-uol"
+  ]
 }
