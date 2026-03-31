@@ -664,16 +664,19 @@ def send_new_dashboard_message(state: Dict, text: str, action_label: str) -> Non
             },
             timeout=REQUEST_TIMEOUT,
         )
-        if resp.ok:
+
+        data = {}
+        if resp.headers.get("content-type", "").startswith("application/json"):
             data = resp.json()
-            if data.get("ok"):
-                state["message_id"] = data.get("result", {}).get("message_id")
-                save_daily_log(state)
-                log(f"✅ dashboard diário {action_label}")
-            else:
-                log(f"⚠️ telegram recusou {action_label} do dashboard diário: {data}")
-        else:
-            log(f"⚠️ falha ao {action_label} dashboard diário: {resp.text}")
+
+        if resp.ok and data.get("ok"):
+            state["message_id"] = data.get("result", {}).get("message_id")
+            save_daily_log(state)
+            log(f"✅ dashboard diário {action_label}")
+            return
+
+        log(f"⚠️ falha ao {action_label} dashboard diário: {resp.text}")
+
     except Exception as e:
         log(f"⚠️ erro ao {action_label} dashboard diário: {e}")
 
@@ -707,15 +710,16 @@ def sync_daily_dashboard(state: Dict) -> None:
                 timeout=REQUEST_TIMEOUT,
             )
 
-            if delete_resp.ok:
+            delete_data = {}
+            if delete_resp.headers.get("content-type", "").startswith("application/json"):
                 delete_data = delete_resp.json()
-                delete_ok = bool(delete_data.get("ok"))
-                if not delete_ok:
-                    description = str(delete_data.get("description") or "")
-                    delete_not_found = "message to delete not found" in description.lower()
-                    log(f"⚠️ telegram não apagou o dashboard anterior: {delete_data}")
-            else:
-                log(f"⚠️ falha HTTP ao apagar dashboard anterior: {delete_resp.text}")
+
+            delete_ok = bool(delete_data.get("ok"))
+
+            if not delete_ok:
+                description = str(delete_data.get("description") or delete_resp.text or "")
+                delete_not_found = "message to delete not found" in description.lower()
+                log(f"⚠️ telegram não apagou o dashboard anterior: {description}")
 
         except Exception as e:
             log(f"⚠️ erro ao apagar dashboard anterior: {e}")
