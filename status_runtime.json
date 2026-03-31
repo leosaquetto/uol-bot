@@ -1,12 +1,12 @@
 {
   "scriptable": {
-    "last_started_at": "31/03/2026 às 16:36",
+    "last_started_at": "31/03/2026 às 17:00",
     "last_finished_at": "31/03/2026 às 16:36",
-    "status": "ok",
-    "summary": "novas no pending: 1",
-    "offers_seen": 3,
-    "new_offers": 1,
-    "pending_count": 1,
+    "status": "running",
+    "summary": "scriptable iniciado",
+    "offers_seen": 0,
+    "new_offers": 0,
+    "pending_count": 0,
     "last_error": ""
   },
   "scraper": {
@@ -31,10 +31,5 @@
     "failed": 0,
     "pending_count": 0,
     "last_error": ""
-  },
-  "global": {
-    "last_offer_title": "2 INGRESSOS: 04/04 Teatro J. Safra - SP",
-    "last_offer_at": "31/03/2026 às 16:41",
-    "last_offer_id": "pj6-2-ingressos-04-04-teatro-j-safra-sp"
   }
 }
