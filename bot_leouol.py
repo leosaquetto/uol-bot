@@ -652,6 +652,23 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
 
+def send_new_dashboard_message(state: Dict, text: str, action_label: str) -> None:
+    try:
+        resp = requests.post(telegram_api("sendMessage"), data={"chat_id": GRUPO_COMENTARIO_ID, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"}, timeout=REQUEST_TIMEOUT)
+        if resp.ok:
+            data = resp.json()
+            if data.get("ok"):
+                state["message_id"] = data.get("result", {}).get("message_id")
+                save_daily_log(state)
+                log(f"✅ dashboard diário {action_label}")
+            else:
+                log(f"⚠️ telegram recusou {action_label} do dashboard diário: {data}")
+        else:
+            log(f"⚠️ falha ao {action_label} dashboard diário: {resp.text}")
+    except Exception as e:
+        log(f"⚠️ erro ao {action_label} dashboard diário: {e}")
+
+
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
@@ -662,48 +679,38 @@ def sync_daily_dashboard(state: Dict) -> None:
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-20:]
         text = format_monitor_dashboard(state, load_status_runtime())
-        try:
-            resp = requests.post(telegram_api("sendMessage"), data={"chat_id": GRUPO_COMENTARIO_ID, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"}, timeout=REQUEST_TIMEOUT)
-            if resp.ok:
-                data = resp.json()
-                if data.get("ok"):
-                    state["message_id"] = data.get("result", {}).get("message_id")
-                    save_daily_log(state)
-                    log("✅ dashboard diário criado")
-                else:
-                    log(f"⚠️ telegram recusou criação do dashboard diário: {data}")
-            else:
-                log(f"⚠️ falha ao criar dashboard diário: {resp.text}")
-        except Exception as e:
-            log(f"⚠️ erro ao criar dashboard diário: {e}")
+        send_new_dashboard_message(state, text, "criado")
         return
     try:
         delete_ok = False
+        delete_not_found = False
         try:
             delete_resp = requests.post(telegram_api("deleteMessage"), data={"chat_id": GRUPO_COMENTARIO_ID, "message_id": state["message_id"]}, timeout=REQUEST_TIMEOUT)
             if delete_resp.ok:
                 delete_data = delete_resp.json()
                 delete_ok = bool(delete_data.get("ok"))
                 if not delete_ok:
-                    log(f"⚠️ telegram não apagou o dashboard anterior: {delete_data}")
+                    description = delete_data.get("description", "")
+                    error_code = delete_data.get("error_code")
+                    if error_code == 400 and "message to delete not found" in description.lower():
+                        delete_not_found = True
+                        log(f"⚠️ mensagem do dashboard não existe mais no telegram: {delete_data}")
+                    else:
+                        log(f"⚠️ telegram não apagou o dashboard anterior: {delete_data}")
             else:
                 log(f"⚠️ falha HTTP ao apagar dashboard anterior: {delete_resp.text}")
         except Exception as e:
             log(f"⚠️ erro ao apagar dashboard anterior: {e}")
         if not delete_ok:
-            log("⚠️ dashboard anterior não foi apagado; não vou criar outro para evitar duplicata")
-            return
-        resp = requests.post(telegram_api("sendMessage"), data={"chat_id": GRUPO_COMENTARIO_ID, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"}, timeout=REQUEST_TIMEOUT)
-        if resp.ok:
-            data = resp.json()
-            if data.get("ok"):
-                state["message_id"] = data.get("result", {}).get("message_id")
+            if delete_not_found:
+                log("⚠️ mensagem anterior não encontrada no telegram; recriando dashboard")
+                state["message_id"] = None
                 save_daily_log(state)
-                log("✅ dashboard diário atualizado")
+                send_new_dashboard_message(state, text, "recriado")
             else:
-                log(f"⚠️ telegram recusou recriação do dashboard diário: {data}")
-        else:
-            log(f"⚠️ falha ao recriar dashboard diário: {resp.text}")
+                log("⚠️ dashboard anterior não foi apagado; não vou criar outro para evitar duplicata")
+            return
+        send_new_dashboard_message(state, text, "atualizado")
     except Exception as e:
         log(f"⚠️ erro ao atualizar dashboard diário: {e}")
 
