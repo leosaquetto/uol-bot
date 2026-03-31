@@ -1,34 +1,28 @@
 name: BOT LEOUOL SCRAPER
 
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "*/10 * * * *"
 
-
 permissions:
   contents: write
-
 
 concurrency:
   group: bot-leouol-scraper-main
   cancel-in-progress: false
-
 
 jobs:
   buscar-ofertas:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-
 
       - name: garantir branch atualizada
         run: |
@@ -36,13 +30,11 @@ jobs:
           git checkout main
           git reset --hard origin/main
 
-
       - name: setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: "pip"
-
 
       - name: garantir arquivos json
         run: |
@@ -50,27 +42,26 @@ jobs:
             echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
           fi
 
-
           if [ ! -f pending_offers.json ]; then
             echo '{"last_update":null,"offers":[]}' > pending_offers.json
           fi
-
 
           if [ ! -f latest_offers.json ]; then
             echo '{"last_update":null,"offers":[]}' > latest_offers.json
           fi
 
-
           if [ ! -f daily_log.json ]; then
             echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","lines":[]}' > daily_log.json
           fi
 
+          if [ ! -f status_runtime.json ]; then
+            echo '{"scriptable":{"last_started_at":"","last_finished_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"scraper":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"consumer":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","processed":0,"sent":0,"failed":0,"pending_count":0,"last_error":""},"global":{"last_offer_title":"","last_offer_at":"","last_offer_id":""}}' > status_runtime.json
+          fi
 
-      - name: instalar dependências
+      - name: instalar dependências do scraper
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
 
       - name: rodar scraper
         env:
@@ -78,56 +69,14 @@ jobs:
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         run: python github_scraper.py
 
-
-      - name: commitar mudanças
+      - name: commitar mudanças do scraper
         if: always()
         run: |
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
-
-
           git add .
-
-
           if git diff --cached --quiet; then
             exit 0
           fi
-
-
           git commit -m "scraper atualiza pending e dashboard [skip ci]" || exit 0
-          git push origin HEAD:main        with:
-          python-version: "3.11"
-          cache: "pip"
-
-
-      - name: instalar dependências
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-consumer.txt
-
-
-      - name: processar pending offers
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
-        run: python bot_leouol.py --pending
-
-
-      - name: commitar mudanças
-        if: always()
-        run: |
-          git config user.email "bot@leouol.com"
-          git config user.name "BOT LEOUOL"
-
-
-          git add .
-
-
-          if git diff --cached --quiet; then
-            exit 0
-          fi
-
-
-          git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || exit 0
-          git push
+          git push origin HEAD:main
