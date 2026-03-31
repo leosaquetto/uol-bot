@@ -26,6 +26,7 @@ STATUS_RUNTIME_FILE = "status_runtime.json"
 
 
 REQUEST_TIMEOUT = 30
+MAX_DASHBOARD_LENGTH = 3900
 
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
@@ -45,10 +46,8 @@ BR_TZ = ZoneInfo("America/Sao_Paulo")
 
 
 
-
 def now_br() -> datetime:
     return datetime.now(BR_TZ)
-
 
 
 
@@ -57,10 +56,8 @@ def log(msg: str) -> None:
 
 
 
-
 def now_br_date() -> str:
     return now_br().strftime("%d/%m/%Y")
-
 
 
 
@@ -69,10 +66,8 @@ def now_br_time() -> str:
 
 
 
-
 def now_br_datetime() -> str:
     return now_br().strftime("%d/%m/%Y às %H:%M")
-
 
 
 
@@ -87,11 +82,9 @@ def load_json(path: str, default: Any) -> Any:
 
 
 
-
 def save_json(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-
 
 
 
@@ -104,7 +97,6 @@ def clean_text(text: Optional[str]) -> str:
     text = re.sub(r"\n\s*\n+", "\n\n", text)
     text = re.sub(r"^ +| +$", "", text, flags=re.MULTILINE)
     return text.strip()
-
 
 
 
@@ -122,7 +114,6 @@ def html_to_text(html: str) -> str:
 
 
 
-
 def escape_html(text: str) -> str:
     if not text:
         return ""
@@ -134,6 +125,50 @@ def escape_html(text: str) -> str:
         .replace("'", "&#39;")
     )
 
+
+
+def parse_br_datetime(value: str) -> Optional[datetime]:
+    raw = str(value or "").strip()
+    if not raw or raw == "—":
+        return None
+    for fmt in ("%d/%m/%Y às %H:%M", "%d/%m/%Y %H:%M"):
+        try:
+            return datetime.strptime(raw, fmt).replace(tzinfo=BR_TZ)
+        except Exception:
+            continue
+    for fmt in ("%d/%m às %H:%M", "%d/%m %H:%M"):
+        try:
+            partial = datetime.strptime(raw, fmt)
+            return partial.replace(year=now_br().year, tzinfo=BR_TZ)
+        except Exception:
+            continue
+    return None
+
+
+
+def format_relative_time(value: str) -> str:
+    dt = parse_br_datetime(value)
+    if not dt:
+        return "Sem dados"
+    delta = now_br() - dt
+    seconds = max(int(delta.total_seconds()), 0)
+    if seconds < 60:
+        return "Agora"
+    minutes = seconds // 60
+    if minutes < 60:
+        return f"Há {minutes}min"
+    hours = minutes // 60
+    rem_minutes = minutes % 60
+    if hours < 24:
+        return f"Há {hours}h{rem_minutes:02d}min" if rem_minutes else f"Há {hours}h"
+    days = hours // 24
+    rem_hours = hours % 24
+    return f"Há {days}d{rem_hours:02d}h" if rem_hours else f"Há {days}d"
+
+
+
+def truncate_text(text: str, max_len: int) -> str:
+    return text if len(text) <= max_len else text[:max_len]
 
 
 
@@ -151,19 +186,13 @@ def load_daily_log() -> Dict:
     }
     if not path.exists():
         return default
-
-
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         data = default
-
-
     lines = data.get("lines", [])
     if not isinstance(lines, list):
         lines = []
-
-
     return {
         "date": str(data.get("date") or ""),
         "message_id": data.get("message_id"),
@@ -177,13 +206,11 @@ def load_daily_log() -> Dict:
 
 
 
-
 def save_daily_log(data: Dict) -> None:
     Path(DAILY_LOG_FILE).write_text(
         json.dumps(data, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-
 
 
 
@@ -203,6 +230,7 @@ def load_status_runtime() -> Dict:
         "scraper": {
             "last_started_at": "",
             "last_finished_at": "",
+            "last_success_at": "",
             "status": "",
             "summary": "",
             "offers_seen": 0,
@@ -213,6 +241,7 @@ def load_status_runtime() -> Dict:
         "consumer": {
             "last_started_at": "",
             "last_finished_at": "",
+            "last_success_at": "",
             "status": "",
             "summary": "",
             "processed": 0,
@@ -221,24 +250,26 @@ def load_status_runtime() -> Dict:
             "pending_count": 0,
             "last_error": "",
         },
+        "global": {
+            "last_offer_title": "",
+            "last_offer_at": "",
+            "last_offer_id": "",
+        },
     }
     if not path.exists():
         return default
-
-
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         data = default
-
-
     for key, value in default.items():
         if key not in data or not isinstance(data[key], dict):
             data[key] = value
-
-
+    if "last_success_at" not in data["scraper"]:
+        data["scraper"]["last_success_at"] = ""
+    if "last_success_at" not in data["consumer"]:
+        data["consumer"]["last_success_at"] = ""
     return data
-
 
 
 
@@ -250,21 +281,21 @@ def save_status_runtime(data: Dict) -> None:
 
 
 
-
 def status_scraper_start() -> None:
     status = load_status_runtime()
+    prev = status.get("scraper", {})
     status["scraper"] = {
         "last_started_at": now_br_datetime(),
-        "last_finished_at": status["scraper"].get("last_finished_at", ""),
+        "last_finished_at": prev.get("last_finished_at", ""),
+        "last_success_at": prev.get("last_success_at", ""),
         "status": "running",
         "summary": "scraper iniciado",
         "offers_seen": 0,
         "new_offers": 0,
-        "pending_count": status["scraper"].get("pending_count", 0),
+        "pending_count": prev.get("pending_count", 0),
         "last_error": "",
     }
     save_status_runtime(status)
-
 
 
 
@@ -277,9 +308,14 @@ def status_scraper_finish(
     last_error: str = "",
 ) -> None:
     status = load_status_runtime()
+    prev = status.get("scraper", {})
+    last_success_at = prev.get("last_success_at", "")
+    if status_value in {"ok", "sem_novidade"} and not last_error:
+        last_success_at = now_br_datetime()
     status["scraper"] = {
-        "last_started_at": status["scraper"].get("last_started_at", ""),
+        "last_started_at": prev.get("last_started_at", ""),
         "last_finished_at": now_br_datetime(),
+        "last_success_at": last_success_at,
         "status": status_value,
         "summary": summary,
         "offers_seen": offers_seen,
@@ -291,116 +327,150 @@ def status_scraper_finish(
 
 
 
-
 def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
 
+def map_operation_status(source: str, status_block: Dict, fallback_detail: str) -> tuple[str, str, str]:
+    status_value = str(status_block.get("status") or "").strip().lower()
+    detail = str(status_block.get("summary") or fallback_detail or "Sem atualização registrada.").strip()
+    started_at = str(status_block.get("last_started_at") or "")
+    finished_at = str(status_block.get("last_finished_at") or "")
+    started_dt = parse_br_datetime(started_at)
+    finished_dt = parse_br_datetime(finished_at)
+    stale_running = status_value == "running" and started_dt and (not finished_dt or finished_dt < started_dt)
 
-def build_dashboard_text(state: Dict) -> str:
-    today = state["date"] or now_br_date()
-    last_success = state["last_success_check"] or "—"
-    last_new = state["last_new_offer_at"] or "—"
-    pending_count = state["pending_count"]
-    last_consumer = state["last_consumer_run"] or "—"
+    if source == "scriptable":
+        if stale_running:
+            return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
+        if status_value in {"ok", "running", "sem_novidade"}:
+            return ("🟢 Online", detail, finished_at or started_at)
+        if status_value == "erro":
+            err = str(status_block.get("last_error") or detail or "Erro")
+            return ("🔴 Erro", err, finished_at or started_at)
+        return ("⚪ Sem dados", detail, finished_at or started_at)
+
+    if source == "scraper":
+        last_success = str(status_block.get("last_success_at") or "").strip()
+        if stale_running:
+            return ("🟡 Instável", "rodada iniciada sem fechamento consistente", started_at or finished_at or last_success)
+        if status_value == "ok":
+            return ("🟢 Online", detail, finished_at or started_at or last_success)
+        if status_value == "sem_novidade":
+            return ("⚪ Ocioso", detail, finished_at or started_at or last_success)
+        if status_value == "erro":
+            extra = f"Último sucesso às {last_success.split(' às ')[-1]}" if last_success else "Sem sucesso recente"
+            return ("🟡 Bloqueado", f"{extra} (check cloudflare)", finished_at or started_at or last_success)
+        return ("⚪ Sem dados", detail, finished_at or started_at or last_success)
+
+    if source == "consumer":
+        if stale_running:
+            return ("🟡 Instável", "processamento iniciou mas não fechou corretamente", started_at or finished_at)
+        if status_value == "running":
+            return ("🔵 Ativo", detail, started_at or finished_at)
+        if status_value == "ok":
+            return ("✅ Concluído", detail, finished_at or started_at or str(status_block.get("last_success_at") or ""))
+        if status_value == "sem_novidade":
+            return ("⚪ Ocioso", detail, finished_at or started_at or str(status_block.get("last_success_at") or ""))
+        if status_value == "parcial":
+            return ("🟡 Parcial", detail, finished_at or started_at or str(status_block.get("last_success_at") or ""))
+        if status_value == "erro":
+            err = str(status_block.get("last_error") or detail or "Erro")
+            return ("🔴 Erro", err, finished_at or started_at)
+        return ("⚪ Sem dados", detail, finished_at or started_at)
+
+    return ("⚪ Sem dados", detail, finished_at or started_at)
 
 
-    header = [
-        f"📊 <b>relatório diário uol - {escape_html(today)}</b>",
+
+def get_last_offer_snapshot(status: Dict) -> tuple[str, str]:
+    global_block = status.get("global", {}) or {}
+    title = str(global_block.get("last_offer_title") or "").strip()
+    detected_at = str(global_block.get("last_offer_at") or "").strip()
+    if title and detected_at:
+        return title, detected_at
+    return "Não disponível", "—"
+
+
+
+def format_elapsed_since(value: str) -> str:
+    dt = parse_br_datetime(value)
+    if not dt:
+        return "sem oferta nova recente"
+    delta = now_br() - dt
+    seconds = max(int(delta.total_seconds()), 0)
+    if seconds < 60:
+        return f"{seconds}s sem oferta nova"
+    minutes = seconds // 60
+    if minutes < 60:
+        return f"{minutes}min sem oferta nova"
+    hours = minutes // 60
+    rem_minutes = minutes % 60
+    if hours < 24:
+        return f"{hours}h{rem_minutes:02d}m sem oferta nova"
+    days = hours // 24
+    rem_hours = hours % 24
+    return f"{days}d{rem_hours:02d}h sem oferta nova"
+
+
+
+def format_monitor_dashboard(state: Dict, status: Dict) -> str:
+    st = status.get("scriptable", {})
+    sc = status.get("scraper", {})
+    co = status.get("consumer", {})
+
+    s_status, _s_detail, s_dt = map_operation_status("scriptable", st, str(st.get("summary") or "Sem atualização registrada."))
+    sc_status, _sc_detail, sc_dt = map_operation_status("scraper", sc, str(sc.get("summary") or "Sem atualização registrada."))
+    c_status, _c_detail, c_dt = map_operation_status("consumer", co, str(co.get("summary") or "Sem atualização registrada."))
+
+    def fmt(dt_str: str) -> str:
+        rel = format_relative_time(dt_str)
+        dt = parse_br_datetime(dt_str)
+        if not dt:
+            return str(rel).lower() if rel != "Sem dados" else rel
+        rel_txt = "agora" if str(rel).lower() == "agora" else str(rel).lower()
+        return f"{rel_txt} às {dt.strftime('%H:%M')}"
+
+    last_title, last_at = get_last_offer_snapshot(status)
+    pending_count = state.get("pending_count", 0)
+    scraper_line_status = ("🟠 Sob restrição" if "Bloqueado" in sc_status else sc_status).replace("⚪ Ocioso", "⚪ Em espera")
+    consumer_line_status = "✅ Pronto" if pending_count == 0 and ("Ocioso" in c_status or "Concluído" in c_status or "sem_novidade" in str(co.get("status", "")).lower()) else c_status
+
+    dash = [
+        f"📊 <b>Monitor Clube Uol</b> ({escape_html(now_br_time())})",
         "",
-        f"última verificação com sucesso: {escape_html(last_success)}",
-        f"última oferta nova encontrada: {escape_html(last_new)}",
-        f"pending atual: {escape_html(str(pending_count))}",
-        f"última execução do consumer: {escape_html(last_consumer)}",
+        f"📱 <b>Scriptable</b> {escape_html(s_status)} <i>({escape_html(fmt(s_dt))})</i>",
+        f"🤖 <b>Scraper</b> {escape_html(scraper_line_status)} <i>({escape_html(fmt(sc_dt))})</i>",
+        f"📦 <b>Consumer</b> {escape_html(consumer_line_status)} <i>({escape_html(fmt(c_dt))})</i>",
         "",
+        f"🎯 <b>Última captura</b> 🕒 {escape_html(last_at)}",
+        f"↳ <code>{escape_html(last_title)}</code>",
+        f"⏳ <i>{escape_html(format_elapsed_since(last_at))}</i>",
+        "",
+        f"📦 <b>Fila de processamento:</b> {('🚀 ' + str(pending_count) + ' ofertas aguardando') if pending_count > 0 else '📭 Limpa'}",
+        "",
+        f"🌤️ <b>Humor do sistema:</b> {'Atenção no scraper' if 'Bloqueado' in sc_status or 'restrição' in scraper_line_status.lower() or 'Erro' in sc_status else ('Fila aquecida' if pending_count > 0 or 'Ativo' in consumer_line_status else 'Tudo calmo')}",
+        f"🧭 <b>Leitura do ambiente:</b> {'Parcial' if 'Bloqueado' in sc_status or 'restrição' in scraper_line_status.lower() else ('Alta' if 'Online' in s_status else 'Moderada')}",
     ]
-
-
-    groups: Dict[str, List[str]] = {
-        "consumer": [],
-        "scraper": [],
-        "scriptable": [],
-        "outros": [],
-    }
-
-
-    for raw_line in state.get("lines", [])[-30:]:
-        line = str(raw_line or "").strip()
-        if not line:
-            continue
-
-
-        if "]: " in line:
-            _, rest = line.split("]: ", 1)
-        else:
-            rest = line
-
-
-        if ": " in rest:
-            source, _message = rest.split(": ", 1)
-            source = source.strip().lower()
-            rendered = line.replace(f"{source}: ", "", 1)
-        else:
-            source = "outros"
-            rendered = line
-
-
-        if source not in groups:
-            source = "outros"
-
-
-        groups[source].append(escape_html(rendered))
-
-
-    body: List[str] = []
-    ordered_sources = ["consumer", "scraper", "scriptable", "outros"]
-
-
-    for source in ordered_sources:
-        entries = groups[source]
-        if not entries:
-            continue
-        body.append(f"<b>{escape_html(source)}</b>")
-        body.extend(entries)
-        body.append("")
-
-
-    if not body:
-        body = ["sem registros ainda"]
-    elif body[-1] == "":
-        body.pop()
-
-
-    text = "\n".join(header + body)
-    if len(text) > 3900:
-        text = text[:3900]
-    return text
-
+    return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
 
 
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
-
-
-    text = build_dashboard_text(state)
-
-
+    status = load_status_runtime()
+    text = format_monitor_dashboard(state, status)
     current_text = str(state.get("last_rendered_text") or "")
     if current_text == text:
         save_daily_log(state)
         return
-
-
     if state["date"] != now_br_date() or not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
-        state["lines"] = state.get("lines", [])[-20:]
-        text = build_dashboard_text(state)
-
-
+        state["lines"] = state.get("lines", [])[-12:]
+        text = format_monitor_dashboard(state, load_status_runtime())
         try:
             resp = requests.post(
                 telegram_api("sendMessage"),
@@ -415,16 +485,15 @@ def sync_daily_dashboard(state: Dict) -> None:
             )
             if resp.ok:
                 data = resp.json()
-                state["message_id"] = data.get("result", {}).get("message_id")
-                state["last_rendered_text"] = text
-                save_daily_log(state)
+                if data.get("ok"):
+                    state["message_id"] = data.get("result", {}).get("message_id")
+                    state["last_rendered_text"] = text
+                    save_daily_log(state)
             else:
                 log(f"falha ao criar dashboard diário: {resp.text}")
         except Exception as e:
             log(f"falha ao criar dashboard diário: {e}")
         return
-
-
     try:
         resp = requests.post(
             telegram_api("editMessageText"),
@@ -445,26 +514,19 @@ def sync_daily_dashboard(state: Dict) -> None:
                 error_data = resp.json()
             except Exception:
                 error_data = {}
-
-
             description = str(error_data.get("description") or "")
             if "message is not modified" in description.lower():
                 state["last_rendered_text"] = text
                 save_daily_log(state)
                 return
-
-
             log(f"falha ao editar dashboard diário: {resp.text}")
     except Exception as e:
         log(f"falha ao editar dashboard diário: {e}")
 
 
 
-
 def append_dashboard_line(source: str, status_line: str) -> None:
     state = load_daily_log()
-
-
     if state["date"] != now_br_date():
         state = {
             "date": now_br_date(),
@@ -476,15 +538,11 @@ def append_dashboard_line(source: str, status_line: str) -> None:
             "last_rendered_text": "",
             "lines": [],
         }
-
-
     line = f"[{now_br_time()}] {source}: {status_line}"
-    state["lines"].append(line)
-    state["lines"] = state["lines"][-30:]
-
-
+    filtered = [l for l in state.get("lines", []) if f"] {source}:" not in l]
+    filtered.append(line)
+    state["lines"] = filtered[-12:]
     sync_daily_dashboard(state)
-
 
 
 
@@ -500,7 +558,6 @@ def set_dashboard_success_check() -> None:
 
 
 
-
 def set_dashboard_last_new_offer() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
@@ -513,7 +570,6 @@ def set_dashboard_last_new_offer() -> None:
 
 
 
-
 def set_dashboard_pending_count(count: int) -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
@@ -523,7 +579,6 @@ def set_dashboard_pending_count(count: int) -> None:
         state["last_rendered_text"] = ""
     state["pending_count"] = count
     sync_daily_dashboard(state)
-
 
 
 
@@ -541,7 +596,6 @@ def absolutize_url(url: Optional[str]) -> str:
 
 
 
-
 def get_offer_id(link: str) -> str:
     try:
         clean_link = str(link).split("?")[0].rstrip("/")
@@ -551,13 +605,10 @@ def get_offer_id(link: str) -> str:
 
 
 
-
 def normalize_text_key(value: Optional[str]) -> str:
     raw = str(value or "").strip().lower()
     if not raw:
         return ""
-
-
     replacements = {
         "á": "a", "à": "a", "ã": "a", "â": "a",
         "é": "e", "ê": "e",
@@ -568,8 +619,6 @@ def normalize_text_key(value: Optional[str]) -> str:
     }
     for src, dst in replacements.items():
         raw = raw.replace(src, dst)
-
-
     raw = re.sub(r"https?://", "", raw)
     raw = re.sub(r"[^a-z0-9]+", "-", raw)
     raw = re.sub(r"-{2,}", "-", raw)
@@ -578,31 +627,21 @@ def normalize_text_key(value: Optional[str]) -> str:
 
 
 
-
 def normalize_offer_key(value: str) -> str:
     raw = str(value or "").strip().lower()
     if not raw:
         return ""
-
-
     if raw.startswith("http://") or raw.startswith("https://"):
         raw = get_offer_id(raw)
-
-
     return normalize_text_key(raw)
-
 
 
 
 def pick_description_anchor(description: str) -> str:
     if not description:
         return ""
-
-
     lines = [clean_text(x) for x in str(description).splitlines()]
     filtered = []
-
-
     blacklist_starts = (
         "beneficio valido",
         "válido até",
@@ -618,25 +657,14 @@ def pick_description_anchor(description: str) -> str:
         "mensagem",
         "enviar",
     )
-
-
     for line in lines:
         low = normalize_text_key(line)
-        if not low:
-            continue
-        if len(low) < 12:
+        if not low or len(low) < 12:
             continue
         if any(low.startswith(normalize_text_key(x)) for x in blacklist_starts):
             continue
         filtered.append(low)
-
-
-    if not filtered:
-        return ""
-
-
-    return filtered[0][:160]
-
+    return filtered[0][:160] if filtered else ""
 
 
 
@@ -646,7 +674,6 @@ def build_dedupe_key(title: str, validity: Optional[str], description: str) -> s
     desc_key = pick_description_anchor(description)
     parts = [x for x in [title_key, validity_key, desc_key] if x]
     return "|".join(parts)
-
 
 
 
@@ -660,7 +687,6 @@ def uniq_by(items: List[Dict[str, Any]], key_fn) -> List[Dict[str, Any]]:
         seen.add(key)
         out.append(item)
     return out
-
 
 
 
@@ -689,7 +715,6 @@ def is_bad_banner_url(url: Optional[str]) -> bool:
 
 
 
-
 def is_likely_benefit_banner(url: Optional[str]) -> bool:
     u = str(url or "").lower()
     if not u or is_bad_banner_url(u):
@@ -699,7 +724,6 @@ def is_likely_benefit_banner(url: Optional[str]) -> bool:
         or "/campanhasdeingresso/" in u
         or "cloudfront.net" in u
     )
-
 
 
 
@@ -717,7 +741,6 @@ def build_headers(referer: Optional[str] = None) -> Dict[str, str]:
 
 
 
-
 def fetch_once(session: requests.Session, url: str, referer: Optional[str], verify_value) -> requests.Response:
     headers = build_headers(referer)
     response = session.get(
@@ -728,7 +751,6 @@ def fetch_once(session: requests.Session, url: str, referer: Optional[str], veri
         allow_redirects=True,
     )
     return response
-
 
 
 
@@ -760,35 +782,21 @@ def fetch_with_fallback(session: requests.Session, url: str, referer: Optional[s
 
 
 
-
 def get_html(url: str) -> Optional[str]:
     session = requests.Session()
-
-
-    candidates = [
-        (url, BASE_URL + "/"),
-    ]
-
-
+    candidates = [(url, BASE_URL + "/")]
     if url == LIST_URL:
         candidates.append((FALLBACK_LIST_URL, BASE_URL + "/"))
-
-
     for candidate_url, referer in candidates:
         html = fetch_with_fallback(session, candidate_url, referer)
         if html:
             return html
-
-
     return None
-
 
 
 
 def extract_all_img_meta(block) -> List[Dict[str, Any]]:
     imgs: List[Dict[str, Any]] = []
-
-
     for img in block.select("img"):
         src = (
             img.get("data-src")
@@ -797,30 +805,20 @@ def extract_all_img_meta(block) -> List[Dict[str, Any]]:
             or img.get("src")
             or ""
         ).strip()
-
-
         if not src or src.startswith("data:image"):
             continue
-
-
         full_src = absolutize_url(src)
         class_names = " ".join(img.get("class", [])).lower()
         title = (img.get("title") or "").strip().lower()
         alt = (img.get("alt") or "").strip().lower()
-
-
         try:
             width = int(img.get("width") or 0)
         except Exception:
             width = 0
-
-
         try:
             height = int(img.get("height") or 0)
         except Exception:
             height = 0
-
-
         imgs.append(
             {
                 "src": full_src,
@@ -842,34 +840,23 @@ def extract_all_img_meta(block) -> List[Dict[str, Any]]:
                 ),
             }
         )
-
-
     return uniq_by(imgs, lambda x: x["src"])
-
 
 
 
 def choose_images_from_block(block) -> Dict[str, str]:
     all_imgs = extract_all_img_meta(block)
-
-
     partner_img_url = ""
     img_url = ""
-
-
     partner_candidates = [img for img in all_imgs if img["is_partner_like"] or img["is_partner_path"]]
     if partner_candidates:
         partner_img_url = partner_candidates[0]["src"]
-
-
     banner_candidates = [
         img for img in all_imgs
         if (not partner_img_url or img["src"] != partner_img_url) and is_likely_benefit_banner(img["src"])
     ]
     if banner_candidates:
         img_url = banner_candidates[-1]["src"]
-
-
     if not img_url:
         fallback_candidates = [
             img for img in all_imgs
@@ -877,31 +864,19 @@ def choose_images_from_block(block) -> Dict[str, str]:
         ]
         if fallback_candidates:
             img_url = fallback_candidates[-1]["src"]
-
-
     if not partner_img_url and len(all_imgs) >= 2:
         for img in all_imgs:
             if img["src"] != img_url:
                 partner_img_url = img["src"]
                 break
-
-
-    return {
-        "img_url": img_url,
-        "partner_img_url": partner_img_url,
-    }
-
+    return {"img_url": img_url, "partner_img_url": partner_img_url}
 
 
 
 def parse_offers(html: str) -> List[Dict[str, Any]]:
     soup = BeautifulSoup(html, "lxml")
     offers: List[Dict[str, Any]] = []
-
-
     blocks = soup.select('[data-categoria="Ingressos Exclusivos"]')
-
-
     if not blocks:
         log("fallback: buscando blocos com menção a ingresso")
         candidate_blocks = soup.select("[data-categoria], .beneficio, .item-oferta, .oferta")
@@ -909,40 +884,22 @@ def parse_offers(html: str) -> List[Dict[str, Any]]:
         for block in candidate_blocks:
             low = block.get_text(" ", strip=True).lower()
             hrefs = " ".join(a.get("href", "") for a in block.select("a[href]")).lower()
-            if (
-                "ingresso" in low
-                or "ingressos" in low
-                or "campanhasdeingresso" in hrefs
-            ):
+            if "ingresso" in low or "ingressos" in low or "campanhasdeingresso" in hrefs:
                 filtered.append(block)
         blocks = filtered
-
-
     log(f"blocos candidatos: {len(blocks)}")
-
-
     for block in blocks:
         try:
             title_el = block.select_one(".titulo") or block.select_one("h3") or block.select_one("h2")
             link_el = block.select_one("a[href]")
-
-
             if not title_el or not link_el:
                 continue
-
-
             title = clean_text(title_el.get_text(" ", strip=True))
             link = absolutize_url(link_el.get("href"))
-
-
             images = choose_images_from_block(block)
             offer_id = get_offer_id(link)
-
-
             log(f"     main url: {images['img_url'] or 'vazia'}")
             log(f"     partner url: {images['partner_img_url'] or 'vazia'}")
-
-
             offers.append({
                 "id": offer_id,
                 "original_link": link,
@@ -952,54 +909,33 @@ def parse_offers(html: str) -> List[Dict[str, Any]]:
                 "img_url": images["img_url"],
                 "partner_img_url": images["partner_img_url"],
             })
-
-
             log(f"extraído: {title[:60]}")
         except Exception as e:
             log(f"erro ao parsear bloco: {e}")
-
-
     return uniq_by(offers, lambda o: normalize_offer_key(o.get("id") or o.get("link")))
-
 
 
 
 def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
     full_url = absolutize_url(url)
     log(f"acessando detalhes: {preview_title[:50]}...")
-
-
     try:
         html = get_html(full_url)
         if not html:
-            return {
-                "title": preview_title,
-                "validity": None,
-                "description": "descrição não disponível.",
-                "detail_img_url": "",
-            }
-
-
+            return {"title": preview_title, "validity": None, "description": "descrição não disponível.", "detail_img_url": ""}
         page_title = preview_title
-        for regex in [
-            re.compile(r"<h2[^>]*>([\s\S]*?)</h2>", re.I),
-            re.compile(r"<h1[^>]*>([\s\S]*?)</h1>", re.I),
-        ]:
+        for regex in [re.compile(r"<h2[^>]*>([\s\S]*?)</h2>", re.I), re.compile(r"<h1[^>]*>([\s\S]*?)</h1>", re.I)]:
             m = regex.search(html)
             if m:
                 candidate_title = clean_text(re.sub(r"<[^>]+>", " ", m.group(1)))
                 if candidate_title:
                     page_title = candidate_title
                     break
-
-
         all_imgs = []
         for m in re.finditer(r'<img[^>]+(?:data-src|data-original|data-lazy|src)=["\']([^"\']+)["\']', html, re.I):
             src = absolutize_url(m.group(1))
             if src and not src.startswith("data:image"):
                 all_imgs.append(src)
-
-
         detail_img_url = ""
         detail_candidates = [src for src in all_imgs if is_likely_benefit_banner(src)]
         if detail_candidates:
@@ -1008,8 +944,6 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
             fallback_detail = [src for src in all_imgs if not is_bad_banner_url(src)]
             if fallback_detail:
                 detail_img_url = fallback_detail[-1]
-
-
         validity = None
         for regex in [
             re.compile(r"[Bb]enefício válido de[^.!?\n]*[.!?]?", re.I),
@@ -1020,8 +954,6 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
             if m:
                 validity = clean_text(re.sub(r"<[^>]+>", " ", m.group(0)))
                 break
-
-
         description = ""
         for regex in [
             re.compile(r'class=["\'][^"\']*info-beneficio[^"\']*["\'][^>]*>([\s\S]*?)(?:<script|<footer|class=["\'][^"\']*box-compartilhar)', re.I),
@@ -1032,50 +964,30 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                 description = html_to_text(m.group(1))
                 if len(description) >= 20:
                     break
-
-
         if not description or len(description) < 20:
             description = "descrição detalhada não disponível."
-
-
-        description = description[:4000]
-
-
         return {
             "title": page_title,
             "validity": validity,
-            "description": description,
+            "description": description[:4000],
             "detail_img_url": detail_img_url,
         }
     except Exception as e:
         log(f"erro ao extrair detalhes: {e}")
-        return {
-            "title": preview_title,
-            "validity": None,
-            "description": "descrição não disponível.",
-            "detail_img_url": "",
-        }
-
+        return {"title": preview_title, "validity": None, "description": "descrição não disponível.", "detail_img_url": ""}
 
 
 
 def extract_history_sets(history_data: Dict[str, Any]) -> tuple[set, set]:
     ids = history_data.get("ids", [])
     dedupe_keys = history_data.get("dedupe_keys", [])
-
-
     if not isinstance(ids, list):
         ids = []
     if not isinstance(dedupe_keys, list):
         dedupe_keys = []
-
-
     id_set = {normalize_offer_key(x) for x in ids if normalize_offer_key(x)}
     dedupe_set = {str(x).strip() for x in dedupe_keys if str(x).strip()}
-
-
     return id_set, dedupe_set
-
 
 
 
@@ -1083,18 +995,12 @@ def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set]:
     offers = pending_data.get("offers", [])
     if not isinstance(offers, list):
         offers = []
-
-
     id_set = set()
     dedupe_set = set()
-
-
     for o in offers:
         offer_key = normalize_offer_key(o.get("id") or o.get("link"))
         if offer_key:
             id_set.add(offer_key)
-
-
         dedupe_key = str(o.get("dedupe_key") or "").strip()
         if not dedupe_key:
             dedupe_key = build_dedupe_key(
@@ -1104,30 +1010,21 @@ def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set]:
             )
         if dedupe_key:
             dedupe_set.add(dedupe_key)
-
-
     return id_set, dedupe_set
-
 
 
 
 def main() -> None:
     log("iniciando scraper")
     status_scraper_start()
-    append_dashboard_line("scraper", "▶️ rodada iniciada")
-
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": []})
     pending = load_json(PENDING_FILE, {"last_update": None, "offers": []})
-
-
     if not isinstance(pending.get("offers"), list):
         pending["offers"] = []
 
-
     historico_keys, historico_dedupe = extract_history_sets(historico)
     pending_keys, pending_dedupe = extract_pending_sets(pending)
-
 
     html = get_html(LIST_URL)
     if not html:
@@ -1143,74 +1040,37 @@ def main() -> None:
         )
         return
 
-
     set_dashboard_success_check()
-
-
     offers = parse_offers(html)
     log(f"total encontradas: {len(offers)}")
-
 
     candidates = []
     seen_new_offer_keys = set()
     seen_new_dedupe_keys = set()
 
-
     for offer in offers:
         details = extract_offer_details(offer["link"], offer["preview_title"])
         final_title = details["title"] or offer["title"]
         final_partner = absolutize_url(offer.get("partner_img_url") or "")
-
-
         final_img = absolutize_url(details["detail_img_url"] or "")
-        if (
-            not final_img
-            or is_bad_banner_url(final_img)
-            or final_img == final_partner
-        ):
+        if not final_img or is_bad_banner_url(final_img) or final_img == final_partner:
             fallback_img = absolutize_url(offer.get("img_url") or "")
-            if (
-                fallback_img
-                and not is_bad_banner_url(fallback_img)
-                and fallback_img != final_partner
-            ):
+            if fallback_img and not is_bad_banner_url(fallback_img) and fallback_img != final_partner:
                 final_img = fallback_img
-
-
-        if (
-            not final_img
-            or is_bad_banner_url(final_img)
-            or final_img == final_partner
-        ):
+        if not final_img or is_bad_banner_url(final_img) or final_img == final_partner:
             final_img = ""
-
-
         offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
-        dedupe_key = build_dedupe_key(
-            title=final_title,
-            validity=details["validity"],
-            description=details["description"],
-        )
-
-
+        dedupe_key = build_dedupe_key(title=final_title, validity=details["validity"], description=details["description"])
         if not offer_key and not dedupe_key:
             continue
-
-
         if offer_key and (offer_key in historico_keys or offer_key in pending_keys or offer_key in seen_new_offer_keys):
             continue
-
-
         if dedupe_key and (dedupe_key in historico_dedupe or dedupe_key in pending_dedupe or dedupe_key in seen_new_dedupe_keys):
             continue
-
-
         if offer_key:
             seen_new_offer_keys.add(offer_key)
         if dedupe_key:
             seen_new_dedupe_keys.add(dedupe_key)
-
-
         candidates.append({
             "id": offer["id"],
             "original_link": offer["original_link"],
@@ -1225,10 +1085,7 @@ def main() -> None:
             "scraped_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         })
 
-
     log(f"novas fora de histórico/pending: {len(candidates)}")
-
-
     if not candidates:
         log("nenhuma oferta nova para adicionar")
         set_dashboard_pending_count(len(pending.get("offers", [])))
@@ -1243,26 +1100,17 @@ def main() -> None:
         )
         return
 
-
     pending["offers"].extend(candidates)
     pending["offers"] = uniq_by(
         pending["offers"],
-        lambda o: (
-            str(o.get("dedupe_key") or "").strip()
-            or normalize_offer_key(o.get("id") or o.get("link"))
-        )
+        lambda o: str(o.get("dedupe_key") or "").strip() or normalize_offer_key(o.get("id") or o.get("link"))
     )
     pending["last_update"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-
-
     save_json(PENDING_FILE, pending)
-
 
     set_dashboard_last_new_offer()
     set_dashboard_pending_count(len(pending["offers"]))
     append_dashboard_line("scraper", f"✅ novas no pending: {len(candidates)}")
-
-
     status_scraper_finish(
         summary=f"novas no pending: {len(candidates)}",
         status_value="ok",
@@ -1271,12 +1119,8 @@ def main() -> None:
         pending_count=len(pending["offers"]),
         last_error="",
     )
-
-
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
-
-
 
 
 if __name__ == "__main__":
