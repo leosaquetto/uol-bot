@@ -390,6 +390,28 @@ def get_last_offer_snapshot(status: Dict) -> tuple[str, str]:
     detected_at = str(global_block.get("last_offer_at") or "").strip()
     if title and detected_at:
         return title, detected_at
+
+    latest_data = load_json("latest_offers.json", {"offers": []})
+    latest_offers = latest_data.get("offers", []) if isinstance(latest_data, dict) else []
+    if isinstance(latest_offers, list) and latest_offers:
+        last_offer = latest_offers[-1] or {}
+        latest_title = str(last_offer.get("title") or last_offer.get("preview_title") or "").strip()
+        latest_detected = str(last_offer.get("scraped_at") or "").strip()
+
+        if latest_title:
+            if latest_detected:
+                try:
+                    dt = datetime.fromisoformat(latest_detected.replace("Z", "+00:00")).astimezone(BR_TZ)
+                    return latest_title, dt.strftime("%d/%m às %H:%M")
+                except Exception:
+                    pass
+            return latest_title, detected_at or "—"
+
+    history_data = load_json(HISTORY_FILE, {"ids": []})
+    history_ids = history_data.get("ids", []) if isinstance(history_data, dict) else []
+    if isinstance(history_ids, list) and history_ids:
+        return str(history_ids[-1]).strip(), detected_at or "—"
+
     return "Não disponível", "—"
 
 
