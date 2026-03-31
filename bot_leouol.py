@@ -652,58 +652,86 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
 
-def sync_daily_dashboard(state: Dict) -> None:
-    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
-        return
-    status = load_status_runtime()
-    text = format_monitor_dashboard(state, status)
-    if state["date"] != now_br_date() or not state["message_id"]:
-        state["date"] = now_br_date()
-        state["message_id"] = None
-        state["lines"] = state.get("lines", [])[-20:]
-        text = format_monitor_dashboard(state, load_status_runtime())
-        try:
-            resp = requests.post(telegram_api("sendMessage"), data={"chat_id": GRUPO_COMENTARIO_ID, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"}, timeout=REQUEST_TIMEOUT)
-            if resp.ok:
-                data = resp.json()
-                if data.get("ok"):
-                    state["message_id"] = data.get("result", {}).get("message_id")
-                    save_daily_log(state)
-                    log("✅ dashboard diário criado")
-                else:
-                    log(f"⚠️ telegram recusou criação do dashboard diário: {data}")
-            else:
-                log(f"⚠️ falha ao criar dashboard diário: {resp.text}")
-        except Exception as e:
-            log(f"⚠️ erro ao criar dashboard diário: {e}")
-        return
+def send_new_dashboard_message(state: Dict, text: str, action_label: str) -> None:
     try:
-        delete_ok = False
-        try:
-            delete_resp = requests.post(telegram_api("deleteMessage"), data={"chat_id": GRUPO_COMENTARIO_ID, "message_id": state["message_id"]}, timeout=REQUEST_TIMEOUT)
-            if delete_resp.ok:
-                delete_data = delete_resp.json()
-                delete_ok = bool(delete_data.get("ok"))
-                if not delete_ok:
-                    log(f"⚠️ telegram não apagou o dashboard anterior: {delete_data}")
-            else:
-                log(f"⚠️ falha HTTP ao apagar dashboard anterior: {delete_resp.text}")
-        except Exception as e:
-            log(f"⚠️ erro ao apagar dashboard anterior: {e}")
-        if not delete_ok:
-            log("⚠️ dashboard anterior não foi apagado; não vou criar outro para evitar duplicata")
-            return
-        resp = requests.post(telegram_api("sendMessage"), data={"chat_id": GRUPO_COMENTARIO_ID, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"}, timeout=REQUEST_TIMEOUT)
+        resp = requests.post(
+            telegram_api("sendMessage"),
+            data={
+                "chat_id": GRUPO_COMENTARIO_ID,
+                "text": text,
+                "parse_mode": "HTML",
+                "disable_web_page_preview": "true",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
         if resp.ok:
             data = resp.json()
             if data.get("ok"):
                 state["message_id"] = data.get("result", {}).get("message_id")
                 save_daily_log(state)
-                log("✅ dashboard diário atualizado")
+                log(f"✅ dashboard diário {action_label}")
             else:
-                log(f"⚠️ telegram recusou recriação do dashboard diário: {data}")
+                log(f"⚠️ telegram recusou {action_label} do dashboard diário: {data}")
         else:
-            log(f"⚠️ falha ao recriar dashboard diário: {resp.text}")
+            log(f"⚠️ falha ao {action_label} dashboard diário: {resp.text}")
+    except Exception as e:
+        log(f"⚠️ erro ao {action_label} dashboard diário: {e}")
+
+
+def sync_daily_dashboard(state: Dict) -> None:
+    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
+        return
+
+    status = load_status_runtime()
+    text = format_monitor_dashboard(state, status)
+
+    if state["date"] != now_br_date() or not state["message_id"]:
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = state.get("lines", [])[-20:]
+        text = format_monitor_dashboard(state, load_status_runtime())
+        send_new_dashboard_message(state, text, "criado")
+        return
+
+    try:
+        delete_ok = False
+        delete_not_found = False
+
+        try:
+            delete_resp = requests.post(
+                telegram_api("deleteMessage"),
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "message_id": state["message_id"],
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if delete_resp.ok:
+                delete_data = delete_resp.json()
+                delete_ok = bool(delete_data.get("ok"))
+                if not delete_ok:
+                    description = str(delete_data.get("description") or "")
+                    delete_not_found = "message to delete not found" in description.lower()
+                    log(f"⚠️ telegram não apagou o dashboard anterior: {delete_data}")
+            else:
+                log(f"⚠️ falha HTTP ao apagar dashboard anterior: {delete_resp.text}")
+
+        except Exception as e:
+            log(f"⚠️ erro ao apagar dashboard anterior: {e}")
+
+        if not delete_ok:
+            if delete_not_found:
+                state["message_id"] = None
+                save_daily_log(state)
+                send_new_dashboard_message(state, text, "recriado após message_id inválido")
+                return
+
+            log("⚠️ dashboard anterior não foi apagado; não vou criar outro para evitar duplicata")
+            return
+
+        send_new_dashboard_message(state, text, "atualizado")
+
     except Exception as e:
         log(f"⚠️ erro ao atualizar dashboard diário: {e}")
 
