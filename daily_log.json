@@ -5,7 +5,6 @@
   "last_new_offer_at": "",
   "pending_count": 0,
   "last_consumer_run": "01/04/2026 às 08:32",
-  "last_rendered_text": "📊 <b>Monitor Clube Uol</b> (08:34)\n\n📱 <b>Scriptable</b> 🟡 Instável <i>(há 34min às 08:00)</i>\n🤖 <b>Scraper</b> 🟡 Instável <i>(há 1min às 08:33)</i>\n📦 <b>Consumer</b> ✅ Pronto <i>(há 2min às 08:32)</i>\n\n🎯 <b>Última captura</b> 🕒 31/03 às 23:03\n↳ <code>50% OFF no par de ingressos</code>\n⏳ <i>9h31m sem oferta nova</i>\n\n📦 <b>Fila de processamento:</b> 📭 Limpa\n\n🌤️ <b>Humor do sistema:</b> Tudo calmo\n🧭 <b>Leitura do ambiente:</b> Moderada",
   "lines": [
     "[00:31] scriptable: ▶️ rodada iniciada",
     "[00:31] scriptable: 💤 sem ofertas novas",
@@ -18,6 +17,7 @@
     "[08:00] scriptable: ▶️ rodada iniciada",
     "[08:00] scriptable: 💤 sem ofertas novas",
     "[08:32] consumer: 📭 pending vazio",
-    "[08:34] scraper: 💤 sem ofertas novas"
+    "[08:34] scraper: 💤 sem ofertas novas",
+    "[09:00] scriptable: ▶️ rodada iniciada"
   ]
 }
