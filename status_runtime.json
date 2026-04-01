@@ -2,11 +2,11 @@
   "scriptable": {
     "last_started_at": "31/03/2026 às 23:03",
     "last_finished_at": "31/03/2026 às 23:03",
-    "status": "ok",
-    "summary": "novas no pending: 2",
-    "offers_seen": 4,
-    "new_offers": 2,
-    "pending_count": 2,
+    "status": "running",
+    "summary": "scriptable iniciado",
+    "offers_seen": 0,
+    "new_offers": 0,
+    "pending_count": 0,
     "last_error": ""
   },
   "scraper": {
@@ -21,15 +21,20 @@
     "last_error": "falha ao obter html da lista"
   },
   "consumer": {
-    "last_started_at": "31/03/2026 às 22:15",
-    "last_finished_at": "31/03/2026 às 22:15",
-    "last_success_at": "31/03/2026 às 22:15",
-    "status": "sem_novidade",
-    "summary": "pending vazio",
-    "processed": 0,
-    "sent": 0,
+    "last_started_at": "31/03/2026 às 23:03",
+    "last_finished_at": "31/03/2026 às 23:04",
+    "last_success_at": "31/03/2026 às 23:04",
+    "status": "ok",
+    "summary": "processadas 2, enviadas 2, pendentes 0",
+    "processed": 2,
+    "sent": 2,
     "failed": 0,
     "pending_count": 0,
     "last_error": ""
+  },
+  "global": {
+    "last_offer_title": "50% OFF no par de ingressos",
+    "last_offer_at": "31/03/2026 às 23:04",
+    "last_offer_id": "pjC-50-off-no-par-de-ingressos"
   }
 }
