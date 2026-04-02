@@ -24,7 +24,7 @@ MAX_HISTORY_LOOSE = 1500
 LATEST_LIMIT = 20
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-CANAL_ID = os.environ.get("CANAL_ID")
+CANAL_ID = os.environ.get("CANAL_ID") or os.environ.get("TELEGRAM_CHAT_ID")
 GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
 
 BR_TZ = ZoneInfo("America/Sao_Paulo")
@@ -409,7 +409,7 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
     if source == "scriptable":
         if stale_running:
             return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
-        if status_value in {"ok", "running", "sem_novidade"}:
+        if status_value in {"ok", "running", "sem_novidade", "sem_novidades"}:
             return ("🟢 Online", detail, finished_at or started_at)
         if status_value == "erro":
             err = str(status_block.get("last_error") or detail or "Erro")
@@ -707,26 +707,25 @@ def build_comment_text(offer: Dict[str, Any]) -> str:
     return truncate_text("\n\n".join(parts), 3900)
 
 
-def send_photo(chat_id: str, photo_url: str, caption: str) -> requests.Response:
+def send_photo_raw(chat_id: str, photo_url: str, caption: str) -> requests.Response:
     return requests.post(
         telegram_api("sendPhoto"),
         data={
             "chat_id": chat_id,
             "photo": photo_url,
-            "caption": caption,
+            "caption": caption[:1024],
             "parse_mode": "HTML",
-            "disable_web_page_preview": "true",
         },
         timeout=REQUEST_TIMEOUT,
     )
 
 
-def send_message(chat_id: str, text: str, reply_to_message_id: Optional[int] = None) -> requests.Response:
+def send_message_raw(chat_id: str, text: str, reply_to_message_id: Optional[int] = None) -> requests.Response:
     payload = {
         "chat_id": chat_id,
         "text": text,
         "parse_mode": "HTML",
-        "disable_web_page_preview": "true",
+        "disable_web_page_preview": "false",
     }
     if reply_to_message_id:
         payload["reply_to_message_id"] = reply_to_message_id
@@ -737,43 +736,58 @@ def send_message(chat_id: str, text: str, reply_to_message_id: Optional[int] = N
     )
 
 
-def send_offer_to_telegram(offer: Dict[str, Any]) -> tuple[bool, bool, str]:
-    if not TELEGRAM_TOKEN or not CANAL_ID or not GRUPO_COMENTARIO_ID:
-        return False, False, "variáveis do telegram ausentes"
+def send_offer_main(offer: Dict[str, Any]) -> tuple[bool, Optional[int], str]:
+    if not TELEGRAM_TOKEN or not CANAL_ID:
+        return False, None, "variáveis do telegram ausentes"
 
     caption = build_caption(offer)
-    comment_text = build_comment_text(offer)
     img_url = clean_text(offer.get("img_url") or "")
-    main_message_id: Optional[int] = None
+
+    if img_url:
+        try:
+            resp = send_photo_raw(CANAL_ID, img_url, caption)
+            if resp.ok:
+                data = resp.json()
+                if data.get("ok"):
+                    return True, data.get("result", {}).get("message_id"), ""
+                err = f"telegram foto não-ok: {data}"
+                log(err)
+            else:
+                err = f"falha no sendPhoto: {resp.text}"
+                log(err)
+        except Exception as e:
+            err = f"erro no sendPhoto: {e}"
+            log(err)
+
+        log("sendPhoto falhou; tentando fallback em texto")
 
     try:
-        if img_url:
-            resp = send_photo(CANAL_ID, img_url, caption)
-        else:
-            resp = send_message(CANAL_ID, caption)
-
+        resp = send_message_raw(CANAL_ID, caption)
         if not resp.ok:
-            return False, False, f"falha no envio principal: {resp.text}"
-
+            return False, None, f"falha no envio principal: {resp.text}"
         data = resp.json()
         if not data.get("ok"):
-            return False, False, f"telegram principal não-ok: {data}"
-
-        main_message_id = data.get("result", {}).get("message_id")
-        if not main_message_id:
-            return False, False, "message_id principal ausente"
-
-        comment_resp = send_message(GRUPO_COMENTARIO_ID, comment_text, reply_to_message_id=main_message_id)
-        if not comment_resp.ok:
-            return True, False, f"falha no comentário: {comment_resp.text}"
-
-        comment_data = comment_resp.json()
-        if not comment_data.get("ok"):
-            return True, False, f"telegram comentário não-ok: {comment_data}"
-
-        return True, True, ""
+            return False, None, f"telegram principal não-ok: {data}"
+        return True, data.get("result", {}).get("message_id"), ""
     except Exception as e:
-        return bool(main_message_id), False, str(e)
+        return False, None, str(e)
+
+
+def send_offer_comment(offer: Dict[str, Any], reply_to_message_id: Optional[int]) -> tuple[bool, str]:
+    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID or not reply_to_message_id:
+        return False, "comentário sem configuração ou sem message_id"
+
+    try:
+        comment_text = build_comment_text(offer)
+        resp = send_message_raw(GRUPO_COMENTARIO_ID, comment_text, reply_to_message_id=reply_to_message_id)
+        if not resp.ok:
+            return False, f"falha no comentário: {resp.text}"
+        data = resp.json()
+        if not data.get("ok"):
+            return False, f"telegram comentário não-ok: {data}"
+        return True, ""
+    except Exception as e:
+        return False, str(e)
 
 
 def append_history_entries(history: Dict[str, Any], offer: Dict[str, Any]) -> Dict[str, Any]:
@@ -868,7 +882,8 @@ def consume_pending() -> int:
 
     for offer in offers:
         processed += 1
-        sent_main, sent_comment, err = send_offer_to_telegram(offer)
+
+        sent_main, main_message_id, err = send_offer_main(offer)
 
         if sent_main:
             sent += 1
@@ -876,9 +891,10 @@ def consume_pending() -> int:
             latest = update_latest(latest, offer)
             update_global_last_offer(offer)
 
+            sent_comment, comment_err = send_offer_comment(offer, main_message_id)
             if not sent_comment:
                 failed += 1
-                last_error = err or "comentário falhou após envio principal"
+                last_error = comment_err or "comentário falhou após envio principal"
                 log(f"comentário falhou, mas principal já foi enviado. não voltará ao pending: {last_error}")
             else:
                 log(f"oferta enviada com sucesso: {offer.get('title') or offer.get('preview_title')}")
