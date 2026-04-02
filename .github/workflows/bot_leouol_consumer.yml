@@ -1,92 +1,83 @@
-name: bot leouol consumer
+name: BOT LEOUOL - Consumer
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - pending_offers.json
+      - bot_leouol.py
+      - .github/workflows/bot_leouol_consumer.yml
   schedule:
     - cron: "*/5 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: bot-leouol-consumer
+  group: bot-leouol-consumer-main
   cancel-in-progress: false
 
 jobs:
-  consumer:
+  process-offers:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+          cache: "pip"
 
-      - name: install dependencies
+      - name: instalar dependências
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements-consumer.txt
 
-      - name: run consumer
+      - name: processar pending offers
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
-        run: |
-          python bot_leouol.py --pending
+        run: python bot_leouol.py --pending
 
-      - name: configure git
+      - name: commitar mudanças
+        if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
+          git add .
 
-      - name: commit changes if needed
-        id: commit_step
-        run: |
-          if git diff --quiet && git diff --cached --quiet; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+          if git diff --cached --quiet; then
             exit 0
           fi
 
-          git add .
-          git commit -m "atualiza dados do consumer"
-
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-
-      - name: push with rebase and retry
-        if: steps.commit_step.outputs.changed == 'true'
-        run: |
-          branch="${GITHUB_REF_NAME:-main}"
+          git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || exit 0
 
           for attempt in 1 2 3; do
-            echo "tentativa de push: $attempt"
+            git fetch origin main
+            git reset --soft origin/main
+            git add .
 
-            git fetch origin "$branch"
-            git rebase "origin/$branch" || {
-              git rebase --abort || true
-              if [ "$attempt" -eq 3 ]; then
-                echo "falha no rebase após 3 tentativas"
-                exit 1
-              fi
-              sleep 5
-              continue
-            }
+            if git diff --cached --quiet; then
+              exit 0
+            fi
 
-            if git push origin HEAD:"$branch"; then
-              echo "push concluído com sucesso"
+            git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || exit 0
+
+            if git push origin HEAD:main; then
               exit 0
             fi
 
             if [ "$attempt" -eq 3 ]; then
-              echo "falha no push após 3 tentativas"
               exit 1
             fi
 
-            sleep 5
+            sleep 2
+            git reset --hard origin/main
           done

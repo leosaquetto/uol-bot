@@ -1,91 +1,82 @@
-name: bot leouol scraper
+name: BOT LEOUOL SCRAPER
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/10 * * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  group: bot-leouol-scraper
+  group: bot-leouol-scraper-main
   cancel-in-progress: false
 
 jobs:
-  scraper:
+  buscar-ofertas:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: garantir branch atualizada
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
 
       - name: setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+          cache: "pip"
 
-      - name: install dependencies
+      - name: garantir arquivos json
+        run: |
+          if [ ! -f historico_leouol.json ]; then
+            echo '{"ids":[],"dedupe_keys":[]}' > historico_leouol.json
+          fi
+
+          if [ ! -f pending_offers.json ]; then
+            echo '{"last_update":null,"offers":[]}' > pending_offers.json
+          fi
+
+          if [ ! -f latest_offers.json ]; then
+            echo '{"last_update":null,"offers":[]}' > latest_offers.json
+          fi
+
+          if [ ! -f daily_log.json ]; then
+            echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","lines":[]}' > daily_log.json
+          fi
+
+          if [ ! -f status_runtime.json ]; then
+            echo '{"scriptable":{"last_started_at":"","last_finished_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"scraper":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"consumer":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","processed":0,"sent":0,"failed":0,"pending_count":0,"last_error":""},"global":{"last_offer_title":"","last_offer_at":"","last_offer_id":""}}' > status_runtime.json
+          fi
+
+      - name: instalar dependências do scraper
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
 
-      - name: run scraper
+      - name: rodar scraper
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
-        run: |
-          python github_scraper.py
+        run: python github_scraper.py
 
-      - name: configure git
+      - name: commitar mudanças do scraper
+        if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: commit changes if needed
-        id: commit_step
-        run: |
-          if git diff --quiet && git diff --cached --quiet; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
+          git add .
+          if git diff --cached --quiet; then
             exit 0
           fi
-
-          git add .
-          git commit -m "atualiza dados do scraper"
-
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-
-      - name: push with rebase and retry
-        if: steps.commit_step.outputs.changed == 'true'
-        run: |
-          branch="${GITHUB_REF_NAME:-main}"
-
-          for attempt in 1 2 3; do
-            echo "tentativa de push: $attempt"
-
-            git fetch origin "$branch"
-            git rebase "origin/$branch" || {
-              git rebase --abort || true
-              if [ "$attempt" -eq 3 ]; then
-                echo "falha no rebase após 3 tentativas"
-                exit 1
-              fi
-              sleep 5
-              continue
-            }
-
-            if git push origin HEAD:"$branch"; then
-              echo "push concluído com sucesso"
-              exit 0
-            fi
-
-            if [ "$attempt" -eq 3 ]; then
-              echo "falha no push após 3 tentativas"
-              exit 1
-            fi
-
-            sleep 5
-          done
+          git commit -m "scraper atualiza pending e dashboard [skip ci]" || exit 0
+          git push origin HEAD:main
