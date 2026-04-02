@@ -589,6 +589,37 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
     return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
 
+def send_new_dashboard_message(state: Dict, text: str, action_label: str) -> bool:
+    try:
+        resp = requests.post(
+            telegram_api("sendMessage"),
+            data={
+                "chat_id": GRUPO_COMENTARIO_ID,
+                "text": text,
+                "parse_mode": "HTML",
+                "disable_notification": "true",
+                "disable_web_page_preview": "true",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+        if not resp.ok:
+            log(f"falha ao {action_label} dashboard diário: {resp.text}")
+            return False
+
+        data = resp.json()
+        if not data.get("ok"):
+            log(f"falha ao {action_label} dashboard diário: {data}")
+            return False
+
+        state["message_id"] = data.get("result", {}).get("message_id")
+        state["last_rendered_text"] = text
+        save_daily_log(state)
+        return True
+    except Exception as e:
+        log(f"falha ao {action_label} dashboard diário: {e}")
+        return False
+
+
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
@@ -598,34 +629,15 @@ def sync_daily_dashboard(state: Dict) -> None:
     if current_text == text:
         save_daily_log(state)
         return
+
     if not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-12:]
         text = format_monitor_dashboard(state, load_status_runtime())
-        try:
-            resp = requests.post(
-                telegram_api("sendMessage"),
-                data={
-                    "chat_id": GRUPO_COMENTARIO_ID,
-                    "text": text,
-                    "parse_mode": "HTML",
-                    "disable_notification": "true",
-                    "disable_web_page_preview": "true",
-                },
-                timeout=REQUEST_TIMEOUT,
-            )
-            if resp.ok:
-                data = resp.json()
-                if data.get("ok"):
-                    state["message_id"] = data.get("result", {}).get("message_id")
-                    state["last_rendered_text"] = text
-                    save_daily_log(state)
-            else:
-                log(f"falha ao criar dashboard diário: {resp.text}")
-        except Exception as e:
-            log(f"falha ao criar dashboard diário: {e}")
+        send_new_dashboard_message(state, text, "criar")
         return
+
     try:
         resp = requests.post(
             telegram_api("editMessageText"),
@@ -641,17 +653,27 @@ def sync_daily_dashboard(state: Dict) -> None:
         if resp.ok:
             state["last_rendered_text"] = text
             save_daily_log(state)
-        else:
-            try:
-                error_data = resp.json()
-            except Exception:
-                error_data = {}
-            description = str(error_data.get("description") or "")
-            if "message is not modified" in description.lower():
-                state["last_rendered_text"] = text
-                save_daily_log(state)
-                return
-            log(f"falha ao editar dashboard diário: {resp.text}")
+            return
+
+        try:
+            error_data = resp.json()
+        except Exception:
+            error_data = {}
+
+        description = str(error_data.get("description") or "")
+
+        if "message is not modified" in description.lower():
+            state["last_rendered_text"] = text
+            save_daily_log(state)
+            return
+
+        if "message to delete not found" in description.lower() or "message to edit not found" in description.lower():
+            state["message_id"] = None
+            save_daily_log(state)
+            send_new_dashboard_message(state, text, "recriar")
+            return
+
+        log(f"falha ao editar dashboard diário: {resp.text}")
     except Exception as e:
         log(f"falha ao editar dashboard diário: {e}")
 
@@ -1040,7 +1062,7 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                     page_title = candidate_title
                     break
         all_imgs = []
-        for m in re.finditer(r'<img[^>]+(?:data-src|data-original|data-lazy|src)=["\\\']([^"\\\']+)["\\\']', html, re.I):
+        for m in re.finditer(r'<img[^>]+(?:data-src|data-original|data-lazy|src)=["\']([^"\']+)["\']', html, re.I):
             src = absolutize_url(m.group(1))
             if src and not src.startswith("data:image"):
                 all_imgs.append(src)
@@ -1064,8 +1086,8 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                 break
         description = ""
         for regex in [
-            re.compile(r'class=["\\\'][^"\\\']*info-beneficio[^"\\\']*["\\\'][^>]*>([\s\S]*?)(?:<script|<footer|class=["\\\'][^"\\\']*box-compartilhar)', re.I),
-            re.compile(r'id=["\\\']beneficio["\\\'][^>]*>([\s\S]*?)(?:<script|<footer)', re.I),
+            re.compile(r'class=["\'][^"\']*info-beneficio[^"\']*["\'][^>]*>([\s\S]*?)(?:<script|<footer|class=["\'][^"\']*box-compartilhar)', re.I),
+            re.compile(r'id=["\']beneficio["\'][^>]*>([\s\S]*?)(?:<script|<footer)', re.I),
         ]:
             m = regex.search(html)
             if m:
@@ -1157,7 +1179,6 @@ def main() -> None:
     loaded_snapshot_ids = []
     offer_snapshot_map: Dict[str, str] = {}
     snapshot_meta_map: Dict[str, Optional[Dict[str, Any]]] = {}
-
     detail_lookup_by_snapshot: Dict[str, Dict[str, Dict[str, Any]]] = {}
 
     for snapshot_id in snapshot_ids:
@@ -1180,6 +1201,7 @@ def main() -> None:
             offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
             if offer_key and offer_key not in offer_snapshot_map:
                 offer_snapshot_map[offer_key] = snapshot_id
+
         detail_payload = load_detail_payload(snapshot_id)
         detail_lookup_by_snapshot[snapshot_id] = build_detail_lookup(detail_payload)
         loaded_snapshot_ids.append(snapshot_id)
@@ -1195,10 +1217,7 @@ def main() -> None:
         offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
         snapshot_id = offer_snapshot_map.get(offer_key, "")
         detail_lookup = detail_lookup_by_snapshot.get(snapshot_id, {})
-        details = detail_lookup.get(
-            absolutize_url(offer["link"]),
-            {}
-        )
+        details = detail_lookup.get(absolutize_url(offer["link"]), {})
 
         if details:
             details = {
@@ -1210,6 +1229,7 @@ def main() -> None:
             }
         else:
             details = extract_offer_details(offer["link"], offer["preview_title"])
+
         final_title = details["title"] or offer["title"]
         final_partner = absolutize_url(details.get("partner_img_url") or offer.get("partner_img_url") or "")
         final_img = absolutize_url(details["detail_img_url"] or "")
@@ -1219,6 +1239,7 @@ def main() -> None:
                 final_img = fallback_img
         if not final_img or is_bad_banner_url(final_img) or final_img == final_partner:
             final_img = ""
+
         offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
         dedupe_key = build_dedupe_key(
             title=final_title,
@@ -1231,10 +1252,12 @@ def main() -> None:
             continue
         if dedupe_key and (dedupe_key in historico_dedupe or dedupe_key in pending_dedupe or dedupe_key in seen_new_dedupe_keys):
             continue
+
         if offer_key:
             seen_new_offer_keys.add(offer_key)
         if dedupe_key:
             seen_new_dedupe_keys.add(dedupe_key)
+
         candidates.append(
             {
                 "id": offer["id"],
