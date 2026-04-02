@@ -1118,52 +1118,41 @@ def main() -> None:
 
     snapshot_ids, snapshot_control = get_unprocessed_snapshot_ids()
 
-    if snapshot_ids:
-        log(f"snapshots pendentes encontrados: {len(snapshot_ids)}")
-    else:
-        log("nenhum snapshot pendente; tentando buscar html direto")
-        html = get_html(LIST_URL)
-        if not html:
-            log("não foi possível obter html da lista nesta rodada; encerrando sem alterações")
-            append_dashboard_line("scraper", "⚠️ html indisponível / 405 / ssl")
-            status_scraper_finish(
-                summary="html indisponível / 405 / ssl",
-                status_value="erro",
-                offers_seen=0,
-                new_offers=0,
-                pending_count=len(pending.get("offers", [])),
-                last_error="falha ao obter html da lista",
-            )
-            return
-        snapshot_ids = ["__live_fetch__"]
+if snapshot_ids:
+    log(f"snapshots pendentes encontrados: {len(snapshot_ids)}")
+else:
+    log("nenhum snapshot pendente; encerrando sem scraping direto do uol")
+    set_dashboard_pending_count(len(pending.get("offers", [])))
+    append_dashboard_line("scraper", "📭 sem snapshots pendentes")
+    status_scraper_finish(
+        summary="sem snapshots pendentes",
+        status_value="sem_novidade",
+        offers_seen=0,
+        new_offers=0,
+        pending_count=len(pending.get("offers", [])),
+        last_error="",
+    )
+    return
 
     all_offers = []
     loaded_snapshot_ids = []
 
 
-    for snapshot_id in snapshot_ids:
-        if snapshot_id == "__live_fetch__":
-            html = get_html(LIST_URL)
-            if not html:
-                continue
-            source_label = "live_fetch"
-        else:
-            meta, html = load_snapshot(snapshot_id)
-            source_label = snapshot_id
+for snapshot_id in snapshot_ids:
+    _meta, html = load_snapshot(snapshot_id)
+    source_label = snapshot_id
 
-            if not html:
-                log(f"snapshot inválido ou sem html: {snapshot_id}")
-                mark_snapshot_processed(snapshot_id, snapshot_control)
-                continue
+    if not html:
+        log(f"snapshot inválido ou sem html: {snapshot_id}")
+        mark_snapshot_processed(snapshot_id, snapshot_control)
+        continue
 
-        set_dashboard_success_check()
-        offers = parse_offers(html)
-        log(f"total encontradas em {source_label}: {len(offers)}")
+    set_dashboard_success_check()
+    offers = parse_offers(html)
+    log(f"total encontradas em {source_label}: {len(offers)}")
 
-        all_offers.extend(offers)
-
-        if snapshot_id != "__live_fetch__":
-            loaded_snapshot_ids.append(snapshot_id)
+    all_offers.extend(offers)
+    loaded_snapshot_ids.append(snapshot_id)
 
     offers = uniq_by(all_offers, lambda o: normalize_offer_key(o.get("id") or o.get("link")))
     log(f"total consolidado após unir snapshots: {len(offers)}")
