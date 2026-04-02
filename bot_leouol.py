@@ -1,3 +1,4 @@
+
 import json
 import os
 import re
@@ -1104,7 +1105,8 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
     try:
         html = get_html(full_url)
         if not html:
-            return {"title": preview_title, "validity": None, "description": "descrição não disponível.", "detail_img_url": ""}
+            return {"title": preview_title, "validity": None, "description": "descrição não disponível.", "detail_img_url": "", "partner_img_url": ""}
+
         page_title = preview_title
         for regex in [re.compile(r"<h2[^>]*>([\s\S]*?)</h2>", re.I), re.compile(r"<h1[^>]*>([\s\S]*?)</h1>", re.I)]:
             m = regex.search(html)
@@ -1113,19 +1115,27 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                 if candidate_title:
                     page_title = candidate_title
                     break
+
         all_imgs = []
         for m in re.finditer(r'<img[^>]+(?:data-src|data-original|data-lazy|src)=["\']([^"\']+)["\']', html, re.I):
             src = absolutize_url(m.group(1))
             if src and not src.startswith("data:image"):
                 all_imgs.append(src)
+
+        partner_img_url = ""
+        partner_candidates = [src for src in all_imgs if "/parceiros/" in src.lower()]
+        if partner_candidates:
+            partner_img_url = partner_candidates[0]
+
         detail_img_url = ""
         detail_candidates = [src for src in all_imgs if is_likely_benefit_banner(src)]
         if detail_candidates:
             detail_img_url = detail_candidates[-1]
         else:
-            fallback_detail = [src for src in all_imgs if not is_bad_banner_url(src)]
+            fallback_detail = [src for src in all_imgs if not is_bad_banner_url(src) and src != partner_img_url]
             if fallback_detail:
                 detail_img_url = fallback_detail[-1]
+
         validity = None
         for regex in [
             re.compile(r"[Bb]enefício válido de[^.!?\n]*[.!?]?", re.I),
@@ -1136,6 +1146,7 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
             if m:
                 validity = clean_text(re.sub(r"<[^>]+>", " ", m.group(0)))
                 break
+
         description = ""
         for regex in [
             re.compile(r'class=["\'][^"\']*info-beneficio[^"\']*["\'][^>]*>([\s\S]*?)(?:<script|<footer|class=["\'][^"\']*box-compartilhar)', re.I),
@@ -1146,18 +1157,26 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                 description = html_to_text(m.group(1))
                 if len(description) >= 20:
                     break
+
         if not description or len(description) < 20:
             description = "descrição detalhada não disponível."
+
         return {
             "title": page_title,
             "validity": validity,
             "description": description[:4000],
             "detail_img_url": detail_img_url,
-            "partner_img_url": "",
+            "partner_img_url": partner_img_url,
         }
     except Exception as e:
         log(f"erro ao extrair detalhes: {e}")
-        return {"title": preview_title, "validity": None, "description": "descrição não disponível.", "detail_img_url": "", "partner_img_url": ""}
+        return {
+            "title": preview_title,
+            "validity": None,
+            "description": "descrição não disponível.",
+            "detail_img_url": "",
+            "partner_img_url": "",
+        }
 
 
 def extract_history_sets(history_data: Dict[str, Any]) -> tuple[set, set]:
@@ -1208,42 +1227,101 @@ def finish_without_snapshots(pending_count: int) -> None:
     )
 
 
-def set_global_last_offer(title: str, detected_at: str, offer_id: str) -> None:
-    status = load_status_runtime()
-    global_block = status.get("global", {}) or {}
-    global_block["last_offer_title"] = str(title or "").strip()
-    global_block["last_offer_at"] = str(detected_at or "").strip()
-    global_block["last_offer_id"] = str(offer_id or "").strip()
-    status["global"] = global_block
-    save_status_runtime(status)
+def compact_text(text: str) -> str:
+    text = clean_text(text or "")
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
 
 
-def build_offer_caption(offer: Dict[str, Any]) -> str:
+def clip_text(text: str, max_len: int) -> str:
+    text = compact_text(text)
+    if len(text) <= max_len:
+        return text
+    clipped = text[: max_len - 1].rstrip()
+    if " " in clipped:
+        clipped = clipped.rsplit(" ", 1)[0]
+    return clipped.rstrip(" .,:;-") + "…"
+
+
+def build_offer_tags(offer: Dict[str, Any]) -> str:
+    title = normalize_text_key(str(offer.get("title") or offer.get("preview_title") or ""))
+    tags = ["#campanhasdeingresso", "#ingresso", "#teatro"]
+
+    if "santander" in title:
+        tags.append("#teatrosantander")
+    elif "joao-caetano" in title or "joo-caetano" in title:
+        tags.append("#teatrojoaocaetano")
+    elif "j-safra" in title:
+        tags.append("#teatrojsafra")
+    elif "casa-natura" in title:
+        tags.append("#casanatura")
+    elif "morumbi-park" in title:
+        tags.append("#morumbipark")
+
+    seen = set()
+    final_tags = []
+    for tag in tags:
+        if tag not in seen:
+            seen.add(tag)
+            final_tags.append(tag)
+    return " ".join(final_tags)
+
+
+def build_main_post_caption(offer: Dict[str, Any]) -> str:
     title = str(offer.get("title") or offer.get("preview_title") or "Oferta UOL").strip()
-    validity = str(offer.get("validity") or "").strip()
-    description = clean_text(str(offer.get("description") or "").strip())
+    validity = compact_text(str(offer.get("validity") or "").strip())
     link = str(offer.get("link") or offer.get("original_link") or "").strip()
+    tags = build_offer_tags(offer)
 
-    parts = [f"<b>{escape_html(title)}</b>"]
+    parts = [f"‼️ <b>{escape_html(title)}</b> ‼️"]
+
+    if tags:
+        parts.append(escape_html(tags))
+
     if validity:
-        parts.append(f"<i>{escape_html(validity)}</i>")
-    if description:
-        parts.append(escape_html(description[:3500]))
+        parts.append(f"📅 {escape_html(validity)}")
+
     if link:
-        parts.append(f'<a href="{escape_html(link)}">abrir oferta</a>')
+        parts.append(f"🔗 {escape_html(link)}")
+
+    parts.append("💬 <i>veja os detalhes completos dentro dos comentários.</i>")
     return "\n\n".join(parts)
 
 
-def send_telegram_text(chat_id: str, text: str) -> Optional[int]:
+def build_detail_comment_text(offer: Dict[str, Any]) -> str:
+    title = str(offer.get("title") or offer.get("preview_title") or "Oferta UOL").strip()
+    validity = compact_text(str(offer.get("validity") or "").strip())
+    description = compact_text(str(offer.get("description") or "").strip())
+    link = str(offer.get("link") or offer.get("original_link") or "").strip()
+
+    parts = [f"📋 <b>{escape_html(title)}</b>"]
+
+    if description:
+        parts.append(escape_html(description))
+
+    if validity:
+        parts.append(f"📅 <b>validade:</b>\n{escape_html(validity)}")
+
+    if link:
+        parts.append(f"🔗 <a href=\"{escape_html(link)}\">abrir oferta</a>")
+
+    return "\n\n".join(parts)
+
+
+def send_telegram_text(chat_id: str, text: str, reply_to_message_id: Optional[int] = None) -> Optional[int]:
     try:
+        payload = {
+            "chat_id": chat_id,
+            "text": text,
+            "parse_mode": "HTML",
+            "disable_web_page_preview": "false",
+        }
+        if reply_to_message_id:
+            payload["reply_to_message_id"] = str(reply_to_message_id)
+
         resp = requests.post(
             telegram_api("sendMessage"),
-            data={
-                "chat_id": chat_id,
-                "text": text,
-                "parse_mode": "HTML",
-                "disable_web_page_preview": "false",
-            },
+            data=payload,
             timeout=REQUEST_TIMEOUT,
         )
         if not resp.ok:
@@ -1259,16 +1337,26 @@ def send_telegram_text(chat_id: str, text: str) -> Optional[int]:
         return None
 
 
-def send_telegram_photo(chat_id: str, photo_url: str, caption: str) -> Optional[int]:
+def send_telegram_photo(
+    chat_id: str,
+    photo_url: str,
+    caption: str = "",
+    reply_to_message_id: Optional[int] = None,
+) -> Optional[int]:
     try:
+        payload = {
+            "chat_id": chat_id,
+            "photo": photo_url,
+            "parse_mode": "HTML",
+        }
+        if caption:
+            payload["caption"] = caption[:1024]
+        if reply_to_message_id:
+            payload["reply_to_message_id"] = str(reply_to_message_id)
+
         resp = requests.post(
             telegram_api("sendPhoto"),
-            data={
-                "chat_id": chat_id,
-                "photo": photo_url,
-                "caption": caption[:1024],
-                "parse_mode": "HTML",
-            },
+            data=payload,
             timeout=REQUEST_TIMEOUT,
         )
         if not resp.ok:
@@ -1284,22 +1372,75 @@ def send_telegram_photo(chat_id: str, photo_url: str, caption: str) -> Optional[
         return None
 
 
+def set_global_last_offer(title: str, detected_at: str, offer_id: str) -> None:
+    status = load_status_runtime()
+    global_block = status.get("global", {}) or {}
+    global_block["last_offer_title"] = str(title or "").strip()
+    global_block["last_offer_at"] = str(detected_at or "").strip()
+    global_block["last_offer_id"] = str(offer_id or "").strip()
+    status["global"] = global_block
+    save_status_runtime(status)
+
+
 def send_offer_to_telegram(offer: Dict[str, Any]) -> bool:
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
         log("telegram não configurado para envio do consumer")
         return False
 
-    caption = build_offer_caption(offer)
-    img_url = str(offer.get("img_url") or "").strip()
+    main_img_url = str(offer.get("img_url") or "").strip()
+    partner_img_url = str(offer.get("partner_img_url") or "").strip()
 
-    if img_url and not is_bad_banner_url(img_url):
-        msg_id = send_telegram_photo(TELEGRAM_CHAT_ID, img_url, caption)
-        if msg_id:
-            return True
-        log("sendPhoto falhou; tentando fallback em texto")
+    main_caption = build_main_post_caption(offer)
+    detail_text = build_detail_comment_text(offer)
 
-    msg_id = send_telegram_text(TELEGRAM_CHAT_ID, caption)
-    return bool(msg_id)
+    main_message_id = None
+
+    if main_img_url and not is_bad_banner_url(main_img_url):
+        main_message_id = send_telegram_photo(
+            TELEGRAM_CHAT_ID,
+            main_img_url,
+            main_caption,
+        )
+        if not main_message_id:
+            log("sendPhoto principal falhou; tentando fallback em texto")
+
+    if not main_message_id:
+        main_message_id = send_telegram_text(
+            TELEGRAM_CHAT_ID,
+            main_caption,
+        )
+
+    if not main_message_id:
+        return False
+
+    comment_ok = False
+
+    if partner_img_url and not is_bad_banner_url(partner_img_url) and partner_img_url != main_img_url:
+        comment_message_id = send_telegram_photo(
+            TELEGRAM_CHAT_ID,
+            partner_img_url,
+            "",
+            reply_to_message_id=main_message_id,
+        )
+        if comment_message_id:
+            full_detail_sent = send_telegram_text(
+                TELEGRAM_CHAT_ID,
+                clip_text(detail_text, 3800),
+                reply_to_message_id=main_message_id,
+            )
+            comment_ok = bool(full_detail_sent)
+        else:
+            log("foto do parceiro falhou; tentando detalhe só em texto")
+
+    if not comment_ok:
+        full_detail_sent = send_telegram_text(
+            TELEGRAM_CHAT_ID,
+            clip_text(detail_text, 3800),
+            reply_to_message_id=main_message_id,
+        )
+        comment_ok = bool(full_detail_sent)
+
+    return bool(main_message_id and comment_ok)
 
 
 def update_history_and_latest(sent_offers: List[Dict[str, Any]]) -> None:
