@@ -409,15 +409,15 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
     finished_dt = parse_br_datetime(finished_at)
     stale_running = status_value == "running" and started_dt and (not finished_dt or finished_dt < started_dt)
 
-if source == "scriptable":
-    if stale_running:
-        return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
-    if status_value in {"ok", "running", "sem_novidade", "sem_novidades"}:
-        return ("🟢 Online", detail, finished_at or started_at)
-    if status_value == "erro":
-        err = str(status_block.get("last_error") or detail or "Erro")
-        return ("🔴 Erro", err, finished_at or started_at)
-    return ("⚪ Sem dados", detail, finished_at or started_at)
+    if source == "scriptable":
+        if stale_running:
+            return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
+        if status_value in {"ok", "running", "sem_novidade", "sem_novidades"}:
+            return ("🟢 Online", detail, finished_at or started_at)
+        if status_value == "erro":
+            err = str(status_block.get("last_error") or detail or "Erro")
+            return ("🔴 Erro", err, finished_at or started_at)
+        return ("⚪ Sem dados", detail, finished_at or started_at)
 
     if source == "scraper":
         last_success = str(status_block.get("last_success_at") or "").strip()
@@ -550,17 +550,21 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
+
     status = load_status_runtime()
     text = format_monitor_dashboard(state, status)
     current_text = str(state.get("last_rendered_text") or "")
+
     if current_text == text:
         save_daily_log(state)
         return
-if not state["message_id"]:
+
+    if not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-12:]
         text = format_monitor_dashboard(state, load_status_runtime())
+
         try:
             resp = requests.post(
                 telegram_api("sendMessage"),
@@ -573,6 +577,7 @@ if not state["message_id"]:
                 },
                 timeout=REQUEST_TIMEOUT,
             )
+
             if resp.ok:
                 data = resp.json()
                 if data.get("ok"):
@@ -584,6 +589,7 @@ if not state["message_id"]:
         except Exception as e:
             log(f"falha ao criar dashboard diário: {e}")
         return
+
     try:
         resp = requests.post(
             telegram_api("editMessageText"),
@@ -596,6 +602,7 @@ if not state["message_id"]:
             },
             timeout=REQUEST_TIMEOUT,
         )
+
         if resp.ok:
             state["last_rendered_text"] = text
             save_daily_log(state)
@@ -604,11 +611,14 @@ if not state["message_id"]:
                 error_data = resp.json()
             except Exception:
                 error_data = {}
+
             description = str(error_data.get("description") or "")
+
             if "message is not modified" in description.lower():
                 state["last_rendered_text"] = text
                 save_daily_log(state)
                 return
+
             log(f"falha ao editar dashboard diário: {resp.text}")
     except Exception as e:
         log(f"falha ao editar dashboard diário: {e}")
