@@ -1,11 +1,11 @@
 {
   "scriptable": {
     "last_started_at": "2026-04-02T22:05:13.560906Z",
-    "last_finished_at": "2026-04-02T22:00:38.152107Z",
-    "status": "running",
-    "summary": "railway collector iniciado",
-    "offers_seen": 0,
-    "new_offers": 0,
+    "last_finished_at": "2026-04-02T22:05:26.081621Z",
+    "status": "ok",
+    "summary": "railway coleta ok: 20260402_220513_nsvug | origem https://clube.uol.com.br/?order=new | vitrine 48 | novas reais 4 | detalhes 4/4",
+    "offers_seen": 48,
+    "new_offers": 4,
     "pending_count": 0,
     "last_error": ""
   },
@@ -21,9 +21,9 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "02/04/2026 às 19:05",
-    "last_finished_at": "02/04/2026 às 19:05",
-    "last_success_at": "02/04/2026 às 19:05",
+    "last_started_at": "02/04/2026 às 19:01",
+    "last_finished_at": "02/04/2026 às 19:01",
+    "last_success_at": "02/04/2026 às 19:01",
     "status": "sem_novidade",
     "summary": "pending vazio",
     "processed": 0,
