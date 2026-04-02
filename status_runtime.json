@@ -1,40 +1,40 @@
 {
   "scriptable": {
-    "last_started_at": "2026-04-02T16:25:14.424084Z",
-    "last_finished_at": "2026-04-02T16:25:26.440243Z",
+    "last_started_at": "",
+    "last_finished_at": "2026-04-02T16:30:03.399Z",
     "status": "ok",
-    "summary": "railway coleta ok: 20260402_162513_ey7ku | vitrine 48 | novas reais 4 | detalhes 4/5",
+    "summary": "manual fallback ok: 20260402_130002_lua63 | vitrine 48 | nova real 1 | detalhe 1/1",
     "offers_seen": 48,
-    "new_offers": 4,
+    "new_offers": 1,
     "pending_count": 0,
     "last_error": ""
   },
   "scraper": {
-    "last_started_at": "02/04/2026 às 12:44",
-    "last_finished_at": "02/04/2026 às 12:44",
-    "last_success_at": "02/04/2026 às 12:44",
-    "status": "ok",
-    "summary": "novas no pending: 2",
-    "offers_seen": 12,
-    "new_offers": 2,
-    "pending_count": 2,
+    "last_started_at": "",
+    "last_finished_at": "",
+    "last_success_at": "",
+    "status": "",
+    "summary": "",
+    "offers_seen": 0,
+    "new_offers": 0,
+    "pending_count": 0,
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "02/04/2026 às 12:55",
-    "last_finished_at": "02/04/2026 às 12:55",
-    "last_success_at": "02/04/2026 às 12:55",
-    "status": "ok",
-    "summary": "enviadas: 2",
-    "processed": 2,
-    "sent": 2,
+    "last_started_at": "",
+    "last_finished_at": "",
+    "last_success_at": "",
+    "status": "",
+    "summary": "",
+    "processed": 0,
+    "sent": 0,
     "failed": 0,
     "pending_count": 0,
     "last_error": ""
   },
   "global": {
-    "last_offer_title": "2 INGRESSOS: 11/04 Teatro Santander- SP",
-    "last_offer_at": "02/04/2026 às 12:44",
-    "last_offer_id": "pk3-2-ingressos-11-04-teatro-santander-sp"
+    "last_offer_title": "",
+    "last_offer_at": "",
+    "last_offer_id": ""
   }
 }
