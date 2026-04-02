@@ -1212,6 +1212,10 @@ def main() -> None:
     log(f"novas fora de histórico/pending: {len(candidates)}")
     if not candidates:
         log("nenhuma oferta nova para adicionar")
+
+        for snapshot_id in loaded_snapshot_ids:
+            mark_snapshot_processed(snapshot_id, snapshot_control)
+
         set_dashboard_pending_count(len(pending.get("offers", [])))
         append_dashboard_line("scraper", "💤 sem ofertas novas")
         status_scraper_finish(
