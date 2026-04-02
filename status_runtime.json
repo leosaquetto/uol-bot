@@ -1,13 +1,13 @@
 {
   "scriptable": {
-    "last_started_at": "2026-04-02T20:20:05.586307Z",
+    "last_started_at": "2026-04-02T20:30:24.705701Z",
     "last_finished_at": "2026-04-02T20:20:14.517881Z",
-    "status": "erro",
-    "summary": "erro geral no railway collector",
+    "status": "running",
+    "summary": "railway collector iniciado",
     "offers_seen": 0,
     "new_offers": 0,
     "pending_count": 5,
-    "last_error": "arquivo não confirmado após gravação: snapshots/snapshot_20260402_202005_kr3gs.html"
+    "last_error": ""
   },
   "scraper": {
     "last_started_at": "02/04/2026 às 14:59",
