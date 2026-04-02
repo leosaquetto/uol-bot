@@ -1,11 +1,11 @@
 {
   "scriptable": {
-    "last_started_at": "2026-04-02T12:25:03.393984Z",
+    "last_started_at": "2026-04-02T12:25:31.017870Z",
     "last_finished_at": "2026-04-02T12:25:16.525935Z",
-    "status": "ok",
-    "summary": "railway snapshots ok: 20260402_122502_ldhb0 | detalhes 4/4",
-    "offers_seen": 48,
-    "new_offers": 42,
+    "status": "running",
+    "summary": "railway collector iniciado",
+    "offers_seen": 0,
+    "new_offers": 0,
     "pending_count": 0,
     "last_error": ""
   },
