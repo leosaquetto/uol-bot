@@ -1,17 +1,8 @@
-// scriptable - clube uol scraper
-// versão robusta + deduplicação estrutural:
-// - lê histórico e pending do github com decode base64 correto
-// - aborta se não conseguir ler o estado remoto, para não floodar
-// - não grava no histórico aqui; histórico fica só com o consumer
-// - adiciona apenas ofertas novas ao pending
-// - tenta extrair banner principal + logo do parceiro
-// - enriquece com título, validade e descrição
-// - evita depender de nth-child
-// - deduplica por offer_key e também por dedupe_key semântica
+// scriptable - clube uol
+// scraper + widget no mesmo arquivo
+// modo widget: renderiza widget
+// modo shortcuts/app: roda scraper e devolve output sem ui
 
-// ==============================================
-// configurações
-// ==============================================
 const GITHUB_TOKEN = "xxx"
 const REPO_OWNER = "leosaquetto"
 const REPO_NAME = "uol-bot"
@@ -21,10 +12,16 @@ const LIST_URL = `${BASE_URL}/?order=new`
 
 const HISTORY_FILE = "historico_leouol.json"
 const PENDING_FILE = "pending_offers.json"
+const DAILY_LOG_FILE = "daily_log.json"
+const STATUS_RUNTIME_FILE = "status_runtime.json"
 
-// ==============================================
-// utilidades
-// ==============================================
+const GITHUB_JSON_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/latest_offers.json"
+const UOL_LOGO_URL = "https://i.imgur.com/UdIgTfI.png"
+
+const fm = FileManager.local()
+const cachePath = fm.joinPath(fm.documentsDirectory(), "uol_widget_cache_v3.json")
+const CACHE_TIME = 10 * 60 * 1000
+
 function log(msg) {
   const timestamp = new Date().toLocaleTimeString()
   console.log(`[${timestamp}] ${msg}`)
@@ -34,9 +31,27 @@ function logSeparator() {
   console.log("-".repeat(60))
 }
 
+function brDate(d = new Date()) {
+  const dd = String(d.getDate()).padStart(2, "0")
+  const mm = String(d.getMonth() + 1).padStart(2, "0")
+  const yyyy = d.getFullYear()
+  return `${dd}/${mm}/${yyyy}`
+}
+
+function brTime(d = new Date()) {
+  const hh = String(d.getHours()).padStart(2, "0")
+  const mm = String(d.getMinutes()).padStart(2, "0")
+  return `${hh}:${mm}`
+}
+
+function brDateTime(d = new Date()) {
+  return `${brDate(d)} às ${brTime(d)}`
+}
+
 function cleanText(text) {
   if (!text) return ""
   let cleaned = String(text)
+
   cleaned = cleaned.replace(/&nbsp;/gi, " ")
   cleaned = cleaned.replace(/&#160;/gi, " ")
   cleaned = cleaned.replace(/[ \t]+/g, " ")
@@ -49,12 +64,14 @@ function cleanText(text) {
 function htmlToText(html) {
   if (!html) return ""
   let text = String(html)
+
   text = text.replace(/<br\s*\/?>/gi, "\n")
   text = text.replace(/<\/p>/gi, "\n\n")
   text = text.replace(/<\/div>/gi, "\n")
   text = text.replace(/<li[^>]*>/gi, "\n• ")
   text = text.replace(/<\/li>/gi, "")
   text = text.replace(/<[^>]+>/g, " ")
+
   return cleanText(text)
 }
 
@@ -110,8 +127,7 @@ function normalizeOfferKey(value) {
     raw = getOfferId(raw)
   }
 
-  raw = normalizeTextKey(raw)
-  return raw
+  return normalizeTextKey(raw)
 }
 
 function pickDescriptionAnchor(description) {
@@ -130,7 +146,6 @@ function pickDescriptionAnchor(description) {
     "importante",
     "regras-de-resgate",
     "atencao",
-    "atenção",
     "enviar-cupons-por-e-mail",
     "preencha-os-campos-abaixo",
     "e-mail",
@@ -139,17 +154,15 @@ function pickDescriptionAnchor(description) {
   ]
 
   const filtered = []
-
   for (const line of lines) {
     const low = normalizeTextKey(line)
     if (!low) continue
     if (low.length < 12) continue
-    if (blacklistStarts.some(x => low.startsWith(normalizeTextKey(x)))) continue
+    if (blacklistStarts.some(x => low.startsWith(x))) continue
     filtered.push(low)
   }
 
-  if (!filtered.length) return ""
-  return filtered[0].slice(0, 160)
+  return filtered.length ? filtered[0].slice(0, 160) : ""
 }
 
 function buildDedupeKey(title, validity, description) {
@@ -157,6 +170,12 @@ function buildDedupeKey(title, validity, description) {
   const validityKey = normalizeTextKey(validity || "")
   const descKey = pickDescriptionAnchor(description || "")
   return [titleKey, validityKey, descKey].filter(Boolean).join("|")
+}
+
+function buildLooseDedupeKey(title, description) {
+  const titleKey = normalizeTextKey(title || "")
+  const descKey = pickDescriptionAnchor(description || "")
+  return [titleKey, descKey].filter(Boolean).join("|")
 }
 
 function absolutizeUrl(url) {
@@ -228,9 +247,36 @@ function isLikelyBenefitBanner(url) {
   )
 }
 
-// ==============================================
+function ensureTodayState(state) {
+  const today = brDate()
+  if (!state || state.date !== today) {
+    return {
+      date: today,
+      message_id: null,
+      last_success_check: state?.last_success_check || "",
+      last_new_offer_at: state?.last_new_offer_at || "",
+      pending_count: 0,
+      last_consumer_run: state?.last_consumer_run || "",
+      lines: []
+    }
+  }
+  return state
+}
+
+function appendDashboardLine(state, source, statusLine) {
+  state = ensureTodayState(state)
+  const line = `[${brTime()}] ${source}: ${statusLine}`
+  state.lines = Array.isArray(state.lines) ? state.lines : []
+  state.lines.push(line)
+  state.lines = state.lines.slice(-30)
+  return state
+}
+
+function isShortcutContext() {
+  return !!(config.runsInShortcuts || config.runsWithSiri || args.shortcutParameter !== undefined)
+}
+
 // github api
-// ==============================================
 function githubContentsUrl(filePath) {
   return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`
 }
@@ -351,7 +397,7 @@ async function loadHistoryStrict() {
   }
 
   if (!result.content) {
-    return { ids: [], dedupe_keys: [] }
+    return { ids: [], dedupe_keys: [], loose_dedupe_keys: [] }
   }
 
   if (!Array.isArray(result.content.ids)) {
@@ -359,14 +405,10 @@ async function loadHistoryStrict() {
     return null
   }
 
-  if (result.content.dedupe_keys && !Array.isArray(result.content.dedupe_keys)) {
-    log(`❌ formato inválido em dedupe_keys de ${HISTORY_FILE}`)
-    return null
-  }
-
   return {
     ids: Array.isArray(result.content.ids) ? result.content.ids : [],
-    dedupe_keys: Array.isArray(result.content.dedupe_keys) ? result.content.dedupe_keys : []
+    dedupe_keys: Array.isArray(result.content.dedupe_keys) ? result.content.dedupe_keys : [],
+    loose_dedupe_keys: Array.isArray(result.content.loose_dedupe_keys) ? result.content.loose_dedupe_keys : []
   }
 }
 
@@ -390,6 +432,118 @@ async function loadPendingStrict() {
   return result.content
 }
 
+async function loadDailyLogStrict() {
+  const result = await getFileContent(DAILY_LOG_FILE)
+  if (!result.ok) {
+    log(`❌ falha ao ler ${DAILY_LOG_FILE}`)
+    log(`   ${result.error}`)
+    return null
+  }
+
+  if (!result.content) {
+    return {
+      date: "",
+      message_id: null,
+      last_success_check: "",
+      last_new_offer_at: "",
+      pending_count: 0,
+      last_consumer_run: "",
+      lines: []
+    }
+  }
+
+  const content = result.content || {}
+  return {
+    date: String(content.date || ""),
+    message_id: content.message_id || null,
+    last_success_check: String(content.last_success_check || ""),
+    last_new_offer_at: String(content.last_new_offer_at || ""),
+    pending_count: Number(content.pending_count || 0),
+    last_consumer_run: String(content.last_consumer_run || ""),
+    lines: Array.isArray(content.lines) ? content.lines.map(String) : []
+  }
+}
+
+async function loadStatusRuntimeStrict() {
+  const result = await getFileContent(STATUS_RUNTIME_FILE)
+  if (!result.ok) {
+    log(`❌ falha ao ler ${STATUS_RUNTIME_FILE}`)
+    log(`   ${result.error}`)
+    return null
+  }
+
+  if (!result.content) {
+    return {
+      scriptable: {
+        last_started_at: "",
+        last_finished_at: "",
+        status: "",
+        summary: "",
+        offers_seen: 0,
+        new_offers: 0,
+        pending_count: 0,
+        last_error: ""
+      },
+      scraper: {
+        last_started_at: "",
+        last_finished_at: "",
+        status: "",
+        summary: "",
+        offers_seen: 0,
+        new_offers: 0,
+        pending_count: 0,
+        last_error: ""
+      },
+      consumer: {
+        last_started_at: "",
+        last_finished_at: "",
+        status: "",
+        summary: "",
+        processed: 0,
+        sent: 0,
+        failed: 0,
+        pending_count: 0,
+        last_error: ""
+      }
+    }
+  }
+
+  const c = result.content || {}
+  return {
+    scriptable: c.scriptable || {
+      last_started_at: "",
+      last_finished_at: "",
+      status: "",
+      summary: "",
+      offers_seen: 0,
+      new_offers: 0,
+      pending_count: 0,
+      last_error: ""
+    },
+    scraper: c.scraper || {
+      last_started_at: "",
+      last_finished_at: "",
+      status: "",
+      summary: "",
+      offers_seen: 0,
+      new_offers: 0,
+      pending_count: 0,
+      last_error: ""
+    },
+    consumer: c.consumer || {
+      last_started_at: "",
+      last_finished_at: "",
+      status: "",
+      summary: "",
+      processed: 0,
+      sent: 0,
+      failed: 0,
+      pending_count: 0,
+      last_error: ""
+    }
+  }
+}
+
 async function savePending(offers) {
   const payload = {
     last_update: new Date().toISOString(),
@@ -403,6 +557,51 @@ async function savePending(offers) {
   )
 }
 
+async function saveDailyLog(state) {
+  return await updateFile(
+    DAILY_LOG_FILE,
+    state,
+    `atualiza daily log em ${new Date().toISOString()}`
+  )
+}
+
+async function saveStatusRuntime(state) {
+  return await updateFile(
+    STATUS_RUNTIME_FILE,
+    state,
+    `atualiza status runtime em ${new Date().toISOString()}`
+  )
+}
+
+function setScriptableStatusStart(state, pendingCount) {
+  state.scriptable = {
+    last_started_at: brDateTime(),
+    last_finished_at: state.scriptable?.last_finished_at || "",
+    status: "running",
+    summary: "scriptable iniciado",
+    offers_seen: 0,
+    new_offers: 0,
+    pending_count: pendingCount || 0,
+    last_error: ""
+  }
+  return state
+}
+
+function setScriptableStatusFinish(state, payload) {
+  state.scriptable = {
+    last_started_at: state.scriptable?.last_started_at || "",
+    last_finished_at: brDateTime(),
+    status: payload.status || "",
+    summary: payload.summary || "",
+    offers_seen: Number(payload.offers_seen || 0),
+    new_offers: Number(payload.new_offers || 0),
+    pending_count: Number(payload.pending_count || 0),
+    last_error: payload.last_error || ""
+  }
+  return state
+}
+
+// parser
 function extractAllImageUrls(blockHtml) {
   const urls = []
   const regex = /<img[^>]+(?:data-src|data-original|data-lazy|src)=["']([^"']+)["'][^>]*>/gi
@@ -470,7 +669,7 @@ function chooseImagesFromBlock(blockHtml) {
   let main = bannerCandidates.length ? bannerCandidates[bannerCandidates.length - 1] : null
 
   if (!main) {
-    const fallbackMain = uniqImgs.find(img => !isBadBannerUrl(img.src) && (!partner || img.src !== partner.src))
+    const fallbackMain = uniqImgs.find(img => !isBadBannerUrl(img.src) && (!partner || img.src !== partner?.src))
     if (fallbackMain) main = fallbackMain
   }
 
@@ -502,20 +701,46 @@ function extractTitleFromBlock(blockHtml) {
   return ""
 }
 
-function extractLinkFromBlock(blockHtml) {
-  const patterns = [
-    /<a[^>]*class=["'][^"']*btn[^"']*["'][^>]*href=["']([^"']+)["']/i,
-    /<a[^>]*href=["']([^"']+)["'][^>]*>/i
-  ]
+function findOfferAnchorsInHtml(html) {
+  const links = []
+  const regex = /<a[^>]+href=["']([^"']+)["'][^>]*>/gi
+  let match
 
-  for (const regex of patterns) {
-    const match = regex.exec(blockHtml)
-    if (match && match[1]) {
-      return absolutizeUrl(match[1])
+  while ((match = regex.exec(html)) !== null) {
+    const href = absolutizeUrl(match[1] || "")
+    const low = href.toLowerCase()
+
+    if (
+      low.includes("/campanhasdeingresso/") ||
+      low.includes("/teatrouol/")
+    ) {
+      links.push(href)
     }
   }
 
-  return ""
+  return uniqBy(links, x => x)
+}
+
+function buildOfferBlockAroundLink(html, link) {
+  const escaped = String(link || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const directRegex = new RegExp(`<a[^>]+href=["']${escaped}["'][^>]*>`, "i")
+  const directMatch = directRegex.exec(html)
+
+  let anchorIndex = directMatch ? directMatch.index : -1
+
+  if (anchorIndex < 0) {
+    const pathOnly = String(link || "").replace(BASE_URL, "")
+    const escapedPath = pathOnly.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    const pathRegex = new RegExp(`<a[^>]+href=["']${escapedPath}["'][^>]*>`, "i")
+    const pathMatch = pathRegex.exec(html)
+    anchorIndex = pathMatch ? pathMatch.index : -1
+  }
+
+  if (anchorIndex < 0) return ""
+
+  const start = Math.max(0, anchorIndex - 2500)
+  const end = Math.min(html.length, anchorIndex + 4500)
+  return html.slice(start, end)
 }
 
 async function scrapeOffersList() {
@@ -533,40 +758,29 @@ async function scrapeOffersList() {
     const html = await req.loadString()
     log(`✅ página baixada: ${html.length} caracteres`)
 
-    const rawBlocks = []
-    const categoriaRegex = /<div[^>]*data-categoria=['"]Ingressos\s*Exclusivos['"][^>]*>([\s\S]*?)(?=<div[^>]*data-categoria=|$)/gi
-    let match
-
-    while ((match = categoriaRegex.exec(html)) !== null) {
-      rawBlocks.push(match[1])
-    }
-
-    if (rawBlocks.length === 0) {
-      log("⚠️ fallback: buscando blocos com menção a ingresso")
-      const genericRegex = /<div[^>]*class=["'][^"']*(?:beneficio|item-oferta|oferta)[^"']*["'][^>]*>([\s\S]*?)(?=<div[^>]*class=["'][^"']*(?:beneficio|item-oferta|oferta)[^"']*["']|$)/gi
-
-      while ((match = genericRegex.exec(html)) !== null) {
-        const blockHtml = match[1]
-        const low = blockHtml.toLowerCase()
-        if (
-          low.includes("ingresso") ||
-          low.includes("ingressos") ||
-          low.includes("campanhasdeingresso")
-        ) {
-          rawBlocks.push(blockHtml)
-        }
-      }
-    }
-
-    log(`📦 blocos candidatos: ${rawBlocks.length}`)
+    const anchorLinks = findOfferAnchorsInHtml(html)
+    log(`🔗 links candidatos: ${anchorLinks.length}`)
 
     const offers = []
 
-    for (const blockHtml of rawBlocks) {
+    for (const link of anchorLinks) {
       try {
-        const title = extractTitleFromBlock(blockHtml)
-        const link = extractLinkFromBlock(blockHtml)
+        const blockHtml = buildOfferBlockAroundLink(html, link)
+        if (!blockHtml) continue
+
+        let title = extractTitleFromBlock(blockHtml)
         const { img_url, partner_img_url } = chooseImagesFromBlock(blockHtml)
+
+        if (!title) {
+          const slug = getOfferId(link)
+          title = cleanText(
+            decodeHtmlEntities(
+              String(slug || "")
+                .replace(/[-_]+/g, " ")
+                .replace(/\b\w/g, c => c.toUpperCase())
+            )
+          )
+        }
 
         log(`     main url: ${img_url || "vazia"}`)
         log(`     partner url: ${partner_img_url || "vazia"}`)
@@ -586,14 +800,19 @@ async function scrapeOffersList() {
         })
 
         log(`  ✅ extraído: ${title.substring(0, 55)}...`)
-        log(`     🖼️ main: ${img_url ? "ok" : "vazio"}`)
-        log(`     🏷️ partner: ${partner_img_url ? "ok" : "não detectado"}`)
       } catch (e) {
         log(`  ⚠️ erro ao extrair card: ${e.message}`)
       }
     }
 
-    return uniqBy(offers, o => normalizeOfferKey(o.id || o.link))
+    const uniqueOffers = uniqBy(offers, o => normalizeOfferKey(o.id || o.link))
+    log(`📦 blocos/ofertas aproveitados: ${uniqueOffers.length}`)
+
+    if (uniqueOffers.length <= 1) {
+      log("⚠️ parsing suspeito: poucas ofertas capturadas da vitrine")
+    }
+
+    return uniqueOffers
   } catch (e) {
     log(`❌ erro ao baixar lista: ${e.message}`)
     return []
@@ -612,192 +831,130 @@ async function extractOfferDetails(url, previewTitle) {
     "Referer": BASE_URL + "/"
   }
 
-  try {
-    const html = await req.loadString()
+  const html = await req.loadString()
 
-    let pageTitle = previewTitle
-    const titlePatterns = [
-      /<h2[^>]*>([\s\S]*?)<\/h2>/i,
-      /<h1[^>]*>([\s\S]*?)<\/h1>/i
-    ]
+  let pageTitle = previewTitle
+  const titlePatterns = [
+    /<h2[^>]*>([\s\S]*?)<\/h2>/i,
+    /<h1[^>]*>([\s\S]*?)<\/h1>/i
+  ]
 
-    for (const regex of titlePatterns) {
-      const m = regex.exec(html)
-      if (m && m[1]) {
-        pageTitle = cleanText(m[1].replace(/<[^>]+>/g, " "))
-        break
-      }
+  for (const regex of titlePatterns) {
+    const m = regex.exec(html)
+    if (m && m[1]) {
+      pageTitle = cleanText(m[1].replace(/<[^>]+>/g, " "))
+      break
     }
+  }
 
-    let detailImgUrl = ""
-    const allImgs = extractAllImageUrls(html)
-    const detailCandidates = allImgs.filter(url => isLikelyBenefitBanner(url))
-    if (detailCandidates.length) {
-      detailImgUrl = detailCandidates[detailCandidates.length - 1]
-    } else {
-      const fallbackDetail = allImgs.filter(url => !isBadBannerUrl(url))
-      if (fallbackDetail.length) {
-        detailImgUrl = fallbackDetail[fallbackDetail.length - 1]
-      }
+  let detailImgUrl = ""
+  const allImgs = extractAllImageUrls(html)
+  const detailCandidates = allImgs.filter(url => isLikelyBenefitBanner(url))
+  if (detailCandidates.length) {
+    detailImgUrl = detailCandidates[detailCandidates.length - 1]
+  } else {
+    const fallbackDetail = allImgs.filter(url => !isBadBannerUrl(url))
+    if (fallbackDetail.length) {
+      detailImgUrl = fallbackDetail[fallbackDetail.length - 1]
     }
+  }
 
-    let validity = null
-    const validityPatterns = [
-      /[Bb]enefício válido de[^.!?\n]*[.!?]?/,
-      /[Vv]álido até[^.!?\n]*[.!?]?/,
-      /\d{2}\/\d{2}\/\d{4}[\s\S]{0,80}\d{2}\/\d{2}\/\d{4}/
-    ]
+  let validity = null
+  const validityPatterns = [
+    /[Bb]enefício válido de[^.!?\n]*[.!?]?/,
+    /[Vv]álido até[^.!?\n]*[.!?]?/,
+    /\d{2}\/\d{2}\/\d{4}[\s\S]{0,80}\d{2}\/\d{2}\/\d{4}/
+  ]
 
-    for (const pattern of validityPatterns) {
-      const m = pattern.exec(html)
-      if (m && m[0]) {
-        validity = cleanText(m[0].replace(/<[^>]+>/g, " "))
-        break
-      }
+  for (const pattern of validityPatterns) {
+    const m = pattern.exec(html)
+    if (m && m[0]) {
+      validity = cleanText(m[0].replace(/<[^>]+>/g, " "))
+      break
     }
+  }
 
-    let description = ""
-    const infoPatterns = [
-      /class=["'][^"']*info-beneficio[^"']*["'][^>]*>([\s\S]*?)(?:<script|<footer|class=["'][^"']*box-compartilhar)/i,
-      /id=["']beneficio["'][^>]*>([\s\S]*?)(?:<script|<footer)/i
-    ]
+  let description = ""
+  const infoPatterns = [
+    /class=["'][^"']*info-beneficio[^"']*["'][^>]*>([\s\S]*?)(?:<script|<footer|class=["'][^"']*box-compartilhar)/i,
+    /id=["']beneficio["'][^>]*>([\s\S]*?)(?:<script|<footer)/i
+  ]
 
-    for (const regex of infoPatterns) {
-      const m = regex.exec(html)
-      if (m && m[1]) {
-        description = htmlToText(m[1])
-        if (description.length >= 20) break
-      }
+  for (const regex of infoPatterns) {
+    const m = regex.exec(html)
+    if (m && m[1]) {
+      description = htmlToText(m[1])
+      if (description.length >= 20) break
     }
+  }
 
-    if (!description || description.length < 20) {
-      description = "descrição detalhada não disponível."
-    }
+  if (!description || description.length < 20) {
+    description = "descrição detalhada não disponível."
+  }
 
-    description = description.substring(0, 4000)
+  description = description.substring(0, 4000)
 
-    return {
-      title: pageTitle,
-      validity,
-      description,
-      detailImgUrl
-    }
-  } catch (e) {
-    log(`   ⚠️ erro na página interna: ${e.message}`)
-    return {
-      title: previewTitle,
-      validity: null,
-      description: "descrição não disponível.",
-      detailImgUrl: ""
-    }
+  return {
+    title: pageTitle,
+    validity,
+    description,
+    detailImgUrl
   }
 }
 
-function extractHistorySets(history) {
-  const ids = Array.isArray(history.ids) ? history.ids : []
-  const dedupeKeys = Array.isArray(history.dedupe_keys) ? history.dedupe_keys : []
+function buildExistingDedupeSets(history, pending) {
+  const historyKeys = new Set((history.ids || []).map(x => normalizeOfferKey(x)))
+  const historyDedupe = new Set((history.dedupe_keys || []).map(x => String(x || "").trim()).filter(Boolean))
+  const historyLooseDedupe = new Set((history.loose_dedupe_keys || []).map(x => String(x || "").trim()).filter(Boolean))
 
-  const idSet = new Set(ids.map(x => normalizeOfferKey(x)).filter(Boolean))
-  const dedupeSet = new Set(dedupeKeys.map(x => String(x || "").trim()).filter(Boolean))
-
-  return { idSet, dedupeSet }
-}
-
-function extractPendingSets(pending) {
-  const offers = Array.isArray(pending.offers) ? pending.offers : []
-
-  const idSet = new Set()
-  const dedupeSet = new Set()
-
-  for (const o of offers) {
-    const offerKey = normalizeOfferKey(o.id || o.link)
-    if (offerKey) idSet.add(offerKey)
-
-    let dedupeKey = String(o.dedupe_key || "").trim()
-    if (!dedupeKey) {
-      dedupeKey = buildDedupeKey(
-        o.title || o.preview_title || "",
-        o.validity || "",
-        o.description || ""
-      )
-    }
-    if (dedupeKey) dedupeSet.add(dedupeKey)
-  }
-
-  return { idSet, dedupeSet }
-}
-
-async function saveCompleteOffers(offers) {
-  const history = await loadHistoryStrict()
-  const pending = await loadPendingStrict()
-
-  if (!history || !pending) {
-    log("❌ abortando: não consegui carregar histórico/pending com segurança")
-    return false
-  }
-
-  const historySets = extractHistorySets(history)
-  const pendingSets = extractPendingSets(pending)
-
-  const freshOffers = []
-  const seenOfferKeys = new Set()
-  const seenDedupeKeys = new Set()
-
-  for (const o of offers) {
-    const offerKey = normalizeOfferKey(o.id || o.link)
-    const dedupeKey = String(o.dedupe_key || "").trim()
-
-    if (
-      offerKey &&
-      (
-        historySets.idSet.has(offerKey) ||
-        pendingSets.idSet.has(offerKey) ||
-        seenOfferKeys.has(offerKey)
-      )
-    ) {
-      continue
-    }
-
-    if (
-      dedupeKey &&
-      (
-        historySets.dedupeSet.has(dedupeKey) ||
-        pendingSets.dedupeSet.has(dedupeKey) ||
-        seenDedupeKeys.has(dedupeKey)
-      )
-    ) {
-      continue
-    }
-
-    if (offerKey) seenOfferKeys.add(offerKey)
-    if (dedupeKey) seenDedupeKeys.add(dedupeKey)
-
-    freshOffers.push(o)
-  }
-
-  if (freshOffers.length === 0) {
-    log("📭 nenhuma oferta nova para adicionar ao pending")
-    return false
-  }
-
-  const merged = [...(pending.offers || []), ...freshOffers]
-  const deduped = uniqBy(
-    merged,
-    o => String(o.dedupe_key || "").trim() || normalizeOfferKey(o.id || o.link)
+  const pendingKeys = new Set((pending.offers || []).map(o => normalizeOfferKey(o.id || o.link)))
+  const pendingDedupe = new Set((pending.offers || []).map(o => String(o.dedupe_key || "").trim()).filter(Boolean))
+  const pendingLooseDedupe = new Set(
+    (pending.offers || [])
+      .map(o => String(o.loose_dedupe_key || buildLooseDedupeKey(o.title, o.description || "")).trim())
+      .filter(Boolean)
   )
 
-  const ok = await savePending(deduped)
-
-  if (!ok) {
-    log("❌ não consegui salvar o pending no github")
-    return false
+  return {
+    historyKeys,
+    historyDedupe,
+    historyLooseDedupe,
+    pendingKeys,
+    pendingDedupe,
+    pendingLooseDedupe
   }
-
-  log(`✅ ${freshOffers.length} novas ofertas adicionadas ao pending`)
-  return true
 }
 
-async function main() {
+function alreadyKnownByAnyKey(offer, sets) {
+  const idKey = normalizeOfferKey(offer.id || offer.link)
+  const strictKey = String(offer.dedupe_key || "").trim()
+  const looseKey = String(offer.loose_dedupe_key || buildLooseDedupeKey(offer.title, offer.description || "")).trim()
+
+  if (idKey && (sets.historyKeys.has(idKey) || sets.pendingKeys.has(idKey))) return true
+  if (strictKey && (sets.historyDedupe.has(strictKey) || sets.pendingDedupe.has(strictKey))) return true
+  if (looseKey && (sets.historyLooseDedupe.has(looseKey) || sets.pendingLooseDedupe.has(looseKey))) return true
+
+  return false
+}
+
+function mergeOffersDeduped(existingOffers, newOffers) {
+  const merged = [...(existingOffers || []), ...(newOffers || [])]
+
+  return uniqBy(merged, o => {
+    const strictKey = String(o.dedupe_key || "").trim()
+    if (strictKey) return `strict:${strictKey}`
+
+    const looseKey = String(o.loose_dedupe_key || buildLooseDedupeKey(o.title, o.description || "")).trim()
+    if (looseKey) return `loose:${looseKey}`
+
+    const idKey = normalizeOfferKey(o.id || o.link)
+    if (idKey) return `id:${idKey}`
+
+    return ""
+  })
+}
+
+async function mainScraper() {
   log("=".repeat(60))
   log("🤖 scriptable - clube uol scraper")
   log(`📅 ${new Date().toLocaleString()}`)
@@ -805,45 +962,140 @@ async function main() {
 
   if (!GITHUB_TOKEN) {
     log("❌ passe o token no parâmetro do widget / script")
-    return
+    return "erro | token ausente"
   }
+
+  let statusState = null
+  let dailyState = null
+  let pendingBeforeCount = 0
 
   try {
     const history = await loadHistoryStrict()
     const pending = await loadPendingStrict()
+    const daily = await loadDailyLogStrict()
+    const statusRuntime = await loadStatusRuntimeStrict()
 
-    if (!history || !pending) {
+    if (!history || !pending || !daily || !statusRuntime) {
       log("❌ abortando por segurança: falha ao ler estado remoto")
-      return
+      throw new Error("falha ao ler estado remoto")
     }
+
+    pendingBeforeCount = Array.isArray(pending.offers) ? pending.offers.length : 0
+
+    statusState = setScriptableStatusStart(statusRuntime, pendingBeforeCount)
+    await saveStatusRuntime(statusState)
+
+    dailyState = ensureTodayState(daily)
+    dailyState = appendDashboardLine(dailyState, "scriptable", "▶️ rodada iniciada")
+    await saveDailyLog(dailyState)
 
     log(`📚 histórico atual: ${(history.ids || []).length} ids`)
     log(`🧠 dedupe_keys atuais: ${(history.dedupe_keys || []).length}`)
-    log(`📦 pending atual: ${(pending.offers || []).length} ofertas`)
+    log(`📦 pending atual: ${pendingBeforeCount} ofertas`)
 
     const allOffers = await scrapeOffersList()
 
-    if (allOffers.length === 0) {
-      log("📭 nenhuma oferta encontrada")
-      return
+    dailyState = await loadDailyLogStrict()
+    if (dailyState) {
+      dailyState = ensureTodayState(dailyState)
+      dailyState.last_success_check = brDateTime()
+      dailyState.pending_count = pendingBeforeCount
+      await saveDailyLog(dailyState)
     }
 
-    log("📋 extraindo detalhes...")
+    if (allOffers.length === 0) {
+      log("📭 nenhuma oferta encontrada")
+
+      dailyState = await loadDailyLogStrict()
+      if (dailyState) {
+        dailyState = ensureTodayState(dailyState)
+        dailyState.pending_count = pendingBeforeCount
+        dailyState = appendDashboardLine(dailyState, "scriptable", "💤 sem ofertas novas")
+        await saveDailyLog(dailyState)
+      }
+
+      statusState = await loadStatusRuntimeStrict()
+      if (statusState) {
+        statusState = setScriptableStatusFinish(statusState, {
+          status: "sem_novidades",
+          summary: "nenhuma oferta encontrada",
+          offers_seen: 0,
+          new_offers: 0,
+          pending_count: pendingBeforeCount,
+          last_error: ""
+        })
+        await saveStatusRuntime(statusState)
+      }
+
+      return "sem ofertas encontradas"
+    }
+
+    const knownSets = buildExistingDedupeSets(history, pending)
+
+    const candidateOffers = allOffers.filter(o => {
+      const key = normalizeOfferKey(o.id || o.link)
+      return key && !knownSets.historyKeys.has(key) && !knownSets.pendingKeys.has(key)
+    })
+
+    if (candidateOffers.length === 0) {
+      log("📭 nenhuma oferta nova fora do histórico/pending")
+
+      dailyState = await loadDailyLogStrict()
+      if (dailyState) {
+        dailyState = ensureTodayState(dailyState)
+        dailyState.pending_count = pendingBeforeCount
+        dailyState = appendDashboardLine(dailyState, "scriptable", "💤 sem ofertas novas")
+        await saveDailyLog(dailyState)
+      }
+
+      statusState = await loadStatusRuntimeStrict()
+      if (statusState) {
+        statusState = setScriptableStatusFinish(statusState, {
+          status: "sem_novidades",
+          summary: "nenhuma oferta nova fora do histórico/pending",
+          offers_seen: allOffers.length,
+          new_offers: 0,
+          pending_count: pendingBeforeCount,
+          last_error: ""
+        })
+        await saveStatusRuntime(statusState)
+      }
+
+      return `sem novidades | vistas: ${allOffers.length}`
+    }
+
+    log(`🎉 ${candidateOffers.length} ofertas candidatas detectadas`)
     logSeparator()
 
     const completeOffers = []
+    const shortcutMode = isShortcutContext()
 
-    for (let i = 0; i < allOffers.length; i++) {
-      const offer = allOffers[i]
-      log(`📌 oferta ${i + 1}/${allOffers.length}`)
+    if (shortcutMode) {
+      log("⚡ contexto shortcuts detectado")
+      log("📌 prioridade: ainda tentar enriquecer páginas internas para dedupe melhor")
+    } else {
+      log("📋 extraindo detalhes...")
+    }
+
+    for (let i = 0; i < candidateOffers.length; i++) {
+      const offer = candidateOffers[i]
+      log(`📌 oferta ${i + 1}/${candidateOffers.length}`)
       log(`   id: ${offer.id}`)
 
-      const details = await extractOfferDetails(offer.link, offer.preview_title)
+      let details = null
+      let usedQuickFallback = false
 
-      const finalTitle = details.title || offer.title || offer.preview_title
+      try {
+        details = await extractOfferDetails(offer.link, offer.preview_title)
+      } catch (e) {
+        usedQuickFallback = true
+        log(`   ⚠️ falha ao enriquecer página interna: ${e.message}`)
+      }
+
+      const finalTitle = (details && details.title) || offer.title || offer.preview_title || getOfferId(offer.link)
       const finalPartnerImgUrl = absolutizeUrl(offer.partner_img_url || "")
 
-      let finalImgUrl = absolutizeUrl(details.detailImgUrl || "")
+      let finalImgUrl = absolutizeUrl((details && details.detailImgUrl) || "")
 
       if (
         !finalImgUrl ||
@@ -868,16 +1120,12 @@ async function main() {
         finalImgUrl = ""
       }
 
-      const dedupeKey = buildDedupeKey(
-        finalTitle,
-        details.validity,
-        details.description
-      )
+      const validity = (details && details.validity) || null
+      const description = (details && details.description) || (usedQuickFallback ? "enriquecimento pendente" : "descrição não disponível.")
+      const dedupeKey = buildDedupeKey(finalTitle, validity, description)
+      const looseDedupeKey = buildLooseDedupeKey(finalTitle, description)
 
-      log(`   🖼️ banner final: ${finalImgUrl || "vazio"}`)
-      log(`   🏷️ logo final: ${finalPartnerImgUrl || "vazio"}`)
-
-      completeOffers.push({
+      const normalizedOffer = {
         id: offer.id,
         original_link: offer.original_link || offer.link,
         preview_title: offer.preview_title || finalTitle,
@@ -885,38 +1133,370 @@ async function main() {
         link: offer.link,
         img_url: finalImgUrl,
         partner_img_url: finalPartnerImgUrl,
-        validity: details.validity,
-        description: details.description,
+        validity,
+        description,
         dedupe_key: dedupeKey,
+        loose_dedupe_key: looseDedupeKey,
         scraped_at: new Date().toISOString()
-      })
-
-      log(`   ✅ título final: ${finalTitle.substring(0, 55)}...`)
-      if (finalPartnerImgUrl) {
-        log("   🏷️ logo do parceiro detectada")
       }
+
+      if (alreadyKnownByAnyKey(normalizedOffer, knownSets)) {
+        log("   ⚠️ pulada por dedupe já conhecido")
+        continue
+      }
+
+      completeOffers.push(normalizedOffer)
+
+      if (normalizedOffer.dedupe_key) knownSets.pendingDedupe.add(normalizedOffer.dedupe_key)
+      if (normalizedOffer.loose_dedupe_key) knownSets.pendingLooseDedupe.add(normalizedOffer.loose_dedupe_key)
+      const idKey = normalizeOfferKey(normalizedOffer.id || normalizedOffer.link)
+      if (idKey) knownSets.pendingKeys.add(idKey)
+
+      log(`   🖼️ banner final: ${finalImgUrl || "vazio"}`)
+      log(`   🏷️ logo final: ${finalPartnerImgUrl || "vazio"}`)
+      log(`   ✅ título final: ${finalTitle.substring(0, 55)}...`)
     }
 
     logSeparator()
-    log(`✅ detalhes extraídos: ${completeOffers.length}`)
+    log(`✅ ofertas novas úteis após dedupe: ${completeOffers.length}`)
 
-    const saved = await saveCompleteOffers(completeOffers)
+    if (completeOffers.length === 0) {
+      dailyState = await loadDailyLogStrict()
+      if (dailyState) {
+        dailyState = ensureTodayState(dailyState)
+        dailyState.pending_count = pendingBeforeCount
+        dailyState = appendDashboardLine(dailyState, "scriptable", "💤 sem ofertas novas")
+        await saveDailyLog(dailyState)
+      }
 
-    if (saved) {
-      log("🚀 github actions vai consumir o pending")
+      statusState = await loadStatusRuntimeStrict()
+      if (statusState) {
+        statusState = setScriptableStatusFinish(statusState, {
+          status: "sem_novidades",
+          summary: "dedupe filtrou todas as ofertas",
+          offers_seen: allOffers.length,
+          new_offers: 0,
+          pending_count: pendingBeforeCount,
+          last_error: ""
+        })
+        await saveStatusRuntime(statusState)
+      }
+
+      return `sem novidades após dedupe | vistas: ${allOffers.length}`
     }
+
+    const mergedDeduped = mergeOffersDeduped(pending.offers || [], completeOffers)
+
+    const okPending = await savePending(mergedDeduped)
+    if (!okPending) {
+      dailyState = await loadDailyLogStrict()
+      if (dailyState) {
+        dailyState = ensureTodayState(dailyState)
+        dailyState.pending_count = pendingBeforeCount
+        dailyState = appendDashboardLine(dailyState, "scriptable", "⚠️ falha ao salvar pending")
+        await saveDailyLog(dailyState)
+      }
+
+      statusState = await loadStatusRuntimeStrict()
+      if (statusState) {
+        statusState = setScriptableStatusFinish(statusState, {
+          status: "erro",
+          summary: "falha ao salvar pending",
+          offers_seen: allOffers.length,
+          new_offers: completeOffers.length,
+          pending_count: pendingBeforeCount,
+          last_error: "falha ao salvar pending_offers.json"
+        })
+        await saveStatusRuntime(statusState)
+      }
+
+      return `erro | falha ao salvar pending | vistas: ${allOffers.length} | novas: ${completeOffers.length}`
+    }
+
+    dailyState = await loadDailyLogStrict()
+    if (dailyState) {
+      dailyState = ensureTodayState(dailyState)
+      dailyState.last_new_offer_at = brDateTime()
+      dailyState.last_success_check = brDateTime()
+      dailyState.pending_count = mergedDeduped.length
+      dailyState = appendDashboardLine(dailyState, "scriptable", `✅ novas no pending: ${completeOffers.length}`)
+      await saveDailyLog(dailyState)
+    }
+
+    statusState = await loadStatusRuntimeStrict()
+    if (statusState) {
+      statusState = setScriptableStatusFinish(statusState, {
+        status: "sucesso",
+        summary: `novas no pending: ${completeOffers.length}`,
+        offers_seen: allOffers.length,
+        new_offers: completeOffers.length,
+        pending_count: mergedDeduped.length,
+        last_error: ""
+      })
+      await saveStatusRuntime(statusState)
+    }
+
+    log("🚀 github actions vai consumir o pending")
+
+    if (shortcutMode) {
+      return `ok rápido | vistas: ${allOffers.length} | novas: ${completeOffers.length} | pending: ${mergedDeduped.length}`
+    }
+
+    return `ok | vistas: ${allOffers.length} | novas: ${completeOffers.length} | pending: ${mergedDeduped.length}`
   } catch (e) {
-    log(`❌ erro geral: ${e.message}`)
+    const errMsg = String(e && e.message ? e.message : e)
+    log(`❌ erro geral: ${errMsg}`)
+
+    try {
+      let freshStatusState = await loadStatusRuntimeStrict()
+      if (freshStatusState) {
+        freshStatusState = setScriptableStatusFinish(freshStatusState, {
+          status: "erro",
+          summary: "erro geral no scriptable",
+          offers_seen: 0,
+          new_offers: 0,
+          pending_count: pendingBeforeCount,
+          last_error: errMsg
+        })
+        await saveStatusRuntime(freshStatusState)
+      }
+    } catch (_) {}
+
+    try {
+      let freshDailyState = await loadDailyLogStrict()
+      if (freshDailyState) {
+        freshDailyState = ensureTodayState(freshDailyState)
+        freshDailyState.pending_count = pendingBeforeCount
+        freshDailyState = appendDashboardLine(freshDailyState, "scriptable", `❌ erro: ${errMsg}`)
+        await saveDailyLog(freshDailyState)
+      }
+    } catch (_) {}
+
+    return `erro | ${errMsg}`
+  }
+}
+
+// widget
+function saveCache(data) {
+  try {
+    fm.writeString(cachePath, JSON.stringify({
+      timestamp: Date.now(),
+      data: Array.isArray(data) ? data : []
+    }))
+  } catch (e) {
+    console.log("erro salvando cache: " + e)
+  }
+}
+
+function loadCache() {
+  if (!fm.fileExists(cachePath)) return null
+  try {
+    const parsed = JSON.parse(fm.readString(cachePath))
+    if (!parsed || !Array.isArray(parsed.data)) return null
+    return parsed
+  } catch (e) {
+    console.log("erro lendo cache: " + e)
+    return null
+  }
+}
+
+function normalizeOffers(raw) {
+  if (!raw) return []
+
+  if (Array.isArray(raw)) {
+    return raw.slice(0, 4).map(o => ({
+      title: String(o.title || "oferta uol"),
+      mainImg: o.mainImg || o.img_url || "",
+      logoImg: o.logoImg || o.partner_img_url || ""
+    }))
   }
 
-  logSeparator()
-  log("🏁 fim")
+  if (raw && Array.isArray(raw.offers)) {
+    return raw.offers.slice(0, 4).map(o => ({
+      title: String(o.title || "oferta uol"),
+      mainImg: o.img_url || o.mainImg || "",
+      logoImg: o.partner_img_url || o.logoImg || ""
+    }))
+  }
+
+  return []
 }
 
-await main()
+async function fetchWidgetData() {
+  const cache = loadCache()
 
-if (config.runsWithSiri || args.shortcutParameter !== undefined) {
-  Script.setShortcutOutput("ok")
+  if (cache && Date.now() - cache.timestamp < CACHE_TIME) {
+    return Array.isArray(cache.data) ? cache.data : []
+  }
+
+  try {
+    const req = new Request(GITHUB_JSON_URL)
+    req.timeoutInterval = 5
+    req.headers = { "Cache-Control": "no-cache" }
+
+    const text = await req.loadString()
+
+    if (!text || text.trim().startsWith("<")) {
+      throw new Error("github retornou html ou vazio em vez de json")
+    }
+
+    let json
+    try {
+      json = JSON.parse(text)
+    } catch (e) {
+      throw new Error("json inválido: " + e)
+    }
+
+    const offers = normalizeOffers(json)
+
+    if (offers.length > 0) {
+      saveCache(offers)
+      return offers
+    }
+
+    return cache && Array.isArray(cache.data) ? cache.data : []
+  } catch (e) {
+    console.log("erro github: " + e)
+    return cache && Array.isArray(cache.data) ? cache.data : []
+  }
 }
 
-Script.complete()
+async function loadImage(url) {
+  if (!url) return null
+
+  const safeName = url.replace(/[^a-z0-9]/gi, "") + ".jpg"
+  const path = fm.joinPath(fm.documentsDirectory(), safeName)
+
+  try {
+    if (fm.fileExists(path)) return fm.readImage(path)
+  } catch (e) {}
+
+  try {
+    const req = new Request(url)
+    req.timeoutInterval = 4
+    const img = await req.loadImage()
+    fm.writeImage(path, img)
+    return img
+  } catch (e) {
+    console.log("erro imagem: " + e)
+    return null
+  }
+}
+
+async function createWidget() {
+  const offers = await fetchWidgetData()
+  const safeOffers = Array.isArray(offers) ? offers.slice(0, 4) : []
+
+  const urls = new Set([UOL_LOGO_URL])
+  safeOffers.forEach(o => {
+    if (o.mainImg) urls.add(o.mainImg)
+    if (o.logoImg) urls.add(o.logoImg)
+  })
+
+  const imgCache = {}
+  await Promise.all(Array.from(urls).map(async (u) => {
+    imgCache[u] = await loadImage(u)
+  }))
+
+  const w = new ListWidget()
+  w.backgroundColor = new Color("#4a027e")
+  w.setPadding(12, 12, 12, 12)
+  w.url = "https://github.com/leosaquetto/uol-bot"
+  w.refreshAfterDate = new Date(Date.now() + 10 * 60 * 1000)
+
+  const header = w.addStack()
+  header.layoutHorizontally()
+  header.centerAlignContent()
+
+  const title = header.addText("clube uol")
+  title.textColor = Color.white()
+  title.font = Font.boldSystemFont(13)
+
+  header.addSpacer()
+
+  if (imgCache[UOL_LOGO_URL]) {
+    const img = header.addImage(imgCache[UOL_LOGO_URL])
+    img.imageSize = new Size(45, 12)
+  }
+
+  w.addSpacer()
+
+  if (safeOffers.length === 0) {
+    const t = w.addText("sem ofertas recentes")
+    t.textColor = Color.white()
+    t.font = Font.systemFont(12)
+    return w
+  }
+
+  for (let i = 0; i < 2; i++) {
+    const row = w.addStack()
+    row.layoutHorizontally()
+
+    for (let j = 0; j < 2; j++) {
+      const idx = i * 2 + j
+      const item = safeOffers[idx]
+
+      const box = row.addStack()
+      box.size = new Size(0, 56)
+      box.backgroundColor = new Color("#ffffff", 0.15)
+      box.cornerRadius = 10
+      box.setPadding(6, 6, 6, 6)
+
+      if (item) {
+        box.layoutHorizontally()
+        box.centerAlignContent()
+
+        if (item.mainImg && imgCache[item.mainImg]) {
+          const img = box.addImage(imgCache[item.mainImg])
+          img.imageSize = new Size(44, 44)
+          img.cornerRadius = 8
+        }
+
+        box.addSpacer(6)
+
+        const col = box.addStack()
+        col.layoutVertically()
+
+        if (item.logoImg && imgCache[item.logoImg]) {
+          const l = col.addImage(imgCache[item.logoImg])
+          l.imageSize = new Size(16, 16)
+          l.cornerRadius = 4
+          col.addSpacer(2)
+        }
+
+        const t = col.addText(String(item.title || "oferta").toUpperCase())
+        t.font = Font.boldSystemFont(9)
+        t.textColor = Color.white()
+        t.lineLimit = 2
+        t.minimumScaleFactor = 0.75
+      }
+
+      if (j === 0) row.addSpacer(8)
+    }
+
+    if (i === 0) w.addSpacer(8)
+  }
+
+  return w
+}
+
+async function runApp() {
+  try {
+    return String(await mainScraper() || "ok")
+  } catch (e) {
+    const message = String(e && e.message ? e.message : e)
+    console.error(`top-level error: ${message}`)
+    return `erro | ${message}`
+  }
+}
+
+if (config.runsInWidget) {
+  const widget = await createWidget()
+  Script.setWidget(widget)
+  Script.complete()
+} else {
+  const output = await runApp()
+  console.log(`final output: ${output}`)
+  Script.setShortcutOutput(String(output || "ok"))
+  Script.complete()
+}
