@@ -3,20 +3,10 @@
   "message_id": 669,
   "last_success_check": "02/04/2026 às 14:59",
   "last_new_offer_at": "02/04/2026 às 14:59",
-  "pending_count": 8,
-  "last_consumer_run": "02/04/2026 às 02:28",
-  "last_rendered_text": "📊 <b>Monitor Clube Uol</b> (14:59)\n\n📱 <b>Scriptable</b> 🟢 Online <i>(Sem dados)</i>\n🤖 <b>Scraper</b> 🟡 Instável <i>(agora às 14:59)</i>\n📦 <b>Consumer</b> ✅ Concluído <i>(há 24min às 14:35)</i>\n\n🎯 <b>Última captura</b> 🕒 02/04/2026 às 14:33\n↳ <code>2 INGRESSOS: 09/04 Teatro João Caetano</code>\n⏳ <i>26min sem oferta nova</i>\n\n📦 <b>Fila de processamento:</b> 🚀 8 ofertas aguardando\n\n🌤️ <b>Humor do sistema:</b> Fila aquecida\n🧭 <b>Leitura do ambiente:</b> Alta",
+  "pending_count": 4,
+  "last_consumer_run": "02/04/2026 às 14:35",
+  "last_rendered_text": "",
   "lines": [
-    "[02:08] scriptable: ▶️ rodada iniciada",
-    "[02:09] scriptable: 💤 sem ofertas novas",
-    "[02:09] scriptable: 💤 sem ofertas novas",
-    "[02:09] scriptable: 💤 sem ofertas novas",
-    "[02:10] scriptable: ▶️ rodada iniciada",
-    "[02:10] scriptable: 💤 sem ofertas novas",
-    "[02:19] scriptable: ▶️ rodada iniciada",
-    "[02:19] scriptable: 💤 sem ofertas novas",
-    "[02:20] scriptable: ▶️ rodada iniciada",
-    "[02:34] scriptable: 💤 sem ofertas novas",
     "[14:35] consumer: ✅ enviadas: 4",
     "[14:59] scraper: ✅ novas no pending: 4"
   ]
