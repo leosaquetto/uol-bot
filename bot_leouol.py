@@ -409,15 +409,15 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
     finished_dt = parse_br_datetime(finished_at)
     stale_running = status_value == "running" and started_dt and (not finished_dt or finished_dt < started_dt)
 
-    if source == "scriptable":
-        if stale_running:
-            return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
-        if status_value in {"ok", "running", "sem_novidade"}:
-            return ("🟢 Online", detail, finished_at or started_at)
-        if status_value == "erro":
-            err = str(status_block.get("last_error") or detail or "Erro")
-            return ("🔴 Erro", err, finished_at or started_at)
-        return ("⚪ Sem dados", detail, finished_at or started_at)
+if source == "scriptable":
+    if stale_running:
+        return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
+    if status_value in {"ok", "running", "sem_novidade", "sem_novidades"}:
+        return ("🟢 Online", detail, finished_at or started_at)
+    if status_value == "erro":
+        err = str(status_block.get("last_error") or detail or "Erro")
+        return ("🔴 Erro", err, finished_at or started_at)
+    return ("⚪ Sem dados", detail, finished_at or started_at)
 
     if source == "scraper":
         last_success = str(status_block.get("last_success_at") or "").strip()
@@ -556,7 +556,7 @@ def sync_daily_dashboard(state: Dict) -> None:
     if current_text == text:
         save_daily_log(state)
         return
-    if state["date"] != now_br_date() or not state["message_id"]:
+if not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-12:]
@@ -620,10 +620,10 @@ def append_dashboard_line(source: str, status_line: str) -> None:
     if state["date"] != now_br_date():
         state = {
             "date": now_br_date(),
-            "message_id": None,
-            "last_success_check": "",
+            "message_id": state.get("message_id"),
+            "last_success_check": state.get("last_success_check", ""),
             "last_new_offer_at": state.get("last_new_offer_at", ""),
-            "pending_count": 0,
+            "pending_count": state.get("pending_count", 0),
             "last_consumer_run": state.get("last_consumer_run", ""),
             "last_rendered_text": "",
             "lines": [],
@@ -640,7 +640,6 @@ def set_dashboard_success_check() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
-        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["last_success_check"] = now_br_datetime()
@@ -652,7 +651,6 @@ def set_dashboard_last_new_offer() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
-        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["last_new_offer_at"] = now_br_datetime()
@@ -664,7 +662,6 @@ def set_dashboard_pending_count(count: int) -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
-        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["pending_count"] = count
