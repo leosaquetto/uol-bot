@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-04-02T15:55:05.320341Z",
+  "last_update": "2026-04-02T17:00:26.569331Z",
   "offers": [
     {
       "id": "pjL-35-off-no-cardapio-de-pizzas",
@@ -144,6 +144,19 @@
       "description": "descrição não disponível.",
       "dedupe_key": "2-ingressos-11-04-teatro-santander-sp|descricao-nao-disponivel",
       "scraped_at": "2026-04-02T15:44:30.592627Z"
+    },
+    {
+      "id": "pjY-2-ingressos-09-04-teatro-joao-caetano",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pjY-2-ingressos-09-04-teatro-joao-caetano",
+      "preview_title": "2 INGRESSOS: 09/04 Teatro João Caetano",
+      "title": "2 INGRESSOS: 09/04 Teatro João Caetano",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pjY-2-ingressos-09-04-teatro-joao-caetano",
+      "img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "validity": null,
+      "description": "descrição não disponível.",
+      "dedupe_key": "2-ingressos-09-04-teatro-joao-caetano|descricao-nao-disponivel",
+      "scraped_at": "2026-04-02T16:40:59.299912Z"
     }
   ]
 }
