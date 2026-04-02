@@ -25,6 +25,10 @@ DAILY_LOG_FILE = "daily_log.json"
 STATUS_RUNTIME_FILE = "status_runtime.json"
 
 
+SNAPSHOT_DIR = "snapshots"
+SNAPSHOT_CONTROL_FILE = "snapshots_control.json"
+
+
 REQUEST_TIMEOUT = 30
 MAX_DASHBOARD_LENGTH = 3900
 
@@ -86,6 +90,70 @@ def save_json(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
+
+
+def load_snapshot_control() -> Dict[str, Any]:
+    return load_json(SNAPSHOT_CONTROL_FILE, {"processed_snapshot_ids": []})
+
+
+def save_snapshot_control(data: Dict[str, Any]) -> None:
+    save_json(SNAPSHOT_CONTROL_FILE, data)
+
+
+def list_snapshot_ids() -> List[str]:
+    if not os.path.exists(SNAPSHOT_DIR):
+        return []
+
+    ids = []
+    for name in os.listdir(SNAPSHOT_DIR):
+        if name.startswith("snapshot_") and name.endswith(".json"):
+            snapshot_id = name[len("snapshot_"):-len(".json")]
+            ids.append(snapshot_id)
+
+    ids.sort()
+    return ids
+
+
+def load_snapshot(snapshot_id: str) -> tuple[Optional[Dict[str, Any]], Optional[str]]:
+    meta_path = os.path.join(SNAPSHOT_DIR, f"snapshot_{snapshot_id}.json")
+
+    if not os.path.exists(meta_path):
+        return None, None
+
+    meta = load_json(meta_path, None)
+    if not isinstance(meta, dict):
+        return None, None
+
+    html_path = str(meta.get("html_path") or "").strip()
+    if not html_path or not os.path.exists(html_path):
+        return meta, None
+
+    try:
+        with open(html_path, "r", encoding="utf-8") as f:
+            html = f.read()
+        return meta, html
+    except Exception:
+        return meta, None
+
+
+def get_unprocessed_snapshot_ids() -> tuple[List[str], Dict[str, Any]]:
+    control = load_snapshot_control()
+    processed = set(control.get("processed_snapshot_ids", []))
+    all_ids = list_snapshot_ids()
+    pending_ids = [snapshot_id for snapshot_id in all_ids if snapshot_id not in processed]
+    return pending_ids, control
+
+
+def mark_snapshot_processed(snapshot_id: str, control: Dict[str, Any]) -> None:
+    processed = control.get("processed_snapshot_ids", [])
+    if not isinstance(processed, list):
+        processed = []
+
+    if snapshot_id not in processed:
+        processed.append(snapshot_id)
+
+    control["processed_snapshot_ids"] = processed[-500:]
+    save_snapshot_control(control)
 
 
 def clean_text(text: Optional[str]) -> str:
@@ -1048,23 +1116,55 @@ def main() -> None:
     historico_keys, historico_dedupe = extract_history_sets(historico)
     pending_keys, pending_dedupe = extract_pending_sets(pending)
 
-    html = get_html(LIST_URL)
-    if not html:
-        log("não foi possível obter html da lista nesta rodada; encerrando sem alterações")
-        append_dashboard_line("scraper", "⚠️ html indisponível / 405 / ssl")
-        status_scraper_finish(
-            summary="html indisponível / 405 / ssl",
-            status_value="erro",
-            offers_seen=0,
-            new_offers=0,
-            pending_count=len(pending.get("offers", [])),
-            last_error="falha ao obter html da lista",
-        )
-        return
+    snapshot_ids, snapshot_control = get_unprocessed_snapshot_ids()
 
-    set_dashboard_success_check()
-    offers = parse_offers(html)
-    log(f"total encontradas: {len(offers)}")
+    if snapshot_ids:
+        log(f"snapshots pendentes encontrados: {len(snapshot_ids)}")
+    else:
+        log("nenhum snapshot pendente; tentando buscar html direto")
+        html = get_html(LIST_URL)
+        if not html:
+            log("não foi possível obter html da lista nesta rodada; encerrando sem alterações")
+            append_dashboard_line("scraper", "⚠️ html indisponível / 405 / ssl")
+            status_scraper_finish(
+                summary="html indisponível / 405 / ssl",
+                status_value="erro",
+                offers_seen=0,
+                new_offers=0,
+                pending_count=len(pending.get("offers", [])),
+                last_error="falha ao obter html da lista",
+            )
+            return
+        snapshot_ids = ["__live_fetch__"]
+
+    all_offers = []
+
+    for snapshot_id in snapshot_ids:
+        if snapshot_id == "__live_fetch__":
+            html = get_html(LIST_URL)
+            if not html:
+                continue
+            source_label = "live_fetch"
+        else:
+            meta, html = load_snapshot(snapshot_id)
+            source_label = snapshot_id
+
+            if not html:
+                log(f"snapshot inválido ou sem html: {snapshot_id}")
+                mark_snapshot_processed(snapshot_id, snapshot_control)
+                continue
+
+        set_dashboard_success_check()
+        offers = parse_offers(html)
+        log(f"total encontradas em {source_label}: {len(offers)}")
+
+        all_offers.extend(offers)
+
+        if snapshot_id != "__live_fetch__":
+            mark_snapshot_processed(snapshot_id, snapshot_control)
+
+    offers = uniq_by(all_offers, lambda o: normalize_offer_key(o.get("id") or o.get("link")))
+    log(f"total consolidado após unir snapshots: {len(offers)}")
 
     candidates = []
     seen_new_offer_keys = set()
