@@ -1,12 +1,12 @@
 {
   "scriptable": {
     "last_started_at": "2026-04-02T12:20:13.619095Z",
-    "last_finished_at": "2026-04-02T12:15:42.302475Z",
-    "status": "running",
-    "summary": "railway collector iniciado",
-    "offers_seen": 0,
-    "new_offers": 0,
-    "pending_count": 16,
+    "last_finished_at": "2026-04-02T12:20:24.225775Z",
+    "status": "ok",
+    "summary": "railway snapshots ok: 20260402_122013_1dggr | detalhes 4/4",
+    "offers_seen": 48,
+    "new_offers": 42,
+    "pending_count": 20,
     "last_error": ""
   },
   "scraper": {
