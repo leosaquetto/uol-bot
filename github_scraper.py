@@ -12,7 +12,6 @@ import urllib3
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError, RequestException, SSLError
 
-
 BASE_URL = "https://clube.uol.com.br"
 LIST_URL = f"{BASE_URL}/?order=new"
 FALLBACK_LIST_URL = f"{BASE_URL}/"
@@ -399,8 +398,8 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
         if status_value == "sem_novidade":
             return ("⚪ Ocioso", detail, finished_at or started_at or last_success)
         if status_value == "erro":
-            err = str(status_block.get("last_error") or detail or "Erro")
-            return ("🟡 Bloqueado", err, finished_at or started_at or last_success)
+            extra = f"Último sucesso às {last_success.split(' às ')[-1]}" if last_success else "Sem sucesso recente"
+            return ("🟡 Bloqueado", f"{extra} (check cloudflare)", finished_at or started_at or last_success)
         return ("⚪ Sem dados", detail, finished_at or started_at or last_success)
 
     if source == "consumer":
@@ -517,15 +516,12 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
-
     status = load_status_runtime()
     text = format_monitor_dashboard(state, status)
     current_text = str(state.get("last_rendered_text") or "")
-
     if current_text == text:
         save_daily_log(state)
         return
-
     if state["date"] != now_br_date() or not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
@@ -554,7 +550,6 @@ def sync_daily_dashboard(state: Dict) -> None:
         except Exception as e:
             log(f"falha ao criar dashboard diário: {e}")
         return
-
     try:
         resp = requests.post(
             telegram_api("editMessageText"),
@@ -570,28 +565,17 @@ def sync_daily_dashboard(state: Dict) -> None:
         if resp.ok:
             state["last_rendered_text"] = text
             save_daily_log(state)
-            return
-
-        try:
-            error_data = resp.json()
-        except Exception:
-            error_data = {}
-
-        description = str(error_data.get("description") or "")
-        description_lower = description.lower()
-        if "message is not modified" in description_lower:
-            state["last_rendered_text"] = text
-            save_daily_log(state)
-            return
-
-        if "message to edit not found" in description_lower:
-            state["message_id"] = None
-            state["last_rendered_text"] = ""
-            save_daily_log(state)
-            sync_daily_dashboard(state)
-            return
-
-        log(f"falha ao editar dashboard diário: {resp.text}")
+        else:
+            try:
+                error_data = resp.json()
+            except Exception:
+                error_data = {}
+            description = str(error_data.get("description") or "")
+            if "message is not modified" in description.lower():
+                state["last_rendered_text"] = text
+                save_daily_log(state)
+                return
+            log(f"falha ao editar dashboard diário: {resp.text}")
     except Exception as e:
         log(f"falha ao editar dashboard diário: {e}")
 
@@ -675,16 +659,10 @@ def normalize_text_key(value: Optional[str]) -> str:
     if not raw:
         return ""
     replacements = {
-        "á": "a",
-        "à": "a",
-        "ã": "a",
-        "â": "a",
-        "é": "e",
-        "ê": "e",
+        "á": "a", "à": "a", "ã": "a", "â": "a",
+        "é": "e", "ê": "e",
         "í": "i",
-        "ó": "o",
-        "ô": "o",
-        "õ": "o",
+        "ó": "o", "ô": "o", "õ": "o",
         "ú": "u",
         "ç": "c",
     }
@@ -784,7 +762,11 @@ def is_likely_benefit_banner(url: Optional[str]) -> bool:
     u = str(url or "").lower()
     if not u or is_bad_banner_url(u):
         return False
-    return "/beneficios/" in u or "/campanhasdeingresso/" in u or "cloudfront.net" in u
+    return (
+        "/beneficios/" in u
+        or "/campanhasdeingresso/" in u
+        or "cloudfront.net" in u
+    )
 
 
 def build_headers(referer: Optional[str] = None) -> Dict[str, str]:
@@ -907,16 +889,14 @@ def choose_images_from_block(block) -> Dict[str, str]:
     if partner_candidates:
         partner_img_url = partner_candidates[0]["src"]
     banner_candidates = [
-        img
-        for img in all_imgs
+        img for img in all_imgs
         if (not partner_img_url or img["src"] != partner_img_url) and is_likely_benefit_banner(img["src"])
     ]
     if banner_candidates:
         img_url = banner_candidates[-1]["src"]
     if not img_url:
         fallback_candidates = [
-            img
-            for img in all_imgs
+            img for img in all_imgs
             if (not partner_img_url or img["src"] != partner_img_url) and not is_bad_banner_url(img["src"])
         ]
         if fallback_candidates:
@@ -956,17 +936,15 @@ def parse_offers(html: str) -> List[Dict[str, Any]]:
             offer_id = get_offer_id(link)
             log(f"     main url: {images['img_url'] or 'vazia'}")
             log(f"     partner url: {images['partner_img_url'] or 'vazia'}")
-            offers.append(
-                {
-                    "id": offer_id,
-                    "original_link": link,
-                    "preview_title": title,
-                    "title": title,
-                    "link": link,
-                    "img_url": images["img_url"],
-                    "partner_img_url": images["partner_img_url"],
-                }
-            )
+            offers.append({
+                "id": offer_id,
+                "original_link": link,
+                "preview_title": title,
+                "title": title,
+                "link": link,
+                "img_url": images["img_url"],
+                "partner_img_url": images["partner_img_url"],
+            })
             log(f"extraído: {title[:60]}")
         except Exception as e:
             log(f"erro ao parsear bloco: {e}")
@@ -979,12 +957,7 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
     try:
         html = get_html(full_url)
         if not html:
-            return {
-                "title": preview_title,
-                "validity": None,
-                "description": "descrição não disponível.",
-                "detail_img_url": "",
-            }
+            return {"title": preview_title, "validity": None, "description": "descrição não disponível.", "detail_img_url": ""}
         page_title = preview_title
         for regex in [re.compile(r"<h2[^>]*>([\s\S]*?)</h2>", re.I), re.compile(r"<h1[^>]*>([\s\S]*?)</h1>", re.I)]:
             m = regex.search(html)
@@ -994,7 +967,7 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                     page_title = candidate_title
                     break
         all_imgs = []
-        for m in re.finditer(r'<img[^>]+(?:data-src|data-original|data-lazy|src)=["\']([^"\']+)["\']', html, re.I):
+        for m in re.finditer(r'<img[^>]+(?:data-src|data-original|data-lazy|src)=["\\\']([^"\\\']+)["\\\']', html, re.I):
             src = absolutize_url(m.group(1))
             if src and not src.startswith("data:image"):
                 all_imgs.append(src)
@@ -1018,8 +991,8 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
                 break
         description = ""
         for regex in [
-            re.compile(r'class=["\'][^"\']*info-beneficio[^"\']*["\'][^>]*>([\s\S]*?)(?:<script|<footer|class=["\'][^"\']*box-compartilhar)', re.I),
-            re.compile(r'id=["\']beneficio["\'][^>]*>([\s\S]*?)(?:<script|<footer)', re.I),
+            re.compile(r'class=["\\\'][^"\\\']*info-beneficio[^"\\\']*["\\\'][^>]*>([\s\S]*?)(?:<script|<footer|class=["\\\'][^"\\\']*box-compartilhar)', re.I),
+            re.compile(r'id=["\\\']beneficio["\\\'][^>]*>([\s\S]*?)(?:<script|<footer)', re.I),
         ]:
             m = regex.search(html)
             if m:
@@ -1036,12 +1009,7 @@ def extract_offer_details(url: str, preview_title: str) -> Dict[str, Any]:
         }
     except Exception as e:
         log(f"erro ao extrair detalhes: {e}")
-        return {
-            "title": preview_title,
-            "validity": None,
-            "description": "descrição não disponível.",
-            "detail_img_url": "",
-        }
+        return {"title": preview_title, "validity": None, "description": "descrição não disponível.", "detail_img_url": ""}
 
 
 def extract_history_sets(history_data: Dict[str, Any]) -> tuple[set, set]:
@@ -1116,7 +1084,7 @@ def main() -> None:
     loaded_snapshot_ids = []
 
     for snapshot_id in snapshot_ids:
-        meta, html = load_snapshot(snapshot_id)
+        _meta, html = load_snapshot(snapshot_id)
         source_label = snapshot_id
 
         if not html:
@@ -1149,7 +1117,6 @@ def main() -> None:
                 final_img = fallback_img
         if not final_img or is_bad_banner_url(final_img) or final_img == final_partner:
             final_img = ""
-
         offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
         dedupe_key = build_dedupe_key(
             title=final_title,
