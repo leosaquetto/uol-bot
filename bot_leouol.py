@@ -675,20 +675,30 @@ def update_global_last_offer(offer: Dict[str, Any]) -> None:
     save_status_runtime(status)
 
 
-def build_caption(offer: Dict[str, Any]) -> str:
+def build_main_caption(offer: Dict[str, Any]) -> str:
     title = clean_text(offer.get("title") or offer.get("preview_title") or "oferta uol")
     validity = clean_text(offer.get("validity") or "")
-    description = clean_text(offer.get("description") or "")
     link = clean_text(offer.get("link") or offer.get("original_link") or "")
 
     parts = [f"<b>{escape_html(title)}</b>"]
     if validity:
         parts.append(f"🕒 {escape_html(validity)}")
-    if description:
-        parts.append(escape_html(description[:900]))
     if link:
         parts.append(f'<a href="{escape_html(link)}">abrir oferta</a>')
-    return "\n\n".join(parts)
+    return "\n".join(parts)
+
+
+def build_main_text_fallback(offer: Dict[str, Any]) -> str:
+    title = clean_text(offer.get("title") or offer.get("preview_title") or "oferta uol")
+    validity = clean_text(offer.get("validity") or "")
+    link = clean_text(offer.get("link") or offer.get("original_link") or "")
+
+    parts = [f"🎟️ <b>{escape_html(title)}</b>"]
+    if validity:
+        parts.append(f"🕒 {escape_html(validity)}")
+    if link:
+        parts.append(f'<a href="{escape_html(link)}">abrir oferta</a>')
+    return "\n".join(parts)
 
 
 def build_comment_text(offer: Dict[str, Any]) -> str:
@@ -736,33 +746,43 @@ def send_message_raw(chat_id: str, text: str, reply_to_message_id: Optional[int]
     )
 
 
+def try_send_photo(chat_id: str, photo_url: str, caption: str) -> tuple[bool, Optional[int], str]:
+    if not photo_url:
+        return False, None, "url de foto vazia"
+    try:
+        resp = send_photo_raw(chat_id, photo_url, caption)
+        if not resp.ok:
+            return False, None, resp.text
+        data = resp.json()
+        if not data.get("ok"):
+            return False, None, str(data)
+        return True, data.get("result", {}).get("message_id"), ""
+    except Exception as e:
+        return False, None, str(e)
+
+
 def send_offer_main(offer: Dict[str, Any]) -> tuple[bool, Optional[int], str]:
     if not TELEGRAM_TOKEN or not CANAL_ID:
         return False, None, "variáveis do telegram ausentes"
 
-    caption = build_caption(offer)
+    main_caption = build_main_caption(offer)
+    main_text = build_main_text_fallback(offer)
+
     img_url = clean_text(offer.get("img_url") or "")
+    partner_img_url = clean_text(offer.get("partner_img_url") or "")
 
-    if img_url:
-        try:
-            resp = send_photo_raw(CANAL_ID, img_url, caption)
-            if resp.ok:
-                data = resp.json()
-                if data.get("ok"):
-                    return True, data.get("result", {}).get("message_id"), ""
-                err = f"telegram foto não-ok: {data}"
-                log(err)
-            else:
-                err = f"falha no sendPhoto: {resp.text}"
-                log(err)
-        except Exception as e:
-            err = f"erro no sendPhoto: {e}"
-            log(err)
+    for candidate in [img_url, partner_img_url]:
+        if not candidate:
+            continue
+        ok, message_id, err = try_send_photo(CANAL_ID, candidate, main_caption)
+        if ok:
+            return True, message_id, ""
+        log(f"sendPhoto falhou para {candidate}: {err}")
 
-        log("sendPhoto falhou; tentando fallback em texto")
+    log("fotos falharam; tentando fallback em texto curto")
 
     try:
-        resp = send_message_raw(CANAL_ID, caption)
+        resp = send_message_raw(CANAL_ID, main_text)
         if not resp.ok:
             return False, None, f"falha no envio principal: {resp.text}"
         data = resp.json()
