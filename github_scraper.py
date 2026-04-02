@@ -449,6 +449,8 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
     detail = str(status_block.get("summary") or fallback_detail or "Sem atualização registrada.").strip()
     started_at = str(status_block.get("last_started_at") or "")
     finished_at = str(status_block.get("last_finished_at") or "")
+    last_success = str(status_block.get("last_success_at") or "").strip()
+
     started_dt = parse_br_datetime(started_at)
     finished_dt = parse_br_datetime(finished_at)
     stale_running = status_value == "running" and started_dt and (not finished_dt or finished_dt < started_dt)
@@ -464,13 +466,14 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
         return ("⚪ Sem dados", detail, finished_at or started_at)
 
     if source == "scraper":
-        last_success = str(status_block.get("last_success_at") or "").strip()
         if stale_running:
             return ("🟡 Instável", "rodada iniciada sem fechamento consistente", started_at or finished_at or last_success)
+        if status_value == "running":
+            return ("🔵 Ativo", detail or "processando snapshots", started_at or finished_at or last_success)
         if status_value == "ok":
             return ("🟢 Online", detail, finished_at or started_at or last_success)
         if status_value == "sem_novidade":
-            return ("⚪ Ocioso", detail, finished_at or started_at or last_success)
+            return ("⚪ Em espera", detail, finished_at or started_at or last_success)
         if status_value == "erro":
             extra = f"Último sucesso às {last_success.split(' às ')[-1]}" if last_success else "Sem sucesso recente"
             return ("🟡 Bloqueado", f"{extra} (check cloudflare)", finished_at or started_at or last_success)
@@ -565,14 +568,13 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
 
     last_title, last_at = get_last_offer_snapshot(status)
     pending_count = state.get("pending_count", 0)
-    scraper_line_status = ("🟠 Sob restrição" if "Bloqueado" in sc_status else sc_status).replace("⚪ Ocioso", "⚪ Em espera")
     consumer_line_status = "✅ Pronto" if pending_count == 0 and ("Ocioso" in c_status or "Concluído" in c_status or "sem_novidade" in str(co.get("status", "")).lower()) else c_status
 
     dash = [
         f"📊 <b>Monitor Clube Uol</b> ({escape_html(now_br_time())})",
         "",
         f"📱 <b>Scriptable</b> {escape_html(s_status)} <i>({escape_html(fmt(s_dt))})</i>",
-        f"🤖 <b>Scraper</b> {escape_html(scraper_line_status)} <i>({escape_html(fmt(sc_dt))})</i>",
+        f"🤖 <b>Scraper</b> {escape_html(sc_status)} <i>({escape_html(fmt(sc_dt))})</i>",
         f"📦 <b>Consumer</b> {escape_html(consumer_line_status)} <i>({escape_html(fmt(c_dt))})</i>",
         "",
         f"🎯 <b>Última captura</b> 🕒 {escape_html(last_at)}",
@@ -581,8 +583,8 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
         "",
         f"📦 <b>Fila de processamento:</b> {('🚀 ' + str(pending_count) + ' ofertas aguardando') if pending_count > 0 else '📭 Limpa'}",
         "",
-        f"🌤️ <b>Humor do sistema:</b> {'Atenção no scraper' if 'Bloqueado' in sc_status or 'restrição' in scraper_line_status.lower() or 'Erro' in sc_status else ('Fila aquecida' if pending_count > 0 or 'Ativo' in consumer_line_status else 'Tudo calmo')}",
-        f"🧭 <b>Leitura do ambiente:</b> {'Parcial' if 'Bloqueado' in sc_status or 'restrição' in scraper_line_status.lower() else ('Alta' if 'Online' in s_status else 'Moderada')}",
+        f"🌤️ <b>Humor do sistema:</b> {'Atenção no scraper' if 'Bloqueado' in sc_status or 'Erro' in sc_status else ('Fila aquecida' if pending_count > 0 or 'Ativo' in consumer_line_status else 'Tudo calmo')}",
+        f"🧭 <b>Leitura do ambiente:</b> {'Parcial' if 'Bloqueado' in sc_status else ('Alta' if 'Online' in s_status or 'Online' in sc_status or 'Em espera' in sc_status else 'Moderada')}",
     ]
     return truncate_text("\n".join(dash), MAX_DASHBOARD_LENGTH)
 
