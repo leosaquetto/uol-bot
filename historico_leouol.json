@@ -38,7 +38,12 @@
     "pjq-2-ingressos-03-04-teatro-joao-caetano",
     "pjx-2-ingressos-10-04-casa-natura-musical",
     "pjl-35-off-no-cardapio-de-pizzas",
-    "pj2-2-ingressos-12-04-morumbi-park-sp"
+    "pj2-2-ingressos-12-04-morumbi-park-sp",
+    "pkk-2-ingressos-10-04-teatro-joo-caetano",
+    "pkh-2-ingressos-12-04-teatro-joo-caetano",
+    "pke-2-ingressos-11-04-teatro-joo-caetano",
+    "pjY-2-ingressos-09-04-teatro-joo-caetano",
+    "plv-2-ingressos-20-04-tetro-uol-sp"
   ],
   "dedupe_keys": [
     "2-ingressos-11-04-morumbi-park-sp|beneficio-valido-de-30-03-2026-17-35-ate-10-04-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-para-o-morumbi-park-e-aproveite-atracoes-como-trampolins-e-arvorismo-alem-da-area-baby-no-morumbi-sp",
@@ -62,6 +67,14 @@
     "35-off-no-cardapio-de-pizzas|beneficio-valido-de-01-04-2026-16-46-ate-30-04-2026-23-59|beneficio-35-off-no-cardapio-de-pizzas",
     "2-ingressos-03-04-teatro-santander-sp|beneficio-valido-de-01-04-2026-18-07-ate-02-04-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-para-gal-o-musical-e-viva-a-historia-da-musa-da-tropicalia-no-033-rooftop-no-teatro-santander-em-sao-paulo",
     "2-ingressos-18-04-morumbi-park-sp|beneficio-valido-de-30-03-2026-17-35-ate-16-04-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-para-o-morumbi-park-e-aproveite-atracoes-como-trampolins-e-arvorismo-alem-da-area-baby-no-morumbi-sp",
-    "2-ingressos-05-04-morumbi-park-sp|beneficio-valido-de-30-03-2026-17-35-ate-04-04-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-para-o-morumbi-park-e-aproveite-atracoes-como-trampolins-e-arvorismo-alem-da-area-baby-no-morumbi-sp"
+    "2-ingressos-05-04-morumbi-park-sp|beneficio-valido-de-30-03-2026-17-35-ate-04-04-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-para-o-morumbi-park-e-aproveite-atracoes-como-trampolins-e-arvorismo-alem-da-area-baby-no-morumbi-sp",
+    "2-ingressos-10-04-teatro-joao-caetano|beneficio-valido-de-02-04-2026-11-14-ate-09-04-2026-23-59|assinante-uol",
+    "2-ingressos-12-04-teatro-joao-caetano|beneficio-valido-de-02-04-2026-10-54-ate-09-04-2026-23-59|assinante-uol",
+    "2-ingressos-11-04-teatro-joao-caetano|beneficio-valido-de-02-04-2026-10-54-ate-10-04-2026-23-59|assinante-uol",
+    "2-ingressos-09-04-teatro-joao-caetano|beneficio-valido-de-02-04-2026-10-54-ate-08-04-2026-23-59|assinante-uol",
+    "2-ingressos-20-04-tetro-uol-sp|beneficio-valido-de-02-04-2026-15-51-ate-19-04-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-e-viva-momentos-de-muita-emocao-em-um-espetaculo-imperdivel-no-teatro-uol-no-shopping-patio-higienopolis-sp"
+  ],
+  "loose_dedupe_keys": [
+    "2-ingressos-20-04-tetro-uol-sp|assinante-uol-resgate-1-par-de-ingressos-e-viva-momentos-de-muita-emocao-em-um-espetaculo-imperdivel-no-teatro-uol-no-shopping-patio-higienopolis-sp"
   ]
 }
