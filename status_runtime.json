@@ -10,9 +10,9 @@
     "last_error": ""
   },
   "scraper": {
-    "last_started_at": "02/04/2026 às 02:25",
-    "last_finished_at": "02/04/2026 às 02:25",
-    "last_success_at": "02/04/2026 às 02:25",
+    "last_started_at": "02/04/2026 às 02:56",
+    "last_finished_at": "02/04/2026 às 02:56",
+    "last_success_at": "02/04/2026 às 02:56",
     "status": "sem_novidade",
     "summary": "sem ofertas novas",
     "offers_seen": 2,
@@ -31,5 +31,10 @@
     "failed": 0,
     "pending_count": 0,
     "last_error": ""
+  },
+  "global": {
+    "last_offer_title": "",
+    "last_offer_at": "",
+    "last_offer_id": ""
   }
 }
