@@ -139,6 +139,30 @@ def mark_snapshot_processed(snapshot_id: str, control: Dict[str, Any]) -> None:
     save_snapshot_control(control)
 
 
+def cleanup_snapshot_files(snapshot_id: str, meta: Optional[Dict[str, Any]] = None) -> None:
+    candidates = [
+        os.path.join(SNAPSHOT_DIR, f"snapshot_{snapshot_id}.json"),
+        os.path.join(SNAPSHOT_DIR, f"snapshot_{snapshot_id}.html"),
+        os.path.join(SNAPSHOT_DIR, f"detail_{snapshot_id}.json"),
+    ]
+
+    if isinstance(meta, dict):
+        html_path = str(meta.get("html_path") or "").strip()
+        if html_path:
+            candidates.append(html_path)
+
+    seen = set()
+    for path in candidates:
+        normalized = str(path or "").strip()
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        try:
+            if os.path.exists(normalized):
+                os.remove(normalized)
+                log(f"snapshot limpo: {normalized}")
+        except Exception as e:
+            log(f"falha ao limpar snapshot {normalized}: {e}")
 
 
 def load_detail_payload(snapshot_id: str) -> Dict[str, Any]:
@@ -170,7 +194,7 @@ def build_detail_lookup(detail_payload: Dict[str, Any]) -> Dict[str, Dict[str, A
         )
 
         validity = clean_text(item.get("validity") or "") or None
-        description = clean_text(item.get("description") or "")
+        description = clean_text(item.get("description") or item.get("description_preview") or "")
         detail_img_url = absolutize_url(
             item.get("detail_img_url")
             or item.get("card_img_url")
@@ -187,6 +211,7 @@ def build_detail_lookup(detail_payload: Dict[str, Any]) -> Dict[str, Dict[str, A
         }
 
     return lookup
+
 
 def clean_text(text: Optional[str]) -> str:
     if not text:
@@ -1129,16 +1154,19 @@ def main() -> None:
     all_offers = []
     loaded_snapshot_ids = []
     offer_snapshot_map: Dict[str, str] = {}
+    snapshot_meta_map: Dict[str, Optional[Dict[str, Any]]] = {}
 
     detail_lookup_by_snapshot: Dict[str, Dict[str, Dict[str, Any]]] = {}
 
     for snapshot_id in snapshot_ids:
-        _meta, html = load_snapshot(snapshot_id)
+        meta, html = load_snapshot(snapshot_id)
+        snapshot_meta_map[snapshot_id] = meta
         source_label = snapshot_id
 
         if not html:
             log(f"snapshot inválido ou sem html: {snapshot_id}")
             mark_snapshot_processed(snapshot_id, snapshot_control)
+            cleanup_snapshot_files(snapshot_id, meta)
             continue
 
         set_dashboard_success_check()
@@ -1227,6 +1255,7 @@ def main() -> None:
 
         for snapshot_id in loaded_snapshot_ids:
             mark_snapshot_processed(snapshot_id, snapshot_control)
+            cleanup_snapshot_files(snapshot_id, snapshot_meta_map.get(snapshot_id))
 
         set_dashboard_pending_count(len(pending.get("offers", [])))
         append_dashboard_line("scraper", "💤 sem ofertas novas")
@@ -1250,6 +1279,7 @@ def main() -> None:
 
     for snapshot_id in loaded_snapshot_ids:
         mark_snapshot_processed(snapshot_id, snapshot_control)
+        cleanup_snapshot_files(snapshot_id, snapshot_meta_map.get(snapshot_id))
 
     set_dashboard_last_new_offer()
     set_dashboard_pending_count(len(pending["offers"]))
