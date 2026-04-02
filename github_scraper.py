@@ -1138,6 +1138,8 @@ def main() -> None:
         snapshot_ids = ["__live_fetch__"]
 
     all_offers = []
+    loaded_snapshot_ids = []
+
 
     for snapshot_id in snapshot_ids:
         if snapshot_id == "__live_fetch__":
@@ -1161,7 +1163,7 @@ def main() -> None:
         all_offers.extend(offers)
 
         if snapshot_id != "__live_fetch__":
-            mark_snapshot_processed(snapshot_id, snapshot_control)
+            loaded_snapshot_ids.append(snapshot_id)
 
     offers = uniq_by(all_offers, lambda o: normalize_offer_key(o.get("id") or o.get("link")))
     log(f"total consolidado após unir snapshots: {len(offers)}")
@@ -1229,6 +1231,9 @@ def main() -> None:
     )
     pending["last_update"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     save_json(PENDING_FILE, pending)
+
+    for snapshot_id in loaded_snapshot_ids:
+        mark_snapshot_processed(snapshot_id, snapshot_control)
 
     set_dashboard_last_new_offer()
     set_dashboard_pending_count(len(pending["offers"]))
