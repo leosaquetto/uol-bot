@@ -5,6 +5,10 @@ on:
     paths:
       - pending_offers.json
       - bot_leouol.py
+      - latest_offers.json
+      - historico_leouol.json
+      - daily_log.json
+      - status_runtime.json
       - .github/workflows/bot_leouol_consumer.yml
   schedule:
     - cron: "*/5 * * * *"
@@ -42,7 +46,7 @@ jobs:
       - name: processar pending offers
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CANAL_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         run: python bot_leouol.py --pending
 
@@ -51,26 +55,37 @@ jobs:
         run: |
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
-          git add .
+
+          git add pending_offers.json latest_offers.json historico_leouol.json daily_log.json status_runtime.json || true
 
           if git diff --cached --quiet; then
+            echo "sem mudanças para commit"
             exit 0
           fi
 
           git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || exit 0
 
+      - name: push com retry
+        if: always()
+        run: |
+          if git diff --quiet HEAD~1 HEAD 2>/dev/null; then
+            echo "nenhum commit novo para enviar"
+            exit 0
+          fi
+
           for attempt in 1 2 3; do
             git fetch origin main
-            git reset --soft origin/main
-            git add .
-
-            if git diff --cached --quiet; then
-              exit 0
-            fi
-
-            git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || exit 0
+            git rebase origin/main || {
+              git rebase --abort || true
+              if [ "$attempt" -eq 3 ]; then
+                exit 1
+              fi
+              sleep 2
+              continue
+            }
 
             if git push origin HEAD:main; then
+              echo "push concluído"
               exit 0
             fi
 
@@ -79,5 +94,4 @@ jobs:
             fi
 
             sleep 2
-            git reset --hard origin/main
           done
