@@ -139,6 +139,55 @@ def mark_snapshot_processed(snapshot_id: str, control: Dict[str, Any]) -> None:
     save_snapshot_control(control)
 
 
+
+
+def load_detail_payload(snapshot_id: str) -> Dict[str, Any]:
+    path = os.path.join(SNAPSHOT_DIR, f"detail_{snapshot_id}.json")
+    data = load_json(path, {})
+    return data if isinstance(data, dict) else {}
+
+
+def build_detail_lookup(detail_payload: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    offers = detail_payload.get("offers", []) if isinstance(detail_payload, dict) else []
+    if not isinstance(offers, list):
+        offers = []
+
+    lookup: Dict[str, Dict[str, Any]] = {}
+    for item in offers:
+        if not isinstance(item, dict):
+            continue
+
+        raw_link = str(item.get("link") or "").strip()
+        if not raw_link:
+            continue
+
+        link = absolutize_url(raw_link)
+        title = clean_text(
+            item.get("detail_title")
+            or item.get("card_title")
+            or item.get("title")
+            or ""
+        )
+
+        validity = clean_text(item.get("validity") or "") or None
+        description = clean_text(item.get("description") or "")
+        detail_img_url = absolutize_url(
+            item.get("detail_img_url")
+            or item.get("card_img_url")
+            or ""
+        )
+        partner_img_url = absolutize_url(item.get("partner_img_url") or "")
+
+        lookup[link] = {
+            "title": title,
+            "validity": validity,
+            "description": description,
+            "detail_img_url": detail_img_url,
+            "partner_img_url": partner_img_url,
+        }
+
+    return lookup
+
 def clean_text(text: Optional[str]) -> str:
     if not text:
         return ""
@@ -382,7 +431,7 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
     if source == "scriptable":
         if stale_running:
             return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
-        if status_value in {"ok", "running", "sem_novidade"}:
+        if status_value in {"ok", "running", "sem_novidade", "sem_novidades"}:
             return ("🟢 Online", detail, finished_at or started_at)
         if status_value == "erro":
             err = str(status_block.get("last_error") or detail or "Erro")
@@ -522,7 +571,7 @@ def sync_daily_dashboard(state: Dict) -> None:
     if current_text == text:
         save_daily_log(state)
         return
-    if state["date"] != now_br_date() or not state["message_id"]:
+    if not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-12:]
@@ -585,10 +634,10 @@ def append_dashboard_line(source: str, status_line: str) -> None:
     if state["date"] != now_br_date():
         state = {
             "date": now_br_date(),
-            "message_id": None,
-            "last_success_check": "",
+            "message_id": state.get("message_id"),
+            "last_success_check": state.get("last_success_check", ""),
             "last_new_offer_at": state.get("last_new_offer_at", ""),
-            "pending_count": 0,
+            "pending_count": state.get("pending_count", 0),
             "last_consumer_run": state.get("last_consumer_run", ""),
             "last_rendered_text": "",
             "lines": [],
@@ -604,7 +653,6 @@ def set_dashboard_success_check() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
-        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["last_success_check"] = now_br_datetime()
@@ -615,7 +663,6 @@ def set_dashboard_last_new_offer() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
-        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["last_new_offer_at"] = now_br_datetime()
@@ -626,7 +673,6 @@ def set_dashboard_pending_count(count: int) -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
-        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["pending_count"] = count
@@ -1082,6 +1128,9 @@ def main() -> None:
 
     all_offers = []
     loaded_snapshot_ids = []
+    offer_snapshot_map: Dict[str, str] = {}
+
+    detail_lookup_by_snapshot: Dict[str, Dict[str, Dict[str, Any]]] = {}
 
     for snapshot_id in snapshot_ids:
         _meta, html = load_snapshot(snapshot_id)
@@ -1097,6 +1146,12 @@ def main() -> None:
         log(f"total encontradas em {source_label}: {len(offers)}")
 
         all_offers.extend(offers)
+        for offer in offers:
+            offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
+            if offer_key and offer_key not in offer_snapshot_map:
+                offer_snapshot_map[offer_key] = snapshot_id
+        detail_payload = load_detail_payload(snapshot_id)
+        detail_lookup_by_snapshot[snapshot_id] = build_detail_lookup(detail_payload)
         loaded_snapshot_ids.append(snapshot_id)
 
     offers = uniq_by(all_offers, lambda o: normalize_offer_key(o.get("id") or o.get("link")))
@@ -1107,9 +1162,26 @@ def main() -> None:
     seen_new_dedupe_keys = set()
 
     for offer in offers:
-        details = extract_offer_details(offer["link"], offer["preview_title"])
+        offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
+        snapshot_id = offer_snapshot_map.get(offer_key, "")
+        detail_lookup = detail_lookup_by_snapshot.get(snapshot_id, {})
+        details = detail_lookup.get(
+            absolutize_url(offer["link"]),
+            {}
+        )
+
+        if details:
+            details = {
+                "title": details.get("title") or offer["preview_title"],
+                "validity": details.get("validity"),
+                "description": details.get("description") or "descrição não disponível.",
+                "detail_img_url": details.get("detail_img_url") or "",
+                "partner_img_url": details.get("partner_img_url") or "",
+            }
+        else:
+            details = extract_offer_details(offer["link"], offer["preview_title"])
         final_title = details["title"] or offer["title"]
-        final_partner = absolutize_url(offer.get("partner_img_url") or "")
+        final_partner = absolutize_url(details.get("partner_img_url") or offer.get("partner_img_url") or "")
         final_img = absolutize_url(details["detail_img_url"] or "")
         if not final_img or is_bad_banner_url(final_img) or final_img == final_partner:
             fallback_img = absolutize_url(offer.get("img_url") or "")
