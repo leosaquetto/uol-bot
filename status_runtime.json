@@ -1,11 +1,11 @@
 {
   "scriptable": {
-    "last_started_at": "2026-04-02T15:25:19.879769Z",
+    "last_started_at": "2026-04-02T15:30:03.825Z",
     "last_finished_at": "2026-04-02T15:25:34.460222Z",
-    "status": "ok",
-    "summary": "railway coleta ok: 20260402_152519_a65g9 | vitrine 48 | novas reais 4 | detalhes 4/5",
-    "offers_seen": 48,
-    "new_offers": 4,
+    "status": "running",
+    "summary": "scriptable manual fallback iniciado",
+    "offers_seen": 0,
+    "new_offers": 0,
     "pending_count": 0,
     "last_error": ""
   },
