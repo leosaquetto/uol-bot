@@ -1106,6 +1106,7 @@ def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set]:
 
 def main() -> None:
     log("iniciando scraper")
+
     status_scraper_start()
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": []})
@@ -1118,41 +1119,40 @@ def main() -> None:
 
     snapshot_ids, snapshot_control = get_unprocessed_snapshot_ids()
 
-if snapshot_ids:
-    log(f"snapshots pendentes encontrados: {len(snapshot_ids)}")
-else:
-    log("nenhum snapshot pendente; encerrando sem scraping direto do uol")
-    set_dashboard_pending_count(len(pending.get("offers", [])))
-    append_dashboard_line("scraper", "📭 sem snapshots pendentes")
-    status_scraper_finish(
-        summary="sem snapshots pendentes",
-        status_value="sem_novidade",
-        offers_seen=0,
-        new_offers=0,
-        pending_count=len(pending.get("offers", [])),
-        last_error="",
-    )
-    return
+    if snapshot_ids:
+        log(f"snapshots pendentes encontrados: {len(snapshot_ids)}")
+    else:
+        log("nenhum snapshot pendente; encerrando sem scraping direto do uol")
+        set_dashboard_pending_count(len(pending.get("offers", [])))
+        append_dashboard_line("scraper", "📭 sem snapshots pendentes")
+        status_scraper_finish(
+            summary="sem snapshots pendentes",
+            status_value="sem_novidade",
+            offers_seen=0,
+            new_offers=0,
+            pending_count=len(pending.get("offers", [])),
+            last_error="",
+        )
+        return
 
     all_offers = []
     loaded_snapshot_ids = []
 
+    for snapshot_id in snapshot_ids:
+        _meta, html = load_snapshot(snapshot_id)
+        source_label = snapshot_id
 
-for snapshot_id in snapshot_ids:
-    _meta, html = load_snapshot(snapshot_id)
-    source_label = snapshot_id
+        if not html:
+            log(f"snapshot inválido ou sem html: {snapshot_id}")
+            mark_snapshot_processed(snapshot_id, snapshot_control)
+            continue
 
-    if not html:
-        log(f"snapshot inválido ou sem html: {snapshot_id}")
-        mark_snapshot_processed(snapshot_id, snapshot_control)
-        continue
+        set_dashboard_success_check()
+        offers = parse_offers(html)
+        log(f"total encontradas em {source_label}: {len(offers)}")
 
-    set_dashboard_success_check()
-    offers = parse_offers(html)
-    log(f"total encontradas em {source_label}: {len(offers)}")
-
-    all_offers.extend(offers)
-    loaded_snapshot_ids.append(snapshot_id)
+        all_offers.extend(offers)
+        loaded_snapshot_ids.append(snapshot_id)
 
     offers = uniq_by(all_offers, lambda o: normalize_offer_key(o.get("id") or o.get("link")))
     log(f"total consolidado após unir snapshots: {len(offers)}")
@@ -1173,7 +1173,11 @@ for snapshot_id in snapshot_ids:
         if not final_img or is_bad_banner_url(final_img) or final_img == final_partner:
             final_img = ""
         offer_key = normalize_offer_key(offer.get("id") or offer.get("link"))
-        dedupe_key = build_dedupe_key(title=final_title, validity=details["validity"], description=details["description"])
+        dedupe_key = build_dedupe_key(
+            title=final_title,
+            validity=details["validity"],
+            description=details["description"],
+        )
         if not offer_key and not dedupe_key:
             continue
         if offer_key and (offer_key in historico_keys or offer_key in pending_keys or offer_key in seen_new_offer_keys):
@@ -1241,7 +1245,3 @@ for snapshot_id in snapshot_ids:
     )
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
-
-
-if __name__ == "__main__":
-    main()
