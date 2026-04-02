@@ -2,8 +2,18 @@ name: BOT LEOUOL SCRAPER
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - snapshots/**
+      - github_scraper.py
+      - pending_offers.json
+      - historico_leouol.json
+      - daily_log.json
+      - status_runtime.json
+      - snapshots_control.json
+      - .github/workflows/bot_leouol.yml
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
@@ -35,6 +45,89 @@ jobs:
         with:
           python-version: "3.11"
           cache: "pip"
+
+      - name: garantir arquivos json
+        run: |
+          if [ ! -f historico_leouol.json ]; then
+            echo '{"ids":[],"dedupe_keys":[],"loose_dedupe_keys":[]}' > historico_leouol.json
+          fi
+
+          if [ ! -f pending_offers.json ]; then
+            echo '{"last_update":null,"offers":[]}' > pending_offers.json
+          fi
+
+          if [ ! -f latest_offers.json ]; then
+            echo '{"last_update":null,"offers":[]}' > latest_offers.json
+          fi
+
+          if [ ! -f snapshots_control.json ]; then
+            echo '{"processed_snapshot_ids":[]}' > snapshots_control.json
+          fi
+
+          if [ ! -f daily_log.json ]; then
+            echo '{"date":"","message_id":null,"last_success_check":"","last_new_offer_at":"","pending_count":0,"last_consumer_run":"","last_rendered_text":"","lines":[]}' > daily_log.json
+          fi
+
+          if [ ! -f status_runtime.json ]; then
+            echo '{"scriptable":{"last_started_at":"","last_finished_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"scraper":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"consumer":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","processed":0,"sent":0,"failed":0,"pending_count":0,"last_error":""},"global":{"last_offer_title":"","last_offer_at":"","last_offer_id":""}}' > status_runtime.json
+          fi
+
+      - name: instalar dependências do scraper
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: rodar scraper
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
+        run: python github_scraper.py
+
+      - name: commitar mudanças do scraper
+        if: always()
+        run: |
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
+
+          git add pending_offers.json historico_leouol.json daily_log.json status_runtime.json snapshots_control.json || true
+
+          if git diff --cached --quiet; then
+            echo "sem mudanças para commit"
+            exit 0
+          fi
+
+          git commit -m "scraper atualiza pending e dashboard [skip ci]" || exit 0
+
+      - name: push com retry
+        if: always()
+        run: |
+          if git diff --quiet HEAD~1 HEAD 2>/dev/null; then
+            echo "nenhum commit novo para enviar"
+            exit 0
+          fi
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main || {
+              git rebase --abort || true
+              if [ "$attempt" -eq 3 ]; then
+                exit 1
+              fi
+              sleep 2
+              continue
+            }
+
+            if git push origin HEAD:main; then
+              echo "push concluído"
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+
+            sleep 2
+          done          cache: "pip"
 
       - name: garantir arquivos json
         run: |
