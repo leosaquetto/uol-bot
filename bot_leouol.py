@@ -412,7 +412,7 @@ def map_operation_status(source: str, status_block: Dict, fallback_detail: str) 
     if source == "scriptable":
         if stale_running:
             return ("🟡 Instável", "última execução ainda não consolidada", started_at or finished_at)
-        if status_value in {"ok", "running", "sem_novidade", "sem_novidades"}:
+        if status_value in {"ok", "running", "sem_novidade"}:
             return ("🟢 Online", detail, finished_at or started_at)
         if status_value == "erro":
             err = str(status_block.get("last_error") or detail or "Erro")
@@ -550,21 +550,17 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
-
     status = load_status_runtime()
     text = format_monitor_dashboard(state, status)
     current_text = str(state.get("last_rendered_text") or "")
-
     if current_text == text:
         save_daily_log(state)
         return
-
-    if not state["message_id"]:
+    if state["date"] != now_br_date() or not state["message_id"]:
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-12:]
         text = format_monitor_dashboard(state, load_status_runtime())
-
         try:
             resp = requests.post(
                 telegram_api("sendMessage"),
@@ -577,7 +573,6 @@ def sync_daily_dashboard(state: Dict) -> None:
                 },
                 timeout=REQUEST_TIMEOUT,
             )
-
             if resp.ok:
                 data = resp.json()
                 if data.get("ok"):
@@ -589,7 +584,6 @@ def sync_daily_dashboard(state: Dict) -> None:
         except Exception as e:
             log(f"falha ao criar dashboard diário: {e}")
         return
-
     try:
         resp = requests.post(
             telegram_api("editMessageText"),
@@ -602,7 +596,6 @@ def sync_daily_dashboard(state: Dict) -> None:
             },
             timeout=REQUEST_TIMEOUT,
         )
-
         if resp.ok:
             state["last_rendered_text"] = text
             save_daily_log(state)
@@ -611,14 +604,11 @@ def sync_daily_dashboard(state: Dict) -> None:
                 error_data = resp.json()
             except Exception:
                 error_data = {}
-
             description = str(error_data.get("description") or "")
-
             if "message is not modified" in description.lower():
                 state["last_rendered_text"] = text
                 save_daily_log(state)
                 return
-
             log(f"falha ao editar dashboard diário: {resp.text}")
     except Exception as e:
         log(f"falha ao editar dashboard diário: {e}")
@@ -630,10 +620,10 @@ def append_dashboard_line(source: str, status_line: str) -> None:
     if state["date"] != now_br_date():
         state = {
             "date": now_br_date(),
-            "message_id": state.get("message_id"),
-            "last_success_check": state.get("last_success_check", ""),
+            "message_id": None,
+            "last_success_check": "",
             "last_new_offer_at": state.get("last_new_offer_at", ""),
-            "pending_count": state.get("pending_count", 0),
+            "pending_count": 0,
             "last_consumer_run": state.get("last_consumer_run", ""),
             "last_rendered_text": "",
             "lines": [],
@@ -650,6 +640,7 @@ def set_dashboard_success_check() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
+        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["last_success_check"] = now_br_datetime()
@@ -661,6 +652,7 @@ def set_dashboard_last_new_offer() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
+        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["last_new_offer_at"] = now_br_datetime()
@@ -672,6 +664,7 @@ def set_dashboard_pending_count(count: int) -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
         state["date"] = now_br_date()
+        state["message_id"] = None
         state["lines"] = []
         state["last_rendered_text"] = ""
     state["pending_count"] = count
@@ -1252,287 +1245,3 @@ def main() -> None:
     )
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
-
-def status_consumer_start(pending_count: int) -> None:
-    status = load_status_runtime()
-    prev = status.get("consumer", {})
-    status["consumer"] = {
-        "last_started_at": now_br_datetime(),
-        "last_finished_at": prev.get("last_finished_at", ""),
-        "last_success_at": prev.get("last_success_at", ""),
-        "status": "running",
-        "summary": "consumer iniciado",
-        "processed": 0,
-        "sent": 0,
-        "failed": 0,
-        "pending_count": pending_count,
-        "last_error": "",
-    }
-    save_status_runtime(status)
-
-
-def status_consumer_finish(
-    summary: str,
-    status_value: str,
-    processed: int,
-    sent: int,
-    failed: int,
-    pending_count: int,
-    last_error: str = "",
-) -> None:
-    status = load_status_runtime()
-    prev = status.get("consumer", {})
-    last_success_at = prev.get("last_success_at", "")
-    if status_value in {"ok", "sem_novidade", "parcial"} and not last_error:
-        last_success_at = now_br_datetime()
-    status["consumer"] = {
-        "last_started_at": prev.get("last_started_at", ""),
-        "last_finished_at": now_br_datetime(),
-        "last_success_at": last_success_at,
-        "status": status_value,
-        "summary": summary,
-        "processed": processed,
-        "sent": sent,
-        "failed": failed,
-        "pending_count": pending_count,
-        "last_error": last_error,
-    }
-    save_status_runtime(status)
-
-
-def set_global_last_offer(title: str, detected_at: str, offer_id: str) -> None:
-    status = load_status_runtime()
-    global_block = status.get("global", {}) or {}
-    global_block["last_offer_title"] = str(title or "").strip()
-    global_block["last_offer_at"] = str(detected_at or "").strip()
-    global_block["last_offer_id"] = str(offer_id or "").strip()
-    status["global"] = global_block
-    save_status_runtime(status)
-
-
-def build_offer_caption(offer: Dict[str, Any]) -> str:
-    title = str(offer.get("title") or offer.get("preview_title") or "Oferta UOL").strip()
-    validity = str(offer.get("validity") or "").strip()
-    description = clean_text(str(offer.get("description") or "").strip())
-    link = str(offer.get("link") or offer.get("original_link") or "").strip()
-
-    parts = [f"<b>{escape_html(title)}</b>"]
-    if validity:
-        parts.append(f"<i>{escape_html(validity)}</i>")
-    if description:
-        parts.append(escape_html(description[:3500]))
-    if link:
-        parts.append(f'<a href="{escape_html(link)}">abrir oferta</a>')
-    return "\n\n".join(parts)
-
-
-def send_telegram_text(chat_id: str, text: str) -> Optional[int]:
-    try:
-        resp = requests.post(
-            telegram_api("sendMessage"),
-            data={
-                "chat_id": chat_id,
-                "text": text,
-                "parse_mode": "HTML",
-                "disable_web_page_preview": "false",
-            },
-            timeout=REQUEST_TIMEOUT,
-        )
-        if not resp.ok:
-            log(f"falha sendMessage: {resp.text}")
-            return None
-        data = resp.json()
-        if not data.get("ok"):
-            log(f"falha sendMessage json: {data}")
-            return None
-        return data.get("result", {}).get("message_id")
-    except Exception as e:
-        log(f"erro sendMessage: {e}")
-        return None
-
-
-def send_telegram_photo(chat_id: str, photo_url: str, caption: str) -> Optional[int]:
-    try:
-        resp = requests.post(
-            telegram_api("sendPhoto"),
-            data={
-                "chat_id": chat_id,
-                "photo": photo_url,
-                "caption": caption[:1024],
-                "parse_mode": "HTML",
-            },
-            timeout=REQUEST_TIMEOUT,
-        )
-        if not resp.ok:
-            log(f"falha sendPhoto: {resp.text}")
-            return None
-        data = resp.json()
-        if not data.get("ok"):
-            log(f"falha sendPhoto json: {data}")
-            return None
-        return data.get("result", {}).get("message_id")
-    except Exception as e:
-        log(f"erro sendPhoto: {e}")
-        return None
-
-
-def send_offer_to_telegram(offer: Dict[str, Any]) -> bool:
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
-    if not TELEGRAM_TOKEN or not chat_id:
-        log("telegram não configurado para envio do consumer")
-        return False
-
-    caption = build_offer_caption(offer)
-    img_url = str(offer.get("img_url") or "").strip()
-
-    if img_url and not is_bad_banner_url(img_url):
-        msg_id = send_telegram_photo(chat_id, img_url, caption)
-        if msg_id:
-            return True
-        log("sendPhoto falhou; tentando fallback em texto")
-
-    msg_id = send_telegram_text(chat_id, caption)
-    return bool(msg_id)
-
-
-def update_history_and_latest(sent_offers: List[Dict[str, Any]]) -> None:
-    if not sent_offers:
-        return
-
-    history = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": []})
-    latest = load_json("latest_offers.json", {"last_update": None, "offers": []})
-
-    if not isinstance(history.get("ids"), list):
-        history["ids"] = []
-    if not isinstance(history.get("dedupe_keys"), list):
-        history["dedupe_keys"] = []
-    if not isinstance(latest.get("offers"), list):
-        latest["offers"] = []
-
-    for offer in sent_offers:
-        offer_id = normalize_offer_key(offer.get("id") or offer.get("link"))
-        dedupe_key = str(offer.get("dedupe_key") or "").strip()
-        if offer_id and offer_id not in history["ids"]:
-            history["ids"].append(offer_id)
-        if dedupe_key and dedupe_key not in history["dedupe_keys"]:
-            history["dedupe_keys"].append(dedupe_key)
-        latest["offers"].append(offer)
-
-    history["ids"] = history["ids"][-1000:]
-    history["dedupe_keys"] = history["dedupe_keys"][-1000:]
-    latest["offers"] = latest["offers"][-50:]
-    latest["last_update"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-
-    save_json(HISTORY_FILE, history)
-    save_json("latest_offers.json", latest)
-
-    last_offer = sent_offers[-1]
-    scraped_at = str(last_offer.get("scraped_at") or "").strip()
-    detected_at = ""
-    if scraped_at:
-        try:
-            dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00")).astimezone(BR_TZ)
-            detected_at = dt.strftime("%d/%m/%Y às %H:%M")
-        except Exception:
-            detected_at = now_br_datetime()
-    else:
-        detected_at = now_br_datetime()
-
-    set_global_last_offer(
-        title=str(last_offer.get("title") or last_offer.get("preview_title") or "").strip(),
-        detected_at=detected_at,
-        offer_id=str(last_offer.get("id") or "").strip(),
-    )
-
-
-def process_pending_offers() -> None:
-    pending = load_json(PENDING_FILE, {"last_update": None, "offers": []})
-    offers = pending.get("offers", [])
-    if not isinstance(offers, list):
-        offers = []
-
-    status_consumer_start(len(offers))
-
-    if not offers:
-        set_dashboard_pending_count(0)
-        append_dashboard_line("consumer", "📭 pending vazio")
-        status_consumer_finish(
-            summary="pending vazio",
-            status_value="sem_novidade",
-            processed=0,
-            sent=0,
-            failed=0,
-            pending_count=0,
-            last_error="",
-        )
-        return
-
-    sent_offers: List[Dict[str, Any]] = []
-    failed_offers: List[Dict[str, Any]] = []
-
-    for offer in offers:
-        ok = send_offer_to_telegram(offer)
-        if ok:
-            sent_offers.append(offer)
-        else:
-            failed_offers.append(offer)
-
-    pending["offers"] = failed_offers
-    pending["last_update"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    save_json(PENDING_FILE, pending)
-
-    if sent_offers:
-        update_history_and_latest(sent_offers)
-        set_dashboard_last_new_offer()
-
-    set_dashboard_pending_count(len(failed_offers))
-
-    processed = len(offers)
-    sent = len(sent_offers)
-    failed = len(failed_offers)
-
-    if sent and failed:
-        append_dashboard_line("consumer", f"🟡 parcial: {sent} enviadas | {failed} falharam")
-        status_consumer_finish(
-            summary=f"parcial: {sent} enviadas | {failed} falharam",
-            status_value="parcial",
-            processed=processed,
-            sent=sent,
-            failed=failed,
-            pending_count=len(failed_offers),
-            last_error="",
-        )
-        return
-
-    if sent and not failed:
-        append_dashboard_line("consumer", f"✅ enviadas: {sent}")
-        status_consumer_finish(
-            summary=f"enviadas: {sent}",
-            status_value="ok",
-            processed=processed,
-            sent=sent,
-            failed=0,
-            pending_count=0,
-            last_error="",
-        )
-        return
-
-    append_dashboard_line("consumer", f"❌ falha no envio de {failed}")
-    status_consumer_finish(
-        summary=f"falha no envio de {failed}",
-        status_value="erro",
-        processed=processed,
-        sent=0,
-        failed=failed,
-        pending_count=len(failed_offers),
-        last_error="nenhuma oferta foi enviada",
-    )
-
-
-if __name__ == "__main__":
-    import sys
-
-    if "--pending" in sys.argv:
-        process_pending_offers()
-    else:
-        main()
