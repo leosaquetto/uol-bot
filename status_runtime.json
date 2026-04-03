@@ -1,13 +1,13 @@
 {
   "scriptable": {
     "last_started_at": "2026-04-03T23:45:11.548581Z",
-    "last_finished_at": "2026-04-03T23:40:28.450687Z",
-    "status": "running",
-    "summary": "railway collector iniciado",
+    "last_finished_at": "2026-04-03T23:45:20.461044Z",
+    "status": "erro",
+    "summary": "erro geral no railway collector",
     "offers_seen": 0,
     "new_offers": 0,
     "pending_count": 0,
-    "last_error": ""
+    "last_error": "arquivo não confirmado após gravação: snapshots/snapshot_20260403_234511_avgvw.json"
   },
   "scraper": {
     "last_started_at": "02/04/2026 às 17:52",
