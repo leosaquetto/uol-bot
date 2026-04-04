@@ -749,10 +749,7 @@ def send_message_raw(chat_id: str, text: str, reply_to_message_id: Optional[int]
 
 
 def normalize_chat_id(value: Optional[str]) -> str:
-    raw = str(value or "").strip()
-    if not raw:
-        return ""
-    return raw
+    return str(value or "").strip()
 
 
 def normalize_channel_post_id(value: Any) -> Optional[int]:
