@@ -4,7 +4,6 @@ import re
 import sys
 import time
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 from zoneinfo import ZoneInfo
 
@@ -12,7 +11,6 @@ import requests
 
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
-DAILY_LOG_FILE = "daily_log.json"
 STATUS_RUNTIME_FILE = "status_runtime.json"
 LATEST_FILE = "latest_offers.json"
 
@@ -213,8 +211,27 @@ def build_comment_text(offer: Dict[str, Any]) -> str:
     if link:
         parts.append(f'🔗 <a href="{escape_html(link)}">acessar oferta</a>')
 
-    text = "\n\n".join(parts)
-    return text[:3900]
+    return "\n\n".join(parts)[:3900]
+
+
+def is_offer_complete_for_send(offer: Dict[str, Any]) -> bool:
+    img_url = clean_text(offer.get("img_url") or "")
+    validity = clean_text(offer.get("validity") or "")
+    description = clean_text(offer.get("description") or "")
+    title = clean_text(offer.get("title") or offer.get("preview_title") or "")
+    link = clean_text(offer.get("link") or offer.get("original_link") or "")
+
+    if not title or not link:
+        return False
+    if not img_url:
+        return False
+    if not validity:
+        return False
+    if not description or len(description) < 40:
+        return False
+    if "descrição não disponível" in description.lower():
+        return False
+    return True
 
 
 def send_photo_raw(chat_id: str, photo_url: str, caption: str) -> requests.Response:
@@ -279,12 +296,7 @@ def get_updates(offset: Optional[int] = None, timeout: int = 0) -> List[Dict[str
         return []
 
 
-def find_mirrored_group_message_id(
-    channel_message_id: int,
-    caption_hint: str,
-    sent_at_ts: float,
-    max_wait_seconds: int = 25,
-) -> Optional[int]:
+def find_mirrored_group_message_id(channel_message_id: int, caption_hint: str, sent_at_ts: float, max_wait_seconds: int = 25) -> Optional[int]:
     if not GRUPO_COMENTARIO_ID:
         return None
 
@@ -340,41 +352,16 @@ def send_offer_main(offer: Dict[str, Any]) -> tuple[bool, Optional[int], float, 
         return False, None, 0.0, "variáveis do telegram ausentes"
 
     caption = build_main_caption(offer)
-    text_fallback = "\n".join([
-        f"🎟️ <b>{escape_html(clean_text(offer.get('title') or offer.get('preview_title') or 'oferta uol'))}</b>",
-        f"📅 {escape_html(clean_text(offer.get('validity') or ''))}" if clean_text(offer.get("validity") or "") else "",
-        f'🔗 <a href="{escape_html(clean_text(offer.get("link") or offer.get("original_link") or ""))}">acessar oferta</a>' if clean_text(offer.get("link") or offer.get("original_link") or "") else "",
-    ]).strip()
-
-    img_url = clean_text(offer.get("img_url") or "")
-    partner_img_url = clean_text(offer.get("partner_img_url") or "")
     sent_at_ts = time.time()
-
-    for candidate in [img_url, partner_img_url]:
-        if not candidate:
-            continue
-        try:
-            resp = send_photo_raw(CANAL_ID, candidate, caption)
-            if not resp.ok:
-                log(f"sendPhoto falhou para {candidate}: {resp.text}")
-                continue
-            data = resp.json()
-            if not data.get("ok"):
-                log(f"sendPhoto não-ok para {candidate}: {data}")
-                continue
-            return True, data.get("result", {}).get("message_id"), sent_at_ts, ""
-        except Exception as e:
-            log(f"sendPhoto exceção para {candidate}: {e}")
-
-    log("fotos falharam; tentando fallback texto")
+    img_url = clean_text(offer.get("img_url") or "")
 
     try:
-        resp = send_message_raw(CANAL_ID, text_fallback)
+        resp = send_photo_raw(CANAL_ID, img_url, caption)
         if not resp.ok:
-            return False, None, sent_at_ts, f"falha no envio principal: {resp.text}"
+            return False, None, sent_at_ts, f"sendPhoto falhou: {resp.text}"
         data = resp.json()
         if not data.get("ok"):
-            return False, None, sent_at_ts, f"telegram principal não-ok: {data}"
+            return False, None, sent_at_ts, f"sendPhoto não-ok: {data}"
         return True, data.get("result", {}).get("message_id"), sent_at_ts, ""
     except Exception as e:
         return False, None, sent_at_ts, str(e)
@@ -538,25 +525,23 @@ def consume_pending() -> int:
     save_json(STATUS_RUNTIME_FILE, status)
 
     if not offers:
-        update_status_runtime(
-            summary="pending vazio",
-            status_value="sem_novidade",
-            processed=0,
-            sent=0,
-            failed=0,
-            pending_count=0,
-            last_error="",
-        )
+        update_status_runtime("pending vazio", "sem_novidade", 0, 0, 0, 0, "")
         return 0
 
     remaining: List[Dict[str, Any]] = []
     processed = 0
     sent = 0
     failed = 0
+    skipped = 0
     last_error = ""
 
     for offer in offers:
         processed += 1
+
+        if not is_offer_complete_for_send(offer):
+            skipped += 1
+            log(f"oferta incompleta descartada do pending: {offer.get('title') or offer.get('preview_title')}")
+            continue
 
         sent_main, main_message_id, sent_at_ts, err = send_offer_main(offer)
 
@@ -587,7 +572,7 @@ def consume_pending() -> int:
 
     if sent > 0 and failed == 0:
         update_status_runtime(
-            summary=f"enviadas: {sent}",
+            summary=f"enviadas: {sent} | descartadas: {skipped}",
             status_value="ok",
             processed=processed,
             sent=sent,
@@ -597,7 +582,7 @@ def consume_pending() -> int:
         )
     elif sent > 0 and failed > 0:
         update_status_runtime(
-            summary=f"enviadas: {sent} | falhas: {failed}",
+            summary=f"enviadas: {sent} | falhas: {failed} | descartadas: {skipped}",
             status_value="parcial",
             processed=processed,
             sent=sent,
@@ -605,15 +590,25 @@ def consume_pending() -> int:
             pending_count=len(remaining),
             last_error=last_error,
         )
-    else:
+    elif failed > 0:
         update_status_runtime(
-            summary=f"falhas: {failed}",
+            summary=f"falhas: {failed} | descartadas: {skipped}",
             status_value="erro",
             processed=processed,
             sent=sent,
             failed=failed,
             pending_count=len(remaining),
             last_error=last_error or "nenhuma oferta enviada",
+        )
+    else:
+        update_status_runtime(
+            summary=f"nenhuma oferta pronta | descartadas: {skipped}",
+            status_value="sem_novidade",
+            processed=processed,
+            sent=sent,
+            failed=failed,
+            pending_count=len(remaining),
+            last_error="",
         )
 
     return 0 if failed == 0 else 1
