@@ -2,6 +2,7 @@ import json
 import os
 import re
 import sys
+import time
 from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
@@ -397,6 +398,14 @@ def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
+def telegram_post(method: str, data: Dict[str, Any], timeout: int = REQUEST_TIMEOUT) -> requests.Response:
+    return requests.post(telegram_api(method), data=data, timeout=timeout)
+
+
+def telegram_get(method: str, params: Dict[str, Any], timeout: int = REQUEST_TIMEOUT) -> requests.Response:
+    return requests.get(telegram_api(method), params=params, timeout=timeout)
+
+
 def map_operation_status(source: str, status_block: Dict, fallback_detail: str) -> tuple[str, str, str]:
     status_value = str(status_block.get("status") or "").strip().lower()
     detail = str(status_block.get("summary") or fallback_detail or "Sem atualização registrada.").strip()
@@ -540,16 +549,15 @@ def format_monitor_dashboard(state: Dict, status: Dict) -> str:
 
 def send_new_dashboard_message(state: Dict, text: str, action_label: str) -> None:
     try:
-        resp = requests.post(
-            telegram_api("sendMessage"),
-            data={
+        resp = telegram_post(
+            "sendMessage",
+            {
                 "chat_id": GRUPO_COMENTARIO_ID,
                 "text": text,
                 "parse_mode": "HTML",
                 "disable_notification": "true",
                 "disable_web_page_preview": "true",
             },
-            timeout=REQUEST_TIMEOUT,
         )
         if resp.ok:
             data = resp.json()
@@ -582,16 +590,15 @@ def sync_daily_dashboard(state: Dict) -> None:
         return
 
     try:
-        resp = requests.post(
-            telegram_api("editMessageText"),
-            data={
+        resp = telegram_post(
+            "editMessageText",
+            {
                 "chat_id": GRUPO_COMENTARIO_ID,
                 "message_id": state["message_id"],
                 "text": text,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": "true",
             },
-            timeout=REQUEST_TIMEOUT,
         )
         if resp.ok:
             state["last_rendered_text"] = text
@@ -718,15 +725,14 @@ def build_comment_text(offer: Dict[str, Any]) -> str:
 
 
 def send_photo_raw(chat_id: str, photo_url: str, caption: str) -> requests.Response:
-    return requests.post(
-        telegram_api("sendPhoto"),
-        data={
+    return telegram_post(
+        "sendPhoto",
+        {
             "chat_id": chat_id,
             "photo": photo_url,
             "caption": caption[:1024],
             "parse_mode": "HTML",
         },
-        timeout=REQUEST_TIMEOUT,
     )
 
 
@@ -739,11 +745,113 @@ def send_message_raw(chat_id: str, text: str, reply_to_message_id: Optional[int]
     }
     if reply_to_message_id:
         payload["reply_to_message_id"] = reply_to_message_id
-    return requests.post(
-        telegram_api("sendMessage"),
-        data=payload,
-        timeout=REQUEST_TIMEOUT,
-    )
+    return telegram_post("sendMessage", payload)
+
+
+def normalize_chat_id(value: Optional[str]) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    return raw
+
+
+def normalize_channel_post_id(value: Any) -> Optional[int]:
+    try:
+        if value is None:
+            return None
+        return int(value)
+    except Exception:
+        return None
+
+
+def extract_updates_items(data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    result = data.get("result", [])
+    return result if isinstance(result, list) else []
+
+
+def get_updates(offset: Optional[int] = None, limit: int = 100, timeout: int = 0) -> List[Dict[str, Any]]:
+    params: Dict[str, Any] = {
+        "limit": limit,
+        "timeout": timeout,
+        "allowed_updates": json.dumps(["message", "edited_message", "channel_post", "edited_channel_post"]),
+    }
+    if offset is not None:
+        params["offset"] = offset
+    try:
+        resp = telegram_get("getUpdates", params=params, timeout=max(timeout + 5, REQUEST_TIMEOUT))
+        if not resp.ok:
+            log(f"getUpdates falhou: http {resp.status_code} {resp.text}")
+            return []
+        data = resp.json()
+        if not data.get("ok"):
+            log(f"getUpdates retornou não-ok: {data}")
+            return []
+        return extract_updates_items(data)
+    except Exception as e:
+        log(f"erro em getUpdates: {e}")
+        return []
+
+
+def find_discussion_mirror_message_id(
+    channel_message_id: Optional[int],
+    caption_hint: str,
+    sent_after_ts: float,
+    max_wait_seconds: int = 20,
+) -> Optional[int]:
+    if not channel_message_id or not GRUPO_COMENTARIO_ID:
+        return None
+
+    target_group = normalize_chat_id(GRUPO_COMENTARIO_ID)
+    caption_hint = clean_text(caption_hint)
+    deadline = time.time() + max_wait_seconds
+    offset: Optional[int] = None
+    best_candidate: Optional[int] = None
+
+    while time.time() < deadline:
+        updates = get_updates(offset=offset, limit=100, timeout=2)
+        if updates:
+            max_update_id = max(int(u.get("update_id", 0)) for u in updates)
+            offset = max_update_id + 1
+
+        for upd in updates:
+            for key in ("message", "edited_message"):
+                msg = upd.get(key)
+                if not isinstance(msg, dict):
+                    continue
+
+                chat = msg.get("chat", {}) or {}
+                chat_id = normalize_chat_id(chat.get("id"))
+                if chat_id != target_group:
+                    continue
+
+                msg_date = int(msg.get("date") or 0)
+                if msg_date and msg_date < int(sent_after_ts) - 15:
+                    continue
+
+                forward_origin = msg.get("forward_origin") or {}
+                if isinstance(forward_origin, dict):
+                    origin_mid = normalize_channel_post_id(forward_origin.get("message_id"))
+                    if origin_mid == channel_message_id:
+                        return normalize_channel_post_id(msg.get("message_id"))
+
+                forwarded_mid = normalize_channel_post_id(msg.get("forward_from_message_id"))
+                if forwarded_mid == channel_message_id:
+                    return normalize_channel_post_id(msg.get("message_id"))
+
+                is_auto = bool(msg.get("is_automatic_forward"))
+                if is_auto:
+                    text_blob = clean_text(msg.get("text") or msg.get("caption") or "")
+                    if caption_hint and text_blob and caption_hint[:120] in text_blob:
+                        candidate_mid = normalize_channel_post_id(msg.get("message_id"))
+                        if candidate_mid:
+                            best_candidate = candidate_mid
+
+        if best_candidate:
+            return best_candidate
+
+        time.sleep(1.2)
+
+    return best_candidate
 
 
 def try_send_photo(chat_id: str, photo_url: str, caption: str) -> tuple[bool, Optional[int], str]:
@@ -761,22 +869,23 @@ def try_send_photo(chat_id: str, photo_url: str, caption: str) -> tuple[bool, Op
         return False, None, str(e)
 
 
-def send_offer_main(offer: Dict[str, Any]) -> tuple[bool, Optional[int], str]:
+def send_offer_main(offer: Dict[str, Any]) -> tuple[bool, Optional[int], float, str]:
     if not TELEGRAM_TOKEN or not CANAL_ID:
-        return False, None, "variáveis do telegram ausentes"
+        return False, None, 0.0, "variáveis do telegram ausentes"
 
     main_caption = build_main_caption(offer)
     main_text = build_main_text_fallback(offer)
 
     img_url = clean_text(offer.get("img_url") or "")
     partner_img_url = clean_text(offer.get("partner_img_url") or "")
+    sent_at_ts = time.time()
 
     for candidate in [img_url, partner_img_url]:
         if not candidate:
             continue
         ok, message_id, err = try_send_photo(CANAL_ID, candidate, main_caption)
         if ok:
-            return True, message_id, ""
+            return True, message_id, sent_at_ts, ""
         log(f"sendPhoto falhou para {candidate}: {err}")
 
     log("fotos falharam; tentando fallback em texto curto")
@@ -784,18 +893,30 @@ def send_offer_main(offer: Dict[str, Any]) -> tuple[bool, Optional[int], str]:
     try:
         resp = send_message_raw(CANAL_ID, main_text)
         if not resp.ok:
-            return False, None, f"falha no envio principal: {resp.text}"
+            return False, None, sent_at_ts, f"falha no envio principal: {resp.text}"
         data = resp.json()
         if not data.get("ok"):
-            return False, None, f"telegram principal não-ok: {data}"
-        return True, data.get("result", {}).get("message_id"), ""
+            return False, None, sent_at_ts, f"telegram principal não-ok: {data}"
+        return True, data.get("result", {}).get("message_id"), sent_at_ts, ""
     except Exception as e:
-        return False, None, str(e)
+        return False, None, sent_at_ts, str(e)
 
 
-def send_offer_comment(offer: Dict[str, Any], reply_to_message_id: Optional[int]) -> tuple[bool, str]:
-    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID or not reply_to_message_id:
-        return False, "comentário sem configuração ou sem message_id"
+def send_offer_comment(offer: Dict[str, Any], channel_message_id: Optional[int], sent_at_ts: float) -> tuple[bool, str]:
+    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
+        return False, "comentário sem configuração"
+    if not channel_message_id:
+        return False, "comentário sem message_id do canal"
+
+    reply_to_message_id = find_discussion_mirror_message_id(
+        channel_message_id=channel_message_id,
+        caption_hint=build_main_caption(offer),
+        sent_after_ts=sent_at_ts,
+        max_wait_seconds=20,
+    )
+
+    if not reply_to_message_id:
+        return False, "não encontrei a mensagem espelhada no grupo para responder"
 
     try:
         comment_text = build_comment_text(offer)
@@ -903,7 +1024,7 @@ def consume_pending() -> int:
     for offer in offers:
         processed += 1
 
-        sent_main, main_message_id, err = send_offer_main(offer)
+        sent_main, main_message_id, sent_at_ts, err = send_offer_main(offer)
 
         if sent_main:
             sent += 1
@@ -911,7 +1032,7 @@ def consume_pending() -> int:
             latest = update_latest(latest, offer)
             update_global_last_offer(offer)
 
-            sent_comment, comment_err = send_offer_comment(offer, main_message_id)
+            sent_comment, comment_err = send_offer_comment(offer, main_message_id, sent_at_ts)
             if not sent_comment:
                 failed += 1
                 last_error = comment_err or "comentário falhou após envio principal"
