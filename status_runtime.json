@@ -1,13 +1,13 @@
 {
   "scriptable": {
-    "last_started_at": "2026-04-04T04:45:20.633909Z",
+    "last_started_at": "2026-04-04T04:55:27.118859Z",
     "last_finished_at": "2026-04-04T04:45:32.641551Z",
-    "status": "erro",
-    "summary": "erro geral no railway collector",
+    "status": "running",
+    "summary": "railway collector iniciado",
     "offers_seen": 0,
     "new_offers": 0,
     "pending_count": 0,
-    "last_error": "github put 409: {'message': 'is at 8934774f685496093d3ddff6d98105d5d171e3ed but expected 080ae316a5ff89eada9801d9251409042859437e', 'documentation_url': 'https://docs.github.com/rest/repos/contents#create-or-update-file-contents', 'status': '409'}"
+    "last_error": ""
   },
   "scraper": {
     "last_started_at": "02/04/2026 às 17:52",
