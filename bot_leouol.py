@@ -76,18 +76,6 @@ HASHTAG_PRIORITY = [
     "#eletrodomesticoseletronicos",
 ]
 
-SECTION_EMOJIS = {
-    "data": "🗓️",
-    "quando": "🗓️",
-    "local": "📍",
-    "atenção": "⚠️",
-    "atencao": "⚠️",
-    "importante": "❗",
-    "regras de resgate": "📌",
-    "como resgatar": "📌",
-    "passo a passo para resgate": "📌",
-}
-
 HTTP_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -161,6 +149,7 @@ def clean_multiline_text(text: Optional[str]) -> str:
     text = re.sub(r"\n{3,}", "\n\n", text)
     text = re.sub(r"•\s*\n\s*", "• ", text)
     text = re.sub(r"\n\s*•\s*", "\n• ", text)
+    text = re.sub(r" \.", ".", text)
     text = text.strip()
 
     lixo_markers = [
@@ -615,7 +604,8 @@ def sync_daily_dashboard(state: Dict) -> None:
         if resp.ok:
             save_daily_log(state)
         else:
-            log(f"⚠️ falha ao editar dashboard diário: {resp.text}")
+            if '"message is not modified"' not in resp.text:
+                log(f"⚠️ falha ao editar dashboard diário: {resp.text}")
     except Exception as e:
         log(f"⚠️ erro ao editar dashboard diário: {e}")
 
@@ -705,6 +695,7 @@ def normalize_validity(validity: Optional[str]) -> str:
         return ""
     if not val.endswith("."):
         val += "."
+    val = re.sub(r" \.", ".", val)
     return val
 
 
@@ -712,18 +703,17 @@ def build_main_caption(title: str, description: str, validity: Optional[str], li
     tags = build_smart_hashtags(title, description, link)
     decorated_title = decorate_main_title(title, link)
 
-    parts = [escape_html(decorated_title)]
+    body = [f"<b>{escape_html(decorated_title)}</b>"]
     if tags:
-        parts.append(escape_html(" ".join(tags)))
+        body.append(escape_html(" ".join(tags)))
 
-    body = []
     val = normalize_validity(validity)
     if val:
         body.append(f"📅 {escape_html(val)}")
     body.append(f"🔗 {escape_html(link)}")
     body.append("💬 Veja os detalhes completos dentro dos comentários.")
 
-    return truncate_text("\n\n".join(parts + body), MAX_CAPTION_LENGTH)
+    return truncate_text("\n\n".join(body), MAX_CAPTION_LENGTH)
 
 
 def split_description_sections(description: str) -> List[str]:
@@ -755,8 +745,11 @@ def split_description_sections(description: str) -> List[str]:
         "local:",
         "atenção!",
         "atencao!",
+        "atenção:",
+        "atencao:",
         "importante:",
         "📌 regras de resgate:",
+        "regras de resgate:",
     ]
 
     for line in lines:
@@ -770,27 +763,49 @@ def split_description_sections(description: str) -> List[str]:
 
 
 def beautify_section(section: str) -> str:
-    low = section.lower()
+    raw = section.strip()
+    low = raw.lower()
 
-    for key, emoji in SECTION_EMOJIS.items():
-        if low.startswith(key + ":"):
-            title, rest = section.split(":", 1)
-            return f"{emoji} <b>{escape_html(title.strip())}:</b>{escape_html((' ' + rest.strip()) if rest.strip() else '')}"
+    if low.startswith("data:"):
+        title, rest = raw.split(":", 1)
+        return f"<b>{escape_html(title.strip())}:</b>\n{escape_html(rest.strip())}"
+
+    if low.startswith("local:"):
+        title, rest = raw.split(":", 1)
+        return f"📍 <b>{escape_html(title.strip())}:</b>\n{escape_html(rest.strip())}"
+
+    if low.startswith("importante:"):
+        title, rest = raw.split(":", 1)
+        return f"❗ <b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
+
+    if low.startswith("atenção:") or low.startswith("atencao:"):
+        title, rest = raw.split(":", 1)
+        return f"❗ <b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
+
+    if low.startswith("atenção!") or low.startswith("atencao!"):
+        title, rest = raw.split("!", 1)
+        rest = rest.strip()
+        if rest:
+            return f"❗ <b>{escape_html(title.strip())}!</b>\n{escape_html(rest)}"
+        return f"❗ <b>{escape_html(title.strip())}!</b>"
+
+    if low.startswith("regras de resgate:") or low.startswith("📌 regras de resgate:"):
+        cleaned = raw.replace("📌", "").strip()
+        title, rest = cleaned.split(":", 1)
+        rest = rest.strip()
+        if rest:
+            return f"📌 <b>{escape_html(title.strip().upper())}:</b>\n{escape_html(rest)}"
+        return f"📌 <b>{escape_html(title.strip().upper())}:</b>"
 
     if low.startswith("benefício:") or low.startswith("beneficio:"):
-        title, rest = section.split(":", 1)
-        return f"<b>{escape_html(title.strip())}:</b>{escape_html((' ' + rest.strip()) if rest.strip() else '')}"
+        title, rest = raw.split(":", 1)
+        return f"<b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
 
-    if "\n• " in section:
-        first, *rest = section.split("\n")
-        out = []
-        if first.strip():
-            out.append(escape_html(first.strip()))
-        for item in rest:
-            out.append(escape_html(item.strip()))
-        return "\n".join(out)
+    if low.startswith("sobre o parceiro:"):
+        title, rest = raw.split(":", 1)
+        return f"<b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
 
-    return escape_html(section)
+    return escape_html(raw)
 
 
 def build_comment_text(title: str, description: str, validity: Optional[str], link: str) -> str:
@@ -799,27 +814,30 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
 
     if sections:
         for idx, section in enumerate(sections):
-            out.append(beautify_section(section))
+            rendered = beautify_section(section)
+            out.append(rendered)
+
             if idx != len(sections) - 1:
                 out.append("")
     else:
         desc = clean_multiline_text(description)
         if desc:
-            out.append(escape_html(desc))
-            out.append("")
+            paragraphs = [p.strip() for p in desc.split("\n\n") if p.strip()]
+            for idx, p in enumerate(paragraphs):
+                out.append(escape_html(p))
+                if idx != len(paragraphs) - 1:
+                    out.append("")
 
     val = normalize_validity(validity)
     if val:
-        out.append(f"📅 {escape_html(val)}")
         out.append("")
+        out.append(f"📅 {escape_html(val)}")
 
+    out.append("")
     out.append(f"🔗 {escape_html(link)}")
+
     text = "\n".join(out).strip()
     return truncate_text(text, MAX_COMMENT_LENGTH)
-
-
-def build_partner_photo_caption(title: str) -> str:
-    return truncate_text(escape_html(title), 900)
 
 
 def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, sleep_s: int = 2) -> Optional[int]:
@@ -896,15 +914,16 @@ def send_photo_bytes(
     chat_id: str,
     image_bytes: bytes,
     ext: str,
-    caption: str,
+    caption: Optional[str] = None,
     disable_notification: bool = False,
     reply_to_message_id: Optional[int] = None,
 ) -> requests.Response:
     data = {
         "chat_id": chat_id,
-        "caption": caption,
-        "parse_mode": "HTML",
     }
+    if caption:
+        data["caption"] = caption
+        data["parse_mode"] = "HTML"
     if disable_notification:
         data["disable_notification"] = "true"
     if reply_to_message_id:
@@ -947,7 +966,7 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
                 TELEGRAM_CHAT_ID,
                 image_bytes,
                 ext,
-                caption,
+                caption=caption,
                 disable_notification=silent,
             )
             if resp.ok:
@@ -991,7 +1010,7 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
                     GRUPO_COMENTARIO_ID,
                     image_bytes,
                     ext,
-                    build_partner_photo_caption(title),
+                    caption=None,
                     disable_notification=True,
                     reply_to_message_id=reply_target,
                 )
