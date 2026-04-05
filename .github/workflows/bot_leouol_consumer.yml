@@ -32,6 +32,12 @@ jobs:
         with:
           fetch-depth: 0
 
+                - name: garantir branch atualizada
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
       - name: setup python
         uses: actions/setup-python@v6
         with:
