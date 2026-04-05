@@ -25,6 +25,8 @@ LATEST_FILE = "latest_offers.json"
 
 SNAPSHOT_DIR = "snapshots"
 SNAPSHOT_CONTROL_FILE = "snapshots_control.json"
+MAX_PROCESSED_SNAPSHOTS = 5000
+SNAPSHOT_CLEANUP_ENABLED = True
 
 REQUEST_TIMEOUT = 30
 MAX_HISTORY_IDS = 1500
@@ -508,6 +510,32 @@ def load_detail_for_snapshot(snapshot_id: str) -> Dict[str, Dict[str, Any]]:
     return lookup
 
 
+def cleanup_snapshot_files(snapshot_id: str, meta: Optional[Dict[str, Any]] = None) -> None:
+    if not SNAPSHOT_CLEANUP_ENABLED:
+        return
+
+    paths = {
+        os.path.join(SNAPSHOT_DIR, f"snapshot_{snapshot_id}.json"),
+        os.path.join(SNAPSHOT_DIR, f"detail_{snapshot_id}.json"),
+    }
+
+    if isinstance(meta, dict):
+        html_path = str(meta.get("html_path") or "").strip()
+        if html_path:
+            paths.add(html_path)
+    else:
+        paths.add(os.path.join(SNAPSHOT_DIR, f"snapshot_{snapshot_id}.html"))
+
+    for path in paths:
+        if not path:
+            continue
+        try:
+            if os.path.exists(path):
+                os.remove(path)
+        except Exception as e:
+            log(f"aviso: não consegui limpar arquivo processado {path}: {e}")
+
+
 def get_unprocessed_snapshot_ids() -> Tuple[List[str], Dict[str, Any]]:
     control = load_snapshot_control()
     processed = set(control.get("processed_snapshot_ids", []))
@@ -516,14 +544,15 @@ def get_unprocessed_snapshot_ids() -> Tuple[List[str], Dict[str, Any]]:
     return pending_ids, control
 
 
-def mark_snapshot_processed(snapshot_id: str, control: Dict[str, Any]) -> None:
+def mark_snapshot_processed(snapshot_id: str, control: Dict[str, Any], meta: Optional[Dict[str, Any]] = None) -> None:
     processed = control.get("processed_snapshot_ids", [])
     if not isinstance(processed, list):
         processed = []
     if snapshot_id not in processed:
         processed.append(snapshot_id)
-    control["processed_snapshot_ids"] = processed[-500:]
+    control["processed_snapshot_ids"] = processed[-MAX_PROCESSED_SNAPSHOTS:]
     save_snapshot_control(control)
+    cleanup_snapshot_files(snapshot_id, meta)
 
 
 def status_scraper_start() -> None:
@@ -909,12 +938,14 @@ def main() -> None:
 
     all_offers: List[Dict[str, Any]] = []
     loaded_snapshot_ids: List[str] = []
+    snapshot_meta_map: Dict[str, Optional[Dict[str, Any]]] = {}
 
     for snapshot_id in snapshot_ids:
-        _meta, html = load_snapshot(snapshot_id)
+        meta, html = load_snapshot(snapshot_id)
+        snapshot_meta_map[snapshot_id] = meta
         if not html:
             log(f"snapshot inválido ou sem html: {snapshot_id}")
-            mark_snapshot_processed(snapshot_id, snapshot_control)
+            mark_snapshot_processed(snapshot_id, snapshot_control, meta)
             continue
 
         offers = parse_offers(html)
@@ -924,7 +955,7 @@ def main() -> None:
 
     if not all_offers:
         for snapshot_id in loaded_snapshot_ids:
-            mark_snapshot_processed(snapshot_id, snapshot_control)
+            mark_snapshot_processed(snapshot_id, snapshot_control, snapshot_meta_map.get(snapshot_id))
         status_scraper_finish(
             summary="sem ofertas novas",
             status_value="sem_novidade",
@@ -1003,7 +1034,7 @@ def main() -> None:
     log(f"descartadas por incompletas: {dropped_incomplete}")
 
     for snapshot_id in loaded_snapshot_ids:
-        mark_snapshot_processed(snapshot_id, snapshot_control)
+        mark_snapshot_processed(snapshot_id, snapshot_control, snapshot_meta_map.get(snapshot_id))
 
     if not candidates:
         status_scraper_finish(
