@@ -52,9 +52,9 @@ jobs:
       - name: processar pending offers
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          CANAL_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
-        run: python bot_leouol.py --pending
+        run: python bot_leouol.py --pending || true
 
       - name: commitar mudanças
         if: always()
