@@ -32,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
 
-                - name: garantir branch atualizada
+      - name: garantir branch atualizada
         run: |
           git fetch origin main
           git checkout main
