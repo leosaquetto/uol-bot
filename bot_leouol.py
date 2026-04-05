@@ -1,7 +1,7 @@
 # bot_leouol.py
 # consumer do pending_offers.json + envio para telegram + dashboard diário
-# com fallback de imagem, comentário em reply, hashtags inteligentes
-# e histórico atualizado só após sucesso real de envio
+# com upload real de imagem, retry para 429, comentário em múltiplas mensagens
+# e histórico atualizado só após sucesso real
 
 import json
 import os
@@ -34,6 +34,8 @@ MAX_CAPTION_LENGTH = 1024
 MAX_COMMENT_LENGTH = 4096
 MAX_DASHBOARD_LENGTH = 3900
 REQUEST_TIMEOUT = 30
+RETRY_429_EXTRA_SECONDS = 1
+BETWEEN_OFFERS_DELAY_SECONDS = 2
 
 HASHTAG_RULES_BODY = {
     "#ingresso": ["ingresso", "ingressos"],
@@ -84,6 +86,16 @@ SECTION_EMOJIS = {
     "regras de resgate": "📌",
     "como resgatar": "📌",
     "passo a passo para resgate": "📌",
+}
+
+HTTP_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/123.0.0.0 Safari/537.36"
+    ),
+    "Referer": "https://clube.uol.com.br/",
+    "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
 }
 
 
@@ -524,6 +536,38 @@ def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
 
+def parse_retry_after(response: Optional[requests.Response]) -> int:
+    try:
+        if response is None:
+            return 0
+        data = response.json()
+        return int(data.get("parameters", {}).get("retry_after") or 0)
+    except Exception:
+        return 0
+
+
+def telegram_post(method: str, data=None, files=None, retry_429: bool = True) -> requests.Response:
+    resp = requests.post(
+        telegram_api(method),
+        data=data or {},
+        files=files,
+        timeout=REQUEST_TIMEOUT,
+    )
+    if retry_429 and resp.status_code == 429:
+        retry_after = parse_retry_after(resp)
+        if retry_after > 0:
+            wait_s = retry_after + RETRY_429_EXTRA_SECONDS
+            log(f"429 no {method}, aguardando {wait_s}s para tentar de novo")
+            time.sleep(wait_s)
+            resp = requests.post(
+                telegram_api(method),
+                data=data or {},
+                files=files,
+                timeout=REQUEST_TIMEOUT,
+            )
+    return resp
+
+
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
@@ -537,8 +581,8 @@ def sync_daily_dashboard(state: Dict) -> None:
         text = build_dashboard_text(state)
 
         try:
-            resp = requests.post(
-                telegram_api("sendMessage"),
+            resp = telegram_post(
+                "sendMessage",
                 data={
                     "chat_id": GRUPO_COMENTARIO_ID,
                     "text": text,
@@ -546,7 +590,6 @@ def sync_daily_dashboard(state: Dict) -> None:
                     "disable_notification": "true",
                     "disable_web_page_preview": "true",
                 },
-                timeout=REQUEST_TIMEOUT,
             )
             if resp.ok:
                 data = resp.json()
@@ -559,8 +602,8 @@ def sync_daily_dashboard(state: Dict) -> None:
         return
 
     try:
-        resp = requests.post(
-            telegram_api("editMessageText"),
+        resp = telegram_post(
+            "editMessageText",
             data={
                 "chat_id": GRUPO_COMENTARIO_ID,
                 "message_id": state["message_id"],
@@ -568,7 +611,6 @@ def sync_daily_dashboard(state: Dict) -> None:
                 "parse_mode": "HTML",
                 "disable_web_page_preview": "true",
             },
-            timeout=REQUEST_TIMEOUT,
         )
         if resp.ok:
             save_daily_log(state)
@@ -670,7 +712,7 @@ def build_main_caption(title: str, description: str, validity: Optional[str], li
     tags = build_smart_hashtags(title, description, link)
     decorated_title = decorate_main_title(title, link)
 
-    parts = [f"<b>{escape_html(decorated_title)}</b>"]
+    parts = [escape_html(decorated_title)]
     if tags:
         parts.append(escape_html(" ".join(tags)))
 
@@ -776,48 +818,8 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
     return truncate_text(text, MAX_COMMENT_LENGTH)
 
 
-def telegram_post(method: str, data=None):
-    return requests.post(
-        telegram_api(method),
-        data=data or {},
-        timeout=REQUEST_TIMEOUT,
-    )
-
-
-def try_send_message(chat_id: str, text: str, disable_notification: bool = False, reply_to_message_id: Optional[int] = None):
-    data = {
-        "chat_id": chat_id,
-        "text": text,
-        "parse_mode": "HTML",
-        "disable_web_page_preview": "true",
-    }
-    if disable_notification:
-        data["disable_notification"] = "true"
-    if reply_to_message_id:
-        data["reply_to_message_id"] = str(reply_to_message_id)
-
-    return telegram_post("sendMessage", data=data)
-
-
-def try_send_photo_by_url(
-    chat_id: str,
-    photo_url: str,
-    caption: str,
-    disable_notification: bool = False,
-    reply_to_message_id: Optional[int] = None,
-):
-    data = {
-        "chat_id": chat_id,
-        "photo": photo_url,
-        "caption": caption,
-        "parse_mode": "HTML",
-    }
-    if disable_notification:
-        data["disable_notification"] = "true"
-    if reply_to_message_id:
-        data["reply_to_message_id"] = str(reply_to_message_id)
-
-    return telegram_post("sendPhoto", data=data)
+def build_partner_photo_caption(title: str) -> str:
+    return truncate_text(escape_html(title), 900)
 
 
 def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, sleep_s: int = 2) -> Optional[int]:
@@ -845,13 +847,73 @@ def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, s
                 forward_origin = msg.get("forward_origin", {}) or {}
                 if forward_origin.get("message_id") == channel_message_id:
                     return msg.get("message_id")
-
-                if msg.get("reply_to_message_id") == channel_message_id:
-                    return msg.get("message_id")
         except Exception:
             continue
 
     return None
+
+
+def download_image_bytes(url: str) -> Optional[Tuple[bytes, str]]:
+    if not url:
+        return None
+    try:
+        resp = requests.get(url, headers=HTTP_HEADERS, timeout=REQUEST_TIMEOUT)
+        if not resp.ok:
+            return None
+
+        content_type = resp.headers.get("content-type", "").lower()
+        if "image/" not in content_type and not resp.content:
+            return None
+
+        ext = "jpg"
+        if "png" in content_type:
+            ext = "png"
+        elif "webp" in content_type:
+            ext = "webp"
+        elif "jpeg" in content_type:
+            ext = "jpg"
+
+        return resp.content, ext
+    except Exception:
+        return None
+
+
+def send_message_text(chat_id: str, text: str, disable_notification: bool = False, reply_to_message_id: Optional[int] = None) -> requests.Response:
+    data = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": "true",
+    }
+    if disable_notification:
+        data["disable_notification"] = "true"
+    if reply_to_message_id:
+        data["reply_to_message_id"] = str(reply_to_message_id)
+    return telegram_post("sendMessage", data=data)
+
+
+def send_photo_bytes(
+    chat_id: str,
+    image_bytes: bytes,
+    ext: str,
+    caption: str,
+    disable_notification: bool = False,
+    reply_to_message_id: Optional[int] = None,
+) -> requests.Response:
+    data = {
+        "chat_id": chat_id,
+        "caption": caption,
+        "parse_mode": "HTML",
+    }
+    if disable_notification:
+        data["disable_notification"] = "true"
+    if reply_to_message_id:
+        data["reply_to_message_id"] = str(reply_to_message_id)
+
+    files = {
+        "photo": (f"image.{ext}", image_bytes),
+    }
+    return telegram_post("sendPhoto", data=data, files=files)
 
 
 def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
@@ -874,22 +936,29 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
     silent = should_send_silent(tags)
 
     for label, candidate in candidates:
+        img = download_image_bytes(candidate)
+        if not img:
+            log(f"falha ao baixar imagem via {label}")
+            continue
+
+        image_bytes, ext = img
         try:
-            resp = try_send_photo_by_url(
+            resp = send_photo_bytes(
                 TELEGRAM_CHAT_ID,
-                candidate,
+                image_bytes,
+                ext,
                 caption,
                 disable_notification=silent,
             )
             if resp.ok:
                 data = resp.json()
                 return True, data.get("result", {}).get("message_id"), f"sendPhoto ok via {label}"
-            log(f"sendPhoto falhou via {label}: {resp.text}")
+            log(f"sendPhoto upload falhou via {label}: {resp.text}")
         except Exception as e:
-            log(f"sendPhoto exception via {label}: {e}")
+            log(f"sendPhoto upload exception via {label}: {e}")
 
     try:
-        resp = try_send_message(
+        resp = send_message_text(
             TELEGRAM_CHAT_ID,
             caption,
             disable_notification=silent,
@@ -907,7 +976,6 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
     description = offer.get("description") or ""
     validity = offer.get("validity")
     link = offer.get("link") or offer.get("original_link") or ""
-    text = build_comment_text(title, description, validity, link)
 
     discussion_message_id = wait_for_discussion_message_id(channel_message_id)
     reply_target = discussion_message_id
@@ -915,41 +983,36 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
     partner_img_url = (offer.get("partner_img_url") or "").strip()
 
     if partner_img_url:
-        try:
-            data = {
-                "chat_id": GRUPO_COMENTARIO_ID,
-                "photo": partner_img_url,
-                "caption": text,
-                "parse_mode": "HTML",
-                "disable_notification": "true",
-            }
-            if reply_target:
-                data["reply_to_message_id"] = str(reply_target)
+        img = download_image_bytes(partner_img_url)
+        if img:
+            image_bytes, ext = img
+            try:
+                resp = send_photo_bytes(
+                    GRUPO_COMENTARIO_ID,
+                    image_bytes,
+                    ext,
+                    build_partner_photo_caption(title),
+                    disable_notification=True,
+                    reply_to_message_id=reply_target,
+                )
+                if not resp.ok:
+                    log(f"foto do parceiro falhou: {resp.text}")
+            except Exception as e:
+                log(f"foto do parceiro exception: {e}")
 
-            resp = telegram_post("sendPhoto", data=data)
-            if resp.ok:
-                return True, "comentário com foto do parceiro enviado"
-            log(f"comentário com foto falhou: {resp.text}")
-        except Exception as e:
-            log(f"comentário com foto exception: {e}")
-
+    text = build_comment_text(title, description, validity, link)
     try:
-        data = {
-            "chat_id": GRUPO_COMENTARIO_ID,
-            "text": text,
-            "parse_mode": "HTML",
-            "disable_notification": "true",
-            "disable_web_page_preview": "true",
-        }
-        if reply_target:
-            data["reply_to_message_id"] = str(reply_target)
-
-        resp = telegram_post("sendMessage", data=data)
+        resp = send_message_text(
+            GRUPO_COMENTARIO_ID,
+            text,
+            disable_notification=True,
+            reply_to_message_id=reply_target,
+        )
         if resp.ok:
-            return True, "comentário em texto enviado"
-        return False, f"sendMessage comentário falhou: {resp.text}"
+            return True, "descrição completa enviada"
+        return False, f"descrição completa falhou: {resp.text}"
     except Exception as e:
-        return False, f"sendMessage comentário exception: {e}"
+        return False, f"descrição completa exception: {e}"
 
 
 def mark_offer_success(history: Dict[str, List[str]], offer: Dict) -> None:
@@ -1003,7 +1066,7 @@ def consume_pending() -> int:
     failed = 0
     last_error = ""
 
-    for offer in offers:
+    for idx, offer in enumerate(offers, 1):
         processed += 1
 
         offer_id = normalize_offer_key(offer.get("id") or offer.get("link") or "")
@@ -1041,6 +1104,9 @@ def consume_pending() -> int:
 
         append_dashboard_line("consumer", f"✅ enviada: {title[:80]}")
         log(f"oferta enviada com sucesso: {title}")
+
+        if idx < len(offers):
+            time.sleep(BETWEEN_OFFERS_DELAY_SECONDS)
 
     save_history(history)
     save_pending(remaining)
