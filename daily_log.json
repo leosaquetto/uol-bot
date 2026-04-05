@@ -2,9 +2,9 @@
   "date": "04/04/2026",
   "message_id": 704,
   "last_success_check": "04/04/2026 às 19:01",
-  "last_new_offer_at": "04/04/2026 às 22:13",
-  "pending_count": 3,
-  "last_consumer_run": "04/04/2026 às 22:13",
+  "last_new_offer_at": "04/04/2026 às 22:29",
+  "pending_count": 0,
+  "last_consumer_run": "04/04/2026 às 22:29",
   "lines": [
     "[18:50] consumer: 📭 pending vazio",
     "[19:01] scraper: 💤 sem ofertas novas",
@@ -15,6 +15,11 @@
     "[22:12] consumer: ✅ enviada: 50% OFF em até 4 ingressos",
     "[22:12] consumer: ✅ enviada: 30% OFF na compra de ingresso - PR",
     "[22:13] consumer: ✅ enviada: 50% OFF no par de ingressos",
-    "[22:13] consumer: ✅ processadas 9 | enviadas 6 | falhas 3"
+    "[22:13] consumer: ✅ processadas 9 | enviadas 6 | falhas 3",
+    "[22:28] consumer: ▶️ processando 3 ofertas",
+    "[22:28] consumer: ✅ enviada: 10% OFF nos ingressos!",
+    "[22:29] consumer: ✅ enviada: 20% OFF no ingressos",
+    "[22:29] consumer: ✅ enviada: 10% OFF no Ingresso!",
+    "[22:29] consumer: ✅ processadas 3 | enviadas 3 | falhas 0"
   ]
 }

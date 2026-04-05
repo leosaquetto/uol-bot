@@ -21,20 +21,20 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "04/04/2026 às 22:12",
-    "last_finished_at": "04/04/2026 às 22:13",
-    "last_success_at": "04/04/2026 às 22:13",
-    "status": "parcial",
-    "summary": "6 enviada(s), 3 falha(s)",
-    "processed": 9,
-    "sent": 6,
-    "failed": 3,
-    "pending_count": 3,
-    "last_error": "sendMessage falhou: {\"ok\":false,\"error_code\":429,\"description\":\"Too Many Requests: retry after 13\",\"parameters\":{\"retry_after\":13}}"
+    "last_started_at": "04/04/2026 às 22:28",
+    "last_finished_at": "04/04/2026 às 22:29",
+    "last_success_at": "04/04/2026 às 22:29",
+    "status": "ok",
+    "summary": "3 enviada(s) com sucesso",
+    "processed": 3,
+    "sent": 3,
+    "failed": 0,
+    "pending_count": 0,
+    "last_error": ""
   },
   "global": {
-    "last_offer_title": "50% OFF no par de ingressos",
-    "last_offer_at": "04/04/2026 às 22:13",
-    "last_offer_id": "oUP-50-off-no-par-de-ingressos"
+    "last_offer_title": "10% OFF no Ingresso!",
+    "last_offer_at": "04/04/2026 às 22:29",
+    "last_offer_id": "niB-10-off-no-ingresso"
   }
 }
