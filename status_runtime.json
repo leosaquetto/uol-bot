@@ -21,20 +21,20 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "04/04/2026 às 21:35",
-    "last_finished_at": "04/04/2026 às 21:36",
-    "last_success_at": "04/04/2026 às 18:50",
+    "last_started_at": "04/04/2026 às 22:12",
+    "last_finished_at": "04/04/2026 às 22:13",
+    "last_success_at": "04/04/2026 às 22:13",
     "status": "parcial",
-    "summary": "enviadas: 2 | falhas: 9 | descartadas: 0",
-    "processed": 11,
-    "sent": 2,
-    "failed": 9,
-    "pending_count": 9,
-    "last_error": "sendPhoto falhou: {\"ok\":false,\"error_code\":400,\"description\":\"Bad Request: failed to get HTTP URL content\"}"
+    "summary": "6 enviada(s), 3 falha(s)",
+    "processed": 9,
+    "sent": 6,
+    "failed": 3,
+    "pending_count": 3,
+    "last_error": "sendMessage falhou: {\"ok\":false,\"error_code\":429,\"description\":\"Too Many Requests: retry after 13\",\"parameters\":{\"retry_after\":13}}"
   },
   "global": {
-    "last_offer_title": "2 INGRESSOS: 20/04 Tetro UOL - SP",
-    "last_offer_at": "02/04/2026 às 18:43",
-    "last_offer_id": "plv-2-ingressos-20-04-tetro-uol-sp"
+    "last_offer_title": "50% OFF no par de ingressos",
+    "last_offer_at": "04/04/2026 às 22:13",
+    "last_offer_id": "oUP-50-off-no-par-de-ingressos"
   }
 }
