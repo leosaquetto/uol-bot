@@ -21,16 +21,16 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "04/04/2026 às 18:50",
-    "last_finished_at": "04/04/2026 às 18:50",
+    "last_started_at": "04/04/2026 às 21:35",
+    "last_finished_at": "04/04/2026 às 21:36",
     "last_success_at": "04/04/2026 às 18:50",
-    "status": "sem_novidade",
-    "summary": "pending vazio",
-    "processed": 0,
-    "sent": 0,
-    "failed": 0,
-    "pending_count": 0,
-    "last_error": ""
+    "status": "parcial",
+    "summary": "enviadas: 2 | falhas: 9 | descartadas: 0",
+    "processed": 11,
+    "sent": 2,
+    "failed": 9,
+    "pending_count": 9,
+    "last_error": "sendPhoto falhou: {\"ok\":false,\"error_code\":400,\"description\":\"Bad Request: failed to get HTTP URL content\"}"
   },
   "global": {
     "last_offer_title": "2 INGRESSOS: 20/04 Tetro UOL - SP",
