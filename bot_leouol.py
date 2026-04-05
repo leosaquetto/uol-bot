@@ -35,12 +35,6 @@ MAX_COMMENT_LENGTH = 4096
 MAX_DASHBOARD_LENGTH = 3900
 REQUEST_TIMEOUT = 30
 
-USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/123.0.0.0 Safari/537.36"
-)
-
 HASHTAG_RULES_BODY = {
     "#ingresso": ["ingresso", "ingressos"],
     "#show": ["show", "festival", "musical", "turnê", "turne", "apresentação", "apresentacao"],
@@ -226,12 +220,11 @@ def load_history() -> Dict[str, List[str]]:
         return {"ids": [], "dedupe_keys": []}
 
     data = safe_json_load(path, {"ids": [], "dedupe_keys": []})
-
     ids = data.get("ids", [])
+    dedupe_keys = data.get("dedupe_keys", [])
+
     if not isinstance(ids, list):
         ids = []
-
-    dedupe_keys = data.get("dedupe_keys", [])
     if not isinstance(dedupe_keys, list):
         dedupe_keys = []
 
@@ -624,14 +617,6 @@ def set_dashboard_last_consumer_run() -> None:
     sync_daily_dashboard(state)
 
 
-def is_ticket_offer(title: str, description: str, link: str) -> bool:
-    blob = f"{title}\n{description}\n{link}".lower()
-    if "/campanhasdeingresso/" in (link or "").lower():
-        return True
-    keywords = ["ingresso", "ingressos", "teatro", "musical", "show", "festival", "sessão", "sessao", "espetáculo", "espetaculo"]
-    return any(k in blob for k in keywords)
-
-
 def build_smart_hashtags(title: str, description: str, link: str) -> List[str]:
     title_text = (title or "").lower()
     full_text = f"{title}\n{description}".lower()
@@ -686,7 +671,6 @@ def build_main_caption(title: str, description: str, validity: Optional[str], li
     decorated_title = decorate_main_title(title, link)
 
     parts = [f"<b>{escape_html(decorated_title)}</b>"]
-
     if tags:
         parts.append(escape_html(" ".join(tags)))
 
@@ -694,12 +678,10 @@ def build_main_caption(title: str, description: str, validity: Optional[str], li
     val = normalize_validity(validity)
     if val:
         body.append(f"📅 {escape_html(val)}")
-
     body.append(f"🔗 {escape_html(link)}")
     body.append("💬 Veja os detalhes completos dentro dos comentários.")
 
-    full = "\n\n".join(parts + body)
-    return truncate_text(full, MAX_CAPTION_LENGTH)
+    return truncate_text("\n\n".join(parts + body), MAX_CAPTION_LENGTH)
 
 
 def split_description_sections(description: str) -> List[str]:
@@ -794,11 +776,10 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
     return truncate_text(text, MAX_COMMENT_LENGTH)
 
 
-def telegram_post(method: str, data=None, files=None):
+def telegram_post(method: str, data=None):
     return requests.post(
         telegram_api(method),
         data=data or {},
-        files=files,
         timeout=REQUEST_TIMEOUT,
     )
 
@@ -846,16 +827,13 @@ def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, s
     for _ in range(attempts):
         time.sleep(sleep_s)
         try:
-            resp = requests.get(
-                telegram_api("getUpdates"),
-                timeout=REQUEST_TIMEOUT,
-            )
+            resp = requests.get(telegram_api("getUpdates"), timeout=REQUEST_TIMEOUT)
             if not resp.ok:
                 continue
 
             updates = resp.json().get("result", [])
             for update in reversed(updates):
-                msg = update.get("message", {}) or update.get("channel_post", {}) or {}
+                msg = update.get("message", {}) or {}
                 chat = msg.get("chat", {}) or {}
                 if str(chat.get("id")) != str(GRUPO_COMENTARIO_ID):
                     continue
@@ -885,6 +863,7 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
 
     img_url = (offer.get("img_url") or "").strip()
     partner_img_url = (offer.get("partner_img_url") or "").strip()
+
     candidates = []
     if img_url:
         candidates.append(("img_url", img_url))
@@ -904,10 +883,8 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
             )
             if resp.ok:
                 data = resp.json()
-                message_id = data.get("result", {}).get("message_id")
-                return True, message_id, f"sendPhoto ok via {label}"
-            else:
-                log(f"sendPhoto falhou via {label}: {resp.text}")
+                return True, data.get("result", {}).get("message_id"), f"sendPhoto ok via {label}"
+            log(f"sendPhoto falhou via {label}: {resp.text}")
         except Exception as e:
             log(f"sendPhoto exception via {label}: {e}")
 
@@ -919,8 +896,7 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
         )
         if resp.ok:
             data = resp.json()
-            message_id = data.get("result", {}).get("message_id")
-            return True, message_id, "fallback sendMessage ok"
+            return True, data.get("result", {}).get("message_id"), "fallback sendMessage ok"
         return False, None, f"sendMessage falhou: {resp.text}"
     except Exception as e:
         return False, None, f"sendMessage exception: {e}"
@@ -934,19 +910,23 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
     text = build_comment_text(title, description, validity, link)
 
     discussion_message_id = wait_for_discussion_message_id(channel_message_id)
-    reply_target = discussion_message_id or channel_message_id
+    reply_target = discussion_message_id
 
     partner_img_url = (offer.get("partner_img_url") or "").strip()
 
     if partner_img_url:
         try:
-            resp = try_send_photo_by_url(
-                GRUPO_COMENTARIO_ID,
-                partner_img_url,
-                text,
-                disable_notification=True,
-                reply_to_message_id=reply_target,
-            )
+            data = {
+                "chat_id": GRUPO_COMENTARIO_ID,
+                "photo": partner_img_url,
+                "caption": text,
+                "parse_mode": "HTML",
+                "disable_notification": "true",
+            }
+            if reply_target:
+                data["reply_to_message_id"] = str(reply_target)
+
+            resp = telegram_post("sendPhoto", data=data)
             if resp.ok:
                 return True, "comentário com foto do parceiro enviado"
             log(f"comentário com foto falhou: {resp.text}")
@@ -954,12 +934,17 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
             log(f"comentário com foto exception: {e}")
 
     try:
-        resp = try_send_message(
-            GRUPO_COMENTARIO_ID,
-            text,
-            disable_notification=True,
-            reply_to_message_id=reply_target,
-        )
+        data = {
+            "chat_id": GRUPO_COMENTARIO_ID,
+            "text": text,
+            "parse_mode": "HTML",
+            "disable_notification": "true",
+            "disable_web_page_preview": "true",
+        }
+        if reply_target:
+            data["reply_to_message_id"] = str(reply_target)
+
+        resp = telegram_post("sendMessage", data=data)
         if resp.ok:
             return True, "comentário em texto enviado"
         return False, f"sendMessage comentário falhou: {resp.text}"
@@ -1000,7 +985,7 @@ def consume_pending() -> int:
             status_value="sem_novidade",
         )
         append_dashboard_line("consumer", "📭 pending vazio")
-        log("📭 Nenhuma oferta pendente")
+        log("📭 nenhuma oferta pendente")
         return 0
 
     history = load_history()
@@ -1011,7 +996,6 @@ def consume_pending() -> int:
     append_dashboard_line("consumer", f"▶️ processando {len(offers)} ofertas")
     set_dashboard_pending_count(len(offers))
 
-    sent_offers = []
     latest_sent = []
     remaining = []
     processed = 0
@@ -1049,7 +1033,6 @@ def consume_pending() -> int:
             continue
 
         sent += 1
-        sent_offers.append(offer)
         latest_sent.append(offer)
         mark_offer_success(history, offer)
         history_ids.add(offer_id)
@@ -1106,7 +1089,7 @@ def consume_pending() -> int:
         f"{'✅' if sent > 0 else '⚠️'} processadas {processed} | enviadas {sent} | falhas {failed}",
     )
 
-    return 0 if failed == 0 else 1
+    return 0
 
 
 if __name__ == "__main__":
