@@ -36,6 +36,8 @@ MAX_DASHBOARD_LENGTH = 3900
 REQUEST_TIMEOUT = 30
 RETRY_429_EXTRA_SECONDS = 1
 BETWEEN_OFFERS_DELAY_SECONDS = 2
+DISCUSSION_WAIT_ATTEMPTS = 3
+DISCUSSION_WAIT_SLEEP_SECONDS = 2
 
 HASHTAG_RULES_BODY = {
     "#ingresso": ["ingresso", "ingressos"],
@@ -1003,25 +1005,88 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
     return truncate_text(text.strip(), MAX_COMMENT_LENGTH)
 
 
-def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, sleep_s: int = 2) -> Optional[int]:
+def send_message_text(chat_id: str, text: str, disable_notification: bool = False, reply_to_message_id: Optional[int] = None) -> requests.Response:
+    data = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": "true",
+        "disable_notification": "true" if disable_notification else "false",
+    }
+    if reply_to_message_id:
+        data["reply_to_message_id"] = str(reply_to_message_id)
+    return telegram_post("sendMessage", data=data)
+
+
+def download_image_bytes(url: str) -> Optional[Tuple[bytes, str]]:
+    if not url:
+        return None
+    try:
+        resp = requests.get(url, headers=HTTP_HEADERS, timeout=REQUEST_TIMEOUT)
+        if not resp.ok or not resp.content:
+            return None
+        content_type = str(resp.headers.get("Content-Type") or "").lower()
+        if "png" in content_type:
+            ext = "png"
+        elif "webp" in content_type:
+            ext = "webp"
+        else:
+            ext = "jpg"
+        return resp.content, ext
+    except Exception as e:
+        log(f"erro ao baixar imagem: {e}")
+        return None
+
+
+def send_photo_bytes(
+    chat_id: str,
+    image_bytes: bytes,
+    ext: str,
+    caption: Optional[str] = None,
+    disable_notification: bool = False,
+    reply_to_message_id: Optional[int] = None,
+) -> requests.Response:
+    filename = f"offer.{ext or 'jpg'}"
+    data = {
+        "chat_id": chat_id,
+        "disable_notification": "true" if disable_notification else "false",
+    }
+    if caption:
+        data["caption"] = caption
+        data["parse_mode"] = "HTML"
+    if reply_to_message_id:
+        data["reply_to_message_id"] = str(reply_to_message_id)
+    files = {
+        "photo": (filename, image_bytes),
+    }
+    return telegram_post("sendPhoto", data=data, files=files)
+
+
+def wait_for_discussion_message_id(channel_message_id: int, attempts: int = DISCUSSION_WAIT_ATTEMPTS, sleep_s: int = DISCUSSION_WAIT_SLEEP_SECONDS) -> Optional[int]:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return None
 
-    for _ in range(attempts):
+    for attempt in range(1, attempts + 1):
         time.sleep(sleep_s)
         try:
             resp = requests.get(telegram_api("getUpdates"), timeout=REQUEST_TIMEOUT)
             if not resp.ok:
+                log(f"getUpdates falhou na tentativa {attempt}: {resp.text}")
                 continue
 
             updates = resp.json().get("result", [])
             for update in reversed(updates):
                 msg = update.get("message") or update.get("channel_post")
                 if msg and msg.get("forward_from_message_id") == channel_message_id:
-                    return msg.get("message_id")
-        except Exception:
-            pass
+                    discussion_id = msg.get("message_id")
+                    if discussion_id:
+                        return discussion_id
+        except Exception as e:
+            log(f"erro ao buscar discussion_message_id na tentativa {attempt}: {e}")
+
+    log(f"⚠️ discussion_message_id não encontrado para channel_message_id={channel_message_id}; usando fallback sem reply")
     return None
+
 
 def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
     title = offer.get("title") or offer.get("preview_title") or "Oferta"
@@ -1045,7 +1110,6 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
         candidates.append(("img_url", img_url))
     if partner_img_url:
         candidates.append(("partner_img_url", partner_img_url))
-        
 
     tags = build_smart_hashtags(title, description, link)
     silent = should_send_silent(tags)
@@ -1094,9 +1158,9 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
 
     discussion_message_id = wait_for_discussion_message_id(channel_message_id)
     reply_target = discussion_message_id
+    events = []
 
     partner_img_url = (offer.get("partner_img_url") or "").strip()
-
     if partner_img_url:
         img = download_image_bytes(partner_img_url)
         if img:
@@ -1110,10 +1174,16 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
                     disable_notification=True,
                     reply_to_message_id=reply_target,
                 )
-                if not resp.ok:
+                if resp.ok:
+                    events.append("foto do parceiro enviada")
+                else:
                     log(f"foto do parceiro falhou: {resp.text}")
+                    events.append("foto do parceiro falhou")
             except Exception as e:
                 log(f"foto do parceiro exception: {e}")
+                events.append("foto do parceiro exception")
+        else:
+            events.append("foto do parceiro indisponível")
 
     text = build_comment_text(title, description, validity, link)
     try:
@@ -1124,7 +1194,8 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
             reply_to_message_id=reply_target,
         )
         if resp.ok:
-            return True, "descrição completa enviada"
+            events.append("descrição completa enviada")
+            return True, " | ".join(events)
         return False, f"descrição completa falhou: {resp.text}"
     except Exception as e:
         return False, f"descrição completa exception: {e}"
@@ -1232,74 +1303,95 @@ def consume_pending() -> int:
     append_dashboard_line("consumer", f"▶️ processando {len(offers)} ofertas")
     set_dashboard_pending_count(len(offers))
 
-    latest_sent = []
+    latest_snapshot = safe_json_load(Path(LATEST_FILE), {"last_update": None, "offers": []})
+    latest_sent = latest_snapshot.get("offers", []) if isinstance(latest_snapshot.get("offers", []), list) else []
     remaining = []
     processed = 0
     sent = 0
     failed = 0
     last_error = ""
 
-    for idx, offer in enumerate(offers, 1):
-        processed += 1
+    try:
+        for idx, offer in enumerate(offers, 1):
+            processed += 1
 
-        offer_id = normalize_offer_key(offer.get("id") or offer.get("link") or "")
-        title = offer.get("title") or offer.get("preview_title") or ""
-        validity = offer.get("validity")
-        description = offer.get("description") or ""
-        dedupe_key = offer.get("dedupe_key") or build_dedupe_key(title, validity, description)
+            offer_id = normalize_offer_key(offer.get("id") or offer.get("link") or "")
+            title = offer.get("title") or offer.get("preview_title") or ""
+            validity = offer.get("validity")
+            description = offer.get("description") or ""
+            dedupe_key = offer.get("dedupe_key") or build_dedupe_key(title, validity, description)
 
-        if offer_id in history_ids or (dedupe_key and dedupe_key in history_dedupe):
-            log(f"oferta já está no histórico, removendo do pending: {title}")
-            continue
+            if offer_id in history_ids or (dedupe_key and dedupe_key in history_dedupe):
+                log(f"oferta já está no histórico, removendo do pending: {title}")
+                continue
 
-        ok_main, channel_message_id, detail_main = send_offer_main(offer)
-        if not ok_main or not channel_message_id:
-            failed += 1
-            last_error = detail_main
-            remaining.append(offer)
-            log(f"oferta mantida no pending por falha total: {detail_main}")
-            continue
+            try:
+                ok_main, channel_message_id, detail_main = send_offer_main(offer)
+            except Exception as e:
+                ok_main, channel_message_id, detail_main = False, None, f"send_offer_main exception: {e}"
 
-        ok_comment, detail_comment = send_offer_comment(offer, channel_message_id)
-        if not ok_comment:
-            failed += 1
-            last_error = detail_comment
-            remaining.append(offer)
-            log(f"oferta mantida no pending por falha no comentário: {detail_comment}")
-            continue
+            if not ok_main or not channel_message_id:
+                failed += 1
+                last_error = detail_main
+                remaining.append(offer)
+                append_dashboard_line("consumer", f"⚠️ falha principal: {title[:70]}")
+                log(f"oferta mantida no pending por falha total: {detail_main}")
+                continue
 
-        sent += 1
-        offer["channel_message_id"] = channel_message_id
-        latest_sent.append(offer)
-        mark_offer_success(history, offer)
-        history_ids.add(offer_id)
-        if dedupe_key:
-            history_dedupe.add(dedupe_key)
+            offer["channel_message_id"] = channel_message_id
 
-        append_dashboard_line("consumer", f"✅ enviada: {title[:80]}")
-        log(f"oferta enviada com sucesso: {title}")
+            try:
+                ok_comment, detail_comment = send_offer_comment(offer, channel_message_id)
+            except Exception as e:
+                ok_comment, detail_comment = False, f"send_offer_comment exception: {e}"
 
-        if idx < len(offers):
-            time.sleep(BETWEEN_OFFERS_DELAY_SECONDS)
+            if not ok_comment:
+                failed += 1
+                last_error = detail_comment
+                remaining.append(offer)
+                append_dashboard_line("consumer", f"⚠️ falha comentário: {title[:70]}")
+                log(f"oferta mantida no pending por falha no comentário: {detail_comment}")
+                continue
+
+            sent += 1
+            latest_sent = [x for x in latest_sent if normalize_offer_key(x.get("id") or x.get("link") or "") != offer_id]
+            latest_sent.append(offer)
+            latest_sent = latest_sent[-20:]
+
+            mark_offer_success(history, offer)
+            history_ids.add(offer_id)
+            if dedupe_key:
+                history_dedupe.add(dedupe_key)
+
+            append_dashboard_line("consumer", f"✅ enviada: {title[:80]}")
+            log(f"oferta enviada com sucesso: {title}")
+
+            if idx < len(offers):
+                time.sleep(BETWEEN_OFFERS_DELAY_SECONDS)
+
+    except Exception as e:
+        failed += 1
+        last_error = f"loop principal exception: {e}"
+        log(f"❌ erro inesperado no consume_pending: {e}")
 
     save_history(history)
     save_pending(remaining)
+    save_latest(latest_sent)
 
-    if latest_sent:
-        save_latest(latest_sent[-20:])
-
+    if sent > 0:
         status = load_status_runtime()
-        last_offer = latest_sent[-1]
-        status["global"] = {
-            "last_offer_title": str(last_offer.get("title") or last_offer.get("preview_title") or ""),
-            "last_offer_at": now_br_datetime(),
-            "last_offer_id": str(last_offer.get("id") or ""),
-        }
-        save_status_runtime(status)
+        last_offer = latest_sent[-1] if latest_sent else None
+        if last_offer:
+            status["global"] = {
+                "last_offer_title": str(last_offer.get("title") or last_offer.get("preview_title") or ""),
+                "last_offer_at": now_br_datetime(),
+                "last_offer_id": str(last_offer.get("id") or ""),
+            }
+            save_status_runtime(status)
 
-        state = load_daily_log()
-        state["last_new_offer_at"] = now_br_datetime()
-        save_daily_log(state)
+            state = load_daily_log()
+            state["last_new_offer_at"] = now_br_datetime()
+            save_daily_log(state)
 
     set_dashboard_pending_count(len(remaining))
     set_dashboard_last_consumer_run()
@@ -1310,9 +1402,12 @@ def consume_pending() -> int:
     elif sent > 0 and failed > 0:
         status_value = "parcial"
         summary = f"{sent} enviada(s), {failed} falha(s)"
-    else:
+    elif failed > 0:
         status_value = "erro"
         summary = f"nenhuma enviada, {failed} falha(s)"
+    else:
+        status_value = "sem_novidade"
+        summary = "nenhuma oferta nova enviada"
 
     status_consumer_finish(
         summary=summary,
