@@ -1001,6 +1001,7 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
 
     return truncate_text(text.strip(), MAX_COMMENT_LENGTH)
 
+
 def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, sleep_s: int = 2) -> Optional[int]:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return None
@@ -1101,7 +1102,7 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
     description = offer.get("description") or ""
     validity = offer.get("validity")
     link = offer.get("link") or offer.get("original_link") or ""
-    caption = build_main_caption(
+caption = build_main_caption(
     title,
     description,
     validity,
@@ -1235,7 +1236,7 @@ def refresh_sent_offers_with_sold_out() -> None:
         validity = offer.get("validity")
         link = offer.get("link") or offer.get("original_link") or ""
 
-        caption = build_main_caption(
+caption = build_main_caption(
     title,
     description,
     validity,
@@ -1268,6 +1269,7 @@ def refresh_sent_offers_with_sold_out() -> None:
             json.dumps(latest, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
+
 
 def consume_pending() -> int:
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID or not GRUPO_COMENTARIO_ID:
