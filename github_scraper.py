@@ -909,9 +909,82 @@ def is_offer_ready_for_pending(offer: Dict[str, Any]) -> bool:
         return False
     return True
 
+def is_same_day_offer(scraped_at: str) -> bool:
+    raw = str(scraped_at or "").strip()
+    if not raw:
+        return False
+    try:
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(BR_TZ)
+        return dt.strftime("%d/%m/%Y") == now_br().strftime("%d/%m/%Y")
+    except Exception:
+        return False
 
+
+def offer_page_still_exists(url: str, expected_title: str) -> bool:
+    html = get_html(url)
+    if not html:
+        return False
+
+    html_low = html.lower()
+    title_low = clean_text(expected_title).lower()
+
+    if "/campanhasdeingresso/" in str(url).lower() and get_offer_id(url).lower() in html_low:
+        return True
+
+    if title_low and title_low[:30] in html_low:
+        return True
+
+    strong_signals = [
+        "benefício válido",
+        "beneficio valido",
+        "regras de resgate",
+        "sobre o parceiro",
+        "importante:",
+        "local:",
+        "data:",
+    ]
+    return any(signal in html_low for signal in strong_signals)
+
+
+def update_same_day_sent_offers_as_sold_out() -> bool:
+    latest = load_json(LATEST_FILE, {"last_update": None, "offers": []})
+    offers = latest.get("offers", [])
+    if not isinstance(offers, list):
+        offers = []
+
+    changed = False
+    for offer in offers:
+        sold_out_at = str(offer.get("sold_out_at") or "").strip()
+        if sold_out_at:
+            continue
+
+        scraped_at = str(offer.get("scraped_at") or "").strip()
+        if not is_same_day_offer(scraped_at):
+            continue
+
+        url = str(offer.get("link") or offer.get("original_link") or "").strip()
+        title = str(offer.get("title") or offer.get("preview_title") or "").strip()
+        if not url:
+            continue
+
+        still_exists = offer_page_still_exists(url, title)
+        if still_exists:
+            continue
+
+        offer["sold_out_at"] = now_br().strftime("%H:%M")
+        changed = True
+        log(f"oferta marcada como esgotada: {title} às {offer['sold_out_at']}")
+
+    if changed:
+        latest["offers"] = offers
+        latest["last_update"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        save_json(LATEST_FILE, latest)
+
+    return changed
+    
 def main() -> None:
     log("iniciando scraper")
+        sold_out_changed = update_same_day_sent_offers_as_sold_out()
     status_scraper_start()
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": [], "loose_dedupe_keys": []})
@@ -927,7 +1000,7 @@ def main() -> None:
         log(f"snapshots pendentes encontrados: {len(snapshot_ids)}")
     else:
         status_scraper_finish(
-            summary="sem snapshots pendentes",
+            summary="sem snapshots pendentes" + (" | esgotadas atualizadas" if sold_out_changed else ""),
             status_value="sem_novidade",
             offers_seen=0,
             new_offers=0,
@@ -957,7 +1030,7 @@ def main() -> None:
         for snapshot_id in loaded_snapshot_ids:
             mark_snapshot_processed(snapshot_id, snapshot_control, snapshot_meta_map.get(snapshot_id))
         status_scraper_finish(
-            summary="sem ofertas novas",
+            summary="sem ofertas novas" + (" | esgotadas atualizadas" if sold_out_changed else ""),
             status_value="sem_novidade",
             offers_seen=0,
             new_offers=0,
@@ -1038,7 +1111,7 @@ def main() -> None:
 
     if not candidates:
         status_scraper_finish(
-            summary=f"sem ofertas prontas | incompletas descartadas: {dropped_incomplete}",
+            summary=f"sem ofertas prontas | incompletas descartadas: {dropped_incomplete}" + (" | esgotadas atualizadas" if sold_out_changed else ""),
             status_value="sem_novidade",
             offers_seen=len(offers),
             new_offers=0,
@@ -1053,7 +1126,7 @@ def main() -> None:
     save_json(PENDING_FILE, pending)
 
     status_scraper_finish(
-        summary=f"novas no pending: {len(candidates)} | incompletas descartadas: {dropped_incomplete}",
+        summary=f"novas no pending: {len(candidates)} | incompletas descartadas: {dropped_incomplete}" + (" | esgotadas atualizadas" if sold_out_changed else ""),
         status_value="ok",
         offers_seen=len(offers),
         new_offers=len(candidates),
