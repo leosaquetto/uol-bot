@@ -630,6 +630,7 @@ def build_dashboard_text(state: Dict) -> str:
 
     return truncate_text("\n".join(lines), MAX_DASHBOARD_LENGTH)
 
+
 def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
 
@@ -1163,13 +1164,13 @@ def refresh_sent_offers_with_sold_out() -> None:
         validity = offer.get("validity")
         link = offer.get("link") or offer.get("original_link") or ""
 
-caption = build_main_caption(
-    title,
-    description,
-    validity,
-    link,
-    sold_out_at=offer.get("sold_out_at"),
-)
+        caption = build_main_caption(
+            title,
+            description,
+            validity,
+            link,
+            sold_out_at=offer.get("sold_out_at"),
+        )
 
         try:
             resp = telegram_post(
