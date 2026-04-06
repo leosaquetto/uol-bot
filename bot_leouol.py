@@ -500,26 +500,135 @@ def status_consumer_finish(
 
 
 def build_dashboard_text(state: Dict) -> str:
-    today = state["date"] or now_br_date()
-    last_success = state["last_success_check"] or "—"
-    last_new = state["last_new_offer_at"] or "—"
-    pending_count = state["pending_count"]
-    last_consumer = state["last_consumer_run"] or "—"
+    status = load_status_runtime()
+    scriptable = status.get("scriptable", {}) if isinstance(status, dict) else {}
+    scraper = status.get("scraper", {}) if isinstance(status, dict) else {}
+    consumer = status.get("consumer", {}) if isinstance(status, dict) else {}
+    global_status = status.get("global", {}) if isinstance(status, dict) else {}
 
-    header = [
-        f"📊 <b>relatório diário uol - {escape_html(today)}</b>",
+    today = state.get("date") or now_br_date()
+    pending_count = int(state.get("pending_count") or 0)
+
+    def parse_br_dt(value: str) -> Optional[datetime]:
+        raw = str(value or "").strip()
+        if not raw:
+            return None
+        for fmt in ("%d/%m/%Y às %H:%M", "%d/%m/%Y %H:%M"):
+            try:
+                return datetime.strptime(raw, fmt).replace(tzinfo=BR_TZ)
+            except Exception:
+                pass
+        return None
+
+    def fmt_relative(value: str) -> str:
+        dt = parse_br_dt(value)
+        if not dt:
+            return "—"
+        delta = now_br() - dt
+        total_min = max(0, int(delta.total_seconds() // 60))
+        if total_min < 1:
+            rel = "agora"
+        elif total_min < 60:
+            rel = f"há {total_min}min"
+        elif total_min < 1440:
+            h = total_min // 60
+            m = total_min % 60
+            rel = f"há {h}h{m:02d}min" if m else f"há {h}h"
+        else:
+            d = total_min // 1440
+            rem = total_min % 1440
+            h = rem // 60
+            rel = f"há {d}d{h:02d}h" if h else f"há {d}d"
+        return f"{rel} às {dt.strftime('%H:%M')}"
+
+    def component_line(label: str, data: Dict) -> str:
+        status_value = str(data.get("status") or "").strip().lower()
+        summary = str(data.get("summary") or "").strip()
+        finished = str(data.get("last_finished_at") or "")
+        started = str(data.get("last_started_at") or "")
+
+        when = finished or started
+
+        if status_value == "ok":
+            icon = "🟢" if label != "consumer" else "✅"
+            text = "online" if label != "consumer" else "pronto"
+        elif status_value == "sem_novidade":
+            icon = "⚪" if label != "consumer" else "⚪"
+            text = "em espera" if label != "consumer" else "ocioso"
+        elif status_value == "running":
+            icon = "🔵"
+            text = "ativo"
+        elif status_value == "parcial":
+            icon = "🟡"
+            text = "instável"
+        elif status_value == "erro":
+            icon = "🔴" if label == "scriptable" else "🟡"
+            text = "erro" if label == "scriptable" else "instável"
+        else:
+            icon = "⚪"
+            text = "em espera"
+
+        return f"{icon} {text.capitalize()} ({fmt_relative(when)})"
+
+    def mood_text() -> str:
+        if pending_count > 0:
+            return "Fila aquecida"
+        if str(consumer.get("status") or "") in {"erro", "parcial"}:
+            return "Atenção no consumer"
+        if str(scraper.get("status") or "") in {"erro", "parcial"}:
+            return "Atenção no scraper"
+        if str(scriptable.get("status") or "") in {"erro", "parcial"}:
+            return "Atenção no scriptable"
+        return "Tudo calmo"
+
+    def environment_text() -> str:
+        if pending_count > 0:
+            return "Alta"
+        if str(scraper.get("status") or "") == "ok" and str(scriptable.get("status") or "") == "ok":
+            return "Alta"
+        if str(scraper.get("status") or "") in {"parcial", "erro"} or str(scriptable.get("status") or "") in {"parcial", "erro"}:
+            return "Moderada"
+        return "Baixa"
+
+    def silence_since_text() -> str:
+        value = str(state.get("last_new_offer_at") or global_status.get("last_offer_at") or "").strip()
+        dt = parse_br_dt(value)
+        if not dt:
+            return "—"
+        delta = now_br() - dt
+        total_min = max(0, int(delta.total_seconds() // 60))
+        days = total_min // 1440
+        hours = (total_min % 1440) // 60
+        mins = total_min % 60
+        if days > 0:
+            return f"{days}d{hours:02d}h sem oferta nova"
+        if hours > 0:
+            return f"{hours}h{mins:02d}m sem oferta nova"
+        return f"{mins}min sem oferta nova"
+
+    last_offer_title = str(global_status.get("last_offer_title") or "").strip() or "Não disponível"
+    last_offer_at = str(global_status.get("last_offer_at") or state.get("last_new_offer_at") or "").strip() or "—"
+
+    pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
+
+    lines = [
+        f"📊 <b>Monitor Clube Uol ({escape_html(now_br().strftime('%H:%M'))})</b>",
         "",
-        f"última leitura do site sem bloqueio: {escape_html(last_success)}",
-        f"última oferta nova encontrada: {escape_html(last_new)}",
-        f"pending atual: {escape_html(str(pending_count))}",
-        f"última execução do consumer: {escape_html(last_consumer)}",
+        f"📱 Scriptable {escape_html(component_line('scriptable', scriptable))}",
+        f"🤖 Scraper {escape_html(component_line('scraper', scraper))}",
+        f"📦 Consumer {escape_html(component_line('consumer', consumer))}",
         "",
+        f"🎯 Última captura 🕒 {escape_html(last_offer_at)}",
+        f"↳ {escape_html(last_offer_title)}",
+        f"⏳ {escape_html(silence_since_text())}",
+        "",
+        f"📦 Fila de processamento: {escape_html(pending_label)}",
+        "",
+        f"🌤️ Humor do sistema: {escape_html(mood_text())}",
+        f"🧭 Leitura do ambiente: {escape_html(environment_text())}",
     ]
 
-    lines = state.get("lines", [])
-    body = [escape_html(x) for x in lines[-20:]] if lines else ["sem registros ainda"]
-    return truncate_text("\n".join(header + body), MAX_DASHBOARD_LENGTH)
-
+    return truncate_text("\n".join(lines), MAX_DASHBOARD_LENGTH)
 
 def telegram_api(method: str) -> str:
     return f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
