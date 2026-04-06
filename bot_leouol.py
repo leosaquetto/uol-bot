@@ -1015,100 +1015,26 @@ def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, s
 
             updates = resp.json().get("result", [])
             for update in reversed(updates):
-                msg = update.get("message", {}) or {}
-                chat = msg.get("chat", {}) or {}
-                if str(chat.get("id")) != str(GRUPO_COMENTARIO_ID):
-                    continue
-
-                reply = msg.get("reply_to_message", {}) or {}
-                if reply.get("message_id") == channel_message_id:
-                    return msg.get("message_id")
-
-                forward_origin = msg.get("forward_origin", {}) or {}
-                if forward_origin.get("message_id") == channel_message_id:
+                msg = update.get("message") or update.get("channel_post")
+                if msg and msg.get("forward_from_message_id") == channel_message_id:
                     return msg.get("message_id")
         except Exception:
-            continue
-
+            pass
     return None
-
-
-def download_image_bytes(url: str) -> Optional[Tuple[bytes, str]]:
-    if not url:
-        return None
-    try:
-        resp = requests.get(url, headers=HTTP_HEADERS, timeout=REQUEST_TIMEOUT)
-        if not resp.ok:
-            return None
-
-        content_type = resp.headers.get("content-type", "").lower()
-        if "image/" not in content_type and not resp.content:
-            return None
-
-        ext = "jpg"
-        if "png" in content_type:
-            ext = "png"
-        elif "webp" in content_type:
-            ext = "webp"
-        elif "jpeg" in content_type:
-            ext = "jpg"
-
-        return resp.content, ext
-    except Exception:
-        return None
-
-
-def send_message_text(chat_id: str, text: str, disable_notification: bool = False, reply_to_message_id: Optional[int] = None) -> requests.Response:
-    data = {
-        "chat_id": chat_id,
-        "text": text,
-        "parse_mode": "HTML",
-        "disable_web_page_preview": "true",
-    }
-    if disable_notification:
-        data["disable_notification"] = "true"
-    if reply_to_message_id:
-        data["reply_to_message_id"] = str(reply_to_message_id)
-    return telegram_post("sendMessage", data=data)
-
-
-def send_photo_bytes(
-    chat_id: str,
-    image_bytes: bytes,
-    ext: str,
-    caption: Optional[str] = None,
-    disable_notification: bool = False,
-    reply_to_message_id: Optional[int] = None,
-) -> requests.Response:
-    data = {
-        "chat_id": chat_id,
-    }
-    if caption:
-        data["caption"] = caption
-        data["parse_mode"] = "HTML"
-    if disable_notification:
-        data["disable_notification"] = "true"
-    if reply_to_message_id:
-        data["reply_to_message_id"] = str(reply_to_message_id)
-
-    files = {
-        "photo": (f"image.{ext}", image_bytes),
-    }
-    return telegram_post("sendPhoto", data=data, files=files)
-
 
 def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
     title = offer.get("title") or offer.get("preview_title") or "Oferta"
     description = offer.get("description") or ""
     validity = offer.get("validity")
     link = offer.get("link") or offer.get("original_link") or ""
-caption = build_main_caption(
-    title,
-    description,
-    validity,
-    link,
-    sold_out_at=offer.get("sold_out_at"),
-)
+
+    caption = build_main_caption(
+        title,
+        description,
+        validity,
+        link,
+        sold_out_at=offer.get("sold_out_at"),
+    )
 
     img_url = (offer.get("img_url") or "").strip()
     partner_img_url = (offer.get("partner_img_url") or "").strip()
@@ -1116,8 +1042,9 @@ caption = build_main_caption(
     candidates = []
     if img_url:
         candidates.append(("img_url", img_url))
-    if partner_img_url and partner_img_url != img_url:
+    if partner_img_url:
         candidates.append(("partner_img_url", partner_img_url))
+        
 
     tags = build_smart_hashtags(title, description, link)
     silent = should_send_silent(tags)
