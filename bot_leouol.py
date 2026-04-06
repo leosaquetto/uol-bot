@@ -545,10 +545,8 @@ def build_dashboard_text(state: Dict) -> str:
 
     def component_line(label: str, data: Dict) -> str:
         status_value = str(data.get("status") or "").strip().lower()
-        summary = str(data.get("summary") or "").strip()
         finished = str(data.get("last_finished_at") or "")
         started = str(data.get("last_started_at") or "")
-
         when = finished or started
 
         if status_value == "ok":
@@ -610,7 +608,6 @@ def build_dashboard_text(state: Dict) -> str:
 
     last_offer_title = str(global_status.get("last_offer_title") or "").strip() or "Não disponível"
     last_offer_at = str(global_status.get("last_offer_at") or state.get("last_new_offer_at") or "").strip() or "—"
-
     pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
 
     lines = [
@@ -834,6 +831,12 @@ def split_description_sections(description: str) -> List[str]:
     if not desc:
         return []
 
+    desc = re.sub(r"\s*•\s*", "\n• ", desc)
+    desc = re.sub(r"(?i)\s*(Atenção,\s*Assinante UOL!)", r"\n\n\1", desc)
+    desc = re.sub(r"(?i)\s*(Essa prática pode resultar)", r"\n\n\1", desc)
+    desc = re.sub(r"(?i)\s*(Valorize seu benefício\.?\s*Use com responsabilidade!?)", r"\n\n\1", desc)
+    desc = re.sub(r"\n{3,}", "\n\n", desc).strip()
+
     lines = [x.strip() for x in desc.splitlines() if x.strip()]
     sections = []
     current = []
@@ -841,7 +844,9 @@ def split_description_sections(description: str) -> List[str]:
     def flush():
         nonlocal current
         if current:
-            sections.append("\n".join(current).strip())
+            section = "\n".join(current).strip()
+            if section:
+                sections.append(section)
             current = []
 
     section_starts = [
@@ -855,14 +860,19 @@ def split_description_sections(description: str) -> List[str]:
         "como resgatar",
         "passo a passo para resgate:",
         "data:",
+        "quando:",
         "local:",
         "atenção!",
         "atencao!",
         "atenção:",
         "atencao:",
+        "atenção, assinante uol!",
         "importante:",
         "📌 regras de resgate:",
         "regras de resgate:",
+        "essa prática pode resultar",
+        "valorize seu benefício",
+        "•",
     ]
 
     for line in lines:
@@ -872,7 +882,21 @@ def split_description_sections(description: str) -> List[str]:
         current.append(line)
     flush()
 
-    return sections
+    normalized_sections = []
+    bullet_buffer = []
+    for section in sections:
+        low = section.lower()
+        if low.startswith("•"):
+            bullet_buffer.append(section)
+            continue
+        if bullet_buffer:
+            normalized_sections.append("\n".join(bullet_buffer))
+            bullet_buffer = []
+        normalized_sections.append(section)
+    if bullet_buffer:
+        normalized_sections.append("\n".join(bullet_buffer))
+
+    return normalized_sections
 
 
 def beautify_section(section: str) -> str:
@@ -901,18 +925,36 @@ def beautify_section(section: str) -> str:
         title, rest = split_label(raw)
         return f"❗ <b>{escape_html(title)}:</b> {escape_html(rest)}".strip()
 
+    if low.startswith("regras de resgate") or low.startswith("📌 regras de resgate"):
+        cleaned = raw.replace("📌", "").strip()
+        title, rest = split_label(cleaned)
+        rendered = [f"📌 <b>{escape_html(title.upper())}:</b>"]
+        if rest:
+            rendered.append(escape_html(rest))
+        return "\n\n".join(rendered)
+
+    if low.startswith("•"):
+        bullets = []
+        for line in raw.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            if not line.startswith("•"):
+                line = f"• {line}"
+            bullets.append(escape_html(line))
+        return "\n".join(bullets)
+
     if low.startswith("atenção") or low.startswith("atencao"):
         title, rest = split_label(raw)
         if rest:
             return f"❗ <b>{escape_html(title)}:</b> {escape_html(rest)}"
-        return f"<b>{escape_html(raw)}</b>"
+        return f"❗ <b>{escape_html(raw)}</b>"
 
-    if low.startswith("regras de resgate") or low.startswith("📌 regras de resgate"):
-        cleaned = raw.replace("📌", "").strip()
-        title, rest = split_label(cleaned)
-        if rest:
-            return f"📌 <b>{escape_html(title.upper())}:</b>\n{escape_html(rest)}"
-        return f"📌 <b>{escape_html(title.upper())}:</b>"
+    if low.startswith("essa prática pode resultar"):
+        return escape_html(raw)
+
+    if low.startswith("valorize seu benefício"):
+        return escape_html(raw)
 
     if low.startswith("benefício") or low.startswith("beneficio"):
         title, rest = split_label(raw)
@@ -935,7 +977,8 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
         (r"\b(Importante)\s*:\s*", r"\n\nImportante: "),
         (r"\b(REGRAS DE RESGATE)\s*:\s*", r"\n\nREGRAS DE RESGATE: "),
         (r"\b(Atenção,\s*Assinante UOL!)\s*", r"\n\nAtenção, Assinante UOL! "),
-        (r"\b(Valorize seu benefício\.)\s*", r"\n\nValorize seu benefício. "),
+        (r"\b(Essa prática pode resultar)\s*", r"\n\nEssa prática pode resultar"),
+        (r"\b(Valorize seu benefício\.?\s*Use com responsabilidade!?)\s*", r"\n\n\1"),
     ]
     for pattern, repl in replacements:
         desc = re.sub(pattern, repl, desc, flags=re.I)
@@ -949,13 +992,10 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
     if sections:
         for idx, section in enumerate(sections):
             rendered = beautify_section(section)
-            out.append(rendered)
-
-            low = clean_multiline_text(section).lower()
-            if "a venda dos ingressos resgatados pelo clube uol é proibida" in low:
-                out.append("")
-            if idx != len(sections) - 1:
-                out.append("")
+            if rendered:
+                out.append(rendered)
+                if idx != len(sections) - 1:
+                    out.append("")
     else:
         paragraphs = [p.strip() for p in desc.split("\n\n") if p.strip()]
         for idx, p in enumerate(paragraphs):
