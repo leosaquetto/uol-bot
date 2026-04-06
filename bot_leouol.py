@@ -670,74 +670,46 @@ def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
 
-    old_date = str(state.get("date") or "").strip()
     old_message_id = state.get("message_id")
-    current_date = now_br_date()
-
-    is_new_day = old_date != current_date
-    if is_new_day:
-        state["date"] = current_date
-        state["message_id"] = None
-        state["lines"] = state.get("lines", [])[-20:]
-
+    state["date"] = now_br_date()
+    state["lines"] = state.get("lines", [])[-20:]
     text = build_dashboard_text(state)
-
-    if is_new_day or not old_message_id:
-        try:
-            resp = telegram_post(
-                "sendMessage",
-                data={
-                    "chat_id": GRUPO_COMENTARIO_ID,
-                    "text": text,
-                    "parse_mode": "HTML",
-                    "disable_notification": "true",
-                    "disable_web_page_preview": "true",
-                },
-            )
-            if resp.ok:
-                data = resp.json()
-                new_message_id = data.get("result", {}).get("message_id")
-                state["message_id"] = new_message_id
-                save_daily_log(state)
-
-                if is_new_day and old_message_id:
-                    try:
-                        del_resp = telegram_post(
-                            "deleteMessage",
-                            data={
-                                "chat_id": GRUPO_COMENTARIO_ID,
-                                "message_id": str(old_message_id),
-                            },
-                            retry_429=False,
-                        )
-                        if not del_resp.ok and '"message to delete not found"' not in del_resp.text:
-                            log(f"⚠️ falha ao deletar dashboard anterior: {del_resp.text}")
-                    except Exception as e:
-                        log(f"⚠️ erro ao deletar dashboard anterior: {e}")
-            else:
-                log(f"⚠️ falha ao criar dashboard diário: {resp.text}")
-        except Exception as e:
-            log(f"⚠️ erro ao criar dashboard diário: {e}")
-        return
 
     try:
         resp = telegram_post(
-            "editMessageText",
+            "sendMessage",
             data={
                 "chat_id": GRUPO_COMENTARIO_ID,
-                "message_id": state["message_id"],
                 "text": text,
                 "parse_mode": "HTML",
+                "disable_notification": "true",
                 "disable_web_page_preview": "true",
             },
         )
         if resp.ok:
+            data = resp.json()
+            new_message_id = data.get("result", {}).get("message_id")
+            state["message_id"] = new_message_id
             save_daily_log(state)
+
+            if old_message_id and str(old_message_id) != str(new_message_id):
+                try:
+                    del_resp = telegram_post(
+                        "deleteMessage",
+                        data={
+                            "chat_id": GRUPO_COMENTARIO_ID,
+                            "message_id": str(old_message_id),
+                        },
+                        retry_429=False,
+                    )
+                    if not del_resp.ok and '"message to delete not found"' not in del_resp.text:
+                        log(f"⚠️ falha ao deletar dashboard anterior: {del_resp.text}")
+                except Exception as e:
+                    log(f"⚠️ erro ao deletar dashboard anterior: {e}")
         else:
-            if '"message is not modified"' not in resp.text:
-                log(f"⚠️ falha ao editar dashboard diário: {resp.text}")
+            log(f"⚠️ falha ao publicar dashboard: {resp.text}")
     except Exception as e:
-        log(f"⚠️ erro ao editar dashboard diário: {e}")
+        log(f"⚠️ erro ao publicar dashboard: {e}")
 
 
 def append_dashboard_line(source: str, status_line: str) -> None:
@@ -893,53 +865,74 @@ def split_description_sections(description: str) -> List[str]:
 
 
 def beautify_section(section: str) -> str:
-    raw = section.strip()
+    raw = clean_multiline_text(section).strip()
     low = raw.lower()
 
-    if low.startswith("data:"):
-        title, rest = raw.split(":", 1)
-        return f"<b>{escape_html(title.strip())}:</b>\n{escape_html(rest.strip())}"
+    def split_label(text: str) -> tuple[str, str]:
+        m = re.match(r"^\s*([^:!]+?)\s*[:!]\s*(.*)$", text, flags=re.S)
+        if m:
+            return m.group(1).strip(), m.group(2).strip()
+        return text.strip(), ""
 
-    if low.startswith("local:"):
-        title, rest = raw.split(":", 1)
-        return f"📍 <b>{escape_html(title.strip())}:</b>\n{escape_html(rest.strip())}"
+    if low.startswith("data"):
+        title, rest = split_label(raw)
+        return f"🗓️ <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"🗓️ <b>{escape_html(title)}:</b>"
 
-    if low.startswith("importante:"):
-        title, rest = raw.split(":", 1)
-        return f"❗ <b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
+    if low.startswith("quando"):
+        title, rest = split_label(raw)
+        return f"🗓️ <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"🗓️ <b>{escape_html(title)}:</b>"
 
-    if low.startswith("atenção:") or low.startswith("atencao:"):
-        title, rest = raw.split(":", 1)
-        return f"❗ <b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
+    if low.startswith("local"):
+        title, rest = split_label(raw)
+        return f"📍 <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"📍 <b>{escape_html(title)}:</b>"
 
-    if low.startswith("atenção!") or low.startswith("atencao!"):
-        title, rest = raw.split("!", 1)
-        rest = rest.strip()
+    if low.startswith("importante"):
+        title, rest = split_label(raw)
+        return f"❗ <b>{escape_html(title)}:</b> {escape_html(rest)}".strip()
+
+    if low.startswith("atenção") or low.startswith("atencao"):
+        title, rest = split_label(raw)
         if rest:
-            return f"❗ <b>{escape_html(title.strip())}!</b>\n{escape_html(rest)}"
-        return f"❗ <b>{escape_html(title.strip())}!</b>"
+            return f"❗ <b>{escape_html(title)}:</b> {escape_html(rest)}"
+        return f"<b>{escape_html(raw)}</b>"
 
-    if low.startswith("regras de resgate:") or low.startswith("📌 regras de resgate:"):
+    if low.startswith("regras de resgate") or low.startswith("📌 regras de resgate"):
         cleaned = raw.replace("📌", "").strip()
-        title, rest = cleaned.split(":", 1)
-        rest = rest.strip()
+        title, rest = split_label(cleaned)
         if rest:
-            return f"📌 <b>{escape_html(title.strip().upper())}:</b>\n{escape_html(rest)}"
-        return f"📌 <b>{escape_html(title.strip().upper())}:</b>"
+            return f"📌 <b>{escape_html(title.upper())}:</b>\n{escape_html(rest)}"
+        return f"📌 <b>{escape_html(title.upper())}:</b>"
 
-    if low.startswith("benefício:") or low.startswith("beneficio:"):
-        title, rest = raw.split(":", 1)
-        return f"<b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
+    if low.startswith("benefício") or low.startswith("beneficio"):
+        title, rest = split_label(raw)
+        return f"<b>{escape_html(title)}:</b> {escape_html(rest)}".strip()
 
-    if low.startswith("sobre o parceiro:"):
-        title, rest = raw.split(":", 1)
-        return f"<b>{escape_html(title.strip())}:</b> {escape_html(rest.strip())}"
+    if low.startswith("sobre o parceiro"):
+        title, rest = split_label(raw)
+        return f"<b>{escape_html(title)}:</b> {escape_html(rest)}".strip()
 
     return escape_html(raw)
 
 
 def build_comment_text(title: str, description: str, validity: Optional[str], link: str) -> str:
-    sections = split_description_sections(description)
+    desc = clean_multiline_text(description)
+
+    replacements = [
+        (r"\b(Data)\s*:\s*", r"\n\nData: "),
+        (r"\b(Quando)\s*:\s*", r"\n\nQuando: "),
+        (r"\b(Local)\s*:\s*", r"\n\nLocal: "),
+        (r"\b(Importante)\s*:\s*", r"\n\nImportante: "),
+        (r"\b(REGRAS DE RESGATE)\s*:\s*", r"\n\nREGRAS DE RESGATE: "),
+        (r"\b(Atenção,\s*Assinante UOL!)\s*", r"\n\nAtenção, Assinante UOL! "),
+        (r"\b(Valorize seu benefício\.)\s*", r"\n\nValorize seu benefício. "),
+    ]
+    for pattern, repl in replacements:
+        desc = re.sub(pattern, repl, desc, flags=re.I)
+
+    desc = re.sub(r"(?<!\n)•\s*", r"\n• ", desc)
+    desc = re.sub(r"\n{3,}", "\n\n", desc).strip()
+
+    sections = split_description_sections(desc)
     out = [f"📋 <b>{escape_html(title)}</b>", ""]
 
     if sections:
@@ -947,28 +940,58 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
             rendered = beautify_section(section)
             out.append(rendered)
 
+            low = clean_multiline_text(section).lower()
+            if "a venda dos ingressos resgatados pelo clube uol é proibida" in low:
+                out.append("")
             if idx != len(sections) - 1:
                 out.append("")
     else:
-        desc = clean_multiline_text(description)
-        if desc:
-            paragraphs = [p.strip() for p in desc.split("\n\n") if p.strip()]
-            for idx, p in enumerate(paragraphs):
-                out.append(escape_html(p))
-                if idx != len(paragraphs) - 1:
-                    out.append("")
+        paragraphs = [p.strip() for p in desc.split("\n\n") if p.strip()]
+        for idx, p in enumerate(paragraphs):
+            out.append(escape_html(p))
+            if idx != len(paragraphs) - 1:
+                out.append("")
+
+    text = "\n".join(out)
+
+    text = re.sub(
+        r"(Atenção,\s*Assinante UOL!)",
+        r"<b>\1</b>",
+        text,
+        flags=re.I,
+    )
+    text = re.sub(
+        r"(A venda)(.*?)(é proibida\.?)",
+        r"<b>\1</b>\2<b>\3</b>",
+        text,
+        flags=re.I | re.S,
+    )
+    text = re.sub(
+        r"(banimento imediato)",
+        r"<b>\1</b>",
+        text,
+        flags=re.I,
+    )
+    text = re.sub(
+        r"(cancelamento dos ingressos já resgatados\.?)",
+        r"<b>\1</b>",
+        text,
+        flags=re.I,
+    )
 
     val = normalize_validity(validity)
     if val:
-        out.append("")
-        out.append(f"📅 {escape_html(val)}")
+        strong_val = re.sub(
+            r"(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})",
+            r"<b>\1</b>",
+            escape_html(val),
+        )
+        out_tail = ["", f"📅 {strong_val}", "", f"🔗 {escape_html(link)}"]
+        text = text.rstrip() + "\n" + "\n".join(out_tail)
+    else:
+        text = text.rstrip() + f"\n\n🔗 {escape_html(link)}"
 
-    out.append("")
-    out.append(f"🔗 {escape_html(link)}")
-
-    text = "\n".join(out).strip()
-    return truncate_text(text, MAX_COMMENT_LENGTH)
-
+    return truncate_text(text.strip(), MAX_COMMENT_LENGTH)
 
 def wait_for_discussion_message_id(channel_message_id: int, attempts: int = 5, sleep_s: int = 2) -> Optional[int]:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
