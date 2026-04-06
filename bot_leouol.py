@@ -1212,7 +1212,8 @@ def mark_offer_success(history: Dict[str, List[str]], offer: Dict) -> None:
         history.setdefault("ids", []).append(offer_id)
     if dedupe_key:
         history.setdefault("dedupe_keys", []).append(dedupe_key)
-        
+
+
 def refresh_sent_offers_with_sold_out() -> None:
     latest = safe_json_load(Path(LATEST_FILE), {"last_update": None, "offers": []})
     offers = latest.get("offers", [])
