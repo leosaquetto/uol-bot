@@ -670,14 +670,19 @@ def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
 
-    text = build_dashboard_text(state)
+    old_date = str(state.get("date") or "").strip()
+    old_message_id = state.get("message_id")
+    current_date = now_br_date()
 
-    if state["date"] != now_br_date() or not state["message_id"]:
-        state["date"] = now_br_date()
+    is_new_day = old_date != current_date
+    if is_new_day:
+        state["date"] = current_date
         state["message_id"] = None
         state["lines"] = state.get("lines", [])[-20:]
-        text = build_dashboard_text(state)
 
+    text = build_dashboard_text(state)
+
+    if is_new_day or not old_message_id:
         try:
             resp = telegram_post(
                 "sendMessage",
@@ -691,8 +696,24 @@ def sync_daily_dashboard(state: Dict) -> None:
             )
             if resp.ok:
                 data = resp.json()
-                state["message_id"] = data.get("result", {}).get("message_id")
+                new_message_id = data.get("result", {}).get("message_id")
+                state["message_id"] = new_message_id
                 save_daily_log(state)
+
+                if is_new_day and old_message_id:
+                    try:
+                        del_resp = telegram_post(
+                            "deleteMessage",
+                            data={
+                                "chat_id": GRUPO_COMENTARIO_ID,
+                                "message_id": str(old_message_id),
+                            },
+                            retry_429=False,
+                        )
+                        if not del_resp.ok and '"message to delete not found"' not in del_resp.text:
+                            log(f"⚠️ falha ao deletar dashboard anterior: {del_resp.text}")
+                    except Exception as e:
+                        log(f"⚠️ erro ao deletar dashboard anterior: {e}")
             else:
                 log(f"⚠️ falha ao criar dashboard diário: {resp.text}")
         except Exception as e:
