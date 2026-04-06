@@ -984,13 +984,11 @@ def update_same_day_sent_offers_as_sold_out() -> bool:
     
 def main() -> None:
     log("iniciando scraper")
-        sold_out_changed = update_same_day_sent_offers_as_sold_out()
+    sold_out_changed = update_same_day_sent_offers_as_sold_out()
     status_scraper_start()
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": [], "loose_dedupe_keys": []})
     pending = load_json(PENDING_FILE, {"last_update": None, "offers": []})
-    if not isinstance(pending.get("offers"), list):
-        pending["offers"] = []
 
     historico_keys, historico_dedupe, historico_loose = extract_history_sets(historico)
     pending_keys, pending_dedupe, pending_loose = extract_pending_sets(pending)
