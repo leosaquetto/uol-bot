@@ -1101,7 +1101,13 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
     description = offer.get("description") or ""
     validity = offer.get("validity")
     link = offer.get("link") or offer.get("original_link") or ""
-    caption = build_main_caption(title, description, validity, link)
+    caption = build_main_caption(
+    title,
+    description,
+    validity,
+    link,
+    sold_out_at=offer.get("sold_out_at"),
+)
 
     img_url = (offer.get("img_url") or "").strip()
     partner_img_url = (offer.get("partner_img_url") or "").strip()
