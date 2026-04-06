@@ -1,9 +1,9 @@
 {
   "date": "06/04/2026",
-  "message_id": 844,
+  "message_id": 846,
   "last_success_check": "04/04/2026 às 19:01",
   "last_new_offer_at": "06/04/2026 às 12:59",
-  "pending_count": 0,
+  "pending_count": 2,
   "last_consumer_run": "06/04/2026 às 17:52",
   "lines": [
     "[01:13] consumer: 📭 pending vazio",
@@ -21,6 +21,7 @@
     "[16:37] consumer: 📭 pending vazio",
     "[16:52] consumer: 📭 pending vazio",
     "[17:08] consumer: 📭 pending vazio",
-    "[17:52] consumer: 📭 pending vazio"
+    "[17:52] consumer: 📭 pending vazio",
+    "[18:25] consumer: ▶️ processando 2 ofertas"
   ]
 }
