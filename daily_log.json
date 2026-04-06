@@ -1,14 +1,11 @@
 {
   "date": "06/04/2026",
-  "message_id": 850,
+  "message_id": 863,
   "last_success_check": "04/04/2026 às 19:01",
-  "last_new_offer_at": "06/04/2026 às 12:59",
-  "pending_count": 2,
-  "last_consumer_run": "06/04/2026 às 17:52",
+  "last_new_offer_at": "06/04/2026 às 19:48",
+  "pending_count": 0,
+  "last_consumer_run": "06/04/2026 às 19:48",
   "lines": [
-    "[01:13] consumer: 📭 pending vazio",
-    "[03:07] consumer: 📭 pending vazio",
-    "[04:59] consumer: 📭 pending vazio",
     "[06:12] consumer: 📭 pending vazio",
     "[07:20] consumer: 📭 pending vazio",
     "[08:15] consumer: 📭 pending vazio",
@@ -24,6 +21,10 @@
     "[17:52] consumer: 📭 pending vazio",
     "[18:25] consumer: ▶️ processando 2 ofertas",
     "[18:57] consumer: ▶️ processando 2 ofertas",
-    "[19:33] consumer: ▶️ processando 2 ofertas"
+    "[19:33] consumer: ▶️ processando 2 ofertas",
+    "[19:48] consumer: ▶️ processando 2 ofertas",
+    "[19:48] consumer: ✅ enviada: 2 INGRESSOS: 11/04 BeFly Minascentro MG",
+    "[19:48] consumer: ✅ enviada: 2 INGRESSOS: 10/04 BeFly Minascentro MG",
+    "[19:48] consumer: ✅ processadas 2 | enviadas 2 | falhas 0"
   ]
 }
