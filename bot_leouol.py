@@ -802,7 +802,7 @@ def normalize_validity(validity: Optional[str]) -> str:
 
 
 def build_main_caption(title: str, description: str, validity: Optional[str], link: str, sold_out_at: Optional[str] = None) -> str:
-        tags = build_smart_hashtags(title, description, link)
+    tags = build_smart_hashtags(title, description, link)
     decorated_title = decorate_main_title(title, link)
 
     if str(sold_out_at or "").strip():
@@ -819,7 +819,7 @@ def build_main_caption(title: str, description: str, validity: Optional[str], li
 
     if str(sold_out_at or "").strip():
         body.append(f"❌ Oferta esgotada às {escape_html(str(sold_out_at).strip())}.")
-        
+
     body.append(f"🔗 {escape_html(link)}")
     body.append("💬 Veja os detalhes completos dentro dos comentários.")
 
@@ -1212,6 +1212,7 @@ def mark_offer_success(history: Dict[str, List[str]], offer: Dict) -> None:
         history.setdefault("ids", []).append(offer_id)
     if dedupe_key:
         history.setdefault("dedupe_keys", []).append(dedupe_key)
+        
 def refresh_sent_offers_with_sold_out() -> None:
     latest = safe_json_load(Path(LATEST_FILE), {"last_update": None, "offers": []})
     offers = latest.get("offers", [])
@@ -1234,12 +1235,12 @@ def refresh_sent_offers_with_sold_out() -> None:
         link = offer.get("link") or offer.get("original_link") or ""
 
         caption = build_main_caption(
-            title,
-            description,
-            validity,
-            link,
-            sold_out_at=sold_out_at,
-        )
+    title,
+    description,
+    validity,
+    link,
+    sold_out_at=offer.get("sold_out_at"),
+)
 
         try:
             resp = telegram_post(
@@ -1272,7 +1273,7 @@ def consume_pending() -> int:
         log("❌ variáveis TELEGRAM_TOKEN, TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórias")
         return 1
 
-        refresh_sent_offers_with_sold_out()
+    refresh_sent_offers_with_sold_out()
 
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
