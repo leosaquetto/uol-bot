@@ -1,12 +1,11 @@
 {
   "date": "06/04/2026",
-  "message_id": 869,
+  "message_id": 873,
   "last_success_check": "04/04/2026 às 19:01",
   "last_new_offer_at": "06/04/2026 às 19:48",
   "pending_count": 0,
-  "last_consumer_run": "06/04/2026 às 20:08",
+  "last_consumer_run": "06/04/2026 às 20:48",
   "lines": [
-    "[08:15] consumer: 📭 pending vazio",
     "[08:54] consumer: 📭 pending vazio",
     "[14:43] consumer: 📭 pending vazio",
     "[15:18] consumer: 📭 pending vazio",
@@ -25,6 +24,7 @@
     "[19:48] consumer: ✅ enviada: 2 INGRESSOS: 10/04 BeFly Minascentro MG",
     "[19:48] consumer: ✅ processadas 2 | enviadas 2 | falhas 0",
     "[20:06] consumer: 📭 pending vazio",
-    "[20:08] consumer: 📭 pending vazio"
+    "[20:08] consumer: 📭 pending vazio",
+    "[20:48] consumer: 📭 pending vazio"
   ]
 }
