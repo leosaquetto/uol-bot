@@ -801,17 +801,25 @@ def normalize_validity(validity: Optional[str]) -> str:
     return val
 
 
-def build_main_caption(title: str, description: str, validity: Optional[str], link: str) -> str:
-    tags = build_smart_hashtags(title, description, link)
+def build_main_caption(title: str, description: str, validity: Optional[str], link: str, sold_out_at: Optional[str] = None) -> str:
+        tags = build_smart_hashtags(title, description, link)
     decorated_title = decorate_main_title(title, link)
 
+    if str(sold_out_at or "").strip():
+        decorated_title = f"[ESGOTADO] {decorated_title}"
+
     body = [f"<b>{escape_html(decorated_title)}</b>"]
+
     if tags:
         body.append(escape_html(" ".join(tags)))
 
     val = normalize_validity(validity)
     if val:
         body.append(f"📅 {escape_html(val)}")
+
+    if str(sold_out_at or "").strip():
+        body.append(f"❌ Oferta esgotada às {escape_html(str(sold_out_at).strip())}.")
+        
     body.append(f"🔗 {escape_html(link)}")
     body.append("💬 Veja os detalhes completos dentro dos comentários.")
 
