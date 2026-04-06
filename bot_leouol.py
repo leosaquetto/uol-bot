@@ -508,7 +508,6 @@ def build_dashboard_text(state: Dict) -> str:
     consumer = status.get("consumer", {}) if isinstance(status, dict) else {}
     global_status = status.get("global", {}) if isinstance(status, dict) else {}
 
-    today = state.get("date") or now_br_date()
     pending_count = int(state.get("pending_count") or 0)
 
     def parse_br_dt(value: str) -> Optional[datetime]:
@@ -553,7 +552,7 @@ def build_dashboard_text(state: Dict) -> str:
             icon = "🟢" if label != "consumer" else "✅"
             text = "online" if label != "consumer" else "pronto"
         elif status_value == "sem_novidade":
-            icon = "⚪" if label != "consumer" else "⚪"
+            icon = "⚪"
             text = "em espera" if label != "consumer" else "ocioso"
         elif status_value == "running":
             icon = "🔵"
@@ -1102,6 +1101,35 @@ def send_photo_bytes(
     return telegram_post("sendPhoto", data=data, files=files)
 
 
+def send_media_group_bytes(
+    chat_id: str,
+    media_items: List[Tuple[bytes, str]],
+    disable_notification: bool = False,
+    reply_to_message_id: Optional[int] = None,
+) -> requests.Response:
+    media = []
+    files = {}
+
+    for idx, (image_bytes, ext) in enumerate(media_items):
+        attach_name = f"file{idx}"
+        filename = f"offer_{idx}.{ext or 'jpg'}"
+        media.append({
+            "type": "photo",
+            "media": f"attach://{attach_name}",
+        })
+        files[attach_name] = (filename, image_bytes)
+
+    data = {
+        "chat_id": chat_id,
+        "media": json.dumps(media, ensure_ascii=False),
+        "disable_notification": "true" if disable_notification else "false",
+    }
+    if reply_to_message_id:
+        data["reply_to_message_id"] = str(reply_to_message_id)
+
+    return telegram_post("sendMediaGroup", data=data, files=files)
+
+
 def wait_for_discussion_message_id(channel_message_id: int, attempts: int = DISCUSSION_WAIT_ATTEMPTS, sleep_s: int = DISCUSSION_WAIT_SLEEP_SECONDS) -> Optional[int]:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return None
@@ -1200,30 +1228,59 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
     reply_target = discussion_message_id
     events = []
 
+    media_items = []
+
+    offer_img_url = (offer.get("img_url") or "").strip()
+    if offer_img_url:
+        img = download_image_bytes(offer_img_url)
+        if img:
+            media_items.append(img)
+        else:
+            events.append("foto da oferta indisponível")
+
     partner_img_url = (offer.get("partner_img_url") or "").strip()
     if partner_img_url:
         img = download_image_bytes(partner_img_url)
         if img:
-            image_bytes, ext = img
-            try:
-                resp = send_photo_bytes(
-                    GRUPO_COMENTARIO_ID,
-                    image_bytes,
-                    ext,
-                    caption=None,
-                    disable_notification=True,
-                    reply_to_message_id=reply_target,
-                )
-                if resp.ok:
-                    events.append("foto do parceiro enviada")
-                else:
-                    log(f"foto do parceiro falhou: {resp.text}")
-                    events.append("foto do parceiro falhou")
-            except Exception as e:
-                log(f"foto do parceiro exception: {e}")
-                events.append("foto do parceiro exception")
+            media_items.append(img)
         else:
             events.append("foto do parceiro indisponível")
+
+    if len(media_items) >= 2:
+        try:
+            resp = send_media_group_bytes(
+                GRUPO_COMENTARIO_ID,
+                media_items[:2],
+                disable_notification=True,
+                reply_to_message_id=reply_target,
+            )
+            if resp.ok:
+                events.append("álbum com oferta + parceiro enviado")
+            else:
+                log(f"álbum falhou: {resp.text}")
+                events.append("álbum falhou")
+        except Exception as e:
+            log(f"álbum exception: {e}")
+            events.append("álbum exception")
+    elif len(media_items) == 1:
+        image_bytes, ext = media_items[0]
+        try:
+            resp = send_photo_bytes(
+                GRUPO_COMENTARIO_ID,
+                image_bytes,
+                ext,
+                caption=None,
+                disable_notification=True,
+                reply_to_message_id=reply_target,
+            )
+            if resp.ok:
+                events.append("foto única enviada")
+            else:
+                log(f"foto única falhou: {resp.text}")
+                events.append("foto única falhou")
+        except Exception as e:
+            log(f"foto única exception: {e}")
+            events.append("foto única exception")
 
     text = build_comment_text(title, description, validity, link)
     try:
