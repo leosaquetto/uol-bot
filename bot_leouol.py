@@ -1212,12 +1212,67 @@ def mark_offer_success(history: Dict[str, List[str]], offer: Dict) -> None:
         history.setdefault("ids", []).append(offer_id)
     if dedupe_key:
         history.setdefault("dedupe_keys", []).append(dedupe_key)
+def refresh_sent_offers_with_sold_out() -> None:
+    latest = safe_json_load(Path(LATEST_FILE), {"last_update": None, "offers": []})
+    offers = latest.get("offers", [])
+    if not isinstance(offers, list):
+        return
 
+    changed = False
+    for offer in offers:
+        sold_out_at = str(offer.get("sold_out_at") or "").strip()
+        message_id = offer.get("channel_message_id")
+        if not sold_out_at or not message_id:
+            continue
+
+        if offer.get("_sold_out_synced_to_telegram") is True:
+            continue
+
+        title = offer.get("title") or offer.get("preview_title") or "Oferta"
+        description = offer.get("description") or ""
+        validity = offer.get("validity")
+        link = offer.get("link") or offer.get("original_link") or ""
+
+        caption = build_main_caption(
+            title,
+            description,
+            validity,
+            link,
+            sold_out_at=sold_out_at,
+        )
+
+        try:
+            resp = telegram_post(
+                "editMessageCaption",
+                data={
+                    "chat_id": TELEGRAM_CHAT_ID,
+                    "message_id": str(message_id),
+                    "caption": caption,
+                    "parse_mode": "HTML",
+                },
+            )
+            if resp.ok:
+                offer["_sold_out_synced_to_telegram"] = True
+                changed = True
+            else:
+                log(f"falha ao editar oferta esgotada no telegram: {resp.text}")
+        except Exception as e:
+            log(f"erro ao editar oferta esgotada no telegram: {e}")
+
+    if changed:
+        latest["offers"] = offers
+        latest["last_update"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        Path(LATEST_FILE).write_text(
+            json.dumps(latest, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
 
 def consume_pending() -> int:
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID or not GRUPO_COMENTARIO_ID:
         log("❌ variáveis TELEGRAM_TOKEN, TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórias")
         return 1
+
+        refresh_sent_offers_with_sold_out()
 
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
@@ -1282,6 +1337,7 @@ def consume_pending() -> int:
             continue
 
         sent += 1
+        offer["channel_message_id"] = channel_message_id
         latest_sent.append(offer)
         mark_offer_success(history, offer)
         history_ids.add(offer_id)
