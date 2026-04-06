@@ -22,6 +22,7 @@ PENDING_FILE = "pending_offers.json"
 DAILY_LOG_FILE = "daily_log.json"
 STATUS_RUNTIME_FILE = "status_runtime.json"
 LATEST_FILE = "latest_offers.json"
+SOLD_OUT_UPDATES_FILE = "sold_out_updates.json"
 
 SNAPSHOT_DIR = "snapshots"
 SNAPSHOT_CONTROL_FILE = "snapshots_control.json"
@@ -56,6 +57,10 @@ def log(msg: str) -> None:
 
 def now_br_datetime() -> str:
     return now_br().strftime("%d/%m/%Y às %H:%M")
+
+
+def now_br_date() -> str:
+    return now_br().strftime("%d/%m/%Y")
 
 
 def load_json(path: str, default: Any) -> Any:
@@ -909,6 +914,7 @@ def is_offer_ready_for_pending(offer: Dict[str, Any]) -> bool:
         return False
     return True
 
+
 def is_same_day_offer(scraped_at: str) -> bool:
     raw = str(scraped_at or "").strip()
     if not raw:
@@ -920,60 +926,69 @@ def is_same_day_offer(scraped_at: str) -> bool:
         return False
 
 
-def offer_page_still_exists(url: str, expected_title: str) -> bool:
-    html = get_html(url)
-    if not html:
-        return False
-
-    html_low = html.lower()
-    title_low = clean_text(expected_title).lower()
-
-    if "/campanhasdeingresso/" in str(url).lower() and get_offer_id(url).lower() in html_low:
-        return True
-
-    if title_low and title_low[:30] in html_low:
-        return True
-
-    strong_signals = [
-        "benefício válido",
-        "beneficio valido",
-        "regras de resgate",
-        "sobre o parceiro",
-        "importante:",
-        "local:",
-        "data:",
-    ]
-    return any(signal in html_low for signal in strong_signals)
+def load_sold_out_updates() -> List[Dict[str, Any]]:
+    data = load_json(SOLD_OUT_UPDATES_FILE, {"updates": []})
+    updates = data.get("updates", [])
+    if not isinstance(updates, list):
+        return []
+    out = []
+    for item in updates:
+        if not isinstance(item, dict):
+            continue
+        link = str(item.get("link") or "").strip()
+        sold_out_at = str(item.get("sold_out_at") or "").strip()
+        date = str(item.get("date") or "").strip()
+        if not link or not sold_out_at or not date:
+            continue
+        out.append({
+            "link": link,
+            "sold_out_at": sold_out_at,
+            "date": date,
+        })
+    return out
 
 
-def update_same_day_sent_offers_as_sold_out() -> bool:
+def apply_scriptable_sold_out_updates() -> bool:
     latest = load_json(LATEST_FILE, {"last_update": None, "offers": []})
     offers = latest.get("offers", [])
     if not isinstance(offers, list):
         offers = []
 
+    updates = load_sold_out_updates()
+    if not updates:
+        return False
+
+    updates_by_key: Dict[str, Dict[str, Any]] = {}
+    for item in updates:
+        link_key = canonical_offer_key(item.get("link") or "")
+        if link_key:
+            updates_by_key[link_key] = item
+
     changed = False
+    today = now_br_date()
+
     for offer in offers:
-        sold_out_at = str(offer.get("sold_out_at") or "").strip()
-        if sold_out_at:
+        if str(offer.get("sold_out_at") or "").strip():
             continue
 
         scraped_at = str(offer.get("scraped_at") or "").strip()
         if not is_same_day_offer(scraped_at):
             continue
 
-        url = str(offer.get("link") or offer.get("original_link") or "").strip()
-        title = str(offer.get("title") or offer.get("preview_title") or "").strip()
-        if not url:
+        offer_key = canonical_offer_key(offer.get("link") or offer.get("original_link") or offer.get("id") or "")
+        if not offer_key:
             continue
 
-        still_exists = offer_page_still_exists(url, title)
-        if still_exists:
+        update = updates_by_key.get(offer_key)
+        if not update:
             continue
 
-        offer["sold_out_at"] = now_br().strftime("%H:%M")
+        if str(update.get("date") or "").strip() != today:
+            continue
+
+        offer["sold_out_at"] = str(update.get("sold_out_at") or "").strip()
         changed = True
-        log(f"oferta marcada como esgotada: {title} às {offer['sold_out_at']}")
+        log(f"oferta marcada como esgotada via scriptable: {offer.get('title') or offer.get('preview_title')} às {offer['sold_out_at']}")
 
     if changed:
         latest["offers"] = offers
@@ -981,10 +996,11 @@ def update_same_day_sent_offers_as_sold_out() -> bool:
         save_json(LATEST_FILE, latest)
 
     return changed
-    
+
+
 def main() -> None:
     log("iniciando scraper")
-    sold_out_changed = update_same_day_sent_offers_as_sold_out()
+    sold_out_changed = apply_scriptable_sold_out_updates()
     status_scraper_start()
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": [], "loose_dedupe_keys": []})
