@@ -519,7 +519,10 @@ def build_dashboard_text(state: Dict) -> str:
                 return datetime.strptime(raw, fmt).replace(tzinfo=BR_TZ)
             except Exception:
                 pass
-        return None
+        try:
+            return datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(BR_TZ)
+        except Exception:
+            return None
 
     def fmt_relative(value: str) -> str:
         dt = parse_br_dt(value)
@@ -677,12 +680,12 @@ def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
         return
 
-    old_message_id = state.get("message_id")
     state["date"] = now_br_date()
     state["lines"] = state.get("lines", [])[-20:]
     text = build_dashboard_text(state)
+    old_message_id = state.get("message_id")
 
-    try:
+    def send_new_dashboard_message() -> None:
         resp = telegram_post(
             "sendMessage",
             data={
@@ -693,28 +696,59 @@ def sync_daily_dashboard(state: Dict) -> None:
                 "disable_web_page_preview": "true",
             },
         )
-        if resp.ok:
-            data = resp.json()
-            new_message_id = data.get("result", {}).get("message_id")
-            state["message_id"] = new_message_id
-            save_daily_log(state)
-
-            if old_message_id and str(old_message_id) != str(new_message_id):
-                try:
-                    del_resp = telegram_post(
-                        "deleteMessage",
-                        data={
-                            "chat_id": GRUPO_COMENTARIO_ID,
-                            "message_id": str(old_message_id),
-                        },
-                        retry_429=False,
-                    )
-                    if not del_resp.ok and '"message to delete not found"' not in del_resp.text:
-                        log(f"⚠️ falha ao deletar dashboard anterior: {del_resp.text}")
-                except Exception as e:
-                    log(f"⚠️ erro ao deletar dashboard anterior: {e}")
-        else:
+        if not resp.ok:
             log(f"⚠️ falha ao publicar dashboard: {resp.text}")
+            return
+
+        data = resp.json()
+        new_message_id = data.get("result", {}).get("message_id")
+        state["message_id"] = new_message_id
+        save_daily_log(state)
+
+        if old_message_id and str(old_message_id) != str(new_message_id):
+            try:
+                del_resp = telegram_post(
+                    "deleteMessage",
+                    data={
+                        "chat_id": GRUPO_COMENTARIO_ID,
+                        "message_id": str(old_message_id),
+                    },
+                    retry_429=False,
+                )
+                if not del_resp.ok and '"message to delete not found"' not in del_resp.text:
+                    log(f"⚠️ falha ao deletar dashboard anterior: {del_resp.text}")
+            except Exception as e:
+                log(f"⚠️ erro ao deletar dashboard anterior: {e}")
+
+    try:
+        if old_message_id:
+            resp = telegram_post(
+                "editMessageText",
+                data={
+                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "message_id": str(old_message_id),
+                    "text": text,
+                    "parse_mode": "HTML",
+                    "disable_web_page_preview": "true",
+                },
+            )
+            if resp.ok:
+                save_daily_log(state)
+                return
+
+            if '"message to edit not found"' in resp.text or '"message is not modified"' in resp.text:
+                if '"message is not modified"' in resp.text:
+                    save_daily_log(state)
+                    return
+                state["message_id"] = None
+                save_daily_log(state)
+                send_new_dashboard_message()
+                return
+
+            log(f"⚠️ falha ao editar dashboard atual: {resp.text}")
+            return
+
+        send_new_dashboard_message()
     except Exception as e:
         log(f"⚠️ erro ao publicar dashboard: {e}")
 
