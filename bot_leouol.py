@@ -544,9 +544,11 @@ def build_dashboard_text(state: Dict) -> str:
 
     def component_line(label: str, data: Dict) -> str:
         status_value = str(data.get("status") or "").strip().lower()
-        finished = str(data.get("last_finished_at") or "")
-        started = str(data.get("last_started_at") or "")
-        when = finished or started
+        finished = str(data.get("last_finished_at") or "").strip()
+        started = str(data.get("last_started_at") or "").strip()
+        success = str(data.get("last_success_at") or "").strip()
+
+        when = finished or started or success
 
         if status_value == "ok":
             icon = "🟢" if label != "consumer" else "✅"
@@ -567,7 +569,8 @@ def build_dashboard_text(state: Dict) -> str:
             icon = "⚪"
             text = "em espera"
 
-        return f"{icon} {text.capitalize()} ({fmt_relative(when)})"
+        when_text = fmt_relative(when) if when else "agora"
+        return f"{icon} {text.capitalize()} ({when_text})"
 
     def mood_text() -> str:
         if pending_count > 0:
@@ -607,6 +610,7 @@ def build_dashboard_text(state: Dict) -> str:
 
     last_offer_title = str(global_status.get("last_offer_title") or "").strip() or "Não disponível"
     last_offer_at = str(global_status.get("last_offer_at") or state.get("last_new_offer_at") or "").strip() or "—"
+    last_offer_link = str(global_status.get("last_offer_link") or "").strip()
     pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
 
     lines = [
@@ -617,7 +621,11 @@ def build_dashboard_text(state: Dict) -> str:
         f"📦 Consumer {escape_html(component_line('consumer', consumer))}",
         "",
         f"🎯 Última captura 🕒 {escape_html(last_offer_at)}",
-        f"↳ {escape_html(last_offer_title)}",
+        (
+            f'↳ <a href="{escape_html(last_offer_link)}">{escape_html(last_offer_title)}</a>'
+            if last_offer_link else
+            f"↳ {escape_html(last_offer_title)}"
+        ),
         f"⏳ {escape_html(silence_since_text())}",
         "",
         f"📦 Fila de processamento: {escape_html(pending_label)}",
@@ -797,6 +805,18 @@ def build_comment_link(group_chat_id: str, comment_message_id: int, discussion_m
     if discussion_message_id:
         return f"{base}?thread={discussion_message_id}"
     return base
+
+
+def build_channel_message_link(channel_chat_id: str, channel_message_id: int) -> str:
+    raw = str(channel_chat_id or "").strip()
+    if raw.startswith("-100"):
+        public_chat_id = raw[4:]
+    elif raw.startswith("-"):
+        public_chat_id = raw[1:]
+    else:
+        public_chat_id = raw
+
+    return f"https://t.me/c/{public_chat_id}/{channel_message_id}"
 
 
 def decorate_main_title(title: str, link: str) -> str:
@@ -1509,7 +1529,7 @@ def consume_pending() -> int:
                 log(f"oferta mantida no pending por falha total: {detail_main}")
                 continue
 
-            offer["channel_message_id"] = channel_message_id
+            offer["channel_message_link"] = build_channel_message_link(TELEGRAM_CHAT_ID, channel_message_id)
 
             try:
                 ok_comment, detail_comment = send_offer_comment(offer, channel_message_id)
@@ -1559,6 +1579,7 @@ def consume_pending() -> int:
                 "last_offer_title": str(last_offer.get("title") or last_offer.get("preview_title") or ""),
                 "last_offer_at": now_br_datetime(),
                 "last_offer_id": str(last_offer.get("id") or ""),
+                "last_offer_link": str(last_offer.get("channel_message_link") or ""),
             }
             save_status_runtime(status)
 
