@@ -1335,6 +1335,7 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
     except Exception as e:
         return False, f"descrição completa exception: {e}"
 
+
 def update_main_offer_caption_with_comment_link(offer: Dict) -> None:
     channel_message_id = offer.get("channel_message_id")
     comment_link = str(offer.get("comment_link") or "").strip()
