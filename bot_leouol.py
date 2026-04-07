@@ -784,6 +784,21 @@ def should_send_silent(tags: List[str]) -> bool:
     return any(tag in tag_set for tag in SILENT_HASHTAGS)
 
 
+def build_comment_link(group_chat_id: str, comment_message_id: int, discussion_message_id: Optional[int] = None) -> str:
+    raw = str(group_chat_id or "").strip()
+    if raw.startswith("-100"):
+        public_group_id = raw[4:]
+    elif raw.startswith("-"):
+        public_group_id = raw[1:]
+    else:
+        public_group_id = raw
+
+    base = f"https://t.me/c/{public_group_id}/{comment_message_id}"
+    if discussion_message_id:
+        return f"{base}?thread={discussion_message_id}"
+    return base
+
+
 def decorate_main_title(title: str, link: str) -> str:
     if "/campanhasdeingresso/" in (link or "").lower():
         return f"‼️ {title} ‼️"
@@ -800,7 +815,14 @@ def normalize_validity(validity: Optional[str]) -> str:
     return val
 
 
-def build_main_caption(title: str, description: str, validity: Optional[str], link: str, sold_out_at: Optional[str] = None) -> str:
+def build_main_caption(
+    title: str,
+    description: str,
+    validity: Optional[str],
+    link: str,
+    sold_out_at: Optional[str] = None,
+    comment_link: Optional[str] = None,
+) -> str:
     tags = build_smart_hashtags(title, description, link)
     decorated_title = decorate_main_title(title, link)
 
@@ -820,7 +842,13 @@ def build_main_caption(title: str, description: str, validity: Optional[str], li
         body.append(f"❌ Oferta esgotada às {escape_html(str(sold_out_at).strip())}.")
 
     body.append(f"🔗 {escape_html(link)}")
-    body.append("💬 Veja os detalhes completos dentro dos comentários.")
+
+    if str(comment_link or "").strip():
+        body.append(
+            f'💬 Veja os <a href="{escape_html(str(comment_link).strip())}">detalhes completos</a> nos comentários.'
+        )
+    else:
+        body.append("💬 Veja os detalhes completos dentro dos comentários.")
 
     return truncate_text("\n\n".join(body), MAX_CAPTION_LENGTH)
 
@@ -1291,11 +1319,56 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
             reply_to_message_id=reply_target,
         )
         if resp.ok:
+            data = resp.json()
+            comment_message_id = data.get("result", {}).get("message_id")
+            if comment_message_id:
+                offer["comment_message_id"] = comment_message_id
+                offer["discussion_message_id"] = discussion_message_id
+                offer["comment_link"] = build_comment_link(
+                    GRUPO_COMENTARIO_ID,
+                    comment_message_id,
+                    discussion_message_id,
+                )
             events.append("descrição completa enviada")
             return True, " | ".join(events)
         return False, f"descrição completa falhou: {resp.text}"
     except Exception as e:
         return False, f"descrição completa exception: {e}"
+
+def update_main_offer_caption_with_comment_link(offer: Dict) -> None:
+    channel_message_id = offer.get("channel_message_id")
+    comment_link = str(offer.get("comment_link") or "").strip()
+    if not channel_message_id or not comment_link:
+        return
+
+    title = offer.get("title") or offer.get("preview_title") or "Oferta"
+    description = offer.get("description") or ""
+    validity = offer.get("validity")
+    link = offer.get("link") or offer.get("original_link") or ""
+
+    caption = build_main_caption(
+        title,
+        description,
+        validity,
+        link,
+        sold_out_at=offer.get("sold_out_at"),
+        comment_link=comment_link,
+    )
+
+    try:
+        resp = telegram_post(
+            "editMessageCaption",
+            data={
+                "chat_id": TELEGRAM_CHAT_ID,
+                "message_id": str(channel_message_id),
+                "caption": caption,
+                "parse_mode": "HTML",
+            },
+        )
+        if not resp.ok:
+            log(f"falha ao editar caption com link do comentário: {resp.text}")
+    except Exception as e:
+        log(f"erro ao editar caption com link do comentário: {e}")
 
 
 def mark_offer_success(history: Dict[str, List[str]], offer: Dict) -> None:
@@ -1449,6 +1522,8 @@ def consume_pending() -> int:
                 append_dashboard_line("consumer", f"⚠️ falha comentário: {title[:70]}")
                 log(f"oferta mantida no pending por falha no comentário: {detail_comment}")
                 continue
+
+            update_main_offer_caption_with_comment_link(offer)
 
             sent += 1
             latest_sent = [x for x in latest_sent if normalize_offer_key(x.get("id") or x.get("link") or "") != offer_id]
