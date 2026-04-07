@@ -1529,6 +1529,7 @@ def consume_pending() -> int:
                 log(f"oferta mantida no pending por falha total: {detail_main}")
                 continue
 
+            offer["channel_message_id"] = channel_message_id
             offer["channel_message_link"] = build_channel_message_link(TELEGRAM_CHAT_ID, channel_message_id)
 
             try:
