@@ -904,14 +904,18 @@ def is_offer_ready_for_pending(offer: Dict[str, Any]) -> bool:
 
     if not title or not link:
         return False
-    if not img_url:
-        return False
+
     if not description or len(description) < 40:
         return False
+
     if "descrição não disponível" in description.lower():
         return False
-    if not validity:
-        return False
+
+    # pacote ideal
+    if img_url and validity:
+        return True
+
+    # fallback mínimo para não matar ofertas válidas da vitrine
     return True
 
 
