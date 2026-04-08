@@ -1,14 +1,14 @@
 {
   "scriptable": {
-    "last_started_at": "08/04/2026 às 17:00",
-    "last_finished_at": "08/04/2026 às 17:00",
-    "last_success_at": "08/04/2026 às 17:00",
-    "status": "ok",
-    "summary": "iphone coleta ok: 20260408_170046_whq93 | vitrine 48 | novas 0 | detalhes 0/0",
+    "last_started_at": "08/04/2026 às 17:02",
+    "last_finished_at": "08/04/2026 às 17:02",
+    "last_success_at": "08/04/2026 às 17:02",
+    "status": "parcial",
+    "summary": "iphone coleta ok: 20260408_170202_b53ez | vitrine 48 | novas 0 | detalhes 0/0",
     "offers_seen": 48,
     "new_offers": 0,
     "pending_count": 0,
-    "last_error": ""
+    "last_error": "github sem commit: {\"message\":\"is at af6e33bfb4e61ed293b3aa17ba530841a579a2f3 but expected 3a7d394e1d74c3a2d17e7940a9ad22532594dc91\",\"status\":\"409\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\"}"
   },
   "scraper": {
     "last_started_at": "08/04/2026 às 17:01",
