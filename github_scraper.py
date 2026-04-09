@@ -945,6 +945,17 @@ def is_offer_ready_for_pending(offer: Dict[str, Any]) -> bool:
 
     return True
 
+
+def is_same_day_offer(scraped_at: str) -> bool:
+    raw = str(scraped_at or "").strip()
+    if not raw:
+        return False
+    try:
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(BR_TZ)
+        return dt.strftime("%d/%m/%Y") == now_br().strftime("%d/%m/%Y")
+    except Exception:
+        return False
+
 def is_same_day_offer(scraped_at: str) -> bool:
     raw = str(scraped_at or "").strip()
     if not raw:
