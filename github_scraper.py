@@ -939,36 +939,11 @@ def merge_offer_data(base_offer: Dict[str, Any], details: Dict[str, Any]) -> Dic
 def is_offer_ready_for_pending(offer: Dict[str, Any]) -> bool:
     title = clean_text(offer.get("title") or offer.get("preview_title") or "")
     link = clean_text(offer.get("link") or offer.get("original_link") or "")
-    img_url = clean_text(offer.get("img_url") or "")
-    description = clean_text(offer.get("description") or "")
-    validity = clean_text(offer.get("validity") or "")
 
     if not title or not link:
         return False
 
-    if not description or len(description) < 40:
-        return False
-
-    if "descrição não disponível" in description.lower():
-        return False
-
-    # pacote ideal
-    if img_url and validity:
-        return True
-
-    # fallback mínimo para não matar ofertas válidas da vitrine
     return True
-
-
-def is_same_day_offer(scraped_at: str) -> bool:
-    raw = str(scraped_at or "").strip()
-    if not raw:
-        return False
-    try:
-        dt = datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(BR_TZ)
-        return dt.strftime("%d/%m/%Y") == now_br().strftime("%d/%m/%Y")
-    except Exception:
-        return False
 
 
 def load_sold_out_updates() -> List[Dict[str, Any]]:
