@@ -115,13 +115,7 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
-          git add \
-            pending_offers.json \
-            historico_leouol.json \
-            latest_offers.json \
-            daily_log.json \
-            status_runtime.json \
-            snapshots_control.json || true
+          git add -A
 
           if git diff --cached --quiet; then
             echo "sem mudanças para commit"
@@ -133,8 +127,8 @@ jobs:
       - name: push com retry
         if: always()
         run: |
-          if git diff --cached --quiet && git diff --quiet HEAD~1 HEAD 2>/dev/null; then
-            echo "nenhum commit novo para enviar"
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "nenhuma mudança local"
             exit 0
           fi
 
