@@ -121,8 +121,7 @@ jobs:
             latest_offers.json \
             daily_log.json \
             status_runtime.json \
-            snapshots_control.json \
-            snapshots || true
+            snapshots_control.json || true
 
           if git diff --cached --quiet; then
             echo "sem mudanças para commit"
