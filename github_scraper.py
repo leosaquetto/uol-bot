@@ -514,6 +514,47 @@ def load_detail_for_snapshot(snapshot_id: str) -> Dict[str, Dict[str, Any]]:
                 lookup[key] = normalized_item
     return lookup
 
+def load_offers_from_snapshot_meta(meta: Optional[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    if not isinstance(meta, dict):
+        return []
+
+    raw_offers = meta.get("offers", [])
+    if not isinstance(raw_offers, list):
+        return []
+
+    normalized: List[Dict[str, Any]] = []
+
+    for item in raw_offers:
+        if not isinstance(item, dict):
+            continue
+
+        link = absolutize_url(item.get("link") or item.get("original_link") or "")
+        title = clean_text(item.get("title") or item.get("preview_title") or "")
+        if not link or not title:
+            continue
+
+        offer_id = get_offer_id(link)
+
+        normalized.append({
+            "id": offer_id,
+            "original_link": link,
+            "preview_title": title,
+            "title": title,
+            "link": link,
+            "img_url": absolutize_url(item.get("img_url") or item.get("card_img_url") or ""),
+            "partner_img_url": absolutize_url(item.get("partner_img_url") or ""),
+        })
+
+    bucket: Dict[str, Dict[str, Any]] = {}
+    for offer in normalized:
+        key = canonical_offer_key(offer.get("id") or offer.get("link") or "")
+        if not key:
+            continue
+        prev = bucket.get(key)
+        bucket[key] = choose_richer_offer(prev, offer)
+
+    return list(bucket.values())
+
 
 def cleanup_snapshot_files(snapshot_id: str, meta: Optional[Dict[str, Any]] = None) -> None:
     if not SNAPSHOT_CLEANUP_ENABLED:
@@ -1030,17 +1071,27 @@ def main() -> None:
     all_offers: List[Dict[str, Any]] = []
     loaded_snapshot_ids: List[str] = []
     snapshot_meta_map: Dict[str, Optional[Dict[str, Any]]] = {}
+    
 
     for snapshot_id in snapshot_ids:
         meta, html = load_snapshot(snapshot_id)
         snapshot_meta_map[snapshot_id] = meta
-        if not html:
-            log(f"snapshot inválido ou sem html: {snapshot_id}")
-            mark_snapshot_processed(snapshot_id, snapshot_control, meta)
-            continue
+
+        offers_from_meta = load_offers_from_snapshot_meta(meta)
+
+    if offers_from_meta:
+        log(f"usando offers do snapshot meta em {snapshot_id}: {len(offers_from_meta)}")
+        all_offers.extend(offers_from_meta)
+        loaded_snapshot_ids.append(snapshot_id)
+        continue
+
+    if not html:
+        log(f"snapshot inválido ou sem html/meta útil: {snapshot_id}")
+        mark_snapshot_processed(snapshot_id, snapshot_control, meta)
+        continue
 
         offers = parse_offers(html)
-        log(f"total encontradas em {snapshot_id}: {len(offers)}")
+        log(f"total encontradas via parse html em {snapshot_id}: {len(offers)}")
         all_offers.extend(offers)
         loaded_snapshot_ids.append(snapshot_id)
 
