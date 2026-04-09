@@ -1,14 +1,14 @@
 {
   "scriptable": {
-    "last_started_at": "09/04/2026 às 11:21",
-    "last_finished_at": "09/04/2026 às 11:21",
+    "last_started_at": "09/04/2026 às 11:30",
+    "last_finished_at": "09/04/2026 às 12:00",
     "last_success_at": "09/04/2026 às 11:21",
-    "status": "ok",
-    "summary": "iphone coleta ok: 20260409_112113_5zydv | vitrine 48 | novas 42 | detalhes 12/12",
-    "offers_seen": 48,
-    "new_offers": 42,
+    "status": "erro",
+    "summary": "iphone falhou na meta: 20260409_113004_ep6zf",
+    "offers_seen": 12,
+    "new_offers": 12,
     "pending_count": 0,
-    "last_error": ""
+    "last_error": "Error: Esgotou-se o tempo limite da solicitação."
   },
   "scraper": {
     "last_started_at": "09/04/2026 às 02:59",
