@@ -1089,36 +1089,31 @@ for snapshot_id in snapshot_ids:
         mark_snapshot_processed(snapshot_id, snapshot_control, meta)
         continue
 
-    offers = parse_offers(html)
-    log(f"total encontradas via parse html em {snapshot_id}: {len(offers)}")
-    all_offers.extend(offers)
-    loaded_snapshot_ids.append(snapshot_id)
-
     all_offers: List[Dict[str, Any]] = []
     loaded_snapshot_ids: List[str] = []
     snapshot_meta_map: Dict[str, Optional[Dict[str, Any]]] = {}
 
-for snapshot_id in snapshot_ids:
-    meta, html = load_snapshot(snapshot_id)
-    snapshot_meta_map[snapshot_id] = meta
+    for snapshot_id in snapshot_ids:
+        meta, html = load_snapshot(snapshot_id)
+        snapshot_meta_map[snapshot_id] = meta
 
-    offers_from_meta = load_offers_from_snapshot_meta(meta)
+        offers_from_meta = load_offers_from_snapshot_meta(meta)
 
-    if offers_from_meta:
-        log(f"usando offers do snapshot meta em {snapshot_id}: {len(offers_from_meta)}")
-        all_offers.extend(offers_from_meta)
+        if offers_from_meta:
+            log(f"usando offers do snapshot meta em {snapshot_id}: {len(offers_from_meta)}")
+            all_offers.extend(offers_from_meta)
+            loaded_snapshot_ids.append(snapshot_id)
+            continue
+
+        if not html:
+            log(f"snapshot inválido ou sem html/meta útil: {snapshot_id}")
+            mark_snapshot_processed(snapshot_id, snapshot_control, meta)
+            continue
+
+        offers = parse_offers(html)
+        log(f"total encontradas via parse html em {snapshot_id}: {len(offers)}")
+        all_offers.extend(offers)
         loaded_snapshot_ids.append(snapshot_id)
-        continue
-
-    if not html:
-        log(f"snapshot inválido ou sem html/meta útil: {snapshot_id}")
-        mark_snapshot_processed(snapshot_id, snapshot_control, meta)
-        continue
-
-    offers = parse_offers(html)
-    log(f"total encontradas via parse html em {snapshot_id}: {len(offers)}")
-    all_offers.extend(offers)
-    loaded_snapshot_ids.append(snapshot_id)
 
     if not all_offers:
         for snapshot_id in loaded_snapshot_ids:
