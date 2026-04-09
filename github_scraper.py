@@ -956,17 +956,6 @@ def is_same_day_offer(scraped_at: str) -> bool:
     except Exception:
         return False
 
-def is_same_day_offer(scraped_at: str) -> bool:
-    raw = str(scraped_at or "").strip()
-    if not raw:
-        return False
-    try:
-        dt = datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(BR_TZ)
-        return dt.strftime("%d/%m/%Y") == now_br().strftime("%d/%m/%Y")
-    except Exception:
-        return False
-
-
 def load_sold_out_updates() -> List[Dict[str, Any]]:
     data = load_json(SOLD_OUT_UPDATES_FILE, {"updates": []})
     updates = data.get("updates", [])
