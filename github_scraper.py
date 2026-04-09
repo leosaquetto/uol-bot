@@ -1154,9 +1154,13 @@ def main() -> None:
             continue
         if strict_key and (strict_key in historico_dedupe or strict_key in pending_dedupe or strict_key in seen_new_dedupe_keys):
             continue
-        if loose_key and (loose_key in historico_loose or loose_key in pending_loose or loose_key in seen_new_loose_keys):
+        if not offer_key and not strict_key and loose_key and (
+            loose_key in historico_loose or
+            loose_key in pending_loose or
+            loose_key in seen_new_loose_keys
+        ):
             continue
-
+            
         if offer_key:
             seen_new_offer_keys.add(offer_key)
         if strict_key:
