@@ -79,11 +79,35 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: debug snapshots antes do scraper
+        run: |
+          echo "### DEBUG ANTES ###"
+          echo "HEAD atual: $(git rev-parse HEAD)"
+          echo "--- Conteúdo snapshots_control.json ---"
+          cat snapshots_control.json || echo "Arquivo não encontrado"
+          echo "--- Arquivos em snapshots/ ---"
+          find snapshots -maxdepth 2 -type f | sort || echo "Pasta vazia ou inexistente"
+          echo "--- Status Git ---"
+          git status --short
+
       - name: rodar scraper
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         run: python github_scraper.py
+
+      - name: debug snapshots depois do scraper
+        if: always()
+        run: |
+          echo "### DEBUG DEPOIS ###"
+          echo "--- Status Git ---"
+          git status --short
+          echo "--- Conteúdo pending_offers.json ---"
+          cat pending_offers.json || echo "Não gerado"
+          echo "--- Conteúdo status_runtime.json ---"
+          cat status_runtime.json || echo "Não gerado"
+          echo "--- Conteúdo snapshots_control.json ---"
+          cat snapshots_control.json || echo "Não alterado"
 
       - name: commitar mudanças do scraper
         if: always()
