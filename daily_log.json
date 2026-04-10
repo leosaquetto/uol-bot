@@ -6,7 +6,6 @@
   "pending_count": 0,
   "last_consumer_run": "10/04/2026 às 16:26",
   "lines": [
-    "[10:00] consumer: 📭 pending vazio",
     "[10:30] consumer: 📭 pending vazio",
     "[10:45] consumer: 📭 pending vazio",
     "[11:00] consumer: 📭 pending vazio",
@@ -25,6 +24,7 @@
     "[15:30] consumer: 📭 pending vazio",
     "[16:00] consumer: 📭 pending vazio",
     "[16:09] consumer: 📭 pending vazio",
-    "[16:26] consumer: 📭 pending vazio"
+    "[16:26] consumer: 📭 pending vazio",
+    "[16:32] consumer: 📭 pending vazio"
   ]
 }
