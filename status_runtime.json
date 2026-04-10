@@ -14,16 +14,21 @@
     "last_success_at": ""
   },
   "consumer": {
-    "last_started_at": "",
-    "last_finished_at": "10/04/2026 às 18:40",
-    "last_success_at": "",
-    "status": "sem_novidade",
-    "summary": "pending vazio",
-    "processed": 0,
-    "sent": 0,
+    "last_started_at": "10/04/2026 às 19:00",
+    "last_finished_at": "10/04/2026 às 19:00",
+    "last_success_at": "10/04/2026 às 19:00",
+    "status": "ok",
+    "summary": "1 enviada(s) com sucesso",
+    "processed": 1,
+    "sent": 1,
     "failed": 0,
     "pending_count": 0,
     "last_error": ""
   },
-  "global": {}
+  "global": {
+    "last_offer_title": "30% OFF em Pós Graduação de Medicina",
+    "last_offer_at": "10/04/2026 às 19:00",
+    "last_offer_id": "pnu-30-off-em-ps-graduao-de-medicina",
+    "last_offer_link": "https://t.me/c/3723320790/468"
+  }
 }
