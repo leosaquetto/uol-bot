@@ -89,6 +89,18 @@ HTTP_HEADERS = {
 }
 
 
+def is_bad_offer_image_url(url: Optional[str]) -> bool:
+    u = str(url or "").strip().lower()
+    if not u:
+        return True
+    return (
+        "/static/images/clubes/uol/categorias/" in u
+        or "ingressosexclusivos-hover" in u
+        or "ingressos-hover" in u
+        or "loader.gif" in u
+    )
+
+
 def now_br() -> datetime:
     return datetime.now(BR_TZ)
 
@@ -1262,9 +1274,9 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
     partner_img_url = (offer.get("partner_img_url") or "").strip()
 
     candidates = []
-    if img_url:
+    if img_url and not is_bad_offer_image_url(img_url):
         candidates.append(("img_url", img_url))
-    if partner_img_url:
+    if partner_img_url and not is_bad_offer_image_url(partner_img_url):
         candidates.append(("partner_img_url", partner_img_url))
 
     tags = build_smart_hashtags(title, description, link)
@@ -1319,7 +1331,7 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
     media_items = []
 
     offer_img_url = (offer.get("img_url") or "").strip()
-    if offer_img_url:
+    if offer_img_url and not is_bad_offer_image_url(offer_img_url):
         img = download_image_bytes(offer_img_url)
         if img:
             media_items.append(img)
@@ -1327,7 +1339,7 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
             events.append("foto da oferta indisponível")
 
     partner_img_url = (offer.get("partner_img_url") or "").strip()
-    if partner_img_url:
+    if partner_img_url and not is_bad_offer_image_url(partner_img_url):
         img = download_image_bytes(partner_img_url)
         if img:
             media_items.append(img)
