@@ -1673,8 +1673,10 @@ def consume_pending() -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--pending":
-        raise SystemExit(consume_pending())
-    else:
-        log("este arquivo está configurado para o modo consumer (--pending)")
-        raise SystemExit(0)
+    args = set(sys.argv[1:])
+    if args and "--pending" not in args:
+        log("uso: python bot_leouol.py [--pending]")
+        raise SystemExit(2)
+
+    # Compatibilidade: sem argumentos também executa o consumer.
+    raise SystemExit(consume_pending())
