@@ -1506,6 +1506,11 @@ def consume_pending() -> int:
     offers = pending_data.get("offers", [])
 
     if not offers:
+        runtime_status = load_status_runtime()
+        scraper_status = runtime_status.get("scriptable", {}) if isinstance(runtime_status, dict) else {}
+        scraper_error = str(scraper_status.get("last_error") or "").strip()
+        scraper_state = str(scraper_status.get("status") or "").strip().lower()
+
         set_dashboard_pending_count(0)
         set_dashboard_last_consumer_run()
         status_consumer_finish(
@@ -1517,6 +1522,8 @@ def consume_pending() -> int:
             status_value="sem_novidade",
         )
         append_dashboard_line("consumer", "📭 pending vazio")
+        if scraper_state in {"erro", "parcial"} and scraper_error:
+            log(f"ℹ️ sem envio para o Telegram porque não há ofertas pendentes; último erro do scraper: {scraper_error}")
         log("📭 nenhuma oferta pendente")
         return 0
 
@@ -1657,8 +1664,10 @@ def consume_pending() -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--pending":
-        raise SystemExit(consume_pending())
-    else:
-        log("este arquivo está configurado para o modo consumer (--pending)")
-        raise SystemExit(0)
+    args = set(sys.argv[1:])
+    if args and "--pending" not in args:
+        log("uso: python bot_leouol.py [--pending]")
+        raise SystemExit(2)
+
+    # Compatibilidade: sem argumentos também executa o consumer.
+    raise SystemExit(consume_pending())
