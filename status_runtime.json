@@ -1,42 +1,16 @@
 {
   "scriptable": {
-    "last_started_at": "10/04/2026 às 17:37",
-    "last_finished_at": "10/04/2026 às 17:38",
-    "last_success_at": "10/04/2026 às 17:38",
+    "last_started_at": "10/04/2026 às 17:38",
+    "last_finished_at": "10/04/2026 às 17:43",
+    "last_success_at": "10/04/2026 às 17:43",
     "status": "sem_novidade",
-    "summary": "iphone coleta ok: 20260410_173701_tqisn | vitrine 12 | novas 0 | detalhes 0/0 | pending+ 0",
+    "summary": "iphone coleta ok: 20260410_173803_py3mx | vitrine 12 | novas 0 | detalhes 0/0 | pending+ 0",
     "offers_seen": 12,
     "new_offers": 0,
     "pending_count": 0,
     "last_error": ""
   },
-  "scraper": {
-    "last_started_at": "09/04/2026 às 02:59",
-    "last_finished_at": "09/04/2026 às 02:59",
-    "last_success_at": "09/04/2026 às 02:59",
-    "status": "sem_novidade",
-    "summary": "sem snapshots pendentes",
-    "offers_seen": 0,
-    "new_offers": 0,
-    "pending_count": 0,
-    "last_error": ""
-  },
-  "consumer": {
-    "last_started_at": "10/04/2026 às 16:40",
-    "last_finished_at": "10/04/2026 às 17:38",
-    "last_success_at": "10/04/2026 às 16:42",
-    "status": "sem_novidade",
-    "summary": "pending vazio",
-    "processed": 0,
-    "sent": 0,
-    "failed": 0,
-    "pending_count": 0,
-    "last_error": ""
-  },
-  "global": {
-    "last_offer_title": "50% OFF no par de ingressos",
-    "last_offer_at": "10/04/2026 às 16:42",
-    "last_offer_id": "pmw-50-off-no-par-de-ingressos",
-    "last_offer_link": "https://t.me/c/3723320790/467"
-  }
+  "scraper": {},
+  "consumer": {},
+  "global": {}
 }
