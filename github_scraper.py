@@ -277,6 +277,9 @@ def is_bad_banner_url(url: Optional[str]) -> bool:
         or "social" in u
         or "logo-uol" in u
         or "logo_uol" in u
+        or "/static/images/clubes/uol/categorias/" in u
+        or "ingressosexclusivos-hover" in u
+        or "ingressos-hover" in u
     )
 
 
