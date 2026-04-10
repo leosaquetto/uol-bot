@@ -350,6 +350,7 @@ def load_daily_log() -> Dict:
     default = {
         "date": "",
         "message_id": None,
+        "previous_message_id": None,
         "last_success_check": "",
         "last_new_offer_at": "",
         "pending_count": 0,
@@ -367,6 +368,7 @@ def load_daily_log() -> Dict:
     return {
         "date": str(data.get("date") or ""),
         "message_id": data.get("message_id"),
+        "previous_message_id": data.get("previous_message_id"),
         "last_success_check": str(data.get("last_success_check") or ""),
         "last_new_offer_at": str(data.get("last_new_offer_at") or ""),
         "pending_count": int(data.get("pending_count") or 0),
@@ -683,7 +685,7 @@ def sync_daily_dashboard(state: Dict) -> None:
     state["date"] = now_br_date()
     state["lines"] = state.get("lines", [])[-20:]
     text = build_dashboard_text(state)
-    old_message_id = state.get("message_id")
+    old_message_id = state.get("message_id") or state.get("previous_message_id")
 
     def send_new_dashboard_message() -> None:
         resp = telegram_post(
@@ -703,6 +705,7 @@ def sync_daily_dashboard(state: Dict) -> None:
         data = resp.json()
         new_message_id = data.get("result", {}).get("message_id")
         state["message_id"] = new_message_id
+        state["previous_message_id"] = None
         save_daily_log(state)
 
         if old_message_id and str(old_message_id) != str(new_message_id):
@@ -763,6 +766,7 @@ def append_dashboard_line(source: str, status_line: str) -> None:
             "last_new_offer_at": state.get("last_new_offer_at", ""),
             "pending_count": 0,
             "last_consumer_run": "",
+            "previous_message_id": state.get("message_id"),
             "lines": [],
         }
 
@@ -775,6 +779,7 @@ def append_dashboard_line(source: str, status_line: str) -> None:
 def set_dashboard_pending_count(count: int) -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
+        state["previous_message_id"] = state.get("message_id")
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = []
@@ -785,6 +790,7 @@ def set_dashboard_pending_count(count: int) -> None:
 def set_dashboard_last_consumer_run() -> None:
     state = load_daily_log()
     if state["date"] != now_br_date():
+        state["previous_message_id"] = state.get("message_id")
         state["date"] = now_br_date()
         state["message_id"] = None
         state["lines"] = []
@@ -1506,6 +1512,11 @@ def consume_pending() -> int:
     offers = pending_data.get("offers", [])
 
     if not offers:
+        runtime_status = load_status_runtime()
+        scriptable_status = runtime_status.get("scriptable", {}) if isinstance(runtime_status, dict) else {}
+        scriptable_error = str(scriptable_status.get("last_error") or "").strip()
+        scriptable_state = str(scriptable_status.get("status") or "").strip().lower()
+
         set_dashboard_pending_count(0)
         set_dashboard_last_consumer_run()
         status_consumer_finish(
@@ -1517,6 +1528,11 @@ def consume_pending() -> int:
             status_value="sem_novidade",
         )
         append_dashboard_line("consumer", "📭 pending vazio")
+        if scriptable_state in {"erro", "parcial"} and scriptable_error:
+            log(
+                "ℹ️ sem envio para o Telegram porque não há ofertas pendentes; "
+                f"último erro do scriptable: {scriptable_error}"
+            )
         log("📭 nenhuma oferta pendente")
         return 0
 
