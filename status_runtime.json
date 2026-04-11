@@ -1,34 +1,16 @@
 {
   "scriptable": {
-    "last_started_at": "10/04/2026 às 22:24",
-    "last_finished_at": "10/04/2026 às 22:24",
-    "last_success_at": "10/04/2026 às 22:24",
+    "last_started_at": "10/04/2026 às 23:00",
+    "last_finished_at": "10/04/2026 às 23:08",
+    "last_success_at": "10/04/2026 às 23:08",
     "status": "sem_novidade",
-    "summary": "iphone coleta ok: 20260410_222428_kpewy | vitrine 12 | novas 0 | detalhes 0/0 | pending+ 0",
+    "summary": "iphone coleta ok: 20260410_230003_usxze | vitrine 12 | novas 0 | detalhes 0/0 | pending+ 0",
     "offers_seen": 12,
     "new_offers": 0,
     "pending_count": 0,
     "last_error": ""
   },
-  "scraper": {
-    "last_success_at": ""
-  },
-  "consumer": {
-    "last_started_at": "10/04/2026 às 19:00",
-    "last_finished_at": "10/04/2026 às 23:00",
-    "last_success_at": "10/04/2026 às 19:00",
-    "status": "sem_novidade",
-    "summary": "pending vazio",
-    "processed": 0,
-    "sent": 0,
-    "failed": 0,
-    "pending_count": 0,
-    "last_error": ""
-  },
-  "global": {
-    "last_offer_title": "30% OFF em Pós Graduação de Medicina",
-    "last_offer_at": "10/04/2026 às 19:00",
-    "last_offer_id": "pnu-30-off-em-ps-graduao-de-medicina",
-    "last_offer_link": "https://t.me/c/3723320790/468"
-  }
+  "scraper": {},
+  "consumer": {},
+  "global": {}
 }
