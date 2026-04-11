@@ -1,14 +1,14 @@
 {
   "scriptable": {
-    "last_started_at": "11/04/2026 às 08:30",
-    "last_finished_at": "11/04/2026 às 08:30",
-    "last_success_at": "11/04/2026 às 03:18",
-    "status": "erro",
-    "summary": "iphone falhou no html: 20260411_083003_xy8uv",
+    "last_started_at": "11/04/2026 às 08:00",
+    "last_finished_at": "11/04/2026 às 09:00",
+    "last_success_at": "11/04/2026 às 09:00",
+    "status": "parcial",
+    "summary": "iphone coleta ok: 20260411_080002_uumyz | vitrine 12 | novas 0 | detalhes 0/0 | pending+ 0",
     "offers_seen": 12,
     "new_offers": 0,
     "pending_count": 0,
-    "last_error": "github sem commit: {\"message\":\"is at c27fdbe87dc218fcf0df99ef1da0e3c3719c28df but expected b28d119e14ee6062eba25b134f07b12d89716c51\",\"status\":\"409\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\"}"
+    "last_error": "Error: Esgotou-se o tempo limite da solicitação."
   },
   "scraper": {
     "last_success_at": ""
