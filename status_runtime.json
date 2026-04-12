@@ -1,14 +1,14 @@
 {
   "scriptable": {
-    "last_started_at": "12/04/2026 às 08:30",
-    "last_finished_at": "12/04/2026 às 09:00",
-    "last_success_at": "12/04/2026 às 09:00",
-    "status": "sem_novidade",
-    "summary": "iphone coleta ok: 20260412_083003_1uvvg | vitrine 2 | novas 0 | detalhes 0/0 | pending+ 0",
+    "last_started_at": "12/04/2026 às 09:00",
+    "last_finished_at": "12/04/2026 às 09:30",
+    "last_success_at": "12/04/2026 às 09:30",
+    "status": "parcial",
+    "summary": "iphone coleta ok: 20260412_090001_higsh | vitrine 2 | novas 0 | detalhes 0/0 | pending+ 0",
     "offers_seen": 2,
     "new_offers": 0,
     "pending_count": 0,
-    "last_error": ""
+    "last_error": "Error: Esgotou-se o tempo limite da solicitação."
   },
   "scraper": {
     "last_success_at": ""
