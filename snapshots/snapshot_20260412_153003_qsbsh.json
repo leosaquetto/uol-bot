@@ -1,0 +1,38 @@
+{
+  "snapshot_id": "20260412_153003_qsbsh",
+  "created_at": "2026-04-12T18:30:06.341Z",
+  "created_at_br": "12/04/2026 às 15:30",
+  "source_url": "https://clube.uol.com.br/?order=new",
+  "html_path": "snapshots/snapshot_20260412_153003_qsbsh.html",
+  "html_length": 280759,
+  "total_offers_found": 2,
+  "total_new_offers_found": 0,
+  "tested_detail_count": 0,
+  "sold_out_detected_count": 0,
+  "cache_size_before": 134,
+  "context": "shortcuts",
+  "current_links": [
+    "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
+    "https://clube.uol.com.br/teatrojsafra/pnh-50-off-no-par-de-ingressos"
+  ],
+  "offers": [
+    {
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
+      "title": "30% OFF em PГіs GraduaГ§ГЈo de Medicina",
+      "category": "EducaГ§ГЈo",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8b53d9895a84545d055bea98cd3bbadf.png",
+      "partner_name": "MedBrasil",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/99fc859d8cba0a613a5644104f5c8366.png",
+      "offer_key": "pnu-30-off-em-ps-graduao-de-medicina"
+    },
+    {
+      "link": "https://clube.uol.com.br/teatrojsafra/pnh-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "category": "Entretenimento e Viagens",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
+      "partner_name": "Teatro J. Safra",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5da27ac2f36621a31cd2e4dfa987eea1.png",
+      "offer_key": "pnh-50-off-no-par-de-ingressos"
+    }
+  ]
+}
