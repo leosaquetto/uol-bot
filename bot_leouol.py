@@ -21,6 +21,7 @@ BR_TZ = ZoneInfo("America/Sao_Paulo")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
+DASHBOARD_CHAT_ID = os.environ.get("DASHBOARD_CHAT_ID") or GRUPO_COMENTARIO_ID or TELEGRAM_CHAT_ID
 
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
@@ -691,7 +692,7 @@ def telegram_post(method: str, data=None, files=None, retry_429: bool = True) ->
 
 
 def sync_daily_dashboard(state: Dict) -> None:
-    if not TELEGRAM_TOKEN or not GRUPO_COMENTARIO_ID:
+    if not TELEGRAM_TOKEN or not DASHBOARD_CHAT_ID:
         return
 
     state["date"] = now_br_date()
@@ -703,7 +704,7 @@ def sync_daily_dashboard(state: Dict) -> None:
         resp = telegram_post(
             "sendMessage",
             data={
-                "chat_id": GRUPO_COMENTARIO_ID,
+                "chat_id": DASHBOARD_CHAT_ID,
                 "text": text,
                 "parse_mode": "HTML",
                 "disable_notification": "true",
@@ -725,7 +726,7 @@ def sync_daily_dashboard(state: Dict) -> None:
                 del_resp = telegram_post(
                     "deleteMessage",
                     data={
-                        "chat_id": GRUPO_COMENTARIO_ID,
+                        "chat_id": DASHBOARD_CHAT_ID,
                         "message_id": str(old_message_id),
                     },
                     retry_429=False,
@@ -740,7 +741,7 @@ def sync_daily_dashboard(state: Dict) -> None:
             resp = telegram_post(
                 "editMessageText",
                 data={
-                    "chat_id": GRUPO_COMENTARIO_ID,
+                    "chat_id": DASHBOARD_CHAT_ID,
                     "message_id": str(old_message_id),
                     "text": text,
                     "parse_mode": "HTML",
