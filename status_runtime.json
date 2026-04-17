@@ -14,21 +14,21 @@
     "last_success_at": ""
   },
   "consumer": {
-    "last_started_at": "16/04/2026 às 22:45",
-    "last_finished_at": "16/04/2026 às 23:04",
-    "last_success_at": "16/04/2026 às 22:47",
-    "status": "sem_novidade",
-    "summary": "pending vazio",
-    "processed": 0,
-    "sent": 0,
+    "last_started_at": "16/04/2026 às 23:04",
+    "last_finished_at": "16/04/2026 às 23:07",
+    "last_success_at": "16/04/2026 às 23:07",
+    "status": "ok",
+    "summary": "12 enviada(s) com sucesso",
+    "processed": 12,
+    "sent": 12,
     "failed": 0,
     "pending_count": 0,
     "last_error": ""
   },
   "global": {
-    "last_offer_title": "15% OFF em todo o site",
-    "last_offer_at": "16/04/2026 às 22:47",
-    "last_offer_id": "pnx-15-off-em-todo-o-site",
-    "last_offer_link": "https://t.me/c/3723320790/480"
+    "last_offer_title": "2 cervejas pelo preço de 1",
+    "last_offer_at": "16/04/2026 às 23:07",
+    "last_offer_id": "pnx-2-cervejas-pelo-preco-de-1",
+    "last_offer_link": "https://t.me/c/3723320790/492"
   }
 }
