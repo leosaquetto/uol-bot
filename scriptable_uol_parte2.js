@@ -1,14 +1,16 @@
 // scriptable uol - parte 2/3
 // lê stage1, busca detalhes, grava detail + stage2
 
-const GITHUB_TOKEN = "OCULTO"
+const GITHUB_TOKEN_FALLBACK = "OCULTO"
+const GITHUB_TOKEN_KEYCHAIN_KEY = "uol_bot_github_token"
 const REPO_OWNER = "leosaquetto"
 const REPO_NAME = "uol-bot"
 const TARGET_BRANCH = "main"
 
 const BASE_URL = "https://clube.uol.com.br"
 const LIST_URL = `${BASE_URL}/?order=new`
-const MAX_DETAIL_FETCHES = 12
+const DEFAULT_MAX_DETAIL_FETCHES = 12
+const MAX_RUNTIME_SECONDS = 85
 const MAX_RETRIES = 3
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
 
@@ -18,6 +20,29 @@ function brDate(d = new Date()) { return `${pad(d.getDate())}/${pad(d.getMonth()
 function brTime(d = new Date()) { return `${pad(d.getHours())}:${pad(d.getMinutes())}` }
 function brDateTime(d = new Date()) { return `${brDate(d)} às ${brTime(d)}` }
 function normalizeLink(url) { return String(url || "").trim() }
+function getGithubToken() {
+  try {
+    const fallback = String(GITHUB_TOKEN_FALLBACK || "").trim()
+    if (fallback && fallback !== "OCULTO") {
+      if (typeof Keychain !== "undefined") {
+        const current = Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY) ? String(Keychain.get(GITHUB_TOKEN_KEYCHAIN_KEY) || "").trim() : ""
+        if (current !== fallback) Keychain.set(GITHUB_TOKEN_KEYCHAIN_KEY, fallback)
+      }
+      return fallback
+    }
+
+    if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
+      const fromKeychain = String(Keychain.get(GITHUB_TOKEN_KEYCHAIN_KEY) || "").trim()
+      if (fromKeychain) return fromKeychain
+    }
+  } catch (e) {}
+  return ""
+}
+const GITHUB_TOKEN = getGithubToken()
+async function sleepMs(ms) {
+  const seconds = Math.max(0.01, Number(ms || 0) / 1000)
+  return await new Promise(resolve => Timer.schedule(seconds, false, () => resolve()))
+}
 function toBase64(str) { return Data.fromString(str).toBase64String() }
 function githubApiUrl(path) { return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}` }
 function normalizeOfferKey(value) {
@@ -25,6 +50,25 @@ function normalizeOfferKey(value) {
   if (!raw) return ""
   const tail = raw.startsWith("http://") || raw.startsWith("https://") ? raw.split("?")[0].replace(/\/$/, "").split("/").pop() : raw
   return String(tail || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-+|-+$/g, "")
+}
+function clampInt(value, fallback, minV = 1, maxV = 30) {
+  const n = Number(value)
+  if (!Number.isFinite(n)) return fallback
+  const i = Math.trunc(n)
+  if (i < minV) return minV
+  if (i > maxV) return maxV
+  return i
+}
+function resolveDetailLimitFromShortcut() {
+  try {
+    const p = args.shortcutParameter
+    if (typeof p === "number" || typeof p === "string") return clampInt(p, DEFAULT_MAX_DETAIL_FETCHES)
+    if (p && typeof p === "object") {
+      const fromObj = p.max_detail_fetches ?? p.detail_limit ?? p.maxDetails ?? p.max
+      return clampInt(fromObj, DEFAULT_MAX_DETAIL_FETCHES)
+    }
+  } catch (e) {}
+  return DEFAULT_MAX_DETAIL_FETCHES
 }
 
 function getIcloudPath() {
@@ -57,7 +101,15 @@ async function withRetries(label, fn, retries = MAX_RETRIES) {
     } catch (e) {
       lastErr = String(e)
       log(`⚠️ ${label} tentativa ${i}/${retries}: ${lastErr}`)
-      if (i < retries) await new Promise(r => setTimeout(r, 800 * i))
+      if (/bad credentials|status\"?:\"?401|401/i.test(lastErr)) {
+        try {
+          if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
+            Keychain.remove(GITHUB_TOKEN_KEYCHAIN_KEY)
+          }
+        } catch (inner) {}
+        return { ok: false, error: `${label} falhou por autenticação GitHub (401). Verifique o token usado pelas 3 partes.` }
+      }
+      if (i < retries) await sleepMs(800 * i)
     }
   }
   return { ok: false, error: `${label} esgotou tentativas: ${lastErr}` }
@@ -76,17 +128,36 @@ async function githubGetJson(path) {
   } catch (e) { return { ok: false, error: String(e) } }
 }
 async function githubPutFile(path, content, message) {
-  const existing = await githubGetJson(path)
-  const req = new Request(githubApiUrl(path))
-  req.method = "PUT"
-  req.headers = { "User-Agent": "Scriptable", "Accept": "application/vnd.github+json", "Authorization": `token ${String(GITHUB_TOKEN || "").trim()}`, "Content-Type": "application/json" }
-  const body = { message, content: toBase64(content), branch: TARGET_BRANCH }
-  if (existing.ok && !existing.notFound && existing.sha) body.sha = existing.sha
-  req.body = JSON.stringify(body)
-  try {
-    const resp = await req.loadJSON()
-    return (resp && resp.commit) ? { ok: true, data: resp } : { ok: false, error: `github sem commit: ${JSON.stringify(resp)}` }
-  } catch (e) { return { ok: false, error: String(e) } }
+  let lastErr = ""
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const existing = await githubGetJson(path)
+    const req = new Request(githubApiUrl(path))
+    req.method = "PUT"
+    req.headers = { "User-Agent": "Scriptable", "Accept": "application/vnd.github+json", "Authorization": `token ${String(GITHUB_TOKEN || "").trim()}`, "Content-Type": "application/json" }
+    const body = { message, content: toBase64(content), branch: TARGET_BRANCH }
+    if (existing.ok && !existing.notFound && existing.sha) body.sha = existing.sha
+    req.body = JSON.stringify(body)
+
+    try {
+      const resp = await req.loadJSON()
+      if (resp && resp.commit) return { ok: true, data: resp }
+      const status = String(resp?.status || "")
+      const msg = String(resp?.message || "")
+      lastErr = `github sem commit: ${JSON.stringify(resp)}`
+      if (status === "409" || msg.includes("expected")) {
+        await sleepMs(350 * attempt)
+        continue
+      }
+      return { ok: false, error: lastErr }
+    } catch (e) {
+      lastErr = String(e)
+      if (attempt < 3) {
+        await sleepMs(350 * attempt)
+        continue
+      }
+    }
+  }
+  return { ok: false, error: lastErr || "github put falhou sem detalhe" }
 }
 
 async function fetchText(url, referer = BASE_URL + "/", timeout = 15) {
@@ -131,18 +202,41 @@ function extractDescriptionFromDetail(html) {
   }
   return ""
 }
+function isBadOfferImageUrl(url) {
+  const src = String(url || "").toLowerCase()
+  if (!src) return true
+  return (
+    src.includes("/parceiros/") ||
+    src.includes("loader.gif") ||
+    src.includes("/static/images/clubes/uol/categorias/") ||
+    src.includes("ingressosexclusivos-hover") ||
+    src.includes("ingressos-hover") ||
+    src.includes("icone") ||
+    src.includes("icon-")
+  )
+}
 function extractDetailImageFromDetail(html) {
+  const metaCandidates = [
+    (html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) || [])[1] || "",
+    (html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) || [])[1] || "",
+  ]
+  for (const raw of metaCandidates) {
+    const src = absolutizeUrl(raw || "")
+    if (!isBadOfferImageUrl(src)) return { url: src, source: "meta" }
+  }
+
   const matches = [...html.matchAll(/<img[^>]+(?:data-src|data-original|data-lazy|src)="([^"]+)"/gi)]
   for (const m of matches) {
     const src = absolutizeUrl(m[1] || "")
-    if (src.includes("/beneficios/") || src.includes("/campanhasdeingresso/") || src.includes("/teatro") || src.includes("cloudfront")) return src
+    if (isBadOfferImageUrl(src)) continue
+    if (src.includes("/beneficios/") || src.includes("/campanhasdeingresso/") || src.includes("/teatro") || src.includes("cloudfront")) return { url: src, source: "priority_img" }
   }
   for (const m of matches) {
     const src = absolutizeUrl(m[1] || "")
-    if (!src || src.includes("/parceiros/") || src.includes("loader.gif")) continue
-    return src
+    if (isBadOfferImageUrl(src)) continue
+    return { url: src, source: "fallback_img" }
   }
-  return ""
+  return { url: "", source: "none" }
 }
 
 async function fetchOfferDetailData(offer) {
@@ -152,10 +246,12 @@ async function fetchOfferDetailData(offer) {
     const title = extractTitleFromDetail(html) || offer.title
     const validity = extractValidityFromDetail(html)
     const description = extractDescriptionFromDetail(html)
-    const detail_img_url = extractDetailImageFromDetail(html)
-    return { ok: true, title, html_length: html.length, validity, description, detail_img_url, error: "" }
+    const detail_image = extractDetailImageFromDetail(html) || {}
+    const detail_img_url = String(detail_image.url || "")
+    const detail_img_source = String(detail_image.source || "none")
+    return { ok: true, title, html_length: html.length, validity, description, detail_img_url, detail_img_source, error: "" }
   } catch (e) {
-    return { ok: false, title: offer.title, html_length: 0, validity: "", description: "", detail_img_url: "", error: String(e) }
+    return { ok: false, title: offer.title, html_length: 0, validity: "", description: "", detail_img_url: "", detail_img_source: "error", error: String(e) }
   }
 }
 
@@ -193,7 +289,10 @@ async function main() {
     if (snapshotId !== String(state.snapshot_id)) throw new Error("snapshot_id inconsistente entre estado e stage1")
 
     const newOffers = Array.isArray(stage1.new_offers) ? stage1.new_offers : []
-    const offersToTest = newOffers.slice(0, MAX_DETAIL_FETCHES)
+    const shortcutDetailLimit = resolveDetailLimitFromShortcut()
+    const stateDetailLimit = clampInt(state.max_detail_fetches, shortcutDetailLimit)
+    const detailLimit = stateDetailLimit
+    const offersToTest = newOffers.slice(0, detailLimit)
     const detailMetaPath = `snapshots/detail_${snapshotId}.json`
     const stage2Path = `snapshots/stage2_${snapshotId}.json`
 
@@ -202,9 +301,14 @@ async function main() {
     let okCount = 0
 
     for (let i = 0; i < offersToTest.length; i++) {
+      const elapsedSeconds = (new Date().getTime() - startedAtGlobal.getTime()) / 1000
+      if (elapsedSeconds >= MAX_RUNTIME_SECONDS) {
+        log(`⏱️ limite de tempo atingido (${Math.trunc(elapsedSeconds)}s), encerrando detalhes em ${i}/${offersToTest.length}`)
+        break
+      }
       const offer = offersToTest[i]
       const detail = await withRetries(`detalhe ${i + 1}`, () => fetchOfferDetailData(offer))
-      const d = detail.ok === false ? { ok: false, title: offer.title, validity: "", description: "", detail_img_url: "", html_length: 0, error: detail.error || "falhou" } : detail
+      const d = detail.ok === false ? { ok: false, title: offer.title, validity: "", description: "", detail_img_url: "", detail_img_source: "failed", html_length: 0, error: detail.error || "falhou" } : detail
       if (d.ok) okCount += 1
 
       pendingToAppend.push({
@@ -219,6 +323,7 @@ async function main() {
         partner_name: offer.partner_name || "",
         partner_img_url: offer.partner_img_url || "",
         img_url: d.detail_img_url || offer.img_url || "",
+        img_source: d.detail_img_source || (offer.img_url ? "card_img" : "none"),
         created_at: new Date().toISOString(),
         snapshot_id: snapshotId,
       })
@@ -236,6 +341,7 @@ async function main() {
         has_description: !!d.description,
         detail_status: d.ok ? ((d.title && d.validity && d.description) ? "complete" : "partial") : "failed",
         detail_img_url: d.detail_img_url || "",
+        detail_img_source: d.detail_img_source || "none",
         error: d.error || "",
       })
     }
@@ -243,9 +349,9 @@ async function main() {
     const detailMeta = {
       snapshot_id: snapshotId,
       tested_at: new Date().toISOString(),
-      tested_count: offersToTest.length,
+      tested_count: detailResults.length,
       detail_ok_count: okCount,
-      detail_fail_count: offersToTest.length - okCount,
+      detail_fail_count: detailResults.length - okCount,
       sold_out_detected_count: Array.isArray(stage1.sold_out_updates) ? stage1.sold_out_updates.length : 0,
       offers: detailResults,
     }
@@ -254,7 +360,7 @@ async function main() {
       snapshot_id: snapshotId,
       created_at: new Date().toISOString(),
       pending_to_append: pendingToAppend,
-      stats: { tested_count: offersToTest.length, detail_ok_count: okCount },
+      stats: { tested_count: detailResults.length, detail_ok_count: okCount, detail_limit: detailLimit },
     }
 
     const saves = await Promise.all([
@@ -268,13 +374,13 @@ async function main() {
 
     await updateScriptableStatusRuntime({
       statusValue: "parcial",
-      summary: `parte2 ok: ${snapshotId} | detalhes ${okCount}/${offersToTest.length}`,
+      summary: `parte2 ok: ${snapshotId} | detalhes ${okCount}/${pendingToAppend.length} (limite ${detailLimit})`,
       offersSeen: Number(stage1.stats?.total_offers || 0),
       newOffers: Number(stage1.stats?.total_new || 0),
       pendingCount: pendingToAppend.length,
     })
 
-    return `ok_parte2 | snapshot ${snapshotId} | detalhes ${okCount}/${offersToTest.length}`
+    return `ok_parte2 | snapshot ${snapshotId} | detalhes ${okCount}/${pendingToAppend.length} | limite ${detailLimit}`
   } catch (e) {
     const msg = String(e && e.message ? e.message : e)
     await updateScriptableStatusRuntime({ statusValue: "erro", summary: "parte2 com erro", offersSeen: 0, newOffers: 0, pendingCount: 0, lastError: msg })
