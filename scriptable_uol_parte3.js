@@ -1,7 +1,8 @@
 // scriptable uol - parte 3/3
 // consolida pending + sold_out + status final
 
-const GITHUB_TOKEN = "OCULTO"
+const GITHUB_TOKEN_FALLBACK = "OCULTO"
+const GITHUB_TOKEN_KEYCHAIN_KEY = "uol_bot_github_token"
 const REPO_OWNER = "leosaquetto"
 const REPO_NAME = "uol-bot"
 const TARGET_BRANCH = "main"
@@ -14,6 +15,21 @@ function brDate(d = new Date()) { return `${pad(d.getDate())}/${pad(d.getMonth()
 function brTime(d = new Date()) { return `${pad(d.getHours())}:${pad(d.getMinutes())}` }
 function brDateTime(d = new Date()) { return `${brDate(d)} às ${brTime(d)}` }
 function normalizeLink(url) { return String(url || "").trim() }
+function getGithubToken() {
+  try {
+    if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
+      const fromKeychain = String(Keychain.get(GITHUB_TOKEN_KEYCHAIN_KEY) || "").trim()
+      if (fromKeychain) return fromKeychain
+    }
+    const fallback = String(GITHUB_TOKEN_FALLBACK || "").trim()
+    if (fallback && fallback !== "OCULTO") {
+      if (typeof Keychain !== "undefined") Keychain.set(GITHUB_TOKEN_KEYCHAIN_KEY, fallback)
+      return fallback
+    }
+  } catch (e) {}
+  return ""
+}
+const GITHUB_TOKEN = getGithubToken()
 async function sleepMs(ms) {
   const seconds = Math.max(0.01, Number(ms || 0) / 1000)
   return await new Promise(resolve => Timer.schedule(seconds, false, () => resolve()))
@@ -57,6 +73,9 @@ async function withRetries(label, fn, retries = MAX_RETRIES) {
     } catch (e) {
       lastErr = String(e)
       log(`⚠️ ${label} tentativa ${i}/${retries}: ${lastErr}`)
+      if (/bad credentials|status\"?:\"?401|401/i.test(lastErr)) {
+        return { ok: false, error: `${label} falhou por autenticação GitHub (401). Verifique o token usado pelas 3 partes.` }
+      }
       if (i < retries) await sleepMs(800 * i)
     }
   }
