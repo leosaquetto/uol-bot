@@ -9,7 +9,8 @@ const TARGET_BRANCH = "main"
 
 const BASE_URL = "https://clube.uol.com.br"
 const LIST_URL = `${BASE_URL}/?order=new`
-const MAX_DETAIL_FETCHES = 12
+const DEFAULT_MAX_DETAIL_FETCHES = 12
+const MAX_RUNTIME_SECONDS = 85
 const MAX_RETRIES = 3
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
 
@@ -49,6 +50,25 @@ function normalizeOfferKey(value) {
   if (!raw) return ""
   const tail = raw.startsWith("http://") || raw.startsWith("https://") ? raw.split("?")[0].replace(/\/$/, "").split("/").pop() : raw
   return String(tail || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-+|-+$/g, "")
+}
+function clampInt(value, fallback, minV = 1, maxV = 30) {
+  const n = Number(value)
+  if (!Number.isFinite(n)) return fallback
+  const i = Math.trunc(n)
+  if (i < minV) return minV
+  if (i > maxV) return maxV
+  return i
+}
+function resolveDetailLimitFromShortcut() {
+  try {
+    const p = args.shortcutParameter
+    if (typeof p === "number" || typeof p === "string") return clampInt(p, DEFAULT_MAX_DETAIL_FETCHES)
+    if (p && typeof p === "object") {
+      const fromObj = p.max_detail_fetches ?? p.detail_limit ?? p.maxDetails ?? p.max
+      return clampInt(fromObj, DEFAULT_MAX_DETAIL_FETCHES)
+    }
+  } catch (e) {}
+  return DEFAULT_MAX_DETAIL_FETCHES
 }
 
 function getIcloudPath() {
@@ -269,7 +289,10 @@ async function main() {
     if (snapshotId !== String(state.snapshot_id)) throw new Error("snapshot_id inconsistente entre estado e stage1")
 
     const newOffers = Array.isArray(stage1.new_offers) ? stage1.new_offers : []
-    const offersToTest = newOffers.slice(0, MAX_DETAIL_FETCHES)
+    const shortcutDetailLimit = resolveDetailLimitFromShortcut()
+    const stateDetailLimit = clampInt(state.max_detail_fetches, shortcutDetailLimit)
+    const detailLimit = stateDetailLimit
+    const offersToTest = newOffers.slice(0, detailLimit)
     const detailMetaPath = `snapshots/detail_${snapshotId}.json`
     const stage2Path = `snapshots/stage2_${snapshotId}.json`
 
@@ -278,6 +301,11 @@ async function main() {
     let okCount = 0
 
     for (let i = 0; i < offersToTest.length; i++) {
+      const elapsedSeconds = (new Date().getTime() - startedAtGlobal.getTime()) / 1000
+      if (elapsedSeconds >= MAX_RUNTIME_SECONDS) {
+        log(`⏱️ limite de tempo atingido (${Math.trunc(elapsedSeconds)}s), encerrando detalhes em ${i}/${offersToTest.length}`)
+        break
+      }
       const offer = offersToTest[i]
       const detail = await withRetries(`detalhe ${i + 1}`, () => fetchOfferDetailData(offer))
       const d = detail.ok === false ? { ok: false, title: offer.title, validity: "", description: "", detail_img_url: "", detail_img_source: "failed", html_length: 0, error: detail.error || "falhou" } : detail
@@ -321,9 +349,9 @@ async function main() {
     const detailMeta = {
       snapshot_id: snapshotId,
       tested_at: new Date().toISOString(),
-      tested_count: offersToTest.length,
+      tested_count: detailResults.length,
       detail_ok_count: okCount,
-      detail_fail_count: offersToTest.length - okCount,
+      detail_fail_count: detailResults.length - okCount,
       sold_out_detected_count: Array.isArray(stage1.sold_out_updates) ? stage1.sold_out_updates.length : 0,
       offers: detailResults,
     }
@@ -332,7 +360,7 @@ async function main() {
       snapshot_id: snapshotId,
       created_at: new Date().toISOString(),
       pending_to_append: pendingToAppend,
-      stats: { tested_count: offersToTest.length, detail_ok_count: okCount },
+      stats: { tested_count: detailResults.length, detail_ok_count: okCount, detail_limit: detailLimit },
     }
 
     const saves = await Promise.all([
@@ -346,13 +374,13 @@ async function main() {
 
     await updateScriptableStatusRuntime({
       statusValue: "parcial",
-      summary: `parte2 ok: ${snapshotId} | detalhes ${okCount}/${offersToTest.length}`,
+      summary: `parte2 ok: ${snapshotId} | detalhes ${okCount}/${pendingToAppend.length} (limite ${detailLimit})`,
       offersSeen: Number(stage1.stats?.total_offers || 0),
       newOffers: Number(stage1.stats?.total_new || 0),
       pendingCount: pendingToAppend.length,
     })
 
-    return `ok_parte2 | snapshot ${snapshotId} | detalhes ${okCount}/${offersToTest.length}`
+    return `ok_parte2 | snapshot ${snapshotId} | detalhes ${okCount}/${pendingToAppend.length} | limite ${detailLimit}`
   } catch (e) {
     const msg = String(e && e.message ? e.message : e)
     await updateScriptableStatusRuntime({ statusValue: "erro", summary: "parte2 com erro", offersSeen: 0, newOffers: 0, pendingCount: 0, lastError: msg })
