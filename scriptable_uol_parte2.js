@@ -177,15 +177,38 @@ function extractDescriptionFromDetail(html) {
   }
   return ""
 }
+function isBadOfferImageUrl(url) {
+  const src = String(url || "").toLowerCase()
+  if (!src) return true
+  return (
+    src.includes("/parceiros/") ||
+    src.includes("loader.gif") ||
+    src.includes("/static/images/clubes/uol/categorias/") ||
+    src.includes("ingressosexclusivos-hover") ||
+    src.includes("ingressos-hover") ||
+    src.includes("icone") ||
+    src.includes("icon-")
+  )
+}
 function extractDetailImageFromDetail(html) {
+  const metaCandidates = [
+    (html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) || [])[1] || "",
+    (html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) || [])[1] || "",
+  ]
+  for (const raw of metaCandidates) {
+    const src = absolutizeUrl(raw || "")
+    if (!isBadOfferImageUrl(src)) return src
+  }
+
   const matches = [...html.matchAll(/<img[^>]+(?:data-src|data-original|data-lazy|src)="([^"]+)"/gi)]
   for (const m of matches) {
     const src = absolutizeUrl(m[1] || "")
+    if (isBadOfferImageUrl(src)) continue
     if (src.includes("/beneficios/") || src.includes("/campanhasdeingresso/") || src.includes("/teatro") || src.includes("cloudfront")) return src
   }
   for (const m of matches) {
     const src = absolutizeUrl(m[1] || "")
-    if (!src || src.includes("/parceiros/") || src.includes("loader.gif")) continue
+    if (isBadOfferImageUrl(src)) continue
     return src
   }
   return ""
