@@ -98,6 +98,11 @@ async function withRetries(label, fn, retries = MAX_RETRIES) {
       lastErr = String(e)
       log(`⚠️ ${label} tentativa ${i}/${retries}: ${lastErr}`)
       if (/bad credentials|status\"?:\"?401|401/i.test(lastErr)) {
+        try {
+          if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
+            Keychain.remove(GITHUB_TOKEN_KEYCHAIN_KEY)
+          }
+        } catch (inner) {}
         return { ok: false, error: `${label} falhou por autenticação GitHub (401). Verifique o token usado pelas 3 partes.` }
       }
       if (i < retries) await sleepMs(800 * i)
@@ -335,6 +340,13 @@ async function main() {
     const pendingData = pendingResp.ok && pendingResp.data ? pendingResp.data : { offers: [] }
     const latestData = latestResp.ok && latestResp.data ? latestResp.data : { offers: [] }
     const historyData = historyResp.ok && historyResp.data ? historyResp.data : { ids: [] }
+
+    const authErrors = [pendingResp, latestResp, historyResp]
+      .filter(x => !x.ok && /autenticação github|401/i.test(String(x.error || "")))
+      .map(x => String(x.error || ""))
+    if (authErrors.length > 0) {
+      throw new Error(authErrors[0])
+    }
 
     const htmlResp = await withRetries("fetch vitrine", () => fetchText(LIST_URL, BASE_URL + "/", 20).then(x => ({ ok: true, html: x })))
     if (!htmlResp.ok || !htmlResp.html) throw new Error(htmlResp.error || "html vazia")

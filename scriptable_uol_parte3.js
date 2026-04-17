@@ -78,6 +78,11 @@ async function withRetries(label, fn, retries = MAX_RETRIES) {
       lastErr = String(e)
       log(`⚠️ ${label} tentativa ${i}/${retries}: ${lastErr}`)
       if (/bad credentials|status\"?:\"?401|401/i.test(lastErr)) {
+        try {
+          if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
+            Keychain.remove(GITHUB_TOKEN_KEYCHAIN_KEY)
+          }
+        } catch (inner) {}
         return { ok: false, error: `${label} falhou por autenticação GitHub (401). Verifique o token usado pelas 3 partes.` }
       }
       if (i < retries) await sleepMs(800 * i)
