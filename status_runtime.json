@@ -1,14 +1,14 @@
 {
   "scriptable": {
-    "last_started_at": "16/04/2026 às 21:54",
-    "last_finished_at": "16/04/2026 às 21:54",
-    "last_success_at": "12/04/2026 às 21:00",
-    "status": "erro",
-    "summary": "parte1 com erro",
-    "offers_seen": 0,
-    "new_offers": 0,
+    "last_started_at": "16/04/2026 às 21:58",
+    "last_finished_at": "16/04/2026 às 21:58",
+    "last_success_at": "16/04/2026 às 21:58",
+    "status": "parcial",
+    "summary": "parte1 ok: 20260416_215813_iqc5o | vitrine 48 | novas 25",
+    "offers_seen": 48,
+    "new_offers": 25,
     "pending_count": 0,
-    "last_error": "Can't find variable: new_offers"
+    "last_error": ""
   },
   "scraper": {
     "last_success_at": ""
