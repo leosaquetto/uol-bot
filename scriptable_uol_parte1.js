@@ -334,7 +334,7 @@ async function main() {
     const stageData = {
       snapshot_id: snapshotId,
       created_at: new Date().toISOString(),
-      new_offers,
+      new_offers: newOffers,
       sold_out_updates: soldOutUpdates,
       stats: { total_offers: allOffers.length, total_new: newOffers.length },
     }
