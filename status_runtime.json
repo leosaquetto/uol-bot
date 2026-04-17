@@ -1,21 +1,21 @@
 {
   "scriptable": {
-    "last_started_at": "17/04/2026 às 13:00",
+    "last_started_at": "17/04/2026 às 12:30",
     "last_finished_at": "17/04/2026 às 13:00",
-    "last_success_at": "17/04/2026 às 13:00",
-    "status": "parcial",
-    "summary": "parte1 ok: 20260417_130002_s3d7w | vitrine 48 | novas 1",
-    "offers_seen": 48,
-    "new_offers": 1,
+    "last_success_at": "17/04/2026 às 11:30",
+    "status": "erro",
+    "summary": "parte1 com erro",
+    "offers_seen": 0,
+    "new_offers": 0,
     "pending_count": 0,
-    "last_error": ""
+    "last_error": "upload html esgotou tentativas: Error: github sem commit: {\"message\":\"Invalid request.\\n\\n\\\"sha\\\" wasn't supplied.\",\"status\":\"422\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\"}"
   },
   "scraper": {
     "last_success_at": ""
   },
   "consumer": {
     "last_started_at": "17/04/2026 às 10:30",
-    "last_finished_at": "17/04/2026 às 13:00",
+    "last_finished_at": "17/04/2026 às 12:43",
     "last_success_at": "17/04/2026 às 09:44",
     "status": "sem_novidade",
     "summary": "pending vazio",
