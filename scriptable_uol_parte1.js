@@ -301,7 +301,6 @@ async function main() {
 
   try {
     const seenCache = await loadSeenCache()
-    const seenSet = new Set(seenCache.seen)
     let todayState = await loadTodayState()
 
     const [pendingResp, latestResp, historyResp] = await Promise.all([
@@ -330,7 +329,7 @@ async function main() {
     const newOffers = allOffers.filter(o => {
       const link = normalizeLink(o.link)
       const key = normalizeOfferKey(link)
-      return !!(link && key && !seenSet.has(link) && !processedKeys.has(key))
+      return !!(link && key && !processedKeys.has(key))
     })
 
     const meta = {
