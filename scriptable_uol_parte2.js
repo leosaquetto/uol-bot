@@ -21,14 +21,18 @@ function brDateTime(d = new Date()) { return `${brDate(d)} às ${brTime(d)}` }
 function normalizeLink(url) { return String(url || "").trim() }
 function getGithubToken() {
   try {
+    const fallback = String(GITHUB_TOKEN_FALLBACK || "").trim()
+    if (fallback && fallback !== "OCULTO") {
+      if (typeof Keychain !== "undefined") {
+        const current = Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY) ? String(Keychain.get(GITHUB_TOKEN_KEYCHAIN_KEY) || "").trim() : ""
+        if (current !== fallback) Keychain.set(GITHUB_TOKEN_KEYCHAIN_KEY, fallback)
+      }
+      return fallback
+    }
+
     if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
       const fromKeychain = String(Keychain.get(GITHUB_TOKEN_KEYCHAIN_KEY) || "").trim()
       if (fromKeychain) return fromKeychain
-    }
-    const fallback = String(GITHUB_TOKEN_FALLBACK || "").trim()
-    if (fallback && fallback !== "OCULTO") {
-      if (typeof Keychain !== "undefined") Keychain.set(GITHUB_TOKEN_KEYCHAIN_KEY, fallback)
-      return fallback
     }
   } catch (e) {}
   return ""
