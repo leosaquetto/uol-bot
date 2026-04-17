@@ -22,6 +22,8 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
 DASHBOARD_CHAT_ID = os.environ.get("DASHBOARD_CHAT_ID") or GRUPO_COMENTARIO_ID or TELEGRAM_CHAT_ID
+ENABLE_SOLD_OUT_UNDERLINE = str(os.environ.get("ENABLE_SOLD_OUT_UNDERLINE") or "").strip().lower() in {"1", "true", "yes", "on"}
+ENABLE_AGGRESSIVE_HASHTAGS = str(os.environ.get("ENABLE_AGGRESSIVE_HASHTAGS") or "").strip().lower() in {"1", "true", "yes", "on"}
 
 HISTORY_FILE = "historico_leouol.json"
 PENDING_FILE = "pending_offers.json"
@@ -78,6 +80,14 @@ HASHTAG_PRIORITY = [
     "#educacao",
     "#eletrodomesticoseletronicos",
 ]
+
+AGGRESSIVE_HASHTAG_HINTS = {
+    "#comerbeber": ["ifood", "restaurante", "hamburguer", "pizza", "cupom", "desconto em comida"],
+    "#entretenimentoviagens": ["viagem", "hotel", "hospedagem", "passagem", "turismo"],
+    "#compraspresentes": ["presente", "joia", "perfume", "relogio", "relógio"],
+    "#eletrodomesticoseletronicos": ["notebook", "smartphone", "fone", "tv", "monitor", "airfryer"],
+    "#servicos": ["consulta", "servico", "serviço", "assistencia", "assistência"],
+}
 
 HTTP_HEADERS = {
     "User-Agent": (
@@ -368,6 +378,7 @@ def load_daily_log() -> Dict:
         "last_new_offer_at": "",
         "pending_count": 0,
         "last_consumer_run": "",
+        "sold_out_edited_today": 0,
         "lines": [],
     }
     if not path.exists():
@@ -386,6 +397,7 @@ def load_daily_log() -> Dict:
         "last_new_offer_at": str(data.get("last_new_offer_at") or ""),
         "pending_count": int(data.get("pending_count") or 0),
         "last_consumer_run": str(data.get("last_consumer_run") or ""),
+        "sold_out_edited_today": int(data.get("sold_out_edited_today") or 0),
         "lines": [str(x) for x in lines][-30:],
     }
 
@@ -630,6 +642,7 @@ def build_dashboard_text(state: Dict) -> str:
     last_offer_at = str(global_status.get("last_offer_at") or state.get("last_new_offer_at") or "").strip() or "—"
     last_offer_link = str(global_status.get("last_offer_link") or "").strip()
     pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
+    sold_out_edited_today = int(state.get("sold_out_edited_today") or 0)
 
     lines = [
         f"📊 <b>Monitor Clube Uol ({escape_html(now_br().strftime('%H:%M'))})</b>",
@@ -647,6 +660,7 @@ def build_dashboard_text(state: Dict) -> str:
         f"⏳ {escape_html(silence_since_text())}",
         "",
         f"📦 Fila de processamento: {escape_html(pending_label)}",
+        f"🧷 Esgotadas editadas hoje: {sold_out_edited_today}",
         "",
         f"🌤️ Humor do sistema: {escape_html(mood_text())}",
         f"🧭 Leitura do ambiente: {escape_html(environment_text())}",
@@ -811,21 +825,53 @@ def set_dashboard_last_consumer_run() -> None:
     sync_daily_dashboard(state)
 
 
+def increment_dashboard_sold_out_count(delta: int) -> None:
+    if int(delta or 0) <= 0:
+        return
+    state = load_daily_log()
+    if state["date"] != now_br_date():
+        state["previous_message_id"] = state.get("message_id")
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = []
+        state["sold_out_edited_today"] = 0
+    state["sold_out_edited_today"] = int(state.get("sold_out_edited_today") or 0) + int(delta)
+    sync_daily_dashboard(state)
+
+
 def build_smart_hashtags(title: str, description: str, link: str) -> List[str]:
-    title_text = (title or "").lower()
-    full_text = f"{title}\n{description}".lower()
+    title_text = str(title or "")
+    full_text = f"{title}\n{description}"
+    title_text_lower = title_text.lower()
+    full_text_lower = full_text.lower()
+    title_norm = normalize_text_key(title_text)
+    full_norm = normalize_text_key(full_text)
+
+    def keyword_in_text(keyword: str, text_lower: str, text_norm: str) -> bool:
+        kw = str(keyword or "").strip()
+        if not kw:
+            return False
+        kw_lower = kw.lower()
+        kw_norm = normalize_text_key(kw)
+        return (kw_lower in text_lower) or (kw_norm in text_norm)
+
     tags = []
 
     if "/campanhasdeingresso/" in (link or "").lower():
         tags.append("#campanhasdeingresso")
 
     for tag, keywords in HASHTAG_RULES_BODY.items():
-        if any(kw.lower() in full_text for kw in keywords):
+        if any(keyword_in_text(kw, full_text_lower, full_norm) for kw in keywords):
             tags.append(tag)
 
     for tag, keywords in HASHTAG_RULES_TITLE_ONLY.items():
-        if any(kw.lower() in title_text for kw in keywords):
+        if any(keyword_in_text(kw, title_text_lower, title_norm) for kw in keywords):
             tags.append(tag)
+
+    if ENABLE_AGGRESSIVE_HASHTAGS:
+        for tag, keywords in AGGRESSIVE_HASHTAG_HINTS.items():
+            if any(keyword_in_text(kw, full_text_lower, full_norm) for kw in keywords):
+                tags.append(tag)
 
     seen = set()
     ordered = []
@@ -912,7 +958,8 @@ def build_main_caption(
         body.append(f"📅 {escape_html(val)}")
 
     if str(sold_out_at or "").strip():
-        body.append(f"❌ Oferta esgotada às {escape_html(str(sold_out_at).strip())}.")
+        sold_out_label = "<u>esgotada</u>" if ENABLE_SOLD_OUT_UNDERLINE else "esgotada"
+        body.append(f"❌ Oferta {sold_out_label} às {escape_html(str(sold_out_at).strip())}.")
 
     body.append(f"🔗 {escape_html(link)}")
 
@@ -930,6 +977,21 @@ def split_description_sections(description: str) -> List[str]:
     desc = clean_multiline_text(description)
     if not desc:
         return []
+
+    inline_markers = [
+        "Sobre a Turnê:",
+        "Sobre a Turne:",
+        "Data do Show:",
+        "Benefício:",
+        "Beneficio:",
+        "Como utilizar:",
+        "Como resgatar:",
+        "Regras:",
+        "Endereço",
+        "Endereco",
+    ]
+    for marker in inline_markers:
+        desc = re.sub(rf"\s*({re.escape(marker)})", r"\n\n\1", desc, flags=re.I)
 
     desc = re.sub(r"\s*•\s*", "\n• ", desc)
     desc = re.sub(r"(?i)\s*(Atenção,\s*Assinante UOL!)", r"\n\n\1", desc)
@@ -950,10 +1012,13 @@ def split_description_sections(description: str) -> List[str]:
             current = []
 
     section_starts = [
+        "sobre a turnê:",
+        "sobre a turne:",
         "sobre o parceiro:",
         "sobre a cacau show:",
         "benefício:",
         "beneficio:",
+        "como utilizar:",
         "regras:",
         "regras do benefício:",
         "regras do beneficio:",
@@ -1032,6 +1097,26 @@ def beautify_section(section: str) -> str:
         if rest:
             rendered.append(escape_html(rest))
         return "\n\n".join(rendered)
+
+    if low.startswith("sobre a turnê") or low.startswith("sobre a turne"):
+        title, rest = split_label(raw)
+        return f"🎤 <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"🎤 <b>{escape_html(title)}:</b>"
+
+    if low.startswith("benefício") or low.startswith("beneficio"):
+        title, rest = split_label(raw)
+        return f"🎁 <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"🎁 <b>{escape_html(title)}:</b>"
+
+    if low.startswith("como utilizar") or low.startswith("como resgatar"):
+        title, rest = split_label(raw)
+        return f"🧭 <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"🧭 <b>{escape_html(title)}:</b>"
+
+    if low.startswith("regras"):
+        title, rest = split_label(raw)
+        return f"📜 <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"📜 <b>{escape_html(title)}:</b>"
+
+    if low.startswith("endereço") or low.startswith("endereco"):
+        title, rest = split_label(raw)
+        return f"📍 <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"📍 <b>{escape_html(title)}:</b>"
 
     if low.startswith("•"):
         bullets = []
@@ -1458,13 +1543,14 @@ def mark_offer_success(history: Dict[str, List[str]], offer: Dict) -> None:
         history.setdefault("dedupe_keys", []).append(dedupe_key)
 
 
-def refresh_sent_offers_with_sold_out() -> None:
+def refresh_sent_offers_with_sold_out() -> int:
     latest = safe_json_load(Path(LATEST_FILE), {"last_update": None, "offers": []})
     offers = latest.get("offers", [])
     if not isinstance(offers, list):
-        return
+        return 0
 
     changed = False
+    edited_count = 0
     for offer in offers:
         sold_out_at = str(offer.get("sold_out_at") or "").strip()
         message_id = offer.get("channel_message_id")
@@ -1500,6 +1586,7 @@ def refresh_sent_offers_with_sold_out() -> None:
             if resp.ok:
                 offer["_sold_out_synced_to_telegram"] = True
                 changed = True
+                edited_count += 1
             else:
                 log(f"falha ao editar oferta esgotada no telegram: {resp.text}")
         except Exception as e:
@@ -1512,6 +1599,7 @@ def refresh_sent_offers_with_sold_out() -> None:
             json.dumps(latest, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
+    return edited_count
 
 
 def consume_pending() -> int:
@@ -1519,7 +1607,10 @@ def consume_pending() -> int:
         log("❌ variáveis TELEGRAM_TOKEN, TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórias")
         return 1
 
-    refresh_sent_offers_with_sold_out()
+    sold_out_edited = refresh_sent_offers_with_sold_out()
+    if sold_out_edited > 0:
+        increment_dashboard_sold_out_count(sold_out_edited)
+        append_dashboard_line("consumer", f"🧷 {sold_out_edited} oferta(s) marcada(s) como esgotada(s)")
 
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
