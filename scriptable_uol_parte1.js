@@ -23,6 +23,10 @@ function brDate(d = new Date()) { return `${pad(d.getDate())}/${pad(d.getMonth()
 function brTime(d = new Date()) { return `${pad(d.getHours())}:${pad(d.getMinutes())}` }
 function brDateTime(d = new Date()) { return `${brDate(d)} às ${brTime(d)}` }
 function normalizeLink(url) { return String(url || "").trim() }
+async function sleepMs(ms) {
+  const seconds = Math.max(0.01, Number(ms || 0) / 1000)
+  return await new Promise(resolve => Timer.schedule(seconds, false, () => resolve()))
+}
 
 function buildSnapshotId() {
   const d = new Date()
@@ -73,7 +77,7 @@ async function withRetries(label, fn, retries = MAX_RETRIES) {
     } catch (e) {
       lastErr = String(e)
       log(`⚠️ ${label} tentativa ${i}/${retries}: ${lastErr}`)
-      if (i < retries) await new Promise(r => setTimeout(r, 800 * i))
+      if (i < retries) await sleepMs(800 * i)
     }
   }
   return { ok: false, error: `${label} esgotou tentativas: ${lastErr}` }
@@ -330,7 +334,7 @@ async function main() {
     const stageData = {
       snapshot_id: snapshotId,
       created_at: new Date().toISOString(),
-      new_offers,
+      new_offers: newOffers,
       sold_out_updates: soldOutUpdates,
       stats: { total_offers: allOffers.length, total_new: newOffers.length },
     }
