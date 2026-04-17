@@ -1,7 +1,8 @@
 // scriptable uol - parte 1/3
 // coleta vitrine + snapshot/meta + estágio para parte 2
 
-const GITHUB_TOKEN = "OCULTO"
+const GITHUB_TOKEN_FALLBACK = "OCULTO"
+const GITHUB_TOKEN_KEYCHAIN_KEY = "uol_bot_github_token"
 const REPO_OWNER = "leosaquetto"
 const REPO_NAME = "uol-bot"
 const TARGET_BRANCH = "main"
@@ -23,6 +24,25 @@ function brDate(d = new Date()) { return `${pad(d.getDate())}/${pad(d.getMonth()
 function brTime(d = new Date()) { return `${pad(d.getHours())}:${pad(d.getMinutes())}` }
 function brDateTime(d = new Date()) { return `${brDate(d)} às ${brTime(d)}` }
 function normalizeLink(url) { return String(url || "").trim() }
+function getGithubToken() {
+  try {
+    const fallback = String(GITHUB_TOKEN_FALLBACK || "").trim()
+    if (fallback && fallback !== "OCULTO") {
+      if (typeof Keychain !== "undefined") {
+        const current = Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY) ? String(Keychain.get(GITHUB_TOKEN_KEYCHAIN_KEY) || "").trim() : ""
+        if (current !== fallback) Keychain.set(GITHUB_TOKEN_KEYCHAIN_KEY, fallback)
+      }
+      return fallback
+    }
+
+    if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
+      const fromKeychain = String(Keychain.get(GITHUB_TOKEN_KEYCHAIN_KEY) || "").trim()
+      if (fromKeychain) return fromKeychain
+    }
+  } catch (e) {}
+  return ""
+}
+const GITHUB_TOKEN = getGithubToken()
 async function sleepMs(ms) {
   const seconds = Math.max(0.01, Number(ms || 0) / 1000)
   return await new Promise(resolve => Timer.schedule(seconds, false, () => resolve()))
@@ -77,6 +97,14 @@ async function withRetries(label, fn, retries = MAX_RETRIES) {
     } catch (e) {
       lastErr = String(e)
       log(`⚠️ ${label} tentativa ${i}/${retries}: ${lastErr}`)
+      if (/bad credentials|status\"?:\"?401|401/i.test(lastErr)) {
+        try {
+          if (typeof Keychain !== "undefined" && Keychain.contains(GITHUB_TOKEN_KEYCHAIN_KEY)) {
+            Keychain.remove(GITHUB_TOKEN_KEYCHAIN_KEY)
+          }
+        } catch (inner) {}
+        return { ok: false, error: `${label} falhou por autenticação GitHub (401). Verifique o token usado pelas 3 partes.` }
+      }
       if (i < retries) await sleepMs(800 * i)
     }
   }
@@ -103,24 +131,41 @@ async function githubGetJson(path) {
 }
 
 async function githubPutFile(path, content, message) {
-  const existing = await githubGetJson(path)
-  const req = new Request(githubApiUrl(path))
-  req.method = "PUT"
-  req.headers = {
-    "User-Agent": "Scriptable",
-    "Accept": "application/vnd.github+json",
-    "Authorization": `token ${String(GITHUB_TOKEN || "").trim()}`,
-    "Content-Type": "application/json",
+  let lastErr = ""
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const existing = await githubGetJson(path)
+    const req = new Request(githubApiUrl(path))
+    req.method = "PUT"
+    req.headers = {
+      "User-Agent": "Scriptable",
+      "Accept": "application/vnd.github+json",
+      "Authorization": `token ${String(GITHUB_TOKEN || "").trim()}`,
+      "Content-Type": "application/json",
+    }
+    const body = { message, content: toBase64(content), branch: TARGET_BRANCH }
+    if (existing.ok && !existing.notFound && existing.sha) body.sha = existing.sha
+    req.body = JSON.stringify(body)
+
+    try {
+      const resp = await req.loadJSON()
+      if (resp && resp.commit) return { ok: true, data: resp }
+      const status = String(resp?.status || "")
+      const msg = String(resp?.message || "")
+      lastErr = `github sem commit: ${JSON.stringify(resp)}`
+      if (status === "409" || msg.includes("expected")) {
+        await sleepMs(350 * attempt)
+        continue
+      }
+      return { ok: false, error: lastErr }
+    } catch (e) {
+      lastErr = String(e)
+      if (attempt < 3) {
+        await sleepMs(350 * attempt)
+        continue
+      }
+    }
   }
-  const body = { message, content: toBase64(content), branch: TARGET_BRANCH }
-  if (existing.ok && !existing.notFound && existing.sha) body.sha = existing.sha
-  req.body = JSON.stringify(body)
-  try {
-    const resp = await req.loadJSON()
-    return (resp && resp.commit) ? { ok: true, data: resp } : { ok: false, error: `github sem commit: ${JSON.stringify(resp)}` }
-  } catch (e) {
-    return { ok: false, error: String(e) }
-  }
+  return { ok: false, error: lastErr || "github put falhou sem detalhe" }
 }
 
 async function fetchText(url, referer = BASE_URL + "/", timeout = 20) {
@@ -284,7 +329,6 @@ async function main() {
 
   try {
     const seenCache = await loadSeenCache()
-    const seenSet = new Set(seenCache.seen)
     let todayState = await loadTodayState()
 
     const [pendingResp, latestResp, historyResp] = await Promise.all([
@@ -296,6 +340,13 @@ async function main() {
     const pendingData = pendingResp.ok && pendingResp.data ? pendingResp.data : { offers: [] }
     const latestData = latestResp.ok && latestResp.data ? latestResp.data : { offers: [] }
     const historyData = historyResp.ok && historyResp.data ? historyResp.data : { ids: [] }
+
+    const authErrors = [pendingResp, latestResp, historyResp]
+      .filter(x => !x.ok && /autenticação github|401/i.test(String(x.error || "")))
+      .map(x => String(x.error || ""))
+    if (authErrors.length > 0) {
+      throw new Error(authErrors[0])
+    }
 
     const htmlResp = await withRetries("fetch vitrine", () => fetchText(LIST_URL, BASE_URL + "/", 20).then(x => ({ ok: true, html: x })))
     if (!htmlResp.ok || !htmlResp.html) throw new Error(htmlResp.error || "html vazia")
@@ -313,7 +364,7 @@ async function main() {
     const newOffers = allOffers.filter(o => {
       const link = normalizeLink(o.link)
       const key = normalizeOfferKey(link)
-      return !!(link && key && !seenSet.has(link) && !processedKeys.has(key))
+      return !!(link && key && !processedKeys.has(key))
     })
 
     const meta = {
