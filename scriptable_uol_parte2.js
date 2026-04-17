@@ -202,21 +202,21 @@ function extractDetailImageFromDetail(html) {
   ]
   for (const raw of metaCandidates) {
     const src = absolutizeUrl(raw || "")
-    if (!isBadOfferImageUrl(src)) return src
+    if (!isBadOfferImageUrl(src)) return { url: src, source: "meta" }
   }
 
   const matches = [...html.matchAll(/<img[^>]+(?:data-src|data-original|data-lazy|src)="([^"]+)"/gi)]
   for (const m of matches) {
     const src = absolutizeUrl(m[1] || "")
     if (isBadOfferImageUrl(src)) continue
-    if (src.includes("/beneficios/") || src.includes("/campanhasdeingresso/") || src.includes("/teatro") || src.includes("cloudfront")) return src
+    if (src.includes("/beneficios/") || src.includes("/campanhasdeingresso/") || src.includes("/teatro") || src.includes("cloudfront")) return { url: src, source: "priority_img" }
   }
   for (const m of matches) {
     const src = absolutizeUrl(m[1] || "")
     if (isBadOfferImageUrl(src)) continue
-    return src
+    return { url: src, source: "fallback_img" }
   }
-  return ""
+  return { url: "", source: "none" }
 }
 
 async function fetchOfferDetailData(offer) {
@@ -226,10 +226,12 @@ async function fetchOfferDetailData(offer) {
     const title = extractTitleFromDetail(html) || offer.title
     const validity = extractValidityFromDetail(html)
     const description = extractDescriptionFromDetail(html)
-    const detail_img_url = extractDetailImageFromDetail(html)
-    return { ok: true, title, html_length: html.length, validity, description, detail_img_url, error: "" }
+    const detail_image = extractDetailImageFromDetail(html) || {}
+    const detail_img_url = String(detail_image.url || "")
+    const detail_img_source = String(detail_image.source || "none")
+    return { ok: true, title, html_length: html.length, validity, description, detail_img_url, detail_img_source, error: "" }
   } catch (e) {
-    return { ok: false, title: offer.title, html_length: 0, validity: "", description: "", detail_img_url: "", error: String(e) }
+    return { ok: false, title: offer.title, html_length: 0, validity: "", description: "", detail_img_url: "", detail_img_source: "error", error: String(e) }
   }
 }
 
@@ -278,7 +280,7 @@ async function main() {
     for (let i = 0; i < offersToTest.length; i++) {
       const offer = offersToTest[i]
       const detail = await withRetries(`detalhe ${i + 1}`, () => fetchOfferDetailData(offer))
-      const d = detail.ok === false ? { ok: false, title: offer.title, validity: "", description: "", detail_img_url: "", html_length: 0, error: detail.error || "falhou" } : detail
+      const d = detail.ok === false ? { ok: false, title: offer.title, validity: "", description: "", detail_img_url: "", detail_img_source: "failed", html_length: 0, error: detail.error || "falhou" } : detail
       if (d.ok) okCount += 1
 
       pendingToAppend.push({
@@ -293,6 +295,7 @@ async function main() {
         partner_name: offer.partner_name || "",
         partner_img_url: offer.partner_img_url || "",
         img_url: d.detail_img_url || offer.img_url || "",
+        img_source: d.detail_img_source || (offer.img_url ? "card_img" : "none"),
         created_at: new Date().toISOString(),
         snapshot_id: snapshotId,
       })
@@ -310,6 +313,7 @@ async function main() {
         has_description: !!d.description,
         detail_status: d.ok ? ((d.title && d.validity && d.description) ? "complete" : "partial") : "failed",
         detail_img_url: d.detail_img_url || "",
+        detail_img_source: d.detail_img_source || "none",
         error: d.error || "",
       })
     }
