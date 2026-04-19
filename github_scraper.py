@@ -28,6 +28,8 @@ SNAPSHOT_DIR = "snapshots"
 SNAPSHOT_CONTROL_FILE = "snapshots_control.json"
 MAX_PROCESSED_SNAPSHOTS = 5000
 SNAPSHOT_CLEANUP_ENABLED = True
+SNAPSHOT_RETENTION_MIN_RECENT = 20
+SNAPSHOT_RETENTION_HOURS = 24
 
 REQUEST_TIMEOUT = 30
 MAX_HISTORY_IDS = 1500
@@ -585,6 +587,68 @@ def cleanup_snapshot_files(snapshot_id: str, meta: Optional[Dict[str, Any]] = No
             log(f"aviso: não consegui limpar arquivo processado {path}: {e}")
 
 
+def cleanup_old_snapshot_files() -> None:
+    if not SNAPSHOT_CLEANUP_ENABLED:
+        return
+    if not os.path.isdir(SNAPSHOT_DIR):
+        return
+
+    try:
+        now_ts = datetime.now(timezone.utc).timestamp()
+        max_age_seconds = SNAPSHOT_RETENTION_HOURS * 3600
+
+        grouped: Dict[str, Dict[str, Any]] = {}
+        for entry in Path(SNAPSHOT_DIR).iterdir():
+            if not entry.is_file():
+                continue
+
+            name = entry.name
+            snapshot_id = ""
+            if name.startswith("snapshot_") and name.endswith(".json"):
+                snapshot_id = name[len("snapshot_") : -len(".json")]
+            elif name.startswith("snapshot_") and name.endswith(".html"):
+                snapshot_id = name[len("snapshot_") : -len(".html")]
+            elif name.startswith("detail_") and name.endswith(".json"):
+                snapshot_id = name[len("detail_") : -len(".json")]
+
+            if not snapshot_id:
+                continue
+
+            try:
+                mtime = entry.stat().st_mtime
+            except Exception as e:
+                log(f"aviso: não consegui ler mtime de {entry}: {e}")
+                continue
+
+            group = grouped.setdefault(snapshot_id, {"files": [], "latest_mtime": 0.0})
+            group["files"].append(entry)
+            group["latest_mtime"] = max(float(group["latest_mtime"]), float(mtime))
+
+        if not grouped:
+            return
+
+        sorted_ids = sorted(grouped.keys(), key=lambda sid: grouped[sid]["latest_mtime"], reverse=True)
+        keep_ids = set(sorted_ids[:SNAPSHOT_RETENTION_MIN_RECENT])
+        for snapshot_id, group in grouped.items():
+            if (now_ts - float(group["latest_mtime"])) < max_age_seconds:
+                keep_ids.add(snapshot_id)
+
+        removed = 0
+        for snapshot_id, group in grouped.items():
+            if snapshot_id in keep_ids:
+                continue
+            for path in group["files"]:
+                try:
+                    path.unlink()
+                    removed += 1
+                except Exception as e:
+                    log(f"aviso: não consegui apagar snapshot antigo {path}: {e}")
+
+        log(f"limpeza snapshots: removidos {removed} arquivos antigos (retenção: {SNAPSHOT_RETENTION_MIN_RECENT} mais recentes e últimos {SNAPSHOT_RETENTION_HOURS}h)")
+    except Exception as e:
+        log(f"aviso: falha na limpeza de snapshots antigos: {e}")
+
+
 def get_unprocessed_snapshot_ids() -> Tuple[List[str], Dict[str, Any]]:
     control = load_snapshot_control()
     processed = set(control.get("processed_snapshot_ids", []))
@@ -601,7 +665,6 @@ def mark_snapshot_processed(snapshot_id: str, control: Dict[str, Any], meta: Opt
         processed.append(snapshot_id)
     control["processed_snapshot_ids"] = processed[-MAX_PROCESSED_SNAPSHOTS:]
     save_snapshot_control(control)
-    cleanup_snapshot_files(snapshot_id, meta)
 
 
 def status_scraper_start() -> None:
@@ -1093,6 +1156,7 @@ def main() -> None:
             pending_count=len(pending.get("offers", [])),
             last_error="",
         )
+        cleanup_old_snapshot_files()
         return
 
     base_bucket: Dict[str, Dict[str, Any]] = {}
@@ -1178,6 +1242,7 @@ def main() -> None:
             pending_count=len(pending.get("offers", [])),
             last_error="",
         )
+        cleanup_old_snapshot_files()
         return
 
     pending["offers"].extend(candidates)
@@ -1193,6 +1258,7 @@ def main() -> None:
         pending_count=len(pending["offers"]),
         last_error="",
     )
+    cleanup_old_snapshot_files()
 
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")

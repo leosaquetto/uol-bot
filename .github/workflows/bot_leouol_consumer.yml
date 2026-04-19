@@ -54,6 +54,7 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
+          DASHBOARD_CHAT_ID: ${{ secrets.DASHBOARD_CHAT_ID }}
         run: python bot_leouol.py --pending || true
 
       - name: commitar mudanças
