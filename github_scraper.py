@@ -543,11 +543,17 @@ def load_offers_from_snapshot_meta(meta: Optional[Dict[str, Any]]) -> List[Dict[
         normalized.append({
             "id": offer_id,
             "original_link": link,
-            "preview_title": title,
-            "title": title,
+            "preview_title": clean_text(item.get("preview_title") or title),
+            "title": clean_text(item.get("title") or title),
             "link": link,
             "img_url": absolutize_url(item.get("img_url") or item.get("card_img_url") or ""),
+            "detail_img_url": absolutize_url(item.get("detail_img_url") or ""),
             "partner_img_url": absolutize_url(item.get("partner_img_url") or ""),
+            "validity": clean_text(item.get("validity") or ""),
+            "description": clean_text(item.get("description") or ""),
+            "detail_ok": bool(item.get("detail_ok")),
+            "detail_error": clean_text(item.get("detail_error") or ""),
+            "scraped_at": str(item.get("scraped_at") or meta.get("generated_at") or ""),
         })
 
     bucket: Dict[str, Dict[str, Any]] = {}
@@ -1188,6 +1194,13 @@ def main() -> None:
 
         if detail and detail.get("detail_ok"):
             details = normalize_detail_payload(detail, offer)
+        elif (
+            bool(offer.get("detail_ok"))
+            or clean_text(offer.get("validity") or "")
+            or clean_text(offer.get("description") or "")
+            or absolutize_url(offer.get("detail_img_url") or "")
+        ):
+            details = normalize_detail_payload(offer, offer)
         else:
             details = extract_offer_details_live(offer["link"], offer["preview_title"])
             details = normalize_detail_payload(details, offer)

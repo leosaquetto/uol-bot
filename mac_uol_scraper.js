@@ -24,6 +24,7 @@ const DEFAULT_MAX_CARDS = 48;
 const MAX_VISIBLE_OFFERS = 48;
 const DEFAULT_SOLD_OUT_LOOKBACK_DAYS = 3;
 const DEFAULT_SOLD_OUT_MIN_MISSES = 2;
+const DEFAULT_DETAIL_PAGE_TIMEOUT_MS = 12000;
 
 function parseMaxCards(value, fallback = DEFAULT_MAX_CARDS) {
   const n = Number(value);
@@ -45,6 +46,7 @@ function parsePositiveInt(value, fallback) {
 const MAX_CARDS = parseMaxCards(process.env.MAX_CARDS, DEFAULT_MAX_CARDS);
 const SOLD_OUT_LOOKBACK_DAYS = parsePositiveInt(process.env.SOLD_OUT_LOOKBACK_DAYS, DEFAULT_SOLD_OUT_LOOKBACK_DAYS);
 const SOLD_OUT_MIN_MISSES = parsePositiveInt(process.env.SOLD_OUT_MIN_MISSES, DEFAULT_SOLD_OUT_MIN_MISSES);
+const DETAIL_PAGE_TIMEOUT_MS = parsePositiveInt(process.env.DETAIL_PAGE_TIMEOUT_MS, DEFAULT_DETAIL_PAGE_TIMEOUT_MS);
 
 const GITHUB_TOKEN = String(process.env.GITHUB_TOKEN || '').trim();
 const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'leosaquetto';
@@ -343,9 +345,10 @@ async function collectOfferCards(page) {
 }
 
 async function fetchOfferDetailData(page, offer) {
+  const startedAt = Date.now();
   try {
-    await page.goto(offer.link, { waitUntil: 'domcontentloaded', timeout: 45000 });
-    await page.waitForTimeout(1200);
+    await page.goto(offer.link, { waitUntil: 'domcontentloaded', timeout: DETAIL_PAGE_TIMEOUT_MS });
+    await page.waitForTimeout(700);
 
     const detail = await page.evaluate(() => {
       const clean = (s) => String(s || '').replace(/\s+/g, ' ').trim();
@@ -461,6 +464,7 @@ async function fetchOfferDetailData(page, offer) {
       detail_img_url: detailImgUrl,
       detail_img_source: detailImgSource,
       html_length: Number(detail.html_length || 0),
+      elapsed_ms: Date.now() - startedAt,
       error: '',
     };
   } catch (err) {
@@ -472,6 +476,7 @@ async function fetchOfferDetailData(page, offer) {
       detail_img_url: '',
       detail_img_source: 'error',
       html_length: 0,
+      elapsed_ms: Date.now() - startedAt,
       error: cleanText(err && err.message ? err.message : String(err)),
     };
   }
@@ -505,6 +510,7 @@ async function enrichOffers(context, cards) {
       detail_ok: !!detail.ok,
       detail_error: detail.error || '',
       detail_html_length: Number(detail.html_length || 0),
+      detail_elapsed_ms: Number(detail.elapsed_ms || 0),
       scraped_at: new Date().toISOString(),
     });
   }
@@ -536,6 +542,7 @@ async function enrichOffers(context, cards) {
       source: 'mac-playwright',
       target_url: TARGET_URL,
       max_cards_per_round: MAX_CARDS,
+      detail_page_timeout_ms: DETAIL_PAGE_TIMEOUT_MS,
       collected_cards_count: cards.length,
       enriched_offers_count: offers.length,
       detail_ok_count: enrichment.detailOkCount,
