@@ -377,9 +377,13 @@ async function fetchOfferDetailData(page, offer) {
 
       const descriptionSelectors = [
         '.info-beneficio',
+        '#beneficio .info-beneficio',
         '#beneficio',
+        '.descricao-beneficio',
+        '.box-descricao-beneficio',
         '.descricao',
         '.content-beneficio',
+        'section.beneficio',
         'main'
       ];
       let description = '';
@@ -392,11 +396,23 @@ async function fetchOfferDetailData(page, offer) {
       }
 
       const metaOg = document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+      const metaOgSecure = document.querySelector('meta[property="og:image:secure_url"]')?.getAttribute('content') || '';
       const metaTw = document.querySelector('meta[name="twitter:image"]')?.getAttribute('content') || '';
 
       const imageCandidates = [];
+      if (metaOgSecure) imageCandidates.push({ src: metaOgSecure, source: 'meta_og_secure' });
       if (metaOg) imageCandidates.push({ src: metaOg, source: 'meta_og' });
       if (metaTw) imageCandidates.push({ src: metaTw, source: 'meta_twitter' });
+
+      const bgThumb = Array.from(document.querySelectorAll('[data-src*="/beneficios/"], [style*="/beneficios/"]'));
+      for (const node of bgThumb) {
+        const src = node.getAttribute('data-src') || '';
+        if (src) imageCandidates.push({ src, source: 'benefit_data_src' });
+
+        const style = node.getAttribute('style') || '';
+        const match = style.match(/url\((['"]?)(.*?)\1\)/i);
+        if (match && match[2]) imageCandidates.push({ src: match[2], source: 'benefit_style_url' });
+      }
 
       const imgs = Array.from(document.querySelectorAll('img'));
       for (const img of imgs) {
@@ -498,6 +514,7 @@ async function enrichOffers(context, cards) {
 }
 
 (async () => {
+  const runStartedAt = Date.now();
   let browser;
   try {
     browser = await chromium.launchPersistentContext(EDGE_PROFILE_DIR, {
@@ -512,15 +529,20 @@ async function enrichOffers(context, cards) {
     const offers = enrichment.enriched;
     const activeLinksSet = new Set(offers.map((o) => normalizeLink(o.link)).filter(Boolean));
 
+    const runDurationMs = Date.now() - runStartedAt;
+    const detailFailCount = offers.length - enrichment.detailOkCount;
     const payload = {
       ok: true,
       source: 'mac-playwright',
       target_url: TARGET_URL,
-      configured_max_cards: MAX_CARDS,
+      max_cards_per_round: MAX_CARDS,
       collected_cards_count: cards.length,
       enriched_offers_count: offers.length,
       detail_ok_count: enrichment.detailOkCount,
-      detail_fail_count: offers.length - enrichment.detailOkCount,
+      detail_fail_count: detailFailCount,
+      run_duration_ms: runDurationMs,
+      run_duration_seconds: Number((runDurationMs / 1000).toFixed(2)),
+      avg_detail_ms_per_offer: offers.length > 0 ? Math.round(runDurationMs / offers.length) : 0,
       generated_at: new Date().toISOString(),
       host: os.hostname(),
       offers,
@@ -572,7 +594,7 @@ async function enrichOffers(context, cards) {
       throw new Error('GITHUB_TOKEN ausente e REQUIRE_GITHUB_UPLOAD=1');
     }
 
-    console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} repo_path=${GITHUB_TARGET_PATH}`);
+    console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} repo_path=${GITHUB_TARGET_PATH}`);
     process.exit(0);
   } catch (err) {
     console.error(`MAC_FAIL ${cleanText(err && err.message ? err.message : String(err))}`);
