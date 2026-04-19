@@ -15,7 +15,6 @@ const MAX_SEEN_LINKS = 400
 const MAX_RETRIES = 3
 
 const SEEN_CACHE_FILE = "uol_seen_links.json"
-const TODAY_STATE_FILE = "uol_today_state.json"
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
 
 function log(msg) { console.log(`[${new Date().toLocaleTimeString()}] ${msg}`) }
@@ -76,7 +75,6 @@ function getIcloudPaths() {
   return {
     fm,
     seenPath: fm.joinPath(dir, SEEN_CACHE_FILE),
-    todayStatePath: fm.joinPath(dir, TODAY_STATE_FILE),
     pipelineStatePath: fm.joinPath(dir, PIPELINE_STATE_FILE),
   }
 }
@@ -230,32 +228,6 @@ function saveSeenCache(seenLinks) {
   fm.writeString(seenPath, JSON.stringify({ seen: trimmed, updated_at: new Date().toISOString() }, null, 2))
 }
 
-async function loadTodayState() {
-  const { fm, todayStatePath } = getIcloudPaths()
-  const today = brDate()
-  await ensureIcloudFile(todayStatePath, { date: today, active_links: [], sold_out_sent: {} })
-  try {
-    const data = JSON.parse(fm.readString(todayStatePath))
-    if (String(data.date || "") !== today) return { date: today, active_links: [], sold_out_sent: {} }
-    return {
-      date: today,
-      active_links: Array.isArray(data.active_links) ? data.active_links.map(normalizeLink).filter(Boolean) : [],
-      sold_out_sent: data.sold_out_sent && typeof data.sold_out_sent === "object" ? data.sold_out_sent : {},
-    }
-  } catch (e) {
-    return { date: today, active_links: [], sold_out_sent: {} }
-  }
-}
-
-function saveTodayState(state) {
-  const { fm, todayStatePath } = getIcloudPaths()
-  fm.writeString(todayStatePath, JSON.stringify({
-    date: brDate(),
-    active_links: Array.from(new Set((state.active_links || []).map(normalizeLink).filter(Boolean))),
-    sold_out_sent: state.sold_out_sent && typeof state.sold_out_sent === "object" ? state.sold_out_sent : {},
-  }, null, 2))
-}
-
 function savePipelineState(state) {
   const { fm, pipelineStatePath } = getIcloudPaths()
   fm.writeString(pipelineStatePath, JSON.stringify(state, null, 2))
@@ -281,23 +253,6 @@ function collectRepoProcessedKeys(pendingData, latestData, historyData) {
     if (k) processedKeys.add(k)
   }
   return { processedLinks, processedKeys }
-}
-
-function buildSoldOutUpdates(todayState, currentLinks, allowedLinksSet) {
-  const currentSet = new Set(currentLinks.map(normalizeLink))
-  const previousSet = new Set((todayState.active_links || []).map(normalizeLink))
-  const updates = []
-  const now = new Date()
-  for (const link of previousSet) {
-    if (!link || currentSet.has(link) || !allowedLinksSet.has(link)) continue
-    const offerKey = normalizeOfferKey(link)
-    if (!offerKey || (todayState.sold_out_sent && todayState.sold_out_sent[offerKey])) continue
-    updates.push({ link, sold_out_at: brTime(now), date: brDate(now) })
-    if (!todayState.sold_out_sent || typeof todayState.sold_out_sent !== "object") todayState.sold_out_sent = {}
-    todayState.sold_out_sent[offerKey] = brTime(now)
-  }
-  todayState.active_links = Array.from(currentSet)
-  return { updates, todayState }
 }
 
 async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen, newOffers, pendingCount = 0, lastError = "" }) {
@@ -329,8 +284,6 @@ async function main() {
 
   try {
     const seenCache = await loadSeenCache()
-    let todayState = await loadTodayState()
-
     const [pendingResp, latestResp, historyResp] = await Promise.all([
       withRetries("get pending", () => githubGetJson("pending_offers.json")),
       withRetries("get latest", () => githubGetJson("latest_offers.json")),
@@ -355,12 +308,7 @@ async function main() {
     const allOffers = extractOfferCards(html, MAX_OFFERS_FROM_LIST)
     const currentLinks = allOffers.map(o => normalizeLink(o.link)).filter(Boolean)
 
-    const { processedLinks, processedKeys } = collectRepoProcessedKeys(pendingData, latestData, historyData)
-    const allowedLinksSet = new Set([...currentLinks, ...Array.from(processedLinks)])
-    const soldOutResult = buildSoldOutUpdates(todayState, currentLinks, allowedLinksSet)
-    const soldOutUpdates = soldOutResult.updates
-    todayState = soldOutResult.todayState
-
+    const { processedKeys } = collectRepoProcessedKeys(pendingData, latestData, historyData)
     const newOffers = allOffers.filter(o => {
       const link = normalizeLink(o.link)
       const key = normalizeOfferKey(link)
@@ -376,7 +324,6 @@ async function main() {
       html_length: html.length,
       total_offers_found: allOffers.length,
       total_new_offers_found: newOffers.length,
-      sold_out_detected_count: soldOutUpdates.length,
       cache_size_before: seenCache.seen.length,
       current_links: currentLinks,
       offers: allOffers,
@@ -386,7 +333,6 @@ async function main() {
       snapshot_id: snapshotId,
       created_at: new Date().toISOString(),
       new_offers: newOffers,
-      sold_out_updates: soldOutUpdates,
       stats: { total_offers: allOffers.length, total_new: newOffers.length },
     }
 
@@ -400,7 +346,6 @@ async function main() {
 
     const mergedSeen = [...seenCache.seen, ...currentLinks]
     saveSeenCache(mergedSeen)
-    saveTodayState(todayState)
     savePipelineState({
       version: 1,
       last_part: 1,

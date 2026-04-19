@@ -9,7 +9,7 @@ const TARGET_BRANCH = "main"
 
 const BASE_URL = "https://clube.uol.com.br"
 const LIST_URL = `${BASE_URL}/?order=new`
-const DEFAULT_MAX_DETAIL_FETCHES = 12
+const DEFAULT_MAX_DETAIL_FETCHES = 4
 const MAX_RUNTIME_SECONDS = 85
 const MAX_RETRIES = 3
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
@@ -352,7 +352,6 @@ async function main() {
       tested_count: detailResults.length,
       detail_ok_count: okCount,
       detail_fail_count: detailResults.length - okCount,
-      sold_out_detected_count: Array.isArray(stage1.sold_out_updates) ? stage1.sold_out_updates.length : 0,
       offers: detailResults,
     }
 
