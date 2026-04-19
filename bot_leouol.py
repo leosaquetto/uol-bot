@@ -53,15 +53,46 @@ HASHTAG_RULES_BODY = {
 HASHTAG_RULES_TITLE_ONLY = {
     "#servicos": ["terapia"],
     "#beleza": ["depilação", "depilacao", "axilas", "beleza", "barba"],
-    "#comerbeber": ["bloomin onion", "cinnamon oblivion", "vinho", "vinhos", "sobremesa", "restaurante"],
+    "#comerbeber": [
+        "bloomin onion",
+        "cinnamon oblivion",
+        "vinho",
+        "vinhos",
+        "cerveja",
+        "cervejas",
+        "banquete",
+        "jantar",
+        "almoço",
+        "almoco",
+        "sobremesa",
+        "restaurante",
+    ],
+    "#cursos": ["curso", "cursos", "inglês", "ingles", "english"],
     "#compraspresentes": ["ovo de páscoa", "ovo de pascoa", "vivara", "presente"],
-    "#educacao": ["graduações", "graduacoes", "graduação", "graduacao", "ead", "aprender", "enem"],
+    "#educacao": [
+        "curso",
+        "cursos",
+        "inglês",
+        "ingles",
+        "english",
+        "graduações",
+        "graduacoes",
+        "graduação",
+        "graduacao",
+        "pós",
+        "pos",
+        "ead",
+        "aprender",
+        "enem",
+    ],
+    "#viagem": ["viagem", "viagens"],
     "#eletrodomesticoseletronicos": ["dell", "lg", "eletro", "geladeira", "lavadora"],
 }
 
 SILENT_HASHTAGS = {
     "#servicos",
     "#beleza",
+    "#cursos",
     "#educacao",
     "#eletrodomesticoseletronicos",
 }
@@ -74,6 +105,8 @@ HASHTAG_PRIORITY = [
     "#standup",
     "#entretenimentoviagens",
     "#comerbeber",
+    "#viagem",
+    "#cursos",
     "#compraspresentes",
     "#servicos",
     "#beleza",
@@ -643,6 +676,7 @@ def build_dashboard_text(state: Dict) -> str:
     last_offer_link = str(global_status.get("last_offer_link") or "").strip()
     pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
     sold_out_edited_today = int(state.get("sold_out_edited_today") or 0)
+    recent_lines = [str(x).strip() for x in (state.get("lines") or []) if str(x).strip()][-5:]
 
     lines = [
         f"📊 <b>Monitor Clube Uol ({escape_html(now_br().strftime('%H:%M'))})</b>",
@@ -665,6 +699,9 @@ def build_dashboard_text(state: Dict) -> str:
         f"🌤️ Humor do sistema: {escape_html(mood_text())}",
         f"🧭 Leitura do ambiente: {escape_html(environment_text())}",
     ]
+    if recent_lines:
+        lines.extend(["", "📝 Últimos eventos:"])
+        lines.extend([f"• {escape_html(item)}" for item in recent_lines])
 
     return truncate_text("\n".join(lines), MAX_DASHBOARD_LENGTH)
 
@@ -934,6 +971,42 @@ def normalize_validity(validity: Optional[str]) -> str:
     return val
 
 
+def extract_post_location(description: str) -> str:
+    desc = clean_multiline_text(description or "")
+    if not desc:
+        return ""
+
+    city_state_pattern = re.compile(
+        r"([A-Za-zÀ-ÖØ-öø-ÿ'`\- ]+?)\s*[-/]\s*([A-Za-z]{2})(?=$|[.,;)\n])",
+        flags=re.I,
+    )
+
+    for line in desc.splitlines():
+        line_clean = line.strip()
+        if not line_clean:
+            continue
+
+        low = line_clean.lower()
+        if not (low.startswith("local:") or low.startswith("local ")):
+            continue
+
+        line_value = re.sub(r"(?i)^\s*local\s*:?\s*", "", line_clean).strip()
+        if not line_value:
+            return ""
+
+        match = city_state_pattern.search(line_value)
+        if match:
+            city = re.sub(r"\s+", " ", match.group(1).strip(" -.,;"))
+            state = match.group(2).upper()
+            return f"{city} - {state}" if city else state
+
+        state_only = re.search(r"\b([A-Za-z]{2})\b", line_value)
+        if state_only:
+            return state_only.group(1).upper()
+
+    return ""
+
+
 def build_main_caption(
     title: str,
     description: str,
@@ -952,6 +1025,10 @@ def build_main_caption(
 
     if tags:
         body.append(escape_html(" ".join(tags)))
+
+    post_location = extract_post_location(description)
+    if post_location:
+        body.append(f"📍 {escape_html(post_location)}")
 
     val = normalize_validity(validity)
     if val:
