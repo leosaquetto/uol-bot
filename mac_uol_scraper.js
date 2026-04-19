@@ -315,6 +315,24 @@ function isBadOfferImageUrl(url) {
   );
 }
 
+function evaluateDetailQuality(detail) {
+  if (!detail || !detail.ok) return 'failed';
+  const hasTitle = cleanText(detail.title || '').length >= 4;
+  const hasValidity = cleanText(detail.validity || '').length >= 8;
+  const hasDescription = cleanText(detail.description || '').length >= 60;
+  const hasImage = !!normalizeLink(detail.detail_img_url || '');
+
+  if (hasTitle && hasValidity && hasDescription && hasImage) return 'complete';
+  if ((hasValidity && hasDescription) || (hasDescription && hasImage) || (hasValidity && hasImage)) return 'partial';
+  if (hasTitle || hasDescription || hasImage || hasValidity) return 'weak';
+  return 'failed';
+}
+
+function shouldRetryDetail(errorText) {
+  const text = String(errorText || '');
+  return /(timeout|navigation|net::|ERR_|Target closed|Execution context was destroyed)/i.test(text);
+}
+
 async function collectOfferCards(page) {
   await page.goto(TARGET_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
@@ -486,11 +504,21 @@ async function enrichOffers(context, cards) {
   const detailPage = await context.newPage();
   const enriched = [];
   let detailOkCount = 0;
+  const qualityCounts = { complete: 0, partial: 0, weak: 0, failed: 0 };
 
   for (let i = 0; i < cards.length; i++) {
     const card = cards[i];
-    const detail = await fetchOfferDetailData(detailPage, card);
+    let attempts = 1;
+    let detail = await fetchOfferDetailData(detailPage, card);
+    if (!detail.ok && shouldRetryDetail(detail.error)) {
+      attempts = 2;
+      await detailPage.waitForTimeout(250);
+      const retryDetail = await fetchOfferDetailData(detailPage, card);
+      if (retryDetail.ok || !detail.ok) detail = retryDetail;
+    }
     if (detail.ok) detailOkCount += 1;
+    const detailQuality = evaluateDetailQuality(detail);
+    qualityCounts[detailQuality] = Number(qualityCounts[detailQuality] || 0) + 1;
 
     enriched.push({
       id: normalizeOfferKey(card.link),
@@ -508,7 +536,9 @@ async function enrichOffers(context, cards) {
       detail_img_url: detail.detail_img_url || '',
       img_source: detail.detail_img_source || (card.img_url ? 'card_img' : 'none'),
       detail_ok: !!detail.ok,
+      detail_quality: detailQuality,
       detail_error: detail.error || '',
+      detail_attempts: attempts,
       detail_html_length: Number(detail.html_length || 0),
       detail_elapsed_ms: Number(detail.elapsed_ms || 0),
       scraped_at: new Date().toISOString(),
@@ -516,7 +546,7 @@ async function enrichOffers(context, cards) {
   }
 
   await detailPage.close();
-  return { enriched, detailOkCount };
+  return { enriched, detailOkCount, qualityCounts };
 }
 
 (async () => {
@@ -547,6 +577,7 @@ async function enrichOffers(context, cards) {
       enriched_offers_count: offers.length,
       detail_ok_count: enrichment.detailOkCount,
       detail_fail_count: detailFailCount,
+      detail_quality_counts: enrichment.qualityCounts,
       run_duration_ms: runDurationMs,
       run_duration_seconds: Number((runDurationMs / 1000).toFixed(2)),
       avg_detail_ms_per_offer: offers.length > 0 ? Math.round(runDurationMs / offers.length) : 0,
