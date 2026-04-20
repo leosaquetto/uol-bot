@@ -15,7 +15,7 @@ const CACHE_TIME = 2 * 60 * 1000 // 2 min
 
 const MAX_SNAPSHOT_META_FILES = 10
 const MAX_SNAPSHOT_HTML_FILES = 8
-const MAX_DETAIL_JSON_FILES = 12
+const MAX_DETAIL_JSON_FILES = 4
 
 function saveCache(data) {
   try {
@@ -237,7 +237,12 @@ async function fetchOffersFromLatestFile() {
       })
       .filter(Boolean)
 
-    return dedupeOffers(normalized).slice(0, 4)
+    return dedupeOffers(normalized)
+      .sort((a, b) => {
+        if ((b.ts || 0) !== (a.ts || 0)) return (b.ts || 0) - (a.ts || 0)
+        return (a.order || 0) - (b.order || 0)
+      })
+      .slice(0, 4)
   } catch (e) {
     console.log("erro lendo latest_offers: " + e)
     return []
@@ -271,9 +276,19 @@ async function fetchOffersFromSnapshotsHtml(fileList) {
   return unique.slice(0, 4)
 }
 
-async function buildDetailMap(fileList) {
+async function buildDetailMap(fileList, targetLinks = []) {
   const detailFiles = Array.isArray(fileList?.detailFiles) ? fileList.detailFiles : []
   const detailMap = {}
+  const wanted = new Set((Array.isArray(targetLinks) ? targetLinks : []).filter(Boolean))
+  const onlyWanted = wanted.size > 0
+
+  const allWantedFound = () => {
+    if (!onlyWanted) return false
+    for (const link of wanted) {
+      if (!detailMap[link]) return false
+    }
+    return true
+  }
 
   for (const file of detailFiles) {
     try {
@@ -285,6 +300,7 @@ async function buildDetailMap(fileList) {
       for (const o of offers) {
         const link = absolutizeUrl(String(o.link || "").trim())
         if (!link) continue
+        if (onlyWanted && !wanted.has(link)) continue
 
         const current = detailMap[link]
         const candidate = {
@@ -296,6 +312,7 @@ async function buildDetailMap(fileList) {
 
         if (!current || candidate.ts >= current.ts) detailMap[link] = candidate
       }
+      if (allWantedFound()) break
     } catch (e) {
       console.log("erro lendo detail file: " + e)
     }
@@ -320,7 +337,7 @@ async function fetchData() {
 
     if (!cards.length) return cache && Array.isArray(cache.data) ? cache.data : []
 
-    const detailMap = await buildDetailMap(fileList)
+    const detailMap = await buildDetailMap(fileList, cards.map(c => c.link))
 
     const merged = cards.map(card => {
       const detail = detailMap[card.link] || null
@@ -329,7 +346,7 @@ async function fetchData() {
         mainImg: detail?.mainImg ? detail.mainImg : card.mainImg,
         logoImg: detail?.logoImg ? detail.logoImg : card.logoImg,
         link: card.link,
-        ts: detail?.ts ? detail.ts : card.ts,
+        ts: Math.max(detail?.ts || 0, card.ts || 0),
         order: card.order || 0,
       }
     })
