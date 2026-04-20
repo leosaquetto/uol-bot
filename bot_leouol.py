@@ -765,6 +765,10 @@ def telegram_post(method: str, data=None, files=None, retry_429: bool = True) ->
 
 def sync_daily_dashboard(state: Dict) -> None:
     if not TELEGRAM_TOKEN or not DASHBOARD_CHAT_ID:
+        if not TELEGRAM_TOKEN:
+            log("⚠️ dashboard não enviado: TELEGRAM_TOKEN ausente")
+        if not DASHBOARD_CHAT_ID:
+            log("⚠️ dashboard não enviado: DASHBOARD_CHAT_ID ausente (sem fallback de chat configurado)")
         return
 
     state["date"] = now_br_date()
@@ -834,6 +838,9 @@ def sync_daily_dashboard(state: Dict) -> None:
                 return
 
             log(f"⚠️ falha ao editar dashboard atual: {resp.text}")
+            state["message_id"] = None
+            save_daily_log(state)
+            send_new_dashboard_message()
             return
 
         send_new_dashboard_message()
@@ -1663,17 +1670,20 @@ def refresh_sent_offers_with_sold_out() -> int:
 
 
 def consume_pending() -> int:
-    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID or not GRUPO_COMENTARIO_ID:
-        log("❌ variáveis TELEGRAM_TOKEN, TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórias")
+    if not TELEGRAM_TOKEN:
+        log("❌ variável TELEGRAM_TOKEN é obrigatória")
         return 1
-
-    sold_out_edited = refresh_sent_offers_with_sold_out()
-    if sold_out_edited > 0:
-        increment_dashboard_sold_out_count(sold_out_edited)
-        append_dashboard_line("consumer", f"🧷 {sold_out_edited} oferta(s) marcada(s) como esgotada(s)")
 
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
+
+    can_send_offers = bool(TELEGRAM_CHAT_ID and GRUPO_COMENTARIO_ID)
+
+    if can_send_offers:
+        sold_out_edited = refresh_sent_offers_with_sold_out()
+        if sold_out_edited > 0:
+            increment_dashboard_sold_out_count(sold_out_edited)
+            append_dashboard_line("consumer", f"🧷 {sold_out_edited} oferta(s) marcada(s) como esgotada(s)")
 
     if not offers:
         runtime_status = load_status_runtime()
@@ -1699,6 +1709,17 @@ def consume_pending() -> int:
             )
         log("📭 nenhuma oferta pendente")
         return 0
+
+    if not can_send_offers:
+        log(
+            "❌ variáveis TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID são obrigatórias para envio "
+            "das ofertas pendentes"
+        )
+        append_dashboard_line(
+            "consumer",
+            "⚠️ envio pausado: configure TELEGRAM_CHAT_ID e GRUPO_COMENTARIO_ID",
+        )
+        return 1
 
     history = load_history()
     history_ids = set(history.get("ids", []))
