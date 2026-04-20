@@ -23,7 +23,7 @@ BR_TZ = ZoneInfo("America/Sao_Paulo")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
-DASHBOARD_CHAT_ID = os.environ.get("DASHBOARD_CHAT_ID") or TELEGRAM_CHAT_ID or GRUPO_COMENTARIO_ID
+DASHBOARD_CHAT_ID = os.environ.get("DASHBOARD_CHAT_ID") or GRUPO_COMENTARIO_ID
 ENABLE_SOLD_OUT_UNDERLINE = str(os.environ.get("ENABLE_SOLD_OUT_UNDERLINE") or "").strip().lower() in {"1", "true", "yes", "on"}
 ENABLE_AGGRESSIVE_HASHTAGS = str(os.environ.get("ENABLE_AGGRESSIVE_HASHTAGS") or "").strip().lower() in {"1", "true", "yes", "on"}
 
@@ -662,7 +662,7 @@ def build_dashboard_text(state: Dict) -> str:
         if str(consumer.get("status") or "") in {"erro", "parcial"}:
             return "Atenção no consumer"
         if str(scraper.get("status") or "") in {"erro", "parcial"}:
-            return "Atenção no scraper"
+            return "Atenção no scraper do Mac"
         if str(scriptable.get("status") or "") in {"erro", "parcial"}:
             return "Atenção no scriptable"
         return "Tudo calmo"
@@ -703,7 +703,7 @@ def build_dashboard_text(state: Dict) -> str:
         f"📊 <b>Monitor Clube Uol ({escape_html(now_br().strftime('%H:%M'))})</b>",
         "",
         f"📱 Scriptable {escape_html(component_line('scriptable', scriptable))}",
-        f"🤖 Scraper {escape_html(component_line('scraper', scraper))}",
+        f"🍎 Scraper Mac {escape_html(component_line('scraper', scraper))}",
         f"📦 Consumer {escape_html(component_line('consumer', consumer))}",
         "",
         f"🎯 Última captura 🕒 {escape_html(last_offer_at)}",
@@ -783,7 +783,6 @@ def sync_daily_dashboard(state: Dict) -> None:
                 "chat_id": DASHBOARD_CHAT_ID,
                 "text": text,
                 "parse_mode": "HTML",
-                "disable_notification": "true",
                 "disable_web_page_preview": "true",
             },
         )
