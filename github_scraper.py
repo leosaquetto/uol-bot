@@ -1,10 +1,12 @@
 import json
 import os
 import re
+import unicodedata
 from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import unquote, urlparse
 from zoneinfo import ZoneInfo
 
 import certifi
@@ -26,6 +28,7 @@ SOLD_OUT_UPDATES_FILE = "sold_out_updates.json"
 
 SNAPSHOT_DIR = "snapshots"
 SNAPSHOT_CONTROL_FILE = "snapshots_control.json"
+MAC_SNAPSHOT_FILE = os.path.join(SNAPSHOT_DIR, "mac-uol-offers.json")
 MAX_PROCESSED_SNAPSHOTS = 5000
 SNAPSHOT_CLEANUP_ENABLED = True
 SNAPSHOT_RETENTION_MIN_RECENT = 20
@@ -143,8 +146,16 @@ def absolutize_url(url: Optional[str]) -> str:
 
 def get_offer_id(link: str) -> str:
     try:
-        clean_link = str(link).split("?")[0].rstrip("/")
-        return clean_link.split("/")[-1]
+        raw = str(link or "").strip()
+        if not raw:
+            return ""
+        parsed = urlparse(raw)
+        if parsed.scheme and parsed.netloc:
+            path = parsed.path or ""
+        else:
+            path = raw.split("?")[0].split("#")[0]
+        tail = path.rstrip("/").split("/")[-1]
+        return unquote(tail)
     except Exception:
         return str(link or "").strip()
 
@@ -154,17 +165,10 @@ def normalize_text_key(value: Optional[str]) -> str:
     if not raw:
         return ""
 
-    replacements = {
-        "á": "a", "à": "a", "ã": "a", "â": "a",
-        "é": "e", "ê": "e",
-        "í": "i",
-        "ó": "o", "ô": "o", "õ": "o",
-        "ú": "u",
-        "ç": "c",
-    }
-    for src, dst in replacements.items():
-        raw = raw.replace(src, dst)
-
+    raw = unquote(raw)
+    raw = raw.split("?")[0].split("#")[0]
+    raw = unicodedata.normalize("NFD", raw)
+    raw = "".join(ch for ch in raw if unicodedata.category(ch) != "Mn")
     raw = re.sub(r"https?://", "", raw)
     raw = re.sub(r"[^a-z0-9]+", "-", raw)
     raw = re.sub(r"-{2,}", "-", raw)
@@ -475,6 +479,17 @@ def load_snapshot(snapshot_id: str) -> Tuple[Optional[Dict[str, Any]], Optional[
         return meta, None
 
 
+def load_mac_snapshot_meta() -> Optional[Dict[str, Any]]:
+    if not os.path.exists(MAC_SNAPSHOT_FILE):
+        return None
+    data = load_json(MAC_SNAPSHOT_FILE, None)
+    if not isinstance(data, dict):
+        return None
+    if not isinstance(data.get("offers"), list):
+        return None
+    return data
+
+
 def load_detail_for_snapshot(snapshot_id: str) -> Dict[str, Dict[str, Any]]:
     path = os.path.join(SNAPSHOT_DIR, f"detail_{snapshot_id}.json")
     data = load_json(path, {})
@@ -543,11 +558,17 @@ def load_offers_from_snapshot_meta(meta: Optional[Dict[str, Any]]) -> List[Dict[
         normalized.append({
             "id": offer_id,
             "original_link": link,
-            "preview_title": title,
-            "title": title,
+            "preview_title": clean_text(item.get("preview_title") or title),
+            "title": clean_text(item.get("title") or title),
             "link": link,
             "img_url": absolutize_url(item.get("img_url") or item.get("card_img_url") or ""),
+            "detail_img_url": absolutize_url(item.get("detail_img_url") or ""),
             "partner_img_url": absolutize_url(item.get("partner_img_url") or ""),
+            "validity": clean_text(item.get("validity") or ""),
+            "description": clean_text(item.get("description") or ""),
+            "detail_ok": bool(item.get("detail_ok")),
+            "detail_error": clean_text(item.get("detail_error") or ""),
+            "scraped_at": str(item.get("scraped_at") or meta.get("generated_at") or ""),
         })
 
     bucket: Dict[str, Dict[str, Any]] = {}
@@ -1106,9 +1127,15 @@ def main() -> None:
     pending_keys, pending_dedupe, pending_loose = extract_pending_sets(pending)
 
     snapshot_ids, snapshot_control = get_unprocessed_snapshot_ids()
+    mac_meta = load_mac_snapshot_meta()
+    mac_offers = load_offers_from_snapshot_meta(mac_meta) if mac_meta else []
+
     if snapshot_ids:
         log(f"snapshots pendentes encontrados: {len(snapshot_ids)}")
-    else:
+    if mac_offers:
+        log(f"snapshot mac disponível: {len(mac_offers)} ofertas enriquecidas")
+
+    if not snapshot_ids and not mac_offers:
         status_scraper_finish(
             summary="sem snapshots pendentes" + (" | esgotadas atualizadas" if sold_out_changed else ""),
             status_value="sem_novidade",
@@ -1122,6 +1149,9 @@ def main() -> None:
     all_offers: List[Dict[str, Any]] = []
     loaded_snapshot_ids: List[str] = []
     snapshot_meta_map: Dict[str, Optional[Dict[str, Any]]] = {}
+
+    if mac_offers:
+        all_offers.extend(mac_offers)
 
     for snapshot_id in snapshot_ids:
         meta, html = load_snapshot(snapshot_id)
@@ -1188,6 +1218,13 @@ def main() -> None:
 
         if detail and detail.get("detail_ok"):
             details = normalize_detail_payload(detail, offer)
+        elif (
+            bool(offer.get("detail_ok"))
+            or clean_text(offer.get("validity") or "")
+            or clean_text(offer.get("description") or "")
+            or absolutize_url(offer.get("detail_img_url") or "")
+        ):
+            details = normalize_detail_payload(offer, offer)
         else:
             details = extract_offer_details_live(offer["link"], offer["preview_title"])
             details = normalize_detail_payload(details, offer)

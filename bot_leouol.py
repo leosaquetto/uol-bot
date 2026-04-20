@@ -8,10 +8,12 @@ import os
 import re
 import sys
 import time
+import unicodedata
 from datetime import datetime, timezone
 from html import unescape
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
+from urllib.parse import unquote, urlparse
 from zoneinfo import ZoneInfo
 
 import requests
@@ -231,17 +233,10 @@ def normalize_text_key(value: Optional[str]) -> str:
     if not raw:
         return ""
 
-    replacements = {
-        "á": "a", "à": "a", "ã": "a", "â": "a",
-        "é": "e", "ê": "e",
-        "í": "i",
-        "ó": "o", "ô": "o", "õ": "o",
-        "ú": "u",
-        "ç": "c",
-    }
-    for src, dst in replacements.items():
-        raw = raw.replace(src, dst)
-
+    raw = unquote(raw)
+    raw = raw.split("?")[0].split("#")[0]
+    raw = unicodedata.normalize("NFD", raw)
+    raw = "".join(ch for ch in raw if unicodedata.category(ch) != "Mn")
     raw = re.sub(r"https?://", "", raw)
     raw = re.sub(r"[^a-z0-9]+", "-", raw)
     raw = re.sub(r"-{2,}", "-", raw)
@@ -251,19 +246,45 @@ def normalize_text_key(value: Optional[str]) -> str:
 
 def get_offer_id(link: str) -> str:
     try:
-        clean_link = str(link).split("?")[0].rstrip("/")
-        return clean_link.split("/")[-1]
+        raw = str(link or "").strip()
+        if not raw:
+            return ""
+        parsed = urlparse(raw)
+        if parsed.scheme and parsed.netloc:
+            path = parsed.path or ""
+        else:
+            path = raw.split("?")[0].split("#")[0]
+        return unquote(path.rstrip("/").split("/")[-1])
     except Exception:
         return str(link or "").strip()
 
 
-def normalize_offer_key(value: str) -> str:
+def normalize_offer_key_base(value: str) -> str:
     raw = str(value or "").strip()
     if not raw:
         return ""
     if raw.startswith("http://") or raw.startswith("https://"):
         raw = get_offer_id(raw)
     return normalize_text_key(raw)
+
+
+def slug_tail_variants(value: str) -> Set[str]:
+    base = normalize_offer_key_base(value)
+    if not base:
+        return set()
+
+    variants = {base}
+    if "joo" in base:
+        variants.add(base.replace("joo", "joao"))
+    if "joao" in base:
+        variants.add(base.replace("joao", "joo"))
+    variants.add(base.replace("-de-", "-"))
+    return {x for x in variants if x}
+
+
+def normalize_offer_key(value: str) -> str:
+    variants = sorted(slug_tail_variants(value))
+    return variants[0] if variants else ""
 
 
 def build_dedupe_key(title: str, validity: Optional[str], description: str) -> str:

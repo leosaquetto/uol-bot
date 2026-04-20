@@ -1,5 +1,5 @@
 // scriptable uol - parte 3/3
-// consolida pending + sold_out + status final
+// consolida pending + status final
 
 const GITHUB_TOKEN_FALLBACK = "OCULTO"
 const GITHUB_TOKEN_KEYCHAIN_KEY = "uol_bot_github_token"
@@ -43,8 +43,35 @@ function githubApiUrl(path) { return `https://api.github.com/repos/${REPO_OWNER}
 function normalizeOfferKey(value) {
   const raw = normalizeLink(value)
   if (!raw) return ""
-  const tail = raw.startsWith("http://") || raw.startsWith("https://") ? raw.split("?")[0].replace(/\/$/, "").split("/").pop() : raw
-  return String(tail || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-+|-+$/g, "")
+
+  let tail = raw
+  if (raw.startsWith("http://") || raw.startsWith("https://")) {
+    const noHash = raw.split("#")[0]
+    const noQuery = noHash.split("?")[0]
+    tail = noQuery.replace(/\/$/, "").split("/").pop() || ""
+  }
+
+  let decoded = ""
+  try {
+    decoded = decodeURIComponent(String(tail || ""))
+  } catch (e) {
+    decoded = String(tail || "")
+  }
+
+  const base = decoded
+    .toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+
+  if (!base) return ""
+
+  const variants = new Set([base, base.replace(/-de-/g, "-")])
+  if (base.includes("joo")) variants.add(base.replace(/joo/g, "joao"))
+  if (base.includes("joao")) variants.add(base.replace(/joao/g, "joo"))
+
+  return Array.from(variants).filter(Boolean).sort()[0] || ""
 }
 
 function getIcloudPath() {
@@ -149,30 +176,6 @@ function dedupeOffersByLink(items) {
   return out
 }
 
-async function mergeAndUploadSoldOutUpdates(newUpdates) {
-  if (!Array.isArray(newUpdates) || newUpdates.length === 0) return { ok: true, count: 0 }
-  const current = await githubGetJson("sold_out_updates.json")
-  let existing = { updated_at: "", updates: [] }
-  if (current.ok && current.data) existing = current.data
-
-  const merged = Array.isArray(existing.updates) ? [...existing.updates] : []
-  const known = new Set(merged.map(x => `${normalizeOfferKey(x.link)}|${String(x.date || "").trim()}`))
-
-  let added = 0
-  for (const item of newUpdates) {
-    const key = `${normalizeOfferKey(item.link)}|${String(item.date || "").trim()}`
-    if (!key || known.has(key)) continue
-    known.add(key)
-    merged.push(item)
-    added += 1
-  }
-
-  const payload = { updated_at: new Date().toISOString(), updates: merged }
-  const save = await githubPutFile("sold_out_updates.json", JSON.stringify(payload, null, 2), `scriptable sold out updates ${new Date().toISOString()}`)
-  if (!save.ok) return { ok: false, error: save.error, count: 0 }
-  return { ok: true, count: added }
-}
-
 async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen, newOffers, pendingCount = 0, lastError = "" }) {
   const resp = await githubGetJson("status_runtime.json")
   let status = { scriptable: {}, scraper: {}, consumer: {}, global: {} }
@@ -225,15 +228,12 @@ async function main() {
     const pendingSave = await withRetries("upload pending", () => githubPutFile("pending_offers.json", JSON.stringify(pendingPayload, null, 2), `scriptable pending update ${snapshotId}`))
     if (!pendingSave.ok) throw new Error(pendingSave.error || "falha pending")
 
-    const soldOutUpdates = Array.isArray(stage1.sold_out_updates) ? stage1.sold_out_updates : []
-    const soldOutSave = await withRetries("upload sold_out", () => mergeAndUploadSoldOutUpdates(soldOutUpdates))
-
     const totalOffers = Number(stage1.stats?.total_offers || 0)
     const totalNew = Number(stage1.stats?.total_new || 0)
     const detailsOk = Number(stage2.stats?.detail_ok_count || 0)
     const detailsTotal = Number(stage2.stats?.tested_count || 0)
 
-    const statusValue = (!soldOutSave.ok) ? "parcial" : (totalNew > 0 ? "ok" : "sem_novidade")
+    const statusValue = totalNew > 0 ? "ok" : "sem_novidade"
     const summary = `pipeline 3 partes ok: ${snapshotId} | vitrine ${totalOffers} | novas ${totalNew} | detalhes ${detailsOk}/${detailsTotal} | pending+ ${pendingToAppend.length}`
 
     await updateScriptableStatusRuntime({
@@ -242,11 +242,11 @@ async function main() {
       offersSeen: totalOffers,
       newOffers: totalNew,
       pendingCount: mergedPending.length,
-      lastError: soldOutSave.ok ? "" : String(soldOutSave.error || "falha sold_out"),
+      lastError: "",
     })
 
     savePipelineState({ ...state, last_part: 3, finished_at: new Date().toISOString() })
-    return `ok_parte3 | snapshot ${snapshotId} | pending ${mergedPending.length} | sold_out ${soldOutSave.ok ? soldOutSave.count : 0}`
+    return `ok_parte3 | snapshot ${snapshotId} | pending ${mergedPending.length}`
   } catch (e) {
     const msg = String(e && e.message ? e.message : e)
     await updateScriptableStatusRuntime({ statusValue: "erro", summary: "parte3 com erro", offersSeen: 0, newOffers: 0, pendingCount: 0, lastError: msg })

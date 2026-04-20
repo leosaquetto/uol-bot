@@ -9,7 +9,7 @@ const TARGET_BRANCH = "main"
 
 const BASE_URL = "https://clube.uol.com.br"
 const LIST_URL = `${BASE_URL}/?order=new`
-const DEFAULT_MAX_DETAIL_FETCHES = 12
+const DEFAULT_MAX_DETAIL_FETCHES = 4
 const MAX_RUNTIME_SECONDS = 85
 const MAX_RETRIES = 3
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
@@ -48,8 +48,35 @@ function githubApiUrl(path) { return `https://api.github.com/repos/${REPO_OWNER}
 function normalizeOfferKey(value) {
   const raw = normalizeLink(value)
   if (!raw) return ""
-  const tail = raw.startsWith("http://") || raw.startsWith("https://") ? raw.split("?")[0].replace(/\/$/, "").split("/").pop() : raw
-  return String(tail || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-+|-+$/g, "")
+
+  let tail = raw
+  if (raw.startsWith("http://") || raw.startsWith("https://")) {
+    const noHash = raw.split("#")[0]
+    const noQuery = noHash.split("?")[0]
+    tail = noQuery.replace(/\/$/, "").split("/").pop() || ""
+  }
+
+  let decoded = ""
+  try {
+    decoded = decodeURIComponent(String(tail || ""))
+  } catch (e) {
+    decoded = String(tail || "")
+  }
+
+  const base = decoded
+    .toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+
+  if (!base) return ""
+
+  const variants = new Set([base, base.replace(/-de-/g, "-")])
+  if (base.includes("joo")) variants.add(base.replace(/joo/g, "joao"))
+  if (base.includes("joao")) variants.add(base.replace(/joao/g, "joo"))
+
+  return Array.from(variants).filter(Boolean).sort()[0] || ""
 }
 function clampInt(value, fallback, minV = 1, maxV = 30) {
   const n = Number(value)
@@ -352,7 +379,6 @@ async function main() {
       tested_count: detailResults.length,
       detail_ok_count: okCount,
       detail_fail_count: detailResults.length - okCount,
-      sold_out_detected_count: Array.isArray(stage1.sold_out_updates) ? stage1.sold_out_updates.length : 0,
       offers: detailResults,
     }
 
