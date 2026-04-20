@@ -75,37 +75,37 @@ function normalizeLink(url) {
 }
 
 function normalizeOfferKey(value) {
-  const raw = normalizeLink(value)
-  if (!raw) return ""
+  const raw = normalizeLink(value);
+  if (!raw) return '';
 
-  let tail = raw
-  if (raw.startsWith("http://") || raw.startsWith("https://")) {
-    const noHash = raw.split("#")[0]
-    const noQuery = noHash.split("?")[0]
-    tail = noQuery.replace(/\/$/, "").split("/").pop() || ""
+  let tail = raw;
+  if (raw.startsWith('http://') || raw.startsWith('https://')) {
+    const noHash = raw.split('#')[0];
+    const noQuery = noHash.split('?')[0];
+    tail = noQuery.replace(/\/$/, '').split('/').pop() || '';
   }
 
-  let decoded = ""
+  let decoded = '';
   try {
-    decoded = decodeURIComponent(String(tail || ""))
+    decoded = decodeURIComponent(String(tail || ''));
   } catch (e) {
-    decoded = String(tail || "")
+    decoded = String(tail || '');
   }
 
   const base = decoded
     .toLowerCase()
-    .normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 
-  if (!base) return ""
+  if (!base) return '';
 
-  const variants = new Set([base, base.replace(/-de-/g, "-")])
-  if (base.includes("joo")) variants.add(base.replace(/joo/g, "joao"))
-  if (base.includes("joao")) variants.add(base.replace(/joao/g, "joo"))
+  const variants = new Set([base, base.replace(/-de-/g, '-')]);
+  if (base.includes('joo')) variants.add(base.replace(/joo/g, 'joao'));
+  if (base.includes('joao')) variants.add(base.replace(/joao/g, 'joo'));
 
-  return Array.from(variants).filter(Boolean).sort()[0] || ""
+  return Array.from(variants).filter(Boolean).sort()[0] || '';
 }
 
 function pad(n) {
