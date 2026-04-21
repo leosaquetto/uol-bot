@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 109675,
-  "run_duration_seconds": 109.67,
-  "avg_detail_ms_per_offer": 2285,
-  "generated_at": "2026-04-20T23:02:55.829Z",
+  "run_duration_ms": 109799,
+  "run_duration_seconds": 109.8,
+  "avg_detail_ms_per_offer": 2287,
+  "generated_at": "2026-04-21T00:01:55.027Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,9 +39,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124959,
-      "detail_elapsed_ms": 2529,
-      "scraped_at": "2026-04-20T23:01:26.987Z"
+      "detail_html_length": 125975,
+      "detail_elapsed_ms": 2232,
+      "scraped_at": "2026-04-21T00:00:28.962Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -62,9 +62,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131215,
-      "detail_elapsed_ms": 2228,
-      "scraped_at": "2026-04-20T23:01:29.248Z"
+      "detail_html_length": 132365,
+      "detail_elapsed_ms": 2389,
+      "scraped_at": "2026-04-21T00:00:31.369Z"
     },
     {
       "id": "pok-ofertas-de-ltima-hora-25-off-extra",
@@ -85,55 +85,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132031,
-      "detail_elapsed_ms": 1959,
-      "scraped_at": "2026-04-20T23:01:31.209Z"
-    },
-    {
-      "id": "poj-festival-de-guarda-roupa-com-at-20-off",
-      "link": "https://clube.uol.com.br/carrefour/poj-festival-de-guarda-roupa-com-at-20-off",
-      "original_link": "https://clube.uol.com.br/carrefour/poj-festival-de-guarda-roupa-com-at-20-off",
-      "title": "Festival de guarda-roupa com até 20% OFF",
-      "preview_title": "Festival de guarda-roupa com até 20% OFF",
-      "validity": "Benefício válido de 16/04/2026 15:23 até 20/04/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos o Carrefour, uma das maiores redes de varejo do mundo, oferecendo uma ampla variedade de produtos que vão desde alimentos até itens para casa, tecnologia e moda. Nosso compromisso é proporcionar praticidade, economia e uma experiência de compra completa para o seu dia a dia. Benefício: Até 20% OFF no Festival de Guarda-Roupa Regras: Descontos aplicados automaticamente em produtos selecionados da campanha Festival de Guarda-Roupa no site. Não é necessário utilizar cupom. Oferta válida por tempo limitado ou enquanto durarem os estoques. Não cumulativo com outras promoções.",
-      "category": "Compras e Presentes",
-      "partner_name": "Carrefour",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-carrefour.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/817150c5d87dc1f351d9d10c2bd01d58.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/817150c5d87dc1f351d9d10c2bd01d58.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/817150c5d87dc1f351d9d10c2bd01d58.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133229,
-      "detail_elapsed_ms": 2474,
-      "scraped_at": "2026-04-20T23:01:33.683Z"
-    },
-    {
-      "id": "poi-30-off-extra-na-seleo-masculina",
-      "link": "https://clube.uol.com.br/lojasrenner/poi-30-off-extra-na-seleo-masculina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/poi-30-off-extra-na-seleo-masculina",
-      "title": "30% OFF extra na seleção masculina",
-      "preview_title": "30% OFF extra na seleção masculina",
-      "validity": "Benefício válido de 16/04/2026 15:04 até 20/04/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 30% OFF extra na seleção masculina Regras: Desconto válido para itens masculinos selecionados no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6f69f8d83a3f93b0d7d981870440acd0.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6f69f8d83a3f93b0d7d981870440acd0.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6f69f8d83a3f93b0d7d981870440acd0.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130213,
-      "detail_elapsed_ms": 2533,
-      "scraped_at": "2026-04-20T23:01:36.216Z"
+      "detail_html_length": 133169,
+      "detail_elapsed_ms": 1769,
+      "scraped_at": "2026-04-21T00:00:33.138Z"
     },
     {
       "id": "poh-40-off-extra-em-seleo-feminina",
@@ -154,9 +108,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131005,
-      "detail_elapsed_ms": 2006,
-      "scraped_at": "2026-04-20T23:01:38.222Z"
+      "detail_html_length": 124625,
+      "detail_elapsed_ms": 1827,
+      "scraped_at": "2026-04-21T00:00:34.965Z"
     },
     {
       "id": "pog-30-off-extra-em-seleo-feminina",
@@ -177,32 +131,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129772,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-04-20T23:01:39.807Z"
-    },
-    {
-      "id": "pof-30-off-em-jeans-feminino-plus-size",
-      "link": "https://clube.uol.com.br/lojasrenner/pof-30-off-em-jeans-feminino-plus-size",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pof-30-off-em-jeans-feminino-plus-size",
-      "title": "30% OFF em Jeans feminino plus size",
-      "preview_title": "30% OFF em Jeans feminino plus size",
-      "validity": "Benefício válido de 16/04/2026 14:31 até 20/04/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 30% OFF em seleção de jeans feminino plus size Regras: Válido para produtos selecionados de jeans feminino plus size no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f146de1cd3b9bf41f3086b994696b789.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f146de1cd3b9bf41f3086b994696b789.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f146de1cd3b9bf41f3086b994696b789.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131064,
-      "detail_elapsed_ms": 1671,
-      "scraped_at": "2026-04-20T23:01:41.478Z"
+      "detail_html_length": 129855,
+      "detail_elapsed_ms": 2012,
+      "scraped_at": "2026-04-21T00:00:36.977Z"
     },
     {
       "id": "poe-30-off-em-seleo-de-jeans-feminino",
@@ -223,9 +154,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131049,
-      "detail_elapsed_ms": 1721,
-      "scraped_at": "2026-04-20T23:01:43.200Z"
+      "detail_html_length": 131111,
+      "detail_elapsed_ms": 1674,
+      "scraped_at": "2026-04-21T00:00:38.651Z"
     },
     {
       "id": "pob-at-75-off-para-compras-no-site",
@@ -246,9 +177,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131166,
-      "detail_elapsed_ms": 1894,
-      "scraped_at": "2026-04-20T23:01:45.095Z"
+      "detail_html_length": 131118,
+      "detail_elapsed_ms": 1699,
+      "scraped_at": "2026-04-21T00:00:40.350Z"
     },
     {
       "id": "poa-at-75-off-para-compras-no-site",
@@ -269,9 +200,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130852,
-      "detail_elapsed_ms": 1986,
-      "scraped_at": "2026-04-20T23:01:47.081Z"
+      "detail_html_length": 130843,
+      "detail_elapsed_ms": 1757,
+      "scraped_at": "2026-04-21T00:00:42.107Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -292,9 +223,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130924,
-      "detail_elapsed_ms": 1624,
-      "scraped_at": "2026-04-20T23:01:48.705Z"
+      "detail_html_length": 129683,
+      "detail_elapsed_ms": 1788,
+      "scraped_at": "2026-04-21T00:00:43.895Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -315,9 +246,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130730,
-      "detail_elapsed_ms": 1955,
-      "scraped_at": "2026-04-20T23:01:50.660Z"
+      "detail_html_length": 129531,
+      "detail_elapsed_ms": 1844,
+      "scraped_at": "2026-04-21T00:00:45.740Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -339,8 +270,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130857,
-      "detail_elapsed_ms": 1575,
-      "scraped_at": "2026-04-20T23:01:52.235Z"
+      "detail_elapsed_ms": 1929,
+      "scraped_at": "2026-04-21T00:00:47.669Z"
     },
     {
       "id": "pnk-at-12-off-nas-reservas",
@@ -361,9 +292,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132912,
-      "detail_elapsed_ms": 1712,
-      "scraped_at": "2026-04-20T23:01:53.947Z"
+      "detail_html_length": 132880,
+      "detail_elapsed_ms": 1486,
+      "scraped_at": "2026-04-21T00:00:49.155Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -384,9 +315,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131056,
-      "detail_elapsed_ms": 1880,
-      "scraped_at": "2026-04-20T23:01:55.827Z"
+      "detail_html_length": 131067,
+      "detail_elapsed_ms": 1524,
+      "scraped_at": "2026-04-21T00:00:50.679Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-ms-grtis",
@@ -407,9 +338,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129976,
-      "detail_elapsed_ms": 1901,
-      "scraped_at": "2026-04-20T23:01:57.728Z"
+      "detail_html_length": 131136,
+      "detail_elapsed_ms": 1586,
+      "scraped_at": "2026-04-21T00:00:52.265Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -430,9 +361,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129839,
-      "detail_elapsed_ms": 2303,
-      "scraped_at": "2026-04-20T23:02:00.031Z"
+      "detail_html_length": 130988,
+      "detail_elapsed_ms": 1789,
+      "scraped_at": "2026-04-21T00:00:54.054Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -453,9 +384,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129791,
-      "detail_elapsed_ms": 2153,
-      "scraped_at": "2026-04-20T23:02:02.184Z"
+      "detail_html_length": 124602,
+      "detail_elapsed_ms": 1871,
+      "scraped_at": "2026-04-21T00:00:55.925Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -476,9 +407,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138025,
-      "detail_elapsed_ms": 1766,
-      "scraped_at": "2026-04-20T23:02:03.950Z"
+      "detail_html_length": 138036,
+      "detail_elapsed_ms": 1893,
+      "scraped_at": "2026-04-21T00:00:57.818Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preo-1",
@@ -499,9 +430,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131568,
-      "detail_elapsed_ms": 2085,
-      "scraped_at": "2026-04-20T23:02:06.035Z"
+      "detail_html_length": 131569,
+      "detail_elapsed_ms": 2084,
+      "scraped_at": "2026-04-21T00:00:59.902Z"
     },
     {
       "id": "pnu-30-off-em-ps-graduao-de-medicina",
@@ -522,9 +453,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132983,
-      "detail_elapsed_ms": 1748,
-      "scraped_at": "2026-04-20T23:02:07.783Z"
+      "detail_html_length": 131835,
+      "detail_elapsed_ms": 1981,
+      "scraped_at": "2026-04-21T00:01:01.883Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -545,9 +476,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130763,
-      "detail_elapsed_ms": 1772,
-      "scraped_at": "2026-04-20T23:02:09.555Z"
+      "detail_html_length": 131934,
+      "detail_elapsed_ms": 1999,
+      "scraped_at": "2026-04-21T00:01:03.882Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -568,9 +499,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131762,
-      "detail_elapsed_ms": 2004,
-      "scraped_at": "2026-04-20T23:02:11.559Z"
+      "detail_html_length": 131732,
+      "detail_elapsed_ms": 1744,
+      "scraped_at": "2026-04-21T00:01:05.626Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -591,9 +522,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130394,
-      "detail_elapsed_ms": 1810,
-      "scraped_at": "2026-04-20T23:02:13.370Z"
+      "detail_html_length": 131902,
+      "detail_elapsed_ms": 1825,
+      "scraped_at": "2026-04-21T00:01:07.451Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -614,9 +545,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131894,
-      "detail_elapsed_ms": 1773,
-      "scraped_at": "2026-04-20T23:02:15.143Z"
+      "detail_html_length": 131936,
+      "detail_elapsed_ms": 1706,
+      "scraped_at": "2026-04-21T00:01:09.157Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -637,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132168,
-      "detail_elapsed_ms": 1749,
-      "scraped_at": "2026-04-20T23:02:16.892Z"
+      "detail_html_length": 132130,
+      "detail_elapsed_ms": 1719,
+      "scraped_at": "2026-04-21T00:01:10.876Z"
     },
     {
       "id": "pmw-50-off-no-par-de-ingressos",
@@ -660,9 +591,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132225,
-      "detail_elapsed_ms": 1596,
-      "scraped_at": "2026-04-20T23:02:18.488Z"
+      "detail_html_length": 132185,
+      "detail_elapsed_ms": 1974,
+      "scraped_at": "2026-04-21T00:01:12.851Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -683,9 +614,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131379,
-      "detail_elapsed_ms": 1793,
-      "scraped_at": "2026-04-20T23:02:20.281Z"
+      "detail_html_length": 132630,
+      "detail_elapsed_ms": 1768,
+      "scraped_at": "2026-04-21T00:01:14.619Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -706,9 +637,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133269,
-      "detail_elapsed_ms": 1829,
-      "scraped_at": "2026-04-20T23:02:22.111Z"
+      "detail_html_length": 133270,
+      "detail_elapsed_ms": 1675,
+      "scraped_at": "2026-04-21T00:01:16.294Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -729,9 +660,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132667,
-      "detail_elapsed_ms": 1741,
-      "scraped_at": "2026-04-20T23:02:23.852Z"
+      "detail_html_length": 133900,
+      "detail_elapsed_ms": 1582,
+      "scraped_at": "2026-04-21T00:01:17.876Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -753,8 +684,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132291,
-      "detail_elapsed_ms": 1861,
-      "scraped_at": "2026-04-20T23:02:25.713Z"
+      "detail_elapsed_ms": 1982,
+      "scraped_at": "2026-04-21T00:01:19.858Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -775,9 +706,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131998,
-      "detail_elapsed_ms": 2086,
-      "scraped_at": "2026-04-20T23:02:27.799Z"
+      "detail_html_length": 130849,
+      "detail_elapsed_ms": 1558,
+      "scraped_at": "2026-04-21T00:01:21.416Z"
     },
     {
       "id": "pmx-30-off-na-compra-de-ingresso-sp",
@@ -798,9 +729,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131982,
-      "detail_elapsed_ms": 1844,
-      "scraped_at": "2026-04-20T23:02:29.644Z"
+      "detail_html_length": 131972,
+      "detail_elapsed_ms": 1848,
+      "scraped_at": "2026-04-21T00:01:23.264Z"
     },
     {
       "id": "pmv-30-off-na-compra-de-ingresso-ba",
@@ -821,9 +752,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131904,
-      "detail_elapsed_ms": 1608,
-      "scraped_at": "2026-04-20T23:02:31.253Z"
+      "detail_html_length": 131895,
+      "detail_elapsed_ms": 1854,
+      "scraped_at": "2026-04-21T00:01:25.119Z"
     },
     {
       "id": "pmu-30-off-na-compra-de-ingresso-ce",
@@ -844,9 +775,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131890,
-      "detail_elapsed_ms": 1649,
-      "scraped_at": "2026-04-20T23:02:32.902Z"
+      "detail_html_length": 130660,
+      "detail_elapsed_ms": 1821,
+      "scraped_at": "2026-04-21T00:01:26.940Z"
     },
     {
       "id": "pmt-41-off-na-ps-graduao",
@@ -867,9 +798,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130613,
-      "detail_elapsed_ms": 1565,
-      "scraped_at": "2026-04-20T23:02:34.467Z"
+      "detail_html_length": 130607,
+      "detail_elapsed_ms": 1875,
+      "scraped_at": "2026-04-21T00:01:28.815Z"
     },
     {
       "id": "pms-cursinho-enem-com-r-50-off",
@@ -890,9 +821,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130683,
-      "detail_elapsed_ms": 1716,
-      "scraped_at": "2026-04-20T23:02:36.183Z"
+      "detail_html_length": 130674,
+      "detail_elapsed_ms": 1874,
+      "scraped_at": "2026-04-21T00:01:30.689Z"
     },
     {
       "id": "pmr-30-off-na-compra-de-ingresso-mg",
@@ -913,9 +844,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131868,
-      "detail_elapsed_ms": 1889,
-      "scraped_at": "2026-04-20T23:02:38.072Z"
+      "detail_html_length": 130638,
+      "detail_elapsed_ms": 1496,
+      "scraped_at": "2026-04-21T00:01:32.185Z"
     },
     {
       "id": "pmq-30-off-na-compra-de-ingresso-sp",
@@ -936,9 +867,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131830,
-      "detail_elapsed_ms": 1486,
-      "scraped_at": "2026-04-20T23:02:39.558Z"
+      "detail_html_length": 131811,
+      "detail_elapsed_ms": 1788,
+      "scraped_at": "2026-04-21T00:01:33.973Z"
     },
     {
       "id": "pmp-30-off-na-compra-de-ingresso-rj",
@@ -960,8 +891,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131793,
-      "detail_elapsed_ms": 2124,
-      "scraped_at": "2026-04-20T23:02:41.682Z"
+      "detail_elapsed_ms": 2189,
+      "scraped_at": "2026-04-21T00:01:36.163Z"
     },
     {
       "id": "pmk-20-off-no-ingresso",
@@ -982,9 +913,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131216,
-      "detail_elapsed_ms": 1564,
-      "scraped_at": "2026-04-20T23:02:43.247Z"
+      "detail_html_length": 131196,
+      "detail_elapsed_ms": 2531,
+      "scraped_at": "2026-04-21T00:01:38.694Z"
     },
     {
       "id": "plx-at-50-off-em-graduao-e-ps",
@@ -1005,9 +936,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133206,
-      "detail_elapsed_ms": 1644,
-      "scraped_at": "2026-04-20T23:02:44.891Z"
+      "detail_html_length": 126830,
+      "detail_elapsed_ms": 1935,
+      "scraped_at": "2026-04-21T00:01:40.629Z"
     },
     {
       "id": "plg-30-off-na-compra-de-ingresso-mg",
@@ -1028,9 +959,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131605,
-      "detail_elapsed_ms": 2206,
-      "scraped_at": "2026-04-20T23:02:47.097Z"
+      "detail_html_length": 131616,
+      "detail_elapsed_ms": 1726,
+      "scraped_at": "2026-04-21T00:01:42.355Z"
     },
     {
       "id": "pl8-10-off-no-ingresso-luminiscence",
@@ -1051,9 +982,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124412,
-      "detail_elapsed_ms": 2610,
-      "scraped_at": "2026-04-20T23:02:49.707Z"
+      "detail_html_length": 130781,
+      "detail_elapsed_ms": 1698,
+      "scraped_at": "2026-04-21T00:01:44.053Z"
     },
     {
       "id": "pll-compre-1-curso-e-ganhe-outro",
@@ -1074,9 +1005,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132889,
-      "detail_elapsed_ms": 2330,
-      "scraped_at": "2026-04-20T23:02:52.038Z"
+      "detail_html_length": 132890,
+      "detail_elapsed_ms": 1917,
+      "scraped_at": "2026-04-21T00:01:45.970Z"
     },
     {
       "id": "pkt-20-off-no-site",
@@ -1097,9 +1028,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130674,
-      "detail_elapsed_ms": 1671,
-      "scraped_at": "2026-04-20T23:02:53.709Z"
+      "detail_html_length": 130735,
+      "detail_elapsed_ms": 1929,
+      "scraped_at": "2026-04-21T00:01:47.899Z"
     },
     {
       "id": "pjl-35-off-no-cardpio-de-pizzas",
@@ -1120,9 +1051,78 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130786,
-      "detail_elapsed_ms": 1851,
-      "scraped_at": "2026-04-20T23:02:55.560Z"
+      "detail_html_length": 130778,
+      "detail_elapsed_ms": 1726,
+      "scraped_at": "2026-04-21T00:01:49.625Z"
+    },
+    {
+      "id": "pjd-50-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pjD-50-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatrouol/pjD-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "preview_title": "50% OFF no par de ingressos",
+      "validity": "Benefício válido de 31/03/2026 18:24 até 26/04/2026 23:59.",
+      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Espetáculo Água fresca para as flores. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Fenômeno literário mundial ganha primeira adaptação latino-americana nos palcos brasileiros. Após temporadas de sucesso no Rio de Janeiro (Teatro dos Quatro), São Paulo (Teatro UOL e Moise Safra) e Belo Horizonte (Teatro Feluma), o espetáculo “Água Fresca para as Flores” consolida-se como um dos monólogos mais emocionantes da cena atual. Idealizado e protagonizado por Marcella Muniz, com adaptação e direção de Bruno Costa, a peça dá vida à obra da francesa Valérie Perrin, traduzida para mais de 40 idiomas. A montagem é um mergulho poético na resiliência humana, celebrando a capacidade de florescer mesmo diante das perdas mais profundas. Com uma estética apurada e uma interpretação visceral, o espetáculo convida o público a uma pausa necessária para refletir sobre o valor do tempo e dos afetos. Violette Toussaint é zeladora de um cemitério no interior da França. Para quem passa pelo portão, ela é apenas uma mulher serena que oferece café e ouvidos atentos. Mas, por trás da rotina tranquila entre túmulos e flores, esconde-se uma sobrevivente. O espetáculo desvenda as camadas da vida de Violette: da infância em orfanatos ao casamento tóxico, culminando na ferida profunda da perda de sua filha, Léonine. Intercalando um presente leve e um jardim cheio de cores com memórias de um passado brutal, a peça é um elogio à capacidade de recomeçar e um lembrete de que, mesmo no pior inverno, ainda é tempo de florescer. FICHA TÉCNICA: Obra original: Valérie Perrin. Atuação, Idealização e Produção: Marcella Muniz. Adaptação, Direção e Produção: Bruno Costa. Cenografia: Teca Fichinsky. Iluminação: Dani Sanchez. Trilha sonora: Thiago Muller e Tibi. Figurino: Ofélia Lott. Assistência de direção: Joana Lerner. Preparação corporal: Dani Visco. Preparação vocal: Edi Montecchi. Assistência de produção: Guto Urbieta. Realização: Pritati Produções e EVOE. SERVIÇO: Temporada: 04/04/2026 a 26/04/2026. Apresentações: Sábado e Domingo, 18h. Ingresso*: Setor A - Inteira: R$ 160,00 Meia: R$ 80,00 | Setor B - Inteira: R$ 130,00 Meia: R$ 75,00. Duração: 75 minutos. Classificação etária: 14 anos. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro UOL",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/75a7e7161e5648033a8f29ff5ded0456.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/75a7e7161e5648033a8f29ff5ded0456.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/75a7e7161e5648033a8f29ff5ded0456.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133545,
+      "detail_elapsed_ms": 1921,
+      "scraped_at": "2026-04-21T00:01:51.547Z"
+    },
+    {
+      "id": "pjc-50-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pjC-50-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatrouol/pjC-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "preview_title": "50% OFF no par de ingressos",
+      "validity": "Benefício válido de 31/03/2026 18:24 até 30/05/2026 23:59.",
+      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Espetáculo A Autoestima do Homem Hétero. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo É noite de lançamento da invenção farmacêutica mais ousada da década: a autoestima do homem hétero, sintetizada em pílulas. Carina, a criadora da fórmula, revela ao público os componentes do medicamento, reencenando situações hilárias e dando vida aos personagens masculinos que serviram de “matéria-prima” para sua criação que promete revolucionar o mundo. O problema é que ninguém estava preparado para as consequências… nem ela própria! O sucesso de público A Autoestima do Homem Hétero volta aos palcos no dia 4 de abril no Teatro UOL. O espetáculo consolidou-se como uma das comédias mais comentadas da cena recente. Idealizado, escrito e protagonizado por Amanda Mirásci, com direção de Martha Nowill, o monólogo teve uma temporada de estreia de grande repercussão no Teatro UOL, em São Paulo, onde conquistou duas prorrogações consecutivas e permaneceu quatro meses em cartaz, sempre com plateias cheias. Em janeiro de 2026, o espetáculo abriu a programação do ano da Arena B3, realizando quatro apresentações com grande presença de público. O êxito junto ao público veio acompanhado do reconhecimento do meio teatral, com duas indicações ao Prêmio do Humor, nas categorias Melhor Texto e Melhor Direção, reafirmando a força da dramaturgia, da encenação e da comunicação direta com a plateia. A premissa do espetáculo é simples, provocadora e altamente comunicável: e se fosse possível encapsular a inabalável confiança dos homens héteros e oferecê-la, em forma de pílula, às mulheres? A partir dessa ideia, a peça constrói uma comédia afiada sobre relações afetivas, autoestima e comportamentos masculinos amplamente reconhecíveis, criando identificação imediata com diferentes públicos. FICHA TÉCNICA: Idealização, Texto e Atuação: Amanda Mirásci. Direção: Martha Nowill. Colaboração dramatúrgica: Bruna Trindade e Martha Nowill. Assistência de direção: Iuri Saraiva. Direção de movimento: Julianne Trevisol. Luz: Júnior Docini. Trilha sonora: Aline Meyer. Direção de arte: Luiza Mitidieri. Visagismo: Isabella Oliveira. Operação de luz e som: Rafael Pereira. Gestão de tráfego pago: Vanessa Santana. Design gráfico: Harú Estúdio Criativo. Fotos estúdio: Julia Lego. Fotos de cena: Tiago Tagawa. Assessoria de imprensa: Pombo Correio. Direção de produção: Jessica Rodrigues e Carolina Henriques. Produção: Rodri Produções. Realização: Arrakasta Produções Artísticas. SERVIÇO: Temporada: 04/04/2026 a 30/05/2026. Apresentações: Sábado, 22h. Ingresso*: Setor A - Inteira: R$ 100,00 Meia: R$ 50,00 | Setor B - Inteira: R$ 80,00 Meia: R$ 40,00. Duração: 70 minutos. Classificação etária: 14 anos. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro UOL",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/eb51124337eebf76ee0da1ddb4b9d4b5.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/eb51124337eebf76ee0da1ddb4b9d4b5.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/eb51124337eebf76ee0da1ddb4b9d4b5.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134077,
+      "detail_elapsed_ms": 1642,
+      "scraped_at": "2026-04-21T00:01:53.190Z"
+    },
+    {
+      "id": "pjo-prato-em-dobro-no-la-parrilla-argentina",
+      "link": "https://clube.uol.com.br/restaurantelaparrillaargentina/pjo-prato-em-dobro-no-la-parrilla-argentina",
+      "original_link": "https://clube.uol.com.br/restaurantelaparrillaargentina/pjo-prato-em-dobro-no-la-parrilla-argentina",
+      "title": "Prato em Dobro no La Parrilla Argentina",
+      "preview_title": "Prato em Dobro no La Parrilla Argentina",
+      "validity": "Benefício válido de 27/03/2026 12:11 até 27/03/2027 23:59.",
+      "description": "Sobre o parceiro: No La Parrilla Argentina, cada detalhe foi pensado para te transportar direto para Buenos Aires: carnes na parrilla feitas no ponto certo, vinhos selecionados, clima envolvente com a elegância do tango e ambiente aconchegante para momentos especiais. Benefício: Na compra de um prato principal, ganhe um segundo prato no La Parrilla Argentina. Como resgatar seu benefício: Clique em \"Utilizar este benefício\" e baixe o seu voucher de Assinante UOL. Em seguida, basta apresentar o voucher e documento original no restaurante. Atenção! O prato executivo não entra na promoção do Prato em Dobro. Apenas os pratos de cortes de carne: Bife Ancho: Suculento, delicioso, saboroso. Chorizo: A parrilla marcante em sabor. Carré de Cordeiro: Carne nobre, corte especial, escolha o ponto. Tapa de Quadril: Tapa de Quadril tradicional. Assado de tira: Carne nobre, corte especial, escolha o ponto. Vacio: Carne nobre, corte especial, escolha o ponto. Pechuga de Frango Grelhado: Feito com um tempero que surpreende. Parrillada: Cortes especiais, escolha o ponto. Regulamento da Campanha “Prato em Dobro” Benefício exclusivo para assinantes UOL. Promoção não válida para pratos executivos. Não cumulativo com outras promoções do Restaurante. Válido para todos os dias de semana e em todos os horários. Venha conhecer no La Parrilla Argentina: Av. Moema, 218 - Moema, São Paulo - SP.",
+      "category": "Comer e Beber",
+      "partner_name": "Restaurante La Parrilla Argentina",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/776480a87f1023473e9279d154174291.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/084126c71b8d80a8ea518f13691b77b1.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/084126c71b8d80a8ea518f13691b77b1.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/084126c71b8d80a8ea518f13691b77b1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132748,
+      "detail_elapsed_ms": 1644,
+      "scraped_at": "2026-04-21T00:01:54.834Z"
     }
   ]
 }
