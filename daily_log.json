@@ -1,32 +1,13 @@
 {
-  "date": "20/04/2026",
-  "message_id": 1218,
+  "date": "21/04/2026",
+  "message_id": 1219,
   "previous_message_id": null,
   "last_success_check": "04/04/2026 às 19:01",
   "last_new_offer_at": "20/04/2026 às 13:37",
   "pending_count": 0,
-  "last_consumer_run": "20/04/2026 às 21:08",
+  "last_consumer_run": "21/04/2026 às 00:43",
   "sold_out_edited_today": 0,
   "lines": [
-    "[15:30] consumer: ▶️ processando 1 ofertas",
-    "[15:31] consumer: ⚠️ processadas 1 | enviadas 0 | falhas 0",
-    "[15:41] consumer: 📭 pending vazio",
-    "[16:05] consumer: 📭 pending vazio",
-    "[16:05] consumer: 📭 pending vazio",
-    "[16:40] consumer: 📭 pending vazio",
-    "[16:41] consumer: 📭 pending vazio",
-    "[16:44] consumer: 📭 pending vazio",
-    "[17:01] consumer: 📭 pending vazio",
-    "[17:01] consumer: 📭 pending vazio",
-    "[17:02] consumer: 📭 pending vazio",
-    "[17:02] consumer: ▶️ processando 4 ofertas",
-    "[17:02] consumer: ⚠️ processadas 4 | enviadas 0 | falhas 0",
-    "[17:02] consumer: 📭 pending vazio",
-    "[17:27] consumer: 📭 pending vazio",
-    "[18:09] consumer: 📭 pending vazio",
-    "[19:00] consumer: 📭 pending vazio",
-    "[19:52] consumer: 📭 pending vazio",
-    "[20:31] consumer: 📭 pending vazio",
-    "[21:08] consumer: 📭 pending vazio"
+    "[00:43] consumer: 📭 pending vazio"
   ]
 }
