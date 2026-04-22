@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 48,
   "enriched_offers_count": 48,
-  "detail_ok_count": 48,
-  "detail_fail_count": 0,
+  "detail_ok_count": 46,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 48,
+    "complete": 46,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 106811,
-  "run_duration_seconds": 106.81,
-  "avg_detail_ms_per_offer": 2225,
-  "generated_at": "2026-04-22T14:35:41.648Z",
+  "run_duration_ms": 6621505,
+  "run_duration_seconds": 6621.51,
+  "avg_detail_ms_per_offer": 137948,
+  "generated_at": "2026-04-22T16:26:15.276Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -30,7 +30,7 @@
       "description": "Assinante UOL, Resgate 1 par de ingressos para curtir “Frida Kahlo – Viva la Vida”, um solo poético e vibrante que celebra a vida e a obra da artista, no dia 26 de abril, às 18h ou 20h, no Teatro Faresi, em Salvador – Bahia. Data: 26 de abril, às 18h e 20h. Local: Av. Oceânica, 2717 - Ondina, Salvador - Bahia REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d33296ad3ba3fc7a5f935477a4f2ed46.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d33296ad3ba3fc7a5f935477a4f2ed46.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d33296ad3ba3fc7a5f935477a4f2ed46.png",
@@ -39,9 +39,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131900,
-      "detail_elapsed_ms": 2339,
-      "scraped_at": "2026-04-22T14:34:04.821Z"
+      "detail_html_length": 131950,
+      "detail_elapsed_ms": 2010,
+      "scraped_at": "2026-04-22T14:36:04.788Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -53,7 +53,7 @@
       "description": "Assinante UOL, resgate 1 par de ingressos para o Termas do Pacu e aproveite um dia de descanso e diversão para toda a família em Mineiros do Tietê - SP. Validade: 30/04/2026 Local: Rodovia SP-304, Km 273 - Distrito Industrial I, Mineiros do Tietê - SP Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69e23ea8b8731_69e14ec7638bb_28250056d0911e2a733aeb9a5b4eaa01.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69e23ea8b8731_69e14ec7638bb_28250056d0911e2a733aeb9a5b4eaa01.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69e23ea8b8731_69e14ec7638bb_28250056d0911e2a733aeb9a5b4eaa01.png",
@@ -62,9 +62,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132408,
-      "detail_elapsed_ms": 1852,
-      "scraped_at": "2026-04-22T14:34:06.683Z"
+      "detail_html_length": 132428,
+      "detail_elapsed_ms": 1443,
+      "scraped_at": "2026-04-22T14:36:06.241Z"
     },
     {
       "id": "pok-ofertas-de-ultima-hora-25-off-extra",
@@ -76,7 +76,7 @@
       "description": "Sobre o Parceiro: Somos a Hotéis.com, uma plataforma global de reservas que oferece milhares de opções de hospedagem ao redor do mundo, desde hotéis econômicos até acomodações de luxo. Aqui você encontra praticidade, variedade e ofertas para planejar a sua viagem com mais economia. Benefício: Ofertas de última hora: 25% OFF extra! Regras: Oferta válida para hospedagens selecionadas e sujeita à disponibilidade de datas e localidades. Os descontos podem variar conforme o destino e o período escolhido. Condições podem ser alteradas sem aviso prévio. Não cumulativo com outras promoções.",
       "category": "",
       "partner_name": "Hoteis.com",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/db47d7a8c56ac98c1aa4ee7ac849b0e9.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e4d2eeb3ad86d2f2ba582609dfecb81c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e4d2eeb3ad86d2f2ba582609dfecb81c.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e4d2eeb3ad86d2f2ba582609dfecb81c.png",
@@ -85,9 +85,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133229,
-      "detail_elapsed_ms": 1553,
-      "scraped_at": "2026-04-22T14:34:08.236Z"
+      "detail_html_length": 133221,
+      "detail_elapsed_ms": 1728,
+      "scraped_at": "2026-04-22T14:36:07.969Z"
     },
     {
       "id": "poh-40-off-extra-em-selecao-feminina",
@@ -99,7 +99,7 @@
       "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 40% OFF em seleção feminina. Regras: Válido para produtos femininos selecionados no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
@@ -108,9 +108,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131050,
-      "detail_elapsed_ms": 1430,
-      "scraped_at": "2026-04-22T14:34:09.666Z"
+      "detail_html_length": 131049,
+      "detail_elapsed_ms": 1458,
+      "scraped_at": "2026-04-22T14:36:09.427Z"
     },
     {
       "id": "pog-30-off-extra-em-selecao-feminina",
@@ -122,7 +122,7 @@
       "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 30% OFF em seleção feminina Regras: Desconto extra válido para itens femininos selecionados no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/deff5727e9e5870d627d09eed613992f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/deff5727e9e5870d627d09eed613992f.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/deff5727e9e5870d627d09eed613992f.png",
@@ -131,9 +131,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131070,
-      "detail_elapsed_ms": 1569,
-      "scraped_at": "2026-04-22T14:34:11.235Z"
+      "detail_html_length": 131071,
+      "detail_elapsed_ms": 1537,
+      "scraped_at": "2026-04-22T14:36:10.964Z"
     },
     {
       "id": "poe-30-off-em-selecao-de-jeans-feminino",
@@ -145,7 +145,7 @@
       "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 30% OFF em seleção de jeans feminino Regras: Válido para produtos selecionados de jeans feminino no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1ab421b5375d75fb800ef6dbee9823a2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1ab421b5375d75fb800ef6dbee9823a2.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1ab421b5375d75fb800ef6dbee9823a2.png",
@@ -154,9 +154,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131137,
-      "detail_elapsed_ms": 1353,
-      "scraped_at": "2026-04-22T14:34:12.588Z"
+      "detail_html_length": 131114,
+      "detail_elapsed_ms": 1381,
+      "scraped_at": "2026-04-22T14:36:12.345Z"
     },
     {
       "id": "pob-ate-75-off-para-compras-no-site",
@@ -177,9 +177,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131157,
-      "detail_elapsed_ms": 1605,
-      "scraped_at": "2026-04-22T14:34:14.193Z"
+      "detail_html_length": 131167,
+      "detail_elapsed_ms": 1548,
+      "scraped_at": "2026-04-22T14:36:13.893Z"
     },
     {
       "id": "poa-ate-75-off-para-compras-no-site",
@@ -200,9 +200,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 1457,
-      "scraped_at": "2026-04-22T14:34:15.650Z"
+      "detail_html_length": 130863,
+      "detail_elapsed_ms": 1531,
+      "scraped_at": "2026-04-22T14:36:15.424Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -223,9 +223,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130960,
-      "detail_elapsed_ms": 1637,
-      "scraped_at": "2026-04-22T14:34:17.287Z"
+      "detail_html_length": 130948,
+      "detail_elapsed_ms": 1587,
+      "scraped_at": "2026-04-22T14:36:17.011Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -246,9 +246,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130735,
-      "detail_elapsed_ms": 1730,
-      "scraped_at": "2026-04-22T14:34:19.018Z"
+      "detail_html_length": 130734,
+      "detail_elapsed_ms": 1492,
+      "scraped_at": "2026-04-22T14:36:18.503Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -269,9 +269,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 1946,
-      "scraped_at": "2026-04-22T14:34:20.964Z"
+      "detail_html_length": 130860,
+      "detail_elapsed_ms": 1447,
+      "scraped_at": "2026-04-22T14:36:19.950Z"
     },
     {
       "id": "pnk-ate-12-off-nas-reservas",
@@ -292,9 +292,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132942,
-      "detail_elapsed_ms": 1689,
-      "scraped_at": "2026-04-22T14:34:22.654Z"
+      "detail_html_length": 132892,
+      "detail_elapsed_ms": 1506,
+      "scraped_at": "2026-04-22T14:36:21.456Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -315,9 +315,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131110,
-      "detail_elapsed_ms": 1582,
-      "scraped_at": "2026-04-22T14:34:24.236Z"
+      "detail_html_length": 131111,
+      "detail_elapsed_ms": 1658,
+      "scraped_at": "2026-04-22T14:36:23.114Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
@@ -338,9 +338,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131195,
-      "detail_elapsed_ms": 1587,
-      "scraped_at": "2026-04-22T14:34:25.823Z"
+      "detail_html_length": 131196,
+      "detail_elapsed_ms": 1680,
+      "scraped_at": "2026-04-22T14:36:24.794Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -361,9 +361,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131023,
-      "detail_elapsed_ms": 1512,
-      "scraped_at": "2026-04-22T14:34:27.335Z"
+      "detail_html_length": 131043,
+      "detail_elapsed_ms": 1755,
+      "scraped_at": "2026-04-22T14:36:26.549Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -384,9 +384,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131015,
-      "detail_elapsed_ms": 1517,
-      "scraped_at": "2026-04-22T14:34:28.852Z"
+      "detail_html_length": 130964,
+      "detail_elapsed_ms": 1504,
+      "scraped_at": "2026-04-22T14:36:28.053Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -407,9 +407,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 148901,
-      "detail_elapsed_ms": 1760,
-      "scraped_at": "2026-04-22T14:34:30.612Z"
+      "detail_html_length": 139291,
+      "detail_elapsed_ms": 1891,
+      "scraped_at": "2026-04-22T14:36:29.944Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preco-1",
@@ -430,9 +430,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131648,
-      "detail_elapsed_ms": 1504,
-      "scraped_at": "2026-04-22T14:34:32.117Z"
+      "detail_html_length": 131599,
+      "detail_elapsed_ms": 1531,
+      "scraped_at": "2026-04-22T14:36:31.476Z"
     },
     {
       "id": "pnu-30-off-em-pos-graduacao-de-medicina",
@@ -453,9 +453,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133040,
-      "detail_elapsed_ms": 1639,
-      "scraped_at": "2026-04-22T14:34:33.756Z"
+      "detail_html_length": 133000,
+      "detail_elapsed_ms": 1607,
+      "scraped_at": "2026-04-22T14:36:33.083Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -476,9 +476,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131977,
-      "detail_elapsed_ms": 1537,
-      "scraped_at": "2026-04-22T14:34:35.293Z"
+      "detail_html_length": 131927,
+      "detail_elapsed_ms": 2009,
+      "scraped_at": "2026-04-22T14:36:35.092Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -486,22 +486,22 @@
       "original_link": "https://clube.uol.com.br/teatrojsafra/png-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 10/04/2026 11:42 até 05/07/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Espetáculo Infantil T.REX O Dinossauro na Amazônia. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo Prepare-se para embarcar em uma aventura mágica e cheia de emoção com o espetáculo infantil “T. Rex - O Dinossauro na Amazônia”, uma produção que mistura fantasia, cultura e preservação ambiental de forma divertida e educativa. FICHA TÉCNICA: Duração: 75 minutos Classificação: Livre SERVIÇO: Temporada: 27, 28 de Junho. 04 e 05 de Julho de 2026 Apresentações: Sábado e Domingo, 15h",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro J. Safra",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/04234f8c1f130502af6360acdf7290fc.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/04234f8c1f130502af6360acdf7290fc.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/04234f8c1f130502af6360acdf7290fc.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131775,
-      "detail_elapsed_ms": 1690,
-      "scraped_at": "2026-04-22T14:34:36.983Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/teatrojsafra/png-50-off-no-par-de-ingressos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12005,
+      "scraped_at": "2026-04-22T14:38:00.500Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -522,9 +522,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131947,
-      "detail_elapsed_ms": 1743,
-      "scraped_at": "2026-04-22T14:34:38.726Z"
+      "detail_html_length": 131880,
+      "detail_elapsed_ms": 1586,
+      "scraped_at": "2026-04-22T14:38:02.086Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -545,9 +545,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131951,
-      "detail_elapsed_ms": 1641,
-      "scraped_at": "2026-04-22T14:34:40.368Z"
+      "detail_html_length": 131941,
+      "detail_elapsed_ms": 1652,
+      "scraped_at": "2026-04-22T14:38:03.738Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -567,10 +567,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132096,
-      "detail_elapsed_ms": 1462,
-      "scraped_at": "2026-04-22T14:34:59.246Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132174,
+      "detail_elapsed_ms": 1608,
+      "scraped_at": "2026-04-22T14:38:05.347Z"
     },
     {
       "id": "pmw-50-off-no-par-de-ingressos",
@@ -591,9 +591,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132229,
-      "detail_elapsed_ms": 1663,
-      "scraped_at": "2026-04-22T14:35:00.909Z"
+      "detail_html_length": 132240,
+      "detail_elapsed_ms": 1507,
+      "scraped_at": "2026-04-22T14:38:06.854Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -614,9 +614,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132654,
-      "detail_elapsed_ms": -941,
-      "scraped_at": "2026-04-22T14:34:59.968Z"
+      "detail_html_length": 132675,
+      "detail_elapsed_ms": 1397,
+      "scraped_at": "2026-04-22T14:38:08.251Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -637,9 +637,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131792,
-      "detail_elapsed_ms": 1447,
-      "scraped_at": "2026-04-22T14:35:01.415Z"
+      "detail_html_length": 133305,
+      "detail_elapsed_ms": 1417,
+      "scraped_at": "2026-04-22T14:38:09.668Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -660,9 +660,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133904,
-      "detail_elapsed_ms": 1565,
-      "scraped_at": "2026-04-22T14:35:02.980Z"
+      "detail_html_length": 133973,
+      "detail_elapsed_ms": 1451,
+      "scraped_at": "2026-04-22T14:38:11.119Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -684,8 +684,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132325,
-      "detail_elapsed_ms": 1409,
-      "scraped_at": "2026-04-22T14:35:04.389Z"
+      "detail_elapsed_ms": 1623,
+      "scraped_at": "2026-04-22T14:38:12.746Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -707,8 +707,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132044,
-      "detail_elapsed_ms": 1520,
-      "scraped_at": "2026-04-22T14:35:05.909Z"
+      "detail_elapsed_ms": 1430,
+      "scraped_at": "2026-04-22T14:38:14.201Z"
     },
     {
       "id": "pmx-30-off-na-compra-de-ingresso-sp",
@@ -729,9 +729,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132016,
-      "detail_elapsed_ms": 1443,
-      "scraped_at": "2026-04-22T14:35:07.352Z"
+      "detail_html_length": 132017,
+      "detail_elapsed_ms": 1448,
+      "scraped_at": "2026-04-22T14:38:15.649Z"
     },
     {
       "id": "pmv-30-off-na-compra-de-ingresso-ba",
@@ -752,9 +752,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131939,
-      "detail_elapsed_ms": 1645,
-      "scraped_at": "2026-04-22T14:35:09.000Z"
+      "detail_html_length": 131948,
+      "detail_elapsed_ms": 1397,
+      "scraped_at": "2026-04-22T14:38:17.046Z"
     },
     {
       "id": "pmu-30-off-na-compra-de-ingresso-ce",
@@ -775,9 +775,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131926,
-      "detail_elapsed_ms": 1603,
-      "scraped_at": "2026-04-22T14:35:10.605Z"
+      "detail_html_length": 131935,
+      "detail_elapsed_ms": 1544,
+      "scraped_at": "2026-04-22T14:38:18.590Z"
     },
     {
       "id": "pmt-41-off-na-pos-graduacao",
@@ -798,9 +798,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130666,
-      "detail_elapsed_ms": 1613,
-      "scraped_at": "2026-04-22T14:35:12.218Z"
+      "detail_html_length": 131035,
+      "detail_elapsed_ms": 1692,
+      "scraped_at": "2026-04-22T14:38:20.282Z"
     },
     {
       "id": "pms-cursinho-enem-com-r-50-off",
@@ -821,9 +821,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130698,
-      "detail_elapsed_ms": 2277,
-      "scraped_at": "2026-04-22T14:35:14.495Z"
+      "detail_html_length": 130688,
+      "detail_elapsed_ms": 1591,
+      "scraped_at": "2026-04-22T14:38:21.873Z"
     },
     {
       "id": "pmr-30-off-na-compra-de-ingresso-mg",
@@ -845,8 +845,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131914,
-      "detail_elapsed_ms": 1430,
-      "scraped_at": "2026-04-22T14:35:15.925Z"
+      "detail_elapsed_ms": 3619,
+      "scraped_at": "2026-04-22T14:38:25.502Z"
     },
     {
       "id": "pmq-30-off-na-compra-de-ingresso-sp",
@@ -867,9 +867,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131876,
-      "detail_elapsed_ms": 2436,
-      "scraped_at": "2026-04-22T14:35:18.361Z"
+      "detail_html_length": 131865,
+      "detail_elapsed_ms": 1507,
+      "scraped_at": "2026-04-22T14:38:27.013Z"
     },
     {
       "id": "pmp-30-off-na-compra-de-ingresso-rj",
@@ -890,9 +890,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131827,
-      "detail_elapsed_ms": 1434,
-      "scraped_at": "2026-04-22T14:35:19.795Z"
+      "detail_html_length": 131849,
+      "detail_elapsed_ms": 1399,
+      "scraped_at": "2026-04-22T14:38:28.412Z"
     },
     {
       "id": "pmk-20-off-no-ingresso",
@@ -913,9 +913,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131250,
-      "detail_elapsed_ms": 1409,
-      "scraped_at": "2026-04-22T14:35:21.205Z"
+      "detail_html_length": 131240,
+      "detail_elapsed_ms": 1455,
+      "scraped_at": "2026-04-22T14:38:29.867Z"
     },
     {
       "id": "plx-ate-50-off-em-graduacao-e-pos",
@@ -937,8 +937,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133270,
-      "detail_elapsed_ms": 2118,
-      "scraped_at": "2026-04-22T14:35:23.327Z"
+      "detail_elapsed_ms": 1367,
+      "scraped_at": "2026-04-22T14:38:31.234Z"
     },
     {
       "id": "plg-30-off-na-compra-de-ingresso-mg",
@@ -959,9 +959,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 1520,
-      "scraped_at": "2026-04-22T14:35:24.854Z"
+      "detail_html_length": 131650,
+      "detail_elapsed_ms": 1391,
+      "scraped_at": "2026-04-22T14:38:32.625Z"
     },
     {
       "id": "pl8-10-off-no-ingresso-luminiscence",
@@ -982,9 +982,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130836,
-      "detail_elapsed_ms": 1560,
-      "scraped_at": "2026-04-22T14:35:26.414Z"
+      "detail_html_length": 130825,
+      "detail_elapsed_ms": 1365,
+      "scraped_at": "2026-04-22T14:38:33.991Z"
     },
     {
       "id": "pll-compre-1-curso-e-ganhe-outro",
@@ -1005,9 +1005,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132953,
-      "detail_elapsed_ms": 1971,
-      "scraped_at": "2026-04-22T14:35:28.385Z"
+      "detail_html_length": 132944,
+      "detail_elapsed_ms": 3200319,
+      "scraped_at": "2026-04-22T15:31:54.317Z"
     },
     {
       "id": "pkt-20-off-no-site",
@@ -1015,22 +1015,22 @@
       "original_link": "https://clube.uol.com.br/multicoisas/pkT-20-off-no-site",
       "title": "20% OFF no site",
       "preview_title": "20% OFF no site",
-      "validity": "Benefício válido de 02/04/2026 14:32 até 31/05/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Multicoisas: a maior rede de varejo brasileira da área de utilidades. Acreditamos que um dia a dia mais prático e inspirador faz bem para a sua qualidade de vida. E para garantir isso, buscamos reunir em um lugar só o melhor atendimento e todas as soluções que sua casa ou escritório podem precisar. Beneficio: 20% de desconto em compras no site Regras: Disponível para apenas uma compra por CPF, efetuada exclusivamente no site oficial. Desconto concedido através da aplicação do código antes da finalização do pedido.",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Multicoisas",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/19bdf6467a069d5ff7ee77a2ff04db4a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cab1cd8293ac9ad8f94fc6cdc24bf06f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cab1cd8293ac9ad8f94fc6cdc24bf06f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cab1cd8293ac9ad8f94fc6cdc24bf06f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130730,
-      "detail_elapsed_ms": 3179,
-      "scraped_at": "2026-04-22T14:35:31.564Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/multicoisas/pkT-20-off-no-site\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12065,
+      "scraped_at": "2026-04-22T16:26:06.552Z"
     },
     {
       "id": "pjl-35-off-no-cardapio-de-pizzas",
@@ -1051,9 +1051,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130828,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-04-22T14:35:33.259Z"
+      "detail_html_length": 122504,
+      "detail_elapsed_ms": 1775,
+      "scraped_at": "2026-04-22T16:26:08.328Z"
     },
     {
       "id": "pjd-50-off-no-par-de-ingressos",
@@ -1074,9 +1074,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133599,
-      "detail_elapsed_ms": 2425,
-      "scraped_at": "2026-04-22T14:35:35.684Z"
+      "detail_html_length": 125347,
+      "detail_elapsed_ms": 3728,
+      "scraped_at": "2026-04-22T16:26:12.060Z"
     },
     {
       "id": "pjc-50-off-no-par-de-ingressos",
@@ -1097,9 +1097,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134111,
-      "detail_elapsed_ms": 2227,
-      "scraped_at": "2026-04-22T14:35:37.915Z"
+      "detail_html_length": 125858,
+      "detail_elapsed_ms": 1415,
+      "scraped_at": "2026-04-22T16:26:13.478Z"
     },
     {
       "id": "pjo-prato-em-dobro-no-la-parrilla-argentina",
@@ -1120,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132771,
-      "detail_elapsed_ms": 3474,
-      "scraped_at": "2026-04-22T14:35:41.394Z"
+      "detail_html_length": 124456,
+      "detail_elapsed_ms": 1631,
+      "scraped_at": "2026-04-22T16:26:15.109Z"
     }
   ]
 }
