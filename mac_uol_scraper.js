@@ -17,6 +17,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { spawnSync } = require('child_process');
 
 const TARGET_URL = process.env.UOL_TARGET_URL || 'https://clube.uol.com.br/?order=new';
 const EDGE_PROFILE_DIR = process.env.EDGE_PROFILE_DIR || '/Users/leosaquetto/Documents/GrabNumberAutomator/edge-profile';
@@ -56,6 +57,8 @@ const GITHUB_TARGET_PATH = process.env.GITHUB_TARGET_PATH || 'snapshots/mac-uol-
 const GITHUB_LATEST_OFFERS_PATH = process.env.GITHUB_LATEST_OFFERS_PATH || 'latest_offers.json';
 const GITHUB_SOLD_OUT_UPDATES_PATH = process.env.GITHUB_SOLD_OUT_UPDATES_PATH || 'sold_out_updates.json';
 const REQUIRE_GITHUB_UPLOAD = String(process.env.REQUIRE_GITHUB_UPLOAD || '1') === '1';
+const RUN_PENDING_CONSOLIDATION = String(process.env.RUN_PENDING_CONSOLIDATION || '1').trim() !== '0';
+const PENDING_CONSOLIDATION_SCRIPT = process.env.PENDING_CONSOLIDATION_SCRIPT || 'github_scraper.py';
 
 const homeDir = os.homedir();
 const icloudBase = path.join(homeDir, 'Library', 'Mobile Documents', 'com~apple~CloudDocs');
@@ -248,6 +251,47 @@ function saveLocalSoldOutState(state) {
   };
   ensureDir(stateFile);
   fs.writeFileSync(stateFile, JSON.stringify(payload, null, 2), 'utf8');
+}
+
+function runPendingConsolidation() {
+  if (!RUN_PENDING_CONSOLIDATION) {
+    return { status: 'skipped', detail: 'disabled' };
+  }
+
+  const candidates = String(process.env.PYTHON_BIN_CANDIDATES || 'python3,python')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (!candidates.length) {
+    return { status: 'fail', detail: 'no_python_candidates' };
+  }
+
+  for (const pythonBin of candidates) {
+    const result = spawnSync(pythonBin, [PENDING_CONSOLIDATION_SCRIPT], {
+      cwd: __dirname,
+      encoding: 'utf8',
+      timeout: 20 * 60 * 1000,
+      env: process.env,
+    });
+
+    if (result.error) {
+      continue;
+    }
+
+    if (result.status === 0) {
+      return { status: 'ok', detail: pythonBin };
+    }
+
+    const stderr = cleanText(result.stderr || '');
+    const stdout = cleanText(result.stdout || '');
+    return {
+      status: 'fail',
+      detail: `${pythonBin}:exit_${result.status || 'unknown'}:${stderr || stdout || 'no_output'}`,
+    };
+  }
+
+  return { status: 'fail', detail: 'python_not_found' };
 }
 
 function buildSoldOutUpdates({ activeLinksSet, latestOffers, previousState, now }) {
@@ -652,7 +696,12 @@ async function enrichOffers(context, cards) {
       throw new Error('GITHUB_TOKEN ausente e REQUIRE_GITHUB_UPLOAD=1');
     }
 
-    console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} repo_path=${GITHUB_TARGET_PATH}`);
+    const pendingConsolidation = runPendingConsolidation();
+    if (pendingConsolidation.status !== 'ok' && pendingConsolidation.status !== 'skipped') {
+      throw new Error(`falha ao consolidar pending_offers: ${pendingConsolidation.detail}`);
+    }
+
+    console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} pending_consolidation=${pendingConsolidation.status} pending_detail=${pendingConsolidation.detail} repo_path=${GITHUB_TARGET_PATH}`);
     process.exit(0);
   } catch (err) {
     console.error(`MAC_FAIL ${cleanText(err && err.message ? err.message : String(err))}`);
