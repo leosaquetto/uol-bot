@@ -252,11 +252,16 @@ function saveLocalSoldOutState(state) {
   fs.writeFileSync(stateFile, JSON.stringify(payload, null, 2), 'utf8');
 }
 
-async function triggerGithubWorkflow(workflowFilename, inputs = {}) {
+async function triggerGithubWorkflow(workflowFilename, inputs = null) {
   if (!GITHUB_TOKEN) {
     throw new Error('GITHUB_TOKEN ausente para disparar workflow no GitHub');
   }
   const url = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/actions/workflows/${encodeURIComponent(workflowFilename)}/dispatches`;
+  const body = { ref: GITHUB_BRANCH };
+  if (inputs && typeof inputs === 'object' && Object.keys(inputs).length > 0) {
+    body.inputs = inputs;
+  }
+
   const resp = await fetch(url, {
     method: 'POST',
     headers: {
@@ -265,10 +270,7 @@ async function triggerGithubWorkflow(workflowFilename, inputs = {}) {
       'Content-Type': 'application/json',
       'User-Agent': 'mac-uol-scraper'
     },
-    body: JSON.stringify({
-      ref: GITHUB_BRANCH,
-      inputs
-    })
+    body: JSON.stringify(body)
   });
   if (resp.status === 404) {
     throw new Error(`workflow não encontrado: ${workflowFilename}`);
@@ -683,11 +685,7 @@ async function enrichOffers(context, cards) {
 
     let workflowTrigger = { status: 'skipped', workflow: '' };
     if (TRIGGER_GITHUB_WORKFLOW) {
-      workflowTrigger = await triggerGithubWorkflow(GITHUB_WORKFLOW_FILENAME, {
-        source: 'mac',
-        target_path: GITHUB_TARGET_PATH,
-        generated_at: new Date().toISOString(),
-      });
+      workflowTrigger = await triggerGithubWorkflow(GITHUB_WORKFLOW_FILENAME);
     }
 
     console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} workflow_trigger=${workflowTrigger.status} workflow_name=${workflowTrigger.workflow || 'none'} repo_path=${GITHUB_TARGET_PATH}`);
