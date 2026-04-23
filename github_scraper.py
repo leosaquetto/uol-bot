@@ -107,6 +107,54 @@ def html_to_text(html: str) -> str:
     return clean_text(text)
 
 
+def extract_location_summary(text: Optional[str]) -> str:
+    desc = clean_text(text or "")
+    if not desc:
+        return ""
+
+    city_state_pattern = re.compile(
+        r"([A-Za-zÀ-ÖØ-öø-ÿ'`\- ]+?)\s*[-/]\s*([A-Za-z]{2})(?=$|[.,;)\n])",
+        flags=re.I,
+    )
+
+    has_explicit_local_line = False
+    for line in desc.splitlines():
+        line_clean = line.strip()
+        if not line_clean:
+            continue
+        low = line_clean.lower()
+        if not (low.startswith("local:") or low.startswith("local ")):
+            continue
+        has_explicit_local_line = True
+        line_value = re.sub(r"(?i)^\s*local\s*:?\s*", "", line_clean).strip()
+        if not line_value:
+            continue
+        match = city_state_pattern.search(line_value)
+        if match:
+            city = re.sub(r"\s+", " ", match.group(1).strip(" -.,;"))
+            state = match.group(2).upper()
+            return f"{city} - {state}" if city else state
+
+    for match_local in re.finditer(r"(?i)\blocal\s*:\s*([^\n|]+)", desc):
+        line_value = clean_text(match_local.group(1) or "")
+        if not line_value:
+            continue
+        match = city_state_pattern.search(line_value)
+        if match:
+            city = re.sub(r"\s+", " ", match.group(1).strip(" -.,;"))
+            state = match.group(2).upper()
+            return f"{city} - {state}" if city else state
+
+    if not has_explicit_local_line:
+        match = city_state_pattern.search(desc)
+        if match:
+            city = re.sub(r"\s+", " ", match.group(1).strip(" -.,;"))
+            state = match.group(2).upper()
+            return f"{city} - {state}" if city else state
+
+    return ""
+
+
 def parse_any_datetime(value: str) -> Optional[datetime]:
     raw = str(value or "").strip()
     if not raw or raw == "—":
@@ -1003,6 +1051,7 @@ def merge_offer_data(base_offer: Dict[str, Any], details: Dict[str, Any]) -> Dic
 
     validity = clean_text(details.get("validity") or "") or None
     description = clean_text(details.get("description") or "")
+    location_summary = extract_location_summary(description)
 
     dedupe_key = build_dedupe_key(final_title, validity, description)
     loose_dedupe_key = build_loose_dedupe_key(final_title, description)
@@ -1017,6 +1066,7 @@ def merge_offer_data(base_offer: Dict[str, Any], details: Dict[str, Any]) -> Dic
         "partner_img_url": final_partner,
         "validity": validity,
         "description": description,
+        "location_summary": location_summary,
         "dedupe_key": dedupe_key,
         "loose_dedupe_key": loose_dedupe_key,
         "scraped_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),

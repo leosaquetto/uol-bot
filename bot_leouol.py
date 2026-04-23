@@ -1008,6 +1008,8 @@ def extract_post_location(description: str) -> str:
         flags=re.I,
     )
 
+    has_explicit_local_line = False
+
     for line in desc.splitlines():
         line_clean = line.strip()
         if not line_clean:
@@ -1016,6 +1018,7 @@ def extract_post_location(description: str) -> str:
         low = line_clean.lower()
         if not (low.startswith("local:") or low.startswith("local ")):
             continue
+        has_explicit_local_line = True
 
         line_value = re.sub(r"(?i)^\s*local\s*:?\s*", "", line_clean).strip()
         if not line_value:
@@ -1031,6 +1034,27 @@ def extract_post_location(description: str) -> str:
         if state_only:
             return state_only.group(1).upper()
 
+    # Busca global para "Local:" em qualquer trecho do texto, não só no começo de linha.
+    for match_local in re.finditer(r"(?i)\blocal\s*:\s*([^\n|]+)", desc):
+        line_value = clean_multiline_text(match_local.group(1) or "")
+        if not line_value:
+            continue
+
+        match = city_state_pattern.search(line_value)
+        if match:
+            city = re.sub(r"\s+", " ", match.group(1).strip(" -.,;"))
+            state = match.group(2).upper()
+            return f"{city} - {state}" if city else state
+
+    # Fallback: quando não houver linha explícita iniciando com "Local:",
+    # tenta reconhecer cidade/UF no texto completo.
+    if not has_explicit_local_line:
+        match = city_state_pattern.search(desc)
+        if match:
+            city = re.sub(r"\s+", " ", match.group(1).strip(" -.,;"))
+            state = match.group(2).upper()
+            return f"{city} - {state}" if city else state
+
     return ""
 
 
@@ -1039,6 +1063,7 @@ def build_main_caption(
     description: str,
     validity: Optional[str],
     link: str,
+    location_summary: Optional[str] = None,
     sold_out_at: Optional[str] = None,
     comment_link: Optional[str] = None,
 ) -> str:
@@ -1053,7 +1078,7 @@ def build_main_caption(
     if tags:
         body.append(escape_html(" ".join(tags)))
 
-    post_location = extract_post_location(description)
+    post_location = clean_multiline_text(location_summary or "") or extract_post_location(description)
     if post_location:
         body.append(f"📍 {escape_html(post_location)}")
 
@@ -1419,6 +1444,7 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
         description,
         validity,
         link,
+        location_summary=offer.get("location_summary"),
         sold_out_at=offer.get("sold_out_at"),
     )
 
@@ -1576,6 +1602,7 @@ def update_main_offer_caption_with_comment_link(offer: Dict) -> None:
         description,
         validity,
         link,
+        location_summary=offer.get("location_summary"),
         sold_out_at=offer.get("sold_out_at"),
         comment_link=comment_link,
     )
@@ -1636,6 +1663,7 @@ def refresh_sent_offers_with_sold_out() -> int:
             description,
             validity,
             link,
+            location_summary=offer.get("location_summary"),
             sold_out_at=offer.get("sold_out_at"),
         )
 
