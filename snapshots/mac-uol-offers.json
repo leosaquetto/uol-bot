@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 97654,
-  "run_duration_seconds": 97.65,
-  "avg_detail_ms_per_offer": 2034,
-  "generated_at": "2026-04-23T16:01:41.565Z",
+  "run_duration_ms": 97556,
+  "run_duration_seconds": 97.56,
+  "avg_detail_ms_per_offer": 2032,
+  "generated_at": "2026-04-23T16:31:41.751Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,9 +39,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 123804,
-      "detail_elapsed_ms": 2514,
-      "scraped_at": "2026-04-23T16:00:18.044Z"
+      "detail_html_length": 124149,
+      "detail_elapsed_ms": 2476,
+      "scraped_at": "2026-04-23T16:30:19.610Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -62,9 +62,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126631,
-      "detail_elapsed_ms": 2172,
-      "scraped_at": "2026-04-23T16:00:20.238Z"
+      "detail_html_length": 132993,
+      "detail_elapsed_ms": 2005,
+      "scraped_at": "2026-04-23T16:30:21.632Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -85,9 +85,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131933,
-      "detail_elapsed_ms": 2713,
-      "scraped_at": "2026-04-23T16:00:22.951Z"
+      "detail_html_length": 133103,
+      "detail_elapsed_ms": 1657,
+      "scraped_at": "2026-04-23T16:30:23.289Z"
     },
     {
       "id": "po0-2-ingressos-24-04-teatro-faap-sp",
@@ -109,8 +109,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132387,
-      "detail_elapsed_ms": 2050,
-      "scraped_at": "2026-04-23T16:00:25.001Z"
+      "detail_elapsed_ms": 1638,
+      "scraped_at": "2026-04-23T16:30:24.927Z"
     },
     {
       "id": "poy-30-cashback",
@@ -131,9 +131,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131183,
-      "detail_elapsed_ms": 1702,
-      "scraped_at": "2026-04-23T16:00:26.703Z"
+      "detail_html_length": 131232,
+      "detail_elapsed_ms": 1519,
+      "scraped_at": "2026-04-23T16:30:26.446Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -154,14 +154,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132368,
-      "detail_elapsed_ms": 2007,
-      "scraped_at": "2026-04-23T16:00:28.710Z"
+      "detail_html_length": 132419,
+      "detail_elapsed_ms": 1538,
+      "scraped_at": "2026-04-23T16:30:27.984Z"
     },
     {
-      "id": "pok-ofertas-de-ltima-hora-25-off-extra",
-      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ltima-hora-25-off-extra",
-      "original_link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ltima-hora-25-off-extra",
+      "id": "pok-ofertas-de-ultima-hora-25-off-extra",
+      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
+      "original_link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
       "title": "Ofertas de última hora: 25% OFF extra!",
       "preview_title": "Ofertas de última hora: 25% OFF extra!",
       "validity": "Benefício válido de 16/04/2026 15:40 até 25/05/2026 23:59.",
@@ -177,14 +177,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132018,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-04-23T16:00:30.396Z"
+      "detail_html_length": 133219,
+      "detail_elapsed_ms": 1659,
+      "scraped_at": "2026-04-23T16:30:29.643Z"
     },
     {
-      "id": "poh-40-off-extra-em-seleo-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-seleo-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-seleo-feminina",
+      "id": "poh-40-off-extra-em-selecao-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
       "title": "40% OFF extra em seleção feminina",
       "preview_title": "40% OFF extra em seleção feminina",
       "validity": "Benefício válido de 16/04/2026 14:56 até 27/04/2026 23:59.",
@@ -200,14 +200,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131008,
-      "detail_elapsed_ms": 2354,
-      "scraped_at": "2026-04-23T16:00:32.750Z"
+      "detail_html_length": 131047,
+      "detail_elapsed_ms": 1792,
+      "scraped_at": "2026-04-23T16:30:31.435Z"
     },
     {
-      "id": "pog-30-off-extra-em-seleo-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-seleo-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-seleo-feminina",
+      "id": "pog-30-off-extra-em-selecao-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
       "title": "30% OFF extra em seleção feminina",
       "preview_title": "30% OFF extra em seleção feminina",
       "validity": "Benefício válido de 16/04/2026 14:41 até 27/04/2026 23:59.",
@@ -223,14 +223,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131010,
-      "detail_elapsed_ms": 1796,
-      "scraped_at": "2026-04-23T16:00:34.546Z"
+      "detail_html_length": 131061,
+      "detail_elapsed_ms": 1621,
+      "scraped_at": "2026-04-23T16:30:33.056Z"
     },
     {
-      "id": "poe-30-off-em-seleo-de-jeans-feminino",
-      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-seleo-de-jeans-feminino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-seleo-de-jeans-feminino",
+      "id": "poe-30-off-em-selecao-de-jeans-feminino",
+      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
       "title": "30% OFF em seleção de jeans feminino",
       "preview_title": "30% OFF em seleção de jeans feminino",
       "validity": "Benefício válido de 16/04/2026 14:12 até 27/04/2026 23:59.",
@@ -246,14 +246,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131077,
-      "detail_elapsed_ms": 2184,
-      "scraped_at": "2026-04-23T16:00:36.731Z"
+      "detail_html_length": 131105,
+      "detail_elapsed_ms": 1521,
+      "scraped_at": "2026-04-23T16:30:34.578Z"
     },
     {
-      "id": "pob-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pob-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pob-at-75-off-para-compras-no-site",
+      "id": "pob-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 16/04/2026 12:40 até 10/05/2026 23:59.",
@@ -269,14 +269,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131524,
-      "detail_elapsed_ms": 1863,
-      "scraped_at": "2026-04-23T16:00:38.594Z"
+      "detail_html_length": 131178,
+      "detail_elapsed_ms": 1471,
+      "scraped_at": "2026-04-23T16:30:36.049Z"
     },
     {
-      "id": "poa-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/zattini/poa-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/zattini/poa-at-75-off-para-compras-no-site",
+      "id": "poa-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/zattini/poa-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/zattini/poa-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 16/04/2026 12:37 até 10/05/2026 23:59.",
@@ -292,9 +292,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130857,
-      "detail_elapsed_ms": 1917,
-      "scraped_at": "2026-04-23T16:00:40.511Z"
+      "detail_html_length": 130872,
+      "detail_elapsed_ms": 1547,
+      "scraped_at": "2026-04-23T16:30:37.596Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -315,9 +315,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130919,
-      "detail_elapsed_ms": 1731,
-      "scraped_at": "2026-04-23T16:00:42.242Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 1433,
+      "scraped_at": "2026-04-23T16:30:39.029Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -338,9 +338,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130685,
-      "detail_elapsed_ms": 1475,
-      "scraped_at": "2026-04-23T16:00:43.717Z"
+      "detail_html_length": 130695,
+      "detail_elapsed_ms": 2291,
+      "scraped_at": "2026-04-23T16:30:41.320Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -361,14 +361,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130862,
-      "detail_elapsed_ms": 1792,
-      "scraped_at": "2026-04-23T16:00:45.509Z"
+      "detail_html_length": 130892,
+      "detail_elapsed_ms": 1786,
+      "scraped_at": "2026-04-23T16:30:43.106Z"
     },
     {
-      "id": "pnk-at-12-off-nas-reservas",
-      "link": "https://clube.uol.com.br/movida/pnK-at-12-off-nas-reservas",
-      "original_link": "https://clube.uol.com.br/movida/pnK-at-12-off-nas-reservas",
+      "id": "pnk-ate-12-off-nas-reservas",
+      "link": "https://clube.uol.com.br/movida/pnK-ate-12-off-nas-reservas",
+      "original_link": "https://clube.uol.com.br/movida/pnK-ate-12-off-nas-reservas",
       "title": "Até 12% OFF nas reservas",
       "preview_title": "Até 12% OFF nas reservas",
       "validity": "Benefício válido de 14/04/2026 15:51 até 03/05/2026 23:59.",
@@ -384,9 +384,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132896,
-      "detail_elapsed_ms": 1646,
-      "scraped_at": "2026-04-23T16:00:47.155Z"
+      "detail_html_length": 132891,
+      "detail_elapsed_ms": 1568,
+      "scraped_at": "2026-04-23T16:30:44.674Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -407,14 +407,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131081,
-      "detail_elapsed_ms": 1790,
-      "scraped_at": "2026-04-23T16:00:48.945Z"
+      "detail_html_length": 131100,
+      "detail_elapsed_ms": 1798,
+      "scraped_at": "2026-04-23T16:30:46.473Z"
     },
     {
-      "id": "pn8-resgate-agora-1-kit-com-10-ms-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-ms-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-ms-grtis",
+      "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
+      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-imas-gratis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-imas-gratis",
       "title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
       "preview_title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
       "validity": "Benefício válido de 14/04/2026 11:29 até 30/04/2026 23:59.",
@@ -430,9 +430,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131180,
-      "detail_elapsed_ms": 1586,
-      "scraped_at": "2026-04-23T16:00:50.531Z"
+      "detail_html_length": 131142,
+      "detail_elapsed_ms": 1956,
+      "scraped_at": "2026-04-23T16:30:48.429Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -453,9 +453,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131003,
-      "detail_elapsed_ms": 1454,
-      "scraped_at": "2026-04-23T16:00:51.985Z"
+      "detail_html_length": 131023,
+      "detail_elapsed_ms": 1882,
+      "scraped_at": "2026-04-23T16:30:50.312Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -476,9 +476,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130963,
-      "detail_elapsed_ms": 1821,
-      "scraped_at": "2026-04-23T16:00:53.806Z"
+      "detail_html_length": 130964,
+      "detail_elapsed_ms": 1698,
+      "scraped_at": "2026-04-23T16:30:52.011Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -499,14 +499,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137778,
-      "detail_elapsed_ms": 1962,
-      "scraped_at": "2026-04-23T16:00:55.768Z"
+      "detail_html_length": 138113,
+      "detail_elapsed_ms": 2005,
+      "scraped_at": "2026-04-23T16:30:54.016Z"
     },
     {
-      "id": "pnx-2-cervejas-pelo-preo-1",
-      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preo-de-1",
-      "original_link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preo-de-1",
+      "id": "pnx-2-cervejas-pelo-preco-1",
+      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
+      "original_link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
       "title": "2 cervejas pelo preço de 1",
       "preview_title": "2 cervejas pelo preço de 1",
       "validity": "Benefício válido de 13/04/2026 11:41 até 13/06/2027 23:59.",
@@ -522,14 +522,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131584,
-      "detail_elapsed_ms": 2015,
-      "scraped_at": "2026-04-23T16:00:57.783Z"
+      "detail_html_length": 131577,
+      "detail_elapsed_ms": 1765,
+      "scraped_at": "2026-04-23T16:30:55.781Z"
     },
     {
-      "id": "pnu-30-off-em-ps-graduao-de-medicina",
-      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
-      "original_link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
+      "id": "pnu-30-off-em-pos-graduacao-de-medicina",
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
+      "original_link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
       "title": "30% OFF em Pós Graduação de Medicina",
       "preview_title": "30% OFF em Pós Graduação de Medicina",
       "validity": "Benefício válido de 10/04/2026 17:21 até 31/12/2028 23:59.",
@@ -545,9 +545,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132978,
-      "detail_elapsed_ms": 1494,
-      "scraped_at": "2026-04-23T16:00:59.277Z"
+      "detail_html_length": 132994,
+      "detail_elapsed_ms": 2024,
+      "scraped_at": "2026-04-23T16:30:57.805Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -568,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131938,
-      "detail_elapsed_ms": 2006,
-      "scraped_at": "2026-04-23T16:01:01.283Z"
+      "detail_html_length": 131987,
+      "detail_elapsed_ms": 2043,
+      "scraped_at": "2026-04-23T16:30:59.849Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -591,9 +591,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131786,
-      "detail_elapsed_ms": 1491,
-      "scraped_at": "2026-04-23T16:01:02.774Z"
+      "detail_html_length": 131777,
+      "detail_elapsed_ms": 1653,
+      "scraped_at": "2026-04-23T16:31:01.502Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -614,9 +614,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131947,
-      "detail_elapsed_ms": 1995,
-      "scraped_at": "2026-04-23T16:01:04.769Z"
+      "detail_html_length": 131957,
+      "detail_elapsed_ms": 1539,
+      "scraped_at": "2026-04-23T16:31:03.041Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -637,9 +637,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131950,
-      "detail_elapsed_ms": 1725,
-      "scraped_at": "2026-04-23T16:01:06.494Z"
+      "detail_html_length": 131960,
+      "detail_elapsed_ms": 1543,
+      "scraped_at": "2026-04-23T16:31:04.584Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -660,9 +660,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132143,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-04-23T16:01:08.142Z"
+      "detail_html_length": 132164,
+      "detail_elapsed_ms": 1554,
+      "scraped_at": "2026-04-23T16:31:06.138Z"
     },
     {
       "id": "pmw-50-off-no-par-de-ingressos",
@@ -683,9 +683,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132189,
-      "detail_elapsed_ms": 1938,
-      "scraped_at": "2026-04-23T16:01:10.080Z"
+      "detail_html_length": 132250,
+      "detail_elapsed_ms": 1622,
+      "scraped_at": "2026-04-23T16:31:07.760Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -706,9 +706,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132634,
-      "detail_elapsed_ms": 1868,
-      "scraped_at": "2026-04-23T16:01:11.948Z"
+      "detail_html_length": 132614,
+      "detail_elapsed_ms": 1443,
+      "scraped_at": "2026-04-23T16:31:09.203Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -729,9 +729,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133326,
-      "detail_elapsed_ms": 1921,
-      "scraped_at": "2026-04-23T16:01:13.869Z"
+      "detail_html_length": 133325,
+      "detail_elapsed_ms": 1535,
+      "scraped_at": "2026-04-23T16:31:10.738Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -752,9 +752,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133913,
-      "detail_elapsed_ms": 1438,
-      "scraped_at": "2026-04-23T16:01:15.307Z"
+      "detail_html_length": 133902,
+      "detail_elapsed_ms": 1485,
+      "scraped_at": "2026-04-23T16:31:12.223Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -775,9 +775,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132336,
-      "detail_elapsed_ms": 1682,
-      "scraped_at": "2026-04-23T16:01:16.989Z"
+      "detail_html_length": 132296,
+      "detail_elapsed_ms": 1537,
+      "scraped_at": "2026-04-23T16:31:13.760Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -798,9 +798,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132014,
-      "detail_elapsed_ms": 1573,
-      "scraped_at": "2026-04-23T16:01:18.562Z"
+      "detail_html_length": 132033,
+      "detail_elapsed_ms": 1636,
+      "scraped_at": "2026-04-23T16:31:15.396Z"
     },
     {
       "id": "pmx-30-off-na-compra-de-ingresso-sp",
@@ -821,9 +821,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132036,
-      "detail_elapsed_ms": 1674,
-      "scraped_at": "2026-04-23T16:01:20.236Z"
+      "detail_html_length": 132015,
+      "detail_elapsed_ms": 1860,
+      "scraped_at": "2026-04-23T16:31:17.257Z"
     },
     {
       "id": "pmv-30-off-na-compra-de-ingresso-ba",
@@ -844,9 +844,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131948,
-      "detail_elapsed_ms": 1564,
-      "scraped_at": "2026-04-23T16:01:21.800Z"
+      "detail_html_length": 131929,
+      "detail_elapsed_ms": 1537,
+      "scraped_at": "2026-04-23T16:31:18.794Z"
     },
     {
       "id": "pmu-30-off-na-compra-de-ingresso-ce",
@@ -867,14 +867,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131936,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-04-23T16:01:23.346Z"
+      "detail_html_length": 131895,
+      "detail_elapsed_ms": 1567,
+      "scraped_at": "2026-04-23T16:31:20.362Z"
     },
     {
-      "id": "pmt-41-off-na-ps-graduao",
-      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-ps-graduao",
-      "original_link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-ps-graduao",
+      "id": "pmt-41-off-na-pos-graduacao",
+      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
+      "original_link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
       "title": "41% OFF na Pós-Graduação",
       "preview_title": "41% OFF na Pós-Graduação",
       "validity": "Benefício válido de 08/04/2026 15:34 até 31/12/2026 23:59.",
@@ -890,9 +890,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130670,
-      "detail_elapsed_ms": 1486,
-      "scraped_at": "2026-04-23T16:01:24.832Z"
+      "detail_html_length": 130633,
+      "detail_elapsed_ms": 1602,
+      "scraped_at": "2026-04-23T16:31:21.964Z"
     },
     {
       "id": "pms-cursinho-enem-com-r-50-off",
@@ -913,9 +913,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130738,
-      "detail_elapsed_ms": 1842,
-      "scraped_at": "2026-04-23T16:01:26.674Z"
+      "detail_html_length": 130718,
+      "detail_elapsed_ms": 1619,
+      "scraped_at": "2026-04-23T16:31:23.583Z"
     },
     {
       "id": "pmr-30-off-na-compra-de-ingresso-mg",
@@ -936,9 +936,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131914,
-      "detail_elapsed_ms": 1544,
-      "scraped_at": "2026-04-23T16:01:28.218Z"
+      "detail_html_length": 131863,
+      "detail_elapsed_ms": 1631,
+      "scraped_at": "2026-04-23T16:31:25.214Z"
     },
     {
       "id": "pmq-30-off-na-compra-de-ingresso-sp",
@@ -959,9 +959,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131875,
-      "detail_elapsed_ms": 1517,
-      "scraped_at": "2026-04-23T16:01:29.735Z"
+      "detail_html_length": 125875,
+      "detail_elapsed_ms": 2085,
+      "scraped_at": "2026-04-23T16:31:27.299Z"
     },
     {
       "id": "pmp-30-off-na-compra-de-ingresso-rj",
@@ -982,9 +982,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131839,
-      "detail_elapsed_ms": 1526,
-      "scraped_at": "2026-04-23T16:01:31.261Z"
+      "detail_html_length": 131799,
+      "detail_elapsed_ms": 1803,
+      "scraped_at": "2026-04-23T16:31:29.102Z"
     },
     {
       "id": "pmk-20-off-no-ingresso",
@@ -1005,14 +1005,14 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131241,
-      "detail_elapsed_ms": 1495,
-      "scraped_at": "2026-04-23T16:01:32.756Z"
+      "detail_html_length": 131190,
+      "detail_elapsed_ms": 2058,
+      "scraped_at": "2026-04-23T16:31:31.160Z"
     },
     {
-      "id": "plx-at-50-off-em-graduao-e-ps",
-      "link": "https://clube.uol.com.br/fasig/plX-at-50-off-em-graduao-e-ps",
-      "original_link": "https://clube.uol.com.br/fasig/plX-at-50-off-em-graduao-e-ps",
+      "id": "plx-ate-50-off-em-graduacao-e-pos",
+      "link": "https://clube.uol.com.br/fasig/plX-ate-50-off-em-graduacao-e-pos",
+      "original_link": "https://clube.uol.com.br/fasig/plX-ate-50-off-em-graduacao-e-pos",
       "title": "Até 50% OFF em Graduação e Pós!",
       "preview_title": "Até 50% OFF em Graduação e Pós!",
       "validity": "Benefício válido de 02/04/2026 18:06 até 31/12/2027 23:59.",
@@ -1028,9 +1028,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133260,
-      "detail_elapsed_ms": 1420,
-      "scraped_at": "2026-04-23T16:01:34.176Z"
+      "detail_html_length": 132063,
+      "detail_elapsed_ms": 1882,
+      "scraped_at": "2026-04-23T16:31:33.043Z"
     },
     {
       "id": "plg-30-off-na-compra-de-ingresso-mg",
@@ -1051,9 +1051,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 1817,
-      "scraped_at": "2026-04-23T16:01:35.993Z"
+      "detail_html_length": 131599,
+      "detail_elapsed_ms": 2592,
+      "scraped_at": "2026-04-23T16:31:35.635Z"
     },
     {
       "id": "pl8-10-off-no-ingresso-luminiscence",
@@ -1074,9 +1074,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129539,
-      "detail_elapsed_ms": 2323,
-      "scraped_at": "2026-04-23T16:01:38.316Z"
+      "detail_html_length": 130795,
+      "detail_elapsed_ms": 1925,
+      "scraped_at": "2026-04-23T16:31:37.560Z"
     },
     {
       "id": "pll-compre-1-curso-e-ganhe-outro",
@@ -1097,9 +1097,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132933,
-      "detail_elapsed_ms": 1578,
-      "scraped_at": "2026-04-23T16:01:39.894Z"
+      "detail_html_length": 132903,
+      "detail_elapsed_ms": 2023,
+      "scraped_at": "2026-04-23T16:31:39.583Z"
     },
     {
       "id": "pkt-20-off-no-site",
@@ -1120,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130719,
-      "detail_elapsed_ms": 1572,
-      "scraped_at": "2026-04-23T16:01:41.466Z"
+      "detail_html_length": 130680,
+      "detail_elapsed_ms": 1849,
+      "scraped_at": "2026-04-23T16:31:41.432Z"
     }
   ]
 }
