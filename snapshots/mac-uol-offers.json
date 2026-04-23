@@ -14,12 +14,35 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 93534,
-  "run_duration_seconds": 93.53,
-  "avg_detail_ms_per_offer": 1949,
-  "generated_at": "2026-04-23T17:01:39.561Z",
+  "run_duration_ms": 92557,
+  "run_duration_seconds": 92.56,
+  "avg_detail_ms_per_offer": 1928,
+  "generated_at": "2026-04-23T17:31:37.703Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pog-50-off-em-at-4-ingressos",
+      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
+      "original_link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
+      "title": "50% OFF em até 4 ingressos",
+      "preview_title": "50% OFF em até 4 ingressos",
+      "validity": "Benefício válido de 09/03/2026 15:54 até 07/06/2026 23:59.",
+      "description": "Sobre o parceiro: Espetáculo Chez Toi – Em Seu Lugar estreia em maio na cidade de São Paulo em curta temporada com Barbara Bruno no elenco comemorando os seus 70 de idade e 55 de carreira. “Chez Toi – Em Seu Lugar” usa do realismo mágico e toques de muito humor para contar a história de Abigail (Barbara Bruno), uma mulher que vive sozinha em seu apartamento e recebe constantes visitas de sua filha Emily (Bianca Rinaldi), uma mulher com traumas do passado. Benefício: Cupom de 50% OFF em até 4 ingressos do Espetáculo Espetáculo Chez Toi - Em Seu Lugar. Regras: Para resgatar o desconto de 50% no ingresso em até 4 ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para o site da ticketeira oficial do espetáculo, escolha a opção \"UOL\" e, em seguida, cole o código no campo solicitado para obter o seu desconto. Atenção: Desconto válido para o Assinante UOL. Desconto válido em até 4 ingressos apenas para modalidade inteira. Benefício não válido para o Setor Popular. Temporada: De 1 de Maio a 7 de Junho de 2026. Horários: Sexta e sábado, às 20h; e domingo, às 18h. Fique de olho no horário: não é permitida a entrada após o início do espetáculo! **Localização do Teatro Nair Bello - Rua Frei Caneca, 569 - 3º Piso, Shopping Frei Caneca, São Paulo.",
+      "category": "Promoções do Mês",
+      "partner_name": "Espetáculo Chez Toi - Em Seu Lugar",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/115ecb9e9fb8b7a643faae3fc21c203c.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69ea51e7c31b6_ec296b77dc3a0fc397c0effe52c9b660.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69ea51e7c31b6_ec296b77dc3a0fc397c0effe52c9b660.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69ea51e7c31b6_ec296b77dc3a0fc397c0effe52c9b660.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 125171,
+      "detail_elapsed_ms": 1991,
+      "scraped_at": "2026-04-23T17:30:18.639Z"
+    },
     {
       "id": "pof-10-off-no-site-oficial",
       "link": "https://clube.uol.com.br/sanavita/poF-10-off-no-site-oficial",
@@ -39,9 +62,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128931,
-      "detail_elapsed_ms": 2584,
-      "scraped_at": "2026-04-23T17:00:24.392Z"
+      "detail_html_length": 130652,
+      "detail_elapsed_ms": 2047,
+      "scraped_at": "2026-04-23T17:30:20.701Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -62,9 +85,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132984,
-      "detail_elapsed_ms": 1966,
-      "scraped_at": "2026-04-23T17:00:26.374Z"
+      "detail_html_length": 133014,
+      "detail_elapsed_ms": 1570,
+      "scraped_at": "2026-04-23T17:30:22.271Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -85,9 +108,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133132,
-      "detail_elapsed_ms": 1632,
-      "scraped_at": "2026-04-23T17:00:28.006Z"
+      "detail_html_length": 133094,
+      "detail_elapsed_ms": 1584,
+      "scraped_at": "2026-04-23T17:30:23.855Z"
     },
     {
       "id": "po0-2-ingressos-24-04-teatro-faap-sp",
@@ -108,9 +131,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132397,
-      "detail_elapsed_ms": 1581,
-      "scraped_at": "2026-04-23T17:00:29.587Z"
+      "detail_html_length": 132440,
+      "detail_elapsed_ms": 1498,
+      "scraped_at": "2026-04-23T17:30:25.353Z"
     },
     {
       "id": "poy-30-cashback",
@@ -131,9 +154,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131232,
-      "detail_elapsed_ms": 1543,
-      "scraped_at": "2026-04-23T17:00:31.131Z"
+      "detail_html_length": 131234,
+      "detail_elapsed_ms": 1662,
+      "scraped_at": "2026-04-23T17:30:27.015Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -154,9 +177,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132388,
-      "detail_elapsed_ms": 1513,
-      "scraped_at": "2026-04-23T17:00:32.644Z"
+      "detail_html_length": 132431,
+      "detail_elapsed_ms": 1656,
+      "scraped_at": "2026-04-23T17:30:28.671Z"
     },
     {
       "id": "pok-ofertas-de-ltima-hora-25-off-extra",
@@ -177,9 +200,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133166,
-      "detail_elapsed_ms": 1600,
-      "scraped_at": "2026-04-23T17:00:34.244Z"
+      "detail_html_length": 133217,
+      "detail_elapsed_ms": 1656,
+      "scraped_at": "2026-04-23T17:30:30.327Z"
     },
     {
       "id": "poh-40-off-extra-em-seleo-feminina",
@@ -200,9 +223,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131057,
-      "detail_elapsed_ms": 1760,
-      "scraped_at": "2026-04-23T17:00:36.004Z"
+      "detail_html_length": 131080,
+      "detail_elapsed_ms": 1611,
+      "scraped_at": "2026-04-23T17:30:31.938Z"
     },
     {
       "id": "pog-30-off-extra-em-seleo-feminina",
@@ -223,9 +246,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131049,
-      "detail_elapsed_ms": 1439,
-      "scraped_at": "2026-04-23T17:00:37.444Z"
+      "detail_html_length": 131070,
+      "detail_elapsed_ms": 1352,
+      "scraped_at": "2026-04-23T17:30:33.290Z"
     },
     {
       "id": "poe-30-off-em-seleo-de-jeans-feminino",
@@ -246,9 +269,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131097,
-      "detail_elapsed_ms": 1730,
-      "scraped_at": "2026-04-23T17:00:39.174Z"
+      "detail_html_length": 131059,
+      "detail_elapsed_ms": 1557,
+      "scraped_at": "2026-04-23T17:30:34.847Z"
     },
     {
       "id": "pob-at-75-off-para-compras-no-site",
@@ -269,9 +292,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131132,
-      "detail_elapsed_ms": 1482,
-      "scraped_at": "2026-04-23T17:00:40.656Z"
+      "detail_html_length": 131133,
+      "detail_elapsed_ms": 2152,
+      "scraped_at": "2026-04-23T17:30:37.000Z"
     },
     {
       "id": "poa-at-75-off-para-compras-no-site",
@@ -292,9 +315,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130867,
-      "detail_elapsed_ms": 1557,
-      "scraped_at": "2026-04-23T17:00:42.213Z"
+      "detail_html_length": 124446,
+      "detail_elapsed_ms": 2236,
+      "scraped_at": "2026-04-23T17:30:39.236Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -315,9 +338,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130959,
-      "detail_elapsed_ms": 1592,
-      "scraped_at": "2026-04-23T17:00:43.806Z"
+      "detail_html_length": 130912,
+      "detail_elapsed_ms": 2048,
+      "scraped_at": "2026-04-23T17:30:41.284Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -338,9 +361,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130724,
-      "detail_elapsed_ms": 1417,
-      "scraped_at": "2026-04-23T17:00:45.223Z"
+      "detail_html_length": 130686,
+      "detail_elapsed_ms": 1639,
+      "scraped_at": "2026-04-23T17:30:42.923Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -361,9 +384,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-04-23T17:00:46.728Z"
+      "detail_html_length": 130864,
+      "detail_elapsed_ms": 1765,
+      "scraped_at": "2026-04-23T17:30:44.688Z"
     },
     {
       "id": "pnk-at-12-off-nas-reservas",
@@ -384,9 +407,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132935,
-      "detail_elapsed_ms": 1785,
-      "scraped_at": "2026-04-23T17:00:48.513Z"
+      "detail_html_length": 132810,
+      "detail_elapsed_ms": 1705,
+      "scraped_at": "2026-04-23T17:30:46.393Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -407,9 +430,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131100,
-      "detail_elapsed_ms": 1521,
-      "scraped_at": "2026-04-23T17:00:50.034Z"
+      "detail_html_length": 131073,
+      "detail_elapsed_ms": 1743,
+      "scraped_at": "2026-04-23T17:30:48.137Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-ms-grtis",
@@ -430,9 +453,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131168,
-      "detail_elapsed_ms": 1618,
-      "scraped_at": "2026-04-23T17:00:51.652Z"
+      "detail_html_length": 131153,
+      "detail_elapsed_ms": 1528,
+      "scraped_at": "2026-04-23T17:30:49.665Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -453,9 +476,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131023,
-      "detail_elapsed_ms": 1420,
-      "scraped_at": "2026-04-23T17:00:53.072Z"
+      "detail_html_length": 131024,
+      "detail_elapsed_ms": 1550,
+      "scraped_at": "2026-04-23T17:30:51.215Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -476,9 +499,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130995,
-      "detail_elapsed_ms": 1504,
-      "scraped_at": "2026-04-23T17:00:54.576Z"
+      "detail_html_length": 130975,
+      "detail_elapsed_ms": 1565,
+      "scraped_at": "2026-04-23T17:30:52.780Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -499,9 +522,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139281,
-      "detail_elapsed_ms": 1764,
-      "scraped_at": "2026-04-23T17:00:56.340Z"
+      "detail_html_length": 139284,
+      "detail_elapsed_ms": 1740,
+      "scraped_at": "2026-04-23T17:30:54.520Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preo-1",
@@ -522,9 +545,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131613,
-      "detail_elapsed_ms": 1714,
-      "scraped_at": "2026-04-23T17:00:58.054Z"
+      "detail_html_length": 131624,
+      "detail_elapsed_ms": 3089,
+      "scraped_at": "2026-04-23T17:30:57.609Z"
     },
     {
       "id": "pnu-30-off-em-ps-graduao-de-medicina",
@@ -545,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132978,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-04-23T17:00:59.557Z"
+      "detail_html_length": 133030,
+      "detail_elapsed_ms": 1758,
+      "scraped_at": "2026-04-23T17:30:59.367Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -568,9 +591,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131978,
-      "detail_elapsed_ms": 1576,
-      "scraped_at": "2026-04-23T17:01:01.133Z"
+      "detail_html_length": 131979,
+      "detail_elapsed_ms": 1661,
+      "scraped_at": "2026-04-23T17:31:01.028Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -591,9 +614,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131767,
-      "detail_elapsed_ms": 1647,
-      "scraped_at": "2026-04-23T17:01:02.780Z"
+      "detail_html_length": 130533,
+      "detail_elapsed_ms": 1663,
+      "scraped_at": "2026-04-23T17:31:02.691Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -614,9 +637,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131966,
-      "detail_elapsed_ms": 1799,
-      "scraped_at": "2026-04-23T17:01:04.579Z"
+      "detail_html_length": 131949,
+      "detail_elapsed_ms": 1542,
+      "scraped_at": "2026-04-23T17:31:04.233Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -637,9 +660,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132387,
-      "detail_elapsed_ms": 2224,
-      "scraped_at": "2026-04-23T17:01:06.803Z"
+      "detail_html_length": 131952,
+      "detail_elapsed_ms": 1501,
+      "scraped_at": "2026-04-23T17:31:05.734Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -660,9 +683,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132134,
-      "detail_elapsed_ms": 1610,
-      "scraped_at": "2026-04-23T17:01:08.413Z"
+      "detail_html_length": 132175,
+      "detail_elapsed_ms": 1646,
+      "scraped_at": "2026-04-23T17:31:07.380Z"
     },
     {
       "id": "pmw-50-off-no-par-de-ingressos",
@@ -683,9 +706,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132239,
-      "detail_elapsed_ms": 1634,
-      "scraped_at": "2026-04-23T17:01:10.048Z"
+      "detail_html_length": 132252,
+      "detail_elapsed_ms": 1726,
+      "scraped_at": "2026-04-23T17:31:09.106Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -706,9 +729,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132634,
-      "detail_elapsed_ms": 1413,
-      "scraped_at": "2026-04-23T17:01:11.461Z"
+      "detail_html_length": 132676,
+      "detail_elapsed_ms": 1390,
+      "scraped_at": "2026-04-23T17:31:10.496Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -729,9 +752,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133265,
-      "detail_elapsed_ms": 1569,
-      "scraped_at": "2026-04-23T17:01:13.030Z"
+      "detail_html_length": 133308,
+      "detail_elapsed_ms": 1521,
+      "scraped_at": "2026-04-23T17:31:12.017Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -752,9 +775,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133964,
-      "detail_elapsed_ms": 1946,
-      "scraped_at": "2026-04-23T17:01:14.976Z"
+      "detail_html_length": 133965,
+      "detail_elapsed_ms": 1486,
+      "scraped_at": "2026-04-23T17:31:13.503Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -775,9 +798,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132325,
-      "detail_elapsed_ms": 1491,
-      "scraped_at": "2026-04-23T17:01:16.467Z"
+      "detail_html_length": 132328,
+      "detail_elapsed_ms": 1582,
+      "scraped_at": "2026-04-23T17:31:15.085Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -798,9 +821,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132044,
-      "detail_elapsed_ms": 1451,
-      "scraped_at": "2026-04-23T17:01:17.918Z"
+      "detail_html_length": 131996,
+      "detail_elapsed_ms": 1581,
+      "scraped_at": "2026-04-23T17:31:16.666Z"
     },
     {
       "id": "pmx-30-off-na-compra-de-ingresso-sp",
@@ -821,9 +844,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132047,
-      "detail_elapsed_ms": 1556,
-      "scraped_at": "2026-04-23T17:01:19.474Z"
+      "detail_html_length": 132049,
+      "detail_elapsed_ms": 1713,
+      "scraped_at": "2026-04-23T17:31:18.379Z"
     },
     {
       "id": "pmv-30-off-na-compra-de-ingresso-ba",
@@ -844,9 +867,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131959,
-      "detail_elapsed_ms": 1441,
-      "scraped_at": "2026-04-23T17:01:20.915Z"
+      "detail_html_length": 131931,
+      "detail_elapsed_ms": 1921,
+      "scraped_at": "2026-04-23T17:31:20.300Z"
     },
     {
       "id": "pmu-30-off-na-compra-de-ingresso-ce",
@@ -867,9 +890,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131935,
-      "detail_elapsed_ms": 1422,
-      "scraped_at": "2026-04-23T17:01:22.339Z"
+      "detail_html_length": 131937,
+      "detail_elapsed_ms": 1805,
+      "scraped_at": "2026-04-23T17:31:22.105Z"
     },
     {
       "id": "pmt-41-off-na-ps-graduao",
@@ -890,9 +913,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130646,
-      "detail_elapsed_ms": 1388,
-      "scraped_at": "2026-04-23T17:01:23.727Z"
+      "detail_html_length": 130658,
+      "detail_elapsed_ms": 1457,
+      "scraped_at": "2026-04-23T17:31:23.562Z"
     },
     {
       "id": "pms-cursinho-enem-com-r-50-off",
@@ -913,9 +936,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130729,
-      "detail_elapsed_ms": 1435,
-      "scraped_at": "2026-04-23T17:01:25.162Z"
+      "detail_html_length": 130731,
+      "detail_elapsed_ms": 1462,
+      "scraped_at": "2026-04-23T17:31:25.024Z"
     },
     {
       "id": "pmr-30-off-na-compra-de-ingresso-mg",
@@ -936,9 +959,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131884,
-      "detail_elapsed_ms": 1536,
-      "scraped_at": "2026-04-23T17:01:26.698Z"
+      "detail_html_length": 131915,
+      "detail_elapsed_ms": 1601,
+      "scraped_at": "2026-04-23T17:31:26.625Z"
     },
     {
       "id": "pmq-30-off-na-compra-de-ingresso-sp",
@@ -959,9 +982,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131866,
-      "detail_elapsed_ms": 1484,
-      "scraped_at": "2026-04-23T17:01:28.182Z"
+      "detail_html_length": 131876,
+      "detail_elapsed_ms": 1638,
+      "scraped_at": "2026-04-23T17:31:28.263Z"
     },
     {
       "id": "pmp-30-off-na-compra-de-ingresso-rj",
@@ -982,9 +1005,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131828,
-      "detail_elapsed_ms": 1519,
-      "scraped_at": "2026-04-23T17:01:29.701Z"
+      "detail_html_length": 131839,
+      "detail_elapsed_ms": 1539,
+      "scraped_at": "2026-04-23T17:31:29.802Z"
     },
     {
       "id": "pmk-20-off-no-ingresso",
@@ -1005,9 +1028,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131240,
-      "detail_elapsed_ms": 1560,
-      "scraped_at": "2026-04-23T17:01:31.261Z"
+      "detail_html_length": 131243,
+      "detail_elapsed_ms": 1571,
+      "scraped_at": "2026-04-23T17:31:31.373Z"
     },
     {
       "id": "plx-at-50-off-em-graduao-e-ps",
@@ -1028,9 +1051,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133201,
-      "detail_elapsed_ms": 1653,
-      "scraped_at": "2026-04-23T17:01:32.915Z"
+      "detail_html_length": 133273,
+      "detail_elapsed_ms": 1503,
+      "scraped_at": "2026-04-23T17:31:32.876Z"
     },
     {
       "id": "plg-30-off-na-compra-de-ingresso-mg",
@@ -1051,9 +1074,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131609,
-      "detail_elapsed_ms": 1598,
-      "scraped_at": "2026-04-23T17:01:34.513Z"
+      "detail_html_length": 131653,
+      "detail_elapsed_ms": 1536,
+      "scraped_at": "2026-04-23T17:31:34.412Z"
     },
     {
       "id": "pl8-10-off-no-ingresso-luminiscence",
@@ -1074,9 +1097,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130826,
-      "detail_elapsed_ms": 1716,
-      "scraped_at": "2026-04-23T17:01:36.229Z"
+      "detail_html_length": 130838,
+      "detail_elapsed_ms": 1669,
+      "scraped_at": "2026-04-23T17:31:36.081Z"
     },
     {
       "id": "pll-compre-1-curso-e-ganhe-outro",
@@ -1097,32 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132934,
-      "detail_elapsed_ms": 1613,
-      "scraped_at": "2026-04-23T17:01:37.842Z"
-    },
-    {
-      "id": "pkt-20-off-no-site",
-      "link": "https://clube.uol.com.br/multicoisas/pkT-20-off-no-site",
-      "original_link": "https://clube.uol.com.br/multicoisas/pkT-20-off-no-site",
-      "title": "20% OFF no site",
-      "preview_title": "20% OFF no site",
-      "validity": "Benefício válido de 02/04/2026 14:32 até 31/05/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Multicoisas: a maior rede de varejo brasileira da área de utilidades. Acreditamos que um dia a dia mais prático e inspirador faz bem para a sua qualidade de vida. E para garantir isso, buscamos reunir em um lugar só o melhor atendimento e todas as soluções que sua casa ou escritório podem precisar. Beneficio: 20% de desconto em compras no site Regras: Disponível para apenas uma compra por CPF, efetuada exclusivamente no site oficial. Desconto concedido através da aplicação do código antes da finalização do pedido.",
-      "category": "",
-      "partner_name": "Multicoisas",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/19bdf6467a069d5ff7ee77a2ff04db4a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cab1cd8293ac9ad8f94fc6cdc24bf06f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cab1cd8293ac9ad8f94fc6cdc24bf06f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cab1cd8293ac9ad8f94fc6cdc24bf06f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130729,
-      "detail_elapsed_ms": 1560,
-      "scraped_at": "2026-04-23T17:01:39.402Z"
+      "detail_html_length": 132936,
+      "detail_elapsed_ms": 1553,
+      "scraped_at": "2026-04-23T17:31:37.634Z"
     }
   ]
 }
