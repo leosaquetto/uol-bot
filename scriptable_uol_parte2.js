@@ -78,6 +78,63 @@ function normalizeOfferKey(value) {
 
   return Array.from(variants).filter(Boolean).sort()[0] || ""
 }
+function normalizeOfferRecordKey(offer) {
+  if (!offer || typeof offer !== "object") return ""
+  return normalizeOfferKey(offer.offer_key || offer.id || offer.link || offer.original_link || "")
+}
+function pickCachedDetailImage(offer) {
+  if (!offer || typeof offer !== "object") return ""
+  const candidates = [
+    offer.detail_img_url,
+    offer.img_url,
+    offer.image_url,
+    offer.image,
+  ]
+  for (const raw of candidates) {
+    const src = absolutizeUrl(String(raw || "").trim())
+    if (!src || isBadOfferImageUrl(src)) continue
+    return src
+  }
+  return ""
+}
+function hasSufficientDetail(entry) {
+  if (!entry || typeof entry !== "object") return false
+  const validity = String(entry.validity || "").trim()
+  const description = String(entry.description || "").trim()
+  const detailImage = String(entry.detail_img_url || "").trim()
+  return validity.length >= 8 && description.length >= 20 && !!detailImage
+}
+function toDetailIndexEntry(offer) {
+  if (!offer || typeof offer !== "object") return null
+  const key = normalizeOfferRecordKey(offer)
+  if (!key) return null
+  const validity = String(offer.validity || "").trim()
+  const description = String(offer.description || "").trim()
+  const detail_img_url = pickCachedDetailImage(offer)
+  return {
+    key,
+    validity,
+    description,
+    detail_img_url,
+    source_title: String(offer.title || offer.preview_title || "").trim(),
+    source_link: normalizeLink(offer.link || offer.original_link || ""),
+    sufficient: hasSufficientDetail({ validity, description, detail_img_url }),
+  }
+}
+function appendDetailIndexFromList(indexMap, offers, sourceLabel) {
+  if (!Array.isArray(offers)) return 0
+  let count = 0
+  for (const offer of offers) {
+    const entry = toDetailIndexEntry(offer)
+    if (!entry) continue
+    const previous = indexMap.get(entry.key)
+    if (!previous || (!previous.sufficient && entry.sufficient)) {
+      indexMap.set(entry.key, { ...entry, source: sourceLabel })
+      count += 1
+    }
+  }
+  return count
+}
 function clampInt(value, fallback, minV = 1, maxV = 30) {
   const n = Number(value)
   if (!Number.isFinite(n)) return fallback
@@ -308,7 +365,13 @@ async function main() {
     const state = await loadPipelineState()
     if (!state || !state.snapshot_id || !state.stage1_path || Number(state.last_part || 0) < 1) return "erro_parte2 | estado da parte1 ausente"
 
-    const stage1Resp = await withRetries("load stage1", () => githubGetJson(state.stage1_path))
+    const detailCachePath = "offer_detail_cache.json"
+    const [stage1Resp, pendingResp, latestResp, detailCacheResp] = await Promise.all([
+      withRetries("load stage1", () => githubGetJson(state.stage1_path)),
+      withRetries("get pending", () => githubGetJson("pending_offers.json")),
+      withRetries("get latest", () => githubGetJson("latest_offers.json")),
+      withRetries("get detail cache", () => githubGetJson(detailCachePath)),
+    ])
     if (!stage1Resp.ok || !stage1Resp.data) throw new Error(stage1Resp.error || "stage1 indisponível")
 
     const stage1 = stage1Resp.data
@@ -322,10 +385,21 @@ async function main() {
     const offersToTest = newOffers.slice(0, detailLimit)
     const detailMetaPath = `snapshots/detail_${snapshotId}.json`
     const stage2Path = `snapshots/stage2_${snapshotId}.json`
+    const detailIndex = new Map()
+    const detailCacheData = detailCacheResp.ok && detailCacheResp.data && typeof detailCacheResp.data === "object" ? detailCacheResp.data : { offers_by_key: {} }
+    const cacheOffersByKey = detailCacheData.offers_by_key && typeof detailCacheData.offers_by_key === "object" ? detailCacheData.offers_by_key : {}
+    const cacheEntries = Object.keys(cacheOffersByKey).map(key => ({ ...(cacheOffersByKey[key] || {}), offer_key: key }))
+    const pendingOffers = pendingResp.ok && pendingResp.data && Array.isArray(pendingResp.data.offers) ? pendingResp.data.offers : []
+    const latestOffers = latestResp.ok && latestResp.data && Array.isArray(latestResp.data.offers) ? latestResp.data.offers : []
+    appendDetailIndexFromList(detailIndex, pendingOffers, "pending_offers")
+    appendDetailIndexFromList(detailIndex, latestOffers, "latest_offers")
+    appendDetailIndexFromList(detailIndex, cacheEntries, "offer_detail_cache")
+    log(`🧠 índice de detalhes carregado: ${detailIndex.size} chaves`)
 
     const detailResults = []
     const pendingToAppend = []
     let okCount = 0
+    let cacheHitCount = 0
 
     for (let i = 0; i < offersToTest.length; i++) {
       const elapsedSeconds = (new Date().getTime() - startedAtGlobal.getTime()) / 1000
@@ -334,12 +408,31 @@ async function main() {
         break
       }
       const offer = offersToTest[i]
-      const detail = await withRetries(`detalhe ${i + 1}`, () => fetchOfferDetailData(offer))
-      const d = detail.ok === false ? { ok: false, title: offer.title, validity: "", description: "", detail_img_url: "", detail_img_source: "failed", html_length: 0, error: detail.error || "falhou" } : detail
+      const offerKey = normalizeOfferKey(offer.link || offer.id || "")
+      const cached = detailIndex.get(offerKey)
+      let d = null
+      let cacheHit = false
+      if (cached && cached.sufficient) {
+        cacheHit = true
+        cacheHitCount += 1
+        d = {
+          ok: true,
+          title: cached.source_title || offer.title || "Oferta",
+          html_length: 0,
+          validity: cached.validity || "",
+          description: cached.description || "",
+          detail_img_url: cached.detail_img_url || "",
+          detail_img_source: `cache_${cached.source || "index"}`,
+          error: "",
+        }
+      } else {
+        const detail = await withRetries(`detalhe ${i + 1}`, () => fetchOfferDetailData(offer))
+        d = detail.ok === false ? { ok: false, title: offer.title, validity: "", description: "", detail_img_url: "", detail_img_source: "failed", html_length: 0, error: detail.error || "falhou" } : detail
+      }
       if (d.ok) okCount += 1
 
       pendingToAppend.push({
-        id: normalizeOfferKey(offer.link),
+        id: offerKey,
         link: normalizeLink(offer.link),
         original_link: normalizeLink(offer.link),
         title: (d.title || offer.title || "Oferta").trim(),
@@ -354,6 +447,10 @@ async function main() {
         created_at: new Date().toISOString(),
         snapshot_id: snapshotId,
       })
+      const cacheCandidate = toDetailIndexEntry({ offer_key: offerKey, ...d, link: offer.link, title: d.title || offer.title })
+      if (cacheCandidate && cacheCandidate.sufficient) {
+        detailIndex.set(offerKey, { ...cacheCandidate, source: cacheHit ? "cache_reused" : "fetch_detail" })
+      }
 
       detailResults.push({
         index: i + 1,
@@ -366,6 +463,7 @@ async function main() {
         description: (d.description || "").slice(0, 4000),
         has_validity: !!d.validity,
         has_description: !!d.description,
+        cache_hit: cacheHit,
         detail_status: d.ok ? ((d.title && d.validity && d.description) ? "complete" : "partial") : "failed",
         detail_img_url: d.detail_img_url || "",
         detail_img_source: d.detail_img_source || "none",
@@ -379,6 +477,7 @@ async function main() {
       tested_count: detailResults.length,
       detail_ok_count: okCount,
       detail_fail_count: detailResults.length - okCount,
+      cache_hit_count: cacheHitCount,
       offers: detailResults,
     }
 
@@ -386,12 +485,32 @@ async function main() {
       snapshot_id: snapshotId,
       created_at: new Date().toISOString(),
       pending_to_append: pendingToAppend,
-      stats: { tested_count: detailResults.length, detail_ok_count: okCount, detail_limit: detailLimit },
+      stats: { tested_count: detailResults.length, detail_ok_count: okCount, detail_limit: detailLimit, cache_hit_count: cacheHitCount },
+    }
+
+    const cachePayload = {
+      last_update: new Date().toISOString(),
+      snapshot_id: snapshotId,
+      stats: {
+        indexed_keys: detailIndex.size,
+        cache_hit_count: cacheHitCount,
+        tested_count: detailResults.length,
+      },
+      offers_by_key: Object.fromEntries(Array.from(detailIndex.entries()).map(([key, entry]) => [key, {
+        validity: entry.validity || "",
+        description: entry.description || "",
+        detail_img_url: entry.detail_img_url || "",
+        source: entry.source || "unknown",
+        source_link: entry.source_link || "",
+        source_title: entry.source_title || "",
+        sufficient: !!entry.sufficient,
+      }])),
     }
 
     const saves = await Promise.all([
       withRetries("upload detail", () => githubPutFile(detailMetaPath, JSON.stringify(detailMeta, null, 2), `scriptable detail meta ${snapshotId}`)),
       withRetries("upload stage2", () => githubPutFile(stage2Path, JSON.stringify(stage2, null, 2), `scriptable stage2 ${snapshotId}`)),
+      withRetries("upload detail cache", () => githubPutFile(detailCachePath, JSON.stringify(cachePayload, null, 2), `scriptable detail cache ${snapshotId}`)),
     ])
 
     if (saves.some(x => !x.ok)) throw new Error(saves.find(x => !x.ok).error || "falha upload parte2")
