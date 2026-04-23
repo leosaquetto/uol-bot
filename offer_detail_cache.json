@@ -1,21 +1,12 @@
 {
-  "last_update": "2026-04-23T17:34:35.271Z",
-  "snapshot_id": "20260423_143428_rtbn2",
+  "last_update": "2026-04-23T21:56:48.961Z",
+  "snapshot_id": "20260423_185637_g6cq6",
   "stats": {
-    "indexed_keys": 24,
-    "cache_hit_count": 4,
+    "indexed_keys": 25,
+    "cache_hit_count": 3,
     "tested_count": 4
   },
   "offers_by_key": {
-    "pmr-30-off-na-compra-de-ingresso-mg": {
-      "validity": "Benefício válido de 08/04/2026 15:08 até 19/09/2026 23:59 .",
-      "description": "Sobre a Turnê: Depois do sucesso da primeira edição, Ivete Clareou retorna em 2026, passando por mais cidades do Brasil e ampliando um encontro que já se tornou inesquecível para quem viveu e irresistível para quem ainda vai viver. O samba de mainha continua! Data do Show: 19 de setembro, na Área Externa do Mineirinho, em Belo Horizonte/MG. Benefício: Cupom de 30% OFF na compra de ingresso da Turnê Ivete Clareou - Turnê 2026. Como utilizar: Para resgatar o desconto de 30% no ingresso, clique em &#34;Utilizar este benefício&#34; e copie o código. Ao ser direcionado para a ticketeira oficial do evento, clique em &#34;Liberar código&#34; e em &#34;Cupom&#34;. Em seguida, insira seu Código Promocional e prossiga com a compra do ingresso. Regras: Benefício válido para todos os setores e tipos de ingresso. Cada assinante tem direito ao cupom exclusivo de 30% OFF no ingresso. O benefício é válido para todos os setores e sujeito a disponibilidade de ingresso. Endereço da Área Externa do Mineirinho: Av. Abrahão Caran, 1.000 - São José. Enviar cupons por e-mail Preencha os campos abaixo para enviar os seus cupons resgatados por e-mail E-mail Mensagem Enviar",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
-      "source": "latest_offers",
-      "source_link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmr-30-off-na-compra-de-ingresso-mg",
-      "source_title": "30% OFF na compra de ingresso - MG",
-      "sufficient": true
-    },
     "pmq-30-off-na-compra-de-ingresso-sp": {
       "validity": "Benefício válido de 08/04/2026 15:08 até 22/08/2026 23:59 .",
       "description": "Sobre a Turnê: Depois do sucesso da primeira edição, Ivete Clareou retorna em 2026, passando por mais cidades do Brasil e ampliando um encontro que já se tornou inesquecível para quem viveu e irresistível para quem ainda vai viver. O samba de mainha continua! Data do Show: 22 de agosto, no Centro Esportivo Tietê, em São Paulo/SP. Benefício: Cupom de 30% OFF na compra de ingresso da Turnê Ivete Clareou - Turnê 2026. Como utilizar: Para resgatar o desconto de 30% no ingresso, clique em &#34;Utilizar este benefício&#34; e copie o código. Ao ser direcionado para a ticketeira oficial do evento, clique em &#34;Liberar código&#34; e em &#34;Cupom&#34;. Em seguida, insira seu Código Promocional e prossiga com a compra do ingresso. Regras: Benefício válido para todos os setores e tipos de ingresso. Cada assinante tem direito ao cupom exclusivo de 30% OFF no ingresso. O benefício é válido para todos os setores e sujeito a disponibilidade de ingresso. Endereço do Centro Esportivo Tietê: Av. Santos Dumont, 843 - Luz. Enviar cupons por e-mail Preencha os campos abaixo para enviar os seus cupons resgatados por e-mail E-mail Mensagem Enviar",
@@ -191,9 +182,18 @@
       "validity": "Benefício válido de 09/03/2026 15:54 até 07/06/2026 23:59 .",
       "description": "Sobre o parceiro: Espetáculo Chez Toi – Em Seu Lugar estreia em maio na cidade de São Paulo em curta temporada com Barbara Bruno no elenco comemorando os seus 70 de idade e 55 de carreira. “Chez Toi – Em Seu Lugar” usa do realismo mágico e toques de muito humor para contar a história de Abigail (Barbara Bruno), uma mulher que vive sozinha em seu apartamento e recebe constantes visitas de sua filha Emily (Bianca Rinaldi), uma mulher com traumas do passado. Benefício: Cupom de 50% OFF em até 4 ingressos do Espetáculo Espetáculo Chez Toi - Em Seu Lugar. Regras: Para resgatar o desconto de 50% no ingresso em até 4 ingressos, clique em &#34;Utilizar este benefício&#34; e copie o código. Ao ser direcionado para o site da ticketeira oficial do espetáculo, escolha a opção &#34;UOL&#34; e, em seguida, cole o código no campo solicitado para obter o seu desconto. Atenção: Desconto válido para o Assinante UOL. Desconto válido em até 4 ingressos apenas para modalidade inteira. Benefício não válido para o Setor Popular. Temporada: De 1 de Maio a 7 de Junho de 2026. Horários: Sexta e sábado, às 20h; e domingo, às 18h. Fique de olho no horário: não é permitida a entrada após o início do espetáculo! **Localização do Teatro Nair Bello - Rua Frei Caneca, 569 - 3º Piso, Shopping Frei Caneca, São Paulo. Enviar cupons por e-mail Preencha os campos abaixo para enviar os seus cupons resgatados por e-mail E-mail Mensagem Enviar",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69ea51e7c31b6_ec296b77dc3a0fc397c0effe52c9b660.png",
-      "source": "cache_reused",
+      "source": "latest_offers",
       "source_link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
       "source_title": "50% OFF em até 4 ingressos",
+      "sufficient": true
+    },
+    "pmr-30-off-na-compra-de-ingresso-mg": {
+      "validity": "Benefício válido de 08/04/2026 15:08 até 19/09/2026 23:59 .",
+      "description": "Sobre a Turnê: Depois do sucesso da primeira edição, Ivete Clareou retorna em 2026, passando por mais cidades do Brasil e ampliando um encontro que já se tornou inesquecível para quem viveu e irresistível para quem ainda vai viver. O samba de mainha continua! Data do Show: 19 de setembro, na Área Externa do Mineirinho, em Belo Horizonte/MG. Benefício: Cupom de 30% OFF na compra de ingresso da Turnê Ivete Clareou - Turnê 2026. Como utilizar: Para resgatar o desconto de 30% no ingresso, clique em &#34;Utilizar este benefício&#34; e copie o código. Ao ser direcionado para a ticketeira oficial do evento, clique em &#34;Liberar código&#34; e em &#34;Cupom&#34;. Em seguida, insira seu Código Promocional e prossiga com a compra do ingresso. Regras: Benefício válido para todos os setores e tipos de ingresso. Cada assinante tem direito ao cupom exclusivo de 30% OFF no ingresso. O benefício é válido para todos os setores e sujeito a disponibilidade de ingresso. Endereço da Área Externa do Mineirinho: Av. Abrahão Caran, 1.000 - São José. Enviar cupons por e-mail Preencha os campos abaixo para enviar os seus cupons resgatados por e-mail E-mail Mensagem Enviar",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
+      "source": "offer_detail_cache",
+      "source_link": "",
+      "source_title": "",
       "sufficient": true
     },
     "pok-ofertas-de-ltima-hora-25-off-extra": {
@@ -221,6 +221,15 @@
       "source": "cache_reused",
       "source_link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-seleo-feminina",
       "source_title": "30% OFF extra em seleção feminina",
+      "sufficient": true
+    },
+    "poe-30-off-em-seleo-de-jeans-feminino": {
+      "validity": "Benefício válido de 16/04/2026 14:12 até 27/04/2026 23:59 .",
+      "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 30% OFF em seleção de jeans feminino Regras: Válido para produtos selecionados de jeans feminino no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio. Enviar cupons por e-mail Preencha os campos abaixo para enviar os seus cupons resgatados por e-mail E-mail Mensagem Enviar",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1ab421b5375d75fb800ef6dbee9823a2.png",
+      "source": "fetch_detail",
+      "source_link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-seleo-de-jeans-feminino",
+      "source_title": "30% OFF em seleção de jeans feminino",
       "sufficient": true
     }
   }
