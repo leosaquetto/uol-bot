@@ -165,8 +165,10 @@ jobs:
       - name: push com retry
         if: always()
         run: |
-          if git diff --quiet && git diff --cached --quiet; then
-            echo "nenhuma mudança local"
+          git fetch origin main
+
+          if git diff --quiet origin/main..HEAD; then
+            echo "nenhum commit novo"
             exit 0
           fi
 
@@ -180,6 +182,9 @@ jobs:
               sleep 2
               continue
             }
+
+            echo "HEAD local antes do push: $(git rev-parse HEAD)"
+            echo "origin/main antes do push: $(git rev-parse origin/main)"
 
             if git push origin HEAD:main; then
               echo "push concluído"
