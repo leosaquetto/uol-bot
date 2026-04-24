@@ -58,6 +58,7 @@ const GITHUB_SOLD_OUT_UPDATES_PATH = process.env.GITHUB_SOLD_OUT_UPDATES_PATH ||
 const GITHUB_WORKFLOW_FILENAME = process.env.GITHUB_WORKFLOW_FILENAME || 'bot_leouol.yml';
 const TRIGGER_GITHUB_WORKFLOW = String(process.env.TRIGGER_GITHUB_WORKFLOW || '1').trim() !== '0';
 const REQUIRE_GITHUB_UPLOAD = String(process.env.REQUIRE_GITHUB_UPLOAD || '1') === '1';
+const PIPELINE_AUDIT_FILE = process.env.PIPELINE_AUDIT_FILE || 'pipeline_audit.jsonl';
 
 const homeDir = os.homedir();
 const icloudBase = path.join(homeDir, 'Library', 'Mobile Documents', 'com~apple~CloudDocs');
@@ -108,6 +109,29 @@ function normalizeOfferKey(value) {
   if (base.includes('joao')) variants.add(base.replace(/joao/g, 'joo'));
 
   return Array.from(variants).filter(Boolean).sort()[0] || '';
+}
+
+function buildTraceId(value) {
+  const canonicalKey = normalizeOfferKey(value);
+  return canonicalKey ? `trace_${canonicalKey}` : '';
+}
+
+function appendPipelineAudit(stage, traceId, extra = {}) {
+  const trace = cleanText(traceId || '');
+  if (!trace) return;
+
+  const payload = {
+    timestamp_utc: new Date().toISOString(),
+    stage: cleanText(stage || ''),
+    trace_id: trace,
+    ...((extra && typeof extra === 'object') ? extra : {}),
+  };
+
+  try {
+    fs.appendFileSync(PIPELINE_AUDIT_FILE, `${JSON.stringify(payload)}\n`, 'utf8');
+  } catch (err) {
+    console.error(`MAC_AUDIT_FAIL ${cleanText(err && err.message ? err.message : String(err))}`);
+  }
 }
 
 function pad(n) {
@@ -589,6 +613,7 @@ async function enrichOffers(context, cards) {
 
     enriched.push({
       id: normalizeOfferKey(card.link),
+      trace_id: buildTraceId(card.link),
       link: normalizeLink(card.link),
       original_link: normalizeLink(card.link),
       title: (detail.title || card.title || 'Oferta').trim(),
@@ -631,6 +656,12 @@ async function enrichOffers(context, cards) {
     const enrichment = await enrichOffers(browser, cards);
     const offers = enrichment.enriched;
     const activeLinksSet = new Set(offers.map((o) => normalizeLink(o.link)).filter(Boolean));
+    for (const offer of offers) {
+      appendPipelineAudit('mac.capture', offer.trace_id || buildTraceId(offer.id || offer.link), {
+        title: cleanText(offer.title || offer.preview_title || ''),
+        link: normalizeLink(offer.link),
+      });
+    }
 
     const runDurationMs = Date.now() - runStartedAt;
     const detailFailCount = offers.length - enrichment.detailOkCount;
@@ -665,6 +696,9 @@ async function enrichOffers(context, cards) {
     if (GITHUB_TOKEN) {
       await githubPutFile(GITHUB_TARGET_PATH, payloadText);
       githubUpload = 'ok';
+      for (const offer of offers) {
+        appendPipelineAudit('mac.upload', offer.trace_id || buildTraceId(offer.id || offer.link), { path: GITHUB_TARGET_PATH });
+      }
 
       const [latestResp, soldOutResp] = await Promise.all([
         githubGetContent(GITHUB_LATEST_OFFERS_PATH),
@@ -702,6 +736,12 @@ async function enrichOffers(context, cards) {
     let workflowTrigger = { status: 'skipped', workflow: '', dispatch: { workflow: GITHUB_WORKFLOW_FILENAME, http_status: 0, response_body: '' } };
     if (TRIGGER_GITHUB_WORKFLOW) {
       workflowTrigger = await triggerGithubWorkflow(GITHUB_WORKFLOW_FILENAME);
+    }
+    for (const offer of offers) {
+      appendPipelineAudit('mac.dispatch', offer.trace_id || buildTraceId(offer.id || offer.link), {
+        workflow: workflowTrigger.workflow || GITHUB_WORKFLOW_FILENAME,
+        status: workflowTrigger.status || 'skipped',
+      });
     }
     console.log(`MAC_WORKFLOW_DISPATCH ${JSON.stringify(workflowTrigger.dispatch)}`);
     if (workflowTrigger.status !== 'ok') {

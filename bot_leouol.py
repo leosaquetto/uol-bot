@@ -33,6 +33,7 @@ PENDING_FILE = "pending_offers.json"
 LATEST_FILE = "latest_offers.json"
 DAILY_LOG_FILE = "daily_log.json"
 STATUS_RUNTIME_FILE = "status_runtime.json"
+PIPELINE_AUDIT_FILE = "pipeline_audit.jsonl"
 
 MAX_HISTORY_SIZE = 1500
 MAX_DEDUPE_HISTORY_SIZE = 1500
@@ -167,6 +168,40 @@ def now_br_time() -> str:
 
 def now_br_datetime() -> str:
     return now_br().strftime("%d/%m/%Y às %H:%M")
+
+
+def utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def build_trace_id(value: str) -> str:
+    key = normalize_offer_key(value)
+    return f"trace_{key}" if key else ""
+
+
+def get_offer_trace_id(offer: Dict) -> str:
+    trace_id = str(offer.get("trace_id") or "").strip()
+    if trace_id:
+        return trace_id
+    source = str(offer.get("id") or offer.get("link") or offer.get("original_link") or "")
+    trace_id = build_trace_id(source)
+    if trace_id:
+        offer["trace_id"] = trace_id
+    return trace_id
+
+
+def append_pipeline_audit(stage: str, trace_id: str, extra: Optional[Dict] = None) -> None:
+    trace = str(trace_id or "").strip()
+    if not trace:
+        return
+    payload = {"timestamp_utc": utc_now_iso(), "stage": str(stage or "").strip(), "trace_id": trace}
+    if isinstance(extra, dict):
+        payload.update(extra)
+    try:
+        with Path(PIPELINE_AUDIT_FILE).open("a", encoding="utf-8") as f:
+            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+    except Exception as e:
+        log(f"⚠️ falha ao registrar auditoria ({stage}): {e}")
 
 
 def truncate_text(text: str, max_len: int, suffix: str = "...") -> str:
@@ -517,6 +552,60 @@ def status_consumer_finish(
     }, logger=log)
 
 
+def build_pipeline_flow_summary(limit: int = 8) -> List[str]:
+    path = Path(PIPELINE_AUDIT_FILE)
+    if not path.exists():
+        return []
+
+    tracked_stages = {"mac.capture", "github.candidate", "bot.send_success"}
+    trace_last_event: Dict[str, Dict] = {}
+
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except Exception:
+        return []
+
+    for line in lines:
+        raw = str(line).strip()
+        if not raw:
+            continue
+        try:
+            event = json.loads(raw)
+        except Exception:
+            continue
+        if not isinstance(event, dict):
+            continue
+
+        trace_id = str(event.get("trace_id") or "").strip()
+        stage = str(event.get("stage") or "").strip()
+        if not trace_id or stage not in tracked_stages:
+            continue
+
+        item = trace_last_event.setdefault(trace_id, {"captured": False, "pending": False, "sent": False, "ts": ""})
+        if stage == "mac.capture":
+            item["captured"] = True
+        elif stage == "github.candidate":
+            item["pending"] = True
+        elif stage == "bot.send_success":
+            item["sent"] = True
+
+        ts = str(event.get("timestamp_utc") or "")
+        if ts and ts >= str(item.get("ts") or ""):
+            item["ts"] = ts
+
+    if not trace_last_event:
+        return []
+
+    ordered = sorted(trace_last_event.items(), key=lambda kv: str(kv[1].get("ts") or ""), reverse=True)[:max(1, int(limit))]
+    out = []
+    for trace_id, item in ordered:
+        c = "✅" if item.get("captured") else "◻️"
+        p = "✅" if item.get("pending") else "◻️"
+        e = "✅" if item.get("sent") else "◻️"
+        out.append(f"{trace_id}: {c} capturada -> {p} pending -> {e} enviada")
+    return out
+
+
 def build_dashboard_text(state: Dict) -> str:
     status = load_status_runtime()
     scriptable = status.get("scriptable", {}) if isinstance(status, dict) else {}
@@ -633,6 +722,7 @@ def build_dashboard_text(state: Dict) -> str:
     pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
     sold_out_edited_today = int(state.get("sold_out_edited_today") or 0)
     recent_lines = [str(x).strip() for x in (state.get("lines") or []) if str(x).strip()][-5:]
+    pipeline_lines = build_pipeline_flow_summary(int(os.environ.get("PIPELINE_FLOW_LAST_N") or 6))
 
     lines = [
         f"📊 <b>Monitor Clube Uol ({escape_html(now_br().strftime('%H:%M'))})</b>",
@@ -658,6 +748,10 @@ def build_dashboard_text(state: Dict) -> str:
     if recent_lines:
         lines.extend(["", "📝 Últimos eventos:"])
         lines.extend([f"• {escape_html(item)}" for item in recent_lines])
+
+    if pipeline_lines:
+        lines.extend(["", "🔎 Fluxo recente (capturada -> pending -> enviada):"])
+        lines.extend([f"• {escape_html(item)}" for item in pipeline_lines])
 
     return truncate_text("\n".join(lines), MAX_DASHBOARD_LENGTH)
 
@@ -1704,21 +1798,25 @@ def consume_pending() -> int:
             processed += 1
 
             offer_id = normalize_offer_key(offer.get("id") or offer.get("link") or "")
+            trace_id = get_offer_trace_id(offer)
             title = offer.get("title") or offer.get("preview_title") or ""
             validity = offer.get("validity")
             description = offer.get("description") or ""
             dedupe_key = offer.get("dedupe_key") or build_dedupe_key(title, validity, description)
 
             if offer_id in history_ids or (dedupe_key and dedupe_key in history_dedupe):
+                append_pipeline_audit("bot.skip_history", trace_id, {"title": title})
                 log(f"oferta já está no histórico, removendo do pending: {title}")
                 continue
 
+            append_pipeline_audit("bot.send_main_start", trace_id, {"title": title})
             try:
                 ok_main, channel_message_id, detail_main = send_offer_main(offer)
             except Exception as e:
                 ok_main, channel_message_id, detail_main = False, None, f"send_offer_main exception: {e}"
 
             if not ok_main or not channel_message_id:
+                append_pipeline_audit("bot.send_main_fail", trace_id, {"detail": detail_main})
                 failed += 1
                 last_error = detail_main
                 remaining.append(offer)
@@ -1729,12 +1827,14 @@ def consume_pending() -> int:
             offer["channel_message_id"] = channel_message_id
             offer["channel_message_link"] = build_channel_message_link(TELEGRAM_CHAT_ID, channel_message_id)
 
+            append_pipeline_audit("bot.send_comment_start", trace_id, {"channel_message_id": channel_message_id})
             try:
                 ok_comment, detail_comment = send_offer_comment(offer, channel_message_id)
             except Exception as e:
                 ok_comment, detail_comment = False, f"send_offer_comment exception: {e}"
 
             if not ok_comment:
+                append_pipeline_audit("bot.send_comment_fail", trace_id, {"detail": detail_comment})
                 failed += 1
                 last_error = detail_comment
                 remaining.append(offer)
@@ -1744,6 +1844,7 @@ def consume_pending() -> int:
 
             update_main_offer_caption_with_comment_link(offer)
 
+            append_pipeline_audit("bot.send_success", trace_id, {"channel_message_id": channel_message_id, "title": title})
             sent += 1
             latest_sent = [x for x in latest_sent if normalize_offer_key(x.get("id") or x.get("link") or "") != offer_id]
             latest_sent.append(offer)
