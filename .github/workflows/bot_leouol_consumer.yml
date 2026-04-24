@@ -55,6 +55,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
           DASHBOARD_CHAT_ID: ${{ secrets.DASHBOARD_CHAT_ID }}
+          MAX_PENDING_AGE_HOURS: "6"
+          MAX_CONSUMER_BATCH: "8"
         run: |
           python bot_leouol.py --pending 2>&1 | tee consumer_process.log
 
@@ -71,24 +73,25 @@ jobs:
           echo "=== pending_offers.json (contagem) ==="
           if [ -f pending_offers.json ]; then
             python - <<'PY'
-import json
-from pathlib import Path
-p = Path("pending_offers.json")
-try:
-    data = json.loads(p.read_text(encoding="utf-8"))
-except Exception as exc:
-    print(f"erro ao ler pending_offers.json: {exc}")
-else:
-    if isinstance(data, list):
-        print(f"pending_offers_count={len(data)}")
-    elif isinstance(data, dict):
-        if isinstance(data.get("offers"), list):
-            print(f"pending_offers_count={len(data['offers'])}")
-        else:
-            print(f"pending_offers_keys={list(data.keys())}")
-    else:
-        print(f"pending_offers_tipo={type(data).__name__}")
-PY
+            import json
+            from pathlib import Path
+
+            p = Path("pending_offers.json")
+            try:
+                data = json.loads(p.read_text(encoding="utf-8"))
+            except Exception as exc:
+                print(f"erro ao ler pending_offers.json: {exc}")
+            else:
+                if isinstance(data, list):
+                    print(f"pending_offers_count={len(data)}")
+                elif isinstance(data, dict):
+                    if isinstance(data.get("offers"), list):
+                        print(f"pending_offers_count={len(data['offers'])}")
+                    else:
+                        print(f"pending_offers_keys={list(data.keys())}")
+                else:
+                    print(f"pending_offers_tipo={type(data).__name__}")
+            PY
           else
             echo "pending_offers.json não encontrado"
           fi

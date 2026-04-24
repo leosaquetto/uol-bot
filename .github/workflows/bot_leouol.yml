@@ -373,6 +373,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
           DASHBOARD_CHAT_ID: ${{ secrets.DASHBOARD_CHAT_ID }}
+          MAX_PENDING_AGE_HOURS: "6"
+          MAX_CONSUMER_BATCH: "8"
         run: |
           git fetch origin main
           git reset --hard origin/main

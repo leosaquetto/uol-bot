@@ -45,6 +45,8 @@ RETRY_429_EXTRA_SECONDS = 1
 BETWEEN_OFFERS_DELAY_SECONDS = 2
 DISCUSSION_WAIT_ATTEMPTS = 3
 DISCUSSION_WAIT_SLEEP_SECONDS = 2
+MAX_PENDING_AGE_HOURS = max(1, int(str(os.environ.get("MAX_PENDING_AGE_HOURS") or "6").strip() or "6"))
+MAX_CONSUMER_BATCH = max(1, int(str(os.environ.get("MAX_CONSUMER_BATCH") or "8").strip() or "8"))
 
 HASHTAG_RULES_BODY = {
     "#ingresso": ["ingresso", "ingressos"],
@@ -264,20 +266,62 @@ def clean_multiline_text(text: Optional[str]) -> str:
     return text
 
 
-def normalize_text_key(value: Optional[str]) -> str:
-    raw = str(value or "").strip().lower()
+def canonical_key(value: Optional[str]) -> str:
+    raw = str(value or "").strip()
     if not raw:
         return ""
 
     raw = unquote(raw)
+    raw = raw.replace("\u00a0", " ")
+    mojibake_replacements = {
+        "Ã¡": "á",
+        "Ã ": "à",
+        "Ã¢": "â",
+        "Ã£": "ã",
+        "Ã©": "é",
+        "Ãª": "ê",
+        "Ã­": "í",
+        "Ã³": "ó",
+        "Ã´": "ô",
+        "Ãµ": "õ",
+        "Ãº": "ú",
+        "Ã§": "ç",
+        "Ã‰": "É",
+        "Ã‡": "Ç",
+    }
+    for bad, good in mojibake_replacements.items():
+        raw = raw.replace(bad, good)
+
+    raw = raw.lower()
     raw = raw.split("?")[0].split("#")[0]
-    raw = unicodedata.normalize("NFD", raw)
+    raw = raw.replace("&", " e ")
+    raw = raw.replace("º", "o").replace("ª", "a")
+    raw = re.sub(r"[\s_]+", "-", raw)
+    raw = unicodedata.normalize("NFKD", raw)
     raw = "".join(ch for ch in raw if unicodedata.category(ch) != "Mn")
-    raw = re.sub(r"https?://", "", raw)
-    raw = re.sub(r"[^a-z0-9]+", "-", raw)
+    raw = re.sub(r"[^a-z0-9-]+", "-", raw)
     raw = re.sub(r"-{2,}", "-", raw)
     raw = raw.strip("-")
+
+    known_fixes = {
+        "ltima": "ultima",
+        "ltimo": "ultimo",
+        "seleo": "selecao",
+        "graduao": "graduacao",
+        "grtis": "gratis",
+        "ms": "imas",
+        "preo": "preco",
+    }
+    for bad, good in known_fixes.items():
+        raw = re.sub(rf"(^|-){re.escape(bad)}(?=-|$)", lambda m: f"{m.group(1)}{good}", raw)
+    raw = re.sub(r"(^|-)ps(?=-|$)", lambda m: f"{m.group(1)}pos", raw)
+    raw = raw.replace("-at-", "-ate-")
+    raw = re.sub(r"-{2,}", "-", raw).strip("-")
     return raw
+
+
+def normalize_text_key(value: Optional[str]) -> str:
+    return canonical_key(value)
 
 
 def get_offer_id(link: str) -> str:
@@ -301,7 +345,7 @@ def normalize_offer_key_base(value: str) -> str:
         return ""
     if raw.startswith("http://") or raw.startswith("https://"):
         raw = get_offer_id(raw)
-    return normalize_text_key(raw)
+    return canonical_key(raw)
 
 
 def slug_tail_variants(value: str) -> Set[str]:
@@ -330,19 +374,132 @@ def build_dedupe_key(title: str, validity: Optional[str], description: str) -> s
     return "|".join([x for x in [title_key, validity_key, desc_key] if x])
 
 
+def parse_utc_datetime(value: Optional[str]) -> Optional[datetime]:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        if raw.endswith("Z"):
+            raw = raw.replace("Z", "+00:00")
+        dt = datetime.fromisoformat(raw)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    except Exception:
+        return None
+
+
+def build_sent_indexes(history: Dict, latest: Dict) -> Dict[str, Set[str]]:
+    indexes: Dict[str, Set[str]] = {
+        "ids": set(),
+        "links": set(),
+        "dedupe_keys": set(),
+        "loose_dedupe_keys": set(),
+        "title_validity": set(),
+    }
+
+    def add(index_name: str, value: Optional[str]) -> None:
+        raw = str(value or "").strip()
+        if not raw:
+            return
+        indexes[index_name].add(raw)
+        canon = canonical_key(raw)
+        if canon:
+            indexes[index_name].add(canon)
+
+    for item in history.get("ids", []) if isinstance(history.get("ids", []), list) else []:
+        add("ids", item)
+    for item in history.get("dedupe_keys", []) if isinstance(history.get("dedupe_keys", []), list) else []:
+        add("dedupe_keys", item)
+    for item in history.get("loose_dedupe_keys", []) if isinstance(history.get("loose_dedupe_keys", []), list) else []:
+        add("loose_dedupe_keys", item)
+    for item in history.get("links", []) if isinstance(history.get("links", []), list) else []:
+        add("links", item)
+
+    latest_offers = latest.get("offers", []) if isinstance(latest.get("offers", []), list) else []
+    for offer in latest_offers:
+        if not isinstance(offer, dict):
+            continue
+        add("ids", offer.get("id"))
+        add("ids", offer.get("offer_id"))
+        add("links", offer.get("link"))
+        add("links", offer.get("original_link"))
+        add("dedupe_keys", offer.get("dedupe_key"))
+        add("loose_dedupe_keys", offer.get("loose_dedupe_key"))
+
+        title = str(offer.get("title") or offer.get("preview_title") or "").strip()
+        validity = str(offer.get("validity") or "").strip()
+        description = str(offer.get("description") or "").strip()
+        computed_dedupe = build_dedupe_key(title, validity, description)
+        add("dedupe_keys", computed_dedupe)
+        if title or validity:
+            add("title_validity", f"{canonical_key(title)}|{canonical_key(validity)}")
+
+    return indexes
+
+
+def should_skip_pending_offer(
+    offer: Dict,
+    sent_indexes: Dict[str, Set[str]],
+    now_utc: datetime,
+    round_started_at: Optional[datetime],
+    backlog_size: int,
+) -> Tuple[bool, str]:
+    offer_id = str(offer.get("id") or offer.get("offer_id") or "").strip()
+    link = str(offer.get("link") or offer.get("original_link") or "").strip()
+    dedupe_key = str(offer.get("dedupe_key") or "").strip()
+    loose_dedupe_key = str(offer.get("loose_dedupe_key") or "").strip()
+    title = str(offer.get("title") or offer.get("preview_title") or "").strip()
+    validity = str(offer.get("validity") or "").strip()
+    title_validity = f"{canonical_key(title)}|{canonical_key(validity)}"
+
+    checks = [
+        ("id_duplicado", "ids", offer_id),
+        ("id_duplicado", "ids", canonical_key(offer_id)),
+        ("link_duplicado", "links", link),
+        ("link_duplicado", "links", canonical_key(link)),
+        ("dedupe_duplicado", "dedupe_keys", dedupe_key),
+        ("dedupe_duplicado", "dedupe_keys", canonical_key(dedupe_key)),
+        ("loose_dedupe_duplicado", "loose_dedupe_keys", loose_dedupe_key),
+        ("loose_dedupe_duplicado", "loose_dedupe_keys", canonical_key(loose_dedupe_key)),
+        ("title_validity_duplicado", "title_validity", title_validity),
+    ]
+    for reason, index_name, value in checks:
+        if value and value in sent_indexes.get(index_name, set()):
+            return True, reason
+
+    scraped_at = parse_utc_datetime(offer.get("scraped_at"))
+    if scraped_at:
+        age_hours = (now_utc - scraped_at).total_seconds() / 3600
+        if age_hours > MAX_PENDING_AGE_HOURS:
+            return True, "idade_excedida"
+    else:
+        if backlog_size > MAX_CONSUMER_BATCH:
+            return True, "sem_scraped_at_em_backlog"
+        if round_started_at:
+            created_at = parse_utc_datetime(offer.get("created_at"))
+            if created_at and created_at < round_started_at:
+                return True, "fora_da_rodada_atual"
+
+    return False, ""
+
+
 def load_history() -> Dict[str, List[str]]:
     path = Path(HISTORY_FILE)
     if not path.exists():
-        return {"ids": [], "dedupe_keys": []}
+        return {"ids": [], "dedupe_keys": [], "loose_dedupe_keys": []}
 
-    data = safe_json_load(path, {"ids": [], "dedupe_keys": []})
+    data = safe_json_load(path, {"ids": [], "dedupe_keys": [], "loose_dedupe_keys": []})
     ids = data.get("ids", [])
     dedupe_keys = data.get("dedupe_keys", [])
+    loose_dedupe_keys = data.get("loose_dedupe_keys", [])
 
     if not isinstance(ids, list):
         ids = []
     if not isinstance(dedupe_keys, list):
         dedupe_keys = []
+    if not isinstance(loose_dedupe_keys, list):
+        loose_dedupe_keys = []
 
     cleaned_ids = []
     seen_ids = set()
@@ -355,14 +512,23 @@ def load_history() -> Dict[str, List[str]]:
     cleaned_dedupe = []
     seen_dedupe = set()
     for item in dedupe_keys:
-        key = str(item).strip()
+        key = canonical_key(item)
         if key and key not in seen_dedupe:
             seen_dedupe.add(key)
             cleaned_dedupe.append(key)
 
+    cleaned_loose = []
+    seen_loose = set()
+    for item in loose_dedupe_keys:
+        key = canonical_key(item)
+        if key and key not in seen_loose:
+            seen_loose.add(key)
+            cleaned_loose.append(key)
+
     return {
         "ids": cleaned_ids[-MAX_HISTORY_SIZE:],
         "dedupe_keys": cleaned_dedupe[-MAX_DEDUPE_HISTORY_SIZE:],
+        "loose_dedupe_keys": cleaned_loose[-MAX_DEDUPE_HISTORY_SIZE:],
     }
 
 
@@ -370,11 +536,14 @@ def save_history(history: Dict[str, List[str]]) -> bool:
     try:
         ids = history.get("ids", [])
         dedupe_keys = history.get("dedupe_keys", [])
+        loose_dedupe_keys = history.get("loose_dedupe_keys", [])
 
         if not isinstance(ids, list):
             ids = []
         if not isinstance(dedupe_keys, list):
             dedupe_keys = []
+        if not isinstance(loose_dedupe_keys, list):
+            loose_dedupe_keys = []
 
         cleaned_ids = []
         seen_ids = set()
@@ -387,21 +556,34 @@ def save_history(history: Dict[str, List[str]]) -> bool:
         cleaned_dedupe = []
         seen_dedupe = set()
         for item in dedupe_keys:
-            key = str(item).strip()
+            key = canonical_key(item)
             if key and key not in seen_dedupe:
                 seen_dedupe.add(key)
                 cleaned_dedupe.append(key)
 
+        cleaned_loose = []
+        seen_loose = set()
+        for item in loose_dedupe_keys:
+            key = canonical_key(item)
+            if key and key not in seen_loose:
+                seen_loose.add(key)
+                cleaned_loose.append(key)
+
         payload = {
             "ids": cleaned_ids[-MAX_HISTORY_SIZE:],
             "dedupe_keys": cleaned_dedupe[-MAX_DEDUPE_HISTORY_SIZE:],
+            "loose_dedupe_keys": cleaned_loose[-MAX_DEDUPE_HISTORY_SIZE:],
         }
 
         Path(HISTORY_FILE).write_text(
             json.dumps(payload, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-        log(f"✅ histórico salvo: {len(payload['ids'])} ids / {len(payload['dedupe_keys'])} dedupe_keys")
+        log(
+            "✅ histórico salvo: "
+            f"{len(payload['ids'])} ids / {len(payload['dedupe_keys'])} dedupe_keys / "
+            f"{len(payload['loose_dedupe_keys'])} loose_dedupe_keys"
+        )
         return True
     except Exception as e:
         log(f"❌ erro ao salvar histórico: {e}")
@@ -1660,12 +1842,15 @@ def mark_offer_success(history: Dict[str, List[str]], offer: Dict) -> None:
     title = offer.get("title") or offer.get("preview_title") or ""
     validity = offer.get("validity")
     description = offer.get("description") or ""
-    dedupe_key = offer.get("dedupe_key") or build_dedupe_key(title, validity, description)
+    dedupe_key = canonical_key(offer.get("dedupe_key") or build_dedupe_key(title, validity, description))
+    loose_dedupe_key = canonical_key(offer.get("loose_dedupe_key") or "")
 
     if offer_id:
         history.setdefault("ids", []).append(offer_id)
     if dedupe_key:
         history.setdefault("dedupe_keys", []).append(dedupe_key)
+    if loose_dedupe_key:
+        history.setdefault("loose_dedupe_keys", []).append(loose_dedupe_key)
 
 
 def refresh_sent_offers_with_sold_out() -> int:
@@ -1780,24 +1965,77 @@ def consume_pending() -> int:
         )
         return 1
 
-    history = load_history()
-    history_ids = set(history.get("ids", []))
-    history_dedupe = set(history.get("dedupe_keys", []))
-
     status_consumer_start(len(offers))
     append_dashboard_line("consumer", f"▶️ processando {len(offers)} ofertas")
     set_dashboard_pending_count(len(offers))
 
+    history = load_history()
     latest_snapshot = safe_json_load(Path(LATEST_FILE), {"last_update": None, "offers": []})
     latest_sent = latest_snapshot.get("offers", []) if isinstance(latest_snapshot.get("offers", []), list) else []
+    sent_indexes = build_sent_indexes(history, latest_snapshot)
+    now_utc = datetime.now(timezone.utc)
+    pending_last_update = parse_utc_datetime(pending_data.get("last_update"))
+
+    eligible_offers: List[Dict] = []
+    duplicate_removed = 0
+    age_removed = 0
+    missing_scraped_removed = 0
+    for offer in offers:
+        skip, reason = should_skip_pending_offer(
+            offer=offer,
+            sent_indexes=sent_indexes,
+            now_utc=now_utc,
+            round_started_at=pending_last_update,
+            backlog_size=len(offers),
+        )
+        if skip:
+            if reason == "idade_excedida":
+                age_removed += 1
+            elif reason == "sem_scraped_at_em_backlog":
+                missing_scraped_removed += 1
+            else:
+                duplicate_removed += 1
+            continue
+        eligible_offers.append(offer)
+
+    remaining = list(eligible_offers)
+    if duplicate_removed or age_removed or missing_scraped_removed:
+        append_dashboard_line(
+            "consumer",
+            (
+                f"🧹 filtradas {duplicate_removed} duplicadas | "
+                f"{age_removed} antigas | {missing_scraped_removed} sem scraped_at"
+            ),
+        )
+
+    if len(eligible_offers) > MAX_CONSUMER_BATCH:
+        save_pending(remaining)
+        set_dashboard_pending_count(len(remaining))
+        set_dashboard_last_consumer_run()
+        summary = f"lote suspeito bloqueado: {len(eligible_offers)} elegíveis após filtro"
+        status_consumer_finish(
+            summary=summary,
+            processed=0,
+            sent=0,
+            failed=0,
+            pending_count=len(remaining),
+            status_value="bloqueado_backlog",
+            last_error=f"bloqueado por MAX_CONSUMER_BATCH={MAX_CONSUMER_BATCH}",
+        )
+        append_dashboard_line("consumer", f"⛔ {summary}")
+        return 0
+
     remaining = []
     processed = 0
     sent = 0
     failed = 0
     last_error = ""
+    history_ids = set(history.get("ids", []))
+    history_dedupe = set(history.get("dedupe_keys", []))
+    history_loose = set(history.get("loose_dedupe_keys", []))
 
     try:
-        for idx, offer in enumerate(offers, 1):
+        for idx, offer in enumerate(eligible_offers, 1):
             processed += 1
 
             offer_id = normalize_offer_key(offer.get("id") or offer.get("link") or "")
@@ -1805,9 +2043,14 @@ def consume_pending() -> int:
             title = offer.get("title") or offer.get("preview_title") or ""
             validity = offer.get("validity")
             description = offer.get("description") or ""
-            dedupe_key = offer.get("dedupe_key") or build_dedupe_key(title, validity, description)
+            dedupe_key = canonical_key(offer.get("dedupe_key") or build_dedupe_key(title, validity, description))
+            loose_dedupe_key = canonical_key(offer.get("loose_dedupe_key") or "")
 
-            if offer_id in history_ids or (dedupe_key and dedupe_key in history_dedupe):
+            if (
+                offer_id in history_ids
+                or (dedupe_key and dedupe_key in history_dedupe)
+                or (loose_dedupe_key and loose_dedupe_key in history_loose)
+            ):
                 append_pipeline_audit("bot.skip_history", trace_id, {"title": title})
                 log(f"oferta já está no histórico, removendo do pending: {title}")
                 continue
@@ -1857,11 +2100,13 @@ def consume_pending() -> int:
             history_ids.add(offer_id)
             if dedupe_key:
                 history_dedupe.add(dedupe_key)
+            if loose_dedupe_key:
+                history_loose.add(loose_dedupe_key)
 
             append_dashboard_line("consumer", f"✅ enviada: {title[:80]}")
             log(f"oferta enviada com sucesso: {title}")
 
-            if idx < len(offers):
+            if idx < len(eligible_offers):
                 time.sleep(BETWEEN_OFFERS_DELAY_SECONDS)
 
     except Exception as e:
@@ -1915,7 +2160,11 @@ def consume_pending() -> int:
 
     append_dashboard_line(
         "consumer",
-        f"{'✅' if sent > 0 else '⚠️'} processadas {processed} | enviadas {sent} | falhas {failed}",
+        (
+            f"{'✅' if sent > 0 else '⚠️'} filtradas {duplicate_removed + age_removed + missing_scraped_removed} "
+            f"(dup {duplicate_removed} / antigas {age_removed} / sem scraped_at {missing_scraped_removed}) | "
+            f"processadas {processed} | enviadas {sent} | falhas {failed} | pendentes {len(remaining)}"
+        ),
     )
 
     return 0
