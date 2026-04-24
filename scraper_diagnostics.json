@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-04-24T19:06:52.730802Z",
+  "updated_at": "2026-04-24T19:07:12.810584Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "historico": 35,
-    "pending": 10,
+    "pending": 13,
     "dedupe": 0
   },
   "discarded_offers": [
@@ -37,16 +37,34 @@
       "trace_id": "trace_ppf-presenteie-com-10-off-no-dia-das-maes"
     },
     {
+      "title": "39% OFF na Caixa Angel Tabletes",
+      "link": "https://clube.uol.com.br/cacaushow/ppe-39-off-na-caixa-angel-tabletes",
+      "reason": "pending",
+      "trace_id": "trace_ppe-39-off-na-caixa-angel-tabletes"
+    },
+    {
       "title": "Dia das Mães com 15% OFF",
       "link": "https://clube.uol.com.br/gocase/ppd-dia-das-maes-com-15-off",
       "reason": "pending",
       "trace_id": "trace_ppd-dia-das-maes-com-15-off"
     },
     {
+      "title": "36% OFF na Lata de Biscoitos Sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/ppc-36-off-na-lata-de-biscoitos-sortidos",
+      "reason": "pending",
+      "trace_id": "trace_ppc-36-off-na-lata-biscoitos-sortidos"
+    },
+    {
       "title": "Dia das Mães com 25% OFF",
       "link": "https://clube.uol.com.br/hering/ppb-dia-das-maes-com-25-off",
       "reason": "pending",
       "trace_id": "trace_ppb-dia-das-maes-com-25-off"
+    },
+    {
+      "title": "37% OFF na Caixa de Bombons Sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/poZ-37-off-na-caixa-de-bombons-sortidos",
+      "reason": "pending",
+      "trace_id": "trace_poz-37-off-na-caixa-bombons-sortidos"
     },
     {
       "title": "2 INGRESSOS | 30/04 Teatro Carlos Gomes",
