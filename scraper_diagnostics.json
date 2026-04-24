@@ -1,28 +1,22 @@
 {
-  "updated_at": "2026-04-24T17:39:51.344244Z",
+  "updated_at": "2026-04-24T18:14:42.835947Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 0,
+  "candidates_added": 8,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "historico": 36,
-    "pending": 12,
+    "historico": 39,
+    "pending": 1,
     "dedupe": 0
   },
   "discarded_offers": [
     {
-      "title": "2 INGRESSOS: 26/04 Tokio Marine Hall SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/poO-2-ingressos-26-04-tokio-marine-hall-sp",
-      "reason": "pending",
-      "trace_id": "trace_poo-2-ingressos-26-04-tokio-marine-hall-sp"
-    },
-    {
       "title": "50% OFF em até 4 ingressos",
-      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
+      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-ate-4-ingressos",
       "reason": "historico",
-      "trace_id": "trace_pog-50-off-em-at-4-ingressos"
+      "trace_id": "trace_pog-50-off-em-ate-4-ingressos"
     },
     {
       "title": "10% OFF no site oficial",
@@ -56,39 +50,39 @@
     },
     {
       "title": "Ofertas de última hora: 25% OFF extra!",
-      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ltima-hora-25-off-extra",
-      "reason": "pending",
-      "trace_id": "trace_pok-ofertas-de-ltima-hora-25-off-extra"
+      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
+      "reason": "historico",
+      "trace_id": "trace_pok-ofertas-de-ultima-hora-25-off-extra"
     },
     {
       "title": "40% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-seleo-feminina",
-      "reason": "pending",
-      "trace_id": "trace_poh-40-off-extra-em-seleo-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
+      "reason": "historico",
+      "trace_id": "trace_poh-40-off-extra-em-selecao-feminina"
     },
     {
       "title": "30% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-seleo-feminina",
-      "reason": "pending",
-      "trace_id": "trace_pog-30-off-extra-em-seleo-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
+      "reason": "historico",
+      "trace_id": "trace_pog-30-off-extra-em-selecao-feminina"
     },
     {
       "title": "30% OFF em seleção de jeans feminino",
-      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-seleo-de-jeans-feminino",
-      "reason": "pending",
-      "trace_id": "trace_poe-30-off-em-seleo-de-jeans-feminino"
+      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
+      "reason": "historico",
+      "trace_id": "trace_poe-30-off-em-selecao-de-jeans-feminino"
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/net_shoes/pob-at-75-off-para-compras-no-site",
-      "reason": "pending",
-      "trace_id": "trace_pob-at-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_pob-ate-75-off-para-compras-no-site"
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/zattini/poa-at-75-off-para-compras-no-site",
-      "reason": "pending",
-      "trace_id": "trace_poa-at-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/zattini/poa-ate-75-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_poa-ate-75-off-para-compras-no-site"
     },
     {
       "title": "15% OFF para compras no site",
@@ -110,9 +104,9 @@
     },
     {
       "title": "Até 12% OFF nas reservas",
-      "link": "https://clube.uol.com.br/movida/pnK-at-12-off-nas-reservas",
-      "reason": "pending",
-      "trace_id": "trace_pnk-at-12-off-nas-reservas"
+      "link": "https://clube.uol.com.br/movida/pnK-ate-12-off-nas-reservas",
+      "reason": "historico",
+      "trace_id": "trace_pnk-ate-12-off-nas-reservas"
     },
     {
       "title": "50% OFF no Kit 3 Mini Books",
@@ -122,9 +116,9 @@
     },
     {
       "title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-ms-grtis",
-      "reason": "pending",
-      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-ms-grtis"
+      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-imas-gratis",
+      "reason": "historico",
+      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-imas-gratis"
     },
     {
       "title": "Aproveite 15% OFF em viagens",
@@ -146,15 +140,15 @@
     },
     {
       "title": "2 cervejas pelo preço de 1",
-      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preo-de-1",
-      "reason": "pending",
-      "trace_id": "trace_pnx-2-cervejas-pelo-preo-1"
+      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
+      "reason": "historico",
+      "trace_id": "trace_pnx-2-cervejas-pelo-preco-1"
     },
     {
       "title": "30% OFF em Pós Graduação de Medicina",
-      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
-      "reason": "historico",
-      "trace_id": "trace_pnu-30-off-em-ps-graduao-de-medicina"
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
+      "reason": "pending",
+      "trace_id": "trace_pnu-30-off-em-pos-graduacao-de-medicina"
     },
     {
       "title": "50% OFF no par de ingressos",
@@ -242,9 +236,9 @@
     },
     {
       "title": "41% OFF na Pós-Graduação",
-      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-ps-graduao",
-      "reason": "pending",
-      "trace_id": "trace_pmt-41-off-na-ps-graduao"
+      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
+      "reason": "historico",
+      "trace_id": "trace_pmt-41-off-na-pos-graduacao"
     },
     {
       "title": "Cursinho ENEM com R$ 50 OFF",
@@ -257,48 +251,6 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmr-30-off-na-compra-de-ingresso-mg",
       "reason": "historico",
       "trace_id": "trace_pmr-30-off-na-compra-de-ingresso-mg"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - SP",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmq-30-off-na-compra-de-ingresso-sp",
-      "reason": "historico",
-      "trace_id": "trace_pmq-30-off-na-compra-de-ingresso-sp"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - RJ",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmp-30-off-na-compra-de-ingresso-rj",
-      "reason": "historico",
-      "trace_id": "trace_pmp-30-off-na-compra-de-ingresso-rj"
-    },
-    {
-      "title": "20% OFF no ingresso",
-      "link": "https://clube.uol.com.br/festivalbangersopenair2026/pmk-20-off-no-ingresso",
-      "reason": "historico",
-      "trace_id": "trace_pmk-20-off-no-ingresso"
-    },
-    {
-      "title": "Até 50% OFF em Graduação e Pós!",
-      "link": "https://clube.uol.com.br/fasig/plX-at-50-off-em-graduao-e-ps",
-      "reason": "pending",
-      "trace_id": "trace_plx-at-50-off-em-graduao-e-ps"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - MG",
-      "link": "https://clube.uol.com.br/turneinfinitosamba/plG-30-off-na-compra-de-ingresso-mg",
-      "reason": "historico",
-      "trace_id": "trace_plg-30-off-na-compra-de-ingresso-mg"
-    },
-    {
-      "title": "10% OFF no ingresso LUMINISCENCE",
-      "link": "https://clube.uol.com.br/luminiscence/pl8-10-off-no-ingresso-luminiscence",
-      "reason": "historico",
-      "trace_id": "trace_pl8-10-off-no-ingresso-luminiscence"
-    },
-    {
-      "title": "Compre 1 curso e ganhe outro!",
-      "link": "https://clube.uol.com.br/openenglish/pll-compre-1-curso-e-ganhe-outro",
-      "reason": "historico",
-      "trace_id": "trace_pll-compre-1-curso-e-ganhe-outro"
     }
   ]
 }
