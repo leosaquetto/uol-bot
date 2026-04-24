@@ -1,17 +1,23 @@
 {
-  "updated_at": "2026-04-24T18:32:01.755481Z",
+  "updated_at": "2026-04-24T18:32:21.562858Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "historico": 38,
-    "pending": 9,
+    "pending": 10,
     "dedupe": 0
   },
   "discarded_offers": [
+    {
+      "title": "Dia das Mães com 15% OFF + brinde!",
+      "link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
+      "reason": "pending",
+      "trace_id": "trace_ppi-dia-das-maes-com-15-off-brinde"
+    },
     {
       "title": "Especial de Dia das Mães com 12% OFF",
       "link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-maes-com-12-off",
