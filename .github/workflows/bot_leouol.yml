@@ -366,13 +366,16 @@ jobs:
             sleep 2
           done
 
-      - name: disparar consumer quando houver pending
+      - name: processar consumer quando houver pending
         if: success()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
+          DASHBOARD_CHAT_ID: ${{ secrets.DASHBOARD_CHAT_ID }}
         run: |
-          BEFORE_COUNT=${{ steps.pending_before.outputs.pending_count }}
-          PENDING_CHANGED_IN_COMMIT=${{ steps.commit_scraper.outputs.pending_changed }}
+          git fetch origin main
+          git reset --hard origin/main
 
           PENDING_COUNT=$(python - <<'PY'
           import json
@@ -394,42 +397,61 @@ jobs:
           PY
           )
 
-          echo "pending_before=$BEFORE_COUNT"
-          echo "pending_after=$PENDING_COUNT"
-          echo "pending_changed_in_commit=$PENDING_CHANGED_IN_COMMIT"
+          echo "pending_count=$PENDING_COUNT"
 
-          if [ "${PENDING_COUNT:-0}" -ne "${BEFORE_COUNT:-0}" ]; then
-            PENDING_CHANGED_IN_CYCLE=true
-          else
-            PENDING_CHANGED_IN_CYCLE=false
+          if [ "${PENDING_COUNT:-0}" -le 0 ]; then
+            echo "pending vazio, consumer não será executado"
+            exit 0
           fi
 
-          if [ "${PENDING_COUNT:-0}" -gt 0 ] && { [ "$PENDING_CHANGED_IN_CYCLE" = "true" ] || [ "${PENDING_CHANGED_IN_COMMIT}" = "true" ]; }; then
-            echo "disparando bot_leouol_consumer.yml via workflow_dispatch"
-            if gh workflow run bot_leouol_consumer.yml --ref main; then
-              echo "dispatch_path=gh"
-              echo "consumer disparado via gh workflow run"
-            else
-              echo "dispatch_path=api_fallback"
-              echo "falha no gh workflow run; tentando fallback via API REST"
+          echo "pending encontrado, instalando dependências e executando consumer no mesmo workflow"
+          pip install -r requirements-consumer.txt
+          python bot_leouol.py --pending
 
-              HTTP_CODE=$(curl -sS -o /tmp/workflow_dispatch_response.txt -w "%{http_code}" \
-                -X POST \
-                -H "Accept: application/vnd.github+json" \
-                -H "Authorization: Bearer ${GH_TOKEN}" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                "https://api.github.com/repos/${{ github.repository }}/actions/workflows/bot_leouol_consumer.yml/dispatches" \
-                -d '{"ref":"main"}')
+      - name: commitar mudanças do consumer embutido
+        if: success()
+        run: |
+          git config user.email "bot@leouol.com"
+          git config user.name "BOT LEOUOL"
 
-              if [ "$HTTP_CODE" = "204" ]; then
-                echo "consumer disparado via API REST (workflow_dispatch)"
-              else
-                echo "erro: falha ao disparar consumer via gh e também via API REST (HTTP ${HTTP_CODE})"
-                echo "resposta da API:"
-                cat /tmp/workflow_dispatch_response.txt || true
+          git add pending_offers.json latest_offers.json historico_leouol.json daily_log.json status_runtime.json || true
+
+          if git diff --cached --quiet; then
+            echo "sem mudanças do consumer para commit"
+            exit 0
+          fi
+
+          git commit -m "consumer processa pending após scraper [skip ci]" || exit 0
+
+      - name: push do consumer com retry
+        if: success()
+        run: |
+          git fetch origin main
+
+          if git diff --quiet origin/main..HEAD; then
+            echo "nenhum commit novo do consumer"
+            exit 0
+          fi
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main || {
+              git rebase --abort || true
+              if [ "$attempt" -eq 3 ]; then
                 exit 1
               fi
+              sleep 2
+              continue
+            }
+
+            if git push origin HEAD:main; then
+              echo "push do consumer concluído"
+              exit 0
             fi
-          else
-            echo "sem mudança efetiva de pending neste ciclo ou pending vazio; consumer não será disparado"
-          fi
+
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+
+            sleep 2
+          done
