@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-04-24T19:32:06.527150Z",
+  "updated_at": "2026-04-24T19:32:26.751859Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "historico": 32,
-    "pending": 13,
+    "pending": 16,
     "dedupe": 0
   },
   "discarded_offers": [
@@ -83,6 +83,24 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/poV-2-ingressos-25-04-teatro-carlos-gomes",
       "reason": "pending",
       "trace_id": "trace_pov-2-ingressos-25-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS: 30/04 Casa Natura Musical",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/poS-2-ingressos-30-04-casa-natura-musical",
+      "reason": "pending",
+      "trace_id": "trace_pos-2-ingressos-30-04-casa-natura-musical"
+    },
+    {
+      "title": "2 INGRESSOS: 25/04 Casa Natura Musical",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/poQ-2-ingressos-25-04-casa-natura-musical",
+      "reason": "pending",
+      "trace_id": "trace_poq-2-ingressos-25-04-casa-natura-musical"
+    },
+    {
+      "title": "2 INGRESSOS: 24/04 Casa Natura Musical",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/poP-2-ingressos-24-04-casa-natura-musical",
+      "reason": "pending",
+      "trace_id": "trace_pop-2-ingressos-24-04-casa-natura-musical"
     },
     {
       "title": "50% OFF em até 4 ingressos",
