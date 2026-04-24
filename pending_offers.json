@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-04-24T18:14:42.837029Z",
+  "last_update": "2026-04-24T18:32:01.756549Z",
   "offers": [
     {
       "id": "poO-2-ingressos-26-04-tokio-marine-hall-sp",
@@ -864,6 +864,22 @@
       "loose_dedupe_key": "2-ingressos-25-04-teatro-carlos-gomes|assinante-uol-resgate-1-par-de-ingressos-para-as-centenarias-o-musical-e-viva-uma-experiencia-emocionante-e-bem-humorada-do-teatro-brasileiro-contemporaneo-no-t",
       "scraped_at": "2026-04-24T18:14:42.737605Z",
       "trace_id": "trace_pov-2-ingressos-25-04-teatro-carlos-gomes"
+    },
+    {
+      "id": "ppi-dia-das-maes-com-15-off-brinde",
+      "original_link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
+      "preview_title": "Dia das Mães com 15% OFF + brinde!",
+      "title": "Dia das Mães com 15% OFF + brinde!",
+      "link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/3d7f43651a30a9075a4040159876a720.png",
+      "validity": "Benefício válido de 24/04/2026 15:14 até 10/05/2026 23:59.",
+      "description": "Sobre o Parceiro: Não somos uma marca de beleza. Somos uma nova forma de comprar, consumir e pensar a beleza. Nascemos há mais de dez anos para trazer uma beleza espontânea, descomplicada, acessível, e claro, smart! Benefício: 15% de desconto + brinde na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras acima de R$249. Aplicável apenas para produtos selecionados. Oferta válida somente para a loja online. Não cumulativa com demais cupons. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026",
+      "location_summary": "",
+      "dedupe_key": "dia-das-maes-com-15-off-brinde|beneficio-valido-de-24-04-2026-15-14-ate-10-05-2026-23-59|sobre-o-parceiro-nao-somos-uma-marca-de-beleza-somos-uma-nova-forma-de-comprar-consumir-e-pensar-a-beleza-nascemos-ha-mais-de-dez-anos-para-trazer-uma-beleza-es",
+      "loose_dedupe_key": "dia-das-maes-com-15-off-brinde|sobre-o-parceiro-nao-somos-uma-marca-de-beleza-somos-uma-nova-forma-de-comprar-consumir-e-pensar-a-beleza-nascemos-ha-mais-de-dez-anos-para-trazer-uma-beleza-es",
+      "scraped_at": "2026-04-24T18:32:01.636107Z",
+      "trace_id": "trace_ppi-dia-das-maes-com-15-off-brinde"
     }
   ]
 }

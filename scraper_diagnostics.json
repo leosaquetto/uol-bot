@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-04-24T18:31:31.273926Z",
+  "updated_at": "2026-04-24T18:32:01.755481Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "historico": 39,
+    "historico": 38,
     "pending": 9,
     "dedupe": 0
   },
@@ -293,12 +293,6 @@
       "link": "https://clube.uol.com.br/descomplica/pms-cursinho-enem-com-r-50-off",
       "reason": "historico",
       "trace_id": "trace_pms-cursinho-enem-com-r-50-off"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - MG",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmr-30-off-na-compra-de-ingresso-mg",
-      "reason": "historico",
-      "trace_id": "trace_pmr-30-off-na-compra-de-ingresso-mg"
     }
   ]
 }
