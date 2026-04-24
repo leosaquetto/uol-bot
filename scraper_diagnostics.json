@@ -1,0 +1,526 @@
+{
+  "updated_at": "2026-04-24T02:47:59.406375Z",
+  "snapshot_ids_pending": 223,
+  "mac_offers_loaded": 48,
+  "offers_consolidated": 131,
+  "candidates_added": 46,
+  "dropped_incomplete": 0,
+  "discard_reasons": {
+    "incompleta": 0,
+    "historico": 77,
+    "pending": 0,
+    "dedupe": 8
+  },
+  "discarded_offers": [
+    {
+      "title": "50% OFF em até 4 ingressos",
+      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pog-50-off-em-at-4-ingressos"
+    },
+    {
+      "title": "10% OFF no site oficial",
+      "link": "https://clube.uol.com.br/sanavita/poF-10-off-no-site-oficial",
+      "reason": "historico",
+      "trace_id": "trace_pof-10-off-no-site-oficial"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/poE-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_poe-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/poD-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pod-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "30% de CashBack",
+      "link": "https://clube.uol.com.br/gofoods/poy-30-de-cashback",
+      "reason": "historico",
+      "trace_id": "trace_poy-30-cashback"
+    },
+    {
+      "title": "2 INGRESSOS: 30/04 Termas do Pacu | SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pon-2-ingressos-30-04-termas-do-pacu-sp",
+      "reason": "historico",
+      "trace_id": "trace_pon-2-ingressos-30-04-termas-do-pacu-sp"
+    },
+    {
+      "title": "15% OFF para compras no site",
+      "link": "https://clube.uol.com.br/underarmour/pnZ-15-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_pnz-15-off-para-compras-no-site"
+    },
+    {
+      "title": "15% OFF em todo o site",
+      "link": "https://clube.uol.com.br/mizuno/pnY-15-off-em-todo-o-site",
+      "reason": "historico",
+      "trace_id": "trace_pny-15-off-em-todo-o-site"
+    },
+    {
+      "title": "15% OFF em todo o site",
+      "link": "https://clube.uol.com.br/olympikus/pnX-15-off-em-todo-o-site",
+      "reason": "historico",
+      "trace_id": "trace_pnx-15-off-em-todo-o-site"
+    },
+    {
+      "title": "50% OFF no Kit 3 Mini Books",
+      "link": "https://clube.uol.com.br/fotoregistro/pn9-50-off-no-kit-3-mini-books",
+      "reason": "historico",
+      "trace_id": "trace_pn9-50-off-no-kit-3-mini-books"
+    },
+    {
+      "title": "Aproveite 15% OFF em viagens",
+      "link": "https://clube.uol.com.br/flixbus/pn7-aproveite-15-off-em-viagens",
+      "reason": "historico",
+      "trace_id": "trace_pn7-aproveite-15-off-em-viagens"
+    },
+    {
+      "title": "20% OFF no site oficial da Nutrify",
+      "link": "https://clube.uol.com.br/nutrify/pn6-20-off-no-site-oficial-da-nutrify",
+      "reason": "historico",
+      "trace_id": "trace_pn6-20-off-no-site-oficial-da-nutrify"
+    },
+    {
+      "title": "Ganhe o banquete do chef",
+      "link": "https://clube.uol.com.br/forneriamaiori/pn0-ganhe-o-banquete-do-chef",
+      "reason": "historico",
+      "trace_id": "trace_pn0-ganhe-o-banquete-do-chef"
+    },
+    {
+      "title": "30% OFF em Pós Graduação de Medicina",
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
+      "reason": "historico",
+      "trace_id": "trace_pnu-30-off-em-ps-graduao-de-medicina"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pnh-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pnh-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/png-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_png-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pnf-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pnf-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pne-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pne-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pnd-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pmW-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pmw-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmE-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pme-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmB-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pmb-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pm9-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
+      "reason": "historico",
+      "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
+      "reason": "historico",
+      "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - BA",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
+      "reason": "historico",
+      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - CE",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
+      "reason": "historico",
+      "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce"
+    },
+    {
+      "title": "Cursinho ENEM com R$ 50 OFF",
+      "link": "https://clube.uol.com.br/descomplica/pms-cursinho-enem-com-r-50-off",
+      "reason": "historico",
+      "trace_id": "trace_pms-cursinho-enem-com-r-50-off"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - MG",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmr-30-off-na-compra-de-ingresso-mg",
+      "reason": "historico",
+      "trace_id": "trace_pmr-30-off-na-compra-de-ingresso-mg"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmq-30-off-na-compra-de-ingresso-sp",
+      "reason": "historico",
+      "trace_id": "trace_pmq-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - RJ",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmp-30-off-na-compra-de-ingresso-rj",
+      "reason": "historico",
+      "trace_id": "trace_pmp-30-off-na-compra-de-ingresso-rj"
+    },
+    {
+      "title": "20% OFF no ingresso",
+      "link": "https://clube.uol.com.br/festivalbangersopenair2026/pmk-20-off-no-ingresso",
+      "reason": "historico",
+      "trace_id": "trace_pmk-20-off-no-ingresso"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - MG",
+      "link": "https://clube.uol.com.br/turneinfinitosamba/plG-30-off-na-compra-de-ingresso-mg",
+      "reason": "historico",
+      "trace_id": "trace_plg-30-off-na-compra-de-ingresso-mg"
+    },
+    {
+      "title": "10% OFF no ingresso LUMINISCENCE",
+      "link": "https://clube.uol.com.br/luminiscence/pl8-10-off-no-ingresso-luminiscence",
+      "reason": "historico",
+      "trace_id": "trace_pl8-10-off-no-ingresso-luminiscence"
+    },
+    {
+      "title": "Compre 1 curso e ganhe outro!",
+      "link": "https://clube.uol.com.br/openenglish/pll-compre-1-curso-e-ganhe-outro",
+      "reason": "historico",
+      "trace_id": "trace_pll-compre-1-curso-e-ganhe-outro"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - PE",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pml-30-off-na-compra-de-ingresso-pe",
+      "reason": "historico",
+      "trace_id": "trace_pml-30-off-na-compra-de-ingresso-pe"
+    },
+    {
+      "title": "2 INGRESSOS: 11/04 BeFly Minascentro MG",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pme-2-ingressos-11-04-befly-minascentro-mg",
+      "reason": "historico",
+      "trace_id": "trace_pme-2-ingressos-11-04-befly-minascentro-mg"
+    },
+    {
+      "title": "2 INGRESSOS: 10/04 BeFly Minascentro MG",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pmd-2-ingressos-10-04-befly-minascentro-mg",
+      "reason": "historico",
+      "trace_id": "trace_pmd-2-ingressos-10-04-befly-minascentro-mg"
+    },
+    {
+      "title": "20% OFF no site",
+      "link": "https://clube.uol.com.br/multicoisas/pkT-20-off-no-site",
+      "reason": "historico",
+      "trace_id": "trace_pkt-20-off-no-site"
+    },
+    {
+      "title": "35% OFF no cardápio de pizzas",
+      "link": "https://clube.uol.com.br/dominos/pjL-35-off-no-cardpio-de-pizzas",
+      "reason": "historico",
+      "trace_id": "trace_pjl-35-off-no-cardpio-de-pizzas"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pjD-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pjd-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pjC-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pjc-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "Prato em Dobro no La Parrilla Argentina",
+      "link": "https://clube.uol.com.br/restaurantelaparrillaargentina/pjo-prato-em-dobro-no-la-parrilla-argentina",
+      "reason": "historico",
+      "trace_id": "trace_pjo-prato-em-dobro-no-la-parrilla-argentina"
+    },
+    {
+      "title": "15% OFF no site oficial da Darkness",
+      "link": "https://clube.uol.com.br/darkness/pfW-15-off-no-site-oficial-da-darkness",
+      "reason": "dedupe",
+      "trace_id": "trace_pfw-15-off-no-site-oficial-da-darkness"
+    },
+    {
+      "title": "50% OFF em até 4 ingressos",
+      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/pfj-50-off-em-at-4-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pfj-50-off-em-at-4-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/peW-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pew-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmF-50-off-no-par-de-ingressos",
+      "reason": "historico",
+      "trace_id": "trace_pmf-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "2 INGRESSOS | 16/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pnc-2-ingressos-16-04-teatro-carlos-gomes",
+      "reason": "historico",
+      "trace_id": "trace_pnc-2-ingressos-16-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 12/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pnb-2-ingressos-12-04-teatro-carlos-gomes",
+      "reason": "historico",
+      "trace_id": "trace_pnb-2-ingressos-12-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 11/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pna-2-ingressos-11-04-teatro-carlos-gomes",
+      "reason": "historico",
+      "trace_id": "trace_pna-2-ingressos-11-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 10/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pmZ-2-ingressos-10-04-teatro-carlos-gomes",
+      "reason": "historico",
+      "trace_id": "trace_pmz-2-ingressos-10-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 24/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pnG-2-ingressos-24-04-teatro-carlos-gomes",
+      "reason": "historico",
+      "trace_id": "trace_png-2-ingressos-24-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 23/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pnE-2-ingressos-23-04-teatro-carlos-gomes",
+      "reason": "historico",
+      "trace_id": "trace_pne-2-ingressos-23-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 19/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pnD-2-ingressos-19-04-teatro-carlos-gomes",
+      "reason": "historico",
+      "trace_id": "trace_pnd-2-ingressos-19-04-teatro-carlos-gomes"
+    },
+    {
+      "title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
+      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-imas-gratis",
+      "reason": "historico",
+      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-imas-gratis"
+    },
+    {
+      "title": "41% OFF na Pós-Graduação",
+      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
+      "reason": "historico",
+      "trace_id": "trace_pmt-41-off-na-pos-graduacao"
+    },
+    {
+      "title": "Até 50% OFF em Graduação e Pós!",
+      "link": "https://clube.uol.com.br/fasig/plX-ate-50-off-em-graduacao-e-pos",
+      "reason": "historico",
+      "trace_id": "trace_plx-ate-50-off-em-graduacao-e-pos"
+    },
+    {
+      "title": "35% OFF no cardápio de pizzas",
+      "link": "https://clube.uol.com.br/dominos/pjL-35-off-no-cardapio-de-pizzas",
+      "reason": "historico",
+      "trace_id": "trace_pjl-35-off-no-cardapio-de-pizzas"
+    },
+    {
+      "title": "Ganhe uma batata grátis",
+      "link": "https://clube.uol.com.br/slidershamburgueria/pji-ganhe-uma-batata-gratis",
+      "reason": "dedupe",
+      "trace_id": "trace_pji-ganhe-uma-batata-gratis"
+    },
+    {
+      "title": "Ganhe um Cálice de Licor Limoncello",
+      "link": "https://clube.uol.com.br/restauranteprovinciadisalerno/pjh-ganhe-um-calice-de-licor-limoncello",
+      "reason": "dedupe",
+      "trace_id": "trace_pjh-ganhe-um-calice-de-licor-limoncello"
+    },
+    {
+      "title": "20% OFF + Revitalização Facial de brinde",
+      "link": "https://clube.uol.com.br/odaralifestyle/piR-20-off-revitalizacao-facial-de-brinde",
+      "reason": "dedupe",
+      "trace_id": "trace_pir-20-off-revitalizacao-facial-brinde"
+    },
+    {
+      "title": "Até 10% de desconto no site",
+      "link": "https://clube.uol.com.br/santista/piz-ate-10-de-desconto-no-site",
+      "reason": "dedupe",
+      "trace_id": "trace_piz-ate-10-de-desconto-no-site"
+    },
+    {
+      "title": "Até 10% OFF no site!",
+      "link": "https://clube.uol.com.br/artex/piy-ate-10-off-no-site",
+      "reason": "dedupe",
+      "trace_id": "trace_piy-ate-10-off-no-site"
+    },
+    {
+      "title": "Seleção de produtos com 12% OFF",
+      "link": "https://clube.uol.com.br/lgebffc/pit-selecao-de-produtos-com-12-off",
+      "reason": "dedupe",
+      "trace_id": "trace_pit-selecao-de-produtos-com-12-off"
+    },
+    {
+      "title": "Até 35% de desconto em medicamentos",
+      "link": "https://clube.uol.com.br/healthyinterplayers/piq-ate-35-de-desconto-em-medicamentos",
+      "reason": "dedupe",
+      "trace_id": "trace_piq-ate-35-de-desconto-em-medicamentos"
+    },
+    {
+      "title": "Até 70% OFF para compras no site",
+      "link": "https://clube.uol.com.br/zattini/pnS-ate-70-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_pns-ate-70-off-para-compras-no-site"
+    },
+    {
+      "title": "Até 12% OFF nas reservas",
+      "link": "https://clube.uol.com.br/movida/pnK-ate-12-off-nas-reservas",
+      "reason": "historico",
+      "trace_id": "trace_pnk-ate-12-off-nas-reservas"
+    },
+    {
+      "title": "2 cervejas pelo preço de 1",
+      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
+      "reason": "historico",
+      "trace_id": "trace_pnx-2-cervejas-pelo-preco-1"
+    },
+    {
+      "title": "2 INGRESSOS: 30/04 Hopi Hari - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pnV-2-ingressos-30-04-hopi-hari-sp",
+      "reason": "historico",
+      "trace_id": "trace_pnv-2-ingressos-30-04-hopi-hari-sp"
+    },
+    {
+      "title": "30% OFF em Jeans feminino plus size",
+      "link": "https://clube.uol.com.br/lojasrenner/pof-30-off-em-jeans-feminino-plus-size",
+      "reason": "historico",
+      "trace_id": "trace_pof-30-off-em-jeans-feminino-plus-size"
+    },
+    {
+      "title": "Ofertas de última hora: 25% OFF extra!",
+      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
+      "reason": "historico",
+      "trace_id": "trace_pok-ofertas-de-ultima-hora-25-off-extra"
+    },
+    {
+      "title": "Festival de guarda-roupa com até 20% OFF",
+      "link": "https://clube.uol.com.br/carrefour/poj-festival-de-guarda-roupa-com-ate-20-off",
+      "reason": "historico",
+      "trace_id": "trace_poj-festival-de-guarda-roupa-com-ate-20-off"
+    },
+    {
+      "title": "30% OFF extra na seleção masculina",
+      "link": "https://clube.uol.com.br/lojasrenner/poi-30-off-extra-na-selecao-masculina",
+      "reason": "historico",
+      "trace_id": "trace_poi-30-off-extra-na-selecao-masculina"
+    },
+    {
+      "title": "40% OFF extra em seleção feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
+      "reason": "historico",
+      "trace_id": "trace_poh-40-off-extra-em-selecao-feminina"
+    },
+    {
+      "title": "30% OFF extra em seleção feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
+      "reason": "historico",
+      "trace_id": "trace_pog-30-off-extra-em-selecao-feminina"
+    },
+    {
+      "title": "30% OFF em seleção de jeans feminino",
+      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
+      "reason": "historico",
+      "trace_id": "trace_poe-30-off-em-selecao-de-jeans-feminino"
+    },
+    {
+      "title": "Até 75% OFF para compras no site",
+      "link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_pob-ate-75-off-para-compras-no-site"
+    },
+    {
+      "title": "Até 75% OFF para compras no site",
+      "link": "https://clube.uol.com.br/zattini/poa-ate-75-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_poa-ate-75-off-para-compras-no-site"
+    },
+    {
+      "title": "2 INGRESSOS: 18/04 Centro Conv. PE",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pop-2-ingressos-18-04-centro-conv-pe",
+      "reason": "historico",
+      "trace_id": "trace_pop-2-ingressos-18-04-centro-conv-pe"
+    },
+    {
+      "title": "2 INGRESSOS: 23/04 Teatro Riachuelo RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pos-2-ingressos-23-04-teatro-riachuelo-rj",
+      "reason": "historico",
+      "trace_id": "trace_pos-2-ingressos-23-04-teatro-riachuelo-rj"
+    },
+    {
+      "title": "2 INGRESSOS: 19/04 Teatro Riachuelo RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/por-2-ingressos-19-04-teatro-riachuelo-rj",
+      "reason": "historico",
+      "trace_id": "trace_por-2-ingressos-19-04-teatro-riachuelo-rj"
+    },
+    {
+      "title": "2 INGRESSOS: 18/04 Teatro Riachuelo RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/poq-2-ingressos-18-04-teatro-riachuelo-rj",
+      "reason": "historico",
+      "trace_id": "trace_poq-2-ingressos-18-04-teatro-riachuelo-rj"
+    },
+    {
+      "title": "2 INGRESSOS: 26/04 Teatro Faresi - BA",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pow-2-ingressos-26-04-teatro-faresi-ba",
+      "reason": "historico",
+      "trace_id": "trace_pow-2-ingressos-26-04-teatro-faresi-ba"
+    },
+    {
+      "title": "2 INGRESSOS: 24/04 Teatro FAAP - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/po0-2-ingressos-24-04-teatro-faap-sp",
+      "reason": "historico",
+      "trace_id": "trace_po0-2-ingressos-24-04-teatro-faap-sp"
+    }
+  ]
+}
