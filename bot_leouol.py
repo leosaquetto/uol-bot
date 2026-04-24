@@ -473,38 +473,6 @@ def load_status_runtime() -> Dict:
     return load_status_runtime_file(STATUS_RUNTIME_FILE)
 
 
-def save_status_runtime(data: Dict) -> bool:
-    try:
-        merge_component_status_file(
-            STATUS_RUNTIME_FILE,
-            "scriptable",
-            data.get("scriptable", {}),
-            logger=log,
-        )
-        merge_component_status_file(
-            STATUS_RUNTIME_FILE,
-            "scraper",
-            data.get("scraper", {}),
-            logger=log,
-        )
-        merge_component_status_file(
-            STATUS_RUNTIME_FILE,
-            "consumer",
-            data.get("consumer", {}),
-            logger=log,
-        )
-        merge_component_status_file(
-            STATUS_RUNTIME_FILE,
-            "global",
-            data.get("global", {}),
-            logger=log,
-        )
-        return True
-    except Exception as e:
-        log(f"❌ erro ao salvar status_runtime.json: {e}")
-        return False
-
-
 def status_consumer_start(pending_count: int) -> None:
     status = load_status_runtime()
     merge_component_status_file(STATUS_RUNTIME_FILE, "consumer", {
@@ -1802,16 +1770,14 @@ def consume_pending() -> int:
     save_latest(latest_sent)
 
     if sent > 0:
-        status = load_status_runtime()
         last_offer = latest_sent[-1] if latest_sent else None
         if last_offer:
-            status["global"] = {
+            merge_component_status_file(STATUS_RUNTIME_FILE, "global", {
                 "last_offer_title": str(last_offer.get("title") or last_offer.get("preview_title") or ""),
                 "last_offer_at": now_br_datetime(),
                 "last_offer_id": str(last_offer.get("id") or ""),
                 "last_offer_link": str(last_offer.get("channel_message_link") or ""),
-            }
-            save_status_runtime(status)
+            }, logger=log)
 
             state = load_daily_log()
             state["last_new_offer_at"] = now_br_datetime()
