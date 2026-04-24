@@ -129,6 +129,30 @@ jobs:
           echo "--- Status Git ---"
           git status --short
 
+      - name: capturar pending antes do scraper
+        id: pending_before
+        run: |
+          PENDING_BEFORE=$(python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("pending_offers.json")
+          if not path.exists():
+              print(0)
+              raise SystemExit
+
+          try:
+              data = json.loads(path.read_text(encoding="utf-8"))
+          except Exception:
+              print(0)
+              raise SystemExit
+
+          offers = data.get("offers") if isinstance(data, dict) else []
+          print(len(offers) if isinstance(offers, list) else 0)
+          PY
+          )
+          echo "pending_count=$PENDING_BEFORE" >> "$GITHUB_OUTPUT"
+
       - name: rodar scraper
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -149,6 +173,7 @@ jobs:
           cat snapshots_control.json || echo "Não alterado"
 
       - name: commitar mudanças do scraper
+        id: commit_scraper
         if: always()
         run: |
           git config user.email "bot@leouol.com"
@@ -158,10 +183,19 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "sem mudanças para commit"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            echo "pending_changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
+          if git diff --cached --name-only | grep -Fxq "pending_offers.json"; then
+            echo "pending_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pending_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
           git commit -m "scraper atualiza pending e dashboard [skip ci]" || exit 0
+          echo "committed=true" >> "$GITHUB_OUTPUT"
 
       - name: push com retry
         if: always()
@@ -200,10 +234,13 @@ jobs:
           done
 
       - name: disparar consumer quando houver pending
-        if: always()
+        if: success()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          BEFORE_COUNT=${{ steps.pending_before.outputs.pending_count }}
+          PENDING_CHANGED_IN_COMMIT=${{ steps.commit_scraper.outputs.pending_changed }}
+
           PENDING_COUNT=$(python - <<'PY'
           import json
           from pathlib import Path
@@ -224,11 +261,19 @@ jobs:
           PY
           )
 
-          echo "pending_count=$PENDING_COUNT"
+          echo "pending_before=$BEFORE_COUNT"
+          echo "pending_after=$PENDING_COUNT"
+          echo "pending_changed_in_commit=$PENDING_CHANGED_IN_COMMIT"
 
-          if [ "${PENDING_COUNT:-0}" -gt 0 ]; then
+          if [ "${PENDING_COUNT:-0}" -ne "${BEFORE_COUNT:-0}" ]; then
+            PENDING_CHANGED_IN_CYCLE=true
+          else
+            PENDING_CHANGED_IN_CYCLE=false
+          fi
+
+          if [ "${PENDING_COUNT:-0}" -gt 0 ] && { [ "$PENDING_CHANGED_IN_CYCLE" = "true" ] || [ "${PENDING_CHANGED_IN_COMMIT}" = "true" ]; }; then
             echo "disparando bot_leouol_consumer.yml via workflow_dispatch"
             gh workflow run bot_leouol_consumer.yml --ref main
           else
-            echo "pending vazio, consumer não será disparado"
+            echo "sem mudança efetiva de pending neste ciclo ou pending vazio; consumer não será disparado"
           fi
