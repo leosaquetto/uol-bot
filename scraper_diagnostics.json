@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-04-24T18:59:33.921308Z",
+  "updated_at": "2026-04-24T19:06:52.730802Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 0,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "historico": 38,
+    "historico": 35,
     "pending": 10,
     "dedupe": 0
   },
@@ -281,24 +281,6 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
       "reason": "historico",
       "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - CE",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
-      "reason": "historico",
-      "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce"
-    },
-    {
-      "title": "41% OFF na Pós-Graduação",
-      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
-      "reason": "historico",
-      "trace_id": "trace_pmt-41-off-na-pos-graduacao"
-    },
-    {
-      "title": "Cursinho ENEM com R$ 50 OFF",
-      "link": "https://clube.uol.com.br/descomplica/pms-cursinho-enem-com-r-50-off",
-      "reason": "historico",
-      "trace_id": "trace_pms-cursinho-enem-com-r-50-off"
     }
   ]
 }
