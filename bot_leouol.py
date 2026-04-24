@@ -535,7 +535,10 @@ def status_consumer_finish(
 ) -> None:
     status = load_status_runtime()
     last_success_at = status["consumer"].get("last_success_at", "")
-    if status_value in {"ok", "sem_novidade", "parcial"} and sent > 0:
+    if (
+        (status_value in {"ok", "parcial"} and sent > 0)
+        or (status_value == "sem_novidade" and failed == 0)
+    ):
         last_success_at = now_br_datetime()
 
     merge_component_status_file(STATUS_RUNTIME_FILE, "consumer", {
