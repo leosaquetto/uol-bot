@@ -16,6 +16,9 @@ const MAX_RETRIES = 3
 
 const SEEN_CACHE_FILE = "uol_seen_links.json"
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
+const statusRuntimeUtils = (() => {
+  try { return importModule("status_runtime_utils") } catch (e) { return null }
+})()
 
 function log(msg) { console.log(`[${new Date().toLocaleTimeString()}] ${msg}`) }
 function pad(n) { return String(n).padStart(2, "0") }
@@ -276,13 +279,10 @@ function collectRepoProcessedKeys(pendingData, latestData, historyData) {
 }
 
 async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen, newOffers, pendingCount = 0, lastError = "" }) {
-  const resp = await githubGetJson("status_runtime.json")
-  let status = { scriptable: {}, scraper: {}, consumer: {}, global: {} }
-  if (resp.ok && resp.data && typeof resp.data === "object") status = resp.data
-  status.scriptable = {
+  const scriptablePatch = {
     last_started_at: brDateTime(startedAtGlobal),
     last_finished_at: brDateTime(new Date()),
-    last_success_at: (statusValue === "ok" || statusValue === "sem_novidade" || statusValue === "parcial") ? brDateTime(new Date()) : String(status.scriptable?.last_success_at || ""),
+    last_success_at: (statusValue === "ok" || statusValue === "sem_novidade" || statusValue === "parcial") ? brDateTime(new Date()) : undefined,
     status: statusValue,
     summary: String(summary || ""),
     offers_seen: Number(offersSeen || 0),
@@ -290,7 +290,30 @@ async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen,
     pending_count: Number(pendingCount || 0),
     last_error: String(lastError || ""),
   }
-  return await githubPutFile("status_runtime.json", JSON.stringify(status, null, 2), `scriptable runtime status ${new Date().toISOString()}`)
+  if (scriptablePatch.last_success_at === undefined) delete scriptablePatch.last_success_at
+  if (statusRuntimeUtils && typeof statusRuntimeUtils.updateStatusRuntimeComponent === "function") {
+    return await statusRuntimeUtils.updateStatusRuntimeComponent({
+      githubGetJson,
+      githubPutFile,
+      component: "scriptable",
+      componentPatch: scriptablePatch,
+      commitMessage: `scriptable runtime status ${new Date().toISOString()}`,
+      logFn: log,
+    })
+  }
+  const resp = await githubGetJson("status_runtime.json")
+  const status = resp.ok && resp.data && typeof resp.data === "object" ? resp.data : { scriptable: {}, scraper: {}, consumer: {}, global: {} }
+  const prevNode = status.scriptable && typeof status.scriptable === "object" ? status.scriptable : {}
+  status.scriptable = { ...prevNode, ...scriptablePatch }
+  const saveResp = await githubPutFile("status_runtime.json", JSON.stringify(status, null, 2), `scriptable runtime status ${new Date().toISOString()}`)
+  if (saveResp && saveResp.ok) {
+    const afterResp = await githubGetJson("status_runtime.json")
+    const afterNode = afterResp && afterResp.ok && afterResp.data && typeof afterResp.data.scriptable === "object" ? afterResp.data.scriptable : {}
+    const requiredKeys = ["status", "summary", "last_finished_at", "pending_count", "last_error"]
+    const missing = requiredKeys.filter((k) => !(k in afterNode))
+    if (missing.length > 0) log(`⚠️ warning status_runtime.json: chaves críticas ausentes em 'scriptable': ${missing.join(", ")}`)
+  }
+  return saveResp
 }
 
 const startedAtGlobal = new Date()

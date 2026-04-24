@@ -17,6 +17,7 @@ from urllib.parse import unquote, urlparse
 from zoneinfo import ZoneInfo
 
 import requests
+from status_runtime_utils import load_status_runtime_file, merge_component_status_file
 
 BR_TZ = ZoneInfo("America/Sao_Paulo")
 
@@ -469,66 +470,34 @@ def save_daily_log(data: Dict) -> bool:
 
 
 def load_status_runtime() -> Dict:
-    path = Path(STATUS_RUNTIME_FILE)
-    default = {
-        "scriptable": {
-            "last_started_at": "",
-            "last_finished_at": "",
-            "status": "",
-            "summary": "",
-            "offers_seen": 0,
-            "new_offers": 0,
-            "pending_count": 0,
-            "last_error": "",
-        },
-        "scraper": {
-            "last_started_at": "",
-            "last_finished_at": "",
-            "last_success_at": "",
-            "status": "",
-            "summary": "",
-            "offers_seen": 0,
-            "new_offers": 0,
-            "pending_count": 0,
-            "last_error": "",
-        },
-        "consumer": {
-            "last_started_at": "",
-            "last_finished_at": "",
-            "last_success_at": "",
-            "status": "",
-            "summary": "",
-            "processed": 0,
-            "sent": 0,
-            "failed": 0,
-            "pending_count": 0,
-            "last_error": "",
-        },
-        "global": {
-            "last_offer_title": "",
-            "last_offer_at": "",
-            "last_offer_id": "",
-        },
-    }
-    if not path.exists():
-        return default
-
-    data = safe_json_load(path, default)
-    for key, value in default.items():
-        if key not in data or not isinstance(data[key], dict):
-            data[key] = value
-    if "last_success_at" not in data["scraper"]:
-        data["scraper"]["last_success_at"] = ""
-    if "last_success_at" not in data["consumer"]:
-        data["consumer"]["last_success_at"] = ""
-    return data
+    return load_status_runtime_file(STATUS_RUNTIME_FILE)
 
 
 def save_status_runtime(data: Dict) -> bool:
     try:
-        Path(STATUS_RUNTIME_FILE).write_text(
-            json.dumps(data, ensure_ascii=False, indent=2),
-            encoding="utf-8",
+        merge_component_status_file(
+            STATUS_RUNTIME_FILE,
+            "scriptable",
+            data.get("scriptable", {}),
+            logger=log,
+        )
+        merge_component_status_file(
+            STATUS_RUNTIME_FILE,
+            "scraper",
+            data.get("scraper", {}),
+            logger=log,
+        )
+        merge_component_status_file(
+            STATUS_RUNTIME_FILE,
+            "consumer",
+            data.get("consumer", {}),
+            logger=log,
+        )
+        merge_component_status_file(
+            STATUS_RUNTIME_FILE,
+            "global",
+            data.get("global", {}),
+            logger=log,
         )
         return True
     except Exception as e:
@@ -538,7 +507,7 @@ def save_status_runtime(data: Dict) -> bool:
 
 def status_consumer_start(pending_count: int) -> None:
     status = load_status_runtime()
-    status["consumer"] = {
+    merge_component_status_file(STATUS_RUNTIME_FILE, "consumer", {
         "last_started_at": now_br_datetime(),
         "last_finished_at": status["consumer"].get("last_finished_at", ""),
         "last_success_at": status["consumer"].get("last_success_at", ""),
@@ -549,8 +518,7 @@ def status_consumer_start(pending_count: int) -> None:
         "failed": 0,
         "pending_count": pending_count,
         "last_error": "",
-    }
-    save_status_runtime(status)
+    }, logger=log)
 
 
 def status_consumer_finish(
@@ -567,7 +535,7 @@ def status_consumer_finish(
     if status_value in {"ok", "sem_novidade", "parcial"} and sent > 0:
         last_success_at = now_br_datetime()
 
-    status["consumer"] = {
+    merge_component_status_file(STATUS_RUNTIME_FILE, "consumer", {
         "last_started_at": status["consumer"].get("last_started_at", ""),
         "last_finished_at": now_br_datetime(),
         "last_success_at": last_success_at,
@@ -578,8 +546,7 @@ def status_consumer_finish(
         "failed": failed,
         "pending_count": pending_count,
         "last_error": last_error,
-    }
-    save_status_runtime(status)
+    }, logger=log)
 
 
 def build_dashboard_text(state: Dict) -> str:
