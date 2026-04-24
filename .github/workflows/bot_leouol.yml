@@ -7,6 +7,7 @@ on:
       - snapshots/**
       - github_scraper.py
       - pending_offers.json
+      - scraper_diagnostics.json
       - historico_leouol.json
       - latest_offers.json
       - daily_log.json
@@ -73,6 +74,43 @@ jobs:
           if [ ! -f status_runtime.json ]; then
             echo '{"scriptable":{"last_started_at":"","last_finished_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"scraper":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"consumer":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","processed":0,"sent":0,"failed":0,"pending_count":0,"last_error":""},"global":{"last_offer_title":"","last_offer_at":"","last_offer_id":""}}' > status_runtime.json
           fi
+
+      - name: diagnóstico inicial (snapshot + cargas)
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          snapshot_path = "snapshots/mac-uol-offers.json"
+          pending_path = "pending_offers.json"
+
+          if os.path.exists(snapshot_path):
+            with open(snapshot_path, "rb") as f:
+              raw = f.read()
+            sha = hashlib.sha256(raw).hexdigest()
+            mtime = datetime.fromtimestamp(os.path.getmtime(snapshot_path), tz=timezone.utc).isoformat().replace("+00:00", "Z")
+            try:
+              payload = json.loads(raw.decode("utf-8"))
+            except Exception:
+              payload = {}
+            mac_offers = len(payload.get("offers", [])) if isinstance(payload, dict) and isinstance(payload.get("offers"), list) else 0
+            print(f"[diag] snapshots/mac-uol-offers.json sha256={sha} mtime_utc={mtime}")
+          else:
+            mac_offers = 0
+            print("[diag] snapshots/mac-uol-offers.json ausente")
+
+          try:
+            with open(pending_path, "r", encoding="utf-8") as f:
+              pending_payload = json.load(f)
+          except Exception:
+            pending_payload = {}
+          pending_total = len(pending_payload.get("offers", [])) if isinstance(pending_payload, dict) and isinstance(pending_payload.get("offers"), list) else 0
+
+          print(f"[diag] ofertas carregáveis do mac snapshot (github_scraper.py): {mac_offers}")
+          print(f"[diag] total atual de candidatas em pending_offers.json: {pending_total}")
+          PY
 
       - name: instalar dependências do scraper
         run: |
