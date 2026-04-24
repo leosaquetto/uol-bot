@@ -25,6 +25,7 @@ DAILY_LOG_FILE = "daily_log.json"
 STATUS_RUNTIME_FILE = "status_runtime.json"
 LATEST_FILE = "latest_offers.json"
 SOLD_OUT_UPDATES_FILE = "sold_out_updates.json"
+SCRAPER_DIAGNOSTICS_FILE = "scraper_diagnostics.json"
 
 SNAPSHOT_DIR = "snapshots"
 SNAPSHOT_CONTROL_FILE = "snapshots_control.json"
@@ -81,6 +82,14 @@ def load_json(path: str, default: Any) -> Any:
 def save_json(path: str, data: Any) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def save_scraper_diagnostics(data: Dict[str, Any]) -> None:
+    payload = {
+        "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        **(data or {}),
+    }
+    save_json(SCRAPER_DIAGNOSTICS_FILE, payload)
 
 
 def clean_text(text: Optional[str]) -> str:
@@ -1185,6 +1194,18 @@ def main() -> None:
     if mac_offers:
         log(f"snapshot mac disponível: {len(mac_offers)} ofertas enriquecidas")
 
+    save_scraper_diagnostics(
+        {
+            "snapshot_ids_pending": len(snapshot_ids),
+            "mac_offers_loaded": len(mac_offers),
+            "offers_consolidated": 0,
+            "candidates_added": 0,
+            "dropped_incomplete": 0,
+            "discard_reasons": {},
+            "discarded_offers": [],
+        }
+    )
+
     if not snapshot_ids and not mac_offers:
         status_scraper_finish(
             summary="sem snapshots pendentes" + (" | esgotadas atualizadas" if sold_out_changed else ""),
@@ -1261,6 +1282,8 @@ def main() -> None:
         merged_detail_lookup.update(lookup)
 
     dropped_incomplete = 0
+    discard_reasons: Dict[str, int] = {"incompleta": 0, "historico": 0, "pending": 0, "dedupe": 0}
+    discarded_offers: List[Dict[str, str]] = []
 
     for offer in offers:
         offer_key = canonical_offer_key(offer.get("id") or offer.get("link") or "")
@@ -1280,9 +1303,13 @@ def main() -> None:
             details = normalize_detail_payload(details, offer)
 
         normalized_offer = merge_offer_data(offer, details)
+        offer_title = str(normalized_offer.get("title") or normalized_offer.get("preview_title") or "").strip()
+        offer_link = str(normalized_offer.get("link") or normalized_offer.get("original_link") or "").strip()
 
         if not is_offer_ready_for_pending(normalized_offer):
             dropped_incomplete += 1
+            discard_reasons["incompleta"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "incompleta"})
             log(f"descartada por pacote incompleto: {normalized_offer.get('title') or normalized_offer.get('preview_title')}")
             continue
 
@@ -1293,15 +1320,41 @@ def main() -> None:
         if not offer_key and not strict_key and not loose_key:
             continue
 
-        if offer_key and (offer_key in historico_keys or offer_key in pending_keys or offer_key in seen_new_offer_keys):
+        if offer_key and offer_key in seen_new_offer_keys:
+            discard_reasons["dedupe"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "dedupe"})
             continue
-        if strict_key and (strict_key in historico_dedupe or strict_key in pending_dedupe or strict_key in seen_new_dedupe_keys):
+        if offer_key and offer_key in historico_keys:
+            discard_reasons["historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico"})
             continue
-        if not offer_key and not strict_key and loose_key and (
-            loose_key in historico_loose or
-            loose_key in pending_loose or
-            loose_key in seen_new_loose_keys
-        ):
+        if offer_key and offer_key in pending_keys:
+            discard_reasons["pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending"})
+            continue
+        if strict_key and strict_key in seen_new_dedupe_keys:
+            discard_reasons["dedupe"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "dedupe"})
+            continue
+        if strict_key and strict_key in historico_dedupe:
+            discard_reasons["historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico"})
+            continue
+        if strict_key and strict_key in pending_dedupe:
+            discard_reasons["pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending"})
+            continue
+        if not offer_key and not strict_key and loose_key and loose_key in historico_loose:
+            discard_reasons["historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico"})
+            continue
+        if not offer_key and not strict_key and loose_key and loose_key in pending_loose:
+            discard_reasons["pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending"})
+            continue
+        if not offer_key and not strict_key and loose_key and loose_key in seen_new_loose_keys:
+            discard_reasons["dedupe"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "dedupe"})
             continue
             
         if offer_key:
@@ -1316,6 +1369,27 @@ def main() -> None:
     candidates = dedupe_keep_richest(candidates)
     log(f"novas fora de histórico/pending: {len(candidates)}")
     log(f"descartadas por incompletas: {dropped_incomplete}")
+    save_scraper_diagnostics(
+        {
+            "snapshot_ids_pending": len(snapshot_ids),
+            "mac_offers_loaded": len(mac_offers),
+            "offers_consolidated": len(offers),
+            "candidates_added": len(candidates),
+            "dropped_incomplete": dropped_incomplete,
+            "discard_reasons": discard_reasons,
+            "discarded_offers": discarded_offers,
+        }
+    )
+
+    if mac_offers and not candidates:
+        log("diagnóstico mac_offers>0 e candidates==0:")
+        for item in discarded_offers:
+            log(
+                "descarte oferta | "
+                f"motivo={item.get('reason') or '-'} | "
+                f"titulo={clean_text(item.get('title') or '') or '-'} | "
+                f"link={item.get('link') or '-'}"
+            )
 
     for snapshot_id in loaded_snapshot_ids:
         mark_snapshot_processed(snapshot_id, snapshot_control, snapshot_meta_map.get(snapshot_id))

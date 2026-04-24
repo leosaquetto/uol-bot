@@ -254,7 +254,12 @@ function saveLocalSoldOutState(state) {
 
 async function triggerGithubWorkflow(workflowFilename, inputs = null) {
   if (!GITHUB_TOKEN) {
-    throw new Error('GITHUB_TOKEN ausente para disparar workflow no GitHub');
+    return {
+      status: 'failed',
+      workflow: workflowFilename,
+      error: 'GITHUB_TOKEN ausente para disparar workflow no GitHub',
+      dispatch: { workflow: workflowFilename, http_status: 0, response_body: '' },
+    };
   }
   const url = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/actions/workflows/${encodeURIComponent(workflowFilename)}/dispatches`;
   const body = { ref: GITHUB_BRANCH };
@@ -272,13 +277,24 @@ async function triggerGithubWorkflow(workflowFilename, inputs = null) {
     },
     body: JSON.stringify(body)
   });
-  if (resp.status === 404) {
-    throw new Error(`workflow não encontrado: ${workflowFilename}`);
-  }
+  const responseBody = await resp.text();
+  const dispatchResult = {
+    workflow: workflowFilename,
+    http_status: resp.status,
+    response_body: responseBody,
+  };
+
   if (resp.status !== 204) {
-    throw new Error(`workflow dispatch ${workflowFilename} ${resp.status} ${await resp.text()}`);
+    return {
+      status: 'failed',
+      workflow: workflowFilename,
+      error: resp.status === 404
+        ? `workflow não encontrado: ${workflowFilename}`
+        : `workflow dispatch ${workflowFilename} ${resp.status} ${responseBody}`,
+      dispatch: dispatchResult,
+    };
   }
-  return { status: 'ok', workflow: workflowFilename };
+  return { status: 'ok', workflow: workflowFilename, dispatch: dispatchResult };
 }
 
 function buildSoldOutUpdates({ activeLinksSet, latestOffers, previousState, now }) {
@@ -683,9 +699,13 @@ async function enrichOffers(context, cards) {
       throw new Error('GITHUB_TOKEN ausente e REQUIRE_GITHUB_UPLOAD=1');
     }
 
-    let workflowTrigger = { status: 'skipped', workflow: '' };
+    let workflowTrigger = { status: 'skipped', workflow: '', dispatch: { workflow: GITHUB_WORKFLOW_FILENAME, http_status: 0, response_body: '' } };
     if (TRIGGER_GITHUB_WORKFLOW) {
       workflowTrigger = await triggerGithubWorkflow(GITHUB_WORKFLOW_FILENAME);
+    }
+    console.log(`MAC_WORKFLOW_DISPATCH ${JSON.stringify(workflowTrigger.dispatch)}`);
+    if (workflowTrigger.status !== 'ok') {
+      console.error(`MAC_WORKFLOW_TRIGGER_FAIL ${cleanText(workflowTrigger.error || 'dispatch não confirmado')}`);
     }
 
     console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} workflow_trigger=${workflowTrigger.status} workflow_name=${workflowTrigger.workflow || 'none'} repo_path=${GITHUB_TARGET_PATH}`);

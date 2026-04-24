@@ -20,16 +20,25 @@ EDGE_PROFILE_DIR="/Users/leosaquetto/Documents/GrabNumberAutomator/edge-profile"
 ## Regra de arquitetura (sem concorrência)
 
 - **Plano A (Mac):** roda primeiro via SSH.
-- **Plano B (iOS):** só roda se o Plano A não devolver `MAC_OK`.
+- **Plano B (iOS):** só roda se o Plano A não devolver `MAC_OK workflow_trigger=ok`.
 - Não há escrita concorrente no mesmo arquivo final do fluxo Scriptable: o Mac grava snapshot próprio (`snapshots/mac-uol-offers.json`).
 
 ## Como montar a lógica no Atalhos (iOS)
 
 1. **Ação 1:** Run Script over SSH (comando acima).
-2. **Ação 2:** `If` resultado **contains** `MAC_OK`:
+2. **Ação 2:** `If` resultado **contains** `MAC_OK` **e** **contains** `workflow_trigger=ok`:
    - `Stop this Shortcut` (sucesso no Mac, não roda o fluxo iOS).
 3. **Else**:
    - Executa seu fluxo atual dividido (parte 1 → parte 2 → parte 3 no Scriptable).
+
+### Regra explícita para `workflow_trigger`
+
+No retorno do SSH, trate assim:
+
+- `MAC_OK ... workflow_trigger=ok` → sucesso completo (encerra o atalho).
+- `MAC_OK ... workflow_trigger=failed` → **fallback automático** para Scriptable.
+- `MAC_OK ... workflow_trigger=skipped` → **fallback automático** para Scriptable.
+- qualquer saída sem `MAC_OK` → **fallback automático** para Scriptable.
 
 ## Sobre o erro recorrente “Não foi possível executar Run Script”
 
