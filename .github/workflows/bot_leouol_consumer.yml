@@ -55,10 +55,55 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
           DASHBOARD_CHAT_ID: ${{ secrets.DASHBOARD_CHAT_ID }}
-        run: python bot_leouol.py --pending || true
+        run: |
+          python bot_leouol.py --pending 2>&1 | tee consumer_process.log
+
+      - name: diagnóstico de falha do consumer
+        if: failure()
+        run: |
+          echo "=== status_runtime.json ==="
+          if [ -f status_runtime.json ]; then
+            cat status_runtime.json
+          else
+            echo "status_runtime.json não encontrado"
+          fi
+
+          echo "=== pending_offers.json (contagem) ==="
+          if [ -f pending_offers.json ]; then
+            python - <<'PY'
+import json
+from pathlib import Path
+p = Path("pending_offers.json")
+try:
+    data = json.loads(p.read_text(encoding="utf-8"))
+except Exception as exc:
+    print(f"erro ao ler pending_offers.json: {exc}")
+else:
+    if isinstance(data, list):
+        print(f"pending_offers_count={len(data)}")
+    elif isinstance(data, dict):
+        if isinstance(data.get("offers"), list):
+            print(f"pending_offers_count={len(data['offers'])}")
+        else:
+            print(f"pending_offers_keys={list(data.keys())}")
+    else:
+        print(f"pending_offers_tipo={type(data).__name__}")
+PY
+          else
+            echo "pending_offers.json não encontrado"
+          fi
+
+          echo "=== últimas linhas relevantes do log ==="
+          if [ -f consumer_process.log ]; then
+            grep -E "error|exception|traceback|fail|pending|consumer|telegram|status" -i consumer_process.log | tail -n 120 || true
+            echo "--- tail bruto (últimas 120 linhas) ---"
+            tail -n 120 consumer_process.log || true
+          else
+            echo "consumer_process.log não encontrado"
+          fi
 
       - name: commitar mudanças
-        if: always()
+        if: success()
         run: |
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
@@ -73,7 +118,7 @@ jobs:
           git commit -m "Atualiza histórico, pending e dashboard [skip ci]" || exit 0
 
       - name: push com retry
-        if: always()
+        if: success()
         run: |
           if git diff --quiet HEAD~1 HEAD 2>/dev/null; then
             echo "nenhum commit novo para enviar"
