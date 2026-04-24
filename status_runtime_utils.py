@@ -74,8 +74,26 @@ def _normalize_status_runtime(data: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
+def _is_partially_normalized(data: Dict[str, Any]) -> bool:
+    if not isinstance(data, dict):
+        return True
+    for component, template in DEFAULT_STATUS_RUNTIME.items():
+        node = data.get(component)
+        if not isinstance(node, dict):
+            return True
+        for key in template:
+            if key not in node:
+                return True
+    return False
+
+
 def load_status_runtime_file(path: str) -> Dict[str, Any]:
-    return _normalize_status_runtime(_safe_load(Path(path)))
+    runtime_path = Path(path)
+    raw = _safe_load(runtime_path)
+    normalized = _normalize_status_runtime(deepcopy(raw) if isinstance(raw, dict) else {})
+    if _is_partially_normalized(raw):
+        runtime_path.write_text(json.dumps(normalized, ensure_ascii=False, indent=2), encoding="utf-8")
+    return normalized
 
 
 def merge_component_status_file(
@@ -101,7 +119,10 @@ def merge_component_status_file(
     runtime_path.write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
 
     reloaded_raw = _safe_load(runtime_path)
-    reloaded = _normalize_status_runtime(reloaded_raw)
+    reloaded = _normalize_status_runtime(deepcopy(reloaded_raw) if isinstance(reloaded_raw, dict) else {})
+    if _is_partially_normalized(reloaded_raw):
+        runtime_path.write_text(json.dumps(reloaded, ensure_ascii=False, indent=2), encoding="utf-8")
+        reloaded_raw = reloaded
     reloaded_component = (
         reloaded_raw.get(component, {})
         if isinstance(reloaded_raw, dict) and isinstance(reloaded_raw.get(component), dict)

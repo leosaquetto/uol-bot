@@ -16,9 +16,7 @@ const MAX_RETRIES = 3
 
 const SEEN_CACHE_FILE = "uol_seen_links.json"
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
-const statusRuntimeUtils = (() => {
-  try { return importModule("status_runtime_utils") } catch (e) { return null }
-})()
+const statusRuntimeUtils = importModule("status_runtime_utils")
 
 function log(msg) { console.log(`[${new Date().toLocaleTimeString()}] ${msg}`) }
 function pad(n) { return String(n).padStart(2, "0") }
@@ -291,29 +289,17 @@ async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen,
     last_error: String(lastError || ""),
   }
   if (scriptablePatch.last_success_at === undefined) delete scriptablePatch.last_success_at
-  if (statusRuntimeUtils && typeof statusRuntimeUtils.updateStatusRuntimeComponent === "function") {
-    return await statusRuntimeUtils.updateStatusRuntimeComponent({
-      githubGetJson,
-      githubPutFile,
-      component: "scriptable",
-      componentPatch: scriptablePatch,
-      commitMessage: `scriptable runtime status ${new Date().toISOString()}`,
-      logFn: log,
-    })
+  if (!statusRuntimeUtils || typeof statusRuntimeUtils.updateStatusRuntimeComponent !== "function") {
+    throw new Error("status_runtime_utils.updateStatusRuntimeComponent indisponível")
   }
-  const resp = await githubGetJson("status_runtime.json")
-  const status = resp.ok && resp.data && typeof resp.data === "object" ? resp.data : { scriptable: {}, scraper: {}, consumer: {}, global: {} }
-  const prevNode = status.scriptable && typeof status.scriptable === "object" ? status.scriptable : {}
-  status.scriptable = { ...prevNode, ...scriptablePatch }
-  const saveResp = await githubPutFile("status_runtime.json", JSON.stringify(status, null, 2), `scriptable runtime status ${new Date().toISOString()}`)
-  if (saveResp && saveResp.ok) {
-    const afterResp = await githubGetJson("status_runtime.json")
-    const afterNode = afterResp && afterResp.ok && afterResp.data && typeof afterResp.data.scriptable === "object" ? afterResp.data.scriptable : {}
-    const requiredKeys = ["status", "summary", "last_finished_at", "pending_count", "last_error"]
-    const missing = requiredKeys.filter((k) => !(k in afterNode))
-    if (missing.length > 0) log(`⚠️ warning status_runtime.json: chaves críticas ausentes em 'scriptable': ${missing.join(", ")}`)
-  }
-  return saveResp
+  return await statusRuntimeUtils.updateStatusRuntimeComponent({
+    githubGetJson,
+    githubPutFile,
+    component: "scriptable",
+    componentPatch: scriptablePatch,
+    commitMessage: `scriptable runtime status ${new Date().toISOString()}`,
+    logFn: log,
+  })
 }
 
 const startedAtGlobal = new Date()
