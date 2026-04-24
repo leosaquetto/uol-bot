@@ -1,7 +1,7 @@
 # Legacy scripts
 
-Esta pasta contém versões antigas de scripts mantidas apenas para referência histórica.
+Esta pasta contém arquivos históricos e não usados em produção.
 
-- **Não entram em produção**.
-- Não são usadas pelos workflows atuais.
+- Mantidos apenas para referência.
+- Não são usados pelos workflows atuais.
 - Alterações aqui não afetam o pipeline principal.
