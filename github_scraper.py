@@ -14,6 +14,7 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError, RequestException, SSLError
+from status_runtime_utils import merge_component_status_file
 
 BASE_URL = "https://clube.uol.com.br"
 LIST_URL = f"{BASE_URL}/?order=new"
@@ -746,16 +747,10 @@ def mark_snapshot_processed(snapshot_id: str, control: Dict[str, Any], meta: Opt
 
 
 def status_scraper_start() -> None:
-    status = load_json(STATUS_RUNTIME_FILE, {
-        "scriptable": {},
-        "scraper": {},
-        "consumer": {},
-        "global": {},
-    })
-    prev = status.get("scraper", {}) if isinstance(status, dict) else {}
-    if not isinstance(status, dict):
-        status = {"scriptable": {}, "scraper": {}, "consumer": {}, "global": {}}
-    status["scraper"] = {
+    prev = load_json(STATUS_RUNTIME_FILE, {}).get("scraper", {})
+    if not isinstance(prev, dict):
+        prev = {}
+    merge_component_status_file(STATUS_RUNTIME_FILE, "scraper", {
         "last_started_at": now_br_datetime(),
         "last_finished_at": prev.get("last_finished_at", ""),
         "last_success_at": prev.get("last_success_at", ""),
@@ -765,24 +760,17 @@ def status_scraper_start() -> None:
         "new_offers": 0,
         "pending_count": prev.get("pending_count", 0),
         "last_error": "",
-    }
-    save_json(STATUS_RUNTIME_FILE, status)
+    }, logger=log)
 
 
 def status_scraper_finish(summary: str, status_value: str, offers_seen: int, new_offers: int, pending_count: int, last_error: str = "") -> None:
-    status = load_json(STATUS_RUNTIME_FILE, {
-        "scriptable": {},
-        "scraper": {},
-        "consumer": {},
-        "global": {},
-    })
-    prev = status.get("scraper", {}) if isinstance(status, dict) else {}
-    if not isinstance(status, dict):
-        status = {"scriptable": {}, "scraper": {}, "consumer": {}, "global": {}}
+    prev = load_json(STATUS_RUNTIME_FILE, {}).get("scraper", {})
+    if not isinstance(prev, dict):
+        prev = {}
     last_success_at = prev.get("last_success_at", "")
     if status_value in {"ok", "sem_novidade"} and not last_error:
         last_success_at = now_br_datetime()
-    status["scraper"] = {
+    merge_component_status_file(STATUS_RUNTIME_FILE, "scraper", {
         "last_started_at": prev.get("last_started_at", ""),
         "last_finished_at": now_br_datetime(),
         "last_success_at": last_success_at,
@@ -792,8 +780,7 @@ def status_scraper_finish(summary: str, status_value: str, offers_seen: int, new
         "new_offers": new_offers,
         "pending_count": pending_count,
         "last_error": last_error,
-    }
-    save_json(STATUS_RUNTIME_FILE, status)
+    }, logger=log)
 
 
 def parse_offers(html: str) -> List[Dict[str, Any]]:
