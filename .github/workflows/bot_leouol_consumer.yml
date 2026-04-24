@@ -120,7 +120,8 @@ PY
       - name: push com retry
         if: success()
         run: |
-          if git diff --quiet HEAD~1 HEAD 2>/dev/null; then
+          git fetch origin main
+          if git diff --quiet origin/main..HEAD; then
             echo "nenhum commit novo para enviar"
             exit 0
           fi
@@ -135,6 +136,9 @@ PY
               sleep 2
               continue
             }
+
+            echo "HEAD local: $(git rev-parse HEAD)"
+            echo "origin/main: $(git rev-parse origin/main)"
 
             if git push origin HEAD:main; then
               echo "push concluído"
