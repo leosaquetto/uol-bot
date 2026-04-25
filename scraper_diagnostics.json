@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-25T18:34:27.507824Z",
+  "updated_at": "2026-04-25T19:06:51.342384Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,17 +7,11 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "historico": 26,
-    "pending": 22,
+    "historico": 27,
+    "pending": 21,
     "dedupe": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS:25/04 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppn-2-ingressos-25-04-teatro-liberdade-sp",
-      "reason": "pending",
-      "trace_id": "trace_ppn-2-ingressos-25-04-teatro-liberdade-sp"
-    },
     {
       "title": "Dia das Mães com 15% OFF + brinde!",
       "link": "https://clube.uol.com.br/oceane/ppi-dia-das-mes-com-15-off-brinde",
@@ -299,6 +293,12 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
       "reason": "historico",
       "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - BA",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
+      "reason": "historico",
+      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
     }
   ]
 }
