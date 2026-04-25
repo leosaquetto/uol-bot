@@ -1,17 +1,23 @@
 {
-  "updated_at": "2026-04-25T16:31:56.302965Z",
+  "updated_at": "2026-04-25T16:34:24.000267Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "historico": 34,
-    "pending": 13,
+    "pending": 14,
     "dedupe": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS:25/04 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppn-2-ingressos-25-04-teatro-liberdade-sp",
+      "reason": "pending",
+      "trace_id": "trace_ppn-2-ingressos-25-04-teatro-liberdade-sp"
+    },
     {
       "title": "Dia das Mães com 15% OFF + brinde!",
       "link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
