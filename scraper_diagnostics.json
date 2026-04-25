@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-25T17:27:03.791901Z",
+  "updated_at": "2026-04-25T17:32:02.343225Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,8 +7,8 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "historico": 26,
-    "pending": 22,
+    "historico": 34,
+    "pending": 14,
     "dedupe": 0
   },
   "discarded_offers": [
@@ -20,27 +20,27 @@
     },
     {
       "title": "Dia das Mães com 15% OFF + brinde!",
-      "link": "https://clube.uol.com.br/oceane/ppi-dia-das-mes-com-15-off-brinde",
+      "link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
       "reason": "pending",
-      "trace_id": "trace_ppi-dia-das-mes-com-15-off-brinde"
+      "trace_id": "trace_ppi-dia-das-maes-com-15-off-brinde"
     },
     {
       "title": "Especial de Dia das Mães com 12% OFF",
-      "link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-mes-com-12-off",
+      "link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-maes-com-12-off",
       "reason": "pending",
-      "trace_id": "trace_pph-especial-de-dia-das-mes-com-12-off"
+      "trace_id": "trace_pph-especial-de-dia-das-maes-com-12-off"
     },
     {
       "title": "Dia das Mães Puket com 10% OFF",
-      "link": "https://clube.uol.com.br/puket/ppg-dia-das-mes-puket-com-10-off",
+      "link": "https://clube.uol.com.br/puket/ppg-dia-das-maes-puket-com-10-off",
       "reason": "pending",
-      "trace_id": "trace_ppg-dia-das-mes-puket-com-10-off"
+      "trace_id": "trace_ppg-dia-das-maes-puket-com-10-off"
     },
     {
       "title": "Presenteie com 10% OFF no Dia das Mães",
-      "link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-mes",
+      "link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-maes",
       "reason": "pending",
-      "trace_id": "trace_ppf-presenteie-com-10-off-no-dia-das-mes"
+      "trace_id": "trace_ppf-presenteie-com-10-off-no-dia-das-maes"
     },
     {
       "title": "39% OFF na Caixa Angel Tabletes",
@@ -50,9 +50,9 @@
     },
     {
       "title": "Dia das Mães com 15% OFF",
-      "link": "https://clube.uol.com.br/gocase/ppd-dia-das-mes-com-15-off",
+      "link": "https://clube.uol.com.br/gocase/ppd-dia-das-maes-com-15-off",
       "reason": "pending",
-      "trace_id": "trace_ppd-dia-das-mes-com-15-off"
+      "trace_id": "trace_ppd-dia-das-maes-com-15-off"
     },
     {
       "title": "36% OFF na Lata de Biscoitos Sortidos",
@@ -62,9 +62,9 @@
     },
     {
       "title": "Dia das Mães com 25% OFF",
-      "link": "https://clube.uol.com.br/hering/ppb-dia-das-mes-com-25-off",
+      "link": "https://clube.uol.com.br/hering/ppb-dia-das-maes-com-25-off",
       "reason": "pending",
-      "trace_id": "trace_ppb-dia-das-mes-com-25-off"
+      "trace_id": "trace_ppb-dia-das-maes-com-25-off"
     },
     {
       "title": "37% OFF na Caixa de Bombons Sortidos",
@@ -92,9 +92,9 @@
     },
     {
       "title": "50% OFF em até 4 ingressos",
-      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
+      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-ate-4-ingressos",
       "reason": "historico",
-      "trace_id": "trace_pog-50-off-em-at-4-ingressos"
+      "trace_id": "trace_pog-50-off-em-ate-4-ingressos"
     },
     {
       "title": "10% OFF no site oficial",
@@ -128,39 +128,39 @@
     },
     {
       "title": "Ofertas de última hora: 25% OFF extra!",
-      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ltima-hora-25-off-extra",
-      "reason": "pending",
-      "trace_id": "trace_pok-ofertas-de-ltima-hora-25-off-extra"
+      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
+      "reason": "historico",
+      "trace_id": "trace_pok-ofertas-de-ultima-hora-25-off-extra"
     },
     {
       "title": "40% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-seleo-feminina",
-      "reason": "pending",
-      "trace_id": "trace_poh-40-off-extra-em-seleo-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
+      "reason": "historico",
+      "trace_id": "trace_poh-40-off-extra-em-selecao-feminina"
     },
     {
       "title": "30% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-seleo-feminina",
-      "reason": "pending",
-      "trace_id": "trace_pog-30-off-extra-em-seleo-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
+      "reason": "historico",
+      "trace_id": "trace_pog-30-off-extra-em-selecao-feminina"
     },
     {
       "title": "30% OFF em seleção de jeans feminino",
-      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-seleo-de-jeans-feminino",
-      "reason": "pending",
-      "trace_id": "trace_poe-30-off-em-seleo-de-jeans-feminino"
+      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
+      "reason": "historico",
+      "trace_id": "trace_poe-30-off-em-selecao-de-jeans-feminino"
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/net_shoes/pob-at-75-off-para-compras-no-site",
-      "reason": "pending",
-      "trace_id": "trace_pob-at-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_pob-ate-75-off-para-compras-no-site"
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/zattini/poa-at-75-off-para-compras-no-site",
-      "reason": "pending",
-      "trace_id": "trace_poa-at-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/zattini/poa-ate-75-off-para-compras-no-site",
+      "reason": "historico",
+      "trace_id": "trace_poa-ate-75-off-para-compras-no-site"
     },
     {
       "title": "15% OFF para compras no site",
@@ -182,9 +182,9 @@
     },
     {
       "title": "Até 12% OFF nas reservas",
-      "link": "https://clube.uol.com.br/movida/pnK-at-12-off-nas-reservas",
-      "reason": "pending",
-      "trace_id": "trace_pnk-at-12-off-nas-reservas"
+      "link": "https://clube.uol.com.br/movida/pnK-ate-12-off-nas-reservas",
+      "reason": "historico",
+      "trace_id": "trace_pnk-ate-12-off-nas-reservas"
     },
     {
       "title": "50% OFF no Kit 3 Mini Books",
@@ -194,9 +194,9 @@
     },
     {
       "title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-ms-grtis",
-      "reason": "pending",
-      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-ms-grtis"
+      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-imas-gratis",
+      "reason": "historico",
+      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-imas-gratis"
     },
     {
       "title": "Aproveite 15% OFF em viagens",
@@ -218,15 +218,15 @@
     },
     {
       "title": "2 cervejas pelo preço de 1",
-      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preo-de-1",
-      "reason": "pending",
-      "trace_id": "trace_pnx-2-cervejas-pelo-preo-1"
+      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
+      "reason": "historico",
+      "trace_id": "trace_pnx-2-cervejas-pelo-preco-1"
     },
     {
       "title": "30% OFF em Pós Graduação de Medicina",
-      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
-      "reason": "historico",
-      "trace_id": "trace_pnu-30-off-em-ps-graduao-de-medicina"
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
+      "reason": "pending",
+      "trace_id": "trace_pnu-30-off-em-pos-graduacao-de-medicina"
     },
     {
       "title": "50% OFF no par de ingressos",
