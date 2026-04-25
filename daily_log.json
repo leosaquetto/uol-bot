@@ -1,11 +1,11 @@
 {
   "date": "24/04/2026",
-  "message_id": 1505,
+  "message_id": 1506,
   "previous_message_id": null,
   "last_success_check": "",
   "last_new_offer_at": "23/04/2026 às 14:35",
   "pending_count": 14,
-  "last_consumer_run": "24/04/2026 às 21:08",
+  "last_consumer_run": "24/04/2026 às 22:02",
   "sold_out_edited_today": 0,
   "lines": [
     "[21:02] consumer: ▶️ processando 15 ofertas",
@@ -16,6 +16,9 @@
     "[21:02] consumer: ⛔ lote suspeito bloqueado: 14 elegíveis após filtro",
     "[21:07] consumer: ▶️ processando 15 ofertas",
     "[21:08] consumer: 🧹 filtradas 1 duplicadas | 0 antigas | 0 sem scraped_at",
-    "[21:08] consumer: ⛔ lote suspeito bloqueado: 14 elegíveis após filtro"
+    "[21:08] consumer: ⛔ lote suspeito bloqueado: 14 elegíveis após filtro",
+    "[22:02] consumer: ▶️ processando 15 ofertas",
+    "[22:02] consumer: 🧹 filtradas 1 duplicadas | 0 antigas | 0 sem scraped_at",
+    "[22:02] consumer: ⛔ lote suspeito bloqueado: 14 elegíveis após filtro"
   ]
 }
