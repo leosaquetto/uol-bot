@@ -1685,13 +1685,9 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
     )
 
     img_url = (offer.get("img_url") or "").strip()
-    partner_img_url = (offer.get("partner_img_url") or "").strip()
-
     candidates = []
     if img_url and not is_bad_offer_image_url(img_url):
         candidates.append(("img_url", img_url))
-    if partner_img_url and not is_bad_offer_image_url(partner_img_url):
-        candidates.append(("partner_img_url", partner_img_url))
 
     tags = build_smart_hashtags(title, description, link)
     silent = should_send_silent(tags)
@@ -1742,59 +1738,30 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
     reply_target = discussion_message_id
     events = []
 
-    media_items = []
-
-    offer_img_url = (offer.get("img_url") or "").strip()
-    if offer_img_url and not is_bad_offer_image_url(offer_img_url):
-        img = download_image_bytes(offer_img_url)
-        if img:
-            media_items.append(img)
-        else:
-            events.append("foto da oferta indisponível")
-
     partner_img_url = (offer.get("partner_img_url") or "").strip()
     if partner_img_url and not is_bad_offer_image_url(partner_img_url):
         img = download_image_bytes(partner_img_url)
         if img:
-            media_items.append(img)
+            image_bytes, ext = img
+            try:
+                resp = send_photo_bytes(
+                    GRUPO_COMENTARIO_ID,
+                    image_bytes,
+                    ext,
+                    caption=None,
+                    disable_notification=True,
+                    reply_to_message_id=reply_target,
+                )
+                if resp.ok:
+                    events.append("foto do parceiro enviada")
+                else:
+                    log(f"foto do parceiro falhou: {resp.text}")
+                    events.append("foto do parceiro falhou")
+            except Exception as e:
+                log(f"foto do parceiro exception: {e}")
+                events.append("foto do parceiro exception")
         else:
             events.append("foto do parceiro indisponível")
-
-    if len(media_items) >= 2:
-        try:
-            resp = send_media_group_bytes(
-                GRUPO_COMENTARIO_ID,
-                media_items[:2],
-                disable_notification=True,
-                reply_to_message_id=reply_target,
-            )
-            if resp.ok:
-                events.append("álbum com oferta + parceiro enviado")
-            else:
-                log(f"álbum falhou: {resp.text}")
-                events.append("álbum falhou")
-        except Exception as e:
-            log(f"álbum exception: {e}")
-            events.append("álbum exception")
-    elif len(media_items) == 1:
-        image_bytes, ext = media_items[0]
-        try:
-            resp = send_photo_bytes(
-                GRUPO_COMENTARIO_ID,
-                image_bytes,
-                ext,
-                caption=None,
-                disable_notification=True,
-                reply_to_message_id=reply_target,
-            )
-            if resp.ok:
-                events.append("foto única enviada")
-            else:
-                log(f"foto única falhou: {resp.text}")
-                events.append("foto única falhou")
-        except Exception as e:
-            log(f"foto única exception: {e}")
-            events.append("foto única exception")
 
     text = build_comment_text(title, description, validity, link)
     try:
@@ -2063,6 +2030,35 @@ def consume_pending() -> int:
             dedupe_key = canonical_key(offer.get("dedupe_key") or build_dedupe_key(title, validity, description))
             loose_dedupe_key = canonical_key(offer.get("loose_dedupe_key") or "")
 
+            latest_history = load_history()
+            history_ids.update(latest_history.get("ids", []))
+            history_dedupe.update(latest_history.get("dedupe_keys", []))
+            history_loose.update(latest_history.get("loose_dedupe_keys", []))
+
+            latest_snapshot_live = safe_json_load(Path(LATEST_FILE), {"last_update": None, "offers": []})
+            sent_indexes_live = build_sent_indexes(latest_history, latest_snapshot_live)
+            sent_indexes_live["ids"].update(history_ids)
+            sent_indexes_live["dedupe_keys"].update(history_dedupe)
+            sent_indexes_live["loose_dedupe_keys"].update(history_loose)
+
+            skip_live, reason_live = should_skip_pending_offer(
+                offer=offer,
+                sent_indexes=sent_indexes_live,
+                now_utc=now_utc,
+                round_started_at=pending_last_update,
+                backlog_size=len(offers),
+            )
+            if skip_live and reason_live in {
+                "id_duplicado",
+                "link_duplicado",
+                "dedupe_duplicado",
+                "loose_dedupe_duplicado",
+                "title_validity_duplicado",
+            }:
+                append_pipeline_audit("bot.skip_live_duplicate", trace_id, {"title": title, "reason": reason_live})
+                log(f"oferta duplicada detectada em checagem live, removendo do pending: {title} ({reason_live})")
+                continue
+
             if (
                 offer_id in history_ids
                 or (dedupe_key and dedupe_key in history_dedupe)
@@ -2119,6 +2115,7 @@ def consume_pending() -> int:
                 history_dedupe.add(dedupe_key)
             if loose_dedupe_key:
                 history_loose.add(loose_dedupe_key)
+            save_history(history)
 
             append_dashboard_line("consumer", f"✅ enviada: {title[:80]}")
             log(f"oferta enviada com sucesso: {title}")
