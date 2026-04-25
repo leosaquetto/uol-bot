@@ -1,17 +1,6 @@
 name: BOT LEOUOL - Consumer
 
 on:
-  push:
-    paths:
-      - pending_offers.json
-      - bot_leouol.py
-      - latest_offers.json
-      - historico_leouol.json
-      - daily_log.json
-      - status_runtime.json
-      - .github/workflows/bot_leouol_consumer.yml
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
