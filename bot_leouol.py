@@ -47,6 +47,7 @@ DISCUSSION_WAIT_ATTEMPTS = 3
 DISCUSSION_WAIT_SLEEP_SECONDS = 2
 MAX_PENDING_AGE_HOURS = max(1, int(str(os.environ.get("MAX_PENDING_AGE_HOURS") or "6").strip() or "6"))
 MAX_CONSUMER_BATCH = max(1, int(str(os.environ.get("MAX_CONSUMER_BATCH") or "8").strip() or "8"))
+MAX_VALID_FROM_AGE_HOURS = max(1, int(str(os.environ.get("MAX_VALID_FROM_AGE_HOURS") or "36").strip() or "36"))
 
 HASHTAG_RULES_BODY = {
     "#ingresso": ["ingresso", "ingressos"],
@@ -389,6 +390,22 @@ def parse_utc_datetime(value: Optional[str]) -> Optional[datetime]:
         return None
 
 
+def parse_validity_start(value: Optional[str]) -> Optional[datetime]:
+    raw = clean_multiline_text(value or "")
+    if not raw:
+        return None
+
+    match = re.search(r"v[aá]lido\s+de\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})", raw, flags=re.IGNORECASE)
+    if not match:
+        return None
+    start_raw = match.group(1).strip()
+    try:
+        dt_local = datetime.strptime(start_raw, "%d/%m/%Y %H:%M").replace(tzinfo=BR_TZ)
+        return dt_local.astimezone(timezone.utc)
+    except Exception:
+        return None
+
+
 def build_sent_indexes(history: Dict, latest: Dict) -> Dict[str, Set[str]]:
     indexes: Dict[str, Set[str]] = {
         "ids": set(),
@@ -469,7 +486,12 @@ def should_skip_pending_offer(
             return True, reason
 
     scraped_at = parse_utc_datetime(offer.get("scraped_at"))
-    if scraped_at:
+    valid_from = parse_validity_start(offer.get("validity"))
+    if valid_from:
+        age_hours = (now_utc - valid_from).total_seconds() / 3600
+        if age_hours > MAX_VALID_FROM_AGE_HOURS:
+            return True, "validade_antiga"
+    elif scraped_at:
         age_hours = (now_utc - scraped_at).total_seconds() / 3600
         if age_hours > MAX_PENDING_AGE_HOURS:
             return True, "idade_excedida"
@@ -1978,7 +2000,8 @@ def consume_pending() -> int:
 
     eligible_offers: List[Dict] = []
     duplicate_removed = 0
-    age_removed = 0
+    scraped_age_removed = 0
+    validity_age_removed = 0
     missing_scraped_removed = 0
     for offer in offers:
         skip, reason = should_skip_pending_offer(
@@ -1990,7 +2013,9 @@ def consume_pending() -> int:
         )
         if skip:
             if reason == "idade_excedida":
-                age_removed += 1
+                scraped_age_removed += 1
+            elif reason == "validade_antiga":
+                validity_age_removed += 1
             elif reason == "sem_scraped_at_em_backlog":
                 missing_scraped_removed += 1
             else:
@@ -1998,34 +2023,26 @@ def consume_pending() -> int:
             continue
         eligible_offers.append(offer)
 
-    remaining = list(eligible_offers)
-    if duplicate_removed or age_removed or missing_scraped_removed:
+    if duplicate_removed or scraped_age_removed or validity_age_removed or missing_scraped_removed:
         append_dashboard_line(
             "consumer",
             (
                 f"🧹 filtradas {duplicate_removed} duplicadas | "
-                f"{age_removed} antigas | {missing_scraped_removed} sem scraped_at"
+                f"{scraped_age_removed} por scraped_at | {validity_age_removed} por validade antiga | "
+                f"{missing_scraped_removed} sem scraped_at"
             ),
         )
 
-    if len(eligible_offers) > MAX_CONSUMER_BATCH:
-        save_pending(remaining)
-        set_dashboard_pending_count(len(remaining))
-        set_dashboard_last_consumer_run()
-        summary = f"lote suspeito bloqueado: {len(eligible_offers)} elegíveis após filtro"
-        status_consumer_finish(
-            summary=summary,
-            processed=0,
-            sent=0,
-            failed=0,
-            pending_count=len(remaining),
-            status_value="bloqueado_backlog",
-            last_error=f"bloqueado por MAX_CONSUMER_BATCH={MAX_CONSUMER_BATCH}",
+    offers_to_process = eligible_offers[:MAX_CONSUMER_BATCH]
+    deferred_offers = eligible_offers[MAX_CONSUMER_BATCH:]
+    deferred_count = len(deferred_offers)
+    if deferred_count > 0:
+        append_dashboard_line(
+            "consumer",
+            f"⏳ adiadas {deferred_count} oferta(s) para próximas rodadas (limite {MAX_CONSUMER_BATCH})",
         )
-        append_dashboard_line("consumer", f"⛔ {summary}")
-        return 0
 
-    remaining = []
+    remaining = list(deferred_offers)
     processed = 0
     sent = 0
     failed = 0
@@ -2035,7 +2052,7 @@ def consume_pending() -> int:
     history_loose = set(history.get("loose_dedupe_keys", []))
 
     try:
-        for idx, offer in enumerate(eligible_offers, 1):
+        for idx, offer in enumerate(offers_to_process, 1):
             processed += 1
 
             offer_id = normalize_offer_key(offer.get("id") or offer.get("link") or "")
@@ -2106,7 +2123,7 @@ def consume_pending() -> int:
             append_dashboard_line("consumer", f"✅ enviada: {title[:80]}")
             log(f"oferta enviada com sucesso: {title}")
 
-            if idx < len(eligible_offers):
+            if idx < len(offers_to_process):
                 time.sleep(BETWEEN_OFFERS_DELAY_SECONDS)
 
     except Exception as e:
@@ -2135,12 +2152,12 @@ def consume_pending() -> int:
     set_dashboard_pending_count(len(remaining))
     set_dashboard_last_consumer_run()
 
-    if sent > 0 and failed == 0:
+    if sent > 0 and failed == 0 and len(remaining) == 0:
         status_value = "ok"
         summary = f"{sent} enviada(s) com sucesso"
-    elif sent > 0 and failed > 0:
+    elif sent > 0 and (failed > 0 or len(remaining) > 0):
         status_value = "parcial"
-        summary = f"{sent} enviada(s), {failed} falha(s)"
+        summary = f"{sent} enviada(s), {failed} falha(s), {len(remaining)} pendente(s)"
     elif failed > 0:
         status_value = "erro"
         summary = f"nenhuma enviada, {failed} falha(s)"
@@ -2161,9 +2178,12 @@ def consume_pending() -> int:
     append_dashboard_line(
         "consumer",
         (
-            f"{'✅' if sent > 0 else '⚠️'} filtradas {duplicate_removed + age_removed + missing_scraped_removed} "
-            f"(dup {duplicate_removed} / antigas {age_removed} / sem scraped_at {missing_scraped_removed}) | "
-            f"processadas {processed} | enviadas {sent} | falhas {failed} | pendentes {len(remaining)}"
+            f"{'✅' if sent > 0 else '⚠️'} filtradas "
+            f"{duplicate_removed + scraped_age_removed + validity_age_removed + missing_scraped_removed} "
+            f"(dup {duplicate_removed} / scraped_at {scraped_age_removed} / validade antiga {validity_age_removed} "
+            f"/ sem scraped_at {missing_scraped_removed}) | "
+            f"processadas {processed} | enviadas {sent} | falhas {failed} | adiadas {deferred_count} "
+            f"| pendentes {len(remaining)}"
         ),
     )
 
