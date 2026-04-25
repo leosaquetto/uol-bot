@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-04-25T03:13:28.113356Z",
+  "updated_at": "2026-04-25T03:18:06.881833Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "historico": 35,
-    "pending": 12,
+    "pending": 13,
     "dedupe": 0
   },
   "discarded_offers": [
@@ -215,6 +215,12 @@
       "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
       "reason": "historico",
       "trace_id": "trace_pnx-2-cervejas-pelo-preco-1"
+    },
+    {
+      "title": "30% OFF em Pós Graduação de Medicina",
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
+      "reason": "pending",
+      "trace_id": "trace_pnu-30-off-em-pos-graduacao-de-medicina"
     },
     {
       "title": "50% OFF no par de ingressos",
