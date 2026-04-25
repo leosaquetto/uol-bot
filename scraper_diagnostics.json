@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-04-25T16:04:05.151289Z",
+  "updated_at": "2026-04-25T16:31:56.302965Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "historico": 35,
+    "historico": 34,
     "pending": 13,
     "dedupe": 0
   },
@@ -293,12 +293,6 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
       "reason": "historico",
       "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - BA",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
-      "reason": "historico",
-      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
     }
   ]
 }
