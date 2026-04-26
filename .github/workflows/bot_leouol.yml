@@ -6,14 +6,10 @@ on:
     paths:
       - snapshots/**
       - github_scraper.py
-      - pending_offers.json
-      - scraper_diagnostics.json
-      - historico_leouol.json
-      - latest_offers.json
-      - daily_log.json
-      - status_runtime.json
-      - snapshots_control.json
       - requirements.txt
+      - requirements-consumer.txt
+      - bot_leouol.py
+      - status_runtime_utils.py
       - .github/workflows/bot_leouol.yml
   schedule:
     - cron: "*/5 * * * *"
@@ -28,6 +24,9 @@ concurrency:
 
 jobs:
   buscar-ofertas:
+    if: >
+      github.event_name != 'push' ||
+      !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
