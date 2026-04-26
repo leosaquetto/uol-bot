@@ -9,7 +9,7 @@ import re
 import sys
 import time
 import unicodedata
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from html import unescape
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
@@ -759,13 +759,27 @@ def status_consumer_finish(
     }, logger=log)
 
 
-def build_pipeline_flow_summary(limit: int = 8) -> List[str]:
+def _parse_utc_iso(value: str) -> Optional[datetime]:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        return datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(timezone.utc)
+    except Exception:
+        return None
+
+
+def build_pipeline_flow_summary(limit: int = 5) -> List[str]:
     path = Path(PIPELINE_AUDIT_FILE)
     if not path.exists():
         return []
 
-    tracked_stages = {"mac.capture", "github.candidate", "bot.send_success"}
+    tracked_stages = {"mac.capture", "github.candidate", "bot.send_success", "github.discard", "bot.discard"}
     trace_last_event: Dict[str, Dict] = {}
+    now_utc = datetime.now(timezone.utc)
+    now_local = now_utc.astimezone(BR_TZ)
+    local_today = now_local.date()
+    max_age = timedelta(hours=24)
 
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
@@ -788,28 +802,48 @@ def build_pipeline_flow_summary(limit: int = 8) -> List[str]:
         if not trace_id or stage not in tracked_stages:
             continue
 
-        item = trace_last_event.setdefault(trace_id, {"captured": False, "pending": False, "sent": False, "ts": ""})
+        ts_raw = str(event.get("timestamp_utc") or "")
+        ts = _parse_utc_iso(ts_raw)
+        if not ts:
+            continue
+        ts_local = ts.astimezone(BR_TZ)
+        is_recent = (now_utc - ts) <= max_age or ts_local.date() == local_today
+        if not is_recent:
+            continue
+
+        item = trace_last_event.setdefault(trace_id, {"captured": False, "pending": False, "sent": False, "discarded": False, "ts": ""})
         if stage == "mac.capture":
             item["captured"] = True
         elif stage == "github.candidate":
             item["pending"] = True
         elif stage == "bot.send_success":
             item["sent"] = True
+        elif stage in {"github.discard", "bot.discard"}:
+            item["discarded"] = True
 
-        ts = str(event.get("timestamp_utc") or "")
-        if ts and ts >= str(item.get("ts") or ""):
-            item["ts"] = ts
+        if ts_raw and ts_raw >= str(item.get("ts") or ""):
+            item["ts"] = ts_raw
 
     if not trace_last_event:
         return []
 
-    ordered = sorted(trace_last_event.items(), key=lambda kv: str(kv[1].get("ts") or ""), reverse=True)[:max(1, int(limit))]
+    ordered = sorted(trace_last_event.items(), key=lambda kv: str(kv[1].get("ts") or ""), reverse=True)[:max(1, min(5, int(limit)))]
     out = []
     for trace_id, item in ordered:
-        c = "✅" if item.get("captured") else "◻️"
-        p = "✅" if item.get("pending") else "◻️"
-        e = "✅" if item.get("sent") else "◻️"
-        out.append(f"{trace_id}: {c} capturada -> {p} pending -> {e} enviada")
+        c = "✅ capturada" if item.get("captured") else "◻️ não capturada"
+        if item.get("discarded") and not item.get("pending"):
+            p = "🧹 filtrada/descartada"
+        else:
+            p = "✅ em pending" if item.get("pending") else "◻️ não entrou em pending"
+        e = "✅ enviada" if item.get("sent") else "◻️ não enviada"
+        out.extend(
+            [
+                f"• {trace_id}",
+                f"  captura: {c}",
+                f"  pending: {p}",
+                f"  envio: {e}",
+            ]
+        )
     return out
 
 
@@ -926,10 +960,11 @@ def build_dashboard_text(state: Dict) -> str:
     last_offer_title = str(global_status.get("last_offer_title") or "").strip() or "Não disponível"
     last_offer_at = str(global_status.get("last_offer_at") or state.get("last_new_offer_at") or "").strip() or "—"
     last_offer_link = str(global_status.get("last_offer_link") or "").strip()
+    last_mac_collect_at = str(scraper.get("last_success_at") or scriptable.get("last_success_at") or "").strip() or "—"
     pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
     sold_out_edited_today = int(state.get("sold_out_edited_today") or 0)
     recent_lines = [str(x).strip() for x in (state.get("lines") or []) if str(x).strip()][-5:]
-    pipeline_lines = build_pipeline_flow_summary(int(os.environ.get("PIPELINE_FLOW_LAST_N") or 6))
+    pipeline_lines = build_pipeline_flow_summary(int(os.environ.get("PIPELINE_FLOW_LAST_N") or 5))
 
     lines = [
         f"📊 <b>Monitor Clube Uol ({escape_html(now_br().strftime('%H:%M'))})</b>",
@@ -938,12 +973,13 @@ def build_dashboard_text(state: Dict) -> str:
         f"🍎 Scraper Mac {escape_html(component_line('scraper', scraper))}",
         f"📦 Consumer {escape_html(component_line('consumer', consumer))}",
         "",
-        f"🎯 Última captura 🕒 {escape_html(last_offer_at)}",
+        f"🎯 Última oferta enviada 🕒 {escape_html(last_offer_at)}",
         (
             f'↳ <a href="{escape_html(last_offer_link)}">{escape_html(last_offer_title)}</a>'
             if last_offer_link else
             f"↳ {escape_html(last_offer_title)}"
         ),
+        f"🛰️ Última coleta Mac 🕒 {escape_html(last_mac_collect_at)}",
         f"⏳ {escape_html(silence_since_text())}",
         "",
         f"📦 Fila de processamento: {escape_html(pending_label)}",
@@ -956,9 +992,11 @@ def build_dashboard_text(state: Dict) -> str:
         lines.extend(["", "📝 Últimos eventos:"])
         lines.extend([f"• {escape_html(item)}" for item in recent_lines])
 
+    lines.extend(["", "🔎 Fluxo recente:"])
     if pipeline_lines:
-        lines.extend(["", "🔎 Fluxo recente (capturada -> pending -> enviada):"])
-        lines.extend([f"• {escape_html(item)}" for item in pipeline_lines])
+        lines.extend([escape_html(item) for item in pipeline_lines])
+    elif pending_count == 0:
+        lines.append("sem fluxo pendente recente")
 
     return truncate_text("\n".join(lines), MAX_DASHBOARD_LENGTH)
 
@@ -1098,7 +1136,10 @@ def append_dashboard_line(source: str, status_line: str) -> None:
         }
 
     line = f"[{now_br_time()}] {source}: {status_line}"
-    state["lines"].append(line)
+    source_prefix = f"] {source}:"
+    filtered = [item for item in state.get("lines", []) if source_prefix not in str(item)]
+    filtered.append(line)
+    state["lines"] = filtered
     state["lines"] = state["lines"][-30:]
     sync_daily_dashboard(state)
 
@@ -1994,7 +2035,6 @@ def consume_pending() -> int:
         return 1
 
     status_consumer_start(len(offers))
-    append_dashboard_line("consumer", f"▶️ processando {len(offers)} ofertas")
     set_dashboard_pending_count(len(offers))
 
     history = load_history()
@@ -2010,6 +2050,8 @@ def consume_pending() -> int:
     validity_age_removed = 0
     missing_scraped_removed = 0
     for offer in offers:
+        trace_id = get_offer_trace_id(offer)
+        title = str(offer.get("title") or offer.get("preview_title") or "").strip()
         skip, reason = should_skip_pending_offer(
             offer=offer,
             sent_indexes=sent_indexes,
@@ -2018,6 +2060,7 @@ def consume_pending() -> int:
             backlog_size=len(offers),
         )
         if skip:
+            append_pipeline_audit("bot.discard", trace_id, {"title": title, "reason": reason})
             if reason == "idade_excedida":
                 scraped_age_removed += 1
             elif reason == "validade_antiga":
@@ -2029,24 +2072,9 @@ def consume_pending() -> int:
             continue
         eligible_offers.append(offer)
 
-    if duplicate_removed or scraped_age_removed or validity_age_removed or missing_scraped_removed:
-        append_dashboard_line(
-            "consumer",
-            (
-                f"🧹 filtradas {duplicate_removed} duplicadas | "
-                f"{scraped_age_removed} por scraped_at | {validity_age_removed} por validade antiga | "
-                f"{missing_scraped_removed} sem scraped_at"
-            ),
-        )
-
     offers_to_process = eligible_offers[:MAX_CONSUMER_BATCH]
     deferred_offers = eligible_offers[MAX_CONSUMER_BATCH:]
     deferred_count = len(deferred_offers)
-    if deferred_count > 0:
-        append_dashboard_line(
-            "consumer",
-            f"⏳ adiadas {deferred_count} oferta(s) para próximas rodadas (limite {MAX_CONSUMER_BATCH})",
-        )
 
     remaining = list(deferred_offers)
     processed = 0
@@ -2139,7 +2167,6 @@ def consume_pending() -> int:
                 failed += 1
                 last_error = detail_main
                 remaining.append(offer)
-                append_dashboard_line("consumer", f"⚠️ falha principal: {title[:70]}")
                 log(f"oferta mantida no pending por falha total: {detail_main}")
                 continue
 
@@ -2158,7 +2185,6 @@ def consume_pending() -> int:
                 last_error = detail_comment
                 offer["comment_status"] = "failed"
                 offer["comment_error"] = detail_comment
-                append_dashboard_line("consumer", f"⚠️ comentário falhou (principal enviada): {title[:70]}")
                 log(f"comentário falhou, mas oferta principal foi enviada: {detail_comment}")
 
             update_main_offer_caption_with_comment_link(offer)
@@ -2177,7 +2203,6 @@ def consume_pending() -> int:
                 history_loose.add(loose_dedupe_key)
             save_history(history)
 
-            append_dashboard_line("consumer", f"✅ enviada: {title[:80]}")
             log(f"oferta enviada com sucesso: {title}")
 
             if idx < len(offers_to_process):
