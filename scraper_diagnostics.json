@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-26T23:10:15.404805Z",
+  "updated_at": "2026-04-26T23:10:42.334756Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,8 +7,8 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_antiga": 46,
-    "historico": 2,
+    "validade_antiga": 48,
+    "historico": 0,
     "latest": 0,
     "pending": 0,
     "dedupe": 0
@@ -131,7 +131,7 @@
     {
       "title": "Até 75% OFF para compras no site",
       "link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
-      "reason": "historico",
+      "reason": "validade_antiga",
       "trace_id": "trace_pob-ate-75-off-para-compras-no-site"
     },
     {
@@ -269,7 +269,7 @@
     {
       "title": "30% OFF na compra de ingresso - SP",
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
-      "reason": "historico",
+      "reason": "validade_antiga",
       "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
     },
     {
