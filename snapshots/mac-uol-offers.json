@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 48,
   "enriched_offers_count": 48,
-  "detail_ok_count": 48,
-  "detail_fail_count": 0,
+  "detail_ok_count": 46,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 48,
+    "complete": 46,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 127331,
-  "run_duration_seconds": 127.33,
-  "avg_detail_ms_per_offer": 2653,
-  "generated_at": "2026-04-26T06:20:12.039Z",
+  "run_duration_ms": 342510,
+  "run_duration_seconds": 342.51,
+  "avg_detail_ms_per_offer": 7136,
+  "generated_at": "2026-04-26T12:05:49.156Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -31,7 +31,7 @@
       "description": "Sobre o Parceiro: Não somos uma marca de beleza. Somos uma nova forma de comprar, consumir e pensar a beleza. Nascemos há mais de dez anos para trazer uma beleza espontânea, descomplicada, acessível, e claro, smart! Benefício: 15% de desconto + brinde na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras acima de R$249. Aplicável apenas para produtos selecionados. Oferta válida somente para a loja online. Não cumulativa com demais cupons. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Océane",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/3d7f43651a30a9075a4040159876a720.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130829,
-      "detail_elapsed_ms": 7277,
-      "scraped_at": "2026-04-26T06:18:42.060Z"
+      "detail_html_length": 130894,
+      "detail_elapsed_ms": 3857,
+      "scraped_at": "2026-04-26T12:00:40.582Z"
     },
     {
       "id": "pph-especial-de-dia-das-maes-com-12-off",
@@ -55,7 +55,7 @@
       "description": "Sobre o Parceiro: Nosso maior propósito é facilitar o acesso à moda, levando ao consumidor agilidade, qualidade e um valor justo. Benefício: 12% de desconto na coleção especial de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras acima de R$99. Aplicável apenas para produtos vendidos e entregues pela Riachuelo. Não cumulativo com outras promoções. Não válido para eletrônicos, eletro-portáteis e itens de beleza. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Riachuelo",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a25d71d110f30679ed8bc9b9637db7d7.jpg",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0f92af52d627ef7af3e346bbd3f41d9.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0f92af52d627ef7af3e346bbd3f41d9.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0f92af52d627ef7af3e346bbd3f41d9.png",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124654,
-      "detail_elapsed_ms": 2249,
-      "scraped_at": "2026-04-26T06:18:44.334Z"
+      "detail_html_length": 131039,
+      "detail_elapsed_ms": 3061,
+      "scraped_at": "2026-04-26T12:00:43.662Z"
     },
     {
       "id": "ppg-dia-das-maes-puket-com-10-off",
@@ -79,7 +79,7 @@
       "description": "Sobre o Parceiro: A Puket é uma marca especializada em meias, pijamas, acessórios e mais, para bebês, crianças e adultos. Benefício: 10% de desconto na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras no site com valor mínimo de R$200. Válido apenas para pedidos com frete Normal ou Rápido. Não acumulativo com demais promoções. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Puket",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d8a2ed8775889d543b6b57943ad5ee95.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112f5eeb706bf179f761f96aca694668.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112f5eeb706bf179f761f96aca694668.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112f5eeb706bf179f761f96aca694668.png",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124449,
-      "detail_elapsed_ms": 2164,
-      "scraped_at": "2026-04-26T06:18:46.498Z"
+      "detail_html_length": 130873,
+      "detail_elapsed_ms": 4471,
+      "scraped_at": "2026-04-26T12:00:48.138Z"
     },
     {
       "id": "ppf-presenteie-com-10-off-no-dia-das-maes",
@@ -103,7 +103,7 @@
       "description": "Sobre o Parceiro: A Imaginarium é uma renomada varejista brasileira especializada em produtos criativos e originais. Fundada em 1991, a empresa oferece uma vasta gama de itens, incluindo presentes, decoração e gadgets inovadores. Com um foco na criatividade e na personalização, a Imaginarium busca proporcionar experiências únicas aos seus clientes. Suas lojas, que combinam design moderno e um ambiente lúdico, são um verdadeiro convite à imaginação. A marca é conhecida por seus produtos que encantam pessoas de todas as idades, tornando a vida cotidiana mais especial e divertida. Benefício: 10% de desconto na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para itens vendidos e entregues pela Imaginarium. Não cumulativo com outras promoções. Disponível somente para a modalidade de entrega \"normal - site\". O cupom deve ser aplicado após a inclusão do CEP de entrega. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Imaginarium",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9090c2903c65204016e4c4464b44fc3e.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b76c2f3c3182cd21f24e1047d6a66b44.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b76c2f3c3182cd21f24e1047d6a66b44.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b76c2f3c3182cd21f24e1047d6a66b44.png",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130857,
-      "detail_elapsed_ms": 2549,
-      "scraped_at": "2026-04-26T06:18:49.047Z"
+      "detail_html_length": 132668,
+      "detail_elapsed_ms": 3016,
+      "scraped_at": "2026-04-26T12:00:51.156Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -127,7 +127,7 @@
       "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia das Mães: Garanta 39% de desconto em 1 Caixa Angel Tabletes 90g - De 32,99 por R$ 19,99. Sobre a Caixa Angel Tabletes 90g: A Caixa de Tabletes ao Leite é perfeita para tornar qualquer momento mais doce. Com três tabletes de chocolate ao leite de 30g cada, oferece uma experiência deliciosa e especial, ideal para presentear ou declarar carinho. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa Angel Tabletes 90g - De 32,99 por R$ 19,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 04/05/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
       "category": "Compras e Presentes",
       "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5b9f2700a86612a8e526a72498f56d5f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5b9f2700a86612a8e526a72498f56d5f.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5b9f2700a86612a8e526a72498f56d5f.png",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131372,
-      "detail_elapsed_ms": 1574,
-      "scraped_at": "2026-04-26T06:18:50.621Z"
+      "detail_html_length": 132563,
+      "detail_elapsed_ms": 2467,
+      "scraped_at": "2026-04-26T12:00:53.624Z"
     },
     {
       "id": "ppd-dia-das-maes-com-15-off",
@@ -151,7 +151,7 @@
       "description": "Sobre o Parceiro: Ter um produto Gocase com seu nome é a nossa maior paixão. Entregas para todo o Brasil. Dá uma olhadinha nos nossos produtos e personalize com seu nome. Felicidade Garantida! Vamos te ajudar. Personalize seus produtos. Benefício: 15% OFF Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Desconto não cumulativo com demais cupons promocionais. Válido para compras acima de R$300. Sujeito a desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Compras e Presentes",
       "partner_name": "GoCase",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/37104a846b2ed632825f3ed7205b080e.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/395f3ddcfb09449dda337f35783212e0.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/395f3ddcfb09449dda337f35783212e0.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/395f3ddcfb09449dda337f35783212e0.png",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130749,
-      "detail_elapsed_ms": 1844,
-      "scraped_at": "2026-04-26T06:18:52.465Z"
+      "detail_html_length": 130802,
+      "detail_elapsed_ms": 1536,
+      "scraped_at": "2026-04-26T12:00:55.160Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -175,7 +175,7 @@
       "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia das Mães: Garanta 36% de desconto em 1 Lata Biscoito Sortidos 265g - De 84,99 por R$ 53,99. Sobre a Lata Biscoito Sortidos 265g: A Lata de Biscoitos Tradicionais Sortidos é perfeita para quem aprecia biscoitos finos e crocantes, trazendo sofisticação e sabor para qualquer momento especial. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Lata Biscoito Sortidos 265g - De 84,99 por R$ 53,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 04/05/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
       "category": "Compras e Presentes",
       "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/274f90a7deac6348231cd01fa37af6e2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/274f90a7deac6348231cd01fa37af6e2.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/274f90a7deac6348231cd01fa37af6e2.png",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131392,
-      "detail_elapsed_ms": 1982,
-      "scraped_at": "2026-04-26T06:18:54.448Z"
+      "detail_html_length": 132593,
+      "detail_elapsed_ms": 1445,
+      "scraped_at": "2026-04-26T12:00:56.608Z"
     },
     {
       "id": "ppb-dia-das-maes-com-25-off",
@@ -199,7 +199,7 @@
       "description": "Sobre o Parceiro: Voltada para todos os públicos, a Hering tem se reinventado constantemente ao longo de sua história de mais de 140 anos, sem perder a tradição de ser reconhecida como a Básica do Brasil! Benefício: 25% de desconto na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. desconto de 25%. válido apenas para produtos selecionados da campanha de Dia das Mães. Não é aplicável em itens remarcados. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio. Valido Até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Hering",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-hering.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef88816c7d7d41560b02e3730950a6da.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef88816c7d7d41560b02e3730950a6da.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef88816c7d7d41560b02e3730950a6da.png",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130815,
-      "detail_elapsed_ms": 1948,
-      "scraped_at": "2026-04-26T06:18:56.396Z"
+      "detail_html_length": 130857,
+      "detail_elapsed_ms": 1441,
+      "scraped_at": "2026-04-26T12:00:58.049Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -223,7 +223,7 @@
       "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia das Mães: Garanta 37% de desconto em 1 Caixa de Bombons Sortidos 240g - De 74,99 por R$ 46,99. Sobre a Caixa de Bombons Sortidos 240g: A Caixa de Bombons Sortidos é perfeita para quem busca variedade e sabor em cada pedaço. Com uma seleção irresistível de bombons, oferece uma experiência completa para todos os gostos. Seja para presentear ou saborear em momentos especiais, esta caixa encanta com sabores equilibrados e textura cremosa. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa de Bombons Sortidos 240g - De 74,99 por R$ 46,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 04/05/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
       "category": "Compras e Presentes",
       "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f67c898f74dbd1d9c182469daf6d4dc6.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f67c898f74dbd1d9c182469daf6d4dc6.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f67c898f74dbd1d9c182469daf6d4dc6.png",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131539,
-      "detail_elapsed_ms": 1828,
-      "scraped_at": "2026-04-26T06:18:58.224Z"
+      "detail_html_length": 132741,
+      "detail_elapsed_ms": 1502,
+      "scraped_at": "2026-04-26T12:00:59.551Z"
     },
     {
       "id": "pox-2-ingressos-30-04-teatro-carlos-gomes",
@@ -247,7 +247,7 @@
       "description": "Assinante UOL, resgate 1 par de ingressos para AS CENTENÁRIAS – O MUSICAL e viva uma experiência emocionante e bem-humorada do teatro brasileiro contemporâneo no Teatro Municipal Carlos Gomes, no Rio de Janeiro. Data: Quinta - feira, 30/04 com sessões às 19h. Local: Teatro Municipal Carlos Gomes - Praça Tiradentes, Rio de Janeiro Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, setor ou assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE •Promoção válida por tempo limitado, enquanto durarem os estoques. •Benefício válido ao Assinante UOL pagante + 1 acompanhante. •Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. •O UOL não possui qualquer responsabilidade sobre a realização do evento. •Não é possível alterar ou substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69eadc0923021_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69eadc0923021_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69eadc0923021_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131403,
-      "detail_elapsed_ms": 1727,
-      "scraped_at": "2026-04-26T06:18:59.951Z"
+      "detail_html_length": 132594,
+      "detail_elapsed_ms": 1557,
+      "scraped_at": "2026-04-26T12:01:01.108Z"
     },
     {
       "id": "pog-50-off-em-ate-4-ingressos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131031,
-      "detail_elapsed_ms": 1958,
-      "scraped_at": "2026-04-26T06:19:01.909Z"
+      "detail_html_length": 132064,
+      "detail_elapsed_ms": 1664,
+      "scraped_at": "2026-04-26T12:01:02.772Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124052,
-      "detail_elapsed_ms": 1971,
-      "scraped_at": "2026-04-26T06:19:03.880Z"
+      "detail_html_length": 130664,
+      "detail_elapsed_ms": 3238,
+      "scraped_at": "2026-04-26T12:01:06.014Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -328,9 +328,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132996,
-      "detail_elapsed_ms": 2100,
-      "scraped_at": "2026-04-26T06:19:05.980Z"
+      "detail_html_length": 133017,
+      "detail_elapsed_ms": 1731,
+      "scraped_at": "2026-04-26T12:01:07.748Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -352,9 +352,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133104,
-      "detail_elapsed_ms": 2257,
-      "scraped_at": "2026-04-26T06:19:08.238Z"
+      "detail_html_length": 133146,
+      "detail_elapsed_ms": 2336,
+      "scraped_at": "2026-04-26T12:01:10.085Z"
     },
     {
       "id": "poy-30-cashback",
@@ -376,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124555,
-      "detail_elapsed_ms": 1896,
-      "scraped_at": "2026-04-26T06:19:10.134Z"
+      "detail_html_length": 131236,
+      "detail_elapsed_ms": 1441,
+      "scraped_at": "2026-04-26T12:01:11.526Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -400,9 +400,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131222,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-04-26T06:19:11.680Z"
+      "detail_html_length": 132422,
+      "detail_elapsed_ms": 1494,
+      "scraped_at": "2026-04-26T12:01:13.021Z"
     },
     {
       "id": "pok-ofertas-de-ultima-hora-25-off-extra",
@@ -424,9 +424,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126820,
-      "detail_elapsed_ms": 1775,
-      "scraped_at": "2026-04-26T06:19:13.455Z"
+      "detail_html_length": 133235,
+      "detail_elapsed_ms": 1750,
+      "scraped_at": "2026-04-26T12:01:14.774Z"
     },
     {
       "id": "poh-40-off-extra-em-selecao-feminina",
@@ -435,22 +435,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
       "title": "40% OFF extra em seleção feminina",
       "preview_title": "40% OFF extra em seleção feminina",
-      "validity": "Benefício válido de 16/04/2026 14:56 até 27/04/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 40% OFF em seleção feminina. Regras: Válido para produtos femininos selecionados no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129883,
-      "detail_elapsed_ms": 1985,
-      "scraped_at": "2026-04-26T06:19:15.440Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12257,
+      "scraped_at": "2026-04-26T12:03:33.774Z"
     },
     {
       "id": "pog-30-off-extra-em-selecao-feminina",
@@ -472,9 +472,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129884,
-      "detail_elapsed_ms": 1943,
-      "scraped_at": "2026-04-26T06:19:17.383Z"
+      "detail_html_length": 130997,
+      "detail_elapsed_ms": 1568,
+      "scraped_at": "2026-04-26T12:03:35.344Z"
     },
     {
       "id": "poe-30-off-em-selecao-de-jeans-feminino",
@@ -496,9 +496,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129833,
-      "detail_elapsed_ms": 1939,
-      "scraped_at": "2026-04-26T06:19:19.323Z"
+      "detail_html_length": 131130,
+      "detail_elapsed_ms": 1560,
+      "scraped_at": "2026-04-26T12:03:36.905Z"
     },
     {
       "id": "pob-ate-75-off-para-compras-no-site",
@@ -520,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124757,
-      "detail_elapsed_ms": 2534,
-      "scraped_at": "2026-04-26T06:19:21.857Z"
+      "detail_html_length": 131192,
+      "detail_elapsed_ms": 1527,
+      "scraped_at": "2026-04-26T12:03:38.432Z"
     },
     {
       "id": "poa-ate-75-off-para-compras-no-site",
@@ -544,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129656,
-      "detail_elapsed_ms": 2124,
-      "scraped_at": "2026-04-26T06:19:23.981Z"
+      "detail_html_length": 130867,
+      "detail_elapsed_ms": 1364,
+      "scraped_at": "2026-04-26T12:03:39.796Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -568,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130921,
-      "detail_elapsed_ms": 2041,
-      "scraped_at": "2026-04-26T06:19:26.022Z"
+      "detail_html_length": 130964,
+      "detail_elapsed_ms": 1442,
+      "scraped_at": "2026-04-26T12:03:41.238Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -592,9 +592,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130697,
-      "detail_elapsed_ms": 1767,
-      "scraped_at": "2026-04-26T06:19:27.789Z"
+      "detail_html_length": 130739,
+      "detail_elapsed_ms": 4543,
+      "scraped_at": "2026-04-26T12:03:45.790Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -616,9 +616,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129724,
-      "detail_elapsed_ms": 2012,
-      "scraped_at": "2026-04-26T06:19:29.801Z"
+      "detail_html_length": 131175,
+      "detail_elapsed_ms": 7017,
+      "scraped_at": "2026-04-26T12:03:52.827Z"
     },
     {
       "id": "pnk-ate-12-off-nas-reservas",
@@ -640,9 +640,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131735,
-      "detail_elapsed_ms": 1887,
-      "scraped_at": "2026-04-26T06:19:31.689Z"
+      "detail_html_length": 132926,
+      "detail_elapsed_ms": 6636,
+      "scraped_at": "2026-04-26T12:03:59.471Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -664,9 +664,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129924,
-      "detail_elapsed_ms": 1992,
-      "scraped_at": "2026-04-26T06:19:33.681Z"
+      "detail_html_length": 131125,
+      "detail_elapsed_ms": 1677,
+      "scraped_at": "2026-04-26T12:04:01.152Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
@@ -688,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131167,
-      "detail_elapsed_ms": 1964,
-      "scraped_at": "2026-04-26T06:19:35.645Z"
+      "detail_html_length": 131189,
+      "detail_elapsed_ms": 1525,
+      "scraped_at": "2026-04-26T12:04:02.678Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -712,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129503,
-      "detail_elapsed_ms": 1810,
-      "scraped_at": "2026-04-26T06:19:37.455Z"
+      "detail_html_length": 131510,
+      "detail_elapsed_ms": 1585,
+      "scraped_at": "2026-04-26T12:04:04.263Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -736,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129798,
-      "detail_elapsed_ms": 2152,
-      "scraped_at": "2026-04-26T06:19:39.608Z"
+      "detail_html_length": 131008,
+      "detail_elapsed_ms": 4364,
+      "scraped_at": "2026-04-26T12:04:08.627Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -760,9 +760,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132870,
-      "detail_elapsed_ms": 1797,
-      "scraped_at": "2026-04-26T06:19:41.405Z"
+      "detail_html_length": 139346,
+      "detail_elapsed_ms": 2242,
+      "scraped_at": "2026-04-26T12:04:10.878Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preco-1",
@@ -784,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131579,
-      "detail_elapsed_ms": 1949,
-      "scraped_at": "2026-04-26T06:19:43.354Z"
+      "detail_html_length": 131621,
+      "detail_elapsed_ms": 4501,
+      "scraped_at": "2026-04-26T12:04:15.389Z"
     },
     {
       "id": "pnu-30-off-em-pos-graduacao-de-medicina",
@@ -808,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133022,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-04-26T06:19:45.040Z"
+      "detail_html_length": 133047,
+      "detail_elapsed_ms": 2362,
+      "scraped_at": "2026-04-26T12:04:17.753Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -832,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131939,
-      "detail_elapsed_ms": 1709,
-      "scraped_at": "2026-04-26T06:19:46.749Z"
+      "detail_html_length": 131942,
+      "detail_elapsed_ms": 1600,
+      "scraped_at": "2026-04-26T12:04:19.353Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -856,9 +856,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131759,
-      "detail_elapsed_ms": 1831,
-      "scraped_at": "2026-04-26T06:19:48.580Z"
+      "detail_html_length": 131801,
+      "detail_elapsed_ms": 2092,
+      "scraped_at": "2026-04-26T12:04:21.451Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -867,22 +867,22 @@
       "original_link": "https://clube.uol.com.br/teatrojsafra/pnf-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 10/04/2026 11:42 até 13/06/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Espetáculo Um sim à vida, com Viviane Mosé. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo O espetáculo Um sim à vida, com Viviane Mosé e direção de Lee Taylor, relaciona a história da vida na Terra com a trajetória poética da vida de uma pessoa comum. De um lado, a imensidão do universo, a infinitude, de outro, a dor humana de existir em sua finitude, em sua solidão constitutiva. Ao mesmo tempo, relaciona dois discursos, o filosófico, de um lado, e, de outro, a narrativa poética de sua própria vida. FICHA TÉCNICA: Duração: 90 minutos Classificação: 14 anos SERVIÇO: Temporada: 12 e 13 de Junho de 2026 Apresentações: Sexta, 20h30, e Sábado, 20h",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro J. Safra",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90be4900b7fa3d30ec2294e7ff400a30.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90be4900b7fa3d30ec2294e7ff400a30.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90be4900b7fa3d30ec2294e7ff400a30.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130779,
-      "detail_elapsed_ms": 2279,
-      "scraped_at": "2026-04-26T06:19:50.859Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/teatrojsafra/pnf-50-off-no-par-de-ingressos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12056,
+      "scraped_at": "2026-04-26T12:05:16.153Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -904,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130753,
-      "detail_elapsed_ms": 2067,
-      "scraped_at": "2026-04-26T06:19:52.926Z"
+      "detail_html_length": 131886,
+      "detail_elapsed_ms": 1899,
+      "scraped_at": "2026-04-26T12:05:18.055Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -928,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132156,
-      "detail_elapsed_ms": 2036,
-      "scraped_at": "2026-04-26T06:19:54.962Z"
+      "detail_html_length": 132198,
+      "detail_elapsed_ms": 1892,
+      "scraped_at": "2026-04-26T12:05:19.947Z"
     },
     {
       "id": "pmw-50-off-no-par-de-ingressos",
@@ -952,9 +952,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132211,
-      "detail_elapsed_ms": 1634,
-      "scraped_at": "2026-04-26T06:19:56.596Z"
+      "detail_html_length": 132264,
+      "detail_elapsed_ms": 1666,
+      "scraped_at": "2026-04-26T12:05:21.613Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -976,9 +976,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132666,
-      "detail_elapsed_ms": 1749,
-      "scraped_at": "2026-04-26T06:19:58.345Z"
+      "detail_html_length": 132659,
+      "detail_elapsed_ms": 1528,
+      "scraped_at": "2026-04-26T12:05:23.142Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -1000,9 +1000,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133328,
-      "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-04-26T06:19:59.859Z"
+      "detail_html_length": 133320,
+      "detail_elapsed_ms": 1693,
+      "scraped_at": "2026-04-26T12:05:24.835Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -1024,9 +1024,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133966,
-      "detail_elapsed_ms": 1529,
-      "scraped_at": "2026-04-26T06:20:01.388Z"
+      "detail_html_length": 133967,
+      "detail_elapsed_ms": 1974,
+      "scraped_at": "2026-04-26T12:05:26.810Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -1048,9 +1048,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132308,
-      "detail_elapsed_ms": 1530,
-      "scraped_at": "2026-04-26T06:20:02.918Z"
+      "detail_html_length": 132619,
+      "detail_elapsed_ms": 6810,
+      "scraped_at": "2026-04-26T12:05:33.624Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -1072,9 +1072,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132054,
-      "detail_elapsed_ms": 1666,
-      "scraped_at": "2026-04-26T06:20:04.585Z"
+      "detail_html_length": 132047,
+      "detail_elapsed_ms": 2530,
+      "scraped_at": "2026-04-26T12:05:37.581Z"
     },
     {
       "id": "pmx-30-off-na-compra-de-ingresso-sp",
@@ -1096,9 +1096,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131998,
-      "detail_elapsed_ms": 1690,
-      "scraped_at": "2026-04-26T06:20:06.275Z"
+      "detail_html_length": 132020,
+      "detail_elapsed_ms": 5763,
+      "scraped_at": "2026-04-26T12:05:43.352Z"
     },
     {
       "id": "pmv-30-off-na-compra-de-ingresso-ba",
@@ -1120,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131910,
-      "detail_elapsed_ms": 1752,
-      "scraped_at": "2026-04-26T06:20:08.027Z"
+      "detail_html_length": 131942,
+      "detail_elapsed_ms": 1424,
+      "scraped_at": "2026-04-26T12:05:44.778Z"
     },
     {
       "id": "pmu-30-off-na-compra-de-ingresso-ce",
@@ -1144,9 +1144,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131928,
-      "detail_elapsed_ms": 1815,
-      "scraped_at": "2026-04-26T06:20:09.842Z"
+      "detail_html_length": 131950,
+      "detail_elapsed_ms": 2839,
+      "scraped_at": "2026-04-26T12:05:47.617Z"
     },
     {
       "id": "pmt-41-off-na-pos-graduacao",
@@ -1168,9 +1168,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130698,
-      "detail_elapsed_ms": 1921,
-      "scraped_at": "2026-04-26T06:20:11.763Z"
+      "detail_html_length": 130700,
+      "detail_elapsed_ms": 1452,
+      "scraped_at": "2026-04-26T12:05:49.069Z"
     }
   ]
 }
