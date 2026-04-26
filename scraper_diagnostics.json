@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-26T00:03:57.122968Z",
+  "updated_at": "2026-04-26T01:01:49.378013Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,8 +7,8 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "historico": 35,
-    "pending": 13,
+    "historico": 37,
+    "pending": 11,
     "dedupe": 0
   },
   "discarded_offers": [
@@ -71,18 +71,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/poX-2-ingressos-30-04-teatro-carlos-gomes",
       "reason": "pending",
       "trace_id": "trace_pox-2-ingressos-30-04-teatro-carlos-gomes"
-    },
-    {
-      "title": "2 INGRESSOS | 26/04 Teatro Carlos Gomes",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/poW-2-ingressos-26-04-teatro-carlos-gomes",
-      "reason": "pending",
-      "trace_id": "trace_pow-2-ingressos-26-04-teatro-carlos-gomes"
-    },
-    {
-      "title": "2 INGRESSOS | 25/04 Teatro Carlos Gomes",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/poV-2-ingressos-25-04-teatro-carlos-gomes",
-      "reason": "pending",
-      "trace_id": "trace_pov-2-ingressos-25-04-teatro-carlos-gomes"
     },
     {
       "title": "50% OFF em até 4 ingressos",
@@ -299,6 +287,18 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
       "reason": "historico",
       "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - CE",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
+      "reason": "historico",
+      "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce"
+    },
+    {
+      "title": "41% OFF na Pós-Graduação",
+      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
+      "reason": "historico",
+      "trace_id": "trace_pmt-41-off-na-pos-graduacao"
     }
   ]
 }
