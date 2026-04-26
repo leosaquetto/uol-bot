@@ -1669,7 +1669,7 @@ def wait_for_discussion_message_id(channel_message_id: int, attempts: int = DISC
     return None
 
 
-def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
+def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str, Optional[Dict]]:
     title = offer.get("title") or offer.get("preview_title") or "Oferta"
     description = offer.get("description") or ""
     validity = offer.get("validity")
@@ -1709,7 +1709,8 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
             )
             if resp.ok:
                 data = resp.json()
-                return True, data.get("result", {}).get("message_id"), f"sendPhoto ok via {label}"
+                result = data.get("result", {}) or {}
+                return True, result.get("message_id"), f"sendPhoto ok via {label}", result
             log(f"sendPhoto upload falhou via {label}: {resp.text}")
         except Exception as e:
             log(f"sendPhoto upload exception via {label}: {e}")
@@ -1722,21 +1723,52 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str]:
         )
         if resp.ok:
             data = resp.json()
-            return True, data.get("result", {}).get("message_id"), "fallback sendMessage ok"
-        return False, None, f"sendMessage falhou: {resp.text}"
+            result = data.get("result", {}) or {}
+            return True, result.get("message_id"), "fallback sendMessage ok", result
+        return False, None, f"sendMessage falhou: {resp.text}", None
     except Exception as e:
-        return False, None, f"sendMessage exception: {e}"
+        return False, None, f"sendMessage exception: {e}", None
 
 
-def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]:
+def extract_discussion_message_id(channel_result: Optional[Dict], channel_message_id: Optional[int]) -> Optional[int]:
+    if not isinstance(channel_result, dict):
+        return None
+
+    candidates = [
+        channel_result.get("message_thread_id"),
+        channel_result.get("forward_from_message_id"),
+    ]
+
+    reply_to = channel_result.get("reply_to_message")
+    if isinstance(reply_to, dict):
+        candidates.append(reply_to.get("message_id"))
+        candidates.append(reply_to.get("forward_from_message_id"))
+
+    for candidate in candidates:
+        if isinstance(candidate, int) and candidate > 0 and candidate != channel_message_id:
+            return candidate
+
+    return None
+
+
+def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Optional[Dict] = None) -> Tuple[bool, str]:
     title = offer.get("title") or offer.get("preview_title") or "Oferta"
     description = offer.get("description") or ""
     validity = offer.get("validity")
     link = offer.get("link") or offer.get("original_link") or ""
 
     discussion_message_id = wait_for_discussion_message_id(channel_message_id)
+    if not discussion_message_id:
+        discussion_message_id = extract_discussion_message_id(channel_result, channel_message_id)
     reply_target = discussion_message_id
     events = []
+
+    if not isinstance(reply_target, int) or reply_target <= 0:
+        msg = "comentário não enviado: discussion_message_id ausente"
+        log(msg)
+        offer["comment_status"] = "failed"
+        offer["comment_error"] = msg
+        return False, msg
 
     partner_img_url = (offer.get("partner_img_url") or "").strip()
     if partner_img_url and not is_bad_offer_image_url(partner_img_url):
@@ -1777,6 +1809,7 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
             if comment_message_id:
                 offer["comment_message_id"] = comment_message_id
                 offer["discussion_message_id"] = discussion_message_id
+                offer["comment_status"] = "sent"
                 offer["comment_link"] = build_comment_link(
                     GRUPO_COMENTARIO_ID,
                     comment_message_id,
@@ -1784,9 +1817,15 @@ def send_offer_comment(offer: Dict, channel_message_id: int) -> Tuple[bool, str]
                 )
             events.append("descrição completa enviada")
             return True, " | ".join(events)
-        return False, f"descrição completa falhou: {resp.text}"
+        error_msg = f"descrição completa falhou: {resp.text}"
+        offer["comment_status"] = "failed"
+        offer["comment_error"] = error_msg
+        return False, error_msg
     except Exception as e:
-        return False, f"descrição completa exception: {e}"
+        error_msg = f"descrição completa exception: {e}"
+        offer["comment_status"] = "failed"
+        offer["comment_error"] = error_msg
+        return False, error_msg
 
 
 def update_main_offer_caption_with_comment_link(offer: Dict) -> None:
@@ -2070,9 +2109,9 @@ def consume_pending() -> int:
 
             append_pipeline_audit("bot.send_main_start", trace_id, {"title": title})
             try:
-                ok_main, channel_message_id, detail_main = send_offer_main(offer)
+                ok_main, channel_message_id, detail_main, channel_result = send_offer_main(offer)
             except Exception as e:
-                ok_main, channel_message_id, detail_main = False, None, f"send_offer_main exception: {e}"
+                ok_main, channel_message_id, detail_main, channel_result = False, None, f"send_offer_main exception: {e}", None
 
             if not ok_main or not channel_message_id:
                 append_pipeline_audit("bot.send_main_fail", trace_id, {"detail": detail_main})
@@ -2088,7 +2127,7 @@ def consume_pending() -> int:
 
             append_pipeline_audit("bot.send_comment_start", trace_id, {"channel_message_id": channel_message_id})
             try:
-                ok_comment, detail_comment = send_offer_comment(offer, channel_message_id)
+                ok_comment, detail_comment = send_offer_comment(offer, channel_message_id, channel_result=channel_result)
             except Exception as e:
                 ok_comment, detail_comment = False, f"send_offer_comment exception: {e}"
 
@@ -2096,10 +2135,10 @@ def consume_pending() -> int:
                 append_pipeline_audit("bot.send_comment_fail", trace_id, {"detail": detail_comment})
                 failed += 1
                 last_error = detail_comment
-                remaining.append(offer)
-                append_dashboard_line("consumer", f"⚠️ falha comentário: {title[:70]}")
-                log(f"oferta mantida no pending por falha no comentário: {detail_comment}")
-                continue
+                offer["comment_status"] = "failed"
+                offer["comment_error"] = detail_comment
+                append_dashboard_line("consumer", f"⚠️ comentário falhou (principal enviada): {title[:70]}")
+                log(f"comentário falhou, mas oferta principal foi enviada: {detail_comment}")
 
             update_main_offer_caption_with_comment_link(offer)
 
