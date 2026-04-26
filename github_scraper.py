@@ -41,6 +41,7 @@ REQUEST_TIMEOUT = 30
 MAX_HISTORY_IDS = 1500
 MAX_HISTORY_DEDUPE = 1500
 MAX_HISTORY_LOOSE = 1500
+MAX_VALID_FROM_AGE_HOURS = max(1, int(str(os.environ.get("MAX_VALID_FROM_AGE_HOURS") or "36").strip() or "36"))
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
@@ -69,6 +70,20 @@ def now_br_datetime() -> str:
 
 def now_br_date() -> str:
     return now_br().strftime("%d/%m/%Y")
+
+
+def parse_validity_start(value: Optional[str]) -> Optional[datetime]:
+    raw = clean_text(value or "")
+    if not raw:
+        return None
+    match = re.search(r"v[aá]lido\s+de\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})", raw, flags=re.IGNORECASE)
+    if not match:
+        return None
+    try:
+        dt_local = datetime.strptime(match.group(1).strip(), "%d/%m/%Y %H:%M").replace(tzinfo=BR_TZ)
+        return dt_local.astimezone(timezone.utc)
+    except Exception:
+        return None
 
 
 def load_json(path: str, default: Any) -> Any:
@@ -1004,12 +1019,15 @@ def normalize_detail_payload(detail: Dict[str, Any], fallback_offer: Dict[str, A
     }
 
 
-def extract_history_sets(history_data: Dict[str, Any]) -> tuple[set, set, set]:
+def extract_history_sets(history_data: Dict[str, Any]) -> tuple[set, set, set, set]:
     ids = history_data.get("ids", [])
+    links = history_data.get("links", [])
     dedupe_keys = history_data.get("dedupe_keys", [])
     loose_dedupe_keys = history_data.get("loose_dedupe_keys", [])
     if not isinstance(ids, list):
         ids = []
+    if not isinstance(links, list):
+        links = []
     if not isinstance(dedupe_keys, list):
         dedupe_keys = []
     if not isinstance(loose_dedupe_keys, list):
@@ -1018,24 +1036,30 @@ def extract_history_sets(history_data: Dict[str, Any]) -> tuple[set, set, set]:
     id_set = set()
     for x in ids:
         id_set.update(slug_tail_variants(x))
+    link_set = set()
+    for x in links:
+        link_set.update(slug_tail_variants(x))
 
     dedupe_set = {str(x).strip() for x in dedupe_keys if str(x).strip()}
     loose_set = {str(x).strip() for x in loose_dedupe_keys if str(x).strip()}
-    return id_set, dedupe_set, loose_set
+    return id_set, link_set, dedupe_set, loose_set
 
 
-def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set, set]:
+def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set, set, set]:
     offers = pending_data.get("offers", [])
     if not isinstance(offers, list):
         offers = []
 
     id_set = set()
+    link_set = set()
     dedupe_set = set()
     loose_set = set()
 
     for o in offers:
-        for variant in slug_tail_variants(o.get("id") or o.get("link")):
+        for variant in slug_tail_variants(o.get("id")):
             id_set.add(variant)
+        for variant in slug_tail_variants(o.get("link") or o.get("original_link")):
+            link_set.add(variant)
 
         dedupe_key = str(o.get("dedupe_key") or "").strip()
         if not dedupe_key:
@@ -1056,7 +1080,47 @@ def extract_pending_sets(pending_data: Dict[str, Any]) -> tuple[set, set, set]:
         if loose_key:
             loose_set.add(loose_key)
 
-    return id_set, dedupe_set, loose_set
+    return id_set, link_set, dedupe_set, loose_set
+
+
+def extract_latest_sets(latest_data: Dict[str, Any]) -> tuple[set, set, set, set]:
+    offers = latest_data.get("offers", [])
+    if not isinstance(offers, list):
+        offers = []
+
+    id_set = set()
+    link_set = set()
+    dedupe_set = set()
+    loose_set = set()
+
+    for o in offers:
+        if not isinstance(o, dict):
+            continue
+        for variant in slug_tail_variants(o.get("id") or o.get("offer_id")):
+            id_set.add(variant)
+        for variant in slug_tail_variants(o.get("link") or o.get("original_link")):
+            link_set.add(variant)
+
+        dedupe_key = str(o.get("dedupe_key") or "").strip()
+        if not dedupe_key:
+            dedupe_key = build_dedupe_key(
+                title=o.get("title") or o.get("preview_title") or "",
+                validity=o.get("validity"),
+                description=o.get("description") or "",
+            )
+        if dedupe_key:
+            dedupe_set.add(dedupe_key)
+
+        loose_key = str(o.get("loose_dedupe_key") or "").strip()
+        if not loose_key:
+            loose_key = build_loose_dedupe_key(
+                title=o.get("title") or o.get("preview_title") or "",
+                description=o.get("description") or "",
+            )
+        if loose_key:
+            loose_set.add(loose_key)
+
+    return id_set, link_set, dedupe_set, loose_set
 
 
 def merge_offer_data(base_offer: Dict[str, Any], details: Dict[str, Any]) -> Dict[str, Any]:
@@ -1196,10 +1260,13 @@ def main() -> None:
     status_scraper_start()
 
     historico = load_json(HISTORY_FILE, {"ids": [], "dedupe_keys": [], "loose_dedupe_keys": []})
+    latest = load_json(LATEST_FILE, {"last_update": None, "offers": []})
     pending = load_json(PENDING_FILE, {"last_update": None, "offers": []})
+    now_utc = datetime.now(timezone.utc)
 
-    historico_keys, historico_dedupe, historico_loose = extract_history_sets(historico)
-    pending_keys, pending_dedupe, pending_loose = extract_pending_sets(pending)
+    historico_keys, historico_links, historico_dedupe, historico_loose = extract_history_sets(historico)
+    latest_keys, latest_links, latest_dedupe, latest_loose = extract_latest_sets(latest)
+    pending_keys, pending_links, pending_dedupe, pending_loose = extract_pending_sets(pending)
 
     snapshot_ids, snapshot_control = get_unprocessed_snapshot_ids()
     mac_meta = load_mac_snapshot_meta()
@@ -1298,7 +1365,14 @@ def main() -> None:
         merged_detail_lookup.update(lookup)
 
     dropped_incomplete = 0
-    discard_reasons: Dict[str, int] = {"incompleta": 0, "historico": 0, "pending": 0, "dedupe": 0}
+    discard_reasons: Dict[str, int] = {
+        "incompleta": 0,
+        "validade_antiga": 0,
+        "historico": 0,
+        "latest": 0,
+        "pending": 0,
+        "dedupe": 0,
+    }
     discarded_offers: List[Dict[str, str]] = []
 
     for offer in offers:
@@ -1334,10 +1408,20 @@ def main() -> None:
             continue
 
         offer_key = canonical_offer_key(normalized_offer.get("id") or normalized_offer.get("link") or "")
+        offer_link_key = canonical_offer_key(normalized_offer.get("link") or normalized_offer.get("original_link") or "")
         strict_key = str(normalized_offer.get("dedupe_key") or "").strip()
         loose_key = str(normalized_offer.get("loose_dedupe_key") or "").strip()
+        validity_start = parse_validity_start(normalized_offer.get("validity"))
 
-        if not offer_key and not strict_key and not loose_key:
+        if validity_start:
+            age_hours = (now_utc - validity_start).total_seconds() / 3600
+            if age_hours > MAX_VALID_FROM_AGE_HOURS:
+                discard_reasons["validade_antiga"] += 1
+                discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "validade_antiga", "trace_id": trace_id})
+                append_pipeline_audit("github.discard", trace_id, {"reason": "validade_antiga", "title": offer_title, "link": offer_link})
+                continue
+
+        if not offer_key and not offer_link_key and not strict_key and not loose_key:
             continue
 
         if offer_key and offer_key in seen_new_offer_keys:
@@ -1350,7 +1434,27 @@ def main() -> None:
             discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
             append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
             continue
+        if offer_key and offer_key in latest_keys:
+            discard_reasons["latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            continue
         if offer_key and offer_key in pending_keys:
+            discard_reasons["pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
+            continue
+        if offer_link_key and offer_link_key in historico_links:
+            discard_reasons["historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
+            continue
+        if offer_link_key and offer_link_key in latest_links:
+            discard_reasons["latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            continue
+        if offer_link_key and offer_link_key in pending_links:
             discard_reasons["pending"] += 1
             discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
             append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
@@ -1365,22 +1469,32 @@ def main() -> None:
             discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
             append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
             continue
+        if strict_key and strict_key in latest_dedupe:
+            discard_reasons["latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            continue
         if strict_key and strict_key in pending_dedupe:
             discard_reasons["pending"] += 1
             discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
             append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
             continue
-        if not offer_key and not strict_key and loose_key and loose_key in historico_loose:
+        if loose_key and loose_key in historico_loose:
             discard_reasons["historico"] += 1
             discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
             append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
             continue
-        if not offer_key and not strict_key and loose_key and loose_key in pending_loose:
+        if loose_key and loose_key in latest_loose:
+            discard_reasons["latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            continue
+        if loose_key and loose_key in pending_loose:
             discard_reasons["pending"] += 1
             discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
             append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
             continue
-        if not offer_key and not strict_key and loose_key and loose_key in seen_new_loose_keys:
+        if loose_key and loose_key in seen_new_loose_keys:
             discard_reasons["dedupe"] += 1
             discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "dedupe", "trace_id": trace_id})
             append_pipeline_audit("github.discard", trace_id, {"reason": "dedupe", "title": offer_title, "link": offer_link})
@@ -1388,6 +1502,8 @@ def main() -> None:
             
         if offer_key:
             seen_new_offer_keys.add(offer_key)
+        if offer_link_key:
+            seen_new_offer_keys.add(offer_link_key)
         if strict_key:
             seen_new_dedupe_keys.add(strict_key)
         if loose_key:
