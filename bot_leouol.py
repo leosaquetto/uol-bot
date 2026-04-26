@@ -2107,6 +2107,27 @@ def consume_pending() -> int:
                 log(f"oferta já está no histórico, removendo do pending: {title}")
                 continue
 
+            already_marked_as_sent = bool(
+                offer.get("channel_message_id")
+                or str(offer.get("channel_message_link") or "").strip()
+                or str(offer.get("comment_status") or "").strip().lower() == "sent"
+            )
+            if already_marked_as_sent:
+                append_pipeline_audit(
+                    "bot.skip_pending_already_sent_mark",
+                    trace_id,
+                    {"title": title},
+                )
+                log("pending já tinha marca de envio; removendo sem reenviar")
+                mark_offer_success(history, offer)
+                history_ids.add(offer_id)
+                if dedupe_key:
+                    history_dedupe.add(dedupe_key)
+                if loose_dedupe_key:
+                    history_loose.add(loose_dedupe_key)
+                save_history(history)
+                continue
+
             append_pipeline_audit("bot.send_main_start", trace_id, {"title": title})
             try:
                 ok_main, channel_message_id, detail_main, channel_result = send_offer_main(offer)
