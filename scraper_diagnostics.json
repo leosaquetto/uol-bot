@@ -1,17 +1,77 @@
 {
-  "updated_at": "2026-04-26T12:42:27.240847Z",
+  "updated_at": "2026-04-26T12:42:53.572172Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 10,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "historico": 38,
-    "pending": 0,
+    "pending": 10,
     "dedupe": 0
   },
   "discarded_offers": [
+    {
+      "title": "Dia das Mães com 15% OFF + brinde!",
+      "link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
+      "reason": "pending",
+      "trace_id": "trace_ppi-dia-das-maes-com-15-off-brinde"
+    },
+    {
+      "title": "Especial de Dia das Mães com 12% OFF",
+      "link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-maes-com-12-off",
+      "reason": "pending",
+      "trace_id": "trace_pph-especial-de-dia-das-maes-com-12-off"
+    },
+    {
+      "title": "Dia das Mães Puket com 10% OFF",
+      "link": "https://clube.uol.com.br/puket/ppg-dia-das-maes-puket-com-10-off",
+      "reason": "pending",
+      "trace_id": "trace_ppg-dia-das-maes-puket-com-10-off"
+    },
+    {
+      "title": "Presenteie com 10% OFF no Dia das Mães",
+      "link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-maes",
+      "reason": "pending",
+      "trace_id": "trace_ppf-presenteie-com-10-off-no-dia-das-maes"
+    },
+    {
+      "title": "39% OFF na Caixa Angel Tabletes",
+      "link": "https://clube.uol.com.br/cacaushow/ppe-39-off-na-caixa-angel-tabletes",
+      "reason": "pending",
+      "trace_id": "trace_ppe-39-off-na-caixa-angel-tabletes"
+    },
+    {
+      "title": "Dia das Mães com 15% OFF",
+      "link": "https://clube.uol.com.br/gocase/ppd-dia-das-maes-com-15-off",
+      "reason": "pending",
+      "trace_id": "trace_ppd-dia-das-maes-com-15-off"
+    },
+    {
+      "title": "36% OFF na Lata de Biscoitos Sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/ppc-36-off-na-lata-de-biscoitos-sortidos",
+      "reason": "pending",
+      "trace_id": "trace_ppc-36-off-na-lata-biscoitos-sortidos"
+    },
+    {
+      "title": "Dia das Mães com 25% OFF",
+      "link": "https://clube.uol.com.br/hering/ppb-dia-das-maes-com-25-off",
+      "reason": "pending",
+      "trace_id": "trace_ppb-dia-das-maes-com-25-off"
+    },
+    {
+      "title": "37% OFF na Caixa de Bombons Sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/poZ-37-off-na-caixa-de-bombons-sortidos",
+      "reason": "pending",
+      "trace_id": "trace_poz-37-off-na-caixa-bombons-sortidos"
+    },
+    {
+      "title": "2 INGRESSOS | 30/04 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/poX-2-ingressos-30-04-teatro-carlos-gomes",
+      "reason": "pending",
+      "trace_id": "trace_pox-2-ingressos-30-04-teatro-carlos-gomes"
+    },
     {
       "title": "50% OFF em até 4 ingressos",
       "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-ate-4-ingressos",
