@@ -1757,9 +1757,9 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
     validity = offer.get("validity")
     link = offer.get("link") or offer.get("original_link") or ""
 
-    discussion_message_id = extract_discussion_message_id(channel_result, channel_message_id)
+    discussion_message_id = wait_for_discussion_message_id(channel_message_id)
     if not discussion_message_id:
-        discussion_message_id = wait_for_discussion_message_id(channel_message_id)
+        discussion_message_id = extract_discussion_message_id(channel_result, channel_message_id)
     reply_target = discussion_message_id
     events = []
 
