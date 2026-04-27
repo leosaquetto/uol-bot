@@ -222,6 +222,63 @@ jobs:
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         run: python github_scraper.py
 
+      - name: diagnóstico pós-scraper (pending e status)
+        id: diag_after_scraper
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          pending_path = Path("pending_offers.json")
+          runtime_path = Path("status_runtime.json")
+
+          pending_count = 0
+          pending_sha = ""
+          if pending_path.exists():
+            raw = pending_path.read_bytes()
+            pending_sha = hashlib.sha256(raw).hexdigest()
+            try:
+              payload = json.loads(raw.decode("utf-8"))
+            except Exception:
+              payload = {}
+            offers = payload.get("offers") if isinstance(payload, dict) else []
+            pending_count = len(offers) if isinstance(offers, list) else 0
+
+          new_offers = 0
+          if runtime_path.exists():
+            try:
+              runtime = json.loads(runtime_path.read_text(encoding="utf-8"))
+            except Exception:
+              runtime = {}
+            scraper = runtime.get("scraper") if isinstance(runtime, dict) else {}
+            if isinstance(scraper, dict):
+              value = scraper.get("new_offers", 0)
+              try:
+                new_offers = int(value)
+              except Exception:
+                new_offers = 0
+
+          with open(Path(__import__("os").environ["GITHUB_OUTPUT"]), "a", encoding="utf-8") as out:
+            out.write(f"pending_count_local={pending_count}\n")
+            out.write(f"pending_sha_local={pending_sha}\n")
+            out.write(f"new_offers_runtime={new_offers}\n")
+
+          print(f"[diag] pending_count_local={pending_count}")
+          print(f"[diag] pending_sha_local={pending_sha or 'n/a'}")
+          print(f"[diag] new_offers_runtime={new_offers}")
+          PY
+
+      - name: validar consistência scraper -> pending
+        if: always()
+        run: |
+          NEW_OFFERS="${{ steps.diag_after_scraper.outputs.new_offers_runtime }}"
+          PENDING_LOCAL="${{ steps.diag_after_scraper.outputs.pending_count_local }}"
+          if [ "${NEW_OFFERS:-0}" -gt 0 ] && [ "${PENDING_LOCAL:-0}" -le 0 ]; then
+            echo "ERRO: scraper reportou new_offers=${NEW_OFFERS}, mas pending_offers.json ficou vazio."
+            exit 1
+          fi
+
       - name: debug snapshots depois do scraper
         if: always()
         run: |
@@ -312,6 +369,8 @@ jobs:
           git config user.name "BOT LEOUOL"
 
           git add -A
+          echo "arquivos staged:"
+          git diff --cached --name-only || true
 
           if git diff --cached --quiet; then
             echo "sem mudanças para commit"
@@ -352,9 +411,26 @@ jobs:
 
             echo "HEAD local antes do push: $(git rev-parse HEAD)"
             echo "origin/main antes do push: $(git rev-parse origin/main)"
+            echo "pending_count_local_antes_push=${{ steps.diag_after_scraper.outputs.pending_count_local }}"
+            echo "pending_sha_local_antes_push=${{ steps.diag_after_scraper.outputs.pending_sha_local }}"
 
             if git push origin HEAD:main; then
               echo "push concluído"
+              git fetch origin main
+              ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python - <<'PY'
+              import json, sys
+              try:
+                payload = json.load(sys.stdin)
+              except Exception:
+                print(0)
+                raise SystemExit
+              offers = payload.get("offers") if isinstance(payload, dict) else []
+              print(len(offers) if isinstance(offers, list) else 0)
+              PY
+              )
+              ORIGIN_PENDING_SHA=$(git show origin/main:pending_offers.json 2>/dev/null | sha256sum | awk '{print $1}')
+              echo "pending_count_origin_main_pos_push=${ORIGIN_PENDING_COUNT:-0}"
+              echo "pending_sha_origin_main_pos_push=${ORIGIN_PENDING_SHA:-n/a}"
               exit 0
             fi
 
@@ -376,9 +452,6 @@ jobs:
           MAX_VALID_FROM_AGE_HOURS: "36"
           MAX_CONSUMER_BATCH: "8"
         run: |
-          git fetch origin main
-          git reset --hard origin/main
-
           PENDING_COUNT=$(python - <<'PY'
           import json
           from pathlib import Path
@@ -399,7 +472,23 @@ jobs:
           PY
           )
 
-          echo "pending_count=$PENDING_COUNT"
+          echo "pending_count_local_workspace=$PENDING_COUNT"
+
+          git fetch origin main
+          ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python - <<'PY'
+          import json, sys
+          try:
+              payload = json.load(sys.stdin)
+          except Exception:
+              print(0)
+              raise SystemExit
+          offers = payload.get("offers") if isinstance(payload, dict) else []
+          print(len(offers) if isinstance(offers, list) else 0)
+          PY
+          )
+          ORIGIN_PENDING_SHA=$(git show origin/main:pending_offers.json 2>/dev/null | sha256sum | awk '{print $1}')
+          echo "pending_count_origin_main=$ORIGIN_PENDING_COUNT"
+          echo "pending_sha_origin_main=${ORIGIN_PENDING_SHA:-n/a}"
 
           if [ "${PENDING_COUNT:-0}" -le 0 ]; then
             echo "pending vazio, consumer não será executado"
