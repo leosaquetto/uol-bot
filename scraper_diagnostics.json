@@ -1,21 +1,57 @@
 {
-  "updated_at": "2026-04-27T21:37:34.556779Z",
+  "updated_at": "2026-04-27T22:29:08.712933Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 6,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 42,
+    "duplicada_historico": 48,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 03/05 Teatro Riachuelo RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppz-2-ingressos-03-05-teatro-riachuelo-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppz-2-ingressos-03-05-teatro-riachuelo-rj"
+    },
+    {
+      "title": "2 INGRESSOS | 10/05 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppv-2-ingressos-10-05-teatro-carlos-gomes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppv-2-ingressos-10-05-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 09/05 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppu-2-ingressos-09-05-teatro-carlos-gomes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppu-2-ingressos-09-05-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 08/05 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppt-2-ingressos-08-05-teatro-carlos-gomes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppt-2-ingressos-08-05-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 07/05 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pps-2-ingressos-07-05-teatro-carlos-gomes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pps-2-ingressos-07-05-teatro-carlos-gomes"
+    },
+    {
+      "title": "2 INGRESSOS | 02/05 Teatro Carlos Gomes",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppr-2-ingressos-02-05-teatro-carlos-gomes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppr-2-ingressos-02-05-teatro-carlos-gomes"
+    },
     {
       "title": "Dia das Mães com 15% OFF + brinde!",
       "link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
