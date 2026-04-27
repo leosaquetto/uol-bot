@@ -368,7 +368,7 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
-          git add -A
+          git add pending_offers.json latest_offers.json historico_leouol.json daily_log.json status_runtime.json snapshots_control.json scraper_diagnostics.json pipeline_audit.jsonl || true
           echo "arquivos staged:"
           git diff --cached --name-only || true
 
@@ -420,17 +420,14 @@ jobs:
             if git push origin HEAD:main; then
               echo "push concluído"
               git fetch origin main
-              ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python - <<'PY'
-              import json, sys
-              try:
-                payload = json.load(sys.stdin)
-              except Exception:
-                print(0)
-                raise SystemExit
-              offers = payload.get("offers") if isinstance(payload, dict) else []
-              print(len(offers) if isinstance(offers, list) else 0)
-              PY
-              )
+              ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python -c 'import json,sys
+try:
+    payload=json.load(sys.stdin)
+except Exception:
+    print(0)
+    raise SystemExit
+offers=payload.get("offers") if isinstance(payload, dict) else []
+print(len(offers) if isinstance(offers, list) else 0)')
               ORIGIN_PENDING_SHA=$(git show origin/main:pending_offers.json 2>/dev/null | sha256sum | awk '{print $1}')
               echo "pending_count_origin_main_pos_push=${ORIGIN_PENDING_COUNT:-0}"
               echo "pending_sha_origin_main_pos_push=${ORIGIN_PENDING_SHA:-n/a}"
@@ -455,40 +452,31 @@ jobs:
           MAX_VALID_FROM_AGE_HOURS: "36"
           MAX_CONSUMER_BATCH: "8"
         run: |
-          PENDING_COUNT=$(python - <<'PY'
-          import json
-          from pathlib import Path
-
-          path = Path("pending_offers.json")
-          if not path.exists():
-              print(0)
-              raise SystemExit
-
-          try:
-              data = json.loads(path.read_text(encoding="utf-8"))
-          except Exception:
-              print(0)
-              raise SystemExit
-
-          offers = data.get("offers") if isinstance(data, dict) else []
-          print(len(offers) if isinstance(offers, list) else 0)
-          PY
-          )
+          PENDING_COUNT=$(python -c 'import json
+from pathlib import Path
+path=Path("pending_offers.json")
+if not path.exists():
+    print(0)
+    raise SystemExit
+try:
+    data=json.loads(path.read_text(encoding="utf-8"))
+except Exception:
+    print(0)
+    raise SystemExit
+offers=data.get("offers") if isinstance(data, dict) else []
+print(len(offers) if isinstance(offers, list) else 0)')
 
           echo "pending_count_local_workspace=$PENDING_COUNT"
 
           git fetch origin main
-          ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python - <<'PY'
-          import json, sys
-          try:
-              payload = json.load(sys.stdin)
-          except Exception:
-              print(0)
-              raise SystemExit
-          offers = payload.get("offers") if isinstance(payload, dict) else []
-          print(len(offers) if isinstance(offers, list) else 0)
-          PY
-          )
+          ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python -c 'import json,sys
+try:
+    payload=json.load(sys.stdin)
+except Exception:
+    print(0)
+    raise SystemExit
+offers=payload.get("offers") if isinstance(payload, dict) else []
+print(len(offers) if isinstance(offers, list) else 0)')
           ORIGIN_PENDING_SHA=$(git show origin/main:pending_offers.json 2>/dev/null | sha256sum | awk '{print $1}')
           echo "pending_count_origin_main=$ORIGIN_PENDING_COUNT"
           echo "pending_sha_origin_main=${ORIGIN_PENDING_SHA:-n/a}"
