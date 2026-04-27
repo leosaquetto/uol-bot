@@ -406,6 +406,27 @@ def parse_validity_start(value: Optional[str]) -> Optional[datetime]:
         return None
 
 
+def parse_validity_window(value: Optional[str]) -> Tuple[Optional[datetime], Optional[datetime]]:
+    raw = clean_multiline_text(value or "")
+    if not raw:
+        return None, None
+
+    match = re.search(
+        r"v[aá]lido\s+de\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})\s+at[eé]\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})",
+        raw,
+        flags=re.IGNORECASE,
+    )
+    if match:
+        try:
+            start_local = datetime.strptime(match.group(1).strip(), "%d/%m/%Y %H:%M").replace(tzinfo=BR_TZ)
+            end_local = datetime.strptime(match.group(2).strip(), "%d/%m/%Y %H:%M").replace(tzinfo=BR_TZ)
+            return start_local.astimezone(timezone.utc), end_local.astimezone(timezone.utc)
+        except Exception:
+            return None, None
+
+    return parse_validity_start(raw), None
+
+
 def build_sent_indexes(history: Dict, latest: Dict) -> Dict[str, Set[str]]:
     indexes: Dict[str, Set[str]] = {
         "ids": set(),
@@ -486,15 +507,19 @@ def should_skip_pending_offer(
             return True, reason
 
     scraped_at = parse_utc_datetime(offer.get("scraped_at"))
-    valid_from = parse_validity_start(offer.get("validity"))
+    valid_from, valid_until = parse_validity_window(offer.get("validity"))
+    if valid_until:
+        if now_utc > valid_until:
+            return True, "validade_expirada"
+        return False, ""
     if valid_from:
         age_hours = (now_utc - valid_from).total_seconds() / 3600
         if age_hours > MAX_VALID_FROM_AGE_HOURS:
-            return True, "validade_antiga"
+            return True, "inicio_validade_antigo_sem_fim"
     elif scraped_at:
         age_hours = (now_utc - scraped_at).total_seconds() / 3600
-        if age_hours > MAX_PENDING_AGE_HOURS:
-            return True, "idade_excedida"
+        if age_hours > MAX_VALID_FROM_AGE_HOURS:
+            return True, "scraped_at_antigo"
     else:
         if backlog_size > MAX_CONSUMER_BATCH:
             return True, "sem_scraped_at_em_backlog"
@@ -2046,8 +2071,9 @@ def consume_pending() -> int:
 
     eligible_offers: List[Dict] = []
     duplicate_removed = 0
+    expired_removed = 0
+    validity_start_age_removed = 0
     scraped_age_removed = 0
-    validity_age_removed = 0
     missing_scraped_removed = 0
     for offer in offers:
         trace_id = get_offer_trace_id(offer)
@@ -2061,10 +2087,12 @@ def consume_pending() -> int:
         )
         if skip:
             append_pipeline_audit("bot.discard", trace_id, {"title": title, "reason": reason})
-            if reason == "idade_excedida":
+            if reason == "validade_expirada":
+                expired_removed += 1
+            elif reason == "inicio_validade_antigo_sem_fim":
+                validity_start_age_removed += 1
+            elif reason == "scraped_at_antigo":
                 scraped_age_removed += 1
-            elif reason == "validade_antiga":
-                validity_age_removed += 1
             elif reason == "sem_scraped_at_em_backlog":
                 missing_scraped_removed += 1
             else:
@@ -2075,6 +2103,20 @@ def consume_pending() -> int:
     offers_to_process = eligible_offers[:MAX_CONSUMER_BATCH]
     deferred_offers = eligible_offers[MAX_CONSUMER_BATCH:]
     deferred_count = len(deferred_offers)
+    total_discarded = (
+        duplicate_removed
+        + expired_removed
+        + validity_start_age_removed
+        + scraped_age_removed
+        + missing_scraped_removed
+    )
+    log(
+        "consumer pre-processamento: "
+        f"pending_total={len(offers)} | elegiveis={len(eligible_offers)} | descartadas={total_discarded} "
+        f"(duplicadas={duplicate_removed}, validade_expirada={expired_removed}, "
+        f"inicio_validade_antigo_sem_fim={validity_start_age_removed}, scraped_at_antigo={scraped_age_removed}, "
+        f"sem_scraped_at_em_backlog={missing_scraped_removed})"
+    )
 
     remaining = list(deferred_offers)
     processed = 0
@@ -2243,6 +2285,31 @@ def consume_pending() -> int:
     elif failed > 0:
         status_value = "erro"
         summary = f"nenhuma enviada, {failed} falha(s)"
+    elif len(offers) > 0 and sent == 0 and total_discarded > 0:
+        status_value = "sem_novidade"
+        summary = (
+            "nenhuma enviada; descartadas "
+            f"{total_discarded} (validade_expirada={expired_removed}, "
+            f"inicio_validade_antigo_sem_fim={validity_start_age_removed}, "
+            f"scraped_at_antigo={scraped_age_removed}, duplicadas={duplicate_removed}, "
+            f"sem_scraped_at_em_backlog={missing_scraped_removed})"
+        )
+        if not last_error:
+            last_error = (
+                "consumer_sem_envio_com_pending: "
+                f"pending={len(offers)} descartadas={total_discarded} falhas_telegram={failed}"
+            )
+    elif len(offers) > 0 and sent == 0:
+        status_value = "sem_novidade"
+        summary = (
+            f"nenhuma enviada; pending={len(offers)} processadas={processed} "
+            f"falhas_telegram={failed} pendentes={len(remaining)}"
+        )
+        if not last_error:
+            last_error = (
+                "consumer_sem_envio_com_pending: "
+                f"pending={len(offers)} descartadas={total_discarded} falhas_telegram={failed}"
+            )
     else:
         status_value = "sem_novidade"
         summary = "nenhuma oferta nova enviada"
@@ -2261,12 +2328,18 @@ def consume_pending() -> int:
         "consumer",
         (
             f"{'✅' if sent > 0 else '⚠️'} filtradas "
-            f"{duplicate_removed + scraped_age_removed + validity_age_removed + missing_scraped_removed} "
-            f"(dup {duplicate_removed} / scraped_at {scraped_age_removed} / validade antiga {validity_age_removed} "
+            f"{total_discarded} "
+            f"(dup {duplicate_removed} / validade expirada {expired_removed} / "
+            f"início antigo sem fim {validity_start_age_removed} / scraped_at antigo {scraped_age_removed} "
             f"/ sem scraped_at {missing_scraped_removed}) | "
             f"processadas {processed} | enviadas {sent} | falhas {failed} | adiadas {deferred_count} "
             f"| pendentes {len(remaining)}"
         ),
+    )
+    log(
+        "consumer resumo: "
+        f"pending_total={len(offers)} enviadas={sent} descartadas={total_discarded} "
+        f"falhas_telegram={failed} pendentes_finais={len(remaining)}"
     )
 
     return 0
