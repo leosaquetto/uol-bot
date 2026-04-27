@@ -102,14 +102,17 @@ jobs:
 
           for attempt in 1 2 3; do
             git fetch origin main
+            git stash push --include-untracked -m "pre-rebase-temp" >/dev/null 2>&1 || true
             git rebase origin/main || {
               git rebase --abort || true
+              git stash drop >/dev/null 2>&1 || true
               if [ "$attempt" -eq 3 ]; then
                 exit 1
               fi
               sleep 2
               continue
             }
+            git stash drop >/dev/null 2>&1 || true
 
             echo "HEAD local: $(git rev-parse HEAD)"
             echo "origin/main: $(git rev-parse origin/main)"

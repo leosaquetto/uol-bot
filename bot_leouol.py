@@ -48,6 +48,7 @@ DISCUSSION_WAIT_SLEEP_SECONDS = 2
 MAX_PENDING_AGE_HOURS = max(1, int(str(os.environ.get("MAX_PENDING_AGE_HOURS") or "6").strip() or "6"))
 MAX_CONSUMER_BATCH = max(1, int(str(os.environ.get("MAX_CONSUMER_BATCH") or "8").strip() or "8"))
 MAX_VALID_FROM_AGE_HOURS = max(1, int(str(os.environ.get("MAX_VALID_FROM_AGE_HOURS") or "36").strip() or "36"))
+RECENT_RESEND_BLOCK_HOURS = max(1, int(str(os.environ.get("RECENT_RESEND_BLOCK_HOURS") or "168").strip() or "168"))
 
 HASHTAG_RULES_BODY = {
     "#ingresso": ["ingresso", "ingressos"],
@@ -476,9 +477,92 @@ def build_sent_indexes(history: Dict, latest: Dict) -> Dict[str, Set[str]]:
     return indexes
 
 
+def build_recent_sent_indexes(latest: Dict, now_utc: datetime) -> Dict[str, Set[str]]:
+    threshold = now_utc - timedelta(hours=RECENT_RESEND_BLOCK_HOURS)
+    out: Dict[str, Set[str]] = {
+        "trace_ids": set(),
+        "ids": set(),
+        "links": set(),
+        "dedupe_keys": set(),
+        "title_validity": set(),
+    }
+
+    def add(index_name: str, value: Optional[str]) -> None:
+        raw = str(value or "").strip()
+        if not raw:
+            return
+        out[index_name].add(raw)
+        canon = canonical_key(raw)
+        if canon:
+            out[index_name].add(canon)
+
+    latest_offers = latest.get("offers", []) if isinstance(latest.get("offers", []), list) else []
+    for offer in latest_offers:
+        if not isinstance(offer, dict):
+            continue
+        sent_candidates = [
+            offer.get("sent_at"),
+            offer.get("channel_sent_at"),
+            offer.get("created_at"),
+            latest.get("last_update"),
+        ]
+        sent_at = None
+        for candidate in sent_candidates:
+            parsed = parse_utc_datetime(candidate)
+            if parsed:
+                sent_at = parsed
+                break
+        if not sent_at or sent_at < threshold:
+            continue
+
+        add("trace_ids", offer.get("trace_id"))
+        add("ids", offer.get("id"))
+        add("ids", offer.get("offer_id"))
+        add("links", offer.get("link"))
+        add("links", offer.get("original_link"))
+        add("dedupe_keys", offer.get("dedupe_key"))
+        add("dedupe_keys", build_dedupe_key(
+            str(offer.get("title") or offer.get("preview_title") or ""),
+            str(offer.get("validity") or ""),
+            str(offer.get("description") or ""),
+        ))
+        title = str(offer.get("title") or offer.get("preview_title") or "").strip()
+        validity = str(offer.get("validity") or "").strip()
+        add("title_validity", f"{canonical_key(title)}|{canonical_key(validity)}")
+
+    path = Path(PIPELINE_AUDIT_FILE)
+    if path.exists():
+        try:
+            for raw in path.read_text(encoding="utf-8").splitlines():
+                row = str(raw or "").strip()
+                if not row:
+                    continue
+                try:
+                    event = json.loads(row)
+                except Exception:
+                    continue
+                if str(event.get("stage") or "").strip() != "bot.send_success":
+                    continue
+                event_ts = parse_utc_datetime(event.get("timestamp_utc"))
+                if not event_ts or event_ts < threshold:
+                    continue
+                add("trace_ids", event.get("trace_id"))
+                add("ids", event.get("offer_id"))
+                add("links", event.get("link"))
+                add("dedupe_keys", event.get("dedupe_key"))
+                title = str(event.get("title") or "").strip()
+                validity = str(event.get("validity") or "").strip()
+                add("title_validity", f"{canonical_key(title)}|{canonical_key(validity)}")
+        except Exception as e:
+            log(f"⚠️ falha ao montar índice de reenvio recente: {e}")
+
+    return out
+
+
 def should_skip_pending_offer(
     offer: Dict,
     sent_indexes: Dict[str, Set[str]],
+    recent_sent_indexes: Dict[str, Set[str]],
     now_utc: datetime,
     round_started_at: Optional[datetime],
     backlog_size: int,
@@ -490,6 +574,21 @@ def should_skip_pending_offer(
     title = str(offer.get("title") or offer.get("preview_title") or "").strip()
     validity = str(offer.get("validity") or "").strip()
     title_validity = f"{canonical_key(title)}|{canonical_key(validity)}"
+    trace_id = get_offer_trace_id(offer)
+
+    recent_checks = [
+        ("reenvio_bloqueado_7d", "trace_ids", trace_id),
+        ("reenvio_bloqueado_7d", "ids", offer_id),
+        ("reenvio_bloqueado_7d", "ids", canonical_key(offer_id)),
+        ("reenvio_bloqueado_7d", "links", link),
+        ("reenvio_bloqueado_7d", "links", canonical_key(link)),
+        ("reenvio_bloqueado_7d", "dedupe_keys", dedupe_key),
+        ("reenvio_bloqueado_7d", "dedupe_keys", canonical_key(dedupe_key)),
+        ("reenvio_bloqueado_7d", "title_validity", title_validity),
+    ]
+    for reason, index_name, value in recent_checks:
+        if value and value in recent_sent_indexes.get(index_name, set()):
+            return True, reason
 
     checks = [
         ("id_duplicado", "ids", offer_id),
@@ -1435,8 +1534,10 @@ def split_description_sections(description: str) -> List[str]:
         "regras:",
         "regras do benefício:",
         "regras do beneficio:",
+        "como utilizar",
         "como resgatar",
         "passo a passo para resgate:",
+        "data do show:",
         "data:",
         "quando:",
         "local:",
@@ -1511,6 +1612,24 @@ def beautify_section(section: str) -> str:
             rendered.append(escape_html(rest))
         return "\n\n".join(rendered)
 
+    if low.startswith("regras:"):
+        title, rest = split_label(raw)
+        rendered = [f"📌 <b>{escape_html(title)}:</b>"]
+        if rest:
+            rendered.append(escape_html(rest))
+        return "\n\n".join(rendered)
+
+    if low.startswith("como utilizar") or low.startswith("como resgatar") or low.startswith("passo a passo para resgate"):
+        title, rest = split_label(raw)
+        rendered = [f"🧩 <b>{escape_html(title)}:</b>"]
+        if rest:
+            rendered.append(escape_html(rest))
+        return "\n\n".join(rendered)
+
+    if low.startswith("data do show"):
+        title, rest = split_label(raw)
+        return f"🗓️ <b>{escape_html(title)}:</b>\n{escape_html(rest)}" if rest else f"🗓️ <b>{escape_html(title)}:</b>"
+
     if low.startswith("•"):
         bullets = []
         for line in raw.splitlines():
@@ -1549,6 +1668,14 @@ def build_comment_text(title: str, description: str, validity: Optional[str], li
     desc = clean_multiline_text(description)
 
     replacements = [
+        (r"\s*(Sobre o Parceiro)\s*:\s*", r"\n\nSobre o Parceiro: "),
+        (r"\s*(Sobre a Cacau Show)\s*:\s*", r"\n\nSobre a Cacau Show: "),
+        (r"\s*(Benef[ií]cio)\s*:\s*", r"\n\nBenefício: "),
+        (r"\s*(Regras(?: do benef[ií]cio)?)\s*:\s*", r"\n\nRegras: "),
+        (r"\s*(Como utilizar)\s*:\s*", r"\n\nComo utilizar: "),
+        (r"\s*(Como resgatar)\s*:\s*", r"\n\nComo resgatar: "),
+        (r"\s*(Passo a passo para resgate)\s*:\s*", r"\n\nPasso a passo para resgate: "),
+        (r"\s*(Data do Show)\s*:\s*", r"\n\nData do Show: "),
         (r"\b(Data)\s*:\s*", r"\n\nData: "),
         (r"\b(Quando)\s*:\s*", r"\n\nQuando: "),
         (r"\b(Local)\s*:\s*", r"\n\nLocal: "),
@@ -1836,12 +1963,42 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
         offer["comment_error"] = msg
         return False, msg
 
-    partner_img_url = (offer.get("partner_img_url") or "").strip()
-    if partner_img_url and not is_bad_offer_image_url(partner_img_url):
-        img = download_image_bytes(partner_img_url)
-        if img:
-            image_bytes, ext = img
-            try:
+    media_items: List[Tuple[bytes, str]] = []
+    media_labels: List[str] = []
+    media_candidates = [
+        ("foto da oferta", (offer.get("img_url") or "").strip()),
+        ("foto do parceiro", (offer.get("partner_img_url") or "").strip()),
+    ]
+    seen_media_urls: Set[str] = set()
+    for label, url in media_candidates:
+        if not url or is_bad_offer_image_url(url):
+            continue
+        if url in seen_media_urls:
+            continue
+        seen_media_urls.add(url)
+        img = download_image_bytes(url)
+        if not img:
+            events.append(f"{label} indisponível")
+            continue
+        media_items.append(img)
+        media_labels.append(label)
+
+    if media_items:
+        try:
+            if len(media_items) >= 2:
+                resp = send_media_group_bytes(
+                    GRUPO_COMENTARIO_ID,
+                    media_items[:2],
+                    disable_notification=True,
+                    reply_to_message_id=reply_target,
+                )
+                if resp.ok:
+                    events.append(" + ".join(media_labels[:2]) + " enviada(s)")
+                else:
+                    log(f"fotos do reply falharam: {resp.text}")
+                    events.append("fotos do reply falharam")
+            else:
+                image_bytes, ext = media_items[0]
                 resp = send_photo_bytes(
                     GRUPO_COMENTARIO_ID,
                     image_bytes,
@@ -1851,15 +2008,13 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
                     reply_to_message_id=reply_target,
                 )
                 if resp.ok:
-                    events.append("foto do parceiro enviada")
+                    events.append(f"{media_labels[0]} enviada")
                 else:
-                    log(f"foto do parceiro falhou: {resp.text}")
-                    events.append("foto do parceiro falhou")
-            except Exception as e:
-                log(f"foto do parceiro exception: {e}")
-                events.append("foto do parceiro exception")
-        else:
-            events.append("foto do parceiro indisponível")
+                    log(f"{media_labels[0]} falhou: {resp.text}")
+                    events.append(f"{media_labels[0]} falhou")
+        except Exception as e:
+            log(f"erro no envio de mídia do reply: {e}")
+            events.append("mídia do reply exception")
 
     text = build_comment_text(title, description, validity, link)
     try:
@@ -2067,9 +2222,11 @@ def consume_pending() -> int:
     latest_sent = latest_snapshot.get("offers", []) if isinstance(latest_snapshot.get("offers", []), list) else []
     sent_indexes = build_sent_indexes(history, latest_snapshot)
     now_utc = datetime.now(timezone.utc)
+    recent_sent_indexes = build_recent_sent_indexes(latest_snapshot, now_utc=now_utc)
     pending_last_update = parse_utc_datetime(pending_data.get("last_update"))
 
     eligible_offers: List[Dict] = []
+    resend_blocked_removed = 0
     duplicate_removed = 0
     expired_removed = 0
     validity_start_age_removed = 0
@@ -2081,6 +2238,7 @@ def consume_pending() -> int:
         skip, reason = should_skip_pending_offer(
             offer=offer,
             sent_indexes=sent_indexes,
+            recent_sent_indexes=recent_sent_indexes,
             now_utc=now_utc,
             round_started_at=pending_last_update,
             backlog_size=len(offers),
@@ -2089,6 +2247,8 @@ def consume_pending() -> int:
             append_pipeline_audit("bot.discard", trace_id, {"title": title, "reason": reason})
             if reason == "validade_expirada":
                 expired_removed += 1
+            elif reason == "reenvio_bloqueado_7d":
+                resend_blocked_removed += 1
             elif reason == "inicio_validade_antigo_sem_fim":
                 validity_start_age_removed += 1
             elif reason == "scraped_at_antigo":
@@ -2105,6 +2265,7 @@ def consume_pending() -> int:
     deferred_count = len(deferred_offers)
     total_discarded = (
         duplicate_removed
+        + resend_blocked_removed
         + expired_removed
         + validity_start_age_removed
         + scraped_age_removed
@@ -2113,7 +2274,7 @@ def consume_pending() -> int:
     log(
         "consumer pre-processamento: "
         f"pending_total={len(offers)} | elegiveis={len(eligible_offers)} | descartadas={total_discarded} "
-        f"(duplicadas={duplicate_removed}, validade_expirada={expired_removed}, "
+        f"(bloqueio_7d={resend_blocked_removed}, duplicadas={duplicate_removed}, validade_expirada={expired_removed}, "
         f"inicio_validade_antigo_sem_fim={validity_start_age_removed}, scraped_at_antigo={scraped_age_removed}, "
         f"sem_scraped_at_em_backlog={missing_scraped_removed})"
     )
@@ -2136,6 +2297,7 @@ def consume_pending() -> int:
             title = offer.get("title") or offer.get("preview_title") or ""
             validity = offer.get("validity")
             description = offer.get("description") or ""
+            link = offer.get("link") or offer.get("original_link") or ""
             dedupe_key = canonical_key(offer.get("dedupe_key") or build_dedupe_key(title, validity, description))
             loose_dedupe_key = canonical_key(offer.get("loose_dedupe_key") or "")
 
@@ -2153,6 +2315,7 @@ def consume_pending() -> int:
             skip_live, reason_live = should_skip_pending_offer(
                 offer=offer,
                 sent_indexes=sent_indexes_live,
+                recent_sent_indexes=recent_sent_indexes,
                 now_utc=now_utc,
                 round_started_at=pending_last_update,
                 backlog_size=len(offers),
@@ -2230,8 +2393,20 @@ def consume_pending() -> int:
                 log(f"comentário falhou, mas oferta principal foi enviada: {detail_comment}")
 
             update_main_offer_caption_with_comment_link(offer)
+            offer["sent_at"] = utc_now_iso()
 
-            append_pipeline_audit("bot.send_success", trace_id, {"channel_message_id": channel_message_id, "title": title})
+            append_pipeline_audit(
+                "bot.send_success",
+                trace_id,
+                {
+                    "channel_message_id": channel_message_id,
+                    "title": title,
+                    "validity": str(validity or ""),
+                    "offer_id": offer_id,
+                    "link": str(link or ""),
+                    "dedupe_key": dedupe_key,
+                },
+            )
             sent += 1
             latest_sent = [x for x in latest_sent if normalize_offer_key(x.get("id") or x.get("link") or "") != offer_id]
             latest_sent.append(offer)
@@ -2289,7 +2464,7 @@ def consume_pending() -> int:
         status_value = "sem_novidade"
         summary = (
             "nenhuma enviada; descartadas "
-            f"{total_discarded} (validade_expirada={expired_removed}, "
+            f"{total_discarded} (reenvio_bloqueado_7d={resend_blocked_removed}, validade_expirada={expired_removed}, "
             f"inicio_validade_antigo_sem_fim={validity_start_age_removed}, "
             f"scraped_at_antigo={scraped_age_removed}, duplicadas={duplicate_removed}, "
             f"sem_scraped_at_em_backlog={missing_scraped_removed})"
@@ -2329,7 +2504,7 @@ def consume_pending() -> int:
         (
             f"{'✅' if sent > 0 else '⚠️'} filtradas "
             f"{total_discarded} "
-            f"(dup {duplicate_removed} / validade expirada {expired_removed} / "
+            f"(bloqueio 7d {resend_blocked_removed} / dup {duplicate_removed} / validade expirada {expired_removed} / "
             f"início antigo sem fim {validity_start_age_removed} / scraped_at antigo {scraped_age_removed} "
             f"/ sem scraped_at {missing_scraped_removed}) | "
             f"processadas {processed} | enviadas {sent} | falhas {failed} | adiadas {deferred_count} "
