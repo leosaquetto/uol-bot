@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-04-27T11:35:52.338828Z",
+  "updated_at": "2026-04-27T11:36:30.701874Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 11,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -12,7 +12,7 @@
     "scraped_at_antigo": 0,
     "duplicada_historico": 27,
     "duplicada_latest": 1,
-    "duplicada_pending": 9,
+    "duplicada_pending": 20,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
@@ -107,6 +107,42 @@
       "trace_id": "trace_pon-2-ingressos-30-04-termas-do-pacu-sp"
     },
     {
+      "title": "Ofertas de última hora: 25% OFF extra!",
+      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ltima-hora-25-off-extra",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pok-ofertas-de-ltima-hora-25-off-extra"
+    },
+    {
+      "title": "40% OFF extra em seleção feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-seleo-feminina",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_poh-40-off-extra-em-seleo-feminina"
+    },
+    {
+      "title": "30% OFF extra em seleção feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-seleo-feminina",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pog-30-off-extra-em-seleo-feminina"
+    },
+    {
+      "title": "30% OFF em seleção de jeans feminino",
+      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-seleo-de-jeans-feminino",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_poe-30-off-em-seleo-de-jeans-feminino"
+    },
+    {
+      "title": "Até 75% OFF para compras no site",
+      "link": "https://clube.uol.com.br/net_shoes/pob-at-75-off-para-compras-no-site",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pob-at-75-off-para-compras-no-site"
+    },
+    {
+      "title": "Até 75% OFF para compras no site",
+      "link": "https://clube.uol.com.br/zattini/poa-at-75-off-para-compras-no-site",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_poa-at-75-off-para-compras-no-site"
+    },
+    {
       "title": "15% OFF para compras no site",
       "link": "https://clube.uol.com.br/underarmour/pnZ-15-off-para-compras-no-site",
       "reason": "duplicada_historico",
@@ -125,10 +161,22 @@
       "trace_id": "trace_pnx-15-off-em-todo-o-site"
     },
     {
+      "title": "Até 12% OFF nas reservas",
+      "link": "https://clube.uol.com.br/movida/pnK-at-12-off-nas-reservas",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pnk-at-12-off-nas-reservas"
+    },
+    {
       "title": "50% OFF no Kit 3 Mini Books",
       "link": "https://clube.uol.com.br/fotoregistro/pn9-50-off-no-kit-3-mini-books",
       "reason": "duplicada_historico",
       "trace_id": "trace_pn9-50-off-no-kit-3-mini-books"
+    },
+    {
+      "title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
+      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-ms-grtis",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-ms-grtis"
     },
     {
       "title": "Aproveite 15% OFF em viagens",
@@ -147,6 +195,18 @@
       "link": "https://clube.uol.com.br/forneriamaiori/pn0-ganhe-o-banquete-do-chef",
       "reason": "duplicada_historico",
       "trace_id": "trace_pn0-ganhe-o-banquete-do-chef"
+    },
+    {
+      "title": "2 cervejas pelo preço de 1",
+      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preo-de-1",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pnx-2-cervejas-pelo-preo-1"
+    },
+    {
+      "title": "30% OFF em Pós Graduação de Medicina",
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pnu-30-off-em-ps-graduao-de-medicina"
     },
     {
       "title": "50% OFF no par de ingressos",
@@ -225,6 +285,12 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce"
+    },
+    {
+      "title": "41% OFF na Pós-Graduação",
+      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-ps-graduao",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pmt-41-off-na-ps-graduao"
     },
     {
       "title": "Cursinho ENEM com R$ 50 OFF",
