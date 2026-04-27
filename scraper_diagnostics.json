@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-26T23:54:41.362237Z",
+  "updated_at": "2026-04-27T00:08:00.823784Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,8 +7,8 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_antiga": 46,
-    "historico": 2,
+    "validade_antiga": 45,
+    "historico": 3,
     "latest": 0,
     "pending": 0,
     "dedupe": 0
@@ -131,7 +131,7 @@
     {
       "title": "Até 75% OFF para compras no site",
       "link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
-      "reason": "historico",
+      "reason": "validade_antiga",
       "trace_id": "trace_pob-ate-75-off-para-compras-no-site"
     },
     {
@@ -155,7 +155,7 @@
     {
       "title": "15% OFF em todo o site",
       "link": "https://clube.uol.com.br/olympikus/pnX-15-off-em-todo-o-site",
-      "reason": "validade_antiga",
+      "reason": "historico",
       "trace_id": "trace_pnx-15-off-em-todo-o-site"
     },
     {
@@ -239,7 +239,7 @@
     {
       "title": "50% OFF no par de ingressos",
       "link": "https://clube.uol.com.br/teatrojsafra/pmW-50-off-no-par-de-ingressos",
-      "reason": "validade_antiga",
+      "reason": "historico",
       "trace_id": "trace_pmw-50-off-no-par-de-ingressos"
     },
     {
@@ -269,7 +269,7 @@
     {
       "title": "30% OFF na compra de ingresso - SP",
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
-      "reason": "historico",
+      "reason": "validade_antiga",
       "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
     },
     {
@@ -299,7 +299,7 @@
     {
       "title": "Cursinho ENEM com R$ 50 OFF",
       "link": "https://clube.uol.com.br/descomplica/pms-cursinho-enem-com-r-50-off",
-      "reason": "validade_antiga",
+      "reason": "historico",
       "trace_id": "trace_pms-cursinho-enem-com-r-50-off"
     }
   ]
