@@ -1166,20 +1166,21 @@ def sync_daily_dashboard(state, force=False):
         log("⚠️ dashboard não enviado: credenciais ausentes")
         return False
 
-    # Prepara os dados antes de construir o texto
+    # Prepara os dados (conforme o seu bot_leouol_new.py já faz)
     state["date"] = now_br_date()
     state["lines"] = state.get("lines", [])[-20:]
     
+    # Gera o texto com o novo layout (implementação abaixo)
     text = build_dashboard_text(state)
     
-    # Busca o ID da mensagem (ajuste a chave se necessário)
-    message_id = state.get("dashboard_message_id") or state.get("message_id")
+    # Usa a chave 'message_id' que já existe no seu load_daily_log
+    message_id = state.get("message_id")
 
     if not message_id:
-        log("⚠️ ID da mensagem do dashboard não encontrado.")
+        log("⚠️ ID da mensagem do dashboard não encontrado no state.")
         return False
 
-    # Trava local para evitar requisição se o conteúdo for igual
+    # Trava local: evita upload se o conteúdo for idêntico
     if state.get("last_rendered_text") == text and not force:
         return True
 
@@ -1195,8 +1196,6 @@ def sync_daily_dashboard(state, force=False):
 
     if not resp.get("ok"):
         description = str(resp.get("description") or "").lower()
-
-        # Sucesso silencioso se o Telegram disser que nada mudou
         if "message is not modified" in description:
             state["last_rendered_text"] = text
             save_daily_log(state)
@@ -1205,10 +1204,42 @@ def sync_daily_dashboard(state, force=False):
         log(f"⚠️ falha ao editar dashboard atual: {resp}")
         return False
 
-    # Atualiza o estado após sucesso real
     state["last_rendered_text"] = text
     save_daily_log(state)
     return True
+
+def build_dashboard_text(state):
+    """Implementação do novo layout 'Clean' para o monitor"""
+    hora_atual = now_br_time()
+    
+    # Cabeçalho e Status
+    header = f"<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>{hora_atual}</i>\n\n"
+    
+    # Aqui você pode calcular os tempos de 'Online há Xh' se tiver os timestamps
+    status = (
+        f"🟢 <b>Sistema:</b> Online\n"
+        f"✅ <b>Consumer:</b> Pronto\n"
+        f"⏳ <b>Backlog:</b> {state.get('pending_count', 0)} ofertas\n\n"
+    )
+    
+    # Atividade Recente
+    atividade = "<b>ATIVIDADE</b>\n"
+    if state.get("last_new_offer_at"):
+        atividade += f"🎯 {state.get('last_offer_title', 'Nova oferta')}\n"
+        atividade += f"📅 {state.get('last_new_offer_at')}\n\n"
+    else:
+        atividade += "<i>Nenhuma oferta recente</i>\n\n"
+
+    # Logs do Consumer (última linha processada)
+    logs_section = "<b>ÚLTIMOS EVENTOS</b>\n"
+    if state.get("lines"):
+        # Pega apenas os últimos 3 eventos para não poluir
+        recent_lines = state["lines"][-3:]
+        logs_section += "\n".join([f"• {line}" for line in recent_lines])
+    else:
+        logs_section += "<i>Aguardando processamento...</i>"
+
+    return f"{header}{status}{atividade}{logs_section}"
 
     def send_new_dashboard_message() -> None:
         resp = telegram_post(
