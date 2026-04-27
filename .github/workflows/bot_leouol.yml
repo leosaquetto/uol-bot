@@ -224,6 +224,9 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
+          find . -type d -name __pycache__ -prune -exec rm -rf {} +
+          find . -type f -name "*.pyc" -delete
+
           git add pending_offers.json latest_offers.json historico_leouol.json daily_log.json status_runtime.json snapshots_control.json scraper_diagnostics.json pipeline_audit.jsonl || true
           echo "arquivos staged:"
           git diff --cached --name-only || true
@@ -247,6 +250,8 @@ jobs:
       - name: push com retry
         if: always()
         run: |
+          find . -type d -name __pycache__ -prune -exec rm -rf {} +
+          find . -type f -name "*.pyc" -delete
           git fetch origin main
 
           if git diff --quiet origin/main..HEAD; then
@@ -317,6 +322,9 @@ jobs:
           git config user.email "bot@leouol.com"
           git config user.name "BOT LEOUOL"
 
+          find . -type d -name __pycache__ -prune -exec rm -rf {} +
+          find . -type f -name "*.pyc" -delete
+
           git add pending_offers.json latest_offers.json historico_leouol.json daily_log.json status_runtime.json || true
 
           if git diff --cached --quiet; then
@@ -329,6 +337,8 @@ jobs:
       - name: push do consumer com retry
         if: success()
         run: |
+          find . -type d -name __pycache__ -prune -exec rm -rf {} +
+          find . -type f -name "*.pyc" -delete
           git fetch origin main
 
           if git diff --quiet origin/main..HEAD; then
