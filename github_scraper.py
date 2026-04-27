@@ -86,6 +86,40 @@ def parse_validity_start(value: Optional[str]) -> Optional[datetime]:
         return None
 
 
+def parse_validity_window(value: Optional[str]) -> Tuple[Optional[datetime], Optional[datetime]]:
+    raw = clean_text(value or "")
+    if not raw:
+        return None, None
+
+    match = re.search(
+        r"v[aá]lido\s+de\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})\s+at[eé]\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})",
+        raw,
+        flags=re.IGNORECASE,
+    )
+    if match:
+        try:
+            start_local = datetime.strptime(match.group(1).strip(), "%d/%m/%Y %H:%M").replace(tzinfo=BR_TZ)
+            end_local = datetime.strptime(match.group(2).strip(), "%d/%m/%Y %H:%M").replace(tzinfo=BR_TZ)
+            return start_local.astimezone(timezone.utc), end_local.astimezone(timezone.utc)
+        except Exception:
+            return None, None
+
+    return parse_validity_start(raw), None
+
+
+def parse_iso_utc(value: Optional[str]) -> Optional[datetime]:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        if not dt.tzinfo:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    except Exception:
+        return None
+
+
 def load_json(path: str, default: Any) -> Any:
     if not os.path.exists(path):
         return deepcopy(default)
@@ -1144,6 +1178,14 @@ def merge_offer_data(base_offer: Dict[str, Any], details: Dict[str, Any]) -> Dic
     offer_id = base_offer.get("id") or get_offer_id(base_offer.get("link") or "")
     offer_link = base_offer.get("link") or base_offer.get("original_link") or ""
 
+    scraped_at = str(details.get("scraped_at") or base_offer.get("scraped_at") or "").strip()
+    parsed_scraped_at = parse_iso_utc(scraped_at)
+    normalized_scraped_at = (
+        parsed_scraped_at.isoformat().replace("+00:00", "Z")
+        if parsed_scraped_at
+        else utc_now_iso()
+    )
+
     return {
         "id": offer_id,
         "original_link": base_offer.get("original_link") or offer_link,
@@ -1157,7 +1199,7 @@ def merge_offer_data(base_offer: Dict[str, Any], details: Dict[str, Any]) -> Dic
         "location_summary": location_summary,
         "dedupe_key": dedupe_key,
         "loose_dedupe_key": loose_dedupe_key,
-        "scraped_at": utc_now_iso(),
+        "scraped_at": normalized_scraped_at,
         "trace_id": str(base_offer.get("trace_id") or build_trace_id(offer_id or offer_link) or ""),
     }
 
@@ -1367,11 +1409,13 @@ def main() -> None:
     dropped_incomplete = 0
     discard_reasons: Dict[str, int] = {
         "incompleta": 0,
-        "validade_antiga": 0,
-        "historico": 0,
-        "latest": 0,
-        "pending": 0,
-        "dedupe": 0,
+        "validade_expirada": 0,
+        "inicio_validade_antigo_sem_fim": 0,
+        "scraped_at_antigo": 0,
+        "duplicada_historico": 0,
+        "duplicada_latest": 0,
+        "duplicada_pending": 0,
+        "duplicada_execucao": 0,
     }
     discarded_offers: List[Dict[str, str]] = []
 
@@ -1411,93 +1455,108 @@ def main() -> None:
         offer_link_key = canonical_offer_key(normalized_offer.get("link") or normalized_offer.get("original_link") or "")
         strict_key = str(normalized_offer.get("dedupe_key") or "").strip()
         loose_key = str(normalized_offer.get("loose_dedupe_key") or "").strip()
-        validity_start = parse_validity_start(normalized_offer.get("validity"))
+        validity_start, validity_end = parse_validity_window(normalized_offer.get("validity"))
+        parsed_scraped_at = parse_iso_utc(normalized_offer.get("scraped_at"))
 
-        if validity_start:
+        if validity_end and validity_end < now_utc:
+            discard_reasons["validade_expirada"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "validade_expirada", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "validade_expirada", "title": offer_title, "link": offer_link})
+            continue
+
+        if validity_start and not validity_end:
             age_hours = (now_utc - validity_start).total_seconds() / 3600
             if age_hours > MAX_VALID_FROM_AGE_HOURS:
-                discard_reasons["validade_antiga"] += 1
-                discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "validade_antiga", "trace_id": trace_id})
-                append_pipeline_audit("github.discard", trace_id, {"reason": "validade_antiga", "title": offer_title, "link": offer_link})
+                discard_reasons["inicio_validade_antigo_sem_fim"] += 1
+                discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "inicio_validade_antigo_sem_fim", "trace_id": trace_id})
+                append_pipeline_audit("github.discard", trace_id, {"reason": "inicio_validade_antigo_sem_fim", "title": offer_title, "link": offer_link})
+                continue
+
+        if not validity_start and not validity_end and parsed_scraped_at:
+            scraped_age_hours = (now_utc - parsed_scraped_at).total_seconds() / 3600
+            if scraped_age_hours > MAX_VALID_FROM_AGE_HOURS:
+                discard_reasons["scraped_at_antigo"] += 1
+                discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "scraped_at_antigo", "trace_id": trace_id})
+                append_pipeline_audit("github.discard", trace_id, {"reason": "scraped_at_antigo", "title": offer_title, "link": offer_link})
                 continue
 
         if not offer_key and not offer_link_key and not strict_key and not loose_key:
             continue
 
         if offer_key and offer_key in seen_new_offer_keys:
-            discard_reasons["dedupe"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "dedupe", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "dedupe", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_execucao"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_execucao", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_execucao", "title": offer_title, "link": offer_link})
             continue
         if offer_key and offer_key in historico_keys:
-            discard_reasons["historico"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_historico", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_historico", "title": offer_title, "link": offer_link})
             continue
         if offer_key and offer_key in latest_keys:
-            discard_reasons["latest"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_latest", "title": offer_title, "link": offer_link})
             continue
         if offer_key and offer_key in pending_keys:
-            discard_reasons["pending"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_pending", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_pending", "title": offer_title, "link": offer_link})
             continue
         if offer_link_key and offer_link_key in historico_links:
-            discard_reasons["historico"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_historico", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_historico", "title": offer_title, "link": offer_link})
             continue
         if offer_link_key and offer_link_key in latest_links:
-            discard_reasons["latest"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_latest", "title": offer_title, "link": offer_link})
             continue
         if offer_link_key and offer_link_key in pending_links:
-            discard_reasons["pending"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_pending", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_pending", "title": offer_title, "link": offer_link})
             continue
         if strict_key and strict_key in seen_new_dedupe_keys:
-            discard_reasons["dedupe"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "dedupe", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "dedupe", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_execucao"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_execucao", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_execucao", "title": offer_title, "link": offer_link})
             continue
         if strict_key and strict_key in historico_dedupe:
-            discard_reasons["historico"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_historico", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_historico", "title": offer_title, "link": offer_link})
             continue
         if strict_key and strict_key in latest_dedupe:
-            discard_reasons["latest"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_latest", "title": offer_title, "link": offer_link})
             continue
         if strict_key and strict_key in pending_dedupe:
-            discard_reasons["pending"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_pending", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_pending", "title": offer_title, "link": offer_link})
             continue
         if loose_key and loose_key in historico_loose:
-            discard_reasons["historico"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "historico", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "historico", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_historico"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_historico", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_historico", "title": offer_title, "link": offer_link})
             continue
         if loose_key and loose_key in latest_loose:
-            discard_reasons["latest"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "latest", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "latest", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_latest"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_latest", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_latest", "title": offer_title, "link": offer_link})
             continue
         if loose_key and loose_key in pending_loose:
-            discard_reasons["pending"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "pending", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "pending", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_pending"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_pending", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_pending", "title": offer_title, "link": offer_link})
             continue
         if loose_key and loose_key in seen_new_loose_keys:
-            discard_reasons["dedupe"] += 1
-            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "dedupe", "trace_id": trace_id})
-            append_pipeline_audit("github.discard", trace_id, {"reason": "dedupe", "title": offer_title, "link": offer_link})
+            discard_reasons["duplicada_execucao"] += 1
+            discarded_offers.append({"title": offer_title, "link": offer_link, "reason": "duplicada_execucao", "trace_id": trace_id})
+            append_pipeline_audit("github.discard", trace_id, {"reason": "duplicada_execucao", "title": offer_title, "link": offer_link})
             continue
             
         if offer_key:
@@ -1540,9 +1599,21 @@ def main() -> None:
     for snapshot_id in loaded_snapshot_ids:
         mark_snapshot_processed(snapshot_id, snapshot_control, snapshot_meta_map.get(snapshot_id))
 
+    duplicate_discards = (
+        discard_reasons.get("duplicada_historico", 0)
+        + discard_reasons.get("duplicada_latest", 0)
+        + discard_reasons.get("duplicada_pending", 0)
+        + discard_reasons.get("duplicada_execucao", 0)
+    )
+    expired_discards = discard_reasons.get("validade_expirada", 0)
+    mac_summary = (
+        f"mac snapshot processado: {len(offers)} vistas, {len(candidates)} novas, "
+        f"{duplicate_discards} descartadas por duplicidade, {expired_discards} expiradas"
+    )
+
     if not candidates:
         status_scraper_finish(
-            summary=f"sem ofertas prontas | incompletas descartadas: {dropped_incomplete}" + (" | esgotadas atualizadas" if sold_out_changed else ""),
+            summary=mac_summary + f" | sem ofertas prontas | incompletas descartadas: {dropped_incomplete}" + (" | esgotadas atualizadas" if sold_out_changed else ""),
             status_value="sem_novidade",
             offers_seen=len(offers),
             new_offers=0,
@@ -1558,7 +1629,7 @@ def main() -> None:
     save_json(PENDING_FILE, pending)
 
     status_scraper_finish(
-        summary=f"novas no pending: {len(candidates)} | incompletas descartadas: {dropped_incomplete}" + (" | esgotadas atualizadas" if sold_out_changed else ""),
+        summary=mac_summary + f" | novas no pending: {len(candidates)} | incompletas descartadas: {dropped_incomplete}" + (" | esgotadas atualizadas" if sold_out_changed else ""),
         status_value="ok",
         offers_seen=len(offers),
         new_offers=len(candidates),
