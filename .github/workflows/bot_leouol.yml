@@ -75,7 +75,7 @@ jobs:
             echo '{"scriptable":{"last_started_at":"","last_finished_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"scraper":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","offers_seen":0,"new_offers":0,"pending_count":0,"last_error":""},"consumer":{"last_started_at":"","last_finished_at":"","last_success_at":"","status":"","summary":"","processed":0,"sent":0,"failed":0,"pending_count":0,"last_error":""},"global":{"last_offer_title":"","last_offer_at":"","last_offer_id":""}}' > status_runtime.json
           fi
 
-      - name: diagnóstico inicial (snapshot + cargas)
+      - name: diagnóstico inicial
         run: |
           python - <<'PY'
           import hashlib
@@ -108,8 +108,8 @@ jobs:
             pending_payload = {}
           pending_total = len(pending_payload.get("offers", [])) if isinstance(pending_payload, dict) and isinstance(pending_payload.get("offers"), list) else 0
 
-          print(f"[diag] ofertas carregáveis do mac snapshot (github_scraper.py): {mac_offers}")
-          print(f"[diag] total atual de candidatas em pending_offers.json: {pending_total}")
+          print(f"[diag] ofertas carregáveis do mac snapshot: {mac_offers}")
+          print(f"[diag] total atual em pending_offers.json: {pending_total}")
           PY
 
       - name: instalar dependências do scraper
@@ -117,117 +117,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: debug snapshots antes do scraper
-        run: |
-          DEBUG_FULL_DUMP="${DEBUG_FULL_DUMP:-false}"
-          MAX_ITEMS="${MAX_ITEMS:-5}"
-
-          summarize_json() {
-            local file="$1"
-            local label="$2"
-            local max_items="$3"
-
-            python - "$file" "$label" "$max_items" <<'PY'
-          import json
-          import sys
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          file_path = Path(sys.argv[1])
-          label = sys.argv[2]
-          max_items = int(sys.argv[3])
-
-          if not file_path.exists():
-            print(f"--- {label} ---")
-            print("arquivo ausente")
-            raise SystemExit
-
-          mtime = datetime.fromtimestamp(file_path.stat().st_mtime, tz=timezone.utc).isoformat().replace("+00:00", "Z")
-          print(f"--- {label} ---")
-          print(f"mtime_utc={mtime}")
-
-          try:
-            payload = json.loads(file_path.read_text(encoding="utf-8"))
-          except Exception as exc:
-            print(f"erro ao parsear json: {exc}")
-            raise SystemExit
-
-          if isinstance(payload, dict):
-            offers = payload.get("offers")
-            lines = payload.get("lines")
-            processed = payload.get("processed_snapshot_ids")
-            print(f"keys={len(payload.keys())}")
-            if isinstance(offers, list):
-              print(f"offers_count={len(offers)}")
-              print(f"offers_first_{max_items}={offers[:max_items]}")
-            if isinstance(lines, list):
-              print(f"lines_count={len(lines)}")
-              print(f"lines_first_{max_items}={lines[:max_items]}")
-            if isinstance(processed, list):
-              print(f"processed_snapshot_ids_count={len(processed)}")
-              print(f"processed_snapshot_ids_first_{max_items}={processed[:max_items]}")
-          elif isinstance(payload, list):
-            print(f"items_count={len(payload)}")
-            print(f"items_first_{max_items}={payload[:max_items]}")
-          else:
-            print(f"type={type(payload).__name__}")
-          PY
-          }
-
-          echo "### DEBUG ANTES ###"
-          echo "HEAD atual: $(git rev-parse HEAD)"
-          summarize_json "snapshots_control.json" "Resumo snapshots_control.json" "$MAX_ITEMS"
-          echo "--- Arquivos em snapshots/ (máximo ${MAX_ITEMS}) ---"
-          if [ -d snapshots ]; then
-            TOTAL_FILES=$(find snapshots -maxdepth 2 -type f | wc -l | tr -d ' ')
-            echo "total_arquivos=${TOTAL_FILES}"
-            find snapshots -maxdepth 2 -type f | sort | head -n "$MAX_ITEMS"
-          else
-            echo "Pasta snapshots ausente"
-          fi
-          echo "--- Status Git ---"
-          git status --short
-          if [ "$DEBUG_FULL_DUMP" = "true" ]; then
-            echo "--- DUMP COMPLETO snapshots_control.json (DEBUG_FULL_DUMP=true) ---"
-            cat snapshots_control.json || echo "Arquivo não encontrado"
-          fi
-
-      - name: capturar pending antes do scraper
-        id: pending_before
-        run: |
-          PENDING_BEFORE=$(python - <<'PY'
-          import json
-          from pathlib import Path
-
-          path = Path("pending_offers.json")
-          if not path.exists():
-              print(0)
-              raise SystemExit
-
-          try:
-              data = json.loads(path.read_text(encoding="utf-8"))
-          except Exception:
-              print(0)
-              raise SystemExit
-
-          offers = data.get("offers") if isinstance(data, dict) else []
-          print(len(offers) if isinstance(offers, list) else 0)
-          PY
-          )
-          echo "pending_count=$PENDING_BEFORE" >> "$GITHUB_OUTPUT"
-
       - name: rodar scraper
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           GRUPO_COMENTARIO_ID: ${{ secrets.GRUPO_COMENTARIO_ID }}
         run: python github_scraper.py
 
-      - name: diagnóstico pós-scraper (pending e status)
+      - name: diagnóstico pós-scraper
         id: diag_after_scraper
         run: |
           python - <<'PY'
           import hashlib
           import json
+          import os
           from pathlib import Path
 
           pending_path = Path("pending_offers.json")
@@ -253,13 +155,12 @@ jobs:
               runtime = {}
             scraper = runtime.get("scraper") if isinstance(runtime, dict) else {}
             if isinstance(scraper, dict):
-              value = scraper.get("new_offers", 0)
               try:
-                new_offers = int(value)
+                new_offers = int(scraper.get("new_offers", 0) or 0)
               except Exception:
                 new_offers = 0
 
-          with open(Path(__import__("os").environ["GITHUB_OUTPUT"]), "a", encoding="utf-8") as out:
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
             out.write(f"pending_count_local={pending_count}\n")
             out.write(f"pending_sha_local={pending_sha}\n")
             out.write(f"new_offers_runtime={new_offers}\n")
@@ -269,7 +170,7 @@ jobs:
           print(f"[diag] new_offers_runtime={new_offers}")
           PY
 
-      - name: validar consistência scraper -> pending
+      - name: validar consistência scraper pending
         if: always()
         run: |
           NEW_OFFERS="${{ steps.diag_after_scraper.outputs.new_offers_runtime }}"
@@ -279,87 +180,42 @@ jobs:
             exit 1
           fi
 
-      - name: debug snapshots depois do scraper
+      - name: debug depois do scraper
         if: always()
         run: |
-          DEBUG_FULL_DUMP="${DEBUG_FULL_DUMP:-false}"
-          MAX_ITEMS="${MAX_ITEMS:-5}"
-
-          summarize_json() {
-            local file="$1"
-            local label="$2"
-            local max_items="$3"
-
-            python - "$file" "$label" "$max_items" <<'PY'
-          import json
-          import sys
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          file_path = Path(sys.argv[1])
-          label = sys.argv[2]
-          max_items = int(sys.argv[3])
-
-          if not file_path.exists():
-            print(f"--- {label} ---")
-            print("arquivo ausente")
-            raise SystemExit
-
-          mtime = datetime.fromtimestamp(file_path.stat().st_mtime, tz=timezone.utc).isoformat().replace("+00:00", "Z")
-          print(f"--- {label} ---")
-          print(f"mtime_utc={mtime}")
-
-          try:
-            payload = json.loads(file_path.read_text(encoding="utf-8"))
-          except Exception as exc:
-            print(f"erro ao parsear json: {exc}")
-            raise SystemExit
-
-          if isinstance(payload, dict):
-            offers = payload.get("offers")
-            processed = payload.get("processed_snapshot_ids")
-            scriptable = payload.get("scriptable")
-            scraper = payload.get("scraper")
-            consumer = payload.get("consumer")
-            print(f"keys={len(payload.keys())}")
-            if isinstance(offers, list):
-              print(f"offers_count={len(offers)}")
-              print(f"offers_first_{max_items}={offers[:max_items]}")
-            if isinstance(processed, list):
-              print(f"processed_snapshot_ids_count={len(processed)}")
-              print(f"processed_snapshot_ids_first_{max_items}={processed[:max_items]}")
-            if isinstance(scriptable, dict):
-              print(f"scriptable_status={scriptable.get('status')}")
-              print(f"scriptable_last_finished_at={scriptable.get('last_finished_at')}")
-            if isinstance(scraper, dict):
-              print(f"scraper_status={scraper.get('status')}")
-              print(f"scraper_last_success_at={scraper.get('last_success_at')}")
-            if isinstance(consumer, dict):
-              print(f"consumer_status={consumer.get('status')}")
-              print(f"consumer_last_success_at={consumer.get('last_success_at')}")
-          elif isinstance(payload, list):
-            print(f"items_count={len(payload)}")
-            print(f"items_first_{max_items}={payload[:max_items]}")
-          else:
-            print(f"type={type(payload).__name__}")
-          PY
-          }
-
           echo "### DEBUG DEPOIS ###"
           echo "--- Status Git ---"
           git status --short
-          summarize_json "pending_offers.json" "Resumo pending_offers.json" "$MAX_ITEMS"
-          summarize_json "status_runtime.json" "Resumo status_runtime.json" "$MAX_ITEMS"
-          summarize_json "snapshots_control.json" "Resumo snapshots_control.json" "$MAX_ITEMS"
+          python - <<'PY'
+          import json
+          from pathlib import Path
 
-          if [ "$DEBUG_FULL_DUMP" = "true" ] || [ "${{ job.status }}" != "success" ]; then
-            echo "--- DUMP COMPLETO pending_offers.json (falha ou DEBUG_FULL_DUMP=true) ---"
-            cat pending_offers.json || echo "Não gerado"
-            echo "--- DUMP COMPLETO status_runtime.json (falha ou DEBUG_FULL_DUMP=true) ---"
-            cat status_runtime.json || echo "Não gerado"
-            echo "--- DUMP COMPLETO snapshots_control.json (falha ou DEBUG_FULL_DUMP=true) ---"
-            cat snapshots_control.json || echo "Não alterado"
-          fi
+          for name in ["pending_offers.json", "status_runtime.json", "snapshots_control.json"]:
+            path = Path(name)
+            print(f"--- {name} ---")
+            if not path.exists():
+              print("arquivo ausente")
+              continue
+            try:
+              payload = json.loads(path.read_text(encoding="utf-8"))
+            except Exception as exc:
+              print(f"json inválido: {exc}")
+              continue
+            if isinstance(payload, dict):
+              offers = payload.get("offers")
+              if isinstance(offers, list):
+                print(f"offers_count={len(offers)}")
+              processed = payload.get("processed_snapshot_ids")
+              if isinstance(processed, list):
+                print(f"processed_snapshot_ids_count={len(processed)}")
+              for key in ["scriptable", "scraper", "consumer"]:
+                value = payload.get(key)
+                if isinstance(value, dict):
+                  print(f"{key}_status={value.get('status')}")
+                  print(f"{key}_last_success_at={value.get('last_success_at')}")
+            else:
+              print(type(payload).__name__)
+          PY
 
       - name: commitar mudanças do scraper
         id: commit_scraper
@@ -385,7 +241,7 @@ jobs:
             echo "pending_changed=false" >> "$GITHUB_OUTPUT"
           fi
 
-          git commit -m "scraper atualiza pending e dashboard [skip ci]" || exit 0
+          git commit -m "scraper atualiza pending e dashboard [skip ci]"
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
       - name: push com retry
@@ -400,44 +256,18 @@ jobs:
 
           for attempt in 1 2 3; do
             git fetch origin main
-            git stash push --include-untracked -m "pre-rebase-temp" >/dev/null 2>&1 || true
-            git rebase origin/main || {
-              git rebase --abort || true
-              git stash drop >/dev/null 2>&1 || true
-              if [ "$attempt" -eq 3 ]; then
-                exit 1
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "push concluído"
+                exit 0
               fi
-              sleep 2
-              continue
-            }
-            git stash drop >/dev/null 2>&1 || true
-
-            echo "HEAD local antes do push: $(git rev-parse HEAD)"
-            echo "origin/main antes do push: $(git rev-parse origin/main)"
-            echo "pending_count_local_antes_push=${{ steps.diag_after_scraper.outputs.pending_count_local }}"
-            echo "pending_sha_local_antes_push=${{ steps.diag_after_scraper.outputs.pending_sha_local }}"
-
-            if git push origin HEAD:main; then
-              echo "push concluído"
-              git fetch origin main
-              ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python -c 'import json,sys
-try:
-    payload=json.load(sys.stdin)
-except Exception:
-    print(0)
-    raise SystemExit
-offers=payload.get("offers") if isinstance(payload, dict) else []
-print(len(offers) if isinstance(offers, list) else 0)')
-              ORIGIN_PENDING_SHA=$(git show origin/main:pending_offers.json 2>/dev/null | sha256sum | awk '{print $1}')
-              echo "pending_count_origin_main_pos_push=${ORIGIN_PENDING_COUNT:-0}"
-              echo "pending_sha_origin_main_pos_push=${ORIGIN_PENDING_SHA:-n/a}"
-              exit 0
+            else
+              git rebase --abort || true
             fi
 
             if [ "$attempt" -eq 3 ]; then
               exit 1
             fi
-
             sleep 2
           done
 
@@ -452,34 +282,25 @@ print(len(offers) if isinstance(offers, list) else 0)')
           MAX_VALID_FROM_AGE_HOURS: "36"
           MAX_CONSUMER_BATCH: "8"
         run: |
-          PENDING_COUNT=$(python -c 'import json
-from pathlib import Path
-path=Path("pending_offers.json")
-if not path.exists():
-    print(0)
-    raise SystemExit
-try:
-    data=json.loads(path.read_text(encoding="utf-8"))
-except Exception:
-    print(0)
-    raise SystemExit
-offers=data.get("offers") if isinstance(data, dict) else []
-print(len(offers) if isinstance(offers, list) else 0)')
+          PENDING_COUNT=$(python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("pending_offers.json")
+          if not path.exists():
+            print(0)
+            raise SystemExit
+          try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+          except Exception:
+            print(0)
+            raise SystemExit
+          offers = data.get("offers") if isinstance(data, dict) else []
+          print(len(offers) if isinstance(offers, list) else 0)
+          PY
+          )
 
           echo "pending_count_local_workspace=$PENDING_COUNT"
-
-          git fetch origin main
-          ORIGIN_PENDING_COUNT=$(git show origin/main:pending_offers.json 2>/dev/null | python -c 'import json,sys
-try:
-    payload=json.load(sys.stdin)
-except Exception:
-    print(0)
-    raise SystemExit
-offers=payload.get("offers") if isinstance(payload, dict) else []
-print(len(offers) if isinstance(offers, list) else 0)')
-          ORIGIN_PENDING_SHA=$(git show origin/main:pending_offers.json 2>/dev/null | sha256sum | awk '{print $1}')
-          echo "pending_count_origin_main=$ORIGIN_PENDING_COUNT"
-          echo "pending_sha_origin_main=${ORIGIN_PENDING_SHA:-n/a}"
 
           if [ "${PENDING_COUNT:-0}" -le 0 ]; then
             echo "pending vazio, consumer não será executado"
@@ -503,7 +324,7 @@ print(len(offers) if isinstance(offers, list) else 0)')
             exit 0
           fi
 
-          git commit -m "consumer processa pending após scraper [skip ci]" || exit 0
+          git commit -m "consumer processa pending após scraper [skip ci]"
 
       - name: push do consumer com retry
         if: success()
@@ -517,26 +338,17 @@ print(len(offers) if isinstance(offers, list) else 0)')
 
           for attempt in 1 2 3; do
             git fetch origin main
-            git stash push --include-untracked -m "pre-rebase-temp" >/dev/null 2>&1 || true
-            git rebase origin/main || {
-              git rebase --abort || true
-              git stash drop >/dev/null 2>&1 || true
-              if [ "$attempt" -eq 3 ]; then
-                exit 1
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "push do consumer concluído"
+                exit 0
               fi
-              sleep 2
-              continue
-            }
-            git stash drop >/dev/null 2>&1 || true
-
-            if git push origin HEAD:main; then
-              echo "push do consumer concluído"
-              exit 0
+            else
+              git rebase --abort || true
             fi
 
             if [ "$attempt" -eq 3 ]; then
               exit 1
             fi
-
             sleep 2
           done
