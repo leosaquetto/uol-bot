@@ -1166,80 +1166,15 @@ def sync_daily_dashboard(state, force=False):
         log("⚠️ dashboard não enviado: credenciais ausentes")
         return False
 
-    # Prepara os dados (conforme o seu bot_leouol_new.py já faz)
     state["date"] = now_br_date()
     state["lines"] = state.get("lines", [])[-20:]
     
-    # Gera o texto com o novo layout (implementação abaixo)
     text = build_dashboard_text(state)
-    
-    # Usa a chave 'message_id' que já existe no seu load_daily_log
-    message_id = state.get("message_id")
+    old_message_id = state.get("message_id") or state.get("previous_message_id")
 
-    if not message_id:
-        log("⚠️ ID da mensagem do dashboard não encontrado no state.")
-        return False
-
-    # Trava local: evita upload se o conteúdo for idêntico
+    # Trava local: evita request pro Telegram se o texto for idêntico
     if state.get("last_rendered_text") == text and not force:
         return True
-
-    payload = {
-        "chat_id": DASHBOARD_CHAT_ID,
-        "message_id": message_id,
-        "text": text,
-        "parse_mode": "HTML",
-        "disable_web_page_preview": True,
-    }
-
-    resp = telegram_api("editMessageText", payload)
-
-    if not resp.get("ok"):
-        description = str(resp.get("description") or "").lower()
-        if "message is not modified" in description:
-            state["last_rendered_text"] = text
-            save_daily_log(state)
-            return True
-
-        log(f"⚠️ falha ao editar dashboard atual: {resp}")
-        return False
-
-    state["last_rendered_text"] = text
-    save_daily_log(state)
-    return True
-
-def build_dashboard_text(state):
-    """Implementação do novo layout 'Clean' para o monitor"""
-    hora_atual = now_br_time()
-    
-    # Cabeçalho e Status
-    header = f"<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>{hora_atual}</i>\n\n"
-    
-    # Aqui você pode calcular os tempos de 'Online há Xh' se tiver os timestamps
-    status = (
-        f"🟢 <b>Sistema:</b> Online\n"
-        f"✅ <b>Consumer:</b> Pronto\n"
-        f"⏳ <b>Backlog:</b> {state.get('pending_count', 0)} ofertas\n\n"
-    )
-    
-    # Atividade Recente
-    atividade = "<b>ATIVIDADE</b>\n"
-    if state.get("last_new_offer_at"):
-        atividade += f"🎯 {state.get('last_offer_title', 'Nova oferta')}\n"
-        atividade += f"📅 {state.get('last_new_offer_at')}\n\n"
-    else:
-        atividade += "<i>Nenhuma oferta recente</i>\n\n"
-
-    # Logs do Consumer (última linha processada)
-    logs_section = "<b>ÚLTIMOS EVENTOS</b>\n"
-    if state.get("lines"):
-        # Pega apenas os últimos 3 eventos para não poluir
-        recent_lines = state["lines"][-3:]
-        logs_section += "\n".join([f"• {line}" for line in recent_lines])
-    else:
-        logs_section += "<i>Aguardando processamento...</i>"
-
-    return f"{header}{status}{atividade}{logs_section}"
 
     def send_new_dashboard_message() -> None:
         resp = telegram_post(
@@ -1259,6 +1194,7 @@ def build_dashboard_text(state):
         new_message_id = data.get("result", {}).get("message_id")
         state["message_id"] = new_message_id
         state["previous_message_id"] = None
+        state["last_rendered_text"] = text
         save_daily_log(state)
 
         if old_message_id and str(old_message_id) != str(new_message_id):
@@ -1289,27 +1225,29 @@ def build_dashboard_text(state):
                 },
             )
             if resp.ok:
+                state["last_rendered_text"] = text
                 save_daily_log(state)
-                return
+                return True
 
             if '"message to edit not found"' in resp.text or '"message is not modified"' in resp.text:
                 if '"message is not modified"' in resp.text:
+                    state["last_rendered_text"] = text
                     save_daily_log(state)
-                    return
+                    return True
                 state["message_id"] = None
-                save_daily_log(state)
                 send_new_dashboard_message()
-                return
+                return True
 
             log(f"⚠️ falha ao editar dashboard atual: {resp.text}")
             state["message_id"] = None
-            save_daily_log(state)
             send_new_dashboard_message()
-            return
+            return True
 
         send_new_dashboard_message()
+        return True
     except Exception as e:
         log(f"⚠️ erro ao publicar dashboard: {e}")
+        return False
 
 
 def append_dashboard_line(source: str, status_line: str) -> None:
@@ -1332,6 +1270,28 @@ def append_dashboard_line(source: str, status_line: str) -> None:
     filtered.append(line)
     state["lines"] = filtered
     state["lines"] = state["lines"][-30:]
+    sync_daily_dashboard(state)
+
+
+def set_dashboard_pending_count(count: int) -> None:
+    state = load_daily_log()
+    if state["date"] != now_br_date():
+        state["previous_message_id"] = state.get("message_id")
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = []
+    state["pending_count"] = count
+    sync_daily_dashboard(state)
+
+
+def set_dashboard_last_consumer_run() -> None:
+    state = load_daily_log()
+    if state["date"] != now_br_date():
+        state["previous_message_id"] = state.get("message_id")
+        state["date"] = now_br_date()
+        state["message_id"] = None
+        state["lines"] = []
+    state["last_consumer_run"] = now_br_datetime()
     sync_daily_dashboard(state)
 
 
