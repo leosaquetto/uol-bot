@@ -1161,18 +1161,54 @@ def telegram_post(method: str, data=None, files=None, retry_429: bool = True) ->
     return resp
 
 
-def sync_daily_dashboard(state: Dict) -> None:
+def sync_daily_dashboard(state, force=False):
     if not TELEGRAM_TOKEN or not DASHBOARD_CHAT_ID:
-        if not TELEGRAM_TOKEN:
-            log("⚠️ dashboard não enviado: TELEGRAM_TOKEN ausente")
-        if not DASHBOARD_CHAT_ID:
-            log("⚠️ dashboard não enviado: DASHBOARD_CHAT_ID ausente (sem fallback de chat configurado)")
-        return
+        log("⚠️ dashboard não enviado: credenciais ausentes")
+        return False
 
+    # Prepara os dados antes de construir o texto
     state["date"] = now_br_date()
     state["lines"] = state.get("lines", [])[-20:]
+    
     text = build_dashboard_text(state)
-    old_message_id = state.get("message_id") or state.get("previous_message_id")
+    
+    # Busca o ID da mensagem (ajuste a chave se necessário)
+    message_id = state.get("dashboard_message_id") or state.get("message_id")
+
+    if not message_id:
+        log("⚠️ ID da mensagem do dashboard não encontrado.")
+        return False
+
+    # Trava local para evitar requisição se o conteúdo for igual
+    if state.get("last_rendered_text") == text and not force:
+        return True
+
+    payload = {
+        "chat_id": DASHBOARD_CHAT_ID,
+        "message_id": message_id,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+    }
+
+    resp = telegram_api("editMessageText", payload)
+
+    if not resp.get("ok"):
+        description = str(resp.get("description") or "").lower()
+
+        # Sucesso silencioso se o Telegram disser que nada mudou
+        if "message is not modified" in description:
+            state["last_rendered_text"] = text
+            save_daily_log(state)
+            return True
+
+        log(f"⚠️ falha ao editar dashboard atual: {resp}")
+        return False
+
+    # Atualiza o estado após sucesso real
+    state["last_rendered_text"] = text
+    save_daily_log(state)
+    return True
 
     def send_new_dashboard_message() -> None:
         resp = telegram_post(
