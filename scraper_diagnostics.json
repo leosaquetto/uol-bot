@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-04-28T22:04:09.480900Z",
+  "updated_at": "2026-04-28T22:05:12.559986Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 45,
+    "duplicada_historico": 48,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -33,6 +33,24 @@
       "link": "https://clube.uol.com.br/s2medica/ppH-ate-70-em-exames-e-check-ups",
       "reason": "duplicada_historico",
       "trace_id": "trace_pph-ate-70-em-exames-e-check-ups"
+    },
+    {
+      "title": "2 INGRESSOS: 10/05 Teatro Nair Bello SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppG-2-ingressos-10-05-teatro-nair-bello-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppg-2-ingressos-10-05-teatro-nair-bello-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 09/05 Teatro Nair Bello SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppF-2-ingressos-09-05-teatro-nair-bello-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppf-2-ingressos-09-05-teatro-nair-bello-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 01/05 Teatro Nair Bello SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppC-2-ingressos-01-05-teatro-nair-bello-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppc-2-ingressos-01-05-teatro-nair-bello-sp"
     },
     {
       "title": "15% OFF no site",
