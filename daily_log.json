@@ -1,13 +1,14 @@
 {
   "date": "27/04/2026",
-  "message_id": 4412,
+  "message_id": 4413,
   "previous_message_id": null,
   "last_success_check": "",
   "last_new_offer_at": "27/04/2026 às 18:38",
   "pending_count": 0,
-  "last_consumer_run": "27/04/2026 às 18:38",
+  "last_consumer_run": "27/04/2026 às 21:01",
   "sold_out_edited_today": 0,
   "lines": [
-    "[18:38] consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 6 | enviadas 6 | falhas 0 | adiadas 0 | pendentes 0"
-  ]
+    "[21:01] consumer: 📭 pending vazio"
+  ],
+  "last_rendered_text": "📊 <b>Monitor Clube Uol (21:01)</b>\n\n📱 Scriptable 🟢 Online (há 4d02h às 18:57)\n🍎 Scraper Mac ⚪ Em espera (há 3min às 20:58)\n📦 Consumer ⚪ Ocioso (agora às 21:01)\n\n🎯 Última oferta enviada 🕒 27/04/2026 às 18:38\n↳ <a href=\"https://t.me/c/3723320790/1342\">2 INGRESSOS | 02/05 Teatro Carlos Gomes</a>\n🛰️ Última coleta Mac 🕒 27/04/2026 às 20:58\n⏳ 2h23m sem oferta nova\n\n📦 Fila de processamento: 📭 Limpa\n🧷 Esgotadas editadas hoje: 0\n\n🌤️ Humor do sistema: Tudo calmo\n🧭 Leitura do ambiente: Baixa\n\n📝 Últimos eventos:\n• [21:01] consumer: 📭 pending vazio\n\n🔎 Fluxo recente:\n• trace_pmx-30-off-na-compra-de-ingresso-sp\n  captura: ◻️ não capturada\n  pending: 🧹 filtrada/descartada\n  envio: ◻️ não enviada\n• trace_pmy-30-off-na-compra-de-ingresso-sp\n  captura: ◻️ não capturada\n  pending: 🧹 filtrada/descartada\n  envio: ◻️ não enviada\n• trace_pm7-50-off-no-par-de-ingressos\n  captura: ◻️ não capturada\n  pending: 🧹 filtrada/descartada\n  envio: ◻️ não enviada\n• trace_pm9-50-off-no-par-de-ingressos\n  captura: ◻️ não capturada\n  pending: 🧹 filtrada/descartada\n  envio: ◻️ não enviada\n• trace_pmb-50-off-no-par-de-ingressos\n  captura: ◻️ não capturada\n  pending: 🧹 filtrada/descartada\n  envio: ◻️ não enviada"
 }
