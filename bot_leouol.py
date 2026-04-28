@@ -1043,27 +1043,8 @@ def build_dashboard_text(state: Dict) -> str:
             text = "em espera"
 
         when_text = fmt_relative(when) if when else "agora"
-        return f"{icon} {text.capitalize()} ({when_text})"
-
-    def mood_text() -> str:
-        if pending_count > 0:
-            return "Fila aquecida"
-        if str(consumer.get("status") or "") in {"erro", "parcial"}:
-            return "Atenção no consumer"
-        if str(scraper.get("status") or "") in {"erro", "parcial"}:
-            return "Atenção no scraper do Mac"
-        if str(scriptable.get("status") or "") in {"erro", "parcial"}:
-            return "Atenção no scriptable"
-        return "Tudo calmo"
-
-    def environment_text() -> str:
-        if pending_count > 0:
-            return "Alta"
-        if str(scraper.get("status") or "") == "ok" and str(scriptable.get("status") or "") == "ok":
-            return "Alta"
-        if str(scraper.get("status") or "") in {"parcial", "erro"} or str(scriptable.get("status") or "") in {"parcial", "erro"}:
-            return "Moderada"
-        return "Baixa"
+        # Adiciona a tag bold (<b>) aos nomes para melhorar o layout
+        return f"{icon} <b>{text.capitalize()}</b> ({when_text})"
 
     def silence_since_text() -> str:
         value = str(state.get("last_new_offer_at") or global_status.get("last_offer_at") or "").strip()
@@ -1084,43 +1065,47 @@ def build_dashboard_text(state: Dict) -> str:
     last_offer_title = str(global_status.get("last_offer_title") or "").strip() or "Não disponível"
     last_offer_at = str(global_status.get("last_offer_at") or state.get("last_new_offer_at") or "").strip() or "—"
     last_offer_link = str(global_status.get("last_offer_link") or "").strip()
-    last_mac_collect_at = str(scraper.get("last_success_at") or scriptable.get("last_success_at") or "").strip() or "—"
-    pending_label = "📭 Limpa" if pending_count == 0 else f"🚀 {pending_count} ofertas aguardando"
     sold_out_edited_today = int(state.get("sold_out_edited_today") or 0)
     recent_lines = [str(x).strip() for x in (state.get("lines") or []) if str(x).strip()][-5:]
-    pipeline_lines = build_pipeline_flow_summary(int(os.environ.get("PIPELINE_FLOW_LAST_N") or 5))
 
+    # Montagem do Layout Clean
     lines = [
-        f"📊 <b>Monitor Clube Uol ({escape_html(now_br().strftime('%H:%M'))})</b>",
+        f"<b>─── 🖥️ MONITOR CLUBE UOL ───</b>",
+        f"🕒 <i>Atualizado às {escape_html(now_br().strftime('%H:%M'))}</i>",
         "",
-        f"📱 Scriptable {escape_html(component_line('scriptable', scriptable))}",
-        f"🍎 Scraper Mac {escape_html(component_line('scraper', scraper))}",
-        f"📦 Consumer {escape_html(component_line('consumer', consumer))}",
-        "",
-        f"🎯 Última oferta enviada 🕒 {escape_html(last_offer_at)}",
-        (
-            f'↳ <a href="{escape_html(last_offer_link)}">{escape_html(last_offer_title)}</a>'
-            if last_offer_link else
-            f"↳ {escape_html(last_offer_title)}"
-        ),
-        f"🛰️ Última coleta Mac 🕒 {escape_html(last_mac_collect_at)}",
-        f"⏳ {escape_html(silence_since_text())}",
-        "",
-        f"📦 Fila de processamento: {escape_html(pending_label)}",
-        f"🧷 Esgotadas editadas hoje: {sold_out_edited_today}",
-        "",
-        f"🌤️ Humor do sistema: {escape_html(mood_text())}",
-        f"🧭 Leitura do ambiente: {escape_html(environment_text())}",
+        "<b>STATUS DO SISTEMA</b>",
+        f"📱 <b>Scriptable:</b> {escape_html(component_line('scriptable', scriptable))}",
+        f"🍎 <b>Scraper Mac:</b> {escape_html(component_line('scraper', scraper))}",
+        f"📦 <b>Consumer:</b> {escape_html(component_line('consumer', consumer))}",
     ]
-    if recent_lines:
-        lines.extend(["", "📝 Últimos eventos:"])
-        lines.extend([f"• {escape_html(item)}" for item in recent_lines])
 
-    lines.extend(["", "🔎 Fluxo recente:"])
-    if pipeline_lines:
-        lines.extend([escape_html(item) for item in pipeline_lines])
-    elif pending_count == 0:
-        lines.append("sem fluxo pendente recente")
+    if pending_count > 0:
+        lines.append(f"⏳ <b>Fila de processamento:</b> {pending_count} aguardando")
+    if sold_out_edited_today > 0:
+        lines.append(f"🧷 <b>Esgotadas editadas hoje:</b> {sold_out_edited_today}")
+
+    lines.extend(["", "<b>ÚLTIMA ATIVIDADE</b>"])
+
+    if global_status.get("last_offer_title") or state.get("last_new_offer_at"):
+        title_html = escape_html(last_offer_title)
+        if last_offer_link:
+            title_html = f'<a href="{escape_html(last_offer_link)}">{title_html}</a>'
+        
+        lines.append(f"🎯 {title_html}")
+        lines.append(f"📅 <b>Enviada:</b> {escape_html(last_offer_at)}")
+        lines.append(f"⏳ {escape_html(silence_since_text())}")
+    else:
+        lines.append("<i>Nenhuma oferta recente registrada.</i>")
+
+    lines.extend(["", "<b>DETALHES TÉCNICOS</b>"])
+
+    if recent_lines:
+        # Pega a última linha para o detalhe técnico
+        last_event = recent_lines[-1]
+        clean_event = re.sub(r'^\[.*?\]\s*', '', last_event)
+        lines.append(f"<code>• {escape_html(clean_event)}</code>")
+    else:
+        lines.append("<i>Aguardando processamento...</i>")
 
     return truncate_text("\n".join(lines), MAX_DASHBOARD_LENGTH)
 
@@ -1207,7 +1192,8 @@ def sync_daily_dashboard(state, force=False):
                     },
                     retry_429=False,
                 )
-                if not del_resp.ok and '"message to delete not found"' not in del_resp.text:
+                error_text_del = del_resp.text.lower()
+                if not del_resp.ok and "message to delete not found" not in error_text_del:
                     log(f"⚠️ falha ao deletar dashboard anterior: {del_resp.text}")
             except Exception as e:
                 log(f"⚠️ erro ao deletar dashboard anterior: {e}")
@@ -1229,8 +1215,10 @@ def sync_daily_dashboard(state, force=False):
                 save_daily_log(state)
                 return True
 
-            if '"message to edit not found"' in resp.text or '"message is not modified"' in resp.text:
-                if '"message is not modified"' in resp.text:
+            # Correção para o "message is not modified"
+            error_text = resp.text.lower()
+            if "message to edit not found" in error_text or "message is not modified" in error_text:
+                if "message is not modified" in error_text:
                     state["last_rendered_text"] = text
                     save_daily_log(state)
                     return True
@@ -1270,28 +1258,6 @@ def append_dashboard_line(source: str, status_line: str) -> None:
     filtered.append(line)
     state["lines"] = filtered
     state["lines"] = state["lines"][-30:]
-    sync_daily_dashboard(state)
-
-
-def set_dashboard_pending_count(count: int) -> None:
-    state = load_daily_log()
-    if state["date"] != now_br_date():
-        state["previous_message_id"] = state.get("message_id")
-        state["date"] = now_br_date()
-        state["message_id"] = None
-        state["lines"] = []
-    state["pending_count"] = count
-    sync_daily_dashboard(state)
-
-
-def set_dashboard_last_consumer_run() -> None:
-    state = load_daily_log()
-    if state["date"] != now_br_date():
-        state["previous_message_id"] = state.get("message_id")
-        state["date"] = now_br_date()
-        state["message_id"] = None
-        state["lines"] = []
-    state["last_consumer_run"] = now_br_datetime()
     sync_daily_dashboard(state)
 
 
