@@ -5,10 +5,10 @@
   "last_success_check": "",
   "last_new_offer_at": "28/04/2026 às 15:24",
   "pending_count": 0,
-  "last_consumer_run": "28/04/2026 às 15:24",
-  "sold_out_edited_today": 1,
+  "last_consumer_run": "28/04/2026 às 15:59",
+  "sold_out_edited_today": 2,
   "lines": [
-    "[15:24] consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 4 | enviadas 4 | falhas 0 | adiadas 0 | pendentes 0"
+    "[15:59] consumer: ⚠️ filtradas 8 (bloqueio 7d 1 / dup 7 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 1 | enviadas 0 | falhas 0 | adiadas 0 | pendentes 0"
   ],
-  "last_rendered_text": "<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>Atualizado às 15:24</i>\n\n<b>STATUS DO SISTEMA</b>\n📱 <b>Scriptable:</b> 🟢 &lt;b&gt;Online&lt;/b&gt; (há 4d20h às 18:57)\n🍎 <b>Scraper Mac:</b> 🟢 &lt;b&gt;Online&lt;/b&gt; (há 1min às 15:23)\n📦 <b>Consumer:</b> ✅ &lt;b&gt;Pronto&lt;/b&gt; (agora às 15:24)\n🧷 <b>Esgotadas editadas hoje:</b> 1\n\n<b>ÚLTIMA ATIVIDADE</b>\n🎯 <a href=\"https://t.me/c/3723320790/1347\">Prato em Dobro na Cardof Bistrô</a>\n📅 <b>Enviada:</b> 28/04/2026 às 15:24\n⏳ 0min sem oferta nova\n\n<b>DETALHES TÉCNICOS</b>\n<code>• consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 4 | enviadas 4 | falhas 0 | adiadas 0 | pendentes 0</code>"
+  "last_rendered_text": "<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>Atualizado às 15:59</i>\n\n<b>STATUS DO SISTEMA</b>\n📱 <b>Scriptable:</b> 🟢 &lt;b&gt;Online&lt;/b&gt; (há 4d21h às 18:57)\n🍎 <b>Scraper Mac:</b> 🟢 &lt;b&gt;Online&lt;/b&gt; (agora às 15:59)\n📦 <b>Consumer:</b> ⚪ &lt;b&gt;Ocioso&lt;/b&gt; (agora às 15:59)\n🧷 <b>Esgotadas editadas hoje:</b> 2\n\n<b>ÚLTIMA ATIVIDADE</b>\n🎯 <a href=\"https://t.me/c/3723320790/1347\">Prato em Dobro na Cardof Bistrô</a>\n📅 <b>Enviada:</b> 28/04/2026 às 15:24\n⏳ 35min sem oferta nova\n\n<b>DETALHES TÉCNICOS</b>\n<code>• consumer: ⚠️ filtradas 8 (bloqueio 7d 1 / dup 7 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 1 | enviadas 0 | falhas 0 | adiadas 0 | pendentes 0</code>"
 }
