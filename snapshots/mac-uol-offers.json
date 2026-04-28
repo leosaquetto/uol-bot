@@ -6,44 +6,20 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 48,
   "enriched_offers_count": 48,
-  "detail_ok_count": 48,
-  "detail_fail_count": 0,
+  "detail_ok_count": 46,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 48,
+    "complete": 46,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 88167,
-  "run_duration_seconds": 88.17,
-  "avg_detail_ms_per_offer": 1837,
-  "generated_at": "2026-04-28T00:01:30.236Z",
+  "run_duration_ms": 3856228,
+  "run_duration_seconds": 3856.23,
+  "avg_detail_ms_per_offer": 80338,
+  "generated_at": "2026-04-28T02:04:21.065Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "ppz-2-ingressos-03-05-teatro-riachuelo-rj",
-      "trace_id": "trace_ppz-2-ingressos-03-05-teatro-riachuelo-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppz-2-ingressos-03-05-teatro-riachuelo-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ppz-2-ingressos-03-05-teatro-riachuelo-rj",
-      "title": "2 INGRESSOS: 03/05 Teatro Riachuelo RJ",
-      "preview_title": "2 INGRESSOS: 03/05 Teatro Riachuelo RJ",
-      "validity": "Benefício válido de 27/04/2026 16:02 até 02/05/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para curtir “Viva – A Vida é uma Festa In Concert: Uma Experiência Além da Tela” no Teatro Riachuelo, Rio de Janeiro – RJ! Data: 03 de Maio, às 11h e 15h. Local: Rua do Passeio, 38 - Centro, Rio de Janeiro - RJ. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efb4243c2f2_69efb37451d19_69efb25c0d231_69e2b6b1311c9_69e2b63543954_69e2b5af1ab20_69e2b4cacb9ac_1fbb487d67a949640086a07857e23e2a.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efb4243c2f2_69efb37451d19_69efb25c0d231_69e2b6b1311c9_69e2b63543954_69e2b5af1ab20_69e2b4cacb9ac_1fbb487d67a949640086a07857e23e2a.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efb4243c2f2_69efb37451d19_69efb25c0d231_69e2b6b1311c9_69e2b63543954_69e2b5af1ab20_69e2b4cacb9ac_1fbb487d67a949640086a07857e23e2a.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132040,
-      "detail_elapsed_ms": 2179,
-      "scraped_at": "2026-04-28T00:00:13.532Z"
-    },
     {
       "id": "ppv-2-ingressos-10-05-teatro-carlos-gomes",
       "trace_id": "trace_ppv-2-ingressos-10-05-teatro-carlos-gomes",
@@ -55,7 +31,7 @@
       "description": "Assinante UOL, resgate 1 par de ingressos para AS CENTENÁRIAS – O MUSICAL e viva uma experiência emocionante e bem-humorada do teatro brasileiro contemporâneo no Teatro Municipal Carlos Gomes, no Rio de Janeiro. Data: Domingo, 10/05 com sessões às 17h. Local: Teatro Municipal Carlos Gomes - Praça Tiradentes, Rio de Janeiro Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, setor ou assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE •Promoção válida por tempo limitado, enquanto durarem os estoques. •Benefício válido ao Assinante UOL pagante + 1 acompanhante. •Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. •O UOL não possui qualquer responsabilidade sobre a realização do evento. •Não é possível alterar ou substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa85774aea_69efa7a376255_69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa85774aea_69efa7a376255_69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa85774aea_69efa7a376255_69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132692,
-      "detail_elapsed_ms": 1863,
-      "scraped_at": "2026-04-28T00:00:15.396Z"
+      "detail_html_length": 132870,
+      "detail_elapsed_ms": 10684,
+      "scraped_at": "2026-04-28T01:00:35.992Z"
     },
     {
       "id": "ppu-2-ingressos-09-05-teatro-carlos-gomes",
@@ -79,7 +55,7 @@
       "description": "Assinante UOL, resgate 1 par de ingressos para AS CENTENÁRIAS – O MUSICAL e viva uma experiência emocionante e bem-humorada do teatro brasileiro contemporâneo no Teatro Municipal Carlos Gomes, no Rio de Janeiro. Data: Sábado, 09/05 com sessões às 19h e 20h. Local: Teatro Municipal Carlos Gomes - Praça Tiradentes, Rio de Janeiro Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, setor ou assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE •Promoção válida por tempo limitado, enquanto durarem os estoques. •Benefício válido ao Assinante UOL pagante + 1 acompanhante. •Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. •O UOL não possui qualquer responsabilidade sobre a realização do evento. •Não é possível alterar ou substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa7a376255_69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa7a376255_69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa7a376255_69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132677,
-      "detail_elapsed_ms": 1525,
-      "scraped_at": "2026-04-28T00:00:16.921Z"
+      "detail_html_length": 132973,
+      "detail_elapsed_ms": 2338036,
+      "scraped_at": "2026-04-28T01:39:34.100Z"
     },
     {
       "id": "ppt-2-ingressos-08-05-teatro-carlos-gomes",
@@ -99,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/ppt-2-ingressos-08-05-teatro-carlos-gomes",
       "title": "2 INGRESSOS | 08/05 Teatro Carlos Gomes",
       "preview_title": "2 INGRESSOS | 08/05 Teatro Carlos Gomes",
-      "validity": "Benefício válido de 27/04/2026 15:04 até 07/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para AS CENTENÁRIAS – O MUSICAL e viva uma experiência emocionante e bem-humorada do teatro brasileiro contemporâneo no Teatro Municipal Carlos Gomes, no Rio de Janeiro. Data: Sexta - feira, 08/05 com sessões às 19h. Local: Teatro Municipal Carlos Gomes - Praça Tiradentes, Rio de Janeiro Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, setor ou assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE •Promoção válida por tempo limitado, enquanto durarem os estoques. •Benefício válido ao Assinante UOL pagante + 1 acompanhante. •Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. •O UOL não possui qualquer responsabilidade sobre a realização do evento. •Não é possível alterar ou substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa69e9e13e_69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132682,
-      "detail_elapsed_ms": 1554,
-      "scraped_at": "2026-04-28T00:00:18.475Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/ppt-2-ingressos-08-05-teatro-carlos-gomes\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12992,
+      "scraped_at": "2026-04-28T02:00:43.632Z"
     },
     {
       "id": "pps-2-ingressos-07-05-teatro-carlos-gomes",
@@ -127,7 +103,7 @@
       "description": "Assinante UOL, resgate 1 par de ingressos para AS CENTENÁRIAS – O MUSICAL e viva uma experiência emocionante e bem-humorada do teatro brasileiro contemporâneo no Teatro Municipal Carlos Gomes, no Rio de Janeiro. Data: Quinta - feira, 07/05 com sessões às 19h. Local: Teatro Municipal Carlos Gomes - Praça Tiradentes, Rio de Janeiro Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, setor ou assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE •Promoção válida por tempo limitado, enquanto durarem os estoques. •Benefício válido ao Assinante UOL pagante + 1 acompanhante. •Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. •O UOL não possui qualquer responsabilidade sobre a realização do evento. •Não é possível alterar ou substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa5de13d5b_69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132665,
-      "detail_elapsed_ms": 1504,
-      "scraped_at": "2026-04-28T00:00:19.980Z"
+      "detail_html_length": 125968,
+      "detail_elapsed_ms": 3815,
+      "scraped_at": "2026-04-28T02:00:47.475Z"
     },
     {
       "id": "ppi-dia-das-maes-com-15-off-brinde",
@@ -151,7 +127,7 @@
       "description": "Sobre o Parceiro: Não somos uma marca de beleza. Somos uma nova forma de comprar, consumir e pensar a beleza. Nascemos há mais de dez anos para trazer uma beleza espontânea, descomplicada, acessível, e claro, smart! Benefício: 15% de desconto + brinde na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras acima de R$249. Aplicável apenas para produtos selecionados. Oferta válida somente para a loja online. Não cumulativa com demais cupons. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Océane",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/3d7f43651a30a9075a4040159876a720.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131002,
-      "detail_elapsed_ms": 1470,
-      "scraped_at": "2026-04-28T00:00:21.450Z"
+      "detail_html_length": 124435,
+      "detail_elapsed_ms": 1553,
+      "scraped_at": "2026-04-28T02:00:49.033Z"
     },
     {
       "id": "pph-especial-de-dia-das-maes-com-12-off",
@@ -175,7 +151,7 @@
       "description": "Sobre o Parceiro: Nosso maior propósito é facilitar o acesso à moda, levando ao consumidor agilidade, qualidade e um valor justo. Benefício: 12% de desconto na coleção especial de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras acima de R$99. Aplicável apenas para produtos vendidos e entregues pela Riachuelo. Não cumulativo com outras promoções. Não válido para eletrônicos, eletro-portáteis e itens de beleza. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Riachuelo",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a25d71d110f30679ed8bc9b9637db7d7.jpg",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0f92af52d627ef7af3e346bbd3f41d9.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0f92af52d627ef7af3e346bbd3f41d9.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0f92af52d627ef7af3e346bbd3f41d9.png",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131005,
-      "detail_elapsed_ms": 1878,
-      "scraped_at": "2026-04-28T00:00:23.329Z"
+      "detail_html_length": 124461,
+      "detail_elapsed_ms": 1582,
+      "scraped_at": "2026-04-28T02:00:50.617Z"
     },
     {
       "id": "ppg-dia-das-maes-puket-com-10-off",
@@ -199,7 +175,7 @@
       "description": "Sobre o Parceiro: A Puket é uma marca especializada em meias, pijamas, acessórios e mais, para bebês, crianças e adultos. Benefício: 10% de desconto na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras no site com valor mínimo de R$200. Válido apenas para pedidos com frete Normal ou Rápido. Não acumulativo com demais promoções. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Puket",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d8a2ed8775889d543b6b57943ad5ee95.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112f5eeb706bf179f761f96aca694668.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112f5eeb706bf179f761f96aca694668.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112f5eeb706bf179f761f96aca694668.png",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130818,
-      "detail_elapsed_ms": 1963,
-      "scraped_at": "2026-04-28T00:00:25.292Z"
+      "detail_html_length": 124277,
+      "detail_elapsed_ms": 1622,
+      "scraped_at": "2026-04-28T02:00:52.239Z"
     },
     {
       "id": "ppf-presenteie-com-10-off-no-dia-das-maes",
@@ -223,7 +199,7 @@
       "description": "Sobre o Parceiro: A Imaginarium é uma renomada varejista brasileira especializada em produtos criativos e originais. Fundada em 1991, a empresa oferece uma vasta gama de itens, incluindo presentes, decoração e gadgets inovadores. Com um foco na criatividade e na personalização, a Imaginarium busca proporcionar experiências únicas aos seus clientes. Suas lojas, que combinam design moderno e um ambiente lúdico, são um verdadeiro convite à imaginação. A marca é conhecida por seus produtos que encantam pessoas de todas as idades, tornando a vida cotidiana mais especial e divertida. Benefício: 10% de desconto na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para itens vendidos e entregues pela Imaginarium. Não cumulativo com outras promoções. Disponível somente para a modalidade de entrega \"normal - site\". O cupom deve ser aplicado após a inclusão do CEP de entrega. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Imaginarium",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9090c2903c65204016e4c4464b44fc3e.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b76c2f3c3182cd21f24e1047d6a66b44.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b76c2f3c3182cd21f24e1047d6a66b44.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b76c2f3c3182cd21f24e1047d6a66b44.png",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139514,
-      "detail_elapsed_ms": 1730,
-      "scraped_at": "2026-04-28T00:00:27.022Z"
+      "detail_html_length": 126072,
+      "detail_elapsed_ms": 1590,
+      "scraped_at": "2026-04-28T02:00:53.830Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -247,7 +223,7 @@
       "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia das Mães: Garanta 39% de desconto em 1 Caixa Angel Tabletes 90g - De 32,99 por R$ 19,99. Sobre a Caixa Angel Tabletes 90g: A Caixa de Tabletes ao Leite é perfeita para tornar qualquer momento mais doce. Com três tabletes de chocolate ao leite de 30g cada, oferece uma experiência deliciosa e especial, ideal para presentear ou declarar carinho. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa Angel Tabletes 90g - De 32,99 por R$ 19,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 04/05/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
       "category": "Compras e Presentes",
       "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5b9f2700a86612a8e526a72498f56d5f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5b9f2700a86612a8e526a72498f56d5f.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5b9f2700a86612a8e526a72498f56d5f.png",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132527,
-      "detail_elapsed_ms": 1789,
-      "scraped_at": "2026-04-28T00:00:28.811Z"
+      "detail_html_length": 127372,
+      "detail_elapsed_ms": 5267,
+      "scraped_at": "2026-04-28T02:00:59.104Z"
     },
     {
       "id": "ppd-dia-das-maes-com-15-off",
@@ -271,7 +247,7 @@
       "description": "Sobre o Parceiro: Ter um produto Gocase com seu nome é a nossa maior paixão. Entregas para todo o Brasil. Dá uma olhadinha nos nossos produtos e personalize com seu nome. Felicidade Garantida! Vamos te ajudar. Personalize seus produtos. Benefício: 15% OFF Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Desconto não cumulativo com demais cupons promocionais. Válido para compras acima de R$300. Sujeito a desativação sem aviso prévio. Valido até 10/05/2026.",
       "category": "Compras e Presentes",
       "partner_name": "GoCase",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/37104a846b2ed632825f3ed7205b080e.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/395f3ddcfb09449dda337f35783212e0.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/395f3ddcfb09449dda337f35783212e0.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/395f3ddcfb09449dda337f35783212e0.png",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130742,
-      "detail_elapsed_ms": 1816,
-      "scraped_at": "2026-04-28T00:00:30.627Z"
+      "detail_html_length": 125606,
+      "detail_elapsed_ms": 2210,
+      "scraped_at": "2026-04-28T02:01:01.346Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -295,7 +271,7 @@
       "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia das Mães: Garanta 36% de desconto em 1 Lata Biscoito Sortidos 265g - De 84,99 por R$ 53,99. Sobre a Lata Biscoito Sortidos 265g: A Lata de Biscoitos Tradicionais Sortidos é perfeita para quem aprecia biscoitos finos e crocantes, trazendo sofisticação e sabor para qualquer momento especial. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Lata Biscoito Sortidos 265g - De 84,99 por R$ 53,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 04/05/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
       "category": "Compras e Presentes",
       "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/274f90a7deac6348231cd01fa37af6e2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/274f90a7deac6348231cd01fa37af6e2.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/274f90a7deac6348231cd01fa37af6e2.png",
@@ -304,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132588,
-      "detail_elapsed_ms": 1843,
-      "scraped_at": "2026-04-28T00:00:32.470Z"
+      "detail_html_length": 127396,
+      "detail_elapsed_ms": 3499,
+      "scraped_at": "2026-04-28T02:01:04.855Z"
     },
     {
       "id": "ppb-dia-das-maes-com-25-off",
@@ -319,7 +295,7 @@
       "description": "Sobre o Parceiro: Voltada para todos os públicos, a Hering tem se reinventado constantemente ao longo de sua história de mais de 140 anos, sem perder a tradição de ser reconhecida como a Básica do Brasil! Benefício: 25% de desconto na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. desconto de 25%. válido apenas para produtos selecionados da campanha de Dia das Mães. Não é aplicável em itens remarcados. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio. Valido Até 10/05/2026.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Hering",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-hering.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef88816c7d7d41560b02e3730950a6da.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef88816c7d7d41560b02e3730950a6da.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef88816c7d7d41560b02e3730950a6da.png",
@@ -328,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130832,
-      "detail_elapsed_ms": 1699,
-      "scraped_at": "2026-04-28T00:00:34.169Z"
+      "detail_html_length": 125620,
+      "detail_elapsed_ms": 2636,
+      "scraped_at": "2026-04-28T02:01:07.496Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -352,9 +328,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132716,
-      "detail_elapsed_ms": 1616,
-      "scraped_at": "2026-04-28T00:00:35.785Z"
+      "detail_html_length": 132721,
+      "detail_elapsed_ms": 5280,
+      "scraped_at": "2026-04-28T02:01:12.790Z"
     },
     {
       "id": "pog-50-off-em-ate-4-ingressos",
@@ -376,9 +352,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132050,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-04-28T00:00:37.480Z"
+      "detail_html_length": 132072,
+      "detail_elapsed_ms": 1412,
+      "scraped_at": "2026-04-28T02:01:14.204Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -400,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130680,
-      "detail_elapsed_ms": 1696,
-      "scraped_at": "2026-04-28T00:00:39.176Z"
+      "detail_html_length": 130694,
+      "detail_elapsed_ms": 1478,
+      "scraped_at": "2026-04-28T02:01:15.682Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -424,9 +400,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132983,
-      "detail_elapsed_ms": 1466,
-      "scraped_at": "2026-04-28T00:00:40.643Z"
+      "detail_html_length": 133037,
+      "detail_elapsed_ms": 93993,
+      "scraped_at": "2026-04-28T02:02:49.682Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -435,22 +411,22 @@
       "original_link": "https://clube.uol.com.br/teatrouol/poD-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 23/04/2026 10:55 até 26/07/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Espetáculo 10 Maneiras Incríveis de Destruir Seu Casamento. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Com texto de Sérgio Abritta, o espetáculo é estruturado em esquetes ágeis e independentes que retratam, com humor ácido e identificação imediata, situações do casamento contemporâneo. Pequenos hábitos, conflitos cotidianos e crises conjugais ganham contornos cômicos, transformando dramas comuns em gargalhadas. A montagem é estrelada por Ellen Rocche, Daniel Rocha, Thaisa Damous e Tom Prado, atores com sólida trajetória no teatro, na televisão e no cinema e que se destaca pela versatilidade em múltiplos personagens e pela relação direta com a plateia, potencializando o humor do texto e garantindo ritmo e alto engajamento do início ao fim. Popular, atual e provocadora, a peça convida o público a rir de si mesmo e das relações afetivas, em uma experiência divertida, dinâmica e altamente reconhecível — ideal para casados, solteiros e divorciados. FICHA TÉCNICA: Elenco: Vitória Strada, Daniel Rocha, Thaisa Damous e Ton Prado. Stand in: Fernanda Heras. Texto: Sérgio Abritta. Direção: Isser Korik. Cenografia: Osvaldo Gonçalvez. Iluminadora: Renata Bitencourt. Figurinos: Leandro Mariz. Direção musical: Giovana Cirne e Diego Rodda. SAC: Carinne Namba. Projeto gráfico: Lucas Sancho. Comunicação e Marketing: Lucas Sancho. Gestão de performance e Redes sociais: Nucleus. Produção executiva: Andrea Làra. Produção geral: Miçairi Guimarães e Sandro Chaim. Realização: Magic Arts. SERVIÇO: Temporada: 02/05/2026 a 26/07/2026. Apresentações: Sábado e domingo, 18h. Ingresso*: Setor A - Inteira: R$ 150,00 Meia: R$ 75,00 | Setor B - Inteira: R$ 120,00 Meia: R$ 60,00. Duração: 80 minutos. Classificação etária: 14 anos. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro UOL",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3bbf961f62fcef68e1f59259d65861ea.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3bbf961f62fcef68e1f59259d65861ea.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3bbf961f62fcef68e1f59259d65861ea.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133123,
-      "detail_elapsed_ms": 1682,
-      "scraped_at": "2026-04-28T00:00:42.326Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/teatrouol/poD-50-off-no-par-de-ingressos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12065,
+      "scraped_at": "2026-04-28T02:03:14.595Z"
     },
     {
       "id": "poy-30-cashback",
@@ -472,9 +448,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131222,
-      "detail_elapsed_ms": 1477,
-      "scraped_at": "2026-04-28T00:00:43.803Z"
+      "detail_html_length": 131149,
+      "detail_elapsed_ms": 1508,
+      "scraped_at": "2026-04-28T02:03:16.110Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -496,9 +472,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132419,
-      "detail_elapsed_ms": 1663,
-      "scraped_at": "2026-04-28T00:00:45.466Z"
+      "detail_html_length": 132443,
+      "detail_elapsed_ms": 1357,
+      "scraped_at": "2026-04-28T02:03:17.467Z"
     },
     {
       "id": "pok-ofertas-de-ultima-hora-25-off-extra",
@@ -520,81 +496,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133212,
-      "detail_elapsed_ms": 1775,
-      "scraped_at": "2026-04-28T00:00:47.241Z"
-    },
-    {
-      "id": "poh-40-off-extra-em-selecao-feminina",
-      "trace_id": "trace_poh-40-off-extra-em-selecao-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
-      "title": "40% OFF extra em seleção feminina",
-      "preview_title": "40% OFF extra em seleção feminina",
-      "validity": "Benefício válido de 16/04/2026 14:56 até 27/04/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 40% OFF em seleção feminina. Regras: Válido para produtos femininos selecionados no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0f1ffba4fcc7de0c4551fca9587afee.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131049,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-04-28T00:00:48.927Z"
-    },
-    {
-      "id": "pog-30-off-extra-em-selecao-feminina",
-      "trace_id": "trace_pog-30-off-extra-em-selecao-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
-      "title": "30% OFF extra em seleção feminina",
-      "preview_title": "30% OFF extra em seleção feminina",
-      "validity": "Benefício válido de 16/04/2026 14:41 até 27/04/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 30% OFF em seleção feminina Regras: Desconto extra válido para itens femininos selecionados no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/deff5727e9e5870d627d09eed613992f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/deff5727e9e5870d627d09eed613992f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/deff5727e9e5870d627d09eed613992f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131031,
-      "detail_elapsed_ms": 1976,
-      "scraped_at": "2026-04-28T00:00:50.903Z"
-    },
-    {
-      "id": "poe-30-off-em-selecao-de-jeans-feminino",
-      "trace_id": "trace_poe-30-off-em-selecao-de-jeans-feminino",
-      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
-      "title": "30% OFF em seleção de jeans feminino",
-      "preview_title": "30% OFF em seleção de jeans feminino",
-      "validity": "Benefício válido de 16/04/2026 14:12 até 27/04/2026 23:59.",
-      "description": "Sobre o Parceiro: Somos a Renner, uma das maiores varejistas de moda do Brasil, reconhecida por oferecer roupas, acessórios e tendências que combinam estilo, qualidade e preços acessíveis. Nosso propósito é encantar clientes com coleções que valorizam a diversidade e acompanham diferentes momentos do dia a dia. Benefício: 30% OFF em seleção de jeans feminino Regras: Válido para produtos selecionados de jeans feminino no site. O desconto é aplicado mediante inserção do cupom no carrinho antes da finalização da compra. Não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1ab421b5375d75fb800ef6dbee9823a2.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1ab421b5375d75fb800ef6dbee9823a2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1ab421b5375d75fb800ef6dbee9823a2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131117,
-      "detail_elapsed_ms": 1536,
-      "scraped_at": "2026-04-28T00:00:52.439Z"
+      "detail_html_length": 133225,
+      "detail_elapsed_ms": 1532,
+      "scraped_at": "2026-04-28T02:03:18.999Z"
     },
     {
       "id": "pob-ate-75-off-para-compras-no-site",
@@ -616,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131168,
-      "detail_elapsed_ms": 1610,
-      "scraped_at": "2026-04-28T00:00:54.049Z"
+      "detail_html_length": 131191,
+      "detail_elapsed_ms": 1778,
+      "scraped_at": "2026-04-28T02:03:20.777Z"
     },
     {
       "id": "poa-ate-75-off-para-compras-no-site",
@@ -640,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130823,
-      "detail_elapsed_ms": 1653,
-      "scraped_at": "2026-04-28T00:00:55.702Z"
+      "detail_html_length": 130885,
+      "detail_elapsed_ms": 1610,
+      "scraped_at": "2026-04-28T02:03:22.387Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -664,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131352,
-      "detail_elapsed_ms": 1420,
-      "scraped_at": "2026-04-28T00:00:57.122Z"
+      "detail_html_length": 130953,
+      "detail_elapsed_ms": 3701,
+      "scraped_at": "2026-04-28T02:03:26.106Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -688,9 +592,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130743,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-04-28T00:00:58.605Z"
+      "detail_html_length": 130738,
+      "detail_elapsed_ms": 3584,
+      "scraped_at": "2026-04-28T02:03:29.707Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -712,9 +616,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 1693,
-      "scraped_at": "2026-04-28T00:01:00.298Z"
+      "detail_html_length": 130915,
+      "detail_elapsed_ms": 1623,
+      "scraped_at": "2026-04-28T02:03:31.342Z"
     },
     {
       "id": "pnk-ate-12-off-nas-reservas",
@@ -736,9 +640,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132902,
-      "detail_elapsed_ms": 1736,
-      "scraped_at": "2026-04-28T00:01:02.034Z"
+      "detail_html_length": 132946,
+      "detail_elapsed_ms": 1341,
+      "scraped_at": "2026-04-28T02:03:32.683Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -760,9 +664,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131061,
-      "detail_elapsed_ms": 1413,
-      "scraped_at": "2026-04-28T00:01:03.447Z"
+      "detail_html_length": 131385,
+      "detail_elapsed_ms": 6552,
+      "scraped_at": "2026-04-28T02:03:39.239Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
@@ -784,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131156,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-04-28T00:01:05.142Z"
+      "detail_html_length": 131210,
+      "detail_elapsed_ms": 2121,
+      "scraped_at": "2026-04-28T02:03:41.363Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -808,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131033,
-      "detail_elapsed_ms": 1743,
-      "scraped_at": "2026-04-28T00:01:06.885Z"
+      "detail_html_length": 131046,
+      "detail_elapsed_ms": 1416,
+      "scraped_at": "2026-04-28T02:03:42.779Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -832,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130965,
-      "detail_elapsed_ms": 1582,
-      "scraped_at": "2026-04-28T00:01:08.467Z"
+      "detail_html_length": 131018,
+      "detail_elapsed_ms": 1399,
+      "scraped_at": "2026-04-28T02:03:44.178Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -856,9 +760,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 140635,
-      "detail_elapsed_ms": 1487,
-      "scraped_at": "2026-04-28T00:01:09.954Z"
+      "detail_html_length": 139326,
+      "detail_elapsed_ms": 1515,
+      "scraped_at": "2026-04-28T02:03:45.693Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preco-1",
@@ -880,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131552,
-      "detail_elapsed_ms": 1496,
-      "scraped_at": "2026-04-28T00:01:11.450Z"
+      "detail_html_length": 131613,
+      "detail_elapsed_ms": 1395,
+      "scraped_at": "2026-04-28T02:03:47.088Z"
     },
     {
       "id": "pnu-30-off-em-pos-graduacao-de-medicina",
@@ -904,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133059,
-      "detail_elapsed_ms": 1459,
-      "scraped_at": "2026-04-28T00:01:12.909Z"
+      "detail_html_length": 133034,
+      "detail_elapsed_ms": 1393,
+      "scraped_at": "2026-04-28T02:03:48.481Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -928,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131978,
-      "detail_elapsed_ms": 1479,
-      "scraped_at": "2026-04-28T00:01:14.388Z"
+      "detail_html_length": 131981,
+      "detail_elapsed_ms": 1375,
+      "scraped_at": "2026-04-28T02:03:49.856Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -952,9 +856,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131796,
-      "detail_elapsed_ms": 1478,
-      "scraped_at": "2026-04-28T00:01:15.866Z"
+      "detail_html_length": 131801,
+      "detail_elapsed_ms": 1392,
+      "scraped_at": "2026-04-28T02:03:51.248Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -976,9 +880,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131967,
-      "detail_elapsed_ms": 1535,
-      "scraped_at": "2026-04-28T00:01:17.401Z"
+      "detail_html_length": 131960,
+      "detail_elapsed_ms": 1470,
+      "scraped_at": "2026-04-28T02:03:52.718Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -1000,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131950,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-04-28T00:01:18.904Z"
+      "detail_html_length": 131944,
+      "detail_elapsed_ms": 1634,
+      "scraped_at": "2026-04-28T02:03:54.352Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -1024,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132203,
-      "detail_elapsed_ms": 1405,
-      "scraped_at": "2026-04-28T00:01:20.309Z"
+      "detail_html_length": 132178,
+      "detail_elapsed_ms": 1682,
+      "scraped_at": "2026-04-28T02:03:56.038Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -1048,9 +952,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132664,
-      "detail_elapsed_ms": 1416,
-      "scraped_at": "2026-04-28T00:01:21.725Z"
+      "detail_html_length": 132668,
+      "detail_elapsed_ms": 1432,
+      "scraped_at": "2026-04-28T02:03:57.478Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -1072,9 +976,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133336,
-      "detail_elapsed_ms": 1461,
-      "scraped_at": "2026-04-28T00:01:23.187Z"
+      "detail_html_length": 133330,
+      "detail_elapsed_ms": 2502,
+      "scraped_at": "2026-04-28T02:03:59.989Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -1096,9 +1000,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133924,
-      "detail_elapsed_ms": 1731,
-      "scraped_at": "2026-04-28T00:01:24.918Z"
+      "detail_html_length": 133967,
+      "detail_elapsed_ms": 1576,
+      "scraped_at": "2026-04-28T02:04:01.569Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -1120,9 +1024,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132335,
-      "detail_elapsed_ms": 2039,
-      "scraped_at": "2026-04-28T00:01:26.957Z"
+      "detail_html_length": 132339,
+      "detail_elapsed_ms": 4737,
+      "scraped_at": "2026-04-28T02:04:06.314Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -1144,9 +1048,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132044,
-      "detail_elapsed_ms": 1451,
-      "scraped_at": "2026-04-28T00:01:28.409Z"
+      "detail_html_length": 132317,
+      "detail_elapsed_ms": 6859,
+      "scraped_at": "2026-04-28T02:04:13.181Z"
     },
     {
       "id": "pmx-30-off-na-compra-de-ingresso-sp",
@@ -1168,9 +1072,105 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132036,
-      "detail_elapsed_ms": 1705,
-      "scraped_at": "2026-04-28T00:01:30.116Z"
+      "detail_html_length": 132040,
+      "detail_elapsed_ms": 1531,
+      "scraped_at": "2026-04-28T02:04:14.715Z"
+    },
+    {
+      "id": "pmv-30-off-na-compra-de-ingresso-ba",
+      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
+      "original_link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
+      "title": "30% OFF na compra de ingresso - BA",
+      "preview_title": "30% OFF na compra de ingresso - BA",
+      "validity": "Benefício válido de 08/04/2026 15:08 até 14/11/2026 23:59.",
+      "description": "Sobre a Turnê: Depois do sucesso da primeira edição, Ivete Clareou retorna em 2026, passando por mais cidades do Brasil e ampliando um encontro que já se tornou inesquecível para quem viveu e irresistível para quem ainda vai viver. O samba de mainha continua! Data do Show: 14 de novembro, no Wet Eventos, em Salvador/BA. Benefício: Cupom de 30% OFF na compra de ingresso da Turnê Ivete Clareou - Turnê 2026. Como utilizar: Para resgatar o desconto de 30% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, clique em \"Liberar código\" e em \"Cupom\". Em seguida, insira seu Código Promocional e prossiga com a compra do ingresso. Regras: Benefício válido para todos os setores e tipos de ingresso. Cada assinante tem direito ao cupom exclusivo de 30% OFF no ingresso. O benefício é válido para todos os setores e sujeito a disponibilidade de ingresso. Endereço do Wet Eventos: Av. Luís Viana Filho, 9.581 - Paralela.",
+      "category": "Promoções do Mês",
+      "partner_name": "Turnê Ivete Clareou - Turnê 2026",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/6817680aed0c582dce40d06a117fc81e.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d6a2b3ca0cb_69d6a1dcefe5f_69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d6a2b3ca0cb_69d6a1dcefe5f_69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d6a2b3ca0cb_69d6a1dcefe5f_69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131942,
+      "detail_elapsed_ms": 1773,
+      "scraped_at": "2026-04-28T02:04:16.488Z"
+    },
+    {
+      "id": "pmu-30-off-na-compra-de-ingresso-ce",
+      "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
+      "original_link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
+      "title": "30% OFF na compra de ingresso - CE",
+      "preview_title": "30% OFF na compra de ingresso - CE",
+      "validity": "Benefício válido de 08/04/2026 15:08 até 10/10/2026 23:59.",
+      "description": "Sobre a Turnê: Depois do sucesso da primeira edição, Ivete Clareou retorna em 2026, passando por mais cidades do Brasil e ampliando um encontro que já se tornou inesquecível para quem viveu e irresistível para quem ainda vai viver. O samba de mainha continua! Data do Show: 10 de outubro, no Colosso Fortaleza, em Fortaleza/CE. Benefício: Cupom de 30% OFF na compra de ingresso da Turnê Ivete Clareou - Turnê 2026. Como utilizar: Para resgatar o desconto de 30% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, clique em \"Liberar código\" e em \"Cupom\". Em seguida, insira seu Código Promocional e prossiga com a compra do ingresso. Regras: Benefício válido para todos os setores e tipos de ingresso. Cada assinante tem direito ao cupom exclusivo de 30% OFF no ingresso. O benefício é válido para todos os setores e sujeito a disponibilidade de ingresso. Endereço do Colosso Fortaleza: Av. Hermenegildo Sá Cavalcante, s/n - Edson Queiroz.",
+      "category": "Promoções do Mês",
+      "partner_name": "Turnê Ivete Clareou - Turnê 2026",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/6817680aed0c582dce40d06a117fc81e.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d6a1dcefe5f_69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d6a1dcefe5f_69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69d6a1dcefe5f_69d69b43a432e_69d69a163b688_69d699715f73e_5e6bbaf41ae4b359c5fd71d530af8828.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131939,
+      "detail_elapsed_ms": 1387,
+      "scraped_at": "2026-04-28T02:04:17.875Z"
+    },
+    {
+      "id": "pmt-41-off-na-pos-graduacao",
+      "trace_id": "trace_pmt-41-off-na-pos-graduacao",
+      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
+      "original_link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
+      "title": "41% OFF na Pós-Graduação",
+      "preview_title": "41% OFF na Pós-Graduação",
+      "validity": "Benefício válido de 08/04/2026 15:34 até 31/12/2026 23:59.",
+      "description": "Sobre o Parceiro: Somos a Descomplica: plataforma brasileira de educação online fundada em 2011, pioneira em cursinhos pré-vestibular e Enem, que expandiu para faculdade, pós-graduação e cursos tecnólogos. Beneficio: Pós-Graduação com 41% OFF Regras: Benefício não cumulativo, válido para uma única utilização por CPF. Sujeito à desativação sem aviso prévio.",
+      "category": "Educação",
+      "partner_name": "Descomplica",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/87a65164f9bc12f2812e3e667e204167.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4626ac7cdc640a3a2dd9f5979f1a1cdb.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4626ac7cdc640a3a2dd9f5979f1a1cdb.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4626ac7cdc640a3a2dd9f5979f1a1cdb.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130690,
+      "detail_elapsed_ms": 1567,
+      "scraped_at": "2026-04-28T02:04:19.443Z"
+    },
+    {
+      "id": "pms-cursinho-enem-com-r-50-off",
+      "trace_id": "trace_pms-cursinho-enem-com-r-50-off",
+      "link": "https://clube.uol.com.br/descomplica/pms-cursinho-enem-com-r-50-off",
+      "original_link": "https://clube.uol.com.br/descomplica/pms-cursinho-enem-com-r-50-off",
+      "title": "Cursinho ENEM com R$ 50 OFF",
+      "preview_title": "Cursinho ENEM com R$ 50 OFF",
+      "validity": "Benefício válido de 08/04/2026 15:18 até 31/12/2026 23:59.",
+      "description": "Sobre o Parceiro: Somos a Descomplica: plataforma brasileira de educação online fundada em 2011, pioneira em cursinhos pré-vestibular e Enem, que expandiu para faculdade, pós-graduação e cursos tecnólogos. Beneficio: R$50 de desconto no cursinho ENEM no site Regras: Benefício não cumulativo, válido para uma única utilização por CPF. Sujeito à desativação sem aviso prévio.",
+      "category": "Educação",
+      "partner_name": "Descomplica",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/87a65164f9bc12f2812e3e667e204167.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/93ac648feaaa4b449d9499f7951e6b2b.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/93ac648feaaa4b449d9499f7951e6b2b.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/93ac648feaaa4b449d9499f7951e6b2b.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130722,
+      "detail_elapsed_ms": 1473,
+      "scraped_at": "2026-04-28T02:04:20.916Z"
     }
   ]
 }
