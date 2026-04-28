@@ -1,21 +1,45 @@
 {
-  "updated_at": "2026-04-28T18:23:29.125112Z",
+  "updated_at": "2026-04-28T18:24:43.255638Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 4,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 44,
+    "duplicada_historico": 48,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "15% OFF no site",
+      "link": "https://clube.uol.com.br/nesthome/pp9-15-off-no-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pp9-15-off-no-site"
+    },
+    {
+      "title": "Caipirinha ou Chope Double",
+      "link": "https://clube.uol.com.br/restaurantepraasaoloureno/pp8-caipirinha-ou-chope-double",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pp8-caipirinha-ou-chope-double"
+    },
+    {
+      "title": "Ganhe uma sobremesa no jantar",
+      "link": "https://clube.uol.com.br/restaurantepraasaoloureno/pp7-ganhe-uma-sobremesa-no-jantar",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pp7-ganhe-uma-sobremesa-no-jantar"
+    },
+    {
+      "title": "Prato em Dobro na Cardof Bistrô",
+      "link": "https://clube.uol.com.br/cardofbistrowinebeer/pp4-prato-em-dobro-na-cardof-bistro",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pp4-prato-em-dobro-na-cardof-bistro"
+    },
     {
       "title": "2 INGRESSOS | 10/05 Teatro Carlos Gomes",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ppv-2-ingressos-10-05-teatro-carlos-gomes",
