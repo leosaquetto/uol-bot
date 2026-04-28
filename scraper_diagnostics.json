@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-28T01:20:07.865551Z",
+  "updated_at": "2026-04-28T02:04:42.250964Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 03/05 Teatro Riachuelo RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppz-2-ingressos-03-05-teatro-riachuelo-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppz-2-ingressos-03-05-teatro-riachuelo-rj"
-    },
     {
       "title": "2 INGRESSOS | 10/05 Teatro Carlos Gomes",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ppv-2-ingressos-10-05-teatro-carlos-gomes",
@@ -141,24 +135,6 @@
       "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
       "reason": "duplicada_historico",
       "trace_id": "trace_pok-ofertas-de-ultima-hora-25-off-extra"
-    },
-    {
-      "title": "40% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/poh-40-off-extra-em-selecao-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_poh-40-off-extra-em-selecao-feminina"
-    },
-    {
-      "title": "30% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pog-30-off-extra-em-selecao-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pog-30-off-extra-em-selecao-feminina"
-    },
-    {
-      "title": "30% OFF em seleção de jeans feminino",
-      "link": "https://clube.uol.com.br/lojasrenner/poe-30-off-em-selecao-de-jeans-feminino",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_poe-30-off-em-selecao-de-jeans-feminino"
     },
     {
       "title": "Até 75% OFF para compras no site",
@@ -303,6 +279,30 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - BA",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - CE",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce"
+    },
+    {
+      "title": "41% OFF na Pós-Graduação",
+      "link": "https://clube.uol.com.br/descomplica/pmt-41-off-na-pos-graduacao",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmt-41-off-na-pos-graduacao"
+    },
+    {
+      "title": "Cursinho ENEM com R$ 50 OFF",
+      "link": "https://clube.uol.com.br/descomplica/pms-cursinho-enem-com-r-50-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pms-cursinho-enem-com-r-50-off"
     }
   ]
 }
