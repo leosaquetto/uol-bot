@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-04-29T19:17:01.881810Z",
+  "last_update": "2026-04-29T19:17:13.227039Z",
   "offers": [
     {
       "id": "ppr-2-ingressos-02-05-teatro-carlos-gomes",
@@ -476,7 +476,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4487?thread=4484",
       "sent_at": "2026-04-29T18:21:59.594362Z",
-      "sold_out_at": "16:16"
+      "sold_out_at": "16:16",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
