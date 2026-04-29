@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-28T23:14:41.665921Z",
+  "updated_at": "2026-04-29T00:01:51.624814Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/giulianaflores/ppK-dia-das-maes-2026-r-50-off",
       "reason": "duplicada_historico",
       "trace_id": "trace_ppk-dia-das-maes-2026-r-50-off"
-    },
-    {
-      "title": "10% OFF Playcenter",
-      "link": "https://clube.uol.com.br/playcenter/ppJ-10-off-playcenter",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppj-10-off-playcenter"
     },
     {
       "title": "Até 70% em exames e check-ups",
@@ -303,6 +297,12 @@
       "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
     }
   ]
 }
