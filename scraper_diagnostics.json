@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-29T18:32:50.329320Z",
+  "updated_at": "2026-04-29T19:17:06.471813Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/ppR-2-ingressos-casa-natura-musical-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_ppr-2-ingressos-casa-natura-musical-sp"
-    },
-    {
-      "title": "2 INGRESSOS 31/05/26 Teatro Claro - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppQ-2-ingressos-31-05-26-teatro-claro-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppq-2-ingressos-31-05-26-teatro-claro-sp"
     },
     {
       "title": "2 INGRESSOS: Teatro Eldorado - SP",
@@ -219,6 +213,12 @@
       "link": "https://clube.uol.com.br/teatrojsafra/pne-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pne-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pnd-50-off-no-par-de-ingressos"
     }
   ]
 }
