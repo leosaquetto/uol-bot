@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-29T22:15:16.385126Z",
+  "updated_at": "2026-04-29T22:32:26.168827Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -63,12 +63,6 @@
       "link": "https://clube.uol.com.br/s2medica/ppH-ate-70-em-exames-e-check-ups",
       "reason": "duplicada_historico",
       "trace_id": "trace_pph-ate-70-em-exames-e-check-ups"
-    },
-    {
-      "title": "2 INGRESSOS: 01/05 Marina da Gloria RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppA-2-ingressos-01-05-marina-da-gloria-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppa-2-ingressos-01-05-marina-da-gloria-rj"
     },
     {
       "title": "15% OFF no site",
@@ -303,6 +297,12 @@
       "link": "https://clube.uol.com.br/teatrojsafra/pne-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pne-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pnd-50-off-no-par-de-ingressos"
     }
   ]
 }
