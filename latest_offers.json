@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-04-29T18:32:12.700542Z",
+  "last_update": "2026-04-29T18:32:17.717090Z",
   "offers": [
     {
       "id": "ppr-2-ingressos-02-05-teatro-carlos-gomes",
@@ -428,7 +428,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4479?thread=4476",
       "sent_at": "2026-04-29T17:36:11.206730Z",
-      "sold_out_at": "15:31"
+      "sold_out_at": "15:31",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "ppR-2-ingressos-casa-natura-musical-sp",
