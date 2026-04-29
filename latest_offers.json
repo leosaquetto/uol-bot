@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-04-29T23:03:08.460026Z",
+  "last_update": "2026-04-29T23:03:13.575995Z",
   "offers": [
     {
       "id": "pp9-15-off-no-site",
@@ -453,7 +453,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4491?thread=4488",
       "sent_at": "2026-04-29T20:48:17.560220Z",
-      "sold_out_at": "19:32"
+      "sold_out_at": "19:32",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "ppA-2-ingressos-01-05-marina-da-gloria-rj",
@@ -477,7 +478,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4495?thread=4492",
       "sent_at": "2026-04-29T22:02:42.237313Z",
-      "sold_out_at": "20:02"
+      "sold_out_at": "20:02",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
