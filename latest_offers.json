@@ -1,31 +1,6 @@
 {
-  "last_update": "2026-04-29T20:48:01.585092Z",
+  "last_update": "2026-04-29T20:48:19.648374Z",
   "offers": [
-    {
-      "id": "ppr-2-ingressos-02-05-teatro-carlos-gomes",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ppr-2-ingressos-02-05-teatro-carlos-gomes",
-      "preview_title": "2 INGRESSOS | 02/05 Teatro Carlos Gomes",
-      "title": "2 INGRESSOS | 02/05 Teatro Carlos Gomes",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppr-2-ingressos-02-05-teatro-carlos-gomes",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69efa4f154ac5_69efa2e54a085_69eadb366d757_69eada4a455e0_69de5bf5af6af_69de58832b3f3_69de579d2f549_69de566834712_69d91deab710e_69d91c9389478_23bea11d3d0ff495d12d22cfce0c646c.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "validity": "Benefício válido de 27/04/2026 15:04 até 01/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para AS CENTENÁRIAS – O MUSICAL e viva uma experiência emocionante e bem-humorada do teatro brasileiro contemporâneo no Teatro Municipal Carlos Gomes, no Rio de Janeiro. Data: Sábado, 02/05 com sessões às 17h. Local: Teatro Municipal Carlos Gomes - Praça Tiradentes, Rio de Janeiro Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, setor ou assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE •Promoção válida por tempo limitado, enquanto durarem os estoques. •Benefício válido ao Assinante UOL pagante + 1 acompanhante. •Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. •O UOL não possui qualquer responsabilidade sobre a realização do evento. •Não é possível alterar ou substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "location_summary": "",
-      "dedupe_key": "2-ingressos-02-05-teatro-carlos-gomes|beneficio-valido-de-27-04-2026-15-04-ate-01-05-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-para-as-centenarias-o-musical-e-viva-uma-experiencia-emocionante-e-bem-humorada-do-teatro-brasileiro-contemporaneo-no-t",
-      "loose_dedupe_key": "2-ingressos-02-05-teatro-carlos-gomes|assinante-uol-resgate-1-par-de-ingressos-para-as-centenarias-o-musical-e-viva-uma-experiencia-emocionante-e-bem-humorada-do-teatro-brasileiro-contemporaneo-no-t",
-      "scraped_at": "2026-04-27T21:19:07.047000Z",
-      "trace_id": "trace_ppr-2-ingressos-02-05-teatro-carlos-gomes",
-      "channel_message_id": 1342,
-      "channel_message_link": "https://t.me/c/3723320790/1342",
-      "comment_message_id": 4411,
-      "discussion_message_id": 4408,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/4411?thread=4408",
-      "sent_at": "2026-04-27T21:38:41.785216Z",
-      "sold_out_at": "21:01",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "pp5-2-ingressos-30-04-teatro-uol-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pp5-2-ingressos-30-04-teatro-uol-sp",
@@ -380,7 +355,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4471?thread=4468",
       "sent_at": "2026-04-29T16:10:46.349481Z",
-      "sold_out_at": "17:47"
+      "sold_out_at": "17:47",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "ppT-25-off-dia-das-maes",
@@ -479,6 +455,29 @@
       "sent_at": "2026-04-29T18:21:59.594362Z",
       "sold_out_at": "16:16",
       "_sold_out_synced_to_telegram": true
+    },
+    {
+      "id": "ppT-25-off-dia-das-mes",
+      "original_link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-mes",
+      "preview_title": "25% OFF Dia das mães",
+      "title": "25% OFF Dia das mães",
+      "link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-mes",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/475e2bdd1f46ec1e150f0ae62e1cfab7.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8bd1776457768ba3072e73ccca68ece3.png",
+      "validity": null,
+      "description": "",
+      "location_summary": "",
+      "dedupe_key": "25-off-dia-das-maes",
+      "loose_dedupe_key": "25-off-dia-das-maes",
+      "scraped_at": "2026-04-29T20:44:09.042000Z",
+      "trace_id": "trace_ppt-25-off-dia-das-mes",
+      "channel_message_id": 1362,
+      "channel_message_link": "https://t.me/c/3723320790/1362",
+      "comment_message_id": 4491,
+      "discussion_message_id": 4488,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/4491?thread=4488",
+      "sent_at": "2026-04-29T20:48:17.560220Z"
     }
   ]
 }
