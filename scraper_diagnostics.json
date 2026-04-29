@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-29T11:03:57.744401Z",
+  "updated_at": "2026-04-29T11:32:11.152089Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -51,12 +51,6 @@
       "link": "https://clube.uol.com.br/cardofbistrowinebeer/pp4-prato-em-dobro-na-cardof-bistro",
       "reason": "duplicada_historico",
       "trace_id": "trace_pp4-prato-em-dobro-na-cardof-bistro"
-    },
-    {
-      "title": "2 INGRESSOS | 10/05 Teatro Carlos Gomes",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppv-2-ingressos-10-05-teatro-carlos-gomes",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppv-2-ingressos-10-05-teatro-carlos-gomes"
     },
     {
       "title": "2 INGRESSOS | 09/05 Teatro Carlos Gomes",
@@ -303,6 +297,12 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
     }
   ]
 }
