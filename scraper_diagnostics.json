@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-04-29T16:11:16.390649Z",
+  "updated_at": "2026-04-29T16:35:12.213369Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 48,
+    "duplicada_historico": 47,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -297,12 +297,6 @@
       "link": "https://clube.uol.com.br/teatrouol/pmE-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pme-50-off-no-par-de-ingressos"
-    },
-    {
-      "title": "50% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/teatrouol/pmB-50-off-no-par-de-ingressos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pmb-50-off-no-par-de-ingressos"
     }
   ]
 }
