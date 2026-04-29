@@ -1,26 +1,38 @@
 {
-  "updated_at": "2026-04-29T17:35:53.551785Z",
+  "updated_at": "2026-04-29T17:36:55.872850Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 16,
+  "candidates_added": 14,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 28,
+    "duplicada_historico": 30,
     "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
+      "title": "Isenção de taxa de serviço no cinema",
+      "link": "https://clube.uol.com.br/ingressocom/ppU-iseno-de-taxa-de-servio-no-cinema",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppu-iseno-de-taxa-de-servio-no-cinema"
+    },
+    {
       "title": "25% OFF Dia das mães",
       "link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-mes",
       "reason": "duplicada_latest",
       "trace_id": "trace_ppt-25-off-dia-das-mes"
+    },
+    {
+      "title": "2 INGRESSOS: Casa Natura Musical - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppR-2-ingressos-casa-natura-musical-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppr-2-ingressos-casa-natura-musical-sp"
     },
     {
       "title": "2 INGRESSOS 31/05/26 Teatro Claro - SP",
