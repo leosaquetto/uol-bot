@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-04-29T13:34:09.844504Z",
+  "updated_at": "2026-04-29T13:34:51.721043Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 47,
+    "duplicada_historico": 48,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: Teatro Reinassance",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppO-2-ingressos-teatro-reinassance",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppo-2-ingressos-teatro-reinassance"
+    },
     {
       "title": "2 INGRESSOS: Teatro Nair Bello SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ppL-2-ingressos-teatro-nair-bello-sp",
