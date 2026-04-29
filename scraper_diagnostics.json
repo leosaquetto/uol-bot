@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-04-29T22:02:29.123999Z",
+  "updated_at": "2026-04-29T22:03:14.635581Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 47,
+    "duplicada_historico": 48,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -63,6 +63,12 @@
       "link": "https://clube.uol.com.br/s2medica/ppH-ate-70-em-exames-e-check-ups",
       "reason": "duplicada_historico",
       "trace_id": "trace_pph-ate-70-em-exames-e-check-ups"
+    },
+    {
+      "title": "2 INGRESSOS: 01/05 Marina da Gloria RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppA-2-ingressos-01-05-marina-da-gloria-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppa-2-ingressos-01-05-marina-da-gloria-rj"
     },
     {
       "title": "15% OFF no site",
