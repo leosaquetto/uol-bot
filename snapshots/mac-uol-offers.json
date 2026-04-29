@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 48,
   "enriched_offers_count": 48,
-  "detail_ok_count": 48,
-  "detail_fail_count": 0,
+  "detail_ok_count": 46,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 48,
+    "complete": 46,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 106208,
-  "run_duration_seconds": 106.21,
-  "avg_detail_ms_per_offer": 2213,
-  "generated_at": "2026-04-29T18:31:50.790Z",
+  "run_duration_ms": 688496,
+  "run_duration_seconds": 688.5,
+  "avg_detail_ms_per_offer": 14344,
+  "generated_at": "2026-04-29T19:16:33.148Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134556,
-      "detail_elapsed_ms": 2166,
-      "scraped_at": "2026-04-29T18:30:14.481Z"
+      "detail_html_length": 128139,
+      "detail_elapsed_ms": 1849,
+      "scraped_at": "2026-04-29T19:05:15.152Z"
     },
     {
       "id": "ppt-25-off-dia-das-mes",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130598,
-      "detail_elapsed_ms": 1591,
-      "scraped_at": "2026-04-29T18:30:16.073Z"
+      "detail_html_length": 130589,
+      "detail_elapsed_ms": 1563,
+      "scraped_at": "2026-04-29T19:05:16.716Z"
     },
     {
       "id": "ppr-2-ingressos-casa-natura-musical-sp",
@@ -88,33 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132730,
-      "detail_elapsed_ms": 1438,
-      "scraped_at": "2026-04-29T18:30:17.511Z"
-    },
-    {
-      "id": "ppq-2-ingressos-31-05-26-teatro-claro-sp",
-      "trace_id": "trace_ppq-2-ingressos-31-05-26-teatro-claro-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppQ-2-ingressos-31-05-26-teatro-claro-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ppQ-2-ingressos-31-05-26-teatro-claro-sp",
-      "title": "2 INGRESSOS 31/05/26 Teatro Claro - SP",
-      "preview_title": "2 INGRESSOS 31/05/26 Teatro Claro - SP",
-      "validity": "Benefício válido de 29/04/2026 12:00 até 31/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e viva a experiência de um espetáculo especial no Teatro Claro – Shopping Vila Olímpia – SP. Validade: Disponível para utilização no mês de Maio/2026. Local: Shopping Vila Olimpia - Rua Olimpíadas, 360, 5º piso, São Paulo- SP. Consulte um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaissp.com.br/programacao Espetáculos em cartaz Flashdance Milton Canta Lulu Emerson Ceará e Ramon Coxinha - A Magia do Buteco Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. Como utilizar o voucher: -Para a utilização do voucher é necessário fazer reserva com até 48 horas de antecedência informando o número do voucher através do e-mail: relacionamentos@brainmais.com. -Reservas para os finais de semanas e feriados devem ser efetuadas até às 17 horas de sexta-feira ou do dia útil anterior. -A retirada dos ingressos com 30 minutos de antecedência, no balcão de convidados vips. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f21ce9ad3c7_0d1fec18de5e7114d778b312160de362.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f21ce9ad3c7_0d1fec18de5e7114d778b312160de362.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f21ce9ad3c7_0d1fec18de5e7114d778b312160de362.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133216,
-      "detail_elapsed_ms": 1466,
-      "scraped_at": "2026-04-29T18:30:18.977Z"
+      "detail_html_length": 132700,
+      "detail_elapsed_ms": 1434,
+      "scraped_at": "2026-04-29T19:05:18.150Z"
     },
     {
       "id": "ppp-2-ingressos-teatro-eldorado-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132453,
-      "detail_elapsed_ms": 1623,
-      "scraped_at": "2026-04-29T18:30:20.601Z"
+      "detail_html_length": 132463,
+      "detail_elapsed_ms": 1482,
+      "scraped_at": "2026-04-29T19:05:19.632Z"
     },
     {
       "id": "ppo-2-ingressos-teatro-reinassance",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132441,
-      "detail_elapsed_ms": 1639,
-      "scraped_at": "2026-04-29T18:30:22.240Z"
+      "detail_html_length": 132421,
+      "detail_elapsed_ms": 1516,
+      "scraped_at": "2026-04-29T19:05:21.148Z"
     },
     {
       "id": "ppl-2-ingressos-teatro-nair-bello-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132615,
-      "detail_elapsed_ms": 1585,
-      "scraped_at": "2026-04-29T18:30:23.825Z"
+      "detail_html_length": 132635,
+      "detail_elapsed_ms": 1597,
+      "scraped_at": "2026-04-29T19:05:22.745Z"
     },
     {
       "id": "ppk-dia-das-mes-2026-r-50-off",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131116,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-04-29T18:30:25.409Z"
+      "detail_html_length": 131126,
+      "detail_elapsed_ms": 1587,
+      "scraped_at": "2026-04-29T19:05:24.332Z"
     },
     {
       "id": "pph-at-70-em-exames-e-check-ups",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133452,
-      "detail_elapsed_ms": 1901,
-      "scraped_at": "2026-04-29T18:30:27.310Z"
+      "detail_html_length": 133442,
+      "detail_elapsed_ms": 1486,
+      "scraped_at": "2026-04-29T19:05:25.819Z"
     },
     {
       "id": "pp9-15-off-no-site",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130669,
-      "detail_elapsed_ms": 1854,
-      "scraped_at": "2026-04-29T18:30:29.164Z"
+      "detail_html_length": 130638,
+      "detail_elapsed_ms": 2553,
+      "scraped_at": "2026-04-29T19:05:28.372Z"
     },
     {
       "id": "pp8-caipirinha-ou-chope-double",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131864,
-      "detail_elapsed_ms": 1666,
-      "scraped_at": "2026-04-29T18:30:30.830Z"
+      "detail_html_length": 131853,
+      "detail_elapsed_ms": 1661,
+      "scraped_at": "2026-04-29T19:05:30.033Z"
     },
     {
       "id": "pp7-ganhe-uma-sobremesa-no-jantar",
@@ -304,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131956,
-      "detail_elapsed_ms": 1697,
-      "scraped_at": "2026-04-29T18:30:32.527Z"
+      "detail_html_length": 131926,
+      "detail_elapsed_ms": 1706,
+      "scraped_at": "2026-04-29T19:05:31.739Z"
     },
     {
       "id": "pp4-prato-em-dobro-na-cardof-bistr",
@@ -328,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132237,
-      "detail_elapsed_ms": 1748,
-      "scraped_at": "2026-04-29T18:30:34.275Z"
+      "detail_html_length": 132257,
+      "detail_elapsed_ms": 1585,
+      "scraped_at": "2026-04-29T19:05:33.324Z"
     },
     {
       "id": "ppu-2-ingressos-09-05-teatro-carlos-gomes",
@@ -352,9 +328,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132727,
-      "detail_elapsed_ms": 1746,
-      "scraped_at": "2026-04-29T18:30:36.021Z"
+      "detail_html_length": 132717,
+      "detail_elapsed_ms": 1503,
+      "scraped_at": "2026-04-29T19:05:34.827Z"
     },
     {
       "id": "ppt-2-ingressos-08-05-teatro-carlos-gomes",
@@ -376,9 +352,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132663,
-      "detail_elapsed_ms": 1417,
-      "scraped_at": "2026-04-29T18:30:37.438Z"
+      "detail_html_length": 132662,
+      "detail_elapsed_ms": 1827,
+      "scraped_at": "2026-04-29T19:05:36.654Z"
     },
     {
       "id": "ppi-dia-das-mes-com-15-off-brinde",
@@ -400,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131016,
-      "detail_elapsed_ms": 1382,
-      "scraped_at": "2026-04-29T18:30:38.821Z"
+      "detail_html_length": 131027,
+      "detail_elapsed_ms": 1688,
+      "scraped_at": "2026-04-29T19:05:38.342Z"
     },
     {
       "id": "pph-especial-de-dia-das-mes-com-12-off",
@@ -424,9 +400,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131049,
-      "detail_elapsed_ms": 1390,
-      "scraped_at": "2026-04-29T18:30:40.211Z"
+      "detail_html_length": 131020,
+      "detail_elapsed_ms": 1454,
+      "scraped_at": "2026-04-29T19:05:39.796Z"
     },
     {
       "id": "ppg-dia-das-mes-puket-com-10-off",
@@ -448,9 +424,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130804,
-      "detail_elapsed_ms": 1585,
-      "scraped_at": "2026-04-29T18:30:41.796Z"
+      "detail_html_length": 130864,
+      "detail_elapsed_ms": 1504,
+      "scraped_at": "2026-04-29T19:05:41.300Z"
     },
     {
       "id": "ppf-presenteie-com-10-off-no-dia-das-mes",
@@ -472,9 +448,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139935,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-04-29T18:30:43.503Z"
+      "detail_html_length": 148299,
+      "detail_elapsed_ms": 1518,
+      "scraped_at": "2026-04-29T19:05:42.818Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -496,9 +472,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132580,
-      "detail_elapsed_ms": 1650,
-      "scraped_at": "2026-04-29T18:30:45.153Z"
+      "detail_html_length": 132590,
+      "detail_elapsed_ms": 1516,
+      "scraped_at": "2026-04-29T19:05:44.334Z"
     },
     {
       "id": "ppd-dia-das-mes-com-15-off",
@@ -520,9 +496,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130803,
-      "detail_elapsed_ms": 1617,
-      "scraped_at": "2026-04-29T18:30:46.770Z"
+      "detail_html_length": 130791,
+      "detail_elapsed_ms": 1531,
+      "scraped_at": "2026-04-29T19:05:45.866Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -544,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132608,
-      "detail_elapsed_ms": 1440,
-      "scraped_at": "2026-04-29T18:30:48.210Z"
+      "detail_html_length": 132598,
+      "detail_elapsed_ms": 1372,
+      "scraped_at": "2026-04-29T19:05:47.238Z"
     },
     {
       "id": "ppb-dia-das-mes-com-25-off",
@@ -568,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130876,
-      "detail_elapsed_ms": 1540,
-      "scraped_at": "2026-04-29T18:30:49.750Z"
+      "detail_html_length": 130856,
+      "detail_elapsed_ms": 1533,
+      "scraped_at": "2026-04-29T19:05:48.771Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -591,10 +567,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132669,
-      "detail_elapsed_ms": 1740,
-      "scraped_at": "2026-04-29T18:31:13.048Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132746,
+      "detail_elapsed_ms": 283865,
+      "scraped_at": "2026-04-29T19:10:32.637Z"
     },
     {
       "id": "pog-50-off-em-at-4-ingressos",
@@ -603,22 +579,22 @@
       "original_link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
       "title": "50% OFF em até 4 ingressos",
       "preview_title": "50% OFF em até 4 ingressos",
-      "validity": "Benefício válido de 09/03/2026 15:54 até 07/06/2026 23:59.",
-      "description": "Sobre o parceiro: Espetáculo Chez Toi – Em Seu Lugar estreia em maio na cidade de São Paulo em curta temporada com Barbara Bruno no elenco comemorando os seus 70 de idade e 55 de carreira. “Chez Toi – Em Seu Lugar” usa do realismo mágico e toques de muito humor para contar a história de Abigail (Barbara Bruno), uma mulher que vive sozinha em seu apartamento e recebe constantes visitas de sua filha Emily (Bianca Rinaldi), uma mulher com traumas do passado. Benefício: Cupom de 50% OFF em até 4 ingressos do Espetáculo Espetáculo Chez Toi - Em Seu Lugar. Regras: Para resgatar o desconto de 50% no ingresso em até 4 ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para o site da ticketeira oficial do espetáculo, escolha a opção \"UOL\" e, em seguida, cole o código no campo solicitado para obter o seu desconto. Atenção: Desconto válido para o Assinante UOL. Desconto válido em até 4 ingressos apenas para modalidade inteira. Benefício não válido para o Setor Popular. Temporada: De 1 de Maio a 7 de Junho de 2026. Horários: Sexta e sábado, às 20h; e domingo, às 18h. Fique de olho no horário: não é permitida a entrada após o início do espetáculo! **Localização do Teatro Nair Bello - Rua Frei Caneca, 569 - 3º Piso, Shopping Frei Caneca, São Paulo.",
+      "validity": "",
+      "description": "",
       "category": "Promoções do Mês",
       "partner_name": "Espetáculo Chez Toi - Em Seu Lugar",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/115ecb9e9fb8b7a643faae3fc21c203c.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69ea51e7c31b6_ec296b77dc3a0fc397c0effe52c9b660.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69ea51e7c31b6_ec296b77dc3a0fc397c0effe52c9b660.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69ea51e7c31b6_ec296b77dc3a0fc397c0effe52c9b660.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132090,
-      "detail_elapsed_ms": 1465,
-      "scraped_at": "2026-04-29T18:31:14.513Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12473,
+      "scraped_at": "2026-04-29T19:10:57.369Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -640,9 +616,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130710,
-      "detail_elapsed_ms": 1481,
-      "scraped_at": "2026-04-29T18:31:15.994Z"
+      "detail_html_length": 130593,
+      "detail_elapsed_ms": 1865,
+      "scraped_at": "2026-04-29T19:10:59.234Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -664,9 +640,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133024,
-      "detail_elapsed_ms": 1467,
-      "scraped_at": "2026-04-29T18:31:17.461Z"
+      "detail_html_length": 132977,
+      "detail_elapsed_ms": 2036,
+      "scraped_at": "2026-04-29T19:11:01.270Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -688,9 +664,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133122,
-      "detail_elapsed_ms": 1639,
-      "scraped_at": "2026-04-29T18:31:19.100Z"
+      "detail_html_length": 133152,
+      "detail_elapsed_ms": 1553,
+      "scraped_at": "2026-04-29T19:11:02.823Z"
     },
     {
       "id": "poy-30-cashback",
@@ -712,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131242,
-      "detail_elapsed_ms": 1433,
-      "scraped_at": "2026-04-29T18:31:20.533Z"
+      "detail_html_length": 131243,
+      "detail_elapsed_ms": 1469,
+      "scraped_at": "2026-04-29T19:11:04.292Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -736,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132438,
-      "detail_elapsed_ms": 1630,
-      "scraped_at": "2026-04-29T18:31:22.163Z"
+      "detail_html_length": 132429,
+      "detail_elapsed_ms": 1546,
+      "scraped_at": "2026-04-29T19:11:05.838Z"
     },
     {
       "id": "pok-ofertas-de-ltima-hora-25-off-extra",
@@ -760,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133197,
-      "detail_elapsed_ms": 1654,
-      "scraped_at": "2026-04-29T18:31:23.817Z"
+      "detail_html_length": 133244,
+      "detail_elapsed_ms": 1424,
+      "scraped_at": "2026-04-29T19:11:07.262Z"
     },
     {
       "id": "pob-at-75-off-para-compras-no-site",
@@ -784,9 +760,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131171,
-      "detail_elapsed_ms": 1580,
-      "scraped_at": "2026-04-29T18:31:25.397Z"
+      "detail_html_length": 131191,
+      "detail_elapsed_ms": 1812,
+      "scraped_at": "2026-04-29T19:11:09.074Z"
     },
     {
       "id": "poa-at-75-off-para-compras-no-site",
@@ -808,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130887,
-      "detail_elapsed_ms": 1689,
-      "scraped_at": "2026-04-29T18:31:27.086Z"
+      "detail_html_length": 130877,
+      "detail_elapsed_ms": 1492,
+      "scraped_at": "2026-04-29T19:11:10.566Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -832,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130980,
-      "detail_elapsed_ms": 1382,
-      "scraped_at": "2026-04-29T18:31:28.469Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 1364,
+      "scraped_at": "2026-04-29T19:11:11.930Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -856,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130755,
-      "detail_elapsed_ms": 1458,
-      "scraped_at": "2026-04-29T18:31:29.927Z"
+      "detail_html_length": 130754,
+      "detail_elapsed_ms": 1361,
+      "scraped_at": "2026-04-29T19:11:13.291Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -880,9 +856,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130911,
-      "detail_elapsed_ms": 1465,
-      "scraped_at": "2026-04-29T18:31:31.392Z"
+      "detail_html_length": 130920,
+      "detail_elapsed_ms": 1351,
+      "scraped_at": "2026-04-29T19:11:14.642Z"
     },
     {
       "id": "pnk-at-12-off-nas-reservas",
@@ -904,9 +880,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132948,
-      "detail_elapsed_ms": 2660,
-      "scraped_at": "2026-04-29T18:31:34.054Z"
+      "detail_html_length": 132898,
+      "detail_elapsed_ms": 1499,
+      "scraped_at": "2026-04-29T19:11:16.141Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -928,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131131,
-      "detail_elapsed_ms": 1529,
-      "scraped_at": "2026-04-29T18:31:35.583Z"
+      "detail_html_length": 131120,
+      "detail_elapsed_ms": 1589,
+      "scraped_at": "2026-04-29T19:11:17.730Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-ms-grtis",
@@ -952,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131157,
-      "detail_elapsed_ms": 1520,
-      "scraped_at": "2026-04-29T18:31:37.103Z"
+      "detail_html_length": 131187,
+      "detail_elapsed_ms": 1594,
+      "scraped_at": "2026-04-29T19:11:19.324Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -976,9 +952,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131054,
-      "detail_elapsed_ms": 1485,
-      "scraped_at": "2026-04-29T18:31:38.588Z"
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 274328,
+      "scraped_at": "2026-04-29T19:15:53.653Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -987,22 +963,22 @@
       "original_link": "https://clube.uol.com.br/nutrify/pn6-20-off-no-site-oficial-da-nutrify",
       "title": "20% OFF no site oficial da Nutrify",
       "preview_title": "20% OFF no site oficial da Nutrify",
-      "validity": "Benefício válido de 14/04/2026 10:40 até 15/05/2026 23:59.",
-      "description": "Sobre o parceiro: Com uma variedade de categorias, Nutrify atende suas necessidades diárias, desde vitaminas e minerais fundamentais até proteínas para seu melhorar seu desempenho no seu esporte favorito. Cada produto é desenvolvido com fórmulas limpas, garantindo que você receba os benefícios de verdade sem aditivos desnecessários. Benefício: Cupom de 20% OFF no site oficial da Nutrify. Regras: Desconto de 20% OFF no site oficial da Nutrify. Cupom cumulativo com outras promoções do site, exceto categoria moda e acessórios. Cupom não cumulativo com outros cupons. O desconto não abrange o frete.",
+      "validity": "",
+      "description": "",
       "category": "Beleza",
       "partner_name": "Nutrify",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a38410fac306ec4054c4417adff966a6.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7c63c56c09aeee3bebed758d8f3e9ce8.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7c63c56c09aeee3bebed758d8f3e9ce8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7c63c56c09aeee3bebed758d8f3e9ce8.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131015,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-04-29T18:31:40.091Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/nutrify/pn6-20-off-no-site-oficial-da-nutrify\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12002,
+      "scraped_at": "2026-04-29T19:16:17.905Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -1024,9 +1000,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 148778,
-      "detail_elapsed_ms": 1589,
-      "scraped_at": "2026-04-29T18:31:41.680Z"
+      "detail_html_length": 132585,
+      "detail_elapsed_ms": 2325,
+      "scraped_at": "2026-04-29T19:16:20.230Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preo-1",
@@ -1048,9 +1024,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131634,
-      "detail_elapsed_ms": 1527,
-      "scraped_at": "2026-04-29T18:31:43.207Z"
+      "detail_html_length": 131288,
+      "detail_elapsed_ms": 2321,
+      "scraped_at": "2026-04-29T19:16:22.551Z"
     },
     {
       "id": "pnu-30-off-em-ps-graduao-de-medicina",
@@ -1072,9 +1048,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133043,
-      "detail_elapsed_ms": 1439,
-      "scraped_at": "2026-04-29T18:31:44.646Z"
+      "detail_html_length": 132694,
+      "detail_elapsed_ms": 1963,
+      "scraped_at": "2026-04-29T19:16:24.514Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -1096,9 +1072,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131987,
-      "detail_elapsed_ms": 1795,
-      "scraped_at": "2026-04-29T18:31:46.442Z"
+      "detail_html_length": 131683,
+      "detail_elapsed_ms": 2326,
+      "scraped_at": "2026-04-29T19:16:26.841Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -1120,9 +1096,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131814,
-      "detail_elapsed_ms": 1426,
-      "scraped_at": "2026-04-29T18:31:47.868Z"
+      "detail_html_length": 131463,
+      "detail_elapsed_ms": 1435,
+      "scraped_at": "2026-04-29T19:16:28.276Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -1144,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131996,
-      "detail_elapsed_ms": 1413,
-      "scraped_at": "2026-04-29T18:31:49.282Z"
+      "detail_html_length": 131652,
+      "detail_elapsed_ms": 1506,
+      "scraped_at": "2026-04-29T19:16:29.783Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -1168,9 +1144,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131951,
-      "detail_elapsed_ms": 1449,
-      "scraped_at": "2026-04-29T18:31:50.731Z"
+      "detail_html_length": 131980,
+      "detail_elapsed_ms": 1862,
+      "scraped_at": "2026-04-29T19:16:31.645Z"
+    },
+    {
+      "id": "pnd-50-off-no-par-de-ingressos",
+      "trace_id": "trace_pnd-50-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "preview_title": "50% OFF no par de ingressos",
+      "validity": "Benefício válido de 10/04/2026 11:42 até 25/07/2026 23:59.",
+      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Show de Stand-UP do Afonso Padilha. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo Afonso Padilha retorna aos palcos com seu show de \"COMO NOSSOS PAIS”, trazendo um olhar afiado, sincero e hilário sobre um sentimento que une toda uma geração: a sensação de que ninguém ensinou a gente a ser adulto. No espetáculo, Afonso parte de questões universais e extremamente atuais — por que nossos pais pareciam saber tudo, enquanto a gente mal sabe pagar um boleto? Ter filhos é sonho ou desespero? E, afinal, em que momento era pra começar a ter dinheiro? Com seu humor observacional característico, o comediante transforma inseguranças, frustrações e dilemas da vida adulta em risadas imediatas, criando uma identificação instantânea com o público. FICHA TÉCNICA: Duração: 80 minutos Classificação: 16 anos SERVIÇO: Temporada: 25 de Julho de 2026 Apresentações: Sábado, 21h",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro J. Safra",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5d5c8ac147ecfe8b8dd5a35fc9466844.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5d5c8ac147ecfe8b8dd5a35fc9466844.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5d5c8ac147ecfe8b8dd5a35fc9466844.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132193,
+      "detail_elapsed_ms": 1441,
+      "scraped_at": "2026-04-29T19:16:33.086Z"
     }
   ]
 }
