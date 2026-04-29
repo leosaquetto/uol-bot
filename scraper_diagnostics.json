@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-04-29T18:21:47.795111Z",
+  "updated_at": "2026-04-29T18:22:24.423035Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 47,
+    "duplicada_historico": 48,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Isenção de taxa no Diabo Veste Prada 2",
+      "link": "https://clube.uol.com.br/ingressocom/ppU-isencao-de-taxa-no-diabo-veste-prada-2",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppu-isencao-de-taxa-no-diabo-veste-prada-2"
+    },
     {
       "title": "25% OFF Dia das mães",
       "link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-maes",
