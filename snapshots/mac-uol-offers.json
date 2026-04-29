@@ -6,20 +6,44 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 48,
   "enriched_offers_count": 48,
-  "detail_ok_count": 47,
-  "detail_fail_count": 1,
+  "detail_ok_count": 46,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 47,
+    "complete": 46,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 2
   },
-  "run_duration_ms": 422699,
-  "run_duration_seconds": 422.7,
-  "avg_detail_ms_per_offer": 8806,
-  "generated_at": "2026-04-29T15:44:22.804Z",
+  "run_duration_ms": 603262,
+  "run_duration_seconds": 603.26,
+  "avg_detail_ms_per_offer": 12568,
+  "generated_at": "2026-04-29T16:10:01.794Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "ppq-2-ingressos-31-05-26-teatro-claro-sp",
+      "trace_id": "trace_ppq-2-ingressos-31-05-26-teatro-claro-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ppQ-2-ingressos-31-05-26-teatro-claro-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ppQ-2-ingressos-31-05-26-teatro-claro-sp",
+      "title": "2 INGRESSOS 31/05/26 Teatro Claro - SP",
+      "preview_title": "2 INGRESSOS 31/05/26 Teatro Claro - SP",
+      "validity": "Benefício válido de 29/04/2026 12:00 até 31/05/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos e viva a experiência de um espetáculo especial no Teatro Claro – Shopping Vila Olímpia – SP. Validade: Disponível para utilização no mês de Maio/2026. Local: Shopping Vila Olimpia - Rua Olimpíadas, 360, 5º piso, São Paulo- SP. Consulte um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaissp.com.br/programacao Espetáculos em cartaz Flashdance Milton Canta Lulu Emerson Ceará e Ramon Coxinha - A Magia do Buteco Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. Como utilizar o voucher: -Para a utilização do voucher é necessário fazer reserva com até 48 horas de antecedência informando o número do voucher através do e-mail: relacionamentos@brainmais.com. -Reservas para os finais de semanas e feriados devem ser efetuadas até às 17 horas de sexta-feira ou do dia útil anterior. -A retirada dos ingressos com 30 minutos de antecedência, no balcão de convidados vips. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f21ce9ad3c7_0d1fec18de5e7114d778b312160de362.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f21ce9ad3c7_0d1fec18de5e7114d778b312160de362.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f21ce9ad3c7_0d1fec18de5e7114d778b312160de362.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131517,
+      "detail_elapsed_ms": 1868,
+      "scraped_at": "2026-04-29T16:00:08.298Z"
+    },
     {
       "id": "ppp-2-ingressos-teatro-eldorado-sp",
       "trace_id": "trace_ppp-2-ingressos-teatro-eldorado-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132255,
-      "detail_elapsed_ms": 75224,
-      "scraped_at": "2026-04-29T15:38:42.735Z"
+      "detail_html_length": 132415,
+      "detail_elapsed_ms": 1792,
+      "scraped_at": "2026-04-29T16:00:10.091Z"
     },
     {
       "id": "ppo-2-ingressos-teatro-reinassance",
@@ -51,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/ppO-2-ingressos-teatro-reinassance",
       "title": "2 INGRESSOS: Teatro Reinassance",
       "preview_title": "2 INGRESSOS: Teatro Reinassance",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 29/04/2026 10:00 até 26/07/2026 23:59.",
+      "description": "Exclusivo para assinantes UOL! Resgate 1 par de ingressos e viva a experiência de O Figurante, um espetáculo intenso, reflexivo e emocionante em cartaz no Teatro Reinassance, em São Paulo – SP. Datas disponíveis: 02/05 à 26/06 - Sábados às 19h e Domingos às 17h Local: Teatro Renaissance - Alameda Santos, 2233 - Cerqueira César. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher data, horário, categoria e assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/42d30debc96c768ef8b983d9301c3004.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/42d30debc96c768ef8b983d9301c3004.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/ppO-2-ingressos-teatro-reinassance\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12005,
-      "scraped_at": "2026-04-29T15:39:07.005Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/42d30debc96c768ef8b983d9301c3004.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132423,
+      "detail_elapsed_ms": 1382,
+      "scraped_at": "2026-04-29T16:00:11.473Z"
     },
     {
       "id": "ppl-2-ingressos-teatro-nair-bello-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132548,
-      "detail_elapsed_ms": 1462,
-      "scraped_at": "2026-04-29T15:39:08.467Z"
+      "detail_html_length": 132617,
+      "detail_elapsed_ms": 1517,
+      "scraped_at": "2026-04-29T16:00:12.990Z"
     },
     {
       "id": "ppk-dia-das-maes-2026-r-50-off",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131132,
-      "detail_elapsed_ms": 1400,
-      "scraped_at": "2026-04-29T15:39:09.867Z"
+      "detail_html_length": 131112,
+      "detail_elapsed_ms": 1603,
+      "scraped_at": "2026-04-29T16:00:14.593Z"
     },
     {
       "id": "pph-ate-70-em-exames-e-check-ups",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133429,
-      "detail_elapsed_ms": 1467,
-      "scraped_at": "2026-04-29T15:39:11.334Z"
+      "detail_html_length": 133391,
+      "detail_elapsed_ms": 1687,
+      "scraped_at": "2026-04-29T16:00:16.280Z"
     },
     {
       "id": "pp9-15-off-no-site",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130658,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-04-29T15:39:12.982Z"
+      "detail_html_length": 130610,
+      "detail_elapsed_ms": 1370,
+      "scraped_at": "2026-04-29T16:00:17.650Z"
     },
     {
       "id": "pp8-caipirinha-ou-chope-double",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131884,
-      "detail_elapsed_ms": 1587,
-      "scraped_at": "2026-04-29T15:39:14.569Z"
+      "detail_html_length": 131865,
+      "detail_elapsed_ms": 1685,
+      "scraped_at": "2026-04-29T16:00:19.335Z"
     },
     {
       "id": "pp7-ganhe-uma-sobremesa-no-jantar",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131956,
-      "detail_elapsed_ms": 1464,
-      "scraped_at": "2026-04-29T15:39:16.033Z"
+      "detail_html_length": 131889,
+      "detail_elapsed_ms": 3088,
+      "scraped_at": "2026-04-29T16:00:22.423Z"
     },
     {
       "id": "pp4-prato-em-dobro-na-cardof-bistro",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132261,
-      "detail_elapsed_ms": 1447,
-      "scraped_at": "2026-04-29T15:39:17.480Z"
+      "detail_html_length": 132224,
+      "detail_elapsed_ms": 1726,
+      "scraped_at": "2026-04-29T16:00:24.149Z"
     },
     {
       "id": "ppu-2-ingressos-09-05-teatro-carlos-gomes",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132717,
-      "detail_elapsed_ms": 1371,
-      "scraped_at": "2026-04-29T15:39:18.851Z"
+      "detail_html_length": 132700,
+      "detail_elapsed_ms": 1466,
+      "scraped_at": "2026-04-29T16:00:25.615Z"
     },
     {
       "id": "ppt-2-ingressos-08-05-teatro-carlos-gomes",
@@ -280,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132712,
-      "detail_elapsed_ms": 1553,
-      "scraped_at": "2026-04-29T15:39:20.404Z"
+      "detail_html_length": 132694,
+      "detail_elapsed_ms": 1875,
+      "scraped_at": "2026-04-29T16:00:27.491Z"
     },
     {
       "id": "ppi-dia-das-maes-com-15-off-brinde",
@@ -295,7 +319,7 @@
       "description": "Sobre o Parceiro: Não somos uma marca de beleza. Somos uma nova forma de comprar, consumir e pensar a beleza. Nascemos há mais de dez anos para trazer uma beleza espontânea, descomplicada, acessível, e claro, smart! Benefício: 15% de desconto + brinde na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras acima de R$249. Aplicável apenas para produtos selecionados. Oferta válida somente para a loja online. Não cumulativa com demais cupons. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Océane",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/3d7f43651a30a9075a4040159876a720.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
@@ -304,9 +328,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131022,
-      "detail_elapsed_ms": 1376,
-      "scraped_at": "2026-04-29T15:39:21.780Z"
+      "detail_html_length": 131015,
+      "detail_elapsed_ms": 1630,
+      "scraped_at": "2026-04-29T16:00:29.121Z"
     },
     {
       "id": "pph-especial-de-dia-das-maes-com-12-off",
@@ -328,9 +352,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131055,
-      "detail_elapsed_ms": 1357,
-      "scraped_at": "2026-04-29T15:39:23.137Z"
+      "detail_html_length": 131076,
+      "detail_elapsed_ms": 1819,
+      "scraped_at": "2026-04-29T16:00:30.940Z"
     },
     {
       "id": "ppg-dia-das-maes-puket-com-10-off",
@@ -352,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130850,
-      "detail_elapsed_ms": 1448,
-      "scraped_at": "2026-04-29T15:39:24.585Z"
+      "detail_html_length": 130842,
+      "detail_elapsed_ms": 1429,
+      "scraped_at": "2026-04-29T16:00:32.369Z"
     },
     {
       "id": "ppf-presenteie-com-10-off-no-dia-das-maes",
@@ -376,9 +400,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139298,
-      "detail_elapsed_ms": 1640,
-      "scraped_at": "2026-04-29T15:39:26.226Z"
+      "detail_html_length": 148759,
+      "detail_elapsed_ms": 1402,
+      "scraped_at": "2026-04-29T16:00:33.771Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -400,9 +424,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132579,
-      "detail_elapsed_ms": 1616,
-      "scraped_at": "2026-04-29T15:39:27.842Z"
+      "detail_html_length": 132571,
+      "detail_elapsed_ms": 1584,
+      "scraped_at": "2026-04-29T16:00:35.355Z"
     },
     {
       "id": "ppd-dia-das-maes-com-15-off",
@@ -424,9 +448,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130808,
-      "detail_elapsed_ms": 1436,
-      "scraped_at": "2026-04-29T15:39:29.278Z"
+      "detail_html_length": 130819,
+      "detail_elapsed_ms": 1381,
+      "scraped_at": "2026-04-29T16:00:36.736Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -447,10 +471,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132609,
-      "detail_elapsed_ms": 1459,
-      "scraped_at": "2026-04-29T15:39:43.030Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132610,
+      "detail_elapsed_ms": 1380,
+      "scraped_at": "2026-04-29T16:00:38.116Z"
     },
     {
       "id": "ppb-dia-das-maes-com-25-off",
@@ -472,9 +496,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130863,
-      "detail_elapsed_ms": 1434,
-      "scraped_at": "2026-04-29T15:39:44.464Z"
+      "detail_html_length": 130864,
+      "detail_elapsed_ms": 1403,
+      "scraped_at": "2026-04-29T16:00:39.519Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -496,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132736,
-      "detail_elapsed_ms": 1466,
-      "scraped_at": "2026-04-29T15:39:45.930Z"
+      "detail_html_length": 132698,
+      "detail_elapsed_ms": 1467,
+      "scraped_at": "2026-04-29T16:00:40.986Z"
     },
     {
       "id": "pog-50-off-em-ate-4-ingressos",
@@ -520,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132069,
-      "detail_elapsed_ms": 1608,
-      "scraped_at": "2026-04-29T15:39:47.538Z"
+      "detail_html_length": 132061,
+      "detail_elapsed_ms": 1343,
+      "scraped_at": "2026-04-29T16:00:42.329Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -544,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130700,
-      "detail_elapsed_ms": 1387,
-      "scraped_at": "2026-04-29T15:39:48.925Z"
+      "detail_html_length": 130701,
+      "detail_elapsed_ms": 1546,
+      "scraped_at": "2026-04-29T16:00:43.875Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -568,9 +592,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133042,
-      "detail_elapsed_ms": 1469,
-      "scraped_at": "2026-04-29T15:39:50.395Z"
+      "detail_html_length": 133015,
+      "detail_elapsed_ms": 228748,
+      "scraped_at": "2026-04-29T16:04:32.623Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -579,22 +603,22 @@
       "original_link": "https://clube.uol.com.br/teatrouol/poD-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 23/04/2026 10:55 até 26/07/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Espetáculo 10 Maneiras Incríveis de Destruir Seu Casamento. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Com texto de Sérgio Abritta, o espetáculo é estruturado em esquetes ágeis e independentes que retratam, com humor ácido e identificação imediata, situações do casamento contemporâneo. Pequenos hábitos, conflitos cotidianos e crises conjugais ganham contornos cômicos, transformando dramas comuns em gargalhadas. A montagem é estrelada por Ellen Rocche, Daniel Rocha, Thaisa Damous e Tom Prado, atores com sólida trajetória no teatro, na televisão e no cinema e que se destaca pela versatilidade em múltiplos personagens e pela relação direta com a plateia, potencializando o humor do texto e garantindo ritmo e alto engajamento do início ao fim. Popular, atual e provocadora, a peça convida o público a rir de si mesmo e das relações afetivas, em uma experiência divertida, dinâmica e altamente reconhecível — ideal para casados, solteiros e divorciados. FICHA TÉCNICA: Elenco: Vitória Strada, Daniel Rocha, Thaisa Damous e Ton Prado. Stand in: Fernanda Heras. Texto: Sérgio Abritta. Direção: Isser Korik. Cenografia: Osvaldo Gonçalvez. Iluminadora: Renata Bitencourt. Figurinos: Leandro Mariz. Direção musical: Giovana Cirne e Diego Rodda. SAC: Carinne Namba. Projeto gráfico: Lucas Sancho. Comunicação e Marketing: Lucas Sancho. Gestão de performance e Redes sociais: Nucleus. Produção executiva: Andrea Làra. Produção geral: Miçairi Guimarães e Sandro Chaim. Realização: Magic Arts. SERVIÇO: Temporada: 02/05/2026 a 26/07/2026. Apresentações: Sábado e domingo, 18h. Ingresso*: Setor A - Inteira: R$ 150,00 Meia: R$ 75,00 | Setor B - Inteira: R$ 120,00 Meia: R$ 60,00. Duração: 80 minutos. Classificação etária: 14 anos. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro UOL",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3bbf961f62fcef68e1f59259d65861ea.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3bbf961f62fcef68e1f59259d65861ea.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3bbf961f62fcef68e1f59259d65861ea.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133566,
-      "detail_elapsed_ms": 1443,
-      "scraped_at": "2026-04-29T15:39:51.838Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/teatrouol/poD-50-off-no-par-de-ingressos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12003,
+      "scraped_at": "2026-04-29T16:04:56.886Z"
     },
     {
       "id": "poy-30-cashback",
@@ -616,9 +640,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131212,
-      "detail_elapsed_ms": 1573,
-      "scraped_at": "2026-04-29T15:39:53.411Z"
+      "detail_html_length": 131118,
+      "detail_elapsed_ms": 1472,
+      "scraped_at": "2026-04-29T16:04:58.358Z"
     },
     {
       "id": "pon-2-ingressos-30-04-termas-do-pacu-sp",
@@ -640,9 +664,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132438,
-      "detail_elapsed_ms": 1563,
-      "scraped_at": "2026-04-29T15:39:54.974Z"
+      "detail_html_length": 132440,
+      "detail_elapsed_ms": 1481,
+      "scraped_at": "2026-04-29T16:04:59.839Z"
     },
     {
       "id": "pok-ofertas-de-ultima-hora-25-off-extra",
@@ -664,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133221,
-      "detail_elapsed_ms": 1467,
-      "scraped_at": "2026-04-29T15:39:56.441Z"
+      "detail_html_length": 133244,
+      "detail_elapsed_ms": 1576,
+      "scraped_at": "2026-04-29T16:05:01.415Z"
     },
     {
       "id": "pob-ate-75-off-para-compras-no-site",
@@ -688,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131167,
-      "detail_elapsed_ms": 1425,
-      "scraped_at": "2026-04-29T15:39:57.867Z"
+      "detail_html_length": 131169,
+      "detail_elapsed_ms": 1566,
+      "scraped_at": "2026-04-29T16:05:02.981Z"
     },
     {
       "id": "poa-ate-75-off-para-compras-no-site",
@@ -712,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130872,
-      "detail_elapsed_ms": 1604,
-      "scraped_at": "2026-04-29T15:39:59.471Z"
+      "detail_html_length": 130885,
+      "detail_elapsed_ms": 1575,
+      "scraped_at": "2026-04-29T16:05:04.556Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -736,9 +760,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130970,
-      "detail_elapsed_ms": 1488,
-      "scraped_at": "2026-04-29T15:40:00.959Z"
+      "detail_html_length": 131385,
+      "detail_elapsed_ms": 1449,
+      "scraped_at": "2026-04-29T16:05:06.005Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -760,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130735,
-      "detail_elapsed_ms": 1579,
-      "scraped_at": "2026-04-29T15:40:02.538Z"
+      "detail_html_length": 130746,
+      "detail_elapsed_ms": 1391,
+      "scraped_at": "2026-04-29T16:05:07.396Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -784,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130912,
-      "detail_elapsed_ms": 1529,
-      "scraped_at": "2026-04-29T15:40:04.067Z"
+      "detail_html_length": 130923,
+      "detail_elapsed_ms": 1540,
+      "scraped_at": "2026-04-29T16:05:08.936Z"
     },
     {
       "id": "pnk-ate-12-off-nas-reservas",
@@ -808,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132943,
-      "detail_elapsed_ms": 2092,
-      "scraped_at": "2026-04-29T15:40:06.159Z"
+      "detail_html_length": 132954,
+      "detail_elapsed_ms": 1584,
+      "scraped_at": "2026-04-29T16:05:10.520Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -832,9 +856,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131140,
-      "detail_elapsed_ms": 1564,
-      "scraped_at": "2026-04-29T15:40:07.723Z"
+      "detail_html_length": 131113,
+      "detail_elapsed_ms": 1499,
+      "scraped_at": "2026-04-29T16:05:12.019Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
@@ -856,9 +880,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131216,
-      "detail_elapsed_ms": 1417,
-      "scraped_at": "2026-04-29T15:40:09.140Z"
+      "detail_html_length": 131208,
+      "detail_elapsed_ms": 1432,
+      "scraped_at": "2026-04-29T16:05:13.451Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -880,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131044,
-      "detail_elapsed_ms": 1440,
-      "scraped_at": "2026-04-29T15:40:10.580Z"
+      "detail_html_length": 131046,
+      "detail_elapsed_ms": 1447,
+      "scraped_at": "2026-04-29T16:05:14.898Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -904,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131014,
-      "detail_elapsed_ms": 1633,
-      "scraped_at": "2026-04-29T15:40:12.213Z"
+      "detail_html_length": 131007,
+      "detail_elapsed_ms": 1428,
+      "scraped_at": "2026-04-29T16:05:16.326Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -928,9 +952,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 148198,
-      "detail_elapsed_ms": 1388,
-      "scraped_at": "2026-04-29T15:40:13.601Z"
+      "detail_html_length": 148772,
+      "detail_elapsed_ms": 1466,
+      "scraped_at": "2026-04-29T16:05:17.792Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preco-1",
@@ -952,9 +976,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131608,
-      "detail_elapsed_ms": 1455,
-      "scraped_at": "2026-04-29T15:40:15.056Z"
+      "detail_html_length": 131640,
+      "detail_elapsed_ms": 1516,
+      "scraped_at": "2026-04-29T16:05:19.308Z"
     },
     {
       "id": "pnu-30-off-em-pos-graduacao-de-medicina",
@@ -963,22 +987,22 @@
       "original_link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
       "title": "30% OFF em Pós Graduação de Medicina",
       "preview_title": "30% OFF em Pós Graduação de Medicina",
-      "validity": "Benefício válido de 10/04/2026 17:21 até 31/12/2028 23:59.",
-      "description": "Sobre o Parceiro: A MedBrasil é uma instituição de ensino médico voltada à formação prática e estratégica de médicos, com foco em preparação para prova de título, desenvolvimento clínico e impacto real na carreira. Benefício: 30% OFF em Pós Graduação de Medicina Regras: Acesse o site e preencha o formulário. A equipe MedBrasil entrará em contato em até 24h com condições exclusivas. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Educação",
       "partner_name": "MedBrasil",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8b53d9895a84545d055bea98cd3bbadf.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/99fc859d8cba0a613a5644104f5c8366.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/99fc859d8cba0a613a5644104f5c8366.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/99fc859d8cba0a613a5644104f5c8366.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133050,
-      "detail_elapsed_ms": 1371,
-      "scraped_at": "2026-04-29T15:40:16.428Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12002,
+      "scraped_at": "2026-04-29T16:09:51.330Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -1000,9 +1024,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131976,
-      "detail_elapsed_ms": 1398,
-      "scraped_at": "2026-04-29T15:40:17.827Z"
+      "detail_html_length": 131873,
+      "detail_elapsed_ms": 1611,
+      "scraped_at": "2026-04-29T16:09:52.941Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -1024,9 +1048,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131747,
-      "detail_elapsed_ms": 1376,
-      "scraped_at": "2026-04-29T15:40:19.203Z"
+      "detail_html_length": 131789,
+      "detail_elapsed_ms": 1484,
+      "scraped_at": "2026-04-29T16:09:54.425Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -1048,9 +1072,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131975,
-      "detail_elapsed_ms": 1476,
-      "scraped_at": "2026-04-29T15:40:20.679Z"
+      "detail_html_length": 131979,
+      "detail_elapsed_ms": 1481,
+      "scraped_at": "2026-04-29T16:09:55.906Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -1072,9 +1096,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131960,
-      "detail_elapsed_ms": 1650,
-      "scraped_at": "2026-04-29T15:40:22.329Z"
+      "detail_html_length": 131952,
+      "detail_elapsed_ms": 1524,
+      "scraped_at": "2026-04-29T16:09:57.431Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -1096,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132173,
-      "detail_elapsed_ms": 1477,
-      "scraped_at": "2026-04-29T15:40:23.807Z"
+      "detail_html_length": 132175,
+      "detail_elapsed_ms": 1371,
+      "scraped_at": "2026-04-29T16:09:58.803Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -1120,9 +1144,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132674,
-      "detail_elapsed_ms": 1469,
-      "scraped_at": "2026-04-29T15:40:25.286Z"
+      "detail_html_length": 132687,
+      "detail_elapsed_ms": 1491,
+      "scraped_at": "2026-04-29T16:10:00.294Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -1144,33 +1168,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133315,
-      "detail_elapsed_ms": 1525,
-      "scraped_at": "2026-04-29T15:40:26.811Z"
-    },
-    {
-      "id": "pm9-50-off-no-par-de-ingressos",
-      "trace_id": "trace_pm9-50-off-no-par-de-ingressos",
-      "link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
-      "original_link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
-      "title": "50% OFF no par de ingressos",
-      "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 09/04/2026 10:09 até 24/05/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Espetáculo Betrayal. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Escrita em 1978, “Betrayal” é um dos pilares da dramaturgia de Harold Pinter, vencedor do Nobel de Literatura. Estrutura revolucionária e atemporal. Consagrada mundialmente em palcos internacionais. Exploração profunda do amor, amizade e deslealdade. A trama revela a história de Emma, Robert e Jerry, cujos destinos se cruzam em um triângulo amoroso que põe à prova as fronteiras entre intimidade, amizade e lealdade. Narrada de trás para frente, a peça expõe segredos e contradições, convidando o espectador a se debruçar sobre os silêncios e ambiguidades que permeiam as relações humanas. A montagem aposta em uma estética minimalista, que valoriza a força da palavra, os silêncios e a tensão característica de Pinter. Os três atores permanecem presentes em cena durante toda a peça, criando um jogo de presenças que coloca o público como cúmplice da narrativa. Iluminação e cenografia reforçam a atmosfera íntima e intensa, aproximando a plateia do universo emocional dos personagens. FICHA TÉCNICA: Dramaturgia: Harold Pinter. Tradução: Luis Frias. Direção: Lavínia Pannunzio. Elenco: Luiza Curvo, Leonardo Brício, Diego Machado e Miranda Diamant (part. especial). Direção de arte e cenografia: Mira Andrade. Figurino: Anne Cerutti. Desenho de luz: Sarah Salgado. Trilha sonora: Rafael Thomazini. Visagismo: Dicko Lorenzo. Maquiagem: Silvia Rocha. Operador de som: Rafael Thomazini e Vinicius Scorza. Microfonista: Rodrigo dos Santos. Operador de luz: Douglas Pereira. Consultoria de libras: Victor Pascoalini. Diretor de palco: Domingos Varela. Contrarregra/Camareiro: João Carvalho. Cenotécnico: All Arte Cenografia. Elétrica cênica: Evt Iluminações. Idealização e Produção geral: Luiza Curvo. Produção executiva: Natália Oliveira e Miçairi Guimarães. Produção: Jess Rezende e Lidiane Rosa. Assistente de figurino: Isadora Brant Tavares Pereira. Agência de mídia social: Nucleus. Administração financeira e prestação de contas: Vianapole Arte – Leticia Nápole, Barbara Bittencourt e Leticia Verônica. Fotos divulgação: Felipe Penteado. Fotografia: Luísa Ananias. Design: Laerte Késsimos. Captura de imagem e vídeos: Rafael Thomazini. Sala de ensaio: Teatro Estúdio. Apoio logístico: TDB Transporte e Distribuição de Bens. SERVIÇO: Temporada: 03/04/2026 a 24/05/2026. Apresentações: Sexta, Sábado e Domingo, 20h. Ingresso*: Setor A - Inteira: R$ 150,00 Meia: R$ 75,00 | Setor B - Inteira: R$ 120,00 Meia: R$ 60,00. Duração: 80 minutos. Classificação etária: 14 anos. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
-      "category": "Entretenimento e Viagens",
-      "partner_name": "Teatro UOL",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f335e9111cdb48d86ad8db710c1d4eb4.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f335e9111cdb48d86ad8db710c1d4eb4.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f335e9111cdb48d86ad8db710c1d4eb4.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133914,
-      "detail_elapsed_ms": 235880,
-      "scraped_at": "2026-04-29T15:44:22.692Z"
+      "detail_html_length": 133327,
+      "detail_elapsed_ms": 1429,
+      "scraped_at": "2026-04-29T16:10:01.724Z"
     }
   ]
 }
