@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-30T00:11:51.924059Z",
+  "updated_at": "2026-04-30T04:07:19.757304Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,10 +7,10 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 0,
+    "validade_expirada": 1,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 30,
+    "duplicada_historico": 29,
     "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -145,7 +145,7 @@
     {
       "title": "2 INGRESSOS: 30/04 Termas do Pacu | SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pon-2-ingressos-30-04-termas-do-pacu-sp",
-      "reason": "duplicada_historico",
+      "reason": "validade_expirada",
       "trace_id": "trace_pon-2-ingressos-30-04-termas-do-pacu-sp"
     },
     {
