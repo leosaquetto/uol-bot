@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 95667,
-  "run_duration_seconds": 95.67,
-  "avg_detail_ms_per_offer": 1993,
-  "generated_at": "2026-04-30T19:31:38.825Z",
+  "run_duration_ms": 97105,
+  "run_duration_seconds": 97.11,
+  "avg_detail_ms_per_offer": 2023,
+  "generated_at": "2026-04-30T20:05:40.621Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131125,
-      "detail_elapsed_ms": 2119,
-      "scraped_at": "2026-04-30T19:30:17.679Z"
-    },
-    {
-      "id": "pqf-2-ingressos-02-05-teatro-casa-grande-rj",
-      "trace_id": "trace_pqf-2-ingressos-02-05-teatro-casa-grande-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqf-2-ingressos-02-05-teatro-casa-grande-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqf-2-ingressos-02-05-teatro-casa-grande-rj",
-      "title": "2 INGRESSOS| 02/05 Teatro Casa Grande RJ",
-      "preview_title": "2 INGRESSOS| 02/05 Teatro Casa Grande RJ",
-      "validity": "Benefício válido de 30/04/2026 13:21 até 01/05/2026 18:30.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para O Céu da Língua, com Gregório Duvivier, e viva uma experiência inteligente, divertida e provocadora do teatro brasileiro contemporâneo, em um espetáculo que celebra o poder das palavras com humor, poesia e reflexão, no Teatro Casa Grande, no Rio de Janeiro. Data: 02/05 com sessões às 19h. Local: Teatro Casa Grande - Shopping Leblon - Av. Afrânio de Melo Franco, 290 - a - Leblon - RJ. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, setor ou assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: •Promoção válida por tempo limitado, enquanto durarem os estoques. •Benefício válido ao Assinante UOL pagante + 1 acompanhante. •Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. •O UOL não possui qualquer responsabilidade sobre a realização do evento. •Não é possível alterar ou substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f39c0fc2f3a_69f39aa65ab61_5633694b6122911e621f0ad03272d28c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f39c0fc2f3a_69f39aa65ab61_5633694b6122911e621f0ad03272d28c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69f39c0fc2f3a_69f39aa65ab61_5633694b6122911e621f0ad03272d28c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131170,
-      "detail_elapsed_ms": 2075,
-      "scraped_at": "2026-04-30T19:30:19.776Z"
+      "detail_html_length": 125992,
+      "detail_elapsed_ms": 1898,
+      "scraped_at": "2026-04-30T20:04:20.312Z"
     },
     {
       "id": "pqe-2-ingressos-01-05-teatro-casa-grande-rj",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132379,
-      "detail_elapsed_ms": 1969,
-      "scraped_at": "2026-04-30T19:30:21.745Z"
+      "detail_html_length": 132381,
+      "detail_elapsed_ms": 1929,
+      "scraped_at": "2026-04-30T20:04:22.260Z"
     },
     {
       "id": "ppt-25-off-dia-das-maes",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130553,
-      "detail_elapsed_ms": 1737,
-      "scraped_at": "2026-04-30T19:30:23.482Z"
+      "detail_html_length": 130545,
+      "detail_elapsed_ms": 1767,
+      "scraped_at": "2026-04-30T20:04:24.027Z"
     },
     {
       "id": "ppp-2-ingressos-teatro-eldorado-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132433,
-      "detail_elapsed_ms": 1732,
-      "scraped_at": "2026-04-30T19:30:25.215Z"
+      "detail_html_length": 132405,
+      "detail_elapsed_ms": 1663,
+      "scraped_at": "2026-04-30T20:04:25.690Z"
     },
     {
       "id": "ppk-dia-das-maes-2026-r-50-off",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131051,
-      "detail_elapsed_ms": 1492,
-      "scraped_at": "2026-04-30T19:30:26.708Z"
+      "detail_html_length": 131054,
+      "detail_elapsed_ms": 1750,
+      "scraped_at": "2026-04-30T20:04:27.440Z"
     },
     {
       "id": "pph-ate-70-em-exames-e-check-ups",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133407,
-      "detail_elapsed_ms": 1635,
-      "scraped_at": "2026-04-30T19:30:28.343Z"
+      "detail_html_length": 133380,
+      "detail_elapsed_ms": 1751,
+      "scraped_at": "2026-04-30T20:04:29.191Z"
     },
     {
       "id": "pp9-15-off-no-site",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130578,
-      "detail_elapsed_ms": 1889,
-      "scraped_at": "2026-04-30T19:30:30.232Z"
+      "detail_html_length": 130599,
+      "detail_elapsed_ms": 1761,
+      "scraped_at": "2026-04-30T20:04:30.952Z"
     },
     {
       "id": "pp8-caipirinha-ou-chope-double",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131824,
-      "detail_elapsed_ms": 1936,
-      "scraped_at": "2026-04-30T19:30:32.168Z"
+      "detail_html_length": 131825,
+      "detail_elapsed_ms": 1685,
+      "scraped_at": "2026-04-30T20:04:32.637Z"
     },
     {
       "id": "pp7-ganhe-uma-sobremesa-no-jantar",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131876,
-      "detail_elapsed_ms": 1508,
-      "scraped_at": "2026-04-30T19:30:33.676Z"
+      "detail_html_length": 131909,
+      "detail_elapsed_ms": 1583,
+      "scraped_at": "2026-04-30T20:04:34.220Z"
     },
     {
       "id": "pp4-prato-em-dobro-na-cardof-bistro",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132252,
-      "detail_elapsed_ms": 1756,
-      "scraped_at": "2026-04-30T19:30:35.432Z"
+      "detail_html_length": 132215,
+      "detail_elapsed_ms": 1630,
+      "scraped_at": "2026-04-30T20:04:35.850Z"
     },
     {
       "id": "ppt-2-ingressos-08-05-teatro-carlos-gomes",
@@ -304,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132663,
-      "detail_elapsed_ms": 1733,
-      "scraped_at": "2026-04-30T19:30:37.165Z"
+      "detail_html_length": 132634,
+      "detail_elapsed_ms": 1654,
+      "scraped_at": "2026-04-30T20:04:37.504Z"
     },
     {
       "id": "ppi-dia-das-maes-com-15-off-brinde",
@@ -319,7 +295,7 @@
       "description": "Sobre o Parceiro: Não somos uma marca de beleza. Somos uma nova forma de comprar, consumir e pensar a beleza. Nascemos há mais de dez anos para trazer uma beleza espontânea, descomplicada, acessível, e claro, smart! Benefício: 15% de desconto + brinde na campanha de Dia das Mães. Regras: Para garantir o desconto, aplique o cupom no carrinho antes de finalizar a compra. Válido para compras acima de R$249. Aplicável apenas para produtos selecionados. Oferta válida somente para a loja online. Não cumulativa com demais cupons. Sujeito à desativação sem aviso prévio. Valido até 10/05/2026",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Océane",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/3d7f43651a30a9075a4040159876a720.png",
+      "partner_img_url": "",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4dbaa69883e86a384b0baeb52b544577.png",
@@ -328,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130992,
-      "detail_elapsed_ms": 1742,
-      "scraped_at": "2026-04-30T19:30:38.907Z"
+      "detail_html_length": 130974,
+      "detail_elapsed_ms": 1600,
+      "scraped_at": "2026-04-30T20:04:39.104Z"
     },
     {
       "id": "pph-especial-de-dia-das-maes-com-12-off",
@@ -352,9 +328,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131055,
-      "detail_elapsed_ms": 1829,
-      "scraped_at": "2026-04-30T19:30:40.739Z"
+      "detail_html_length": 131047,
+      "detail_elapsed_ms": 1864,
+      "scraped_at": "2026-04-30T20:04:40.971Z"
     },
     {
       "id": "ppg-dia-das-maes-puket-com-10-off",
@@ -376,9 +352,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130828,
-      "detail_elapsed_ms": 1748,
-      "scraped_at": "2026-04-30T19:30:42.487Z"
+      "detail_html_length": 130790,
+      "detail_elapsed_ms": 1679,
+      "scraped_at": "2026-04-30T20:04:42.650Z"
     },
     {
       "id": "ppf-presenteie-com-10-off-no-dia-das-maes",
@@ -400,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139888,
-      "detail_elapsed_ms": 2071,
-      "scraped_at": "2026-04-30T19:30:44.558Z"
+      "detail_html_length": 135798,
+      "detail_elapsed_ms": 1703,
+      "scraped_at": "2026-04-30T20:04:44.353Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -424,9 +400,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132499,
-      "detail_elapsed_ms": 2232,
-      "scraped_at": "2026-04-30T19:30:46.791Z"
+      "detail_html_length": 132551,
+      "detail_elapsed_ms": 1620,
+      "scraped_at": "2026-04-30T20:04:45.973Z"
     },
     {
       "id": "ppd-dia-das-maes-com-15-off",
@@ -448,9 +424,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130777,
-      "detail_elapsed_ms": 2335,
-      "scraped_at": "2026-04-30T19:30:49.126Z"
+      "detail_html_length": 130778,
+      "detail_elapsed_ms": 1716,
+      "scraped_at": "2026-04-30T20:04:47.689Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -472,9 +448,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132539,
-      "detail_elapsed_ms": 1810,
-      "scraped_at": "2026-04-30T19:30:50.936Z"
+      "detail_html_length": 132580,
+      "detail_elapsed_ms": 1450,
+      "scraped_at": "2026-04-30T20:04:49.139Z"
     },
     {
       "id": "ppb-dia-das-maes-com-25-off",
@@ -496,9 +472,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130842,
-      "detail_elapsed_ms": 1728,
-      "scraped_at": "2026-04-30T19:30:52.664Z"
+      "detail_html_length": 130834,
+      "detail_elapsed_ms": 1679,
+      "scraped_at": "2026-04-30T20:04:50.818Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -520,9 +496,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132726,
-      "detail_elapsed_ms": 1533,
-      "scraped_at": "2026-04-30T19:30:54.197Z"
+      "detail_html_length": 132708,
+      "detail_elapsed_ms": 1686,
+      "scraped_at": "2026-04-30T20:04:52.504Z"
     },
     {
       "id": "pog-50-off-em-ate-4-ingressos",
@@ -544,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132019,
-      "detail_elapsed_ms": 1456,
-      "scraped_at": "2026-04-30T19:30:55.653Z"
+      "detail_html_length": 130841,
+      "detail_elapsed_ms": 1583,
+      "scraped_at": "2026-04-30T20:04:54.087Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -568,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130689,
-      "detail_elapsed_ms": 1786,
-      "scraped_at": "2026-04-30T19:30:57.439Z"
+      "detail_html_length": 130641,
+      "detail_elapsed_ms": 1815,
+      "scraped_at": "2026-04-30T20:04:55.902Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -592,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133022,
-      "detail_elapsed_ms": 1510,
-      "scraped_at": "2026-04-30T19:30:58.949Z"
+      "detail_html_length": 133005,
+      "detail_elapsed_ms": 1627,
+      "scraped_at": "2026-04-30T20:04:57.530Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -616,9 +592,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133112,
-      "detail_elapsed_ms": 1437,
-      "scraped_at": "2026-04-30T19:31:00.386Z"
+      "detail_html_length": 131936,
+      "detail_elapsed_ms": 1717,
+      "scraped_at": "2026-04-30T20:04:59.247Z"
     },
     {
       "id": "poy-30-cashback",
@@ -640,9 +616,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131203,
-      "detail_elapsed_ms": 1440,
-      "scraped_at": "2026-04-30T19:31:01.826Z"
+      "detail_html_length": 131175,
+      "detail_elapsed_ms": 1819,
+      "scraped_at": "2026-04-30T20:05:01.066Z"
     },
     {
       "id": "pok-ofertas-de-ultima-hora-25-off-extra",
@@ -664,9 +640,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133199,
-      "detail_elapsed_ms": 1713,
-      "scraped_at": "2026-04-30T19:31:03.539Z"
+      "detail_html_length": 133164,
+      "detail_elapsed_ms": 1795,
+      "scraped_at": "2026-04-30T20:05:02.861Z"
     },
     {
       "id": "pob-ate-75-off-para-compras-no-site",
@@ -688,9 +664,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131146,
-      "detail_elapsed_ms": 1920,
-      "scraped_at": "2026-04-30T19:31:05.459Z"
+      "detail_html_length": 129959,
+      "detail_elapsed_ms": 1777,
+      "scraped_at": "2026-04-30T20:05:04.638Z"
     },
     {
       "id": "poa-ate-75-off-para-compras-no-site",
@@ -712,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130851,
-      "detail_elapsed_ms": 1604,
-      "scraped_at": "2026-04-30T19:31:07.063Z"
+      "detail_html_length": 130844,
+      "detail_elapsed_ms": 1847,
+      "scraped_at": "2026-04-30T20:05:06.485Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -736,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130949,
-      "detail_elapsed_ms": 1650,
-      "scraped_at": "2026-04-30T19:31:08.713Z"
+      "detail_html_length": 130901,
+      "detail_elapsed_ms": 1647,
+      "scraped_at": "2026-04-30T20:05:08.132Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -760,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130675,
-      "detail_elapsed_ms": 1563,
-      "scraped_at": "2026-04-30T19:31:10.276Z"
+      "detail_html_length": 130717,
+      "detail_elapsed_ms": 2153,
+      "scraped_at": "2026-04-30T20:05:10.285Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -784,9 +760,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130881,
-      "detail_elapsed_ms": 1829,
-      "scraped_at": "2026-04-30T19:31:12.106Z"
+      "detail_html_length": 130853,
+      "detail_elapsed_ms": 1649,
+      "scraped_at": "2026-04-30T20:05:11.935Z"
     },
     {
       "id": "pnk-ate-12-off-nas-reservas",
@@ -808,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132903,
-      "detail_elapsed_ms": 1662,
-      "scraped_at": "2026-04-30T19:31:13.768Z"
+      "detail_html_length": 132873,
+      "detail_elapsed_ms": 1587,
+      "scraped_at": "2026-04-30T20:05:13.522Z"
     },
     {
       "id": "pn9-50-off-no-kit-3-mini-books",
@@ -832,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131081,
-      "detail_elapsed_ms": 1552,
-      "scraped_at": "2026-04-30T19:31:15.320Z"
+      "detail_html_length": 131063,
+      "detail_elapsed_ms": 1605,
+      "scraped_at": "2026-04-30T20:05:15.127Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
@@ -856,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131262,
-      "detail_elapsed_ms": 1770,
-      "scraped_at": "2026-04-30T19:31:17.090Z"
+      "detail_html_length": 131276,
+      "detail_elapsed_ms": 1682,
+      "scraped_at": "2026-04-30T20:05:16.809Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -880,9 +856,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130964,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-04-30T19:31:18.796Z"
+      "detail_html_length": 130985,
+      "detail_elapsed_ms": 1664,
+      "scraped_at": "2026-04-30T20:05:18.473Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -904,9 +880,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130954,
-      "detail_elapsed_ms": 1453,
-      "scraped_at": "2026-04-30T19:31:20.249Z"
+      "detail_html_length": 130977,
+      "detail_elapsed_ms": 1557,
+      "scraped_at": "2026-04-30T20:05:20.030Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -928,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 148725,
-      "detail_elapsed_ms": 1625,
-      "scraped_at": "2026-04-30T19:31:21.874Z"
+      "detail_html_length": 138130,
+      "detail_elapsed_ms": 1792,
+      "scraped_at": "2026-04-30T20:05:21.822Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preco-1",
@@ -952,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131618,
-      "detail_elapsed_ms": 1694,
-      "scraped_at": "2026-04-30T19:31:23.568Z"
+      "detail_html_length": 131570,
+      "detail_elapsed_ms": 2213,
+      "scraped_at": "2026-04-30T20:05:24.035Z"
     },
     {
       "id": "pnu-30-off-em-pos-graduacao-de-medicina",
@@ -976,9 +952,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133416,
-      "detail_elapsed_ms": 1672,
-      "scraped_at": "2026-04-30T19:31:25.240Z"
+      "detail_html_length": 132991,
+      "detail_elapsed_ms": 1694,
+      "scraped_at": "2026-04-30T20:05:25.729Z"
     },
     {
       "id": "pnh-50-off-no-par-de-ingressos",
@@ -1000,9 +976,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131967,
-      "detail_elapsed_ms": 1512,
-      "scraped_at": "2026-04-30T19:31:26.752Z"
+      "detail_html_length": 131950,
+      "detail_elapsed_ms": 1637,
+      "scraped_at": "2026-04-30T20:05:27.366Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -1024,9 +1000,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131736,
-      "detail_elapsed_ms": 1517,
-      "scraped_at": "2026-04-30T19:31:28.269Z"
+      "detail_html_length": 131768,
+      "detail_elapsed_ms": 1764,
+      "scraped_at": "2026-04-30T20:05:29.130Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -1048,9 +1024,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131945,
-      "detail_elapsed_ms": 1570,
-      "scraped_at": "2026-04-30T19:31:29.839Z"
+      "detail_html_length": 131928,
+      "detail_elapsed_ms": 1577,
+      "scraped_at": "2026-04-30T20:05:30.707Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -1072,9 +1048,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131929,
-      "detail_elapsed_ms": 1653,
-      "scraped_at": "2026-04-30T19:31:31.492Z"
+      "detail_html_length": 131923,
+      "detail_elapsed_ms": 1832,
+      "scraped_at": "2026-04-30T20:05:32.539Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -1096,9 +1072,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132124,
-      "detail_elapsed_ms": 1845,
-      "scraped_at": "2026-04-30T19:31:33.337Z"
+      "detail_html_length": 132165,
+      "detail_elapsed_ms": 1580,
+      "scraped_at": "2026-04-30T20:05:34.119Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -1120,9 +1096,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132614,
-      "detail_elapsed_ms": 1953,
-      "scraped_at": "2026-04-30T19:31:35.290Z"
+      "detail_html_length": 132647,
+      "detail_elapsed_ms": 1691,
+      "scraped_at": "2026-04-30T20:05:35.811Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -1144,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133256,
-      "detail_elapsed_ms": 1842,
-      "scraped_at": "2026-04-30T19:31:37.132Z"
+      "detail_html_length": 133267,
+      "detail_elapsed_ms": 1483,
+      "scraped_at": "2026-04-30T20:05:37.294Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -1168,9 +1144,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133914,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-04-30T19:31:38.716Z"
+      "detail_html_length": 133895,
+      "detail_elapsed_ms": 1578,
+      "scraped_at": "2026-04-30T20:05:38.872Z"
+    },
+    {
+      "id": "pm7-50-off-no-par-de-ingressos",
+      "trace_id": "trace_pm7-50-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "preview_title": "50% OFF no par de ingressos",
+      "validity": "Benefício válido de 09/04/2026 10:17 até 31/05/2026 23:59.",
+      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Peter Pan - O Musical. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Em um antigo e acolhedor bairro de Londres, vive a adorável família Darling. Wendy, a filha mais velha, encontra-se em um verdadeiro impasse: seria esta a hora de crescer? Em uma noite, um visitante muito especial entra por sua janela: Peter Pan, o espírito da juventude! Por ser um grande admirador das histórias que Wendy conta, Peter a convida para conhecer um lugar onde nenhuma criança cresce: a Terra do Nunca! FICHA TÉCNICA: Texto e Versões: Ella Dalcin. Direção, Cenografia e Figurinos: Rodrigo Gomes. Elenco: Rafael Barbosa, Camila Vergasta, Vinicius Cafer, Márcio Godoy e Bel Nobre. Stage manager: Henrique dos Santos. SERVIÇO: Temporada: 04/04/2026 a 31/05/2026. Apresentações: Sábado e Domingo, 14h30. Ingresso*: Setor A - Inteira: R$ 160,00 Meia: R$ 80,00 | Setor B - Inteira: R$ 100,00 Meia: R$ 50,00. Duração: 55 minutos. Classificação etária: Livre. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro UOL",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19f54490931c749acec8c912e031ff31.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19f54490931c749acec8c912e031ff31.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19f54490931c749acec8c912e031ff31.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132337,
+      "detail_elapsed_ms": 1630,
+      "scraped_at": "2026-04-30T20:05:40.502Z"
     }
   ]
 }
