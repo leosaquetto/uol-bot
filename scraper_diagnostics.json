@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-30T12:56:08.486740Z",
+  "updated_at": "2026-04-30T13:07:23.361679Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/ppP-2-ingressos-teatro-eldorado-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_ppp-2-ingressos-teatro-eldorado-sp"
-    },
-    {
-      "title": "2 INGRESSOS: Teatro Nair Bello SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppL-2-ingressos-teatro-nair-bello-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppl-2-ingressos-teatro-nair-bello-sp"
     },
     {
       "title": "Dia das Mães 2026 - R$50 OFF",
@@ -225,6 +219,12 @@
       "link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pm9-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
     }
   ]
 }
