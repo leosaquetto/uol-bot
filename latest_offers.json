@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-04-30T09:05:10.076625Z",
+  "last_update": "2026-04-30T09:37:40.965631Z",
   "offers": [
-    {
-      "id": "pp9-15-off-no-site",
-      "original_link": "https://clube.uol.com.br/nesthome/pp9-15-off-no-site",
-      "preview_title": "15% OFF no site",
-      "title": "15% OFF no site",
-      "link": "https://clube.uol.com.br/nesthome/pp9-15-off-no-site",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/297943375083a6fe97b347956ca406b8.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/66542379029b79e8afbf1216c108f57f.png",
-      "validity": "Benefício válido de 28/04/2026 14:19 até 31/12/2026 23:59.",
-      "description": "Sobre o parceiro: A Nest Home é uma marca de decoração com mais de 30 anos de tradição familiar. Oferece produtos com significado, pensados para transformar momentos em experiências, valorizando o lar como espaço de acolhimento, encontros e memórias. Benefício: Desconto de 15% em todo o site Regras: Válido para compras acima de R$ 100, Não cumulativo com outros descontos, Cumulativo apenas com campanhas de frete grátis, Válido para todos os produto.",
-      "location_summary": "",
-      "dedupe_key": "15-off-no-site|beneficio-valido-de-28-04-2026-14-19-ate-31-12-2026-23-59|sobre-o-parceiro-a-nest-home-e-uma-marca-de-decoracao-com-mais-de-30-anos-de-tradicao-familiar-oferece-produtos-com-significado-pensados-para-transformar-moment",
-      "loose_dedupe_key": "15-off-no-site|sobre-o-parceiro-a-nest-home-e-uma-marca-de-decoracao-com-mais-de-30-anos-de-tradicao-familiar-oferece-produtos-com-significado-pensados-para-transformar-moment",
-      "scraped_at": "2026-04-28T18:16:18.362000Z",
-      "trace_id": "trace_pp9-15-off-no-site",
-      "channel_message_id": 1344,
-      "channel_message_link": "https://t.me/c/3723320790/1344",
-      "comment_message_id": 4421,
-      "discussion_message_id": 4418,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/4421?thread=4418",
-      "sent_at": "2026-04-28T18:23:42.888239Z"
-    },
     {
       "id": "pp8-caipirinha-ou-chope-double",
       "original_link": "https://clube.uol.com.br/restaurantepraasaoloureno/pp8-caipirinha-ou-chope-double",
@@ -480,6 +457,29 @@
       "sent_at": "2026-04-29T22:02:42.237313Z",
       "sold_out_at": "20:02",
       "_sold_out_synced_to_telegram": true
+    },
+    {
+      "id": "ppd-dia-das-mes-com-15-off",
+      "original_link": "https://clube.uol.com.br/gocase/ppd-dia-das-mes-com-15-off",
+      "preview_title": "Dia das Mães com 15% OFF",
+      "title": "Dia das Mães com 15% OFF",
+      "link": "https://clube.uol.com.br/gocase/ppd-dia-das-mes-com-15-off",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/395f3ddcfb09449dda337f35783212e0.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/37104a846b2ed632825f3ed7205b080e.png",
+      "validity": null,
+      "description": "",
+      "location_summary": "",
+      "dedupe_key": "dia-das-maes-com-15-off",
+      "loose_dedupe_key": "dia-das-maes-com-15-off",
+      "scraped_at": "2026-04-30T07:58:45.689000Z",
+      "trace_id": "trace_ppd-dia-das-mes-com-15-off",
+      "channel_message_id": 1364,
+      "channel_message_link": "https://t.me/c/3723320790/1364",
+      "comment_message_id": 4499,
+      "discussion_message_id": 4496,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/4499?thread=4496",
+      "sent_at": "2026-04-30T09:37:38.877633Z"
     }
   ]
 }
