@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-30T19:50:53.271317Z",
+  "updated_at": "2026-04-30T20:06:07.021948Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqg-2-ingressos-teatro-casa-grande-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_pqg-2-ingressos-teatro-casa-grande-rj"
-    },
-    {
-      "title": "2 INGRESSOS| 02/05 Teatro Casa Grande RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqf-2-ingressos-02-05-teatro-casa-grande-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqf-2-ingressos-02-05-teatro-casa-grande-rj"
     },
     {
       "title": "2 INGRESSOS| 01/05 Teatro Casa Grande RJ",
@@ -303,6 +297,12 @@
       "link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pm9-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
     }
   ]
 }
