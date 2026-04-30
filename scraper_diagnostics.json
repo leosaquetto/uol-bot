@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-04-30T20:45:10.434764Z",
+  "updated_at": "2026-04-30T20:46:00.133023Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 16,
+  "candidates_added": 15,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 31,
+    "duplicada_historico": 32,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Dia das Mães: Leve 8 e pague 4",
+      "link": "https://clube.uol.com.br/evino/pqi-dia-das-mes-leve-8-e-pague-4",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqi-dia-das-mes-leve-8-e-pague-4"
+    },
     {
       "title": "2 INGRESSOS| Teatro Casa Grande RJ",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqg-2-ingressos-teatro-casa-grande-rj",
