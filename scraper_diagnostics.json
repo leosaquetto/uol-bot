@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-30T09:05:05.596448Z",
+  "updated_at": "2026-04-30T09:37:28.261845Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,10 +7,10 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 1,
+    "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 29,
+    "duplicada_historico": 30,
     "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -29,22 +29,10 @@
       "trace_id": "trace_ppt-25-off-dia-das-mes"
     },
     {
-      "title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppR-2-ingressos-casa-natura-musical-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppr-2-ingressos-casa-natura-musical-sp"
-    },
-    {
       "title": "2 INGRESSOS: Teatro Eldorado - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ppP-2-ingressos-teatro-eldorado-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_ppp-2-ingressos-teatro-eldorado-sp"
-    },
-    {
-      "title": "2 INGRESSOS: Teatro Reinassance",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppO-2-ingressos-teatro-reinassance",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppo-2-ingressos-teatro-reinassance"
     },
     {
       "title": "2 INGRESSOS: Teatro Nair Bello SP",
@@ -143,12 +131,6 @@
       "trace_id": "trace_poy-30-cashback"
     },
     {
-      "title": "2 INGRESSOS: 30/04 Termas do Pacu | SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pon-2-ingressos-30-04-termas-do-pacu-sp",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pon-2-ingressos-30-04-termas-do-pacu-sp"
-    },
-    {
       "title": "15% OFF para compras no site",
       "link": "https://clube.uol.com.br/underarmour/pnZ-15-off-para-compras-no-site",
       "reason": "duplicada_historico",
@@ -219,6 +201,24 @@
       "link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pnd-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmE-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pme-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmB-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmb-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pm9-50-off-no-par-de-ingressos"
     }
   ]
 }
