@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-04-30T09:37:28.261845Z",
+  "updated_at": "2026-04-30T09:38:16.517077Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 14,
+  "candidates_added": 13,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 30,
+    "duplicada_historico": 31,
     "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -93,6 +93,12 @@
       "link": "https://clube.uol.com.br/cacaushow/ppe-39-off-na-caixa-angel-tabletes",
       "reason": "duplicada_historico",
       "trace_id": "trace_ppe-39-off-na-caixa-angel-tabletes"
+    },
+    {
+      "title": "Dia das Mães com 15% OFF",
+      "link": "https://clube.uol.com.br/gocase/ppd-dia-das-mes-com-15-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppd-dia-das-mes-com-15-off"
     },
     {
       "title": "36% OFF na Lata de Biscoitos Sortidos",
