@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-30T14:02:38.676633Z",
+  "updated_at": "2026-04-30T14:33:14.657213Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "Isenção de taxa no Diabo Veste Prada 2",
-      "link": "https://clube.uol.com.br/ingressocom/ppU-isencao-de-taxa-no-diabo-veste-prada-2",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppu-isencao-de-taxa-no-diabo-veste-prada-2"
-    },
     {
       "title": "25% OFF Dia das mães",
       "link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-maes",
@@ -303,6 +297,12 @@
       "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
     }
   ]
 }
