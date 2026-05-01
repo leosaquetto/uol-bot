@@ -1,21 +1,39 @@
 {
-  "updated_at": "2026-05-01T18:17:59.206625Z",
+  "updated_at": "2026-05-01T18:19:00.082421Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 44,
+    "duplicada_historico": 47,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: Teatro J. Safra - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqr-2-ingressos-teatro-j-safra-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqr-2-ingressos-teatro-j-safra-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 03/05 Teatro J. Safra - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqq-2-ingressos-03-05-teatro-j-safra-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqq-2-ingressos-03-05-teatro-j-safra-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 03/05 Teatro J. Safra - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqp-2-ingressos-03-05-teatro-j-safra-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqp-2-ingressos-03-05-teatro-j-safra-sp"
+    },
     {
       "title": "2 INGRESSOS: 02/05 Teatro das Artes - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqo-2-ingressos-02-05-teatro-das-artes-sp",
