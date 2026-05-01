@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-01T21:04:47.900944Z",
+  "updated_at": "2026-05-01T22:02:10.027886Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: Teatro J. Safra - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqr-2-ingressos-teatro-j-safra-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqr-2-ingressos-teatro-j-safra-sp"
-    },
     {
       "title": "2 INGRESSOS: 03/05 Teatro J. Safra - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqp-2-ingressos-03-05-teatro-j-safra-sp",
@@ -213,6 +207,12 @@
       "link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pm9-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
     }
   ]
 }
