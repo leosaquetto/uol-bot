@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-01T00:06:39.440504Z",
+  "updated_at": "2026-05-01T01:02:09.464525Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 10/05 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqn-2-ingressos-10-05-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqn-2-ingressos-10-05-morumbi-park-sp"
-    },
     {
       "title": "2 INGRESSOS: 03/05 Morumbi Park- SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pql-2-ingressos-03-05-morumbi-park-sp",
@@ -149,12 +143,6 @@
       "trace_id": "trace_pnx-15-off-em-todo-o-site"
     },
     {
-      "title": "50% OFF no Kit 3 Mini Books",
-      "link": "https://clube.uol.com.br/fotoregistro/pn9-50-off-no-kit-3-mini-books",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pn9-50-off-no-kit-3-mini-books"
-    },
-    {
       "title": "Aproveite 15% OFF em viagens",
       "link": "https://clube.uol.com.br/flixbus/pn7-aproveite-15-off-em-viagens",
       "reason": "duplicada_historico",
@@ -213,6 +201,18 @@
       "link": "https://clube.uol.com.br/teatrouol/pmB-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmb-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm9-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pm9-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
     }
   ]
 }
