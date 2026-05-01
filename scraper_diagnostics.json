@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-30T23:08:02.492075Z",
+  "updated_at": "2026-05-01T00:02:23.604639Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqn-2-ingressos-10-05-morumbi-park-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pqn-2-ingressos-10-05-morumbi-park-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 09/05 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqm-2-ingressos-09-05-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqm-2-ingressos-09-05-morumbi-park-sp"
     },
     {
       "title": "2 INGRESSOS: 03/05 Morumbi Park- SP",
@@ -87,12 +81,6 @@
       "link": "https://clube.uol.com.br/restaurantepraasaoloureno/pp7-ganhe-uma-sobremesa-no-jantar",
       "reason": "duplicada_historico",
       "trace_id": "trace_pp7-ganhe-uma-sobremesa-no-jantar"
-    },
-    {
-      "title": "2 INGRESSOS | 08/05 Teatro Carlos Gomes",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppt-2-ingressos-08-05-teatro-carlos-gomes",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppt-2-ingressos-08-05-teatro-carlos-gomes"
     },
     {
       "title": "39% OFF na Caixa Angel Tabletes",
@@ -213,6 +201,18 @@
       "link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pnd-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmE-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pme-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmB-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmb-50-off-no-par-de-ingressos"
     }
   ]
 }
