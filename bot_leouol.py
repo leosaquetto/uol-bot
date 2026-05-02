@@ -2124,6 +2124,7 @@ def refresh_sent_offers_with_sold_out() -> int:
             link,
             location_summary=offer.get("location_summary"),
             sold_out_at=offer.get("sold_out_at"),
+            comment_link=offer.get("comment_link"),
         )
 
         try:
