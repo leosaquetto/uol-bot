@@ -23,6 +23,7 @@ BR_TZ = ZoneInfo("America/Sao_Paulo")
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+CANAL2_ID = os.environ.get("CANAL2_ID")
 GRUPO_COMENTARIO_ID = os.environ.get("GRUPO_COMENTARIO_ID")
 DASHBOARD_CHAT_ID = os.environ.get("DASHBOARD_CHAT_ID") or GRUPO_COMENTARIO_ID
 ENABLE_SOLD_OUT_UNDERLINE = str(os.environ.get("ENABLE_SOLD_OUT_UNDERLINE") or "").strip().lower() in {"1", "true", "yes", "on"}
@@ -2047,6 +2048,68 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
         return False, error_msg
 
 
+def is_campaign_for_canal2(offer: Dict) -> bool:
+    title = str(offer.get("title") or offer.get("preview_title") or "")
+    link = str(offer.get("link") or offer.get("original_link") or "")
+    merged = normalize_offer_key(f"{title} {link}")
+    if "teatro" in merged:
+        return False
+    return "#campanhasdeingresso" in merged or "/campanhasdeingresso" in merged
+
+
+def _same_offer_identity(a: Dict, b: Dict) -> bool:
+    a_id = normalize_offer_key(a.get("id") or a.get("link") or "")
+    b_id = normalize_offer_key(b.get("id") or b.get("link") or "")
+    if a_id and b_id and a_id == b_id:
+        return True
+    a_dedupe = canonical_key(a.get("dedupe_key") or "")
+    b_dedupe = canonical_key(b.get("dedupe_key") or "")
+    if a_dedupe and b_dedupe and a_dedupe == b_dedupe:
+        return True
+    return False
+
+
+def already_sent_to_canal2(offer: Dict, latest_sent: List[Dict]) -> bool:
+    if offer.get("canal2_message_id"):
+        return True
+    for existing in latest_sent:
+        if not isinstance(existing, dict):
+            continue
+        if not existing.get("canal2_message_id"):
+            continue
+        if _same_offer_identity(offer, existing):
+            return True
+    return False
+
+
+def forward_offer_to_canal2(offer: Dict, channel_message_id: int, latest_sent: List[Dict]) -> Tuple[bool, str]:
+    if not CANAL2_ID:
+        return True, "CANAL2_ID ausente; skip"
+    if not is_campaign_for_canal2(offer):
+        return True, "não elegível para CANAL2"
+    if already_sent_to_canal2(offer, latest_sent):
+        return True, "já enviada no CANAL2; skip"
+    try:
+        resp = telegram_post(
+            "forwardMessage",
+            data={
+                "chat_id": CANAL2_ID,
+                "from_chat_id": TELEGRAM_CHAT_ID,
+                "message_id": str(channel_message_id),
+                "disable_notification": True,
+            },
+        )
+        if not resp.ok:
+            return False, f"forwardMessage falhou: {resp.text}"
+        result = resp.json().get("result", {}) or {}
+        offer["canal2_message_id"] = result.get("message_id")
+        offer["canal2_forward_status"] = "sent"
+        offer["canal2_forwarded_at"] = utc_now_iso()
+        return True, "encaminhada para CANAL2"
+    except Exception as e:
+        return False, f"forwardMessage exception: {e}"
+
+
 
 def _caption_fields_from_offer(offer: Dict) -> Dict[str, Optional[str]]:
     return {
@@ -2395,6 +2458,11 @@ def consume_pending() -> int:
 
             offer["channel_message_id"] = channel_message_id
             offer["channel_message_link"] = build_channel_message_link(TELEGRAM_CHAT_ID, channel_message_id)
+            canal2_ok, canal2_detail = forward_offer_to_canal2(offer, channel_message_id, latest_sent)
+            if not canal2_ok:
+                log(f"falha ao encaminhar para CANAL2: {canal2_detail}")
+            elif "skip" not in canal2_detail.lower():
+                log(canal2_detail)
 
             append_pipeline_audit("bot.send_comment_start", trace_id, {"channel_message_id": channel_message_id})
             try:
