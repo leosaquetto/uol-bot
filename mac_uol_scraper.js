@@ -24,6 +24,7 @@ const DEFAULT_MAX_CARDS = 48;
 const MAX_VISIBLE_OFFERS = 48;
 const DEFAULT_SOLD_OUT_LOOKBACK_DAYS = 3;
 const DEFAULT_SOLD_OUT_MIN_MISSES = 2;
+const DEFAULT_SOLD_OUT_MIN_ABSENCE_MINUTES = 15;
 const DEFAULT_DETAIL_PAGE_TIMEOUT_MS = 12000;
 
 function parseMaxCards(value, fallback = DEFAULT_MAX_CARDS) {
@@ -46,6 +47,7 @@ function parsePositiveInt(value, fallback) {
 const MAX_CARDS = parseMaxCards(process.env.MAX_CARDS, DEFAULT_MAX_CARDS);
 const SOLD_OUT_LOOKBACK_DAYS = parsePositiveInt(process.env.SOLD_OUT_LOOKBACK_DAYS, DEFAULT_SOLD_OUT_LOOKBACK_DAYS);
 const SOLD_OUT_MIN_MISSES = parsePositiveInt(process.env.SOLD_OUT_MIN_MISSES, DEFAULT_SOLD_OUT_MIN_MISSES);
+const SOLD_OUT_MIN_ABSENCE_MINUTES = parsePositiveInt(process.env.SOLD_OUT_MIN_ABSENCE_MINUTES, DEFAULT_SOLD_OUT_MIN_ABSENCE_MINUTES);
 const DETAIL_PAGE_TIMEOUT_MS = parsePositiveInt(process.env.DETAIL_PAGE_TIMEOUT_MS, DEFAULT_DETAIL_PAGE_TIMEOUT_MS);
 
 const GITHUB_TOKEN = String(process.env.GITHUB_TOKEN || '').trim();
@@ -338,14 +340,22 @@ function buildSoldOutUpdates({ activeLinksSet, latestOffers, previousState, now 
 
     const absenceCount = Number(prev.absence_count || 0) + 1;
     const firstMissingAt = prev.first_missing_at || now.toISOString();
+    const firstMissingDate = new Date(firstMissingAt);
+    const absenceDurationMs = Number.isNaN(firstMissingDate.getTime())
+      ? 0
+      : Math.max(0, now.getTime() - firstMissingDate.getTime());
+    const minAbsenceWindowMs = SOLD_OUT_MIN_ABSENCE_MINUTES * 60 * 1000;
 
     nextState.links[link] = {
       absence_count: absenceCount,
       first_missing_at: firstMissingAt,
       last_checked_at: now.toISOString(),
+      last_missing_at: now.toISOString(),
+      min_absence_window_ms: minAbsenceWindowMs,
+      absence_duration_ms: absenceDurationMs,
     };
 
-    if (absenceCount >= SOLD_OUT_MIN_MISSES) {
+    if (absenceCount >= SOLD_OUT_MIN_MISSES && absenceDurationMs >= minAbsenceWindowMs) {
       soldOutDetected.push({
         link,
         sold_out_at: brTime(now),
