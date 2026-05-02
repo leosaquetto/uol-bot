@@ -793,6 +793,7 @@ def load_daily_log() -> Dict:
         "date": "",
         "message_id": None,
         "previous_message_id": None,
+        "weekly_summary_sent_for": "",
         "last_success_check": "",
         "last_new_offer_at": "",
         "pending_count": 0,
@@ -812,6 +813,7 @@ def load_daily_log() -> Dict:
         "date": str(data.get("date") or ""),
         "message_id": data.get("message_id"),
         "previous_message_id": data.get("previous_message_id"),
+        "weekly_summary_sent_for": str(data.get("weekly_summary_sent_for") or ""),
         "last_success_check": str(data.get("last_success_check") or ""),
         "last_new_offer_at": str(data.get("last_new_offer_at") or ""),
         "pending_count": int(data.get("pending_count") or 0),
@@ -1762,6 +1764,88 @@ def send_message_text(chat_id: str, text: str, disable_notification: bool = Fals
     return telegram_post("sendMessage", data=data)
 
 
+def maybe_send_weekly_ticket_summary() -> None:
+    if not DASHBOARD_CHAT_ID:
+        return
+
+    now_local = now_br()
+    if now_local.weekday() != 0 or now_local.hour >= 12:
+        return
+
+    state = load_daily_log()
+    monday_key = now_local.strftime("%Y-%m-%d")
+    if str(state.get("weekly_summary_sent_for") or "") == monday_key:
+        return
+
+    latest = safe_json_load(Path(LATEST_FILE), {"offers": []})
+    offers = latest.get("offers", [])
+    if not isinstance(offers, list):
+        offers = []
+
+    start = now_local - timedelta(days=7)
+    weekly_rows = []
+    for offer in offers:
+        if not isinstance(offer, dict):
+            continue
+        if not is_campaign_for_canal2(offer):
+            continue
+        sent_at = _parse_utc_iso(str(offer.get("sent_at") or ""))
+        if not sent_at:
+            continue
+        sent_local = sent_at.astimezone(BR_TZ)
+        if sent_local < start or sent_local > now_local:
+            continue
+        title = str(offer.get("title") or offer.get("preview_title") or "Oferta")
+        link = str(offer.get("link") or offer.get("original_link") or "")
+        weekly_rows.append({"title": title, "link": link, "sent_local": sent_local})
+
+    weekly_rows.sort(key=lambda x: x["sent_local"])
+    total = len(weekly_rows)
+
+    per_event: Dict[str, Dict[str, object]] = {}
+    for row in weekly_rows:
+        key = normalize_offer_key(str(row["title"]))
+        item = per_event.setdefault(key, {"title": row["title"], "count": 0, "links": set()})
+        item["count"] = int(item["count"]) + 1
+        if row["link"]:
+            item["links"].add(row["link"])
+
+    lines = [
+        "🎟️ <b>Resumo semanal de ingressos</b> 🎉",
+        f"📅 <b>Período:</b> {start.strftime('%d/%m %H:%M')} até {now_local.strftime('%d/%m %H:%M')}",
+        f"🚀 <b>Total enviado:</b> {total} oferta(s)",
+    ]
+
+    if total == 0:
+        lines.append("😴 Nenhuma oferta de ingresso enviada nesta janela.")
+    else:
+        lines.append("\n<b>📌 Ofertas enviadas:</b>")
+        for idx, row in enumerate(weekly_rows, 1):
+            when = row["sent_local"].strftime("%d/%m %H:%M")
+            lines.append(f"{idx}. 🗓️ <b>{when}</b> — {escape_html(str(row['title']))}")
+            if row["link"]:
+                lines.append(f"🔗 {escape_html(str(row['link']))}")
+
+        repeated = [x for x in per_event.values() if int(x["count"]) > 1]
+        if repeated:
+            repeated.sort(key=lambda x: int(x["count"]), reverse=True)
+            lines.append("\n<b>🔁 Eventos com mais de uma oferta/link:</b>")
+            for item in repeated:
+                lines.append(
+                    f"• {escape_html(str(item['title']))}: "
+                    f"<b>{int(item['count'])}</b> ofertas / <b>{len(item['links'])}</b> link(s)"
+                )
+
+    lines.append("\n✨ Boa semana! Bora lotar os canais com ofertas top 😎")
+    text = "\n".join(lines)
+    try:
+        send_message_text(DASHBOARD_CHAT_ID, text, disable_notification=False)
+        state["weekly_summary_sent_for"] = monday_key
+        save_daily_log(state)
+    except Exception as e:
+        log(f"falha ao enviar resumo semanal de ingressos: {e}")
+
+
 def download_image_bytes(url: str) -> Optional[Tuple[bytes, str]]:
     if not url:
         return None
@@ -2247,6 +2331,8 @@ def consume_pending() -> int:
     if not TELEGRAM_TOKEN:
         log("❌ variável TELEGRAM_TOKEN é obrigatória")
         return 1
+
+    maybe_send_weekly_ticket_summary()
 
     pending_data = load_pending()
     offers = pending_data.get("offers", [])
