@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-02T16:32:39.900973Z",
+  "updated_at": "2026-05-02T17:03:18.314747Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqp-2-ingressos-03-05-teatro-j-safra-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pqp-2-ingressos-03-05-teatro-j-safra-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 02/05 Teatro das Artes - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqo-2-ingressos-02-05-teatro-das-artes-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqo-2-ingressos-02-05-teatro-das-artes-sp"
     },
     {
       "title": "Dia das Mães: Leve 8 e pague 4",
@@ -213,6 +207,12 @@
       "link": "https://clube.uol.com.br/teatrouol/pm7-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pm7-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
     }
   ]
 }
