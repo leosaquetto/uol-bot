@@ -15,6 +15,49 @@ const MAX_RETRIES = 3
 const PIPELINE_STATE_FILE = "uol_pipeline_state.json"
 const statusRuntimeUtils = importModule("status_runtime_utils")
 
+const LOCK_TIMEOUT_MS = 8 * 60 * 1000
+const LOCK_FILE = "uol_scriptable_parte2.lock.json"
+
+function getLockFilePath() {
+  const fm = FileManager.iCloud()
+  const dir = fm.documentsDirectory()
+  return { fm, path: fm.joinPath(dir, LOCK_FILE) }
+}
+async function acquireRunLock() {
+  const { fm, path } = getLockFilePath()
+  try { if (fm.fileExists(path)) await fm.downloadFileFromiCloud(path) } catch (e) {}
+
+  if (fm.fileExists(path)) {
+    try {
+      const raw = String(fm.readString(path) || "")
+      const lockData = raw ? JSON.parse(raw) : null
+      const startedTs = Number(lockData && lockData.started_ts ? lockData.started_ts : 0)
+      const ageMs = startedTs > 0 ? (Date.now() - startedTs) : Number.POSITIVE_INFINITY
+      if (ageMs >= 0 && ageMs < LOCK_TIMEOUT_MS) {
+        const when = lockData && lockData.started_at ? String(lockData.started_at) : "instante desconhecido"
+        return { ok: false, message: `lock ativo da parte2 (iniciado em ${when}, há ${Math.trunc(ageMs / 1000)}s)` }
+      }
+    } catch (e) {}
+  }
+
+  const payload = {
+    part: "parte2",
+    started_at: new Date().toISOString(),
+    started_ts: Date.now(),
+  }
+  fm.writeString(path, JSON.stringify(payload, null, 2))
+  return { ok: true }
+}
+function releaseRunLock() {
+  const { fm, path } = getLockFilePath()
+  try {
+    if (fm.fileExists(path)) fm.remove(path)
+  } catch (e) {
+    log(`⚠️ falha ao liberar lock: ${String(e)}`)
+  }
+}
+
+
 function log(msg) { console.log(`[${new Date().toLocaleTimeString()}] ${msg}`) }
 function pad(n) { return String(n).padStart(2, "0") }
 function brDate(d = new Date()) { return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}` }
@@ -369,6 +412,9 @@ async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen,
 const startedAtGlobal = new Date()
 
 async function main() {
+  const lock = await acquireRunLock()
+  if (!lock.ok) return `abortado_parte2 | ${lock.message}`
+
   if (!GITHUB_TOKEN) return "erro | token ausente"
   try {
     const state = await loadPipelineState()
@@ -539,6 +585,8 @@ async function main() {
     const msg = String(e && e.message ? e.message : e)
     await updateScriptableStatusRuntime({ statusValue: "erro", summary: "parte2 com erro", offersSeen: 0, newOffers: 0, pendingCount: 0, lastError: msg })
     return `erro_parte2 | ${msg}`
+  } finally {
+    releaseRunLock()
   }
 }
 
