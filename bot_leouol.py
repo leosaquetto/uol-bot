@@ -1464,10 +1464,15 @@ def build_main_caption(
     tags = build_smart_hashtags(title, description, link)
     decorated_title = decorate_main_title(title, link)
 
-    if str(sold_out_at or "").strip():
+    is_sold_out = bool(str(sold_out_at or "").strip())
+    if is_sold_out:
         decorated_title = f"[ESGOTADO] {decorated_title}"
 
-    body = [f"<b>{escape_html(decorated_title)}</b>"]
+    title_html = escape_html(decorated_title)
+    if is_sold_out:
+        title_html = f"<s>{title_html}</s>"
+
+    body = [f"<b>{title_html}</b>"]
 
     if tags:
         body.append(escape_html(" ".join(tags)))
