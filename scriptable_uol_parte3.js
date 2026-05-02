@@ -165,16 +165,43 @@ async function githubPutFile(path, content, message) {
 }
 
 function dedupeOffersByLink(items) {
-  const out = []
-  const seen = new Set()
+  const bestByKey = new Map()
   for (const it of items) {
     const link = normalizeLink(it.link || it.original_link || "")
-    const key = normalizeOfferKey(link || it.id || "")
-    if (!key || seen.has(key)) continue
-    seen.add(key)
-    out.push(it)
+    const canonicalSource = normalizeLink(link || it.id || "")
+    const key = normalizeOfferKey(canonicalSource)
+    if (!key) continue
+
+    const current = bestByKey.get(key)
+    if (!current) {
+      bestByKey.set(key, it)
+      continue
+    }
+
+    const currentScore = getOfferDetailScore(current)
+    const nextScore = getOfferDetailScore(it)
+    if (nextScore > currentScore) {
+      bestByKey.set(key, it)
+    }
   }
-  return out
+  return Array.from(bestByKey.values())
+}
+
+function getOfferDetailScore(offer) {
+  if (!offer || typeof offer !== "object") return 0
+  const ignored = new Set([
+    "id", "link", "original_link", "offer_key", "snapshot_id",
+    "captured_at", "created_at", "updated_at", "source",
+  ])
+  let score = 0
+  for (const [field, value] of Object.entries(offer)) {
+    if (ignored.has(field)) continue
+    if (value === null || value === undefined) continue
+    if (typeof value === "string" && !value.trim()) continue
+    if (Array.isArray(value) && value.length === 0) continue
+    score += 1
+  }
+  return score
 }
 
 async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen, newOffers, pendingCount = 0, lastError = "" }) {
