@@ -2047,25 +2047,45 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
         return False, error_msg
 
 
+
+def _caption_fields_from_offer(offer: Dict) -> Dict[str, Optional[str]]:
+    return {
+        "title": offer.get("title") or offer.get("preview_title") or "Oferta",
+        "description": offer.get("description") or "",
+        "validity": offer.get("validity"),
+        "link": offer.get("link") or offer.get("original_link") or "",
+        "location_summary": offer.get("location_summary"),
+        "sold_out_at": offer.get("sold_out_at"),
+        "comment_link": str(offer.get("comment_link") or "").strip() or None,
+    }
+
+
+def _should_skip_less_complete_caption_update(offer: Dict, caption_fields: Dict[str, Optional[str]]) -> bool:
+    if not caption_fields.get("comment_link"):
+        return False
+    title = str(caption_fields.get("title") or "").strip()
+    description = str(caption_fields.get("description") or "").strip()
+    link = str(caption_fields.get("link") or "").strip()
+    return not title or not description or not link
+
 def update_main_offer_caption_with_comment_link(offer: Dict) -> None:
     channel_message_id = offer.get("channel_message_id")
     comment_link = str(offer.get("comment_link") or "").strip()
     if not channel_message_id or not comment_link:
         return
 
-    title = offer.get("title") or offer.get("preview_title") or "Oferta"
-    description = offer.get("description") or ""
-    validity = offer.get("validity")
-    link = offer.get("link") or offer.get("original_link") or ""
+    caption_fields = _caption_fields_from_offer(offer)
+    if _should_skip_less_complete_caption_update(offer, caption_fields):
+        return
 
     caption = build_main_caption(
-        title,
-        description,
-        validity,
-        link,
-        location_summary=offer.get("location_summary"),
-        sold_out_at=offer.get("sold_out_at"),
-        comment_link=comment_link,
+        caption_fields["title"],
+        caption_fields["description"],
+        caption_fields["validity"],
+        caption_fields["link"],
+        location_summary=caption_fields["location_summary"],
+        sold_out_at=caption_fields["sold_out_at"],
+        comment_link=caption_fields["comment_link"],
     )
 
     try:
@@ -2117,19 +2137,18 @@ def refresh_sent_offers_with_sold_out() -> int:
         if offer.get("_sold_out_synced_to_telegram") is True:
             continue
 
-        title = offer.get("title") or offer.get("preview_title") or "Oferta"
-        description = offer.get("description") or ""
-        validity = offer.get("validity")
-        link = offer.get("link") or offer.get("original_link") or ""
+        caption_fields = _caption_fields_from_offer(offer)
+        if _should_skip_less_complete_caption_update(offer, caption_fields):
+            continue
 
         caption = build_main_caption(
-            title,
-            description,
-            validity,
-            link,
-            location_summary=offer.get("location_summary"),
-            sold_out_at=offer.get("sold_out_at"),
-            comment_link=offer.get("comment_link"),
+            caption_fields["title"],
+            caption_fields["description"],
+            caption_fields["validity"],
+            caption_fields["link"],
+            location_summary=caption_fields["location_summary"],
+            sold_out_at=caption_fields["sold_out_at"],
+            comment_link=caption_fields["comment_link"],
         )
 
         try:
