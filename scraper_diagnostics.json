@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-03T22:56:26.019593Z",
+  "updated_at": "2026-05-03T23:12:52.764407Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -7,21 +7,15 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 1,
+    "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 31,
+    "duplicada_historico": 32,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 03/05 Teatro J. Safra - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqp-2-ingressos-03-05-teatro-j-safra-sp",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pqp-2-ingressos-03-05-teatro-j-safra-sp"
-    },
     {
       "title": "Dia das Mães: Leve 8 e pague 4",
       "link": "https://clube.uol.com.br/evino/pqi-dia-das-mes-leve-8-e-pague-4",
@@ -213,6 +207,12 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - SP",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
     }
   ]
 }
