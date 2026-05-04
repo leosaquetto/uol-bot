@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-04T11:08:20.421699Z",
+  "updated_at": "2026-05-04T11:20:08.812532Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 14,
+  "candidates_added": 13,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 33,
+    "duplicada_historico": 34,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -57,6 +57,12 @@
       "link": "https://clube.uol.com.br/restaurantepraasaoloureno/pp7-ganhe-uma-sobremesa-no-jantar",
       "reason": "duplicada_historico",
       "trace_id": "trace_pp7-ganhe-uma-sobremesa-no-jantar"
+    },
+    {
+      "title": "Prato em Dobro na Cardof Bistrô",
+      "link": "https://clube.uol.com.br/cardofbistrowinebeer/pp4-prato-em-dobro-na-cardof-bistr",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pp4-prato-em-dobro-na-cardof-bistr"
     },
     {
       "title": "Presenteie com 10% OFF no Dia das Mães",
