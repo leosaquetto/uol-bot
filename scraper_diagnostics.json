@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-04T16:03:01.145094Z",
+  "updated_at": "2026-05-04T16:32:01.448213Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 31/05 Teatro UOL - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqw-2-ingressos-31-05-teatro-uol-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqw-2-ingressos-31-05-teatro-uol-sp"
-    },
     {
       "title": "2 INGRESSOS: 20/05 Teatro UOL - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqv-2-ingressos-20-05-teatro-uol-sp",
@@ -303,6 +297,12 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - BA",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
     }
   ]
 }
