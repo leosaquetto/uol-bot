@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-03T23:58:01.934868Z",
+  "updated_at": "2026-05-04T01:02:31.333232Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 15,
+  "candidates_added": 14,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 32,
+    "duplicada_historico": 33,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -150,12 +150,6 @@
     },
     {
       "title": "50% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/teatrojsafra/pnh-50-off-no-par-de-ingressos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pnh-50-off-no-par-de-ingressos"
-    },
-    {
-      "title": "50% OFF no par de ingressos",
       "link": "https://clube.uol.com.br/teatrojsafra/png-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_png-50-off-no-par-de-ingressos"
@@ -213,6 +207,18 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - BA",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
+    },
+    {
+      "title": "30% OFF na compra de ingresso - CE",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce"
     }
   ]
 }
