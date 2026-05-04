@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-04T09:16:45.259916Z",
+  "updated_at": "2026-05-04T11:07:48.427124Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 13,
+  "candidates_added": 14,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 34,
+    "duplicada_historico": 33,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-mes",
       "reason": "duplicada_historico",
       "trace_id": "trace_ppt-25-off-dia-das-mes"
-    },
-    {
-      "title": "2 INGRESSOS: Teatro Eldorado - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ppP-2-ingressos-teatro-eldorado-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ppp-2-ingressos-teatro-eldorado-sp"
     },
     {
       "title": "Dia das Mães: R$50 OFF em flores",
