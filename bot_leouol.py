@@ -1839,7 +1839,7 @@ def maybe_send_weekly_ticket_summary() -> None:
     lines.append("\n✨ Boa semana! Bora lotar os canais com ofertas top 😎")
     text = "\n".join(lines)
     try:
-        send_message_text(DASHBOARD_CHAT_ID, text, disable_notification=False)
+        send_message_text(CANAL2_ID or TELEGRAM_CHAT_ID, text, disable_notification=False)
         state["weekly_summary_sent_for"] = monday_key
         save_daily_log(state)
     except Exception as e:
