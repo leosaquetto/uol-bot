@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-04T06:45:23.718893Z",
+  "updated_at": "2026-05-04T06:51:48.524178Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 14,
+  "candidates_added": 13,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 33,
+    "duplicada_historico": 34,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -63,6 +63,12 @@
       "link": "https://clube.uol.com.br/restaurantepraasaoloureno/pp7-ganhe-uma-sobremesa-no-jantar",
       "reason": "duplicada_historico",
       "trace_id": "trace_pp7-ganhe-uma-sobremesa-no-jantar"
+    },
+    {
+      "title": "Presenteie com 10% OFF no Dia das Mães",
+      "link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-mes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ppf-presenteie-com-10-off-no-dia-das-mes"
     },
     {
       "title": "39% OFF na Caixa Angel Tabletes",
