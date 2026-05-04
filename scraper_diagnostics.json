@@ -1,21 +1,39 @@
 {
-  "updated_at": "2026-05-04T15:02:08.421985Z",
+  "updated_at": "2026-05-04T15:03:20.767180Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 44,
+    "duplicada_historico": 47,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 31/05 Teatro UOL - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqw-2-ingressos-31-05-teatro-uol-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqw-2-ingressos-31-05-teatro-uol-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 20/05 Teatro UOL - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqv-2-ingressos-20-05-teatro-uol-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqv-2-ingressos-20-05-teatro-uol-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 10/05 Teatro UOL - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqu-2-ingressos-10-05-teatro-uol-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqu-2-ingressos-10-05-teatro-uol-sp"
+    },
     {
       "title": "Dia das Mães: Leve 8 e pague 4",
       "link": "https://clube.uol.com.br/evino/pqi-dia-das-maes-leve-8-e-pague-4",
