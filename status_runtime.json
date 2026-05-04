@@ -22,16 +22,16 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "04/05/2026 às 06:16",
-    "last_finished_at": "04/05/2026 às 06:16",
-    "last_success_at": "04/05/2026 às 06:16",
+    "last_started_at": "04/05/2026 às 08:07",
+    "last_finished_at": "04/05/2026 às 08:07",
+    "last_success_at": "04/05/2026 às 08:07",
     "status": "sem_novidade",
-    "summary": "nenhuma enviada; descartadas 12 (reenvio_bloqueado_7d=0, validade_expirada=0, inicio_validade_antigo_sem_fim=0, scraped_at_antigo=0, duplicadas=12, sem_scraped_at_em_backlog=0)",
+    "summary": "nenhuma enviada; descartadas 13 (reenvio_bloqueado_7d=0, validade_expirada=0, inicio_validade_antigo_sem_fim=0, scraped_at_antigo=0, duplicadas=13, sem_scraped_at_em_backlog=0)",
     "processed": 1,
     "sent": 0,
     "failed": 0,
     "pending_count": 0,
-    "last_error": "consumer_sem_envio_com_pending: pending=13 descartadas=12 falhas_telegram=0"
+    "last_error": "consumer_sem_envio_com_pending: pending=14 descartadas=13 falhas_telegram=0"
   },
   "global": {
     "last_offer_title": "Presenteie com 10% OFF no Dia das Mães",
