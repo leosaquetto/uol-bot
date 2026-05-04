@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-04T17:18:07.727049Z",
+  "updated_at": "2026-05-04T17:18:54.817517Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 46,
+    "duplicada_historico": 47,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 31/05 Shopping Cidade SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqx-2-ingressos-31-05-shopping-cidade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqx-2-ingressos-31-05-shopping-cidade-sp"
+    },
     {
       "title": "2 INGRESSOS: 20/05 Teatro UOL - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqv-2-ingressos-20-05-teatro-uol-sp",
