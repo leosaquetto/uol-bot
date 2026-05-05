@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-05T22:42:14.738475Z",
+  "updated_at": "2026-05-05T23:34:35.417149Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -53,12 +53,6 @@
       "trace_id": "trace_pqb-2-ingressos-23-05-btg-pactual-hall-sp"
     },
     {
-      "title": "2 INGRESSOS: 17/05 BTG Pactual Hall - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqA-2-ingressos-17-05-btg-pactual-hall-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqa-2-ingressos-17-05-btg-pactual-hall-sp"
-    },
-    {
       "title": "Ganhe 01 Cinnamon Oblivion",
       "link": "https://clube.uol.com.br/outbacksteakhouse/pq8-ganhe-01-cinnamon-oblivion",
       "reason": "duplicada_historico",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/dominospizza/pq3-40-off-nos-pedidos-pelo-site-e-app",
       "reason": "duplicada_historico",
       "trace_id": "trace_pq3-40-off-nos-pedidos-pelo-site-e-app"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pq2-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pq2-50-off-no-par-de-ingressos"
     }
   ]
 }
