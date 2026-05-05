@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 109795,
-  "run_duration_seconds": 109.8,
-  "avg_detail_ms_per_offer": 2287,
-  "generated_at": "2026-05-05T01:01:55.846Z",
+  "run_duration_ms": 293338,
+  "run_duration_seconds": 293.34,
+  "avg_detail_ms_per_offer": 6111,
+  "generated_at": "2026-05-05T02:17:03.276Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132015,
-      "detail_elapsed_ms": 2642,
-      "scraped_at": "2026-05-05T01:00:24.277Z"
+      "detail_html_length": 133830,
+      "detail_elapsed_ms": 7965,
+      "scraped_at": "2026-05-05T02:14:40.153Z"
     },
     {
       "id": "pqv-2-ingressos-20-05-teatro-uol-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133106,
-      "detail_elapsed_ms": 2111,
-      "scraped_at": "2026-05-05T01:00:26.445Z"
+      "detail_html_length": 133311,
+      "detail_elapsed_ms": 6520,
+      "scraped_at": "2026-05-05T02:14:46.705Z"
     },
     {
       "id": "pqu-2-ingressos-10-05-teatro-uol-sp",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133564,
-      "detail_elapsed_ms": 1852,
-      "scraped_at": "2026-05-05T01:00:28.298Z"
+      "detail_html_length": 133020,
+      "detail_elapsed_ms": 1706,
+      "scraped_at": "2026-05-05T02:14:48.456Z"
     },
     {
-      "id": "pqi-dia-das-maes-leve-8-e-pague-4",
-      "trace_id": "trace_pqi-dia-das-maes-leve-8-e-pague-4",
-      "link": "https://clube.uol.com.br/evino/pqi-dia-das-maes-leve-8-e-pague-4",
-      "original_link": "https://clube.uol.com.br/evino/pqi-dia-das-maes-leve-8-e-pague-4",
+      "id": "pqi-dia-das-mes-leve-8-e-pague-4",
+      "trace_id": "trace_pqi-dia-das-mes-leve-8-e-pague-4",
+      "link": "https://clube.uol.com.br/evino/pqi-dia-das-mes-leve-8-e-pague-4",
+      "original_link": "https://clube.uol.com.br/evino/pqi-dia-das-mes-leve-8-e-pague-4",
       "title": "Dia das Mães: Leve 8 e pague 4",
       "preview_title": "Dia das Mães: Leve 8 e pague 4",
       "validity": "Benefício válido de 30/04/2026 17:11 até 15/05/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130725,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-05-05T01:00:29.984Z"
+      "detail_html_length": 130683,
+      "detail_elapsed_ms": 5246,
+      "scraped_at": "2026-05-05T02:14:53.714Z"
     },
     {
-      "id": "ppt-25-off-dia-das-maes",
-      "trace_id": "trace_ppt-25-off-dia-das-maes",
-      "link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-maes",
-      "original_link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-maes",
+      "id": "ppt-25-off-dia-das-mes",
+      "trace_id": "trace_ppt-25-off-dia-das-mes",
+      "link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-mes",
+      "original_link": "https://clube.uol.com.br/nike/ppT-25-off-dia-das-mes",
       "title": "25% OFF Dia das mães",
       "preview_title": "25% OFF Dia das mães",
       "validity": "Benefício válido de 29/04/2026 13:03 até 05/05/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130558,
-      "detail_elapsed_ms": 1795,
-      "scraped_at": "2026-05-05T01:00:31.780Z"
+      "detail_html_length": 130535,
+      "detail_elapsed_ms": 5732,
+      "scraped_at": "2026-05-05T02:14:59.462Z"
     },
     {
-      "id": "ppk-dia-das-maes-r-50-off-em-flores",
-      "trace_id": "trace_ppk-dia-das-maes-r-50-off-em-flores",
-      "link": "https://clube.uol.com.br/giulianaflores/ppK-dia-das-maes-r-50-off-em-flores",
-      "original_link": "https://clube.uol.com.br/giulianaflores/ppK-dia-das-maes-r-50-off-em-flores",
+      "id": "ppk-dia-das-mes-r-50-off-em-flores",
+      "trace_id": "trace_ppk-dia-das-mes-r-50-off-em-flores",
+      "link": "https://clube.uol.com.br/giulianaflores/ppK-dia-das-mes-r-50-off-em-flores",
+      "original_link": "https://clube.uol.com.br/giulianaflores/ppK-dia-das-mes-r-50-off-em-flores",
       "title": "Dia das Mães: R$50 OFF em flores",
       "preview_title": "Dia das Mães: R$50 OFF em flores",
       "validity": "Benefício válido de 28/04/2026 17:25 até 10/05/2026 23:59.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131165,
-      "detail_elapsed_ms": 1934,
-      "scraped_at": "2026-05-05T01:00:33.714Z"
+      "detail_html_length": 131084,
+      "detail_elapsed_ms": 2986,
+      "scraped_at": "2026-05-05T02:15:02.461Z"
     },
     {
-      "id": "pph-ate-70-em-exames-e-check-ups",
-      "trace_id": "trace_pph-ate-70-em-exames-e-check-ups",
-      "link": "https://clube.uol.com.br/s2medica/ppH-ate-70-em-exames-e-check-ups",
-      "original_link": "https://clube.uol.com.br/s2medica/ppH-ate-70-em-exames-e-check-ups",
+      "id": "pph-at-70-em-exames-e-check-ups",
+      "trace_id": "trace_pph-at-70-em-exames-e-check-ups",
+      "link": "https://clube.uol.com.br/s2medica/ppH-at-70-em-exames-e-check-ups",
+      "original_link": "https://clube.uol.com.br/s2medica/ppH-at-70-em-exames-e-check-ups",
       "title": "Até 70% em exames e check-ups",
       "preview_title": "Até 70% em exames e check-ups",
       "validity": "Benefício válido de 28/04/2026 16:03 até 28/04/2027 23:59.",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133380,
-      "detail_elapsed_ms": 1714,
-      "scraped_at": "2026-05-05T01:00:35.428Z"
+      "detail_html_length": 133338,
+      "detail_elapsed_ms": 4286,
+      "scraped_at": "2026-05-05T02:15:06.754Z"
     },
     {
       "id": "pp9-15-off-no-site",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130582,
-      "detail_elapsed_ms": 1549,
-      "scraped_at": "2026-05-05T01:00:36.977Z"
+      "detail_html_length": 130622,
+      "detail_elapsed_ms": 4790,
+      "scraped_at": "2026-05-05T02:15:11.549Z"
     },
     {
       "id": "pp8-caipirinha-ou-chope-double",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131817,
-      "detail_elapsed_ms": 1858,
-      "scraped_at": "2026-05-05T01:00:38.835Z"
+      "detail_html_length": 132119,
+      "detail_elapsed_ms": 7729,
+      "scraped_at": "2026-05-05T02:15:19.289Z"
     },
     {
       "id": "pp7-ganhe-uma-sobremesa-no-jantar",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131910,
-      "detail_elapsed_ms": 2179,
-      "scraped_at": "2026-05-05T01:00:41.014Z"
+      "detail_html_length": 131900,
+      "detail_elapsed_ms": 5932,
+      "scraped_at": "2026-05-05T02:15:25.228Z"
     },
     {
-      "id": "pp4-prato-em-dobro-na-cardof-bistro",
-      "trace_id": "trace_pp4-prato-em-dobro-na-cardof-bistro",
-      "link": "https://clube.uol.com.br/cardofbistrowinebeer/pp4-prato-em-dobro-na-cardof-bistro",
-      "original_link": "https://clube.uol.com.br/cardofbistrowinebeer/pp4-prato-em-dobro-na-cardof-bistro",
+      "id": "pp4-prato-em-dobro-na-cardof-bistr",
+      "trace_id": "trace_pp4-prato-em-dobro-na-cardof-bistr",
+      "link": "https://clube.uol.com.br/cardofbistrowinebeer/pp4-prato-em-dobro-na-cardof-bistr",
+      "original_link": "https://clube.uol.com.br/cardofbistrowinebeer/pp4-prato-em-dobro-na-cardof-bistr",
       "title": "Prato em Dobro na Cardof Bistrô",
       "preview_title": "Prato em Dobro na Cardof Bistrô",
       "validity": "Benefício válido de 28/04/2026 10:38 até 31/10/2027 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132195,
-      "detail_elapsed_ms": 1782,
-      "scraped_at": "2026-05-05T01:00:42.798Z"
+      "detail_html_length": 132262,
+      "detail_elapsed_ms": 1506,
+      "scraped_at": "2026-05-05T02:15:26.735Z"
     },
     {
-      "id": "ppi-dia-das-maes-com-15-off-brinde",
-      "trace_id": "trace_ppi-dia-das-maes-com-15-off-brinde",
-      "link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
-      "original_link": "https://clube.uol.com.br/oceane/ppi-dia-das-maes-com-15-off-brinde",
+      "id": "ppi-dia-das-mes-com-15-off-brinde",
+      "trace_id": "trace_ppi-dia-das-mes-com-15-off-brinde",
+      "link": "https://clube.uol.com.br/oceane/ppi-dia-das-mes-com-15-off-brinde",
+      "original_link": "https://clube.uol.com.br/oceane/ppi-dia-das-mes-com-15-off-brinde",
       "title": "Dia das Mães com 15% OFF + brinde!",
       "preview_title": "Dia das Mães com 15% OFF + brinde!",
       "validity": "Benefício válido de 24/04/2026 15:14 até 10/05/2026 23:59.",
@@ -304,15 +304,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129454,
-      "detail_elapsed_ms": 1995,
-      "scraped_at": "2026-05-05T01:00:44.793Z"
+      "detail_html_length": 130992,
+      "detail_elapsed_ms": 1518,
+      "scraped_at": "2026-05-05T02:15:28.255Z"
     },
     {
-      "id": "pph-especial-de-dia-das-maes-com-12-off",
-      "trace_id": "trace_pph-especial-de-dia-das-maes-com-12-off",
-      "link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-maes-com-12-off",
-      "original_link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-maes-com-12-off",
+      "id": "pph-especial-de-dia-das-mes-com-12-off",
+      "trace_id": "trace_pph-especial-de-dia-das-mes-com-12-off",
+      "link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-mes-com-12-off",
+      "original_link": "https://clube.uol.com.br/riachuelo/pph-especial-de-dia-das-mes-com-12-off",
       "title": "Especial de Dia das Mães com 12% OFF",
       "preview_title": "Especial de Dia das Mães com 12% OFF",
       "validity": "Benefício válido de 24/04/2026 14:52 até 10/05/2026 23:59.",
@@ -328,15 +328,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130988,
-      "detail_elapsed_ms": 1588,
-      "scraped_at": "2026-05-05T01:00:46.384Z"
+      "detail_html_length": 131034,
+      "detail_elapsed_ms": 1544,
+      "scraped_at": "2026-05-05T02:15:29.800Z"
     },
     {
-      "id": "ppg-dia-das-maes-puket-com-10-off",
-      "trace_id": "trace_ppg-dia-das-maes-puket-com-10-off",
-      "link": "https://clube.uol.com.br/puket/ppg-dia-das-maes-puket-com-10-off",
-      "original_link": "https://clube.uol.com.br/puket/ppg-dia-das-maes-puket-com-10-off",
+      "id": "ppg-dia-das-mes-puket-com-10-off",
+      "trace_id": "trace_ppg-dia-das-mes-puket-com-10-off",
+      "link": "https://clube.uol.com.br/puket/ppg-dia-das-mes-puket-com-10-off",
+      "original_link": "https://clube.uol.com.br/puket/ppg-dia-das-mes-puket-com-10-off",
       "title": "Dia das Mães Puket com 10% OFF",
       "preview_title": "Dia das Mães Puket com 10% OFF",
       "validity": "Benefício válido de 24/04/2026 14:40 até 10/05/2026 23:59.",
@@ -352,15 +352,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124172,
-      "detail_elapsed_ms": 1790,
-      "scraped_at": "2026-05-05T01:00:48.174Z"
+      "detail_html_length": 130828,
+      "detail_elapsed_ms": 1841,
+      "scraped_at": "2026-05-05T02:15:31.642Z"
     },
     {
-      "id": "ppf-presenteie-com-10-off-no-dia-das-maes",
-      "trace_id": "trace_ppf-presenteie-com-10-off-no-dia-das-maes",
-      "link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-maes",
-      "original_link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-maes",
+      "id": "ppf-presenteie-com-10-off-no-dia-das-mes",
+      "trace_id": "trace_ppf-presenteie-com-10-off-no-dia-das-mes",
+      "link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-mes",
+      "original_link": "https://clube.uol.com.br/imaginarium/ppf-presenteie-com-10-off-no-dia-das-mes",
       "title": "Presenteie com 10% OFF no Dia das Mães",
       "preview_title": "Presenteie com 10% OFF no Dia das Mães",
       "validity": "Benefício válido de 24/04/2026 14:29 até 10/05/2026 23:59.",
@@ -376,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 135819,
-      "detail_elapsed_ms": 2445,
-      "scraped_at": "2026-05-05T01:00:50.619Z"
+      "detail_html_length": 139261,
+      "detail_elapsed_ms": 1578,
+      "scraped_at": "2026-05-05T02:15:33.220Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -400,15 +400,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126140,
-      "detail_elapsed_ms": 1866,
-      "scraped_at": "2026-05-05T01:00:52.485Z"
+      "detail_html_length": 132502,
+      "detail_elapsed_ms": 20428,
+      "scraped_at": "2026-05-05T02:15:53.648Z"
     },
     {
-      "id": "ppd-dia-das-maes-com-15-off",
-      "trace_id": "trace_ppd-dia-das-maes-com-15-off",
-      "link": "https://clube.uol.com.br/gocase/ppd-dia-das-maes-com-15-off",
-      "original_link": "https://clube.uol.com.br/gocase/ppd-dia-das-maes-com-15-off",
+      "id": "ppd-dia-das-mes-com-15-off",
+      "trace_id": "trace_ppd-dia-das-mes-com-15-off",
+      "link": "https://clube.uol.com.br/gocase/ppd-dia-das-mes-com-15-off",
+      "original_link": "https://clube.uol.com.br/gocase/ppd-dia-das-mes-com-15-off",
       "title": "Dia das Mães com 15% OFF",
       "preview_title": "Dia das Mães com 15% OFF",
       "validity": "Benefício válido de 24/04/2026 14:12 até 10/05/2026 23:59.",
@@ -424,9 +424,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129504,
-      "detail_elapsed_ms": 1655,
-      "scraped_at": "2026-05-05T01:00:54.140Z"
+      "detail_html_length": 130951,
+      "detail_elapsed_ms": 7835,
+      "scraped_at": "2026-05-05T02:16:01.495Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -448,15 +448,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132542,
-      "detail_elapsed_ms": 1986,
-      "scraped_at": "2026-05-05T01:00:56.126Z"
+      "detail_html_length": 131373,
+      "detail_elapsed_ms": 3699,
+      "scraped_at": "2026-05-05T02:16:05.200Z"
     },
     {
-      "id": "ppb-dia-das-maes-com-25-off",
-      "trace_id": "trace_ppb-dia-das-maes-com-25-off",
-      "link": "https://clube.uol.com.br/hering/ppb-dia-das-maes-com-25-off",
-      "original_link": "https://clube.uol.com.br/hering/ppb-dia-das-maes-com-25-off",
+      "id": "ppb-dia-das-mes-com-25-off",
+      "trace_id": "trace_ppb-dia-das-mes-com-25-off",
+      "link": "https://clube.uol.com.br/hering/ppb-dia-das-mes-com-25-off",
+      "original_link": "https://clube.uol.com.br/hering/ppb-dia-das-mes-com-25-off",
       "title": "Dia das Mães com 25% OFF",
       "preview_title": "Dia das Mães com 25% OFF",
       "validity": "Benefício válido de 24/04/2026 13:36 até 10/05/2026 23:59.",
@@ -472,9 +472,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129591,
-      "detail_elapsed_ms": 1762,
-      "scraped_at": "2026-05-05T01:00:57.888Z"
+      "detail_html_length": 129653,
+      "detail_elapsed_ms": 2030,
+      "scraped_at": "2026-05-05T02:16:07.230Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -496,15 +496,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131521,
-      "detail_elapsed_ms": 1970,
-      "scraped_at": "2026-05-05T01:00:59.858Z"
+      "detail_html_length": 126327,
+      "detail_elapsed_ms": 2075,
+      "scraped_at": "2026-05-05T02:16:09.305Z"
     },
     {
-      "id": "pog-50-off-em-ate-4-ingressos",
-      "trace_id": "trace_pog-50-off-em-ate-4-ingressos",
-      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-ate-4-ingressos",
-      "original_link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-ate-4-ingressos",
+      "id": "pog-50-off-em-at-4-ingressos",
+      "trace_id": "trace_pog-50-off-em-at-4-ingressos",
+      "link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
+      "original_link": "https://clube.uol.com.br/espetaculocheztoi-emseulugar/poG-50-off-em-at-4-ingressos",
       "title": "50% OFF em até 4 ingressos",
       "preview_title": "50% OFF em até 4 ingressos",
       "validity": "Benefício válido de 09/03/2026 15:54 até 07/06/2026 23:59.",
@@ -520,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125640,
-      "detail_elapsed_ms": 1925,
-      "scraped_at": "2026-05-05T01:01:01.783Z"
+      "detail_html_length": 131998,
+      "detail_elapsed_ms": 2789,
+      "scraped_at": "2026-05-05T02:16:12.094Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -544,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129484,
-      "detail_elapsed_ms": 2637,
-      "scraped_at": "2026-05-05T01:01:04.420Z"
+      "detail_html_length": 124270,
+      "detail_elapsed_ms": 2203,
+      "scraped_at": "2026-05-05T02:16:14.297Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -568,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132966,
-      "detail_elapsed_ms": 2292,
-      "scraped_at": "2026-05-05T01:01:06.713Z"
+      "detail_html_length": 131809,
+      "detail_elapsed_ms": 2102,
+      "scraped_at": "2026-05-05T02:16:16.399Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -592,9 +592,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131927,
-      "detail_elapsed_ms": 2059,
-      "scraped_at": "2026-05-05T01:01:08.772Z"
+      "detail_html_length": 131594,
+      "detail_elapsed_ms": 2461,
+      "scraped_at": "2026-05-05T02:16:18.860Z"
     },
     {
       "id": "poy-30-cashback",
@@ -616,15 +616,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131167,
-      "detail_elapsed_ms": 1715,
-      "scraped_at": "2026-05-05T01:01:10.487Z"
+      "detail_html_length": 124813,
+      "detail_elapsed_ms": 1788,
+      "scraped_at": "2026-05-05T02:16:20.648Z"
     },
     {
-      "id": "pok-ofertas-de-ultima-hora-25-off-extra",
-      "trace_id": "trace_pok-ofertas-de-ultima-hora-25-off-extra",
-      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
-      "original_link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ultima-hora-25-off-extra",
+      "id": "pok-ofertas-de-ltima-hora-25-off-extra",
+      "trace_id": "trace_pok-ofertas-de-ltima-hora-25-off-extra",
+      "link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ltima-hora-25-off-extra",
+      "original_link": "https://clube.uol.com.br/hoteiscom/pok-ofertas-de-ltima-hora-25-off-extra",
       "title": "Ofertas de última hora: 25% OFF extra!",
       "preview_title": "Ofertas de última hora: 25% OFF extra!",
       "validity": "Benefício válido de 16/04/2026 15:40 até 25/05/2026 23:59.",
@@ -640,15 +640,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126813,
-      "detail_elapsed_ms": 1857,
-      "scraped_at": "2026-05-05T01:01:12.344Z"
+      "detail_html_length": 126805,
+      "detail_elapsed_ms": 2053,
+      "scraped_at": "2026-05-05T02:16:22.701Z"
     },
     {
-      "id": "pob-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_pob-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pob-ate-75-off-para-compras-no-site",
+      "id": "pob-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pob-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pob-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pob-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 16/04/2026 12:40 até 10/05/2026 23:59.",
@@ -664,15 +664,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131131,
-      "detail_elapsed_ms": 1981,
-      "scraped_at": "2026-05-05T01:01:14.325Z"
+      "detail_html_length": 129947,
+      "detail_elapsed_ms": 2362,
+      "scraped_at": "2026-05-05T02:16:25.063Z"
     },
     {
-      "id": "poa-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_poa-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/zattini/poa-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/zattini/poa-ate-75-off-para-compras-no-site",
+      "id": "poa-at-75-off-para-compras-no-site",
+      "trace_id": "trace_poa-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/zattini/poa-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/zattini/poa-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 16/04/2026 12:37 até 10/05/2026 23:59.",
@@ -688,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130815,
-      "detail_elapsed_ms": 2110,
-      "scraped_at": "2026-05-05T01:01:16.436Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 1785,
+      "scraped_at": "2026-05-05T02:16:26.848Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -712,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130913,
-      "detail_elapsed_ms": 2122,
-      "scraped_at": "2026-05-05T01:01:18.558Z"
+      "detail_html_length": 130914,
+      "detail_elapsed_ms": 1826,
+      "scraped_at": "2026-05-05T02:16:28.674Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -736,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129529,
-      "detail_elapsed_ms": 2538,
-      "scraped_at": "2026-05-05T01:01:21.096Z"
+      "detail_html_length": 129975,
+      "detail_elapsed_ms": 1721,
+      "scraped_at": "2026-05-05T02:16:30.395Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -760,15 +760,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124503,
-      "detail_elapsed_ms": 2055,
-      "scraped_at": "2026-05-05T01:01:23.151Z"
+      "detail_html_length": 129727,
+      "detail_elapsed_ms": 1886,
+      "scraped_at": "2026-05-05T02:16:32.281Z"
     },
     {
-      "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
-      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-imas-gratis",
-      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-imas-gratis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-imas-gratis",
+      "id": "pn8-resgate-agora-1-kit-com-10-ms-grtis",
+      "trace_id": "trace_pn8-resgate-agora-1-kit-com-10-ms-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-ms-grtis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pn8-resgate-agora-1-kit-com-10-ms-grtis",
       "title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
       "preview_title": "Resgate agora 1 Kit com 10 Ímãs Grátis",
       "validity": "Benefício válido de 14/04/2026 11:29 até 05/05/2026 23:59.",
@@ -784,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131226,
-      "detail_elapsed_ms": 2131,
-      "scraped_at": "2026-05-05T01:01:25.282Z"
+      "detail_html_length": 130055,
+      "detail_elapsed_ms": 1767,
+      "scraped_at": "2026-05-05T02:16:34.048Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -808,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130976,
-      "detail_elapsed_ms": 1922,
-      "scraped_at": "2026-05-05T01:01:27.204Z"
+      "detail_html_length": 130997,
+      "detail_elapsed_ms": 1851,
+      "scraped_at": "2026-05-05T02:16:35.899Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -832,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130959,
-      "detail_elapsed_ms": 1961,
-      "scraped_at": "2026-05-05T01:01:29.165Z"
+      "detail_html_length": 129790,
+      "detail_elapsed_ms": 1672,
+      "scraped_at": "2026-05-05T02:16:37.571Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -856,15 +856,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 136605,
-      "detail_elapsed_ms": 2110,
-      "scraped_at": "2026-05-05T01:01:31.276Z"
+      "detail_html_length": 138111,
+      "detail_elapsed_ms": 2425,
+      "scraped_at": "2026-05-05T02:16:39.997Z"
     },
     {
-      "id": "pnx-2-cervejas-pelo-preco-1",
-      "trace_id": "trace_pnx-2-cervejas-pelo-preco-1",
-      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
-      "original_link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
+      "id": "pnx-2-cervejas-pelo-preo-1",
+      "trace_id": "trace_pnx-2-cervejas-pelo-preo-1",
+      "link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preo-de-1",
+      "original_link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preo-de-1",
       "title": "2 cervejas pelo preço de 1",
       "preview_title": "2 cervejas pelo preço de 1",
       "validity": "Benefício válido de 13/04/2026 11:41 até 13/06/2027 23:59.",
@@ -880,15 +880,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130423,
-      "detail_elapsed_ms": 1840,
-      "scraped_at": "2026-05-05T01:01:33.116Z"
+      "detail_html_length": 131577,
+      "detail_elapsed_ms": 1933,
+      "scraped_at": "2026-05-05T02:16:41.930Z"
     },
     {
-      "id": "pnu-30-off-em-pos-graduacao-de-medicina",
-      "trace_id": "trace_pnu-30-off-em-pos-graduacao-de-medicina",
-      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
-      "original_link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
+      "id": "pnu-30-off-em-ps-graduao-de-medicina",
+      "trace_id": "trace_pnu-30-off-em-ps-graduao-de-medicina",
+      "link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
+      "original_link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-ps-graduao-de-medicina",
       "title": "30% OFF em Pós Graduação de Medicina",
       "preview_title": "30% OFF em Pós Graduação de Medicina",
       "validity": "Benefício válido de 10/04/2026 17:21 até 31/12/2028 23:59.",
@@ -904,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126635,
-      "detail_elapsed_ms": 2092,
-      "scraped_at": "2026-05-05T01:01:35.208Z"
+      "detail_html_length": 133473,
+      "detail_elapsed_ms": 1825,
+      "scraped_at": "2026-05-05T02:16:43.755Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -928,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130592,
-      "detail_elapsed_ms": 1901,
-      "scraped_at": "2026-05-05T01:01:37.109Z"
+      "detail_html_length": 131731,
+      "detail_elapsed_ms": 1933,
+      "scraped_at": "2026-05-05T02:16:45.688Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -952,9 +952,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130751,
-      "detail_elapsed_ms": 2114,
-      "scraped_at": "2026-05-05T01:01:39.223Z"
+      "detail_html_length": 131941,
+      "detail_elapsed_ms": 1797,
+      "scraped_at": "2026-05-05T02:16:47.485Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -976,9 +976,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131894,
-      "detail_elapsed_ms": 2123,
-      "scraped_at": "2026-05-05T01:01:41.346Z"
+      "detail_html_length": 131924,
+      "detail_elapsed_ms": 1819,
+      "scraped_at": "2026-05-05T02:16:49.304Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -1000,9 +1000,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132127,
-      "detail_elapsed_ms": 1957,
-      "scraped_at": "2026-05-05T01:01:43.303Z"
+      "detail_html_length": 132118,
+      "detail_elapsed_ms": 1877,
+      "scraped_at": "2026-05-05T02:16:51.181Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -1024,9 +1024,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132639,
-      "detail_elapsed_ms": 1573,
-      "scraped_at": "2026-05-05T01:01:44.876Z"
+      "detail_html_length": 132608,
+      "detail_elapsed_ms": 1794,
+      "scraped_at": "2026-05-05T02:16:52.975Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -1049,8 +1049,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133260,
-      "detail_elapsed_ms": 1485,
-      "scraped_at": "2026-05-05T01:01:46.361Z"
+      "detail_elapsed_ms": 1724,
+      "scraped_at": "2026-05-05T02:16:54.699Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -1072,9 +1072,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133908,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-05-05T01:01:48.056Z"
+      "detail_html_length": 133896,
+      "detail_elapsed_ms": 2082,
+      "scraped_at": "2026-05-05T02:16:56.781Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -1096,9 +1096,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132339,
-      "detail_elapsed_ms": 2071,
-      "scraped_at": "2026-05-05T01:01:50.127Z"
+      "detail_html_length": 132329,
+      "detail_elapsed_ms": 1494,
+      "scraped_at": "2026-05-05T02:16:58.275Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -1120,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131987,
-      "detail_elapsed_ms": 1793,
-      "scraped_at": "2026-05-05T01:01:51.921Z"
+      "detail_html_length": 132048,
+      "detail_elapsed_ms": 1549,
+      "scraped_at": "2026-05-05T02:16:59.824Z"
     },
     {
       "id": "pmx-30-off-na-compra-de-ingresso-sp",
@@ -1144,9 +1144,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130821,
-      "detail_elapsed_ms": 2006,
-      "scraped_at": "2026-05-05T01:01:53.927Z"
+      "detail_html_length": 132011,
+      "detail_elapsed_ms": 1629,
+      "scraped_at": "2026-05-05T02:17:01.453Z"
     },
     {
       "id": "pmv-30-off-na-compra-de-ingresso-ba",
@@ -1168,9 +1168,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125272,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-05-05T01:01:55.614Z"
+      "detail_html_length": 131892,
+      "detail_elapsed_ms": 1649,
+      "scraped_at": "2026-05-05T02:17:03.102Z"
     }
   ]
 }
