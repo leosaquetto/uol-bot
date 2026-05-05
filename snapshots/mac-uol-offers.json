@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 48,
   "enriched_offers_count": 48,
-  "detail_ok_count": 48,
-  "detail_fail_count": 0,
+  "detail_ok_count": 38,
+  "detail_fail_count": 10,
   "detail_quality_counts": {
-    "complete": 48,
+    "complete": 38,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 10
   },
-  "run_duration_ms": 137579,
-  "run_duration_seconds": 137.58,
-  "avg_detail_ms_per_offer": 2866,
-  "generated_at": "2026-05-05T16:02:22.261Z",
+  "run_duration_ms": 73086,
+  "run_duration_seconds": 73.09,
+  "avg_detail_ms_per_offer": 1523,
+  "generated_at": "2026-05-05T17:21:53.769Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132940,
-      "detail_elapsed_ms": 6141,
-      "scraped_at": "2026-05-05T16:00:39.358Z"
+      "detail_html_length": 132890,
+      "detail_elapsed_ms": 1908,
+      "scraped_at": "2026-05-05T17:20:50.344Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126590,
-      "detail_elapsed_ms": 2367,
-      "scraped_at": "2026-05-05T16:00:41.746Z"
+      "detail_html_length": 132979,
+      "detail_elapsed_ms": 1617,
+      "scraped_at": "2026-05-05T17:20:51.962Z"
     },
     {
       "id": "pq5-ganhe-01-laramora-340ml",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126540,
-      "detail_elapsed_ms": 2186,
-      "scraped_at": "2026-05-05T16:00:43.932Z"
+      "detail_html_length": 132968,
+      "detail_elapsed_ms": 1481,
+      "scraped_at": "2026-05-05T17:20:53.443Z"
     },
     {
       "id": "pq4-2-ingressos-31-05-2026-teatro-claro-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131698,
-      "detail_elapsed_ms": 1954,
-      "scraped_at": "2026-05-05T16:00:45.886Z"
+      "detail_html_length": 132873,
+      "detail_elapsed_ms": 1483,
+      "scraped_at": "2026-05-05T17:20:54.926Z"
     },
     {
       "id": "pq3-40-off-nos-pedidos-pelo-site-e-app",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125007,
-      "detail_elapsed_ms": 2181,
-      "scraped_at": "2026-05-05T16:00:48.067Z"
+      "detail_html_length": 131396,
+      "detail_elapsed_ms": 1552,
+      "scraped_at": "2026-05-05T17:20:56.478Z"
     },
     {
       "id": "pq2-50-off-no-par-de-ingressos",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127203,
-      "detail_elapsed_ms": 2180,
-      "scraped_at": "2026-05-05T16:00:50.293Z"
+      "detail_html_length": 133601,
+      "detail_elapsed_ms": 1506,
+      "scraped_at": "2026-05-05T17:20:57.985Z"
     },
     {
       "id": "pq0-50-off-no-par-de-ingressos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132041,
-      "detail_elapsed_ms": 2063,
-      "scraped_at": "2026-05-05T16:00:52.356Z"
+      "detail_html_length": 133247,
+      "detail_elapsed_ms": 1498,
+      "scraped_at": "2026-05-05T17:20:59.483Z"
     },
     {
       "id": "pqv-2-ingressos-20-05-teatro-uol-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126733,
-      "detail_elapsed_ms": 2057,
-      "scraped_at": "2026-05-05T16:00:54.413Z"
+      "detail_html_length": 133131,
+      "detail_elapsed_ms": 1742,
+      "scraped_at": "2026-05-05T17:21:01.226Z"
     },
     {
       "id": "pqu-2-ingressos-10-05-teatro-uol-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133067,
-      "detail_elapsed_ms": 1949,
-      "scraped_at": "2026-05-05T16:00:56.362Z"
+      "detail_html_length": 133083,
+      "detail_elapsed_ms": 1510,
+      "scraped_at": "2026-05-05T17:21:02.736Z"
     },
     {
       "id": "pqi-dia-das-maes-leve-8-e-pague-4",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130716,
-      "detail_elapsed_ms": 1768,
-      "scraped_at": "2026-05-05T16:00:58.130Z"
+      "detail_html_length": 130772,
+      "detail_elapsed_ms": 1642,
+      "scraped_at": "2026-05-05T17:21:04.379Z"
     },
     {
       "id": "ppt-25-off-dia-das-maes",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124205,
-      "detail_elapsed_ms": 1794,
-      "scraped_at": "2026-05-05T16:00:59.925Z"
+      "detail_html_length": 130595,
+      "detail_elapsed_ms": 1828,
+      "scraped_at": "2026-05-05T17:21:06.208Z"
     },
     {
       "id": "ppk-dia-das-maes-r-50-off-em-flores",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129889,
-      "detail_elapsed_ms": 2129,
-      "scraped_at": "2026-05-05T16:01:02.054Z"
+      "detail_html_length": 131604,
+      "detail_elapsed_ms": 1749,
+      "scraped_at": "2026-05-05T17:21:07.957Z"
     },
     {
       "id": "pph-ate-70-em-exames-e-check-ups",
@@ -328,9 +328,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133373,
-      "detail_elapsed_ms": 2973,
-      "scraped_at": "2026-05-05T16:01:05.028Z"
+      "detail_html_length": 133427,
+      "detail_elapsed_ms": 1918,
+      "scraped_at": "2026-05-05T17:21:09.875Z"
     },
     {
       "id": "pp9-15-off-no-site",
@@ -352,9 +352,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129109,
-      "detail_elapsed_ms": 2374,
-      "scraped_at": "2026-05-05T16:01:07.403Z"
+      "detail_html_length": 130639,
+      "detail_elapsed_ms": 1708,
+      "scraped_at": "2026-05-05T17:21:11.583Z"
     },
     {
       "id": "pp8-caipirinha-ou-chope-double",
@@ -376,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125880,
-      "detail_elapsed_ms": 2505,
-      "scraped_at": "2026-05-05T16:01:09.908Z"
+      "detail_html_length": 131874,
+      "detail_elapsed_ms": 1692,
+      "scraped_at": "2026-05-05T17:21:13.275Z"
     },
     {
       "id": "pp7-ganhe-uma-sobremesa-no-jantar",
@@ -400,9 +400,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130712,
-      "detail_elapsed_ms": 1923,
-      "scraped_at": "2026-05-05T16:01:11.831Z"
+      "detail_html_length": 131896,
+      "detail_elapsed_ms": 1582,
+      "scraped_at": "2026-05-05T17:21:14.857Z"
     },
     {
       "id": "pp4-prato-em-dobro-na-cardof-bistro",
@@ -424,9 +424,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125854,
-      "detail_elapsed_ms": 1888,
-      "scraped_at": "2026-05-05T16:01:13.719Z"
+      "detail_html_length": 132253,
+      "detail_elapsed_ms": 1532,
+      "scraped_at": "2026-05-05T17:21:16.389Z"
     },
     {
       "id": "ppi-dia-das-maes-com-15-off-brinde",
@@ -448,9 +448,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129741,
-      "detail_elapsed_ms": 2053,
-      "scraped_at": "2026-05-05T16:01:15.772Z"
+      "detail_html_length": 130992,
+      "detail_elapsed_ms": 1493,
+      "scraped_at": "2026-05-05T17:21:17.882Z"
     },
     {
       "id": "pph-especial-de-dia-das-maes-com-12-off",
@@ -472,9 +472,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124656,
-      "detail_elapsed_ms": 2575,
-      "scraped_at": "2026-05-05T16:01:18.347Z"
+      "detail_html_length": 131025,
+      "detail_elapsed_ms": 1597,
+      "scraped_at": "2026-05-05T17:21:19.479Z"
     },
     {
       "id": "ppg-dia-das-maes-puket-com-10-off",
@@ -496,9 +496,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129633,
-      "detail_elapsed_ms": 3333,
-      "scraped_at": "2026-05-05T16:01:21.680Z"
+      "detail_html_length": 130819,
+      "detail_elapsed_ms": 1466,
+      "scraped_at": "2026-05-05T17:21:20.945Z"
     },
     {
       "id": "ppf-presenteie-com-10-off-no-dia-das-maes",
@@ -520,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131576,
-      "detail_elapsed_ms": 2969,
-      "scraped_at": "2026-05-05T16:01:24.649Z"
+      "detail_html_length": 139924,
+      "detail_elapsed_ms": 1737,
+      "scraped_at": "2026-05-05T17:21:22.682Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -544,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126160,
-      "detail_elapsed_ms": 2424,
-      "scraped_at": "2026-05-05T16:01:27.073Z"
+      "detail_html_length": 132560,
+      "detail_elapsed_ms": 1592,
+      "scraped_at": "2026-05-05T17:21:24.274Z"
     },
     {
       "id": "ppd-dia-das-maes-com-15-off",
@@ -568,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129386,
-      "detail_elapsed_ms": 3012,
-      "scraped_at": "2026-05-05T16:01:30.085Z"
+      "detail_html_length": 130787,
+      "detail_elapsed_ms": 1668,
+      "scraped_at": "2026-05-05T17:21:25.943Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -592,9 +592,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126169,
-      "detail_elapsed_ms": 1966,
-      "scraped_at": "2026-05-05T16:01:32.051Z"
+      "detail_html_length": 132577,
+      "detail_elapsed_ms": 1851,
+      "scraped_at": "2026-05-05T17:21:27.794Z"
     },
     {
       "id": "ppb-dia-das-maes-com-25-off",
@@ -616,9 +616,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130817,
-      "detail_elapsed_ms": 2237,
-      "scraped_at": "2026-05-05T16:01:34.288Z"
+      "detail_html_length": 130822,
+      "detail_elapsed_ms": 1784,
+      "scraped_at": "2026-05-05T17:21:29.578Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -640,9 +640,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126308,
-      "detail_elapsed_ms": 2071,
-      "scraped_at": "2026-05-05T16:01:36.360Z"
+      "detail_html_length": 132717,
+      "detail_elapsed_ms": 1896,
+      "scraped_at": "2026-05-05T17:21:31.475Z"
     },
     {
       "id": "pog-50-off-em-ate-4-ingressos",
@@ -664,9 +664,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132014,
-      "detail_elapsed_ms": 2062,
-      "scraped_at": "2026-05-05T16:01:38.422Z"
+      "detail_html_length": 132009,
+      "detail_elapsed_ms": 1968,
+      "scraped_at": "2026-05-05T17:21:33.443Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -688,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130653,
-      "detail_elapsed_ms": 2096,
-      "scraped_at": "2026-05-05T16:01:40.518Z"
+      "detail_html_length": 130670,
+      "detail_elapsed_ms": 1871,
+      "scraped_at": "2026-05-05T17:21:35.314Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -712,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131819,
-      "detail_elapsed_ms": 1990,
-      "scraped_at": "2026-05-05T16:01:42.508Z"
+      "detail_html_length": 132953,
+      "detail_elapsed_ms": 1823,
+      "scraped_at": "2026-05-05T17:21:37.137Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -736,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131937,
-      "detail_elapsed_ms": 1736,
-      "scraped_at": "2026-05-05T16:01:44.245Z"
+      "detail_html_length": 133142,
+      "detail_elapsed_ms": 1816,
+      "scraped_at": "2026-05-05T17:21:38.953Z"
     },
     {
       "id": "poy-30-cashback",
@@ -760,9 +760,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130017,
-      "detail_elapsed_ms": 2026,
-      "scraped_at": "2026-05-05T16:01:46.271Z"
+      "detail_html_length": 131182,
+      "detail_elapsed_ms": 1836,
+      "scraped_at": "2026-05-05T17:21:40.789Z"
     },
     {
       "id": "pok-ofertas-de-ultima-hora-25-off-extra",
@@ -784,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126801,
-      "detail_elapsed_ms": 1936,
-      "scraped_at": "2026-05-05T16:01:48.207Z"
+      "detail_html_length": 133211,
+      "detail_elapsed_ms": 1905,
+      "scraped_at": "2026-05-05T17:21:42.694Z"
     },
     {
       "id": "pob-ate-75-off-para-compras-no-site",
@@ -808,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129952,
-      "detail_elapsed_ms": 1816,
-      "scraped_at": "2026-05-05T16:01:50.023Z"
+      "detail_html_length": 131166,
+      "detail_elapsed_ms": 1774,
+      "scraped_at": "2026-05-05T17:21:44.468Z"
     },
     {
       "id": "poa-ate-75-off-para-compras-no-site",
@@ -832,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129656,
-      "detail_elapsed_ms": 1954,
-      "scraped_at": "2026-05-05T16:01:51.977Z"
+      "detail_html_length": 130851,
+      "detail_elapsed_ms": 1739,
+      "scraped_at": "2026-05-05T17:21:46.207Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -856,9 +856,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124561,
-      "detail_elapsed_ms": 2918,
-      "scraped_at": "2026-05-05T16:01:54.895Z"
+      "detail_html_length": 130949,
+      "detail_elapsed_ms": 1541,
+      "scraped_at": "2026-05-05T17:21:47.748Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -880,9 +880,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129442,
-      "detail_elapsed_ms": 2415,
-      "scraped_at": "2026-05-05T16:01:57.310Z"
+      "detail_html_length": 130705,
+      "detail_elapsed_ms": 1568,
+      "scraped_at": "2026-05-05T17:21:49.316Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -904,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129362,
-      "detail_elapsed_ms": 2047,
-      "scraped_at": "2026-05-05T16:01:59.357Z"
+      "detail_html_length": 130892,
+      "detail_elapsed_ms": 1674,
+      "scraped_at": "2026-05-05T17:21:50.990Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
@@ -928,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124866,
-      "detail_elapsed_ms": 1971,
-      "scraped_at": "2026-05-05T16:02:01.328Z"
+      "detail_html_length": 131713,
+      "detail_elapsed_ms": 1782,
+      "scraped_at": "2026-05-05T17:21:52.773Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -939,22 +939,22 @@
       "original_link": "https://clube.uol.com.br/flixbus/pn7-aproveite-15-off-em-viagens",
       "title": "Aproveite 15% OFF em viagens",
       "preview_title": "Aproveite 15% OFF em viagens",
-      "validity": "Benefício válido de 14/04/2026 10:58 até 30/12/2026 23:59.",
-      "description": "Sobre o parceiro: Seja para visitar alguém especial, conhecer um novo destino ou simplesmente mudar de ares, essa é a hora de embarcar! Garanta sua passagem com a FlixBus e aproveite essa oportunidade por tempo limitado. Benefício: Aproveite 15% OFF em viagens com o cupom da parceria na FlixBus. Regras: Válido para todo o Brasil, exceto rotas de marketplace. O cupom não é válido para compras de passagens no marketplace da FlixBus (viagens de parceiros que utilizam o site da FlixBus como ferramenta de venda - veículos sem a logomarca da FlixBus). A oferta pode ser encerrada sem aviso prévio devido à alta demanda.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Flix Bus",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/27ceb95268c114b138ac9ff737842d41.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/36dfd67c3da084a786bb9bd53e6279c3.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/36dfd67c3da084a786bb9bd53e6279c3.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/36dfd67c3da084a786bb9bd53e6279c3.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed Call log: \u001b[2m - navigating to \"https://clube.uol.com.br/flixbus/pn7-aproveite-15-off-em-viagens\", waiting until \"domcontentloaded\"\u001b[22m",
       "detail_attempts": 1,
-      "detail_html_length": 129829,
-      "detail_elapsed_ms": 2196,
-      "scraped_at": "2026-05-05T16:02:03.524Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 841,
+      "scraped_at": "2026-05-05T17:21:53.614Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -963,22 +963,22 @@
       "original_link": "https://clube.uol.com.br/nutrify/pn6-20-off-no-site-oficial-da-nutrify",
       "title": "20% OFF no site oficial da Nutrify",
       "preview_title": "20% OFF no site oficial da Nutrify",
-      "validity": "Benefício válido de 14/04/2026 10:40 até 15/05/2026 23:59.",
-      "description": "Sobre o parceiro: Com uma variedade de categorias, Nutrify atende suas necessidades diárias, desde vitaminas e minerais fundamentais até proteínas para seu melhorar seu desempenho no seu esporte favorito. Cada produto é desenvolvido com fórmulas limpas, garantindo que você receba os benefícios de verdade sem aditivos desnecessários. Benefício: Cupom de 20% OFF no site oficial da Nutrify. Regras: Desconto de 20% OFF no site oficial da Nutrify. Cupom cumulativo com outras promoções do site, exceto categoria moda e acessórios. Cupom não cumulativo com outros cupons. O desconto não abrange o frete.",
+      "validity": "",
+      "description": "",
       "category": "Beleza",
       "partner_name": "Nutrify",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a38410fac306ec4054c4417adff966a6.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7c63c56c09aeee3bebed758d8f3e9ce8.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7c63c56c09aeee3bebed758d8f3e9ce8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7c63c56c09aeee3bebed758d8f3e9ce8.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 129733,
-      "detail_elapsed_ms": 1988,
-      "scraped_at": "2026-05-05T16:02:05.512Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1,
+      "scraped_at": "2026-05-05T17:21:53.615Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -987,22 +987,22 @@
       "original_link": "https://clube.uol.com.br/forneriamaiori/pn0-ganhe-o-banquete-do-chef",
       "title": "Ganhe o banquete do chef",
       "preview_title": "Ganhe o banquete do chef",
-      "validity": "Benefício válido de 13/04/2026 14:58 até 13/04/2027 23:59.",
-      "description": "Sobre o parceiro: Instalada na Vila Nova Conceição, a Forneria Maiori une a tradição da cozinha italiana ao cuidado artesanal de uma pizzaria contemporânea. O destaque fica por conta das pizzas de fermentação bem conduzida, textura leve e combinações de cobertura pensadas para equilíbrio e sabor, sem excessos. Benefício: Na compra de um Banquete do Chef, ganhe o segundo na Forneria Maiori. Como resgatar seu benefício: Clique em \"Utilizar este benefício\" e baixe o seu voucher de Assinante UOL. Em seguida, basta apresentar o voucher e documento original na Forneria Maiori. Regras: Benefício válido para Assinante UOL. Não há restrições de dias ou horários. Não é válido para pedidos em delivery. Benefício válido na compra do banquete do Chefe na Forneria Maiori. Venha conhecer a Forneria Maiori: Rua Comendador Miguel Calfat, 296, Vila Nova Conceição - São Paulo.",
+      "validity": "",
+      "description": "",
       "category": "Comer e Beber",
       "partner_name": "Forneria Maiori",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d4b6cd6439c2a07c6bc4d8d808c3d673.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0d474e6b7fbd9b3c95b509962c6c6b4.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0d474e6b7fbd9b3c95b509962c6c6b4.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c0d474e6b7fbd9b3c95b509962c6c6b4.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 130297,
-      "detail_elapsed_ms": 2491,
-      "scraped_at": "2026-05-05T16:02:08.003Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 8,
+      "scraped_at": "2026-05-05T17:21:53.623Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preco-1",
@@ -1011,22 +1011,22 @@
       "original_link": "https://clube.uol.com.br/flo-restaurantecervejaria/pnx-2-cervejas-pelo-preco-de-1",
       "title": "2 cervejas pelo preço de 1",
       "preview_title": "2 cervejas pelo preço de 1",
-      "validity": "Benefício válido de 13/04/2026 11:41 até 13/06/2027 23:59.",
-      "description": "Sobre o parceiro: O Flô Restaurante une gastronomia de qualidade e cinco estilos de cervejas artesanais em um dos melhores pontos de São Paulo. Flô é mais que restaurante. É experiência. Venha viver isso com a gente! Benefício: Na compra de 1 cerveja lata Flô Pilsen ou Lager (473ml), ganhe a segunda. Como resgatar seu benefício: Clique em \"Utilizar este benefício\" e baixe o seu voucher de Assinante UOL. Em seguida, basta apresentar o voucher e documento original no Flô - Restaurante & Cervejaria. Regras: Benefício válido para Assinante UOL. Não há restrições de dias ou horários. Não é válido para pedidos em delivery. Venha conhecer o Flô - Restaurante & Cervejaria: Av Antártica 383 – Perdizes – São Paulo – SP.",
+      "validity": "",
+      "description": "",
       "category": "Comer e Beber",
       "partner_name": "Flô - Restaurante & Cervejaria",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/7e123273dcfcad64d2a699c8434de2a6.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a10d999057d6bae30b4f0c6b125a3beb.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a10d999057d6bae30b4f0c6b125a3beb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a10d999057d6bae30b4f0c6b125a3beb.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 130414,
-      "detail_elapsed_ms": 2237,
-      "scraped_at": "2026-05-05T16:02:10.240Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1,
+      "scraped_at": "2026-05-05T17:21:53.624Z"
     },
     {
       "id": "pnu-30-off-em-pos-graduacao-de-medicina",
@@ -1035,22 +1035,22 @@
       "original_link": "https://clube.uol.com.br/medbrasil/pnu-30-off-em-pos-graduacao-de-medicina",
       "title": "30% OFF em Pós Graduação de Medicina",
       "preview_title": "30% OFF em Pós Graduação de Medicina",
-      "validity": "Benefício válido de 10/04/2026 17:21 até 31/12/2028 23:59.",
-      "description": "Sobre o Parceiro: A MedBrasil é uma instituição de ensino médico voltada à formação prática e estratégica de médicos, com foco em preparação para prova de título, desenvolvimento clínico e impacto real na carreira. Benefício: 30% OFF em Pós Graduação de Medicina Regras: Acesse o site e preencha o formulário. A equipe MedBrasil entrará em contato em até 24h com condições exclusivas. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Educação",
       "partner_name": "MedBrasil",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8b53d9895a84545d055bea98cd3bbadf.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/99fc859d8cba0a613a5644104f5c8366.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/99fc859d8cba0a613a5644104f5c8366.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/99fc859d8cba0a613a5644104f5c8366.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 131844,
-      "detail_elapsed_ms": 2145,
-      "scraped_at": "2026-05-05T16:02:12.385Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1,
+      "scraped_at": "2026-05-05T17:21:53.625Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -1059,22 +1059,22 @@
       "original_link": "https://clube.uol.com.br/teatrojsafra/png-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 10/04/2026 11:42 até 05/07/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Espetáculo Infantil T.REX O Dinossauro na Amazônia. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo Prepare-se para embarcar em uma aventura mágica e cheia de emoção com o espetáculo infantil “T. Rex - O Dinossauro na Amazônia”, uma produção que mistura fantasia, cultura e preservação ambiental de forma divertida e educativa. FICHA TÉCNICA: Duração: 75 minutos Classificação: Livre SERVIÇO: Temporada: 27, 28 de Junho. 04 e 05 de Julho de 2026 Apresentações: Sábado e Domingo, 15h",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro J. Safra",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/04234f8c1f130502af6360acdf7290fc.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/04234f8c1f130502af6360acdf7290fc.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/04234f8c1f130502af6360acdf7290fc.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 130571,
-      "detail_elapsed_ms": 2043,
-      "scraped_at": "2026-05-05T16:02:14.429Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 6,
+      "scraped_at": "2026-05-05T17:21:53.631Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -1083,22 +1083,22 @@
       "original_link": "https://clube.uol.com.br/teatrojsafra/pnf-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 10/04/2026 11:42 até 13/06/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Espetáculo Um sim à vida, com Viviane Mosé. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo O espetáculo Um sim à vida, com Viviane Mosé e direção de Lee Taylor, relaciona a história da vida na Terra com a trajetória poética da vida de uma pessoa comum. De um lado, a imensidão do universo, a infinitude, de outro, a dor humana de existir em sua finitude, em sua solidão constitutiva. Ao mesmo tempo, relaciona dois discursos, o filosófico, de um lado, e, de outro, a narrativa poética de sua própria vida. FICHA TÉCNICA: Duração: 90 minutos Classificação: 14 anos SERVIÇO: Temporada: 12 e 13 de Junho de 2026 Apresentações: Sexta, 20h30, e Sábado, 20h",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro J. Safra",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90be4900b7fa3d30ec2294e7ff400a30.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90be4900b7fa3d30ec2294e7ff400a30.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90be4900b7fa3d30ec2294e7ff400a30.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 125557,
-      "detail_elapsed_ms": 1818,
-      "scraped_at": "2026-05-05T16:02:16.247Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1,
+      "scraped_at": "2026-05-05T17:21:53.632Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -1107,22 +1107,22 @@
       "original_link": "https://clube.uol.com.br/teatrojsafra/pne-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 10/04/2026 11:42 até 16/05/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Espetáculo Infantil Bob Zoom em: Clube de Aventuras. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo Em maio, Bob Zoom, a formiguinha azul mais amada do Brasil, retorna ao Teatro J. Safra com sua peça teatral. Além das peças já consagradas “Bob Zoom em: A Folha Mágica”, “Bob Zoom: O Musical” e Bob Zoom em: O Trem de Ferro”, agora, o famoso herói vive novas emoções em “Bob Zoom em: Clube de Aventuras”, peça baseada no estrondoso sucesso da primeira temporada da série animada “As Aventuras do Bob Zoom”, lançada em 2018. FICHA TÉCNICA: Duração: 60 minutos Classificação: Livre SERVIÇO: Temporada: 16 de maio de 2026 Apresentações: Sábado, 15h",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro J. Safra",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8baec0ca9d6ec5641781205ae80ee4d2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8baec0ca9d6ec5641781205ae80ee4d2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8baec0ca9d6ec5641781205ae80ee4d2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 130746,
-      "detail_elapsed_ms": 1843,
-      "scraped_at": "2026-05-05T16:02:18.090Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 0,
+      "scraped_at": "2026-05-05T17:21:53.632Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -1131,22 +1131,22 @@
       "original_link": "https://clube.uol.com.br/teatrojsafra/pnd-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 10/04/2026 11:42 até 25/07/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Show de Stand-UP do Afonso Padilha. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo Afonso Padilha retorna aos palcos com seu show de \"COMO NOSSOS PAIS”, trazendo um olhar afiado, sincero e hilário sobre um sentimento que une toda uma geração: a sensação de que ninguém ensinou a gente a ser adulto. No espetáculo, Afonso parte de questões universais e extremamente atuais — por que nossos pais pareciam saber tudo, enquanto a gente mal sabe pagar um boleto? Ter filhos é sonho ou desespero? E, afinal, em que momento era pra começar a ter dinheiro? Com seu humor observacional característico, o comediante transforma inseguranças, frustrações e dilemas da vida adulta em risadas imediatas, criando uma identificação instantânea com o público. FICHA TÉCNICA: Duração: 80 minutos Classificação: 16 anos SERVIÇO: Temporada: 25 de Julho de 2026 Apresentações: Sábado, 21h",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro J. Safra",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5d5c8ac147ecfe8b8dd5a35fc9466844.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5d5c8ac147ecfe8b8dd5a35fc9466844.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5d5c8ac147ecfe8b8dd5a35fc9466844.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 130958,
-      "detail_elapsed_ms": 1998,
-      "scraped_at": "2026-05-05T16:02:20.088Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 2,
+      "scraped_at": "2026-05-05T17:21:53.635Z"
     },
     {
       "id": "pmf-50-off-no-par-de-ingressos",
@@ -1155,22 +1155,22 @@
       "original_link": "https://clube.uol.com.br/teatrouol/pmF-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 05/05/2026 10:02 até 17/05/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Teatro Para Bebês: Ninho Musical. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Inspirado nos elementos da natureza, o espetáculo conduzido por Fabiana Godoy e Luan Carbonari convida o público a criar imagens singulares e a mergulhar em um universo de sensações. Voltado à imaginação dos bebês e das crianças, o projeto apresenta de forma lúdica e sensorial temas que fazem parte do seu cotidiano. Mais do que um espetáculo, é uma experiência de aprendizagem, partilha e encontro entre bebês, crianças e famílias — uma delicada porta de entrada para o mundo da arte. A interação com a plateia rompe a quarta parede: não apenas quando Fabi vai ao encontro das crianças, mas também quando as crianças se aproximam dela. Essa troca genuína transforma cada apresentação em um show orgânico, criativo e sempre único. Ao lado dos pequenos, as famílias vivenciam de perto a espontaneidade e a beleza do espetáculo. “Teatro para Bebês: Ninho Musical” é, acima de tudo, alimento para a imaginação — em sua forma mais pura e original. Ao lado de Luan Carbonari, que se reveza entre voz, violão e percussões, Fabiana dá vida ao passarinho cênico Leco, criando um encontro que une arte, ludicidade e educação. Este não é um projeto para ser apenas assistido, mas vivenciado: uma experiência divertida, sensorial e profundamente respeitosa às necessidades do público infantil. FICHA TÉCNICA: Direção geral: André Moreira. Direção musical: Luan Carbonari. Elenco: Fabiana Godoy e Luan Carbonari (violão, voz e percussão) Roteiro e Músicas: Fabiana Godoy (Ninho Musical). Roadie: Bruno Carbonari. Maquiagem e Cabelo: Nina Carbonari. Designer de Luz: Fabrício Marcondes da Silva. Produção: Cachola Produções Artísticas. SERVIÇO: Temporada: 03/05/2026 a 17/05/2026. Apresentações: Domingo, 11h30. Ingresso*: Inteira: R$ 100,00 | Meia: R$ 50,00. Duração: 45 minutos. Classificação etária: Livre. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro UOL",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/96ace6f532e2778d96d94c44b4da6fc7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/96ace6f532e2778d96d94c44b4da6fc7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/96ace6f532e2778d96d94c44b4da6fc7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Target page, context or browser has been closed",
       "detail_attempts": 1,
-      "detail_html_length": 132040,
-      "detail_elapsed_ms": 1992,
-      "scraped_at": "2026-05-05T16:02:22.080Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 0,
+      "scraped_at": "2026-05-05T17:21:53.635Z"
     }
   ]
 }
