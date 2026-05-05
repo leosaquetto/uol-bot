@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-05T13:02:42.949996Z",
+  "updated_at": "2026-05-05T13:32:10.304842Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 47,
+    "duplicada_historico": 45,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
-    "duplicada_execucao": 0
+    "duplicada_execucao": 1
   },
   "discarded_offers": [
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pq0-50-off-no-par-de-ingressos",
+      "reason": "duplicada_execucao",
+      "trace_id": "trace_pq0-50-off-no-par-de-ingressos"
+    },
     {
       "title": "2 INGRESSOS: 20/05 Teatro UOL - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqv-2-ingressos-20-05-teatro-uol-sp",
@@ -258,6 +264,12 @@
     },
     {
       "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pmF-50-off-no-par-de-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pmf-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
       "link": "https://clube.uol.com.br/teatrouol/pmE-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pme-50-off-no-par-de-ingressos"
@@ -285,24 +297,6 @@
       "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmy-30-off-na-compra-de-ingresso-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pmy-30-off-na-compra-de-ingresso-sp"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - SP",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmx-30-off-na-compra-de-ingresso-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pmx-30-off-na-compra-de-ingresso-sp"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - BA",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmv-30-off-na-compra-de-ingresso-ba",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pmv-30-off-na-compra-de-ingresso-ba"
-    },
-    {
-      "title": "30% OFF na compra de ingresso - CE",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pmu-30-off-na-compra-de-ingresso-ce",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pmu-30-off-na-compra-de-ingresso-ce"
     }
   ]
 }
