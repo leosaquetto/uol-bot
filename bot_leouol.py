@@ -2135,10 +2135,18 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
 def is_campaign_for_canal2(offer: Dict) -> bool:
     title = str(offer.get("title") or offer.get("preview_title") or "")
     link = str(offer.get("link") or offer.get("original_link") or "")
-    merged = normalize_offer_key(f"{title} {link}")
-    if "teatro" in merged:
-        return False
-    return "#campanhasdeingresso" in merged or "/campanhasdeingresso" in merged
+    category = str(offer.get("category") or offer.get("categoria") or "")
+    hashtags_value = offer.get("hashtags")
+    hashtags = " ".join(hashtags_value) if isinstance(hashtags_value, list) else str(hashtags_value or "")
+
+    raw = f"{title} {link} {category} {hashtags}".lower()
+    normalized = canonical_key(raw)
+
+    return (
+        "/campanhasdeingresso/" in raw
+        or "campanhasdeingresso" in raw
+        or "campanhasdeingresso" in normalized
+    )
 
 
 def _same_offer_identity(a: Dict, b: Dict) -> bool:
