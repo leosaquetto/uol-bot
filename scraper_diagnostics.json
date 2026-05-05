@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-05T16:03:03.651026Z",
+  "updated_at": "2026-05-05T16:04:03.743853Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 3,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 44,
+    "duplicada_historico": 46,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Ganhe 01 Cinnamon Oblivion",
+      "link": "https://clube.uol.com.br/outbacksteakhouse/pq8-ganhe-01-cinnamon-oblivion",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pq8-ganhe-01-cinnamon-oblivion"
+    },
+    {
+      "title": "Ganhe 01 Bloomin Onion",
+      "link": "https://clube.uol.com.br/outbacksteakhouse/pq6-ganhe-01-bloomin-onion",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pq6-ganhe-01-bloomin-onion"
+    },
     {
       "title": "Ganhe 01 Laramora 340ml",
       "link": "https://clube.uol.com.br/outbacksteakhouse/pq5-ganhe-01-laramora-340ml",
