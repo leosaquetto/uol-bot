@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-05T14:33:00.929025Z",
+  "updated_at": "2026-05-05T14:33:57.999086Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 45,
+    "duplicada_historico": 46,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "40% OFF nos pedidos pelo site e app",
+      "link": "https://clube.uol.com.br/dominospizza/pq3-40-off-nos-pedidos-pelo-site-e-app",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pq3-40-off-nos-pedidos-pelo-site-e-app"
+    },
     {
       "title": "50% OFF no par de ingressos",
       "link": "https://clube.uol.com.br/teatrouol/pq2-50-off-no-par-de-ingressos",
