@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29554,
-  "run_duration_seconds": 29.55,
-  "avg_detail_ms_per_offer": 2463,
-  "generated_at": "2026-05-05T22:38:33.582Z",
+  "run_duration_ms": 44351,
+  "run_duration_seconds": 44.35,
+  "avg_detail_ms_per_offer": 3696,
+  "generated_at": "2026-05-05T23:34:00.680Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132278,
-      "detail_elapsed_ms": 2276,
-      "scraped_at": "2026-05-05T22:38:15.714Z"
+      "detail_html_length": 132267,
+      "detail_elapsed_ms": 3398,
+      "scraped_at": "2026-05-05T23:33:37.505Z"
     },
     {
       "id": "pqi-at-70-off-italents-unyleya",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131012,
-      "detail_elapsed_ms": 2036,
-      "scraped_at": "2026-05-05T22:38:17.755Z"
+      "detail_html_length": 131031,
+      "detail_elapsed_ms": 2013,
+      "scraped_at": "2026-05-05T23:33:39.537Z"
     },
     {
       "id": "pqf-10-off-pilates",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130187,
-      "detail_elapsed_ms": 1567,
-      "scraped_at": "2026-05-05T22:38:19.322Z"
+      "detail_html_length": 130157,
+      "detail_elapsed_ms": 1942,
+      "scraped_at": "2026-05-05T23:33:41.479Z"
     },
     {
       "id": "pqe-50-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132149,
-      "detail_elapsed_ms": 1585,
-      "scraped_at": "2026-05-05T22:38:20.907Z"
+      "detail_html_length": 132158,
+      "detail_elapsed_ms": 1964,
+      "scraped_at": "2026-05-05T23:33:43.445Z"
     },
     {
       "id": "pqc-2-ingressos-24-05-btg-pactual-hall-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132163,
-      "detail_elapsed_ms": 1801,
-      "scraped_at": "2026-05-05T22:38:22.709Z"
+      "detail_html_length": 132131,
+      "detail_elapsed_ms": 2704,
+      "scraped_at": "2026-05-05T23:33:46.150Z"
     },
     {
       "id": "pqb-2-ingressos-23-05-btg-pactual-hall-sp",
@@ -160,33 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132127,
-      "detail_elapsed_ms": 1591,
-      "scraped_at": "2026-05-05T22:38:24.300Z"
-    },
-    {
-      "id": "pqa-2-ingressos-17-05-btg-pactual-hall-sp",
-      "trace_id": "trace_pqa-2-ingressos-17-05-btg-pactual-hall-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqA-2-ingressos-17-05-btg-pactual-hall-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqA-2-ingressos-17-05-btg-pactual-hall-sp",
-      "title": "2 INGRESSOS: 17/05 BTG Pactual Hall - SP",
-      "preview_title": "2 INGRESSOS: 17/05 BTG Pactual Hall - SP",
-      "validity": "Benefício válido de 05/05/2026 15:21 até 16/05/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para curtir o espetáculo “Viva – A Vida é uma Festa In Concert: Uma Experiência Além da Tela” no BTG Pactual Hall, em São Paulo (SP)! Data: 17 de Maio, às 11h e 16h. Local: Rua Bento Branco de Andrade Filho, 722, em Santo Amaro. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132109,
-      "detail_elapsed_ms": 1691,
-      "scraped_at": "2026-05-05T22:38:25.992Z"
+      "detail_html_length": 132126,
+      "detail_elapsed_ms": 1817,
+      "scraped_at": "2026-05-05T23:33:47.967Z"
     },
     {
       "id": "pq8-ganhe-01-cinnamon-oblivion",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133103,
-      "detail_elapsed_ms": 1563,
-      "scraped_at": "2026-05-05T22:38:27.555Z"
+      "detail_html_length": 133032,
+      "detail_elapsed_ms": 1981,
+      "scraped_at": "2026-05-05T23:33:49.948Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133003,
-      "detail_elapsed_ms": 1553,
-      "scraped_at": "2026-05-05T22:38:29.109Z"
+      "detail_html_length": 132952,
+      "detail_elapsed_ms": 1932,
+      "scraped_at": "2026-05-05T23:33:51.880Z"
     },
     {
       "id": "pq5-ganhe-01-laramora-340ml",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132981,
-      "detail_elapsed_ms": 1566,
-      "scraped_at": "2026-05-05T22:38:30.675Z"
+      "detail_html_length": 132912,
+      "detail_elapsed_ms": 2154,
+      "scraped_at": "2026-05-05T23:33:54.034Z"
     },
     {
       "id": "pq4-2-ingressos-31-05-2026-teatro-claro-rj",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132896,
-      "detail_elapsed_ms": 1446,
-      "scraped_at": "2026-05-05T22:38:32.121Z"
+      "detail_html_length": 132876,
+      "detail_elapsed_ms": 2858,
+      "scraped_at": "2026-05-05T23:33:56.892Z"
     },
     {
       "id": "pq3-40-off-nos-pedidos-pelo-site-e-app",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131430,
-      "detail_elapsed_ms": 1411,
-      "scraped_at": "2026-05-05T22:38:33.532Z"
+      "detail_html_length": 131390,
+      "detail_elapsed_ms": 1658,
+      "scraped_at": "2026-05-05T23:33:58.550Z"
+    },
+    {
+      "id": "pq2-50-off-no-par-de-ingressos",
+      "trace_id": "trace_pq2-50-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pq2-50-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatrouol/pq2-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "preview_title": "50% OFF no par de ingressos",
+      "validity": "Benefício válido de 05/05/2026 10:13 até 28/06/2026 23:59.",
+      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Espetáculo Infantil Os Três Porquinhos. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Os Três Porquinhos é uma das histórias infantis mais apreciadas de todos os tempos. Na literatura, talvez a versão mais conhecida seja a de Joseph Jacobs , escrita em rimas em 1890. Em 1933, Walt Disney fez também sua versão em desenho animado, consagrando definitivamente os simpáticos porquinhos e o temido lobo mau. Mas qual a razão de tanto sucesso? Para tentar responder a esta pergunta, convidamos a todos para, mais uma vez, compartilhar as intensas emoções desse clássico da literatura infantil. Senhoras e senhores, o Furunfunfum orgulhosamente apresenta: Os Três Porquinhos! A adaptação Quando se reconta uma história desse tipo há sempre duas opções básicas: a tradição ou a mudança. Muitas versões trouxeram alterações e inversões extremamente criativas e instigantes. Nós, do Furunfunfum, optamos pela tradição. Seguimos o clássico enredo das casinhas de palha, madeira e tijolos, o sopro do lobo, a entrada pela chaminé e tudo o mais. A novidade está no ritmo vertiginoso da manipulação dos bonecos, que, como num passeio de montanha russa ou num divertido cartoon, tira o fôlego de crianças e adultos. Há também uma série de atualizações nas falas e nas características dos personagens. Por fim há sempre a participação ativa, intensa e apaixonada da platéia. O espetáculo é dividido em duas partes. Na primeira, apresentamos canções e histórias musicais tradicionais. É nesse momento que criamos um ambiente festivo, descontraído e acolhedor que prepara as crianças para as intensas emoções que irão experimentar na segunda parte do espetáculo, com os sustos provocados por um dos mais famosos vilões de todos os tempos: o Lobo Mau! FICHA TÉCNICA: Concepção, Direção e Atuação: Marcelo e Paula Zurawski. Bonecos: Sérgio Serrano. Cenografia: Nani Brisque / Naná Lavander. Figurinos: Amarilis Arruda. Confecção e manutenção de bonecos e cenários: Claudia Tavares / Gal Gruman / Naná Lavander Realização: Furunfunfum. SERVIÇO: Temporada: 06/06/2026 a 28/06/2026. Apresentações: Sábado e domingo, 16h. Ingresso*: R$ 100,00 | R$ 50,00. Duração: 50 minutos. Classificação etária: Livre. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro UOL",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49f641de9859e4c8bb289b53a3868a2e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49f641de9859e4c8bb289b53a3868a2e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49f641de9859e4c8bb289b53a3868a2e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133555,
+      "detail_elapsed_ms": 1988,
+      "scraped_at": "2026-05-05T23:34:00.538Z"
     }
   ]
 }
