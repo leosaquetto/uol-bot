@@ -14,11 +14,11 @@
     "last_started_at": "05/05/2026 às 14:34",
     "last_finished_at": "05/05/2026 às 14:34",
     "last_success_at": "05/05/2026 às 14:34",
-    "status": "ok",
-    "summary": "mac snapshot processado: 48 vistas, 12 novas, 36 descartadas por duplicidade, 0 expiradas | novas no pending: 12 | incompletas descartadas: 0",
-    "offers_seen": 48,
-    "new_offers": 12,
-    "pending_count": 12,
+    "status": "sem_novidade",
+    "summary": "mac snapshot processado: 4 vistas, 0 novas, 4 descartadas por duplicidade, 0 expiradas | sem ofertas prontas | incompletas descartadas: 0",
+    "offers_seen": 4,
+    "new_offers": 0,
+    "pending_count": 0,
     "last_error": ""
   },
   "consumer": {
