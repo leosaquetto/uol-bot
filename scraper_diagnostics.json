@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-05T22:17:21.604068Z",
+  "updated_at": "2026-05-05T22:25:27.442952Z",
   "snapshot_ids_pending": 0,
-  "mac_offers_loaded": 4,
-  "offers_consolidated": 4,
-  "candidates_added": 0,
+  "mac_offers_loaded": 12,
+  "offers_consolidated": 12,
+  "candidates_added": 7,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
+    "duplicada_historico": 5,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -39,6 +39,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pq4-2-ingressos-31-05-2026-teatro-claro-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_pq4-2-ingressos-31-05-2026-teatro-claro-rj"
+    },
+    {
+      "title": "40% OFF nos pedidos pelo site e app",
+      "link": "https://clube.uol.com.br/dominospizza/pq3-40-off-nos-pedidos-pelo-site-e-app",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pq3-40-off-nos-pedidos-pelo-site-e-app"
     }
   ]
 }
