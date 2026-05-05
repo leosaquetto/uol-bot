@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 84456,
-  "run_duration_seconds": 84.46,
-  "avg_detail_ms_per_offer": 1760,
-  "generated_at": "2026-05-05T13:31:29.761Z",
+  "run_duration_ms": 136405,
+  "run_duration_seconds": 136.41,
+  "avg_detail_ms_per_offer": 2842,
+  "generated_at": "2026-05-05T14:02:26.470Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132255,
-      "detail_elapsed_ms": 1941,
-      "scraped_at": "2026-05-05T13:30:18.129Z"
+      "detail_html_length": 133413,
+      "detail_elapsed_ms": 5542,
+      "scraped_at": "2026-05-05T14:00:41.533Z"
     },
     {
       "id": "pq0-50-off-no-par-de-ingressos",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133185,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-05-05T13:30:19.699Z"
+      "detail_html_length": 126557,
+      "detail_elapsed_ms": 1933,
+      "scraped_at": "2026-05-05T14:00:43.497Z"
     },
     {
       "id": "pqv-2-ingressos-20-05-teatro-uol-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133111,
-      "detail_elapsed_ms": 1407,
-      "scraped_at": "2026-05-05T13:30:21.106Z"
+      "detail_html_length": 126729,
+      "detail_elapsed_ms": 2102,
+      "scraped_at": "2026-05-05T14:00:45.599Z"
     },
     {
       "id": "pqu-2-ingressos-10-05-teatro-uol-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 1399,
-      "scraped_at": "2026-05-05T13:30:22.505Z"
+      "detail_html_length": 126680,
+      "detail_elapsed_ms": 1747,
+      "scraped_at": "2026-05-05T14:00:47.346Z"
     },
     {
       "id": "pqi-dia-das-maes-leve-8-e-pague-4",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131129,
-      "detail_elapsed_ms": 1473,
-      "scraped_at": "2026-05-05T13:30:23.978Z"
+      "detail_html_length": 124349,
+      "detail_elapsed_ms": 1859,
+      "scraped_at": "2026-05-05T14:00:49.205Z"
     },
     {
       "id": "ppt-25-off-dia-das-maes",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130614,
-      "detail_elapsed_ms": 1581,
-      "scraped_at": "2026-05-05T13:30:25.559Z"
+      "detail_html_length": 129396,
+      "detail_elapsed_ms": 1857,
+      "scraped_at": "2026-05-05T14:00:51.063Z"
     },
     {
       "id": "ppk-dia-das-maes-r-50-off-em-flores",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131152,
-      "detail_elapsed_ms": 1451,
-      "scraped_at": "2026-05-05T13:30:27.011Z"
+      "detail_html_length": 124758,
+      "detail_elapsed_ms": 2104,
+      "scraped_at": "2026-05-05T14:00:53.167Z"
     },
     {
       "id": "pph-ate-70-em-exames-e-check-ups",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133418,
-      "detail_elapsed_ms": 1560,
-      "scraped_at": "2026-05-05T13:30:28.571Z"
+      "detail_html_length": 127025,
+      "detail_elapsed_ms": 1869,
+      "scraped_at": "2026-05-05T14:00:55.037Z"
     },
     {
       "id": "pp9-15-off-no-site",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130628,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-05-05T13:30:30.219Z"
+      "detail_html_length": 129449,
+      "detail_elapsed_ms": 2008,
+      "scraped_at": "2026-05-05T14:00:57.045Z"
     },
     {
       "id": "pp8-caipirinha-ou-chope-double",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131853,
-      "detail_elapsed_ms": 1597,
-      "scraped_at": "2026-05-05T13:30:31.816Z"
+      "detail_html_length": 130321,
+      "detail_elapsed_ms": 1932,
+      "scraped_at": "2026-05-05T14:00:58.977Z"
     },
     {
       "id": "pp7-ganhe-uma-sobremesa-no-jantar",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131926,
-      "detail_elapsed_ms": 1609,
-      "scraped_at": "2026-05-05T13:30:33.425Z"
+      "detail_html_length": 130640,
+      "detail_elapsed_ms": 2315,
+      "scraped_at": "2026-05-05T14:01:01.293Z"
     },
     {
       "id": "pp4-prato-em-dobro-na-cardof-bistro",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132243,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-05-05T13:30:34.928Z"
+      "detail_html_length": 125849,
+      "detail_elapsed_ms": 1979,
+      "scraped_at": "2026-05-05T14:01:03.272Z"
     },
     {
       "id": "ppi-dia-das-maes-com-15-off-brinde",
@@ -328,9 +328,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131003,
-      "detail_elapsed_ms": 1583,
-      "scraped_at": "2026-05-05T13:30:36.511Z"
+      "detail_html_length": 129823,
+      "detail_elapsed_ms": 2797,
+      "scraped_at": "2026-05-05T14:01:06.070Z"
     },
     {
       "id": "pph-especial-de-dia-das-maes-com-12-off",
@@ -352,9 +352,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130996,
-      "detail_elapsed_ms": 1485,
-      "scraped_at": "2026-05-05T13:30:37.996Z"
+      "detail_html_length": 124621,
+      "detail_elapsed_ms": 2316,
+      "scraped_at": "2026-05-05T14:01:08.386Z"
     },
     {
       "id": "ppg-dia-das-maes-puket-com-10-off",
@@ -376,9 +376,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130819,
-      "detail_elapsed_ms": 1693,
-      "scraped_at": "2026-05-05T13:30:39.689Z"
+      "detail_html_length": 129554,
+      "detail_elapsed_ms": 2586,
+      "scraped_at": "2026-05-05T14:01:10.972Z"
     },
     {
       "id": "ppf-presenteie-com-10-off-no-dia-das-maes",
@@ -400,9 +400,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 148932,
-      "detail_elapsed_ms": 1599,
-      "scraped_at": "2026-05-05T13:30:41.288Z"
+      "detail_html_length": 126455,
+      "detail_elapsed_ms": 2499,
+      "scraped_at": "2026-05-05T14:01:13.471Z"
     },
     {
       "id": "ppe-39-off-na-caixa-angel-tabletes",
@@ -424,9 +424,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132540,
-      "detail_elapsed_ms": 1551,
-      "scraped_at": "2026-05-05T13:30:42.839Z"
+      "detail_html_length": 131340,
+      "detail_elapsed_ms": 1854,
+      "scraped_at": "2026-05-05T14:01:15.325Z"
     },
     {
       "id": "ppd-dia-das-maes-com-15-off",
@@ -448,9 +448,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130748,
-      "detail_elapsed_ms": 1477,
-      "scraped_at": "2026-05-05T13:30:44.316Z"
+      "detail_html_length": 129578,
+      "detail_elapsed_ms": 1883,
+      "scraped_at": "2026-05-05T14:01:17.208Z"
     },
     {
       "id": "ppc-36-off-na-lata-biscoitos-sortidos",
@@ -472,9 +472,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132538,
-      "detail_elapsed_ms": 1391,
-      "scraped_at": "2026-05-05T13:30:45.707Z"
+      "detail_html_length": 131360,
+      "detail_elapsed_ms": 2079,
+      "scraped_at": "2026-05-05T14:01:19.289Z"
     },
     {
       "id": "ppb-dia-das-maes-com-25-off",
@@ -496,9 +496,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130863,
-      "detail_elapsed_ms": 1446,
-      "scraped_at": "2026-05-05T13:30:47.153Z"
+      "detail_html_length": 129653,
+      "detail_elapsed_ms": 1900,
+      "scraped_at": "2026-05-05T14:01:21.189Z"
     },
     {
       "id": "poz-37-off-na-caixa-bombons-sortidos",
@@ -520,9 +520,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132686,
-      "detail_elapsed_ms": 1529,
-      "scraped_at": "2026-05-05T13:30:48.682Z"
+      "detail_html_length": 126324,
+      "detail_elapsed_ms": 1704,
+      "scraped_at": "2026-05-05T14:01:22.893Z"
     },
     {
       "id": "pog-50-off-em-ate-4-ingressos",
@@ -544,9 +544,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132070,
-      "detail_elapsed_ms": 1444,
-      "scraped_at": "2026-05-05T13:30:50.126Z"
+      "detail_html_length": 130861,
+      "detail_elapsed_ms": 1830,
+      "scraped_at": "2026-05-05T14:01:24.723Z"
     },
     {
       "id": "pof-10-off-no-site-oficial",
@@ -568,9 +568,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130679,
-      "detail_elapsed_ms": 1549,
-      "scraped_at": "2026-05-05T13:30:51.675Z"
+      "detail_html_length": 129147,
+      "detail_elapsed_ms": 1905,
+      "scraped_at": "2026-05-05T14:01:26.628Z"
     },
     {
       "id": "poe-50-off-no-par-de-ingressos",
@@ -592,9 +592,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132964,
-      "detail_elapsed_ms": 1345,
-      "scraped_at": "2026-05-05T13:30:53.020Z"
+      "detail_html_length": 131805,
+      "detail_elapsed_ms": 2148,
+      "scraped_at": "2026-05-05T14:01:28.776Z"
     },
     {
       "id": "pod-50-off-no-par-de-ingressos",
@@ -616,9 +616,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133122,
-      "detail_elapsed_ms": 1547,
-      "scraped_at": "2026-05-05T13:30:54.567Z"
+      "detail_html_length": 131953,
+      "detail_elapsed_ms": 2657,
+      "scraped_at": "2026-05-05T14:01:31.433Z"
     },
     {
       "id": "poy-30-cashback",
@@ -640,9 +640,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131163,
-      "detail_elapsed_ms": 1589,
-      "scraped_at": "2026-05-05T13:30:56.156Z"
+      "detail_html_length": 129937,
+      "detail_elapsed_ms": 2672,
+      "scraped_at": "2026-05-05T14:01:34.105Z"
     },
     {
       "id": "pok-ofertas-de-ultima-hora-25-off-extra",
@@ -664,9 +664,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133211,
-      "detail_elapsed_ms": 1463,
-      "scraped_at": "2026-05-05T13:30:57.619Z"
+      "detail_html_length": 132251,
+      "detail_elapsed_ms": 3729,
+      "scraped_at": "2026-05-05T14:01:37.834Z"
     },
     {
       "id": "pob-ate-75-off-para-compras-no-site",
@@ -688,9 +688,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131158,
-      "detail_elapsed_ms": 1640,
-      "scraped_at": "2026-05-05T13:30:59.259Z"
+      "detail_html_length": 124775,
+      "detail_elapsed_ms": 1988,
+      "scraped_at": "2026-05-05T14:01:39.822Z"
     },
     {
       "id": "poa-ate-75-off-para-compras-no-site",
@@ -712,9 +712,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 1332,
-      "scraped_at": "2026-05-05T13:31:00.591Z"
+      "detail_html_length": 129653,
+      "detail_elapsed_ms": 2048,
+      "scraped_at": "2026-05-05T14:01:41.870Z"
     },
     {
       "id": "pnz-15-off-para-compras-no-site",
@@ -736,9 +736,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130938,
-      "detail_elapsed_ms": 1493,
-      "scraped_at": "2026-05-05T13:31:02.084Z"
+      "detail_html_length": 130890,
+      "detail_elapsed_ms": 1660,
+      "scraped_at": "2026-05-05T14:01:43.530Z"
     },
     {
       "id": "pny-15-off-em-todo-o-site",
@@ -760,9 +760,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130715,
-      "detail_elapsed_ms": 1714,
-      "scraped_at": "2026-05-05T13:31:03.798Z"
+      "detail_html_length": 129525,
+      "detail_elapsed_ms": 1715,
+      "scraped_at": "2026-05-05T14:01:45.245Z"
     },
     {
       "id": "pnx-15-off-em-todo-o-site",
@@ -784,9 +784,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130881,
-      "detail_elapsed_ms": 1556,
-      "scraped_at": "2026-05-05T13:31:05.354Z"
+      "detail_html_length": 130862,
+      "detail_elapsed_ms": 1859,
+      "scraped_at": "2026-05-05T14:01:47.104Z"
     },
     {
       "id": "pn8-resgate-agora-1-kit-com-10-imas-gratis",
@@ -808,9 +808,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131264,
-      "detail_elapsed_ms": 1724,
-      "scraped_at": "2026-05-05T13:31:07.078Z"
+      "detail_html_length": 124882,
+      "detail_elapsed_ms": 1886,
+      "scraped_at": "2026-05-05T14:01:48.990Z"
     },
     {
       "id": "pn7-aproveite-15-off-em-viagens",
@@ -832,9 +832,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131024,
-      "detail_elapsed_ms": 1456,
-      "scraped_at": "2026-05-05T13:31:08.534Z"
+      "detail_html_length": 124631,
+      "detail_elapsed_ms": 2465,
+      "scraped_at": "2026-05-05T14:01:51.455Z"
     },
     {
       "id": "pn6-20-off-no-site-oficial-da-nutrify",
@@ -856,9 +856,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131013,
-      "detail_elapsed_ms": 1539,
-      "scraped_at": "2026-05-05T13:31:10.073Z"
+      "detail_html_length": 124581,
+      "detail_elapsed_ms": 2387,
+      "scraped_at": "2026-05-05T14:01:53.842Z"
     },
     {
       "id": "pn0-ganhe-o-banquete-do-chef",
@@ -880,9 +880,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139966,
-      "detail_elapsed_ms": 1654,
-      "scraped_at": "2026-05-05T13:31:11.727Z"
+      "detail_html_length": 130135,
+      "detail_elapsed_ms": 3006,
+      "scraped_at": "2026-05-05T14:01:56.848Z"
     },
     {
       "id": "pnx-2-cervejas-pelo-preco-1",
@@ -904,9 +904,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131609,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-05-05T13:31:13.230Z"
+      "detail_html_length": 125196,
+      "detail_elapsed_ms": 2462,
+      "scraped_at": "2026-05-05T14:01:59.310Z"
     },
     {
       "id": "pnu-30-off-em-pos-graduacao-de-medicina",
@@ -928,9 +928,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133019,
-      "detail_elapsed_ms": 1380,
-      "scraped_at": "2026-05-05T13:31:14.610Z"
+      "detail_html_length": 131825,
+      "detail_elapsed_ms": 2114,
+      "scraped_at": "2026-05-05T14:02:01.424Z"
     },
     {
       "id": "png-50-off-no-par-de-ingressos",
@@ -952,9 +952,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131757,
-      "detail_elapsed_ms": 1645,
-      "scraped_at": "2026-05-05T13:31:16.255Z"
+      "detail_html_length": 130234,
+      "detail_elapsed_ms": 1987,
+      "scraped_at": "2026-05-05T14:02:03.411Z"
     },
     {
       "id": "pnf-50-off-no-par-de-ingressos",
@@ -976,9 +976,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131937,
-      "detail_elapsed_ms": 1340,
-      "scraped_at": "2026-05-05T13:31:17.595Z"
+      "detail_html_length": 130660,
+      "detail_elapsed_ms": 2645,
+      "scraped_at": "2026-05-05T14:02:06.056Z"
     },
     {
       "id": "pne-50-off-no-par-de-ingressos",
@@ -1000,9 +1000,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131950,
-      "detail_elapsed_ms": 1608,
-      "scraped_at": "2026-05-05T13:31:19.203Z"
+      "detail_html_length": 130664,
+      "detail_elapsed_ms": 2927,
+      "scraped_at": "2026-05-05T14:02:08.984Z"
     },
     {
       "id": "pnd-50-off-no-par-de-ingressos",
@@ -1024,9 +1024,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132164,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-05-05T13:31:20.706Z"
+      "detail_html_length": 125780,
+      "detail_elapsed_ms": 2243,
+      "scraped_at": "2026-05-05T14:02:11.227Z"
     },
     {
       "id": "pmf-50-off-no-par-de-ingressos",
@@ -1048,9 +1048,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133757,
-      "detail_elapsed_ms": 1472,
-      "scraped_at": "2026-05-05T13:31:22.178Z"
+      "detail_html_length": 126910,
+      "detail_elapsed_ms": 2181,
+      "scraped_at": "2026-05-05T14:02:13.409Z"
     },
     {
       "id": "pme-50-off-no-par-de-ingressos",
@@ -1072,9 +1072,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132645,
-      "detail_elapsed_ms": 1428,
-      "scraped_at": "2026-05-05T13:31:23.606Z"
+      "detail_html_length": 131378,
+      "detail_elapsed_ms": 2200,
+      "scraped_at": "2026-05-05T14:02:15.610Z"
     },
     {
       "id": "pmb-50-off-no-par-de-ingressos",
@@ -1096,9 +1096,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133266,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-05-05T13:31:25.109Z"
+      "detail_html_length": 126903,
+      "detail_elapsed_ms": 2466,
+      "scraped_at": "2026-05-05T14:02:18.085Z"
     },
     {
       "id": "pm9-50-off-no-par-de-ingressos",
@@ -1120,9 +1120,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133954,
-      "detail_elapsed_ms": 1510,
-      "scraped_at": "2026-05-05T13:31:26.619Z"
+      "detail_html_length": 132668,
+      "detail_elapsed_ms": 2484,
+      "scraped_at": "2026-05-05T14:02:20.569Z"
     },
     {
       "id": "pm7-50-off-no-par-de-ingressos",
@@ -1144,9 +1144,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132325,
-      "detail_elapsed_ms": 1524,
-      "scraped_at": "2026-05-05T13:31:28.143Z"
+      "detail_html_length": 125913,
+      "detail_elapsed_ms": 2691,
+      "scraped_at": "2026-05-05T14:02:23.260Z"
     },
     {
       "id": "pmy-30-off-na-compra-de-ingresso-sp",
@@ -1168,9 +1168,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132034,
-      "detail_elapsed_ms": 1542,
-      "scraped_at": "2026-05-05T13:31:29.685Z"
+      "detail_html_length": 130610,
+      "detail_elapsed_ms": 2867,
+      "scraped_at": "2026-05-05T14:02:26.127Z"
     }
   ]
 }
