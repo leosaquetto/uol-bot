@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-05T15:32:32.067817Z",
+  "updated_at": "2026-05-05T15:33:50.206188Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 48,
   "offers_consolidated": 48,
-  "candidates_added": 14,
+  "candidates_added": 12,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 32,
+    "duplicada_historico": 34,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Ganhe 01 Laramora 340ml",
+      "link": "https://clube.uol.com.br/outbacksteakhouse/pq5-ganhe-01-laramora-340ml",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pq5-ganhe-01-laramora-340ml"
+    },
+    {
+      "title": "2 INGRESSOS 31/05/2026 Teatro Claro - RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pq4-2-ingressos-31-05-2026-teatro-claro-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pq4-2-ingressos-31-05-2026-teatro-claro-rj"
+    },
     {
       "title": "40% OFF nos pedidos pelo site e app",
       "link": "https://clube.uol.com.br/dominospizza/pq3-40-off-nos-pedidos-pelo-site-e-app",
