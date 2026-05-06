@@ -188,38 +188,61 @@ async function main() {
     return
   }
 
-  let probe
   try {
-    probe = await runSshProbeViaShortcut()
+    let probe
+    try {
+      probe = await runSshProbeViaShortcut()
+    } catch (e) {
+      probe = { ok: false, error: `ssh_probe_exception:${String(e)}` }
+    }
+
+    const decision = evaluateDecision(probe)
+    const persisted = {
+      ...decision,
+      recorded_at_utc: toIsoUtc(),
+      version: 1,
+    }
+
+    const outputPath = await persistDecision(persisted)
+    appendFallbackAudit("guard.decision", {
+      decision: persisted.decision,
+      reason: persisted.reason,
+      run_fallback: persisted.run_fallback,
+      now_utc: persisted.now_utc || null,
+      mtime_utc: persisted.pipeline_audit_mtime_utc || null,
+      age_min: persisted.pipeline_audit_age_min != null ? persisted.pipeline_audit_age_min : null,
+    })
+    log(`decisão: ${persisted.decision} | arquivo: ${outputPath}`)
+
+    console.log(JSON.stringify({
+      decision: persisted.decision,
+      run_fallback: persisted.run_fallback,
+      recorded_at_utc: persisted.recorded_at_utc,
+      decision_file: DECISION_FILE,
+    }))
   } catch (e) {
-    probe = { ok: false, error: `ssh_probe_exception:${String(e)}` }
+    const errMsg = `guard_exception:${String(e)}`
+    log(`erro no guard: ${errMsg}`)
+    appendFallbackAudit("guard.error", { error: errMsg })
+    const safeDecision = {
+      decision: "run_fallback",
+      run_fallback: true,
+      reason: "guard_error",
+      error: errMsg,
+      recorded_at_utc: toIsoUtc(),
+      version: 1,
+    }
+    await persistDecision(safeDecision)
+    console.log(JSON.stringify({
+      decision: safeDecision.decision,
+      run_fallback: safeDecision.run_fallback,
+      reason: safeDecision.reason,
+      recorded_at_utc: safeDecision.recorded_at_utc,
+      decision_file: DECISION_FILE,
+    }))
+  } finally {
+    releaseFallbackLock()
   }
-
-  const decision = evaluateDecision(probe)
-  const persisted = {
-    ...decision,
-    recorded_at_utc: toIsoUtc(),
-    version: 1,
-  }
-
-  const outputPath = await persistDecision(persisted)
-  appendFallbackAudit("guard.decision", {
-    decision: persisted.decision,
-    reason: persisted.reason,
-    run_fallback: persisted.run_fallback,
-    now_utc: persisted.now_utc || null,
-    mtime_utc: persisted.pipeline_audit_mtime_utc || null,
-    age_min: persisted.pipeline_audit_age_min != null ? persisted.pipeline_audit_age_min : null,
-  })
-  log(`decisão: ${persisted.decision} | arquivo: ${outputPath}`)
-
-  console.log(JSON.stringify({
-    decision: persisted.decision,
-    run_fallback: persisted.run_fallback,
-    recorded_at_utc: persisted.recorded_at_utc,
-    decision_file: DECISION_FILE,
-  }))
-  releaseFallbackLock()
 }
 
 await main()
