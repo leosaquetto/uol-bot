@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-06T07:30:10.509892Z",
+  "updated_at": "2026-05-06T08:58:23.917651Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 2,
+    "duplicada_historico": 11,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -24,9 +24,9 @@
     },
     {
       "title": "Até 70% OFF Italents Unyleya",
-      "link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pqi-at-70-off-italents-unyleya"
+      "link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqi-ate-70-off-italents-unyleya"
     },
     {
       "title": "10% OFF Pilates",
