@@ -1,21 +1,57 @@
 {
-  "updated_at": "2026-05-06T19:44:28.700577Z",
+  "updated_at": "2026-05-06T19:46:35.779958Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 7,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "40% OFF em pizzas!",
+      "link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqv-40-off-em-pizzas"
+    },
+    {
+      "title": "10% OFF Seminovos acima de R$999",
+      "link": "https://clube.uol.com.br/compracerta/pqT-10-off-seminovos-acima-de-r-999",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqt-10-off-seminovos-acima-de-r-999"
+    },
+    {
+      "title": "5% OFF Outlet para itens acima de R$999",
+      "link": "https://clube.uol.com.br/compracerta/pqS-5-off-outlet-para-itens-acima-de-r-999",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqs-5-off-outlet-para-itens-acima-de-r-999"
+    },
+    {
+      "title": "Descontos Progressivos: até R$500 OFF",
+      "link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-ate-r-500-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqr-descontos-progressivos-ate-r-500-off"
+    },
+    {
+      "title": "Mês das Mães: Mãe não paga + 10% OFF!",
+      "link": "https://clube.uol.com.br/zoologicosp/pqP-mes-das-maes-mae-nao-paga-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqp-mes-das-maes-mae-nao-paga-10-off"
+    },
+    {
+      "title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqn-2-ingressos-09-05-teatro-nova-iguacu-rj"
+    },
     {
       "title": "2 INGRESSOS: 07/05 Teatro Municipal- MG",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqJ-2-ingressos-07-05-teatro-municipal-mg",
@@ -27,6 +63,12 @@
       "link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
       "reason": "duplicada_historico",
       "trace_id": "trace_pqi-ate-70-off-italents-unyleya"
+    },
+    {
+      "title": "10% OFF nos pacotes",
+      "link": "https://clube.uol.com.br/axis/pqF-10-off-nos-pacotes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqf-10-off-nos-pacotes"
     },
     {
       "title": "50% OFF no par de ingressos",
