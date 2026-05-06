@@ -345,6 +345,17 @@ async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen,
   })
 }
 
+
+const IOS_FALLBACK_MAX_OFFERS = 4
+
+function isIngressoCampaignOffer(offer) {
+  if (!offer || typeof offer !== "object") return false
+  const bag = [offer.link, offer.title, offer.category, offer.description, offer.img_url]
+    .map(v => String(v || "").toLowerCase())
+    .join(" ")
+  return bag.includes("ingresso") || bag.includes("campanhasdeingresso")
+}
+
 const startedAtGlobal = new Date()
 
 async function main() {
@@ -381,10 +392,11 @@ async function main() {
 
     const html = htmlResp.html
     const allOffers = extractOfferCards(html, MAX_OFFERS_FROM_LIST)
-    const currentLinks = allOffers.map(o => normalizeLink(o.link)).filter(Boolean)
+    const iosFallbackCandidates = allOffers.slice(0, IOS_FALLBACK_MAX_OFFERS).filter(isIngressoCampaignOffer)
+    const currentLinks = iosFallbackCandidates.map(o => normalizeLink(o.link)).filter(Boolean)
 
     const { processedKeys } = collectRepoProcessedKeys(pendingData, latestData, historyData)
-    const newOffers = allOffers.filter(o => {
+    const newOffers = iosFallbackCandidates.filter(o => {
       const link = normalizeLink(o.link)
       const key = normalizeOfferKey(link)
       return !!(link && key && !processedKeys.has(key))
@@ -397,18 +409,18 @@ async function main() {
       source_url: LIST_URL,
       html_path: htmlPath,
       html_length: html.length,
-      total_offers_found: allOffers.length,
+      total_offers_found: iosFallbackCandidates.length,
       total_new_offers_found: newOffers.length,
       cache_size_before: seenCache.seen.length,
       current_links: currentLinks,
-      offers: allOffers,
+      offers: iosFallbackCandidates,
     }
 
     const stageData = {
       snapshot_id: snapshotId,
       created_at: new Date().toISOString(),
       new_offers: newOffers,
-      stats: { total_offers: allOffers.length, total_new: newOffers.length },
+      stats: { total_offers: iosFallbackCandidates.length, total_new: newOffers.length },
     }
 
     const saves = await Promise.all([
@@ -434,13 +446,13 @@ async function main() {
 
     await updateScriptableStatusRuntime({
       statusValue: newOffers.length > 0 ? "parcial" : "sem_novidade",
-      summary: `parte1 ok: ${snapshotId} | vitrine ${allOffers.length} | novas ${newOffers.length}`,
-      offersSeen: allOffers.length,
+      summary: `parte1 ok: ${snapshotId} | vitrine ${iosFallbackCandidates.length} | novas ${newOffers.length}`,
+      offersSeen: iosFallbackCandidates.length,
       newOffers: newOffers.length,
       pendingCount: Array.isArray(pendingData.offers) ? pendingData.offers.length : 0,
     })
 
-    return `ok_parte1 | snapshot ${snapshotId} | vitrine ${allOffers.length} | novas ${newOffers.length}`
+    return `ok_parte1 | snapshot ${snapshotId} | vitrine ${iosFallbackCandidates.length} | novas ${newOffers.length}`
   } catch (e) {
     const msg = String(e && e.message ? e.message : e)
     await updateScriptableStatusRuntime({ statusValue: "erro", summary: "parte1 com erro", offersSeen: 0, newOffers: 0, pendingCount: 0, lastError: msg })
