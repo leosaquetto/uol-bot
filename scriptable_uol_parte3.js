@@ -319,6 +319,25 @@ function cleanupLedgerKeys(keysObj, nowMs) {
   return next
 }
 
+function isIngressoOffer(offer) {
+  if (!offer || typeof offer !== "object") return false
+  const bag = [
+    offer.category,
+    offer.title,
+    offer.preview_title,
+    offer.detail_title,
+    offer.link,
+    offer.original_link,
+    offer.img_url,
+    offer.image_url,
+    offer.image,
+    offer.detail_img_url,
+  ]
+    .map(v => String(v || "").toLowerCase())
+    .join(" ")
+  return bag.includes("ingresso") || bag.includes("campanhasdeingresso")
+}
+
 const startedAtGlobal = new Date()
 
 async function main() {
@@ -358,6 +377,12 @@ async function main() {
     for (const offer of pendingToAppend) {
       const canonicalKey = normalizeOfferKey(offer.offer_key || offer.id || offer.link || offer.original_link || "")
       if (!canonicalKey) continue
+
+      if (!isIngressoOffer(offer)) {
+        freshToAppend.push(offer)
+        continue
+      }
+
       if (cleanedKeys[canonicalKey]) continue
       freshToAppend.push(offer)
       cleanedKeys[canonicalKey] = {
