@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 46927,
-  "run_duration_seconds": 46.93,
-  "avg_detail_ms_per_offer": 3911,
-  "generated_at": "2026-05-06T02:02:28.159Z",
+  "run_duration_ms": 33356,
+  "run_duration_seconds": 33.36,
+  "avg_detail_ms_per_offer": 2780,
+  "generated_at": "2026-05-06T02:13:07.966Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132706,
-      "detail_elapsed_ms": 2224,
-      "scraped_at": "2026-05-06T02:02:08.019Z"
+      "detail_html_length": 132294,
+      "detail_elapsed_ms": 2332,
+      "scraped_at": "2026-05-06T02:12:50.567Z"
     },
     {
       "id": "pqi-at-70-off-italents-unyleya",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131020,
-      "detail_elapsed_ms": 2230,
-      "scraped_at": "2026-05-06T02:02:10.270Z"
+      "detail_html_length": 131000,
+      "detail_elapsed_ms": 1633,
+      "scraped_at": "2026-05-06T02:12:52.229Z"
     },
     {
       "id": "pqf-10-off-pilates",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130164,
-      "detail_elapsed_ms": 1813,
-      "scraped_at": "2026-05-06T02:02:12.084Z"
+      "detail_html_length": 130207,
+      "detail_elapsed_ms": 1585,
+      "scraped_at": "2026-05-06T02:12:53.814Z"
     },
     {
       "id": "pqe-50-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132146,
-      "detail_elapsed_ms": 1645,
-      "scraped_at": "2026-05-06T02:02:13.735Z"
+      "detail_html_length": 132159,
+      "detail_elapsed_ms": 1478,
+      "scraped_at": "2026-05-06T02:12:55.294Z"
     },
     {
       "id": "pqc-2-ingressos-24-05-btg-pactual-hall-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132148,
-      "detail_elapsed_ms": 1779,
-      "scraped_at": "2026-05-06T02:02:15.514Z"
+      "detail_html_length": 132161,
+      "detail_elapsed_ms": 1508,
+      "scraped_at": "2026-05-06T02:12:56.802Z"
     },
     {
       "id": "pq8-ganhe-01-cinnamon-oblivion",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133089,
-      "detail_elapsed_ms": 1859,
-      "scraped_at": "2026-05-06T02:02:17.373Z"
+      "detail_html_length": 133102,
+      "detail_elapsed_ms": 1519,
+      "scraped_at": "2026-05-06T02:12:58.321Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133000,
-      "detail_elapsed_ms": 1988,
-      "scraped_at": "2026-05-06T02:02:19.363Z"
+      "detail_html_length": 132992,
+      "detail_elapsed_ms": 1591,
+      "scraped_at": "2026-05-06T02:12:59.912Z"
     },
     {
       "id": "pq5-ganhe-01-laramora-340ml",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132970,
-      "detail_elapsed_ms": 1800,
-      "scraped_at": "2026-05-06T02:02:21.164Z"
+      "detail_html_length": 132971,
+      "detail_elapsed_ms": 1555,
+      "scraped_at": "2026-05-06T02:13:01.467Z"
     },
     {
       "id": "pq4-2-ingressos-31-05-2026-teatro-claro-rj",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132884,
-      "detail_elapsed_ms": 1807,
-      "scraped_at": "2026-05-06T02:02:22.981Z"
+      "detail_html_length": 132886,
+      "detail_elapsed_ms": 1615,
+      "scraped_at": "2026-05-06T02:13:03.082Z"
     },
     {
       "id": "pq3-40-off-nos-pedidos-pelo-site-e-app",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131428,
-      "detail_elapsed_ms": 1741,
-      "scraped_at": "2026-05-06T02:02:24.723Z"
+      "detail_html_length": 131409,
+      "detail_elapsed_ms": 1710,
+      "scraped_at": "2026-05-06T02:13:04.792Z"
     },
     {
       "id": "pq2-50-off-no-par-de-ingressos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133622,
-      "detail_elapsed_ms": 1682,
-      "scraped_at": "2026-05-06T02:02:26.406Z"
+      "detail_html_length": 133625,
+      "detail_elapsed_ms": 1403,
+      "scraped_at": "2026-05-06T02:13:06.195Z"
     },
     {
       "id": "pq0-50-off-no-par-de-ingressos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133257,
-      "detail_elapsed_ms": 1621,
-      "scraped_at": "2026-05-06T02:02:28.028Z"
+      "detail_html_length": 133229,
+      "detail_elapsed_ms": 1658,
+      "scraped_at": "2026-05-06T02:13:07.853Z"
     }
   ]
 }
