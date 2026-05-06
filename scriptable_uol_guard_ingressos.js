@@ -223,7 +223,7 @@ async function main() {
   } catch (e) {
     const errMsg = `guard_exception:${String(e)}`
     log(`erro no guard: ${errMsg}`)
-    appendFallbackAudit("guard.error", { error: errMsg })
+    appendFallbackAudit("guard.error", { reason: "guard_error", error: errMsg })
     const safeDecision = {
       decision: "run_fallback",
       run_fallback: true,
@@ -233,13 +233,15 @@ async function main() {
       version: 1,
     }
     await persistDecision(safeDecision)
-    console.log(JSON.stringify({
+    const safeOutput = {
       decision: safeDecision.decision,
       run_fallback: safeDecision.run_fallback,
       reason: safeDecision.reason,
       recorded_at_utc: safeDecision.recorded_at_utc,
       decision_file: DECISION_FILE,
-    }))
+    }
+    console.log(JSON.stringify(safeOutput))
+    return safeOutput
   } finally {
     releaseFallbackLock()
   }
