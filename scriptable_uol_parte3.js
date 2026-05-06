@@ -288,16 +288,17 @@ async function readIosLedger() {
   const { fm, path } = getICloudDocumentsDir()
   try {
     if (!fm.fileExists(path)) return { keys: {} }
-    try {
-      await fm.downloadFileFromiCloud(path)
-    } catch (e) {
-      log(`⚠️ auditoria ledger iCloud download falhou: ${String(e)}`)
+
+    await fm.downloadFileFromiCloud(path)
+    const raw = fm.readString(path)
+    const data = JSON.parse(String(raw || "{}"))
+
+    if (!data || typeof data !== "object" || !data.keys || typeof data.keys !== "object") {
+      log("⚠️ auditoria ledger iCloud inválido: payload sem keys objeto")
       return { keys: {} }
     }
 
-    const raw = fm.readString(path)
-    const data = JSON.parse(String(raw || "{}"))
-    return (data && typeof data === "object" && data.keys && typeof data.keys === "object") ? data : { keys: {} }
+    return data
   } catch (e) {
     log(`⚠️ auditoria ledger iCloud leitura falhou: ${String(e)}`)
     return { keys: {} }
