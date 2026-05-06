@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 8,
+  "detail_fail_count": 4,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 8,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 4
   },
-  "run_duration_ms": 33356,
-  "run_duration_seconds": 33.36,
-  "avg_detail_ms_per_offer": 2780,
-  "generated_at": "2026-05-06T02:13:07.966Z",
+  "run_duration_ms": 12472360,
+  "run_duration_seconds": 12472.36,
+  "avg_detail_ms_per_offer": 1039363,
+  "generated_at": "2026-05-06T06:27:10.671Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqJ-2-ingressos-07-05-teatro-municipal-mg",
       "title": "2 INGRESSOS: 07/05 Teatro Municipal- MG",
       "preview_title": "2 INGRESSOS: 07/05 Teatro Municipal- MG",
-      "validity": "Benefício válido de 05/05/2026 18:09 até 07/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare‑se para rir muito com o stand‑up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Municipal de Pouso Alegre (MG). Data: Quinta - feira, 07/05/2026 | 20:30 Local: Avenida Dr. Lisboa, 205. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa5c6aebee4_69fa4e35319db_7d3037b1ea487c482b902917f9af161e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa5c6aebee4_69fa4e35319db_7d3037b1ea487c482b902917f9af161e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa5c6aebee4_69fa4e35319db_7d3037b1ea487c482b902917f9af161e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132294,
-      "detail_elapsed_ms": 2332,
-      "scraped_at": "2026-05-06T02:12:50.567Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pqJ-2-ingressos-07-05-teatro-municipal-mg\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12101,
+      "scraped_at": "2026-05-06T04:38:45.304Z"
     },
     {
       "id": "pqi-at-70-off-italents-unyleya",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
       "title": "Até 70% OFF Italents Unyleya",
       "preview_title": "Até 70% OFF Italents Unyleya",
-      "validity": "Benefício válido de 05/05/2026 17:31 até 05/05/2027 17:31.",
-      "description": "Sobre o parceiro: A Faculdade Unyleya é uma instituição de ensino superior com 16 anos de tradição na oferta de cursos de Graduação e Pós-Graduação a distância. Com nota 5 no ENADE (Exame Nacional de Desempenho de Estudantes), a instituição propõe levar ensino de qualidade, com valores acessíveis a todos os cantos do país. Benefícios: Cursos de Pós-Graduação a distância com até 70% OFF! Regras: É necessário apresentar a declaração de vínculo com o Clube Ben. Para gerar, clique no botão \"Baixar Declaração de Vínculo\". Desconto válido para novas matrículas, aplicado sobre o valor integral do curso. Não cumulativo.",
+      "validity": "",
+      "description": "",
       "category": "Educação",
       "partner_name": "Faculdade Unyleya",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/738d7d074c326312e76a2f7583231b62.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8a4775aea2ca103adaf05cc6e104b246.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8a4775aea2ca103adaf05cc6e104b246.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8a4775aea2ca103adaf05cc6e104b246.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131000,
-      "detail_elapsed_ms": 1633,
-      "scraped_at": "2026-05-06T02:12:52.229Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12003,
+      "scraped_at": "2026-05-06T04:39:09.583Z"
     },
     {
       "id": "pqf-10-off-pilates",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/axis/pqF-10-off-pilates",
       "title": "10% OFF Pilates",
       "preview_title": "10% OFF Pilates",
-      "validity": "Benefício válido de 05/05/2026 15:58 até 05/05/2027 23:59.",
-      "description": "Sobre o Parceiro: Axis seu corpo em equilíbrio e sua vida em movimento. Beneficio: 10% OFF nas sessões da Axis Pilates, Funcional, Auriculoterapia e outros serviços. Regras: Entre em contato e apresente o cupom (21 98250-9454)",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Axis",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b5c1bd3dc6dc2a39be83da208ca19c7c.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0ab7ce1086d3c99519da99357166b0f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0ab7ce1086d3c99519da99357166b0f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0ab7ce1086d3c99519da99357166b0f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130207,
-      "detail_elapsed_ms": 1585,
-      "scraped_at": "2026-05-06T02:12:53.814Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/axis/pqF-10-off-pilates\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 3241350,
+      "scraped_at": "2026-05-06T06:26:37.082Z"
     },
     {
       "id": "pqe-50-off-no-par-de-ingressos",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/teatrojsafra/pqE-50-off-no-par-de-ingressos",
       "title": "50% OFF no par de ingressos",
       "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 05/05/2026 16:03 até 15/05/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Show de Stand-UP Thiago Ventura em Lado A Lado. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Show de Stand-UP Lado a Lado | Thiago Ventura estreia “Lado a Lado” em 2026, seu novo solo de comédia que mergulha com humor e sensibilidade nas relações que moldam quem somos. No palco, Ventura fala sobre amizades, família e as companhias que escolhemos (ou que a vida coloca no nosso caminho), sempre com seu estilo único, cheio de histórias reais, situações absurdas e aquele olhar afiado sobre o cotidiano. “Lado a Lado” é um show de stand-up comedy sobre vínculos, lealdade, convivência e a bagunça maravilhosa de dividir a vida com outras pessoas. Um show para rir, se identificar e lembrar que ninguém caminha sozinho. FICHA TÉCNICA: Duração: 90 minutos Classificação: 16 anos SERVIÇO: Temporada: 15 de maio de 2026 Apresentações: Sexta-feira, 21h30",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Teatro J. Safra",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4ac7cb1fb55010c446ec16f5732a1147.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4ac7cb1fb55010c446ec16f5732a1147.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4ac7cb1fb55010c446ec16f5732a1147.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132159,
-      "detail_elapsed_ms": 1478,
-      "scraped_at": "2026-05-06T02:12:55.294Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: net::ERR_NETWORK_CHANGED at https://clube.uol.com.br/teatrojsafra/pqE-50-off-no-par-de-ingressos Call log: - navigating to \"https://clube.uol.com.br/teatrojsafra/pqE-50-off-no-par-de-ingressos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1417,
+      "scraped_at": "2026-05-06T06:26:40.622Z"
     },
     {
       "id": "pqc-2-ingressos-24-05-btg-pactual-hall-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132161,
-      "detail_elapsed_ms": 1508,
-      "scraped_at": "2026-05-06T02:12:56.802Z"
+      "detail_html_length": 124775,
+      "detail_elapsed_ms": 4688,
+      "scraped_at": "2026-05-06T06:26:45.311Z"
     },
     {
       "id": "pq8-ganhe-01-cinnamon-oblivion",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133102,
-      "detail_elapsed_ms": 1519,
-      "scraped_at": "2026-05-06T02:12:58.321Z"
+      "detail_html_length": 131966,
+      "detail_elapsed_ms": 5155,
+      "scraped_at": "2026-05-06T06:26:50.467Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132992,
-      "detail_elapsed_ms": 1591,
-      "scraped_at": "2026-05-06T02:12:59.912Z"
+      "detail_html_length": 132962,
+      "detail_elapsed_ms": 3660,
+      "scraped_at": "2026-05-06T06:26:54.128Z"
     },
     {
       "id": "pq5-ganhe-01-laramora-340ml",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132971,
-      "detail_elapsed_ms": 1555,
-      "scraped_at": "2026-05-06T02:13:01.467Z"
+      "detail_html_length": 132912,
+      "detail_elapsed_ms": 2933,
+      "scraped_at": "2026-05-06T06:26:57.061Z"
     },
     {
       "id": "pq4-2-ingressos-31-05-2026-teatro-claro-rj",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132886,
-      "detail_elapsed_ms": 1615,
-      "scraped_at": "2026-05-06T02:13:03.082Z"
+      "detail_html_length": 132895,
+      "detail_elapsed_ms": 3817,
+      "scraped_at": "2026-05-06T06:27:00.880Z"
     },
     {
       "id": "pq3-40-off-nos-pedidos-pelo-site-e-app",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131409,
-      "detail_elapsed_ms": 1710,
-      "scraped_at": "2026-05-06T02:13:04.792Z"
+      "detail_html_length": 131430,
+      "detail_elapsed_ms": 5307,
+      "scraped_at": "2026-05-06T06:27:06.187Z"
     },
     {
       "id": "pq2-50-off-no-par-de-ingressos",
@@ -281,8 +281,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133625,
-      "detail_elapsed_ms": 1403,
-      "scraped_at": "2026-05-06T02:13:06.195Z"
+      "detail_elapsed_ms": 2710,
+      "scraped_at": "2026-05-06T06:27:08.898Z"
     },
     {
       "id": "pq0-50-off-no-par-de-ingressos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133229,
-      "detail_elapsed_ms": 1658,
-      "scraped_at": "2026-05-06T02:13:07.853Z"
+      "detail_html_length": 133260,
+      "detail_elapsed_ms": 1636,
+      "scraped_at": "2026-05-06T06:27:10.534Z"
     }
   ]
 }
