@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-06T01:17:28.377334Z",
+  "updated_at": "2026-05-06T02:03:01.921749Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
-    "duplicada_latest": 0,
+    "duplicada_historico": 10,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -24,9 +24,9 @@
     },
     {
       "title": "Até 70% OFF Italents Unyleya",
-      "link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqi-ate-70-off-italents-unyleya"
+      "link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pqi-at-70-off-italents-unyleya"
     },
     {
       "title": "10% OFF Pilates",
@@ -45,12 +45,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pqC-2-ingressos-24-05-btg-pactual-hall-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pqc-2-ingressos-24-05-btg-pactual-hall-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 23/05 BTG Pactual Hall - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqB-2-ingressos-23-05-btg-pactual-hall-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqb-2-ingressos-23-05-btg-pactual-hall-sp"
     },
     {
       "title": "Ganhe 01 Cinnamon Oblivion",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/teatrouol/pq2-50-off-no-par-de-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pq2-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pq0-50-off-no-par-de-ingressos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pq0-50-off-no-par-de-ingressos"
     }
   ]
 }
