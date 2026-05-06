@@ -6,6 +6,7 @@ Executar **1x por dia** uma validação resumida de:
 2. Idade do `pipeline_audit.jsonl` no momento da decisão.
 3. Se houve execução de fallback nas últimas 24h.
 4. Se lock ficou preso (lock mais antigo que timeout).
+5. Alertas de inconsistência no ledger/audit.
 
 ## Comando
 ```bash
@@ -15,6 +16,7 @@ python3 guard_daily_check.py
 ## Saída
 - O script imprime uma linha JSON no terminal.
 - Também adiciona a mesma linha em `run/guard_daily_check.log`.
+- Quando detectar anomalias no audit, grava alertas em `run/uol_ios_fallback_alerts.jsonl`.
 
 Campos principais:
 - `ts_utc`: timestamp UTC da checagem.
@@ -25,6 +27,12 @@ Campos principais:
 - `fallback_last_24h`: `true/false`.
 - `lock_stuck`: `true/false`.
 - `issues`: lista resumida de alertas.
+- `audit_alert_count`: quantidade de anomalias detectadas no audit.
+
+Anomalias monitoradas:
+- `duplicate_offer_key_short_window`: mesma `offer_key` processada novamente em até N minutos (default: 60).
+- `inconsistent_processed_without_valid_timestamp`: entrada com status de processada sem timestamp válido.
+- `decision_skip_with_fallback_execution`: decisão de `skip` divergente com execução real de fallback.
 
 ## Atalho dedicado (Shortcuts iOS/macOS)
 Criar um atalho com 1 ação de shell/SSH que execute:
@@ -40,5 +48,7 @@ python3 guard_daily_check.py \
   --pipeline-audit-file pipeline_audit.jsonl \
   --lock-file run/uol_ios_fallback_lock.json \
   --lock-timeout-sec 1800 \
+  --duplicate-window-min 60 \
+  --alerts-file run/uol_ios_fallback_alerts.jsonl \
   --log-file run/guard_daily_check.log
 ```
