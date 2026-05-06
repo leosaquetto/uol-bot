@@ -26,6 +26,8 @@ const DEFAULT_SOLD_OUT_LOOKBACK_DAYS = 3;
 const DEFAULT_SOLD_OUT_MIN_MISSES = 2;
 const DEFAULT_SOLD_OUT_MIN_ABSENCE_MINUTES = 15;
 const DEFAULT_DETAIL_PAGE_TIMEOUT_MS = 12000;
+const LOCK_TTL_MS = 8 * 60 * 1000;
+const MAX_RECENT_TICKET_OFFERS = 4;
 
 function parseMaxCards(value, fallback = DEFAULT_MAX_CARDS) {
   const n = Number(value);
@@ -66,6 +68,8 @@ const homeDir = os.homedir();
 const icloudBase = path.join(homeDir, 'Library', 'Mobile Documents', 'com~apple~CloudDocs');
 const outFile = process.env.OUT_FILE || path.join(icloudBase, 'Shortcuts', 'ClubeUol', 'mac-uol-offers.json');
 const stateFile = process.env.MAC_SOLD_OUT_STATE_FILE || path.join(path.dirname(outFile), 'mac_sold_out_state.json');
+const runLockFile = process.env.MAC_RUN_LOCK_FILE || path.join(path.dirname(outFile), 'mac_uol_run_lock.json');
+const ledgerFile = process.env.MAC_LEDGER_FILE || path.join(path.dirname(outFile), 'mac_uol_ledger.json');
 
 function ensureDir(filePath) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -73,6 +77,39 @@ function ensureDir(filePath) {
 
 function cleanText(s) {
   return String(s || '').replace(/\s+/g, ' ').trim();
+}
+
+function readJsonSafe(filePath, fallback) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch (_) {
+    return fallback;
+  }
+}
+
+function saveJson(filePath, payload) {
+  ensureDir(filePath);
+  fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf8');
+}
+
+function acquireRunLock() {
+  const now = Date.now();
+  const lock = readJsonSafe(runLockFile, null);
+  if (lock && Number(lock.expires_at_ms || 0) > now) {
+    const remainSec = Math.max(1, Math.floor((Number(lock.expires_at_ms) - now) / 1000));
+    throw new Error(`execução já em andamento (lock ativo, expira em ${remainSec}s)`);
+  }
+  saveJson(runLockFile, {
+    holder: `pid:${process.pid}@${os.hostname()}`,
+    created_at: new Date(now).toISOString(),
+    expires_at_ms: now + LOCK_TTL_MS,
+  });
+}
+
+function releaseRunLock() {
+  try {
+    if (fs.existsSync(runLockFile)) fs.unlinkSync(runLockFile);
+  } catch (_) {}
 }
 
 function normalizeLink(url) {
@@ -434,6 +471,11 @@ function shouldRetryDetail(errorText) {
   return /(timeout|navigation|net::|ERR_|Target closed|Execution context was destroyed)/i.test(text);
 }
 
+function isTicketOffer(card) {
+  const hay = `${card.category || ''} ${card.title || ''}`.toLowerCase();
+  return /ingresso|ingressos|teatro|show|evento|festival|stand-?up/.test(hay);
+}
+
 async function collectOfferCards(page) {
   await page.goto(TARGET_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
@@ -651,10 +693,23 @@ async function enrichOffers(context, cards) {
   return { enriched, detailOkCount, qualityCounts };
 }
 
+function checkpointPayload(base, offers, stats = {}) {
+  return {
+    ...base,
+    generated_at: new Date().toISOString(),
+    enriched_offers_count: offers.length,
+    detail_ok_count: Number(stats.detail_ok_count || 0),
+    detail_fail_count: Number(stats.detail_fail_count || 0),
+    detail_quality_counts: stats.detail_quality_counts || { complete: 0, partial: 0, weak: 0, failed: 0 },
+    offers,
+  };
+}
+
 (async () => {
   const runStartedAt = Date.now();
   let browser;
   try {
+    acquireRunLock();
     browser = await chromium.launchPersistentContext(EDGE_PROFILE_DIR, {
       channel: 'msedge',
       headless: true,
@@ -663,8 +718,73 @@ async function enrichOffers(context, cards) {
 
     const page = browser.pages()[0] || await browser.newPage();
     const cards = await collectOfferCards(page);
-    const enrichment = await enrichOffers(browser, cards);
-    const offers = enrichment.enriched;
+    const selectedCards = cards.filter(isTicketOffer).slice(0, MAX_RECENT_TICKET_OFFERS);
+    const ledger = readJsonSafe(ledgerFile, { processed_links: {} });
+    const processedLinks = new Set(Object.keys(ledger.processed_links || {}));
+    const cardsToProcess = selectedCards.filter((card) => !processedLinks.has(normalizeLink(card.link)));
+    const detailPage = await browser.newPage();
+    const offers = [];
+    const qualityCounts = { complete: 0, partial: 0, weak: 0, failed: 0 };
+    let detailOkCount = 0;
+    const checkpointBase = {
+      ok: true,
+      source: 'mac-playwright',
+      target_url: TARGET_URL,
+      max_cards_per_round: MAX_CARDS,
+      selected_recent_ticket_cards: selectedCards.length,
+      detail_page_timeout_ms: DETAIL_PAGE_TIMEOUT_MS,
+      collected_cards_count: cards.length,
+      host: os.hostname(),
+      checkpoint_mode: true,
+    };
+    for (const card of cardsToProcess) {
+      let attempts = 1;
+      let detail = await fetchOfferDetailData(detailPage, card);
+      if (!detail.ok && shouldRetryDetail(detail.error)) {
+        attempts = 2;
+        await detailPage.waitForTimeout(250);
+        const retryDetail = await fetchOfferDetailData(detailPage, card);
+        if (retryDetail.ok || !detail.ok) detail = retryDetail;
+      }
+      if (detail.ok) detailOkCount += 1;
+      const detailQuality = evaluateDetailQuality(detail);
+      qualityCounts[detailQuality] = Number(qualityCounts[detailQuality] || 0) + 1;
+      const offer = {
+        id: normalizeOfferKey(card.link),
+        trace_id: buildTraceId(card.link),
+        link: normalizeLink(card.link),
+        original_link: normalizeLink(card.link),
+        title: (detail.title || card.title || 'Oferta').trim(),
+        preview_title: (card.title || detail.title || 'Oferta').trim(),
+        validity: (detail.validity || '').trim(),
+        description: (detail.description || '').trim(),
+        category: card.category || '',
+        partner_name: card.partner_name || '',
+        partner_img_url: card.partner_img_url || '',
+        img_url: detail.detail_img_url || card.img_url || '',
+        card_img_url: card.img_url || '',
+        detail_img_url: detail.detail_img_url || '',
+        img_source: detail.detail_img_source || (card.img_url ? 'card_img' : 'none'),
+        detail_ok: !!detail.ok,
+        detail_quality: detailQuality,
+        detail_error: detail.error || '',
+        detail_attempts: attempts,
+        detail_html_length: Number(detail.html_length || 0),
+        detail_elapsed_ms: Number(detail.elapsed_ms || 0),
+        scraped_at: new Date().toISOString(),
+      };
+      offers.push(offer);
+      ledger.processed_links = ledger.processed_links || {};
+      ledger.processed_links[offer.link] = { processed_at: new Date().toISOString(), trace_id: offer.trace_id };
+      saveJson(ledgerFile, ledger);
+      saveJson(outFile, checkpointPayload(checkpointBase, offers, {
+        detail_ok_count: detailOkCount,
+        detail_fail_count: offers.length - detailOkCount,
+        detail_quality_counts: qualityCounts,
+      }));
+    }
+    await detailPage.close();
+    const enrichment = { detailOkCount, qualityCounts };
     const activeLinksSet = new Set(offers.map((o) => normalizeLink(o.link)).filter(Boolean));
     for (const offer of offers) {
       appendPipelineAudit('mac.capture', offer.trace_id || buildTraceId(offer.id || offer.link), {
@@ -769,5 +889,6 @@ async function enrichOffers(context, cards) {
         await browser.close();
       } catch (_) {}
     }
+    releaseRunLock();
   }
 })();
