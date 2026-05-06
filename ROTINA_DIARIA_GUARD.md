@@ -1,0 +1,44 @@
+# Rotina diária do guard (manual/atalho)
+
+## Objetivo
+Executar **1x por dia** uma validação resumida de:
+1. Última decisão do guard (`run/skip`) e motivo.
+2. Idade do `pipeline_audit.jsonl` no momento da decisão.
+3. Se houve execução de fallback nas últimas 24h.
+4. Se lock ficou preso (lock mais antigo que timeout).
+
+## Comando
+```bash
+python3 guard_daily_check.py
+```
+
+## Saída
+- O script imprime uma linha JSON no terminal.
+- Também adiciona a mesma linha em `run/guard_daily_check.log`.
+
+Campos principais:
+- `ts_utc`: timestamp UTC da checagem.
+- `status`: `OK` ou `ALERTA`.
+- `decision`: última decisão (`run_fallback`, `skip_fallback`, etc.).
+- `reason`: motivo da decisão.
+- `pipeline_audit_age_min_at_decision`: idade em minutos no instante da decisão.
+- `fallback_last_24h`: `true/false`.
+- `lock_stuck`: `true/false`.
+- `issues`: lista resumida de alertas.
+
+## Atalho dedicado (Shortcuts iOS/macOS)
+Criar um atalho com 1 ação de shell/SSH que execute:
+```bash
+cd /workspace/uol-bot && python3 guard_daily_check.py
+```
+
+> Se quiser ajustar caminhos/timeout:
+```bash
+python3 guard_daily_check.py \
+  --decision-file run/uol_ios_fallback_decision.json \
+  --audit-file run/uol_ios_fallback_audit.jsonl \
+  --pipeline-audit-file pipeline_audit.jsonl \
+  --lock-file run/uol_ios_fallback_lock.json \
+  --lock-timeout-sec 1800 \
+  --log-file run/guard_daily_check.log
+```
