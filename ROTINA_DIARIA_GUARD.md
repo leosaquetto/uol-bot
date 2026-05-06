@@ -52,3 +52,31 @@ python3 guard_daily_check.py \
   --alerts-file run/uol_ios_fallback_alerts.jsonl \
   --log-file run/guard_daily_check.log
 ```
+
+## Rotina mensal (3 cenários)
+
+Executar **1x por mês** os cenários abaixo e validar, em cada um:
+- decisão do guard correta;
+- fallback acionado somente quando devido;
+- zero duplicidade no ledger.
+
+### Cenários
+1. **Mac online + pipeline fresco**
+2. **Mac online + pipeline stale**
+3. **Mac offline**
+
+### Checklist simples (UTC)
+> Preencha a data em UTC no formato `YYYY-MM-DD`.
+
+- [ ] `YYYY-MM-DD` (UTC) — **Cenário 1: Mac online + pipeline fresco**
+  - [ ] decisão do guard correta
+  - [ ] fallback acionado somente quando devido
+  - [ ] zero duplicidade no ledger
+- [ ] `YYYY-MM-DD` (UTC) — **Cenário 2: Mac online + pipeline stale**
+  - [ ] decisão do guard correta
+  - [ ] fallback acionado somente quando devido
+  - [ ] zero duplicidade no ledger
+- [ ] `YYYY-MM-DD` (UTC) — **Cenário 3: Mac offline**
+  - [ ] decisão do guard correta
+  - [ ] fallback acionado somente quando devido
+  - [ ] zero duplicidade no ledger
