@@ -5,6 +5,7 @@ const DECISION_FILE = "uol_ios_fallback_decision.json"
 const LOCK_FILE = "uol_ios_fallback_lock.json"
 const AUDIT_FILE = "uol_ios_fallback_audit.jsonl"
 const STALE_WINDOW_MIN = 30
+const STALE_DRIFT_MARGIN_MIN = 2
 const LOCK_STALE_SEC = 120
 
 // Configure este atalho para executar o SSH no Mac e retornar JSON com:
@@ -100,9 +101,23 @@ async function runSshProbeViaShortcut() {
   }
 }
 
+
+function parseRemoteMtimeToEpoch(probe) {
+  if (!probe || typeof probe !== "object") return 0
+
+  const epochMs = Number(probe.mtime_epoch_ms || 0)
+  if (Number.isFinite(epochMs) && epochMs > 0) return epochMs
+
+  const mtimeRaw = String(probe.mtime_utc || probe.mtime_iso || "").trim()
+  if (!mtimeRaw) return 0
+
+  const parsedMs = Date.parse(mtimeRaw)
+  return Number.isFinite(parsedMs) && parsedMs > 0 ? parsedMs : 0
+}
+
 function evaluateDecision(probe) {
   const nowMs = Date.now()
-  const staleLimitMs = STALE_WINDOW_MIN * 60 * 1000
+  const staleLimitMs = (STALE_WINDOW_MIN + STALE_DRIFT_MARGIN_MIN) * 60 * 1000
 
   if (!probe || probe.ok !== true) {
     return {
@@ -111,11 +126,12 @@ function evaluateDecision(probe) {
       reason: "mac_offline_or_inaccessible",
       now_utc: toIsoUtc(nowMs),
       stale_window_min: STALE_WINDOW_MIN,
+      drift_margin_min: STALE_DRIFT_MARGIN_MIN,
       ssh_probe: probe || null,
     }
   }
 
-  const mtimeMs = Number(probe.mtime_epoch_ms || 0)
+  const mtimeMs = parseRemoteMtimeToEpoch(probe)
   if (!Number.isFinite(mtimeMs) || mtimeMs <= 0) {
     return {
       decision: "run_fallback",
@@ -123,6 +139,7 @@ function evaluateDecision(probe) {
       reason: "missing_or_invalid_mtime",
       now_utc: toIsoUtc(nowMs),
       stale_window_min: STALE_WINDOW_MIN,
+      drift_margin_min: STALE_DRIFT_MARGIN_MIN,
       ssh_probe: probe,
     }
   }
@@ -137,6 +154,7 @@ function evaluateDecision(probe) {
       reason: "pipeline_audit_recent",
       now_utc: toIsoUtc(nowMs),
       stale_window_min: STALE_WINDOW_MIN,
+      drift_margin_min: STALE_DRIFT_MARGIN_MIN,
       pipeline_audit_mtime_utc: toIsoUtc(mtimeMs),
       pipeline_audit_age_min: Number((ageMs / 60000).toFixed(2)),
       mac_path_checked: "/Users/leosaquetto/Documentos MAC/BotLeoUol/pipeline_audit.jsonl",
@@ -150,6 +168,7 @@ function evaluateDecision(probe) {
     reason: "pipeline_audit_stale",
     now_utc: toIsoUtc(nowMs),
     stale_window_min: STALE_WINDOW_MIN,
+    drift_margin_min: STALE_DRIFT_MARGIN_MIN,
     pipeline_audit_mtime_utc: toIsoUtc(mtimeMs),
     pipeline_audit_age_min: Number((ageMs / 60000).toFixed(2)),
     mac_path_checked: "/Users/leosaquetto/Documentos MAC/BotLeoUol/pipeline_audit.jsonl",
@@ -184,7 +203,14 @@ async function main() {
   }
 
   const outputPath = await persistDecision(persisted)
-  appendFallbackAudit("guard.decision", { decision: persisted.decision, reason: persisted.reason, run_fallback: persisted.run_fallback })
+  appendFallbackAudit("guard.decision", {
+    decision: persisted.decision,
+    reason: persisted.reason,
+    run_fallback: persisted.run_fallback,
+    now_utc: persisted.now_utc || null,
+    mtime_utc: persisted.pipeline_audit_mtime_utc || null,
+    age_min: persisted.pipeline_audit_age_min != null ? persisted.pipeline_audit_age_min : null,
+  })
   log(`decisão: ${persisted.decision} | arquivo: ${outputPath}`)
 
   console.log(JSON.stringify({
