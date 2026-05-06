@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 43136,
-  "run_duration_seconds": 43.14,
-  "avg_detail_ms_per_offer": 3595,
-  "generated_at": "2026-05-06T00:43:53.290Z",
+  "run_duration_ms": 46927,
+  "run_duration_seconds": 46.93,
+  "avg_detail_ms_per_offer": 3911,
+  "generated_at": "2026-05-06T02:02:28.159Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,15 +40,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131121,
-      "detail_elapsed_ms": 2968,
-      "scraped_at": "2026-05-06T00:43:33.327Z"
+      "detail_html_length": 132706,
+      "detail_elapsed_ms": 2224,
+      "scraped_at": "2026-05-06T02:02:08.019Z"
     },
     {
-      "id": "pqi-ate-70-off-italents-unyleya",
-      "trace_id": "trace_pqi-ate-70-off-italents-unyleya",
-      "link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
-      "original_link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
+      "id": "pqi-at-70-off-italents-unyleya",
+      "trace_id": "trace_pqi-at-70-off-italents-unyleya",
+      "link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
+      "original_link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
       "title": "Até 70% OFF Italents Unyleya",
       "preview_title": "Até 70% OFF Italents Unyleya",
       "validity": "Benefício válido de 05/05/2026 17:31 até 05/05/2027 17:31.",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131003,
-      "detail_elapsed_ms": 2073,
-      "scraped_at": "2026-05-06T00:43:35.416Z"
+      "detail_html_length": 131020,
+      "detail_elapsed_ms": 2230,
+      "scraped_at": "2026-05-06T02:02:10.270Z"
     },
     {
       "id": "pqf-10-off-pilates",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130155,
-      "detail_elapsed_ms": 2113,
-      "scraped_at": "2026-05-06T00:43:37.530Z"
+      "detail_html_length": 130164,
+      "detail_elapsed_ms": 1813,
+      "scraped_at": "2026-05-06T02:02:12.084Z"
     },
     {
       "id": "pqe-50-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132136,
-      "detail_elapsed_ms": 1798,
-      "scraped_at": "2026-05-06T00:43:39.330Z"
+      "detail_html_length": 132146,
+      "detail_elapsed_ms": 1645,
+      "scraped_at": "2026-05-06T02:02:13.735Z"
     },
     {
       "id": "pqc-2-ingressos-24-05-btg-pactual-hall-sp",
@@ -136,33 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132159,
-      "detail_elapsed_ms": 1920,
-      "scraped_at": "2026-05-06T00:43:41.250Z"
-    },
-    {
-      "id": "pqb-2-ingressos-23-05-btg-pactual-hall-sp",
-      "trace_id": "trace_pqb-2-ingressos-23-05-btg-pactual-hall-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqB-2-ingressos-23-05-btg-pactual-hall-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqB-2-ingressos-23-05-btg-pactual-hall-sp",
-      "title": "2 INGRESSOS: 23/05 BTG Pactual Hall - SP",
-      "preview_title": "2 INGRESSOS: 23/05 BTG Pactual Hall - SP",
-      "validity": "Benefício válido de 05/05/2026 15:21 até 22/05/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para curtir o espetáculo “Viva – A Vida é uma Festa In Concert: Uma Experiência Além da Tela” no BTG Pactual Hall, em São Paulo (SP)! Data: 23 de Maio, às 11h. Local: Rua Bento Branco de Andrade Filho, 722 - Santo Amaro. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa366f6a080_69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa366f6a080_69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa366f6a080_69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132084,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-05-06T00:43:42.956Z"
+      "detail_html_length": 132148,
+      "detail_elapsed_ms": 1779,
+      "scraped_at": "2026-05-06T02:02:15.514Z"
     },
     {
       "id": "pq8-ganhe-01-cinnamon-oblivion",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133090,
-      "detail_elapsed_ms": 1644,
-      "scraped_at": "2026-05-06T00:43:44.600Z"
+      "detail_html_length": 133089,
+      "detail_elapsed_ms": 1859,
+      "scraped_at": "2026-05-06T02:02:17.373Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132991,
-      "detail_elapsed_ms": 1533,
-      "scraped_at": "2026-05-06T00:43:46.133Z"
+      "detail_html_length": 133000,
+      "detail_elapsed_ms": 1988,
+      "scraped_at": "2026-05-06T02:02:19.363Z"
     },
     {
       "id": "pq5-ganhe-01-laramora-340ml",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132959,
-      "detail_elapsed_ms": 1549,
-      "scraped_at": "2026-05-06T00:43:47.682Z"
+      "detail_html_length": 132970,
+      "detail_elapsed_ms": 1800,
+      "scraped_at": "2026-05-06T02:02:21.164Z"
     },
     {
       "id": "pq4-2-ingressos-31-05-2026-teatro-claro-rj",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132905,
-      "detail_elapsed_ms": 1576,
-      "scraped_at": "2026-05-06T00:43:49.258Z"
+      "detail_html_length": 132884,
+      "detail_elapsed_ms": 1807,
+      "scraped_at": "2026-05-06T02:02:22.981Z"
     },
     {
       "id": "pq3-40-off-nos-pedidos-pelo-site-e-app",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131417,
-      "detail_elapsed_ms": 2011,
-      "scraped_at": "2026-05-06T00:43:51.269Z"
+      "detail_html_length": 131428,
+      "detail_elapsed_ms": 1741,
+      "scraped_at": "2026-05-06T02:02:24.723Z"
     },
     {
       "id": "pq2-50-off-no-par-de-ingressos",
@@ -305,8 +281,32 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133622,
-      "detail_elapsed_ms": 1895,
-      "scraped_at": "2026-05-06T00:43:53.165Z"
+      "detail_elapsed_ms": 1682,
+      "scraped_at": "2026-05-06T02:02:26.406Z"
+    },
+    {
+      "id": "pq0-50-off-no-par-de-ingressos",
+      "trace_id": "trace_pq0-50-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatrouol/pq0-50-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatrouol/pq0-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "preview_title": "50% OFF no par de ingressos",
+      "validity": "Benefício válido de 05/05/2026 10:04 até 27/09/2026 23:59.",
+      "description": "Sobre o parceiro: O Teatro UOL está localizado no Shopping Pátio Higienópolis, sendo consagrado como um dos mais sofisticados espaços culturais da cidade, que oferece ao público grande diversidade de linguagens artísticas e garante a qualidade de cada espetáculo. Benefício: 50% OFF no par de ingresso no Espetáculo Aluga-se Um Namorado. Regras: Para resgatar o desconto de 50% é necessário apresentar seu documento de identificação (RG) e o voucher da oferta na bilheteria do Teatro (localizado na seção do Teatro UOL - Comprovante de cupom de 50% OFF no ingresso). Benefício válido ao Assinante UOL + 01 acompanhante. Sobre o espetáculo Com direção e atuação de Eri Johnson, sucesso Aluga-se Um Namorado faz temporada no Teatro UOL em São Paulo. O espetáculo é uma nova montagem da peça que estreou em 1992, com o próprio Eri Johnson no elenco. Entre 2004 e 2008, a comédia percorreu o Brasil com temporadas de sucesso e sessões esgotadas em capitais como São Paulo, Rio de Janeiro, Brasília, Salvador, Porto Alegre, entre outras. Sucesso de público nas décadas de 1990 e 2000, com sessões lotadas em diversas cidades brasileiras, a comédia Aluga-se Um Namorado, escrita originalmente por James Sherman e adaptada por Gustavo Klein, chega ao Teatro UOL em curta temporada. A direção é de Eri Johnson, que também integra o elenco ao lado de Juliana Knust, Betty Erthal, Raymundo de Souza, João Lima Junior e Marcondes Oliveira Aluga-se Um Namorado é uma comédia que explora com humor e leveza as relações familiares, estabelecendo uma forte conexão entre o público e o personagem interpretado por Eri Johnson. Para o ator, a peça é uma de suas preferidas. O espetáculo aborda os vínculos familiares de forma divertida e respeitosa, destacando a importância da convivência e da valorização da família. FICHA TÉCNICA: Texto: James Scherman. Adaptação: Gustavo Klein. Direção: Eri Johnson. Assistente de direção: Thati Manzan. Elenco: Eri Johnson, Juliana Knust, Betty Erthal, Raymundo de Souza, João Lima Junior e Marcondes Oliveira. Produção executiva: Thati Manzan. Realização: Magic Arts e Eri Johnson Associados. SERVIÇO: Temporada: 12/06/2026 a 27/09/2026. Apresentações: Sexta e domingo, 20h | Sábado, 20h e 22h. Ingresso*: SETOR A - R$ 150,00 (inteira) R$ 75,00 (meia) | SETOR B - R$ 120,00 (inteira) R$ 60,00 (meia). Duração: 90 minutos. Classificação etária: 12 anos. *Valores referente ao ingresso inteiro. Meia-entrada disponível em todas as sessões e setores de acordo com a legislação.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro UOL",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b05a732ae9e231a6df8e7d9a567bf894.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cf8343fa6c9f2624b7d88541c755f4f9.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cf8343fa6c9f2624b7d88541c755f4f9.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/cf8343fa6c9f2624b7d88541c755f4f9.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133257,
+      "detail_elapsed_ms": 1621,
+      "scraped_at": "2026-05-06T02:02:28.028Z"
     }
   ]
 }
