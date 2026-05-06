@@ -284,15 +284,22 @@ function getICloudDocumentsDir() {
   return { fm, docs, path: fm.joinPath(docs, IOS_LEDGER_FILE) }
 }
 
-function readIosLedger() {
+async function readIosLedger() {
   const { fm, path } = getICloudDocumentsDir()
   try {
     if (!fm.fileExists(path)) return { keys: {} }
-    fm.downloadFileFromiCloud(path)
+    try {
+      await fm.downloadFileFromiCloud(path)
+    } catch (e) {
+      log(`⚠️ auditoria ledger iCloud download falhou: ${String(e)}`)
+      return { keys: {} }
+    }
+
     const raw = fm.readString(path)
     const data = JSON.parse(String(raw || "{}"))
     return (data && typeof data === "object" && data.keys && typeof data.keys === "object") ? data : { keys: {} }
-  } catch (_) {
+  } catch (e) {
+    log(`⚠️ auditoria ledger iCloud leitura falhou: ${String(e)}`)
     return { keys: {} }
   }
 }
@@ -371,7 +378,7 @@ async function main() {
     const pendingToAppend = Array.isArray(stage2.pending_to_append) ? stage2.pending_to_append : []
 
     const nowMs = Date.now()
-    const ledger = readIosLedger()
+    const ledger = await readIosLedger()
     const cleanedKeys = cleanupLedgerKeys(ledger.keys, nowMs)
     const freshToAppend = []
     for (const offer of pendingToAppend) {
