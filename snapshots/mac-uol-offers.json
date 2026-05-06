@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 38267,
-  "run_duration_seconds": 38.27,
-  "avg_detail_ms_per_offer": 3189,
-  "generated_at": "2026-05-06T22:24:08.759Z",
+  "run_duration_ms": 49628,
+  "run_duration_seconds": 49.63,
+  "avg_detail_ms_per_offer": 4136,
+  "generated_at": "2026-05-06T22:35:04.747Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131019,
-      "detail_elapsed_ms": 2473,
-      "scraped_at": "2026-05-06T22:23:47.648Z"
+      "detail_html_length": 131030,
+      "detail_elapsed_ms": 3888,
+      "scraped_at": "2026-05-06T22:34:40.197Z"
     },
     {
       "id": "pqt-10-off-seminovos-acima-de-r-999",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130885,
-      "detail_elapsed_ms": 2054,
-      "scraped_at": "2026-05-06T22:23:49.723Z"
+      "detail_html_length": 130815,
+      "detail_elapsed_ms": 2649,
+      "scraped_at": "2026-05-06T22:34:42.876Z"
     },
     {
       "id": "pqs-5-off-outlet-para-itens-acima-de-r-999",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130963,
-      "detail_elapsed_ms": 2045,
-      "scraped_at": "2026-05-06T22:23:51.768Z"
+      "detail_html_length": 130989,
+      "detail_elapsed_ms": 2003,
+      "scraped_at": "2026-05-06T22:34:44.879Z"
     },
     {
-      "id": "pqr-descontos-progressivos-ate-r-500-off",
-      "trace_id": "trace_pqr-descontos-progressivos-ate-r-500-off",
-      "link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-ate-r-500-off",
-      "original_link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-ate-r-500-off",
+      "id": "pqr-descontos-progressivos-at-r-500-off",
+      "trace_id": "trace_pqr-descontos-progressivos-at-r-500-off",
+      "link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-at-r-500-off",
+      "original_link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-at-r-500-off",
       "title": "Descontos Progressivos: até R$500 OFF",
       "preview_title": "Descontos Progressivos: até R$500 OFF",
       "validity": "Benefício válido de 06/05/2026 14:55 até 10/05/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131048,
-      "detail_elapsed_ms": 1915,
-      "scraped_at": "2026-05-06T22:23:53.684Z"
+      "detail_html_length": 131436,
+      "detail_elapsed_ms": 1794,
+      "scraped_at": "2026-05-06T22:34:46.673Z"
     },
     {
-      "id": "pqp-mes-das-maes-mae-nao-paga-10-off",
-      "trace_id": "trace_pqp-mes-das-maes-mae-nao-paga-10-off",
-      "link": "https://clube.uol.com.br/zoologicosp/pqP-mes-das-maes-mae-nao-paga-10-off",
-      "original_link": "https://clube.uol.com.br/zoologicosp/pqP-mes-das-maes-mae-nao-paga-10-off",
+      "id": "pqp-ms-das-mes-me-no-paga-10-off",
+      "trace_id": "trace_pqp-ms-das-mes-me-no-paga-10-off",
+      "link": "https://clube.uol.com.br/zoologicosp/pqP-ms-das-mes-me-no-paga-10-off",
+      "original_link": "https://clube.uol.com.br/zoologicosp/pqP-ms-das-mes-me-no-paga-10-off",
       "title": "Mês das Mães: Mãe não paga + 10% OFF!",
       "preview_title": "Mês das Mães: Mãe não paga + 10% OFF!",
       "validity": "Benefício válido de 06/05/2026 13:52 até 31/05/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131727,
-      "detail_elapsed_ms": 1934,
-      "scraped_at": "2026-05-06T22:23:55.618Z"
+      "detail_html_length": 131716,
+      "detail_elapsed_ms": 2049,
+      "scraped_at": "2026-05-06T22:34:48.723Z"
     },
     {
-      "id": "pqn-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "trace_id": "trace_pqn-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
+      "id": "pqn-2-ingressos-09-05-teatro-nova-iguau-rj",
+      "trace_id": "trace_pqn-2-ingressos-09-05-teatro-nova-iguau-rj",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguau-rj",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguau-rj",
       "title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
       "preview_title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
       "validity": "Benefício válido de 06/05/2026 11:34 até 07/05/2026 23:59.",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132526,
-      "detail_elapsed_ms": 1721,
-      "scraped_at": "2026-05-06T22:23:57.340Z"
+      "detail_html_length": 132536,
+      "detail_elapsed_ms": 2124,
+      "scraped_at": "2026-05-06T22:34:50.847Z"
     },
     {
       "id": "pqj-2-ingressos-07-05-teatro-municipal-mg",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132486,
-      "detail_elapsed_ms": 1880,
-      "scraped_at": "2026-05-06T22:23:59.220Z"
+      "detail_html_length": 132432,
+      "detail_elapsed_ms": 2248,
+      "scraped_at": "2026-05-06T22:34:53.095Z"
     },
     {
-      "id": "pqi-ate-70-off-italents-unyleya",
-      "trace_id": "trace_pqi-ate-70-off-italents-unyleya",
-      "link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
-      "original_link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
+      "id": "pqi-at-70-off-italents-unyleya",
+      "trace_id": "trace_pqi-at-70-off-italents-unyleya",
+      "link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
+      "original_link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
       "title": "Até 70% OFF Italents Unyleya",
       "preview_title": "Até 70% OFF Italents Unyleya",
       "validity": "Benefício válido de 05/05/2026 17:31 até 05/05/2027 17:31.",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131022,
-      "detail_elapsed_ms": 1818,
-      "scraped_at": "2026-05-06T22:24:01.038Z"
+      "detail_html_length": 130994,
+      "detail_elapsed_ms": 2197,
+      "scraped_at": "2026-05-06T22:34:55.293Z"
     },
     {
       "id": "pqf-10-off-nos-pacotes",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130371,
-      "detail_elapsed_ms": 1843,
-      "scraped_at": "2026-05-06T22:24:02.881Z"
+      "detail_html_length": 130315,
+      "detail_elapsed_ms": 2819,
+      "scraped_at": "2026-05-06T22:34:58.112Z"
     },
     {
       "id": "pqe-50-off-no-par-de-ingressos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132135,
-      "detail_elapsed_ms": 1998,
-      "scraped_at": "2026-05-06T22:24:04.879Z"
+      "detail_html_length": 132091,
+      "detail_elapsed_ms": 2476,
+      "scraped_at": "2026-05-06T22:35:00.589Z"
     },
     {
       "id": "pq8-ganhe-01-cinnamon-oblivion",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133097,
-      "detail_elapsed_ms": 1791,
-      "scraped_at": "2026-05-06T22:24:06.671Z"
+      "detail_html_length": 133103,
+      "detail_elapsed_ms": 1984,
+      "scraped_at": "2026-05-06T22:35:02.573Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132999,
-      "detail_elapsed_ms": 1940,
-      "scraped_at": "2026-05-06T22:24:08.611Z"
+      "detail_html_length": 132953,
+      "detail_elapsed_ms": 1857,
+      "scraped_at": "2026-05-06T22:35:04.435Z"
     }
   ]
 }
