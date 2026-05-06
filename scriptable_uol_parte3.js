@@ -382,15 +382,15 @@ async function main() {
     const cleanedKeys = cleanupLedgerKeys(ledger.keys, nowMs)
     const freshToAppend = []
     for (const offer of pendingToAppend) {
-      const canonicalKey = normalizeOfferKey(offer.offer_key || offer.id || offer.link || offer.original_link || "")
-      if (!canonicalKey) continue
-
       if (!isIngressoOffer(offer)) {
         freshToAppend.push(offer)
         continue
       }
 
+      const canonicalKey = normalizeOfferKey(offer.offer_key || offer.id || offer.link || offer.original_link || "")
+      if (!canonicalKey) continue
       if (cleanedKeys[canonicalKey]) continue
+
       freshToAppend.push(offer)
       cleanedKeys[canonicalKey] = {
         timestamp: new Date().toISOString(),
