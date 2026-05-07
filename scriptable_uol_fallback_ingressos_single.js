@@ -96,15 +96,28 @@ async function githubPutFile(path, content, message) {
 function normalizeOfferKey(value) {
   const raw = normalizeLink(value)
   if (!raw) return ""
-  const noHash = raw.split("#")[0]
-  const noQuery = noHash.split("?")[0]
-  const tail = noQuery.replace(/\/$/, "").split("/").pop() || ""
-  return String(tail)
+  let tail = raw
+  if (raw.startsWith("http://") || raw.startsWith("https://")) {
+    const noHash = raw.split("#")[0]
+    const noQuery = noHash.split("?")[0]
+    tail = noQuery.replace(/\/$/, "").split("/").pop() || ""
+  }
+
+  let decoded = ""
+  try { decoded = decodeURIComponent(String(tail || "")) } catch (e) { decoded = String(tail || "") }
+
+  const base = String(decoded)
     .toLowerCase()
     .normalize("NFD").replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-+|-+$/g, "")
+  if (!base) return ""
+
+  const variants = new Set([base, base.replace(/-de-/g, "-")])
+  if (base.includes("joo")) variants.add(base.replace(/joo/g, "joao"))
+  if (base.includes("joao")) variants.add(base.replace(/joao/g, "joo"))
+  return Array.from(variants).filter(Boolean).sort()[0] || ""
 }
 
 function dedupeOffersByLink(items) {
@@ -254,13 +267,14 @@ async function main() {
       cleanedKeys[canonicalKey] = { timestamp: new Date().toISOString(), source: IOS_LEDGER_SOURCE }
     }
 
-    const mergedPending = dedupeOffersByLink([...existingPending, ...freshToAppend])
+    const ingresoOnlyFresh = freshToAppend.filter(isIngressoOffer)
+    const mergedPending = dedupeOffersByLink([...existingPending, ...ingresoOnlyFresh])
     const payload = { last_update: new Date().toISOString(), offers: mergedPending }
     const saveResp = await withRetries("upload pending", () => githubPutFile("pending_offers.json", JSON.stringify(payload, null, 2), `scriptable ingresso fallback single ${new Date().toISOString()}`))
     if (!saveResp.ok) throw new Error(saveResp.error || "falha ao salvar pending")
 
     writeIosLedger({ keys: cleanedKeys })
-    return `ok | ingresso_candidates=${ingressoCandidates.length} appended=${freshToAppend.length} pending=${mergedPending.length}`
+    return `ok | ingresso_candidates=${ingressoCandidates.length} appended=${ingresoOnlyFresh.length} pending=${mergedPending.length}`
   } catch (e) {
     return `erro | ${String(e && e.message ? e.message : e)}`
   } finally {
