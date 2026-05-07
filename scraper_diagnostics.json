@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-07T18:43:16.087499Z",
+  "updated_at": "2026-05-07T18:44:12.178855Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 3,
+    "duplicada_historico": 4,
     "duplicada_latest": 8,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -27,6 +27,12 @@
       "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-seleo-de-jeans",
       "reason": "duplicada_latest",
       "trace_id": "trace_pri-30-off-extra-na-seleo-de-jeans"
+    },
+    {
+      "title": "50% Off na Gift Box Retrô",
+      "link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retr",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prg-50-off-na-gift-box-retr"
     },
     {
       "title": "20% OFF extra na seleção de moda inverno",
