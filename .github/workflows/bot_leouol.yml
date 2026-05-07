@@ -227,7 +227,8 @@ jobs:
           find . -type d -name __pycache__ -prune -exec rm -rf {} +
           find . -type f -name "*.pyc" -delete
 
-          git add pending_offers.json latest_offers.json historico_leouol.json daily_log.json status_runtime.json snapshots_control.json scraper_diagnostics.json pipeline_audit.jsonl || true
+          git add -A snapshots/
+          git add pending_offers.json latest_offers.json historico_leouol.json daily_log.json status_runtime.json snapshots_control.json scraper_diagnostics.json pipeline_audit.jsonl sold_out_updates.json || true
           echo "arquivos staged:"
           git diff --cached --name-only || true
 

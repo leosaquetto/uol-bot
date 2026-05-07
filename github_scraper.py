@@ -756,6 +756,9 @@ def cleanup_old_snapshot_files() -> None:
                 continue
 
             name = entry.name
+            if name == "mac-uol-offers.json":
+                continue
+
             snapshot_id = ""
             if name.startswith("snapshot_") and name.endswith(".json"):
                 snapshot_id = name[len("snapshot_") : -len(".json")]
