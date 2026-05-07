@@ -26,7 +26,6 @@ const DEFAULT_SOLD_OUT_LOOKBACK_DAYS = 3;
 const DEFAULT_SOLD_OUT_MIN_MISSES = 2;
 const DEFAULT_SOLD_OUT_MIN_ABSENCE_MINUTES = 15;
 const DEFAULT_DETAIL_PAGE_TIMEOUT_MS = 12000;
-const LOCK_TTL_MS = 8 * 60 * 1000;
 
 function parseMaxCards(value, fallback = DEFAULT_MAX_CARDS) {
   const n = Number(value);
@@ -67,7 +66,6 @@ const homeDir = os.homedir();
 const icloudBase = path.join(homeDir, 'Library', 'Mobile Documents', 'com~apple~CloudDocs');
 const outFile = process.env.OUT_FILE || path.join(icloudBase, 'Shortcuts', 'ClubeUol', 'mac-uol-offers.json');
 const stateFile = process.env.MAC_SOLD_OUT_STATE_FILE || path.join(path.dirname(outFile), 'mac_sold_out_state.json');
-const runLockFile = process.env.MAC_RUN_LOCK_FILE || path.join(path.dirname(outFile), 'mac_uol_run_lock.json');
 
 function ensureDir(filePath) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -75,39 +73,6 @@ function ensureDir(filePath) {
 
 function cleanText(s) {
   return String(s || '').replace(/\s+/g, ' ').trim();
-}
-
-function readJsonSafe(filePath, fallback) {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  } catch (_) {
-    return fallback;
-  }
-}
-
-function saveJson(filePath, payload) {
-  ensureDir(filePath);
-  fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf8');
-}
-
-function acquireRunLock() {
-  const now = Date.now();
-  const lock = readJsonSafe(runLockFile, null);
-  if (lock && Number(lock.expires_at_ms || 0) > now) {
-    const remainSec = Math.max(1, Math.floor((Number(lock.expires_at_ms) - now) / 1000));
-    throw new Error(`execução já em andamento (lock ativo, expira em ${remainSec}s)`);
-  }
-  saveJson(runLockFile, {
-    holder: `pid:${process.pid}@${os.hostname()}`,
-    created_at: new Date(now).toISOString(),
-    expires_at_ms: now + LOCK_TTL_MS,
-  });
-}
-
-function releaseRunLock() {
-  try {
-    if (fs.existsSync(runLockFile)) fs.unlinkSync(runLockFile);
-  } catch (_) {}
 }
 
 function normalizeLink(url) {
@@ -690,7 +655,6 @@ async function enrichOffers(context, cards) {
   const runStartedAt = Date.now();
   let browser;
   try {
-    acquireRunLock();
     browser = await chromium.launchPersistentContext(EDGE_PROFILE_DIR, {
       channel: 'msedge',
       headless: true,
@@ -805,6 +769,5 @@ async function enrichOffers(context, cards) {
         await browser.close();
       } catch (_) {}
     }
-    releaseRunLock();
   }
 })();
