@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-07T17:46:45.082196Z",
+  "updated_at": "2026-05-07T17:47:46.507609Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Mês das Mães Open English",
+      "link": "https://clube.uol.com.br/openenglish/pra-mes-das-maes-open-english",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pra-mes-das-maes-open-english"
+    },
+    {
+      "title": "2x1 - Compre o curso de inglês para você",
+      "link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingles-para-voce",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqz-2x1-compre-o-curso-de-ingles-para-voce"
+    },
     {
       "title": "40% OFF em pizzas!",
       "link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
