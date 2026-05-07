@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-07T21:41:59.845659Z",
+  "updated_at": "2026-05-07T21:42:51.470416Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 3,
+    "duplicada_historico": 4,
     "duplicada_latest": 8,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "75% OFF em Depilação a Laser",
+      "link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prm-75-off-em-depilao-a-laser"
+    },
     {
       "title": "50% Off no Colar Relicário",
       "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio",
