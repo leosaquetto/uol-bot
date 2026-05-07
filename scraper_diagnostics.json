@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-05-07T18:09:56.187541Z",
+  "updated_at": "2026-05-07T18:21:05.634524Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 6,
+    "duplicada_historico": 3,
+    "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -57,36 +57,6 @@
       "link": "https://clube.uol.com.br/zoologicosp/pqP-ms-das-mes-me-no-paga-10-off",
       "reason": "duplicada_latest",
       "trace_id": "trace_pqp-ms-das-mes-me-no-paga-10-off"
-    },
-    {
-      "title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguau-rj",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pqn-2-ingressos-09-05-teatro-nova-iguau-rj"
-    },
-    {
-      "title": "2 INGRESSOS: 07/05 Teatro Municipal- MG",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqJ-2-ingressos-07-05-teatro-municipal-mg",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqj-2-ingressos-07-05-teatro-municipal-mg"
-    },
-    {
-      "title": "Até 70% OFF Italents Unyleya",
-      "link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pqi-at-70-off-italents-unyleya"
-    },
-    {
-      "title": "10% OFF nos pacotes",
-      "link": "https://clube.uol.com.br/axis/pqF-10-off-nos-pacotes",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqf-10-off-nos-pacotes"
-    },
-    {
-      "title": "50% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/teatrojsafra/pqE-50-off-no-par-de-ingressos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqe-50-off-no-par-de-ingressos"
     }
   ]
 }
