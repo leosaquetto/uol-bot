@@ -185,7 +185,7 @@ async function main() {
     await persistDecision({ ...blocked, recorded_at_utc: toIsoUtc(), version: 1 })
     appendFallbackAudit("guard.lock_blocked", blocked)
     console.log(JSON.stringify(blocked))
-    return
+    return blocked
   }
 
   try {
@@ -214,12 +214,14 @@ async function main() {
     })
     log(`decisão: ${persisted.decision} | arquivo: ${outputPath}`)
 
-    console.log(JSON.stringify({
+    const output = {
       decision: persisted.decision,
       run_fallback: persisted.run_fallback,
       recorded_at_utc: persisted.recorded_at_utc,
       decision_file: DECISION_FILE,
-    }))
+    }
+    console.log(JSON.stringify(output))
+    return output
   } catch (e) {
     const errMsg = `guard_exception:${String(e)}`
     log(`erro no guard: ${errMsg}`)
@@ -247,4 +249,6 @@ async function main() {
   }
 }
 
-await main()
+const output = await main()
+Script.setShortcutOutput(typeof output === "string" ? output : JSON.stringify(output || {}))
+Script.complete()
