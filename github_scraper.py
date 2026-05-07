@@ -28,6 +28,8 @@ LATEST_FILE = "latest_offers.json"
 SOLD_OUT_UPDATES_FILE = "sold_out_updates.json"
 SCRAPER_DIAGNOSTICS_FILE = "scraper_diagnostics.json"
 PIPELINE_AUDIT_FILE = "pipeline_audit.jsonl"
+PIPELINE_AUDIT_RETENTION_DAYS = 7
+PIPELINE_AUDIT_MAX_LINES = 5000
 
 SNAPSHOT_DIR = "snapshots"
 SNAPSHOT_CONTROL_FILE = "snapshots_control.json"
@@ -159,6 +161,93 @@ def append_pipeline_audit(stage: str, trace_id: str, extra: Optional[Dict[str, A
             f.write(json.dumps(payload, ensure_ascii=False) + "\n")
     except Exception as e:
         log(f"aviso: falha ao registrar auditoria ({stage}): {e}")
+
+
+def compact_pipeline_audit_file() -> None:
+    path = Path(PIPELINE_AUDIT_FILE)
+    if not path.exists():
+        return
+
+    now_utc = datetime.now(timezone.utc)
+    min_ts = now_utc.timestamp() - (PIPELINE_AUDIT_RETENTION_DAYS * 86400)
+    important_stages = {
+        "mac.capture",
+        "mac.upload",
+        "mac.dispatch",
+        "scraper.pending_added",
+        "bot.send_success",
+        "bot.skipped",
+        "bot.send_failed",
+    }
+
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except Exception as e:
+        log(f"aviso: falha ao ler {PIPELINE_AUDIT_FILE} para limpeza: {e}")
+        return
+
+    kept: List[Tuple[float, str, str]] = []
+    removed = 0
+    for line in lines:
+        raw = str(line or "").strip()
+        if not raw:
+            removed += 1
+            continue
+        try:
+            obj = json.loads(raw)
+        except Exception:
+            removed += 1
+            continue
+        if not isinstance(obj, dict):
+            removed += 1
+            continue
+        ts = parse_iso_utc(obj.get("timestamp_utc"))
+        if not ts:
+            removed += 1
+            continue
+        ts_value = ts.timestamp()
+        if ts_value < min_ts:
+            removed += 1
+            continue
+        stage = str(obj.get("stage") or "").strip()
+        kept.append((ts_value, stage, json.dumps(obj, ensure_ascii=False)))
+
+    if len(kept) > PIPELINE_AUDIT_MAX_LINES:
+        kept_sorted = sorted(kept, key=lambda item: item[0], reverse=True)
+        selected: List[Tuple[float, str, str]] = []
+        selected_texts = set()
+
+        for item in kept_sorted:
+            if len(selected) >= PIPELINE_AUDIT_MAX_LINES:
+                break
+            if item[1] not in important_stages:
+                continue
+            if item[2] in selected_texts:
+                continue
+            selected.append(item)
+            selected_texts.add(item[2])
+
+        for item in kept_sorted:
+            if len(selected) >= PIPELINE_AUDIT_MAX_LINES:
+                break
+            if item[2] in selected_texts:
+                continue
+            selected.append(item)
+            selected_texts.add(item[2])
+
+        kept = sorted(selected, key=lambda item: item[0])
+    else:
+        kept = sorted(kept, key=lambda item: item[0])
+
+    out_lines = [item[2] for item in kept]
+    removed += max(0, len(lines) - removed - len(out_lines))
+
+    try:
+        final_content = ("\n".join(out_lines) + "\n") if out_lines else ""
+        path.write_text(final_content, encoding="utf-8")
+        log(f"limpeza pipeline_audit: mantidas {len(out_lines)} linhas, removidas {removed} linhas")
+    except Exception as e:
+        log(f"aviso: falha ao gravar {PIPELINE_AUDIT_FILE} após limpeza: {e}")
 
 
 def clean_text(text: Optional[str]) -> str:
@@ -1343,6 +1432,7 @@ def main() -> None:
             pending_count=len(pending.get("offers", [])),
             last_error="",
         )
+        compact_pipeline_audit_file()
         return
 
     all_offers: List[Dict[str, Any]] = []
@@ -1386,6 +1476,7 @@ def main() -> None:
             last_error="",
         )
         cleanup_old_snapshot_files()
+        compact_pipeline_audit_file()
         return
 
     base_bucket: Dict[str, Dict[str, Any]] = {}
@@ -1624,6 +1715,7 @@ def main() -> None:
             last_error="",
         )
         cleanup_old_snapshot_files()
+        compact_pipeline_audit_file()
         return
 
     pending["offers"].extend(candidates)
@@ -1640,6 +1732,7 @@ def main() -> None:
         last_error="",
     )
     cleanup_old_snapshot_files()
+    compact_pipeline_audit_file()
 
     log(f"adicionadas ao pending: {len(candidates)}")
     log("finalizado")
