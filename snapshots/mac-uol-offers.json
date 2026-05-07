@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 38012,
-  "run_duration_seconds": 38.01,
-  "avg_detail_ms_per_offer": 3168,
-  "generated_at": "2026-05-07T21:41:30.438Z",
+  "run_duration_ms": 35079,
+  "run_duration_seconds": 35.08,
+  "avg_detail_ms_per_offer": 2923,
+  "generated_at": "2026-05-07T21:53:15.901Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "prm-75-off-em-depilao-a-laser",
-      "trace_id": "trace_prm-75-off-em-depilao-a-laser",
-      "link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
-      "original_link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
+      "id": "prm-75-off-em-depilacao-a-laser",
+      "trace_id": "trace_prm-75-off-em-depilacao-a-laser",
+      "link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilacao-a-laser",
+      "original_link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilacao-a-laser",
       "title": "75% OFF em Depilação a Laser",
       "preview_title": "75% OFF em Depilação a Laser",
       "validity": "Benefício válido de 07/05/2026 18:15 até 30/05/2026 23:59.",
@@ -40,15 +40,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130675,
-      "detail_elapsed_ms": 3223,
-      "scraped_at": "2026-05-07T21:41:09.040Z"
+      "detail_html_length": 129451,
+      "detail_elapsed_ms": 2928,
+      "scraped_at": "2026-05-07T21:52:54.658Z"
     },
     {
-      "id": "prj-50-off-no-colar-relicrio",
-      "trace_id": "trace_prj-50-off-no-colar-relicrio",
-      "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio",
-      "original_link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio",
+      "id": "prj-50-off-no-colar-relicario",
+      "trace_id": "trace_prj-50-off-no-colar-relicario",
+      "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicario",
+      "original_link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicario",
       "title": "50% Off no Colar Relicário",
       "preview_title": "50% Off no Colar Relicário",
       "validity": "Benefício válido de 07/05/2026 15:11 até 31/05/2026 23:59.",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131517,
-      "detail_elapsed_ms": 2502,
-      "scraped_at": "2026-05-07T21:41:11.568Z"
+      "detail_html_length": 131498,
+      "detail_elapsed_ms": 2698,
+      "scraped_at": "2026-05-07T21:52:57.373Z"
     },
     {
-      "id": "pri-30-off-extra-na-seleo-de-jeans",
-      "trace_id": "trace_pri-30-off-extra-na-seleo-de-jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-seleo-de-jeans",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-seleo-de-jeans",
+      "id": "pri-30-off-extra-na-selecao-de-jeans",
+      "trace_id": "trace_pri-30-off-extra-na-selecao-de-jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-selecao-de-jeans",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-selecao-de-jeans",
       "title": "30% OFF extra na seleção de jeans",
       "preview_title": "30% OFF extra na seleção de jeans",
       "validity": "Benefício válido de 07/05/2026 15:18 até 11/05/2026 09:00.",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130835,
-      "detail_elapsed_ms": 1913,
-      "scraped_at": "2026-05-07T21:41:13.482Z"
+      "detail_html_length": 130831,
+      "detail_elapsed_ms": 1857,
+      "scraped_at": "2026-05-07T21:52:59.231Z"
     },
     {
-      "id": "prg-50-off-na-gift-box-retr",
-      "trace_id": "trace_prg-50-off-na-gift-box-retr",
-      "link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retr",
-      "original_link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retr",
+      "id": "prg-50-off-na-gift-box-retro",
+      "trace_id": "trace_prg-50-off-na-gift-box-retro",
+      "link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retro",
+      "original_link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retro",
       "title": "50% Off na Gift Box Retrô",
       "preview_title": "50% Off na Gift Box Retrô",
       "validity": "Benefício válido de 07/05/2026 15:11 até 31/05/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131466,
-      "detail_elapsed_ms": 1914,
-      "scraped_at": "2026-05-07T21:41:15.396Z"
+      "detail_html_length": 131467,
+      "detail_elapsed_ms": 1889,
+      "scraped_at": "2026-05-07T21:53:01.120Z"
     },
     {
-      "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
-      "trace_id": "trace_prf-20-off-extra-na-seleo-de-moda-inverno",
-      "link": "https://clube.uol.com.br/lojasrenner/prf-20-off-extra-na-seleo-de-moda-inverno",
-      "original_link": "https://clube.uol.com.br/lojasrenner/prf-20-off-extra-na-seleo-de-moda-inverno",
+      "id": "prf-20-off-extra-na-selecao-de-moda-inverno",
+      "trace_id": "trace_prf-20-off-extra-na-selecao-de-moda-inverno",
+      "link": "https://clube.uol.com.br/lojasrenner/prf-20-off-extra-na-selecao-de-moda-inverno",
+      "original_link": "https://clube.uol.com.br/lojasrenner/prf-20-off-extra-na-selecao-de-moda-inverno",
       "title": "20% OFF extra na seleção de moda inverno",
       "preview_title": "20% OFF extra na seleção de moda inverno",
       "validity": "Benefício válido de 07/05/2026 15:06 até 18/05/2026 09:00.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130975,
-      "detail_elapsed_ms": 1804,
-      "scraped_at": "2026-05-07T21:41:17.200Z"
+      "detail_html_length": 130933,
+      "detail_elapsed_ms": 1973,
+      "scraped_at": "2026-05-07T21:53:03.093Z"
     },
     {
-      "id": "pre-resgate-agora-30-fotos-retr-grtis",
-      "trace_id": "trace_pre-resgate-agora-30-fotos-retr-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/pre-resgate-agora-30-fotos-retr-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pre-resgate-agora-30-fotos-retr-grtis",
+      "id": "pre-resgate-agora-30-fotos-retro-gratis",
+      "trace_id": "trace_pre-resgate-agora-30-fotos-retro-gratis",
+      "link": "https://clube.uol.com.br/fotoregistro/pre-resgate-agora-30-fotos-retro-gratis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pre-resgate-agora-30-fotos-retro-gratis",
       "title": "Resgate agora 30 Fotos Retrô Grátis",
       "preview_title": "Resgate agora 30 Fotos Retrô Grátis",
       "validity": "Benefício válido de 07/05/2026 15:11 até 31/05/2026 23:59.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131540,
-      "detail_elapsed_ms": 1728,
-      "scraped_at": "2026-05-07T21:41:18.928Z"
+      "detail_html_length": 131563,
+      "detail_elapsed_ms": 1823,
+      "scraped_at": "2026-05-07T21:53:04.916Z"
     },
     {
-      "id": "prd-20-em-seleo-de-produtos",
-      "trace_id": "trace_prd-20-em-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/net_shoes/prd-20-em-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/net_shoes/prd-20-em-seleo-de-produtos",
+      "id": "prd-20-em-selecao-de-produtos",
+      "trace_id": "trace_prd-20-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/net_shoes/prd-20-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/net_shoes/prd-20-em-selecao-de-produtos",
       "title": "20% em seleção de produtos",
       "preview_title": "20% em seleção de produtos",
       "validity": "Benefício válido de 07/05/2026 15:04 até 15/05/2026 23:59.",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131028,
-      "detail_elapsed_ms": 2620,
-      "scraped_at": "2026-05-07T21:41:21.549Z"
+      "detail_html_length": 131013,
+      "detail_elapsed_ms": 1649,
+      "scraped_at": "2026-05-07T21:53:06.565Z"
     },
     {
-      "id": "prc-20-off-na-melhor-seleo-de-produtos",
-      "trace_id": "trace_prc-20-off-na-melhor-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/zattini/prc-20-off-na-melhor-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/zattini/prc-20-off-na-melhor-seleo-de-produtos",
+      "id": "prc-20-off-na-melhor-selecao-de-produtos",
+      "trace_id": "trace_prc-20-off-na-melhor-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/prc-20-off-na-melhor-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/prc-20-off-na-melhor-selecao-de-produtos",
       "title": "20% OFF na melhor seleção de produtos",
       "preview_title": "20% OFF na melhor seleção de produtos",
       "validity": "Benefício válido de 07/05/2026 15:01 até 15/05/2026 23:59.",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130882,
-      "detail_elapsed_ms": 2172,
-      "scraped_at": "2026-05-07T21:41:23.722Z"
+      "detail_html_length": 130888,
+      "detail_elapsed_ms": 1890,
+      "scraped_at": "2026-05-07T21:53:08.455Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130812,
-      "detail_elapsed_ms": 1874,
-      "scraped_at": "2026-05-07T21:41:25.596Z"
+      "detail_html_length": 130808,
+      "detail_elapsed_ms": 1975,
+      "scraped_at": "2026-05-07T21:53:10.430Z"
     },
     {
-      "id": "pra-ms-das-mes-open-english",
-      "trace_id": "trace_pra-ms-das-mes-open-english",
-      "link": "https://clube.uol.com.br/openenglish/pra-ms-das-mes-open-english",
-      "original_link": "https://clube.uol.com.br/openenglish/pra-ms-das-mes-open-english",
+      "id": "pra-mes-das-maes-open-english",
+      "trace_id": "trace_pra-mes-das-maes-open-english",
+      "link": "https://clube.uol.com.br/openenglish/pra-mes-das-maes-open-english",
+      "original_link": "https://clube.uol.com.br/openenglish/pra-mes-das-maes-open-english",
       "title": "Mês das Mães Open English",
       "preview_title": "Mês das Mães Open English",
       "validity": "Benefício válido de 07/05/2026 14:27 até 31/05/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133008,
-      "detail_elapsed_ms": 1674,
-      "scraped_at": "2026-05-07T21:41:27.270Z"
+      "detail_html_length": 132999,
+      "detail_elapsed_ms": 1831,
+      "scraped_at": "2026-05-07T21:53:12.261Z"
     },
     {
-      "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
-      "trace_id": "trace_pqz-2x1-compre-o-curso-de-ingls-para-voc",
-      "link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingls-para-voc",
-      "original_link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingls-para-voc",
+      "id": "pqz-2x1-compre-o-curso-de-ingles-para-voce",
+      "trace_id": "trace_pqz-2x1-compre-o-curso-de-ingles-para-voce",
+      "link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingles-para-voce",
+      "original_link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingles-para-voce",
       "title": "2x1 - Compre o curso de inglês para você",
       "preview_title": "2x1 - Compre o curso de inglês para você",
       "validity": "Benefício válido de 07/05/2026 13:45 até 31/05/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133378,
-      "detail_elapsed_ms": 1563,
-      "scraped_at": "2026-05-07T21:41:28.833Z"
+      "detail_html_length": 133424,
+      "detail_elapsed_ms": 1799,
+      "scraped_at": "2026-05-07T21:53:14.060Z"
     },
     {
       "id": "pqv-40-off-em-pizzas",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131162,
-      "detail_elapsed_ms": 1557,
-      "scraped_at": "2026-05-07T21:41:30.390Z"
+      "detail_html_length": 131147,
+      "detail_elapsed_ms": 1677,
+      "scraped_at": "2026-05-07T21:53:15.737Z"
     }
   ]
 }
