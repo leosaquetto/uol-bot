@@ -79,18 +79,35 @@ async function githubGetJson(path) {
 }
 
 async function githubPutFile(path, content, message) {
-  const existing = await githubGetJson(path)
-  const req = new Request(githubApiUrl(path))
-  req.method = "PUT"
-  req.headers = { "User-Agent": "Scriptable", "Accept": "application/vnd.github+json", "Authorization": `token ${String(GITHUB_TOKEN || "").trim()}`, "Content-Type": "application/json" }
-  const body = { message, content: toBase64(content), branch: TARGET_BRANCH }
-  if (existing.ok && !existing.notFound && existing.sha) body.sha = existing.sha
-  req.body = JSON.stringify(body)
-  try {
-    const resp = await req.loadJSON()
-    if (resp && resp.commit) return { ok: true, data: resp }
-    return { ok: false, error: `github sem commit: ${JSON.stringify(resp)}` }
-  } catch (e) { return { ok: false, error: String(e) } }
+  let lastErr = ""
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const existing = await githubGetJson(path)
+    const req = new Request(githubApiUrl(path))
+    req.method = "PUT"
+    req.headers = { "User-Agent": "Scriptable", "Accept": "application/vnd.github+json", "Authorization": `token ${String(GITHUB_TOKEN || "").trim()}`, "Content-Type": "application/json" }
+    const body = { message, content: toBase64(content), branch: TARGET_BRANCH }
+    if (existing.ok && !existing.notFound && existing.sha) body.sha = existing.sha
+    req.body = JSON.stringify(body)
+    try {
+      const resp = await req.loadJSON()
+      if (resp && resp.commit) return { ok: true, data: resp }
+      const status = String(resp?.status || "")
+      const msg = String(resp?.message || "")
+      lastErr = `github sem commit: ${JSON.stringify(resp)}`
+      if (status === "409" || msg.includes("expected")) {
+        await sleepMs(350 * attempt)
+        continue
+      }
+      return { ok: false, error: lastErr }
+    } catch (e) {
+      lastErr = String(e)
+      if (attempt < 3) {
+        await sleepMs(350 * attempt)
+        continue
+      }
+    }
+  }
+  return { ok: false, error: lastErr || "github put falhou sem detalhe" }
 }
 
 function normalizeOfferKey(value) {
