@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 80085,
-  "run_duration_seconds": 80.08,
-  "avg_detail_ms_per_offer": 6674,
-  "generated_at": "2026-05-07T00:36:48.385Z",
+  "run_duration_ms": 44699,
+  "run_duration_seconds": 44.7,
+  "avg_detail_ms_per_offer": 3725,
+  "generated_at": "2026-05-07T00:47:40.150Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131176,
-      "detail_elapsed_ms": 7794,
-      "scraped_at": "2026-05-07T00:36:19.541Z"
+      "detail_attempts": 1,
+      "detail_html_length": 129772,
+      "detail_elapsed_ms": 2523,
+      "scraped_at": "2026-05-07T00:47:17.373Z"
     },
     {
       "id": "pqt-10-off-seminovos-acima-de-r-999",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130866,
-      "detail_elapsed_ms": 2207,
-      "scraped_at": "2026-05-07T00:36:25.587Z"
+      "detail_html_length": 130820,
+      "detail_elapsed_ms": 2165,
+      "scraped_at": "2026-05-07T00:47:19.570Z"
     },
     {
       "id": "pqs-5-off-outlet-para-itens-acima-de-r-999",
@@ -89,8 +89,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131013,
-      "detail_elapsed_ms": 2051,
-      "scraped_at": "2026-05-07T00:36:27.638Z"
+      "detail_elapsed_ms": 2306,
+      "scraped_at": "2026-05-07T00:47:21.876Z"
     },
     {
       "id": "pqr-descontos-progressivos-ate-r-500-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131070,
-      "detail_elapsed_ms": 2274,
-      "scraped_at": "2026-05-07T00:36:29.913Z"
+      "detail_html_length": 131050,
+      "detail_elapsed_ms": 1744,
+      "scraped_at": "2026-05-07T00:47:23.620Z"
     },
     {
       "id": "pqp-mes-das-maes-mae-nao-paga-10-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131741,
-      "detail_elapsed_ms": 3083,
-      "scraped_at": "2026-05-07T00:36:32.997Z"
+      "detail_html_length": 131737,
+      "detail_elapsed_ms": 1835,
+      "scraped_at": "2026-05-07T00:47:25.455Z"
     },
     {
       "id": "pqn-2-ingressos-09-05-teatro-nova-iguacu-rj",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132546,
-      "detail_elapsed_ms": 1949,
-      "scraped_at": "2026-05-07T00:36:34.946Z"
+      "detail_html_length": 132536,
+      "detail_elapsed_ms": 1967,
+      "scraped_at": "2026-05-07T00:47:27.422Z"
     },
     {
       "id": "pqj-2-ingressos-07-05-teatro-municipal-mg",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132457,
-      "detail_elapsed_ms": 2280,
-      "scraped_at": "2026-05-07T00:36:37.226Z"
+      "detail_html_length": 132456,
+      "detail_elapsed_ms": 1981,
+      "scraped_at": "2026-05-07T00:47:29.403Z"
     },
     {
       "id": "pqi-ate-70-off-italents-unyleya",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130994,
-      "detail_elapsed_ms": 1857,
-      "scraped_at": "2026-05-07T00:36:39.086Z"
+      "detail_html_length": 131002,
+      "detail_elapsed_ms": 2018,
+      "scraped_at": "2026-05-07T00:47:31.421Z"
     },
     {
       "id": "pqf-10-off-nos-pacotes",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130341,
-      "detail_elapsed_ms": 2559,
-      "scraped_at": "2026-05-07T00:36:41.645Z"
+      "detail_html_length": 130372,
+      "detail_elapsed_ms": 2186,
+      "scraped_at": "2026-05-07T00:47:33.607Z"
     },
     {
       "id": "pqe-50-off-no-par-de-ingressos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132116,
-      "detail_elapsed_ms": 2029,
-      "scraped_at": "2026-05-07T00:36:43.674Z"
+      "detail_html_length": 132166,
+      "detail_elapsed_ms": 2361,
+      "scraped_at": "2026-05-07T00:47:35.968Z"
     },
     {
       "id": "pq8-ganhe-01-cinnamon-oblivion",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133058,
-      "detail_elapsed_ms": 1929,
-      "scraped_at": "2026-05-07T00:36:45.603Z"
+      "detail_html_length": 133068,
+      "detail_elapsed_ms": 2101,
+      "scraped_at": "2026-05-07T00:47:38.070Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132950,
-      "detail_elapsed_ms": 2437,
-      "scraped_at": "2026-05-07T00:36:48.040Z"
+      "detail_html_length": 132969,
+      "detail_elapsed_ms": 1943,
+      "scraped_at": "2026-05-07T00:47:40.014Z"
     }
   ]
 }
