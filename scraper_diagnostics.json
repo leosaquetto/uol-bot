@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-07T18:32:02.476699Z",
+  "updated_at": "2026-05-07T18:33:39.808343Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "50% Off no Colar Relicário",
+      "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicario",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prj-50-off-no-colar-relicario"
+    },
+    {
+      "title": "30% OFF extra na seleção de jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-selecao-de-jeans",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pri-30-off-extra-na-selecao-de-jeans"
+    },
     {
       "title": "20% OFF extra na seleção de moda inverno",
       "link": "https://clube.uol.com.br/lojasrenner/prf-20-off-extra-na-selecao-de-moda-inverno",
