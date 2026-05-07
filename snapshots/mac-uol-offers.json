@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 37140,
-  "run_duration_seconds": 37.14,
-  "avg_detail_ms_per_offer": 3095,
-  "generated_at": "2026-05-07T21:19:12.129Z",
+  "run_duration_ms": 38012,
+  "run_duration_seconds": 38.01,
+  "avg_detail_ms_per_offer": 3168,
+  "generated_at": "2026-05-07T21:41:30.438Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "prm-75-off-em-depilao-a-laser",
+      "trace_id": "trace_prm-75-off-em-depilao-a-laser",
+      "link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
+      "original_link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
+      "title": "75% OFF em Depilação a Laser",
+      "preview_title": "75% OFF em Depilação a Laser",
+      "validity": "Benefício válido de 07/05/2026 18:15 até 30/05/2026 23:59.",
+      "description": "Sobre o parceiro: Estamos desde 2004 no mercado e já temos mais de 850 unidades no Brasil, Argentina, Colômbia, Paraguai e Chile. De lá para cá, já foram mais de 5 milhões de clientes atendidos e mais de 80 milhões de procedimentos realizados. Venha conhecer a maior rede de depilação a laser do mundo além da tecnologia mais avançada do mercado. Benefício: 75% OFF nas sessões a laser em até 12x. Regras: Oferta válida enquanto durarem os vouchers disponíveis. Consulte unidades e serviços participantes.",
+      "category": "",
+      "partner_name": "Espaço Laser",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b3d14945bec5f50cfa3af58e7e312f21.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/39e8d82807dbf49664b9b4159fa9c3e4.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/39e8d82807dbf49664b9b4159fa9c3e4.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/39e8d82807dbf49664b9b4159fa9c3e4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130675,
+      "detail_elapsed_ms": 3223,
+      "scraped_at": "2026-05-07T21:41:09.040Z"
+    },
     {
       "id": "prj-50-off-no-colar-relicrio",
       "trace_id": "trace_prj-50-off-no-colar-relicrio",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130109,
-      "detail_elapsed_ms": 2789,
-      "scraped_at": "2026-05-07T21:18:50.960Z"
+      "detail_html_length": 131517,
+      "detail_elapsed_ms": 2502,
+      "scraped_at": "2026-05-07T21:41:11.568Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129684,
-      "detail_elapsed_ms": 2225,
-      "scraped_at": "2026-05-07T21:18:53.211Z"
+      "detail_html_length": 130835,
+      "detail_elapsed_ms": 1913,
+      "scraped_at": "2026-05-07T21:41:13.482Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131465,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-05-07T21:18:55.348Z"
+      "detail_html_length": 131466,
+      "detail_elapsed_ms": 1914,
+      "scraped_at": "2026-05-07T21:41:15.396Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130913,
-      "detail_elapsed_ms": 1983,
-      "scraped_at": "2026-05-07T21:18:57.331Z"
+      "detail_html_length": 130975,
+      "detail_elapsed_ms": 1804,
+      "scraped_at": "2026-05-07T21:41:17.200Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131587,
-      "detail_elapsed_ms": 1812,
-      "scraped_at": "2026-05-07T21:18:59.143Z"
+      "detail_html_length": 131540,
+      "detail_elapsed_ms": 1728,
+      "scraped_at": "2026-05-07T21:41:18.928Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131018,
-      "detail_elapsed_ms": 1660,
-      "scraped_at": "2026-05-07T21:19:00.803Z"
+      "detail_html_length": 131028,
+      "detail_elapsed_ms": 2620,
+      "scraped_at": "2026-05-07T21:41:21.549Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130831,
-      "detail_elapsed_ms": 1863,
-      "scraped_at": "2026-05-07T21:19:02.666Z"
+      "detail_html_length": 130882,
+      "detail_elapsed_ms": 2172,
+      "scraped_at": "2026-05-07T21:41:23.722Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130799,
-      "detail_elapsed_ms": 1915,
-      "scraped_at": "2026-05-07T21:19:04.582Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 1874,
+      "scraped_at": "2026-05-07T21:41:25.596Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133002,
-      "detail_elapsed_ms": 1762,
-      "scraped_at": "2026-05-07T21:19:06.344Z"
+      "detail_html_length": 133008,
+      "detail_elapsed_ms": 1674,
+      "scraped_at": "2026-05-07T21:41:27.270Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133377,
-      "detail_elapsed_ms": 2105,
-      "scraped_at": "2026-05-07T21:19:08.449Z"
+      "detail_html_length": 133378,
+      "detail_elapsed_ms": 1563,
+      "scraped_at": "2026-05-07T21:41:28.833Z"
     },
     {
       "id": "pqv-40-off-em-pizzas",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131161,
-      "detail_elapsed_ms": 1784,
-      "scraped_at": "2026-05-07T21:19:10.233Z"
-    },
-    {
-      "id": "pqt-10-off-seminovos-acima-de-r-999",
-      "trace_id": "trace_pqt-10-off-seminovos-acima-de-r-999",
-      "link": "https://clube.uol.com.br/compracerta/pqT-10-off-seminovos-acima-de-r-999",
-      "original_link": "https://clube.uol.com.br/compracerta/pqT-10-off-seminovos-acima-de-r-999",
-      "title": "10% OFF Seminovos acima de R$999",
-      "preview_title": "10% OFF Seminovos acima de R$999",
-      "validity": "Benefício válido de 06/05/2026 15:20 até 10/05/2026 23:59.",
-      "description": "Parceiro: Clube Oficial Brastemp, Consul e KitchenAid. As Melhores Marcas e Descontos Imperdíveis. Aqui Você Encontra os Produtos Certos Pra Você. Benefício: 10% OFF em Seminovos para compras acima de R$999. Regras: Desconto válido para itens Seminovos em compras acima de R$999. Condições válidas somente para o link da parceria. Frete e Garantia Estendida não contabilizam para o valor mínimo. O desconto será aplicado após a inserção dos dados de entrega.",
-      "category": "Eletrodomésticos e Eletrônicos",
-      "partner_name": "Compra Certa",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-compra-certa.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8e00e70082fc5ff9a8c4297d0a3042cb.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8e00e70082fc5ff9a8c4297d0a3042cb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8e00e70082fc5ff9a8c4297d0a3042cb.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 1719,
-      "scraped_at": "2026-05-07T21:19:11.952Z"
+      "detail_html_length": 131162,
+      "detail_elapsed_ms": 1557,
+      "scraped_at": "2026-05-07T21:41:30.390Z"
     }
   ]
 }
