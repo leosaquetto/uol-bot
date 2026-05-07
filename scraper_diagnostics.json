@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-07T17:47:46.507609Z",
+  "updated_at": "2026-05-07T17:57:33.522775Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,23 +10,23 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
-    "duplicada_latest": 0,
+    "duplicada_historico": 6,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "Mês das Mães Open English",
-      "link": "https://clube.uol.com.br/openenglish/pra-mes-das-maes-open-english",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pra-mes-das-maes-open-english"
+      "link": "https://clube.uol.com.br/openenglish/pra-ms-das-mes-open-english",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pra-ms-das-mes-open-english"
     },
     {
       "title": "2x1 - Compre o curso de inglês para você",
-      "link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingles-para-voce",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqz-2x1-compre-o-curso-de-ingles-para-voce"
+      "link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingls-para-voc",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pqz-2x1-compre-o-curso-de-ingls-para-voc"
     },
     {
       "title": "40% OFF em pizzas!",
@@ -48,21 +48,21 @@
     },
     {
       "title": "Descontos Progressivos: até R$500 OFF",
-      "link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-ate-r-500-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqr-descontos-progressivos-ate-r-500-off"
+      "link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-at-r-500-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pqr-descontos-progressivos-at-r-500-off"
     },
     {
       "title": "Mês das Mães: Mãe não paga + 10% OFF!",
-      "link": "https://clube.uol.com.br/zoologicosp/pqP-mes-das-maes-mae-nao-paga-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqp-mes-das-maes-mae-nao-paga-10-off"
+      "link": "https://clube.uol.com.br/zoologicosp/pqP-ms-das-mes-me-no-paga-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pqp-ms-das-mes-me-no-paga-10-off"
     },
     {
       "title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqn-2-ingressos-09-05-teatro-nova-iguacu-rj"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguau-rj",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pqn-2-ingressos-09-05-teatro-nova-iguau-rj"
     },
     {
       "title": "2 INGRESSOS: 07/05 Teatro Municipal- MG",
@@ -72,9 +72,9 @@
     },
     {
       "title": "Até 70% OFF Italents Unyleya",
-      "link": "https://clube.uol.com.br/unyleya/pqI-ate-70-off-italents-unyleya",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pqi-ate-70-off-italents-unyleya"
+      "link": "https://clube.uol.com.br/unyleya/pqI-at-70-off-italents-unyleya",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pqi-at-70-off-italents-unyleya"
     },
     {
       "title": "10% OFF nos pacotes",
