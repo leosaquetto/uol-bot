@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 9,
+  "detail_fail_count": 3,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 9,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 3
   },
-  "run_duration_ms": 35334,
-  "run_duration_seconds": 35.33,
-  "avg_detail_ms_per_offer": 2945,
-  "generated_at": "2026-05-07T01:30:27.674Z",
+  "run_duration_ms": 10934329,
+  "run_duration_seconds": 10934.33,
+  "avg_detail_ms_per_offer": 911194,
+  "generated_at": "2026-05-07T13:15:30.673Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129851,
-      "detail_elapsed_ms": 2457,
-      "scraped_at": "2026-05-07T01:30:05.097Z"
+      "detail_html_length": 131009,
+      "detail_elapsed_ms": 6083,
+      "scraped_at": "2026-05-07T10:13:37.888Z"
     },
     {
       "id": "pqt-10-off-seminovos-acima-de-r-999",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130898,
-      "detail_elapsed_ms": 2181,
-      "scraped_at": "2026-05-07T01:30:07.279Z"
+      "detail_html_length": 130917,
+      "detail_elapsed_ms": 1684,
+      "scraped_at": "2026-05-07T10:13:39.613Z"
     },
     {
       "id": "pqs-5-off-outlet-para-itens-acima-de-r-999",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130965,
-      "detail_elapsed_ms": 1938,
-      "scraped_at": "2026-05-07T01:30:09.217Z"
+      "detail_html_length": 131296,
+      "detail_elapsed_ms": 3204832,
+      "scraped_at": "2026-05-07T11:07:04.448Z"
     },
     {
       "id": "pqr-descontos-progressivos-ate-r-500-off",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-ate-r-500-off",
       "title": "Descontos Progressivos: até R$500 OFF",
       "preview_title": "Descontos Progressivos: até R$500 OFF",
-      "validity": "Benefício válido de 06/05/2026 14:55 até 10/05/2026 23:59.",
-      "description": "Parceiro: Clube Oficial Brastemp, Consul e KitchenAid. As Melhores Marcas e Descontos Imperdíveis. Aqui Você Encontra os Produtos Certos Pra Você. Benefício: Desconto progressivo de até R$500 OFF. Regras: Desconto progressivo até R$500 R$500 OFF para compras acima de R$5.999 R$400 OFF acima de R$4.999; R$300 OFF acima de R$3.999 R$300 OFF para itens acima de R$3.999 R$200 OFF acima de R$2.999. O desconto será contemplado após os dados de entrega. Sujeito a desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Compra Certa",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-compra-certa.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4748f6bb63d5b2bbf88295ccc77d02c3.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4748f6bb63d5b2bbf88295ccc77d02c3.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4748f6bb63d5b2bbf88295ccc77d02c3.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131040,
-      "detail_elapsed_ms": 2119,
-      "scraped_at": "2026-05-07T01:30:11.336Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/compracerta/pqR-descontos-progressivos-ate-r-500-off\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 17273,
+      "scraped_at": "2026-05-07T12:01:21.691Z"
     },
     {
       "id": "pqp-mes-das-maes-mae-nao-paga-10-off",
@@ -123,22 +123,22 @@
       "original_link": "https://clube.uol.com.br/zoologicosp/pqP-mes-das-maes-mae-nao-paga-10-off",
       "title": "Mês das Mães: Mãe não paga + 10% OFF!",
       "preview_title": "Mês das Mães: Mãe não paga + 10% OFF!",
-      "validity": "Benefício válido de 06/05/2026 13:52 até 31/05/2026 23:59.",
-      "description": "Sobre o Parceiro: Proteger os animais é um pilar que a gente guarda com todo cuidado embaixo das nossas asas. Sempre que é preciso, agir é a melhor opção. Por isso, o Zoo SP bateu suas asas e chegou ao patamar de primeira instituição brasileira a propor e participar de vários programas de recuperação de espécies brasileiras ameaçadas, como os micos-leão, jaguatirica e também a arara-azul-de-lear. Quando o assunto é cuidar dos animais, a gente está preparado para alcançar voos cada vez mais altos! Benefício: Mês das Mães: Mãe não paga + 10% OFF em ingressos para Zoo, Simba Safari e atrações participantes. Regras: Para a ação “Mãe não paga”, é necessário adquirir pelo menos 1 ingresso inteiro (antecipado, com mínimo de 1 dia). Benefício válido para uma mãe acompanhada de 1 pagante, não cumulativo com meia-entrada ou outras promoções. Necessária comprovação de maternidade (documento físico ou digital). Gestantes podem participar mediante comprovação. O desconto adicional é aplicado no checkout. O usuário deve apresentar o voucher (impresso ou digital) na bilheteria no dia da visita. Ingressos com validade de até 90 dias.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "ZOOLÓGICO SP",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5ea9b7b6f0e11ba5b5feb8efcffeed3e.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/edd1c48de28fc0653b8949d86545b893.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/edd1c48de28fc0653b8949d86545b893.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/edd1c48de28fc0653b8949d86545b893.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131768,
-      "detail_elapsed_ms": 1934,
-      "scraped_at": "2026-05-07T01:30:13.271Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/zoologicosp/pqP-mes-das-maes-mae-nao-paga-10-off\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12673,
+      "scraped_at": "2026-05-07T12:01:48.081Z"
     },
     {
       "id": "pqn-2-ingressos-09-05-teatro-nova-iguacu-rj",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
       "title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
       "preview_title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
-      "validity": "Benefício válido de 06/05/2026 11:34 até 07/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare‑se para rir muito com o stand‑up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Nova Iguaçu (RJ). Data: Sábado, 09/05/2026 | 20:00 Local: - Rua Coronel Bernardino de Melo, 1081 - Caonze - Centro. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fb52b5b3fe7_69fb512d59d7a_69fa5c6aebee4_69fa4e35319db_7d3037b1ea487c482b902917f9af161e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fb52b5b3fe7_69fb512d59d7a_69fa5c6aebee4_69fa4e35319db_7d3037b1ea487c482b902917f9af161e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fb52b5b3fe7_69fb512d59d7a_69fa5c6aebee4_69fa4e35319db_7d3037b1ea487c482b902917f9af161e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132568,
-      "detail_elapsed_ms": 2097,
-      "scraped_at": "2026-05-07T01:30:15.368Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1178506,
+      "scraped_at": "2026-05-07T13:14:49.931Z"
     },
     {
       "id": "pqj-2-ingressos-07-05-teatro-municipal-mg",
@@ -183,10 +183,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132478,
-      "detail_elapsed_ms": 1914,
-      "scraped_at": "2026-05-07T01:30:17.282Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132560,
+      "detail_elapsed_ms": 11213,
+      "scraped_at": "2026-05-07T13:15:14.835Z"
     },
     {
       "id": "pqi-ate-70-off-italents-unyleya",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130984,
-      "detail_elapsed_ms": 1749,
-      "scraped_at": "2026-05-07T01:30:19.031Z"
+      "detail_html_length": 129854,
+      "detail_elapsed_ms": 3900,
+      "scraped_at": "2026-05-07T13:15:18.736Z"
     },
     {
       "id": "pqf-10-off-nos-pacotes",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130362,
-      "detail_elapsed_ms": 1670,
-      "scraped_at": "2026-05-07T01:30:20.702Z"
+      "detail_html_length": 130311,
+      "detail_elapsed_ms": 3985,
+      "scraped_at": "2026-05-07T13:15:22.721Z"
     },
     {
       "id": "pqe-50-off-no-par-de-ingressos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132117,
-      "detail_elapsed_ms": 1943,
-      "scraped_at": "2026-05-07T01:30:22.645Z"
+      "detail_html_length": 125732,
+      "detail_elapsed_ms": 2310,
+      "scraped_at": "2026-05-07T13:15:25.033Z"
     },
     {
       "id": "pq8-ganhe-01-cinnamon-oblivion",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133070,
-      "detail_elapsed_ms": 2428,
-      "scraped_at": "2026-05-07T01:30:25.081Z"
+      "detail_html_length": 133058,
+      "detail_elapsed_ms": 2173,
+      "scraped_at": "2026-05-07T13:15:27.206Z"
     },
     {
       "id": "pq6-ganhe-01-bloomin-onion",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132941,
-      "detail_elapsed_ms": 2548,
-      "scraped_at": "2026-05-07T01:30:27.629Z"
+      "detail_html_length": 126597,
+      "detail_elapsed_ms": 3012,
+      "scraped_at": "2026-05-07T13:15:30.218Z"
     }
   ]
 }
