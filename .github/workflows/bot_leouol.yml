@@ -293,6 +293,11 @@ jobs:
           MAX_VALID_FROM_AGE_HOURS: "36"
           MAX_CONSUMER_BATCH: "8"
         run: |
+          echo "sincronizando workspace com a main antes do consumer"
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
           PENDING_COUNT=$(python - <<'PY'
           import json
           from pathlib import Path
@@ -311,14 +316,14 @@ jobs:
           PY
           )
 
-          echo "pending_count_local_workspace=$PENDING_COUNT"
+          echo "pending_count_main_after_scraper=$PENDING_COUNT"
 
           if [ "${PENDING_COUNT:-0}" -le 0 ]; then
             echo "pending vazio, consumer não será executado"
             exit 0
           fi
 
-          echo "pending encontrado, instalando dependências e executando consumer no mesmo workflow"
+          echo "pending encontrado na main, instalando dependências e executando consumer"
           pip install -r requirements-consumer.txt
           python bot_leouol.py --pending
 
