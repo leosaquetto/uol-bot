@@ -273,79 +273,6 @@ async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen,
   })
 }
 
-
-const IOS_LEDGER_FILE = "uol_ingressos_sent_ledger.json"
-const IOS_LEDGER_TTL_HOURS = 72
-const IOS_LEDGER_SOURCE = "ios_fallback"
-
-function getICloudDocumentsDir() {
-  const fm = FileManager.iCloud()
-  const docs = fm.documentsDirectory()
-  return { fm, docs, path: fm.joinPath(docs, IOS_LEDGER_FILE) }
-}
-
-async function readIosLedger() {
-  const { fm, path } = getICloudDocumentsDir()
-  try {
-    if (!fm.fileExists(path)) return { keys: {} }
-
-    await fm.downloadFileFromiCloud(path)
-    const raw = fm.readString(path)
-    const data = JSON.parse(String(raw || "{}"))
-
-    if (!data || typeof data !== "object" || !data.keys || typeof data.keys !== "object") {
-      log("⚠️ auditoria ledger iCloud inválido: payload sem keys objeto")
-      return { keys: {} }
-    }
-
-    return data
-  } catch (e) {
-    log(`⚠️ auditoria ledger iCloud leitura falhou: ${String(e)}`)
-    return { keys: {} }
-  }
-}
-
-function writeIosLedger(ledger) {
-  const { fm, path } = getICloudDocumentsDir()
-  const nowIso = new Date().toISOString()
-  const payload = {
-    last_update: nowIso,
-    ttl_hours: IOS_LEDGER_TTL_HOURS,
-    keys: ledger && ledger.keys && typeof ledger.keys === "object" ? ledger.keys : {},
-  }
-  fm.writeString(path, JSON.stringify(payload, null, 2))
-}
-
-function cleanupLedgerKeys(keysObj, nowMs) {
-  const ttlMs = IOS_LEDGER_TTL_HOURS * 60 * 60 * 1000
-  const next = {}
-  for (const [key, value] of Object.entries(keysObj || {})) {
-    const ts = new Date(String(value && value.timestamp || "")).getTime()
-    if (!Number.isFinite(ts)) continue
-    if ((nowMs - ts) <= ttlMs) next[key] = value
-  }
-  return next
-}
-
-function isIngressoOffer(offer) {
-  if (!offer || typeof offer !== "object") return false
-  const bag = [
-    offer.category,
-    offer.title,
-    offer.preview_title,
-    offer.detail_title,
-    offer.link,
-    offer.original_link,
-    offer.img_url,
-    offer.image_url,
-    offer.image,
-    offer.detail_img_url,
-  ]
-    .map(v => String(v || "").toLowerCase())
-    .join(" ")
-  return bag.includes("ingresso") || bag.includes("campanhasdeingresso")
-}
-
 const startedAtGlobal = new Date()
 
 async function main() {
@@ -378,30 +305,8 @@ async function main() {
     const existingPending = Array.isArray(pendingData.offers) ? pendingData.offers : []
     const pendingToAppend = Array.isArray(stage2.pending_to_append) ? stage2.pending_to_append : []
 
-    const nowMs = Date.now()
-    const ledger = await readIosLedger()
-    const cleanedKeys = cleanupLedgerKeys(ledger.keys, nowMs)
-    const freshToAppend = []
-    for (const offer of pendingToAppend) {
-      if (!isIngressoOffer(offer)) {
-        freshToAppend.push(offer)
-        continue
-      }
-
-      const canonicalKey = normalizeOfferKey(offer.offer_key || offer.id || offer.link || offer.original_link || "")
-      if (!canonicalKey) continue
-      if (cleanedKeys[canonicalKey]) continue
-
-      freshToAppend.push(offer)
-      cleanedKeys[canonicalKey] = {
-        timestamp: new Date().toISOString(),
-        source: IOS_LEDGER_SOURCE,
-      }
-    }
-
-    const mergedPending = dedupeOffersByLink([...existingPending, ...freshToAppend])
+    const mergedPending = dedupeOffersByLink([...existingPending, ...pendingToAppend])
     const pendingPayload = { last_update: new Date().toISOString(), offers: mergedPending }
-    writeIosLedger({ keys: cleanedKeys })
     const pendingSave = await withRetries("upload pending", () => githubPutFile("pending_offers.json", JSON.stringify(pendingPayload, null, 2), `scriptable pending update ${snapshotId}`))
     if (!pendingSave.ok) throw new Error(pendingSave.error || "falha pending")
 
@@ -411,7 +316,7 @@ async function main() {
     const detailsTotal = Number(stage2.stats?.tested_count || 0)
 
     const statusValue = totalNew > 0 ? "ok" : "sem_novidade"
-    const summary = `pipeline 3 partes ok: ${snapshotId} | vitrine ${totalOffers} | novas ${totalNew} | detalhes ${detailsOk}/${detailsTotal} | pending+ ${freshToAppend.length}`
+    const summary = `pipeline 3 partes ok: ${snapshotId} | vitrine ${totalOffers} | novas ${totalNew} | detalhes ${detailsOk}/${detailsTotal} | pending+ ${pendingToAppend.length}`
 
     await updateScriptableStatusRuntime({
       statusValue,

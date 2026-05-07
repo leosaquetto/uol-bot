@@ -37,9 +37,6 @@ async function acquireRunLock() {
         const when = lockData && lockData.started_at ? String(lockData.started_at) : "instante desconhecido"
         return { ok: false, message: `lock ativo da parte2 (iniciado em ${when}, há ${Math.trunc(ageMs / 1000)}s)` }
       }
-      const staleSeconds = Number.isFinite(ageMs) ? Math.max(0, Math.trunc(ageMs / 1000)) : -1
-      log(`event=stale_lock_recovered part=parte2 age_seconds=${staleSeconds}`)
-      try { fm.remove(path) } catch (e) {}
     } catch (e) {}
   }
 
