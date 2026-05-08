@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 105150,
-  "run_duration_seconds": 105.15,
-  "avg_detail_ms_per_offer": 8763,
-  "generated_at": "2026-05-08T16:00:08.595Z",
+  "run_duration_ms": 155677,
+  "run_duration_seconds": 155.68,
+  "avg_detail_ms_per_offer": 12973,
+  "generated_at": "2026-05-08T16:12:54.628Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
       "title": "75% OFF em Depilação a Laser",
       "preview_title": "75% OFF em Depilação a Laser",
-      "validity": "Benefício válido de 07/05/2026 18:15 até 30/05/2026 23:59.",
-      "description": "Sobre o parceiro: Estamos desde 2004 no mercado e já temos mais de 850 unidades no Brasil, Argentina, Colômbia, Paraguai e Chile. De lá para cá, já foram mais de 5 milhões de clientes atendidos e mais de 80 milhões de procedimentos realizados. Venha conhecer a maior rede de depilação a laser do mundo além da tecnologia mais avançada do mercado. Benefício: 75% OFF nas sessões a laser em até 12x. Regras: Oferta válida enquanto durarem os vouchers disponíveis. Consulte unidades e serviços participantes.",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Espaço Laser",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b3d14945bec5f50cfa3af58e7e312f21.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/39e8d82807dbf49664b9b4159fa9c3e4.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/39e8d82807dbf49664b9b4159fa9c3e4.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/39e8d82807dbf49664b9b4159fa9c3e4.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129439,
-      "detail_elapsed_ms": 3308,
-      "scraped_at": "2026-05-08T15:59:41.360Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12002,
+      "scraped_at": "2026-05-08T16:12:04.357Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130249,
-      "detail_elapsed_ms": 2523,
-      "scraped_at": "2026-05-08T15:59:43.900Z"
+      "detail_html_length": 131495,
+      "detail_elapsed_ms": 10855,
+      "scraped_at": "2026-05-08T16:12:34.893Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130811,
-      "detail_elapsed_ms": 1804,
-      "scraped_at": "2026-05-08T15:59:45.704Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 1971,
+      "scraped_at": "2026-05-08T16:12:36.866Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131442,
-      "detail_elapsed_ms": 2126,
-      "scraped_at": "2026-05-08T15:59:47.830Z"
+      "detail_html_length": 131453,
+      "detail_elapsed_ms": 1836,
+      "scraped_at": "2026-05-08T16:12:38.702Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130942,
-      "detail_elapsed_ms": 2006,
-      "scraped_at": "2026-05-08T15:59:49.837Z"
+      "detail_html_length": 130921,
+      "detail_elapsed_ms": 1798,
+      "scraped_at": "2026-05-08T16:12:40.501Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131535,
-      "detail_elapsed_ms": 5925,
-      "scraped_at": "2026-05-08T15:59:55.762Z"
+      "detail_html_length": 131565,
+      "detail_elapsed_ms": 1940,
+      "scraped_at": "2026-05-08T16:12:42.441Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130954,
-      "detail_elapsed_ms": 2043,
-      "scraped_at": "2026-05-08T15:59:57.806Z"
+      "detail_html_length": 130994,
+      "detail_elapsed_ms": 2219,
+      "scraped_at": "2026-05-08T16:12:44.660Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130808,
-      "detail_elapsed_ms": 1784,
-      "scraped_at": "2026-05-08T15:59:59.590Z"
+      "detail_html_length": 130809,
+      "detail_elapsed_ms": 1989,
+      "scraped_at": "2026-05-08T16:12:46.649Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130748,
-      "detail_elapsed_ms": 2779,
-      "scraped_at": "2026-05-08T16:00:02.369Z"
+      "detail_html_length": 130779,
+      "detail_elapsed_ms": 1789,
+      "scraped_at": "2026-05-08T16:12:48.438Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132970,
-      "detail_elapsed_ms": 1993,
-      "scraped_at": "2026-05-08T16:00:04.362Z"
+      "detail_html_length": 132950,
+      "detail_elapsed_ms": 1985,
+      "scraped_at": "2026-05-08T16:12:50.424Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133385,
-      "detail_elapsed_ms": 2010,
-      "scraped_at": "2026-05-08T16:00:06.372Z"
+      "detail_html_length": 133405,
+      "detail_elapsed_ms": 1816,
+      "scraped_at": "2026-05-08T16:12:52.240Z"
     },
     {
       "id": "pqv-40-off-em-pizzas",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131139,
-      "detail_elapsed_ms": 2017,
-      "scraped_at": "2026-05-08T16:00:08.389Z"
+      "detail_html_length": 131168,
+      "detail_elapsed_ms": 2241,
+      "scraped_at": "2026-05-08T16:12:54.481Z"
     }
   ]
 }
