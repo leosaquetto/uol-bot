@@ -1,32 +1,6 @@
 {
-  "last_update": "2026-05-08T21:09:10.673606Z",
+  "last_update": "2026-05-08T21:09:26.393421Z",
   "offers": [
-    {
-      "id": "pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "preview_title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
-      "title": "2 INGRESSOS: 09/05 Teatro Nova Iguaçu RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pqN-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fb52b5b3fe7_69fb512d59d7a_69fa5c6aebee4_69fa4e35319db_7d3037b1ea487c482b902917f9af161e.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "validity": "Benefício válido de 06/05/2026 11:34 até 07/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare‑se para rir muito com o stand‑up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Nova Iguaçu (RJ). Data: Sábado, 09/05/2026 | 20:00 Local: - Rua Coronel Bernardino de Melo, 1081 - Caonze - Centro. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "location_summary": "",
-      "dedupe_key": "2-ingressos-09-05-teatro-nova-iguacu-rj|beneficio-valido-de-06-05-2026-11-34-ate-07-05-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-e-prepare-se-para-rir-muito-com-o-stand-up-mauricio-meirelles-surto-coletivo-um-dos-shows-mais-interativos-e-comentados",
-      "loose_dedupe_key": "2-ingressos-09-05-teatro-nova-iguacu-rj|assinante-uol-resgate-1-par-de-ingressos-e-prepare-se-para-rir-muito-com-o-stand-up-mauricio-meirelles-surto-coletivo-um-dos-shows-mais-interativos-e-comentados",
-      "scraped_at": "2026-05-06T19:43:45.683000Z",
-      "trace_id": "trace_pqn-2-ingressos-09-05-teatro-nova-iguacu-rj",
-      "channel_message_id": 1404,
-      "channel_message_link": "https://t.me/c/3723320790/1404",
-      "canal2_message_id": 15,
-      "canal2_forward_status": "sent",
-      "canal2_forwarded_at": "2026-05-06T19:45:39.338082Z",
-      "comment_message_id": 4663,
-      "discussion_message_id": 4660,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/4663?thread=4660",
-      "sent_at": "2026-05-06T19:45:46.385401Z"
-    },
     {
       "id": "pqF-10-off-nos-pacotes",
       "original_link": "https://clube.uol.com.br/axis/pqF-10-off-nos-pacotes",
@@ -336,7 +310,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4716?thread=4713",
       "sent_at": "2026-05-08T16:24:27.848172Z",
-      "sold_out_at": "17:57"
+      "sold_out_at": "17:57",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "prq-2-ingressos-08-05-teatro-faap-sp",
@@ -363,7 +338,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4720?thread=4717",
       "sent_at": "2026-05-08T16:24:39.488986Z",
-      "sold_out_at": "18:08"
+      "sold_out_at": "18:08",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "prp-2-ingressos-09-05-teatro-faap-sp",
@@ -492,7 +468,31 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4740?thread=4737",
       "sent_at": "2026-05-08T20:26:08.073741Z",
-      "sold_out_at": "17:57"
+      "sold_out_at": "17:57",
+      "_sold_out_synced_to_telegram": true
+    },
+    {
+      "id": "prx-20-off-ncessaire-doce-vitta",
+      "original_link": "https://clube.uol.com.br/lolacosmetics/prx-20-off-ncessaire-doce-vitta",
+      "preview_title": "20% OFF + nécessaire Doce Vitta",
+      "title": "20% OFF + nécessaire Doce Vitta",
+      "link": "https://clube.uol.com.br/lolacosmetics/prx-20-off-ncessaire-doce-vitta",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/980c962a2bb3e9ec3327b661374a68fc.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/c66fa7a07b499eae145df25d73cb6774.png",
+      "validity": "Benefício válido de 08/05/2026 17:50 até 10/05/2026 23:59.",
+      "description": "Sobre o Parceiro: A Lola Cosmetics é uma marca brasileira de cosméticos reconhecida por seus produtos veganos, cruelty-free e com fórmulas inovadoras para cuidados com os cabelos, pele e corpo. A marca oferece soluções de alta performance com ingredientes naturais e embalagens criativas, conquistando consumidores que buscam beleza consciente e sustentável. Benefício: 20% OFF + ganhe uma nécessaire Doce Vitta Regras: Benefício não cumulativo, sujeito a desativação sem aviso prévio..",
+      "location_summary": "",
+      "dedupe_key": "20-off-necessaire-doce-vitta|beneficio-valido-de-08-05-2026-17-50-ate-10-05-2026-23-59|sobre-o-parceiro-a-lola-cosmetics-e-uma-marca-brasileira-de-cosmeticos-reconhecida-por-seus-produtos-veganos-cruelty-free-e-com-formulas-inovadoras-para-cuidado",
+      "loose_dedupe_key": "20-off-necessaire-doce-vitta|sobre-o-parceiro-a-lola-cosmetics-e-uma-marca-brasileira-de-cosmeticos-reconhecida-por-seus-produtos-veganos-cruelty-free-e-com-formulas-inovadoras-para-cuidado",
+      "scraped_at": "2026-05-08T21:08:05.362000Z",
+      "trace_id": "trace_prx-20-off-ncessaire-doce-vitta",
+      "channel_message_id": 1424,
+      "channel_message_link": "https://t.me/c/3723320790/1424",
+      "comment_message_id": 4744,
+      "discussion_message_id": 4741,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/4744?thread=4741",
+      "sent_at": "2026-05-08T21:09:26.331753Z"
     }
   ]
 }
