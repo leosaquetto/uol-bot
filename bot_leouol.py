@@ -2176,6 +2176,23 @@ def should_send_to_canal2(offer: Dict, hashtags: Optional[List[str]] = None) -> 
     return has_campaign_signal
 
 
+def is_campaign_for_canal2(offer: Dict) -> bool:
+    title = str(offer.get("title") or offer.get("preview_title") or "")
+    link = str(offer.get("link") or offer.get("original_link") or "")
+    category = str(offer.get("category") or offer.get("categoria") or "")
+    hashtags_value = offer.get("hashtags")
+    hashtags_text = " ".join(hashtags_value) if isinstance(hashtags_value, list) else str(hashtags_value or "")
+
+    raw = f"{title} {link} {category} {hashtags_text}".lower()
+    normalized = canonical_key(raw)
+    return (
+        "/campanhasdeingresso/" in raw
+        or "campanhasdeingresso" in raw
+        or "campanhasdeingresso" in normalized
+        or re.search(r"(?<![a-z0-9])ingressos?(?![a-z0-9])", normalized) is not None
+    )
+
+
 def _same_offer_identity(a: Dict, b: Dict) -> bool:
     a_id = normalize_offer_key(a.get("id") or a.get("link") or "")
     b_id = normalize_offer_key(b.get("id") or b.get("link") or "")
@@ -2738,19 +2755,3 @@ if __name__ == "__main__":
     # Compatibilidade: sem argumentos também executa o consumer.
     raise SystemExit(consume_pending())
 
-
-def is_campaign_for_canal2(offer: Dict) -> bool:
-    title = str(offer.get("title") or offer.get("preview_title") or "")
-    link = str(offer.get("link") or offer.get("original_link") or "")
-    category = str(offer.get("category") or offer.get("categoria") or "")
-    hashtags_value = offer.get("hashtags")
-    hashtags_text = " ".join(hashtags_value) if isinstance(hashtags_value, list) else str(hashtags_value or "")
-
-    raw = f"{title} {link} {category} {hashtags_text}".lower()
-    normalized = canonical_key(raw)
-    return (
-        "/campanhasdeingresso/" in raw
-        or "campanhasdeingresso" in raw
-        or "campanhasdeingresso" in normalized
-        or re.search(r"(?<![a-z0-9])ingressos?(?![a-z0-9])", normalized) is not None
-    )
