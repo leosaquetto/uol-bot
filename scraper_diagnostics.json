@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-08T20:42:32.142855Z",
+  "updated_at": "2026-05-08T20:47:18.332764Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pru-2-ingressos-16-05-teatro-faap-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pru-2-ingressos-16-05-teatro-faap-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 08/05 Teatro FAAP - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/prq-2-ingressos-08-05-teatro-faap-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prq-2-ingressos-08-05-teatro-faap-sp"
     },
     {
       "title": "75% OFF em Depilação a Laser",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/zattini/prc-20-off-na-melhor-seleo-de-produtos",
       "reason": "duplicada_latest",
       "trace_id": "trace_prc-20-off-na-melhor-seleo-de-produtos"
+    },
+    {
+      "title": "20% OFF para compras no site",
+      "link": "https://clube.uol.com.br/studiogeek/prb-20-off-para-compras-no-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prb-20-off-para-compras-no-site"
     }
   ]
 }
