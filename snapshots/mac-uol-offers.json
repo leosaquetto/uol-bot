@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 47019,
-  "run_duration_seconds": 47.02,
-  "avg_detail_ms_per_offer": 3918,
-  "generated_at": "2026-05-08T16:34:33.463Z",
+  "run_duration_ms": 55570,
+  "run_duration_seconds": 55.57,
+  "avg_detail_ms_per_offer": 4631,
+  "generated_at": "2026-05-08T16:45:38.825Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pru-2-ingressos-16-05-teatro-faap-sp",
+      "trace_id": "trace_pru-2-ingressos-16-05-teatro-faap-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pru-2-ingressos-16-05-teatro-faap-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pru-2-ingressos-16-05-teatro-faap-sp",
+      "title": "2 INGRESSOS: 16/05 Teatro FAAP - SP",
+      "preview_title": "2 INGRESSOS: 16/05 Teatro FAAP - SP",
+      "validity": "Benefício válido de 08/05/2026 12:46 até 15/05/2026 23:59.",
+      "description": "Assinante UOL, neste Dia das Mães, resgate 1 par de ingressos para o espetáculo Matilde, uma peça sensível e bem-humorada sobre encontros entre gerações — perfeita para viver um momento especial ao lado da sua mãe, no Teatro FAAP, em Higienópolis – São Paulo. Datas disponíveis: 16 de Maio, às 17h e 20h. Local: Teatro FAAP - Rua Alagoas, 903 – Higienópolis – São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, categoria do ingresso e assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0f1b328b6_69fe0d4eaef57_69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0f1b328b6_69fe0d4eaef57_69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0f1b328b6_69fe0d4eaef57_69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132564,
+      "detail_elapsed_ms": 3891,
+      "scraped_at": "2026-05-08T16:45:15.481Z"
+    },
     {
       "id": "prt-2-ingressos-17-05-teatro-faap-sp",
       "trace_id": "trace_prt-2-ingressos-17-05-teatro-faap-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132610,
-      "detail_elapsed_ms": 2872,
-      "scraped_at": "2026-05-08T16:34:01.807Z"
+      "detail_html_length": 132710,
+      "detail_elapsed_ms": 2381,
+      "scraped_at": "2026-05-08T16:45:17.892Z"
     },
     {
       "id": "prr-2-ingressos-10-05-teatro-faap-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132696,
-      "detail_elapsed_ms": 1653,
-      "scraped_at": "2026-05-08T16:34:03.475Z"
+      "detail_html_length": 132658,
+      "detail_elapsed_ms": 2083,
+      "scraped_at": "2026-05-08T16:45:19.975Z"
     },
     {
       "id": "prq-2-ingressos-08-05-teatro-faap-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132690,
-      "detail_elapsed_ms": 3588,
-      "scraped_at": "2026-05-08T16:34:07.063Z"
+      "detail_html_length": 132664,
+      "detail_elapsed_ms": 1938,
+      "scraped_at": "2026-05-08T16:45:21.913Z"
     },
     {
       "id": "prp-2-ingressos-09-05-teatro-faap-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132638,
-      "detail_elapsed_ms": 3193,
-      "scraped_at": "2026-05-08T16:34:10.256Z"
+      "detail_html_length": 133056,
+      "detail_elapsed_ms": 2200,
+      "scraped_at": "2026-05-08T16:45:24.113Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130832,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-05-08T16:34:12.392Z"
+      "detail_html_length": 130815,
+      "detail_elapsed_ms": 2143,
+      "scraped_at": "2026-05-08T16:45:26.256Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131483,
-      "detail_elapsed_ms": 2100,
-      "scraped_at": "2026-05-08T16:34:14.492Z"
+      "detail_html_length": 131546,
+      "detail_elapsed_ms": 1999,
+      "scraped_at": "2026-05-08T16:45:28.255Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130808,
-      "detail_elapsed_ms": 2361,
-      "scraped_at": "2026-05-08T16:34:16.855Z"
+      "detail_html_length": 130802,
+      "detail_elapsed_ms": 1793,
+      "scraped_at": "2026-05-08T16:45:30.051Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131451,
-      "detail_elapsed_ms": 1907,
-      "scraped_at": "2026-05-08T16:34:18.762Z"
+      "detail_html_length": 131484,
+      "detail_elapsed_ms": 2404,
+      "scraped_at": "2026-05-08T16:45:32.455Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124548,
-      "detail_elapsed_ms": 2161,
-      "scraped_at": "2026-05-08T16:34:20.923Z"
+      "detail_html_length": 130903,
+      "detail_elapsed_ms": 2512,
+      "scraped_at": "2026-05-08T16:45:34.967Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131544,
-      "detail_elapsed_ms": 3048,
-      "scraped_at": "2026-05-08T16:34:23.971Z"
+      "detail_html_length": 131576,
+      "detail_elapsed_ms": 1803,
+      "scraped_at": "2026-05-08T16:45:36.770Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130974,
-      "detail_elapsed_ms": 2069,
-      "scraped_at": "2026-05-08T16:34:26.041Z"
-    },
-    {
-      "id": "prc-20-off-na-melhor-seleo-de-produtos",
-      "trace_id": "trace_prc-20-off-na-melhor-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/zattini/prc-20-off-na-melhor-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/zattini/prc-20-off-na-melhor-seleo-de-produtos",
-      "title": "20% OFF na melhor seleção de produtos",
-      "preview_title": "20% OFF na melhor seleção de produtos",
-      "validity": "Benefício válido de 07/05/2026 15:01 até 15/05/2026 23:59.",
-      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: 20% off na melhor seleção de produtos na Zattini. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
-      "category": "Compras e Presentes",
-      "partner_name": "Zattini",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6cd436ee0c907e68bba9f79cd4400f3.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6cd436ee0c907e68bba9f79cd4400f3.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6cd436ee0c907e68bba9f79cd4400f3.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130807,
-      "detail_elapsed_ms": 6166,
-      "scraped_at": "2026-05-08T16:34:32.207Z"
+      "detail_html_length": 131006,
+      "detail_elapsed_ms": 1824,
+      "scraped_at": "2026-05-08T16:45:38.594Z"
     }
   ]
 }
