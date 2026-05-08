@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 41366,
-  "run_duration_seconds": 41.37,
-  "avg_detail_ms_per_offer": 3447,
-  "generated_at": "2026-05-08T20:57:28.180Z",
+  "run_duration_ms": 52197,
+  "run_duration_seconds": 52.2,
+  "avg_detail_ms_per_offer": 4350,
+  "generated_at": "2026-05-08T21:08:30.112Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "prx-20-off-ncessaire-doce-vitta",
+      "trace_id": "trace_prx-20-off-ncessaire-doce-vitta",
+      "link": "https://clube.uol.com.br/lolacosmetics/prx-20-off-ncessaire-doce-vitta",
+      "original_link": "https://clube.uol.com.br/lolacosmetics/prx-20-off-ncessaire-doce-vitta",
+      "title": "20% OFF + nécessaire Doce Vitta",
+      "preview_title": "20% OFF + nécessaire Doce Vitta",
+      "validity": "Benefício válido de 08/05/2026 17:50 até 10/05/2026 23:59.",
+      "description": "Sobre o Parceiro: A Lola Cosmetics é uma marca brasileira de cosméticos reconhecida por seus produtos veganos, cruelty-free e com fórmulas inovadoras para cuidados com os cabelos, pele e corpo. A marca oferece soluções de alta performance com ingredientes naturais e embalagens criativas, conquistando consumidores que buscam beleza consciente e sustentável. Benefício: 20% OFF + ganhe uma nécessaire Doce Vitta Regras: Benefício não cumulativo, sujeito a desativação sem aviso prévio..",
+      "category": "",
+      "partner_name": "Lola Cosmetics",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/c66fa7a07b499eae145df25d73cb6774.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/980c962a2bb3e9ec3327b661374a68fc.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1dde123f960426ad7442c090df32542c.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/980c962a2bb3e9ec3327b661374a68fc.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130699,
+      "detail_elapsed_ms": 6722,
+      "scraped_at": "2026-05-08T21:08:05.362Z"
+    },
     {
       "id": "prw-77-off-em-depilao-a-laser",
       "trace_id": "trace_prw-77-off-em-depilao-a-laser",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129440,
-      "detail_elapsed_ms": 3204,
-      "scraped_at": "2026-05-08T20:57:06.764Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 2380,
+      "scraped_at": "2026-05-08T21:08:07.759Z"
     },
     {
       "id": "prv-25-off-em-capinhas-gocase",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130670,
-      "detail_elapsed_ms": 2666,
-      "scraped_at": "2026-05-08T20:57:09.456Z"
+      "detail_html_length": 130680,
+      "detail_elapsed_ms": 2100,
+      "scraped_at": "2026-05-08T21:08:09.859Z"
     },
     {
       "id": "pru-2-ingressos-16-05-teatro-faap-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132717,
-      "detail_elapsed_ms": 2270,
-      "scraped_at": "2026-05-08T20:57:11.726Z"
+      "detail_html_length": 132728,
+      "detail_elapsed_ms": 2207,
+      "scraped_at": "2026-05-08T21:08:12.066Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130843,
-      "detail_elapsed_ms": 2161,
-      "scraped_at": "2026-05-08T20:57:13.887Z"
+      "detail_html_length": 130802,
+      "detail_elapsed_ms": 2005,
+      "scraped_at": "2026-05-08T21:08:14.071Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131504,
-      "detail_elapsed_ms": 1774,
-      "scraped_at": "2026-05-08T20:57:15.661Z"
+      "detail_html_length": 131493,
+      "detail_elapsed_ms": 1863,
+      "scraped_at": "2026-05-08T21:08:15.935Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130810,
-      "detail_elapsed_ms": 1717,
-      "scraped_at": "2026-05-08T20:57:17.423Z"
+      "detail_html_length": 130809,
+      "detail_elapsed_ms": 2089,
+      "scraped_at": "2026-05-08T21:08:18.026Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131492,
-      "detail_elapsed_ms": 1858,
-      "scraped_at": "2026-05-08T20:57:19.281Z"
+      "detail_html_length": 131463,
+      "detail_elapsed_ms": 1733,
+      "scraped_at": "2026-05-08T21:08:19.759Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130910,
-      "detail_elapsed_ms": 1657,
-      "scraped_at": "2026-05-08T20:57:20.938Z"
+      "detail_html_length": 130899,
+      "detail_elapsed_ms": 2071,
+      "scraped_at": "2026-05-08T21:08:21.830Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131574,
-      "detail_elapsed_ms": 1821,
-      "scraped_at": "2026-05-08T20:57:22.759Z"
+      "detail_html_length": 131524,
+      "detail_elapsed_ms": 2165,
+      "scraped_at": "2026-05-08T21:08:23.995Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130963,
-      "detail_elapsed_ms": 1842,
-      "scraped_at": "2026-05-08T20:57:24.601Z"
+      "detail_html_length": 130953,
+      "detail_elapsed_ms": 1920,
+      "scraped_at": "2026-05-08T21:08:25.915Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130857,
-      "detail_elapsed_ms": 1817,
-      "scraped_at": "2026-05-08T20:57:26.418Z"
-    },
-    {
-      "id": "prb-20-off-para-compras-no-site",
-      "trace_id": "trace_prb-20-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/studiogeek/prb-20-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/studiogeek/prb-20-off-para-compras-no-site",
-      "title": "20% OFF para compras no site",
-      "preview_title": "20% OFF para compras no site",
-      "validity": "Benefício válido de 07/05/2026 14:58 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Atualmente o Studio Geek conta com centenas de produtos exclusivos em seu portfólio, levando a cultura Pop a sério. Benefício: 20% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Desconto aplicável para a seleção de produtos do hotsite.",
-      "category": "Compras e Presentes",
-      "partner_name": "Studio Geek",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1038d04b9d628c5c5e6ba10b037b591e.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/039e2d070a0bf9af89b9899fff24596e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/039e2d070a0bf9af89b9899fff24596e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/039e2d070a0bf9af89b9899fff24596e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130798,
-      "detail_elapsed_ms": 1638,
-      "scraped_at": "2026-05-08T20:57:28.056Z"
+      "detail_html_length": 130807,
+      "detail_elapsed_ms": 3527,
+      "scraped_at": "2026-05-08T21:08:29.442Z"
     }
   ]
 }
