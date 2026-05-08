@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 199827,
-  "run_duration_seconds": 199.83,
-  "avg_detail_ms_per_offer": 16652,
-  "generated_at": "2026-05-08T18:50:51.525Z",
+  "run_duration_ms": 87513,
+  "run_duration_seconds": 87.51,
+  "avg_detail_ms_per_offer": 7293,
+  "generated_at": "2026-05-08T19:02:29.188Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130785,
-      "detail_elapsed_ms": 20284,
-      "scraped_at": "2026-05-08T18:48:30.145Z"
+      "detail_html_length": 129277,
+      "detail_elapsed_ms": 3084,
+      "scraped_at": "2026-05-08T19:01:29.414Z"
     },
     {
       "id": "pru-2-ingressos-16-05-teatro-faap-sp",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pru-2-ingressos-16-05-teatro-faap-sp",
       "title": "2 INGRESSOS: 16/05 Teatro FAAP - SP",
       "preview_title": "2 INGRESSOS: 16/05 Teatro FAAP - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 08/05/2026 12:46 até 15/05/2026 23:59.",
+      "description": "Assinante UOL, neste Dia das Mães, resgate 1 par de ingressos para o espetáculo Matilde, uma peça sensível e bem-humorada sobre encontros entre gerações — perfeita para viver um momento especial ao lado da sua mãe, no Teatro FAAP, em Higienópolis – São Paulo. Datas disponíveis: 16 de Maio, às 17h e 20h. Local: Teatro FAAP - Rua Alagoas, 903 – Higienópolis – São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, categoria do ingresso e assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0f1b328b6_69fe0d4eaef57_69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0f1b328b6_69fe0d4eaef57_69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pru-2-ingressos-16-05-teatro-faap-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12001,
-      "scraped_at": "2026-05-08T18:49:21.246Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0f1b328b6_69fe0d4eaef57_69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131503,
+      "detail_elapsed_ms": 2815,
+      "scraped_at": "2026-05-08T19:01:32.263Z"
     },
     {
       "id": "prr-2-ingressos-10-05-teatro-faap-sp",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/prr-2-ingressos-10-05-teatro-faap-sp",
       "title": "2 INGRESSOS: 10/05 Teatro FAAP - SP",
       "preview_title": "2 INGRESSOS: 10/05 Teatro FAAP - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 08/05/2026 12:46 até 09/05/2026 23:59.",
+      "description": "Assinante UOL, neste Dia das Mães, resgate 1 par de ingressos para o espetáculo Matilde, uma peça sensível e bem-humorada sobre encontros entre gerações — perfeita para viver um momento especial ao lado da sua mãe, no Teatro FAAP, em Higienópolis – São Paulo. Datas disponíveis: 10 de Maio, às 17h. Local: Teatro FAAP - Rua Alagoas, 903 – Higienópolis – São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, categoria do ingresso e assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/prr-2-ingressos-10-05-teatro-faap-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12008,
-      "scraped_at": "2026-05-08T18:49:43.297Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0b7948344_69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132697,
+      "detail_elapsed_ms": 2100,
+      "scraped_at": "2026-05-08T19:01:34.363Z"
     },
     {
       "id": "prq-2-ingressos-08-05-teatro-faap-sp",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/prq-2-ingressos-08-05-teatro-faap-sp",
       "title": "2 INGRESSOS: 08/05 Teatro FAAP - SP",
       "preview_title": "2 INGRESSOS: 08/05 Teatro FAAP - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 08/05/2026 12:46 até 08/05/2026 23:59.",
+      "description": "Assinante UOL, neste Dia das Mães, resgate 1 par de ingressos para o espetáculo Matilde, uma peça sensível e bem-humorada sobre encontros entre gerações — perfeita para viver um momento especial ao lado da sua mãe, no Teatro FAAP, em Higienópolis – São Paulo. Datas disponíveis: HOJE, 08 de Maio, às 20h. Local: Teatro FAAP - Rua Alagoas, 903 – Higienópolis – São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, categoria do ingresso e assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/prq-2-ingressos-08-05-teatro-faap-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12002,
-      "scraped_at": "2026-05-08T18:50:07.685Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fe0acc3a5dc_69fe0554ef3fb_69e956143c721_69e95532ac5b1_69e954835c4f2_69e95353cd99d_69e952abdf856_ac51511b95630862acb37ffe34063717.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131415,
+      "detail_elapsed_ms": 2838,
+      "scraped_at": "2026-05-08T19:01:37.201Z"
     },
     {
       "id": "prp-2-ingressos-09-05-teatro-faap-sp",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132627,
-      "detail_elapsed_ms": 12041,
-      "scraped_at": "2026-05-08T18:50:31.986Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132628,
+      "detail_elapsed_ms": 2709,
+      "scraped_at": "2026-05-08T19:01:39.910Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130814,
-      "detail_elapsed_ms": 6541,
-      "scraped_at": "2026-05-08T18:50:38.527Z"
+      "detail_html_length": 130588,
+      "detail_elapsed_ms": 7365,
+      "scraped_at": "2026-05-08T19:01:47.275Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131494,
-      "detail_elapsed_ms": 2100,
-      "scraped_at": "2026-05-08T18:50:40.627Z"
+      "detail_html_length": 131336,
+      "detail_elapsed_ms": 11150,
+      "scraped_at": "2026-05-08T19:01:58.425Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130800,
-      "detail_elapsed_ms": 2694,
-      "scraped_at": "2026-05-08T18:50:43.387Z"
+      "detail_html_length": 130820,
+      "detail_elapsed_ms": 8683,
+      "scraped_at": "2026-05-08T19:02:07.896Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131462,
-      "detail_elapsed_ms": 2137,
-      "scraped_at": "2026-05-08T18:50:45.524Z"
+      "detail_html_length": 131452,
+      "detail_elapsed_ms": 7696,
+      "scraped_at": "2026-05-08T19:02:15.592Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130902,
-      "detail_elapsed_ms": 2000,
-      "scraped_at": "2026-05-08T18:50:47.524Z"
+      "detail_html_length": 130932,
+      "detail_elapsed_ms": 6640,
+      "scraped_at": "2026-05-08T19:02:22.232Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131584,
-      "detail_elapsed_ms": 2066,
-      "scraped_at": "2026-05-08T18:50:49.592Z"
+      "detail_html_length": 131534,
+      "detail_elapsed_ms": 3522,
+      "scraped_at": "2026-05-08T19:02:25.754Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130954,
-      "detail_elapsed_ms": 1815,
-      "scraped_at": "2026-05-08T18:50:51.407Z"
+      "detail_html_length": 130964,
+      "detail_elapsed_ms": 2370,
+      "scraped_at": "2026-05-08T19:02:28.128Z"
     }
   ]
 }
