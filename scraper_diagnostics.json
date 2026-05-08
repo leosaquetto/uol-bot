@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-08T17:20:16.936262Z",
+  "updated_at": "2026-05-08T17:30:25.537748Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
-    "duplicada_latest": 4,
+    "duplicada_historico": 9,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pru-2-ingressos-16-05-teatro-faap-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pru-2-ingressos-16-05-teatro-faap-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 17/05 Teatro FAAP - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/prt-2-ingressos-17-05-teatro-faap-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prt-2-ingressos-17-05-teatro-faap-sp"
     },
     {
       "title": "2 INGRESSOS: 10/05 Teatro FAAP - SP",
@@ -54,39 +48,45 @@
     },
     {
       "title": "75% OFF em Depilação a Laser",
-      "link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prm-75-off-em-depilao-a-laser"
+      "link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilacao-a-laser",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_prm-75-off-em-depilacao-a-laser"
     },
     {
       "title": "50% Off no Colar Relicário",
-      "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_prj-50-off-no-colar-relicrio"
+      "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicario",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prj-50-off-no-colar-relicario"
     },
     {
       "title": "30% OFF extra na seleção de jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-seleo-de-jeans",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pri-30-off-extra-na-seleo-de-jeans"
+      "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-selecao-de-jeans",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pri-30-off-extra-na-selecao-de-jeans"
     },
     {
       "title": "50% Off na Gift Box Retrô",
-      "link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retr",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prg-50-off-na-gift-box-retr"
+      "link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retro",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_prg-50-off-na-gift-box-retro"
     },
     {
       "title": "20% OFF extra na seleção de moda inverno",
-      "link": "https://clube.uol.com.br/lojasrenner/prf-20-off-extra-na-seleo-de-moda-inverno",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_prf-20-off-extra-na-seleo-de-moda-inverno"
+      "link": "https://clube.uol.com.br/lojasrenner/prf-20-off-extra-na-selecao-de-moda-inverno",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prf-20-off-extra-na-selecao-de-moda-inverno"
     },
     {
       "title": "Resgate agora 30 Fotos Retrô Grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/pre-resgate-agora-30-fotos-retr-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/pre-resgate-agora-30-fotos-retro-gratis",
       "reason": "duplicada_latest",
-      "trace_id": "trace_pre-resgate-agora-30-fotos-retr-grtis"
+      "trace_id": "trace_pre-resgate-agora-30-fotos-retro-gratis"
+    },
+    {
+      "title": "20% em seleção de produtos",
+      "link": "https://clube.uol.com.br/net_shoes/prd-20-em-selecao-de-produtos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prd-20-em-selecao-de-produtos"
     }
   ]
 }
