@@ -2132,20 +2132,64 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
         return False, error_msg
 
 
+def should_send_to_canal2(offer: Dict, hashtags: Optional[List[str]] = None) -> bool:
+    def _norm(value: Optional[str]) -> str:
+        return canonical_key(value)
+
+    def _contains_word(text: str, word: str) -> bool:
+        return bool(re.search(rf"(?<![a-z0-9]){re.escape(word)}(?![a-z0-9])", text))
+
+    title = str(offer.get("title") or "")
+    preview_title = str(offer.get("preview_title") or "")
+    description = str(offer.get("description") or "")
+    category = str(offer.get("category") or offer.get("categoria") or "")
+    link = str(offer.get("link") or offer.get("original_link") or "")
+    caption = str(offer.get("caption") or "")
+
+    hashtags_offer = offer.get("hashtags")
+    if hashtags is None:
+        if isinstance(hashtags_offer, list):
+            hashtags = [str(tag) for tag in hashtags_offer]
+        elif hashtags_offer:
+            hashtags = [str(hashtags_offer)]
+        else:
+            hashtags = []
+
+    relevant_texts = [title, preview_title, description, category, link, caption, " ".join(hashtags)]
+    normalized_texts = [_norm(text) for text in relevant_texts if str(text or "").strip()]
+    normalized_blob = " ".join(normalized_texts)
+
+    blocked_terms = ["teatro", "stand up", "stand-up", "standup"]
+    blocked_norms = {_norm(term).replace("-", " ") for term in blocked_terms}
+    compact_blob = normalized_blob.replace("-", " ")
+    for blocked in blocked_norms:
+        if _contains_word(compact_blob, blocked):
+            return False
+
+    has_campaign_signal = (
+        "/campanhasdeingresso/" in link.lower()
+        or "campanhasdeingresso" in _norm(category)
+        or any("campanhasdeingresso" in _norm(tag) for tag in hashtags)
+        or _contains_word(compact_blob, "ingresso")
+        or _contains_word(compact_blob, "ingressos")
+    )
+    return has_campaign_signal
+
+
 def is_campaign_for_canal2(offer: Dict) -> bool:
     title = str(offer.get("title") or offer.get("preview_title") or "")
     link = str(offer.get("link") or offer.get("original_link") or "")
     category = str(offer.get("category") or offer.get("categoria") or "")
     hashtags_value = offer.get("hashtags")
-    hashtags = " ".join(hashtags_value) if isinstance(hashtags_value, list) else str(hashtags_value or "")
+    hashtags_text = " ".join(hashtags_value) if isinstance(hashtags_value, list) else str(hashtags_value or "")
 
-    raw = f"{title} {link} {category} {hashtags}".lower()
+    raw = f"{title} {link} {category} {hashtags_text}".lower()
     normalized = canonical_key(raw)
-
     return (
         "/campanhasdeingresso/" in raw
         or "campanhasdeingresso" in raw
         or "campanhasdeingresso" in normalized
+        or re.search(r"(?<![a-z0-9])ingressos?(?![a-z0-9])", normalized) is not None
     )
 
 
@@ -2177,7 +2221,9 @@ def already_sent_to_canal2(offer: Dict, latest_sent: List[Dict]) -> bool:
 def forward_offer_to_canal2(offer: Dict, channel_message_id: int, latest_sent: List[Dict]) -> Tuple[bool, str]:
     if not CANAL2_ID:
         return True, "CANAL2_ID ausente; skip"
-    if not is_campaign_for_canal2(offer):
+    if not should_send_to_canal2(offer):
+        if is_campaign_for_canal2(offer):
+            log("canal2 ignorado: teatro/stand-up")
         return True, "não elegível para CANAL2"
     if already_sent_to_canal2(offer, latest_sent):
         return True, "já enviada no CANAL2; skip"
@@ -2708,3 +2754,4 @@ if __name__ == "__main__":
 
     # Compatibilidade: sem argumentos também executa o consumer.
     raise SystemExit(consume_pending())
+
