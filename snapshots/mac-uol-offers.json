@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 48368,
-  "run_duration_seconds": 48.37,
-  "avg_detail_ms_per_offer": 4031,
-  "generated_at": "2026-05-08T17:40:50.406Z",
+  "run_duration_ms": 48010,
+  "run_duration_seconds": 48.01,
+  "avg_detail_ms_per_offer": 4001,
+  "generated_at": "2026-05-08T17:51:47.527Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129286,
-      "detail_elapsed_ms": 2729,
-      "scraped_at": "2026-05-08T17:40:24.817Z"
+      "detail_html_length": 128964,
+      "detail_elapsed_ms": 3401,
+      "scraped_at": "2026-05-08T17:51:23.614Z"
     },
     {
       "id": "pru-2-ingressos-16-05-teatro-faap-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126359,
-      "detail_elapsed_ms": 3023,
-      "scraped_at": "2026-05-08T17:40:27.885Z"
+      "detail_html_length": 131494,
+      "detail_elapsed_ms": 2526,
+      "scraped_at": "2026-05-08T17:51:26.165Z"
     },
     {
       "id": "prr-2-ingressos-10-05-teatro-faap-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132660,
-      "detail_elapsed_ms": 2719,
-      "scraped_at": "2026-05-08T17:40:30.604Z"
+      "detail_html_length": 132657,
+      "detail_elapsed_ms": 2151,
+      "scraped_at": "2026-05-08T17:51:28.316Z"
     },
     {
       "id": "prq-2-ingressos-08-05-teatro-faap-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132655,
-      "detail_elapsed_ms": 2587,
-      "scraped_at": "2026-05-08T17:40:33.191Z"
+      "detail_html_length": 132671,
+      "detail_elapsed_ms": 1862,
+      "scraped_at": "2026-05-08T17:51:30.179Z"
     },
     {
       "id": "prp-2-ingressos-09-05-teatro-faap-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132623,
-      "detail_elapsed_ms": 2229,
-      "scraped_at": "2026-05-08T17:40:35.420Z"
+      "detail_html_length": 132680,
+      "detail_elapsed_ms": 3267,
+      "scraped_at": "2026-05-08T17:51:33.448Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130818,
-      "detail_elapsed_ms": 2296,
-      "scraped_at": "2026-05-08T17:40:37.716Z"
+      "detail_html_length": 132972,
+      "detail_elapsed_ms": 2434,
+      "scraped_at": "2026-05-08T17:51:35.882Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131486,
-      "detail_elapsed_ms": 2059,
-      "scraped_at": "2026-05-08T17:40:39.775Z"
+      "detail_html_length": 131505,
+      "detail_elapsed_ms": 2090,
+      "scraped_at": "2026-05-08T17:51:37.972Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130804,
-      "detail_elapsed_ms": 1931,
-      "scraped_at": "2026-05-08T17:40:41.713Z"
+      "detail_html_length": 130822,
+      "detail_elapsed_ms": 1835,
+      "scraped_at": "2026-05-08T17:51:39.809Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131863,
-      "detail_elapsed_ms": 2513,
-      "scraped_at": "2026-05-08T17:40:44.226Z"
+      "detail_html_length": 131463,
+      "detail_elapsed_ms": 1709,
+      "scraped_at": "2026-05-08T17:51:41.519Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130915,
-      "detail_elapsed_ms": 2263,
-      "scraped_at": "2026-05-08T17:40:46.489Z"
+      "detail_html_length": 130912,
+      "detail_elapsed_ms": 1809,
+      "scraped_at": "2026-05-08T17:51:43.329Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131588,
-      "detail_elapsed_ms": 1968,
-      "scraped_at": "2026-05-08T17:40:48.458Z"
+      "detail_html_length": 131586,
+      "detail_elapsed_ms": 2188,
+      "scraped_at": "2026-05-08T17:51:45.517Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130959,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-05-08T17:40:50.144Z"
+      "detail_html_length": 130965,
+      "detail_elapsed_ms": 1778,
+      "scraped_at": "2026-05-08T17:51:47.295Z"
     }
   ]
 }
