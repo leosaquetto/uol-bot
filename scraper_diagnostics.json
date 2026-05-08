@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-08T20:25:54.565789Z",
+  "updated_at": "2026-05-08T20:26:45.091566Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 9,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "77% OFF em Depilação a Laser",
+      "link": "https://clube.uol.com.br/espacolaser/prw-77-off-em-depilacao-a-laser",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prw-77-off-em-depilacao-a-laser"
+    },
     {
       "title": "25% OFF em capinhas Gocase!",
       "link": "https://clube.uol.com.br/gocase/prv-25-off-em-capinhas-gocase",
