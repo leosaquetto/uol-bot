@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 26023,
-  "run_duration_seconds": 26.02,
-  "avg_detail_ms_per_offer": 2169,
-  "generated_at": "2026-05-10T14:22:04.596Z",
+  "run_duration_ms": 31242,
+  "run_duration_seconds": 31.24,
+  "avg_detail_ms_per_offer": 2604,
+  "generated_at": "2026-05-10T14:32:39.705Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130112,
-      "detail_elapsed_ms": 2135,
-      "scraped_at": "2026-05-10T14:21:47.782Z"
+      "detail_html_length": 129237,
+      "detail_elapsed_ms": 2623,
+      "scraped_at": "2026-05-10T14:32:19.296Z"
     },
     {
       "id": "prw-77-off-em-depilao-a-laser",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130828,
-      "detail_elapsed_ms": 1665,
-      "scraped_at": "2026-05-10T14:21:49.448Z"
+      "detail_html_length": 130823,
+      "detail_elapsed_ms": 2217,
+      "scraped_at": "2026-05-10T14:32:21.514Z"
     },
     {
       "id": "prv-25-off-em-capinhas-gocase",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130715,
-      "detail_elapsed_ms": 1596,
-      "scraped_at": "2026-05-10T14:21:51.044Z"
+      "detail_html_length": 130720,
+      "detail_elapsed_ms": 2068,
+      "scraped_at": "2026-05-10T14:32:23.583Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130867,
-      "detail_elapsed_ms": 1642,
-      "scraped_at": "2026-05-10T14:21:52.686Z"
+      "detail_html_length": 131268,
+      "detail_elapsed_ms": 1601,
+      "scraped_at": "2026-05-10T14:32:25.184Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131529,
-      "detail_elapsed_ms": 1425,
-      "scraped_at": "2026-05-10T14:21:54.111Z"
+      "detail_html_length": 131564,
+      "detail_elapsed_ms": 1827,
+      "scraped_at": "2026-05-10T14:32:27.011Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 1421,
-      "scraped_at": "2026-05-10T14:21:55.533Z"
+      "detail_html_length": 130820,
+      "detail_elapsed_ms": 1747,
+      "scraped_at": "2026-05-10T14:32:28.758Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131495,
-      "detail_elapsed_ms": 1469,
-      "scraped_at": "2026-05-10T14:21:57.002Z"
+      "detail_html_length": 131473,
+      "detail_elapsed_ms": 1705,
+      "scraped_at": "2026-05-10T14:32:30.463Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130965,
-      "detail_elapsed_ms": 1419,
-      "scraped_at": "2026-05-10T14:21:58.421Z"
+      "detail_html_length": 130961,
+      "detail_elapsed_ms": 1715,
+      "scraped_at": "2026-05-10T14:32:32.178Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131569,
-      "detail_elapsed_ms": 1608,
-      "scraped_at": "2026-05-10T14:22:00.029Z"
+      "detail_html_length": 131554,
+      "detail_elapsed_ms": 1478,
+      "scraped_at": "2026-05-10T14:32:33.657Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130968,
-      "detail_elapsed_ms": 1608,
-      "scraped_at": "2026-05-10T14:22:01.637Z"
+      "detail_html_length": 131015,
+      "detail_elapsed_ms": 1948,
+      "scraped_at": "2026-05-10T14:32:35.605Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130863,
-      "detail_elapsed_ms": 1437,
-      "scraped_at": "2026-05-10T14:22:03.074Z"
+      "detail_html_length": 130818,
+      "detail_elapsed_ms": 1608,
+      "scraped_at": "2026-05-10T14:32:37.213Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130793,
-      "detail_elapsed_ms": 1494,
-      "scraped_at": "2026-05-10T14:22:04.568Z"
+      "detail_html_length": 130798,
+      "detail_elapsed_ms": 2449,
+      "scraped_at": "2026-05-10T14:32:39.662Z"
     }
   ]
 }
