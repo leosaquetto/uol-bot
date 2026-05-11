@@ -9,41 +9,17 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
-    "weak": 1,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 37304,
-  "run_duration_seconds": 37.3,
-  "avg_detail_ms_per_offer": 3109,
-  "generated_at": "2026-05-11T19:07:07.984Z",
+  "run_duration_ms": 47884,
+  "run_duration_seconds": 47.88,
+  "avg_detail_ms_per_offer": 3990,
+  "generated_at": "2026-05-11T19:18:05.052Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pr9-1-ingresso-14-05-neo-qumica-arena-sp",
-      "trace_id": "trace_pr9-1-ingresso-14-05-neo-qumica-arena-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pr9-1-ingresso-14-05-neo-qumica-arena-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pr9-1-ingresso-14-05-neo-qumica-arena-sp",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "1 INGRESSO: 14/05 Neo Química Arena- SP",
-      "validity": "",
-      "description": "",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa0cb3255ff_69a203c7efc95_698cecdc5f55d_f5f3a8409fd7fcb54391c0463014bde4.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa0cb3255ff_69a203c7efc95_698cecdc5f55d_f5f3a8409fd7fcb54391c0463014bde4.png",
-      "img_source": "benefit_data_src",
-      "detail_ok": true,
-      "detail_quality": "weak",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 297146,
-      "detail_elapsed_ms": 2693,
-      "scraped_at": "2026-05-11T19:06:46.503Z"
-    },
     {
       "id": "prv-25-off-em-capinhas-gocase",
       "trace_id": "trace_prv-25-off-em-capinhas-gocase",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130671,
-      "detail_elapsed_ms": 1805,
-      "scraped_at": "2026-05-11T19:06:48.326Z"
+      "detail_html_length": 124180,
+      "detail_elapsed_ms": 3073,
+      "scraped_at": "2026-05-11T19:17:43.655Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130803,
-      "detail_elapsed_ms": 2577,
-      "scraped_at": "2026-05-11T19:06:50.903Z"
+      "detail_html_length": 124460,
+      "detail_elapsed_ms": 2033,
+      "scraped_at": "2026-05-11T19:17:45.716Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131533,
-      "detail_elapsed_ms": 2347,
-      "scraped_at": "2026-05-11T19:06:53.250Z"
+      "detail_html_length": 131514,
+      "detail_elapsed_ms": 1778,
+      "scraped_at": "2026-05-11T19:17:47.494Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131492,
-      "detail_elapsed_ms": 2403,
-      "scraped_at": "2026-05-11T19:06:55.653Z"
+      "detail_html_length": 131452,
+      "detail_elapsed_ms": 1816,
+      "scraped_at": "2026-05-11T19:17:49.310Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130951,
-      "detail_elapsed_ms": 1682,
-      "scraped_at": "2026-05-11T19:06:57.337Z"
+      "detail_html_length": 130961,
+      "detail_elapsed_ms": 1951,
+      "scraped_at": "2026-05-11T19:17:51.276Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131585,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-05-11T19:06:59.043Z"
+      "detail_html_length": 131575,
+      "detail_elapsed_ms": 1954,
+      "scraped_at": "2026-05-11T19:17:53.231Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130995,
-      "detail_elapsed_ms": 1673,
-      "scraped_at": "2026-05-11T19:07:00.717Z"
+      "detail_html_length": 130984,
+      "detail_elapsed_ms": 1722,
+      "scraped_at": "2026-05-11T19:17:54.953Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130859,
-      "detail_elapsed_ms": 1710,
-      "scraped_at": "2026-05-11T19:07:02.427Z"
+      "detail_html_length": 130829,
+      "detail_elapsed_ms": 1907,
+      "scraped_at": "2026-05-11T19:17:56.860Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -257,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130747,
-      "detail_elapsed_ms": 1841,
-      "scraped_at": "2026-05-11T19:07:04.269Z"
+      "detail_elapsed_ms": 1712,
+      "scraped_at": "2026-05-11T19:17:58.572Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132950,
-      "detail_elapsed_ms": 1748,
-      "scraped_at": "2026-05-11T19:07:06.017Z"
+      "detail_html_length": 132991,
+      "detail_elapsed_ms": 1944,
+      "scraped_at": "2026-05-11T19:18:00.516Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133424,
-      "detail_elapsed_ms": 1902,
-      "scraped_at": "2026-05-11T19:07:07.919Z"
+      "detail_html_length": 133364,
+      "detail_elapsed_ms": 2343,
+      "scraped_at": "2026-05-11T19:18:02.859Z"
+    },
+    {
+      "id": "pqv-40-off-em-pizzas",
+      "trace_id": "trace_pqv-40-off-em-pizzas",
+      "link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
+      "original_link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
+      "title": "40% OFF em pizzas!",
+      "preview_title": "40% OFF em pizzas!",
+      "validity": "Benefício válido de 06/05/2026 16:19 até 15/05/2026 23:59.",
+      "description": "Sobre o Parceiro: De uma pizzaria local no estado americano de Michigan, em 1960, à maior rede de pizzarias do mundo: a Domino’s Pizza está presente hoje em 85 países, com mais de 16 mil lojas. No Brasil, desembarcamos em 1993, inaugurando uma unidade no Rio de Janeiro, no bairro de Botafogo. Ao longo desses anos, investimos em tecnologia e delivery para melhorar a experiência dos amantes de pizza. Somos líderes em número de lojas - em 2020, somamos 300 lojas espalhadas pelo país. Benefício: 40% OFF no cardápio de pizzas (delivery) Regras de Uso: Válidas apenas para pedidos no site ou App da Domino’s Pizza; válido para pizzas médias e grandes; massas fina ou tradicional, todos os sabores; válido todos os dias da semana; o desconto é aplicado apenas na pizza, não no pedido completo; não se aplica à taxa de entrega; não cumulativo com outras promoções; também válido para carryout (retirada na loja); o cupom deve ser inserido no carrinho no momento do checkout; não é válido para pedidos feitos no balcão.",
+      "category": "",
+      "partner_name": "Domino's",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/7852cbf7a1525572a796b6fccedf3170.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131198,
+      "detail_elapsed_ms": 2003,
+      "scraped_at": "2026-05-11T19:18:04.862Z"
     }
   ]
 }
