@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-11T18:45:41.432433Z",
+  "updated_at": "2026-05-11T18:46:32.937147Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,12 +10,18 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
-    "duplicada_latest": 7,
+    "duplicada_historico": 5,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "1 INGRESSO: 14/05 Neo Química Arena- SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pr9-1-ingresso-14-05-neo-qumica-arena-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pr9-1-ingresso-14-05-neo-qumica-arena-sp"
+    },
     {
       "title": "25% OFF em capinhas Gocase!",
       "link": "https://clube.uol.com.br/gocase/prv-25-off-em-capinhas-gocase",
@@ -69,12 +75,6 @@
       "link": "https://clube.uol.com.br/studiogeek/prb-20-off-para-compras-no-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_prb-20-off-para-compras-no-site"
-    },
-    {
-      "title": "Mês das Mães Open English",
-      "link": "https://clube.uol.com.br/openenglish/pra-ms-das-mes-open-english",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pra-ms-das-mes-open-english"
     },
     {
       "title": "2x1 - Compre o curso de inglês para você",
