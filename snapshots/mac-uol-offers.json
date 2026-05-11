@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 67307,
-  "run_duration_seconds": 67.31,
-  "avg_detail_ms_per_offer": 5609,
-  "generated_at": "2026-05-11T18:56:24.075Z",
+  "run_duration_ms": 37304,
+  "run_duration_seconds": 37.3,
+  "avg_detail_ms_per_offer": 3109,
+  "generated_at": "2026-05-11T19:07:07.984Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -25,24 +25,24 @@
       "trace_id": "trace_pr9-1-ingresso-14-05-neo-qumica-arena-sp",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pr9-1-ingresso-14-05-neo-qumica-arena-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pr9-1-ingresso-14-05-neo-qumica-arena-sp",
-      "title": "1 INGRESSO: 14/05 Neo Química Arena- SP",
+      "title": "Ingressos Exclusivos",
       "preview_title": "1 INGRESSO: 14/05 Neo Química Arena- SP",
-      "validity": "Benefício válido de 11/05/2026 15:23 até 13/05/2026 15:40.",
-      "description": "Assinante UOL, chegou a hora de sentir a emoção da Fiel! Resgate 1 ingresso individual para assistir à partida Corinthians x Barra, pelo campeonato Copa do Brasil 2026, no dia 14 de Maio de 2026, às 19h30, na Neo Química Arena - SP. Quando: 14 de Maio de 2026, às 19h30. Onde: Arena Neo Química - Av. Miguel Ignácio Curi, 111 - Itaquera, São Paulo. Atenção: Após finalizar o resgate, não se esqueça de realizar o cadastro facial no Fiel Torcedor. Caso a facial não esteja cadastrada, infelizmente será necessário prosseguir com a desclassificação, conforme as regras da campanha. A quantidade de ingressos é limitada, e apenas os primeiros que realizarem o cadastro facial garantem o ingresso. REGRAS DE RESGATE: O voucher resgatado é temporário. Seu cadastro será validado e, se estiver de acordo com as regras da campanha, você receberá o ingresso individual vinculado ao seu CPF no Fiel Torcedor, com confirmação enviada por e-mail pelo UOL. Para garantir seu ingresso, finalize o cadastro no site www.fieltorcedor.com.br. Se já possui cadastro, basta confirmar ou atualizar seus dados. Promoção válida por tempo limitado, enquanto durarem os estoques. Importante: É obrigatório incluir biometria facial para acesso ao estádio. O ingresso será garantido ao CPF após o cadastro no site. Seu cadastro será confirmado e, caso você esteja dentro das regras da promoção, você receberá um e-mail de confirmação. Atenção, Assinante UOL! A venda de ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato de sua participação em campanhas futuras e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa0cb3255ff_69a203c7efc95_698cecdc5f55d_f5f3a8409fd7fcb54391c0463014bde4.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "img_source": "meta_og",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa0cb3255ff_69a203c7efc95_698cecdc5f55d_f5f3a8409fd7fcb54391c0463014bde4.png",
+      "img_source": "benefit_data_src",
       "detail_ok": true,
-      "detail_quality": "complete",
+      "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130743,
-      "detail_elapsed_ms": 2790,
-      "scraped_at": "2026-05-11T18:55:53.891Z"
+      "detail_html_length": 297146,
+      "detail_elapsed_ms": 2693,
+      "scraped_at": "2026-05-11T19:06:46.503Z"
     },
     {
       "id": "prv-25-off-em-capinhas-gocase",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129525,
-      "detail_elapsed_ms": 2397,
-      "scraped_at": "2026-05-11T18:55:56.315Z"
+      "detail_html_length": 130671,
+      "detail_elapsed_ms": 1805,
+      "scraped_at": "2026-05-11T19:06:48.326Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130731,
-      "detail_elapsed_ms": 1858,
-      "scraped_at": "2026-05-11T18:55:58.173Z"
+      "detail_html_length": 130803,
+      "detail_elapsed_ms": 2577,
+      "scraped_at": "2026-05-11T19:06:50.903Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131499,
-      "detail_elapsed_ms": 1722,
-      "scraped_at": "2026-05-11T18:55:59.895Z"
+      "detail_html_length": 131533,
+      "detail_elapsed_ms": 2347,
+      "scraped_at": "2026-05-11T19:06:53.250Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131429,
-      "detail_elapsed_ms": 1953,
-      "scraped_at": "2026-05-11T18:56:01.848Z"
+      "detail_html_length": 131492,
+      "detail_elapsed_ms": 2403,
+      "scraped_at": "2026-05-11T19:06:55.653Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131275,
-      "detail_elapsed_ms": 2289,
-      "scraped_at": "2026-05-11T18:56:04.140Z"
+      "detail_html_length": 130951,
+      "detail_elapsed_ms": 1682,
+      "scraped_at": "2026-05-11T19:06:57.337Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131450,
-      "detail_elapsed_ms": 1892,
-      "scraped_at": "2026-05-11T18:56:06.032Z"
+      "detail_html_length": 131585,
+      "detail_elapsed_ms": 1706,
+      "scraped_at": "2026-05-11T19:06:59.043Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130882,
-      "detail_elapsed_ms": 2228,
-      "scraped_at": "2026-05-11T18:56:08.260Z"
+      "detail_html_length": 130995,
+      "detail_elapsed_ms": 1673,
+      "scraped_at": "2026-05-11T19:07:00.717Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130745,
-      "detail_elapsed_ms": 1907,
-      "scraped_at": "2026-05-11T18:56:10.167Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 1710,
+      "scraped_at": "2026-05-11T19:07:02.427Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130676,
-      "detail_elapsed_ms": 9439,
-      "scraped_at": "2026-05-11T18:56:19.606Z"
+      "detail_html_length": 130747,
+      "detail_elapsed_ms": 1841,
+      "scraped_at": "2026-05-11T19:07:04.269Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126572,
-      "detail_elapsed_ms": 2251,
-      "scraped_at": "2026-05-11T18:56:21.857Z"
+      "detail_html_length": 132950,
+      "detail_elapsed_ms": 1748,
+      "scraped_at": "2026-05-11T19:07:06.017Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126729,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-05-11T18:56:23.553Z"
+      "detail_html_length": 133424,
+      "detail_elapsed_ms": 1902,
+      "scraped_at": "2026-05-11T19:07:07.919Z"
     }
   ]
 }
