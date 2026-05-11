@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28285,
-  "run_duration_seconds": 28.29,
-  "avg_detail_ms_per_offer": 2357,
-  "generated_at": "2026-05-11T13:32:52.358Z",
+  "run_duration_ms": 27712,
+  "run_duration_seconds": 27.71,
+  "avg_detail_ms_per_offer": 2309,
+  "generated_at": "2026-05-11T13:43:25.341Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "trace_id": "trace_pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "title": "2 INGRESSOS: 13/05 THEATRO PEDRO II - SP",
+      "preview_title": "2 INGRESSOS: 13/05 THEATRO PEDRO II - SP",
+      "validity": "Benefício válido de 11/05/2026 10:28 até 12/05/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Theatro Pedro II, em Ribeirão Preto - SP. Data: Quarta - feira, 13/05/2026 | 20:00 Local: Teatro das Artes - Av. Rebouças, 3970 Pinheiros, São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131127,
+      "detail_elapsed_ms": 2415,
+      "scraped_at": "2026-05-11T13:43:07.156Z"
+    },
     {
       "id": "prv-25-off-em-capinhas-gocase",
       "trace_id": "trace_prv-25-off-em-capinhas-gocase",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130532,
-      "detail_elapsed_ms": 3186,
-      "scraped_at": "2026-05-11T13:32:34.822Z"
+      "detail_html_length": 130672,
+      "detail_elapsed_ms": 2454,
+      "scraped_at": "2026-05-11T13:43:09.612Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130823,
-      "detail_elapsed_ms": 1685,
-      "scraped_at": "2026-05-11T13:32:36.508Z"
+      "detail_html_length": 130845,
+      "detail_elapsed_ms": 1560,
+      "scraped_at": "2026-05-11T13:43:11.173Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131555,
-      "detail_elapsed_ms": 1682,
-      "scraped_at": "2026-05-11T13:32:38.191Z"
+      "detail_html_length": 131525,
+      "detail_elapsed_ms": 1382,
+      "scraped_at": "2026-05-11T13:43:12.555Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -113,8 +137,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131493,
-      "detail_elapsed_ms": 1480,
-      "scraped_at": "2026-05-11T13:32:39.671Z"
+      "detail_elapsed_ms": 1440,
+      "scraped_at": "2026-05-11T13:43:13.995Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130951,
-      "detail_elapsed_ms": 1675,
-      "scraped_at": "2026-05-11T13:32:41.347Z"
+      "detail_html_length": 130963,
+      "detail_elapsed_ms": 1462,
+      "scraped_at": "2026-05-11T13:43:15.457Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -161,8 +185,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131565,
-      "detail_elapsed_ms": 1571,
-      "scraped_at": "2026-05-11T13:32:42.918Z"
+      "detail_elapsed_ms": 1527,
+      "scraped_at": "2026-05-11T13:43:16.984Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130994,
-      "detail_elapsed_ms": 1437,
-      "scraped_at": "2026-05-11T13:32:44.355Z"
+      "detail_html_length": 131005,
+      "detail_elapsed_ms": 1489,
+      "scraped_at": "2026-05-11T13:43:18.473Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130869,
-      "detail_elapsed_ms": 1559,
-      "scraped_at": "2026-05-11T13:32:45.914Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 1489,
+      "scraped_at": "2026-05-11T13:43:19.962Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130789,
-      "detail_elapsed_ms": 1724,
-      "scraped_at": "2026-05-11T13:32:47.638Z"
+      "detail_html_length": 130790,
+      "detail_elapsed_ms": 1963,
+      "scraped_at": "2026-05-11T13:43:21.925Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132981,
-      "detail_elapsed_ms": 1720,
-      "scraped_at": "2026-05-11T13:32:49.358Z"
+      "detail_html_length": 132991,
+      "detail_elapsed_ms": 1779,
+      "scraped_at": "2026-05-11T13:43:23.704Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133395,
-      "detail_elapsed_ms": 1482,
-      "scraped_at": "2026-05-11T13:32:50.840Z"
-    },
-    {
-      "id": "pqv-40-off-em-pizzas",
-      "trace_id": "trace_pqv-40-off-em-pizzas",
-      "link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
-      "original_link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
-      "title": "40% OFF em pizzas!",
-      "preview_title": "40% OFF em pizzas!",
-      "validity": "Benefício válido de 06/05/2026 16:19 até 15/05/2026 23:59.",
-      "description": "Sobre o Parceiro: De uma pizzaria local no estado americano de Michigan, em 1960, à maior rede de pizzarias do mundo: a Domino’s Pizza está presente hoje em 85 países, com mais de 16 mil lojas. No Brasil, desembarcamos em 1993, inaugurando uma unidade no Rio de Janeiro, no bairro de Botafogo. Ao longo desses anos, investimos em tecnologia e delivery para melhorar a experiência dos amantes de pizza. Somos líderes em número de lojas - em 2020, somamos 300 lojas espalhadas pelo país. Benefício: 40% OFF no cardápio de pizzas (delivery) Regras de Uso: Válidas apenas para pedidos no site ou App da Domino’s Pizza; válido para pizzas médias e grandes; massas fina ou tradicional, todos os sabores; válido todos os dias da semana; o desconto é aplicado apenas na pizza, não no pedido completo; não se aplica à taxa de entrega; não cumulativo com outras promoções; também válido para carryout (retirada na loja); o cupom deve ser inserido no carrinho no momento do checkout; não é válido para pedidos feitos no balcão.",
-      "category": "",
-      "partner_name": "Domino's",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/7852cbf7a1525572a796b6fccedf3170.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131168,
-      "detail_elapsed_ms": 1452,
-      "scraped_at": "2026-05-11T13:32:52.292Z"
+      "detail_html_length": 133404,
+      "detail_elapsed_ms": 1571,
+      "scraped_at": "2026-05-11T13:43:25.275Z"
     }
   ]
 }
