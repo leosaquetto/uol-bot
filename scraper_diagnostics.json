@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-11T09:10:16.166805Z",
+  "updated_at": "2026-05-11T09:20:12.418714Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
-    "duplicada_latest": 8,
+    "duplicada_historico": 5,
+    "duplicada_latest": 7,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio",
       "reason": "duplicada_latest",
       "trace_id": "trace_prj-50-off-no-colar-relicrio"
-    },
-    {
-      "title": "30% OFF extra na seleção de jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-seleo-de-jeans",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pri-30-off-extra-na-seleo-de-jeans"
     },
     {
       "title": "50% Off na Gift Box Retrô",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/openenglish/pqZ-2x1-compre-o-curso-de-ingls-para-voc",
       "reason": "duplicada_latest",
       "trace_id": "trace_pqz-2x1-compre-o-curso-de-ingls-para-voc"
+    },
+    {
+      "title": "40% OFF em pizzas!",
+      "link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pqv-40-off-em-pizzas"
     }
   ]
 }
