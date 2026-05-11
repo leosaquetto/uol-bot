@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 35698,
-  "run_duration_seconds": 35.7,
-  "avg_detail_ms_per_offer": 2975,
-  "generated_at": "2026-05-11T09:08:58.409Z",
+  "run_duration_ms": 34914,
+  "run_duration_seconds": 34.91,
+  "avg_detail_ms_per_offer": 2910,
+  "generated_at": "2026-05-11T09:19:39.351Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130522,
-      "detail_elapsed_ms": 2032,
-      "scraped_at": "2026-05-11T09:08:41.402Z"
+      "detail_html_length": 130532,
+      "detail_elapsed_ms": 2993,
+      "scraped_at": "2026-05-11T09:19:22.338Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130872,
-      "detail_elapsed_ms": 1601,
-      "scraped_at": "2026-05-11T09:08:43.045Z"
+      "detail_html_length": 130833,
+      "detail_elapsed_ms": 1705,
+      "scraped_at": "2026-05-11T09:19:24.062Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -88,33 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131543,
-      "detail_elapsed_ms": 1703,
-      "scraped_at": "2026-05-11T09:08:44.748Z"
-    },
-    {
-      "id": "pri-30-off-extra-na-seleo-de-jeans",
-      "trace_id": "trace_pri-30-off-extra-na-seleo-de-jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-seleo-de-jeans",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pri-30-off-extra-na-seleo-de-jeans",
-      "title": "30% OFF extra na seleção de jeans",
-      "preview_title": "30% OFF extra na seleção de jeans",
-      "validity": "Benefício válido de 07/05/2026 15:18 até 11/05/2026 09:00.",
-      "description": "Sobre o parceiro: A Renner é uma das maiores varejistas de moda do Brasil, com produtos femininos, masculinos, infantis, calçados, acessórios e itens para casa. Benefício: 30% OFF extra na seleção de jeans feminina Regras: Oferta válida para itens selecionados da campanha, no site da Renner. Sujeito à disponibilidade de estoque e não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0653a7023202ae5292df02b7870f423b.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0653a7023202ae5292df02b7870f423b.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0653a7023202ae5292df02b7870f423b.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130850,
-      "detail_elapsed_ms": 1459,
-      "scraped_at": "2026-05-11T09:08:46.211Z"
+      "detail_html_length": 131522,
+      "detail_elapsed_ms": 1470,
+      "scraped_at": "2026-05-11T09:19:25.532Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131512,
-      "detail_elapsed_ms": 1449,
-      "scraped_at": "2026-05-11T09:08:47.661Z"
+      "detail_html_length": 131499,
+      "detail_elapsed_ms": 1520,
+      "scraped_at": "2026-05-11T09:19:27.052Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130961,
-      "detail_elapsed_ms": 1545,
-      "scraped_at": "2026-05-11T09:08:49.206Z"
+      "detail_html_length": 130941,
+      "detail_elapsed_ms": 1512,
+      "scraped_at": "2026-05-11T09:19:28.584Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131572,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-05-11T09:08:50.912Z"
+      "detail_html_length": 131574,
+      "detail_elapsed_ms": 1417,
+      "scraped_at": "2026-05-11T09:19:30.002Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131003,
-      "detail_elapsed_ms": 1416,
-      "scraped_at": "2026-05-11T09:08:52.328Z"
+      "detail_html_length": 130993,
+      "detail_elapsed_ms": 1448,
+      "scraped_at": "2026-05-11T09:19:31.450Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130867,
-      "detail_elapsed_ms": 1461,
-      "scraped_at": "2026-05-11T09:08:53.790Z"
+      "detail_html_length": 130848,
+      "detail_elapsed_ms": 1701,
+      "scraped_at": "2026-05-11T09:19:33.151Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130808,
-      "detail_elapsed_ms": 1524,
-      "scraped_at": "2026-05-11T09:08:55.314Z"
+      "detail_html_length": 130778,
+      "detail_elapsed_ms": 1620,
+      "scraped_at": "2026-05-11T09:19:34.771Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133395,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-05-11T09:08:56.797Z"
+      "detail_html_length": 132979,
+      "detail_elapsed_ms": 1564,
+      "scraped_at": "2026-05-11T09:19:36.336Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133412,
-      "detail_elapsed_ms": 1543,
-      "scraped_at": "2026-05-11T09:08:58.340Z"
+      "detail_html_length": 133404,
+      "detail_elapsed_ms": 1552,
+      "scraped_at": "2026-05-11T09:19:37.888Z"
+    },
+    {
+      "id": "pqv-40-off-em-pizzas",
+      "trace_id": "trace_pqv-40-off-em-pizzas",
+      "link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
+      "original_link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
+      "title": "40% OFF em pizzas!",
+      "preview_title": "40% OFF em pizzas!",
+      "validity": "Benefício válido de 06/05/2026 16:19 até 15/05/2026 23:59.",
+      "description": "Sobre o Parceiro: De uma pizzaria local no estado americano de Michigan, em 1960, à maior rede de pizzarias do mundo: a Domino’s Pizza está presente hoje em 85 países, com mais de 16 mil lojas. No Brasil, desembarcamos em 1993, inaugurando uma unidade no Rio de Janeiro, no bairro de Botafogo. Ao longo desses anos, investimos em tecnologia e delivery para melhorar a experiência dos amantes de pizza. Somos líderes em número de lojas - em 2020, somamos 300 lojas espalhadas pelo país. Benefício: 40% OFF no cardápio de pizzas (delivery) Regras de Uso: Válidas apenas para pedidos no site ou App da Domino’s Pizza; válido para pizzas médias e grandes; massas fina ou tradicional, todos os sabores; válido todos os dias da semana; o desconto é aplicado apenas na pizza, não no pedido completo; não se aplica à taxa de entrega; não cumulativo com outras promoções; também válido para carryout (retirada na loja); o cupom deve ser inserido no carrinho no momento do checkout; não é válido para pedidos feitos no balcão.",
+      "category": "",
+      "partner_name": "Domino's",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/7852cbf7a1525572a796b6fccedf3170.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131168,
+      "detail_elapsed_ms": 1394,
+      "scraped_at": "2026-05-11T09:19:39.282Z"
     }
   ]
 }
