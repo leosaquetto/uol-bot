@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-05-08T21:43:22.684316Z",
+  "last_update": "2026-05-11T13:44:10.093915Z",
   "offers": [
-    {
-      "id": "pqF-10-off-nos-pacotes",
-      "original_link": "https://clube.uol.com.br/axis/pqF-10-off-nos-pacotes",
-      "preview_title": "10% OFF nos pacotes",
-      "title": "10% OFF nos pacotes",
-      "link": "https://clube.uol.com.br/axis/pqF-10-off-nos-pacotes",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e0ab7ce1086d3c99519da99357166b0f.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b5c1bd3dc6dc2a39be83da208ca19c7c.png",
-      "validity": "Benefício válido de 05/05/2026 15:58 até 05/05/2027 23:59.",
-      "description": "Sobre o Parceiro: Axis seu corpo em equilíbrio e sua vida em movimento. Beneficio: 10% OFF nas sessões da Axis Pilates, Funcional, Auriculoterapia e outros serviços. Regras: Para resgatar o benefício entre em contato (21 98250-9454) e apresente o cupom de desconto.",
-      "location_summary": "",
-      "dedupe_key": "10-off-nos-pacotes|beneficio-valido-de-05-05-2026-15-58-ate-05-05-2027-23-59|sobre-o-parceiro-axis-seu-corpo-em-equilibrio-e-sua-vida-em-movimento-beneficio-10-off-nas-sessoes-da-axis-pilates-funcional-auriculoterapia-e-outros-servicos-r",
-      "loose_dedupe_key": "10-off-nos-pacotes|sobre-o-parceiro-axis-seu-corpo-em-equilibrio-e-sua-vida-em-movimento-beneficio-10-off-nas-sessoes-da-axis-pilates-funcional-auriculoterapia-e-outros-servicos-r",
-      "scraped_at": "2026-05-06T19:43:50.982000Z",
-      "trace_id": "trace_pqf-10-off-nos-pacotes",
-      "channel_message_id": 1405,
-      "channel_message_link": "https://t.me/c/3723320790/1405",
-      "comment_message_id": 4667,
-      "discussion_message_id": 4664,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/4667?thread=4664",
-      "sent_at": "2026-05-06T19:45:56.436092Z"
-    },
     {
       "id": "pra-mes-das-maes-open-english",
       "original_link": "https://clube.uol.com.br/openenglish/pra-mes-das-maes-open-english",
@@ -422,7 +399,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4732?thread=4729",
       "sent_at": "2026-05-08T16:46:37.275334Z",
-      "sold_out_at": "18:42"
+      "sold_out_at": "18:42",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "prv-25-off-em-capinhas-gocase",
@@ -494,6 +472,29 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4744?thread=4741",
       "sent_at": "2026-05-08T21:09:26.331753Z"
+    },
+    {
+      "id": "pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "preview_title": "2 INGRESSOS: 13/05 THEATRO PEDRO II - SP",
+      "title": "2 INGRESSOS: 13/05 THEATRO PEDRO II - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "validity": "Benefício válido de 11/05/2026 10:28 até 12/05/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Theatro Pedro II, em Ribeirão Preto - SP. Data: Quarta - feira, 13/05/2026 | 20:00 Local: Teatro das Artes - Av. Rebouças, 3970 Pinheiros, São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "location_summary": "Teatro das Artes - AV",
+      "dedupe_key": "2-ingressos-13-05-theatro-pedro-ii-sp|beneficio-valido-de-11-05-2026-10-28-ate-12-05-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-e-prepare-se-para-rir-muito-com-o-stand-up-mauricio-meirelles-surto-coletivo-um-dos-shows-mais-interativos-e-comentados",
+      "loose_dedupe_key": "2-ingressos-13-05-theatro-pedro-ii-sp|assinante-uol-resgate-1-par-de-ingressos-e-prepare-se-para-rir-muito-com-o-stand-up-mauricio-meirelles-surto-coletivo-um-dos-shows-mais-interativos-e-comentados",
+      "scraped_at": "2026-05-11T13:43:07.156000Z",
+      "trace_id": "trace_pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "channel_message_id": 1425,
+      "channel_message_link": "https://t.me/c/3723320790/1425",
+      "comment_message_id": 4749,
+      "discussion_message_id": 4746,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/4749?thread=4746",
+      "sent_at": "2026-05-11T13:44:10.032948Z"
     }
   ]
 }
