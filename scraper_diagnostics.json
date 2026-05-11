@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-11T13:43:56.584673Z",
+  "updated_at": "2026-05-11T13:44:48.710153Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
+    "duplicada_historico": 5,
     "duplicada_latest": 7,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 13/05 THEATRO PEDRO II - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pr0-2-ingressos-13-05-theatro-pedro-ii-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pr0-2-ingressos-13-05-theatro-pedro-ii-sp"
+    },
     {
       "title": "25% OFF em capinhas Gocase!",
       "link": "https://clube.uol.com.br/gocase/prv-25-off-em-capinhas-gocase",
