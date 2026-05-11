@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 36960,
-  "run_duration_seconds": 36.96,
-  "avg_detail_ms_per_offer": 3080,
-  "generated_at": "2026-05-11T18:34:18.531Z",
+  "run_duration_ms": 44889,
+  "run_duration_seconds": 44.89,
+  "avg_detail_ms_per_offer": 3741,
+  "generated_at": "2026-05-11T18:45:08.984Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pr9-1-ingresso-14-05-neo-qumica-arena-sp",
+      "trace_id": "trace_pr9-1-ingresso-14-05-neo-qumica-arena-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pr9-1-ingresso-14-05-neo-qumica-arena-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pr9-1-ingresso-14-05-neo-qumica-arena-sp",
+      "title": "1 INGRESSO: 14/05 Neo Química Arena- SP",
+      "preview_title": "1 INGRESSO: 14/05 Neo Química Arena- SP",
+      "validity": "Benefício válido de 11/05/2026 15:23 até 13/05/2026 15:40.",
+      "description": "Assinante UOL, chegou a hora de sentir a emoção da Fiel! Resgate 1 ingresso individual para assistir à partida Corinthians x Barra, pelo campeonato Copa do Brasil 2026, no dia 14 de Maio de 2026, às 19h30, na Neo Química Arena - SP. Quando: 14 de Maio de 2026, às 19h30. Onde: Arena Neo Química - Av. Miguel Ignácio Curi, 111 - Itaquera, São Paulo. Atenção: Após finalizar o resgate, não se esqueça de realizar o cadastro facial no Fiel Torcedor. Caso a facial não esteja cadastrada, infelizmente será necessário prosseguir com a desclassificação, conforme as regras da campanha. A quantidade de ingressos é limitada, e apenas os primeiros que realizarem o cadastro facial garantem o ingresso. REGRAS DE RESGATE: O voucher resgatado é temporário. Seu cadastro será validado e, se estiver de acordo com as regras da campanha, você receberá o ingresso individual vinculado ao seu CPF no Fiel Torcedor, com confirmação enviada por e-mail pelo UOL. Para garantir seu ingresso, finalize o cadastro no site www.fieltorcedor.com.br. Se já possui cadastro, basta confirmar ou atualizar seus dados. Promoção válida por tempo limitado, enquanto durarem os estoques. Importante: É obrigatório incluir biometria facial para acesso ao estádio. O ingresso será garantido ao CPF após o cadastro no site. Seu cadastro será confirmado e, caso você esteja dentro das regras da promoção, você receberá um e-mail de confirmação. Atenção, Assinante UOL! A venda de ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato de sua participação em campanhas futuras e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132854,
+      "detail_elapsed_ms": 2650,
+      "scraped_at": "2026-05-11T18:44:42.233Z"
+    },
     {
       "id": "prv-25-off-em-capinhas-gocase",
       "trace_id": "trace_prv-25-off-em-capinhas-gocase",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130523,
-      "detail_elapsed_ms": 2667,
-      "scraped_at": "2026-05-11T18:33:58.770Z"
+      "detail_html_length": 130720,
+      "detail_elapsed_ms": 2255,
+      "scraped_at": "2026-05-11T18:44:44.502Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130814,
-      "detail_elapsed_ms": 2387,
-      "scraped_at": "2026-05-11T18:34:01.173Z"
+      "detail_html_length": 130822,
+      "detail_elapsed_ms": 1928,
+      "scraped_at": "2026-05-11T18:44:46.430Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -89,8 +113,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131544,
-      "detail_elapsed_ms": 1753,
-      "scraped_at": "2026-05-11T18:34:02.926Z"
+      "detail_elapsed_ms": 2753,
+      "scraped_at": "2026-05-11T18:44:49.184Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131502,
-      "detail_elapsed_ms": 1697,
-      "scraped_at": "2026-05-11T18:34:04.623Z"
+      "detail_html_length": 131452,
+      "detail_elapsed_ms": 2651,
+      "scraped_at": "2026-05-11T18:44:51.835Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130972,
-      "detail_elapsed_ms": 1803,
-      "scraped_at": "2026-05-11T18:34:06.429Z"
+      "detail_html_length": 130931,
+      "detail_elapsed_ms": 2943,
+      "scraped_at": "2026-05-11T18:44:54.781Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131575,
-      "detail_elapsed_ms": 1991,
-      "scraped_at": "2026-05-11T18:34:08.421Z"
+      "detail_html_length": 131545,
+      "detail_elapsed_ms": 3447,
+      "scraped_at": "2026-05-11T18:44:58.228Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131014,
-      "detail_elapsed_ms": 1634,
-      "scraped_at": "2026-05-11T18:34:10.055Z"
+      "detail_html_length": 130974,
+      "detail_elapsed_ms": 2287,
+      "scraped_at": "2026-05-11T18:45:00.515Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 1642,
-      "scraped_at": "2026-05-11T18:34:11.697Z"
+      "detail_html_length": 130818,
+      "detail_elapsed_ms": 1983,
+      "scraped_at": "2026-05-11T18:45:02.498Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130797,
-      "detail_elapsed_ms": 1589,
-      "scraped_at": "2026-05-11T18:34:13.286Z"
+      "detail_html_length": 130758,
+      "detail_elapsed_ms": 2337,
+      "scraped_at": "2026-05-11T18:45:04.836Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132940,
-      "detail_elapsed_ms": 1813,
-      "scraped_at": "2026-05-11T18:34:15.100Z"
+      "detail_html_length": 132941,
+      "detail_elapsed_ms": 1793,
+      "scraped_at": "2026-05-11T18:45:06.629Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133364,
-      "detail_elapsed_ms": 1673,
-      "scraped_at": "2026-05-11T18:34:16.773Z"
-    },
-    {
-      "id": "pqv-40-off-em-pizzas",
-      "trace_id": "trace_pqv-40-off-em-pizzas",
-      "link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
-      "original_link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
-      "title": "40% OFF em pizzas!",
-      "preview_title": "40% OFF em pizzas!",
-      "validity": "Benefício válido de 06/05/2026 16:19 até 15/05/2026 23:59.",
-      "description": "Sobre o Parceiro: De uma pizzaria local no estado americano de Michigan, em 1960, à maior rede de pizzarias do mundo: a Domino’s Pizza está presente hoje em 85 países, com mais de 16 mil lojas. No Brasil, desembarcamos em 1993, inaugurando uma unidade no Rio de Janeiro, no bairro de Botafogo. Ao longo desses anos, investimos em tecnologia e delivery para melhorar a experiência dos amantes de pizza. Somos líderes em número de lojas - em 2020, somamos 300 lojas espalhadas pelo país. Benefício: 40% OFF no cardápio de pizzas (delivery) Regras de Uso: Válidas apenas para pedidos no site ou App da Domino’s Pizza; válido para pizzas médias e grandes; massas fina ou tradicional, todos os sabores; válido todos os dias da semana; o desconto é aplicado apenas na pizza, não no pedido completo; não se aplica à taxa de entrega; não cumulativo com outras promoções; também válido para carryout (retirada na loja); o cupom deve ser inserido no carrinho no momento do checkout; não é válido para pedidos feitos no balcão.",
-      "category": "",
-      "partner_name": "Domino's",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/7852cbf7a1525572a796b6fccedf3170.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131199,
-      "detail_elapsed_ms": 1653,
-      "scraped_at": "2026-05-11T18:34:18.426Z"
+      "detail_html_length": 133404,
+      "detail_elapsed_ms": 2186,
+      "scraped_at": "2026-05-11T18:45:08.815Z"
     }
   ]
 }
