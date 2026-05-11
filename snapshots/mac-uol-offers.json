@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 41008,
-  "run_duration_seconds": 41.01,
-  "avg_detail_ms_per_offer": 3417,
-  "generated_at": "2026-05-11T06:37:18.650Z",
+  "run_duration_ms": 158760,
+  "run_duration_seconds": 158.76,
+  "avg_detail_ms_per_offer": 13230,
+  "generated_at": "2026-05-11T06:50:03.757Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129374,
-      "detail_elapsed_ms": 2903,
-      "scraped_at": "2026-05-11T06:36:59.036Z"
+      "detail_html_length": 129306,
+      "detail_elapsed_ms": 3202,
+      "scraped_at": "2026-05-11T06:49:44.385Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130814,
-      "detail_elapsed_ms": 2150,
-      "scraped_at": "2026-05-11T06:37:01.203Z"
+      "detail_html_length": 129653,
+      "detail_elapsed_ms": 2048,
+      "scraped_at": "2026-05-11T06:49:46.453Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131565,
-      "detail_elapsed_ms": 1856,
-      "scraped_at": "2026-05-11T06:37:03.059Z"
+      "detail_html_length": 131494,
+      "detail_elapsed_ms": 2085,
+      "scraped_at": "2026-05-11T06:49:48.539Z"
     },
     {
       "id": "pri-30-off-extra-na-seleo-de-jeans",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130861,
-      "detail_elapsed_ms": 1675,
-      "scraped_at": "2026-05-11T06:37:04.736Z"
+      "detail_html_length": 130809,
+      "detail_elapsed_ms": 1714,
+      "scraped_at": "2026-05-11T06:49:50.255Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131462,
-      "detail_elapsed_ms": 1683,
-      "scraped_at": "2026-05-11T06:37:06.419Z"
+      "detail_html_length": 131491,
+      "detail_elapsed_ms": 1871,
+      "scraped_at": "2026-05-11T06:49:52.127Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130921,
-      "detail_elapsed_ms": 1886,
-      "scraped_at": "2026-05-11T06:37:08.305Z"
+      "detail_html_length": 130940,
+      "detail_elapsed_ms": 1686,
+      "scraped_at": "2026-05-11T06:49:53.813Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131595,
-      "detail_elapsed_ms": 1832,
-      "scraped_at": "2026-05-11T06:37:10.137Z"
+      "detail_html_length": 131564,
+      "detail_elapsed_ms": 1540,
+      "scraped_at": "2026-05-11T06:49:55.353Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130964,
-      "detail_elapsed_ms": 1651,
-      "scraped_at": "2026-05-11T06:37:11.788Z"
+      "detail_html_length": 131003,
+      "detail_elapsed_ms": 1730,
+      "scraped_at": "2026-05-11T06:49:57.083Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130878,
-      "detail_elapsed_ms": 1760,
-      "scraped_at": "2026-05-11T06:37:13.548Z"
+      "detail_html_length": 130858,
+      "detail_elapsed_ms": 1540,
+      "scraped_at": "2026-05-11T06:49:58.623Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130809,
-      "detail_elapsed_ms": 1562,
-      "scraped_at": "2026-05-11T06:37:15.110Z"
+      "detail_html_length": 130797,
+      "detail_elapsed_ms": 1617,
+      "scraped_at": "2026-05-11T06:50:00.241Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133011,
-      "detail_elapsed_ms": 1746,
-      "scraped_at": "2026-05-11T06:37:16.856Z"
+      "detail_html_length": 132969,
+      "detail_elapsed_ms": 1679,
+      "scraped_at": "2026-05-11T06:50:01.921Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133414,
-      "detail_elapsed_ms": 1692,
-      "scraped_at": "2026-05-11T06:37:18.548Z"
+      "detail_html_length": 133433,
+      "detail_elapsed_ms": 1679,
+      "scraped_at": "2026-05-11T06:50:03.600Z"
     }
   ]
 }
