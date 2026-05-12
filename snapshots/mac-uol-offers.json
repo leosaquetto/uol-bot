@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 9,
+  "detail_fail_count": 3,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 9,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 3
   },
-  "run_duration_ms": 36581,
-  "run_duration_seconds": 36.58,
-  "avg_detail_ms_per_offer": 3048,
-  "generated_at": "2026-05-12T05:10:28.166Z",
+  "run_duration_ms": 12921417,
+  "run_duration_seconds": 12921.42,
+  "avg_detail_ms_per_offer": 1076785,
+  "generated_at": "2026-05-12T19:25:35.038Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124503,
-      "detail_elapsed_ms": 4208,
-      "scraped_at": "2026-05-12T05:10:07.129Z"
+      "detail_html_length": 128972,
+      "detail_elapsed_ms": 3224,
+      "scraped_at": "2026-05-12T15:50:33.795Z"
     },
     {
       "id": "prm-75-off-em-depilao-a-laser",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130808,
-      "detail_elapsed_ms": 2091,
-      "scraped_at": "2026-05-12T05:10:09.242Z"
+      "detail_html_length": 129657,
+      "detail_elapsed_ms": 3175452,
+      "scraped_at": "2026-05-12T16:43:29.285Z"
     },
     {
       "id": "prj-50-off-no-colar-relicrio",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio",
       "title": "50% Off no Colar Relicário",
       "preview_title": "50% Off no Colar Relicário",
-      "validity": "Benefício válido de 07/05/2026 15:11 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: 50% Off no Colar Relicário - Semijoia banhada a ouro 18k, espaço para até 2 imagens da FotoRegistro. Regras: Benefício exclusivo para Assinantes do Clube UOL. Válido para 50% Off na Gift Box Retrô - comporta até 30 Fotos Retrô, tamanho: 13,8 x 10,5 cm. Frete não incluso. Válido até 31/05/26. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. No fechamento do pedido, atente-se ao prazo de entrega pois eles variam de acordo com o produto e região. O prazo de entrega é contabilizado a partir da data de confirmação do pagamento do pedido. Pedidos pagos com boleto bancário podem levar até 3 dias úteis para ter o pagamento confirmado. O pagamento poderá ser parcelado em até 6x no cartão de crédito, sendo até 3x sem juros com parcela mínima de R$ 50,00. Atenção! Válido apenas para opção \"Personalize Agora\".",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fcd7da40ede_c0b862ee2e6ca620142c7fd99802d4d2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fcd7da40ede_c0b862ee2e6ca620142c7fd99802d4d2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fcd7da40ede_c0b862ee2e6ca620142c7fd99802d4d2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131538,
-      "detail_elapsed_ms": 1913,
-      "scraped_at": "2026-05-12T05:10:11.155Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12249,
+      "scraped_at": "2026-05-12T16:43:53.949Z"
     },
     {
       "id": "prg-50-off-na-gift-box-retr",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retr",
       "title": "50% Off na Gift Box Retrô",
       "preview_title": "50% Off na Gift Box Retrô",
-      "validity": "Benefício válido de 07/05/2026 15:11 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: 50% Off na Gift Box Retrô - comporta até 30 Fotos Retrô, tamanho: 13,8 x 10,5 cm da FotoRegistro. Regras: Benefício exclusivo para Assinantes do Clube UOL. Válido para 50% Off na Gift Box Retrô - comporta até 30 Fotos Retrô, tamanho: 13,8 x 10,5 cm. Frete não incluso. Válido até 31/05/26. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. No fechamento do pedido, atente-se ao prazo de entrega pois eles variam de acordo com o produto e região. O prazo de entrega é contabilizado a partir da data de confirmação do pagamento do pedido. Pedidos pagos com boleto bancário podem levar até 3 dias úteis para ter o pagamento confirmado. O pagamento poderá ser parcelado em até 6x no cartão de crédito, sendo até 3x sem juros com parcela mínima de R$ 50,00. Atenção! Válido apenas para opção \"Personalize Agora\".",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ed687bae0e44ea8eb2401163fcc450ba.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ed687bae0e44ea8eb2401163fcc450ba.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ed687bae0e44ea8eb2401163fcc450ba.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131487,
-      "detail_elapsed_ms": 1679,
-      "scraped_at": "2026-05-12T05:10:12.834Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/prg-50-off-na-gift-box-retr\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 10527,
+      "scraped_at": "2026-05-12T17:37:38.559Z"
     },
     {
       "id": "prf-20-off-extra-na-seleo-de-moda-inverno",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130945,
-      "detail_elapsed_ms": 1645,
-      "scraped_at": "2026-05-12T05:10:14.481Z"
+      "detail_attempts": 2,
+      "detail_html_length": 125875,
+      "detail_elapsed_ms": 5638,
+      "scraped_at": "2026-05-12T17:37:56.706Z"
     },
     {
       "id": "pre-resgate-agora-30-fotos-retr-grtis",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131569,
-      "detail_elapsed_ms": 1451,
-      "scraped_at": "2026-05-12T05:10:15.932Z"
+      "detail_html_length": 126727,
+      "detail_elapsed_ms": 3737,
+      "scraped_at": "2026-05-12T17:38:00.450Z"
     },
     {
       "id": "prd-20-em-seleo-de-produtos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131009,
-      "detail_elapsed_ms": 1570,
-      "scraped_at": "2026-05-12T05:10:17.502Z"
+      "detail_html_length": 126148,
+      "detail_elapsed_ms": 1773,
+      "scraped_at": "2026-05-12T17:38:02.225Z"
     },
     {
       "id": "prc-20-off-na-melhor-seleo-de-produtos",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130863,
-      "detail_elapsed_ms": 1704,
-      "scraped_at": "2026-05-12T05:10:19.206Z"
+      "detail_html_length": 130861,
+      "detail_elapsed_ms": 1544,
+      "scraped_at": "2026-05-12T17:38:03.769Z"
     },
     {
       "id": "prb-20-off-para-compras-no-site",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130793,
-      "detail_elapsed_ms": 2144,
-      "scraped_at": "2026-05-12T05:10:21.351Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 1482,
+      "scraped_at": "2026-05-12T17:38:05.251Z"
     },
     {
       "id": "pra-ms-das-mes-open-english",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132994,
-      "detail_elapsed_ms": 3543,
-      "scraped_at": "2026-05-12T05:10:24.894Z"
+      "detail_html_length": 132984,
+      "detail_elapsed_ms": 3776,
+      "scraped_at": "2026-05-12T17:38:09.030Z"
     },
     {
       "id": "pqz-2x1-compre-o-curso-de-ingls-para-voc",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133419,
-      "detail_elapsed_ms": 1539,
-      "scraped_at": "2026-05-12T05:10:26.433Z"
+      "detail_html_length": 133388,
+      "detail_elapsed_ms": 2587,
+      "scraped_at": "2026-05-12T17:38:11.627Z"
     },
     {
       "id": "pqv-40-off-em-pizzas",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas",
       "title": "40% OFF em pizzas!",
       "preview_title": "40% OFF em pizzas!",
-      "validity": "Benefício válido de 06/05/2026 16:19 até 15/05/2026 23:59.",
-      "description": "Sobre o Parceiro: De uma pizzaria local no estado americano de Michigan, em 1960, à maior rede de pizzarias do mundo: a Domino’s Pizza está presente hoje em 85 países, com mais de 16 mil lojas. No Brasil, desembarcamos em 1993, inaugurando uma unidade no Rio de Janeiro, no bairro de Botafogo. Ao longo desses anos, investimos em tecnologia e delivery para melhorar a experiência dos amantes de pizza. Somos líderes em número de lojas - em 2020, somamos 300 lojas espalhadas pelo país. Benefício: 40% OFF no cardápio de pizzas (delivery) Regras de Uso: Válidas apenas para pedidos no site ou App da Domino’s Pizza; válido para pizzas médias e grandes; massas fina ou tradicional, todos os sabores; válido todos os dias da semana; o desconto é aplicado apenas na pizza, não no pedido completo; não se aplica à taxa de entrega; não cumulativo com outras promoções; também válido para carryout (retirada na loja); o cupom deve ser inserido no carrinho no momento do checkout; não é válido para pedidos feitos no balcão.",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Domino's",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/7852cbf7a1525572a796b6fccedf3170.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6859b567dc2e7e7d6e8c026708757a44.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131202,
-      "detail_elapsed_ms": 1683,
-      "scraped_at": "2026-05-12T05:10:28.116Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/dominos/pqV-40-off-em-pizzas\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 3238698,
+      "scraped_at": "2026-05-12T19:25:34.756Z"
     }
   ]
 }
