@@ -22,21 +22,21 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "12/05/2026 às 16:19",
-    "last_finished_at": "12/05/2026 às 16:19",
-    "last_success_at": "12/05/2026 às 16:19",
-    "status": "sem_novidade",
-    "summary": "nenhuma enviada; descartadas 1 (reenvio_bloqueado_7d=0, validade_expirada=0, inicio_validade_antigo_sem_fim=0, scraped_at_antigo=0, duplicadas=1, sem_scraped_at_em_backlog=0)",
-    "processed": 0,
-    "sent": 0,
+    "last_started_at": "12/05/2026 às 16:26",
+    "last_finished_at": "12/05/2026 às 16:26",
+    "last_success_at": "12/05/2026 às 16:26",
+    "status": "ok",
+    "summary": "1 enviada(s) com sucesso",
+    "processed": 1,
+    "sent": 1,
     "failed": 0,
     "pending_count": 0,
-    "last_error": "consumer_sem_envio_com_pending: pending=1 descartadas=1 falhas_telegram=0"
+    "last_error": ""
   },
   "global": {
-    "last_offer_title": "1 INGRESSO: 14/05 Neo Química Arena- SP",
-    "last_offer_at": "11/05/2026 às 15:45",
-    "last_offer_id": "pr9-1-ingresso-14-05-neo-qumica-arena-sp",
-    "last_offer_link": "https://t.me/c/3723320790/1426"
+    "last_offer_title": "50% Off no Colar Relicário",
+    "last_offer_at": "12/05/2026 às 16:26",
+    "last_offer_id": "prj-50-off-no-colar-relicrio",
+    "last_offer_link": "https://t.me/c/3723320790/1427"
   }
 }
