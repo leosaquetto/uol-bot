@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-12T19:19:20.114788Z",
+  "updated_at": "2026-05-12T19:26:14.870910Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 5,
-    "duplicada_latest": 6,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/espacolaser/prm-75-off-em-depilao-a-laser",
       "reason": "duplicada_historico",
       "trace_id": "trace_prm-75-off-em-depilao-a-laser"
-    },
-    {
-      "title": "50% Off no Colar Relicário",
-      "link": "https://clube.uol.com.br/fotoregistro/prj-50-off-no-colar-relicrio",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_prj-50-off-no-colar-relicrio"
     },
     {
       "title": "50% Off na Gift Box Retrô",
