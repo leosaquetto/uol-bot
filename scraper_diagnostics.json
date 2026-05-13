@@ -1,21 +1,51 @@
 {
-  "updated_at": "2026-05-13T23:49:26.929406Z",
+  "updated_at": "2026-05-13T23:51:29.195828Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 9,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 0,
-    "duplicada_latest": 0,
+    "duplicada_historico": 7,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 3
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 16/05 Teatro das Artes SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/prW-2-ingressos-16-05-teatro-das-artes-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prw-2-ingressos-16-05-teatro-das-artes-sp"
+    },
+    {
+      "title": "12% OFF na compra dos ingressos",
+      "link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prr-12-off-na-compra-dos-ingressos"
+    },
+    {
+      "title": "50% OFF no ingresso para mães",
+      "link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prq-50-off-no-ingresso-para-mes"
+    },
+    {
+      "title": "Até 25% OFF na Porto Serviço.",
+      "link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-at-25-off-na-porto-servio",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_prp-at-25-off-na-porto-servio"
+    },
+    {
+      "title": "15% OFF em todo site.",
+      "link": "https://clube.uol.com.br/lolacosmetics/prN-15-off-em-todo-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prn-15-off-em-todo-site"
+    },
     {
       "title": "50% OFF no par de ingressos",
       "link": "https://clube.uol.com.br/teatrojsafra/prL-50-off-no-par-de-ingressos",
@@ -29,10 +59,28 @@
       "trace_id": "trace_prk-50-off-no-par-de-ingressos"
     },
     {
+      "title": "15% OFF no site oficial",
+      "link": "https://clube.uol.com.br/integralmedica/prJ-15-off-no-site-oficial",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prj-15-off-no-site-oficial"
+    },
+    {
       "title": "50% OFF no par de ingressos",
       "link": "https://clube.uol.com.br/teatrojsafra/prI-50-off-no-par-de-ingressos",
       "reason": "duplicada_execucao",
       "trace_id": "trace_pri-50-off-no-par-de-ingressos"
+    },
+    {
+      "title": "35% OFF no par de ingressos - RJ",
+      "link": "https://clube.uol.com.br/espetaculoamaliarodriguessinfonico/prC-35-off-no-par-de-ingressos-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prc-35-off-no-par-de-ingressos-rj"
+    },
+    {
+      "title": "35% OFF no par de ingressos - SP",
+      "link": "https://clube.uol.com.br/espetaculoamaliarodriguessinfonico/prB-35-off-no-par-de-ingressos-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prb-35-off-no-par-de-ingressos-sp"
     }
   ]
 }
