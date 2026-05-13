@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 102621,
-  "run_duration_seconds": 102.62,
-  "avg_detail_ms_per_offer": 8552,
-  "generated_at": "2026-05-13T23:48:55.483Z",
+  "run_duration_ms": 31004,
+  "run_duration_seconds": 31,
+  "avg_detail_ms_per_offer": 2584,
+  "generated_at": "2026-05-13T23:59:33.209Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130885,
-      "detail_elapsed_ms": 4339,
-      "scraped_at": "2026-05-13T23:47:50.406Z"
+      "detail_html_length": 132364,
+      "detail_elapsed_ms": 2032,
+      "scraped_at": "2026-05-13T23:59:15.361Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124938,
-      "detail_elapsed_ms": 2481,
-      "scraped_at": "2026-05-13T23:47:52.898Z"
+      "detail_html_length": 131318,
+      "detail_elapsed_ms": 1671,
+      "scraped_at": "2026-05-13T23:59:17.052Z"
     },
     {
       "id": "prq-50-off-no-ingresso-para-mes",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132522,
-      "detail_elapsed_ms": 5294,
-      "scraped_at": "2026-05-13T23:47:58.192Z"
+      "detail_html_length": 133719,
+      "detail_elapsed_ms": 1876,
+      "scraped_at": "2026-05-13T23:59:18.928Z"
     },
     {
       "id": "prp-at-25-off-na-porto-servio",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-at-25-off-na-porto-servio",
       "title": "Até 25% OFF na Porto Serviço.",
       "preview_title": "Até 25% OFF na Porto Serviço.",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 13/05/2026 13:18 até 31/07/2026 23:59.",
+      "description": "Sobre a marca: A Porto Serviço, do Grupo Porto, é especialista em serviços emergenciais e de manutenção para casa e carro, democratizando o acesso à qualidade. Com mais de 13 mil prestadores, atende todo o Brasil, 24h por dia, 7 dias por semana, com praticidade e confiança. Benefício Até 25% de desconto nos serviços da Porto Serviço. Regras: O benefício oferece até 25% de desconto nos serviços da Porto Serviço, válido para contratações realizadas pelo site ou WhatsApp mediante aplicação do cupom no momento da compra. O atendimento está sujeito à disponibilidade da região e os valores podem sofrer alterações. O desconto não é cumulativo com outras promoções e não é válido para assinaturas.",
       "category": "",
       "partner_name": "Porto Seguro - Minúcia Seguros",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/707583da4eb84922f520121653ae60bf.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04a80a263cc_f47c2e2123b95466f18ba2b1278753b4.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04a80a263cc_f47c2e2123b95466f18ba2b1278753b4.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/portoseguro-minuciaseguros/prP-at-25-off-na-porto-servio\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12023,
-      "scraped_at": "2026-05-13T23:48:23.531Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04a80a263cc_f47c2e2123b95466f18ba2b1278753b4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131278,
+      "detail_elapsed_ms": 1600,
+      "scraped_at": "2026-05-13T23:59:20.529Z"
     },
     {
       "id": "prn-15-off-em-todo-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130722,
-      "detail_elapsed_ms": 4642,
-      "scraped_at": "2026-05-13T23:48:28.173Z"
+      "detail_html_length": 130760,
+      "detail_elapsed_ms": 1773,
+      "scraped_at": "2026-05-13T23:59:22.302Z"
     },
     {
       "id": "prm-50-off-no-par-de-ingressos",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131110,
-      "detail_elapsed_ms": 4755,
-      "scraped_at": "2026-05-13T23:48:32.975Z"
+      "detail_html_length": 132382,
+      "detail_elapsed_ms": 1791,
+      "scraped_at": "2026-05-13T23:59:24.094Z"
     },
     {
       "id": "prl-50-off-no-par-de-ingressos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131713,
-      "detail_elapsed_ms": 7079,
-      "scraped_at": "2026-05-13T23:48:40.054Z"
+      "detail_html_length": 131868,
+      "detail_elapsed_ms": 1453,
+      "scraped_at": "2026-05-13T23:59:25.547Z"
     },
     {
       "id": "prk-50-off-no-par-de-ingressos",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130945,
-      "detail_elapsed_ms": 3385,
-      "scraped_at": "2026-05-13T23:48:43.439Z"
+      "detail_html_length": 132219,
+      "detail_elapsed_ms": 1476,
+      "scraped_at": "2026-05-13T23:59:27.024Z"
     },
     {
       "id": "prj-15-off-no-site-oficial",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129316,
-      "detail_elapsed_ms": 3063,
-      "scraped_at": "2026-05-13T23:48:46.502Z"
+      "detail_html_length": 130857,
+      "detail_elapsed_ms": 1479,
+      "scraped_at": "2026-05-13T23:59:28.503Z"
     },
     {
       "id": "pri-50-off-no-par-de-ingressos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132008,
-      "detail_elapsed_ms": 3130,
-      "scraped_at": "2026-05-13T23:48:49.632Z"
+      "detail_html_length": 132034,
+      "detail_elapsed_ms": 1557,
+      "scraped_at": "2026-05-13T23:59:30.060Z"
     },
     {
       "id": "prc-35-off-no-par-de-ingressos-rj",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131080,
-      "detail_elapsed_ms": 3029,
-      "scraped_at": "2026-05-13T23:48:52.662Z"
+      "detail_html_length": 132286,
+      "detail_elapsed_ms": 1495,
+      "scraped_at": "2026-05-13T23:59:31.555Z"
     },
     {
       "id": "prb-35-off-no-par-de-ingressos-sp",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130704,
-      "detail_elapsed_ms": 2609,
-      "scraped_at": "2026-05-13T23:48:55.271Z"
+      "detail_html_length": 132223,
+      "detail_elapsed_ms": 1583,
+      "scraped_at": "2026-05-13T23:59:33.138Z"
     }
   ]
 }
