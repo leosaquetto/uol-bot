@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-14T18:54:39.462732Z",
+  "updated_at": "2026-05-14T18:55:33.900128Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 7,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 3
   },
   "discarded_offers": [
+    {
+      "title": "50% OFF no ingresso",
+      "link": "https://clube.uol.com.br/espetaculoentrenos-osmentalistas/psm-50-off-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psm-50-off-no-ingresso"
+    },
     {
       "title": "Prato em Dobro no Pé de Manga",
       "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
