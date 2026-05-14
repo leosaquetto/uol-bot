@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-14T13:01:46.535946Z",
+  "updated_at": "2026-05-14T13:11:58.574901Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 3
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 16/05 Teatro das Artes SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/prW-2-ingressos-16-05-teatro-das-artes-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prw-2-ingressos-16-05-teatro-das-artes-sp"
-    },
     {
       "title": "12% OFF na compra dos ingressos",
       "link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/espetaculoamaliarodriguessinfonico/prB-35-off-no-par-de-ingressos-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_prb-35-off-no-par-de-ingressos-sp"
+    },
+    {
+      "title": "25% OFF em capinhas Gocase!",
+      "link": "https://clube.uol.com.br/gocase/prv-25-off-em-capinhas-gocase",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prv-25-off-em-capinhas-gocase"
     }
   ]
 }
