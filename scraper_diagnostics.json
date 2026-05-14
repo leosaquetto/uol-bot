@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-14T20:32:15.000852Z",
+  "updated_at": "2026-05-14T20:41:16.347034Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 6,
     "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -81,12 +81,6 @@
       "link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
       "reason": "duplicada_historico",
       "trace_id": "trace_pru-prato-em-dobro-no-nmade"
-    },
-    {
-      "title": "12% OFF na compra dos ingressos",
-      "link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prr-12-off-na-compra-dos-ingressos"
     }
   ]
 }
