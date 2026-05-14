@@ -2159,7 +2159,19 @@ def should_send_to_canal2(offer: Dict, hashtags: Optional[List[str]] = None) -> 
     normalized_texts = [_norm(text) for text in relevant_texts if str(text or "").strip()]
     normalized_blob = " ".join(normalized_texts)
 
-    blocked_terms = ["partida", "campeonato", "futebol", "teatro", "stand up", "stand-up", "standup"]
+    blocked_terms = [
+        "partida",
+        "partidas",
+        "campeonato",
+        "campeonatos",
+        "futebol",
+        "jogo",
+        "jogos",
+        "teatro",
+        "stand up",
+        "stand-up",
+        "standup",
+    ]
     blocked_norms = {_norm(term).replace("-", " ") for term in blocked_terms}
     compact_blob = normalized_blob.replace("-", " ")
     for blocked in blocked_norms:
@@ -2223,7 +2235,7 @@ def forward_offer_to_canal2(offer: Dict, channel_message_id: int, latest_sent: L
         return True, "CANAL2_ID ausente; skip"
     if not should_send_to_canal2(offer):
         if is_campaign_for_canal2(offer):
-            log("canal2 ignorado: teatro/stand-up")
+            log("canal2 ignorado: teatro/stand-up/esporte")
         return True, "não elegível para CANAL2"
     if already_sent_to_canal2(offer, latest_sent):
         return True, "já enviada no CANAL2; skip"
