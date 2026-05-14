@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 51418,
-  "run_duration_seconds": 51.42,
-  "avg_detail_ms_per_offer": 4285,
-  "generated_at": "2026-05-14T13:00:34.080Z",
+  "run_duration_ms": 36238,
+  "run_duration_seconds": 36.24,
+  "avg_detail_ms_per_offer": 3020,
+  "generated_at": "2026-05-14T13:11:17.274Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "prw-2-ingressos-16-05-teatro-das-artes-sp",
-      "trace_id": "trace_prw-2-ingressos-16-05-teatro-das-artes-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/prW-2-ingressos-16-05-teatro-das-artes-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/prW-2-ingressos-16-05-teatro-das-artes-sp",
-      "title": "2 INGRESSOS: 16/05 Teatro das Artes SP",
-      "preview_title": "2 INGRESSOS: 16/05 Teatro das Artes SP",
-      "validity": "Benefício válido de 13/05/2026 16:38 até 15/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro das Artes, em São Paulo – SP. Data: Sábado, 16/05/2026 | 22:30. Local: Shopping Eldorado - Avenida Rebouças, 3970, em Pinheiros, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130804,
-      "detail_elapsed_ms": 4203,
-      "scraped_at": "2026-05-14T13:00:07.061Z"
-    },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
       "trace_id": "trace_prr-12-off-na-compra-dos-ingressos",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130134,
-      "detail_elapsed_ms": 2656,
-      "scraped_at": "2026-05-14T13:00:09.765Z"
+      "detail_html_length": 129884,
+      "detail_elapsed_ms": 3239,
+      "scraped_at": "2026-05-14T13:10:54.181Z"
     },
     {
       "id": "prq-50-off-no-ingresso-para-mes",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133683,
-      "detail_elapsed_ms": 2880,
-      "scraped_at": "2026-05-14T13:00:12.646Z"
+      "detail_html_length": 133678,
+      "detail_elapsed_ms": 2394,
+      "scraped_at": "2026-05-14T13:10:56.576Z"
     },
     {
       "id": "prp-at-25-off-na-porto-servio",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131254,
-      "detail_elapsed_ms": 2584,
-      "scraped_at": "2026-05-14T13:00:15.230Z"
+      "detail_html_length": 131248,
+      "detail_elapsed_ms": 1945,
+      "scraped_at": "2026-05-14T13:10:58.521Z"
     },
     {
       "id": "prn-15-off-em-todo-site",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130745,
-      "detail_elapsed_ms": 2209,
-      "scraped_at": "2026-05-14T13:00:17.439Z"
+      "detail_html_length": 130760,
+      "detail_elapsed_ms": 1931,
+      "scraped_at": "2026-05-14T13:11:00.452Z"
     },
     {
       "id": "prm-50-off-no-par-de-ingressos",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132338,
-      "detail_elapsed_ms": 2721,
-      "scraped_at": "2026-05-14T13:00:20.162Z"
+      "detail_html_length": 132333,
+      "detail_elapsed_ms": 2145,
+      "scraped_at": "2026-05-14T13:11:02.597Z"
     },
     {
       "id": "prl-50-off-no-par-de-ingressos",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131843,
-      "detail_elapsed_ms": 2206,
-      "scraped_at": "2026-05-14T13:00:22.368Z"
+      "detail_html_length": 131879,
+      "detail_elapsed_ms": 1848,
+      "scraped_at": "2026-05-14T13:11:04.446Z"
     },
     {
       "id": "prk-50-off-no-par-de-ingressos",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132183,
-      "detail_elapsed_ms": 2238,
-      "scraped_at": "2026-05-14T13:00:24.606Z"
+      "detail_html_length": 132218,
+      "detail_elapsed_ms": 2439,
+      "scraped_at": "2026-05-14T13:11:06.885Z"
     },
     {
       "id": "prj-15-off-no-site-oficial",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130832,
-      "detail_elapsed_ms": 2164,
-      "scraped_at": "2026-05-14T13:00:26.770Z"
+      "detail_html_length": 130817,
+      "detail_elapsed_ms": 2207,
+      "scraped_at": "2026-05-14T13:11:09.092Z"
     },
     {
       "id": "pri-50-off-no-par-de-ingressos",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131923,
-      "detail_elapsed_ms": 2565,
-      "scraped_at": "2026-05-14T13:00:29.337Z"
+      "detail_html_length": 131986,
+      "detail_elapsed_ms": 1977,
+      "scraped_at": "2026-05-14T13:11:11.069Z"
     },
     {
       "id": "prc-35-off-no-par-de-ingressos-rj",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132261,
-      "detail_elapsed_ms": 2226,
-      "scraped_at": "2026-05-14T13:00:31.563Z"
+      "detail_html_length": 132276,
+      "detail_elapsed_ms": 1999,
+      "scraped_at": "2026-05-14T13:11:13.069Z"
     },
     {
       "id": "prb-35-off-no-par-de-ingressos-sp",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132208,
-      "detail_elapsed_ms": 2241,
-      "scraped_at": "2026-05-14T13:00:33.804Z"
+      "detail_html_length": 132183,
+      "detail_elapsed_ms": 2117,
+      "scraped_at": "2026-05-14T13:11:15.187Z"
+    },
+    {
+      "id": "prv-25-off-em-capinhas-gocase",
+      "trace_id": "trace_prv-25-off-em-capinhas-gocase",
+      "link": "https://clube.uol.com.br/gocase/prv-25-off-em-capinhas-gocase",
+      "original_link": "https://clube.uol.com.br/gocase/prv-25-off-em-capinhas-gocase",
+      "title": "25% OFF em capinhas Gocase!",
+      "preview_title": "25% OFF em capinhas Gocase!",
+      "validity": "Benefício válido de 07/05/2026 13:43 até 31/05/2026 23:59.",
+      "description": "Sobre o Parceiro: Ter um produto Gocase com seu nome é a nossa maior paixão. Entregas para todo o Brasil. Dá uma olhadinha nos nossos produtos e personalize com seu nome. Felicidade Garantida! Vamos te ajudar. Personalize seus produtos. Beneficio: 25% OFF em capinhas Gocase! Regras: Desconto não cumulativo com demais cupons promocionais. Válido apenas na categoria capinhas. Sujeito a desativação sem aviso prévio.",
+      "category": "Compras e Presentes",
+      "partner_name": "GoCase",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/37104a846b2ed632825f3ed7205b080e.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5add299bcd09cc6117ef204e3f102397.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5add299bcd09cc6117ef204e3f102397.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5add299bcd09cc6117ef204e3f102397.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130710,
+      "detail_elapsed_ms": 1845,
+      "scraped_at": "2026-05-14T13:11:17.032Z"
     }
   ]
 }
