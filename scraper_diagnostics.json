@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-14T18:45:16.471567Z",
+  "updated_at": "2026-05-14T18:54:39.462732Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 6,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 3
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/teatrojsafra/prI-50-off-no-par-de-ingressos",
       "reason": "duplicada_execucao",
       "trace_id": "trace_pri-50-off-no-par-de-ingressos"
-    },
-    {
-      "title": "35% OFF no par de ingressos - RJ",
-      "link": "https://clube.uol.com.br/espetaculoamaliarodriguessinfonico/prC-35-off-no-par-de-ingressos-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prc-35-off-no-par-de-ingressos-rj"
     }
   ]
 }
