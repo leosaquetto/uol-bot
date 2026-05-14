@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-14T21:24:06.921885Z",
+  "updated_at": "2026-05-14T21:34:17.658203Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 2,
     "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -63,30 +63,6 @@
       "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
       "reason": "duplicada_latest",
       "trace_id": "trace_pss-30-off-em-seleo-feminina"
-    },
-    {
-      "title": "2 INGRESSOS: 15/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psq-2-ingressos-15-05-teatro-itlia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psq-2-ingressos-15-05-teatro-itlia-sp"
-    },
-    {
-      "title": "50% OFF no ingresso",
-      "link": "https://clube.uol.com.br/espetaculoentrenos-osmentalistas/psm-50-off-no-ingresso",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psm-50-off-no-ingresso"
-    },
-    {
-      "title": "Prato em Dobro no Pé de Manga",
-      "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prx-prato-em-dobro-no-p-de-manga"
-    },
-    {
-      "title": "Prato em Dobro no Nômade",
-      "link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pru-prato-em-dobro-no-nmade"
     }
   ]
 }
