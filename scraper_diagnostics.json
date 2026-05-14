@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-14T19:58:47.110692Z",
+  "updated_at": "2026-05-14T19:59:46.256717Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,11 +11,17 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 7,
-    "duplicada_latest": 2,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 1
   },
   "discarded_offers": [
+    {
+      "title": "20% OFF em seleção de Inverno!",
+      "link": "https://clube.uol.com.br/nike/psu-20-off-em-seleo-de-inverno",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psu-20-off-em-seleo-de-inverno"
+    },
     {
       "title": "2 Peças Infantis com 25% OFF",
       "link": "https://clube.uol.com.br/lojasrenner/pst-2-peas-infantis-com-25-off",
