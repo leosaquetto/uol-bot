@@ -14,12 +14,60 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29977,
-  "run_duration_seconds": 29.98,
-  "avg_detail_ms_per_offer": 2498,
-  "generated_at": "2026-05-14T19:58:12.437Z",
+  "run_duration_ms": 33006,
+  "run_duration_seconds": 33.01,
+  "avg_detail_ms_per_offer": 2751,
+  "generated_at": "2026-05-14T20:08:52.431Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "psw-aspiradores-com-at-r-800-off",
+      "trace_id": "trace_psw-aspiradores-com-at-r-800-off",
+      "link": "https://clube.uol.com.br/shopclub/psw-aspiradores-com-at-r-800-off",
+      "original_link": "https://clube.uol.com.br/shopclub/psw-aspiradores-com-at-r-800-off",
+      "title": "Aspiradores com até R$800 OFF",
+      "preview_title": "Aspiradores com até R$800 OFF",
+      "validity": "Benefício válido de 14/05/2026 00:00 até 17/05/2026 23:59.",
+      "description": "Sobre o parceiro: Nós somos um Clube de Vantagens de electrodomésticos e electroportáteis que tem como objetivo oferecer descontos especiais para você que é nosso cliente especial. Benefício: Aspiradores com até R$800 OFF! Regras de Uso: Clique em “Utilizar Benefício” para acessar a seleção de aspiradores participantes da campanha. O desconto será aplicado automaticamente nos produtos elegíveis. Oferta sujeita à disponibilidade de estoque e desativação sem aviso prévio.",
+      "category": "Eletrodomésticos e Eletrônicos",
+      "partner_name": "Shopclub Electrolux",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-shopclub.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f6ec83e99a4550ee128579b5e565a6c.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f6ec83e99a4550ee128579b5e565a6c.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f6ec83e99a4550ee128579b5e565a6c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132832,
+      "detail_elapsed_ms": 2385,
+      "scraped_at": "2026-05-14T20:08:33.764Z"
+    },
+    {
+      "id": "psv-r-150-off-em-legos-da-copa",
+      "trace_id": "trace_psv-r-150-off-em-legos-da-copa",
+      "link": "https://clube.uol.com.br/carrefour/psv-r-150-off-em-legos-da-copa",
+      "original_link": "https://clube.uol.com.br/carrefour/psv-r-150-off-em-legos-da-copa",
+      "title": "R$150 OFF em Legos da Copa",
+      "preview_title": "R$150 OFF em Legos da Copa",
+      "validity": "Benefício válido de 14/05/2026 11:08 até 31/05/2026 23:59.",
+      "description": "Sobre o parceiro: O Carrefour é uma das maiores redes varejistas do mundo, oferecendo uma ampla variedade de produtos nas categorias de mercado, eletrônicos, brinquedos, casa, esportes, moda e muito mais. Com presença em todo o Brasil, o Carrefour proporciona praticidade, ofertas exclusivas e uma experiência completa de compras. Benefício: 150,00 OFF em Lego Troféu Fifa ou Lego Bola de Futebol Regras: Válido para uma lista selecionada de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Compras e Presentes",
+      "partner_name": "Carrefour",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-carrefour.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131214,
+      "detail_elapsed_ms": 1913,
+      "scraped_at": "2026-05-14T20:08:35.711Z"
+    },
     {
       "id": "psu-20-off-em-seleo-de-inverno",
       "trace_id": "trace_psu-20-off-em-seleo-de-inverno",
@@ -40,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130515,
-      "detail_elapsed_ms": 2129,
-      "scraped_at": "2026-05-14T19:57:55.013Z"
+      "detail_html_length": 130664,
+      "detail_elapsed_ms": 1796,
+      "scraped_at": "2026-05-14T20:08:37.508Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -64,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130771,
-      "detail_elapsed_ms": 1450,
-      "scraped_at": "2026-05-14T19:57:56.489Z"
+      "detail_html_length": 130740,
+      "detail_elapsed_ms": 1544,
+      "scraped_at": "2026-05-14T20:08:39.052Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -88,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130730,
-      "detail_elapsed_ms": 1510,
-      "scraped_at": "2026-05-14T19:57:57.999Z"
+      "detail_html_length": 130710,
+      "detail_elapsed_ms": 1865,
+      "scraped_at": "2026-05-14T20:08:40.917Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -112,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131799,
-      "detail_elapsed_ms": 1641,
-      "scraped_at": "2026-05-14T19:57:59.641Z"
+      "detail_html_length": 131809,
+      "detail_elapsed_ms": 1725,
+      "scraped_at": "2026-05-14T20:08:42.642Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -136,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132283,
-      "detail_elapsed_ms": 1678,
-      "scraped_at": "2026-05-14T19:58:01.320Z"
+      "detail_html_length": 132291,
+      "detail_elapsed_ms": 1603,
+      "scraped_at": "2026-05-14T20:08:44.245Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -160,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132486,
-      "detail_elapsed_ms": 1536,
-      "scraped_at": "2026-05-14T19:58:02.856Z"
+      "detail_html_length": 132485,
+      "detail_elapsed_ms": 1594,
+      "scraped_at": "2026-05-14T20:08:45.839Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -184,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131307,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-05-14T19:58:04.440Z"
+      "detail_html_length": 131329,
+      "detail_elapsed_ms": 1649,
+      "scraped_at": "2026-05-14T20:08:47.488Z"
     },
     {
       "id": "prq-50-off-no-ingresso-para-mes",
@@ -209,8 +257,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133728,
-      "detail_elapsed_ms": 1537,
-      "scraped_at": "2026-05-14T19:58:05.977Z"
+      "detail_elapsed_ms": 1657,
+      "scraped_at": "2026-05-14T20:08:49.145Z"
     },
     {
       "id": "prp-at-25-off-na-porto-servio",
@@ -232,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131288,
-      "detail_elapsed_ms": 1471,
-      "scraped_at": "2026-05-14T19:58:07.448Z"
+      "detail_html_length": 131299,
+      "detail_elapsed_ms": 1660,
+      "scraped_at": "2026-05-14T20:08:50.806Z"
     },
     {
       "id": "prn-15-off-em-todo-site",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130749,
-      "detail_elapsed_ms": 1570,
-      "scraped_at": "2026-05-14T19:58:09.018Z"
-    },
-    {
-      "id": "prm-50-off-no-par-de-ingressos",
-      "trace_id": "trace_prm-50-off-no-par-de-ingressos",
-      "link": "https://clube.uol.com.br/teatrojsafra/prM-50-off-no-par-de-ingressos",
-      "original_link": "https://clube.uol.com.br/teatrojsafra/prM-50-off-no-par-de-ingressos",
-      "title": "50% OFF no par de ingressos",
-      "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 12/05/2026 17:14 até 07/09/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Espetáculo Cia Paulista de Dança em O Lago dos Cisnes. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo A Cia Paulista de Dança trás para você mais um grande Espetáculo: O Lago dos Cisnes, Música: Piotr Ilitch Tchaikovsky, Coreografia Original: Marius Petipa e Lev Ivanov. Estreia Mundial: 20 de fevereiro de 1877, Teatro Bolshoi, Moscou. O Lago dos Cisnes é uma das mais célebres obras do repertório clássico, reconhecida pela sua beleza dramática, música inesquecível e movimentos coreográficos de grande virtuosismo. Dividida em quatro atos, a história gira em torno do amor impossível entre o príncipe Siegfried e Odette, uma jovem transformada em cisne pelo feitiço de um feiticeiro maligno. Repleta de magia, traições e redenção, a obra explora os temas do amor verdadeiro e do sacrifício. Personagens Principais: Príncipe Siegfried, Odette (Rainha dos Cisnes), Odile (Cisne Negro), Rothbart: Feiticeiro, Rainha Mãe: Mãe de Siegfried. FICHA TÉCNICA: Duração: 120 minutos Classificação: Livre SERVIÇO: Temporada: 05, 06 e 07 de Setembro de 2026 Apresentações: Sábado 20h, Domingo e Segunda 18h",
-      "category": "Entretenimento e Viagens",
-      "partner_name": "Teatro J. Safra",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/29894d09d7ee5c563eff22a5cd98871f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/29894d09d7ee5c563eff22a5cd98871f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/29894d09d7ee5c563eff22a5cd98871f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132372,
-      "detail_elapsed_ms": 1480,
-      "scraped_at": "2026-05-14T19:58:10.498Z"
-    },
-    {
-      "id": "prl-50-off-no-par-de-ingressos",
-      "trace_id": "trace_prl-50-off-no-par-de-ingressos",
-      "link": "https://clube.uol.com.br/teatrojsafra/prL-50-off-no-par-de-ingressos",
-      "original_link": "https://clube.uol.com.br/teatrojsafra/prL-50-off-no-par-de-ingressos",
-      "title": "50% OFF no par de ingressos",
-      "preview_title": "50% OFF no par de ingressos",
-      "validity": "Benefício válido de 12/05/2026 17:14 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Show de Stand-UP Paulinho Gogó em Só e Bem Acompanhado. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Show de Stand-UP Dono do fenômeno Paulinho Gogó, Maurício Manfrini traz o inédito show “Só e Bem Acompanhado”. Não se iluda com a fala mansa e tranquila do exímio contador de histórias Maurício Manfrini. Por trás desse jeito cativante e que faz você achar que tem décadas de amizade com ele, tem um profissional da arte que não para de criar, produzir, se multiplicar. FICHA TÉCNICA: Duração: 80 minutos Classificação: 14 anos SERVIÇO: Temporada: 30 e 31 de Maio de 2026 Apresentações: Sábado 20h e Domingo 19h",
-      "category": "Entretenimento e Viagens",
-      "partner_name": "Teatro J. Safra",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/305762d82a847ff5086029584dc3b2fa.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/305762d82a847ff5086029584dc3b2fa.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/305762d82a847ff5086029584dc3b2fa.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131878,
-      "detail_elapsed_ms": 1821,
-      "scraped_at": "2026-05-14T19:58:12.319Z"
+      "detail_html_length": 130779,
+      "detail_elapsed_ms": 1518,
+      "scraped_at": "2026-05-14T20:08:52.324Z"
     }
   ]
 }
