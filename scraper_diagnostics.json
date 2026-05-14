@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-14T19:27:34.892683Z",
+  "updated_at": "2026-05-14T19:37:37.157105Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -13,7 +13,7 @@
     "duplicada_historico": 7,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
-    "duplicada_execucao": 3
+    "duplicada_execucao": 2
   },
   "discarded_offers": [
     {
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/integralmedica/prJ-15-off-no-site-oficial",
       "reason": "duplicada_historico",
       "trace_id": "trace_prj-15-off-no-site-oficial"
-    },
-    {
-      "title": "50% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/teatrojsafra/prI-50-off-no-par-de-ingressos",
-      "reason": "duplicada_execucao",
-      "trace_id": "trace_pri-50-off-no-par-de-ingressos"
     }
   ]
 }
