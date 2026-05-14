@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 44164,
-  "run_duration_seconds": 44.16,
-  "avg_detail_ms_per_offer": 3680,
-  "generated_at": "2026-05-14T19:15:40.620Z",
+  "run_duration_ms": 35668,
+  "run_duration_seconds": 35.67,
+  "avg_detail_ms_per_offer": 2972,
+  "generated_at": "2026-05-14T19:26:24.324Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pso-2-ingressos-14-05-teatro-itlia-sp",
-      "trace_id": "trace_pso-2-ingressos-14-05-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pso-2-ingressos-14-05-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pso-2-ingressos-14-05-teatro-itlia-sp",
-      "title": "2 INGRESSOS: 14/05 Teatro Itália - SP",
-      "preview_title": "2 INGRESSOS: 14/05 Teatro Itália - SP",
-      "validity": "Benefício válido de 14/05/2026 16:08 até 14/05/2026 19:30.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir e se reconhecer com a peça “Intenso — Meu Retorno de Saturno”, protagonizada por Vítor DiCastro, no Teatro Itália, em São Paulo – SP. Data: Hoje Quinta - feira, 14/05/2026 | 20:00. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a06163c5dfcb_014e540786804f10062254035cc4da43.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a06163c5dfcb_014e540786804f10062254035cc4da43.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a06163c5dfcb_014e540786804f10062254035cc4da43.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132215,
-      "detail_elapsed_ms": 3079,
-      "scraped_at": "2026-05-14T19:15:18.309Z"
-    },
     {
       "id": "psm-50-off-no-ingresso",
       "trace_id": "trace_psm-50-off-no-ingresso",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131768,
-      "detail_elapsed_ms": 2045,
-      "scraped_at": "2026-05-14T19:15:20.394Z"
+      "detail_html_length": 130380,
+      "detail_elapsed_ms": 2765,
+      "scraped_at": "2026-05-14T19:26:03.891Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132293,
-      "detail_elapsed_ms": 2072,
-      "scraped_at": "2026-05-14T19:15:22.468Z"
+      "detail_html_length": 132182,
+      "detail_elapsed_ms": 2054,
+      "scraped_at": "2026-05-14T19:26:06.011Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132477,
-      "detail_elapsed_ms": 1724,
-      "scraped_at": "2026-05-14T19:15:24.192Z"
+      "detail_html_length": 132504,
+      "detail_elapsed_ms": 2148,
+      "scraped_at": "2026-05-14T19:26:08.159Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131320,
-      "detail_elapsed_ms": 1770,
-      "scraped_at": "2026-05-14T19:15:25.962Z"
+      "detail_html_length": 131336,
+      "detail_elapsed_ms": 1752,
+      "scraped_at": "2026-05-14T19:26:09.911Z"
     },
     {
       "id": "prq-50-off-no-ingresso-para-mes",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133680,
-      "detail_elapsed_ms": 1668,
-      "scraped_at": "2026-05-14T19:15:27.630Z"
+      "detail_html_length": 133724,
+      "detail_elapsed_ms": 1597,
+      "scraped_at": "2026-05-14T19:26:11.508Z"
     },
     {
       "id": "prp-at-25-off-na-porto-servio",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131289,
-      "detail_elapsed_ms": 2269,
-      "scraped_at": "2026-05-14T19:15:29.899Z"
+      "detail_html_length": 131305,
+      "detail_elapsed_ms": 1668,
+      "scraped_at": "2026-05-14T19:26:13.176Z"
     },
     {
       "id": "prn-15-off-em-todo-site",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130710,
-      "detail_elapsed_ms": 2473,
-      "scraped_at": "2026-05-14T19:15:32.373Z"
+      "detail_html_length": 130766,
+      "detail_elapsed_ms": 1591,
+      "scraped_at": "2026-05-14T19:26:14.767Z"
     },
     {
       "id": "prm-50-off-no-par-de-ingressos",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132324,
-      "detail_elapsed_ms": 2122,
-      "scraped_at": "2026-05-14T19:15:34.496Z"
+      "detail_html_length": 132788,
+      "detail_elapsed_ms": 2057,
+      "scraped_at": "2026-05-14T19:26:16.824Z"
     },
     {
       "id": "prl-50-off-no-par-de-ingressos",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131839,
-      "detail_elapsed_ms": 2011,
-      "scraped_at": "2026-05-14T19:15:36.508Z"
+      "detail_html_length": 131895,
+      "detail_elapsed_ms": 1930,
+      "scraped_at": "2026-05-14T19:26:18.755Z"
     },
     {
       "id": "prk-50-off-no-par-de-ingressos",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132230,
-      "detail_elapsed_ms": 2038,
-      "scraped_at": "2026-05-14T19:15:38.546Z"
+      "detail_html_length": 132235,
+      "detail_elapsed_ms": 1812,
+      "scraped_at": "2026-05-14T19:26:20.567Z"
     },
     {
       "id": "prj-15-off-no-site-oficial",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130837,
-      "detail_elapsed_ms": 1832,
-      "scraped_at": "2026-05-14T19:15:40.378Z"
+      "detail_html_length": 130874,
+      "detail_elapsed_ms": 1734,
+      "scraped_at": "2026-05-14T19:26:22.301Z"
+    },
+    {
+      "id": "pri-50-off-no-par-de-ingressos",
+      "trace_id": "trace_pri-50-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/prI-50-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatrojsafra/prI-50-off-no-par-de-ingressos",
+      "title": "50% OFF no par de ingressos",
+      "preview_title": "50% OFF no par de ingressos",
+      "validity": "Benefício válido de 12/05/2026 17:14 até 24/05/2026 23:59.",
+      "description": "Sobre o parceiro: O Teatro J. Safra está localizado na Rua Josef Kryss, 318, na Barra Funda, sob os cuidados da dupla de artistas Maurício Machado e Eduardo Figueiredo, respectivamente ator e diretor teatral. Dança, shows, espetáculos circenses, espetáculos multimídias, óperas, humor, mímica, músicaerudita, recitais, e toda a infinidade de gêneros e estilos artísticos que estiverem alinhados ao crivo da dupla de curadores. Benefício: 50% OFF no par de ingresso no Espetáculo Ballet Stagium em Coisas do Brasil. Regras: Para obter o desconto de 50% no par de ingressos, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira do espetáculo, escolha a opção \"CLUBE UOL\", insira o código e prossiga com a compra dos ingressos com desconto. Benefício válido para Assinante UOL e válido para ingresso na modalidade inteira. Sobre o Espetáculo “Coisas do Brasil” teve sua estreia no Theatro Municipal de São Paulo em julho de 1979, recebendo da Associação Paulista dos Críticos de Arte (APCA) o prêmio de melhor espetáculo. A obra traça um percurso histórico, poético e cultural da formação da nossa sociedade. Criação de Décio Otero e direção teatral de Marika Gidali, “Coisas do Brasil” percorreu todo o território Nacional e vários países da América Latina, não somente em teatros, mas em escolas, hospitais, presídios, ginásios e praças públicas. FICHA TÉCNICA: Duração: 60 minutos Classificação: Livre SERVIÇO: Temporada: 22, 23 e 24 de maio de 2026 Apresentações: Sexta 21h, Sábado 20h e Domingo 18h.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro J. Safra",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5a5af9810a49daf2531656fa7e01aef0.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fb220ffb4c169d9bc540df9704f7f63e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fb220ffb4c169d9bc540df9704f7f63e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fb220ffb4c169d9bc540df9704f7f63e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132052,
+      "detail_elapsed_ms": 1881,
+      "scraped_at": "2026-05-14T19:26:24.182Z"
     }
   ]
 }
