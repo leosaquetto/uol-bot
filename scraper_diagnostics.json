@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-14T19:48:52.499465Z",
+  "updated_at": "2026-05-14T19:58:47.110692Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -13,7 +13,7 @@
     "duplicada_historico": 7,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
-    "duplicada_execucao": 2
+    "duplicada_execucao": 1
   },
   "discarded_offers": [
     {
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/teatrojsafra/prL-50-off-no-par-de-ingressos",
       "reason": "duplicada_execucao",
       "trace_id": "trace_prl-50-off-no-par-de-ingressos"
-    },
-    {
-      "title": "50% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/teatrojsafra/prK-50-off-no-par-de-ingressos",
-      "reason": "duplicada_execucao",
-      "trace_id": "trace_prk-50-off-no-par-de-ingressos"
     }
   ]
 }
