@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-14T19:17:12.681711Z",
+  "updated_at": "2026-05-14T19:26:58.288393Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,18 +10,12 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 7,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
-    "duplicada_execucao": 2
+    "duplicada_execucao": 3
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 14/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pso-2-ingressos-14-05-teatro-itlia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pso-2-ingressos-14-05-teatro-itlia-sp"
-    },
     {
       "title": "50% OFF no ingresso",
       "link": "https://clube.uol.com.br/espetaculoentrenos-osmentalistas/psm-50-off-no-ingresso",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/integralmedica/prJ-15-off-no-site-oficial",
       "reason": "duplicada_historico",
       "trace_id": "trace_prj-15-off-no-site-oficial"
+    },
+    {
+      "title": "50% OFF no par de ingressos",
+      "link": "https://clube.uol.com.br/teatrojsafra/prI-50-off-no-par-de-ingressos",
+      "reason": "duplicada_execucao",
+      "trace_id": "trace_pri-50-off-no-par-de-ingressos"
     }
   ]
 }
