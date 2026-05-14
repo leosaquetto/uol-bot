@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-14T20:30:54.911374Z",
+  "updated_at": "2026-05-14T20:32:15.000852Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 3,
+    "duplicada_historico": 7,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Semana do Frete Grátis",
+      "link": "https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psy-semana-do-frete-grtis"
+    },
+    {
+      "title": "Lavadoras com até 40% OFF + Frete Grátis",
+      "link": "https://clube.uol.com.br/shopclub/psx-lavadoras-com-at-40-off-frete-grtis",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psx-lavadoras-com-at-40-off-frete-grtis"
+    },
     {
       "title": "Aspiradores com até R$800 OFF",
       "link": "https://clube.uol.com.br/shopclub/psw-aspiradores-com-at-r-800-off",
@@ -45,6 +57,12 @@
       "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
       "reason": "duplicada_latest",
       "trace_id": "trace_pss-30-off-em-seleo-feminina"
+    },
+    {
+      "title": "2 INGRESSOS: 15/05 Teatro Itália - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psq-2-ingressos-15-05-teatro-itlia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psq-2-ingressos-15-05-teatro-itlia-sp"
     },
     {
       "title": "50% OFF no ingresso",
