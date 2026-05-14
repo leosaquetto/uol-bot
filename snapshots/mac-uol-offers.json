@@ -14,19 +14,19 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 26119,
-  "run_duration_seconds": 26.12,
-  "avg_detail_ms_per_offer": 2177,
-  "generated_at": "2026-05-14T20:51:17.949Z",
+  "run_duration_ms": 25466,
+  "run_duration_seconds": 25.47,
+  "avg_detail_ms_per_offer": 2122,
+  "generated_at": "2026-05-14T21:01:49.893Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "psz-r-100-off-under-armour-selecionados",
-      "trace_id": "trace_psz-r-100-off-under-armour-selecionados",
-      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-under-armour-selecionados",
-      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-under-armour-selecionados",
+      "id": "psz-r-100-off-em-seleo",
+      "trace_id": "trace_psz-r-100-off-em-seleo",
+      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
+      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
       "title": "R$ 100 OFF em seleção!",
-      "preview_title": "R$100 OFF Under Armour Selecionados",
+      "preview_title": "R$ 100 OFF em seleção!",
       "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
       "description": "Sobre o parceiro: A Under Armour é uma marca global de artigos esportivos reconhecida por sua tecnologia, inovação e alta performance. A marca oferece roupas, calçados e acessórios desenvolvidos para proporcionar conforto, resistência e desempenho para atletas e apaixonados por esporte. Benefício: R$100 OFF extra em seleção de produtos da Under Armour! Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130679,
-      "detail_elapsed_ms": 2031,
-      "scraped_at": "2026-05-14T20:51:00.775Z"
+      "detail_html_length": 129102,
+      "detail_elapsed_ms": 1677,
+      "scraped_at": "2026-05-14T21:01:33.131Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132929,
-      "detail_elapsed_ms": 1680,
-      "scraped_at": "2026-05-14T20:51:02.457Z"
+      "detail_html_length": 132890,
+      "detail_elapsed_ms": 1616,
+      "scraped_at": "2026-05-14T21:01:34.748Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133185,
-      "detail_elapsed_ms": 1572,
-      "scraped_at": "2026-05-14T20:51:04.029Z"
+      "detail_html_length": 133176,
+      "detail_elapsed_ms": 1562,
+      "scraped_at": "2026-05-14T21:01:36.310Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133010,
-      "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-05-14T20:51:05.543Z"
+      "detail_html_length": 133030,
+      "detail_elapsed_ms": 1569,
+      "scraped_at": "2026-05-14T21:01:37.879Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130828,
-      "detail_elapsed_ms": 1558,
-      "scraped_at": "2026-05-14T20:51:07.101Z"
+      "detail_html_length": 130849,
+      "detail_elapsed_ms": 1731,
+      "scraped_at": "2026-05-14T21:01:39.610Z"
     },
     {
       "id": "psu-20-off-em-seleo-de-inverno",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130714,
-      "detail_elapsed_ms": 1896,
-      "scraped_at": "2026-05-14T20:51:08.997Z"
+      "detail_html_length": 131143,
+      "detail_elapsed_ms": 1470,
+      "scraped_at": "2026-05-14T21:01:41.080Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130801,
-      "detail_elapsed_ms": 1568,
-      "scraped_at": "2026-05-14T20:51:10.565Z"
+      "detail_html_length": 130792,
+      "detail_elapsed_ms": 1423,
+      "scraped_at": "2026-05-14T21:01:42.503Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130731,
-      "detail_elapsed_ms": 1471,
-      "scraped_at": "2026-05-14T20:51:12.036Z"
+      "detail_elapsed_ms": 1517,
+      "scraped_at": "2026-05-14T21:01:44.020Z"
     },
     {
       "id": "psq-2-ingressos-15-05-teatro-itlia-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132441,
-      "detail_elapsed_ms": 1473,
-      "scraped_at": "2026-05-14T20:51:13.509Z"
+      "detail_html_length": 132453,
+      "detail_elapsed_ms": 1452,
+      "scraped_at": "2026-05-14T21:01:45.472Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131789,
-      "detail_elapsed_ms": 1442,
-      "scraped_at": "2026-05-14T20:51:14.951Z"
+      "detail_html_length": 131790,
+      "detail_elapsed_ms": 1502,
+      "scraped_at": "2026-05-14T21:01:46.974Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132273,
-      "detail_elapsed_ms": 1417,
-      "scraped_at": "2026-05-14T20:51:16.368Z"
+      "detail_html_length": 132284,
+      "detail_elapsed_ms": 1428,
+      "scraped_at": "2026-05-14T21:01:48.402Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132476,
-      "detail_elapsed_ms": 1498,
-      "scraped_at": "2026-05-14T20:51:17.866Z"
+      "detail_html_length": 132467,
+      "detail_elapsed_ms": 1442,
+      "scraped_at": "2026-05-14T21:01:49.844Z"
     }
   ]
 }
