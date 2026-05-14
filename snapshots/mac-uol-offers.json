@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 31650,
-  "run_duration_seconds": 31.65,
-  "avg_detail_ms_per_offer": 2638,
-  "generated_at": "2026-05-14T20:30:14.471Z",
+  "run_duration_ms": 27883,
+  "run_duration_seconds": 27.88,
+  "avg_detail_ms_per_offer": 2324,
+  "generated_at": "2026-05-14T20:40:47.304Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "psz-r-100-off-under-armour-selecionados",
+      "trace_id": "trace_psz-r-100-off-under-armour-selecionados",
+      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-under-armour-selecionados",
+      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-under-armour-selecionados",
+      "title": "R$100 OFF Under Armour Selecionados",
+      "preview_title": "R$100 OFF Under Armour Selecionados",
+      "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
+      "description": "Sobre o parceiro:A Under Armour é uma marca global de artigos esportivos reconhecida por sua tecnologia, inovação e alta performance. A marca oferece roupas, calçados e acessórios desenvolvidos para proporcionar conforto, resistência e desempenho para atletas e apaixonados por esporte. Benefício: R$100 OFF extra em seleção de produtos da Under Armour! Regras: Válido para uma seleção de produtos. Desconto aplicado automaticamente nos produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Under Armour",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130819,
+      "detail_elapsed_ms": 2250,
+      "scraped_at": "2026-05-14T20:40:29.299Z"
+    },
     {
       "id": "psy-semana-do-frete-grtis",
       "trace_id": "trace_psy-semana-do-frete-grtis",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132741,
-      "detail_elapsed_ms": 2061,
-      "scraped_at": "2026-05-14T20:29:55.625Z"
+      "detail_html_length": 132929,
+      "detail_elapsed_ms": 1887,
+      "scraped_at": "2026-05-14T20:40:31.186Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133183,
-      "detail_elapsed_ms": 1652,
-      "scraped_at": "2026-05-14T20:29:57.295Z"
+      "detail_html_length": 133215,
+      "detail_elapsed_ms": 1639,
+      "scraped_at": "2026-05-14T20:40:32.825Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133020,
-      "detail_elapsed_ms": 1497,
-      "scraped_at": "2026-05-14T20:29:58.792Z"
+      "detail_html_length": 133021,
+      "detail_elapsed_ms": 1465,
+      "scraped_at": "2026-05-14T20:40:34.290Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130839,
-      "detail_elapsed_ms": 1439,
-      "scraped_at": "2026-05-14T20:30:00.231Z"
+      "detail_html_length": 130849,
+      "detail_elapsed_ms": 1633,
+      "scraped_at": "2026-05-14T20:40:35.923Z"
     },
     {
       "id": "psu-20-off-em-seleo-de-inverno",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130713,
-      "detail_elapsed_ms": 1674,
-      "scraped_at": "2026-05-14T20:30:01.906Z"
+      "detail_html_length": 131121,
+      "detail_elapsed_ms": 1487,
+      "scraped_at": "2026-05-14T20:40:37.411Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130770,
-      "detail_elapsed_ms": 1605,
-      "scraped_at": "2026-05-14T20:30:03.511Z"
+      "detail_html_length": 130801,
+      "detail_elapsed_ms": 1858,
+      "scraped_at": "2026-05-14T20:40:39.269Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130731,
-      "detail_elapsed_ms": 2106,
-      "scraped_at": "2026-05-14T20:30:05.617Z"
+      "detail_html_length": 130752,
+      "detail_elapsed_ms": 1973,
+      "scraped_at": "2026-05-14T20:40:41.242Z"
     },
     {
       "id": "psq-2-ingressos-15-05-teatro-itlia-sp",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132451,
-      "detail_elapsed_ms": 1929,
-      "scraped_at": "2026-05-14T20:30:07.546Z"
+      "detail_html_length": 132473,
+      "detail_elapsed_ms": 1489,
+      "scraped_at": "2026-05-14T20:40:42.731Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131788,
-      "detail_elapsed_ms": 1989,
-      "scraped_at": "2026-05-14T20:30:09.535Z"
+      "detail_html_length": 131800,
+      "detail_elapsed_ms": 1548,
+      "scraped_at": "2026-05-14T20:40:44.280Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132282,
-      "detail_elapsed_ms": 1785,
-      "scraped_at": "2026-05-14T20:30:11.320Z"
+      "detail_html_length": 132283,
+      "detail_elapsed_ms": 1556,
+      "scraped_at": "2026-05-14T20:40:45.837Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132486,
-      "detail_elapsed_ms": 1566,
-      "scraped_at": "2026-05-14T20:30:12.886Z"
-    },
-    {
-      "id": "prr-12-off-na-compra-dos-ingressos",
-      "trace_id": "trace_prr-12-off-na-compra-dos-ingressos",
-      "link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
-      "original_link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
-      "title": "12% OFF na compra dos ingressos",
-      "preview_title": "12% OFF na compra dos ingressos",
-      "validity": "Benefício válido de 13/05/2026 14:00 até 31/05/2026 23:59.",
-      "description": "Sobre o parcerio: Ocupando 4 milhões de m², o Thermas Water Park conta com atrações aquáticas e secas. O parque aquático possui 8 milhões de m³ de águas em temperaturas ambiente, climatizada e aquecida, quilômetros de toboáguas, piscinas de diferentes tipos, recreação, fazendinha e muito mais! Tudo isso espalhado em 5 áreas tematizadas e decoradas para o seu lazer e diversão em família. Benefício: 12% OFF na compra dos ingressos Regras: 1) Faça o cadastro no site do Thermas. 2) Clique no link. 3) No site, procure o calendário com os preços dos ingressos. 4) Escolha um dia para se divertir no Parque. 5) Adicione os ingressos e clique em PROSSEGUIR. 6) O desconto é aplicado no final da compra! Endereço: Rodovia SP 304 - Km 189 Fazenda Limoeiro, s/nº, São Pedro - SP",
-      "category": "",
-      "partner_name": "Thermas de São Pedro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/baecba4f3ee408e8d2444c1cb200ebc0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/178bcceb3085c34a1516af3d3f8b25cd.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/178bcceb3085c34a1516af3d3f8b25cd.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/178bcceb3085c34a1516af3d3f8b25cd.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131309,
-      "detail_elapsed_ms": 1533,
-      "scraped_at": "2026-05-14T20:30:14.419Z"
+      "detail_html_length": 132497,
+      "detail_elapsed_ms": 1403,
+      "scraped_at": "2026-05-14T20:40:47.241Z"
     }
   ]
 }
