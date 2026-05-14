@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-14T19:59:46.256717Z",
+  "updated_at": "2026-05-14T20:09:33.288312Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -13,7 +13,7 @@
     "duplicada_historico": 7,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
-    "duplicada_execucao": 1
+    "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/lolacosmetics/prN-15-off-em-todo-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_prn-15-off-em-todo-site"
-    },
-    {
-      "title": "50% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/teatrojsafra/prL-50-off-no-par-de-ingressos",
-      "reason": "duplicada_execucao",
-      "trace_id": "trace_prl-50-off-no-par-de-ingressos"
     }
   ]
 }
