@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 9,
+  "detail_fail_count": 3,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 9,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 3
   },
-  "run_duration_ms": 102597,
-  "run_duration_seconds": 102.6,
-  "avg_detail_ms_per_offer": 8550,
-  "generated_at": "2026-05-16T05:26:52.568Z",
+  "run_duration_ms": 224910,
+  "run_duration_seconds": 224.91,
+  "avg_detail_ms_per_offer": 18743,
+  "generated_at": "2026-05-16T05:40:56.289Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial",
       "title": "10% OFF no site oficial",
       "preview_title": "10% OFF no site oficial",
-      "validity": "Benefício válido de 15/05/2026 12:18 até 31/12/2026 23:59.",
-      "description": "Sobre o parceiro: A Sanavita é uma indústria brasileira especializada em suplementos alimentares funcionais e vitaminas, focada em nutrição, beleza e bem-estar. Benefício: Cupom de 10% OFF no site oficial da Sanavita. Regras: Desconto de 10% OFF no site oficial da Sanavita. Válido para todas as compras feitas no site oficial. Cupom válido para todo o site e cumulativo com outras ofertas.",
+      "validity": "",
+      "description": "",
       "category": "Beleza",
       "partner_name": "Sanavita",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/133cbcc7218e727de5c011437ed14078.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130385,
-      "detail_elapsed_ms": 5048,
-      "scraped_at": "2026-05-16T05:26:29.110Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12011,
+      "scraped_at": "2026-05-16T05:38:27.924Z"
     },
     {
       "id": "psg-2-ingressos-17-05-teatro-villa-lobos",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132367,
-      "detail_elapsed_ms": 3706,
-      "scraped_at": "2026-05-16T05:26:33.364Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132376,
+      "detail_elapsed_ms": 12036,
+      "scraped_at": "2026-05-16T05:38:53.118Z"
     },
     {
       "id": "psa-2-ingressos-16-05-teatro-j-safra-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132467,
-      "detail_elapsed_ms": 1631,
-      "scraped_at": "2026-05-16T05:26:34.995Z"
+      "detail_html_length": 132456,
+      "detail_elapsed_ms": 6314,
+      "scraped_at": "2026-05-16T05:38:59.432Z"
     },
     {
       "id": "ps3-2-ingressos-24-05-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133288,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-05-16T05:26:36.682Z"
+      "detail_html_length": 133286,
+      "detail_elapsed_ms": 11769,
+      "scraped_at": "2026-05-16T05:39:11.202Z"
     },
     {
       "id": "ps1-2-ingressos-17-05-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133263,
-      "detail_elapsed_ms": 1747,
-      "scraped_at": "2026-05-16T05:26:38.430Z"
+      "detail_html_length": 133221,
+      "detail_elapsed_ms": 7550,
+      "scraped_at": "2026-05-16T05:39:18.752Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130765,
-      "detail_elapsed_ms": 2746,
-      "scraped_at": "2026-05-16T05:26:41.176Z"
+      "detail_html_length": 130763,
+      "detail_elapsed_ms": 2702,
+      "scraped_at": "2026-05-16T05:39:21.454Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -171,22 +171,22 @@
       "original_link": "https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis",
       "title": "Semana do Frete Grátis",
       "preview_title": "Semana do Frete Grátis",
-      "validity": "Benefício válido de 14/05/2026 00:00 até 17/05/2026 23:59.",
-      "description": "Sobre o parceiro: Nós somos um Clube de Vantagens de electrodomésticos e electroportáteis que tem como objetivo oferecer descontos especiais para você que é nosso cliente especial. Benefício: Semana do frete grátis em produtos selecionados! Regras de Uso: Clique em “Utilizar Benefício” para acessar a seleção de produtos participantes da campanha. O desconto será aplicado automaticamente nos produtos elegíveis. Oferta sujeita à disponibilidade de estoque e desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Shopclub Electrolux",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-shopclub.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132891,
-      "detail_elapsed_ms": 1788,
-      "scraped_at": "2026-05-16T05:26:42.964Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12162,
+      "scraped_at": "2026-05-16T05:39:46.162Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133147,
-      "detail_elapsed_ms": 1710,
-      "scraped_at": "2026-05-16T05:26:44.674Z"
+      "detail_html_length": 133146,
+      "detail_elapsed_ms": 9849,
+      "scraped_at": "2026-05-16T05:39:56.012Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132983,
-      "detail_elapsed_ms": 1668,
-      "scraped_at": "2026-05-16T05:26:46.342Z"
+      "detail_html_length": 132991,
+      "detail_elapsed_ms": 7323,
+      "scraped_at": "2026-05-16T05:40:03.336Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130801,
-      "detail_elapsed_ms": 1753,
-      "scraped_at": "2026-05-16T05:26:48.095Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 13139,
+      "scraped_at": "2026-05-16T05:40:16.475Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130802,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-05-16T05:26:49.743Z"
+      "detail_html_length": 129583,
+      "detail_elapsed_ms": 10812,
+      "scraped_at": "2026-05-16T05:40:27.287Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
       "title": "30% OFF em seleção feminina",
       "preview_title": "30% OFF em seleção feminina",
-      "validity": "Benefício válido de 14/05/2026 15:06 até 18/05/2026 23:59.",
-      "description": "Sobre o parceiro: A Renner é uma das maiores varejistas de moda do Brasil, com produtos femininos, masculinos, infantis, calçados, acessórios e itens para casa. Benefício: 30% OFF em seleção feminina Regras: Oferta válida para itens selecionados da campanha, no site da Renner. Sujeito à disponibilidade de estoque e não cumulativo com outras promoções, sujeito a desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dfd9246d4026cacb22d4fe5a6cc4a84b.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dfd9246d4026cacb22d4fe5a6cc4a84b.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dfd9246d4026cacb22d4fe5a6cc4a84b.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130723,
-      "detail_elapsed_ms": 2267,
-      "scraped_at": "2026-05-16T05:26:52.010Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12581,
+      "scraped_at": "2026-05-16T05:40:52.880Z"
     }
   ]
 }
