@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 30734,
-  "run_duration_seconds": 30.73,
-  "avg_detail_ms_per_offer": 2561,
-  "generated_at": "2026-05-16T19:54:16.483Z",
+  "run_duration_ms": 25865,
+  "run_duration_seconds": 25.86,
+  "avg_detail_ms_per_offer": 2155,
+  "generated_at": "2026-05-16T20:04:46.918Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129268,
-      "detail_elapsed_ms": 2122,
-      "scraped_at": "2026-05-16T19:53:58.850Z"
+      "detail_html_length": 129201,
+      "detail_elapsed_ms": 2125,
+      "scraped_at": "2026-05-16T20:04:30.325Z"
     },
     {
       "id": "psa-2-ingressos-16-05-teatro-j-safra-sp",
@@ -64,33 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132455,
-      "detail_elapsed_ms": 1758,
-      "scraped_at": "2026-05-16T19:54:00.623Z"
-    },
-    {
-      "id": "ps1-2-ingressos-17-05-morumbi-park-sp",
-      "trace_id": "trace_ps1-2-ingressos-17-05-morumbi-park-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ps1-2-ingressos-17-05-morumbi-park-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ps1-2-ingressos-17-05-morumbi-park-sp",
-      "title": "2 INGRESSOS: 17/05 Morumbi Park- SP",
-      "preview_title": "2 INGRESSOS: 17/05 Morumbi Park- SP",
-      "validity": "Benefício válido de 14/05/2026 17:52 até 16/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para o Morumbi Park, e aproveite atrações como trampolins e arvorismo, além da área baby no Morumbi/SP. Data: 17 de Maio de 2026 (Passaporte 3 horas). Horário:Quarta a sexta, das 12h às 20h | sábado, das 12h às 22h | e domingos e feriados, das 10h às 20h. Local: Av. Major Sylvio de Magalhães Padilha - 16741. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133259,
-      "detail_elapsed_ms": 1497,
-      "scraped_at": "2026-05-16T19:54:02.120Z"
+      "detail_html_length": 132498,
+      "detail_elapsed_ms": 1643,
+      "scraped_at": "2026-05-16T20:04:31.974Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130781,
-      "detail_elapsed_ms": 1496,
-      "scraped_at": "2026-05-16T19:54:03.616Z"
+      "detail_html_length": 130797,
+      "detail_elapsed_ms": 1562,
+      "scraped_at": "2026-05-16T20:04:33.536Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132918,
-      "detail_elapsed_ms": 1443,
-      "scraped_at": "2026-05-16T19:54:05.059Z"
+      "detail_html_length": 132953,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-05-16T20:04:35.012Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133581,
-      "detail_elapsed_ms": 1731,
-      "scraped_at": "2026-05-16T19:54:06.790Z"
+      "detail_html_length": 133188,
+      "detail_elapsed_ms": 1677,
+      "scraped_at": "2026-05-16T20:04:36.690Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133010,
-      "detail_elapsed_ms": 1605,
-      "scraped_at": "2026-05-16T19:54:08.395Z"
+      "detail_html_length": 133033,
+      "detail_elapsed_ms": 1449,
+      "scraped_at": "2026-05-16T20:04:38.139Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130848,
-      "detail_elapsed_ms": 1510,
-      "scraped_at": "2026-05-16T19:54:09.906Z"
+      "detail_html_length": 130853,
+      "detail_elapsed_ms": 1491,
+      "scraped_at": "2026-05-16T20:04:39.630Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130770,
-      "detail_elapsed_ms": 1457,
-      "scraped_at": "2026-05-16T19:54:11.363Z"
+      "detail_html_length": 130785,
+      "detail_elapsed_ms": 1434,
+      "scraped_at": "2026-05-16T20:04:41.064Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130741,
-      "detail_elapsed_ms": 1862,
-      "scraped_at": "2026-05-16T19:54:13.225Z"
+      "detail_html_length": 130744,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-05-16T20:04:42.539Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131253,
-      "detail_elapsed_ms": 1611,
-      "scraped_at": "2026-05-16T19:54:14.836Z"
+      "detail_html_length": 130817,
+      "detail_elapsed_ms": 1474,
+      "scraped_at": "2026-05-16T20:04:44.013Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131789,
-      "detail_elapsed_ms": 1548,
-      "scraped_at": "2026-05-16T19:54:16.384Z"
+      "detail_html_length": 131823,
+      "detail_elapsed_ms": 1468,
+      "scraped_at": "2026-05-16T20:04:45.481Z"
+    },
+    {
+      "id": "prx-prato-em-dobro-no-p-de-manga",
+      "trace_id": "trace_prx-prato-em-dobro-no-p-de-manga",
+      "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
+      "original_link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
+      "title": "Prato em Dobro no Pé de Manga",
+      "preview_title": "Prato em Dobro no Pé de Manga",
+      "validity": "Benefício válido de 13/05/2026 23:17 até 31/05/2027 23:59.",
+      "description": "Sobre o parceiro: Restaurante ao ar livre com muito verde embaixo de 2 mangueiras centenárias, um lugar onde as conversas ganham a companhia do som de uma pequena queda-d’água, que forma um laguinho no jardim. Benefício: Na compra de um prato principal individual, ganhe outro de igual ou menor valor no Restaurante Pé de Manga. Como resgatar seu benefício: Clique em \"Utilizar este benefício\" e baixe o seu voucher de Assinante UOL. Em seguida, basta apresentar o voucher e documento original no restaurante. Regulamento da Campanha “Prato em Dobro” Benefício exclusivo para assinantes UOL. Válido de segunda a quinta, no almoço e jantar. Não cumulativo com outras promoções. Não aplicável ao menu executivo. Condições do benefício: Não é válido para feriados e datas comemorativas (Dia das Mães/Namorados/Pais, etc). Taxa de serviço e gorjeta não estão incluídas no benefício. Os pratos deverão ser consumidos no restaurante. O código é único e individual. A venda ou o repasse do código são proibidos. A cortesia será sempre o prato principal de menor valor da conta. Não válido para delivery, embalagem para viagem e festivais com cardápios pré-definidos. Venha conhecer o Restaurante Pé de Manga: R. Arapiraca, 152 - Vila Madalena, São Paulo - SP.",
+      "category": "Comer e Beber",
+      "partner_name": "Restaurante Pé de Manga",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/848d98caaf68af8777eb88dc2cb9bd2d.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a8ed4067c9532630222545ab6291ea05.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a8ed4067c9532630222545ab6291ea05.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a8ed4067c9532630222545ab6291ea05.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132287,
+      "detail_elapsed_ms": 1386,
+      "scraped_at": "2026-05-16T20:04:46.867Z"
     }
   ]
 }
