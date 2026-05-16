@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-16T17:29:04.504382Z",
+  "updated_at": "2026-05-16T17:29:52.467287Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 6,
-    "duplicada_latest": 5,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -75,6 +75,12 @@
       "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
       "reason": "duplicada_latest",
       "trace_id": "trace_pss-30-off-em-seleo-feminina"
+    },
+    {
+      "title": "R$30 OFF + Frete Grátis acima de R$299",
+      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psp-r-30-off-frete-grtis-acima-de-r-299"
     },
     {
       "title": "50% OFF no ingresso",
