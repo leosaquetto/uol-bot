@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 246775,
-  "run_duration_seconds": 246.78,
-  "avg_detail_ms_per_offer": 20565,
-  "generated_at": "2026-05-16T21:26:27.265Z",
+  "run_duration_ms": 115437,
+  "run_duration_seconds": 115.44,
+  "avg_detail_ms_per_offer": 9620,
+  "generated_at": "2026-05-16T21:38:28.756Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130447,
-      "detail_elapsed_ms": 23204,
-      "scraped_at": "2026-05-16T21:25:00.577Z"
+      "detail_html_length": 130450,
+      "detail_elapsed_ms": 12282,
+      "scraped_at": "2026-05-16T21:37:42.869Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
       "title": "R$ 100 OFF em seleção!",
       "preview_title": "R$ 100 OFF em seleção!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
+      "description": "Sobre o parceiro: A Under Armour é uma marca global de artigos esportivos reconhecida por sua tecnologia, inovação e alta performance. A marca oferece roupas, calçados e acessórios desenvolvidos para proporcionar conforto, resistência e desempenho para atletas e apaixonados por esporte. Benefício: R$100 OFF extra em seleção de produtos da Under Armour! Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Under Armour",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12050,
-      "scraped_at": "2026-05-16T21:25:26.519Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130677,
+      "detail_elapsed_ms": 6963,
+      "scraped_at": "2026-05-16T21:37:49.842Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis",
       "title": "Semana do Frete Grátis",
       "preview_title": "Semana do Frete Grátis",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 14/05/2026 00:00 até 17/05/2026 23:59.",
+      "description": "Sobre o parceiro: Nós somos um Clube de Vantagens de electrodomésticos e electroportáteis que tem como objetivo oferecer descontos especiais para você que é nosso cliente especial. Benefício: Semana do frete grátis em produtos selecionados! Regras de Uso: Clique em “Utilizar Benefício” para acessar a seleção de produtos participantes da campanha. O desconto será aplicado automaticamente nos produtos elegíveis. Oferta sujeita à disponibilidade de estoque e desativação sem aviso prévio.",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Shopclub Electrolux",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-shopclub.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 15173,
-      "scraped_at": "2026-05-16T21:25:54.100Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132901,
+      "detail_elapsed_ms": 5632,
+      "scraped_at": "2026-05-16T21:37:55.475Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133155,
-      "detail_elapsed_ms": 9204,
-      "scraped_at": "2026-05-16T21:26:03.305Z"
+      "detail_html_length": 131930,
+      "detail_elapsed_ms": 3478,
+      "scraped_at": "2026-05-16T21:37:58.953Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132982,
-      "detail_elapsed_ms": 2271,
-      "scraped_at": "2026-05-16T21:26:05.577Z"
+      "detail_html_length": 133001,
+      "detail_elapsed_ms": 5906,
+      "scraped_at": "2026-05-16T21:38:04.883Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130809,
-      "detail_elapsed_ms": 2509,
-      "scraped_at": "2026-05-16T21:26:08.086Z"
+      "detail_html_length": 129662,
+      "detail_elapsed_ms": 5071,
+      "scraped_at": "2026-05-16T21:38:09.954Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130752,
-      "detail_elapsed_ms": 2820,
-      "scraped_at": "2026-05-16T21:26:10.906Z"
+      "detail_html_length": 130675,
+      "detail_elapsed_ms": 4586,
+      "scraped_at": "2026-05-16T21:38:14.540Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130712,
-      "detail_elapsed_ms": 2347,
-      "scraped_at": "2026-05-16T21:26:13.253Z"
+      "detail_elapsed_ms": 3434,
+      "scraped_at": "2026-05-16T21:38:17.974Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130775,
-      "detail_elapsed_ms": 3905,
-      "scraped_at": "2026-05-16T21:26:17.160Z"
+      "detail_html_length": 130805,
+      "detail_elapsed_ms": 3624,
+      "scraped_at": "2026-05-16T21:38:21.598Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131759,
-      "detail_elapsed_ms": 4584,
-      "scraped_at": "2026-05-16T21:26:21.744Z"
+      "detail_html_length": 131770,
+      "detail_elapsed_ms": 2362,
+      "scraped_at": "2026-05-16T21:38:23.961Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132244,
-      "detail_elapsed_ms": 2521,
-      "scraped_at": "2026-05-16T21:26:24.266Z"
+      "detail_html_length": 132255,
+      "detail_elapsed_ms": 2636,
+      "scraped_at": "2026-05-16T21:38:26.598Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131201,
-      "detail_elapsed_ms": 2510,
-      "scraped_at": "2026-05-16T21:26:26.776Z"
+      "detail_html_length": 132458,
+      "detail_elapsed_ms": 1978,
+      "scraped_at": "2026-05-16T21:38:28.577Z"
     }
   ]
 }
