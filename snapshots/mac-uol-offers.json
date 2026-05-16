@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 70291,
-  "run_duration_seconds": 70.29,
-  "avg_detail_ms_per_offer": 5858,
-  "generated_at": "2026-05-16T02:19:51.049Z",
+  "run_duration_ms": 238714,
+  "run_duration_seconds": 238.71,
+  "avg_detail_ms_per_offer": 19893,
+  "generated_at": "2026-05-16T02:34:00.145Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial",
       "title": "10% OFF no site oficial",
       "preview_title": "10% OFF no site oficial",
-      "validity": "Benefício válido de 15/05/2026 12:18 até 31/12/2026 23:59.",
-      "description": "Sobre o parceiro: A Sanavita é uma indústria brasileira especializada em suplementos alimentares funcionais e vitaminas, focada em nutrição, beleza e bem-estar. Benefício: Cupom de 10% OFF no site oficial da Sanavita. Regras: Desconto de 10% OFF no site oficial da Sanavita. Válido para todas as compras feitas no site oficial. Cupom válido para todo o site e cumulativo com outras ofertas.",
+      "validity": "",
+      "description": "",
       "category": "Beleza",
       "partner_name": "Sanavita",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/133cbcc7218e727de5c011437ed14078.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130447,
-      "detail_elapsed_ms": 7065,
-      "scraped_at": "2026-05-16T02:19:21.643Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12049,
+      "scraped_at": "2026-05-16T02:32:02.319Z"
     },
     {
       "id": "psg-2-ingressos-17-05-teatro-villa-lobos",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126003,
-      "detail_elapsed_ms": 2212,
-      "scraped_at": "2026-05-16T02:19:23.858Z"
+      "detail_html_length": 132389,
+      "detail_elapsed_ms": 10604,
+      "scraped_at": "2026-05-16T02:32:12.926Z"
     },
     {
       "id": "psb-2-ingressos-22-05-teatro-j-safra-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132479,
-      "detail_elapsed_ms": 3055,
-      "scraped_at": "2026-05-16T02:19:26.913Z"
+      "detail_html_length": 132342,
+      "detail_elapsed_ms": 10295,
+      "scraped_at": "2026-05-16T02:32:23.221Z"
     },
     {
       "id": "psa-2-ingressos-16-05-teatro-j-safra-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132455,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-05-16T02:19:29.049Z"
+      "detail_html_length": 132330,
+      "detail_elapsed_ms": 7472,
+      "scraped_at": "2026-05-16T02:32:30.693Z"
     },
     {
       "id": "ps3-2-ingressos-24-05-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126904,
-      "detail_elapsed_ms": 2164,
-      "scraped_at": "2026-05-16T02:19:31.213Z"
+      "detail_html_length": 133291,
+      "detail_elapsed_ms": 8178,
+      "scraped_at": "2026-05-16T02:32:38.872Z"
     },
     {
       "id": "ps1-2-ingressos-17-05-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133211,
-      "detail_elapsed_ms": 3493,
-      "scraped_at": "2026-05-16T02:19:34.707Z"
+      "detail_html_length": 133244,
+      "detail_elapsed_ms": 9296,
+      "scraped_at": "2026-05-16T02:32:48.168Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130743,
-      "detail_elapsed_ms": 2475,
-      "scraped_at": "2026-05-16T02:19:37.182Z"
+      "detail_html_length": 130747,
+      "detail_elapsed_ms": 10632,
+      "scraped_at": "2026-05-16T02:32:58.800Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132812,
-      "detail_elapsed_ms": 2504,
-      "scraped_at": "2026-05-16T02:19:39.686Z"
+      "detail_html_length": 132893,
+      "detail_elapsed_ms": 7240,
+      "scraped_at": "2026-05-16T02:33:06.040Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133144,
-      "detail_elapsed_ms": 2482,
-      "scraped_at": "2026-05-16T02:19:42.168Z"
+      "detail_html_length": 133422,
+      "detail_elapsed_ms": 14112,
+      "scraped_at": "2026-05-16T02:33:20.152Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132992,
-      "detail_elapsed_ms": 2461,
-      "scraped_at": "2026-05-16T02:19:44.630Z"
+      "detail_html_length": 132985,
+      "detail_elapsed_ms": 9264,
+      "scraped_at": "2026-05-16T02:33:29.416Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -279,10 +279,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 124179,
-      "detail_elapsed_ms": 2628,
-      "scraped_at": "2026-05-16T02:19:47.258Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130813,
+      "detail_elapsed_ms": 9172,
+      "scraped_at": "2026-05-16T02:33:51.289Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130731,
-      "detail_elapsed_ms": 3356,
-      "scraped_at": "2026-05-16T02:19:50.614Z"
+      "detail_html_length": 130745,
+      "detail_elapsed_ms": 7315,
+      "scraped_at": "2026-05-16T02:33:58.604Z"
     }
   ]
 }
