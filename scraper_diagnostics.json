@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-16T16:32:38.653024Z",
+  "updated_at": "2026-05-16T17:29:04.504382Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 6,
     "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -23,22 +23,10 @@
       "trace_id": "trace_psi-10-off-no-site-oficial"
     },
     {
-      "title": "2 INGRESSOS: 17/05 - Teatro Villa Lobos",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psG-2-ingressos-17-05-teatro-villa-lobos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psg-2-ingressos-17-05-teatro-villa-lobos"
-    },
-    {
       "title": "2 INGRESSOS: 16/05 Teatro J. Safra SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/psA-2-ingressos-16-05-teatro-j-safra-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_psa-2-ingressos-16-05-teatro-j-safra-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 24/05 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ps3-2-ingressos-24-05-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ps3-2-ingressos-24-05-morumbi-park-sp"
     },
     {
       "title": "2 INGRESSOS: 17/05 Morumbi Park- SP",
@@ -87,6 +75,12 @@
       "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
       "reason": "duplicada_latest",
       "trace_id": "trace_pss-30-off-em-seleo-feminina"
+    },
+    {
+      "title": "50% OFF no ingresso",
+      "link": "https://clube.uol.com.br/espetaculoentrenos-osmentalistas/psm-50-off-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psm-50-off-no-ingresso"
     }
   ]
 }
