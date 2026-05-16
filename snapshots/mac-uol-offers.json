@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 140829,
-  "run_duration_seconds": 140.83,
-  "avg_detail_ms_per_offer": 11736,
-  "generated_at": "2026-05-16T21:12:09.371Z",
+  "run_duration_ms": 246775,
+  "run_duration_seconds": 246.78,
+  "avg_detail_ms_per_offer": 20565,
+  "generated_at": "2026-05-16T21:26:27.265Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124085,
-      "detail_elapsed_ms": 3796,
-      "scraped_at": "2026-05-16T21:11:39.435Z"
-    },
-    {
-      "id": "psa-2-ingressos-16-05-teatro-j-safra-sp",
-      "trace_id": "trace_psa-2-ingressos-16-05-teatro-j-safra-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psA-2-ingressos-16-05-teatro-j-safra-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psA-2-ingressos-16-05-teatro-j-safra-sp",
-      "title": "2 INGRESSOS: 16/05 Teatro J. Safra SP",
-      "preview_title": "2 INGRESSOS: 16/05 Teatro J. Safra SP",
-      "validity": "Benefício válido de 15/05/2026 12:04 até 16/05/2026 20:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para “Bob Zoom em: Clube de Aventuras”! Um espetáculo musical e interativo com a formiguinha azul mais querida do Brasil, que convida a criançada para uma jornada divertida em busca do trevinho da sorte, com grandes sucessos e músicas inéditas, no Teatro J. Safra em São Paulo - SP. Data: Sábado, 16 de Maio, às 16h. Local: Rua Josef Kryss, 318 - Barra Funda - São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b1db02bce7acef1e2f4f5eaf536c5296.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b1db02bce7acef1e2f4f5eaf536c5296.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b1db02bce7acef1e2f4f5eaf536c5296.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132456,
-      "detail_elapsed_ms": 3588,
-      "scraped_at": "2026-05-16T21:11:43.028Z"
+      "detail_html_length": 130447,
+      "detail_elapsed_ms": 23204,
+      "scraped_at": "2026-05-16T21:25:00.577Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -75,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
       "title": "R$ 100 OFF em seleção!",
       "preview_title": "R$ 100 OFF em seleção!",
-      "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
-      "description": "Sobre o parceiro: A Under Armour é uma marca global de artigos esportivos reconhecida por sua tecnologia, inovação e alta performance. A marca oferece roupas, calçados e acessórios desenvolvidos para proporcionar conforto, resistência e desempenho para atletas e apaixonados por esporte. Benefício: R$100 OFF extra em seleção de produtos da Under Armour! Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Under Armour",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130733,
-      "detail_elapsed_ms": 2455,
-      "scraped_at": "2026-05-16T21:11:45.483Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12050,
+      "scraped_at": "2026-05-16T21:25:26.519Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -99,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis",
       "title": "Semana do Frete Grátis",
       "preview_title": "Semana do Frete Grátis",
-      "validity": "Benefício válido de 14/05/2026 00:00 até 17/05/2026 23:59.",
-      "description": "Sobre o parceiro: Nós somos um Clube de Vantagens de electrodomésticos e electroportáteis que tem como objetivo oferecer descontos especiais para você que é nosso cliente especial. Benefício: Semana do frete grátis em produtos selecionados! Regras de Uso: Clique em “Utilizar Benefício” para acessar a seleção de produtos participantes da campanha. O desconto será aplicado automaticamente nos produtos elegíveis. Oferta sujeita à disponibilidade de estoque e desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Shopclub Electrolux",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-shopclub.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8b1c0dce26c5090b94b3e00a2c7145eb.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132879,
-      "detail_elapsed_ms": 1948,
-      "scraped_at": "2026-05-16T21:11:47.431Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 15173,
+      "scraped_at": "2026-05-16T21:25:54.100Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133146,
-      "detail_elapsed_ms": 2247,
-      "scraped_at": "2026-05-16T21:11:49.678Z"
+      "detail_html_length": 133155,
+      "detail_elapsed_ms": 9204,
+      "scraped_at": "2026-05-16T21:26:03.305Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126608,
-      "detail_elapsed_ms": 2603,
-      "scraped_at": "2026-05-16T21:11:52.282Z"
+      "detail_html_length": 132982,
+      "detail_elapsed_ms": 2271,
+      "scraped_at": "2026-05-16T21:26:05.577Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129415,
-      "detail_elapsed_ms": 3018,
-      "scraped_at": "2026-05-16T21:11:55.300Z"
+      "detail_html_length": 130809,
+      "detail_elapsed_ms": 2509,
+      "scraped_at": "2026-05-16T21:26:08.086Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130741,
-      "detail_elapsed_ms": 2034,
-      "scraped_at": "2026-05-16T21:11:57.334Z"
+      "detail_html_length": 130752,
+      "detail_elapsed_ms": 2820,
+      "scraped_at": "2026-05-16T21:26:10.906Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130701,
-      "detail_elapsed_ms": 1841,
-      "scraped_at": "2026-05-16T21:11:59.175Z"
+      "detail_html_length": 130712,
+      "detail_elapsed_ms": 2347,
+      "scraped_at": "2026-05-16T21:26:13.253Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129615,
-      "detail_elapsed_ms": 2918,
-      "scraped_at": "2026-05-16T21:12:02.094Z"
+      "detail_html_length": 130775,
+      "detail_elapsed_ms": 3905,
+      "scraped_at": "2026-05-16T21:26:17.160Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125387,
-      "detail_elapsed_ms": 5033,
-      "scraped_at": "2026-05-16T21:12:07.127Z"
+      "detail_html_length": 131759,
+      "detail_elapsed_ms": 4584,
+      "scraped_at": "2026-05-16T21:26:21.744Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132243,
-      "detail_elapsed_ms": 2034,
-      "scraped_at": "2026-05-16T21:12:09.161Z"
+      "detail_html_length": 132244,
+      "detail_elapsed_ms": 2521,
+      "scraped_at": "2026-05-16T21:26:24.266Z"
+    },
+    {
+      "id": "pru-prato-em-dobro-no-nmade",
+      "trace_id": "trace_pru-prato-em-dobro-no-nmade",
+      "link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
+      "original_link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
+      "title": "Prato em Dobro no Nômade",
+      "preview_title": "Prato em Dobro no Nômade",
+      "validity": "Benefício válido de 13/05/2026 17:23 até 31/05/2027 23:59.",
+      "description": "Sobre o parceiro: O Nômade Bar & Restaurante é o mais novo projeto do grupo responsável pelo Pé de Manga, trazendo para Pinheiros uma proposta inovadora de gastronomia contemporânea internacional com influências mediterrâneas, latino-americanas e orientais. Benefício: Na compra de um prato principal individual, ganhe outro de igual ou menor valor no Nômade Bar e Restaurante. Como resgatar seu benefício: Clique em \"Utilizar este benefício\" e baixe o seu voucher de Assinante UOL. Em seguida, basta apresentar o voucher e documento original no restaurante. Regulamento da Campanha “Prato em Dobro” Benefício exclusivo para assinantes UOL. Válido de segunda a domingo, no almoço e jantar. Não cumulativo com outras promoções. Não aplicável ao menu executivo. Condições do benefício: Não é válido em feriados, vésperas de feriados e datas comemorativas (Dia das Mães, Namorados, Pais, etc). Taxa de serviço e gorjeta não estão incluídas no benefício. Os pratos deverão ser consumidos no restaurante. O código é único e individual. A venda ou o repasse do código são proibidos. A cortesia será sempre o prato principal de menor valor da conta. Não válido para delivery, embalagem para viagem e festivais com cardápios pré-definidos. Horário do restaurante: Segunda a Sexta: 12h às 22h Sábado: 12h às 22:30h Domingo: 12h às 19:30h Venha conhecer o Nômade Bar e Restaurante: Av. Rebouças, 3400 - Pinheiros - São Paulo - SP.",
+      "category": "Comer e Beber",
+      "partner_name": "Nômade Bar & Restaurante",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8393b2704850b4faca62e2f1aa7eee73.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/00cc47b32af1ccceb0880e68c390d3f6.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/00cc47b32af1ccceb0880e68c390d3f6.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/00cc47b32af1ccceb0880e68c390d3f6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131201,
+      "detail_elapsed_ms": 2510,
+      "scraped_at": "2026-05-16T21:26:26.776Z"
     }
   ]
 }
