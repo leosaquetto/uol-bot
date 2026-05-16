@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-16T19:55:24.968542Z",
+  "updated_at": "2026-05-16T20:05:15.863280Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/psA-2-ingressos-16-05-teatro-j-safra-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_psa-2-ingressos-16-05-teatro-j-safra-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 17/05 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ps1-2-ingressos-17-05-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ps1-2-ingressos-17-05-morumbi-park-sp"
     },
     {
       "title": "R$ 100 OFF em seleção!",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/espetaculoentrenos-osmentalistas/psm-50-off-no-ingresso",
       "reason": "duplicada_historico",
       "trace_id": "trace_psm-50-off-no-ingresso"
+    },
+    {
+      "title": "Prato em Dobro no Pé de Manga",
+      "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prx-prato-em-dobro-no-p-de-manga"
     }
   ]
 }
