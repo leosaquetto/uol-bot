@@ -1,27 +1,21 @@
 {
-  "updated_at": "2026-05-16T01:24:46.361969Z",
+  "updated_at": "2026-05-16T02:20:19.806877Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 5,
+    "duplicada_historico": 4,
+    "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 30/05 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ps4-2-ingressos-30-05-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ps4-2-ingressos-30-05-morumbi-park-sp"
-    },
     {
       "title": "2 INGRESSOS: 24/05 Morumbi Park- SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ps3-2-ingressos-24-05-morumbi-park-sp",
@@ -29,22 +23,10 @@
       "trace_id": "trace_ps3-2-ingressos-24-05-morumbi-park-sp"
     },
     {
-      "title": "2 INGRESSOS: 23/05 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ps2-2-ingressos-23-05-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ps2-2-ingressos-23-05-morumbi-park-sp"
-    },
-    {
       "title": "2 INGRESSOS: 17/05 Morumbi Park- SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ps1-2-ingressos-17-05-morumbi-park-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_ps1-2-ingressos-17-05-morumbi-park-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 16/05 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ps0-2-ingressos-16-05-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ps0-2-ingressos-16-05-morumbi-park-sp"
     },
     {
       "title": "R$ 100 OFF em seleção!",
@@ -75,12 +57,6 @@
       "link": "https://clube.uol.com.br/carrefour/psv-r-150-off-em-legos-da-copa",
       "reason": "duplicada_historico",
       "trace_id": "trace_psv-r-150-off-em-legos-da-copa"
-    },
-    {
-      "title": "20% OFF em seleção de Inverno!",
-      "link": "https://clube.uol.com.br/nike/psu-20-off-em-seleo-de-inverno",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psu-20-off-em-seleo-de-inverno"
     },
     {
       "title": "2 Peças Infantis com 25% OFF",
