@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 40582,
-  "run_duration_seconds": 40.58,
-  "avg_detail_ms_per_offer": 3382,
-  "generated_at": "2026-05-17T20:05:01.612Z",
+  "run_duration_ms": 222763,
+  "run_duration_seconds": 222.76,
+  "avg_detail_ms_per_offer": 18564,
+  "generated_at": "2026-05-17T20:31:01.304Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129191,
-      "detail_elapsed_ms": 3346,
-      "scraped_at": "2026-05-17T20:04:41.322Z"
+      "detail_attempts": 2,
+      "detail_html_length": 129428,
+      "detail_elapsed_ms": 9972,
+      "scraped_at": "2026-05-17T20:29:49.311Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129573,
-      "detail_elapsed_ms": 1836,
-      "scraped_at": "2026-05-17T20:04:43.185Z"
+      "detail_html_length": 130735,
+      "detail_elapsed_ms": 5555,
+      "scraped_at": "2026-05-17T20:29:54.867Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132888,
-      "detail_elapsed_ms": 1865,
-      "scraped_at": "2026-05-17T20:04:45.050Z"
+      "detail_html_length": 132733,
+      "detail_elapsed_ms": 3602,
+      "scraped_at": "2026-05-17T20:29:58.469Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133135,
-      "detail_elapsed_ms": 1653,
-      "scraped_at": "2026-05-17T20:04:46.703Z"
+      "detail_html_length": 133146,
+      "detail_elapsed_ms": 2766,
+      "scraped_at": "2026-05-17T20:30:01.235Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132971,
-      "detail_elapsed_ms": 2037,
-      "scraped_at": "2026-05-17T20:04:48.741Z"
+      "detail_html_length": 132973,
+      "detail_elapsed_ms": 5499,
+      "scraped_at": "2026-05-17T20:30:06.734Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/carrefour/psv-r-150-off-em-legos-da-copa",
       "title": "R$150 OFF em Legos da Copa",
       "preview_title": "R$150 OFF em Legos da Copa",
-      "validity": "Benefício válido de 14/05/2026 11:08 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: O Carrefour é uma das maiores redes varejistas do mundo, oferecendo uma ampla variedade de produtos nas categorias de mercado, eletrônicos, brinquedos, casa, esportes, moda e muito mais. Com presença em todo o Brasil, o Carrefour proporciona praticidade, ofertas exclusivas e uma experiência completa de compras. Benefício: 150,00 OFF em Lego Troféu Fifa ou Lego Bola de Futebol Regras: Válido para uma lista selecionada de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Carrefour",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-carrefour.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130789,
-      "detail_elapsed_ms": 1835,
-      "scraped_at": "2026-05-17T20:04:50.576Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/carrefour/psv-r-150-off-em-legos-da-copa\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12446,
+      "scraped_at": "2026-05-17T20:30:31.923Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130740,
-      "detail_elapsed_ms": 1746,
-      "scraped_at": "2026-05-17T20:04:52.322Z"
+      "detail_html_length": 130656,
+      "detail_elapsed_ms": 8039,
+      "scraped_at": "2026-05-17T20:30:39.962Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130691,
-      "detail_elapsed_ms": 1710,
-      "scraped_at": "2026-05-17T20:04:54.032Z"
+      "detail_html_length": 130702,
+      "detail_elapsed_ms": 2525,
+      "scraped_at": "2026-05-17T20:30:42.487Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130763,
-      "detail_elapsed_ms": 1826,
-      "scraped_at": "2026-05-17T20:04:55.858Z"
+      "detail_html_length": 124403,
+      "detail_elapsed_ms": 4944,
+      "scraped_at": "2026-05-17T20:30:47.431Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131787,
-      "detail_elapsed_ms": 1905,
-      "scraped_at": "2026-05-17T20:04:57.763Z"
+      "detail_html_length": 131771,
+      "detail_elapsed_ms": 6319,
+      "scraped_at": "2026-05-17T20:30:53.750Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132242,
-      "detail_elapsed_ms": 1705,
-      "scraped_at": "2026-05-17T20:04:59.468Z"
+      "detail_html_length": 132234,
+      "detail_elapsed_ms": 2408,
+      "scraped_at": "2026-05-17T20:30:56.158Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132427,
-      "detail_elapsed_ms": 1927,
-      "scraped_at": "2026-05-17T20:05:01.395Z"
+      "detail_html_length": 132439,
+      "detail_elapsed_ms": 3411,
+      "scraped_at": "2026-05-17T20:30:59.569Z"
     }
   ]
 }
