@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 26815,
-  "run_duration_seconds": 26.82,
-  "avg_detail_ms_per_offer": 2235,
-  "generated_at": "2026-05-17T14:45:37.695Z",
+  "run_duration_ms": 43197,
+  "run_duration_seconds": 43.2,
+  "avg_detail_ms_per_offer": 3600,
+  "generated_at": "2026-05-17T14:56:28.181Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130428,
-      "detail_elapsed_ms": 2266,
-      "scraped_at": "2026-05-17T14:45:20.783Z"
+      "detail_html_length": 129226,
+      "detail_elapsed_ms": 3844,
+      "scraped_at": "2026-05-17T14:56:05.816Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130778,
-      "detail_elapsed_ms": 1537,
-      "scraped_at": "2026-05-17T14:45:22.321Z"
+      "detail_html_length": 130750,
+      "detail_elapsed_ms": 2586,
+      "scraped_at": "2026-05-17T14:56:08.466Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132923,
-      "detail_elapsed_ms": 1567,
-      "scraped_at": "2026-05-17T14:45:23.888Z"
+      "detail_html_length": 132906,
+      "detail_elapsed_ms": 1962,
+      "scraped_at": "2026-05-17T14:56:10.428Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133180,
-      "detail_elapsed_ms": 1542,
-      "scraped_at": "2026-05-17T14:45:25.430Z"
+      "detail_html_length": 133143,
+      "detail_elapsed_ms": 2100,
+      "scraped_at": "2026-05-17T14:56:12.528Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133015,
-      "detail_elapsed_ms": 1488,
-      "scraped_at": "2026-05-17T14:45:26.918Z"
+      "detail_html_length": 133029,
+      "detail_elapsed_ms": 1935,
+      "scraped_at": "2026-05-17T14:56:14.464Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130834,
-      "detail_elapsed_ms": 1441,
-      "scraped_at": "2026-05-17T14:45:28.359Z"
+      "detail_html_length": 130846,
+      "detail_elapsed_ms": 1751,
+      "scraped_at": "2026-05-17T14:56:16.215Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130785,
-      "detail_elapsed_ms": 1678,
-      "scraped_at": "2026-05-17T14:45:30.037Z"
+      "detail_html_length": 130748,
+      "detail_elapsed_ms": 1629,
+      "scraped_at": "2026-05-17T14:56:17.844Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130736,
-      "detail_elapsed_ms": 1492,
-      "scraped_at": "2026-05-17T14:45:31.529Z"
+      "detail_html_length": 130748,
+      "detail_elapsed_ms": 2063,
+      "scraped_at": "2026-05-17T14:56:19.907Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130809,
-      "detail_elapsed_ms": 1675,
-      "scraped_at": "2026-05-17T14:45:33.204Z"
+      "detail_html_length": 130782,
+      "detail_elapsed_ms": 1901,
+      "scraped_at": "2026-05-17T14:56:21.811Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131794,
-      "detail_elapsed_ms": 1443,
-      "scraped_at": "2026-05-17T14:45:34.647Z"
+      "detail_html_length": 131767,
+      "detail_elapsed_ms": 1985,
+      "scraped_at": "2026-05-17T14:56:23.800Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132298,
-      "detail_elapsed_ms": 1492,
-      "scraped_at": "2026-05-17T14:45:36.139Z"
+      "detail_html_length": 132280,
+      "detail_elapsed_ms": 2193,
+      "scraped_at": "2026-05-17T14:56:25.993Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132481,
-      "detail_elapsed_ms": 1510,
-      "scraped_at": "2026-05-17T14:45:37.649Z"
+      "detail_html_length": 132435,
+      "detail_elapsed_ms": 1817,
+      "scraped_at": "2026-05-17T14:56:27.810Z"
     }
   ]
 }
