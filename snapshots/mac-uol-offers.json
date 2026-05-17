@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 61409,
-  "run_duration_seconds": 61.41,
-  "avg_detail_ms_per_offer": 5117,
-  "generated_at": "2026-05-17T19:27:54.891Z",
+  "run_duration_ms": 196844,
+  "run_duration_seconds": 196.84,
+  "avg_detail_ms_per_offer": 16404,
+  "generated_at": "2026-05-17T19:42:09.576Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial",
       "title": "10% OFF no site oficial",
       "preview_title": "10% OFF no site oficial",
-      "validity": "Benefício válido de 15/05/2026 12:18 até 31/12/2026 23:59.",
-      "description": "Sobre o parceiro: A Sanavita é uma indústria brasileira especializada em suplementos alimentares funcionais e vitaminas, focada em nutrição, beleza e bem-estar. Benefício: Cupom de 10% OFF no site oficial da Sanavita. Regras: Desconto de 10% OFF no site oficial da Sanavita. Válido para todas as compras feitas no site oficial. Cupom válido para todo o site e cumulativo com outras ofertas.",
+      "validity": "",
+      "description": "",
       "category": "Beleza",
       "partner_name": "Sanavita",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/133cbcc7218e727de5c011437ed14078.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130092,
-      "detail_elapsed_ms": 6374,
-      "scraped_at": "2026-05-17T19:27:24.639Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12736,
+      "scraped_at": "2026-05-17T19:41:05.504Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
       "title": "R$ 100 OFF em seleção!",
       "preview_title": "R$ 100 OFF em seleção!",
-      "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
-      "description": "Sobre o parceiro: A Under Armour é uma marca global de artigos esportivos reconhecida por sua tecnologia, inovação e alta performance. A marca oferece roupas, calçados e acessórios desenvolvidos para proporcionar conforto, resistência e desempenho para atletas e apaixonados por esporte. Benefício: R$100 OFF extra em seleção de produtos da Under Armour! Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Under Armour",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 124370,
-      "detail_elapsed_ms": 4227,
-      "scraped_at": "2026-05-17T19:27:28.868Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12699,
+      "scraped_at": "2026-05-17T19:41:32.356Z"
     },
     {
       "id": "psy-semana-do-frete-grtis",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126388,
-      "detail_elapsed_ms": 3012,
-      "scraped_at": "2026-05-17T19:27:31.880Z"
+      "detail_html_length": 132892,
+      "detail_elapsed_ms": 7268,
+      "scraped_at": "2026-05-17T19:41:39.624Z"
     },
     {
       "id": "psx-lavadoras-com-at-40-off-frete-grtis",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133155,
-      "detail_elapsed_ms": 2415,
-      "scraped_at": "2026-05-17T19:27:34.295Z"
+      "detail_html_length": 131988,
+      "detail_elapsed_ms": 4130,
+      "scraped_at": "2026-05-17T19:41:43.754Z"
     },
     {
       "id": "psw-aspiradores-com-at-r-800-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132981,
-      "detail_elapsed_ms": 2184,
-      "scraped_at": "2026-05-17T19:27:36.480Z"
+      "detail_html_length": 132993,
+      "detail_elapsed_ms": 2743,
+      "scraped_at": "2026-05-17T19:41:46.498Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130790,
-      "detail_elapsed_ms": 2373,
-      "scraped_at": "2026-05-17T19:27:38.853Z"
+      "detail_html_length": 129418,
+      "detail_elapsed_ms": 4131,
+      "scraped_at": "2026-05-17T19:41:50.629Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130732,
-      "detail_elapsed_ms": 2537,
-      "scraped_at": "2026-05-17T19:27:41.390Z"
+      "detail_html_length": 130744,
+      "detail_elapsed_ms": 3205,
+      "scraped_at": "2026-05-17T19:41:53.834Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130690,
-      "detail_elapsed_ms": 2840,
-      "scraped_at": "2026-05-17T19:27:44.230Z"
+      "detail_html_length": 130555,
+      "detail_elapsed_ms": 3522,
+      "scraped_at": "2026-05-17T19:41:57.356Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130775,
-      "detail_elapsed_ms": 2422,
-      "scraped_at": "2026-05-17T19:27:46.652Z"
+      "detail_html_length": 130638,
+      "detail_elapsed_ms": 3699,
+      "scraped_at": "2026-05-17T19:42:01.058Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131750,
-      "detail_elapsed_ms": 2496,
-      "scraped_at": "2026-05-17T19:27:49.148Z"
+      "detail_html_length": 131761,
+      "detail_elapsed_ms": 2931,
+      "scraped_at": "2026-05-17T19:42:03.989Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132244,
-      "detail_elapsed_ms": 3093,
-      "scraped_at": "2026-05-17T19:27:52.241Z"
+      "detail_html_length": 132255,
+      "detail_elapsed_ms": 2150,
+      "scraped_at": "2026-05-17T19:42:06.139Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132427,
-      "detail_elapsed_ms": 2330,
-      "scraped_at": "2026-05-17T19:27:54.571Z"
+      "detail_html_length": 132450,
+      "detail_elapsed_ms": 2910,
+      "scraped_at": "2026-05-17T19:42:09.049Z"
     }
   ]
 }
