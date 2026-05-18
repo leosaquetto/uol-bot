@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 43084,
-  "run_duration_seconds": 43.08,
-  "avg_detail_ms_per_offer": 3590,
-  "generated_at": "2026-05-18T17:57:22.343Z",
+  "run_duration_ms": 51164,
+  "run_duration_seconds": 51.16,
+  "avg_detail_ms_per_offer": 4264,
+  "generated_at": "2026-05-18T18:08:22.472Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,15 +40,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129279,
-      "detail_elapsed_ms": 2488,
-      "scraped_at": "2026-05-18T17:56:57.834Z"
+      "detail_html_length": 128935,
+      "detail_elapsed_ms": 4946,
+      "scraped_at": "2026-05-18T18:07:58.084Z"
     },
     {
-      "id": "psz-r-100-off-em-selecao",
-      "trace_id": "trace_psz-r-100-off-em-selecao",
-      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-selecao",
-      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-selecao",
+      "id": "psz-r-100-off-em-seleo",
+      "trace_id": "trace_psz-r-100-off-em-seleo",
+      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
+      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
       "title": "R$ 100 OFF em seleção!",
       "preview_title": "R$ 100 OFF em seleção!",
       "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130764,
-      "detail_elapsed_ms": 2120,
-      "scraped_at": "2026-05-18T17:56:59.976Z"
+      "detail_html_length": 129511,
+      "detail_elapsed_ms": 3061,
+      "scraped_at": "2026-05-18T18:08:01.223Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130819,
-      "detail_elapsed_ms": 1944,
-      "scraped_at": "2026-05-18T17:57:01.920Z"
+      "detail_html_length": 130801,
+      "detail_elapsed_ms": 2878,
+      "scraped_at": "2026-05-18T18:08:04.101Z"
     },
     {
-      "id": "pst-2-pecas-infantis-com-25-off",
-      "trace_id": "trace_pst-2-pecas-infantis-com-25-off",
-      "link": "https://clube.uol.com.br/lojasrenner/pst-2-pecas-infantis-com-25-off",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pst-2-pecas-infantis-com-25-off",
+      "id": "pst-2-peas-infantis-com-25-off",
+      "trace_id": "trace_pst-2-peas-infantis-com-25-off",
+      "link": "https://clube.uol.com.br/lojasrenner/pst-2-peas-infantis-com-25-off",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pst-2-peas-infantis-com-25-off",
       "title": "2 Peças Infantis com 25% OFF",
       "preview_title": "2 Peças Infantis com 25% OFF",
       "validity": "Benefício válido de 14/05/2026 15:06 até 18/05/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130787,
-      "detail_elapsed_ms": 1819,
-      "scraped_at": "2026-05-18T17:57:03.739Z"
+      "detail_html_length": 130743,
+      "detail_elapsed_ms": 2265,
+      "scraped_at": "2026-05-18T18:08:06.366Z"
     },
     {
-      "id": "pss-30-off-em-selecao-feminina",
-      "trace_id": "trace_pss-30-off-em-selecao-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-selecao-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-selecao-feminina",
+      "id": "pss-30-off-em-seleo-feminina",
+      "trace_id": "trace_pss-30-off-em-seleo-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
       "title": "30% OFF em seleção feminina",
       "preview_title": "30% OFF em seleção feminina",
       "validity": "Benefício válido de 14/05/2026 15:06 até 18/05/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130721,
-      "detail_elapsed_ms": 1707,
-      "scraped_at": "2026-05-18T17:57:05.446Z"
+      "detail_html_length": 130715,
+      "detail_elapsed_ms": 1965,
+      "scraped_at": "2026-05-18T18:08:08.331Z"
     },
     {
-      "id": "psp-r-30-off-frete-gratis-acima-de-r-299",
-      "trace_id": "trace_psp-r-30-off-frete-gratis-acima-de-r-299",
-      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-gratis-acima-de-r-299",
-      "original_link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-gratis-acima-de-r-299",
+      "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
+      "trace_id": "trace_psp-r-30-off-frete-grtis-acima-de-r-299",
+      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
+      "original_link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
       "title": "R$30 OFF + Frete Grátis acima de R$299",
       "preview_title": "R$30 OFF + Frete Grátis acima de R$299",
       "validity": "Benefício válido de 15/05/2026 00:00 até 01/06/2026 23:59.",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130790,
-      "detail_elapsed_ms": 2511,
-      "scraped_at": "2026-05-18T17:57:07.959Z"
+      "detail_html_length": 130815,
+      "detail_elapsed_ms": 1904,
+      "scraped_at": "2026-05-18T18:08:10.235Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131760,
-      "detail_elapsed_ms": 3762,
-      "scraped_at": "2026-05-18T17:57:11.721Z"
+      "detail_html_length": 131673,
+      "detail_elapsed_ms": 1958,
+      "scraped_at": "2026-05-18T18:08:12.194Z"
     },
     {
-      "id": "prx-prato-em-dobro-no-pe-de-manga",
-      "trace_id": "trace_prx-prato-em-dobro-no-pe-de-manga",
-      "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-pe-de-manga",
-      "original_link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-pe-de-manga",
+      "id": "prx-prato-em-dobro-no-p-de-manga",
+      "trace_id": "trace_prx-prato-em-dobro-no-p-de-manga",
+      "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
+      "original_link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
       "title": "Prato em Dobro no Pé de Manga",
       "preview_title": "Prato em Dobro no Pé de Manga",
       "validity": "Benefício válido de 13/05/2026 23:17 até 31/05/2027 23:59.",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132269,
-      "detail_elapsed_ms": 2231,
-      "scraped_at": "2026-05-18T17:57:13.953Z"
+      "detail_html_length": 132294,
+      "detail_elapsed_ms": 1936,
+      "scraped_at": "2026-05-18T18:08:14.130Z"
     },
     {
-      "id": "pru-prato-em-dobro-no-nomade",
-      "trace_id": "trace_pru-prato-em-dobro-no-nomade",
-      "link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nomade",
-      "original_link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nomade",
+      "id": "pru-prato-em-dobro-no-nmade",
+      "trace_id": "trace_pru-prato-em-dobro-no-nmade",
+      "link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
+      "original_link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
       "title": "Prato em Dobro no Nômade",
       "preview_title": "Prato em Dobro no Nômade",
       "validity": "Benefício válido de 13/05/2026 17:23 até 31/05/2027 23:59.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132464,
-      "detail_elapsed_ms": 1978,
-      "scraped_at": "2026-05-18T17:57:15.931Z"
+      "detail_html_length": 132480,
+      "detail_elapsed_ms": 2047,
+      "scraped_at": "2026-05-18T18:08:16.177Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131280,
-      "detail_elapsed_ms": 1966,
-      "scraped_at": "2026-05-18T17:57:17.898Z"
+      "detail_html_length": 131271,
+      "detail_elapsed_ms": 1891,
+      "scraped_at": "2026-05-18T18:08:18.068Z"
     },
     {
-      "id": "prq-50-off-no-ingresso-para-maes",
-      "trace_id": "trace_prq-50-off-no-ingresso-para-maes",
-      "link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-maes",
-      "original_link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-maes",
+      "id": "prq-50-off-no-ingresso-para-mes",
+      "trace_id": "trace_prq-50-off-no-ingresso-para-mes",
+      "link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
+      "original_link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
       "title": "50% OFF no ingresso para mães",
       "preview_title": "50% OFF no ingresso para mães",
       "validity": "Benefício válido de 13/05/2026 14:00 até 31/05/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133685,
-      "detail_elapsed_ms": 2149,
-      "scraped_at": "2026-05-18T17:57:20.047Z"
+      "detail_html_length": 133709,
+      "detail_elapsed_ms": 2218,
+      "scraped_at": "2026-05-18T18:08:20.286Z"
     },
     {
-      "id": "prp-ate-25-off-na-porto-servico",
-      "trace_id": "trace_prp-ate-25-off-na-porto-servico",
-      "link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-ate-25-off-na-porto-servico",
-      "original_link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-ate-25-off-na-porto-servico",
+      "id": "prp-at-25-off-na-porto-servio",
+      "trace_id": "trace_prp-at-25-off-na-porto-servio",
+      "link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-at-25-off-na-porto-servio",
+      "original_link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-at-25-off-na-porto-servio",
       "title": "Até 25% OFF na Porto Serviço.",
       "preview_title": "Até 25% OFF na Porto Serviço.",
       "validity": "Benefício válido de 13/05/2026 13:18 até 31/07/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131269,
-      "detail_elapsed_ms": 1990,
-      "scraped_at": "2026-05-18T17:57:22.037Z"
+      "detail_html_length": 131261,
+      "detail_elapsed_ms": 1965,
+      "scraped_at": "2026-05-18T18:08:22.251Z"
     }
   ]
 }
