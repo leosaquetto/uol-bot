@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-05-18T00:10:28.063258Z",
+  "updated_at": "2026-05-18T00:18:39.332996Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 6,
+    "duplicada_historico": 8,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -27,24 +27,6 @@
       "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
       "reason": "duplicada_latest",
       "trace_id": "trace_psz-r-100-off-em-seleo"
-    },
-    {
-      "title": "Semana do Frete Grátis",
-      "link": "https://clube.uol.com.br/shopclub/psy-semana-do-frete-grtis",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psy-semana-do-frete-grtis"
-    },
-    {
-      "title": "Lavadoras com até 40% OFF + Frete Grátis",
-      "link": "https://clube.uol.com.br/shopclub/psx-lavadoras-com-at-40-off-frete-grtis",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psx-lavadoras-com-at-40-off-frete-grtis"
-    },
-    {
-      "title": "Aspiradores com até R$800 OFF",
-      "link": "https://clube.uol.com.br/shopclub/psw-aspiradores-com-at-r-800-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psw-aspiradores-com-at-r-800-off"
     },
     {
       "title": "R$150 OFF em Legos da Copa",
@@ -87,6 +69,18 @@
       "link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
       "reason": "duplicada_historico",
       "trace_id": "trace_pru-prato-em-dobro-no-nmade"
+    },
+    {
+      "title": "12% OFF na compra dos ingressos",
+      "link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prr-12-off-na-compra-dos-ingressos"
+    },
+    {
+      "title": "50% OFF no ingresso para mães",
+      "link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_prq-50-off-no-ingresso-para-mes"
     }
   ]
 }
