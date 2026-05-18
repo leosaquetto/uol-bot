@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-18T19:15:29.763960Z",
+  "updated_at": "2026-05-18T19:25:12.255115Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 7,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -57,12 +57,6 @@
       "link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_prr-12-off-na-compra-dos-ingressos"
-    },
-    {
-      "title": "Até 25% OFF na Porto Serviço.",
-      "link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-ate-25-off-na-porto-servico",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prp-ate-25-off-na-porto-servico"
     }
   ]
 }
