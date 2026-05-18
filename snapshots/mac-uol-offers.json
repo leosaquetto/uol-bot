@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 42442,
-  "run_duration_seconds": 42.44,
-  "avg_detail_ms_per_offer": 3537,
-  "generated_at": "2026-05-18T01:22:14.359Z",
+  "run_duration_ms": 32422,
+  "run_duration_seconds": 32.42,
+  "avg_detail_ms_per_offer": 2702,
+  "generated_at": "2026-05-18T01:32:54.411Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129268,
-      "detail_elapsed_ms": 2500,
-      "scraped_at": "2026-05-18T01:21:50.893Z"
+      "detail_html_length": 130447,
+      "detail_elapsed_ms": 2740,
+      "scraped_at": "2026-05-18T01:32:36.548Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130744,
-      "detail_elapsed_ms": 1962,
-      "scraped_at": "2026-05-18T01:21:52.870Z"
+      "detail_html_length": 130743,
+      "detail_elapsed_ms": 1882,
+      "scraped_at": "2026-05-18T01:32:38.445Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130829,
-      "detail_elapsed_ms": 2190,
-      "scraped_at": "2026-05-18T01:21:55.060Z"
+      "detail_html_length": 130839,
+      "detail_elapsed_ms": 1561,
+      "scraped_at": "2026-05-18T01:32:40.006Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130770,
-      "detail_elapsed_ms": 1742,
-      "scraped_at": "2026-05-18T01:21:56.802Z"
+      "detail_html_length": 131188,
+      "detail_elapsed_ms": 1596,
+      "scraped_at": "2026-05-18T01:32:41.603Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130712,
-      "detail_elapsed_ms": 1675,
-      "scraped_at": "2026-05-18T01:21:58.478Z"
+      "detail_html_length": 130752,
+      "detail_elapsed_ms": 1541,
+      "scraped_at": "2026-05-18T01:32:43.145Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129528,
-      "detail_elapsed_ms": 3233,
-      "scraped_at": "2026-05-18T01:22:01.712Z"
+      "detail_html_length": 130825,
+      "detail_elapsed_ms": 1491,
+      "scraped_at": "2026-05-18T01:32:44.638Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131759,
-      "detail_elapsed_ms": 2202,
-      "scraped_at": "2026-05-18T01:22:03.914Z"
+      "detail_html_length": 131799,
+      "detail_elapsed_ms": 1497,
+      "scraped_at": "2026-05-18T01:32:46.135Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132284,
-      "detail_elapsed_ms": 1970,
-      "scraped_at": "2026-05-18T01:22:05.884Z"
+      "detail_html_length": 132294,
+      "detail_elapsed_ms": 1526,
+      "scraped_at": "2026-05-18T01:32:47.661Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132477,
-      "detail_elapsed_ms": 2339,
-      "scraped_at": "2026-05-18T01:22:08.223Z"
+      "detail_html_length": 132487,
+      "detail_elapsed_ms": 1683,
+      "scraped_at": "2026-05-18T01:32:49.344Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131319,
-      "detail_elapsed_ms": 1624,
-      "scraped_at": "2026-05-18T01:22:09.847Z"
+      "detail_html_length": 131329,
+      "detail_elapsed_ms": 1828,
+      "scraped_at": "2026-05-18T01:32:51.173Z"
     },
     {
       "id": "prq-50-off-no-ingresso-para-mes",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133709,
-      "detail_elapsed_ms": 1769,
-      "scraped_at": "2026-05-18T01:22:11.616Z"
+      "detail_html_length": 133720,
+      "detail_elapsed_ms": 1519,
+      "scraped_at": "2026-05-18T01:32:52.693Z"
     },
     {
       "id": "prp-at-25-off-na-porto-servio",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131289,
-      "detail_elapsed_ms": 2248,
-      "scraped_at": "2026-05-18T01:22:13.864Z"
+      "detail_html_length": 131310,
+      "detail_elapsed_ms": 1587,
+      "scraped_at": "2026-05-18T01:32:54.280Z"
     }
   ]
 }
