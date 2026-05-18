@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 62922,
-  "run_duration_seconds": 62.92,
-  "avg_detail_ms_per_offer": 5244,
-  "generated_at": "2026-05-18T23:11:59.645Z",
+  "run_duration_ms": 45849,
+  "run_duration_seconds": 45.85,
+  "avg_detail_ms_per_offer": 3821,
+  "generated_at": "2026-05-18T23:22:51.931Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pss-2-ingressos-28-05-teatro-italia-sp",
-      "trace_id": "trace_pss-2-ingressos-28-05-teatro-italia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psS-2-ingressos-28-05-teatro-italia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psS-2-ingressos-28-05-teatro-italia-sp",
-      "title": "2 INGRESSOS: 28/05 Teatro Itália - SP",
-      "preview_title": "2 INGRESSOS: 28/05 Teatro Itália - SP",
-      "validity": "Benefício válido de 18/05/2026 19:38 até 27/05/2026 19:30.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir e se reconhecer com a peça “Intenso — Meu Retorno de Saturno”, protagonizada por Vítor DiCastro, no Teatro Itália, em São Paulo – SP. Data: Quinta - feira, 28/05/2026 | 20:00. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ac029f58c5e192d1e56dd1bae8344de7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ac029f58c5e192d1e56dd1bae8344de7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ac029f58c5e192d1e56dd1bae8344de7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130654,
-      "detail_elapsed_ms": 2951,
-      "scraped_at": "2026-05-18T23:11:35.217Z"
-    },
     {
       "id": "psr-2-ingressos-27-05-teatro-italia-sp",
       "trace_id": "trace_psr-2-ingressos-27-05-teatro-italia-sp",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126043,
-      "detail_elapsed_ms": 2534,
-      "scraped_at": "2026-05-18T23:11:37.817Z"
+      "detail_html_length": 125892,
+      "detail_elapsed_ms": 2585,
+      "scraped_at": "2026-05-18T23:22:28.694Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-italia-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131371,
-      "detail_elapsed_ms": 1907,
-      "scraped_at": "2026-05-18T23:11:39.724Z"
+      "detail_html_length": 131290,
+      "detail_elapsed_ms": 2488,
+      "scraped_at": "2026-05-18T23:22:31.245Z"
     },
     {
       "id": "pso-2-ingressos-20-05-teatro-italia-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132417,
-      "detail_elapsed_ms": 2610,
-      "scraped_at": "2026-05-18T23:11:42.334Z"
+      "detail_html_length": 132404,
+      "detail_elapsed_ms": 2151,
+      "scraped_at": "2026-05-18T23:22:33.397Z"
     },
     {
       "id": "psn-ate-47-off-nos-ingressos",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133737,
-      "detail_elapsed_ms": 2314,
-      "scraped_at": "2026-05-18T23:11:44.649Z"
+      "detail_html_length": 133724,
+      "detail_elapsed_ms": 1928,
+      "scraped_at": "2026-05-18T23:22:35.325Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129480,
-      "detail_elapsed_ms": 2233,
-      "scraped_at": "2026-05-18T23:11:46.882Z"
+      "detail_html_length": 130636,
+      "detail_elapsed_ms": 2042,
+      "scraped_at": "2026-05-18T23:22:37.367Z"
     },
     {
       "id": "psz-r-100-off-em-selecao",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130796,
-      "detail_elapsed_ms": 2547,
-      "scraped_at": "2026-05-18T23:11:49.429Z"
+      "detail_html_length": 130793,
+      "detail_elapsed_ms": 1858,
+      "scraped_at": "2026-05-18T23:22:39.225Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130843,
-      "detail_elapsed_ms": 2294,
-      "scraped_at": "2026-05-18T23:11:51.723Z"
+      "detail_html_length": 130849,
+      "detail_elapsed_ms": 1918,
+      "scraped_at": "2026-05-18T23:22:41.144Z"
     },
     {
       "id": "pst-2-pecas-infantis-com-25-off",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124427,
-      "detail_elapsed_ms": 2162,
-      "scraped_at": "2026-05-18T23:11:53.885Z"
+      "detail_html_length": 130826,
+      "detail_elapsed_ms": 1870,
+      "scraped_at": "2026-05-18T23:22:43.014Z"
     },
     {
       "id": "pss-30-off-em-selecao-feminina",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130757,
-      "detail_elapsed_ms": 1919,
-      "scraped_at": "2026-05-18T23:11:55.804Z"
+      "detail_html_length": 130791,
+      "detail_elapsed_ms": 2011,
+      "scraped_at": "2026-05-18T23:22:45.025Z"
     },
     {
       "id": "psp-r-30-off-frete-gratis-acima-de-r-299",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130823,
-      "detail_elapsed_ms": 1768,
-      "scraped_at": "2026-05-18T23:11:57.574Z"
+      "detail_html_length": 130819,
+      "detail_elapsed_ms": 2350,
+      "scraped_at": "2026-05-18T23:22:47.377Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131813,
-      "detail_elapsed_ms": 1734,
-      "scraped_at": "2026-05-18T23:11:59.308Z"
+      "detail_html_length": 131850,
+      "detail_elapsed_ms": 2199,
+      "scraped_at": "2026-05-18T23:22:49.577Z"
+    },
+    {
+      "id": "prx-prato-em-dobro-no-pe-de-manga",
+      "trace_id": "trace_prx-prato-em-dobro-no-pe-de-manga",
+      "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-pe-de-manga",
+      "original_link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-pe-de-manga",
+      "title": "Prato em Dobro no Pé de Manga",
+      "preview_title": "Prato em Dobro no Pé de Manga",
+      "validity": "Benefício válido de 13/05/2026 23:17 até 31/05/2027 23:59.",
+      "description": "Sobre o parceiro: Restaurante ao ar livre com muito verde embaixo de 2 mangueiras centenárias, um lugar onde as conversas ganham a companhia do som de uma pequena queda-d’água, que forma um laguinho no jardim. Benefício: Na compra de um prato principal individual, ganhe outro de igual ou menor valor no Restaurante Pé de Manga. Como resgatar seu benefício: Clique em \"Utilizar este benefício\" e baixe o seu voucher de Assinante UOL. Em seguida, basta apresentar o voucher e documento original no restaurante. Regulamento da Campanha “Prato em Dobro” Benefício exclusivo para assinantes UOL. Válido de segunda a quinta, no almoço e jantar. Não cumulativo com outras promoções. Não aplicável ao menu executivo. Condições do benefício: Não é válido para feriados e datas comemorativas (Dia das Mães/Namorados/Pais, etc). Taxa de serviço e gorjeta não estão incluídas no benefício. Os pratos deverão ser consumidos no restaurante. O código é único e individual. A venda ou o repasse do código são proibidos. A cortesia será sempre o prato principal de menor valor da conta. Não válido para delivery, embalagem para viagem e festivais com cardápios pré-definidos. Venha conhecer o Restaurante Pé de Manga: R. Arapiraca, 152 - Vila Madalena, São Paulo - SP.",
+      "category": "Comer e Beber",
+      "partner_name": "Restaurante Pé de Manga",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/848d98caaf68af8777eb88dc2cb9bd2d.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a8ed4067c9532630222545ab6291ea05.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a8ed4067c9532630222545ab6291ea05.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a8ed4067c9532630222545ab6291ea05.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132298,
+      "detail_elapsed_ms": 2132,
+      "scraped_at": "2026-05-18T23:22:51.709Z"
     }
   ]
 }
