@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 80643,
-  "run_duration_seconds": 80.64,
-  "avg_detail_ms_per_offer": 6720,
-  "generated_at": "2026-05-18T22:48:04.749Z",
+  "run_duration_ms": 144766,
+  "run_duration_seconds": 144.77,
+  "avg_detail_ms_per_offer": 12064,
+  "generated_at": "2026-05-18T23:00:41.131Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pss-2-ingressos-28-05-teatro-italia-sp",
-      "trace_id": "trace_pss-2-ingressos-28-05-teatro-italia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psS-2-ingressos-28-05-teatro-italia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psS-2-ingressos-28-05-teatro-italia-sp",
+      "id": "pss-2-ingressos-28-05-teatro-itlia-sp",
+      "trace_id": "trace_pss-2-ingressos-28-05-teatro-itlia-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psS-2-ingressos-28-05-teatro-itlia-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psS-2-ingressos-28-05-teatro-itlia-sp",
       "title": "2 INGRESSOS: 28/05 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 28/05 Teatro Itália - SP",
       "validity": "Benefício válido de 18/05/2026 19:38 até 27/05/2026 19:30.",
@@ -39,16 +39,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132228,
-      "detail_elapsed_ms": 4845,
-      "scraped_at": "2026-05-18T22:47:21.771Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132366,
+      "detail_elapsed_ms": 11350,
+      "scraped_at": "2026-05-18T22:59:53.389Z"
     },
     {
-      "id": "psr-2-ingressos-27-05-teatro-italia-sp",
-      "trace_id": "trace_psr-2-ingressos-27-05-teatro-italia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-italia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-italia-sp",
+      "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
+      "trace_id": "trace_psr-2-ingressos-27-05-teatro-itlia-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
       "title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
       "validity": "Benefício válido de 18/05/2026 18:54 até 20/05/2026 23:59.",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132417,
-      "detail_elapsed_ms": 5363,
-      "scraped_at": "2026-05-18T22:47:27.151Z"
+      "detail_html_length": 132410,
+      "detail_elapsed_ms": 6444,
+      "scraped_at": "2026-05-18T23:00:00.817Z"
     },
     {
-      "id": "psq-2-ingressos-22-05-teatro-italia-sp",
-      "trace_id": "trace_psq-2-ingressos-22-05-teatro-italia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-italia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-italia-sp",
+      "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
+      "trace_id": "trace_psq-2-ingressos-22-05-teatro-itlia-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
       "title": "2 INGRESSOS: 22/05 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 22/05 Teatro Itália - SP",
       "validity": "Benefício válido de 18/05/2026 17:55 até 20/05/2026 23:59.",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126592,
-      "detail_elapsed_ms": 2740,
-      "scraped_at": "2026-05-18T22:47:29.891Z"
+      "detail_html_length": 126171,
+      "detail_elapsed_ms": 4039,
+      "scraped_at": "2026-05-18T23:00:04.856Z"
     },
     {
-      "id": "pso-2-ingressos-20-05-teatro-italia-sp",
-      "trace_id": "trace_pso-2-ingressos-20-05-teatro-italia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psO-2-ingressos-20-05-teatro-italia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psO-2-ingressos-20-05-teatro-italia-sp",
+      "id": "pso-2-ingressos-20-05-teatro-itlia-sp",
+      "trace_id": "trace_pso-2-ingressos-20-05-teatro-itlia-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psO-2-ingressos-20-05-teatro-itlia-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psO-2-ingressos-20-05-teatro-itlia-sp",
       "title": "2 INGRESSOS: 20/05 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 20/05 Teatro Itália - SP",
       "validity": "Benefício válido de 18/05/2026 17:55 até 20/05/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132822,
-      "detail_elapsed_ms": 2376,
-      "scraped_at": "2026-05-18T22:47:32.267Z"
+      "detail_html_length": 132449,
+      "detail_elapsed_ms": 7840,
+      "scraped_at": "2026-05-18T23:00:12.696Z"
     },
     {
-      "id": "psn-ate-47-off-nos-ingressos",
-      "trace_id": "trace_psn-ate-47-off-nos-ingressos",
-      "link": "https://clube.uol.com.br/parquedamonica/psN-ate-47-off-nos-ingressos",
-      "original_link": "https://clube.uol.com.br/parquedamonica/psN-ate-47-off-nos-ingressos",
+      "id": "psn-at-47-off-nos-ingressos",
+      "trace_id": "trace_psn-at-47-off-nos-ingressos",
+      "link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
+      "original_link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
       "title": "Até 47% OFF nos ingressos!",
       "preview_title": "Até 47% OFF nos ingressos!",
       "validity": "Benefício válido de 18/05/2026 14:13 até 20/05/2026 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133735,
-      "detail_elapsed_ms": 8571,
-      "scraped_at": "2026-05-18T22:47:40.838Z"
+      "detail_html_length": 133777,
+      "detail_elapsed_ms": 7752,
+      "scraped_at": "2026-05-18T23:00:20.449Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130511,
-      "detail_elapsed_ms": 7040,
-      "scraped_at": "2026-05-18T22:47:47.878Z"
+      "detail_html_length": 130636,
+      "detail_elapsed_ms": 1948,
+      "scraped_at": "2026-05-18T23:00:22.398Z"
     },
     {
-      "id": "psz-r-100-off-em-selecao",
-      "trace_id": "trace_psz-r-100-off-em-selecao",
-      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-selecao",
-      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-selecao",
+      "id": "psz-r-100-off-em-seleo",
+      "trace_id": "trace_psz-r-100-off-em-seleo",
+      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
+      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
       "title": "R$ 100 OFF em seleção!",
       "preview_title": "R$ 100 OFF em seleção!",
       "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130807,
-      "detail_elapsed_ms": 2650,
-      "scraped_at": "2026-05-18T22:47:50.528Z"
+      "detail_html_length": 130804,
+      "detail_elapsed_ms": 2481,
+      "scraped_at": "2026-05-18T23:00:24.879Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130903,
-      "detail_elapsed_ms": 2030,
-      "scraped_at": "2026-05-18T22:47:52.558Z"
+      "detail_html_length": 129692,
+      "detail_elapsed_ms": 2243,
+      "scraped_at": "2026-05-18T23:00:27.122Z"
     },
     {
-      "id": "pst-2-pecas-infantis-com-25-off",
-      "trace_id": "trace_pst-2-pecas-infantis-com-25-off",
-      "link": "https://clube.uol.com.br/lojasrenner/pst-2-pecas-infantis-com-25-off",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pst-2-pecas-infantis-com-25-off",
+      "id": "pst-2-peas-infantis-com-25-off",
+      "trace_id": "trace_pst-2-peas-infantis-com-25-off",
+      "link": "https://clube.uol.com.br/lojasrenner/pst-2-peas-infantis-com-25-off",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pst-2-peas-infantis-com-25-off",
       "title": "2 Peças Infantis com 25% OFF",
       "preview_title": "2 Peças Infantis com 25% OFF",
       "validity": "Benefício válido de 14/05/2026 15:06 até 18/05/2026 23:59.",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130800,
-      "detail_elapsed_ms": 1962,
-      "scraped_at": "2026-05-18T22:47:54.520Z"
+      "detail_html_length": 129300,
+      "detail_elapsed_ms": 3701,
+      "scraped_at": "2026-05-18T23:00:30.823Z"
     },
     {
-      "id": "pss-30-off-em-selecao-feminina",
-      "trace_id": "trace_pss-30-off-em-selecao-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-selecao-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-selecao-feminina",
+      "id": "pss-30-off-em-seleo-feminina",
+      "trace_id": "trace_pss-30-off-em-seleo-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pss-30-off-em-seleo-feminina",
       "title": "30% OFF em seleção feminina",
       "preview_title": "30% OFF em seleção feminina",
       "validity": "Benefício válido de 14/05/2026 15:06 até 18/05/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130764,
-      "detail_elapsed_ms": 4577,
-      "scraped_at": "2026-05-18T22:47:59.097Z"
+      "detail_html_length": 129604,
+      "detail_elapsed_ms": 5257,
+      "scraped_at": "2026-05-18T23:00:36.080Z"
     },
     {
-      "id": "psp-r-30-off-frete-gratis-acima-de-r-299",
-      "trace_id": "trace_psp-r-30-off-frete-gratis-acima-de-r-299",
-      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-gratis-acima-de-r-299",
-      "original_link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-gratis-acima-de-r-299",
+      "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
+      "trace_id": "trace_psp-r-30-off-frete-grtis-acima-de-r-299",
+      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
+      "original_link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
       "title": "R$30 OFF + Frete Grátis acima de R$299",
       "preview_title": "R$30 OFF + Frete Grátis acima de R$299",
       "validity": "Benefício válido de 15/05/2026 00:00 até 01/06/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130843,
-      "detail_elapsed_ms": 2726,
-      "scraped_at": "2026-05-18T22:48:01.842Z"
+      "detail_html_length": 129666,
+      "detail_elapsed_ms": 2245,
+      "scraped_at": "2026-05-18T23:00:38.328Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131813,
-      "detail_elapsed_ms": 2661,
-      "scraped_at": "2026-05-18T22:48:04.503Z"
+      "detail_html_length": 125467,
+      "detail_elapsed_ms": 2583,
+      "scraped_at": "2026-05-18T23:00:40.911Z"
     }
   ]
 }
