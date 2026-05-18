@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 109747,
-  "run_duration_seconds": 109.75,
-  "avg_detail_ms_per_offer": 9146,
-  "generated_at": "2026-05-18T23:34:57.327Z",
+  "run_duration_ms": 50839,
+  "run_duration_seconds": 50.84,
+  "avg_detail_ms_per_offer": 4237,
+  "generated_at": "2026-05-18T23:45:56.607Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132464,
-      "detail_elapsed_ms": 8045,
-      "scraped_at": "2026-05-18T23:34:26.417Z"
+      "detail_attempts": 1,
+      "detail_html_length": 125907,
+      "detail_elapsed_ms": 3037,
+      "scraped_at": "2026-05-18T23:45:31.195Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-italia-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132387,
-      "detail_elapsed_ms": 4715,
-      "scraped_at": "2026-05-18T23:34:31.165Z"
+      "detail_html_length": 132540,
+      "detail_elapsed_ms": 3029,
+      "scraped_at": "2026-05-18T23:45:34.251Z"
     },
     {
       "id": "pso-2-ingressos-20-05-teatro-italia-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131245,
-      "detail_elapsed_ms": 2891,
-      "scraped_at": "2026-05-18T23:34:34.061Z"
+      "detail_html_length": 132406,
+      "detail_elapsed_ms": 2404,
+      "scraped_at": "2026-05-18T23:45:36.655Z"
     },
     {
       "id": "psn-ate-47-off-nos-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132495,
-      "detail_elapsed_ms": 7101,
-      "scraped_at": "2026-05-18T23:34:41.162Z"
+      "detail_html_length": 133735,
+      "detail_elapsed_ms": 2172,
+      "scraped_at": "2026-05-18T23:45:38.828Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130645,
-      "detail_elapsed_ms": 2441,
-      "scraped_at": "2026-05-18T23:34:43.603Z"
+      "detail_html_length": 130678,
+      "detail_elapsed_ms": 2022,
+      "scraped_at": "2026-05-18T23:45:40.850Z"
     },
     {
       "id": "psz-r-100-off-em-selecao",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130794,
-      "detail_elapsed_ms": 2364,
-      "scraped_at": "2026-05-18T23:34:45.967Z"
+      "detail_html_length": 130806,
+      "detail_elapsed_ms": 2207,
+      "scraped_at": "2026-05-18T23:45:43.057Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130860,
-      "detail_elapsed_ms": 1818,
-      "scraped_at": "2026-05-18T23:34:47.785Z"
+      "detail_html_length": 130853,
+      "detail_elapsed_ms": 2267,
+      "scraped_at": "2026-05-18T23:45:45.324Z"
     },
     {
       "id": "pst-2-pecas-infantis-com-25-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130796,
-      "detail_elapsed_ms": 2068,
-      "scraped_at": "2026-05-18T23:34:49.853Z"
+      "detail_html_length": 130828,
+      "detail_elapsed_ms": 1899,
+      "scraped_at": "2026-05-18T23:45:47.223Z"
     },
     {
       "id": "pss-30-off-em-selecao-feminina",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130762,
-      "detail_elapsed_ms": 1897,
-      "scraped_at": "2026-05-18T23:34:51.750Z"
+      "detail_html_length": 130754,
+      "detail_elapsed_ms": 2555,
+      "scraped_at": "2026-05-18T23:45:49.778Z"
     },
     {
       "id": "psp-r-30-off-frete-gratis-acima-de-r-299",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130829,
-      "detail_elapsed_ms": 1942,
-      "scraped_at": "2026-05-18T23:34:53.694Z"
+      "detail_html_length": 130873,
+      "detail_elapsed_ms": 2122,
+      "scraped_at": "2026-05-18T23:45:51.902Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132249,
-      "detail_elapsed_ms": 1726,
-      "scraped_at": "2026-05-18T23:34:55.421Z"
+      "detail_html_length": 131812,
+      "detail_elapsed_ms": 2064,
+      "scraped_at": "2026-05-18T23:45:53.966Z"
     },
     {
       "id": "prx-prato-em-dobro-no-pe-de-manga",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132288,
-      "detail_elapsed_ms": 1762,
-      "scraped_at": "2026-05-18T23:34:57.183Z"
+      "detail_html_length": 132292,
+      "detail_elapsed_ms": 2225,
+      "scraped_at": "2026-05-18T23:45:56.191Z"
     }
   ]
 }
