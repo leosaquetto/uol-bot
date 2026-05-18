@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-18T14:04:36.329688Z",
+  "updated_at": "2026-05-18T14:05:42.491563Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 9,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 24/05 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psK-2-ingressos-24-05-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psk-2-ingressos-24-05-teatro-liberdade-sp"
+    },
+    {
+      "title": "Ingressos Exclusivos",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psJ-2-ingressos-23-05-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psj-2-ingressos-23-05-teatro-liberdade-sp"
+    },
     {
       "title": "10% OFF no site oficial",
       "link": "https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial",
