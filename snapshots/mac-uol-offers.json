@@ -9,17 +9,65 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 27143,
-  "run_duration_seconds": 27.14,
-  "avg_detail_ms_per_offer": 2262,
-  "generated_at": "2026-05-18T13:53:24.138Z",
+  "run_duration_ms": 26657,
+  "run_duration_seconds": 26.66,
+  "avg_detail_ms_per_offer": 2221,
+  "generated_at": "2026-05-18T14:03:56.123Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "psk-2-ingressos-24-05-teatro-liberdade-sp",
+      "trace_id": "trace_psk-2-ingressos-24-05-teatro-liberdade-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psK-2-ingressos-24-05-teatro-liberdade-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psK-2-ingressos-24-05-teatro-liberdade-sp",
+      "title": "2 INGRESSOS: 24/05 Teatro Liberdade - SP",
+      "preview_title": "2 INGRESSOS: 24/05 Teatro Liberdade - SP",
+      "validity": "Benefício válido de 18/05/2026 10:21 até 23/05/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos para o musical “Diana – A Princesa do Povo” e emocione-se com essa superprodução que retrata a trajetória de uma das personalidades mais marcantes do século XX. Uma experiência intensa, com cenários grandiosos e uma história que vai te tocar do início ao fim, no Teatro Liberdade, em São Paulo. Data: 24 de Maio, às 15h e 19h30. Local: R. São Joaquim, 129, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132393,
+      "detail_elapsed_ms": 2438,
+      "scraped_at": "2026-05-18T14:03:38.573Z"
+    },
+    {
+      "id": "psj-2-ingressos-23-05-teatro-liberdade-sp",
+      "trace_id": "trace_psj-2-ingressos-23-05-teatro-liberdade-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psJ-2-ingressos-23-05-teatro-liberdade-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psJ-2-ingressos-23-05-teatro-liberdade-sp",
+      "title": "Ingressos Exclusivos",
+      "preview_title": "2 INGRESSOS: 23/05 Teatro Liberdade - SP",
+      "validity": "",
+      "description": "",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa0cb3255ff_69a203c7efc95_698cecdc5f55d_f5f3a8409fd7fcb54391c0463014bde4.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/69fa0cb3255ff_69a203c7efc95_698cecdc5f55d_f5f3a8409fd7fcb54391c0463014bde4.png",
+      "img_source": "benefit_data_src",
+      "detail_ok": true,
+      "detail_quality": "weak",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 327573,
+      "detail_elapsed_ms": 2436,
+      "scraped_at": "2026-05-18T14:03:41.010Z"
+    },
     {
       "id": "psi-10-off-no-site-oficial",
       "trace_id": "trace_psi-10-off-no-site-oficial",
@@ -40,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130438,
-      "detail_elapsed_ms": 2087,
-      "scraped_at": "2026-05-18T13:53:06.678Z"
+      "detail_html_length": 130644,
+      "detail_elapsed_ms": 1538,
+      "scraped_at": "2026-05-18T14:03:42.548Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -64,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130785,
-      "detail_elapsed_ms": 1779,
-      "scraped_at": "2026-05-18T13:53:08.459Z"
+      "detail_html_length": 130804,
+      "detail_elapsed_ms": 1510,
+      "scraped_at": "2026-05-18T14:03:44.058Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -88,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130828,
-      "detail_elapsed_ms": 1752,
-      "scraped_at": "2026-05-18T13:53:10.212Z"
+      "detail_html_length": 130860,
+      "detail_elapsed_ms": 1491,
+      "scraped_at": "2026-05-18T14:03:45.549Z"
     },
     {
       "id": "pst-2-peas-infantis-com-25-off",
@@ -112,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130773,
+      "detail_html_length": 130792,
       "detail_elapsed_ms": 1501,
-      "scraped_at": "2026-05-18T13:53:11.713Z"
+      "scraped_at": "2026-05-18T14:03:47.050Z"
     },
     {
       "id": "pss-30-off-em-seleo-feminina",
@@ -136,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131136,
-      "detail_elapsed_ms": 1498,
-      "scraped_at": "2026-05-18T13:53:13.212Z"
+      "detail_html_length": 130764,
+      "detail_elapsed_ms": 1434,
+      "scraped_at": "2026-05-18T14:03:48.484Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -160,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130814,
-      "detail_elapsed_ms": 1527,
-      "scraped_at": "2026-05-18T13:53:14.740Z"
+      "detail_html_length": 130826,
+      "detail_elapsed_ms": 1521,
+      "scraped_at": "2026-05-18T14:03:50.005Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -184,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131809,
-      "detail_elapsed_ms": 1495,
-      "scraped_at": "2026-05-18T13:53:16.235Z"
+      "detail_html_length": 131810,
+      "detail_elapsed_ms": 1539,
+      "scraped_at": "2026-05-18T14:03:51.545Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -208,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132274,
-      "detail_elapsed_ms": 1535,
-      "scraped_at": "2026-05-18T13:53:17.770Z"
+      "detail_html_length": 132295,
+      "detail_elapsed_ms": 1658,
+      "scraped_at": "2026-05-18T14:03:53.204Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -232,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132469,
-      "detail_elapsed_ms": 1488,
-      "scraped_at": "2026-05-18T13:53:19.258Z"
+      "detail_html_length": 132488,
+      "detail_elapsed_ms": 1455,
+      "scraped_at": "2026-05-18T14:03:54.659Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131320,
-      "detail_elapsed_ms": 1590,
-      "scraped_at": "2026-05-18T13:53:20.850Z"
-    },
-    {
-      "id": "prq-50-off-no-ingresso-para-mes",
-      "trace_id": "trace_prq-50-off-no-ingresso-para-mes",
-      "link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
-      "original_link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
-      "title": "50% OFF no ingresso para mães",
-      "preview_title": "50% OFF no ingresso para mães",
-      "validity": "Benefício válido de 13/05/2026 14:00 até 31/05/2026 23:59.",
-      "description": "Sobre o parcerio: Ocupando 4 milhões de m², o Thermas Water Park conta com atrações aquáticas e secas. O parque aquático possui 8 milhões de m³ de águas em temperaturas ambiente, climatizada e aquecida, quilômetros de toboáguas, piscinas de diferentes tipos, recreação, fazendinha e muito mais! Tudo isso espalhado em 5 áreas tematizadas e decoradas para o seu lazer e diversão em família. Benefício: 50% OFF no ingresso para mães Regras: Faça o cadastro no site do Thermas. Clique no link. Consulte o calendário com os valores dos ingressos. Escolha a data desejada e selecione os ingressos. Clique em “Prosseguir” para finalizar a compra. O desconto será aplicado automaticamente ao final da compra. Promoção válida exclusivamente para mães. Obrigatória a apresentação de documento com foto da mãe e do filho na entrada do parque. Benefício cumulativo com outras promoções. Sujeito à alteração ou encerramento sem aviso prévio. Endereço: Rodovia SP 304 - Km 189 Fazenda Limoeiro, s/nº, São Pedro - SP",
-      "category": "",
-      "partner_name": "Thermas de São Pedro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/baecba4f3ee408e8d2444c1cb200ebc0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/83d1236925d253f48011ce9c27fffee2.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/83d1236925d253f48011ce9c27fffee2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/83d1236925d253f48011ce9c27fffee2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133719,
-      "detail_elapsed_ms": 1651,
-      "scraped_at": "2026-05-18T13:53:22.501Z"
-    },
-    {
-      "id": "prp-at-25-off-na-porto-servio",
-      "trace_id": "trace_prp-at-25-off-na-porto-servio",
-      "link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-at-25-off-na-porto-servio",
-      "original_link": "https://clube.uol.com.br/portoseguro-minuciaseguros/prP-at-25-off-na-porto-servio",
-      "title": "Até 25% OFF na Porto Serviço.",
-      "preview_title": "Até 25% OFF na Porto Serviço.",
-      "validity": "Benefício válido de 13/05/2026 13:18 até 31/07/2026 23:59.",
-      "description": "Sobre a marca: A Porto Serviço, do Grupo Porto, é especialista em serviços emergenciais e de manutenção para casa e carro, democratizando o acesso à qualidade. Com mais de 13 mil prestadores, atende todo o Brasil, 24h por dia, 7 dias por semana, com praticidade e confiança. Benefício Até 25% de desconto nos serviços da Porto Serviço. Regras: O benefício oferece até 25% de desconto nos serviços da Porto Serviço, válido para contratações realizadas pelo site ou WhatsApp mediante aplicação do cupom no momento da compra. O atendimento está sujeito à disponibilidade da região e os valores podem sofrer alterações. O desconto não é cumulativo com outras promoções e não é válido para assinaturas.",
-      "category": "",
-      "partner_name": "Porto Seguro - Minúcia Seguros",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/707583da4eb84922f520121653ae60bf.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04a80a263cc_f47c2e2123b95466f18ba2b1278753b4.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04a80a263cc_f47c2e2123b95466f18ba2b1278753b4.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a04a80a263cc_f47c2e2123b95466f18ba2b1278753b4.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131289,
-      "detail_elapsed_ms": 1587,
-      "scraped_at": "2026-05-18T13:53:24.089Z"
+      "detail_html_length": 131340,
+      "detail_elapsed_ms": 1420,
+      "scraped_at": "2026-05-18T14:03:56.080Z"
     }
   ]
 }
