@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-19T15:20:32.656339Z",
+  "updated_at": "2026-05-19T15:21:28.325443Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
+    "duplicada_historico": 5,
     "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -63,6 +63,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
       "reason": "duplicada_latest",
       "trace_id": "trace_psq-2-ingressos-22-05-teatro-itlia-sp"
+    },
+    {
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso"
     },
     {
       "title": "Até 47% OFF nos ingressos!",
