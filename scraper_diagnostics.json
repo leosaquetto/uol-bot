@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-19T13:24:16.187322Z",
+  "updated_at": "2026-05-19T13:25:07.457459Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,6 +16,12 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Até 12% OFF nas reservas",
+      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pst-at-12-off-nas-reservas"
+    },
     {
       "title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
@@ -39,12 +45,6 @@
       "link": "https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial",
       "reason": "duplicada_historico",
       "trace_id": "trace_psi-10-off-no-site-oficial"
-    },
-    {
-      "title": "R$ 100 OFF em seleção!",
-      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psz-r-100-off-em-seleo"
     },
     {
       "title": "R$150 OFF em Legos da Copa",
