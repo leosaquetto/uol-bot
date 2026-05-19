@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27406,
-  "run_duration_seconds": 27.41,
-  "avg_detail_ms_per_offer": 2284,
-  "generated_at": "2026-05-19T21:10:00.991Z",
+  "run_duration_ms": 53281,
+  "run_duration_seconds": 53.28,
+  "avg_detail_ms_per_offer": 4440,
+  "generated_at": "2026-05-19T21:21:08.728Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129422,
-      "detail_elapsed_ms": 1989,
-      "scraped_at": "2026-05-19T21:09:43.670Z"
+      "detail_html_length": 124474,
+      "detail_elapsed_ms": 2786,
+      "scraped_at": "2026-05-19T21:20:40.875Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133092,
-      "detail_elapsed_ms": 1583,
-      "scraped_at": "2026-05-19T21:09:45.257Z"
+      "detail_html_length": 133027,
+      "detail_elapsed_ms": 2593,
+      "scraped_at": "2026-05-19T21:20:43.492Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130938,
-      "detail_elapsed_ms": 1589,
-      "scraped_at": "2026-05-19T21:09:46.846Z"
+      "detail_html_length": 130873,
+      "detail_elapsed_ms": 2342,
+      "scraped_at": "2026-05-19T21:20:45.834Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130760,
-      "detail_elapsed_ms": 1666,
-      "scraped_at": "2026-05-19T21:09:48.512Z"
+      "detail_html_length": 130716,
+      "detail_elapsed_ms": 2156,
+      "scraped_at": "2026-05-19T21:20:47.990Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130810,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-05-19T21:09:50.648Z"
+      "detail_html_length": 130795,
+      "detail_elapsed_ms": 2196,
+      "scraped_at": "2026-05-19T21:20:50.186Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130881,
-      "detail_elapsed_ms": 1475,
-      "scraped_at": "2026-05-19T21:09:52.123Z"
+      "detail_html_length": 130857,
+      "detail_elapsed_ms": 4778,
+      "scraped_at": "2026-05-19T21:20:54.965Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131190,
-      "detail_elapsed_ms": 1475,
-      "scraped_at": "2026-05-19T21:09:53.598Z"
+      "detail_html_length": 131126,
+      "detail_elapsed_ms": 2162,
+      "scraped_at": "2026-05-19T21:20:57.127Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132960,
-      "detail_elapsed_ms": 1443,
-      "scraped_at": "2026-05-19T21:09:55.041Z"
+      "detail_html_length": 132897,
+      "detail_elapsed_ms": 2752,
+      "scraped_at": "2026-05-19T21:20:59.880Z"
     },
     {
       "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132472,
-      "detail_elapsed_ms": 1448,
-      "scraped_at": "2026-05-19T21:09:56.489Z"
+      "detail_html_length": 132408,
+      "detail_elapsed_ms": 2223,
+      "scraped_at": "2026-05-19T21:21:02.103Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132574,
-      "detail_elapsed_ms": 1437,
-      "scraped_at": "2026-05-19T21:09:57.926Z"
+      "detail_html_length": 132531,
+      "detail_elapsed_ms": 2188,
+      "scraped_at": "2026-05-19T21:21:04.295Z"
     },
     {
       "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134438,
-      "detail_elapsed_ms": 1494,
-      "scraped_at": "2026-05-19T21:09:59.420Z"
+      "detail_html_length": 134384,
+      "detail_elapsed_ms": 1982,
+      "scraped_at": "2026-05-19T21:21:06.277Z"
     },
     {
       "id": "psn-at-47-off-nos-ingressos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133770,
-      "detail_elapsed_ms": 1522,
-      "scraped_at": "2026-05-19T21:10:00.942Z"
+      "detail_html_length": 133767,
+      "detail_elapsed_ms": 2139,
+      "scraped_at": "2026-05-19T21:21:08.416Z"
     }
   ]
 }
