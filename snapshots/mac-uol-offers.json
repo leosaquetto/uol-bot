@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28471,
-  "run_duration_seconds": 28.47,
-  "avg_detail_ms_per_offer": 2373,
-  "generated_at": "2026-05-19T09:42:09.237Z",
+  "run_duration_ms": 28394,
+  "run_duration_seconds": 28.39,
+  "avg_detail_ms_per_offer": 2366,
+  "generated_at": "2026-05-19T09:52:42.435Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132256,
-      "detail_elapsed_ms": 2334,
-      "scraped_at": "2026-05-19T09:41:52.352Z"
+      "detail_html_length": 132286,
+      "detail_elapsed_ms": 2483,
+      "scraped_at": "2026-05-19T09:52:25.461Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-italia-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132576,
-      "detail_elapsed_ms": 1780,
-      "scraped_at": "2026-05-19T09:41:54.133Z"
+      "detail_html_length": 132587,
+      "detail_elapsed_ms": 1617,
+      "scraped_at": "2026-05-19T09:52:27.080Z"
     },
     {
       "id": "psn-ate-47-off-nos-ingressos",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133761,
-      "detail_elapsed_ms": 1420,
-      "scraped_at": "2026-05-19T09:41:55.553Z"
+      "detail_html_length": 133803,
+      "detail_elapsed_ms": 1495,
+      "scraped_at": "2026-05-19T09:52:28.575Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130676,
-      "detail_elapsed_ms": 1472,
-      "scraped_at": "2026-05-19T09:41:57.025Z"
+      "detail_html_length": 130695,
+      "detail_elapsed_ms": 1462,
+      "scraped_at": "2026-05-19T09:52:30.037Z"
     },
     {
       "id": "psz-r-100-off-em-selecao",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130844,
-      "detail_elapsed_ms": 1538,
-      "scraped_at": "2026-05-19T09:41:58.563Z"
+      "detail_html_length": 130843,
+      "detail_elapsed_ms": 1533,
+      "scraped_at": "2026-05-19T09:52:31.570Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -161,8 +161,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130899,
-      "detail_elapsed_ms": 1497,
-      "scraped_at": "2026-05-19T09:42:00.060Z"
+      "detail_elapsed_ms": 1526,
+      "scraped_at": "2026-05-19T09:52:33.096Z"
     },
     {
       "id": "psp-r-30-off-frete-gratis-acima-de-r-299",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 1413,
-      "scraped_at": "2026-05-19T09:42:01.473Z"
+      "detail_html_length": 130869,
+      "detail_elapsed_ms": 1509,
+      "scraped_at": "2026-05-19T09:52:34.605Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131860,
-      "detail_elapsed_ms": 1431,
-      "scraped_at": "2026-05-19T09:42:02.904Z"
+      "detail_elapsed_ms": 1479,
+      "scraped_at": "2026-05-19T09:52:36.084Z"
     },
     {
       "id": "prx-prato-em-dobro-no-pe-de-manga",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132338,
-      "detail_elapsed_ms": 1589,
-      "scraped_at": "2026-05-19T09:42:04.493Z"
+      "detail_html_length": 132358,
+      "detail_elapsed_ms": 1642,
+      "scraped_at": "2026-05-19T09:52:37.726Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nomade",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132542,
-      "detail_elapsed_ms": 1628,
-      "scraped_at": "2026-05-19T09:42:06.121Z"
+      "detail_html_length": 132533,
+      "detail_elapsed_ms": 1575,
+      "scraped_at": "2026-05-19T09:52:39.301Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131360,
-      "detail_elapsed_ms": 1441,
-      "scraped_at": "2026-05-19T09:42:07.562Z"
+      "detail_html_length": 131379,
+      "detail_elapsed_ms": 1546,
+      "scraped_at": "2026-05-19T09:52:40.849Z"
     },
     {
       "id": "prq-50-off-no-ingresso-para-maes",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133774,
-      "detail_elapsed_ms": 1621,
-      "scraped_at": "2026-05-19T09:42:09.184Z"
+      "detail_html_length": 133785,
+      "detail_elapsed_ms": 1502,
+      "scraped_at": "2026-05-19T09:52:42.351Z"
     }
   ]
 }
