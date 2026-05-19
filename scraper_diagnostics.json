@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-19T21:22:20.572279Z",
+  "updated_at": "2026-05-19T21:32:49.258371Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 5,
-    "duplicada_latest": 7,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -81,12 +81,6 @@
       "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
       "reason": "duplicada_historico",
       "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso"
-    },
-    {
-      "title": "Até 47% OFF nos ingressos!",
-      "link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psn-at-47-off-nos-ingressos"
     }
   ]
 }
