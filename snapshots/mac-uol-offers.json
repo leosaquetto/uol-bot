@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28014,
-  "run_duration_seconds": 28.01,
-  "avg_detail_ms_per_offer": 2335,
-  "generated_at": "2026-05-19T20:59:27.064Z",
+  "run_duration_ms": 27406,
+  "run_duration_seconds": 27.41,
+  "avg_detail_ms_per_offer": 2284,
+  "generated_at": "2026-05-19T21:10:00.991Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "ptf-30-off-em-seleo-de-produtos",
+      "trace_id": "trace_ptf-30-off-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
+      "title": "30% OFF em seleção de produtos!",
+      "preview_title": "30% OFF em seleção de produtos!",
+      "validity": "Benefício válido de 19/05/2026 16:00 até 20/05/2026 23:59.",
+      "description": "Sobre o Parceiro: A Nike é uma das maiores marcas do mundo no segmento esportivo. Comercializa em seu site itens como roupas, calçados, acessórios e mais. Benefício: 30% OFF em seleção de produtos! Regras: Válido apenas para compras no APP e no site. Válido para uma lista selecionada de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Nike",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8bd1776457768ba3072e73ccca68ece3.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bd8c9a62e290e515897b76ca37d8fc65.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bd8c9a62e290e515897b76ca37d8fc65.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bd8c9a62e290e515897b76ca37d8fc65.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129422,
+      "detail_elapsed_ms": 1989,
+      "scraped_at": "2026-05-19T21:09:43.670Z"
+    },
     {
       "id": "ptd-15-off-em-check-up-mdico",
       "trace_id": "trace_ptd-15-off-em-check-up-mdico",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132879,
-      "detail_elapsed_ms": 2360,
-      "scraped_at": "2026-05-19T20:59:08.918Z"
+      "detail_html_length": 133092,
+      "detail_elapsed_ms": 1583,
+      "scraped_at": "2026-05-19T21:09:45.257Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130924,
-      "detail_elapsed_ms": 1673,
-      "scraped_at": "2026-05-19T20:59:10.593Z"
+      "detail_html_length": 130938,
+      "detail_elapsed_ms": 1589,
+      "scraped_at": "2026-05-19T21:09:46.846Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130755,
-      "detail_elapsed_ms": 1518,
-      "scraped_at": "2026-05-19T20:59:12.111Z"
+      "detail_html_length": 130760,
+      "detail_elapsed_ms": 1666,
+      "scraped_at": "2026-05-19T21:09:48.512Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130786,
-      "detail_elapsed_ms": 1411,
-      "scraped_at": "2026-05-19T20:59:13.522Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 2136,
+      "scraped_at": "2026-05-19T21:09:50.648Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130867,
-      "detail_elapsed_ms": 1555,
-      "scraped_at": "2026-05-19T20:59:15.077Z"
+      "detail_html_length": 130881,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-05-19T21:09:52.123Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131186,
-      "detail_elapsed_ms": 1458,
-      "scraped_at": "2026-05-19T20:59:16.535Z"
+      "detail_html_length": 131190,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-05-19T21:09:53.598Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132937,
-      "detail_elapsed_ms": 1555,
-      "scraped_at": "2026-05-19T20:59:18.090Z"
+      "detail_html_length": 132960,
+      "detail_elapsed_ms": 1443,
+      "scraped_at": "2026-05-19T21:09:55.041Z"
     },
     {
       "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132458,
-      "detail_elapsed_ms": 2010,
-      "scraped_at": "2026-05-19T20:59:20.100Z"
+      "detail_html_length": 132472,
+      "detail_elapsed_ms": 1448,
+      "scraped_at": "2026-05-19T21:09:56.489Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132571,
-      "detail_elapsed_ms": 1795,
-      "scraped_at": "2026-05-19T20:59:21.896Z"
+      "detail_html_length": 132574,
+      "detail_elapsed_ms": 1437,
+      "scraped_at": "2026-05-19T21:09:57.926Z"
     },
     {
       "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134424,
-      "detail_elapsed_ms": 1627,
-      "scraped_at": "2026-05-19T20:59:23.523Z"
+      "detail_html_length": 134438,
+      "detail_elapsed_ms": 1494,
+      "scraped_at": "2026-05-19T21:09:59.420Z"
     },
     {
       "id": "psn-at-47-off-nos-ingressos",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133767,
-      "detail_elapsed_ms": 1799,
-      "scraped_at": "2026-05-19T20:59:25.322Z"
-    },
-    {
-      "id": "psi-10-off-no-site-oficial",
-      "trace_id": "trace_psi-10-off-no-site-oficial",
-      "link": "https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial",
-      "original_link": "https://clube.uol.com.br/sanavita/psI-10-off-no-site-oficial",
-      "title": "10% OFF no site oficial",
-      "preview_title": "10% OFF no site oficial",
-      "validity": "Benefício válido de 15/05/2026 12:18 até 31/12/2026 23:59.",
-      "description": "Sobre o parceiro: A Sanavita é uma indústria brasileira especializada em suplementos alimentares funcionais e vitaminas, focada em nutrição, beleza e bem-estar. Benefício: Cupom de 10% OFF no site oficial da Sanavita. Regras: Desconto de 10% OFF no site oficial da Sanavita. Válido para todas as compras feitas no site oficial. Cupom válido para todo o site e cumulativo com outras ofertas.",
-      "category": "Beleza",
-      "partner_name": "Sanavita",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/133cbcc7218e727de5c011437ed14078.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/90dfc476c69b5093226cec7a4786f423.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130666,
-      "detail_elapsed_ms": 1675,
-      "scraped_at": "2026-05-19T20:59:26.997Z"
+      "detail_html_length": 133770,
+      "detail_elapsed_ms": 1522,
+      "scraped_at": "2026-05-19T21:10:00.942Z"
     }
   ]
 }
