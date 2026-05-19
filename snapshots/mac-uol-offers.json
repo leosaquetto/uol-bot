@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 53281,
-  "run_duration_seconds": 53.28,
-  "avg_detail_ms_per_offer": 4440,
-  "generated_at": "2026-05-19T21:21:08.728Z",
+  "run_duration_ms": 50502,
+  "run_duration_seconds": 50.5,
+  "avg_detail_ms_per_offer": 4209,
+  "generated_at": "2026-05-19T21:32:06.598Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "ptg-r-150-off-em-seminovos-selecionados",
+      "trace_id": "trace_ptg-r-150-off-em-seminovos-selecionados",
+      "link": "https://clube.uol.com.br/compracerta/ptg-r-150-off-em-seminovos-selecionados",
+      "original_link": "https://clube.uol.com.br/compracerta/ptg-r-150-off-em-seminovos-selecionados",
+      "title": "R$150 OFF em Seminovos Selecionados",
+      "preview_title": "R$150 OFF em Seminovos Selecionados",
+      "validity": "Benefício válido de 06/04/2020 00:00 até 31/12/2030 23:59.",
+      "description": "Parceiro: Clube Oficial Brastemp, Consul e KitchenAid. As Melhores Marcas e Descontos Imperdíveis. Aqui Você Encontra os Produtos Certos Pra Você. Benefício: R$150 OFF em seleção de máquinas e refrigeradores seminovos Regras: Digite o cupom promocional no carrinho para aplicar o desconto. Condições válidas exclusivamente pelo link da parceria. Frete e Garantia Estendida não são contabilizados no valor mínimo da compra. O desconto será aplicado após a inserção dos dados de entrega.",
+      "category": "Eletrodomésticos e Eletrônicos",
+      "partner_name": "Compra Certa",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-compra-certa.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a79f2da7270d9403b9edec746ee5478e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a79f2da7270d9403b9edec746ee5478e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a79f2da7270d9403b9edec746ee5478e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129662,
+      "detail_elapsed_ms": 3632,
+      "scraped_at": "2026-05-19T21:31:40.171Z"
+    },
     {
       "id": "ptf-30-off-em-seleo-de-produtos",
       "trace_id": "trace_ptf-30-off-em-seleo-de-produtos",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124474,
-      "detail_elapsed_ms": 2786,
-      "scraped_at": "2026-05-19T21:20:40.875Z"
+      "detail_html_length": 130743,
+      "detail_elapsed_ms": 2657,
+      "scraped_at": "2026-05-19T21:31:42.886Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133027,
-      "detail_elapsed_ms": 2593,
-      "scraped_at": "2026-05-19T21:20:43.492Z"
+      "detail_html_length": 133033,
+      "detail_elapsed_ms": 2066,
+      "scraped_at": "2026-05-19T21:31:44.953Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 2342,
-      "scraped_at": "2026-05-19T21:20:45.834Z"
+      "detail_html_length": 130879,
+      "detail_elapsed_ms": 2145,
+      "scraped_at": "2026-05-19T21:31:47.098Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130716,
-      "detail_elapsed_ms": 2156,
-      "scraped_at": "2026-05-19T21:20:47.990Z"
+      "detail_html_length": 130731,
+      "detail_elapsed_ms": 2244,
+      "scraped_at": "2026-05-19T21:31:49.342Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130795,
-      "detail_elapsed_ms": 2196,
-      "scraped_at": "2026-05-19T21:20:50.186Z"
+      "detail_html_length": 130750,
+      "detail_elapsed_ms": 2414,
+      "scraped_at": "2026-05-19T21:31:51.757Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130857,
-      "detail_elapsed_ms": 4778,
-      "scraped_at": "2026-05-19T21:20:54.965Z"
+      "detail_html_length": 130842,
+      "detail_elapsed_ms": 2230,
+      "scraped_at": "2026-05-19T21:31:53.987Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131126,
-      "detail_elapsed_ms": 2162,
-      "scraped_at": "2026-05-19T21:20:57.127Z"
+      "detail_html_length": 131141,
+      "detail_elapsed_ms": 2182,
+      "scraped_at": "2026-05-19T21:31:56.169Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132897,
-      "detail_elapsed_ms": 2752,
-      "scraped_at": "2026-05-19T21:20:59.880Z"
+      "detail_html_length": 132914,
+      "detail_elapsed_ms": 2915,
+      "scraped_at": "2026-05-19T21:31:59.084Z"
     },
     {
       "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132408,
-      "detail_elapsed_ms": 2223,
-      "scraped_at": "2026-05-19T21:21:02.103Z"
+      "detail_html_length": 132424,
+      "detail_elapsed_ms": 2401,
+      "scraped_at": "2026-05-19T21:32:01.486Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132531,
-      "detail_elapsed_ms": 2188,
-      "scraped_at": "2026-05-19T21:21:04.295Z"
+      "detail_html_length": 132537,
+      "detail_elapsed_ms": 2559,
+      "scraped_at": "2026-05-19T21:32:04.046Z"
     },
     {
       "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134384,
-      "detail_elapsed_ms": 1982,
-      "scraped_at": "2026-05-19T21:21:06.277Z"
-    },
-    {
-      "id": "psn-at-47-off-nos-ingressos",
-      "trace_id": "trace_psn-at-47-off-nos-ingressos",
-      "link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
-      "original_link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
-      "title": "Até 47% OFF nos ingressos!",
-      "preview_title": "Até 47% OFF nos ingressos!",
-      "validity": "Benefício válido de 18/05/2026 14:13 até 20/05/2026 23:59.",
-      "description": "Sobre o Parceiro: Localizado no Shopping SP Market, o Parque da Mônica é o maior Parque coberto da América Latina com 12 mil m² e super atrações que divertem pais e filhos, de forma lúdica, educativa e interativa, dentro do universo encantador das histórias em quadrinhos criadas pelo cartunista Mauricio de Sousa. Benefício: Descontos a serem aplicados para os BENEFICIÁRIOS, conforme abaixo: R$ 84,15 por ingresso na promoção! Regras: Acessar o link da parceria para ter acesso à compra de ingressos com desconto, que não será aplicável para compras presenciais na bilheteria ou através de cupom no site, somente antecipada no link personalizado da parceria. Apresente a declaração de vínculo na catraca do Parque da Mônica, como condição para o acesso ao Parque. Para baixar a declaração de vínculo clique no botão \"baixar declaração de vínculo\". O limite mensal para compra de ingressos com cupons de descontos, por BENEFICIÁRIO, é de 9 (nove) ingressos. O cadastro facial é obrigatório para todos os visitantes, incluindo crianças. Para dúvidas, entre em contato com: 11 94142-7816 - Joyce Cavalcante E-mail: joyce.cavalcante@starparks.com.br",
-      "category": "Promoções do Mês",
-      "partner_name": "Parque da Mônica",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/413e21d095a1351801374f5bdec9e6d8.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/61e6e4aaf21c0ebc0113bea667ccb5cf.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/61e6e4aaf21c0ebc0113bea667ccb5cf.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/61e6e4aaf21c0ebc0113bea667ccb5cf.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133767,
-      "detail_elapsed_ms": 2139,
-      "scraped_at": "2026-05-19T21:21:08.416Z"
+      "detail_html_length": 134409,
+      "detail_elapsed_ms": 2340,
+      "scraped_at": "2026-05-19T21:32:06.386Z"
     }
   ]
 }
