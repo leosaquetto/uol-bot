@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-19T20:50:02.946043Z",
+  "updated_at": "2026-05-19T21:00:16.482366Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,17 +10,17 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
-    "duplicada_latest": 1,
+    "duplicada_historico": 6,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "15% OFF em Check-up Médico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_ptd-15-off-em-check-up-medico"
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptd-15-off-em-check-up-mdico"
     },
     {
       "title": "20% OFF em todo o site",
@@ -42,33 +42,33 @@
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psv-ate-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psv-at-75-off-para-compras-no-site"
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psu-ate-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psu-at-75-off-para-compras-no-site"
     },
     {
       "title": "Até 12% OFF nas reservas",
-      "link": "https://clube.uol.com.br/movida/psT-ate-12-off-nas-reservas",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pst-ate-12-off-nas-reservas"
+      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pst-at-12-off-nas-reservas"
     },
     {
       "title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-italia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psr-2-ingressos-27-05-teatro-italia-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psr-2-ingressos-27-05-teatro-itlia-sp"
     },
     {
       "title": "2 INGRESSOS: 22/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-italia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psq-2-ingressos-22-05-teatro-italia-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psq-2-ingressos-22-05-teatro-itlia-sp"
     },
     {
       "title": "Pague apenas R$ 80 + taxa no ingresso",
@@ -78,9 +78,9 @@
     },
     {
       "title": "Até 47% OFF nos ingressos!",
-      "link": "https://clube.uol.com.br/parquedamonica/psN-ate-47-off-nos-ingressos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psn-ate-47-off-nos-ingressos"
+      "link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psn-at-47-off-nos-ingressos"
     },
     {
       "title": "10% OFF no site oficial",
