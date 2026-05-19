@@ -1,38 +1,38 @@
 {
-  "updated_at": "2026-05-19T11:07:52.970664Z",
+  "updated_at": "2026-05-19T11:17:49.864485Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 5,
+    "duplicada_historico": 9,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psr-2-ingressos-27-05-teatro-itlia-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-italia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psr-2-ingressos-27-05-teatro-italia-sp"
     },
     {
       "title": "2 INGRESSOS: 22/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psq-2-ingressos-22-05-teatro-itlia-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-italia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psq-2-ingressos-22-05-teatro-italia-sp"
     },
     {
       "title": "Até 47% OFF nos ingressos!",
-      "link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psn-at-47-off-nos-ingressos"
+      "link": "https://clube.uol.com.br/parquedamonica/psN-ate-47-off-nos-ingressos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psn-ate-47-off-nos-ingressos"
     },
     {
       "title": "10% OFF no site oficial",
@@ -42,9 +42,9 @@
     },
     {
       "title": "R$ 100 OFF em seleção!",
-      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psz-r-100-off-em-seleo"
+      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-selecao",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psz-r-100-off-em-selecao"
     },
     {
       "title": "R$150 OFF em Legos da Copa",
@@ -54,9 +54,9 @@
     },
     {
       "title": "R$30 OFF + Frete Grátis acima de R$299",
-      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psp-r-30-off-frete-grtis-acima-de-r-299"
+      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-gratis-acima-de-r-299",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psp-r-30-off-frete-gratis-acima-de-r-299"
     },
     {
       "title": "50% OFF no ingresso",
@@ -65,28 +65,10 @@
       "trace_id": "trace_psm-50-off-no-ingresso"
     },
     {
-      "title": "Prato em Dobro no Pé de Manga",
-      "link": "https://clube.uol.com.br/restaurantepedemanga/prX-prato-em-dobro-no-p-de-manga",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prx-prato-em-dobro-no-p-de-manga"
-    },
-    {
-      "title": "Prato em Dobro no Nômade",
-      "link": "https://clube.uol.com.br/nomadebarerestaurante/prU-prato-em-dobro-no-nmade",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pru-prato-em-dobro-no-nmade"
-    },
-    {
       "title": "12% OFF na compra dos ingressos",
       "link": "https://clube.uol.com.br/thermasdesaopedro/prR-12-off-na-compra-dos-ingressos",
       "reason": "duplicada_historico",
       "trace_id": "trace_prr-12-off-na-compra-dos-ingressos"
-    },
-    {
-      "title": "50% OFF no ingresso para mães",
-      "link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_prq-50-off-no-ingresso-para-mes"
     }
   ]
 }
