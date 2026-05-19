@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-19T00:57:09.248028Z",
+  "last_update": "2026-05-19T01:21:13.330835Z",
   "offers": [
     {
       "id": "psz-r-100-off-em-seleo",
@@ -443,7 +443,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4916?thread=4913",
       "sent_at": "2026-05-18T22:49:07.284945Z",
-      "sold_out_at": "21:56"
+      "sold_out_at": "21:56",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "psQ-2-ingressos-22-05-teatro-italia-sp",
@@ -467,7 +468,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4920?thread=4917",
       "sent_at": "2026-05-18T22:49:19.128471Z",
-      "sold_out_at": "21:56"
+      "sold_out_at": "21:56",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "psO-2-ingressos-20-05-teatro-italia-sp",
@@ -491,7 +493,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4924?thread=4921",
       "sent_at": "2026-05-18T22:49:30.368721Z",
-      "sold_out_at": "21:33"
+      "sold_out_at": "21:33",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
