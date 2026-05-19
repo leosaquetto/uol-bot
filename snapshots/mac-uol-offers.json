@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28656,
-  "run_duration_seconds": 28.66,
-  "avg_detail_ms_per_offer": 2388,
-  "generated_at": "2026-05-19T14:05:49.195Z",
+  "run_duration_ms": 31439,
+  "run_duration_seconds": 31.44,
+  "avg_detail_ms_per_offer": 2620,
+  "generated_at": "2026-05-19T14:16:29.192Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "psz-20-off-em-todo-o-site",
+      "trace_id": "trace_psz-20-off-em-todo-o-site",
+      "link": "https://clube.uol.com.br/olympikus/psZ-20-off-em-todo-o-site",
+      "original_link": "https://clube.uol.com.br/olympikus/psZ-20-off-em-todo-o-site",
+      "title": "20% OFF em todo o site",
+      "preview_title": "20% OFF em todo o site",
+      "validity": "Benefício válido de 19/05/2026 10:58 até 24/05/2026 23:59.",
+      "description": "Sobre o parceiro: A marca acredita e investe no esporte, buscando inovação e alta performance, por meio do seu Centro de Desenvolvimento e Tecnologia. Benefício: 20% OFF em todo hotsite da parceria! (Exceto família Corre). Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Olympikus.",
+      "category": "Compras e Presentes",
+      "partner_name": "Olympikus",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/e9afd64c0ef7dd9cffe021d68cc93577.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7151cbe16677c5212f4580f207e05866.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7151cbe16677c5212f4580f207e05866.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7151cbe16677c5212f4580f207e05866.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130746,
+      "detail_elapsed_ms": 2056,
+      "scraped_at": "2026-05-19T14:16:11.707Z"
+    },
     {
       "id": "psy-15-off-em-todo-o-site",
       "trace_id": "trace_psy-15-off-em-todo-o-site",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129404,
-      "detail_elapsed_ms": 1930,
-      "scraped_at": "2026-05-19T14:05:29.966Z"
+      "detail_html_length": 130760,
+      "detail_elapsed_ms": 1680,
+      "scraped_at": "2026-05-19T14:16:13.389Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131150,
-      "detail_elapsed_ms": 1676,
-      "scraped_at": "2026-05-19T14:05:31.643Z"
+      "detail_html_length": 131162,
+      "detail_elapsed_ms": 1460,
+      "scraped_at": "2026-05-19T14:16:14.849Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130820,
-      "detail_elapsed_ms": 1650,
-      "scraped_at": "2026-05-19T14:05:33.293Z"
+      "detail_html_length": 130872,
+      "detail_elapsed_ms": 1472,
+      "scraped_at": "2026-05-19T14:16:16.321Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131149,
-      "detail_elapsed_ms": 2533,
-      "scraped_at": "2026-05-19T14:05:35.826Z"
+      "detail_html_length": 131181,
+      "detail_elapsed_ms": 1538,
+      "scraped_at": "2026-05-19T14:16:17.859Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132958,
-      "detail_elapsed_ms": 2127,
-      "scraped_at": "2026-05-19T14:05:37.954Z"
+      "detail_html_length": 132960,
+      "detail_elapsed_ms": 1487,
+      "scraped_at": "2026-05-19T14:16:19.346Z"
     },
     {
       "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132451,
-      "detail_elapsed_ms": 1663,
-      "scraped_at": "2026-05-19T14:05:39.617Z"
+      "detail_html_length": 132452,
+      "detail_elapsed_ms": 2158,
+      "scraped_at": "2026-05-19T14:16:21.504Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132574,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-05-19T14:05:41.265Z"
+      "detail_html_length": 132576,
+      "detail_elapsed_ms": 1910,
+      "scraped_at": "2026-05-19T14:16:23.414Z"
     },
     {
       "id": "psn-at-47-off-nos-ingressos",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133759,
-      "detail_elapsed_ms": 1456,
-      "scraped_at": "2026-05-19T14:05:42.721Z"
+      "detail_html_length": 133792,
+      "detail_elapsed_ms": 1420,
+      "scraped_at": "2026-05-19T14:16:24.834Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130688,
-      "detail_elapsed_ms": 1624,
-      "scraped_at": "2026-05-19T14:05:44.345Z"
+      "detail_html_length": 130690,
+      "detail_elapsed_ms": 1462,
+      "scraped_at": "2026-05-19T14:16:26.296Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130835,
-      "detail_elapsed_ms": 1654,
-      "scraped_at": "2026-05-19T14:05:45.999Z"
+      "detail_html_length": 130836,
+      "detail_elapsed_ms": 1390,
+      "scraped_at": "2026-05-19T14:16:27.686Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130882,
-      "detail_elapsed_ms": 1615,
-      "scraped_at": "2026-05-19T14:05:47.614Z"
-    },
-    {
-      "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
-      "trace_id": "trace_psp-r-30-off-frete-grtis-acima-de-r-299",
-      "link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
-      "original_link": "https://clube.uol.com.br/evino/psp-r-30-off-frete-grtis-acima-de-r-299",
-      "title": "R$30 OFF + Frete Grátis acima de R$299",
-      "preview_title": "R$30 OFF + Frete Grátis acima de R$299",
-      "validity": "Benefício válido de 15/05/2026 00:00 até 01/06/2026 23:59.",
-      "description": "Sobre o Parceiro: Acreditamos que novas descobertas e histórias sobre o vinho podem deixar a vida melhor. Venha com a gente e viva a vida e o vinho de um jeito diferente. Viva mais histórias. Seja mais vinho. Beneficio: R$30 OFF + Frete Grátis acima de R$299. Regras: Não cumulativo com outros cupons, não se aplica ao frete. Um uso por CPF. Frete grátis válido apenas para as compras a partir de R$299.",
-      "category": "Comer e Beber",
-      "partner_name": "Evino",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2008c042c2b7b797d51458c9c40cdfa5.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0f3bef64eb2b2a5d061c616a1d12f216.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0f3bef64eb2b2a5d061c616a1d12f216.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0f3bef64eb2b2a5d061c616a1d12f216.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 1539,
-      "scraped_at": "2026-05-19T14:05:49.154Z"
+      "detail_html_length": 130903,
+      "detail_elapsed_ms": 1418,
+      "scraped_at": "2026-05-19T14:16:29.104Z"
     }
   ]
 }
