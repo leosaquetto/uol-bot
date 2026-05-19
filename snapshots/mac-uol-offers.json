@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28456,
-  "run_duration_seconds": 28.46,
-  "avg_detail_ms_per_offer": 2371,
-  "generated_at": "2026-05-19T14:58:54.379Z",
+  "run_duration_ms": 27449,
+  "run_duration_seconds": 27.45,
+  "avg_detail_ms_per_offer": 2287,
+  "generated_at": "2026-05-19T15:09:27.513Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130740,
-      "detail_elapsed_ms": 2296,
-      "scraped_at": "2026-05-19T14:58:35.700Z"
+      "detail_html_length": 129571,
+      "detail_elapsed_ms": 2172,
+      "scraped_at": "2026-05-19T15:09:10.347Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130760,
-      "detail_elapsed_ms": 2256,
-      "scraped_at": "2026-05-19T14:58:37.957Z"
+      "detail_html_length": 130707,
+      "detail_elapsed_ms": 1643,
+      "scraped_at": "2026-05-19T15:09:11.991Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -76,7 +76,7 @@
       "title": "Aproveite 12% OFF na Stanley",
       "preview_title": "Aproveite 12% OFF na Stanley",
       "validity": "Benefício válido de 19/05/2026 10:20 até 15/06/2026 23:59.",
-      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday. Para conferir todos os detalhes, acesse o regulamento completo aqui: https://atendimentostanley.zendesk.com/hc/pt-br/articles/23209633340315-Regulamento-para-utiliza%C3%A7%C3%A3o-de-Cupom-de-Desconto",
+      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday.",
       "category": "Compras e Presentes",
       "partner_name": "Stanley",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/437488ab72a7771a7afd7c6d1bcbfda3.png",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131160,
-      "detail_elapsed_ms": 1507,
-      "scraped_at": "2026-05-19T14:58:39.464Z"
+      "detail_html_length": 130787,
+      "detail_elapsed_ms": 1485,
+      "scraped_at": "2026-05-19T15:09:13.476Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130871,
-      "detail_elapsed_ms": 1494,
-      "scraped_at": "2026-05-19T14:58:40.958Z"
+      "detail_html_length": 130868,
+      "detail_elapsed_ms": 1485,
+      "scraped_at": "2026-05-19T15:09:14.961Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131181,
-      "detail_elapsed_ms": 1439,
-      "scraped_at": "2026-05-19T14:58:42.397Z"
+      "detail_html_length": 131178,
+      "detail_elapsed_ms": 1747,
+      "scraped_at": "2026-05-19T15:09:16.708Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132960,
-      "detail_elapsed_ms": 1409,
-      "scraped_at": "2026-05-19T14:58:43.806Z"
+      "detail_html_length": 132958,
+      "detail_elapsed_ms": 1614,
+      "scraped_at": "2026-05-19T15:09:18.322Z"
     },
     {
       "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132462,
-      "detail_elapsed_ms": 1529,
-      "scraped_at": "2026-05-19T14:58:45.335Z"
+      "detail_html_length": 132451,
+      "detail_elapsed_ms": 1532,
+      "scraped_at": "2026-05-19T15:09:19.854Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132595,
-      "detail_elapsed_ms": 1649,
-      "scraped_at": "2026-05-19T14:58:46.984Z"
+      "detail_html_length": 132575,
+      "detail_elapsed_ms": 1533,
+      "scraped_at": "2026-05-19T15:09:21.387Z"
     },
     {
       "id": "psn-at-47-off-nos-ingressos",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133770,
-      "detail_elapsed_ms": 2159,
-      "scraped_at": "2026-05-19T14:58:49.143Z"
+      "detail_html_length": 133779,
+      "detail_elapsed_ms": 1415,
+      "scraped_at": "2026-05-19T15:09:22.802Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130679,
-      "detail_elapsed_ms": 1735,
-      "scraped_at": "2026-05-19T14:58:50.878Z"
+      "detail_html_length": 130677,
+      "detail_elapsed_ms": 1393,
+      "scraped_at": "2026-05-19T15:09:24.195Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130846,
-      "detail_elapsed_ms": 1899,
-      "scraped_at": "2026-05-19T14:58:52.778Z"
+      "detail_html_length": 130828,
+      "detail_elapsed_ms": 1750,
+      "scraped_at": "2026-05-19T15:09:25.945Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130893,
-      "detail_elapsed_ms": 1563,
-      "scraped_at": "2026-05-19T14:58:54.341Z"
+      "detail_html_length": 130881,
+      "detail_elapsed_ms": 1512,
+      "scraped_at": "2026-05-19T15:09:27.457Z"
     }
   ]
 }
