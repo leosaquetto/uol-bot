@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27449,
-  "run_duration_seconds": 27.45,
-  "avg_detail_ms_per_offer": 2287,
-  "generated_at": "2026-05-19T15:09:27.513Z",
+  "run_duration_ms": 25900,
+  "run_duration_seconds": 25.9,
+  "avg_detail_ms_per_offer": 2158,
+  "generated_at": "2026-05-19T15:19:58.711Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129571,
-      "detail_elapsed_ms": 2172,
-      "scraped_at": "2026-05-19T15:09:10.347Z"
+      "detail_html_length": 129510,
+      "detail_elapsed_ms": 1947,
+      "scraped_at": "2026-05-19T15:19:41.320Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130707,
-      "detail_elapsed_ms": 1643,
-      "scraped_at": "2026-05-19T15:09:11.991Z"
+      "detail_html_length": 130731,
+      "detail_elapsed_ms": 1791,
+      "scraped_at": "2026-05-19T15:19:43.115Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130787,
-      "detail_elapsed_ms": 1485,
-      "scraped_at": "2026-05-19T15:09:13.476Z"
+      "detail_html_length": 130809,
+      "detail_elapsed_ms": 1748,
+      "scraped_at": "2026-05-19T15:19:44.864Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 1485,
-      "scraped_at": "2026-05-19T15:09:14.961Z"
+      "detail_html_length": 130873,
+      "detail_elapsed_ms": 1990,
+      "scraped_at": "2026-05-19T15:19:46.855Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131178,
-      "detail_elapsed_ms": 1747,
-      "scraped_at": "2026-05-19T15:09:16.708Z"
+      "detail_html_length": 131180,
+      "detail_elapsed_ms": 1376,
+      "scraped_at": "2026-05-19T15:19:48.231Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132958,
-      "detail_elapsed_ms": 1614,
-      "scraped_at": "2026-05-19T15:09:18.322Z"
+      "detail_html_length": 132949,
+      "detail_elapsed_ms": 1472,
+      "scraped_at": "2026-05-19T15:19:49.703Z"
     },
     {
       "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132451,
-      "detail_elapsed_ms": 1532,
-      "scraped_at": "2026-05-19T15:09:19.854Z"
+      "detail_html_length": 132463,
+      "detail_elapsed_ms": 1410,
+      "scraped_at": "2026-05-19T15:19:51.113Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -208,9 +208,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132575,
-      "detail_elapsed_ms": 1533,
-      "scraped_at": "2026-05-19T15:09:21.387Z"
+      "detail_html_length": 132576,
+      "detail_elapsed_ms": 1455,
+      "scraped_at": "2026-05-19T15:19:52.568Z"
+    },
+    {
+      "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
+      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "original_link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "preview_title": "Pague apenas R$ 80 + taxa no ingresso",
+      "validity": "Benefício válido de 18/05/2026 17:49 até 15/08/2026 23:59.",
+      "description": "Sobre o Clube dos 30: Voltada para quem viveu ou cresceu ouvindo os sucessos dos anos 80, 90 e 2000, a festa reúne diferentes gerações em torno de hits que atravessaram décadas, das baladas românticas às faixas dançantes, em uma celebração de nostalgia e conexão. Edição especial da festa: O Clube dos 30 anuncia edição especial no Varanda Estaiada, dia 15 de agosto de 2026, das 14h às 22h. O evento terá show exclusivo do cantor Latino e expectativa de mais de 3 mil pessoas. Benefício: Pague apenas R$ 80 + taxa no ingresso da edição especial do Clube dos 30. Regras: Para resgatar o desconto exclusivo de assinante UOL, clique em \"Utilizar este benefício\". Ao ser direcionado para a ticketeira oficial do evento, o desconto já estará aplicado. Basta escolher a quantidade dos ingressos e prosseguir com a compra. Atenção: Benefício válido para Assinante UOL. Os ingressos com desconto podem se esgotar a qualquer momento. O ingresso adquirido pelo desconto do Clube UOL não possui restrição de horário para entrada. Os ingressos com desconto da categoria Clube UOL podem se esgotar antes das demais categorias. Esses ingressos com desconto não são elegíveis para brindes eventualmente distribuídos em lotes abertos ao público geral. Serviço Data: 15/08/2026 Horário: 14h às 22h Endereço do Varanda Estaiada: Av. Dr. Chucri Zaidan, 155 - Vila Cordeiro, São Paulo - SP.",
+      "category": "Promoções do Mês",
+      "partner_name": "Festa Clube dos 30",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a9bde83f30245cc83012e16784e9f38d.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/68db74a3cf142500150eade4d1343f8d.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/68db74a3cf142500150eade4d1343f8d.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/68db74a3cf142500150eade4d1343f8d.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134458,
+      "detail_elapsed_ms": 1430,
+      "scraped_at": "2026-05-19T15:19:53.998Z"
     },
     {
       "id": "psn-at-47-off-nos-ingressos",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133779,
-      "detail_elapsed_ms": 1415,
-      "scraped_at": "2026-05-19T15:09:22.802Z"
+      "detail_html_length": 133770,
+      "detail_elapsed_ms": 1488,
+      "scraped_at": "2026-05-19T15:19:55.486Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130677,
-      "detail_elapsed_ms": 1393,
-      "scraped_at": "2026-05-19T15:09:24.195Z"
+      "detail_html_length": 130700,
+      "detail_elapsed_ms": 1457,
+      "scraped_at": "2026-05-19T15:19:56.943Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130828,
-      "detail_elapsed_ms": 1750,
-      "scraped_at": "2026-05-19T15:09:25.945Z"
-    },
-    {
-      "id": "psv-r-150-off-em-legos-da-copa",
-      "trace_id": "trace_psv-r-150-off-em-legos-da-copa",
-      "link": "https://clube.uol.com.br/carrefour/psv-r-150-off-em-legos-da-copa",
-      "original_link": "https://clube.uol.com.br/carrefour/psv-r-150-off-em-legos-da-copa",
-      "title": "R$150 OFF em Legos da Copa",
-      "preview_title": "R$150 OFF em Legos da Copa",
-      "validity": "Benefício válido de 14/05/2026 11:08 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: O Carrefour é uma das maiores redes varejistas do mundo, oferecendo uma ampla variedade de produtos nas categorias de mercado, eletrônicos, brinquedos, casa, esportes, moda e muito mais. Com presença em todo o Brasil, o Carrefour proporciona praticidade, ofertas exclusivas e uma experiência completa de compras. Benefício: 150,00 OFF em Lego Troféu Fifa ou Lego Bola de Futebol Regras: Válido para uma lista selecionada de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
-      "category": "Compras e Presentes",
-      "partner_name": "Carrefour",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-carrefour.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ce22a4aa242a99b7fc865456bd2556e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130881,
-      "detail_elapsed_ms": 1512,
-      "scraped_at": "2026-05-19T15:09:27.457Z"
+      "detail_html_length": 130848,
+      "detail_elapsed_ms": 1713,
+      "scraped_at": "2026-05-19T15:19:58.656Z"
     }
   ]
 }
