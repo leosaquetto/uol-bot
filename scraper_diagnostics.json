@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-19T21:51:04.516265Z",
+  "updated_at": "2026-05-19T21:54:02.254214Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -71,12 +71,6 @@
       "trace_id": "trace_pst-at-12-off-nas-reservas"
     },
     {
-      "title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psr-2-ingressos-27-05-teatro-itlia-sp"
-    },
-    {
       "title": "2 INGRESSOS: 22/05 Teatro Itália - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
       "reason": "duplicada_latest",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
       "reason": "duplicada_historico",
       "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso"
+    },
+    {
+      "title": "Até 47% OFF nos ingressos!",
+      "link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psn-at-47-off-nos-ingressos"
     }
   ]
 }
