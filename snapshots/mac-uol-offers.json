@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 25968,
-  "run_duration_seconds": 25.97,
-  "avg_detail_ms_per_offer": 2164,
-  "generated_at": "2026-05-19T13:13:03.194Z",
+  "run_duration_ms": 29257,
+  "run_duration_seconds": 29.26,
+  "avg_detail_ms_per_offer": 2438,
+  "generated_at": "2026-05-19T13:23:37.906Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pst-at-12-off-nas-reservas",
+      "trace_id": "trace_pst-at-12-off-nas-reservas",
+      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "original_link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "title": "Até 12% OFF nas reservas",
+      "preview_title": "Até 12% OFF nas reservas",
+      "validity": "Benefício válido de 19/05/2026 10:06 até 31/05/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Movida",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0c605a3ad37_95f4d4d35c0cc54916e556357177c427.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132749,
+      "detail_elapsed_ms": 2241,
+      "scraped_at": "2026-05-19T13:23:19.529Z"
+    },
     {
       "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
       "trace_id": "trace_psr-2-ingressos-27-05-teatro-itlia-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132251,
-      "detail_elapsed_ms": 2034,
-      "scraped_at": "2026-05-19T13:12:46.326Z"
+      "detail_html_length": 132450,
+      "detail_elapsed_ms": 1928,
+      "scraped_at": "2026-05-19T13:23:21.458Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132592,
-      "detail_elapsed_ms": 1760,
-      "scraped_at": "2026-05-19T13:12:48.087Z"
+      "detail_html_length": 132564,
+      "detail_elapsed_ms": 1555,
+      "scraped_at": "2026-05-19T13:23:23.013Z"
     },
     {
       "id": "psn-at-47-off-nos-ingressos",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133759,
-      "detail_elapsed_ms": 1607,
-      "scraped_at": "2026-05-19T13:12:49.694Z"
+      "detail_html_length": 133768,
+      "detail_elapsed_ms": 1481,
+      "scraped_at": "2026-05-19T13:23:24.494Z"
     },
     {
       "id": "psi-10-off-no-site-oficial",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130676,
-      "detail_elapsed_ms": 1491,
-      "scraped_at": "2026-05-19T13:12:51.185Z"
+      "detail_html_length": 130667,
+      "detail_elapsed_ms": 1547,
+      "scraped_at": "2026-05-19T13:23:26.041Z"
     },
     {
       "id": "psz-r-100-off-em-seleo",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131229,
-      "detail_elapsed_ms": 1477,
-      "scraped_at": "2026-05-19T13:12:52.662Z"
+      "detail_html_length": 130824,
+      "detail_elapsed_ms": 1531,
+      "scraped_at": "2026-05-19T13:23:27.572Z"
     },
     {
       "id": "psv-r-150-off-em-legos-da-copa",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130890,
-      "detail_elapsed_ms": 1377,
-      "scraped_at": "2026-05-19T13:12:54.039Z"
+      "detail_html_length": 130880,
+      "detail_elapsed_ms": 1611,
+      "scraped_at": "2026-05-19T13:23:29.184Z"
     },
     {
       "id": "psp-r-30-off-frete-grtis-acima-de-r-299",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130865,
-      "detail_elapsed_ms": 1395,
-      "scraped_at": "2026-05-19T13:12:55.434Z"
+      "detail_html_length": 130857,
+      "detail_elapsed_ms": 1553,
+      "scraped_at": "2026-05-19T13:23:30.737Z"
     },
     {
       "id": "psm-50-off-no-ingresso",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131840,
-      "detail_elapsed_ms": 1513,
-      "scraped_at": "2026-05-19T13:12:56.947Z"
+      "detail_html_length": 131839,
+      "detail_elapsed_ms": 1430,
+      "scraped_at": "2026-05-19T13:23:32.167Z"
     },
     {
       "id": "prx-prato-em-dobro-no-p-de-manga",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132335,
-      "detail_elapsed_ms": 1515,
-      "scraped_at": "2026-05-19T13:12:58.463Z"
+      "detail_html_length": 132325,
+      "detail_elapsed_ms": 1589,
+      "scraped_at": "2026-05-19T13:23:33.756Z"
     },
     {
       "id": "pru-prato-em-dobro-no-nmade",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132517,
-      "detail_elapsed_ms": 1435,
-      "scraped_at": "2026-05-19T13:12:59.898Z"
+      "detail_html_length": 132489,
+      "detail_elapsed_ms": 2382,
+      "scraped_at": "2026-05-19T13:23:36.138Z"
     },
     {
       "id": "prr-12-off-na-compra-dos-ingressos",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131370,
-      "detail_elapsed_ms": 1772,
-      "scraped_at": "2026-05-19T13:13:01.670Z"
-    },
-    {
-      "id": "prq-50-off-no-ingresso-para-mes",
-      "trace_id": "trace_prq-50-off-no-ingresso-para-mes",
-      "link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
-      "original_link": "https://clube.uol.com.br/thermasdesaopedro/prQ-50-off-no-ingresso-para-mes",
-      "title": "50% OFF no ingresso para mães",
-      "preview_title": "50% OFF no ingresso para mães",
-      "validity": "Benefício válido de 13/05/2026 14:00 até 31/05/2026 23:59.",
-      "description": "Sobre o parcerio: Ocupando 4 milhões de m², o Thermas Water Park conta com atrações aquáticas e secas. O parque aquático possui 8 milhões de m³ de águas em temperaturas ambiente, climatizada e aquecida, quilômetros de toboáguas, piscinas de diferentes tipos, recreação, fazendinha e muito mais! Tudo isso espalhado em 5 áreas tematizadas e decoradas para o seu lazer e diversão em família. Benefício: 50% OFF no ingresso para mães Regras: Faça o cadastro no site do Thermas. Clique no link. Consulte o calendário com os valores dos ingressos. Escolha a data desejada e selecione os ingressos. Clique em “Prosseguir” para finalizar a compra. O desconto será aplicado automaticamente ao final da compra. Promoção válida exclusivamente para mães. Obrigatória a apresentação de documento com foto da mãe e do filho na entrada do parque. Benefício cumulativo com outras promoções. Sujeito à alteração ou encerramento sem aviso prévio. Endereço: Rodovia SP 304 - Km 189 Fazenda Limoeiro, s/nº, São Pedro - SP",
-      "category": "",
-      "partner_name": "Thermas de São Pedro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/baecba4f3ee408e8d2444c1cb200ebc0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/83d1236925d253f48011ce9c27fffee2.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/83d1236925d253f48011ce9c27fffee2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/83d1236925d253f48011ce9c27fffee2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133782,
-      "detail_elapsed_ms": 1462,
-      "scraped_at": "2026-05-19T13:13:03.132Z"
+      "detail_html_length": 131381,
+      "detail_elapsed_ms": 1710,
+      "scraped_at": "2026-05-19T13:23:37.848Z"
     }
   ]
 }
