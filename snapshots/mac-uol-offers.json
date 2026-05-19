@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 33661,
-  "run_duration_seconds": 33.66,
-  "avg_detail_ms_per_offer": 2805,
-  "generated_at": "2026-05-19T21:42:48.416Z",
+  "run_duration_ms": 30845,
+  "run_duration_seconds": 30.84,
+  "avg_detail_ms_per_offer": 2570,
+  "generated_at": "2026-05-19T21:53:23.946Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130811,
-      "detail_elapsed_ms": 2097,
-      "scraped_at": "2026-05-19T21:42:27.183Z"
+      "detail_html_length": 130831,
+      "detail_elapsed_ms": 2907,
+      "scraped_at": "2026-05-19T21:53:04.774Z"
     },
     {
       "id": "ptf-30-off-em-seleo-de-produtos",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130762,
-      "detail_elapsed_ms": 1951,
-      "scraped_at": "2026-05-19T21:42:29.165Z"
+      "detail_html_length": 130729,
+      "detail_elapsed_ms": 2336,
+      "scraped_at": "2026-05-19T21:53:07.111Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133070,
-      "detail_elapsed_ms": 2264,
-      "scraped_at": "2026-05-19T21:42:31.429Z"
+      "detail_html_length": 133088,
+      "detail_elapsed_ms": 2197,
+      "scraped_at": "2026-05-19T21:53:09.308Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130895,
-      "detail_elapsed_ms": 3731,
-      "scraped_at": "2026-05-19T21:42:35.160Z"
+      "detail_html_length": 130925,
+      "detail_elapsed_ms": 1574,
+      "scraped_at": "2026-05-19T21:53:10.882Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130758,
-      "detail_elapsed_ms": 1783,
-      "scraped_at": "2026-05-19T21:42:36.943Z"
+      "detail_html_length": 130757,
+      "detail_elapsed_ms": 1485,
+      "scraped_at": "2026-05-19T21:53:12.367Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130807,
-      "detail_elapsed_ms": 1794,
-      "scraped_at": "2026-05-19T21:42:38.737Z"
+      "detail_html_length": 130806,
+      "detail_elapsed_ms": 1564,
+      "scraped_at": "2026-05-19T21:53:13.931Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130858,
-      "detail_elapsed_ms": 1882,
-      "scraped_at": "2026-05-19T21:42:40.619Z"
+      "detail_html_length": 130880,
+      "detail_elapsed_ms": 1721,
+      "scraped_at": "2026-05-19T21:53:15.652Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131176,
-      "detail_elapsed_ms": 1676,
-      "scraped_at": "2026-05-19T21:42:42.295Z"
+      "detail_elapsed_ms": 1613,
+      "scraped_at": "2026-05-19T21:53:17.265Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -232,33 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132937,
-      "detail_elapsed_ms": 1573,
-      "scraped_at": "2026-05-19T21:42:43.868Z"
-    },
-    {
-      "id": "psr-2-ingressos-27-05-teatro-itlia-sp",
-      "trace_id": "trace_psr-2-ingressos-27-05-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psR-2-ingressos-27-05-teatro-itlia-sp",
-      "title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
-      "preview_title": "2 INGRESSOS: 27/05 Teatro Itália - SP",
-      "validity": "Benefício válido de 18/05/2026 18:54 até 20/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para o espetáculo Improvisações Selvagens e mergulhe em uma experiência teatral intensa e surpreendente, onde emoção, improviso e realidade se misturam no palco, no Teatro Itália, em São Paulo. Data: 27 de Maio de 2026, às 20h. Local: Av. Ipiranga, 344, República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ab7a236c010f44ddd04c5509155d9f13.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ab7a236c010f44ddd04c5509155d9f13.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ab7a236c010f44ddd04c5509155d9f13.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132439,
-      "detail_elapsed_ms": 1472,
-      "scraped_at": "2026-05-19T21:42:45.340Z"
+      "detail_html_length": 132968,
+      "detail_elapsed_ms": 1582,
+      "scraped_at": "2026-05-19T21:53:18.847Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132573,
-      "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-05-19T21:42:46.854Z"
+      "detail_html_length": 132572,
+      "detail_elapsed_ms": 1810,
+      "scraped_at": "2026-05-19T21:53:20.658Z"
     },
     {
       "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134435,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-05-19T21:42:48.357Z"
+      "detail_html_length": 134444,
+      "detail_elapsed_ms": 1659,
+      "scraped_at": "2026-05-19T21:53:22.317Z"
+    },
+    {
+      "id": "psn-at-47-off-nos-ingressos",
+      "trace_id": "trace_psn-at-47-off-nos-ingressos",
+      "link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
+      "original_link": "https://clube.uol.com.br/parquedamonica/psN-at-47-off-nos-ingressos",
+      "title": "Até 47% OFF nos ingressos!",
+      "preview_title": "Até 47% OFF nos ingressos!",
+      "validity": "Benefício válido de 18/05/2026 14:13 até 20/05/2026 23:59.",
+      "description": "Sobre o Parceiro: Localizado no Shopping SP Market, o Parque da Mônica é o maior Parque coberto da América Latina com 12 mil m² e super atrações que divertem pais e filhos, de forma lúdica, educativa e interativa, dentro do universo encantador das histórias em quadrinhos criadas pelo cartunista Mauricio de Sousa. Benefício: Descontos a serem aplicados para os BENEFICIÁRIOS, conforme abaixo: R$ 84,15 por ingresso na promoção! Regras: Acessar o link da parceria para ter acesso à compra de ingressos com desconto, que não será aplicável para compras presenciais na bilheteria ou através de cupom no site, somente antecipada no link personalizado da parceria. Apresente a declaração de vínculo na catraca do Parque da Mônica, como condição para o acesso ao Parque. Para baixar a declaração de vínculo clique no botão \"baixar declaração de vínculo\". O limite mensal para compra de ingressos com cupons de descontos, por BENEFICIÁRIO, é de 9 (nove) ingressos. O cadastro facial é obrigatório para todos os visitantes, incluindo crianças. Para dúvidas, entre em contato com: 11 94142-7816 - Joyce Cavalcante E-mail: joyce.cavalcante@starparks.com.br",
+      "category": "Promoções do Mês",
+      "partner_name": "Parque da Mônica",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/413e21d095a1351801374f5bdec9e6d8.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/61e6e4aaf21c0ebc0113bea667ccb5cf.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/61e6e4aaf21c0ebc0113bea667ccb5cf.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/61e6e4aaf21c0ebc0113bea667ccb5cf.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133777,
+      "detail_elapsed_ms": 1520,
+      "scraped_at": "2026-05-19T21:53:23.837Z"
     }
   ]
 }
