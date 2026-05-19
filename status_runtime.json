@@ -22,21 +22,21 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "19/05/2026 às 10:03",
-    "last_finished_at": "19/05/2026 às 10:03",
-    "last_success_at": "19/05/2026 às 10:03",
-    "status": "sem_novidade",
-    "summary": "nenhuma enviada; descartadas 3 (reenvio_bloqueado_7d=0, validade_expirada=0, inicio_validade_antigo_sem_fim=0, scraped_at_antigo=0, duplicadas=3, sem_scraped_at_em_backlog=0)",
-    "processed": 0,
-    "sent": 0,
+    "last_started_at": "19/05/2026 às 10:24",
+    "last_finished_at": "19/05/2026 às 10:24",
+    "last_success_at": "19/05/2026 às 10:24",
+    "status": "ok",
+    "summary": "1 enviada(s) com sucesso",
+    "processed": 1,
+    "sent": 1,
     "failed": 0,
     "pending_count": 0,
-    "last_error": "consumer_sem_envio_com_pending: pending=3 descartadas=3 falhas_telegram=0"
+    "last_error": ""
   },
   "global": {
-    "last_offer_title": "2 INGRESSOS: 20/05 Teatro Itália - SP",
-    "last_offer_at": "18/05/2026 às 19:49",
-    "last_offer_id": "psO-2-ingressos-20-05-teatro-italia-sp",
-    "last_offer_link": "https://t.me/c/3723320790/1468"
+    "last_offer_title": "Até 12% OFF nas reservas",
+    "last_offer_at": "19/05/2026 às 10:24",
+    "last_offer_id": "psT-at-12-off-nas-reservas",
+    "last_offer_link": "https://t.me/c/3723320790/1469"
   }
 }

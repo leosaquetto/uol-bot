@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-05-19T13:03:53.059833Z",
+  "last_update": "2026-05-19T13:24:28.610290Z",
   "offers": [
-    {
-      "id": "psz-r-100-off-em-seleo",
-      "original_link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
-      "preview_title": "R$ 100 OFF em seleção!",
-      "title": "R$ 100 OFF em seleção!",
-      "link": "https://clube.uol.com.br/underarmour/psz-r-100-off-em-seleo",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ff028b46dd504d840bc5787a904928ba.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
-      "validity": "Benefício válido de 16/07/2025 13:07 até 31/12/2030 23:59.",
-      "description": "Sobre o parceiro: A Under Armour é uma marca global de artigos esportivos reconhecida por sua tecnologia, inovação e alta performance. A marca oferece roupas, calçados e acessórios desenvolvidos para proporcionar conforto, resistência e desempenho para atletas e apaixonados por esporte. Benefício: R$100 OFF extra em seleção de produtos da Under Armour! Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
-      "location_summary": "",
-      "dedupe_key": "r-100-off-em-selecao|beneficio-valido-de-16-07-2025-13-07-ate-31-12-2030-23-59|sobre-o-parceiro-a-under-armour-e-uma-marca-global-de-artigos-esportivos-reconhecida-por-sua-tecnologia-inovacao-e-alta-performance-a-marca-oferece-roupas-calca",
-      "loose_dedupe_key": "r-100-off-em-selecao|sobre-o-parceiro-a-under-armour-e-uma-marca-global-de-artigos-esportivos-reconhecida-por-sua-tecnologia-inovacao-e-alta-performance-a-marca-oferece-roupas-calca",
-      "scraped_at": "2026-05-14T21:01:33.131000Z",
-      "trace_id": "trace_psz-r-100-off-em-seleo",
-      "channel_message_id": 1449,
-      "channel_message_link": "https://t.me/c/3723320790/1449",
-      "comment_message_id": 4846,
-      "discussion_message_id": 4843,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/4846?thread=4843",
-      "sent_at": "2026-05-14T21:02:34.713069Z"
-    },
     {
       "id": "ps4-2-ingressos-30-05-morumbi-park-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/ps4-2-ingressos-30-05-morumbi-park-sp",
@@ -495,6 +472,29 @@
       "sent_at": "2026-05-18T22:49:30.368721Z",
       "sold_out_at": "21:33",
       "_sold_out_synced_to_telegram": true
+    },
+    {
+      "id": "psT-at-12-off-nas-reservas",
+      "original_link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "preview_title": "Até 12% OFF nas reservas",
+      "title": "Até 12% OFF nas reservas",
+      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "validity": "Benefício válido de 19/05/2026 10:06 até 31/05/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "location_summary": "",
+      "dedupe_key": "ate-12-off-nas-reservas|beneficio-valido-de-19-05-2026-10-06-ate-31-05-2026-23-59|sobre-o-parceiro-desde-2006-no-mercado-de-aluguel-de-carros-a-movida-rent-a-car-conta-com-a-frota-mais-nova-do-brasil-e-dispoe-de-lojas-nas-principais-cidades-e",
+      "loose_dedupe_key": "ate-12-off-nas-reservas|sobre-o-parceiro-desde-2006-no-mercado-de-aluguel-de-carros-a-movida-rent-a-car-conta-com-a-frota-mais-nova-do-brasil-e-dispoe-de-lojas-nas-principais-cidades-e",
+      "scraped_at": "2026-05-19T13:23:19.529000Z",
+      "trace_id": "trace_pst-at-12-off-nas-reservas",
+      "channel_message_id": 1469,
+      "channel_message_link": "https://t.me/c/3723320790/1469",
+      "comment_message_id": 4929,
+      "discussion_message_id": 4926,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/4929?thread=4926",
+      "sent_at": "2026-05-19T13:24:28.535255Z"
     }
   ]
 }
