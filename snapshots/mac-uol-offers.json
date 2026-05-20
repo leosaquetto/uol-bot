@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 32664,
-  "run_duration_seconds": 32.66,
-  "avg_detail_ms_per_offer": 2722,
-  "generated_at": "2026-05-20T13:22:16.388Z",
+  "run_duration_ms": 26387,
+  "run_duration_seconds": 26.39,
+  "avg_detail_ms_per_offer": 2199,
+  "generated_at": "2026-05-20T13:32:49.829Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130811,
-      "detail_elapsed_ms": 2428,
-      "scraped_at": "2026-05-20T13:21:56.513Z"
+      "detail_html_length": 130819,
+      "detail_elapsed_ms": 2862,
+      "scraped_at": "2026-05-20T13:32:33.140Z"
     },
     {
       "id": "ptf-30-off-em-selecao-de-produtos",
@@ -64,9 +64,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130780,
-      "detail_elapsed_ms": 1739,
-      "scraped_at": "2026-05-20T13:21:58.253Z"
+      "detail_html_length": 130783,
+      "detail_elapsed_ms": 1588,
+      "scraped_at": "2026-05-20T13:32:34.729Z"
+    },
+    {
+      "id": "pte-2-ingressos-museu-da-imaginacao-sp",
+      "trace_id": "trace_pte-2-ingressos-museu-da-imaginacao-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pte-2-ingressos-museu-da-imaginacao-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pte-2-ingressos-museu-da-imaginacao-sp",
+      "title": "2 INGRESSOS: Museu da Imaginação - SP",
+      "preview_title": "2 INGRESSOS: Museu da Imaginação - SP",
+      "validity": "Benefício válido de 19/05/2026 16:53 até 25/05/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos para o Museu da Imaginação e viva uma experiência interativa e divertida para todas as idades na Água Branca, em São Paulo. Data: Os ingressos indicam datas a partir de 12 e 14/05, mas podem ser utilizados em até 60 dias pela Cortesia UOL. Local: Rua Virgílio Wey, 100, no bairro da Água Branca - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/37c86238705a0aac3cfb60405f712780.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/37c86238705a0aac3cfb60405f712780.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/37c86238705a0aac3cfb60405f712780.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132514,
+      "detail_elapsed_ms": 1523,
+      "scraped_at": "2026-05-20T13:32:36.253Z"
     },
     {
       "id": "ptd-15-off-em-check-up-medico",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133076,
-      "detail_elapsed_ms": 1655,
-      "scraped_at": "2026-05-20T13:21:59.908Z"
+      "detail_html_length": 133107,
+      "detail_elapsed_ms": 1495,
+      "scraped_at": "2026-05-20T13:32:37.748Z"
     },
     {
       "id": "ptc-1-ingresso-24-05-neo-quimica-arena-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133096,
-      "detail_elapsed_ms": 2088,
-      "scraped_at": "2026-05-20T13:22:01.996Z"
+      "detail_html_length": 133108,
+      "detail_elapsed_ms": 1452,
+      "scraped_at": "2026-05-20T13:32:39.200Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130875,
-      "detail_elapsed_ms": 2604,
-      "scraped_at": "2026-05-20T13:22:04.604Z"
+      "detail_html_length": 130927,
+      "detail_elapsed_ms": 1501,
+      "scraped_at": "2026-05-20T13:32:40.701Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130758,
-      "detail_elapsed_ms": 1647,
-      "scraped_at": "2026-05-20T13:22:06.251Z"
+      "detail_html_length": 130761,
+      "detail_elapsed_ms": 1413,
+      "scraped_at": "2026-05-20T13:32:42.114Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130746,
-      "detail_elapsed_ms": 1777,
-      "scraped_at": "2026-05-20T13:22:08.028Z"
+      "detail_html_length": 130819,
+      "detail_elapsed_ms": 1409,
+      "scraped_at": "2026-05-20T13:32:43.523Z"
     },
     {
       "id": "psv-ate-75-off-para-compras-no-site",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130824,
-      "detail_elapsed_ms": 1825,
-      "scraped_at": "2026-05-20T13:22:09.853Z"
+      "detail_html_length": 130886,
+      "detail_elapsed_ms": 1699,
+      "scraped_at": "2026-05-20T13:32:45.222Z"
     },
     {
       "id": "psu-ate-75-off-para-compras-no-site",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131183,
-      "detail_elapsed_ms": 1766,
-      "scraped_at": "2026-05-20T13:22:11.619Z"
+      "detail_html_length": 131186,
+      "detail_elapsed_ms": 1724,
+      "scraped_at": "2026-05-20T13:32:46.947Z"
     },
     {
       "id": "pst-ate-12-off-nas-reservas",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132953,
-      "detail_elapsed_ms": 1621,
-      "scraped_at": "2026-05-20T13:22:13.240Z"
+      "detail_html_length": 132965,
+      "detail_elapsed_ms": 1400,
+      "scraped_at": "2026-05-20T13:32:48.348Z"
     },
     {
       "id": "psq-2-ingressos-22-05-teatro-italia-sp",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133019,
-      "detail_elapsed_ms": 1507,
-      "scraped_at": "2026-05-20T13:22:14.748Z"
-    },
-    {
-      "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
-      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso",
-      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
-      "original_link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
-      "title": "Pague apenas R$ 80 + taxa no ingresso",
-      "preview_title": "Pague apenas R$ 80 + taxa no ingresso",
-      "validity": "Benefício válido de 18/05/2026 17:49 até 15/08/2026 23:59.",
-      "description": "Sobre o Clube dos 30: Voltada para quem viveu ou cresceu ouvindo os sucessos dos anos 80, 90 e 2000, a festa reúne diferentes gerações em torno de hits que atravessaram décadas, das baladas românticas às faixas dançantes, em uma celebração de nostalgia e conexão. Edição especial da festa: O Clube dos 30 anuncia edição especial no Varanda Estaiada, dia 15 de agosto de 2026, das 14h às 22h. O evento terá show exclusivo do cantor Latino e expectativa de mais de 3 mil pessoas. Benefício: Pague apenas R$ 80 + taxa no ingresso da edição especial do Clube dos 30. Regras: Para resgatar o desconto exclusivo de assinante UOL, clique em \"Utilizar este benefício\". Ao ser direcionado para a ticketeira oficial do evento, o desconto já estará aplicado. Basta escolher a quantidade dos ingressos e prosseguir com a compra. Atenção: Benefício válido para Assinante UOL. Os ingressos com desconto podem se esgotar a qualquer momento. O ingresso adquirido pelo desconto do Clube UOL não possui restrição de horário para entrada. Os ingressos com desconto da categoria Clube UOL podem se esgotar antes das demais categorias. Esses ingressos com desconto não são elegíveis para brindes eventualmente distribuídos em lotes abertos ao público geral. Serviço Data: 15/08/2026 Horário: 14h às 22h Endereço do Varanda Estaiada: Av. Dr. Chucri Zaidan, 155 - Vila Cordeiro, São Paulo - SP.",
-      "category": "Promoções do Mês",
-      "partner_name": "Festa Clube dos 30",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a9bde83f30245cc83012e16784e9f38d.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/68db74a3cf142500150eade4d1343f8d.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/68db74a3cf142500150eade4d1343f8d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/68db74a3cf142500150eade4d1343f8d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 134443,
-      "detail_elapsed_ms": 1581,
-      "scraped_at": "2026-05-20T13:22:16.329Z"
+      "detail_html_length": 132580,
+      "detail_elapsed_ms": 1454,
+      "scraped_at": "2026-05-20T13:32:49.802Z"
     }
   ]
 }
