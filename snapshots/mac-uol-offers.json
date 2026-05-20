@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 39201,
-  "run_duration_seconds": 39.2,
-  "avg_detail_ms_per_offer": 3267,
-  "generated_at": "2026-05-20T19:40:24.735Z",
+  "run_duration_ms": 28371,
+  "run_duration_seconds": 28.37,
+  "avg_detail_ms_per_offer": 2364,
+  "generated_at": "2026-05-20T19:50:58.760Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pto-30-off-extra-na-seleo-calas",
+      "trace_id": "trace_pto-30-off-extra-na-seleo-calas",
+      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
+      "title": "30% OFF extra na seleção de calças",
+      "preview_title": "30% OFF extra na seleção de calças",
+      "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 30% OFF extra na seleção de calças Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35b1d489bf5ee82d89b201b2bd598eb9.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35b1d489bf5ee82d89b201b2bd598eb9.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35b1d489bf5ee82d89b201b2bd598eb9.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130856,
+      "detail_elapsed_ms": 2760,
+      "scraped_at": "2026-05-20T19:50:41.575Z"
+    },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
       "trace_id": "trace_ptn-selecionados-20-off-acima-de-r-350",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 123704,
-      "detail_elapsed_ms": 2245,
-      "scraped_at": "2026-05-20T19:39:58.988Z"
+      "detail_html_length": 131140,
+      "detail_elapsed_ms": 1924,
+      "scraped_at": "2026-05-20T19:50:43.500Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132570,
-      "detail_elapsed_ms": 2630,
-      "scraped_at": "2026-05-20T19:40:01.619Z"
+      "detail_html_length": 132614,
+      "detail_elapsed_ms": 1612,
+      "scraped_at": "2026-05-20T19:50:45.112Z"
     },
     {
       "id": "ptj-2-ingressos-23-05-teatro-bradesco-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132527,
-      "detail_elapsed_ms": 2220,
-      "scraped_at": "2026-05-20T19:40:03.839Z"
+      "detail_html_length": 132573,
+      "detail_elapsed_ms": 1768,
+      "scraped_at": "2026-05-20T19:50:46.882Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132604,
-      "detail_elapsed_ms": 2528,
-      "scraped_at": "2026-05-20T19:40:06.367Z"
+      "detail_html_length": 132649,
+      "detail_elapsed_ms": 1677,
+      "scraped_at": "2026-05-20T19:50:48.560Z"
     },
     {
       "id": "ptg-r-150-off-em-seminovos-selecionados",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130973,
-      "detail_elapsed_ms": 2135,
-      "scraped_at": "2026-05-20T19:40:08.502Z"
+      "detail_html_length": 131029,
+      "detail_elapsed_ms": 1427,
+      "scraped_at": "2026-05-20T19:50:49.987Z"
     },
     {
       "id": "ptf-30-off-em-seleo-de-produtos",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130735,
-      "detail_elapsed_ms": 2123,
-      "scraped_at": "2026-05-20T19:40:10.625Z"
+      "detail_html_length": 130779,
+      "detail_elapsed_ms": 1481,
+      "scraped_at": "2026-05-20T19:50:51.468Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133168,
-      "detail_elapsed_ms": 2163,
-      "scraped_at": "2026-05-20T19:40:12.788Z"
+      "detail_html_length": 133222,
+      "detail_elapsed_ms": 1444,
+      "scraped_at": "2026-05-20T19:50:52.912Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130909,
-      "detail_elapsed_ms": 1966,
-      "scraped_at": "2026-05-20T19:40:14.754Z"
+      "detail_html_length": 130935,
+      "detail_elapsed_ms": 1386,
+      "scraped_at": "2026-05-20T19:50:54.298Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130723,
-      "detail_elapsed_ms": 1915,
-      "scraped_at": "2026-05-20T19:40:16.669Z"
+      "detail_html_length": 130788,
+      "detail_elapsed_ms": 1499,
+      "scraped_at": "2026-05-20T19:50:55.797Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130761,
-      "detail_elapsed_ms": 2717,
-      "scraped_at": "2026-05-20T19:40:19.387Z"
+      "detail_html_length": 130817,
+      "detail_elapsed_ms": 1505,
+      "scraped_at": "2026-05-20T19:50:57.302Z"
     },
     {
       "id": "psv-at-75-off-para-compras-no-site",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130844,
-      "detail_elapsed_ms": 2353,
-      "scraped_at": "2026-05-20T19:40:21.740Z"
-    },
-    {
-      "id": "psu-at-75-off-para-compras-no-site",
-      "trace_id": "trace_psu-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
-      "title": "Até 75% OFF para compras no site",
-      "preview_title": "Até 75% OFF para compras no site",
-      "validity": "Benefício válido de 19/05/2026 10:15 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Netshoes",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/000456842d6863c64d45750ee1b6ee3f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/000456842d6863c64d45750ee1b6ee3f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/000456842d6863c64d45750ee1b6ee3f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131065,
-      "detail_elapsed_ms": 2722,
-      "scraped_at": "2026-05-20T19:40:24.462Z"
+      "detail_html_length": 130890,
+      "detail_elapsed_ms": 1426,
+      "scraped_at": "2026-05-20T19:50:58.728Z"
     }
   ]
 }
