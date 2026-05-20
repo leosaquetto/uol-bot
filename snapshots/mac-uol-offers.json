@@ -14,17 +14,41 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 42899,
-  "run_duration_seconds": 42.9,
-  "avg_detail_ms_per_offer": 3575,
-  "generated_at": "2026-05-20T20:12:35.714Z",
+  "run_duration_ms": 54863,
+  "run_duration_seconds": 54.86,
+  "avg_detail_ms_per_offer": 4572,
+  "generated_at": "2026-05-20T20:23:39.318Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "ptp-25-off-extra-na-selecao-de-vestidos",
-      "trace_id": "trace_ptp-25-off-extra-na-selecao-de-vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
-      "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
+      "id": "ptq-at-60-off-10-off-masculino",
+      "trace_id": "trace_ptq-at-60-off-10-off-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
+      "title": "Até 60% OFF +10% OFF Masculino",
+      "preview_title": "Até 60% OFF +10% OFF Masculino",
+      "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: Até 60% OFF + 10% OFF extra em seleção masculina com o cupom Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8931419d5bc2bc90b39f85ecb5d48461.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8931419d5bc2bc90b39f85ecb5d48461.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8931419d5bc2bc90b39f85ecb5d48461.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130811,
+      "detail_elapsed_ms": 4666,
+      "scraped_at": "2026-05-20T20:23:15.928Z"
+    },
+    {
+      "id": "ptp-25-off-extra-na-seleo-de-vestidos",
+      "trace_id": "trace_ptp-25-off-extra-na-seleo-de-vestidos",
+      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
       "title": "25% OFF extra na seleção de vestidos",
       "preview_title": "25% OFF extra na seleção de vestidos",
       "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
@@ -40,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129313,
-      "detail_elapsed_ms": 3224,
-      "scraped_at": "2026-05-20T20:12:10.084Z"
+      "detail_html_length": 129857,
+      "detail_elapsed_ms": 2205,
+      "scraped_at": "2026-05-20T20:23:18.164Z"
     },
     {
-      "id": "pto-30-off-extra-na-selecao-calcas",
-      "trace_id": "trace_pto-30-off-extra-na-selecao-calcas",
-      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
+      "id": "pto-30-off-extra-na-seleo-calas",
+      "trace_id": "trace_pto-30-off-extra-na-seleo-calas",
+      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
       "title": "30% OFF extra na seleção de calças",
       "preview_title": "30% OFF extra na seleção de calças",
       "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124637,
-      "detail_elapsed_ms": 2728,
-      "scraped_at": "2026-05-20T20:12:12.813Z"
+      "detail_html_length": 130987,
+      "detail_elapsed_ms": 2290,
+      "scraped_at": "2026-05-20T20:23:20.454Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -88,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131058,
-      "detail_elapsed_ms": 2386,
-      "scraped_at": "2026-05-20T20:12:15.199Z"
+      "detail_html_length": 131054,
+      "detail_elapsed_ms": 2246,
+      "scraped_at": "2026-05-20T20:23:22.700Z"
     },
     {
-      "id": "ptk-2-ingressos-26-05-palacio-das-artes-bh",
-      "trace_id": "trace_ptk-2-ingressos-26-05-palacio-das-artes-bh",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "trace_id": "trace_ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
       "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "preview_title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "validity": "Benefício válido de 20/05/2026 12:41 até 25/05/2026 23:59.",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132568,
-      "detail_elapsed_ms": 2123,
-      "scraped_at": "2026-05-20T20:12:17.322Z"
+      "detail_html_length": 132559,
+      "detail_elapsed_ms": 2173,
+      "scraped_at": "2026-05-20T20:23:24.873Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132589,
-      "detail_elapsed_ms": 1994,
-      "scraped_at": "2026-05-20T20:12:19.317Z"
+      "detail_html_length": 132584,
+      "detail_elapsed_ms": 1849,
+      "scraped_at": "2026-05-20T20:23:26.722Z"
     },
     {
       "id": "ptg-r-150-off-em-seminovos-selecionados",
@@ -160,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130977,
-      "detail_elapsed_ms": 2578,
-      "scraped_at": "2026-05-20T20:12:21.895Z"
+      "detail_html_length": 130963,
+      "detail_elapsed_ms": 2576,
+      "scraped_at": "2026-05-20T20:23:29.298Z"
     },
     {
-      "id": "ptf-30-off-em-selecao-de-produtos",
-      "trace_id": "trace_ptf-30-off-em-selecao-de-produtos",
-      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-selecao-de-produtos",
-      "original_link": "https://clube.uol.com.br/nike/ptf-30-off-em-selecao-de-produtos",
+      "id": "ptf-30-off-em-seleo-de-produtos",
+      "trace_id": "trace_ptf-30-off-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
       "title": "30% OFF em seleção de produtos!",
       "preview_title": "30% OFF em seleção de produtos!",
       "validity": "Benefício válido de 19/05/2026 16:00 até 20/05/2026 23:59.",
@@ -184,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130749,
-      "detail_elapsed_ms": 1732,
-      "scraped_at": "2026-05-20T20:12:23.627Z"
+      "detail_html_length": 130733,
+      "detail_elapsed_ms": 2072,
+      "scraped_at": "2026-05-20T20:23:31.370Z"
     },
     {
-      "id": "ptd-15-off-em-check-up-medico",
-      "trace_id": "trace_ptd-15-off-em-check-up-medico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
-      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "id": "ptd-15-off-em-check-up-mdico",
+      "trace_id": "trace_ptd-15-off-em-check-up-mdico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
       "title": "15% OFF em Check-up Médico",
       "preview_title": "15% OFF em Check-up Médico",
       "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
@@ -209,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133157,
-      "detail_elapsed_ms": 2634,
-      "scraped_at": "2026-05-20T20:12:26.262Z"
+      "detail_elapsed_ms": 1976,
+      "scraped_at": "2026-05-20T20:23:33.346Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130883,
-      "detail_elapsed_ms": 2153,
-      "scraped_at": "2026-05-20T20:12:28.415Z"
+      "detail_html_length": 130878,
+      "detail_elapsed_ms": 2120,
+      "scraped_at": "2026-05-20T20:23:35.467Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130716,
-      "detail_elapsed_ms": 2038,
-      "scraped_at": "2026-05-20T20:12:30.454Z"
+      "detail_html_length": 130731,
+      "detail_elapsed_ms": 1964,
+      "scraped_at": "2026-05-20T20:23:37.431Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130755,
-      "detail_elapsed_ms": 2442,
-      "scraped_at": "2026-05-20T20:12:32.896Z"
-    },
-    {
-      "id": "psv-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_psv-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
-      "title": "Até 75% OFF para compras no site",
-      "preview_title": "Até 75% OFF para compras no site",
-      "validity": "Benefício válido de 19/05/2026 10:17 até 24/05/2026 23:59.",
-      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
-      "category": "Compras e Presentes",
-      "partner_name": "Zattini",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130822,
-      "detail_elapsed_ms": 2390,
-      "scraped_at": "2026-05-20T20:12:35.286Z"
+      "detail_html_length": 130750,
+      "detail_elapsed_ms": 1745,
+      "scraped_at": "2026-05-20T20:23:39.176Z"
     }
   ]
 }
