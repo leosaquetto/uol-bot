@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-20T19:51:44.037745Z",
+  "updated_at": "2026-05-20T20:02:27.077309Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 7,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "30% OFF extra na seleção de calças",
+      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pto-30-off-extra-na-selecao-calcas"
+    },
     {
       "title": "Selecionados 20% OFF acima de R$350",
       "link": "https://clube.uol.com.br/underarmour/ptn-selecionados-20-off-acima-de-r-350",
@@ -24,15 +30,9 @@
     },
     {
       "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptk-2-ingressos-26-05-palcio-das-artes-bh"
-    },
-    {
-      "title": "2 INGRESSOS: 23/05 Teatro Bradesco - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptj-2-ingressos-23-05-teatro-bradesco-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptj-2-ingressos-23-05-teatro-bradesco-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_ptk-2-ingressos-26-05-palacio-das-artes-bh"
     },
     {
       "title": "2 INGRESSOS: 23/05 Teatro Dom Bosco MS",
@@ -48,15 +48,9 @@
     },
     {
       "title": "30% OFF em seleção de produtos!",
-      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_ptf-30-off-em-seleo-de-produtos"
-    },
-    {
-      "title": "15% OFF em Check-up Médico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-selecao-de-produtos",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptd-15-off-em-check-up-mdico"
+      "trace_id": "trace_ptf-30-off-em-selecao-de-produtos"
     },
     {
       "title": "20% OFF em todo o site",
@@ -78,9 +72,9 @@
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psv-at-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psv-ate-75-off-para-compras-no-site"
     }
   ]
 }
