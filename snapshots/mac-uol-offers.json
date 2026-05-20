@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 65994,
-  "run_duration_seconds": 65.99,
-  "avg_detail_ms_per_offer": 5500,
-  "generated_at": "2026-05-20T20:45:52.668Z",
+  "run_duration_ms": 62021,
+  "run_duration_seconds": 62.02,
+  "avg_detail_ms_per_offer": 5168,
+  "generated_at": "2026-05-20T20:57:05.162Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "ptr-compre-2-calados-com-20-off",
+      "trace_id": "trace_ptr-compre-2-calados-com-20-off",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "title": "Compre 2 Calçados com 20% OFF",
+      "preview_title": "Compre 2 Calçados com 20% OFF",
+      "validity": "Benefício válido de 20/05/2026 10:32 até 14/06/2026 23:59.",
+      "description": "Sobre o parceiro: A Mizuno é uma multinacional japonesa que oferece a mais avançada tecnologia esportiva, com foco na categoria running performance. A Mizuno reforça, dia após dia, sua paixão por esportes e compartilha essa energia com todos que se aproximam da marca e usam seus produtos. Benefício: Dia dos Namorados: compre 2 calçados com 20% OFF Regras: Desconto de 20% aplicado automaticamente no carrinho na compra de 2 calçados participantes da campanha.",
+      "category": "Compras e Presentes",
+      "partner_name": "Mizuno",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/161c309479737576af6ffa4f705dc88e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/161c309479737576af6ffa4f705dc88e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/161c309479737576af6ffa4f705dc88e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132785,
+      "detail_elapsed_ms": 6367,
+      "scraped_at": "2026-05-20T20:56:39.351Z"
+    },
     {
       "id": "ptq-at-60-off-10-off-masculino",
       "trace_id": "trace_ptq-at-60-off-10-off-masculino",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130812,
-      "detail_elapsed_ms": 8108,
-      "scraped_at": "2026-05-20T20:45:24.608Z"
+      "detail_html_length": 124321,
+      "detail_elapsed_ms": 2062,
+      "scraped_at": "2026-05-20T20:56:41.459Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124659,
-      "detail_elapsed_ms": 3202,
-      "scraped_at": "2026-05-20T20:45:27.830Z"
+      "detail_html_length": 131014,
+      "detail_elapsed_ms": 2451,
+      "scraped_at": "2026-05-20T20:56:43.910Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131007,
-      "detail_elapsed_ms": 2859,
-      "scraped_at": "2026-05-20T20:45:30.689Z"
+      "detail_html_length": 130984,
+      "detail_elapsed_ms": 1984,
+      "scraped_at": "2026-05-20T20:56:45.894Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131070,
-      "detail_elapsed_ms": 2939,
-      "scraped_at": "2026-05-20T20:45:33.628Z"
+      "detail_html_length": 131061,
+      "detail_elapsed_ms": 2782,
+      "scraped_at": "2026-05-20T20:56:48.679Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132565,
-      "detail_elapsed_ms": 2730,
-      "scraped_at": "2026-05-20T20:45:36.359Z"
+      "detail_html_length": 132555,
+      "detail_elapsed_ms": 2571,
+      "scraped_at": "2026-05-20T20:56:51.250Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133074,
-      "detail_elapsed_ms": 2673,
-      "scraped_at": "2026-05-20T20:45:39.033Z"
+      "detail_html_length": 132591,
+      "detail_elapsed_ms": 2202,
+      "scraped_at": "2026-05-20T20:56:53.452Z"
     },
     {
       "id": "ptg-r-150-off-em-seminovos-selecionados",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130967,
-      "detail_elapsed_ms": 2609,
-      "scraped_at": "2026-05-20T20:45:41.642Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 2294,
+      "scraped_at": "2026-05-20T20:56:55.746Z"
     },
     {
       "id": "ptf-30-off-em-seleo-de-produtos",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130739,
-      "detail_elapsed_ms": 2219,
-      "scraped_at": "2026-05-20T20:45:43.861Z"
+      "detail_html_length": 130720,
+      "detail_elapsed_ms": 2203,
+      "scraped_at": "2026-05-20T20:56:57.949Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133184,
-      "detail_elapsed_ms": 2167,
-      "scraped_at": "2026-05-20T20:45:46.028Z"
+      "detail_html_length": 133164,
+      "detail_elapsed_ms": 2214,
+      "scraped_at": "2026-05-20T20:57:00.163Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -257,8 +281,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130885,
-      "detail_elapsed_ms": 2255,
-      "scraped_at": "2026-05-20T20:45:48.283Z"
+      "detail_elapsed_ms": 2432,
+      "scraped_at": "2026-05-20T20:57:02.596Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130718,
-      "detail_elapsed_ms": 2012,
-      "scraped_at": "2026-05-20T20:45:50.295Z"
-    },
-    {
-      "id": "psx-aproveite-12-off-na-stanley",
-      "trace_id": "trace_psx-aproveite-12-off-na-stanley",
-      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "original_link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "title": "Aproveite 12% OFF na Stanley",
-      "preview_title": "Aproveite 12% OFF na Stanley",
-      "validity": "Benefício válido de 19/05/2026 10:20 até 15/06/2026 23:59.",
-      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday.",
-      "category": "Compras e Presentes",
-      "partner_name": "Stanley",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/437488ab72a7771a7afd7c6d1bcbfda3.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130757,
-      "detail_elapsed_ms": 2120,
-      "scraped_at": "2026-05-20T20:45:52.415Z"
+      "detail_html_length": 130719,
+      "detail_elapsed_ms": 2263,
+      "scraped_at": "2026-05-20T20:57:04.859Z"
     }
   ]
 }
