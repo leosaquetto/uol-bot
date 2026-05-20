@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 51861,
-  "run_duration_seconds": 51.86,
-  "avg_detail_ms_per_offer": 4322,
-  "generated_at": "2026-05-20T21:19:07.191Z",
+  "run_duration_ms": 55662,
+  "run_duration_seconds": 55.66,
+  "avg_detail_ms_per_offer": 4639,
+  "generated_at": "2026-05-20T21:30:10.529Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131564,
-      "detail_elapsed_ms": 4349,
-      "scraped_at": "2026-05-20T21:18:40.966Z"
+      "detail_html_length": 132785,
+      "detail_elapsed_ms": 5847,
+      "scraped_at": "2026-05-20T21:29:36.640Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130967,
-      "detail_elapsed_ms": 2700,
-      "scraped_at": "2026-05-20T21:18:43.728Z"
+      "detail_html_length": 124587,
+      "detail_elapsed_ms": 3231,
+      "scraped_at": "2026-05-20T21:29:39.873Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131011,
-      "detail_elapsed_ms": 2200,
-      "scraped_at": "2026-05-20T21:18:45.930Z"
+      "detail_html_length": 131024,
+      "detail_elapsed_ms": 2450,
+      "scraped_at": "2026-05-20T21:29:42.323Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130982,
-      "detail_elapsed_ms": 1948,
-      "scraped_at": "2026-05-20T21:18:47.878Z"
+      "detail_html_length": 130984,
+      "detail_elapsed_ms": 2488,
+      "scraped_at": "2026-05-20T21:29:44.812Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131058,
-      "detail_elapsed_ms": 1988,
-      "scraped_at": "2026-05-20T21:18:49.867Z"
+      "detail_html_length": 131061,
+      "detail_elapsed_ms": 2379,
+      "scraped_at": "2026-05-20T21:29:47.191Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132562,
-      "detail_elapsed_ms": 2719,
-      "scraped_at": "2026-05-20T21:18:52.586Z"
+      "detail_html_length": 132555,
+      "detail_elapsed_ms": 2481,
+      "scraped_at": "2026-05-20T21:29:49.672Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132587,
-      "detail_elapsed_ms": 2441,
-      "scraped_at": "2026-05-20T21:18:55.027Z"
+      "detail_html_length": 132581,
+      "detail_elapsed_ms": 2257,
+      "scraped_at": "2026-05-20T21:29:51.929Z"
     },
     {
       "id": "ptg-r-150-off-em-seminovos-selecionados",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130956,
-      "detail_elapsed_ms": 2014,
-      "scraped_at": "2026-05-20T21:18:57.042Z"
+      "detail_html_length": 130970,
+      "detail_elapsed_ms": 3083,
+      "scraped_at": "2026-05-20T21:29:55.012Z"
     },
     {
       "id": "ptf-30-off-em-seleo-de-produtos",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130718,
-      "detail_elapsed_ms": 2147,
-      "scraped_at": "2026-05-20T21:18:59.189Z"
+      "detail_html_length": 130730,
+      "detail_elapsed_ms": 2717,
+      "scraped_at": "2026-05-20T21:29:57.729Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133152,
-      "detail_elapsed_ms": 2778,
-      "scraped_at": "2026-05-20T21:19:01.967Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133004,
+      "detail_elapsed_ms": 6774,
+      "scraped_at": "2026-05-20T21:30:05.361Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130872,
-      "detail_elapsed_ms": 2292,
-      "scraped_at": "2026-05-20T21:19:04.260Z"
+      "detail_html_length": 124521,
+      "detail_elapsed_ms": 2559,
+      "scraped_at": "2026-05-20T21:30:07.920Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130706,
-      "detail_elapsed_ms": 2535,
-      "scraped_at": "2026-05-20T21:19:06.795Z"
+      "detail_html_length": 130726,
+      "detail_elapsed_ms": 2397,
+      "scraped_at": "2026-05-20T21:30:10.317Z"
     }
   ]
 }
