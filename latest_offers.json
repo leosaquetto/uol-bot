@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-05-20T20:46:31.572191Z",
+  "last_update": "2026-05-20T20:57:53.555805Z",
   "offers": [
-    {
-      "id": "psT-at-12-off-nas-reservas",
-      "original_link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
-      "preview_title": "Até 12% OFF nas reservas",
-      "title": "Até 12% OFF nas reservas",
-      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
-      "validity": "Benefício válido de 19/05/2026 10:06 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
-      "location_summary": "",
-      "dedupe_key": "ate-12-off-nas-reservas|beneficio-valido-de-19-05-2026-10-06-ate-31-05-2026-23-59|sobre-o-parceiro-desde-2006-no-mercado-de-aluguel-de-carros-a-movida-rent-a-car-conta-com-a-frota-mais-nova-do-brasil-e-dispoe-de-lojas-nas-principais-cidades-e",
-      "loose_dedupe_key": "ate-12-off-nas-reservas|sobre-o-parceiro-desde-2006-no-mercado-de-aluguel-de-carros-a-movida-rent-a-car-conta-com-a-frota-mais-nova-do-brasil-e-dispoe-de-lojas-nas-principais-cidades-e",
-      "scraped_at": "2026-05-19T13:23:19.529000Z",
-      "trace_id": "trace_pst-at-12-off-nas-reservas",
-      "channel_message_id": 1469,
-      "channel_message_link": "https://t.me/c/3723320790/1469",
-      "comment_message_id": 4929,
-      "discussion_message_id": 4926,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/4929?thread=4926",
-      "sent_at": "2026-05-19T13:24:28.535255Z"
-    },
     {
       "id": "psX-aproveite-12-off-na-stanley",
       "original_link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
@@ -449,7 +426,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4998?thread=4995",
       "sent_at": "2026-05-20T20:02:40.805265Z",
-      "sold_out_at": "17:45"
+      "sold_out_at": "17:45",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -473,6 +451,29 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5002?thread=4999",
       "sent_at": "2026-05-20T20:24:49.451691Z"
+    },
+    {
+      "id": "ptr-compre-2-calados-com-20-off",
+      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "preview_title": "Compre 2 Calçados com 20% OFF",
+      "title": "Compre 2 Calçados com 20% OFF",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/161c309479737576af6ffa4f705dc88e.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
+      "validity": "Benefício válido de 20/05/2026 10:32 até 14/06/2026 23:59.",
+      "description": "Sobre o parceiro: A Mizuno é uma multinacional japonesa que oferece a mais avançada tecnologia esportiva, com foco na categoria running performance. A Mizuno reforça, dia após dia, sua paixão por esportes e compartilha essa energia com todos que se aproximam da marca e usam seus produtos. Benefício: Dia dos Namorados: compre 2 calçados com 20% OFF Regras: Desconto de 20% aplicado automaticamente no carrinho na compra de 2 calçados participantes da campanha.",
+      "location_summary": "",
+      "dedupe_key": "compre-2-calcados-com-20-off|beneficio-valido-de-20-05-2026-10-32-ate-14-06-2026-23-59|sobre-o-parceiro-a-mizuno-e-uma-multinacional-japonesa-que-oferece-a-mais-avancada-tecnologia-esportiva-com-foco-na-categoria-running-performance-a-mizuno-refor",
+      "loose_dedupe_key": "compre-2-calcados-com-20-off|sobre-o-parceiro-a-mizuno-e-uma-multinacional-japonesa-que-oferece-a-mais-avancada-tecnologia-esportiva-com-foco-na-categoria-running-performance-a-mizuno-refor",
+      "scraped_at": "2026-05-20T20:56:39.351000Z",
+      "trace_id": "trace_ptr-compre-2-calados-com-20-off",
+      "channel_message_id": 1489,
+      "channel_message_link": "https://t.me/c/3723320790/1489",
+      "comment_message_id": 5006,
+      "discussion_message_id": 5003,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/5006?thread=5003",
+      "sent_at": "2026-05-20T20:57:53.471204Z"
     }
   ]
 }
