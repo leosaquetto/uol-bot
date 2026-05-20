@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27407,
-  "run_duration_seconds": 27.41,
-  "avg_detail_ms_per_offer": 2284,
-  "generated_at": "2026-05-20T18:25:11.129Z",
+  "run_duration_ms": 30344,
+  "run_duration_seconds": 30.34,
+  "avg_detail_ms_per_offer": 2529,
+  "generated_at": "2026-05-20T18:35:46.642Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132441,
-      "detail_elapsed_ms": 1953,
-      "scraped_at": "2026-05-20T18:24:54.387Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 2284,
+      "scraped_at": "2026-05-20T18:35:27.039Z"
     },
     {
       "id": "ptg-r-150-off-em-seminovos-selecionados",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131008,
-      "detail_elapsed_ms": 1515,
-      "scraped_at": "2026-05-20T18:24:55.903Z"
+      "detail_html_length": 130972,
+      "detail_elapsed_ms": 2060,
+      "scraped_at": "2026-05-20T18:35:29.100Z"
     },
     {
-      "id": "ptf-30-off-em-seleo-de-produtos",
-      "trace_id": "trace_ptf-30-off-em-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
+      "id": "ptf-30-off-em-selecao-de-produtos",
+      "trace_id": "trace_ptf-30-off-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/nike/ptf-30-off-em-selecao-de-produtos",
       "title": "30% OFF em seleção de produtos!",
       "preview_title": "30% OFF em seleção de produtos!",
       "validity": "Benefício válido de 19/05/2026 16:00 até 20/05/2026 23:59.",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130780,
-      "detail_elapsed_ms": 1427,
-      "scraped_at": "2026-05-20T18:24:57.330Z"
+      "detail_html_length": 130744,
+      "detail_elapsed_ms": 1941,
+      "scraped_at": "2026-05-20T18:35:31.041Z"
     },
     {
-      "id": "ptd-15-off-em-check-up-mdico",
-      "trace_id": "trace_ptd-15-off-em-check-up-mdico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
-      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "id": "ptd-15-off-em-check-up-medico",
+      "trace_id": "trace_ptd-15-off-em-check-up-medico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "title": "15% OFF em Check-up Médico",
       "preview_title": "15% OFF em Check-up Médico",
       "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133203,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-05-20T18:24:58.835Z"
+      "detail_html_length": 133182,
+      "detail_elapsed_ms": 1846,
+      "scraped_at": "2026-05-20T18:35:32.887Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130925,
-      "detail_elapsed_ms": 1692,
-      "scraped_at": "2026-05-20T18:25:00.527Z"
+      "detail_html_length": 130928,
+      "detail_elapsed_ms": 1892,
+      "scraped_at": "2026-05-20T18:35:34.782Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130778,
-      "detail_elapsed_ms": 1637,
-      "scraped_at": "2026-05-20T18:25:02.164Z"
+      "detail_html_length": 130722,
+      "detail_elapsed_ms": 1828,
+      "scraped_at": "2026-05-20T18:35:36.610Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130807,
-      "detail_elapsed_ms": 1441,
-      "scraped_at": "2026-05-20T18:25:03.605Z"
+      "detail_html_length": 130800,
+      "detail_elapsed_ms": 1829,
+      "scraped_at": "2026-05-20T18:35:38.439Z"
     },
     {
-      "id": "psv-at-75-off-para-compras-no-site",
-      "trace_id": "trace_psv-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "id": "psv-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_psv-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 19/05/2026 10:17 até 24/05/2026 23:59.",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130869,
-      "detail_elapsed_ms": 1443,
-      "scraped_at": "2026-05-20T18:25:05.049Z"
+      "detail_html_length": 130837,
+      "detail_elapsed_ms": 1605,
+      "scraped_at": "2026-05-20T18:35:40.044Z"
     },
     {
-      "id": "psu-at-75-off-para-compras-no-site",
-      "trace_id": "trace_psu-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
+      "id": "psu-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_psu-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 19/05/2026 10:15 até 31/05/2026 23:59.",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131198,
-      "detail_elapsed_ms": 1690,
-      "scraped_at": "2026-05-20T18:25:06.739Z"
+      "detail_html_length": 131157,
+      "detail_elapsed_ms": 1721,
+      "scraped_at": "2026-05-20T18:35:41.765Z"
     },
     {
-      "id": "pst-at-12-off-nas-reservas",
-      "trace_id": "trace_pst-at-12-off-nas-reservas",
-      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
-      "original_link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "id": "pst-ate-12-off-nas-reservas",
+      "trace_id": "trace_pst-ate-12-off-nas-reservas",
+      "link": "https://clube.uol.com.br/movida/psT-ate-12-off-nas-reservas",
+      "original_link": "https://clube.uol.com.br/movida/psT-ate-12-off-nas-reservas",
       "title": "Até 12% OFF nas reservas",
       "preview_title": "Até 12% OFF nas reservas",
       "validity": "Benefício válido de 19/05/2026 10:06 até 31/05/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132946,
-      "detail_elapsed_ms": 1428,
-      "scraped_at": "2026-05-20T18:25:08.167Z"
+      "detail_html_length": 132956,
+      "detail_elapsed_ms": 1525,
+      "scraped_at": "2026-05-20T18:35:43.290Z"
     },
     {
-      "id": "psq-2-ingressos-22-05-teatro-itlia-sp",
-      "trace_id": "trace_psq-2-ingressos-22-05-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
+      "id": "psq-2-ingressos-22-05-teatro-italia-sp",
+      "trace_id": "trace_psq-2-ingressos-22-05-teatro-italia-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-italia-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-italia-sp",
       "title": "2 INGRESSOS: 22/05 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 22/05 Teatro Itália - SP",
       "validity": "Benefício válido de 18/05/2026 17:55 até 20/05/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132571,
-      "detail_elapsed_ms": 1399,
-      "scraped_at": "2026-05-20T18:25:09.567Z"
+      "detail_html_length": 132592,
+      "detail_elapsed_ms": 1614,
+      "scraped_at": "2026-05-20T18:35:44.904Z"
     },
     {
       "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134445,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-05-20T18:25:11.050Z"
+      "detail_html_length": 134448,
+      "detail_elapsed_ms": 1652,
+      "scraped_at": "2026-05-20T18:35:46.556Z"
     }
   ]
 }
