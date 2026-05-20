@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-20T20:02:27.077309Z",
+  "updated_at": "2026-05-20T20:03:23.748129Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 8,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "25% OFF extra na seleção de vestidos",
+      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptp-25-off-extra-na-selecao-de-vestidos"
+    },
     {
       "title": "30% OFF extra na seleção de calças",
       "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
