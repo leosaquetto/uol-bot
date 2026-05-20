@@ -1,31 +1,6 @@
 {
-  "last_update": "2026-05-20T20:24:31.821948Z",
+  "last_update": "2026-05-20T20:24:49.517138Z",
   "offers": [
-    {
-      "id": "psO-2-ingressos-20-05-teatro-italia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/psO-2-ingressos-20-05-teatro-italia-sp",
-      "preview_title": "2 INGRESSOS: 20/05 Teatro Itália - SP",
-      "title": "2 INGRESSOS: 20/05 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/psO-2-ingressos-20-05-teatro-italia-sp",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/41d2f8bd4464347c2cd937e28dcec8c8.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "validity": "Benefício válido de 18/05/2026 17:55 até 20/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para o espetáculo Improvisações Selvagens e mergulhe em uma experiência teatral intensa e surpreendente, onde emoção, improviso e realidade se misturam no palco, no Teatro Itália, em São Paulo. Data: 20 de Maio de 2026, às 20h. Local: Av. Ipiranga, 344, República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "location_summary": "São Paulo - SP",
-      "dedupe_key": "2-ingressos-20-05-teatro-italia-sp|beneficio-valido-de-18-05-2026-17-55-ate-20-05-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-para-o-espetaculo-improvisacoes-selvagens-e-mergulhe-em-uma-experiencia-teatral-intensa-e-surpreendente-onde-emocao-imp",
-      "loose_dedupe_key": "2-ingressos-20-05-teatro-italia-sp|assinante-uol-resgate-1-par-de-ingressos-para-o-espetaculo-improvisacoes-selvagens-e-mergulhe-em-uma-experiencia-teatral-intensa-e-surpreendente-onde-emocao-imp",
-      "scraped_at": "2026-05-18T22:47:32.267000Z",
-      "trace_id": "trace_pso-2-ingressos-20-05-teatro-italia-sp",
-      "channel_message_id": 1468,
-      "channel_message_link": "https://t.me/c/3723320790/1468",
-      "comment_message_id": 4924,
-      "discussion_message_id": 4921,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/4924?thread=4921",
-      "sent_at": "2026-05-18T22:49:30.368721Z",
-      "sold_out_at": "21:33",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "psT-at-12-off-nas-reservas",
       "original_link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
@@ -375,7 +350,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4982?thread=4979",
       "sent_at": "2026-05-20T18:47:15.566517Z",
-      "sold_out_at": "17:23"
+      "sold_out_at": "17:23",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "ptl-2-ingressos-28-05-theatro-municipal-rj",
@@ -473,6 +449,29 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/4998?thread=4995",
       "sent_at": "2026-05-20T20:02:40.805265Z"
+    },
+    {
+      "id": "ptq-at-60-off-10-off-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
+      "preview_title": "Até 60% OFF +10% OFF Masculino",
+      "title": "Até 60% OFF +10% OFF Masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8931419d5bc2bc90b39f85ecb5d48461.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: Até 60% OFF + 10% OFF extra em seleção masculina com o cupom Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "location_summary": "",
+      "dedupe_key": "ate-60-off-10-off-masculino|beneficio-valido-de-20-05-2026-16-44-ate-25-05-2026-23-59|beneficio-renner-e-uma-das-maiores-redes-de-moda-do-brasil-oferecendo-roupas-calcados-acessorios-e-itens-de-lifestyle-para-todos-os-estilos-reconhecida-pela-qua",
+      "loose_dedupe_key": "ate-60-off-10-off-masculino|beneficio-renner-e-uma-das-maiores-redes-de-moda-do-brasil-oferecendo-roupas-calcados-acessorios-e-itens-de-lifestyle-para-todos-os-estilos-reconhecida-pela-qua",
+      "scraped_at": "2026-05-20T20:23:15.928000Z",
+      "trace_id": "trace_ptq-at-60-off-10-off-masculino",
+      "channel_message_id": 1488,
+      "channel_message_link": "https://t.me/c/3723320790/1488",
+      "comment_message_id": 5002,
+      "discussion_message_id": 4999,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/5002?thread=4999",
+      "sent_at": "2026-05-20T20:24:49.451691Z"
     }
   ]
 }
