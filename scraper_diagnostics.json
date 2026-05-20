@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-20T15:10:56.550179Z",
+  "updated_at": "2026-05-20T15:21:19.587434Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
-    "duplicada_latest": 7,
+    "duplicada_historico": 6,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
       "reason": "duplicada_latest",
       "trace_id": "trace_ptf-30-off-em-seleo-de-produtos"
-    },
-    {
-      "title": "2 INGRESSOS: Museu da Imaginação - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pte-2-ingressos-museu-da-imaginao-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pte-2-ingressos-museu-da-imaginao-sp"
     },
     {
       "title": "15% OFF em Check-up Médico",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/psQ-2-ingressos-22-05-teatro-itlia-sp",
       "reason": "duplicada_latest",
       "trace_id": "trace_psq-2-ingressos-22-05-teatro-itlia-sp"
+    },
+    {
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso"
     }
   ]
 }
