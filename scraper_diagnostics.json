@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-20T13:22:52.963095Z",
+  "updated_at": "2026-05-20T13:23:45.893646Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -33,6 +33,12 @@
       "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "reason": "duplicada_latest",
       "trace_id": "trace_ptd-15-off-em-check-up-medico"
+    },
+    {
+      "title": "1 INGRESSO: 24/05 Neo Química Arena- SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptc-1-ingresso-24-05-neo-quimica-arena-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptc-1-ingresso-24-05-neo-quimica-arena-sp"
     },
     {
       "title": "20% OFF em todo o site",
