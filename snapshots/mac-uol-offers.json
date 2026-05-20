@@ -14,17 +14,41 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27299,
-  "run_duration_seconds": 27.3,
-  "avg_detail_ms_per_offer": 2275,
-  "generated_at": "2026-05-20T18:46:18.742Z",
+  "run_duration_ms": 28166,
+  "run_duration_seconds": 28.17,
+  "avg_detail_ms_per_offer": 2347,
+  "generated_at": "2026-05-20T18:56:51.413Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
-      "trace_id": "trace_ptk-2-ingressos-26-05-palcio-das-artes-bh",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "id": "ptl-2-ingressos-28-05-theatro-municipal-rj",
+      "trace_id": "trace_ptl-2-ingressos-28-05-theatro-municipal-rj",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptl-2-ingressos-28-05-theatro-municipal-rj",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptl-2-ingressos-28-05-theatro-municipal-rj",
+      "title": "2 INGRESSOS: 28/05 Theatro Municipal RJ",
+      "preview_title": "2 INGRESSOS: 28/05 Theatro Municipal RJ",
+      "validity": "Benefício válido de 20/05/2026 12:41 até 27/05/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo Amália Rodrigues Sinfônico e viva uma emocionante homenagem à Rainha do Fado, com orquestra sinfônica, trio tradicional de fado, projeções audiovisuais imersivas e participação da cantora portuguesa Anabela, sob direção do maestro Laurent Rossi, no Theatro Municipal do Rio de Janeiro. Data: 28 de maio de 2026, às 19h30 Local: Praça Floriano, S/N – Centro, Rio de Janeiro – RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de5256a51f_6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de5256a51f_6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de5256a51f_6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130643,
+      "detail_elapsed_ms": 2327,
+      "scraped_at": "2026-05-20T18:56:32.738Z"
+    },
+    {
+      "id": "ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "trace_id": "trace_ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
       "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "preview_title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "validity": "Benefício válido de 20/05/2026 12:41 até 25/05/2026 23:59.",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132427,
-      "detail_elapsed_ms": 2684,
-      "scraped_at": "2026-05-20T18:46:01.517Z"
+      "detail_html_length": 132580,
+      "detail_elapsed_ms": 2045,
+      "scraped_at": "2026-05-20T18:56:34.785Z"
     },
     {
       "id": "ptj-2-ingressos-23-05-teatro-bradesco-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132563,
-      "detail_elapsed_ms": 1704,
-      "scraped_at": "2026-05-20T18:46:03.222Z"
+      "detail_html_length": 132553,
+      "detail_elapsed_ms": 1657,
+      "scraped_at": "2026-05-20T18:56:36.442Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132640,
-      "detail_elapsed_ms": 1513,
-      "scraped_at": "2026-05-20T18:46:04.735Z"
+      "detail_html_length": 132619,
+      "detail_elapsed_ms": 1646,
+      "scraped_at": "2026-05-20T18:56:38.088Z"
     },
     {
       "id": "ptg-r-150-off-em-seminovos-selecionados",
@@ -112,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131028,
-      "detail_elapsed_ms": 1502,
-      "scraped_at": "2026-05-20T18:46:06.237Z"
+      "detail_html_length": 131007,
+      "detail_elapsed_ms": 1594,
+      "scraped_at": "2026-05-20T18:56:39.682Z"
     },
     {
-      "id": "ptf-30-off-em-seleo-de-produtos",
-      "trace_id": "trace_ptf-30-off-em-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/nike/ptf-30-off-em-seleo-de-produtos",
+      "id": "ptf-30-off-em-selecao-de-produtos",
+      "trace_id": "trace_ptf-30-off-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/nike/ptf-30-off-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/nike/ptf-30-off-em-selecao-de-produtos",
       "title": "30% OFF em seleção de produtos!",
       "preview_title": "30% OFF em seleção de produtos!",
       "validity": "Benefício válido de 19/05/2026 16:00 até 20/05/2026 23:59.",
@@ -136,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130789,
-      "detail_elapsed_ms": 1563,
-      "scraped_at": "2026-05-20T18:46:07.800Z"
+      "detail_html_length": 130779,
+      "detail_elapsed_ms": 1584,
+      "scraped_at": "2026-05-20T18:56:41.266Z"
     },
     {
-      "id": "ptd-15-off-em-check-up-mdico",
-      "trace_id": "trace_ptd-15-off-em-check-up-mdico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
-      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "id": "ptd-15-off-em-check-up-medico",
+      "trace_id": "trace_ptd-15-off-em-check-up-medico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "title": "15% OFF em Check-up Médico",
       "preview_title": "15% OFF em Check-up Médico",
       "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133223,
-      "detail_elapsed_ms": 1468,
-      "scraped_at": "2026-05-20T18:46:09.268Z"
+      "detail_html_length": 133198,
+      "detail_elapsed_ms": 1606,
+      "scraped_at": "2026-05-20T18:56:42.872Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130935,
-      "detail_elapsed_ms": 1504,
-      "scraped_at": "2026-05-20T18:46:10.772Z"
+      "detail_html_length": 130914,
+      "detail_elapsed_ms": 1566,
+      "scraped_at": "2026-05-20T18:56:44.438Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130758,
-      "detail_elapsed_ms": 1566,
-      "scraped_at": "2026-05-20T18:46:12.339Z"
+      "detail_html_length": 130747,
+      "detail_elapsed_ms": 1929,
+      "scraped_at": "2026-05-20T18:56:46.367Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -232,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130807,
-      "detail_elapsed_ms": 1654,
-      "scraped_at": "2026-05-20T18:46:13.993Z"
+      "detail_html_length": 130797,
+      "detail_elapsed_ms": 1771,
+      "scraped_at": "2026-05-20T18:56:48.138Z"
     },
     {
-      "id": "psv-at-75-off-para-compras-no-site",
-      "trace_id": "trace_psv-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "id": "psv-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_psv-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/zattini/psV-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 19/05/2026 10:17 até 24/05/2026 23:59.",
@@ -256,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 1647,
-      "scraped_at": "2026-05-20T18:46:15.640Z"
+      "detail_html_length": 130874,
+      "detail_elapsed_ms": 1604,
+      "scraped_at": "2026-05-20T18:56:49.742Z"
     },
     {
-      "id": "psu-at-75-off-para-compras-no-site",
-      "trace_id": "trace_psu-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
+      "id": "psu-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_psu-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 19/05/2026 10:15 até 31/05/2026 23:59.",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131188,
-      "detail_elapsed_ms": 1535,
-      "scraped_at": "2026-05-20T18:46:17.175Z"
-    },
-    {
-      "id": "pst-at-12-off-nas-reservas",
-      "trace_id": "trace_pst-at-12-off-nas-reservas",
-      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
-      "original_link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
-      "title": "Até 12% OFF nas reservas",
-      "preview_title": "Até 12% OFF nas reservas",
-      "validity": "Benefício válido de 19/05/2026 10:06 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
-      "category": "Entretenimento e Viagens",
-      "partner_name": "Movida",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132970,
-      "detail_elapsed_ms": 1519,
-      "scraped_at": "2026-05-20T18:46:18.694Z"
+      "detail_html_length": 131183,
+      "detail_elapsed_ms": 1609,
+      "scraped_at": "2026-05-20T18:56:51.352Z"
     }
   ]
 }
