@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-20T18:46:54.388525Z",
+  "updated_at": "2026-05-20T18:47:50.959931Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
+    "duplicada_historico": 7,
     "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptk-2-ingressos-26-05-palcio-das-artes-bh"
+    },
+    {
+      "title": "2 INGRESSOS: 23/05 Teatro Bradesco - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptj-2-ingressos-23-05-teatro-bradesco-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptj-2-ingressos-23-05-teatro-bradesco-sp"
+    },
     {
       "title": "2 INGRESSOS: 23/05 Teatro Dom Bosco MS",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pth-2-ingressos-23-05-teatro-dom-bosco-ms",
