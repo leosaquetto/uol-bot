@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 25928,
-  "run_duration_seconds": 25.93,
-  "avg_detail_ms_per_offer": 2161,
-  "generated_at": "2026-05-21T20:05:24.799Z",
+  "run_duration_ms": 29679,
+  "run_duration_seconds": 29.68,
+  "avg_detail_ms_per_offer": 2473,
+  "generated_at": "2026-05-21T20:16:00.056Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "ptw-ganhe-uma-soda-italiana",
+      "trace_id": "trace_ptw-ganhe-uma-soda-italiana",
+      "link": "https://clube.uol.com.br/boulangeriecarioca/ptw-ganhe-uma-soda-italiana",
+      "original_link": "https://clube.uol.com.br/boulangeriecarioca/ptw-ganhe-uma-soda-italiana",
+      "title": "Ganhe uma soda italiana",
+      "preview_title": "Ganhe uma soda italiana",
+      "validity": "Benefício válido de 21/05/2026 16:49 até 25/11/2026 23:59.",
+      "description": "Sobre o parceiro: Inspirada nas sofisticadas padarias da França, a Boulangerie Carioca abriu as portas na maravilhosa cidade do Rio de Janeiro em fevereiro de 2015, unindo os conceitos de boulangerie e pâtisserie. A casa possui todo o charme dos cafés parisienses, com o carinho típico do brasileiro. Benefício: Na compra de qualquer sanduíche, Assinante UOL ganha uma soda italiana no Boulangerie Carioca. Como resgatar seu benefício: Clique em \"Utilizar este benefício\" e baixe o seu voucher de Assinante UOL. Em seguida, basta apresentar o voucher e documento original no restaurante. Regulamento da Campanha Benefício exclusivo para assinantes UOL. Não cumulativo com outras promoções. Válido um benefício por mesa.",
+      "category": "Comer e Beber",
+      "partner_name": "Boulangerie Carioca",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/efcec23296d29e3001d0afebc398c1aa.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0f64e96ab9b_85baedfc4243ab5b92a7fdf6639c8762.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0f64e96ab9b_85baedfc4243ab5b92a7fdf6639c8762.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0f64e96ab9b_85baedfc4243ab5b92a7fdf6639c8762.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129834,
+      "detail_elapsed_ms": 2182,
+      "scraped_at": "2026-05-21T20:15:40.336Z"
+    },
     {
       "id": "ptr-compre-2-calados-com-20-off",
       "trace_id": "trace_ptr-compre-2-calados-com-20-off",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132784,
-      "detail_elapsed_ms": 2240,
-      "scraped_at": "2026-05-21T20:05:07.666Z"
+      "detail_html_length": 132940,
+      "detail_elapsed_ms": 2143,
+      "scraped_at": "2026-05-21T20:15:42.482Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131001,
-      "detail_elapsed_ms": 1488,
-      "scraped_at": "2026-05-21T20:05:09.156Z"
+      "detail_html_length": 130969,
+      "detail_elapsed_ms": 1964,
+      "scraped_at": "2026-05-21T20:15:44.446Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131074,
-      "detail_elapsed_ms": 1520,
-      "scraped_at": "2026-05-21T20:05:10.677Z"
+      "detail_html_length": 131073,
+      "detail_elapsed_ms": 1737,
+      "scraped_at": "2026-05-21T20:15:46.183Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131034,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-05-21T20:05:12.223Z"
+      "detail_html_length": 131004,
+      "detail_elapsed_ms": 1613,
+      "scraped_at": "2026-05-21T20:15:47.796Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131090,
-      "detail_elapsed_ms": 1893,
-      "scraped_at": "2026-05-21T20:05:14.116Z"
+      "detail_html_length": 131110,
+      "detail_elapsed_ms": 1869,
+      "scraped_at": "2026-05-21T20:15:49.666Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132606,
-      "detail_elapsed_ms": 1627,
-      "scraped_at": "2026-05-21T20:05:15.743Z"
+      "detail_html_length": 132604,
+      "detail_elapsed_ms": 1863,
+      "scraped_at": "2026-05-21T20:15:51.529Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132630,
-      "detail_elapsed_ms": 1552,
-      "scraped_at": "2026-05-21T20:05:17.295Z"
+      "detail_html_length": 132640,
+      "detail_elapsed_ms": 1715,
+      "scraped_at": "2026-05-21T20:15:53.244Z"
     },
     {
       "id": "ptg-r-150-off-em-seminovos-selecionados",
@@ -209,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131009,
-      "detail_elapsed_ms": 1492,
-      "scraped_at": "2026-05-21T20:05:18.787Z"
+      "detail_elapsed_ms": 1621,
+      "scraped_at": "2026-05-21T20:15:54.865Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -233,8 +257,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133214,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-05-21T20:05:20.270Z"
+      "detail_elapsed_ms": 1673,
+      "scraped_at": "2026-05-21T20:15:56.538Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130925,
-      "detail_elapsed_ms": 1522,
-      "scraped_at": "2026-05-21T20:05:21.792Z"
+      "detail_html_length": 130934,
+      "detail_elapsed_ms": 1755,
+      "scraped_at": "2026-05-21T20:15:58.293Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130748,
-      "detail_elapsed_ms": 1482,
-      "scraped_at": "2026-05-21T20:05:23.274Z"
-    },
-    {
-      "id": "psx-aproveite-12-off-na-stanley",
-      "trace_id": "trace_psx-aproveite-12-off-na-stanley",
-      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "original_link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "title": "Aproveite 12% OFF na Stanley",
-      "preview_title": "Aproveite 12% OFF na Stanley",
-      "validity": "Benefício válido de 19/05/2026 10:20 até 15/06/2026 23:59.",
-      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday.",
-      "category": "Compras e Presentes",
-      "partner_name": "Stanley",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/437488ab72a7771a7afd7c6d1bcbfda3.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130786,
-      "detail_elapsed_ms": 1482,
-      "scraped_at": "2026-05-21T20:05:24.756Z"
+      "detail_html_length": 131193,
+      "detail_elapsed_ms": 1692,
+      "scraped_at": "2026-05-21T20:15:59.986Z"
     }
   ]
 }
