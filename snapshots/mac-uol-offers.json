@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 63791,
-  "run_duration_seconds": 63.79,
-  "avg_detail_ms_per_offer": 5316,
-  "generated_at": "2026-05-22T15:46:27.822Z",
+  "run_duration_ms": 51954,
+  "run_duration_seconds": 51.95,
+  "avg_detail_ms_per_offer": 4330,
+  "generated_at": "2026-05-22T15:57:27.615Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pty-1-ingresso-21-06-corrida-hello-kitty-rj",
-      "trace_id": "trace_pty-1-ingresso-21-06-corrida-hello-kitty-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pty-1-ingresso-21-06-corrida-hello-kitty-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pty-1-ingresso-21-06-corrida-hello-kitty-rj",
-      "title": "1 ingresso 21/06 Corrida Hello Kitty RJ",
-      "preview_title": "1 ingresso 21/06 Corrida Hello Kitty RJ",
-      "validity": "Benefício válido de 22/05/2026 10:59 até 22/05/2026 23:59.",
-      "description": "Assinante UOL, chegou a hora de correr com muita diversão e nostalgia! Resgate 1 ingresso individual para a Hello Kitty Fun Run 2026 e viva uma experiência pensada para toda a família, em um evento que combina atividade física, entretenimento e momentos inesquecíveis no Rio de Janeiro – RJ. Data: 21 de Junho de 2026 com largada às 7h. Local: Av. Infante Dom Henrique, s/n - Parque do Flamengo, Rio de Janeiro - RJ. Prazo de inscrição: HOJE, 22/05/2026. Importante: No PDF que você resgatou constará apenas 1 ingresso individual. Como resgatar meu benefício: Acesse o link do evento: https://www.yescom.com.br/hellokittyfunrun/2026/rj/index.asp Antes de realizar o cadastro e seguir com a inscrição, clique em “Estou de acordo” e depois em “Quero continuar”. Preencha todos os dados obrigatórios para concluir o cadastro. Após finalizar o cadastro, retorne ao link indicado e clique em “Inscreva-se”. Selecione a opção Individual, escolha o participante e clique em “Continuar”. Escolha a modalidade Básica, informe a KM e selecione o tamanho da camiseta conforme disponibilidade no site. Na aba Confirmação, insira o cupom recebido no campo Desconto/Código, valide e clique em “Continuar”. Sua inscrição será concluída gratuitamente e o KIT poderá ser retirado no local indicado. Importante: O Cupom é limitado de 1 inscrição Fique atento a data da sua corrida, pois a inscrição não poderá ser reutilizado; Prazo de inscrição: HOJE, 22/05/2026. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d7a07dd8692cb7231163d77bcba7b3ef.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d7a07dd8692cb7231163d77bcba7b3ef.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d7a07dd8692cb7231163d77bcba7b3ef.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132233,
-      "detail_elapsed_ms": 5549,
-      "scraped_at": "2026-05-22T15:45:56.650Z"
-    },
     {
       "id": "ptr-compre-2-calados-com-20-off",
       "trace_id": "trace_ptr-compre-2-calados-com-20-off",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126583,
-      "detail_elapsed_ms": 2510,
-      "scraped_at": "2026-05-22T15:45:59.188Z"
+      "detail_html_length": 132410,
+      "detail_elapsed_ms": 4561,
+      "scraped_at": "2026-05-22T15:56:58.915Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129729,
-      "detail_elapsed_ms": 3929,
-      "scraped_at": "2026-05-22T15:46:03.117Z"
+      "detail_html_length": 125082,
+      "detail_elapsed_ms": 2935,
+      "scraped_at": "2026-05-22T15:57:01.851Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131038,
-      "detail_elapsed_ms": 2983,
-      "scraped_at": "2026-05-22T15:46:06.102Z"
+      "detail_html_length": 131020,
+      "detail_elapsed_ms": 3497,
+      "scraped_at": "2026-05-22T15:57:05.348Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131010,
-      "detail_elapsed_ms": 4205,
-      "scraped_at": "2026-05-22T15:46:10.308Z"
+      "detail_html_length": 130992,
+      "detail_elapsed_ms": 2566,
+      "scraped_at": "2026-05-22T15:57:07.914Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131075,
-      "detail_elapsed_ms": 2620,
-      "scraped_at": "2026-05-22T15:46:12.928Z"
+      "detail_html_length": 131069,
+      "detail_elapsed_ms": 2553,
+      "scraped_at": "2026-05-22T15:57:10.468Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132571,
-      "detail_elapsed_ms": 2417,
-      "scraped_at": "2026-05-22T15:46:15.345Z"
+      "detail_html_length": 132563,
+      "detail_elapsed_ms": 2426,
+      "scraped_at": "2026-05-22T15:57:12.894Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131369,
-      "detail_elapsed_ms": 1990,
-      "scraped_at": "2026-05-22T15:46:17.335Z"
+      "detail_html_length": 132608,
+      "detail_elapsed_ms": 2294,
+      "scraped_at": "2026-05-22T15:57:15.189Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133200,
-      "detail_elapsed_ms": 2427,
-      "scraped_at": "2026-05-22T15:46:19.762Z"
+      "detail_html_length": 133173,
+      "detail_elapsed_ms": 2318,
+      "scraped_at": "2026-05-22T15:57:17.507Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130890,
-      "detail_elapsed_ms": 2491,
-      "scraped_at": "2026-05-22T15:46:22.253Z"
+      "detail_html_length": 130933,
+      "detail_elapsed_ms": 2414,
+      "scraped_at": "2026-05-22T15:57:19.922Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130733,
-      "detail_elapsed_ms": 2840,
-      "scraped_at": "2026-05-22T15:46:25.093Z"
+      "detail_html_length": 130715,
+      "detail_elapsed_ms": 2200,
+      "scraped_at": "2026-05-22T15:57:22.123Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130763,
-      "detail_elapsed_ms": 2478,
-      "scraped_at": "2026-05-22T15:46:27.571Z"
+      "detail_html_length": 130756,
+      "detail_elapsed_ms": 2379,
+      "scraped_at": "2026-05-22T15:57:24.502Z"
+    },
+    {
+      "id": "psv-at-75-off-para-compras-no-site",
+      "trace_id": "trace_psv-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "title": "Até 75% OFF para compras no site",
+      "preview_title": "Até 75% OFF para compras no site",
+      "validity": "Benefício válido de 19/05/2026 10:17 até 24/05/2026 23:59.",
+      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
+      "category": "Compras e Presentes",
+      "partner_name": "Zattini",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130838,
+      "detail_elapsed_ms": 2876,
+      "scraped_at": "2026-05-22T15:57:27.378Z"
     }
   ]
 }
