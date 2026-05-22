@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-22T15:14:25.590240Z",
+  "updated_at": "2026-05-22T15:25:07.840926Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 7,
-    "duplicada_latest": 5,
+    "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -81,12 +81,6 @@
       "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
       "reason": "duplicada_historico",
       "trace_id": "trace_psx-aproveite-12-off-na-stanley"
-    },
-    {
-      "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_psv-at-75-off-para-compras-no-site"
     }
   ]
 }
