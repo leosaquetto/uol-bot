@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28410,
-  "run_duration_seconds": 28.41,
-  "avg_detail_ms_per_offer": 2368,
-  "generated_at": "2026-05-22T00:08:51.385Z",
+  "run_duration_ms": 31133,
+  "run_duration_seconds": 31.13,
+  "avg_detail_ms_per_offer": 2594,
+  "generated_at": "2026-05-22T00:19:27.797Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126772,
-      "detail_elapsed_ms": 2422,
-      "scraped_at": "2026-05-22T00:08:33.455Z"
+      "detail_html_length": 132780,
+      "detail_elapsed_ms": 2878,
+      "scraped_at": "2026-05-22T00:19:08.080Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126119,
-      "detail_elapsed_ms": 1874,
-      "scraped_at": "2026-05-22T00:08:35.330Z"
+      "detail_html_length": 130968,
+      "detail_elapsed_ms": 1845,
+      "scraped_at": "2026-05-22T00:19:09.926Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126192,
-      "detail_elapsed_ms": 1915,
-      "scraped_at": "2026-05-22T00:08:37.245Z"
+      "detail_html_length": 131062,
+      "detail_elapsed_ms": 1958,
+      "scraped_at": "2026-05-22T00:19:11.884Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126173,
-      "detail_elapsed_ms": 1545,
-      "scraped_at": "2026-05-22T00:08:38.790Z"
+      "detail_html_length": 131022,
+      "detail_elapsed_ms": 1573,
+      "scraped_at": "2026-05-22T00:19:13.458Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126239,
-      "detail_elapsed_ms": 2055,
-      "scraped_at": "2026-05-22T00:08:40.845Z"
+      "detail_html_length": 131533,
+      "detail_elapsed_ms": 1599,
+      "scraped_at": "2026-05-22T00:19:15.057Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127755,
-      "detail_elapsed_ms": 1642,
-      "scraped_at": "2026-05-22T00:08:42.487Z"
+      "detail_html_length": 132623,
+      "detail_elapsed_ms": 1534,
+      "scraped_at": "2026-05-22T00:19:16.591Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -184,33 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132629,
-      "detail_elapsed_ms": 1460,
-      "scraped_at": "2026-05-22T00:08:43.947Z"
-    },
-    {
-      "id": "ptg-r-150-off-em-seminovos-selecionados",
-      "trace_id": "trace_ptg-r-150-off-em-seminovos-selecionados",
-      "link": "https://clube.uol.com.br/compracerta/ptg-r-150-off-em-seminovos-selecionados",
-      "original_link": "https://clube.uol.com.br/compracerta/ptg-r-150-off-em-seminovos-selecionados",
-      "title": "R$150 OFF em Seminovos Selecionados",
-      "preview_title": "R$150 OFF em Seminovos Selecionados",
-      "validity": "Benefício válido de 19/05/2026 00:00 até 21/05/2026 23:59.",
-      "description": "Parceiro: Clube Oficial Brastemp, Consul e KitchenAid. As Melhores Marcas e Descontos Imperdíveis. Aqui Você Encontra os Produtos Certos Pra Você. Benefício: R$150 OFF em seleção de máquinas e refrigeradores seminovos Regras: Digite o cupom promocional no carrinho para aplicar o desconto. Condições válidas exclusivamente pelo link da parceria. Frete e Garantia Estendida não são contabilizados no valor mínimo da compra. O desconto será aplicado após a inserção dos dados de entrega.",
-      "category": "Eletrodomésticos e Eletrônicos",
-      "partner_name": "Compra Certa",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-compra-certa.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a79f2da7270d9403b9edec746ee5478e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a79f2da7270d9403b9edec746ee5478e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a79f2da7270d9403b9edec746ee5478e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131029,
-      "detail_elapsed_ms": 1408,
-      "scraped_at": "2026-05-22T00:08:45.355Z"
+      "detail_html_length": 132649,
+      "detail_elapsed_ms": 1741,
+      "scraped_at": "2026-05-22T00:19:18.332Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133214,
-      "detail_elapsed_ms": 1430,
-      "scraped_at": "2026-05-22T00:08:46.785Z"
+      "detail_html_length": 133173,
+      "detail_elapsed_ms": 2427,
+      "scraped_at": "2026-05-22T00:19:20.759Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -257,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130914,
-      "detail_elapsed_ms": 1487,
-      "scraped_at": "2026-05-22T00:08:48.272Z"
+      "detail_elapsed_ms": 1552,
+      "scraped_at": "2026-05-22T00:19:22.311Z"
     },
     {
       "id": "psy-15-off-em-todo-o-site",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130758,
-      "detail_elapsed_ms": 1441,
-      "scraped_at": "2026-05-22T00:08:49.713Z"
+      "detail_html_length": 130747,
+      "detail_elapsed_ms": 1680,
+      "scraped_at": "2026-05-22T00:19:23.991Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -305,8 +281,32 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130796,
-      "detail_elapsed_ms": 1621,
-      "scraped_at": "2026-05-22T00:08:51.334Z"
+      "detail_elapsed_ms": 1909,
+      "scraped_at": "2026-05-22T00:19:25.900Z"
+    },
+    {
+      "id": "psv-at-75-off-para-compras-no-site",
+      "trace_id": "trace_psv-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "title": "Até 75% OFF para compras no site",
+      "preview_title": "Até 75% OFF para compras no site",
+      "validity": "Benefício válido de 19/05/2026 10:17 até 24/05/2026 23:59.",
+      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
+      "category": "Compras e Presentes",
+      "partner_name": "Zattini",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/58811ee8b412e1d6bb7654b73c257809.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130877,
+      "detail_elapsed_ms": 1865,
+      "scraped_at": "2026-05-22T00:19:27.765Z"
     }
   ]
 }
