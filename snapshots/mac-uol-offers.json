@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 37864,
-  "run_duration_seconds": 37.86,
-  "avg_detail_ms_per_offer": 3155,
-  "generated_at": "2026-05-22T21:04:37.333Z",
+  "run_duration_ms": 76886,
+  "run_duration_seconds": 76.89,
+  "avg_detail_ms_per_offer": 6407,
+  "generated_at": "2026-05-22T21:16:03.798Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pt7-20-off-no-site-oficial",
+      "trace_id": "trace_pt7-20-off-no-site-oficial",
+      "link": "https://clube.uol.com.br/integralmedica/pt7-20-off-no-site-oficial",
+      "original_link": "https://clube.uol.com.br/integralmedica/pt7-20-off-no-site-oficial",
+      "title": "20% OFF no site oficial",
+      "preview_title": "20% OFF no site oficial",
+      "validity": "Benefício válido de 22/05/2026 14:28 até 15/06/2026 23:59.",
+      "description": "Sobre o parceiro: Com mais de 40 anos de história, somos pioneiros em suplementação esportiva no Brasil e, desde o primeiro momento, imprimimos uma marca de inovação e excelência em produção e pesquisa. Benefício: Aproveite 20% OFF extra em todo o site oficial da Integralmédica. Regras: Desconto de 20% OFF no site oficial da Integralmédica. Válido para compras realizadas no site oficial. O cupom é cumulativo com outras promoções do site, exceto para a categoria moda e acessórios. Não cumulativo com outros cupons. O desconto não se aplica ao frete.",
+      "category": "Comer e Beber",
+      "partner_name": "Integral Médica",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/72f05b8771aecd89fdb45510a6810fd8.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59584d19b674fec291b60852aa4f8f37.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59584d19b674fec291b60852aa4f8f37.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59584d19b674fec291b60852aa4f8f37.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130434,
+      "detail_elapsed_ms": 6950,
+      "scraped_at": "2026-05-22T21:15:31.327Z"
+    },
     {
       "id": "pt6-2-ingressos-22-05-teatro-multiplan-sp",
       "trace_id": "trace_pt6-2-ingressos-22-05-teatro-multiplan-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125475,
-      "detail_elapsed_ms": 3053,
-      "scraped_at": "2026-05-22T21:04:16.727Z"
+      "detail_html_length": 131333,
+      "detail_elapsed_ms": 3210,
+      "scraped_at": "2026-05-22T21:15:34.576Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131670,
-      "detail_elapsed_ms": 2688,
-      "scraped_at": "2026-05-22T21:04:19.548Z"
+      "detail_html_length": 131665,
+      "detail_elapsed_ms": 4105,
+      "scraped_at": "2026-05-22T21:15:38.685Z"
     },
     {
       "id": "ptr-compre-2-calcados-com-20-off",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132996,
-      "detail_elapsed_ms": 1718,
-      "scraped_at": "2026-05-22T21:04:21.266Z"
+      "detail_html_length": 132948,
+      "detail_elapsed_ms": 2364,
+      "scraped_at": "2026-05-22T21:15:41.049Z"
     },
     {
       "id": "ptq-ate-60-off-10-off-masculino",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130983,
-      "detail_elapsed_ms": 1782,
-      "scraped_at": "2026-05-22T21:04:23.048Z"
+      "detail_html_length": 131392,
+      "detail_elapsed_ms": 2908,
+      "scraped_at": "2026-05-22T21:15:43.957Z"
     },
     {
       "id": "ptp-25-off-extra-na-selecao-de-vestidos",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131103,
-      "detail_elapsed_ms": 2069,
-      "scraped_at": "2026-05-22T21:04:25.117Z"
+      "detail_html_length": 129800,
+      "detail_elapsed_ms": 3040,
+      "scraped_at": "2026-05-22T21:15:46.997Z"
     },
     {
       "id": "pto-30-off-extra-na-selecao-calcas",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131067,
-      "detail_elapsed_ms": 1835,
-      "scraped_at": "2026-05-22T21:04:26.952Z"
+      "detail_html_length": 124650,
+      "detail_elapsed_ms": 3144,
+      "scraped_at": "2026-05-22T21:15:50.141Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131512,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-05-22T21:04:28.498Z"
+      "detail_html_length": 131073,
+      "detail_elapsed_ms": 2386,
+      "scraped_at": "2026-05-22T21:15:52.527Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palacio-das-artes-bh",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132629,
-      "detail_elapsed_ms": 1518,
-      "scraped_at": "2026-05-22T21:04:30.016Z"
+      "detail_html_length": 126210,
+      "detail_elapsed_ms": 2629,
+      "scraped_at": "2026-05-22T21:15:55.156Z"
     },
     {
       "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132639,
-      "detail_elapsed_ms": 1488,
-      "scraped_at": "2026-05-22T21:04:31.504Z"
+      "detail_html_length": 132603,
+      "detail_elapsed_ms": 2934,
+      "scraped_at": "2026-05-22T21:15:58.091Z"
     },
     {
       "id": "ptd-15-off-em-check-up-medico",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133226,
-      "detail_elapsed_ms": 2354,
-      "scraped_at": "2026-05-22T21:04:33.858Z"
+      "detail_html_length": 133175,
+      "detail_elapsed_ms": 2890,
+      "scraped_at": "2026-05-22T21:16:00.981Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130933,
-      "detail_elapsed_ms": 1637,
-      "scraped_at": "2026-05-22T21:04:35.495Z"
-    },
-    {
-      "id": "psy-15-off-em-todo-o-site",
-      "trace_id": "trace_psy-15-off-em-todo-o-site",
-      "link": "https://clube.uol.com.br/mizuno/psY-15-off-em-todo-o-site",
-      "original_link": "https://clube.uol.com.br/mizuno/psY-15-off-em-todo-o-site",
-      "title": "15% OFF em todo o site",
-      "preview_title": "15% OFF em todo o site",
-      "validity": "Benefício válido de 19/05/2026 10:32 até 24/05/2026 23:59.",
-      "description": "Sobre o parceiro: Os melhores produtos em tênis, vestuário e acessórios. Benefício: 15% OFF em todo o site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Mizuno.",
-      "category": "Compras e Presentes",
-      "partner_name": "Mizuno",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7ac05d9a4027812bb6f9dacce461bb84.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7ac05d9a4027812bb6f9dacce461bb84.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7ac05d9a4027812bb6f9dacce461bb84.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130766,
-      "detail_elapsed_ms": 1725,
-      "scraped_at": "2026-05-22T21:04:37.220Z"
+      "detail_html_length": 129760,
+      "detail_elapsed_ms": 2327,
+      "scraped_at": "2026-05-22T21:16:03.308Z"
     }
   ]
 }
