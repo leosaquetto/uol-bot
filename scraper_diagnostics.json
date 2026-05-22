@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-22T14:07:52.130745Z",
+  "updated_at": "2026-05-22T14:18:18.846782Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -65,12 +65,6 @@
       "trace_id": "trace_ptd-15-off-em-check-up-mdico"
     },
     {
-      "title": "1 INGRESSO: 24/05 Neo Química Arena- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptc-1-ingresso-24-05-neo-qumica-arena-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_ptc-1-ingresso-24-05-neo-qumica-arena-sp"
-    },
-    {
       "title": "20% OFF em todo o site",
       "link": "https://clube.uol.com.br/olympikus/psZ-20-off-em-todo-o-site",
       "reason": "duplicada_historico",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
       "reason": "duplicada_historico",
       "trace_id": "trace_psx-aproveite-12-off-na-stanley"
+    },
+    {
+      "title": "Até 75% OFF para compras no site",
+      "link": "https://clube.uol.com.br/zattini/psV-at-75-off-para-compras-no-site",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_psv-at-75-off-para-compras-no-site"
     }
   ]
 }
