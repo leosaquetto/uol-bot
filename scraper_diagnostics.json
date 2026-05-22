@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-22T21:38:32.359883Z",
+  "updated_at": "2026-05-22T21:39:47.285782Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
+    "duplicada_historico": 9,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "50% OFF na 2ª Peça em Conjuntos",
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos"
+    },
     {
       "title": "Coleção de Dia dos Namorados com 10% OFF",
       "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -33,6 +39,24 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pt6-2-ingressos-22-05-teatro-multiplan-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pt6-2-ingressos-22-05-teatro-multiplan-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 30/05 Teatro Multiplan SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pt4-2-ingressos-30-05-teatro-multiplan-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt4-2-ingressos-30-05-teatro-multiplan-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 29/05 Teatro Multiplan SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pt3-2-ingressos-29-05-teatro-multiplan-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt3-2-ingressos-29-05-teatro-multiplan-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 27/05 Teatro Multiplan SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pt2-2-ingressos-27-05-teatro-multiplan-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt2-2-ingressos-27-05-teatro-multiplan-sp"
     },
     {
       "title": "40% OFF no par de ingressos",
