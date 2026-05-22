@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-22T21:27:54.031107Z",
+  "updated_at": "2026-05-22T21:28:48.202433Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 8,
     "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Coleção de Dia dos Namorados com 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off"
+    },
     {
       "title": "20% OFF no site oficial",
       "link": "https://clube.uol.com.br/integralmedica/pt7-20-off-no-site-oficial",
