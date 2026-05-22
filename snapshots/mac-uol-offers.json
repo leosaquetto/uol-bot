@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 132703,
-  "run_duration_seconds": 132.7,
-  "avg_detail_ms_per_offer": 11059,
-  "generated_at": "2026-05-22T21:50:25.314Z",
+  "run_duration_ms": 77172,
+  "run_duration_seconds": 77.17,
+  "avg_detail_ms_per_offer": 6431,
+  "generated_at": "2026-05-22T22:03:14.539Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130518,
-      "detail_elapsed_ms": 10823,
-      "scraped_at": "2026-05-22T21:49:31.862Z"
+      "detail_elapsed_ms": 11680,
+      "scraped_at": "2026-05-22T22:02:47.577Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129544,
-      "detail_elapsed_ms": 5160,
-      "scraped_at": "2026-05-22T21:49:37.129Z"
+      "detail_html_length": 130788,
+      "detail_elapsed_ms": 3489,
+      "scraped_at": "2026-05-22T22:02:51.147Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -88,33 +88,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130907,
-      "detail_elapsed_ms": 3337,
-      "scraped_at": "2026-05-22T21:49:40.466Z"
+      "detail_html_length": 130915,
+      "detail_elapsed_ms": 2372,
+      "scraped_at": "2026-05-22T22:02:53.520Z"
     },
     {
       "id": "pt6-2-ingressos-22-05-teatro-multiplan-sp",
       "trace_id": "trace_pt6-2-ingressos-22-05-teatro-multiplan-sp",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pt6-2-ingressos-22-05-teatro-multiplan-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pt6-2-ingressos-22-05-teatro-multiplan-sp",
-      "title": "2 INGRESSOS: 22/05 Teatro Multiplan SP",
+      "title": "Ingressos Exclusivos",
       "preview_title": "2 INGRESSOS: 22/05 Teatro Multiplan SP",
-      "validity": "Benefício válido de 22/05/2026 17:44 até 23/05/2026 23:59.",
-      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para o espetáculo “Poemas” e mergulhe em uma experiência sensível que reflete sobre a dualidade da vida, a memória, o amor e a esperança, em uma encenação poética e onírica no Teatro Multiplan MorumbiShopping, em São Paulo. Data: HOJE 22 de maio, às 20h30. Local: Teatro Multiplan MorumbiShopping – Av. Roque Petroni Jr., 1089, Piso G2 – São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "img_source": "meta_og",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "img_source": "benefit_data_src",
       "detail_ok": true,
-      "detail_quality": "complete",
+      "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132555,
-      "detail_elapsed_ms": 2979,
-      "scraped_at": "2026-05-22T21:49:43.445Z"
+      "detail_html_length": 324627,
+      "detail_elapsed_ms": 5274,
+      "scraped_at": "2026-05-22T22:02:58.794Z"
     },
     {
       "id": "pt4-2-ingressos-30-05-teatro-multiplan-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132498,
-      "detail_elapsed_ms": 5529,
-      "scraped_at": "2026-05-22T21:49:48.976Z"
+      "detail_html_length": 132537,
+      "detail_elapsed_ms": 2095,
+      "scraped_at": "2026-05-22T22:03:00.890Z"
     },
     {
       "id": "pt3-2-ingressos-29-05-teatro-multiplan-sp",
@@ -152,17 +152,17 @@
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10aff7d6b58_ea6a1f1d521b77ccb87499195c1c3f39.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b215e91cd889f04446dfb4c4cbadcd6a.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10aff7d6b58_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10aff7d6b58_ea6a1f1d521b77ccb87499195c1c3f39.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b215e91cd889f04446dfb4c4cbadcd6a.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132515,
-      "detail_elapsed_ms": 6771,
-      "scraped_at": "2026-05-22T21:49:55.810Z"
+      "detail_html_length": 132486,
+      "detail_elapsed_ms": 1749,
+      "scraped_at": "2026-05-22T22:03:02.639Z"
     },
     {
       "id": "pt2-2-ingressos-27-05-teatro-multiplan-sp",
@@ -176,17 +176,17 @@
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10acacbbaa2_ea6a1f1d521b77ccb87499195c1c3f39.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/60f3c45ce8f5c79f495cb2cf87d2009a.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10acacbbaa2_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a10acacbbaa2_ea6a1f1d521b77ccb87499195c1c3f39.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/60f3c45ce8f5c79f495cb2cf87d2009a.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132500,
-      "detail_elapsed_ms": 10386,
-      "scraped_at": "2026-05-22T21:50:06.196Z"
+      "detail_html_length": 132460,
+      "detail_elapsed_ms": 1930,
+      "scraped_at": "2026-05-22T22:03:04.569Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130445,
-      "detail_elapsed_ms": 3565,
-      "scraped_at": "2026-05-22T21:50:09.762Z"
+      "detail_html_length": 131700,
+      "detail_elapsed_ms": 2040,
+      "scraped_at": "2026-05-22T22:03:06.609Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132940,
-      "detail_elapsed_ms": 3683,
-      "scraped_at": "2026-05-22T21:50:13.445Z"
+      "detail_html_length": 132958,
+      "detail_elapsed_ms": 2166,
+      "scraped_at": "2026-05-22T22:03:08.775Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130961,
-      "detail_elapsed_ms": 4739,
-      "scraped_at": "2026-05-22T21:50:18.184Z"
+      "detail_html_length": 131028,
+      "detail_elapsed_ms": 1742,
+      "scraped_at": "2026-05-22T22:03:10.517Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131035,
-      "detail_elapsed_ms": 3219,
-      "scraped_at": "2026-05-22T21:50:21.403Z"
+      "detail_html_length": 131044,
+      "detail_elapsed_ms": 2089,
+      "scraped_at": "2026-05-22T22:03:12.606Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129768,
-      "detail_elapsed_ms": 2943,
-      "scraped_at": "2026-05-22T21:50:24.346Z"
+      "detail_html_length": 130992,
+      "detail_elapsed_ms": 1768,
+      "scraped_at": "2026-05-22T22:03:14.374Z"
     }
   ]
 }
