@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 136912,
-  "run_duration_seconds": 136.91,
-  "avg_detail_ms_per_offer": 11409,
-  "generated_at": "2026-05-23T07:17:46.133Z",
+  "run_duration_ms": 101950,
+  "run_duration_seconds": 101.95,
+  "avg_detail_ms_per_offer": 8496,
+  "generated_at": "2026-05-23T07:30:08.034Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 123844,
-      "detail_elapsed_ms": 2458,
-      "scraped_at": "2026-05-23T07:15:50.762Z"
+      "detail_html_length": 130520,
+      "detail_elapsed_ms": 13742,
+      "scraped_at": "2026-05-23T07:29:30.860Z"
     },
     {
       "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130799,
-      "detail_elapsed_ms": 2606,
-      "scraped_at": "2026-05-23T07:15:53.475Z"
+      "detail_html_length": 130790,
+      "detail_elapsed_ms": 3278,
+      "scraped_at": "2026-05-23T07:29:34.193Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130936,
-      "detail_elapsed_ms": 2382,
-      "scraped_at": "2026-05-23T07:15:55.857Z"
+      "detail_html_length": 129748,
+      "detail_elapsed_ms": 3287,
+      "scraped_at": "2026-05-23T07:29:37.480Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131669,
-      "detail_elapsed_ms": 5089,
-      "scraped_at": "2026-05-23T07:16:00.946Z"
+      "detail_html_length": 131513,
+      "detail_elapsed_ms": 3819,
+      "scraped_at": "2026-05-23T07:29:41.299Z"
     },
     {
       "id": "ptr-compre-2-calcados-com-20-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126580,
-      "detail_elapsed_ms": 2704,
-      "scraped_at": "2026-05-23T07:16:03.650Z"
+      "detail_html_length": 126583,
+      "detail_elapsed_ms": 2780,
+      "scraped_at": "2026-05-23T07:29:44.079Z"
     },
     {
       "id": "ptq-ate-60-off-10-off-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131015,
-      "detail_elapsed_ms": 5443,
-      "scraped_at": "2026-05-23T07:16:09.093Z"
+      "detail_html_length": 124623,
+      "detail_elapsed_ms": 2700,
+      "scraped_at": "2026-05-23T07:29:46.779Z"
     },
     {
       "id": "ptp-25-off-extra-na-selecao-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131053,
-      "detail_elapsed_ms": 6050,
-      "scraped_at": "2026-05-23T07:16:15.143Z"
+      "detail_html_length": 129884,
+      "detail_elapsed_ms": 2641,
+      "scraped_at": "2026-05-23T07:29:49.420Z"
     },
     {
       "id": "pto-30-off-extra-na-selecao-calcas",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131027,
-      "detail_elapsed_ms": 3140,
-      "scraped_at": "2026-05-23T07:16:18.283Z"
+      "detail_html_length": 129772,
+      "detail_elapsed_ms": 3073,
+      "scraped_at": "2026-05-23T07:29:52.493Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129920,
-      "detail_elapsed_ms": 3384,
-      "scraped_at": "2026-05-23T07:16:21.667Z"
+      "detail_html_length": 131079,
+      "detail_elapsed_ms": 2271,
+      "scraped_at": "2026-05-23T07:29:54.764Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palacio-das-artes-bh",
@@ -243,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
       "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "preview_title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 20/05/2026 12:41 até 25/05/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo Amália Rodrigues Sinfônico e viva uma emocionante homenagem à Rainha do Fado, com orquestra sinfônica, projeções audiovisuais e participação da cantora portuguesa Anabela, no Grande Teatro Cemig – Palácio das Artes, em Belo Horizonte. Data: 26 de maio de 2026, às 20h30 Local: Av. Afonso Pena, 1537 – Centro, Belo Horizonte – MG Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 14662,
-      "scraped_at": "2026-05-23T07:16:52.439Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131422,
+      "detail_elapsed_ms": 2798,
+      "scraped_at": "2026-05-23T07:29:57.562Z"
     },
     {
       "id": "ptd-15-off-em-check-up-medico",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "title": "15% OFF em Check-up Médico",
       "preview_title": "15% OFF em Check-up Médico",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
+      "description": "Sobre o parceiro: Pioneira e líder em check-up executivo em Belo Horizonte, a BH Check-Up Médico figura entre as melhores clínicas do país na modalidade. Com foco na saúde preventiva, oferece programas completos com mais de 50 itens, entre consultas, exames de sangue e de imagem. Tudo realizado com máxima eficiência, em apenas uma manhã. Benefício: 15% OFF em Check-up Médico Regras: 15% de desconto sobre a tabela vigente. Clique em “Ir para o site” para consultar mais informações. Para utilização do benefício, o usuário deve entrar em contato informando ser beneficiário do Clube Ben.",
       "category": "",
       "partner_name": "BH CHECK-UP MÉDICO",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/c62644b204610180f7e11fe5c4f30945.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/26b02b987b76fbd3930e28fd57b510b6.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/26b02b987b76fbd3930e28fd57b510b6.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12208,
-      "scraped_at": "2026-05-23T07:17:17.402Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/26b02b987b76fbd3930e28fd57b510b6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131935,
+      "detail_elapsed_ms": 3915,
+      "scraped_at": "2026-05-23T07:30:01.478Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/olympikus/psZ-20-off-em-todo-o-site",
       "title": "20% OFF em todo o site",
       "preview_title": "20% OFF em todo o site",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 19/05/2026 10:58 até 24/05/2026 23:59.",
+      "description": "Sobre o parceiro: A marca acredita e investe no esporte, buscando inovação e alta performance, por meio do seu Centro de Desenvolvimento e Tecnologia. Benefício: 20% OFF em todo hotsite da parceria! (Exceto família Corre). Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Olympikus.",
       "category": "Compras e Presentes",
       "partner_name": "Olympikus",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/e9afd64c0ef7dd9cffe021d68cc93577.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7151cbe16677c5212f4580f207e05866.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7151cbe16677c5212f4580f207e05866.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/olympikus/psZ-20-off-em-todo-o-site\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12119,
-      "scraped_at": "2026-05-23T07:17:41.922Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7151cbe16677c5212f4580f207e05866.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130895,
+      "detail_elapsed_ms": 2977,
+      "scraped_at": "2026-05-23T07:30:04.456Z"
     }
   ]
 }
