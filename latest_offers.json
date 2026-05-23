@@ -1,27 +1,6 @@
 {
-  "last_update": "2026-05-22T22:38:19.248797Z",
+  "last_update": "2026-05-23T01:29:01.673247Z",
   "offers": [
-    {
-      "id": "pth-2-ingressos-23-05-teatro-dom-bosco-ms",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pth-2-ingressos-23-05-teatro-dom-bosco-ms",
-      "preview_title": "2 INGRESSOS: 23/05 Teatro Dom Bosco MS",
-      "title": "2 INGRESSOS: 23/05 Teatro Dom Bosco MS",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pth-2-ingressos-23-05-teatro-dom-bosco-ms",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "validity": "Benefício válido de 20/05/2026 11:26 até 22/05/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Dom Bosco, em Campo Grande – MS. Data: Sábado, 23/05/2026 | 21h. Local: Teatro Dom Bosco - Campo Grande (MS) - Av. Mato Grosso, 225, Centro. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "location_summary": "AV",
-      "dedupe_key": "2-ingressos-23-05-teatro-dom-bosco-ms|beneficio-valido-de-20-05-2026-11-26-ate-22-05-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-e-prepare-se-para-rir-muito-com-o-stand-up-mauricio-meirelles-surto-coletivo-um-dos-shows-mais-interativos-e-comentados",
-      "loose_dedupe_key": "2-ingressos-23-05-teatro-dom-bosco-ms|assinante-uol-resgate-1-par-de-ingressos-e-prepare-se-para-rir-muito-com-o-stand-up-mauricio-meirelles-surto-coletivo-um-dos-shows-mais-interativos-e-comentados",
-      "scraped_at": "2026-05-20T14:36:59.130000Z",
-      "trace_id": "trace_pth-2-ingressos-23-05-teatro-dom-bosco-ms",
-      "channel_message_id": 1481,
-      "channel_message_link": "https://t.me/c/3723320790/1481",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-05-20T14:38:24.406921Z"
-    },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -337,7 +316,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5027?thread=5024",
       "sent_at": "2026-05-22T21:05:27.513892Z",
-      "sold_out_at": "19:37"
+      "sold_out_at": "19:37",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -430,7 +410,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5043?thread=5040",
       "sent_at": "2026-05-22T21:38:53.042851Z",
-      "sold_out_at": "19:37"
+      "sold_out_at": "19:37",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pt3-2-ingressos-29-05-teatro-multiplan-sp",
@@ -454,7 +435,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5047?thread=5044",
       "sent_at": "2026-05-22T21:39:02.569141Z",
-      "sold_out_at": "19:37"
+      "sold_out_at": "19:37",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pt2-2-ingressos-27-05-teatro-multiplan-sp",
@@ -478,6 +460,29 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5051?thread=5048",
       "sent_at": "2026-05-22T21:39:12.079768Z"
+    },
+    {
+      "id": "ptd-15-off-em-check-up-medico",
+      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "preview_title": "15% OFF em Check-up Médico",
+      "title": "15% OFF em Check-up Médico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/26b02b987b76fbd3930e28fd57b510b6.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/c62644b204610180f7e11fe5c4f30945.png",
+      "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
+      "description": "Sobre o parceiro: Pioneira e líder em check-up executivo em Belo Horizonte, a BH Check-Up Médico figura entre as melhores clínicas do país na modalidade. Com foco na saúde preventiva, oferece programas completos com mais de 50 itens, entre consultas, exames de sangue e de imagem. Tudo realizado com máxima eficiência, em apenas uma manhã. Benefício: 15% OFF em Check-up Médico Regras: 15% de desconto sobre a tabela vigente. Clique em “Ir para o site” para consultar mais informações. Para utilização do benefício, o usuário deve entrar em contato informando ser beneficiário do Clube Ben.",
+      "location_summary": "",
+      "dedupe_key": "15-off-em-check-up-medico|beneficio-valido-de-19-05-2026-16-20-ate-19-05-2028-23-59|sobre-o-parceiro-pioneira-e-lider-em-check-up-executivo-em-belo-horizonte-a-bh-check-up-medico-figura-entre-as-melhores-clinicas-do-pais-na-modalidade-com-foco-",
+      "loose_dedupe_key": "15-off-em-check-up-medico|sobre-o-parceiro-pioneira-e-lider-em-check-up-executivo-em-belo-horizonte-a-bh-check-up-medico-figura-entre-as-melhores-clinicas-do-pais-na-modalidade-com-foco-",
+      "scraped_at": "2026-05-23T01:28:15.503000Z",
+      "trace_id": "trace_ptd-15-off-em-check-up-medico",
+      "channel_message_id": 1501,
+      "channel_message_link": "https://t.me/c/3723320790/1501",
+      "comment_message_id": 5055,
+      "discussion_message_id": 5052,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/5055?thread=5052",
+      "sent_at": "2026-05-23T01:29:01.589980Z"
     }
   ]
 }
