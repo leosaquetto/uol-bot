@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-23T03:06:24.039580Z",
+  "updated_at": "2026-05-23T03:16:26.894671Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/integralmedica/pt7-20-off-no-site-oficial",
       "reason": "duplicada_historico",
       "trace_id": "trace_pt7-20-off-no-site-oficial"
-    },
-    {
-      "title": "2 INGRESSOS: 27/05 Teatro Multiplan SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pt2-2-ingressos-27-05-teatro-multiplan-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pt2-2-ingressos-27-05-teatro-multiplan-sp"
     },
     {
       "title": "40% OFF no par de ingressos",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptd-15-off-em-check-up-mdico"
+    },
+    {
+      "title": "20% OFF em todo o site",
+      "link": "https://clube.uol.com.br/olympikus/psZ-20-off-em-todo-o-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psz-20-off-em-todo-o-site"
     }
   ]
 }
