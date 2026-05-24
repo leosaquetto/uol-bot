@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 26665,
-  "run_duration_seconds": 26.66,
-  "avg_detail_ms_per_offer": 2222,
-  "generated_at": "2026-05-24T21:37:01.635Z",
+  "run_duration_ms": 68440,
+  "run_duration_seconds": 68.44,
+  "avg_detail_ms_per_offer": 5703,
+  "generated_at": "2026-05-24T21:48:14.666Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130526,
-      "detail_elapsed_ms": 2166,
-      "scraped_at": "2026-05-24T21:36:44.635Z"
+      "detail_html_length": 129292,
+      "detail_elapsed_ms": 3670,
+      "scraped_at": "2026-05-24T21:47:28.051Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130828,
-      "detail_elapsed_ms": 1613,
-      "scraped_at": "2026-05-24T21:36:46.250Z"
+      "detail_html_length": 129534,
+      "detail_elapsed_ms": 3183,
+      "scraped_at": "2026-05-24T21:47:31.258Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130937,
-      "detail_elapsed_ms": 1587,
-      "scraped_at": "2026-05-24T21:36:47.837Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130906,
+      "detail_elapsed_ms": 8498,
+      "scraped_at": "2026-05-24T21:47:54.952Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131721,
-      "detail_elapsed_ms": 1732,
-      "scraped_at": "2026-05-24T21:36:49.569Z"
+      "detail_html_length": 131710,
+      "detail_elapsed_ms": 3592,
+      "scraped_at": "2026-05-24T21:47:58.544Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132989,
-      "detail_elapsed_ms": 1482,
-      "scraped_at": "2026-05-24T21:36:51.051Z"
+      "detail_html_length": 132960,
+      "detail_elapsed_ms": 2284,
+      "scraped_at": "2026-05-24T21:48:00.828Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131011,
-      "detail_elapsed_ms": 1515,
-      "scraped_at": "2026-05-24T21:36:52.566Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 2251,
+      "scraped_at": "2026-05-24T21:48:03.080Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131064,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-05-24T21:36:54.112Z"
+      "detail_html_length": 131073,
+      "detail_elapsed_ms": 2155,
+      "scraped_at": "2026-05-24T21:48:05.236Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131033,
-      "detail_elapsed_ms": 1562,
-      "scraped_at": "2026-05-24T21:36:55.674Z"
+      "detail_elapsed_ms": 1893,
+      "scraped_at": "2026-05-24T21:48:07.129Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131099,
-      "detail_elapsed_ms": 1428,
-      "scraped_at": "2026-05-24T21:36:57.102Z"
+      "detail_html_length": 131109,
+      "detail_elapsed_ms": 1668,
+      "scraped_at": "2026-05-24T21:48:08.798Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132616,
-      "detail_elapsed_ms": 1461,
-      "scraped_at": "2026-05-24T21:36:58.563Z"
+      "detail_html_length": 133018,
+      "detail_elapsed_ms": 1920,
+      "scraped_at": "2026-05-24T21:48:10.718Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133203,
-      "detail_elapsed_ms": 1426,
-      "scraped_at": "2026-05-24T21:36:59.989Z"
+      "detail_html_length": 133213,
+      "detail_elapsed_ms": 1927,
+      "scraped_at": "2026-05-24T21:48:12.645Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -305,8 +305,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130944,
-      "detail_elapsed_ms": 1598,
-      "scraped_at": "2026-05-24T21:37:01.587Z"
+      "detail_elapsed_ms": 1907,
+      "scraped_at": "2026-05-24T21:48:14.552Z"
     }
   ]
 }
