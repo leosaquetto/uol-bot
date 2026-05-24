@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 73321,
-  "run_duration_seconds": 73.32,
-  "avg_detail_ms_per_offer": 6110,
-  "generated_at": "2026-05-24T09:37:26.401Z",
+  "run_duration_ms": 85285,
+  "run_duration_seconds": 85.28,
+  "avg_detail_ms_per_offer": 7107,
+  "generated_at": "2026-05-24T09:48:58.362Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pt9-50-off-na-2-pea-em-conjuntos",
-      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
-      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
+      "id": "pt9-50-off-na-2a-peca-em-conjuntos",
+      "trace_id": "trace_pt9-50-off-na-2a-peca-em-conjuntos",
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
+      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
       "title": "50% OFF na 2ª Peça em Conjuntos",
       "preview_title": "50% OFF na 2ª Peça em Conjuntos",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -39,16 +39,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129026,
-      "detail_elapsed_ms": 5020,
-      "scraped_at": "2026-05-24T09:36:57.983Z"
+      "detail_attempts": 2,
+      "detail_html_length": 129162,
+      "detail_elapsed_ms": 3301,
+      "scraped_at": "2026-05-24T09:48:27.502Z"
     },
     {
-      "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "trace_id": "trace_pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
       "title": "Coleção de Dia dos Namorados com 10% OFF",
       "preview_title": "Coleção de Dia dos Namorados com 10% OFF",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129553,
-      "detail_elapsed_ms": 3063,
-      "scraped_at": "2026-05-24T09:37:01.047Z"
+      "detail_html_length": 130790,
+      "detail_elapsed_ms": 2991,
+      "scraped_at": "2026-05-24T09:48:30.495Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129757,
-      "detail_elapsed_ms": 2466,
-      "scraped_at": "2026-05-24T09:37:03.514Z"
+      "detail_html_length": 129746,
+      "detail_elapsed_ms": 2874,
+      "scraped_at": "2026-05-24T09:48:33.369Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131670,
-      "detail_elapsed_ms": 2196,
-      "scraped_at": "2026-05-24T09:37:05.711Z"
+      "detail_html_length": 130511,
+      "detail_elapsed_ms": 1990,
+      "scraped_at": "2026-05-24T09:48:35.359Z"
     },
     {
-      "id": "ptr-compre-2-calados-com-20-off",
-      "trace_id": "trace_ptr-compre-2-calados-com-20-off",
-      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
-      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "id": "ptr-compre-2-calcados-com-20-off",
+      "trace_id": "trace_ptr-compre-2-calcados-com-20-off",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
+      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
       "title": "Compre 2 Calçados com 20% OFF",
       "preview_title": "Compre 2 Calçados com 20% OFF",
       "validity": "Benefício válido de 20/05/2026 10:32 até 14/06/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132938,
-      "detail_elapsed_ms": 3084,
-      "scraped_at": "2026-05-24T09:37:08.795Z"
+      "detail_html_length": 132963,
+      "detail_elapsed_ms": 3370,
+      "scraped_at": "2026-05-24T09:48:38.730Z"
     },
     {
-      "id": "ptq-at-60-off-10-off-masculino",
-      "trace_id": "trace_ptq-at-60-off-10-off-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
+      "id": "ptq-ate-60-off-10-off-masculino",
+      "trace_id": "trace_ptq-ate-60-off-10-off-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/ptq-ate-60-off-10-off-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptq-ate-60-off-10-off-masculino",
       "title": "Até 60% OFF +10% OFF Masculino",
       "preview_title": "Até 60% OFF +10% OFF Masculino",
       "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130969,
-      "detail_elapsed_ms": 2310,
-      "scraped_at": "2026-05-24T09:37:11.106Z"
+      "detail_html_length": 130825,
+      "detail_elapsed_ms": 3956,
+      "scraped_at": "2026-05-24T09:48:42.686Z"
     },
     {
-      "id": "ptp-25-off-extra-na-seleo-de-vestidos",
-      "trace_id": "trace_ptp-25-off-extra-na-seleo-de-vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
-      "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
+      "id": "ptp-25-off-extra-na-selecao-de-vestidos",
+      "trace_id": "trace_ptp-25-off-extra-na-selecao-de-vestidos",
+      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
       "title": "25% OFF extra na seleção de vestidos",
       "preview_title": "25% OFF extra na seleção de vestidos",
       "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129862,
-      "detail_elapsed_ms": 2350,
-      "scraped_at": "2026-05-24T09:37:13.456Z"
+      "detail_html_length": 131052,
+      "detail_elapsed_ms": 2236,
+      "scraped_at": "2026-05-24T09:48:44.922Z"
     },
     {
-      "id": "pto-30-off-extra-na-seleo-calas",
-      "trace_id": "trace_pto-30-off-extra-na-seleo-calas",
-      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
+      "id": "pto-30-off-extra-na-selecao-calcas",
+      "trace_id": "trace_pto-30-off-extra-na-selecao-calcas",
+      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
       "title": "30% OFF extra na seleção de calças",
       "preview_title": "30% OFF extra na seleção de calças",
       "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131002,
-      "detail_elapsed_ms": 2384,
-      "scraped_at": "2026-05-24T09:37:15.840Z"
+      "detail_html_length": 131007,
+      "detail_elapsed_ms": 3154,
+      "scraped_at": "2026-05-24T09:48:48.076Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131079,
-      "detail_elapsed_ms": 2387,
-      "scraped_at": "2026-05-24T09:37:18.227Z"
+      "detail_html_length": 131069,
+      "detail_elapsed_ms": 2731,
+      "scraped_at": "2026-05-24T09:48:50.807Z"
     },
     {
-      "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
-      "trace_id": "trace_ptk-2-ingressos-26-05-palcio-das-artes-bh",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "id": "ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "trace_id": "trace_ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
       "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "preview_title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "validity": "Benefício válido de 20/05/2026 12:41 até 25/05/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132563,
-      "detail_elapsed_ms": 2904,
-      "scraped_at": "2026-05-24T09:37:21.131Z"
+      "detail_html_length": 132578,
+      "detail_elapsed_ms": 2303,
+      "scraped_at": "2026-05-24T09:48:53.111Z"
     },
     {
-      "id": "ptd-15-off-em-check-up-mdico",
-      "trace_id": "trace_ptd-15-off-em-check-up-mdico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
-      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "id": "ptd-15-off-em-check-up-medico",
+      "trace_id": "trace_ptd-15-off-em-check-up-medico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "title": "15% OFF em Check-up Médico",
       "preview_title": "15% OFF em Check-up Médico",
       "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133161,
-      "detail_elapsed_ms": 2393,
-      "scraped_at": "2026-05-24T09:37:23.525Z"
+      "detail_html_length": 132008,
+      "detail_elapsed_ms": 2205,
+      "scraped_at": "2026-05-24T09:48:55.318Z"
     },
     {
       "id": "psz-20-off-em-todo-o-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130894,
-      "detail_elapsed_ms": 2535,
-      "scraped_at": "2026-05-24T09:37:26.060Z"
+      "detail_html_length": 130884,
+      "detail_elapsed_ms": 2737,
+      "scraped_at": "2026-05-24T09:48:58.055Z"
     }
   ]
 }
