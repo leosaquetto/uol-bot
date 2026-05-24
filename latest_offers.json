@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-23T02:01:03.148889Z",
+  "last_update": "2026-05-24T05:29:37.402622Z",
   "offers": [
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -483,7 +483,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5055?thread=5052",
       "sent_at": "2026-05-23T01:29:01.589980Z",
-      "sold_out_at": "23:00"
+      "sold_out_at": "23:00",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
