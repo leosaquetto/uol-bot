@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 97270,
-  "run_duration_seconds": 97.27,
-  "avg_detail_ms_per_offer": 8106,
-  "generated_at": "2026-05-25T19:16:51.025Z",
+  "run_duration_ms": 272291,
+  "run_duration_seconds": 272.29,
+  "avg_detail_ms_per_offer": 22691,
+  "generated_at": "2026-05-25T19:31:43.583Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
       "title": "50% OFF na 2ª Peça em Conjuntos",
       "preview_title": "50% OFF na 2ª Peça em Conjuntos",
-      "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
-      "description": "Sobre o Parceiro: A Marcyn é uma das maiores indústrias de lingerie e moda praia do Brasil Benefício: Compre 2 conjuntos e ganhe 50% OFF na 2ª peça Regras de Uso: Válido para compras realizadas através do hotsite da promoção. Apenas para uma seleção de produtos. Sujeito a desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Marcyn",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8f75ac1edf61155f210fe2a2da46d2cc.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8f75ac1edf61155f210fe2a2da46d2cc.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8f75ac1edf61155f210fe2a2da46d2cc.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130527,
-      "detail_elapsed_ms": 8835,
-      "scraped_at": "2026-05-25T19:16:09.095Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12058,
+      "scraped_at": "2026-05-25T19:30:20.108Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124415,
-      "detail_elapsed_ms": 4708,
-      "scraped_at": "2026-05-25T19:16:13.805Z"
+      "detail_html_length": 130652,
+      "detail_elapsed_ms": 14598,
+      "scraped_at": "2026-05-25T19:30:34.731Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130905,
-      "detail_elapsed_ms": 3963,
-      "scraped_at": "2026-05-25T19:16:17.769Z"
+      "detail_html_length": 130768,
+      "detail_elapsed_ms": 10131,
+      "scraped_at": "2026-05-25T19:30:44.862Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131689,
-      "detail_elapsed_ms": 6718,
-      "scraped_at": "2026-05-25T19:16:24.487Z"
+      "detail_html_length": 131670,
+      "detail_elapsed_ms": 7267,
+      "scraped_at": "2026-05-25T19:30:52.130Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132961,
-      "detail_elapsed_ms": 5588,
-      "scraped_at": "2026-05-25T19:16:30.076Z"
+      "detail_html_length": 133060,
+      "detail_elapsed_ms": 10640,
+      "scraped_at": "2026-05-25T19:31:02.771Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130989,
-      "detail_elapsed_ms": 4271,
-      "scraped_at": "2026-05-25T19:16:34.347Z"
+      "detail_html_length": 124595,
+      "detail_elapsed_ms": 4325,
+      "scraped_at": "2026-05-25T19:31:07.096Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131043,
-      "detail_elapsed_ms": 3601,
-      "scraped_at": "2026-05-25T19:16:37.948Z"
+      "detail_html_length": 129795,
+      "detail_elapsed_ms": 3837,
+      "scraped_at": "2026-05-25T19:31:10.934Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131005,
-      "detail_elapsed_ms": 2513,
-      "scraped_at": "2026-05-25T19:16:40.461Z"
+      "detail_html_length": 130993,
+      "detail_elapsed_ms": 5243,
+      "scraped_at": "2026-05-25T19:31:16.178Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129575,
-      "detail_elapsed_ms": 2278,
-      "scraped_at": "2026-05-25T19:16:42.739Z"
+      "detail_html_length": 131079,
+      "detail_elapsed_ms": 7254,
+      "scraped_at": "2026-05-25T19:31:23.432Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132574,
-      "detail_elapsed_ms": 3464,
-      "scraped_at": "2026-05-25T19:16:46.203Z"
+      "detail_html_length": 132573,
+      "detail_elapsed_ms": 5506,
+      "scraped_at": "2026-05-25T19:31:28.938Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133174,
-      "detail_elapsed_ms": 2636,
-      "scraped_at": "2026-05-25T19:16:48.839Z"
+      "detail_html_length": 133185,
+      "detail_elapsed_ms": 5938,
+      "scraped_at": "2026-05-25T19:31:34.877Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130795,
-      "detail_elapsed_ms": 1953,
-      "scraped_at": "2026-05-25T19:16:50.792Z"
+      "detail_html_length": 130755,
+      "detail_elapsed_ms": 6938,
+      "scraped_at": "2026-05-25T19:31:41.815Z"
     }
   ]
 }
