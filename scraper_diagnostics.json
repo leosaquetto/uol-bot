@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-25T12:02:46.229521Z",
+  "updated_at": "2026-05-25T12:12:43.082823Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,23 +10,23 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
-    "duplicada_latest": 4,
+    "duplicada_historico": 9,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "50% OFF na 2ª Peça em Conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pt9-50-off-na-2a-peca-em-conjuntos"
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos"
     },
     {
       "title": "Coleção de Dia dos Namorados com 10% OFF",
-      "link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pt8-colecao-de-dia-dos-namorados-com-10-off"
+      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off"
     },
     {
       "title": "20% OFF no site oficial",
@@ -42,27 +42,27 @@
     },
     {
       "title": "Compre 2 Calçados com 20% OFF",
-      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptr-compre-2-calcados-com-20-off"
+      "trace_id": "trace_ptr-compre-2-calados-com-20-off"
     },
     {
       "title": "Até 60% OFF +10% OFF Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/ptq-ate-60-off-10-off-masculino",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptq-ate-60-off-10-off-masculino"
+      "link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_ptq-at-60-off-10-off-masculino"
     },
     {
       "title": "25% OFF extra na seleção de vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptp-25-off-extra-na-selecao-de-vestidos"
+      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_ptp-25-off-extra-na-seleo-de-vestidos"
     },
     {
       "title": "30% OFF extra na seleção de calças",
-      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
+      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
       "reason": "duplicada_latest",
-      "trace_id": "trace_pto-30-off-extra-na-selecao-calcas"
+      "trace_id": "trace_pto-30-off-extra-na-seleo-calas"
     },
     {
       "title": "Selecionados 20% OFF acima de R$350",
@@ -72,15 +72,15 @@
     },
     {
       "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palacio-das-artes-bh",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_ptk-2-ingressos-26-05-palacio-das-artes-bh"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptk-2-ingressos-26-05-palcio-das-artes-bh"
     },
     {
       "title": "15% OFF em Check-up Médico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptd-15-off-em-check-up-medico"
+      "trace_id": "trace_ptd-15-off-em-check-up-mdico"
     },
     {
       "title": "Aproveite 12% OFF na Stanley",
