@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 186226,
-  "run_duration_seconds": 186.23,
-  "avg_detail_ms_per_offer": 15519,
-  "generated_at": "2026-05-25T19:04:50.484Z",
+  "run_duration_ms": 97270,
+  "run_duration_seconds": 97.27,
+  "avg_detail_ms_per_offer": 8106,
+  "generated_at": "2026-05-25T19:16:51.025Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130516,
-      "detail_elapsed_ms": 9754,
-      "scraped_at": "2026-05-25T19:02:50.168Z"
+      "detail_html_length": 130527,
+      "detail_elapsed_ms": 8835,
+      "scraped_at": "2026-05-25T19:16:09.095Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130778,
-      "detail_elapsed_ms": 2782,
-      "scraped_at": "2026-05-25T19:02:52.952Z"
+      "detail_html_length": 124415,
+      "detail_elapsed_ms": 4708,
+      "scraped_at": "2026-05-25T19:16:13.805Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130915,
-      "detail_elapsed_ms": 3628,
-      "scraped_at": "2026-05-25T19:02:56.580Z"
+      "detail_html_length": 130905,
+      "detail_elapsed_ms": 3963,
+      "scraped_at": "2026-05-25T19:16:17.769Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125306,
-      "detail_elapsed_ms": 2231,
-      "scraped_at": "2026-05-25T19:02:58.811Z"
+      "detail_html_length": 131689,
+      "detail_elapsed_ms": 6718,
+      "scraped_at": "2026-05-25T19:16:24.487Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132959,
-      "detail_elapsed_ms": 2684,
-      "scraped_at": "2026-05-25T19:03:01.495Z"
+      "detail_html_length": 132961,
+      "detail_elapsed_ms": 5588,
+      "scraped_at": "2026-05-25T19:16:30.076Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130968,
-      "detail_elapsed_ms": 3241,
-      "scraped_at": "2026-05-25T19:03:04.736Z"
+      "detail_html_length": 130989,
+      "detail_elapsed_ms": 4271,
+      "scraped_at": "2026-05-25T19:16:34.347Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -171,22 +171,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
       "title": "25% OFF extra na seleção de vestidos",
       "preview_title": "25% OFF extra na seleção de vestidos",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 25% OFF extra na seleção de vestidos Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6b9e9b5ff4820e3dee44c7202ed2d807.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6b9e9b5ff4820e3dee44c7202ed2d807.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12123,
-      "scraped_at": "2026-05-25T19:03:30.838Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6b9e9b5ff4820e3dee44c7202ed2d807.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131043,
+      "detail_elapsed_ms": 3601,
+      "scraped_at": "2026-05-25T19:16:37.948Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131115,
-      "detail_elapsed_ms": 14619,
-      "scraped_at": "2026-05-25T19:03:57.721Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131005,
+      "detail_elapsed_ms": 2513,
+      "scraped_at": "2026-05-25T19:16:40.461Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130921,
-      "detail_elapsed_ms": 11302,
-      "scraped_at": "2026-05-25T19:04:09.023Z"
+      "detail_html_length": 129575,
+      "detail_elapsed_ms": 2278,
+      "scraped_at": "2026-05-25T19:16:42.739Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -243,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
       "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
       "preview_title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 20/05/2026 12:41 até 25/05/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo Amália Rodrigues Sinfônico e viva uma emocionante homenagem à Rainha do Fado, com orquestra sinfônica, projeções audiovisuais e participação da cantora portuguesa Anabela, no Grande Teatro Cemig – Palácio das Artes, em Belo Horizonte. Data: 26 de maio de 2026, às 20h30 Local: Av. Afonso Pena, 1537 – Centro, Belo Horizonte – MG Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12028,
-      "scraped_at": "2026-05-25T19:04:33.584Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a0de15de4719_18d2c84880baffd8b227760ed4a60836.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132574,
+      "detail_elapsed_ms": 3464,
+      "scraped_at": "2026-05-25T19:16:46.203Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133182,
-      "detail_elapsed_ms": 9246,
-      "scraped_at": "2026-05-25T19:04:42.830Z"
+      "detail_html_length": 133174,
+      "detail_elapsed_ms": 2636,
+      "scraped_at": "2026-05-25T19:16:48.839Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130756,
-      "detail_elapsed_ms": 4518,
-      "scraped_at": "2026-05-25T19:04:47.348Z"
+      "detail_html_length": 130795,
+      "detail_elapsed_ms": 1953,
+      "scraped_at": "2026-05-25T19:16:50.792Z"
     }
   ]
 }
