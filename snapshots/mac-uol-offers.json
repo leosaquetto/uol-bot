@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 150192,
-  "run_duration_seconds": 150.19,
-  "avg_detail_ms_per_offer": 12516,
-  "generated_at": "2026-05-25T21:33:27.926Z",
+  "run_duration_ms": 98461,
+  "run_duration_seconds": 98.46,
+  "avg_detail_ms_per_offer": 8205,
+  "generated_at": "2026-05-25T21:45:17.084Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130986,
-      "detail_elapsed_ms": 14582,
-      "scraped_at": "2026-05-25T21:32:39.950Z"
+      "detail_html_length": 130737,
+      "detail_elapsed_ms": 10904,
+      "scraped_at": "2026-05-25T21:44:40.629Z"
     },
     {
       "id": "ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
@@ -64,33 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132112,
-      "detail_elapsed_ms": 4253,
-      "scraped_at": "2026-05-25T21:32:44.206Z"
-    },
-    {
-      "id": "ptj-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "trace_id": "trace_ptj-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptJ-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptJ-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 28/05 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 28/05 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 25/05/2026 17:44 até 30/05/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para a comédia “Faça Mais Sobre Isso”, com Flávia Garrafa, e divirta-se com um espetáculo bem-humorado e reflexivo que provoca o público a pensar sobre o fazer, o não fazer e as contradições do comportamento humano, no Teatro Ruth Escobar, em São Paulo/SP. Data: 28 de Maio, às 20h30. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133352,
-      "detail_elapsed_ms": 4377,
-      "scraped_at": "2026-05-25T21:32:48.584Z"
+      "detail_html_length": 133419,
+      "detail_elapsed_ms": 4971,
+      "scraped_at": "2026-05-25T21:44:45.604Z"
     },
     {
       "id": "pti-2-ingressos-31-05-teatro-ruth-escobar-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133302,
-      "detail_elapsed_ms": 3521,
-      "scraped_at": "2026-05-25T21:32:52.105Z"
+      "detail_html_length": 131831,
+      "detail_elapsed_ms": 3161,
+      "scraped_at": "2026-05-25T21:44:48.765Z"
     },
     {
       "id": "pth-2-ingressos-30-05-teatro-ruth-escobar-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132135,
-      "detail_elapsed_ms": 4008,
-      "scraped_at": "2026-05-25T21:32:56.113Z"
+      "detail_html_length": 133373,
+      "detail_elapsed_ms": 3002,
+      "scraped_at": "2026-05-25T21:44:51.767Z"
     },
     {
       "id": "ptg-2-ingressos-30-05-teatro-ruth-escobar-sp",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127166,
-      "detail_elapsed_ms": 2727,
-      "scraped_at": "2026-05-25T21:32:58.840Z"
+      "detail_html_length": 133529,
+      "detail_elapsed_ms": 3959,
+      "scraped_at": "2026-05-25T21:44:55.727Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124144,
-      "detail_elapsed_ms": 4487,
-      "scraped_at": "2026-05-25T21:33:03.327Z"
+      "detail_html_length": 130666,
+      "detail_elapsed_ms": 3051,
+      "scraped_at": "2026-05-25T21:44:58.778Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130791,
-      "detail_elapsed_ms": 8983,
-      "scraped_at": "2026-05-25T21:33:12.310Z"
+      "detail_html_length": 124438,
+      "detail_elapsed_ms": 2515,
+      "scraped_at": "2026-05-25T21:45:01.293Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129746,
-      "detail_elapsed_ms": 3680,
-      "scraped_at": "2026-05-25T21:33:15.990Z"
+      "detail_html_length": 130916,
+      "detail_elapsed_ms": 2987,
+      "scraped_at": "2026-05-25T21:45:04.280Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125327,
-      "detail_elapsed_ms": 3769,
-      "scraped_at": "2026-05-25T21:33:19.759Z"
+      "detail_html_length": 130435,
+      "detail_elapsed_ms": 2778,
+      "scraped_at": "2026-05-25T21:45:07.058Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131799,
-      "detail_elapsed_ms": 3629,
-      "scraped_at": "2026-05-25T21:33:23.388Z"
+      "detail_html_length": 132950,
+      "detail_elapsed_ms": 2826,
+      "scraped_at": "2026-05-25T21:45:09.895Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129799,
-      "detail_elapsed_ms": 3632,
-      "scraped_at": "2026-05-25T21:33:27.020Z"
+      "detail_html_length": 130980,
+      "detail_elapsed_ms": 2780,
+      "scraped_at": "2026-05-25T21:45:12.686Z"
+    },
+    {
+      "id": "ptp-25-off-extra-na-seleo-de-vestidos",
+      "trace_id": "trace_ptp-25-off-extra-na-seleo-de-vestidos",
+      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
+      "title": "25% OFF extra na seleção de vestidos",
+      "preview_title": "25% OFF extra na seleção de vestidos",
+      "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 25% OFF extra na seleção de vestidos Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6b9e9b5ff4820e3dee44c7202ed2d807.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6b9e9b5ff4820e3dee44c7202ed2d807.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6b9e9b5ff4820e3dee44c7202ed2d807.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131035,
+      "detail_elapsed_ms": 3391,
+      "scraped_at": "2026-05-25T21:45:16.077Z"
     }
   ]
 }
