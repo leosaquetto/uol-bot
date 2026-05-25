@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-25T20:33:08.925966Z",
+  "updated_at": "2026-05-25T20:35:03.094955Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 6,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -21,6 +21,42 @@
       "link": "https://clube.uol.com.br/integralmedica/ptO-20-off-no-site-oficial",
       "reason": "duplicada_latest",
       "trace_id": "trace_pto-20-off-no-site-oficial"
+    },
+    {
+      "title": "2 INGRESSOS 31/05 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptN-2-ingressos-31-05-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptn-2-ingressos-31-05-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 29/05 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptM-2-ingressos-29-05-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptm-2-ingressos-29-05-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 28/05 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptJ-2-ingressos-28-05-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptj-2-ingressos-28-05-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 31/05 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptI-2-ingressos-31-05-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pti-2-ingressos-31-05-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 30/05 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptH-2-ingressos-30-05-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pth-2-ingressos-30-05-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 30/05 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptG-2-ingressos-30-05-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptg-2-ingressos-30-05-teatro-ruth-escobar-sp"
     },
     {
       "title": "50% OFF na 2ª Peça em Conjuntos",
