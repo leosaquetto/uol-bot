@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-25T20:46:11.795680Z",
+  "updated_at": "2026-05-25T20:57:37.505414Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -23,16 +23,10 @@
       "trace_id": "trace_pto-20-off-no-site-oficial"
     },
     {
-      "title": "Ingressos Exclusivos",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptM-2-ingressos-29-05-teatro-ruth-escobar-sp",
+      "title": "2 INGRESSOS 31/05 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptN-2-ingressos-31-05-teatro-ruth-escobar-sp",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptm-2-ingressos-29-05-teatro-ruth-escobar-sp"
-    },
-    {
-      "title": "Ingressos Exclusivos",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptJ-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptj-2-ingressos-28-05-teatro-ruth-escobar-sp"
+      "trace_id": "trace_ptn-2-ingressos-31-05-teatro-ruth-escobar-sp"
     },
     {
       "title": "2 INGRESSOS 30/05 Teatro Ruth Escobar SP",
@@ -69,6 +63,12 @@
       "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptr-compre-2-calados-com-20-off"
+    },
+    {
+      "title": "Selecionados 20% OFF acima de R$350",
+      "link": "https://clube.uol.com.br/underarmour/ptn-selecionados-20-off-acima-de-r-350",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptn-selecionados-20-off-acima-de-r-350"
     }
   ]
 }
