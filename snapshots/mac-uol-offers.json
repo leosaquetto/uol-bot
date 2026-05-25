@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 98461,
-  "run_duration_seconds": 98.46,
-  "avg_detail_ms_per_offer": 8205,
-  "generated_at": "2026-05-25T21:45:17.084Z",
+  "run_duration_ms": 119228,
+  "run_duration_seconds": 119.23,
+  "avg_detail_ms_per_offer": 9936,
+  "generated_at": "2026-05-25T22:08:53.830Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130737,
-      "detail_elapsed_ms": 10904,
-      "scraped_at": "2026-05-25T21:44:40.629Z"
+      "detail_html_length": 130735,
+      "detail_elapsed_ms": 9732,
+      "scraped_at": "2026-05-25T22:07:43.146Z"
     },
     {
       "id": "ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133419,
-      "detail_elapsed_ms": 4971,
-      "scraped_at": "2026-05-25T21:44:45.604Z"
+      "detail_html_length": 132260,
+      "detail_elapsed_ms": 3544,
+      "scraped_at": "2026-05-25T22:07:46.691Z"
     },
     {
       "id": "pti-2-ingressos-31-05-teatro-ruth-escobar-sp",
@@ -88,33 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131831,
-      "detail_elapsed_ms": 3161,
-      "scraped_at": "2026-05-25T21:44:48.765Z"
-    },
-    {
-      "id": "pth-2-ingressos-30-05-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pth-2-ingressos-30-05-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptH-2-ingressos-30-05-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptH-2-ingressos-30-05-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 30/05 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 30/05 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 25/05/2026 12:48 até 30/05/2026 23:59.",
-      "description": "Assinante UOL, exclusivo para você! Resgate 1 par de ingressos para a comédia Confusões à Italiana e divirta‑se com uma história cheia de mal‑entendidos, exageros e muito humor, no Teatro Ruth Escobar, em São Paulo – SP. Data: 30 de Maio, às 20h30. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/afac2a4cfc5eb8916f73734b2d105665.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/afac2a4cfc5eb8916f73734b2d105665.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/afac2a4cfc5eb8916f73734b2d105665.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133373,
-      "detail_elapsed_ms": 3002,
-      "scraped_at": "2026-05-25T21:44:51.767Z"
+      "detail_html_length": 133333,
+      "detail_elapsed_ms": 3113,
+      "scraped_at": "2026-05-25T22:07:49.804Z"
     },
     {
       "id": "ptg-2-ingressos-30-05-teatro-ruth-escobar-sp",
@@ -136,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133529,
-      "detail_elapsed_ms": 3959,
-      "scraped_at": "2026-05-25T21:44:55.727Z"
+      "detail_html_length": 133519,
+      "detail_elapsed_ms": 3755,
+      "scraped_at": "2026-05-25T22:07:53.560Z"
     },
     {
-      "id": "pt9-50-off-na-2-pea-em-conjuntos",
-      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
-      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
+      "id": "pt9-50-off-na-2a-peca-em-conjuntos",
+      "trace_id": "trace_pt9-50-off-na-2a-peca-em-conjuntos",
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
+      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
       "title": "50% OFF na 2ª Peça em Conjuntos",
       "preview_title": "50% OFF na 2ª Peça em Conjuntos",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -160,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130666,
-      "detail_elapsed_ms": 3051,
-      "scraped_at": "2026-05-25T21:44:58.778Z"
+      "detail_html_length": 130687,
+      "detail_elapsed_ms": 7777,
+      "scraped_at": "2026-05-25T22:08:01.337Z"
     },
     {
-      "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "trace_id": "trace_pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
       "title": "Coleção de Dia dos Namorados com 10% OFF",
       "preview_title": "Coleção de Dia dos Namorados com 10% OFF",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124438,
-      "detail_elapsed_ms": 2515,
-      "scraped_at": "2026-05-25T21:45:01.293Z"
+      "detail_html_length": 130641,
+      "detail_elapsed_ms": 6143,
+      "scraped_at": "2026-05-25T22:08:07.481Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130916,
-      "detail_elapsed_ms": 2987,
-      "scraped_at": "2026-05-25T21:45:04.280Z"
+      "detail_html_length": 130767,
+      "detail_elapsed_ms": 7756,
+      "scraped_at": "2026-05-25T22:08:15.237Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -232,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130435,
-      "detail_elapsed_ms": 2778,
-      "scraped_at": "2026-05-25T21:45:07.058Z"
+      "detail_html_length": 131670,
+      "detail_elapsed_ms": 8642,
+      "scraped_at": "2026-05-25T22:08:23.879Z"
     },
     {
-      "id": "ptr-compre-2-calados-com-20-off",
-      "trace_id": "trace_ptr-compre-2-calados-com-20-off",
-      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
-      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "id": "ptr-compre-2-calcados-com-20-off",
+      "trace_id": "trace_ptr-compre-2-calcados-com-20-off",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
+      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
       "title": "Compre 2 Calçados com 20% OFF",
       "preview_title": "Compre 2 Calçados com 20% OFF",
       "validity": "Benefício válido de 20/05/2026 10:32 até 14/06/2026 23:59.",
@@ -256,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132950,
-      "detail_elapsed_ms": 2826,
-      "scraped_at": "2026-05-25T21:45:09.895Z"
+      "detail_html_length": 132976,
+      "detail_elapsed_ms": 9265,
+      "scraped_at": "2026-05-25T22:08:33.144Z"
     },
     {
-      "id": "ptq-at-60-off-10-off-masculino",
-      "trace_id": "trace_ptq-at-60-off-10-off-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/ptq-at-60-off-10-off-masculino",
+      "id": "ptq-ate-60-off-10-off-masculino",
+      "trace_id": "trace_ptq-ate-60-off-10-off-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/ptq-ate-60-off-10-off-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptq-ate-60-off-10-off-masculino",
       "title": "Até 60% OFF +10% OFF Masculino",
       "preview_title": "Até 60% OFF +10% OFF Masculino",
       "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
@@ -280,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130980,
-      "detail_elapsed_ms": 2780,
-      "scraped_at": "2026-05-25T21:45:12.686Z"
+      "detail_html_length": 129826,
+      "detail_elapsed_ms": 4656,
+      "scraped_at": "2026-05-25T22:08:37.800Z"
     },
     {
-      "id": "ptp-25-off-extra-na-seleo-de-vestidos",
-      "trace_id": "trace_ptp-25-off-extra-na-seleo-de-vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
-      "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-seleo-de-vestidos",
+      "id": "ptp-25-off-extra-na-selecao-de-vestidos",
+      "trace_id": "trace_ptp-25-off-extra-na-selecao-de-vestidos",
+      "link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
+      "original_link": "https://clube.uol.com.br/lojasrenner/ptp-25-off-extra-na-selecao-de-vestidos",
       "title": "25% OFF extra na seleção de vestidos",
       "preview_title": "25% OFF extra na seleção de vestidos",
       "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131035,
-      "detail_elapsed_ms": 3391,
-      "scraped_at": "2026-05-25T21:45:16.077Z"
+      "detail_html_length": 131043,
+      "detail_elapsed_ms": 7370,
+      "scraped_at": "2026-05-25T22:08:45.170Z"
+    },
+    {
+      "id": "pto-30-off-extra-na-selecao-calcas",
+      "trace_id": "trace_pto-30-off-extra-na-selecao-calcas",
+      "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-selecao-de-calcas",
+      "title": "30% OFF extra na seleção de calças",
+      "preview_title": "30% OFF extra na seleção de calças",
+      "validity": "Benefício válido de 20/05/2026 16:44 até 25/05/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 30% OFF extra na seleção de calças Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35b1d489bf5ee82d89b201b2bd598eb9.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35b1d489bf5ee82d89b201b2bd598eb9.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35b1d489bf5ee82d89b201b2bd598eb9.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130881,
+      "detail_elapsed_ms": 7037,
+      "scraped_at": "2026-05-25T22:08:52.207Z"
     }
   ]
 }
