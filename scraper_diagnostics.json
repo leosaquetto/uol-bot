@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-25T14:12:46.963586Z",
+  "updated_at": "2026-05-25T14:23:10.001654Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,24 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 31/05 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptD-2-ingressos-31-05-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptd-2-ingressos-31-05-teatro-liberdade-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 29/05 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptC-2-ingressos-29-05-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptc-2-ingressos-29-05-teatro-liberdade-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 30/05 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptB-2-ingressos-30-05-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptb-2-ingressos-30-05-teatro-liberdade-sp"
-    },
     {
       "title": "2 INGRESSOS: 28/05 Teatro Liberdade - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ptA-2-ingressos-28-05-teatro-liberdade-sp",
@@ -87,6 +69,24 @@
       "link": "https://clube.uol.com.br/lojasrenner/pto-30-off-extra-na-seleo-de-calas",
       "reason": "duplicada_latest",
       "trace_id": "trace_pto-30-off-extra-na-seleo-calas"
+    },
+    {
+      "title": "Selecionados 20% OFF acima de R$350",
+      "link": "https://clube.uol.com.br/underarmour/ptn-selecionados-20-off-acima-de-r-350",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptn-selecionados-20-off-acima-de-r-350"
+    },
+    {
+      "title": "2 INGRESSOS: 26/05 Palácio das Artes BH",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptk-2-ingressos-26-05-palcio-das-artes-bh",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptk-2-ingressos-26-05-palcio-das-artes-bh"
+    },
+    {
+      "title": "15% OFF em Check-up Médico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptd-15-off-em-check-up-mdico"
     }
   ]
 }
