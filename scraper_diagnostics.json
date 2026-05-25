@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-25T15:53:02.154365Z",
+  "updated_at": "2026-05-25T16:03:05.639347Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 28/05 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptA-2-ingressos-28-05-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pta-2-ingressos-28-05-teatro-liberdade-sp"
-    },
     {
       "title": "50% OFF na 2ª Peça em Conjuntos",
       "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptd-15-off-em-check-up-mdico"
+    },
+    {
+      "title": "Aproveite 12% OFF na Stanley",
+      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psx-aproveite-12-off-na-stanley"
     }
   ]
 }
