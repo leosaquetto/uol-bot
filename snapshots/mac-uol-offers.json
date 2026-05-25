@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 182061,
-  "run_duration_seconds": 182.06,
-  "avg_detail_ms_per_offer": 15172,
-  "generated_at": "2026-05-25T13:31:11.406Z",
+  "run_duration_ms": 202826,
+  "run_duration_seconds": 202.83,
+  "avg_detail_ms_per_offer": 16902,
+  "generated_at": "2026-05-25T13:44:44.947Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pta-2-ingressos-28-05-teatro-liberdade-sp",
+      "trace_id": "trace_pta-2-ingressos-28-05-teatro-liberdade-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptA-2-ingressos-28-05-teatro-liberdade-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptA-2-ingressos-28-05-teatro-liberdade-sp",
+      "title": "2 INGRESSOS: 28/05 Teatro Liberdade - SP",
+      "preview_title": "2 INGRESSOS: 28/05 Teatro Liberdade - SP",
+      "validity": "Benefício válido de 25/05/2026 10:00 até 28/05/2026 23:59.",
+      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para o Tributo Elton John – Rafael Dentini e viva uma experiência inesquecível com o maior tributo ao Elton John da América Latina, em um espetáculo que celebra os maiores sucessos do Rocket Man com figurinos marcantes, energia contagiante e uma imersão audiovisual de tirar o fôlego, no Teatro Liberdade, em São Paulo. Data: 28 de Maio, às 20h30. Local: R. São Joaquim, 129, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/64eb51cb68246f2e935955e1dc704176.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/64eb51cb68246f2e935955e1dc704176.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/64eb51cb68246f2e935955e1dc704176.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132450,
+      "detail_elapsed_ms": 15238,
+      "scraped_at": "2026-05-25T13:43:21.583Z"
+    },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
       "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos",
@@ -39,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130937,
-      "detail_elapsed_ms": 16885,
-      "scraped_at": "2026-05-25T13:30:03.713Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130665,
+      "detail_elapsed_ms": 8947,
+      "scraped_at": "2026-05-25T13:43:30.534Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129399,
-      "detail_elapsed_ms": 6787,
-      "scraped_at": "2026-05-25T13:30:10.501Z"
+      "detail_html_length": 124427,
+      "detail_elapsed_ms": 4086,
+      "scraped_at": "2026-05-25T13:43:34.620Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130898,
-      "detail_elapsed_ms": 7261,
-      "scraped_at": "2026-05-25T13:30:17.762Z"
+      "detail_html_length": 130916,
+      "detail_elapsed_ms": 8122,
+      "scraped_at": "2026-05-25T13:43:42.742Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131672,
-      "detail_elapsed_ms": 6369,
-      "scraped_at": "2026-05-25T13:30:24.131Z"
+      "detail_html_length": 131679,
+      "detail_elapsed_ms": 8437,
+      "scraped_at": "2026-05-25T13:43:51.179Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132940,
-      "detail_elapsed_ms": 6393,
-      "scraped_at": "2026-05-25T13:30:30.524Z"
+      "detail_html_length": 132804,
+      "detail_elapsed_ms": 7157,
+      "scraped_at": "2026-05-25T13:43:58.336Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124598,
-      "detail_elapsed_ms": 3738,
-      "scraped_at": "2026-05-25T13:30:34.262Z"
+      "detail_html_length": 130822,
+      "detail_elapsed_ms": 7781,
+      "scraped_at": "2026-05-25T13:44:06.117Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131034,
-      "detail_elapsed_ms": 5389,
-      "scraped_at": "2026-05-25T13:30:39.651Z"
+      "detail_html_length": 131041,
+      "detail_elapsed_ms": 7137,
+      "scraped_at": "2026-05-25T13:44:13.254Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131005,
-      "detail_elapsed_ms": 7820,
-      "scraped_at": "2026-05-25T13:30:47.471Z"
+      "detail_html_length": 131024,
+      "detail_elapsed_ms": 6275,
+      "scraped_at": "2026-05-25T13:44:19.530Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131081,
-      "detail_elapsed_ms": 5671,
-      "scraped_at": "2026-05-25T13:30:53.143Z"
+      "detail_html_length": 131350,
+      "detail_elapsed_ms": 10596,
+      "scraped_at": "2026-05-25T13:44:30.126Z"
     },
     {
       "id": "ptk-2-ingressos-26-05-palcio-das-artes-bh",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132566,
-      "detail_elapsed_ms": 5616,
-      "scraped_at": "2026-05-25T13:30:58.759Z"
+      "detail_html_length": 133100,
+      "detail_elapsed_ms": 6464,
+      "scraped_at": "2026-05-25T13:44:36.590Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132614,
-      "detail_elapsed_ms": 7386,
-      "scraped_at": "2026-05-25T13:31:06.146Z"
-    },
-    {
-      "id": "psx-aproveite-12-off-na-stanley",
-      "trace_id": "trace_psx-aproveite-12-off-na-stanley",
-      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "original_link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "title": "Aproveite 12% OFF na Stanley",
-      "preview_title": "Aproveite 12% OFF na Stanley",
-      "validity": "Benefício válido de 19/05/2026 10:20 até 15/06/2026 23:59.",
-      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday.",
-      "category": "Compras e Presentes",
-      "partner_name": "Stanley",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/437488ab72a7771a7afd7c6d1bcbfda3.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129522,
-      "detail_elapsed_ms": 4316,
-      "scraped_at": "2026-05-25T13:31:10.462Z"
+      "detail_html_length": 133186,
+      "detail_elapsed_ms": 6959,
+      "scraped_at": "2026-05-25T13:44:43.549Z"
     }
   ]
 }
