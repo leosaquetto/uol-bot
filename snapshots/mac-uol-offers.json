@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
-    "weak": 2,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 134567,
-  "run_duration_seconds": 134.57,
-  "avg_detail_ms_per_offer": 11214,
-  "generated_at": "2026-05-25T20:44:56.979Z",
+  "run_duration_ms": 106806,
+  "run_duration_seconds": 106.81,
+  "avg_detail_ms_per_offer": 8901,
+  "generated_at": "2026-05-25T20:57:02.192Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,58 +39,34 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130877,
-      "detail_elapsed_ms": 12250,
-      "scraped_at": "2026-05-25T20:43:57.709Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130727,
+      "detail_elapsed_ms": 5942,
+      "scraped_at": "2026-05-25T20:56:32.966Z"
     },
     {
-      "id": "ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "trace_id": "trace_ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptM-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptM-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "2 INGRESSOS 29/05 Teatro Ruth Escobar SP",
-      "validity": "",
-      "description": "",
+      "id": "ptn-2-ingressos-31-05-teatro-ruth-escobar-sp",
+      "trace_id": "trace_ptn-2-ingressos-31-05-teatro-ruth-escobar-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptN-2-ingressos-31-05-teatro-ruth-escobar-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptN-2-ingressos-31-05-teatro-ruth-escobar-sp",
+      "title": "2 INGRESSOS 31/05 Teatro Ruth Escobar SP",
+      "preview_title": "2 INGRESSOS 31/05 Teatro Ruth Escobar SP",
+      "validity": "Benefício válido de 25/05/2026 16:13 até 30/05/2026 23:59.",
+      "description": "Assinante UOL Resgate 1 par de ingressos para o espetáculo “O Livro dos Espíritos” e emocione-se com uma montagem que retrata o primeiro contato de Allan Kardec com as experiências mediúnicas, o amadurecimento de sua fé e a decisão que deu origem à Doutrina Espírita, no Teatro Ruth Escobar, em São Paulo – SP. Data: 31 de Maio, às 19h. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a149a9d87a9c_ace2e6bcb1173885c95432edb0483eae.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "img_source": "benefit_data_src",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/310eb4ba80b2a4a514a72987dc142b5e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/310eb4ba80b2a4a514a72987dc142b5e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/310eb4ba80b2a4a514a72987dc142b5e.png",
+      "img_source": "meta_og",
       "detail_ok": true,
-      "detail_quality": "weak",
+      "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 324738,
-      "detail_elapsed_ms": 11785,
-      "scraped_at": "2026-05-25T20:44:09.547Z"
-    },
-    {
-      "id": "ptj-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "trace_id": "trace_ptj-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptJ-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptJ-2-ingressos-28-05-teatro-ruth-escobar-sp",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "2 INGRESSOS 28/05 Teatro Ruth Escobar SP",
-      "validity": "",
-      "description": "",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "img_source": "benefit_data_src",
-      "detail_ok": true,
-      "detail_quality": "weak",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 324590,
-      "detail_elapsed_ms": 10150,
-      "scraped_at": "2026-05-25T20:44:19.697Z"
+      "detail_html_length": 132261,
+      "detail_elapsed_ms": 3744,
+      "scraped_at": "2026-05-25T20:56:36.712Z"
     },
     {
       "id": "ptg-2-ingressos-30-05-teatro-ruth-escobar-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133531,
-      "detail_elapsed_ms": 4548,
-      "scraped_at": "2026-05-25T20:44:24.245Z"
+      "detail_html_length": 133513,
+      "detail_elapsed_ms": 2573,
+      "scraped_at": "2026-05-25T20:56:39.285Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129500,
-      "detail_elapsed_ms": 3739,
-      "scraped_at": "2026-05-25T20:44:27.987Z"
+      "detail_html_length": 130679,
+      "detail_elapsed_ms": 2225,
+      "scraped_at": "2026-05-25T20:56:41.510Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129613,
-      "detail_elapsed_ms": 3516,
-      "scraped_at": "2026-05-25T20:44:31.503Z"
+      "detail_html_length": 130813,
+      "detail_elapsed_ms": 2429,
+      "scraped_at": "2026-05-25T20:56:43.940Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124535,
-      "detail_elapsed_ms": 2913,
-      "scraped_at": "2026-05-25T20:44:34.416Z"
+      "detail_html_length": 130900,
+      "detail_elapsed_ms": 2555,
+      "scraped_at": "2026-05-25T20:56:46.495Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130436,
-      "detail_elapsed_ms": 3416,
-      "scraped_at": "2026-05-25T20:44:37.835Z"
+      "detail_html_length": 131665,
+      "detail_elapsed_ms": 2443,
+      "scraped_at": "2026-05-25T20:56:48.939Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132864,
-      "detail_elapsed_ms": 4960,
-      "scraped_at": "2026-05-25T20:44:42.795Z"
+      "detail_html_length": 132953,
+      "detail_elapsed_ms": 2420,
+      "scraped_at": "2026-05-25T20:56:51.359Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130971,
-      "detail_elapsed_ms": 5275,
-      "scraped_at": "2026-05-25T20:44:48.070Z"
+      "detail_html_length": 130963,
+      "detail_elapsed_ms": 2596,
+      "scraped_at": "2026-05-25T20:56:53.955Z"
     },
     {
       "id": "ptp-25-off-extra-na-seleo-de-vestidos",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129798,
-      "detail_elapsed_ms": 3899,
-      "scraped_at": "2026-05-25T20:44:51.970Z"
+      "detail_html_length": 131039,
+      "detail_elapsed_ms": 2626,
+      "scraped_at": "2026-05-25T20:56:56.587Z"
     },
     {
       "id": "pto-30-off-extra-na-seleo-calas",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131006,
-      "detail_elapsed_ms": 4272,
-      "scraped_at": "2026-05-25T20:44:56.243Z"
+      "detail_html_length": 131018,
+      "detail_elapsed_ms": 2811,
+      "scraped_at": "2026-05-25T20:56:59.401Z"
+    },
+    {
+      "id": "ptn-selecionados-20-off-acima-de-r-350",
+      "trace_id": "trace_ptn-selecionados-20-off-acima-de-r-350",
+      "link": "https://clube.uol.com.br/underarmour/ptn-selecionados-20-off-acima-de-r-350",
+      "original_link": "https://clube.uol.com.br/underarmour/ptn-selecionados-20-off-acima-de-r-350",
+      "title": "Selecionados 20% OFF acima de R$350",
+      "preview_title": "Selecionados 20% OFF acima de R$350",
+      "validity": "Benefício válido de 20/05/2026 10:41 até 12/06/2026 23:59.",
+      "description": "Sobre o Parceiro: A Under Armour é uma marca global, referência em inovação e criação de vestuário, calçados e acessórios voltados para o esporte. Projetados para tornar todos os atletas melhores, os produtos inovadores da marca são vendidos em todo o mundo para consumidores com estilos de vida ativos. Benefício: 20% OFF em compras acima de R$ 350,00 em produtos selecionados Regras: Desconto de 20% OFF em produtos selecionados para compras acima de R$350, Oferta válida exclusivamente pelo link da parceria e para itens participantes da ação de Dia dos Namorados.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Under Armour",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b2754eb5bc26b4b045097dd51deaf79b.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b2754eb5bc26b4b045097dd51deaf79b.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b2754eb5bc26b4b045097dd51deaf79b.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131073,
+      "detail_elapsed_ms": 2403,
+      "scraped_at": "2026-05-25T20:57:01.806Z"
     }
   ]
 }
