@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 126807,
-  "run_duration_seconds": 126.81,
-  "avg_detail_ms_per_offer": 10567,
-  "generated_at": "2026-05-25T21:20:45.003Z",
+  "run_duration_ms": 150192,
+  "run_duration_seconds": 150.19,
+  "avg_detail_ms_per_offer": 12516,
+  "generated_at": "2026-05-25T21:33:27.926Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 124501,
-      "detail_elapsed_ms": 5145,
-      "scraped_at": "2026-05-25T21:20:09.971Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130986,
+      "detail_elapsed_ms": 14582,
+      "scraped_at": "2026-05-25T21:32:39.950Z"
     },
     {
       "id": "ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133485,
-      "detail_elapsed_ms": 5657,
-      "scraped_at": "2026-05-25T21:20:15.640Z"
+      "detail_html_length": 132112,
+      "detail_elapsed_ms": 4253,
+      "scraped_at": "2026-05-25T21:32:44.206Z"
     },
     {
       "id": "ptj-2-ingressos-28-05-teatro-ruth-escobar-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133500,
-      "detail_elapsed_ms": 2882,
-      "scraped_at": "2026-05-25T21:20:18.524Z"
+      "detail_html_length": 133352,
+      "detail_elapsed_ms": 4377,
+      "scraped_at": "2026-05-25T21:32:48.584Z"
     },
     {
       "id": "pti-2-ingressos-31-05-teatro-ruth-escobar-sp",
@@ -113,8 +113,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133302,
-      "detail_elapsed_ms": 3148,
-      "scraped_at": "2026-05-25T21:20:21.673Z"
+      "detail_elapsed_ms": 3521,
+      "scraped_at": "2026-05-25T21:32:52.105Z"
     },
     {
       "id": "pth-2-ingressos-30-05-teatro-ruth-escobar-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133381,
-      "detail_elapsed_ms": 2934,
-      "scraped_at": "2026-05-25T21:20:24.613Z"
+      "detail_html_length": 132135,
+      "detail_elapsed_ms": 4008,
+      "scraped_at": "2026-05-25T21:32:56.113Z"
     },
     {
       "id": "ptg-2-ingressos-30-05-teatro-ruth-escobar-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133529,
-      "detail_elapsed_ms": 2516,
-      "scraped_at": "2026-05-25T21:20:27.130Z"
+      "detail_html_length": 127166,
+      "detail_elapsed_ms": 2727,
+      "scraped_at": "2026-05-25T21:32:58.840Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131067,
-      "detail_elapsed_ms": 3507,
-      "scraped_at": "2026-05-25T21:20:30.637Z"
+      "detail_html_length": 124144,
+      "detail_elapsed_ms": 4487,
+      "scraped_at": "2026-05-25T21:33:03.327Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130779,
-      "detail_elapsed_ms": 3568,
-      "scraped_at": "2026-05-25T21:20:34.206Z"
+      "detail_html_length": 130791,
+      "detail_elapsed_ms": 8983,
+      "scraped_at": "2026-05-25T21:33:12.310Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130915,
-      "detail_elapsed_ms": 2341,
-      "scraped_at": "2026-05-25T21:20:36.547Z"
+      "detail_html_length": 129746,
+      "detail_elapsed_ms": 3680,
+      "scraped_at": "2026-05-25T21:33:15.990Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131680,
-      "detail_elapsed_ms": 2788,
-      "scraped_at": "2026-05-25T21:20:39.336Z"
+      "detail_html_length": 125327,
+      "detail_elapsed_ms": 3769,
+      "scraped_at": "2026-05-25T21:33:19.759Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132949,
-      "detail_elapsed_ms": 2689,
-      "scraped_at": "2026-05-25T21:20:42.025Z"
+      "detail_html_length": 131799,
+      "detail_elapsed_ms": 3629,
+      "scraped_at": "2026-05-25T21:33:23.388Z"
     },
     {
       "id": "ptq-at-60-off-10-off-masculino",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130968,
-      "detail_elapsed_ms": 2596,
-      "scraped_at": "2026-05-25T21:20:44.622Z"
+      "detail_html_length": 129799,
+      "detail_elapsed_ms": 3632,
+      "scraped_at": "2026-05-25T21:33:27.020Z"
     }
   ]
 }
