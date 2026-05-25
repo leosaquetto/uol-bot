@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-25T13:32:24.594799Z",
+  "updated_at": "2026-05-25T13:45:26.570796Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 8,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -81,12 +81,6 @@
       "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptd-15-off-em-check-up-mdico"
-    },
-    {
-      "title": "Aproveite 12% OFF na Stanley",
-      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psx-aproveite-12-off-na-stanley"
     }
   ]
 }
