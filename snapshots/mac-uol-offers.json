@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 45634,
-  "run_duration_seconds": 45.63,
-  "avg_detail_ms_per_offer": 3803,
-  "generated_at": "2026-05-26T21:43:43.000Z",
+  "run_duration_ms": 59926,
+  "run_duration_seconds": 59.93,
+  "avg_detail_ms_per_offer": 4994,
+  "generated_at": "2026-05-26T21:54:48.277Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pub-2-ingressos-10-06-teatro-uol-sp",
+      "trace_id": "trace_pub-2-ingressos-10-06-teatro-uol-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pub-2-ingressos-10-06-teatro-uol-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pub-2-ingressos-10-06-teatro-uol-sp",
+      "title": "2 INGRESSOS: 10/06 Teatro UOL - SP",
+      "preview_title": "2 INGRESSOS: 10/06 Teatro UOL - SP",
+      "validity": "Benefício válido de 26/05/2026 18:28 até 10/06/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos e viva momentos de muita emoção em um espetáculo imperdível no Teatro UOL, no Shopping Pátio Higienópolis (SP). Data: 10 de Junho de 2026. Local: Av. Higienópolis, 618 - São Paulo/SP. Importante: O voucher inclui 01 par de ingressos. Escolha o horário e o espetáculo de sua preferência no site, utilizando o link indicado na descrição das regras. Como resgatar meu benefício: Cada códigos vale 01 par e são válidos para resgate de peças até o dia 10 de Junho de 2026. Clique no link abaixo e fique atento ao prazo de validade. 1 - Clique no link, resgate seu benefício e escolha o espetáculo de sua preferência. https://teatrouol.showare.com.br/?websaleschannelkey=uol10 2 - Escolha a peça que gostaria de assistir e clique em COMPRAR; 3 - Insira o seu código e clique em Avançar: 4 - Escolha dois lugares disponíveis: 5 - Faça o cadastro e resgate o seu par de ingressos: Bom espetáculo! REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a160fabe36b9_69f8ad8c8c1a1_69f8a8d023f0f_69f0c5b9824d5_69cebaa1a5845_042b50ecb8e2e34fecbee856ed39074e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a160fabe36b9_69f8ad8c8c1a1_69f8a8d023f0f_69f0c5b9824d5_69cebaa1a5845_042b50ecb8e2e34fecbee856ed39074e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a160fabe36b9_69f8ad8c8c1a1_69f8a8d023f0f_69f0c5b9824d5_69cebaa1a5845_042b50ecb8e2e34fecbee856ed39074e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 125829,
+      "detail_elapsed_ms": 2726,
+      "scraped_at": "2026-05-26T21:54:14.973Z"
+    },
     {
       "id": "pua-produtos-com-ate-50-de-desconto",
       "trace_id": "trace_pua-produtos-com-ate-50-de-desconto",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130688,
-      "detail_elapsed_ms": 2664,
-      "scraped_at": "2026-05-26T21:43:08.170Z"
+      "detail_html_length": 129698,
+      "detail_elapsed_ms": 2532,
+      "scraped_at": "2026-05-26T21:54:17.525Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130899,
-      "detail_elapsed_ms": 2217,
-      "scraped_at": "2026-05-26T21:43:10.389Z"
+      "detail_html_length": 130910,
+      "detail_elapsed_ms": 2329,
+      "scraped_at": "2026-05-26T21:54:19.855Z"
     },
     {
       "id": "ptu-2-ingressos-casa-natura-musical-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126091,
-      "detail_elapsed_ms": 1907,
-      "scraped_at": "2026-05-26T21:43:12.297Z"
+      "detail_html_length": 132464,
+      "detail_elapsed_ms": 1656,
+      "scraped_at": "2026-05-26T21:54:21.511Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130924,
-      "detail_elapsed_ms": 6225,
-      "scraped_at": "2026-05-26T21:43:18.523Z"
+      "detail_html_length": 130874,
+      "detail_elapsed_ms": 2724,
+      "scraped_at": "2026-05-26T21:54:24.235Z"
     },
     {
       "id": "pt9-50-off-na-2a-peca-em-conjuntos",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130698,
-      "detail_elapsed_ms": 4146,
-      "scraped_at": "2026-05-26T21:43:22.670Z"
+      "detail_html_length": 130706,
+      "detail_elapsed_ms": 1904,
+      "scraped_at": "2026-05-26T21:54:26.139Z"
     },
     {
       "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130704,
-      "detail_elapsed_ms": 3417,
-      "scraped_at": "2026-05-26T21:43:26.089Z"
+      "detail_html_length": 130800,
+      "detail_elapsed_ms": 3342,
+      "scraped_at": "2026-05-26T21:54:29.481Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129671,
-      "detail_elapsed_ms": 6072,
-      "scraped_at": "2026-05-26T21:43:32.161Z"
+      "detail_html_length": 130966,
+      "detail_elapsed_ms": 1796,
+      "scraped_at": "2026-05-26T21:54:31.277Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131690,
-      "detail_elapsed_ms": 2677,
-      "scraped_at": "2026-05-26T21:43:34.838Z"
+      "detail_html_length": 131661,
+      "detail_elapsed_ms": 4230,
+      "scraped_at": "2026-05-26T21:54:35.507Z"
     },
     {
       "id": "ptr-compre-2-calcados-com-20-off",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132945,
-      "detail_elapsed_ms": 1876,
-      "scraped_at": "2026-05-26T21:43:36.714Z"
+      "detail_html_length": 131709,
+      "detail_elapsed_ms": 3744,
+      "scraped_at": "2026-05-26T21:54:39.251Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131069,
-      "detail_elapsed_ms": 2108,
-      "scraped_at": "2026-05-26T21:43:38.822Z"
+      "detail_html_length": 131090,
+      "detail_elapsed_ms": 4280,
+      "scraped_at": "2026-05-26T21:54:43.531Z"
     },
     {
       "id": "ptd-15-off-em-check-up-medico",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133218,
-      "detail_elapsed_ms": 2016,
-      "scraped_at": "2026-05-26T21:43:40.839Z"
-    },
-    {
-      "id": "psx-aproveite-12-off-na-stanley",
-      "trace_id": "trace_psx-aproveite-12-off-na-stanley",
-      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "original_link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "title": "Aproveite 12% OFF na Stanley",
-      "preview_title": "Aproveite 12% OFF na Stanley",
-      "validity": "Benefício válido de 19/05/2026 10:20 até 15/06/2026 23:59.",
-      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday.",
-      "category": "Compras e Presentes",
-      "partner_name": "Stanley",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/437488ab72a7771a7afd7c6d1bcbfda3.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130817,
-      "detail_elapsed_ms": 1892,
-      "scraped_at": "2026-05-26T21:43:42.732Z"
+      "detail_html_length": 133190,
+      "detail_elapsed_ms": 4129,
+      "scraped_at": "2026-05-26T21:54:47.661Z"
     }
   ]
 }
