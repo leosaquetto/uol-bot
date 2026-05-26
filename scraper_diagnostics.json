@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-26T14:42:15.049222Z",
+  "updated_at": "2026-05-26T14:51:46.737005Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "1 INGRESSO: 27/05 Neo Química Arena- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptQ-1-ingresso-27-05-neo-quimica-arena-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptq-1-ingresso-27-05-neo-quimica-arena-sp"
-    },
     {
       "title": "20% OFF no site oficial",
       "link": "https://clube.uol.com.br/integralmedica/ptO-20-off-no-site-oficial",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/movida/psT-ate-12-off-nas-reservas",
       "reason": "duplicada_historico",
       "trace_id": "trace_pst-ate-12-off-nas-reservas"
+    },
+    {
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso"
     }
   ]
 }
