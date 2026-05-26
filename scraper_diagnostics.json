@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-26T02:16:26.130310Z",
+  "updated_at": "2026-05-26T02:26:12.383034Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 9,
-    "duplicada_latest": 1,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -30,15 +30,15 @@
     },
     {
       "title": "50% OFF na 2ª Peça em Conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos"
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pt9-50-off-na-2a-peca-em-conjuntos"
     },
     {
       "title": "Coleção de Dia dos Namorados com 10% OFF",
-      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off"
+      "link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pt8-colecao-de-dia-dos-namorados-com-10-off"
     },
     {
       "title": "20% OFF no site oficial",
@@ -54,9 +54,9 @@
     },
     {
       "title": "Compre 2 Calçados com 20% OFF",
-      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptr-compre-2-calados-com-20-off"
+      "trace_id": "trace_ptr-compre-2-calcados-com-20-off"
     },
     {
       "title": "Selecionados 20% OFF acima de R$350",
@@ -66,15 +66,27 @@
     },
     {
       "title": "15% OFF em Check-up Médico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptd-15-off-em-check-up-mdico"
+      "trace_id": "trace_ptd-15-off-em-check-up-medico"
     },
     {
       "title": "Aproveite 12% OFF na Stanley",
       "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
       "reason": "duplicada_historico",
       "trace_id": "trace_psx-aproveite-12-off-na-stanley"
+    },
+    {
+      "title": "Até 75% OFF para compras no site",
+      "link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psu-ate-75-off-para-compras-no-site"
+    },
+    {
+      "title": "Até 12% OFF nas reservas",
+      "link": "https://clube.uol.com.br/movida/psT-ate-12-off-nas-reservas",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pst-ate-12-off-nas-reservas"
     }
   ]
 }
