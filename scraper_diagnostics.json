@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-05-26T04:22:23.273622Z",
+  "updated_at": "2026-05-26T04:23:21.471148Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 10,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "20% OFF no site oficial",
+      "link": "https://clube.uol.com.br/integralmedica/ptO-20-off-no-site-oficial",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pto-20-off-no-site-oficial"
+    },
     {
       "title": "2 INGRESSOS 29/05 Teatro Ruth Escobar SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ptM-2-ingressos-29-05-teatro-ruth-escobar-sp",
