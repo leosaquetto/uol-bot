@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-26T00:19:26.026691Z",
+  "last_update": "2026-05-26T00:19:31.732948Z",
   "offers": [
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -483,7 +483,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5096?thread=5093",
       "sent_at": "2026-05-25T20:34:15.078999Z",
-      "sold_out_at": "21:18"
+      "sold_out_at": "21:18",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
