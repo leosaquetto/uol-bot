@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 26164,
-  "run_duration_seconds": 26.16,
-  "avg_detail_ms_per_offer": 2180,
-  "generated_at": "2026-05-26T01:01:12.233Z",
+  "run_duration_ms": 26258,
+  "run_duration_seconds": 26.26,
+  "avg_detail_ms_per_offer": 2188,
+  "generated_at": "2026-05-26T01:11:46.160Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129578,
-      "detail_elapsed_ms": 2180,
-      "scraped_at": "2026-05-26T01:00:55.024Z"
+      "detail_html_length": 130649,
+      "detail_elapsed_ms": 2535,
+      "scraped_at": "2026-05-26T01:11:28.971Z"
     },
     {
       "id": "ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
@@ -64,39 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133496,
-      "detail_elapsed_ms": 1967,
-      "scraped_at": "2026-05-26T01:00:56.993Z"
+      "detail_html_length": 133527,
+      "detail_elapsed_ms": 1824,
+      "scraped_at": "2026-05-26T01:11:30.796Z"
     },
     {
-      "id": "pti-2-ingressos-31-05-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pti-2-ingressos-31-05-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptI-2-ingressos-31-05-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptI-2-ingressos-31-05-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 31/05 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 31/05 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 25/05/2026 14:13 até 30/05/2026 23:59.",
-      "description": "Para você, assinante UOL: Resgate 1 par de ingressos e encante-se com O Mágico de Oz, um clássico que atravessa gerações no Teatro Ruth Escobar, em São Paulo – SP. Data: 31 de Maio de 2026, às 16h. Local: Av. Dra. Ruth Cardoso ,4777 - 4º andar, São Paulo. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8ad9bdba58425b33efa9c50f3c9fa571.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8ad9bdba58425b33efa9c50f3c9fa571.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8ad9bdba58425b33efa9c50f3c9fa571.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133344,
-      "detail_elapsed_ms": 1579,
-      "scraped_at": "2026-05-26T01:00:58.572Z"
-    },
-    {
-      "id": "pt9-50-off-na-2a-peca-em-conjuntos",
-      "trace_id": "trace_pt9-50-off-na-2a-peca-em-conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
-      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
+      "id": "pt9-50-off-na-2-pea-em-conjuntos",
+      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos",
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
+      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
       "title": "50% OFF na 2ª Peça em Conjuntos",
       "preview_title": "50% OFF na 2ª Peça em Conjuntos",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -112,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130728,
-      "detail_elapsed_ms": 1495,
-      "scraped_at": "2026-05-26T01:01:00.067Z"
+      "detail_html_length": 130706,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-05-26T01:11:32.271Z"
     },
     {
-      "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
-      "trace_id": "trace_pt8-colecao-de-dia-dos-namorados-com-10-off",
-      "link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
       "title": "Coleção de Dia dos Namorados com 10% OFF",
       "preview_title": "Coleção de Dia dos Namorados com 10% OFF",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -137,8 +113,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130829,
-      "detail_elapsed_ms": 1622,
-      "scraped_at": "2026-05-26T01:01:01.690Z"
+      "detail_elapsed_ms": 1557,
+      "scraped_at": "2026-05-26T01:11:33.828Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130947,
-      "detail_elapsed_ms": 1440,
-      "scraped_at": "2026-05-26T01:01:03.130Z"
+      "detail_html_length": 130956,
+      "detail_elapsed_ms": 1443,
+      "scraped_at": "2026-05-26T01:11:35.271Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -184,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131711,
-      "detail_elapsed_ms": 1443,
-      "scraped_at": "2026-05-26T01:01:04.573Z"
+      "detail_html_length": 131701,
+      "detail_elapsed_ms": 1453,
+      "scraped_at": "2026-05-26T01:11:36.724Z"
     },
     {
-      "id": "ptr-compre-2-calcados-com-20-off",
-      "trace_id": "trace_ptr-compre-2-calcados-com-20-off",
-      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
-      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
+      "id": "ptr-compre-2-calados-com-20-off",
+      "trace_id": "trace_ptr-compre-2-calados-com-20-off",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "original_link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
       "title": "Compre 2 Calçados com 20% OFF",
       "preview_title": "Compre 2 Calçados com 20% OFF",
       "validity": "Benefício válido de 20/05/2026 10:32 até 14/06/2026 23:59.",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133004,
-      "detail_elapsed_ms": 1571,
-      "scraped_at": "2026-05-26T01:01:06.144Z"
+      "detail_html_length": 132982,
+      "detail_elapsed_ms": 1425,
+      "scraped_at": "2026-05-26T01:11:38.149Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -232,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131110,
-      "detail_elapsed_ms": 1475,
-      "scraped_at": "2026-05-26T01:01:07.619Z"
+      "detail_html_length": 131128,
+      "detail_elapsed_ms": 1460,
+      "scraped_at": "2026-05-26T01:11:39.609Z"
     },
     {
-      "id": "ptd-15-off-em-check-up-medico",
-      "trace_id": "trace_ptd-15-off-em-check-up-medico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
-      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
+      "id": "ptd-15-off-em-check-up-mdico",
+      "trace_id": "trace_ptd-15-off-em-check-up-mdico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
       "title": "15% OFF em Check-up Médico",
       "preview_title": "15% OFF em Check-up Médico",
       "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133219,
-      "detail_elapsed_ms": 1613,
-      "scraped_at": "2026-05-26T01:01:09.232Z"
+      "detail_html_length": 133214,
+      "detail_elapsed_ms": 1454,
+      "scraped_at": "2026-05-26T01:11:41.063Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -280,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130797,
-      "detail_elapsed_ms": 1564,
-      "scraped_at": "2026-05-26T01:01:10.796Z"
+      "detail_html_length": 130796,
+      "detail_elapsed_ms": 1847,
+      "scraped_at": "2026-05-26T01:11:42.911Z"
     },
     {
-      "id": "psu-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_psu-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/psU-ate-75-off-para-compras-no-site",
+      "id": "psu-at-75-off-para-compras-no-site",
+      "trace_id": "trace_psu-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/psU-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 19/05/2026 10:15 até 31/05/2026 23:59.",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131192,
-      "detail_elapsed_ms": 1402,
-      "scraped_at": "2026-05-26T01:01:12.198Z"
+      "detail_html_length": 131187,
+      "detail_elapsed_ms": 1745,
+      "scraped_at": "2026-05-26T01:11:44.657Z"
+    },
+    {
+      "id": "pst-at-12-off-nas-reservas",
+      "trace_id": "trace_pst-at-12-off-nas-reservas",
+      "link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "original_link": "https://clube.uol.com.br/movida/psT-at-12-off-nas-reservas",
+      "title": "Até 12% OFF nas reservas",
+      "preview_title": "Até 12% OFF nas reservas",
+      "validity": "Benefício válido de 19/05/2026 10:06 até 31/05/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Movida",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fd600adfb8bfadea9ed5ea2dc8efdd44.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132968,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-05-26T01:11:46.132Z"
     }
   ]
 }
