@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-26T21:01:34.563318Z",
+  "updated_at": "2026-05-26T21:11:55.254360Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
+    "duplicada_historico": 8,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -24,12 +24,6 @@
     },
     {
       "title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptX-2-ingressos-casa-natura-musical-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptx-2-ingressos-casa-natura-musical-sp"
-    },
-    {
-      "title": "2 INGRESSOS: Casa Natura Musical - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/ptU-2-ingressos-casa-natura-musical-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptu-2-ingressos-casa-natura-musical-sp"
@@ -39,18 +33,6 @@
       "link": "https://clube.uol.com.br/integralmedica/ptO-20-off-no-site-oficial",
       "reason": "duplicada_historico",
       "trace_id": "trace_pto-20-off-no-site-oficial"
-    },
-    {
-      "title": "50% OFF na 2ª Peça em Conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos"
-    },
-    {
-      "title": "Coleção de Dia dos Namorados com 10% OFF",
-      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off"
     },
     {
       "title": "20% OFF no site oficial",
@@ -66,9 +48,9 @@
     },
     {
       "title": "Compre 2 Calçados com 20% OFF",
-      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calados-com-20-off",
+      "link": "https://clube.uol.com.br/mizuno/ptr-compre-2-calcados-com-20-off",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptr-compre-2-calados-com-20-off"
+      "trace_id": "trace_ptr-compre-2-calcados-com-20-off"
     },
     {
       "title": "Selecionados 20% OFF acima de R$350",
@@ -78,15 +60,9 @@
     },
     {
       "title": "15% OFF em Check-up Médico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
+      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "reason": "duplicada_historico",
-      "trace_id": "trace_ptd-15-off-em-check-up-mdico"
-    },
-    {
-      "title": "Aproveite 12% OFF na Stanley",
-      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_psx-aproveite-12-off-na-stanley"
+      "trace_id": "trace_ptd-15-off-em-check-up-medico"
     }
   ]
 }
