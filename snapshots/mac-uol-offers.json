@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 30860,
-  "run_duration_seconds": 30.86,
-  "avg_detail_ms_per_offer": 2572,
-  "generated_at": "2026-05-26T11:18:40.986Z",
+  "run_duration_ms": 26006,
+  "run_duration_seconds": 26.01,
+  "avg_detail_ms_per_offer": 2167,
+  "generated_at": "2026-05-26T11:29:13.747Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129233,
-      "detail_elapsed_ms": 2752,
-      "scraped_at": "2026-05-26T11:18:21.583Z"
-    },
-    {
-      "id": "ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "trace_id": "trace_ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptM-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptM-2-ingressos-29-05-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 29/05 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 29/05 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 25/05/2026 12:48 até 30/05/2026 23:59.",
-      "description": "Assinantes UOL, Resgate 1 par de ingressos para curtir Falando Pelas Costas! – Stand Up Comedy, um espetáculo leve, interativo e cheio de humor, comandado por Júnior Soares, que transforma situações de relacionamento e convivência em muitas risadas no palco do Teatro Ruth Escobar, em São Paulo. Data: 29 de Maio, às 21h. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a149a9d87a9c_ace2e6bcb1173885c95432edb0483eae.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a149a9d87a9c_ace2e6bcb1173885c95432edb0483eae.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a149a9d87a9c_ace2e6bcb1173885c95432edb0483eae.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133507,
-      "detail_elapsed_ms": 1818,
-      "scraped_at": "2026-05-26T11:18:23.403Z"
+      "detail_html_length": 130716,
+      "detail_elapsed_ms": 2049,
+      "scraped_at": "2026-05-26T11:28:56.960Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130696,
-      "detail_elapsed_ms": 2120,
-      "scraped_at": "2026-05-26T11:18:25.523Z"
+      "detail_html_length": 130662,
+      "detail_elapsed_ms": 1543,
+      "scraped_at": "2026-05-26T11:28:58.504Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130822,
-      "detail_elapsed_ms": 2016,
-      "scraped_at": "2026-05-26T11:18:27.539Z"
+      "detail_html_length": 130808,
+      "detail_elapsed_ms": 1434,
+      "scraped_at": "2026-05-26T11:28:59.938Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130937,
-      "detail_elapsed_ms": 1888,
-      "scraped_at": "2026-05-26T11:18:29.427Z"
+      "detail_html_length": 130936,
+      "detail_elapsed_ms": 1575,
+      "scraped_at": "2026-05-26T11:29:01.513Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131711,
-      "detail_elapsed_ms": 1502,
-      "scraped_at": "2026-05-26T11:18:30.929Z"
+      "detail_html_length": 131720,
+      "detail_elapsed_ms": 1567,
+      "scraped_at": "2026-05-26T11:29:03.081Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132980,
-      "detail_elapsed_ms": 1577,
-      "scraped_at": "2026-05-26T11:18:32.506Z"
+      "detail_html_length": 132989,
+      "detail_elapsed_ms": 1467,
+      "scraped_at": "2026-05-26T11:29:04.548Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131119,
-      "detail_elapsed_ms": 1531,
-      "scraped_at": "2026-05-26T11:18:34.038Z"
+      "detail_html_length": 131118,
+      "detail_elapsed_ms": 1431,
+      "scraped_at": "2026-05-26T11:29:05.979Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133162,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-05-26T11:18:35.733Z"
+      "detail_html_length": 133212,
+      "detail_elapsed_ms": 1705,
+      "scraped_at": "2026-05-26T11:29:07.684Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130806,
-      "detail_elapsed_ms": 1793,
-      "scraped_at": "2026-05-26T11:18:37.527Z"
+      "detail_html_length": 130796,
+      "detail_elapsed_ms": 1567,
+      "scraped_at": "2026-05-26T11:29:09.251Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131148,
-      "detail_elapsed_ms": 1898,
-      "scraped_at": "2026-05-26T11:18:39.425Z"
+      "detail_html_length": 131186,
+      "detail_elapsed_ms": 1561,
+      "scraped_at": "2026-05-26T11:29:10.812Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -305,8 +281,32 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132958,
-      "detail_elapsed_ms": 1509,
-      "scraped_at": "2026-05-26T11:18:40.934Z"
+      "detail_elapsed_ms": 1458,
+      "scraped_at": "2026-05-26T11:29:12.270Z"
+    },
+    {
+      "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
+      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "original_link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "preview_title": "Pague apenas R$ 80 + taxa no ingresso",
+      "validity": "Benefício válido de 18/05/2026 17:49 até 15/08/2026 23:59.",
+      "description": "Sobre o Clube dos 30: Voltada para quem viveu ou cresceu ouvindo os sucessos dos anos 80, 90 e 2000, a festa reúne diferentes gerações em torno de hits que atravessaram décadas, das baladas românticas às faixas dançantes, em uma celebração de nostalgia e conexão. Edição especial da festa: O Clube dos 30 anuncia edição especial no Varanda Estaiada, dia 15 de agosto de 2026, das 14h às 22h. O evento terá show exclusivo do cantor Latino e expectativa de mais de 3 mil pessoas. Benefício: Pague apenas R$ 80 + taxa no ingresso da edição especial do Clube dos 30. Regras: Para resgatar o desconto exclusivo de assinante UOL, clique em \"Utilizar este benefício\". Ao ser direcionado para a ticketeira oficial do evento, o desconto já estará aplicado. Basta escolher a quantidade dos ingressos e prosseguir com a compra. Atenção: Benefício válido para Assinante UOL. Os ingressos com desconto podem se esgotar a qualquer momento. O ingresso adquirido pelo desconto do Clube UOL não possui restrição de horário para entrada. Os ingressos com desconto da categoria Clube UOL podem se esgotar antes das demais categorias. Esses ingressos com desconto não são elegíveis para brindes eventualmente distribuídos em lotes abertos ao público geral. Serviço Data: 15/08/2026 Horário: 14h às 22h Endereço do Varanda Estaiada: Av. Dr. Chucri Zaidan, 155 - Vila Cordeiro, São Paulo - SP.",
+      "category": "Promoções do Mês",
+      "partner_name": "Festa Clube dos 30",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a9bde83f30245cc83012e16784e9f38d.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134444,
+      "detail_elapsed_ms": 1435,
+      "scraped_at": "2026-05-26T11:29:13.705Z"
     }
   ]
 }
