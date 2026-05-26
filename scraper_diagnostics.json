@@ -1,38 +1,50 @@
 {
-  "updated_at": "2026-05-26T20:48:46.931427Z",
+  "updated_at": "2026-05-26T20:50:16.137148Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 2,
+    "duplicada_historico": 10,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
+      "title": "2 INGRESSOS: Casa Natura Musical - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptX-2-ingressos-casa-natura-musical-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptx-2-ingressos-casa-natura-musical-sp"
+    },
+    {
+      "title": "2 INGRESSOS: Casa Natura Musical - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptW-2-ingressos-casa-natura-musical-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptw-2-ingressos-casa-natura-musical-sp"
+    },
+    {
+      "title": "2 INGRESSOS: Casa Natura Musical - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptV-2-ingressos-casa-natura-musical-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptv-2-ingressos-casa-natura-musical-sp"
+    },
+    {
+      "title": "2 INGRESSOS: Casa Natura Musical - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptU-2-ingressos-casa-natura-musical-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_ptu-2-ingressos-casa-natura-musical-sp"
+    },
+    {
       "title": "20% OFF no site oficial",
       "link": "https://clube.uol.com.br/integralmedica/ptO-20-off-no-site-oficial",
       "reason": "duplicada_historico",
       "trace_id": "trace_pto-20-off-no-site-oficial"
-    },
-    {
-      "title": "50% OFF na 2ª Peça em Conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pt9-50-off-na-2a-peca-em-conjuntos"
-    },
-    {
-      "title": "Coleção de Dia dos Namorados com 10% OFF",
-      "link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pt8-colecao-de-dia-dos-namorados-com-10-off"
     },
     {
       "title": "20% OFF no site oficial",
