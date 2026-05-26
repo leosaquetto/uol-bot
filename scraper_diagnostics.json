@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-26T18:13:15.239358Z",
+  "updated_at": "2026-05-26T18:23:12.871765Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "Ingressos Exclusivos",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptT-2-ingressos-casa-natura-musical-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptt-2-ingressos-casa-natura-musical-sp"
-    },
     {
       "title": "20% OFF no site oficial",
       "link": "https://clube.uol.com.br/integralmedica/ptO-20-off-no-site-oficial",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/movida/psT-ate-12-off-nas-reservas",
       "reason": "duplicada_historico",
       "trace_id": "trace_pst-ate-12-off-nas-reservas"
+    },
+    {
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso"
     }
   ]
 }
