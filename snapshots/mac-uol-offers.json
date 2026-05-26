@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27586,
-  "run_duration_seconds": 27.59,
-  "avg_detail_ms_per_offer": 2299,
-  "generated_at": "2026-05-26T17:50:49.961Z",
+  "run_duration_ms": 27404,
+  "run_duration_seconds": 27.4,
+  "avg_detail_ms_per_offer": 2284,
+  "generated_at": "2026-05-26T18:01:22.178Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "ptt-2-ingressos-casa-natura-musical-sp",
+      "trace_id": "trace_ptt-2-ingressos-casa-natura-musical-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptT-2-ingressos-casa-natura-musical-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptT-2-ingressos-casa-natura-musical-sp",
+      "title": "2 INGRESSOS: Casa Natura Musical - SP",
+      "preview_title": "2 INGRESSOS: Casa Natura Musical - SP",
+      "validity": "Benefício válido de 29/04/2026 12:53 até 31/05/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para os shows de Zimbra, Zeca Baleiro, Fitti, Marina Lima 70, Mestrinho, Leoni, Roberta Sá, Fundo de Quintal, Tocaia Convida e Chico Chico, que sobem ao palco da Casa Natura Musical/SP em apresentações especiais, reunindo grandes sucessos, repertórios autorais e encontros marcantes da música brasileira. Datas disponíveis: Quinta, sexta e sábado às 21h, e domingo às 19h. Local: Casa Natura Musical - Rua Artur de Azevedo, 2134, 05404-005 – São Paulo, São Paulo – Brasil. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o show, a data, o horário, a categoria ou o assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a15de2a31712_daf071bf1d657f42d32358957c14176e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a15de2a31712_daf071bf1d657f42d32358957c14176e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a15de2a31712_daf071bf1d657f42d32358957c14176e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134785,
+      "detail_elapsed_ms": 2450,
+      "scraped_at": "2026-05-26T18:01:04.121Z"
+    },
     {
       "id": "pto-20-off-no-site-oficial",
       "trace_id": "trace_pto-20-off-no-site-oficial",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130716,
-      "detail_elapsed_ms": 2681,
-      "scraped_at": "2026-05-26T17:50:32.165Z"
+      "detail_html_length": 130930,
+      "detail_elapsed_ms": 1719,
+      "scraped_at": "2026-05-26T18:01:05.842Z"
     },
     {
       "id": "pt9-50-off-na-2a-peca-em-conjuntos",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130668,
-      "detail_elapsed_ms": 1795,
-      "scraped_at": "2026-05-26T17:50:33.961Z"
+      "detail_html_length": 130754,
+      "detail_elapsed_ms": 1868,
+      "scraped_at": "2026-05-26T18:01:07.710Z"
     },
     {
       "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130831,
-      "detail_elapsed_ms": 1504,
-      "scraped_at": "2026-05-26T17:50:35.466Z"
+      "detail_html_length": 130837,
+      "detail_elapsed_ms": 1561,
+      "scraped_at": "2026-05-26T18:01:09.271Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130940,
-      "detail_elapsed_ms": 1578,
-      "scraped_at": "2026-05-26T17:50:37.044Z"
+      "detail_html_length": 130973,
+      "detail_elapsed_ms": 1499,
+      "scraped_at": "2026-05-26T18:01:10.770Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131704,
-      "detail_elapsed_ms": 1515,
-      "scraped_at": "2026-05-26T17:50:38.560Z"
+      "detail_html_length": 131726,
+      "detail_elapsed_ms": 1638,
+      "scraped_at": "2026-05-26T18:01:12.408Z"
     },
     {
       "id": "ptr-compre-2-calcados-com-20-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133000,
-      "detail_elapsed_ms": 1495,
-      "scraped_at": "2026-05-26T17:50:40.055Z"
+      "detail_html_length": 133002,
+      "detail_elapsed_ms": 1675,
+      "scraped_at": "2026-05-26T18:01:14.083Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131113,
-      "detail_elapsed_ms": 1515,
-      "scraped_at": "2026-05-26T17:50:41.570Z"
+      "detail_html_length": 131135,
+      "detail_elapsed_ms": 1544,
+      "scraped_at": "2026-05-26T18:01:15.627Z"
     },
     {
       "id": "ptd-15-off-em-check-up-medico",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133214,
-      "detail_elapsed_ms": 1936,
-      "scraped_at": "2026-05-26T17:50:43.507Z"
+      "detail_html_length": 133246,
+      "detail_elapsed_ms": 1975,
+      "scraped_at": "2026-05-26T18:01:17.602Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130800,
-      "detail_elapsed_ms": 1735,
-      "scraped_at": "2026-05-26T17:50:45.242Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 1561,
+      "scraped_at": "2026-05-26T18:01:19.163Z"
     },
     {
       "id": "psu-ate-75-off-para-compras-no-site",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131186,
-      "detail_elapsed_ms": 1477,
-      "scraped_at": "2026-05-26T17:50:46.719Z"
+      "detail_html_length": 131200,
+      "detail_elapsed_ms": 1480,
+      "scraped_at": "2026-05-26T18:01:20.643Z"
     },
     {
       "id": "pst-ate-12-off-nas-reservas",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132966,
-      "detail_elapsed_ms": 1535,
-      "scraped_at": "2026-05-26T17:50:48.254Z"
-    },
-    {
-      "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
-      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso",
-      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
-      "original_link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
-      "title": "Pague apenas R$ 80 + taxa no ingresso",
-      "preview_title": "Pague apenas R$ 80 + taxa no ingresso",
-      "validity": "Benefício válido de 18/05/2026 17:49 até 15/08/2026 23:59.",
-      "description": "Sobre o Clube dos 30: Voltada para quem viveu ou cresceu ouvindo os sucessos dos anos 80, 90 e 2000, a festa reúne diferentes gerações em torno de hits que atravessaram décadas, das baladas românticas às faixas dançantes, em uma celebração de nostalgia e conexão. Edição especial da festa: O Clube dos 30 anuncia edição especial no Varanda Estaiada, dia 15 de agosto de 2026, das 14h às 22h. O evento terá show exclusivo do cantor Latino e expectativa de mais de 3 mil pessoas. Benefício: Pague apenas R$ 80 + taxa no ingresso da edição especial do Clube dos 30. Regras: Para resgatar o desconto exclusivo de assinante UOL, clique em \"Utilizar este benefício\". Ao ser direcionado para a ticketeira oficial do evento, o desconto já estará aplicado. Basta escolher a quantidade dos ingressos e prosseguir com a compra. Atenção: Benefício válido para Assinante UOL. Os ingressos com desconto podem se esgotar a qualquer momento. O ingresso adquirido pelo desconto do Clube UOL não possui restrição de horário para entrada. Os ingressos com desconto da categoria Clube UOL podem se esgotar antes das demais categorias. Esses ingressos com desconto não são elegíveis para brindes eventualmente distribuídos em lotes abertos ao público geral. Serviço Data: 15/08/2026 Horário: 14h às 22h Endereço do Varanda Estaiada: Av. Dr. Chucri Zaidan, 155 - Vila Cordeiro, São Paulo - SP.",
-      "category": "Promoções do Mês",
-      "partner_name": "Festa Clube dos 30",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a9bde83f30245cc83012e16784e9f38d.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 134447,
-      "detail_elapsed_ms": 1681,
-      "scraped_at": "2026-05-26T17:50:49.935Z"
+      "detail_html_length": 132991,
+      "detail_elapsed_ms": 1483,
+      "scraped_at": "2026-05-26T18:01:22.126Z"
     }
   ]
 }
