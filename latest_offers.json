@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-26T21:33:31.275539Z",
+  "last_update": "2026-05-26T21:33:36.057763Z",
   "offers": [
     {
       "id": "pt2-2-ingressos-27-05-teatro-multiplan-sp",
@@ -370,7 +370,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5109?thread=5106",
       "sent_at": "2026-05-26T20:49:01.355551Z",
-      "sold_out_at": "18:32"
+      "sold_out_at": "18:32",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "ptW-2-ingressos-casa-natura-musical-sp",
