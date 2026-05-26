@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29300,
-  "run_duration_seconds": 29.3,
-  "avg_detail_ms_per_offer": 2442,
-  "generated_at": "2026-05-26T01:43:23.446Z",
+  "run_duration_ms": 25716,
+  "run_duration_seconds": 25.72,
+  "avg_detail_ms_per_offer": 2143,
+  "generated_at": "2026-05-26T01:53:53.899Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129233,
-      "detail_elapsed_ms": 2237,
-      "scraped_at": "2026-05-26T01:43:04.171Z"
+      "detail_html_length": 129489,
+      "detail_elapsed_ms": 1892,
+      "scraped_at": "2026-05-26T01:53:36.938Z"
     },
     {
       "id": "ptm-2-ingressos-29-05-teatro-ruth-escobar-sp",
@@ -65,8 +65,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133550,
-      "detail_elapsed_ms": 2265,
-      "scraped_at": "2026-05-26T01:43:06.437Z"
+      "detail_elapsed_ms": 1783,
+      "scraped_at": "2026-05-26T01:53:38.722Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130710,
-      "detail_elapsed_ms": 2236,
-      "scraped_at": "2026-05-26T01:43:08.673Z"
+      "detail_html_length": 130719,
+      "detail_elapsed_ms": 1573,
+      "scraped_at": "2026-05-26T01:53:40.295Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130833,
-      "detail_elapsed_ms": 2137,
-      "scraped_at": "2026-05-26T01:43:10.810Z"
+      "detail_html_length": 130832,
+      "detail_elapsed_ms": 1420,
+      "scraped_at": "2026-05-26T01:53:41.715Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130940,
-      "detail_elapsed_ms": 1891,
-      "scraped_at": "2026-05-26T01:43:12.701Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 1446,
+      "scraped_at": "2026-05-26T01:53:43.162Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131713,
-      "detail_elapsed_ms": 1619,
-      "scraped_at": "2026-05-26T01:43:14.320Z"
+      "detail_html_length": 131744,
+      "detail_elapsed_ms": 1428,
+      "scraped_at": "2026-05-26T01:53:44.590Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132983,
+      "detail_html_length": 133022,
       "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-05-26T01:43:15.834Z"
+      "scraped_at": "2026-05-26T01:53:46.104Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131123,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-05-26T01:43:17.337Z"
+      "detail_html_length": 131132,
+      "detail_elapsed_ms": 1435,
+      "scraped_at": "2026-05-26T01:53:47.539Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133216,
-      "detail_elapsed_ms": 1681,
-      "scraped_at": "2026-05-26T01:43:19.018Z"
+      "detail_html_length": 133226,
+      "detail_elapsed_ms": 1387,
+      "scraped_at": "2026-05-26T01:53:48.926Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130800,
-      "detail_elapsed_ms": 1457,
-      "scraped_at": "2026-05-26T01:43:20.475Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 1912,
+      "scraped_at": "2026-05-26T01:53:50.838Z"
     },
     {
       "id": "psu-at-75-off-para-compras-no-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131191,
-      "detail_elapsed_ms": 1406,
-      "scraped_at": "2026-05-26T01:43:21.881Z"
+      "detail_html_length": 131201,
+      "detail_elapsed_ms": 1557,
+      "scraped_at": "2026-05-26T01:53:52.395Z"
     },
     {
       "id": "pst-at-12-off-nas-reservas",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132953,
-      "detail_elapsed_ms": 1501,
-      "scraped_at": "2026-05-26T01:43:23.382Z"
+      "detail_html_length": 132971,
+      "detail_elapsed_ms": 1465,
+      "scraped_at": "2026-05-26T01:53:53.860Z"
     }
   ]
 }
