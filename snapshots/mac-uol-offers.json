@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 30924,
-  "run_duration_seconds": 30.92,
-  "avg_detail_ms_per_offer": 2577,
-  "generated_at": "2026-05-26T14:40:27.632Z",
+  "run_duration_ms": 30529,
+  "run_duration_seconds": 30.53,
+  "avg_detail_ms_per_offer": 2544,
+  "generated_at": "2026-05-26T14:51:03.827Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "ptq-1-ingresso-27-05-neo-quimica-arena-sp",
-      "trace_id": "trace_ptq-1-ingresso-27-05-neo-quimica-arena-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptQ-1-ingresso-27-05-neo-quimica-arena-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptQ-1-ingresso-27-05-neo-quimica-arena-sp",
-      "title": "1 INGRESSO: 27/05 Neo Química Arena- SP",
-      "preview_title": "1 INGRESSO: 27/05 Neo Química Arena- SP",
-      "validity": "Benefício válido de 26/05/2026 09:54 até 27/05/2026 15:40.",
-      "description": "Assinante UOL, chegou a hora de sentir a emoção da Fiel! Resgate 1 ingresso individual para assistir à partida Corinthians x Platense-ARG, pelo campeonato Libertadores 2026, no dia 27 de Maio de 2026, às 21h30, na Neo Química Arena - SP. Quando: 27 de Maio de 2026, às 21h30. Onde: Arena Neo Química - Av. Miguel Ignácio Curi, 111 - Itaquera, São Paulo. Atenção: Após finalizar o resgate, não se esqueça de realizar o cadastro facial no Fiel Torcedor. Caso a facial não esteja cadastrada, infelizmente será necessário prosseguir com a desclassificação, conforme as regras da campanha. A quantidade de ingressos é limitada, e apenas os primeiros que realizarem o cadastro facial garantem o ingresso. REGRAS DE RESGATE: O voucher resgatado é temporário. Seu cadastro será validado e, se estiver de acordo com as regras da campanha, você receberá o ingresso individual vinculado ao seu CPF no Fiel Torcedor, com confirmação enviada por e-mail pelo UOL. Para garantir seu ingresso, finalize o cadastro no site www.fieltorcedor.com.br. Se já possui cadastro, basta confirmar ou atualizar seus dados. Promoção válida por tempo limitado, enquanto durarem os estoques. Importante: É obrigatório incluir biometria facial para acesso ao estádio. O ingresso será garantido ao CPF após o cadastro no site. Seu cadastro será confirmado e, caso você esteja dentro das regras da promoção, você receberá um e-mail de confirmação. Atenção, Assinante UOL! A venda de ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato de sua participação em campanhas futuras e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132963,
-      "detail_elapsed_ms": 2157,
-      "scraped_at": "2026-05-26T14:40:09.823Z"
-    },
     {
       "id": "pto-20-off-no-site-oficial",
       "trace_id": "trace_pto-20-off-no-site-oficial",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130915,
-      "detail_elapsed_ms": 1693,
-      "scraped_at": "2026-05-26T14:40:11.517Z"
+      "detail_html_length": 128703,
+      "detail_elapsed_ms": 1909,
+      "scraped_at": "2026-05-26T14:50:46.515Z"
     },
     {
       "id": "pt9-50-off-na-2a-peca-em-conjuntos",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130717,
-      "detail_elapsed_ms": 1570,
-      "scraped_at": "2026-05-26T14:40:13.087Z"
+      "detail_html_length": 130710,
+      "detail_elapsed_ms": 1721,
+      "scraped_at": "2026-05-26T14:50:48.237Z"
     },
     {
       "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130831,
-      "detail_elapsed_ms": 1495,
-      "scraped_at": "2026-05-26T14:40:14.582Z"
+      "detail_html_length": 130835,
+      "detail_elapsed_ms": 1608,
+      "scraped_at": "2026-05-26T14:50:49.846Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130947,
-      "detail_elapsed_ms": 1935,
-      "scraped_at": "2026-05-26T14:40:16.517Z"
+      "detail_html_length": 130950,
+      "detail_elapsed_ms": 1561,
+      "scraped_at": "2026-05-26T14:50:51.407Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131710,
-      "detail_elapsed_ms": 1864,
-      "scraped_at": "2026-05-26T14:40:18.381Z"
+      "detail_html_length": 131715,
+      "detail_elapsed_ms": 1501,
+      "scraped_at": "2026-05-26T14:50:52.909Z"
     },
     {
       "id": "ptr-compre-2-calcados-com-20-off",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132986,
-      "detail_elapsed_ms": 1566,
-      "scraped_at": "2026-05-26T14:40:19.947Z"
+      "detail_html_length": 132991,
+      "detail_elapsed_ms": 1523,
+      "scraped_at": "2026-05-26T14:50:54.432Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131100,
-      "detail_elapsed_ms": 1478,
-      "scraped_at": "2026-05-26T14:40:21.426Z"
+      "detail_html_length": 131104,
+      "detail_elapsed_ms": 1489,
+      "scraped_at": "2026-05-26T14:50:55.921Z"
     },
     {
       "id": "ptd-15-off-em-check-up-medico",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133221,
-      "detail_elapsed_ms": 1498,
-      "scraped_at": "2026-05-26T14:40:22.924Z"
+      "detail_html_length": 133225,
+      "detail_elapsed_ms": 1721,
+      "scraped_at": "2026-05-26T14:50:57.642Z"
     },
     {
       "id": "psx-aproveite-12-off-na-stanley",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130807,
-      "detail_elapsed_ms": 1553,
-      "scraped_at": "2026-05-26T14:40:24.477Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 1509,
+      "scraped_at": "2026-05-26T14:50:59.151Z"
     },
     {
       "id": "psu-ate-75-off-para-compras-no-site",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131184,
-      "detail_elapsed_ms": 1629,
-      "scraped_at": "2026-05-26T14:40:26.107Z"
+      "detail_html_length": 131208,
+      "detail_elapsed_ms": 1438,
+      "scraped_at": "2026-05-26T14:51:00.589Z"
     },
     {
       "id": "pst-ate-12-off-nas-reservas",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132954,
-      "detail_elapsed_ms": 1489,
-      "scraped_at": "2026-05-26T14:40:27.596Z"
+      "detail_html_length": 132880,
+      "detail_elapsed_ms": 1456,
+      "scraped_at": "2026-05-26T14:51:02.045Z"
+    },
+    {
+      "id": "psp-pague-apenas-r-80-taxa-no-ingresso",
+      "trace_id": "trace_psp-pague-apenas-r-80-taxa-no-ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "original_link": "https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso",
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "preview_title": "Pague apenas R$ 80 + taxa no ingresso",
+      "validity": "Benefício válido de 18/05/2026 17:49 até 15/08/2026 23:59.",
+      "description": "Sobre o Clube dos 30: Voltada para quem viveu ou cresceu ouvindo os sucessos dos anos 80, 90 e 2000, a festa reúne diferentes gerações em torno de hits que atravessaram décadas, das baladas românticas às faixas dançantes, em uma celebração de nostalgia e conexão. Edição especial da festa: O Clube dos 30 anuncia edição especial no Varanda Estaiada, dia 15 de agosto de 2026, das 14h às 22h. O evento terá show exclusivo do cantor Latino e expectativa de mais de 3 mil pessoas. Benefício: Pague apenas R$ 80 + taxa no ingresso da edição especial do Clube dos 30. Regras: Para resgatar o desconto exclusivo de assinante UOL, clique em \"Utilizar este benefício\". Ao ser direcionado para a ticketeira oficial do evento, o desconto já estará aplicado. Basta escolher a quantidade dos ingressos e prosseguir com a compra. Atenção: Benefício válido para Assinante UOL. Os ingressos com desconto podem se esgotar a qualquer momento. O ingresso adquirido pelo desconto do Clube UOL não possui restrição de horário para entrada. Os ingressos com desconto da categoria Clube UOL podem se esgotar antes das demais categorias. Esses ingressos com desconto não são elegíveis para brindes eventualmente distribuídos em lotes abertos ao público geral. Serviço Data: 15/08/2026 Horário: 14h às 22h Endereço do Varanda Estaiada: Av. Dr. Chucri Zaidan, 155 - Vila Cordeiro, São Paulo - SP.",
+      "category": "Promoções do Mês",
+      "partner_name": "Festa Clube dos 30",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a9bde83f30245cc83012e16784e9f38d.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134372,
+      "detail_elapsed_ms": 1697,
+      "scraped_at": "2026-05-26T14:51:03.742Z"
     }
   ]
 }
