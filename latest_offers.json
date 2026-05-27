@@ -1,31 +1,6 @@
 {
-  "last_update": "2026-05-27T13:51:42.657632Z",
+  "last_update": "2026-05-27T14:12:31.241958Z",
   "offers": [
-    {
-      "id": "ptd-15-off-em-check-up-medico",
-      "original_link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
-      "preview_title": "15% OFF em Check-up Médico",
-      "title": "15% OFF em Check-up Médico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/26b02b987b76fbd3930e28fd57b510b6.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/c62644b204610180f7e11fe5c4f30945.png",
-      "validity": "Benefício válido de 19/05/2026 16:20 até 19/05/2028 23:59.",
-      "description": "Sobre o parceiro: Pioneira e líder em check-up executivo em Belo Horizonte, a BH Check-Up Médico figura entre as melhores clínicas do país na modalidade. Com foco na saúde preventiva, oferece programas completos com mais de 50 itens, entre consultas, exames de sangue e de imagem. Tudo realizado com máxima eficiência, em apenas uma manhã. Benefício: 15% OFF em Check-up Médico Regras: 15% de desconto sobre a tabela vigente. Clique em “Ir para o site” para consultar mais informações. Para utilização do benefício, o usuário deve entrar em contato informando ser beneficiário do Clube Ben.",
-      "location_summary": "",
-      "dedupe_key": "15-off-em-check-up-medico|beneficio-valido-de-19-05-2026-16-20-ate-19-05-2028-23-59|sobre-o-parceiro-pioneira-e-lider-em-check-up-executivo-em-belo-horizonte-a-bh-check-up-medico-figura-entre-as-melhores-clinicas-do-pais-na-modalidade-com-foco-",
-      "loose_dedupe_key": "15-off-em-check-up-medico|sobre-o-parceiro-pioneira-e-lider-em-check-up-executivo-em-belo-horizonte-a-bh-check-up-medico-figura-entre-as-melhores-clinicas-do-pais-na-modalidade-com-foco-",
-      "scraped_at": "2026-05-23T01:28:15.503000Z",
-      "trace_id": "trace_ptd-15-off-em-check-up-medico",
-      "channel_message_id": 1501,
-      "channel_message_link": "https://t.me/c/3723320790/1501",
-      "comment_message_id": 5055,
-      "discussion_message_id": 5052,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/5055?thread=5052",
-      "sent_at": "2026-05-23T01:29:01.589980Z",
-      "sold_out_at": "23:00",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "ptA-2-ingressos-28-05-teatro-liberdade-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptA-2-ingressos-28-05-teatro-liberdade-sp",
@@ -504,6 +479,29 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5133?thread=5130",
       "sent_at": "2026-05-26T21:55:39.982680Z"
+    },
+    {
+      "id": "ptY-15-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
+      "preview_title": "15% OFF para compras no site",
+      "title": "15% OFF para compras no site",
+      "link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/996ac044269f9108dcc4f7582a945022.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/270747e32f90b7b3c0263d8ad540e44a.png",
+      "validity": "Benefício válido de 26/05/2026 16:33 até 26/05/2027 23:59.",
+      "description": "Sobre o parceiro: A Groove Bikes nasceu do movimento, do ritmo e da paixão pelas duas rodas. A marca une engenharia de ponta, design inteligente e componentes de alta qualidade para criar muito mais do que bicicletas: cria verdadeiros passaportes para a liberdade. Groove Bikes: o movimento certo no ritmo da sua liberdade. Benefício: Cupom de 15% OFF para compras no site da Groove Bikes. Como resgatar: Clique em \"Utilizar este benefício\", copie o cupom e, em seguida, clique em \"Ir para o site\" para continuar sua compra. Regras: Para resgatar o desconto, é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação do pedido, ou seja, antes das informações de pagamento. Benefício válido para assinantes UOL, de uso individual e não cumulativo com outros cupons.",
+      "location_summary": "",
+      "dedupe_key": "15-off-para-compras-no-site|beneficio-valido-de-26-05-2026-16-33-ate-26-05-2027-23-59|sobre-o-parceiro-a-groove-bikes-nasceu-do-movimento-do-ritmo-e-da-paixao-pelas-duas-rodas-a-marca-une-engenharia-de-ponta-design-inteligente-e-componentes-de-al",
+      "loose_dedupe_key": "15-off-para-compras-no-site|sobre-o-parceiro-a-groove-bikes-nasceu-do-movimento-do-ritmo-e-da-paixao-pelas-duas-rodas-a-marca-une-engenharia-de-ponta-design-inteligente-e-componentes-de-al",
+      "scraped_at": "2026-05-27T14:11:11.754000Z",
+      "trace_id": "trace_pty-15-off-para-compras-no-site",
+      "channel_message_id": 1521,
+      "channel_message_link": "https://t.me/c/3723320790/1521",
+      "comment_message_id": 5137,
+      "discussion_message_id": 5134,
+      "comment_status": "sent",
+      "comment_link": "https://t.me/c/3802235343/5137?thread=5134",
+      "sent_at": "2026-05-27T14:12:31.156731Z"
     }
   ]
 }
