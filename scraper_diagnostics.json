@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-27T14:34:07.660634Z",
+  "updated_at": "2026-05-27T14:43:58.696932Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
-    "duplicada_latest": 1,
+    "duplicada_historico": 10,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -39,6 +39,12 @@
       "link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_pty-15-off-para-compras-no-site"
+    },
+    {
+      "title": "1 INGRESSO: 27/05 Neo Química Arena- SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/ptQ-1-ingresso-27-05-neo-qumica-arena-sp",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_ptq-1-ingresso-27-05-neo-qumica-arena-sp"
     },
     {
       "title": "20% OFF no site oficial",
@@ -81,12 +87,6 @@
       "link": "https://clube.uol.com.br/underarmour/ptn-selecionados-20-off-acima-de-r-350",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptn-selecionados-20-off-acima-de-r-350"
-    },
-    {
-      "title": "15% OFF em Check-up Médico",
-      "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-mdico",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptd-15-off-em-check-up-mdico"
     }
   ]
 }
