@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-27T01:50:07.446331Z",
+  "updated_at": "2026-05-27T01:59:53.544859Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/mizuno/ptZ-20-de-desconto-em-roupas-mizuno",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptz-20-de-desconto-em-roupas-mizuno"
-    },
-    {
-      "title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptU-2-ingressos-casa-natura-musical-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptu-2-ingressos-casa-natura-musical-sp"
     },
     {
       "title": "20% OFF no site oficial",
@@ -75,6 +69,12 @@
       "link": "https://clube.uol.com.br/bhcheck-upmedico/ptd-15-off-em-check-up-medico",
       "reason": "duplicada_historico",
       "trace_id": "trace_ptd-15-off-em-check-up-medico"
+    },
+    {
+      "title": "Aproveite 12% OFF na Stanley",
+      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_psx-aproveite-12-off-na-stanley"
     }
   ]
 }
