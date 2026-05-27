@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 31298,
-  "run_duration_seconds": 31.3,
-  "avg_detail_ms_per_offer": 2608,
-  "generated_at": "2026-05-27T01:48:41.079Z",
+  "run_duration_ms": 34013,
+  "run_duration_seconds": 34.01,
+  "avg_detail_ms_per_offer": 2834,
+  "generated_at": "2026-05-27T01:59:19.407Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131866,
-      "detail_elapsed_ms": 2027,
-      "scraped_at": "2026-05-27T01:48:23.318Z"
+      "detail_html_length": 131867,
+      "detail_elapsed_ms": 2584,
+      "scraped_at": "2026-05-27T01:58:59.585Z"
     },
     {
       "id": "pua-produtos-com-ate-50-de-desconto",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130895,
-      "detail_elapsed_ms": 1914,
-      "scraped_at": "2026-05-27T01:48:25.233Z"
+      "detail_html_length": 129707,
+      "detail_elapsed_ms": 1814,
+      "scraped_at": "2026-05-27T01:59:01.400Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -88,33 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130928,
-      "detail_elapsed_ms": 1602,
-      "scraped_at": "2026-05-27T01:48:26.835Z"
-    },
-    {
-      "id": "ptu-2-ingressos-casa-natura-musical-sp",
-      "trace_id": "trace_ptu-2-ingressos-casa-natura-musical-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/ptU-2-ingressos-casa-natura-musical-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/ptU-2-ingressos-casa-natura-musical-sp",
-      "title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "preview_title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "validity": "Benefício válido de 26/05/2026 14:54 até 27/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos e mergulhe na nova fase do Pense, em um show que celebra amadurecimento, reconstrução e conexão com o presente, na Casa Natura Musical. Data: 05 de junho, às 21h. Local: Casa Natura Musical - Rua Artur de Azevedo, 2134, 05404-005 – São Paulo, São Paulo – Brasil. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o show, a data, o horário, a categoria ou o assento, pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d051c4249375a0a25a0921ffd7c611d0.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d051c4249375a0a25a0921ffd7c611d0.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d051c4249375a0a25a0921ffd7c611d0.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132504,
-      "detail_elapsed_ms": 1463,
-      "scraped_at": "2026-05-27T01:48:28.298Z"
+      "detail_html_length": 130899,
+      "detail_elapsed_ms": 1758,
+      "scraped_at": "2026-05-27T01:59:03.158Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130913,
-      "detail_elapsed_ms": 1516,
-      "scraped_at": "2026-05-27T01:48:29.815Z"
+      "detail_html_length": 130883,
+      "detail_elapsed_ms": 1929,
+      "scraped_at": "2026-05-27T01:59:05.087Z"
     },
     {
       "id": "pt9-50-off-na-2a-peca-em-conjuntos",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130716,
-      "detail_elapsed_ms": 1611,
-      "scraped_at": "2026-05-27T01:48:31.426Z"
+      "detail_html_length": 130726,
+      "detail_elapsed_ms": 1734,
+      "scraped_at": "2026-05-27T01:59:06.821Z"
     },
     {
       "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130850,
-      "detail_elapsed_ms": 1556,
-      "scraped_at": "2026-05-27T01:48:32.982Z"
+      "detail_html_length": 130830,
+      "detail_elapsed_ms": 1851,
+      "scraped_at": "2026-05-27T01:59:08.672Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130945,
-      "detail_elapsed_ms": 1517,
-      "scraped_at": "2026-05-27T01:48:34.499Z"
+      "detail_html_length": 130965,
+      "detail_elapsed_ms": 2160,
+      "scraped_at": "2026-05-27T01:59:10.832Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131720,
-      "detail_elapsed_ms": 1658,
-      "scraped_at": "2026-05-27T01:48:36.157Z"
+      "detail_html_length": 131730,
+      "detail_elapsed_ms": 1657,
+      "scraped_at": "2026-05-27T01:59:12.490Z"
     },
     {
       "id": "ptr-compre-2-calcados-com-20-off",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133003,
-      "detail_elapsed_ms": 1652,
-      "scraped_at": "2026-05-27T01:48:37.809Z"
+      "detail_html_length": 133026,
+      "detail_elapsed_ms": 2005,
+      "scraped_at": "2026-05-27T01:59:14.495Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131107,
-      "detail_elapsed_ms": 1651,
-      "scraped_at": "2026-05-27T01:48:39.461Z"
+      "detail_html_length": 131118,
+      "detail_elapsed_ms": 1646,
+      "scraped_at": "2026-05-27T01:59:16.142Z"
     },
     {
       "id": "ptd-15-off-em-check-up-medico",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133219,
-      "detail_elapsed_ms": 1554,
-      "scraped_at": "2026-05-27T01:48:41.015Z"
+      "detail_html_length": 133239,
+      "detail_elapsed_ms": 1601,
+      "scraped_at": "2026-05-27T01:59:17.743Z"
+    },
+    {
+      "id": "psx-aproveite-12-off-na-stanley",
+      "trace_id": "trace_psx-aproveite-12-off-na-stanley",
+      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
+      "original_link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
+      "title": "Aproveite 12% OFF na Stanley",
+      "preview_title": "Aproveite 12% OFF na Stanley",
+      "validity": "Benefício válido de 19/05/2026 10:20 até 15/06/2026 23:59.",
+      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday.",
+      "category": "Compras e Presentes",
+      "partner_name": "Stanley",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/437488ab72a7771a7afd7c6d1bcbfda3.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130835,
+      "detail_elapsed_ms": 1605,
+      "scraped_at": "2026-05-27T01:59:19.349Z"
     }
   ]
 }
