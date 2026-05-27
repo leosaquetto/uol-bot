@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 79019,
-  "run_duration_seconds": 79.02,
-  "avg_detail_ms_per_offer": 6585,
-  "generated_at": "2026-05-27T20:40:24.875Z",
+  "run_duration_ms": 34426,
+  "run_duration_seconds": 34.43,
+  "avg_detail_ms_per_offer": 2869,
+  "generated_at": "2026-05-27T20:51:04.144Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133097,
-      "detail_elapsed_ms": 9717,
-      "scraped_at": "2026-05-27T20:39:57.684Z"
+      "detail_html_length": 133103,
+      "detail_elapsed_ms": 2083,
+      "scraped_at": "2026-05-27T20:50:47.057Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124735,
-      "detail_elapsed_ms": 3027,
-      "scraped_at": "2026-05-27T20:40:00.712Z"
+      "detail_html_length": 131144,
+      "detail_elapsed_ms": 1564,
+      "scraped_at": "2026-05-27T20:50:48.621Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -88,9 +88,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131790,
-      "detail_elapsed_ms": 2895,
-      "scraped_at": "2026-05-27T20:40:03.607Z"
+      "detail_html_length": 132974,
+      "detail_elapsed_ms": 1526,
+      "scraped_at": "2026-05-27T20:50:50.147Z"
+    },
+    {
+      "id": "pue-2-ingressos-31-05-teatro-j-safra-sp",
+      "trace_id": "trace_pue-2-ingressos-31-05-teatro-j-safra-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pue-2-ingressos-31-05-teatro-j-safra-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pue-2-ingressos-31-05-teatro-j-safra-sp",
+      "title": "2 INGRESSOS: 31/05 Teatro J. Safra SP",
+      "preview_title": "2 INGRESSOS: 31/05 Teatro J. Safra SP",
+      "validity": "Benefício válido de 27/05/2026 15:46 até 30/05/2026 20:59.",
+      "description": "Assinante UOL, ele tem borogodó! Resgate 1 par de ingressos para o espetáculo “Só e Bem Acompanhado”, com Maurício Manfrini, o criador do fenômeno Paulinho Gogó, e prepare-se para uma noite de muitas risadas e histórias irresistíveis, no Teatro J. Safra em São Paulo - SP. Data: Domingo, 31 de Maio, às 19h. Local: Rua Josef Kryss, 318 - Barra Funda - São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6f1753a3cfb7e4736900bac8dcc7fae1.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6f1753a3cfb7e4736900bac8dcc7fae1.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6f1753a3cfb7e4736900bac8dcc7fae1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132535,
+      "detail_elapsed_ms": 1574,
+      "scraped_at": "2026-05-27T20:50:51.721Z"
     },
     {
       "id": "pub-2-ingressos-10-06-teatro-uol-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133159,
-      "detail_elapsed_ms": 3344,
-      "scraped_at": "2026-05-27T20:40:06.952Z"
+      "detail_html_length": 133194,
+      "detail_elapsed_ms": 1489,
+      "scraped_at": "2026-05-27T20:50:53.211Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130837,
-      "detail_elapsed_ms": 2561,
-      "scraped_at": "2026-05-27T20:40:09.514Z"
+      "detail_html_length": 130891,
+      "detail_elapsed_ms": 1546,
+      "scraped_at": "2026-05-27T20:50:54.757Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130885,
-      "detail_elapsed_ms": 2208,
-      "scraped_at": "2026-05-27T20:40:11.722Z"
+      "detail_html_length": 130929,
+      "detail_elapsed_ms": 1578,
+      "scraped_at": "2026-05-27T20:50:56.336Z"
     },
     {
       "id": "pty-15-off-para-compras-no-site",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131344,
-      "detail_elapsed_ms": 2256,
-      "scraped_at": "2026-05-27T20:40:13.978Z"
+      "detail_html_length": 131319,
+      "detail_elapsed_ms": 1598,
+      "scraped_at": "2026-05-27T20:50:57.935Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130890,
-      "detail_elapsed_ms": 1989,
-      "scraped_at": "2026-05-27T20:40:15.967Z"
+      "detail_html_length": 130934,
+      "detail_elapsed_ms": 1667,
+      "scraped_at": "2026-05-27T20:50:59.602Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130692,
-      "detail_elapsed_ms": 2109,
-      "scraped_at": "2026-05-27T20:40:18.076Z"
+      "detail_html_length": 130717,
+      "detail_elapsed_ms": 1437,
+      "scraped_at": "2026-05-27T20:51:01.039Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130797,
-      "detail_elapsed_ms": 2196,
-      "scraped_at": "2026-05-27T20:40:20.272Z"
+      "detail_html_length": 130821,
+      "detail_elapsed_ms": 1542,
+      "scraped_at": "2026-05-27T20:51:02.582Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130931,
-      "detail_elapsed_ms": 1878,
-      "scraped_at": "2026-05-27T20:40:22.150Z"
-    },
-    {
-      "id": "pt1-40-off-no-par-de-ingressos",
-      "trace_id": "trace_pt1-40-off-no-par-de-ingressos",
-      "link": "https://clube.uol.com.br/monologooceudalingua/pt1-40-off-no-par-de-ingressos",
-      "original_link": "https://clube.uol.com.br/monologooceudalingua/pt1-40-off-no-par-de-ingressos",
-      "title": "40% OFF no par de ingressos",
-      "preview_title": "40% OFF no par de ingressos",
-      "validity": "Benefício válido de 22/05/2026 15:29 até 07/06/2026 23:59.",
-      "description": "Sobre o espetáculo: No monólogo cômico “O Céu da Língua”, Gregório Duvivier usa o seu discurso sedutor para convencer o público de que tropeçamos diariamente na poesia e o assunto é prazeroso e divertido. Dirigido por Luciana Paes, montagem já percorreu 33 cidades brasileiras e portuguesas. Benefício: Cupom de 40% OFF no par de ingressos do Monólogo O Céu da Língua. Regras: Para resgatar o desconto de 30% no ingresso, clique em \"Utilizar este benefício\" e em \"Ir para o site\". Ao ser direcionado para a ticketeira do espetáculo, o desconto já estará aplicado no ingresso. Atenção: Desconto válido para o Assinante UOL. Desconto de 40% válido em no ingresso apenas para modalidade inteira. Temporada: Até 07 de Junho de 2026. Horários: Quinta, 19h | Sexta, 19h | Sábado, 19h e 21h30 | Domingo, 16h e 18h30. Local: O Espetáculo está em cartaz no Teatro AXIA Casa Grande, no Rio de Janeiro. Localização do Teatro AXIA Casa Grande - Rua Afrânio de Melo Franco, 290 - Leblon, Rio de Janeiro - RJ.",
-      "category": "Promoções do Mês",
-      "partner_name": "Monólogo O Céu da Língua",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/dbef0902c5356cc8ea69aa0979ee33b5.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/400d660951691c20576944836ba1da3d.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/400d660951691c20576944836ba1da3d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/400d660951691c20576944836ba1da3d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131725,
-      "detail_elapsed_ms": 2493,
-      "scraped_at": "2026-05-27T20:40:24.643Z"
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 1491,
+      "scraped_at": "2026-05-27T20:51:04.073Z"
     }
   ]
 }
