@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-05-27T20:22:32.280679Z",
+  "updated_at": "2026-05-27T20:23:38.047172Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
-    "duplicada_latest": 1,
+    "duplicada_historico": 10,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Tênis Sportstyle Under Armour Phantom 4",
+      "link": "https://clube.uol.com.br/underarmour/pug-tnis-sportstyle-under-armour-phantom-4",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pug-tnis-sportstyle-under-armour-phantom-4"
+    },
+    {
+      "title": "Até R$100 OFF acima de R$399",
+      "link": "https://clube.uol.com.br/olympikus/puf-at-r-100-off-acima-de-r-399",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_puf-at-r-100-off-acima-de-r-399"
+    },
     {
       "title": "2 INGRESSOS: 10/06 Teatro UOL - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pub-2-ingressos-10-06-teatro-uol-sp",
