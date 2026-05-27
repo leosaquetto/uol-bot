@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 151540,
-  "run_duration_seconds": 151.54,
-  "avg_detail_ms_per_offer": 12628,
-  "generated_at": "2026-05-27T22:17:52.565Z",
+  "run_duration_ms": 130890,
+  "run_duration_seconds": 130.89,
+  "avg_detail_ms_per_offer": 10908,
+  "generated_at": "2026-05-27T22:41:42.275Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "puh-linha-acessrios-leve-2-e-pague-1",
-      "trace_id": "trace_puh-linha-acessrios-leve-2-e-pague-1",
-      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
-      "original_link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
+      "id": "puh-linha-acessorios-leve-2-e-pague-1",
+      "trace_id": "trace_puh-linha-acessorios-leve-2-e-pague-1",
+      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
+      "original_link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
       "title": "Linha de Acessórios Leve 2 e Pague 1",
       "preview_title": "Linha de Acessórios Leve 2 e Pague 1",
       "validity": "Benefício válido de 27/05/2026 10:41 até 31/05/2026 23:59.",
@@ -39,16 +39,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133739,
-      "detail_elapsed_ms": 11149,
-      "scraped_at": "2026-05-27T22:17:06.354Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133297,
+      "detail_elapsed_ms": 11768,
+      "scraped_at": "2026-05-27T22:40:49.456Z"
     },
     {
-      "id": "pug-tnis-sportstyle-under-armour-phantom-4",
-      "trace_id": "trace_pug-tnis-sportstyle-under-armour-phantom-4",
-      "link": "https://clube.uol.com.br/underarmour/pug-tnis-sportstyle-under-armour-phantom-4",
-      "original_link": "https://clube.uol.com.br/underarmour/pug-tnis-sportstyle-under-armour-phantom-4",
+      "id": "pug-tenis-sportstyle-under-armour-phantom-4",
+      "trace_id": "trace_pug-tenis-sportstyle-under-armour-phantom-4",
+      "link": "https://clube.uol.com.br/underarmour/pug-tenis-sportstyle-under-armour-phantom-4",
+      "original_link": "https://clube.uol.com.br/underarmour/pug-tenis-sportstyle-under-armour-phantom-4",
       "title": "Tênis Sportstyle Under Armour Phantom 4",
       "preview_title": "Tênis Sportstyle Under Armour Phantom 4",
       "validity": "Benefício válido de 27/05/2026 10:41 até 31/05/2026 23:59.",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131318,
-      "detail_elapsed_ms": 4337,
-      "scraped_at": "2026-05-27T22:17:10.693Z"
+      "detail_html_length": 131304,
+      "detail_elapsed_ms": 7341,
+      "scraped_at": "2026-05-27T22:40:56.800Z"
     },
     {
-      "id": "puf-at-r-100-off-acima-de-r-399",
-      "trace_id": "trace_puf-at-r-100-off-acima-de-r-399",
-      "link": "https://clube.uol.com.br/olympikus/puf-at-r-100-off-acima-de-r-399",
-      "original_link": "https://clube.uol.com.br/olympikus/puf-at-r-100-off-acima-de-r-399",
+      "id": "puf-ate-r-100-off-acima-de-r-399",
+      "trace_id": "trace_puf-ate-r-100-off-acima-de-r-399",
+      "link": "https://clube.uol.com.br/olympikus/puf-ate-r-100-off-acima-de-r-399",
+      "original_link": "https://clube.uol.com.br/olympikus/puf-ate-r-100-off-acima-de-r-399",
       "title": "Até R$100 OFF acima de R$399",
       "preview_title": "Até R$100 OFF acima de R$399",
       "validity": "Benefício válido de 27/05/2026 16:37 até 14/06/2026 23:59.",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131903,
-      "detail_elapsed_ms": 3134,
-      "scraped_at": "2026-05-27T22:17:13.827Z"
+      "detail_html_length": 131909,
+      "detail_elapsed_ms": 3369,
+      "scraped_at": "2026-05-27T22:41:00.169Z"
     },
     {
       "id": "pub-2-ingressos-10-06-teatro-uol-sp",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133369,
-      "detail_elapsed_ms": 5247,
-      "scraped_at": "2026-05-27T22:17:19.075Z"
+      "detail_html_length": 133371,
+      "detail_elapsed_ms": 4283,
+      "scraped_at": "2026-05-27T22:41:04.452Z"
     },
     {
-      "id": "pua-produtos-com-at-50-de-desconto",
-      "trace_id": "trace_pua-produtos-com-at-50-de-desconto",
-      "link": "https://clube.uol.com.br/mizuno/pua-produtos-com-at-50-de-desconto",
-      "original_link": "https://clube.uol.com.br/mizuno/pua-produtos-com-at-50-de-desconto",
+      "id": "pua-produtos-com-ate-50-de-desconto",
+      "trace_id": "trace_pua-produtos-com-ate-50-de-desconto",
+      "link": "https://clube.uol.com.br/mizuno/pua-produtos-com-ate-50-de-desconto",
+      "original_link": "https://clube.uol.com.br/mizuno/pua-produtos-com-ate-50-de-desconto",
       "title": "Produtos com até 50% de desconto!",
       "preview_title": "Produtos com até 50% de desconto!",
       "validity": "Benefício válido de 20/05/2026 10:32 até 31/05/2026 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131046,
-      "detail_elapsed_ms": 5018,
-      "scraped_at": "2026-05-27T22:17:24.094Z"
+      "detail_html_length": 131071,
+      "detail_elapsed_ms": 5941,
+      "scraped_at": "2026-05-27T22:41:10.394Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131094,
-      "detail_elapsed_ms": 5000,
-      "scraped_at": "2026-05-27T22:17:29.095Z"
+      "detail_html_length": 130881,
+      "detail_elapsed_ms": 5248,
+      "scraped_at": "2026-05-27T22:41:15.642Z"
     },
     {
       "id": "pty-15-off-para-compras-no-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131513,
-      "detail_elapsed_ms": 3803,
-      "scraped_at": "2026-05-27T22:17:32.898Z"
+      "detail_html_length": 131495,
+      "detail_elapsed_ms": 4727,
+      "scraped_at": "2026-05-27T22:41:20.369Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129863,
-      "detail_elapsed_ms": 3554,
-      "scraped_at": "2026-05-27T22:17:36.452Z"
+      "detail_html_length": 131090,
+      "detail_elapsed_ms": 4260,
+      "scraped_at": "2026-05-27T22:41:24.629Z"
     },
     {
-      "id": "pt9-50-off-na-2-pea-em-conjuntos",
-      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos",
-      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
-      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
+      "id": "pt9-50-off-na-2a-peca-em-conjuntos",
+      "trace_id": "trace_pt9-50-off-na-2a-peca-em-conjuntos",
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
+      "original_link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2a-peca-em-conjuntos",
       "title": "50% OFF na 2ª Peça em Conjuntos",
       "preview_title": "50% OFF na 2ª Peça em Conjuntos",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124507,
-      "detail_elapsed_ms": 3586,
-      "scraped_at": "2026-05-27T22:17:40.038Z"
+      "detail_html_length": 129725,
+      "detail_elapsed_ms": 3871,
+      "scraped_at": "2026-05-27T22:41:28.500Z"
     },
     {
-      "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "id": "pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "trace_id": "trace_pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/pt8-colecao-de-dia-dos-namorados-com-10-off",
       "title": "Coleção de Dia dos Namorados com 10% OFF",
       "preview_title": "Coleção de Dia dos Namorados com 10% OFF",
       "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131014,
-      "detail_elapsed_ms": 5380,
-      "scraped_at": "2026-05-27T22:17:45.419Z"
+      "detail_html_length": 131005,
+      "detail_elapsed_ms": 5274,
+      "scraped_at": "2026-05-27T22:41:33.775Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129748,
-      "detail_elapsed_ms": 4037,
-      "scraped_at": "2026-05-27T22:17:49.456Z"
+      "detail_html_length": 131122,
+      "detail_elapsed_ms": 4007,
+      "scraped_at": "2026-05-27T22:41:37.782Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125502,
-      "detail_elapsed_ms": 2839,
-      "scraped_at": "2026-05-27T22:17:52.295Z"
+      "detail_html_length": 131876,
+      "detail_elapsed_ms": 3904,
+      "scraped_at": "2026-05-27T22:41:41.686Z"
     }
   ]
 }
