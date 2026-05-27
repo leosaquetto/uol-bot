@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29109,
-  "run_duration_seconds": 29.11,
-  "avg_detail_ms_per_offer": 2426,
-  "generated_at": "2026-05-27T14:00:43.816Z",
+  "run_duration_ms": 36772,
+  "run_duration_seconds": 36.77,
+  "avg_detail_ms_per_offer": 3064,
+  "generated_at": "2026-05-27T14:11:26.833Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133026,
-      "detail_elapsed_ms": 2124,
-      "scraped_at": "2026-05-27T14:00:24.901Z"
+      "detail_html_length": 133035,
+      "detail_elapsed_ms": 2895,
+      "scraped_at": "2026-05-27T14:11:05.730Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 2297,
-      "scraped_at": "2026-05-27T14:00:27.199Z"
+      "detail_html_length": 130880,
+      "detail_elapsed_ms": 2239,
+      "scraped_at": "2026-05-27T14:11:07.972Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -88,9 +88,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130940,
-      "detail_elapsed_ms": 1992,
-      "scraped_at": "2026-05-27T14:00:29.191Z"
+      "detail_html_length": 130929,
+      "detail_elapsed_ms": 1990,
+      "scraped_at": "2026-05-27T14:11:09.962Z"
+    },
+    {
+      "id": "pty-15-off-para-compras-no-site",
+      "trace_id": "trace_pty-15-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
+      "title": "15% OFF para compras no site",
+      "preview_title": "15% OFF para compras no site",
+      "validity": "Benefício válido de 26/05/2026 16:33 até 26/05/2027 23:59.",
+      "description": "Sobre o parceiro: A Groove Bikes nasceu do movimento, do ritmo e da paixão pelas duas rodas. A marca une engenharia de ponta, design inteligente e componentes de alta qualidade para criar muito mais do que bicicletas: cria verdadeiros passaportes para a liberdade. Groove Bikes: o movimento certo no ritmo da sua liberdade. Benefício: Cupom de 15% OFF para compras no site da Groove Bikes. Como resgatar: Clique em \"Utilizar este benefício\", copie o cupom e, em seguida, clique em \"Ir para o site\" para continuar sua compra. Regras: Para resgatar o desconto, é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação do pedido, ou seja, antes das informações de pagamento. Benefício válido para assinantes UOL, de uso individual e não cumulativo com outros cupons.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Groove Bikes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/270747e32f90b7b3c0263d8ad540e44a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/996ac044269f9108dcc4f7582a945022.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/996ac044269f9108dcc4f7582a945022.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/996ac044269f9108dcc4f7582a945022.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131307,
+      "detail_elapsed_ms": 1792,
+      "scraped_at": "2026-05-27T14:11:11.754Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130925,
-      "detail_elapsed_ms": 1626,
-      "scraped_at": "2026-05-27T14:00:30.817Z"
+      "detail_html_length": 130914,
+      "detail_elapsed_ms": 1586,
+      "scraped_at": "2026-05-27T14:11:13.341Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130744,
-      "detail_elapsed_ms": 1480,
-      "scraped_at": "2026-05-27T14:00:32.297Z"
+      "detail_html_length": 130667,
+      "detail_elapsed_ms": 2424,
+      "scraped_at": "2026-05-27T14:11:15.765Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130840,
-      "detail_elapsed_ms": 1661,
-      "scraped_at": "2026-05-27T14:00:33.958Z"
+      "detail_html_length": 130828,
+      "detail_elapsed_ms": 1645,
+      "scraped_at": "2026-05-27T14:11:17.410Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130967,
-      "detail_elapsed_ms": 1474,
-      "scraped_at": "2026-05-27T14:00:35.432Z"
+      "detail_html_length": 130955,
+      "detail_elapsed_ms": 1701,
+      "scraped_at": "2026-05-27T14:11:19.111Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131711,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-05-27T14:00:37.016Z"
+      "detail_html_length": 131699,
+      "detail_elapsed_ms": 2098,
+      "scraped_at": "2026-05-27T14:11:21.209Z"
     },
     {
       "id": "ptr-compre-2-calados-com-20-off",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133000,
-      "detail_elapsed_ms": 1727,
-      "scraped_at": "2026-05-27T14:00:38.743Z"
+      "detail_html_length": 132960,
+      "detail_elapsed_ms": 1978,
+      "scraped_at": "2026-05-27T14:11:23.187Z"
     },
     {
       "id": "ptn-selecionados-20-off-acima-de-r-350",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131109,
-      "detail_elapsed_ms": 1694,
-      "scraped_at": "2026-05-27T14:00:40.437Z"
+      "detail_html_length": 131099,
+      "detail_elapsed_ms": 1746,
+      "scraped_at": "2026-05-27T14:11:24.933Z"
     },
     {
       "id": "ptd-15-off-em-check-up-mdico",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133235,
-      "detail_elapsed_ms": 1815,
-      "scraped_at": "2026-05-27T14:00:42.252Z"
-    },
-    {
-      "id": "psx-aproveite-12-off-na-stanley",
-      "trace_id": "trace_psx-aproveite-12-off-na-stanley",
-      "link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "original_link": "https://clube.uol.com.br/stanley/psX-aproveite-12-off-na-stanley",
-      "title": "Aproveite 12% OFF na Stanley",
-      "preview_title": "Aproveite 12% OFF na Stanley",
-      "validity": "Benefício válido de 19/05/2026 10:20 até 15/06/2026 23:59.",
-      "description": "Sobre o parceiro: A Stanley oferece uma ampla gama de equipamentos de alta qualidade, com opções ideais para qualquer momento, seja no escritório ou em viagens de aventura. Benefício: Aproveite 12% OFF na Stanley. Regras: Cupom não cumulativo com outras promoções ou outros cupons; O desconto não contempla o frete; Não é válido para collabs, cross bottle, taças e lancheiras; O benefício não estará disponível durante a Black Friday.",
-      "category": "Compras e Presentes",
-      "partner_name": "Stanley",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/437488ab72a7771a7afd7c6d1bcbfda3.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4b774030fe8a27fe4dd6ae4cea982fa9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130826,
-      "detail_elapsed_ms": 1519,
-      "scraped_at": "2026-05-27T14:00:43.771Z"
+      "detail_html_length": 133215,
+      "detail_elapsed_ms": 1851,
+      "scraped_at": "2026-05-27T14:11:26.784Z"
     }
   ]
 }
