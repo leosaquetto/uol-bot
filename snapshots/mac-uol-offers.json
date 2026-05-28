@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 287407,
-  "run_duration_seconds": 287.41,
-  "avg_detail_ms_per_offer": 23951,
-  "generated_at": "2026-05-28T17:55:25.321Z",
+  "run_duration_ms": 51682,
+  "run_duration_seconds": 51.68,
+  "avg_detail_ms_per_offer": 4307,
+  "generated_at": "2026-05-28T18:06:26.672Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
       "title": "Lacoste com até 50% OFF + 20% OFF extra",
       "preview_title": "Lacoste com até 50% OFF + 20% OFF extra",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 28/05/2026 13:20 até 31/05/2026 23:59.",
+      "description": "Sobre o parceiro: A Dafiti é uma das maiores plataformas de moda e lifestyle da América Latina, oferecendo roupas, calçados, acessórios e produtos das principais marcas nacionais e internacionais com praticidade e variedade para todos os estilos. Benefício: Lacoste com até 50% OFF + 20% OFF extra do cupom Regras: Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Dafiti",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 15065,
-      "scraped_at": "2026-05-28T17:53:18.777Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129512,
+      "detail_elapsed_ms": 5267,
+      "scraped_at": "2026-05-28T18:05:59.634Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: Até 60% OFF + 10% OFF extra na seleção masculina Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12290,
-      "scraped_at": "2026-05-28T17:53:50.742Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131102,
+      "detail_elapsed_ms": 2227,
+      "scraped_at": "2026-05-28T18:06:01.865Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 30% OFF extra em seleção de acessórios Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56cbaf3c349bcbae78e3fb5d005cb3eb.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56cbaf3c349bcbae78e3fb5d005cb3eb.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12010,
-      "scraped_at": "2026-05-28T17:54:15.981Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56cbaf3c349bcbae78e3fb5d005cb3eb.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131267,
+      "detail_elapsed_ms": 1701,
+      "scraped_at": "2026-05-28T18:06:03.566Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131477,
-      "detail_elapsed_ms": 19892,
-      "scraped_at": "2026-05-28T17:54:35.873Z"
+      "detail_html_length": 131279,
+      "detail_elapsed_ms": 1915,
+      "scraped_at": "2026-05-28T18:06:05.481Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131120,
-      "detail_elapsed_ms": 8649,
-      "scraped_at": "2026-05-28T17:54:44.522Z"
+      "detail_html_length": 131132,
+      "detail_elapsed_ms": 1884,
+      "scraped_at": "2026-05-28T18:06:07.365Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129937,
-      "detail_elapsed_ms": 3772,
-      "scraped_at": "2026-05-28T17:54:48.294Z"
+      "detail_html_length": 131108,
+      "detail_elapsed_ms": 3303,
+      "scraped_at": "2026-05-28T18:06:10.668Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131373,
-      "detail_elapsed_ms": 9115,
-      "scraped_at": "2026-05-28T17:54:57.409Z"
+      "detail_html_length": 131356,
+      "detail_elapsed_ms": 2257,
+      "scraped_at": "2026-05-28T18:06:12.928Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132528,
-      "detail_elapsed_ms": 3913,
-      "scraped_at": "2026-05-28T17:55:01.323Z"
+      "detail_html_length": 133680,
+      "detail_elapsed_ms": 2891,
+      "scraped_at": "2026-05-28T18:06:15.819Z"
     },
     {
       "id": "puh-linha-acessrios-leve-2-e-pague-1",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133437,
-      "detail_elapsed_ms": 4104,
-      "scraped_at": "2026-05-28T17:55:05.427Z"
+      "detail_html_length": 133449,
+      "detail_elapsed_ms": 3923,
+      "scraped_at": "2026-05-28T18:06:19.742Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130955,
-      "detail_elapsed_ms": 4417,
-      "scraped_at": "2026-05-28T17:55:09.845Z"
+      "detail_html_length": 131301,
+      "detail_elapsed_ms": 2794,
+      "scraped_at": "2026-05-28T18:06:22.536Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133002,
-      "detail_elapsed_ms": 3595,
-      "scraped_at": "2026-05-28T17:55:13.441Z"
+      "detail_html_length": 133142,
+      "detail_elapsed_ms": 2192,
+      "scraped_at": "2026-05-28T18:06:24.728Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131037,
-      "detail_elapsed_ms": 10020,
-      "scraped_at": "2026-05-28T17:55:23.461Z"
+      "detail_html_length": 131058,
+      "detail_elapsed_ms": 1725,
+      "scraped_at": "2026-05-28T18:06:26.453Z"
     }
   ]
 }
