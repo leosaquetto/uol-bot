@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-28T06:33:12.866662Z",
+  "updated_at": "2026-05-28T06:43:10.033576Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 9,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -24,27 +24,27 @@
     },
     {
       "title": "Linha de Acessórios Leve 2 e Pague 1",
-      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_puh-linha-acessorios-leve-2-e-pague-1"
+      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puh-linha-acessrios-leve-2-e-pague-1"
     },
     {
       "title": "Tênis Sportstyle Under Armour Phantom 4",
-      "link": "https://clube.uol.com.br/underarmour/pug-tenis-sportstyle-under-armour-phantom-4",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pug-tenis-sportstyle-under-armour-phantom-4"
+      "link": "https://clube.uol.com.br/underarmour/pug-tnis-sportstyle-under-armour-phantom-4",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pug-tnis-sportstyle-under-armour-phantom-4"
     },
     {
       "title": "Até R$100 OFF acima de R$399",
-      "link": "https://clube.uol.com.br/olympikus/puf-ate-r-100-off-acima-de-r-399",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puf-ate-r-100-off-acima-de-r-399"
+      "link": "https://clube.uol.com.br/olympikus/puf-at-r-100-off-acima-de-r-399",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_puf-at-r-100-off-acima-de-r-399"
     },
     {
       "title": "Produtos com até 50% de desconto!",
-      "link": "https://clube.uol.com.br/mizuno/pua-produtos-com-ate-50-de-desconto",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pua-produtos-com-ate-50-de-desconto"
+      "link": "https://clube.uol.com.br/mizuno/pua-produtos-com-at-50-de-desconto",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pua-produtos-com-at-50-de-desconto"
     },
     {
       "title": "20% de desconto em roupas Mizuno!",
@@ -63,6 +63,18 @@
       "link": "https://clube.uol.com.br/integralmedica/ptO-20-off-no-site-oficial",
       "reason": "duplicada_historico",
       "trace_id": "trace_pto-20-off-no-site-oficial"
+    },
+    {
+      "title": "50% OFF na 2ª Peça em Conjuntos",
+      "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos"
+    },
+    {
+      "title": "Coleção de Dia dos Namorados com 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off"
     },
     {
       "title": "20% OFF no site oficial",
