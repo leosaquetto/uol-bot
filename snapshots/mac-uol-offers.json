@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 40709,
-  "run_duration_seconds": 40.71,
-  "avg_detail_ms_per_offer": 3392,
-  "generated_at": "2026-05-28T18:29:22.827Z",
+  "run_duration_ms": 41866,
+  "run_duration_seconds": 41.87,
+  "avg_detail_ms_per_offer": 3489,
+  "generated_at": "2026-05-28T18:40:11.924Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "puz-cursinho-enem-com-20-off",
+      "trace_id": "trace_puz-cursinho-enem-com-20-off",
+      "link": "https://clube.uol.com.br/descomplica/puz-cursinho-enem-com-20-off",
+      "original_link": "https://clube.uol.com.br/descomplica/puz-cursinho-enem-com-20-off",
+      "title": "Cursinho ENEM com 20% OFF!",
+      "preview_title": "Cursinho ENEM com 20% OFF!",
+      "validity": "Benefício válido de 08/04/2026 15:18 até 31/12/2026 23:59.",
+      "description": "Sobre o Parceiro: Somos a Descomplica: plataforma brasileira de educação online fundada em 2011, pioneira em cursinhos pré-vestibular e Enem, que expandiu para faculdade, pós-graduação e cursos tecnólogos. Beneficio: Cursinho ENEM com 20% OFF! Regras: Desconto cumulativo com outras promoções; não cumulativo com outros cupons.",
+      "category": "Educação",
+      "partner_name": "Descomplica",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/87a65164f9bc12f2812e3e667e204167.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8dcfc1d32831d3641255962faed89654.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8dcfc1d32831d3641255962faed89654.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8dcfc1d32831d3641255962faed89654.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130734,
+      "detail_elapsed_ms": 3270,
+      "scraped_at": "2026-05-28T18:39:49.903Z"
+    },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
       "trace_id": "trace_put-lacoste-com-at-50-off-20-off-extra",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130992,
-      "detail_elapsed_ms": 2409,
-      "scraped_at": "2026-05-28T18:29:00.603Z"
+      "detail_html_length": 131130,
+      "detail_elapsed_ms": 2880,
+      "scraped_at": "2026-05-28T18:39:52.784Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131107,
-      "detail_elapsed_ms": 2266,
-      "scraped_at": "2026-05-28T18:29:02.870Z"
+      "detail_html_length": 131101,
+      "detail_elapsed_ms": 2094,
+      "scraped_at": "2026-05-28T18:39:54.878Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131294,
-      "detail_elapsed_ms": 1918,
-      "scraped_at": "2026-05-28T18:29:04.788Z"
+      "detail_html_length": 131266,
+      "detail_elapsed_ms": 1855,
+      "scraped_at": "2026-05-28T18:39:56.733Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131246,
-      "detail_elapsed_ms": 2977,
-      "scraped_at": "2026-05-28T18:29:07.765Z"
+      "detail_html_length": 131238,
+      "detail_elapsed_ms": 1747,
+      "scraped_at": "2026-05-28T18:39:58.480Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131170,
-      "detail_elapsed_ms": 1657,
-      "scraped_at": "2026-05-28T18:29:09.422Z"
+      "detail_html_length": 131122,
+      "detail_elapsed_ms": 1697,
+      "scraped_at": "2026-05-28T18:40:00.177Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131135,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-05-28T18:29:11.117Z"
+      "detail_html_length": 131137,
+      "detail_elapsed_ms": 1849,
+      "scraped_at": "2026-05-28T18:40:02.026Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131382,
-      "detail_elapsed_ms": 1829,
-      "scraped_at": "2026-05-28T18:29:12.946Z"
+      "detail_html_length": 131404,
+      "detail_elapsed_ms": 1681,
+      "scraped_at": "2026-05-28T18:40:03.707Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133716,
-      "detail_elapsed_ms": 1740,
-      "scraped_at": "2026-05-28T18:29:14.686Z"
+      "detail_html_length": 133739,
+      "detail_elapsed_ms": 2103,
+      "scraped_at": "2026-05-28T18:40:05.810Z"
     },
     {
       "id": "puh-linha-acessrios-leve-2-e-pague-1",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133476,
-      "detail_elapsed_ms": 1613,
-      "scraped_at": "2026-05-28T18:29:16.299Z"
+      "detail_html_length": 133437,
+      "detail_elapsed_ms": 2161,
+      "scraped_at": "2026-05-28T18:40:07.971Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131328,
-      "detail_elapsed_ms": 1647,
-      "scraped_at": "2026-05-28T18:29:17.946Z"
+      "detail_html_length": 131340,
+      "detail_elapsed_ms": 2011,
+      "scraped_at": "2026-05-28T18:40:09.982Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133140,
-      "detail_elapsed_ms": 2117,
-      "scraped_at": "2026-05-28T18:29:20.063Z"
-    },
-    {
-      "id": "pua-produtos-com-at-50-de-desconto",
-      "trace_id": "trace_pua-produtos-com-at-50-de-desconto",
-      "link": "https://clube.uol.com.br/mizuno/pua-produtos-com-at-50-de-desconto",
-      "original_link": "https://clube.uol.com.br/mizuno/pua-produtos-com-at-50-de-desconto",
-      "title": "Produtos com até 50% de desconto!",
-      "preview_title": "Produtos com até 50% de desconto!",
-      "validity": "Benefício válido de 20/05/2026 10:32 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: A Mizuno é uma multinacional japonesa que oferece a mais avançada tecnologia esportiva, com foco na categoria running performance. A Mizuno reforça, dia após dia, sua paixão por esportes e compartilha essa energia com todos que se aproximam da marca e usam seus produtos. Benefício: Produtos com até 50% de desconto! Regras: Desconto de 50% a uma lista de itens selecionados, Desconto automático , Sujeito a desativação sem aviso prévio.",
-      "category": "Compras e Presentes",
-      "partner_name": "Mizuno",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112bc83cd02d61bb489bdb6eaf754669.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112bc83cd02d61bb489bdb6eaf754669.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/112bc83cd02d61bb489bdb6eaf754669.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131063,
-      "detail_elapsed_ms": 2245,
-      "scraped_at": "2026-05-28T18:29:22.309Z"
+      "detail_html_length": 133151,
+      "detail_elapsed_ms": 1878,
+      "scraped_at": "2026-05-28T18:40:11.860Z"
     }
   ]
 }
