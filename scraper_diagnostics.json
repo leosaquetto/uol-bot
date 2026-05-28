@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-05-28T17:05:28.234322Z",
+  "updated_at": "2026-05-28T17:16:41.801236Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
+    "duplicada_historico": 3,
     "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -69,18 +69,6 @@
       "link": "https://clube.uol.com.br/mizuno/pua-produtos-com-at-50-de-desconto",
       "reason": "duplicada_latest",
       "trace_id": "trace_pua-produtos-com-at-50-de-desconto"
-    },
-    {
-      "title": "20% de desconto em roupas Mizuno!",
-      "link": "https://clube.uol.com.br/mizuno/ptZ-20-de-desconto-em-roupas-mizuno",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_ptz-20-de-desconto-em-roupas-mizuno"
-    },
-    {
-      "title": "15% OFF para compras no site",
-      "link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pty-15-off-para-compras-no-site"
     }
   ]
 }
