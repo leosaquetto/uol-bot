@@ -9,17 +9,41 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 40227,
-  "run_duration_seconds": 40.23,
-  "avg_detail_ms_per_offer": 3352,
-  "generated_at": "2026-05-28T15:01:26.803Z",
+  "run_duration_ms": 46512,
+  "run_duration_seconds": 46.51,
+  "avg_detail_ms_per_offer": 3876,
+  "generated_at": "2026-05-28T15:12:21.886Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pun-1-ingresso-14-06-corrida-clssic-run-sp",
+      "trace_id": "trace_pun-1-ingresso-14-06-corrida-clssic-run-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pun-1-ingresso-14-06-corrida-clssic-run-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pun-1-ingresso-14-06-corrida-clssic-run-sp",
+      "title": "Ingressos Exclusivos",
+      "preview_title": "1 ingresso 14/06 Corrida Clássic Run SP",
+      "validity": "",
+      "description": "",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0c6f8086db9b73a3ea91626c7703bf4d.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
+      "img_source": "benefit_data_src",
+      "detail_ok": true,
+      "detail_quality": "weak",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 334924,
+      "detail_elapsed_ms": 5798,
+      "scraped_at": "2026-05-28T15:11:56.434Z"
+    },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
       "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129778,
-      "detail_elapsed_ms": 2473,
-      "scraped_at": "2026-05-28T15:01:05.214Z"
+      "detail_html_length": 131064,
+      "detail_elapsed_ms": 2010,
+      "scraped_at": "2026-05-28T15:11:58.449Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131373,
-      "detail_elapsed_ms": 2185,
-      "scraped_at": "2026-05-28T15:01:07.401Z"
+      "detail_html_length": 131363,
+      "detail_elapsed_ms": 3679,
+      "scraped_at": "2026-05-28T15:12:02.128Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133687,
-      "detail_elapsed_ms": 2062,
-      "scraped_at": "2026-05-28T15:01:09.463Z"
+      "detail_html_length": 133697,
+      "detail_elapsed_ms": 2324,
+      "scraped_at": "2026-05-28T15:12:04.452Z"
     },
     {
       "id": "puh-linha-acessrios-leve-2-e-pague-1",
@@ -113,8 +137,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133427,
-      "detail_elapsed_ms": 1635,
-      "scraped_at": "2026-05-28T15:01:11.098Z"
+      "detail_elapsed_ms": 2470,
+      "scraped_at": "2026-05-28T15:12:06.922Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131320,
-      "detail_elapsed_ms": 1835,
-      "scraped_at": "2026-05-28T15:01:12.933Z"
+      "detail_html_length": 131368,
+      "detail_elapsed_ms": 2262,
+      "scraped_at": "2026-05-28T15:12:09.184Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133160,
-      "detail_elapsed_ms": 2055,
-      "scraped_at": "2026-05-28T15:01:14.988Z"
+      "detail_html_length": 133159,
+      "detail_elapsed_ms": 2016,
+      "scraped_at": "2026-05-28T15:12:11.200Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -185,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131065,
-      "detail_elapsed_ms": 1738,
-      "scraped_at": "2026-05-28T15:01:16.728Z"
+      "detail_elapsed_ms": 1787,
+      "scraped_at": "2026-05-28T15:12:12.987Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131096,
-      "detail_elapsed_ms": 1674,
-      "scraped_at": "2026-05-28T15:01:18.402Z"
+      "detail_html_length": 131105,
+      "detail_elapsed_ms": 1918,
+      "scraped_at": "2026-05-28T15:12:14.905Z"
     },
     {
       "id": "pty-15-off-para-compras-no-site",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131485,
-      "detail_elapsed_ms": 1838,
-      "scraped_at": "2026-05-28T15:01:20.240Z"
+      "detail_html_length": 131484,
+      "detail_elapsed_ms": 2664,
+      "scraped_at": "2026-05-28T15:12:17.569Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131110,
-      "detail_elapsed_ms": 2587,
-      "scraped_at": "2026-05-28T15:01:22.828Z"
+      "detail_html_length": 131099,
+      "detail_elapsed_ms": 1898,
+      "scraped_at": "2026-05-28T15:12:19.467Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130921,
-      "detail_elapsed_ms": 1658,
-      "scraped_at": "2026-05-28T15:01:24.486Z"
-    },
-    {
-      "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
-      "title": "Coleção de Dia dos Namorados com 10% OFF",
-      "preview_title": "Coleção de Dia dos Namorados com 10% OFF",
-      "validity": "Benefício válido de 22/05/2026 00:00 até 12/06/2026 23:59.",
-      "description": "Sobre o Parceiro: A Marcyn é uma das maiores indústrias de lingerie e moda praia do Brasil Benefício: Coleção de Dia dos Namorados com 10% OFF Regras de Uso: Válido para compras realizadas através do hotsite da promoção. Apenas para uma seleção de produtos. Sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Marcyn",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ffe5000fbba8c934f6e738ac7fddb70.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ffe5000fbba8c934f6e738ac7fddb70.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9ffe5000fbba8c934f6e738ac7fddb70.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130975,
-      "detail_elapsed_ms": 1692,
-      "scraped_at": "2026-05-28T15:01:26.179Z"
+      "detail_html_length": 130891,
+      "detail_elapsed_ms": 2180,
+      "scraped_at": "2026-05-28T15:12:21.647Z"
     }
   ]
 }
