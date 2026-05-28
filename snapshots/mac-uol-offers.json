@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 280041,
-  "run_duration_seconds": 280.04,
-  "avg_detail_ms_per_offer": 23337,
-  "generated_at": "2026-05-28T01:50:27.732Z",
+  "run_duration_ms": 199865,
+  "run_duration_seconds": 199.87,
+  "avg_detail_ms_per_offer": 16655,
+  "generated_at": "2026-05-28T02:16:20.083Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133252,
-      "detail_elapsed_ms": 13238,
-      "scraped_at": "2026-05-28T01:48:57.601Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133459,
+      "detail_elapsed_ms": 8767,
+      "scraped_at": "2026-05-28T02:14:37.451Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130106,
-      "detail_elapsed_ms": 5906,
-      "scraped_at": "2026-05-28T01:49:03.509Z"
+      "detail_html_length": 129993,
+      "detail_elapsed_ms": 4341,
+      "scraped_at": "2026-05-28T02:14:41.795Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133153,
-      "detail_elapsed_ms": 5893,
-      "scraped_at": "2026-05-28T01:49:09.402Z"
+      "detail_html_length": 132994,
+      "detail_elapsed_ms": 10188,
+      "scraped_at": "2026-05-28T02:14:51.983Z"
     },
     {
       "id": "pub-2-ingressos-10-06-teatro-uol-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132138,
-      "detail_elapsed_ms": 4128,
-      "scraped_at": "2026-05-28T01:49:13.530Z"
+      "detail_html_length": 132212,
+      "detail_elapsed_ms": 6063,
+      "scraped_at": "2026-05-28T02:14:58.046Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130931,
-      "detail_elapsed_ms": 9581,
-      "scraped_at": "2026-05-28T01:49:35.886Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131328,
+      "detail_elapsed_ms": 12550,
+      "scraped_at": "2026-05-28T02:15:10.596Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -159,10 +159,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131118,
-      "detail_elapsed_ms": 6641,
-      "scraped_at": "2026-05-28T01:49:55.170Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131126,
+      "detail_elapsed_ms": 8832,
+      "scraped_at": "2026-05-28T02:15:19.428Z"
     },
     {
       "id": "pty-15-off-para-compras-no-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130261,
-      "detail_elapsed_ms": 3687,
-      "scraped_at": "2026-05-28T01:49:58.859Z"
+      "detail_html_length": 131495,
+      "detail_elapsed_ms": 9186,
+      "scraped_at": "2026-05-28T02:15:28.614Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131114,
-      "detail_elapsed_ms": 6193,
-      "scraped_at": "2026-05-28T01:50:05.052Z"
+      "detail_html_length": 131092,
+      "detail_elapsed_ms": 10080,
+      "scraped_at": "2026-05-28T02:15:38.694Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130874,
-      "detail_elapsed_ms": 7764,
-      "scraped_at": "2026-05-28T01:50:12.816Z"
+      "detail_html_length": 131005,
+      "detail_elapsed_ms": 12726,
+      "scraped_at": "2026-05-28T02:15:51.420Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129775,
-      "detail_elapsed_ms": 4376,
-      "scraped_at": "2026-05-28T01:50:17.192Z"
+      "detail_html_length": 130997,
+      "detail_elapsed_ms": 10748,
+      "scraped_at": "2026-05-28T02:16:02.168Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129879,
-      "detail_elapsed_ms": 3607,
-      "scraped_at": "2026-05-28T01:50:20.799Z"
+      "detail_html_length": 131123,
+      "detail_elapsed_ms": 8683,
+      "scraped_at": "2026-05-28T02:16:10.851Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130663,
-      "detail_elapsed_ms": 5568,
-      "scraped_at": "2026-05-28T01:50:26.367Z"
+      "detail_html_length": 131878,
+      "detail_elapsed_ms": 9035,
+      "scraped_at": "2026-05-28T02:16:19.886Z"
     }
   ]
 }
