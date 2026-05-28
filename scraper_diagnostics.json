@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T12:36:37.693862Z",
+  "updated_at": "2026-05-28T12:46:57.122227Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,17 +10,17 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 4,
+    "duplicada_historico": 6,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "Até 75% OFF em seleção de produtos",
-      "link": "https://clube.uol.com.br/zattini/pum-15-off-em-todo-o-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pum-15-off-em-todo-o-site"
+      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos"
     },
     {
       "title": "Até 12% OFF + Bola Exclusiva",
