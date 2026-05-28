@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T13:20:41.960213Z",
+  "updated_at": "2026-05-28T13:30:54.742059Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 5,
+    "duplicada_historico": 7,
+    "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/movida/puk-at-12-off-bola-exclusiva",
       "reason": "duplicada_latest",
       "trace_id": "trace_puk-at-12-off-bola-exclusiva"
-    },
-    {
-      "title": "2 INGRESSOS: 10/06 Teatro UOL - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puj-2-ingressos-10-06-teatro-uol-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_puj-2-ingressos-10-06-teatro-uol-sp"
     },
     {
       "title": "Linha de Acessórios Leve 2 e Pague 1",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos"
+    },
+    {
+      "title": "Coleção de Dia dos Namorados com 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off"
     }
   ]
 }
