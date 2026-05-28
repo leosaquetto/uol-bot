@@ -14,35 +14,35 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 61958,
-  "run_duration_seconds": 61.96,
-  "avg_detail_ms_per_offer": 5163,
-  "generated_at": "2026-05-28T12:34:59.781Z",
+  "run_duration_ms": 67395,
+  "run_duration_seconds": 67.39,
+  "avg_detail_ms_per_offer": 5616,
+  "generated_at": "2026-05-28T12:46:13.783Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pum-15-off-em-todo-o-site",
-      "trace_id": "trace_pum-15-off-em-todo-o-site",
-      "link": "https://clube.uol.com.br/zattini/pum-15-off-em-todo-o-site",
-      "original_link": "https://clube.uol.com.br/zattini/pum-15-off-em-todo-o-site",
+      "id": "pum-at-75-off-em-seleo-de-produtos",
+      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
       "title": "Até 75% OFF em seleção de produtos",
-      "preview_title": "15% OFF em todo o site",
+      "preview_title": "Até 75% OFF em seleção de produtos",
       "validity": "Benefício válido de 28/05/2026 09:23 até 14/06/2026 23:59.",
       "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: Até 75% OFF em seleção de produtos (Até 60% OFF no site + 15% OFF com o cupom da parceria). Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
       "category": "Compras e Presentes",
       "partner_name": "Zattini",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3e21fb1892002b7dfe8d71db676b5ce8.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1833b90dc36_735c2e6f121e6ceb2e38b2f821fc0fe2.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3e21fb1892002b7dfe8d71db676b5ce8.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3e21fb1892002b7dfe8d71db676b5ce8.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130896,
-      "detail_elapsed_ms": 7617,
-      "scraped_at": "2026-05-28T12:34:35.479Z"
+      "detail_html_length": 130937,
+      "detail_elapsed_ms": 6213,
+      "scraped_at": "2026-05-28T12:45:43.330Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130129,
-      "detail_elapsed_ms": 2974,
-      "scraped_at": "2026-05-28T12:34:38.455Z"
+      "detail_html_length": 124990,
+      "detail_elapsed_ms": 4267,
+      "scraped_at": "2026-05-28T12:45:47.600Z"
     },
     {
       "id": "puk-at-12-off-bola-exclusiva",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133576,
-      "detail_elapsed_ms": 2696,
-      "scraped_at": "2026-05-28T12:34:41.152Z"
+      "detail_html_length": 133566,
+      "detail_elapsed_ms": 2229,
+      "scraped_at": "2026-05-28T12:45:49.829Z"
     },
     {
       "id": "puj-2-ingressos-10-06-teatro-uol-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133409,
-      "detail_elapsed_ms": 2368,
-      "scraped_at": "2026-05-28T12:34:43.521Z"
+      "detail_html_length": 133378,
+      "detail_elapsed_ms": 2180,
+      "scraped_at": "2026-05-28T12:45:52.009Z"
     },
     {
       "id": "puh-linha-acessrios-leve-2-e-pague-1",
@@ -137,8 +137,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133448,
-      "detail_elapsed_ms": 2169,
-      "scraped_at": "2026-05-28T12:34:45.692Z"
+      "detail_elapsed_ms": 2350,
+      "scraped_at": "2026-05-28T12:45:54.361Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131309,
-      "detail_elapsed_ms": 1952,
-      "scraped_at": "2026-05-28T12:34:47.644Z"
+      "detail_html_length": 129786,
+      "detail_elapsed_ms": 2341,
+      "scraped_at": "2026-05-28T12:45:56.702Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133162,
-      "detail_elapsed_ms": 1939,
-      "scraped_at": "2026-05-28T12:34:49.583Z"
+      "detail_html_length": 133141,
+      "detail_elapsed_ms": 2702,
+      "scraped_at": "2026-05-28T12:45:59.406Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131108,
-      "detail_elapsed_ms": 1964,
-      "scraped_at": "2026-05-28T12:34:51.547Z"
+      "detail_html_length": 131046,
+      "detail_elapsed_ms": 2581,
+      "scraped_at": "2026-05-28T12:46:01.987Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131146,
-      "detail_elapsed_ms": 2363,
-      "scraped_at": "2026-05-28T12:34:53.910Z"
+      "detail_html_length": 131105,
+      "detail_elapsed_ms": 2492,
+      "scraped_at": "2026-05-28T12:46:04.479Z"
     },
     {
       "id": "pty-15-off-para-compras-no-site",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131515,
-      "detail_elapsed_ms": 1701,
-      "scraped_at": "2026-05-28T12:34:55.611Z"
+      "detail_html_length": 131495,
+      "detail_elapsed_ms": 3141,
+      "scraped_at": "2026-05-28T12:46:07.621Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131111,
-      "detail_elapsed_ms": 1894,
-      "scraped_at": "2026-05-28T12:34:57.506Z"
+      "detail_html_length": 131596,
+      "detail_elapsed_ms": 2907,
+      "scraped_at": "2026-05-28T12:46:10.530Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 2056,
-      "scraped_at": "2026-05-28T12:34:59.562Z"
+      "detail_html_length": 130891,
+      "detail_elapsed_ms": 2846,
+      "scraped_at": "2026-05-28T12:46:13.376Z"
     }
   ]
 }
