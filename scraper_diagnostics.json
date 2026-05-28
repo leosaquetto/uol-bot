@@ -1,21 +1,39 @@
 {
-  "updated_at": "2026-05-28T16:53:35.415103Z",
+  "updated_at": "2026-05-28T16:54:52.037383Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
-    "duplicada_latest": 4,
+    "duplicada_historico": 5,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "30% OFF extra em seleção de acessórios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios"
+    },
+    {
+      "title": "20% OFF Extra em Inverno Feminino",
+      "link": "https://clube.uol.com.br/lojasrenner/puq-20-off-extra-em-inverno-feminino",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puq-20-off-extra-em-inverno-feminino"
+    },
+    {
+      "title": "Até 60% OFF +20% OFF Jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pup-at-60-off-20-off-jeans"
+    },
     {
       "title": "Até 75% OFF em seleção de produtos",
       "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
