@@ -14,12 +14,60 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 57243,
-  "run_duration_seconds": 57.24,
-  "avg_detail_ms_per_offer": 4770,
-  "generated_at": "2026-05-28T17:04:01.677Z",
+  "run_duration_ms": 100626,
+  "run_duration_seconds": 100.63,
+  "avg_detail_ms_per_offer": 8386,
+  "generated_at": "2026-05-28T17:15:52.454Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "put-lacoste-com-at-50-off-20-off-extra",
+      "trace_id": "trace_put-lacoste-com-at-50-off-20-off-extra",
+      "link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
+      "original_link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
+      "title": "Lacoste com até 50% OFF + 20% OFF extra",
+      "preview_title": "Lacoste com até 50% OFF + 20% OFF extra",
+      "validity": "Benefício válido de 28/05/2026 13:20 até 31/05/2026 23:59.",
+      "description": "Sobre o parceiro: A Dafiti é uma das maiores plataformas de moda e lifestyle da América Latina, oferecendo roupas, calçados, acessórios e produtos das principais marcas nacionais e internacionais com praticidade e variedade para todos os estilos. Benefício: Lacoste com até 50% OFF + 20% OFF extra do cupom Regras: Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Dafiti",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130982,
+      "detail_elapsed_ms": 11214,
+      "scraped_at": "2026-05-28T17:14:53.061Z"
+    },
+    {
+      "id": "pus-at-60-off-10-masculino",
+      "trace_id": "trace_pus-at-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "title": "Até 60% OFF +10% Masculino",
+      "preview_title": "Até 60% OFF +10% Masculino",
+      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: Até 60% OFF + 10% OFF extra na seleção masculina Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131109,
+      "detail_elapsed_ms": 5873,
+      "scraped_at": "2026-05-28T17:14:58.936Z"
+    },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
       "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
@@ -40,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129390,
-      "detail_elapsed_ms": 6612,
-      "scraped_at": "2026-05-28T17:03:34.143Z"
+      "detail_html_length": 131264,
+      "detail_elapsed_ms": 6838,
+      "scraped_at": "2026-05-28T17:15:05.774Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -64,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131206,
-      "detail_elapsed_ms": 2741,
-      "scraped_at": "2026-05-28T17:03:36.888Z"
+      "detail_html_length": 131216,
+      "detail_elapsed_ms": 7044,
+      "scraped_at": "2026-05-28T17:15:12.818Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -88,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129863,
-      "detail_elapsed_ms": 2741,
-      "scraped_at": "2026-05-28T17:03:39.629Z"
+      "detail_html_length": 131110,
+      "detail_elapsed_ms": 2872,
+      "scraped_at": "2026-05-28T17:15:15.690Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -112,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131115,
-      "detail_elapsed_ms": 2430,
-      "scraped_at": "2026-05-28T17:03:42.059Z"
+      "detail_html_length": 131084,
+      "detail_elapsed_ms": 3924,
+      "scraped_at": "2026-05-28T17:15:19.614Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -136,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131413,
-      "detail_elapsed_ms": 2223,
-      "scraped_at": "2026-05-28T17:03:44.283Z"
+      "detail_html_length": 131352,
+      "detail_elapsed_ms": 4555,
+      "scraped_at": "2026-05-28T17:15:24.169Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -160,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133539,
-      "detail_elapsed_ms": 3225,
-      "scraped_at": "2026-05-28T17:03:47.508Z"
+      "detail_html_length": 132518,
+      "detail_elapsed_ms": 2819,
+      "scraped_at": "2026-05-28T17:15:26.989Z"
     },
     {
       "id": "puh-linha-acessrios-leve-2-e-pague-1",
@@ -184,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133436,
-      "detail_elapsed_ms": 2846,
-      "scraped_at": "2026-05-28T17:03:50.354Z"
+      "detail_html_length": 133707,
+      "detail_elapsed_ms": 12159,
+      "scraped_at": "2026-05-28T17:15:39.148Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -208,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131287,
-      "detail_elapsed_ms": 2499,
-      "scraped_at": "2026-05-28T17:03:52.853Z"
+      "detail_html_length": 131151,
+      "detail_elapsed_ms": 4646,
+      "scraped_at": "2026-05-28T17:15:43.794Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -232,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133180,
-      "detail_elapsed_ms": 2462,
-      "scraped_at": "2026-05-28T17:03:55.315Z"
+      "detail_html_length": 133188,
+      "detail_elapsed_ms": 3163,
+      "scraped_at": "2026-05-28T17:15:46.958Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131056,
-      "detail_elapsed_ms": 2029,
-      "scraped_at": "2026-05-28T17:03:57.345Z"
-    },
-    {
-      "id": "ptz-20-de-desconto-em-roupas-mizuno",
-      "trace_id": "trace_ptz-20-de-desconto-em-roupas-mizuno",
-      "link": "https://clube.uol.com.br/mizuno/ptZ-20-de-desconto-em-roupas-mizuno",
-      "original_link": "https://clube.uol.com.br/mizuno/ptZ-20-de-desconto-em-roupas-mizuno",
-      "title": "20% de desconto em roupas Mizuno!",
-      "preview_title": "20% de desconto em roupas Mizuno!",
-      "validity": "Benefício válido de 20/05/2026 10:32 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: A Mizuno é uma multinacional japonesa que oferece a mais avançada tecnologia esportiva, com foco na categoria running performance. A Mizuno reforça, dia após dia, sua paixão por esportes e compartilha essa energia com todos que se aproximam da marca e usam seus produtos. Benefício: Aproveite 20% de desconto em roupas Mizuno! Regras: Desconto de 20% a uma lista de itens selecionados, aplique o cupom no carrinho para garantir o desconto, Sujeito a desativação sem aviso prévio.",
-      "category": "Compras e Presentes",
-      "partner_name": "Mizuno",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c7acf029bca09d93d0e4d0289a65543d.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c7acf029bca09d93d0e4d0289a65543d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c7acf029bca09d93d0e4d0289a65543d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131085,
-      "detail_elapsed_ms": 2131,
-      "scraped_at": "2026-05-28T17:03:59.476Z"
-    },
-    {
-      "id": "pty-15-off-para-compras-no-site",
-      "trace_id": "trace_pty-15-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/groovebikes/ptY-15-off-para-compras-no-site",
-      "title": "15% OFF para compras no site",
-      "preview_title": "15% OFF para compras no site",
-      "validity": "Benefício válido de 26/05/2026 16:33 até 26/05/2027 23:59.",
-      "description": "Sobre o parceiro: A Groove Bikes nasceu do movimento, do ritmo e da paixão pelas duas rodas. A marca une engenharia de ponta, design inteligente e componentes de alta qualidade para criar muito mais do que bicicletas: cria verdadeiros passaportes para a liberdade. Groove Bikes: o movimento certo no ritmo da sua liberdade. Benefício: Cupom de 15% OFF para compras no site da Groove Bikes. Como resgatar: Clique em \"Utilizar este benefício\", copie o cupom e, em seguida, clique em \"Ir para o site\" para continuar sua compra. Regras: Para resgatar o desconto, é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação do pedido, ou seja, antes das informações de pagamento. Benefício válido para assinantes UOL, de uso individual e não cumulativo com outros cupons.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Groove Bikes",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/270747e32f90b7b3c0263d8ad540e44a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/996ac044269f9108dcc4f7582a945022.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/996ac044269f9108dcc4f7582a945022.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/996ac044269f9108dcc4f7582a945022.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131533,
-      "detail_elapsed_ms": 1841,
-      "scraped_at": "2026-05-28T17:04:01.317Z"
+      "detail_html_length": 131094,
+      "detail_elapsed_ms": 3744,
+      "scraped_at": "2026-05-28T17:15:50.702Z"
     }
   ]
 }
