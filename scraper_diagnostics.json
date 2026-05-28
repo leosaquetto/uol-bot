@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T15:24:36.610240Z",
+  "updated_at": "2026-05-28T15:34:59.131160Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "Ingressos Exclusivos",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pun-1-ingresso-14-06-corrida-clssic-run-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pun-1-ingresso-14-06-corrida-clssic-run-sp"
-    },
     {
       "title": "Até 75% OFF em seleção de produtos",
       "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/marcyn/pt9-50-off-na-2-pea-em-conjuntos",
       "reason": "duplicada_historico",
       "trace_id": "trace_pt9-50-off-na-2-pea-em-conjuntos"
+    },
+    {
+      "title": "Coleção de Dia dos Namorados com 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/pt8-coleo-de-dia-dos-namorados-com-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pt8-coleo-de-dia-dos-namorados-com-10-off"
     }
   ]
 }
