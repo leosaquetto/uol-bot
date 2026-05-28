@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 95241,
-  "run_duration_seconds": 95.24,
-  "avg_detail_ms_per_offer": 7937,
-  "generated_at": "2026-05-28T17:27:53.979Z",
+  "run_duration_ms": 121587,
+  "run_duration_seconds": 121.59,
+  "avg_detail_ms_per_offer": 10132,
+  "generated_at": "2026-05-28T17:40:14.970Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130993,
-      "detail_elapsed_ms": 6690,
-      "scraped_at": "2026-05-28T17:27:03.547Z"
+      "detail_html_length": 130403,
+      "detail_elapsed_ms": 7522,
+      "scraped_at": "2026-05-28T17:39:41.203Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131108,
-      "detail_elapsed_ms": 7442,
-      "scraped_at": "2026-05-28T17:27:10.991Z"
+      "detail_html_length": 131119,
+      "detail_elapsed_ms": 2798,
+      "scraped_at": "2026-05-28T17:39:44.002Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130115,
-      "detail_elapsed_ms": 3004,
-      "scraped_at": "2026-05-28T17:27:26.328Z"
+      "detail_attempts": 1,
+      "detail_html_length": 124911,
+      "detail_elapsed_ms": 2579,
+      "scraped_at": "2026-05-28T17:39:46.581Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131216,
-      "detail_elapsed_ms": 2815,
-      "scraped_at": "2026-05-28T17:27:29.143Z"
+      "detail_html_length": 129971,
+      "detail_elapsed_ms": 2390,
+      "scraped_at": "2026-05-28T17:39:48.971Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131120,
-      "detail_elapsed_ms": 5962,
-      "scraped_at": "2026-05-28T17:27:35.105Z"
+      "detail_html_length": 131129,
+      "detail_elapsed_ms": 2577,
+      "scraped_at": "2026-05-28T17:39:51.549Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130987,
-      "detail_elapsed_ms": 3270,
-      "scraped_at": "2026-05-28T17:27:38.376Z"
+      "detail_html_length": 131018,
+      "detail_elapsed_ms": 3070,
+      "scraped_at": "2026-05-28T17:39:54.619Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131352,
-      "detail_elapsed_ms": 2441,
-      "scraped_at": "2026-05-28T17:27:40.817Z"
+      "detail_html_length": 130214,
+      "detail_elapsed_ms": 3352,
+      "scraped_at": "2026-05-28T17:39:57.971Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133687,
-      "detail_elapsed_ms": 2416,
-      "scraped_at": "2026-05-28T17:27:43.237Z"
+      "detail_html_length": 133696,
+      "detail_elapsed_ms": 4225,
+      "scraped_at": "2026-05-28T17:40:02.196Z"
     },
     {
       "id": "puh-linha-acessrios-leve-2-e-pague-1",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133426,
-      "detail_elapsed_ms": 3249,
-      "scraped_at": "2026-05-28T17:27:46.486Z"
+      "detail_html_length": 133447,
+      "detail_elapsed_ms": 3029,
+      "scraped_at": "2026-05-28T17:40:05.225Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131212,
-      "detail_elapsed_ms": 2491,
-      "scraped_at": "2026-05-28T17:27:48.977Z"
+      "detail_html_length": 131328,
+      "detail_elapsed_ms": 2919,
+      "scraped_at": "2026-05-28T17:40:08.145Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131924,
-      "detail_elapsed_ms": 2123,
-      "scraped_at": "2026-05-28T17:27:51.100Z"
+      "detail_html_length": 133159,
+      "detail_elapsed_ms": 3359,
+      "scraped_at": "2026-05-28T17:40:11.504Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -305,8 +305,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131065,
-      "detail_elapsed_ms": 2458,
-      "scraped_at": "2026-05-28T17:27:53.558Z"
+      "detail_elapsed_ms": 3033,
+      "scraped_at": "2026-05-28T17:40:14.537Z"
     }
   ]
 }
