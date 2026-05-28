@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-28T14:27:44.574547Z",
+  "last_update": "2026-05-28T14:27:49.335115Z",
   "offers": [
     {
       "id": "ptI-2-ingressos-31-05-teatro-ruth-escobar-sp",
@@ -496,7 +496,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5166?thread=5163",
       "sent_at": "2026-05-28T13:53:32.547203Z",
-      "sold_out_at": "11:27"
+      "sold_out_at": "11:27",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
