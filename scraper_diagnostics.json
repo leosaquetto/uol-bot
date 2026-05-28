@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-28T17:16:41.801236Z",
+  "updated_at": "2026-05-28T17:17:50.563777Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,11 +11,23 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 3,
-    "duplicada_latest": 6,
+    "duplicada_latest": 8,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Lacoste com até 50% OFF + 20% OFF extra",
+      "link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_put-lacoste-com-at-50-off-20-off-extra"
+    },
+    {
+      "title": "Até 60% OFF +10% Masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pus-at-60-off-10-masculino"
+    },
     {
       "title": "30% OFF extra em seleção de acessórios",
       "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
