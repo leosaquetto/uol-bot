@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-28T18:30:55.657427Z",
+  "updated_at": "2026-05-28T18:40:52.726854Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 3,
-    "duplicada_latest": 8,
+    "duplicada_latest": 7,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/olympikus/puf-at-r-100-off-acima-de-r-399",
       "reason": "duplicada_latest",
       "trace_id": "trace_puf-at-r-100-off-acima-de-r-399"
-    },
-    {
-      "title": "Produtos com até 50% de desconto!",
-      "link": "https://clube.uol.com.br/mizuno/pua-produtos-com-at-50-de-desconto",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pua-produtos-com-at-50-de-desconto"
     }
   ]
 }
