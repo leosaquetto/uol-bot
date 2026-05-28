@@ -1,21 +1,39 @@
 {
-  "updated_at": "2026-05-28T23:21:51.370162Z",
+  "updated_at": "2026-05-28T23:23:10.443952Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 2,
+    "duplicada_historico": 5,
     "duplicada_latest": 7,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 14/06 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pu8-2-ingressos-14-06-teatro-tuca-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pu8-2-ingressos-14-06-teatro-tuca-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 12/06 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pu7-2-ingressos-12-06-teatro-tuca-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pu7-2-ingressos-12-06-teatro-tuca-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 07/06 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pu6-2-ingressos-07-06-teatro-tuca-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pu6-2-ingressos-07-06-teatro-tuca-sp"
+    },
     {
       "title": "Cursinho ENEM com 20% OFF!",
       "link": "https://clube.uol.com.br/descomplica/puz-cursinho-enem-com-20-off",
