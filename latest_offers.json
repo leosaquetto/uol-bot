@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-05-28T12:58:04.452546Z",
+  "last_update": "2026-05-28T12:58:10.651309Z",
   "offers": [
     {
       "id": "ptJ-2-ingressos-28-05-teatro-ruth-escobar-sp",
@@ -471,7 +471,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5158?thread=5155",
       "sent_at": "2026-05-28T12:24:41.501625Z",
-      "sold_out_at": "09:57"
+      "sold_out_at": "09:57",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pum-15-off-em-todo-o-site",
