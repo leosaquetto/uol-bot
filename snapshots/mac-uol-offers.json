@@ -9,17 +9,41 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
-    "weak": 1,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29888,
-  "run_duration_seconds": 29.89,
-  "avg_detail_ms_per_offer": 2491,
-  "generated_at": "2026-05-28T03:53:10.122Z",
+  "run_duration_ms": 31584,
+  "run_duration_seconds": 31.58,
+  "avg_detail_ms_per_offer": 2632,
+  "generated_at": "2026-05-28T04:03:45.897Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "puj-2-ingressos-10-06-teatro-uol-sp",
+      "trace_id": "trace_puj-2-ingressos-10-06-teatro-uol-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puj-2-ingressos-10-06-teatro-uol-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puj-2-ingressos-10-06-teatro-uol-sp",
+      "title": "2 INGRESSOS: 10/06 Teatro UOL - SP",
+      "preview_title": "2 INGRESSOS: 10/06 Teatro UOL - SP",
+      "validity": "Benefício válido de 26/05/2026 18:28 até 10/06/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos e viva momentos de muita emoção em um espetáculo imperdível no Teatro UOL, no Shopping Pátio Higienópolis (SP). Data: 10 de Junho de 2026. Local: Av. Higienópolis, 618 - São Paulo/SP. Importante: O voucher inclui 01 par de ingressos. Escolha o horário e o espetáculo de sua preferência no site, utilizando o link indicado na descrição das regras. Como resgatar meu benefício: Cada códigos vale 01 par e são válidos para resgate de peças até o dia 10 de Junho de 2026. Clique no link abaixo e fique atento ao prazo de validade. 1 - Clique no link, resgate seu benefício e escolha o espetáculo de sua preferência. https://teatrouol.showare.com.br/?websaleschannelkey=uol10 2 - Escolha a peça que gostaria de assistir e clique em COMPRAR; 3 - Insira o seu código e clique em Avançar: 4 - Escolha dois lugares disponíveis: 5 - Faça o cadastro e resgate o seu par de ingressos: Bom espetáculo! REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a17ba2a89dca_6a160fabe36b9_69f8ad8c8c1a1_69f8a8d023f0f_69f0c5b9824d5_69cebaa1a5845_042b50ecb8e2e34fecbee856ed39074e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a17ba2a89dca_6a160fabe36b9_69f8ad8c8c1a1_69f8a8d023f0f_69f0c5b9824d5_69cebaa1a5845_042b50ecb8e2e34fecbee856ed39074e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a17ba2a89dca_6a160fabe36b9_69f8ad8c8c1a1_69f8a8d023f0f_69f0c5b9824d5_69cebaa1a5845_042b50ecb8e2e34fecbee856ed39074e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133240,
+      "detail_elapsed_ms": 2344,
+      "scraped_at": "2026-05-28T04:03:28.357Z"
+    },
     {
       "id": "puh-linha-acessrios-leve-2-e-pague-1",
       "trace_id": "trace_puh-linha-acessrios-leve-2-e-pague-1",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133283,
-      "detail_elapsed_ms": 2301,
-      "scraped_at": "2026-05-28T03:52:53.309Z"
+      "detail_html_length": 133486,
+      "detail_elapsed_ms": 1705,
+      "scraped_at": "2026-05-28T04:03:30.063Z"
     },
     {
       "id": "pug-tnis-sportstyle-under-armour-phantom-4",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131361,
-      "detail_elapsed_ms": 1582,
-      "scraped_at": "2026-05-28T03:52:54.893Z"
+      "detail_html_length": 131328,
+      "detail_elapsed_ms": 1486,
+      "scraped_at": "2026-05-28T04:03:31.549Z"
     },
     {
       "id": "puf-at-r-100-off-acima-de-r-399",
@@ -88,33 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133193,
-      "detail_elapsed_ms": 1574,
-      "scraped_at": "2026-05-28T03:52:56.467Z"
-    },
-    {
-      "id": "pub-2-ingressos-10-06-teatro-uol-sp",
-      "trace_id": "trace_pub-2-ingressos-10-06-teatro-uol-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pub-2-ingressos-10-06-teatro-uol-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pub-2-ingressos-10-06-teatro-uol-sp",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "2 INGRESSOS: 10/06 Teatro UOL - SP",
-      "validity": "",
-      "description": "",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a160fabe36b9_69f8ad8c8c1a1_69f8a8d023f0f_69f0c5b9824d5_69cebaa1a5845_042b50ecb8e2e34fecbee856ed39074e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/59eb810ee212e569d29afb6b22893017.png",
-      "img_source": "benefit_data_src",
-      "detail_ok": true,
-      "detail_quality": "weak",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 326848,
-      "detail_elapsed_ms": 1750,
-      "scraped_at": "2026-05-28T03:52:58.217Z"
+      "detail_html_length": 133180,
+      "detail_elapsed_ms": 1503,
+      "scraped_at": "2026-05-28T04:03:33.052Z"
     },
     {
       "id": "pua-produtos-com-at-50-de-desconto",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131107,
-      "detail_elapsed_ms": 1468,
-      "scraped_at": "2026-05-28T03:52:59.685Z"
+      "detail_html_length": 131116,
+      "detail_elapsed_ms": 1460,
+      "scraped_at": "2026-05-28T04:03:34.512Z"
     },
     {
       "id": "ptz-20-de-desconto-em-roupas-mizuno",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131137,
-      "detail_elapsed_ms": 1451,
-      "scraped_at": "2026-05-28T03:53:01.136Z"
+      "detail_html_length": 131135,
+      "detail_elapsed_ms": 1653,
+      "scraped_at": "2026-05-28T04:03:36.166Z"
     },
     {
       "id": "pty-15-off-para-compras-no-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131536,
-      "detail_elapsed_ms": 1459,
-      "scraped_at": "2026-05-28T03:53:02.595Z"
+      "detail_html_length": 131534,
+      "detail_elapsed_ms": 1909,
+      "scraped_at": "2026-05-28T04:03:38.075Z"
     },
     {
       "id": "pto-20-off-no-site-oficial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131130,
-      "detail_elapsed_ms": 1426,
-      "scraped_at": "2026-05-28T03:53:04.021Z"
+      "detail_html_length": 131120,
+      "detail_elapsed_ms": 1721,
+      "scraped_at": "2026-05-28T04:03:39.796Z"
     },
     {
       "id": "pt9-50-off-na-2-pea-em-conjuntos",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130924,
-      "detail_elapsed_ms": 1604,
-      "scraped_at": "2026-05-28T03:53:05.625Z"
+      "detail_html_length": 130910,
+      "detail_elapsed_ms": 1467,
+      "scraped_at": "2026-05-28T04:03:41.264Z"
     },
     {
       "id": "pt8-coleo-de-dia-dos-namorados-com-10-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131027,
-      "detail_elapsed_ms": 1544,
-      "scraped_at": "2026-05-28T03:53:07.169Z"
+      "detail_html_length": 131014,
+      "detail_elapsed_ms": 1491,
+      "scraped_at": "2026-05-28T04:03:42.755Z"
     },
     {
       "id": "pt7-20-off-no-site-oficial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131173,
-      "detail_elapsed_ms": 1451,
-      "scraped_at": "2026-05-28T03:53:08.620Z"
+      "detail_html_length": 131141,
+      "detail_elapsed_ms": 1524,
+      "scraped_at": "2026-05-28T04:03:44.279Z"
     },
     {
       "id": "pt1-40-off-no-par-de-ingressos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131938,
-      "detail_elapsed_ms": 1464,
-      "scraped_at": "2026-05-28T03:53:10.084Z"
+      "detail_html_length": 131926,
+      "detail_elapsed_ms": 1510,
+      "scraped_at": "2026-05-28T04:03:45.789Z"
     }
   ]
 }
