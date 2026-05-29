@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-05-29T13:00:59.461899Z",
+  "updated_at": "2026-05-29T13:02:05.711306Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 4,
-    "duplicada_latest": 7,
+    "duplicada_latest": 8,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,6 +21,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pu8-2-ingressos-14-06-teatro-tuca-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pu8-2-ingressos-14-06-teatro-tuca-sp"
+    },
+    {
+      "title": "Resgate agora 1 Kit de Ímãs de Coração",
+      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao"
     },
     {
       "title": "Cursinho ENEM com 20% OFF!",
