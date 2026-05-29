@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-29T01:33:51.358594Z",
+  "updated_at": "2026-05-29T01:44:02.758767Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
-    "duplicada_latest": 1,
+    "duplicada_historico": 10,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pu8-2-ingressos-14-06-teatro-tuca-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pu8-2-ingressos-14-06-teatro-tuca-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 12/06 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pu7-2-ingressos-12-06-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pu7-2-ingressos-12-06-teatro-tuca-sp"
     },
     {
       "title": "2 INGRESSOS: 07/06 Teatro Tuca - SP",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/movida/puk-ate-12-off-bola-trionda-adidas",
       "reason": "duplicada_historico",
       "trace_id": "trace_puk-ate-12-off-bola-trionda-adidas"
+    },
+    {
+      "title": "Linha de Acessórios Leve 2 e Pague 1",
+      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_puh-linha-acessorios-leve-2-e-pague-1"
     }
   ]
 }
