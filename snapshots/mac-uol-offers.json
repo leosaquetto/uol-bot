@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 71871,
-  "run_duration_seconds": 71.87,
-  "avg_detail_ms_per_offer": 5989,
-  "generated_at": "2026-05-28T23:54:17.341Z",
+  "run_duration_ms": 50864,
+  "run_duration_seconds": 50.86,
+  "avg_detail_ms_per_offer": 4239,
+  "generated_at": "2026-05-29T00:05:14.543Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132399,
-      "detail_elapsed_ms": 11314,
-      "scraped_at": "2026-05-28T23:53:31.117Z"
+      "detail_html_length": 131173,
+      "detail_elapsed_ms": 3651,
+      "scraped_at": "2026-05-29T00:04:48.542Z"
     },
     {
       "id": "pu7-2-ingressos-12-06-teatro-tuca-sp",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132514,
-      "detail_elapsed_ms": 10934,
-      "scraped_at": "2026-05-28T23:53:54.326Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131350,
+      "detail_elapsed_ms": 2692,
+      "scraped_at": "2026-05-29T00:04:51.235Z"
     },
     {
       "id": "pu6-2-ingressos-07-06-teatro-tuca-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132496,
-      "detail_elapsed_ms": 2403,
-      "scraped_at": "2026-05-28T23:53:56.729Z"
+      "detail_html_length": 132481,
+      "detail_elapsed_ms": 2417,
+      "scraped_at": "2026-05-29T00:04:53.652Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130872,
-      "detail_elapsed_ms": 2291,
-      "scraped_at": "2026-05-28T23:53:59.020Z"
+      "detail_html_length": 130868,
+      "detail_elapsed_ms": 2685,
+      "scraped_at": "2026-05-29T00:04:56.337Z"
     },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131154,
-      "detail_elapsed_ms": 2152,
-      "scraped_at": "2026-05-28T23:54:01.172Z"
+      "detail_html_length": 131142,
+      "detail_elapsed_ms": 2368,
+      "scraped_at": "2026-05-29T00:04:58.705Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131124,
-      "detail_elapsed_ms": 2166,
-      "scraped_at": "2026-05-28T23:54:03.338Z"
+      "detail_html_length": 131109,
+      "detail_elapsed_ms": 2186,
+      "scraped_at": "2026-05-29T00:05:00.891Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131272,
-      "detail_elapsed_ms": 2605,
-      "scraped_at": "2026-05-28T23:54:05.943Z"
+      "detail_html_length": 131277,
+      "detail_elapsed_ms": 1965,
+      "scraped_at": "2026-05-29T00:05:02.856Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131210,
-      "detail_elapsed_ms": 2167,
-      "scraped_at": "2026-05-28T23:54:08.110Z"
+      "detail_html_length": 131246,
+      "detail_elapsed_ms": 2316,
+      "scraped_at": "2026-05-29T00:05:05.172Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131124,
-      "detail_elapsed_ms": 2768,
-      "scraped_at": "2026-05-28T23:54:10.878Z"
+      "detail_html_length": 131129,
+      "detail_elapsed_ms": 2099,
+      "scraped_at": "2026-05-29T00:05:07.271Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131102,
-      "detail_elapsed_ms": 1947,
-      "scraped_at": "2026-05-28T23:54:12.825Z"
+      "detail_html_length": 131108,
+      "detail_elapsed_ms": 2448,
+      "scraped_at": "2026-05-29T00:05:09.721Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131367,
-      "detail_elapsed_ms": 2219,
-      "scraped_at": "2026-05-28T23:54:15.044Z"
+      "detail_html_length": 131372,
+      "detail_elapsed_ms": 2353,
+      "scraped_at": "2026-05-29T00:05:12.074Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133710,
-      "detail_elapsed_ms": 2083,
-      "scraped_at": "2026-05-28T23:54:17.127Z"
+      "detail_html_length": 133718,
+      "detail_elapsed_ms": 2303,
+      "scraped_at": "2026-05-29T00:05:14.377Z"
     }
   ]
 }
