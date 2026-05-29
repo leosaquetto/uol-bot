@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-29T03:58:08.462703Z",
+  "updated_at": "2026-05-29T04:12:08.473327Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
-    "duplicada_latest": 7,
+    "duplicada_historico": 9,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -30,21 +30,21 @@
     },
     {
       "title": "Lacoste com até 50% OFF + 20% OFF extra",
-      "link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_put-lacoste-com-at-50-off-20-off-extra"
+      "link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-ate-50-off-20-off-extra",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_put-lacoste-com-ate-50-off-20-off-extra"
     },
     {
       "title": "Até 60% OFF +10% Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pus-at-60-off-10-masculino"
+      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pus-ate-60-off-10-masculino"
     },
     {
       "title": "30% OFF extra em seleção de acessórios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
       "reason": "duplicada_latest",
-      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios"
+      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios"
     },
     {
       "title": "20% OFF Extra em Inverno Feminino",
@@ -54,39 +54,39 @@
     },
     {
       "title": "Até 60% OFF +20% OFF Jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pup-at-60-off-20-off-jeans"
+      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pup-ate-60-off-20-off-jeans"
     },
     {
       "title": "Até 75% OFF em seleção de produtos",
-      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos"
+      "link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pum-ate-75-off-em-selecao-de-produtos"
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pul-at-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pul-ate-75-off-para-compras-no-site"
     },
     {
       "title": "Até 12% OFF + Bola Trionda Adidas",
-      "link": "https://clube.uol.com.br/movida/puk-at-12-off-bola-trionda-adidas",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_puk-at-12-off-bola-trionda-adidas"
+      "link": "https://clube.uol.com.br/movida/puk-ate-12-off-bola-trionda-adidas",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puk-ate-12-off-bola-trionda-adidas"
     },
     {
       "title": "Linha de Acessórios Leve 2 e Pague 1",
-      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puh-linha-acessrios-leve-2-e-pague-1"
+      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_puh-linha-acessorios-leve-2-e-pague-1"
     },
     {
       "title": "Tênis Sportstyle Under Armour Phantom 4",
-      "link": "https://clube.uol.com.br/underarmour/pug-tnis-sportstyle-under-armour-phantom-4",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pug-tnis-sportstyle-under-armour-phantom-4"
+      "link": "https://clube.uol.com.br/underarmour/pug-tenis-sportstyle-under-armour-phantom-4",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pug-tenis-sportstyle-under-armour-phantom-4"
     }
   ]
 }
