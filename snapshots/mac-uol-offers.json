@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 57566,
-  "run_duration_seconds": 57.57,
-  "avg_detail_ms_per_offer": 4797,
-  "generated_at": "2026-05-29T03:48:03.965Z",
+  "run_duration_ms": 98993,
+  "run_duration_seconds": 98.99,
+  "avg_detail_ms_per_offer": 8249,
+  "generated_at": "2026-05-29T03:56:31.150Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131184,
-      "detail_elapsed_ms": 2587,
-      "scraped_at": "2026-05-29T03:47:41.798Z"
+      "detail_html_length": 132393,
+      "detail_elapsed_ms": 8934,
+      "scraped_at": "2026-05-29T03:55:53.680Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 2308,
-      "scraped_at": "2026-05-29T03:47:44.107Z"
+      "detail_html_length": 130891,
+      "detail_elapsed_ms": 6195,
+      "scraped_at": "2026-05-29T03:55:59.876Z"
     },
     {
-      "id": "put-lacoste-com-ate-50-off-20-off-extra",
-      "trace_id": "trace_put-lacoste-com-ate-50-off-20-off-extra",
-      "link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-ate-50-off-20-off-extra",
-      "original_link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-ate-50-off-20-off-extra",
+      "id": "put-lacoste-com-at-50-off-20-off-extra",
+      "trace_id": "trace_put-lacoste-com-at-50-off-20-off-extra",
+      "link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
+      "original_link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
       "title": "Lacoste com até 50% OFF + 20% OFF extra",
       "preview_title": "Lacoste com até 50% OFF + 20% OFF extra",
       "validity": "Benefício válido de 28/05/2026 13:20 até 31/05/2026 23:59.",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131141,
-      "detail_elapsed_ms": 1723,
-      "scraped_at": "2026-05-29T03:47:45.830Z"
+      "detail_html_length": 124771,
+      "detail_elapsed_ms": 2647,
+      "scraped_at": "2026-05-29T03:56:02.523Z"
     },
     {
-      "id": "pus-ate-60-off-10-masculino",
-      "trace_id": "trace_pus-ate-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "id": "pus-at-60-off-10-masculino",
+      "trace_id": "trace_pus-at-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131118,
-      "detail_elapsed_ms": 2921,
-      "scraped_at": "2026-05-29T03:47:48.751Z"
+      "detail_html_length": 131132,
+      "detail_elapsed_ms": 4559,
+      "scraped_at": "2026-05-29T03:56:07.082Z"
     },
     {
-      "id": "pur-30-off-extra-em-selecao-acessorios",
-      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "id": "pur-30-off-extra-em-seleo-acessrios",
+      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131293,
-      "detail_elapsed_ms": 2568,
-      "scraped_at": "2026-05-29T03:47:51.319Z"
+      "detail_html_length": 124918,
+      "detail_elapsed_ms": 2821,
+      "scraped_at": "2026-05-29T03:56:09.904Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131221,
-      "detail_elapsed_ms": 1729,
-      "scraped_at": "2026-05-29T03:47:53.048Z"
+      "detail_html_length": 124856,
+      "detail_elapsed_ms": 2495,
+      "scraped_at": "2026-05-29T03:56:12.399Z"
     },
     {
-      "id": "pup-ate-60-off-20-off-jeans",
-      "trace_id": "trace_pup-ate-60-off-20-off-jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
+      "id": "pup-at-60-off-20-off-jeans",
+      "trace_id": "trace_pup-at-60-off-20-off-jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
       "title": "Até 60% OFF +20% OFF Jeans",
       "preview_title": "Até 60% OFF +20% OFF Jeans",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131140,
-      "detail_elapsed_ms": 1692,
-      "scraped_at": "2026-05-29T03:47:54.740Z"
+      "detail_html_length": 131122,
+      "detail_elapsed_ms": 2300,
+      "scraped_at": "2026-05-29T03:56:14.699Z"
     },
     {
-      "id": "pum-ate-75-off-em-selecao-de-produtos",
-      "trace_id": "trace_pum-ate-75-off-em-selecao-de-produtos",
-      "link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
-      "original_link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
+      "id": "pum-at-75-off-em-seleo-de-produtos",
+      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
       "title": "Até 75% OFF em seleção de produtos",
       "preview_title": "Até 75% OFF em seleção de produtos",
       "validity": "Benefício válido de 28/05/2026 09:23 até 14/06/2026 23:59.",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131096,
-      "detail_elapsed_ms": 1825,
-      "scraped_at": "2026-05-29T03:47:56.565Z"
+      "detail_html_length": 131101,
+      "detail_elapsed_ms": 1827,
+      "scraped_at": "2026-05-29T03:56:16.527Z"
     },
     {
-      "id": "pul-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_pul-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
+      "id": "pul-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pul-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 28/05/2026 09:18 até 14/06/2026 23:59.",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131421,
-      "detail_elapsed_ms": 1705,
-      "scraped_at": "2026-05-29T03:47:58.270Z"
+      "detail_html_length": 131355,
+      "detail_elapsed_ms": 1968,
+      "scraped_at": "2026-05-29T03:56:18.496Z"
     },
     {
-      "id": "puk-ate-12-off-bola-trionda-adidas",
-      "trace_id": "trace_puk-ate-12-off-bola-trionda-adidas",
-      "link": "https://clube.uol.com.br/movida/puk-ate-12-off-bola-trionda-adidas",
-      "original_link": "https://clube.uol.com.br/movida/puk-ate-12-off-bola-trionda-adidas",
+      "id": "puk-at-12-off-bola-trionda-adidas",
+      "trace_id": "trace_puk-at-12-off-bola-trionda-adidas",
+      "link": "https://clube.uol.com.br/movida/puk-at-12-off-bola-trionda-adidas",
+      "original_link": "https://clube.uol.com.br/movida/puk-at-12-off-bola-trionda-adidas",
       "title": "Até 12% OFF + Bola Trionda Adidas",
       "preview_title": "Até 12% OFF + Bola Trionda Adidas",
       "validity": "Benefício válido de 28/05/2026 09:12 até 20/07/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133707,
-      "detail_elapsed_ms": 1675,
-      "scraped_at": "2026-05-29T03:47:59.945Z"
+      "detail_html_length": 132532,
+      "detail_elapsed_ms": 1859,
+      "scraped_at": "2026-05-29T03:56:20.355Z"
     },
     {
-      "id": "puh-linha-acessorios-leve-2-e-pague-1",
-      "trace_id": "trace_puh-linha-acessorios-leve-2-e-pague-1",
-      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
-      "original_link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
+      "id": "puh-linha-acessrios-leve-2-e-pague-1",
+      "trace_id": "trace_puh-linha-acessrios-leve-2-e-pague-1",
+      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
+      "original_link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
       "title": "Linha de Acessórios Leve 2 e Pague 1",
       "preview_title": "Linha de Acessórios Leve 2 e Pague 1",
       "validity": "Benefício válido de 27/05/2026 10:41 até 31/05/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133505,
-      "detail_elapsed_ms": 1714,
-      "scraped_at": "2026-05-29T03:48:01.659Z"
+      "detail_html_length": 132213,
+      "detail_elapsed_ms": 2294,
+      "scraped_at": "2026-05-29T03:56:22.650Z"
     },
     {
-      "id": "pug-tenis-sportstyle-under-armour-phantom-4",
-      "trace_id": "trace_pug-tenis-sportstyle-under-armour-phantom-4",
-      "link": "https://clube.uol.com.br/underarmour/pug-tenis-sportstyle-under-armour-phantom-4",
-      "original_link": "https://clube.uol.com.br/underarmour/pug-tenis-sportstyle-under-armour-phantom-4",
+      "id": "pug-tnis-sportstyle-under-armour-phantom-4",
+      "trace_id": "trace_pug-tnis-sportstyle-under-armour-phantom-4",
+      "link": "https://clube.uol.com.br/underarmour/pug-tnis-sportstyle-under-armour-phantom-4",
+      "original_link": "https://clube.uol.com.br/underarmour/pug-tnis-sportstyle-under-armour-phantom-4",
       "title": "Tênis Sportstyle Under Armour Phantom 4",
       "preview_title": "Tênis Sportstyle Under Armour Phantom 4",
       "validity": "Benefício válido de 27/05/2026 10:41 até 31/05/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131359,
-      "detail_elapsed_ms": 1851,
-      "scraped_at": "2026-05-29T03:48:03.510Z"
+      "detail_html_length": 131312,
+      "detail_elapsed_ms": 6881,
+      "scraped_at": "2026-05-29T03:56:29.531Z"
     }
   ]
 }
