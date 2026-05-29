@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 49044,
-  "run_duration_seconds": 49.04,
-  "avg_detail_ms_per_offer": 4087,
-  "generated_at": "2026-05-29T01:32:30.597Z",
+  "run_duration_ms": 47609,
+  "run_duration_seconds": 47.61,
+  "avg_detail_ms_per_offer": 3967,
+  "generated_at": "2026-05-29T01:43:26.100Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125718,
-      "detail_elapsed_ms": 3129,
-      "scraped_at": "2026-05-29T01:32:02.924Z"
-    },
-    {
-      "id": "pu7-2-ingressos-12-06-teatro-tuca-sp",
-      "trace_id": "trace_pu7-2-ingressos-12-06-teatro-tuca-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pu7-2-ingressos-12-06-teatro-tuca-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pu7-2-ingressos-12-06-teatro-tuca-sp",
-      "title": "2 INGRESSOS: 12/06 Teatro Tuca - SP",
-      "preview_title": "2 INGRESSOS: 12/06 Teatro Tuca - SP",
-      "validity": "Benefício válido de 28/05/2026 17:45 até 11/06/2026 23:59.",
-      "description": "Assinante UOL, viva essa experiência! Resgate 1 par de ingressos e emocione-se com o espetáculo Olhos nos Olhos protagonizado por Ana Lúcia Torre, que celebra 80 anos de vida e 60 anos de carreira em uma apresentação vibrante, reveladora e cheia de sensibilidade, no Teatro Tuca, em São Paulo – SP. Data: 12 de Junho, às 21h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a18ad03a090f_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a18ad03a090f_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a18ad03a090f_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131286,
-      "detail_elapsed_ms": 3626,
-      "scraped_at": "2026-05-29T01:32:06.584Z"
+      "detail_html_length": 130840,
+      "detail_elapsed_ms": 3589,
+      "scraped_at": "2026-05-29T01:43:00.683Z"
     },
     {
       "id": "pu6-2-ingressos-07-06-teatro-tuca-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126151,
-      "detail_elapsed_ms": 2493,
-      "scraped_at": "2026-05-29T01:32:09.077Z"
+      "detail_html_length": 126120,
+      "detail_elapsed_ms": 2588,
+      "scraped_at": "2026-05-29T01:43:03.279Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130882,
-      "detail_elapsed_ms": 2374,
-      "scraped_at": "2026-05-29T01:32:11.451Z"
+      "detail_html_length": 130870,
+      "detail_elapsed_ms": 2800,
+      "scraped_at": "2026-05-29T01:43:06.079Z"
     },
     {
       "id": "put-lacoste-com-ate-50-off-20-off-extra",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131140,
-      "detail_elapsed_ms": 2468,
-      "scraped_at": "2026-05-29T01:32:13.919Z"
+      "detail_html_length": 131137,
+      "detail_elapsed_ms": 1895,
+      "scraped_at": "2026-05-29T01:43:07.974Z"
     },
     {
       "id": "pus-ate-60-off-10-masculino",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131126,
-      "detail_elapsed_ms": 2248,
-      "scraped_at": "2026-05-29T01:32:16.167Z"
+      "detail_html_length": 131134,
+      "detail_elapsed_ms": 2047,
+      "scraped_at": "2026-05-29T01:43:10.021Z"
     },
     {
       "id": "pur-30-off-extra-em-selecao-acessorios",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131302,
-      "detail_elapsed_ms": 2482,
-      "scraped_at": "2026-05-29T01:32:18.649Z"
+      "detail_html_length": 131310,
+      "detail_elapsed_ms": 2137,
+      "scraped_at": "2026-05-29T01:43:12.158Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131210,
-      "detail_elapsed_ms": 2401,
-      "scraped_at": "2026-05-29T01:32:21.050Z"
+      "detail_html_length": 131207,
+      "detail_elapsed_ms": 2057,
+      "scraped_at": "2026-05-29T01:43:14.216Z"
     },
     {
       "id": "pup-ate-60-off-20-off-jeans",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131117,
-      "detail_elapsed_ms": 2024,
-      "scraped_at": "2026-05-29T01:32:23.074Z"
+      "detail_html_length": 131126,
+      "detail_elapsed_ms": 2306,
+      "scraped_at": "2026-05-29T01:43:16.522Z"
     },
     {
       "id": "pum-ate-75-off-em-selecao-de-produtos",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131105,
-      "detail_elapsed_ms": 2565,
-      "scraped_at": "2026-05-29T01:32:25.640Z"
+      "detail_html_length": 131103,
+      "detail_elapsed_ms": 2257,
+      "scraped_at": "2026-05-29T01:43:18.779Z"
     },
     {
       "id": "pul-ate-75-off-para-compras-no-site",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131371,
-      "detail_elapsed_ms": 2580,
-      "scraped_at": "2026-05-29T01:32:28.226Z"
+      "detail_html_length": 131379,
+      "detail_elapsed_ms": 2174,
+      "scraped_at": "2026-05-29T01:43:20.954Z"
     },
     {
       "id": "puk-ate-12-off-bola-trionda-adidas",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133704,
-      "detail_elapsed_ms": 2290,
-      "scraped_at": "2026-05-29T01:32:30.516Z"
+      "detail_html_length": 133702,
+      "detail_elapsed_ms": 2169,
+      "scraped_at": "2026-05-29T01:43:23.123Z"
+    },
+    {
+      "id": "puh-linha-acessorios-leve-2-e-pague-1",
+      "trace_id": "trace_puh-linha-acessorios-leve-2-e-pague-1",
+      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
+      "original_link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
+      "title": "Linha de Acessórios Leve 2 e Pague 1",
+      "preview_title": "Linha de Acessórios Leve 2 e Pague 1",
+      "validity": "Benefício válido de 27/05/2026 10:41 até 31/05/2026 23:59.",
+      "description": "Sobre o Parceiro: A Under Armour é uma marca global, referência em inovação e criação de vestuário, calçados e acessórios voltados para o esporte. Projetados para tornar todos os atletas melhores, os produtos inovadores da marca são vendidos em todo o mundo para consumidores com estilos de vida ativos. Benefício: Linha de Acessórios Leve 2 e Pague 1 Regras: Levando 2 produtos dos itens do link pague apenas 1, desconto aplicado no produto de menor valor. não sendo necessário inserir cupom. Sujeito a desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Under Armour",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/952a40993fb544bc5ab94d0605380a30.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/952a40993fb544bc5ab94d0605380a30.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/952a40993fb544bc5ab94d0605380a30.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133441,
+      "detail_elapsed_ms": 2512,
+      "scraped_at": "2026-05-29T01:43:25.636Z"
     }
   ]
 }
