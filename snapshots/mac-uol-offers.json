@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 34984,
-  "run_duration_seconds": 34.98,
-  "avg_detail_ms_per_offer": 2915,
-  "generated_at": "2026-05-29T13:32:37.318Z",
+  "run_duration_ms": 29271,
+  "run_duration_seconds": 29.27,
+  "avg_detail_ms_per_offer": 2439,
+  "generated_at": "2026-05-29T13:43:11.962Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pu9-15-off-em-kits-seara-churrasco",
+      "trace_id": "trace_pu9-15-off-em-kits-seara-churrasco",
+      "link": "https://clube.uol.com.br/seara/pu9-15-off-em-kits-seara-churrasco",
+      "original_link": "https://clube.uol.com.br/seara/pu9-15-off-em-kits-seara-churrasco",
+      "title": "15% OFF em Kits Seara Churrasco!",
+      "preview_title": "15% OFF em Kits Seara Churrasco!",
+      "validity": "Benefício válido de 29/05/2026 10:31 até 15/06/2026 23:59.",
+      "description": "Benefício: 15% OFF em edição limitada de Kits Seara Churrasco! Pasta de pão de alho exclusiva (Lançamento) Bolsa térmica exclusiva que segura até 16h Entrega em 10 dias, os produtos chegam antes dos jogos da copa Frete Grátis Parcelamento em 2x no cartão Regras: Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons e ofertas. 1 utilização por CPF. A venda está disponível apenas para SP Estado e RJ Capital.",
+      "category": "Comer e Beber",
+      "partner_name": "Seara",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/94d23d47f26f94cf277ce1efc183dd89.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0487d135b4ee541458fa5a9de36802d5.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0487d135b4ee541458fa5a9de36802d5.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0487d135b4ee541458fa5a9de36802d5.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130892,
+      "detail_elapsed_ms": 2349,
+      "scraped_at": "2026-05-29T13:42:52.194Z"
+    },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
       "trace_id": "trace_pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132390,
-      "detail_elapsed_ms": 2962,
-      "scraped_at": "2026-05-29T13:32:15.080Z"
+      "detail_html_length": 132983,
+      "detail_elapsed_ms": 2054,
+      "scraped_at": "2026-05-29T13:42:54.250Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131587,
-      "detail_elapsed_ms": 2024,
-      "scraped_at": "2026-05-29T13:32:17.105Z"
+      "detail_html_length": 132068,
+      "detail_elapsed_ms": 1706,
+      "scraped_at": "2026-05-29T13:42:55.956Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130929,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-05-29T13:32:18.610Z"
+      "detail_html_length": 130912,
+      "detail_elapsed_ms": 1952,
+      "scraped_at": "2026-05-29T13:42:57.909Z"
     },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131132,
-      "detail_elapsed_ms": 2031,
-      "scraped_at": "2026-05-29T13:32:20.641Z"
+      "detail_html_length": 131194,
+      "detail_elapsed_ms": 1947,
+      "scraped_at": "2026-05-29T13:42:59.856Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131169,
-      "detail_elapsed_ms": 1621,
-      "scraped_at": "2026-05-29T13:32:22.262Z"
+      "detail_html_length": 131172,
+      "detail_elapsed_ms": 1817,
+      "scraped_at": "2026-05-29T13:43:01.674Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131305,
-      "detail_elapsed_ms": 2302,
-      "scraped_at": "2026-05-29T13:32:24.567Z"
+      "detail_html_length": 131263,
+      "detail_elapsed_ms": 1479,
+      "scraped_at": "2026-05-29T13:43:03.153Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131256,
-      "detail_elapsed_ms": 1668,
-      "scraped_at": "2026-05-29T13:32:26.235Z"
+      "detail_html_length": 131280,
+      "detail_elapsed_ms": 1835,
+      "scraped_at": "2026-05-29T13:43:04.988Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131170,
-      "detail_elapsed_ms": 1924,
-      "scraped_at": "2026-05-29T13:32:28.159Z"
+      "detail_html_length": 131172,
+      "detail_elapsed_ms": 1683,
+      "scraped_at": "2026-05-29T13:43:06.671Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131134,
-      "detail_elapsed_ms": 1728,
-      "scraped_at": "2026-05-29T13:32:29.887Z"
+      "detail_html_length": 131100,
+      "detail_elapsed_ms": 1639,
+      "scraped_at": "2026-05-29T13:43:08.310Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131422,
-      "detail_elapsed_ms": 1850,
-      "scraped_at": "2026-05-29T13:32:31.737Z"
+      "detail_html_length": 131445,
+      "detail_elapsed_ms": 1877,
+      "scraped_at": "2026-05-29T13:43:10.187Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133746,
-      "detail_elapsed_ms": 1831,
-      "scraped_at": "2026-05-29T13:32:33.568Z"
-    },
-    {
-      "id": "puh-linha-acessrios-leve-2-e-pague-1",
-      "trace_id": "trace_puh-linha-acessrios-leve-2-e-pague-1",
-      "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
-      "original_link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessrios-leve-2-e-pague-1",
-      "title": "Linha de Acessórios Leve 2 e Pague 1",
-      "preview_title": "Linha de Acessórios Leve 2 e Pague 1",
-      "validity": "Benefício válido de 27/05/2026 10:41 até 31/05/2026 23:59.",
-      "description": "Sobre o Parceiro: A Under Armour é uma marca global, referência em inovação e criação de vestuário, calçados e acessórios voltados para o esporte. Projetados para tornar todos os atletas melhores, os produtos inovadores da marca são vendidos em todo o mundo para consumidores com estilos de vida ativos. Benefício: Linha de Acessórios Leve 2 e Pague 1 Regras: Levando 2 produtos dos itens do link pague apenas 1, desconto aplicado no produto de menor valor. não sendo necessário inserir cupom. Sujeito a desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Under Armour",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/952a40993fb544bc5ab94d0605380a30.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/952a40993fb544bc5ab94d0605380a30.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/952a40993fb544bc5ab94d0605380a30.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133519,
-      "detail_elapsed_ms": 3702,
-      "scraped_at": "2026-05-29T13:32:37.270Z"
+      "detail_html_length": 133760,
+      "detail_elapsed_ms": 1708,
+      "scraped_at": "2026-05-29T13:43:11.895Z"
     }
   ]
 }
