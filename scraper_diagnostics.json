@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-29T01:55:38.952448Z",
+  "updated_at": "2026-05-29T02:05:51.430912Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 2,
+    "duplicada_historico": 9,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pu8-2-ingressos-14-06-teatro-tuca-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pu8-2-ingressos-14-06-teatro-tuca-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 07/06 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pu6-2-ingressos-07-06-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pu6-2-ingressos-07-06-teatro-tuca-sp"
     },
     {
       "title": "Cursinho ENEM com 20% OFF!",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/underarmour/puh-linha-de-acessorios-leve-2-e-pague-1",
       "reason": "duplicada_latest",
       "trace_id": "trace_puh-linha-acessorios-leve-2-e-pague-1"
+    },
+    {
+      "title": "Tênis Sportstyle Under Armour Phantom 4",
+      "link": "https://clube.uol.com.br/underarmour/pug-tenis-sportstyle-under-armour-phantom-4",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pug-tenis-sportstyle-under-armour-phantom-4"
     }
   ]
 }
