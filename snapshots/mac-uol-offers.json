@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 138076,
-  "run_duration_seconds": 138.08,
-  "avg_detail_ms_per_offer": 11506,
-  "generated_at": "2026-05-30T18:11:11.933Z",
+  "run_duration_ms": 242358,
+  "run_duration_seconds": 242.36,
+  "avg_detail_ms_per_offer": 20197,
+  "generated_at": "2026-05-30T18:25:28.910Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
       "title": "15% OFF no site!",
       "preview_title": "15% OFF no site!",
-      "validity": "Benefício válido de 29/05/2026 16:42 até 31/12/2026 23:59.",
-      "description": "Sobre o Parceiro: A TopTherm é uma empresa brasileira fundada em 1994, especializada em produtos voltados para saúde, bem-estar e suplementação alimentar. A marca ficou conhecida principalmente por sua linha de ômega 3, vitaminas, colágenos, probióticos e pela tradicional iogurteira TopTherm, comercializada em todo o Brasil. Atualmente, a empresa atua com foco em qualidade de vida, oferecendo soluções voltadas à nutrição, beleza e cuidados com a saúde. Benefício: 15% OFF no site! Regras: Aplique o cupom no checkout. Cumulativo com demais promoções do site. Válido apenas 1 uso por CPF. Não cumulativo com demais cupons.",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Top Therm",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b332eda111321152b53a045d0fe17127.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130852,
-      "detail_elapsed_ms": 9621,
-      "scraped_at": "2026-05-30T18:10:10.827Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/toptherm/puF-15-off-no-site\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12006,
+      "scraped_at": "2026-05-30T18:23:47.478Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132907,
-      "detail_elapsed_ms": 8555,
-      "scraped_at": "2026-05-30T18:10:19.384Z"
+      "detail_html_length": 132891,
+      "detail_elapsed_ms": 13823,
+      "scraped_at": "2026-05-30T18:24:01.302Z"
     },
     {
       "id": "pua-2-ingressos-04-06-cine-theatro-brasil-mg",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131559,
-      "detail_elapsed_ms": 4036,
-      "scraped_at": "2026-05-30T18:10:23.420Z"
+      "detail_html_length": 132860,
+      "detail_elapsed_ms": 11227,
+      "scraped_at": "2026-05-30T18:24:12.529Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129799,
-      "detail_elapsed_ms": 3856,
-      "scraped_at": "2026-05-30T18:10:27.276Z"
+      "detail_html_length": 131028,
+      "detail_elapsed_ms": 9047,
+      "scraped_at": "2026-05-30T18:24:21.576Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131261,
-      "detail_elapsed_ms": 4106,
-      "scraped_at": "2026-05-30T18:10:31.382Z"
+      "detail_html_length": 132540,
+      "detail_elapsed_ms": 8453,
+      "scraped_at": "2026-05-30T18:24:30.030Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131546,
-      "detail_elapsed_ms": 7498,
-      "scraped_at": "2026-05-30T18:10:38.881Z"
+      "detail_html_length": 131830,
+      "detail_elapsed_ms": 10596,
+      "scraped_at": "2026-05-30T18:24:40.626Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130869,
-      "detail_elapsed_ms": 6063,
-      "scraped_at": "2026-05-30T18:10:44.944Z"
+      "detail_html_length": 130891,
+      "detail_elapsed_ms": 4433,
+      "scraped_at": "2026-05-30T18:24:45.059Z"
     },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131140,
-      "detail_elapsed_ms": 7104,
-      "scraped_at": "2026-05-30T18:10:52.048Z"
+      "detail_html_length": 131006,
+      "detail_elapsed_ms": 10455,
+      "scraped_at": "2026-05-30T18:24:55.514Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131119,
-      "detail_elapsed_ms": 4292,
-      "scraped_at": "2026-05-30T18:10:56.340Z"
+      "detail_html_length": 131132,
+      "detail_elapsed_ms": 7241,
+      "scraped_at": "2026-05-30T18:25:02.755Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124978,
-      "detail_elapsed_ms": 5081,
-      "scraped_at": "2026-05-30T18:11:01.421Z"
+      "detail_html_length": 131288,
+      "detail_elapsed_ms": 6911,
+      "scraped_at": "2026-05-30T18:25:09.667Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131216,
-      "detail_elapsed_ms": 5144,
-      "scraped_at": "2026-05-30T18:11:06.566Z"
+      "detail_html_length": 131219,
+      "detail_elapsed_ms": 9956,
+      "scraped_at": "2026-05-30T18:25:19.623Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129885,
-      "detail_elapsed_ms": 3811,
-      "scraped_at": "2026-05-30T18:11:10.378Z"
+      "detail_html_length": 131123,
+      "detail_elapsed_ms": 8177,
+      "scraped_at": "2026-05-30T18:25:27.800Z"
     }
   ]
 }
