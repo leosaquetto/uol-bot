@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 170232,
-  "run_duration_seconds": 170.23,
-  "avg_detail_ms_per_offer": 14186,
-  "generated_at": "2026-05-30T15:18:27.799Z",
+  "run_duration_ms": 101077,
+  "run_duration_seconds": 101.08,
+  "avg_detail_ms_per_offer": 8423,
+  "generated_at": "2026-05-30T15:30:27.343Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 129272,
-      "detail_elapsed_ms": 6959,
-      "scraped_at": "2026-05-30T15:17:11.926Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130863,
+      "detail_elapsed_ms": 10697,
+      "scraped_at": "2026-05-30T15:29:50.993Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 8669,
-      "scraped_at": "2026-05-30T15:17:20.603Z"
+      "detail_html_length": 131720,
+      "detail_elapsed_ms": 3114,
+      "scraped_at": "2026-05-30T15:29:54.109Z"
     },
     {
       "id": "pua-2-ingressos-04-06-cine-theatro-brasil-mg",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132836,
-      "detail_elapsed_ms": 9757,
-      "scraped_at": "2026-05-30T15:17:30.360Z"
+      "detail_html_length": 131612,
+      "detail_elapsed_ms": 3840,
+      "scraped_at": "2026-05-30T15:29:57.949Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131014,
-      "detail_elapsed_ms": 6516,
-      "scraped_at": "2026-05-30T15:17:36.876Z"
+      "detail_html_length": 131025,
+      "detail_elapsed_ms": 3194,
+      "scraped_at": "2026-05-30T15:30:01.143Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132567,
-      "detail_elapsed_ms": 7780,
-      "scraped_at": "2026-05-30T15:17:44.656Z"
+      "detail_html_length": 132559,
+      "detail_elapsed_ms": 3660,
+      "scraped_at": "2026-05-30T15:30:04.804Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131547,
-      "detail_elapsed_ms": 4811,
-      "scraped_at": "2026-05-30T15:17:49.467Z"
+      "detail_html_length": 131538,
+      "detail_elapsed_ms": 3490,
+      "scraped_at": "2026-05-30T15:30:08.294Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131333,
-      "detail_elapsed_ms": 9439,
-      "scraped_at": "2026-05-30T15:17:58.906Z"
+      "detail_html_length": 130870,
+      "detail_elapsed_ms": 3121,
+      "scraped_at": "2026-05-30T15:30:11.415Z"
     },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131150,
-      "detail_elapsed_ms": 8407,
-      "scraped_at": "2026-05-30T15:18:07.313Z"
+      "detail_html_length": 129907,
+      "detail_elapsed_ms": 2499,
+      "scraped_at": "2026-05-30T15:30:13.914Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131108,
-      "detail_elapsed_ms": 7027,
-      "scraped_at": "2026-05-30T15:18:14.340Z"
+      "detail_html_length": 124766,
+      "detail_elapsed_ms": 3267,
+      "scraped_at": "2026-05-30T15:30:17.181Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131052,
-      "detail_elapsed_ms": 4005,
-      "scraped_at": "2026-05-30T15:18:18.346Z"
+      "detail_html_length": 131275,
+      "detail_elapsed_ms": 3289,
+      "scraped_at": "2026-05-30T15:30:20.471Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131247,
-      "detail_elapsed_ms": 5796,
-      "scraped_at": "2026-05-30T15:18:24.142Z"
+      "detail_html_length": 131227,
+      "detail_elapsed_ms": 3397,
+      "scraped_at": "2026-05-30T15:30:23.868Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -305,8 +305,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131130,
-      "detail_elapsed_ms": 3369,
-      "scraped_at": "2026-05-30T15:18:27.511Z"
+      "detail_elapsed_ms": 3084,
+      "scraped_at": "2026-05-30T15:30:26.952Z"
     }
   ]
 }
