@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 136762,
-  "run_duration_seconds": 136.76,
-  "avg_detail_ms_per_offer": 11397,
-  "generated_at": "2026-05-30T16:49:46.387Z",
+  "run_duration_ms": 256977,
+  "run_duration_seconds": 256.98,
+  "avg_detail_ms_per_offer": 21415,
+  "generated_at": "2026-05-30T17:04:24.038Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
       "title": "15% OFF no site!",
       "preview_title": "15% OFF no site!",
-      "validity": "Benefício válido de 29/05/2026 16:42 até 31/12/2026 23:59.",
-      "description": "Sobre o Parceiro: A TopTherm é uma empresa brasileira fundada em 1994, especializada em produtos voltados para saúde, bem-estar e suplementação alimentar. A marca ficou conhecida principalmente por sua linha de ômega 3, vitaminas, colágenos, probióticos e pela tradicional iogurteira TopTherm, comercializada em todo o Brasil. Atualmente, a empresa atua com foco em qualidade de vida, oferecendo soluções voltadas à nutrição, beleza e cuidados com a saúde. Benefício: 15% OFF no site! Regras: Aplique o cupom no checkout. Cumulativo com demais promoções do site. Válido apenas 1 uso por CPF. Não cumulativo com demais cupons.",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Top Therm",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b332eda111321152b53a045d0fe17127.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/toptherm/puF-15-off-no-site\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
-      "detail_html_length": 130938,
-      "detail_elapsed_ms": 6727,
-      "scraped_at": "2026-05-30T16:49:00.802Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12419,
+      "scraped_at": "2026-05-30T17:01:48.205Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
       "title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
       "preview_title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
-      "validity": "Benefício válido de 29/05/2026 11:36 até 04/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Usiminas, em Ipatinga - MG. Data: 05/06/2026 | 21h. Local: Av. Pedro Linhares Gomes, 3.900 A, Bairro Industrial, Ipatinga (MG). Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132891,
-      "detail_elapsed_ms": 4750,
-      "scraped_at": "2026-05-30T16:49:05.556Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12399,
+      "scraped_at": "2026-05-30T17:02:13.086Z"
     },
     {
       "id": "pua-2-ingressos-04-06-cine-theatro-brasil-mg",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132841,
-      "detail_elapsed_ms": 2932,
-      "scraped_at": "2026-05-30T16:49:08.488Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132857,
+      "detail_elapsed_ms": 20172,
+      "scraped_at": "2026-05-30T17:02:45.814Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129526,
-      "detail_elapsed_ms": 2598,
-      "scraped_at": "2026-05-30T16:49:11.086Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131315,
+      "detail_elapsed_ms": 14126,
+      "scraped_at": "2026-05-30T17:03:12.230Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132552,
-      "detail_elapsed_ms": 2639,
-      "scraped_at": "2026-05-30T16:49:13.725Z"
+      "detail_html_length": 132558,
+      "detail_elapsed_ms": 4673,
+      "scraped_at": "2026-05-30T17:03:16.903Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131551,
-      "detail_elapsed_ms": 2880,
-      "scraped_at": "2026-05-30T16:49:16.605Z"
+      "detail_html_length": 131546,
+      "detail_elapsed_ms": 9657,
+      "scraped_at": "2026-05-30T17:03:26.560Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129626,
-      "detail_elapsed_ms": 2900,
-      "scraped_at": "2026-05-30T16:49:19.505Z"
+      "detail_html_length": 131271,
+      "detail_elapsed_ms": 9143,
+      "scraped_at": "2026-05-30T17:03:35.704Z"
     },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131165,
-      "detail_elapsed_ms": 3308,
-      "scraped_at": "2026-05-30T16:49:22.813Z"
+      "detail_html_length": 131013,
+      "detail_elapsed_ms": 7142,
+      "scraped_at": "2026-05-30T17:03:42.846Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -231,10 +231,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129814,
-      "detail_elapsed_ms": 4491,
-      "scraped_at": "2026-05-30T16:49:27.304Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131378,
+      "detail_elapsed_ms": 14271,
+      "scraped_at": "2026-05-30T17:04:10.553Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130119,
-      "detail_elapsed_ms": 2253,
-      "scraped_at": "2026-05-30T16:49:29.557Z"
+      "detail_html_length": 130038,
+      "detail_elapsed_ms": 4616,
+      "scraped_at": "2026-05-30T17:04:15.169Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131230,
-      "detail_elapsed_ms": 4030,
-      "scraped_at": "2026-05-30T16:49:33.587Z"
+      "detail_html_length": 131237,
+      "detail_elapsed_ms": 3043,
+      "scraped_at": "2026-05-30T17:04:18.212Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131124,
-      "detail_elapsed_ms": 6289,
-      "scraped_at": "2026-05-30T16:49:39.876Z"
+      "detail_html_length": 129905,
+      "detail_elapsed_ms": 4225,
+      "scraped_at": "2026-05-30T17:04:22.437Z"
     }
   ]
 }
