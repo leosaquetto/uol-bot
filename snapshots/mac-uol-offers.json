@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 59837,
-  "run_duration_seconds": 59.84,
-  "avg_detail_ms_per_offer": 4986,
-  "generated_at": "2026-05-30T22:25:39.527Z",
+  "run_duration_ms": 251804,
+  "run_duration_seconds": 251.8,
+  "avg_detail_ms_per_offer": 20984,
+  "generated_at": "2026-05-30T22:35:59.978Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129617,
-      "detail_elapsed_ms": 3487,
-      "scraped_at": "2026-05-30T22:25:09.581Z"
+      "detail_attempts": 2,
+      "detail_html_length": 129849,
+      "detail_elapsed_ms": 4102,
+      "scraped_at": "2026-05-30T22:33:19.758Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131653,
-      "detail_elapsed_ms": 4904,
-      "scraped_at": "2026-05-30T22:25:14.492Z"
+      "detail_html_length": 131659,
+      "detail_elapsed_ms": 4344,
+      "scraped_at": "2026-05-30T22:33:24.105Z"
     },
     {
       "id": "pua-2-ingressos-04-06-cine-theatro-brasil-mg",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132847,
-      "detail_elapsed_ms": 3783,
-      "scraped_at": "2026-05-30T22:25:18.275Z"
+      "detail_html_length": 131497,
+      "detail_elapsed_ms": 3256,
+      "scraped_at": "2026-05-30T22:33:27.361Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131036,
-      "detail_elapsed_ms": 2855,
-      "scraped_at": "2026-05-30T22:25:21.130Z"
+      "detail_html_length": 131041,
+      "detail_elapsed_ms": 6781,
+      "scraped_at": "2026-05-30T22:33:34.142Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132559,
-      "detail_elapsed_ms": 2521,
-      "scraped_at": "2026-05-30T22:25:23.652Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132845,
+      "detail_elapsed_ms": 15026,
+      "scraped_at": "2026-05-30T22:34:01.491Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
       "title": "Resgate agora 1 Kit de Ímãs de Coração",
       "preview_title": "Resgate agora 1 Kit de Ímãs de Coração",
-      "validity": "Benefício válido de 07/05/2026 15:11 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit com 9 Ímãs personalizados em formato Coração grátis da FotoRegistro. Regras: Oferta válida para 1 Kit com 9 unidades no formato Coração. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7 x 7cm cada. Frete não incluso. Validade do cupom até 30/06/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131607,
-      "detail_elapsed_ms": 2641,
-      "scraped_at": "2026-05-30T22:25:26.293Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12036,
+      "scraped_at": "2026-05-30T22:34:26.396Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -183,10 +183,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130880,
-      "detail_elapsed_ms": 2365,
-      "scraped_at": "2026-05-30T22:25:28.658Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130726,
+      "detail_elapsed_ms": 10738,
+      "scraped_at": "2026-05-30T22:34:49.453Z"
     },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
@@ -195,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
       "title": "Lacoste com até 50% OFF + 20% OFF extra",
       "preview_title": "Lacoste com até 50% OFF + 20% OFF extra",
-      "validity": "Benefício válido de 28/05/2026 13:20 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: A Dafiti é uma das maiores plataformas de moda e lifestyle da América Latina, oferecendo roupas, calçados, acessórios e produtos das principais marcas nacionais e internacionais com praticidade e variedade para todos os estilos. Benefício: Lacoste com até 50% OFF + 20% OFF extra do cupom Regras: Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Dafiti",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131162,
-      "detail_elapsed_ms": 2064,
-      "scraped_at": "2026-05-30T22:25:30.722Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12008,
+      "scraped_at": "2026-05-30T22:35:13.741Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131140,
-      "detail_elapsed_ms": 2219,
-      "scraped_at": "2026-05-30T22:25:32.941Z"
+      "detail_html_length": 130996,
+      "detail_elapsed_ms": 11855,
+      "scraped_at": "2026-05-30T22:35:25.596Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131295,
-      "detail_elapsed_ms": 2099,
-      "scraped_at": "2026-05-30T22:25:35.041Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131292,
+      "detail_elapsed_ms": 9585,
+      "scraped_at": "2026-05-30T22:35:47.534Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131227,
-      "detail_elapsed_ms": 2027,
-      "scraped_at": "2026-05-30T22:25:37.068Z"
+      "detail_html_length": 124721,
+      "detail_elapsed_ms": 3923,
+      "scraped_at": "2026-05-30T22:35:51.457Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131121,
-      "detail_elapsed_ms": 2208,
-      "scraped_at": "2026-05-30T22:25:39.276Z"
+      "detail_html_length": 131157,
+      "detail_elapsed_ms": 8279,
+      "scraped_at": "2026-05-30T22:35:59.736Z"
     }
   ]
 }
