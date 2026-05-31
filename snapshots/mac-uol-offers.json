@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 92838,
-  "run_duration_seconds": 92.84,
-  "avg_detail_ms_per_offer": 7737,
-  "generated_at": "2026-05-31T03:20:45.720Z",
+  "run_duration_ms": 138171,
+  "run_duration_seconds": 138.17,
+  "avg_detail_ms_per_offer": 11514,
+  "generated_at": "2026-05-31T03:33:11.531Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129293,
-      "detail_elapsed_ms": 3711,
-      "scraped_at": "2026-05-31T03:19:53.237Z"
+      "detail_html_length": 131124,
+      "detail_elapsed_ms": 26146,
+      "scraped_at": "2026-05-31T03:32:07.922Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
       "title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
       "preview_title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
-      "validity": "Benefício válido de 29/05/2026 11:36 até 04/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Usiminas, em Ipatinga - MG. Data: 05/06/2026 | 21h. Local: Av. Pedro Linhares Gomes, 3.900 A, Bairro Industrial, Ipatinga (MG). Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132908,
-      "detail_elapsed_ms": 2589,
-      "scraped_at": "2026-05-31T03:19:55.827Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12020,
+      "scraped_at": "2026-05-31T03:32:35.420Z"
     },
     {
       "id": "pua-2-ingressos-04-06-cine-theatro-brasil-mg",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132878,
-      "detail_elapsed_ms": 2811,
-      "scraped_at": "2026-05-31T03:19:58.638Z"
+      "detail_html_length": 131678,
+      "detail_elapsed_ms": 3735,
+      "scraped_at": "2026-05-31T03:32:39.155Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129876,
-      "detail_elapsed_ms": 2943,
-      "scraped_at": "2026-05-31T03:20:01.581Z"
+      "detail_html_length": 131015,
+      "detail_elapsed_ms": 2816,
+      "scraped_at": "2026-05-31T03:32:41.971Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132568,
-      "detail_elapsed_ms": 2534,
-      "scraped_at": "2026-05-31T03:20:04.116Z"
+      "detail_html_length": 132951,
+      "detail_elapsed_ms": 9166,
+      "scraped_at": "2026-05-31T03:32:51.138Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131558,
-      "detail_elapsed_ms": 2640,
-      "scraped_at": "2026-05-31T03:20:06.757Z"
+      "detail_html_length": 130393,
+      "detail_elapsed_ms": 2834,
+      "scraped_at": "2026-05-31T03:32:54.016Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130880,
-      "detail_elapsed_ms": 2456,
-      "scraped_at": "2026-05-31T03:20:09.213Z"
+      "detail_html_length": 129721,
+      "detail_elapsed_ms": 2350,
+      "scraped_at": "2026-05-31T03:32:56.366Z"
     },
     {
       "id": "put-lacoste-com-at-50-off-20-off-extra",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131151,
-      "detail_elapsed_ms": 6242,
-      "scraped_at": "2026-05-31T03:20:15.455Z"
+      "detail_html_length": 129993,
+      "detail_elapsed_ms": 2744,
+      "scraped_at": "2026-05-31T03:32:59.111Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -231,10 +231,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131119,
-      "detail_elapsed_ms": 10401,
-      "scraped_at": "2026-05-31T03:20:38.316Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131131,
+      "detail_elapsed_ms": 2553,
+      "scraped_at": "2026-05-31T03:33:01.664Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131306,
-      "detail_elapsed_ms": 2490,
-      "scraped_at": "2026-05-31T03:20:40.807Z"
+      "detail_html_length": 131288,
+      "detail_elapsed_ms": 3600,
+      "scraped_at": "2026-05-31T03:33:05.265Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129725,
-      "detail_elapsed_ms": 2430,
-      "scraped_at": "2026-05-31T03:20:43.237Z"
+      "detail_html_length": 131207,
+      "detail_elapsed_ms": 3007,
+      "scraped_at": "2026-05-31T03:33:08.272Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131119,
-      "detail_elapsed_ms": 2296,
-      "scraped_at": "2026-05-31T03:20:45.533Z"
+      "detail_html_length": 129952,
+      "detail_elapsed_ms": 2576,
+      "scraped_at": "2026-05-31T03:33:10.848Z"
     }
   ]
 }
