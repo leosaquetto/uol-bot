@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 126017,
-  "run_duration_seconds": 126.02,
-  "avg_detail_ms_per_offer": 10501,
-  "generated_at": "2026-06-01T16:32:11.450Z",
+  "run_duration_ms": 51489,
+  "run_duration_seconds": 51.49,
+  "avg_detail_ms_per_offer": 4291,
+  "generated_at": "2026-06-01T16:43:13.001Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132586,
-      "detail_elapsed_ms": 13130,
-      "scraped_at": "2026-06-01T16:31:12.434Z"
+      "detail_html_length": 126248,
+      "detail_elapsed_ms": 2450,
+      "scraped_at": "2026-06-01T16:42:45.702Z"
     },
     {
       "id": "puj-2-ingressos-07-06-teatro-multiplan-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132826,
-      "detail_elapsed_ms": 11565,
-      "scraped_at": "2026-06-01T16:31:24.001Z"
+      "detail_html_length": 133308,
+      "detail_elapsed_ms": 2271,
+      "scraped_at": "2026-06-01T16:42:47.986Z"
     },
     {
       "id": "pui-2-ingressos-06-06-teatro-multiplan-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131305,
-      "detail_elapsed_ms": 4156,
-      "scraped_at": "2026-06-01T16:31:28.157Z"
+      "detail_html_length": 132835,
+      "detail_elapsed_ms": 1604,
+      "scraped_at": "2026-06-01T16:42:49.590Z"
     },
     {
       "id": "puh-2-ingressos-04-06-teatro-multiplan-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132734,
-      "detail_elapsed_ms": 3989,
-      "scraped_at": "2026-06-01T16:31:32.146Z"
+      "detail_html_length": 132762,
+      "detail_elapsed_ms": 1611,
+      "scraped_at": "2026-06-01T16:42:51.201Z"
     },
     {
       "id": "pug-2-ingressos-03-06-teatro-multiplan-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132545,
-      "detail_elapsed_ms": 10147,
-      "scraped_at": "2026-06-01T16:31:42.293Z"
+      "detail_html_length": 132732,
+      "detail_elapsed_ms": 1930,
+      "scraped_at": "2026-06-01T16:42:53.131Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129766,
-      "detail_elapsed_ms": 4023,
-      "scraped_at": "2026-06-01T16:31:46.316Z"
+      "detail_html_length": 131453,
+      "detail_elapsed_ms": 2366,
+      "scraped_at": "2026-06-01T16:42:55.497Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126537,
-      "detail_elapsed_ms": 4111,
-      "scraped_at": "2026-06-01T16:31:50.427Z"
+      "detail_html_length": 132918,
+      "detail_elapsed_ms": 1640,
+      "scraped_at": "2026-06-01T16:42:57.137Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129791,
-      "detail_elapsed_ms": 4750,
-      "scraped_at": "2026-06-01T16:31:55.178Z"
+      "detail_html_length": 131084,
+      "detail_elapsed_ms": 1615,
+      "scraped_at": "2026-06-01T16:42:58.752Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132559,
-      "detail_elapsed_ms": 3761,
-      "scraped_at": "2026-06-01T16:31:58.939Z"
+      "detail_html_length": 132617,
+      "detail_elapsed_ms": 1805,
+      "scraped_at": "2026-06-01T16:43:00.557Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130870,
-      "detail_elapsed_ms": 3885,
-      "scraped_at": "2026-06-01T16:32:02.824Z"
+      "detail_html_length": 130909,
+      "detail_elapsed_ms": 2332,
+      "scraped_at": "2026-06-01T16:43:02.889Z"
     },
     {
-      "id": "pus-ate-60-off-10-masculino",
-      "trace_id": "trace_pus-ate-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "id": "pus-at-60-off-10-masculino",
+      "trace_id": "trace_pus-at-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131126,
-      "detail_elapsed_ms": 3219,
-      "scraped_at": "2026-06-01T16:32:06.043Z"
+      "detail_html_length": 131168,
+      "detail_elapsed_ms": 1712,
+      "scraped_at": "2026-06-01T16:43:04.601Z"
     },
     {
-      "id": "pur-30-off-extra-em-selecao-acessorios",
-      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "id": "pur-30-off-extra-em-seleo-acessrios",
+      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131312,
-      "detail_elapsed_ms": 5103,
-      "scraped_at": "2026-06-01T16:32:11.146Z"
+      "detail_html_length": 131284,
+      "detail_elapsed_ms": 1772,
+      "scraped_at": "2026-06-01T16:43:06.373Z"
     }
   ]
 }
