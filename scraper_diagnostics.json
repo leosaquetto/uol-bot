@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-01T16:44:50.176726Z",
+  "updated_at": "2026-06-01T16:56:00.140939Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 9,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -27,18 +27,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/puJ-2-ingressos-07-06-teatro-multiplan-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_puj-2-ingressos-07-06-teatro-multiplan-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 06/06 Teatro Multiplan SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puI-2-ingressos-06-06-teatro-multiplan-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pui-2-ingressos-06-06-teatro-multiplan-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 04/06 Teatro Multiplan SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puH-2-ingressos-04-06-teatro-multiplan-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puh-2-ingressos-04-06-teatro-multiplan-sp"
     },
     {
       "title": "2 INGRESSOS: 03/06 Teatro Multiplan SP",
@@ -81,6 +69,12 @@
       "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
       "reason": "duplicada_latest",
       "trace_id": "trace_pus-at-60-off-10-masculino"
+    },
+    {
+      "title": "20% OFF Extra em Inverno Feminino",
+      "link": "https://clube.uol.com.br/lojasrenner/puq-20-off-extra-em-inverno-feminino",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puq-20-off-extra-em-inverno-feminino"
     }
   ]
 }
