@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 177191,
-  "run_duration_seconds": 177.19,
-  "avg_detail_ms_per_offer": 14766,
-  "generated_at": "2026-06-01T17:52:59.236Z",
+  "run_duration_ms": 111456,
+  "run_duration_seconds": 111.46,
+  "avg_detail_ms_per_offer": 9288,
+  "generated_at": "2026-06-01T18:05:11.076Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "puj-2-ingressos-07-06-teatro-multiplan-sp",
-      "trace_id": "trace_puj-2-ingressos-07-06-teatro-multiplan-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puJ-2-ingressos-07-06-teatro-multiplan-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puJ-2-ingressos-07-06-teatro-multiplan-sp",
-      "title": "2 INGRESSOS: 07/06 Teatro Multiplan SP",
-      "preview_title": "2 INGRESSOS: 07/06 Teatro Multiplan SP",
-      "validity": "Benefício válido de 01/06/2026 11:34 até 06/06/2026 23:59.",
-      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para o espetáculo “Poemas” e mergulhe em uma experiência sensível que reflete sobre a dualidade da vida, a memória, o amor e a esperança, em uma encenação poética e onírica no Teatro Multiplan MorumbiShopping, em São Paulo. Data: 07 de Junho, às 18h. Local: Teatro Multiplan MorumbiShopping – Av. Roque Petroni Jr., 1089, Piso G2 – São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1d98139d26e_6a1d971a76544_6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1d98139d26e_6a1d971a76544_6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1d98139d26e_6a1d971a76544_6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132331,
-      "detail_elapsed_ms": 10035,
-      "scraped_at": "2026-06-01T17:51:41.601Z"
-    },
     {
       "id": "puf-15-off-no-site",
       "trace_id": "trace_puf-15-off-no-site",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130991,
-      "detail_elapsed_ms": 9976,
-      "scraped_at": "2026-06-01T17:51:51.580Z"
+      "detail_html_length": 131134,
+      "detail_elapsed_ms": 13283,
+      "scraped_at": "2026-06-01T18:04:24.953Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132887,
-      "detail_elapsed_ms": 6930,
-      "scraped_at": "2026-06-01T17:51:58.511Z"
+      "detail_html_length": 132898,
+      "detail_elapsed_ms": 6349,
+      "scraped_at": "2026-06-01T18:04:31.303Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130887,
-      "detail_elapsed_ms": 6498,
-      "scraped_at": "2026-06-01T17:52:05.009Z"
+      "detail_html_length": 131045,
+      "detail_elapsed_ms": 4341,
+      "scraped_at": "2026-06-01T18:04:35.644Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132557,
-      "detail_elapsed_ms": 7332,
-      "scraped_at": "2026-06-01T17:52:12.341Z"
+      "detail_html_length": 132588,
+      "detail_elapsed_ms": 2721,
+      "scraped_at": "2026-06-01T18:04:38.366Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -160,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130888,
-      "detail_elapsed_ms": 7594,
-      "scraped_at": "2026-06-01T17:52:19.935Z"
+      "detail_html_length": 130890,
+      "detail_elapsed_ms": 9284,
+      "scraped_at": "2026-06-01T18:04:47.651Z"
     },
     {
-      "id": "pus-at-60-off-10-masculino",
-      "trace_id": "trace_pus-at-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "id": "pus-ate-60-off-10-masculino",
+      "trace_id": "trace_pus-ate-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -184,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130971,
-      "detail_elapsed_ms": 7140,
-      "scraped_at": "2026-06-01T17:52:27.075Z"
+      "detail_html_length": 131155,
+      "detail_elapsed_ms": 3981,
+      "scraped_at": "2026-06-01T18:04:51.633Z"
     },
     {
-      "id": "pur-30-off-extra-em-seleo-acessrios",
-      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "id": "pur-30-off-extra-em-selecao-acessorios",
+      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131294,
-      "detail_elapsed_ms": 6847,
-      "scraped_at": "2026-06-01T17:52:33.922Z"
+      "detail_html_length": 131311,
+      "detail_elapsed_ms": 3036,
+      "scraped_at": "2026-06-01T18:04:54.669Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -232,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131216,
-      "detail_elapsed_ms": 7459,
-      "scraped_at": "2026-06-01T17:52:41.382Z"
+      "detail_html_length": 124865,
+      "detail_elapsed_ms": 3016,
+      "scraped_at": "2026-06-01T18:04:57.685Z"
     },
     {
-      "id": "pup-at-60-off-20-off-jeans",
-      "trace_id": "trace_pup-at-60-off-20-off-jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
+      "id": "pup-ate-60-off-20-off-jeans",
+      "trace_id": "trace_pup-ate-60-off-20-off-jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
       "title": "Até 60% OFF +20% OFF Jeans",
       "preview_title": "Até 60% OFF +20% OFF Jeans",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -256,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130971,
-      "detail_elapsed_ms": 5523,
-      "scraped_at": "2026-06-01T17:52:46.906Z"
+      "detail_html_length": 131135,
+      "detail_elapsed_ms": 3532,
+      "scraped_at": "2026-06-01T18:05:01.217Z"
     },
     {
-      "id": "pum-at-75-off-em-seleo-de-produtos",
-      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "id": "pum-ate-75-off-em-selecao-de-produtos",
+      "trace_id": "trace_pum-ate-75-off-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
       "title": "Até 75% OFF em seleção de produtos",
       "preview_title": "Até 75% OFF em seleção de produtos",
       "validity": "Benefício válido de 28/05/2026 09:23 até 14/06/2026 23:59.",
@@ -280,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131027,
-      "detail_elapsed_ms": 4835,
-      "scraped_at": "2026-06-01T17:52:51.755Z"
+      "detail_html_length": 131121,
+      "detail_elapsed_ms": 3014,
+      "scraped_at": "2026-06-01T18:05:04.232Z"
     },
     {
-      "id": "pul-at-75-off-para-compras-no-site",
-      "trace_id": "trace_pul-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
+      "id": "pul-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_pul-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 28/05/2026 09:18 até 14/06/2026 23:59.",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131214,
-      "detail_elapsed_ms": 6887,
-      "scraped_at": "2026-06-01T17:52:58.643Z"
+      "detail_html_length": 131388,
+      "detail_elapsed_ms": 3143,
+      "scraped_at": "2026-06-01T18:05:07.375Z"
+    },
+    {
+      "id": "puk-ate-12-off-bola-trionda-adidas",
+      "trace_id": "trace_puk-ate-12-off-bola-trionda-adidas",
+      "link": "https://clube.uol.com.br/movida/puk-ate-12-off-bola-trionda-adidas",
+      "original_link": "https://clube.uol.com.br/movida/puk-ate-12-off-bola-trionda-adidas",
+      "title": "Até 12% OFF + Bola Trionda Adidas",
+      "preview_title": "Até 12% OFF + Bola Trionda Adidas",
+      "validity": "Benefício válido de 28/05/2026 09:12 até 20/07/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% OFF em aluguéis de carro + Bola Trionda Exclusiva da Adidas. Desconto já aplicado no hotsite da parceria + 2% OFF utilizando a opção PAGAR AGORA. E ainda, se fizer lavagem especial, ganha a Bola Trionda Adidas. Modelo da bola varia de acordo com o tipo de lavagem escolhida: Lavagem Simples: Trionda Hacky Sack Lavagem Completa: Trionda Mini Lavagem Completa SUV Premium: Trionda Club Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "category": "Promoções do Mês",
+      "partner_name": "Movida",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/105d91fb56063ff4cfeba15b2967cdb2.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/105d91fb56063ff4cfeba15b2967cdb2.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/105d91fb56063ff4cfeba15b2967cdb2.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133712,
+      "detail_elapsed_ms": 3326,
+      "scraped_at": "2026-06-01T18:05:10.701Z"
     }
   ]
 }
