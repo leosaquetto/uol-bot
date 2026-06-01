@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 51489,
-  "run_duration_seconds": 51.49,
-  "avg_detail_ms_per_offer": 4291,
-  "generated_at": "2026-06-01T16:43:13.001Z",
+  "run_duration_ms": 103134,
+  "run_duration_seconds": 103.13,
+  "avg_detail_ms_per_offer": 8595,
+  "generated_at": "2026-06-01T16:55:07.178Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126248,
-      "detail_elapsed_ms": 2450,
-      "scraped_at": "2026-06-01T16:42:45.702Z"
+      "detail_html_length": 132582,
+      "detail_elapsed_ms": 6902,
+      "scraped_at": "2026-06-01T16:54:26.651Z"
     },
     {
       "id": "puj-2-ingressos-07-06-teatro-multiplan-sp",
@@ -64,57 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133308,
-      "detail_elapsed_ms": 2271,
-      "scraped_at": "2026-06-01T16:42:47.986Z"
-    },
-    {
-      "id": "pui-2-ingressos-06-06-teatro-multiplan-sp",
-      "trace_id": "trace_pui-2-ingressos-06-06-teatro-multiplan-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puI-2-ingressos-06-06-teatro-multiplan-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puI-2-ingressos-06-06-teatro-multiplan-sp",
-      "title": "2 INGRESSOS: 06/06 Teatro Multiplan SP",
-      "preview_title": "2 INGRESSOS: 06/06 Teatro Multiplan SP",
-      "validity": "Benefício válido de 01/06/2026 11:29 até 05/06/2026 23:59.",
-      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para o espetáculo “Poemas” e mergulhe em uma experiência sensível que reflete sobre a dualidade da vida, a memória, o amor e a esperança, em uma encenação poética e onírica no Teatro Multiplan MorumbiShopping, em São Paulo. Data: 06 de Junho, às 18h. Local: Teatro Multiplan MorumbiShopping – Av. Roque Petroni Jr., 1089, Piso G2 – São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1d971a76544_6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1d971a76544_6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1d971a76544_6a10bdbfcafdc_6a10b747a1849_ea6a1f1d521b77ccb87499195c1c3f39.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132835,
-      "detail_elapsed_ms": 1604,
-      "scraped_at": "2026-06-01T16:42:49.590Z"
-    },
-    {
-      "id": "puh-2-ingressos-04-06-teatro-multiplan-sp",
-      "trace_id": "trace_puh-2-ingressos-04-06-teatro-multiplan-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puH-2-ingressos-04-06-teatro-multiplan-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puH-2-ingressos-04-06-teatro-multiplan-sp",
-      "title": "2 INGRESSOS: 04/06 Teatro Multiplan SP",
-      "preview_title": "2 INGRESSOS: 04/06 Teatro Multiplan SP",
-      "validity": "Benefício válido de 01/06/2026 11:00 até 03/06/2026 23:59.",
-      "description": "Assinante UOL, prepare-se para uma experiência emocionante! Resgate 1 par de ingressos para “Allan Kardec – Um Olhar para a Eternidade” e encante-se com essa biografia teatral envolvente sobre a jornada do cientista pelo universo espiritual, no MorumbiShopping, em São Paulo (SP). Data: 04/06/2026, às 20h Local: Teatro Multiplan MorumbiShopping – Av. Roque Petroni Jr., 1089, Piso G2 – São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/21f4eb621489af9fb855e34e123fd47f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/21f4eb621489af9fb855e34e123fd47f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/21f4eb621489af9fb855e34e123fd47f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132762,
-      "detail_elapsed_ms": 1611,
-      "scraped_at": "2026-06-01T16:42:51.201Z"
+      "detail_html_length": 131568,
+      "detail_elapsed_ms": 2916,
+      "scraped_at": "2026-06-01T16:54:29.570Z"
     },
     {
       "id": "pug-2-ingressos-03-06-teatro-multiplan-sp",
@@ -136,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132732,
-      "detail_elapsed_ms": 1930,
-      "scraped_at": "2026-06-01T16:42:53.131Z"
+      "detail_html_length": 132693,
+      "detail_elapsed_ms": 2677,
+      "scraped_at": "2026-06-01T16:54:32.247Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -160,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131453,
-      "detail_elapsed_ms": 2366,
-      "scraped_at": "2026-06-01T16:42:55.497Z"
+      "detail_html_length": 131011,
+      "detail_elapsed_ms": 2907,
+      "scraped_at": "2026-06-01T16:54:35.154Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -184,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132918,
-      "detail_elapsed_ms": 1640,
-      "scraped_at": "2026-06-01T16:42:57.137Z"
+      "detail_html_length": 126526,
+      "detail_elapsed_ms": 3061,
+      "scraped_at": "2026-06-01T16:54:38.215Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -208,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131084,
-      "detail_elapsed_ms": 1615,
-      "scraped_at": "2026-06-01T16:42:58.752Z"
+      "detail_html_length": 131025,
+      "detail_elapsed_ms": 2879,
+      "scraped_at": "2026-06-01T16:54:41.094Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -232,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132617,
-      "detail_elapsed_ms": 1805,
-      "scraped_at": "2026-06-01T16:43:00.557Z"
+      "detail_html_length": 132558,
+      "detail_elapsed_ms": 4086,
+      "scraped_at": "2026-06-01T16:54:45.180Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130909,
-      "detail_elapsed_ms": 2332,
-      "scraped_at": "2026-06-01T16:43:02.889Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 2940,
+      "scraped_at": "2026-06-01T16:54:48.120Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -280,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131168,
-      "detail_elapsed_ms": 1712,
-      "scraped_at": "2026-06-01T16:43:04.601Z"
+      "detail_html_length": 129894,
+      "detail_elapsed_ms": 2758,
+      "scraped_at": "2026-06-01T16:54:50.880Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -304,9 +256,57 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131284,
-      "detail_elapsed_ms": 1772,
-      "scraped_at": "2026-06-01T16:43:06.373Z"
+      "detail_html_length": 131266,
+      "detail_elapsed_ms": 5984,
+      "scraped_at": "2026-06-01T16:54:56.865Z"
+    },
+    {
+      "id": "puq-20-off-extra-em-inverno-feminino",
+      "trace_id": "trace_puq-20-off-extra-em-inverno-feminino",
+      "link": "https://clube.uol.com.br/lojasrenner/puq-20-off-extra-em-inverno-feminino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/puq-20-off-extra-em-inverno-feminino",
+      "title": "20% OFF Extra em Inverno Feminino",
+      "preview_title": "20% OFF Extra em Inverno Feminino",
+      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 20% OFF extra em seleção feminina de inverno Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e5070646b2c14512ae53f2d04e015166.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e5070646b2c14512ae53f2d04e015166.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e5070646b2c14512ae53f2d04e015166.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131226,
+      "detail_elapsed_ms": 6345,
+      "scraped_at": "2026-06-01T16:55:03.210Z"
+    },
+    {
+      "id": "pup-at-60-off-20-off-jeans",
+      "trace_id": "trace_pup-at-60-off-20-off-jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
+      "title": "Até 60% OFF +20% OFF Jeans",
+      "preview_title": "Até 60% OFF +20% OFF Jeans",
+      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
+      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: Até 60% OFF + 20% OFF extra em seleção de jeans Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25fac38662d35d1ad58e3c7f35e38c8e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25fac38662d35d1ad58e3c7f35e38c8e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25fac38662d35d1ad58e3c7f35e38c8e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131130,
+      "detail_elapsed_ms": 2199,
+      "scraped_at": "2026-06-01T16:55:05.409Z"
     }
   ]
 }
