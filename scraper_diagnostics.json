@@ -1,27 +1,21 @@
 {
-  "updated_at": "2026-06-01T17:54:37.580467Z",
+  "updated_at": "2026-06-01T18:06:01.570234Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 3,
+    "duplicada_historico": 11,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 07/06 Teatro Multiplan SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puJ-2-ingressos-07-06-teatro-multiplan-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puj-2-ingressos-07-06-teatro-multiplan-sp"
-    },
     {
       "title": "15% OFF no site!",
       "link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
@@ -54,9 +48,9 @@
     },
     {
       "title": "Até 60% OFF +10% Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pus-at-60-off-10-masculino"
+      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pus-ate-60-off-10-masculino"
     },
     {
       "title": "20% OFF Extra em Inverno Feminino",
@@ -65,16 +59,28 @@
       "trace_id": "trace_puq-20-off-extra-em-inverno-feminino"
     },
     {
+      "title": "Até 60% OFF +20% OFF Jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pup-ate-60-off-20-off-jeans"
+    },
+    {
       "title": "Até 75% OFF em seleção de produtos",
-      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos"
+      "link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pum-ate-75-off-em-selecao-de-produtos"
     },
     {
       "title": "Até 75% OFF para compras no site",
-      "link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pul-at-75-off-para-compras-no-site"
+      "link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pul-ate-75-off-para-compras-no-site"
+    },
+    {
+      "title": "Até 12% OFF + Bola Trionda Adidas",
+      "link": "https://clube.uol.com.br/movida/puk-ate-12-off-bola-trionda-adidas",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puk-ate-12-off-bola-trionda-adidas"
     }
   ]
 }
