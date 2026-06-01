@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 9,
     "partial": 0,
-    "weak": 2,
+    "weak": 3,
     "failed": 0
   },
-  "run_duration_ms": 84857,
-  "run_duration_seconds": 84.86,
-  "avg_detail_ms_per_offer": 7071,
-  "generated_at": "2026-06-01T15:55:49.759Z",
+  "run_duration_ms": 85373,
+  "run_duration_seconds": 85.37,
+  "avg_detail_ms_per_offer": 7114,
+  "generated_at": "2026-06-01T16:07:25.223Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 321354,
-      "detail_elapsed_ms": 6224,
-      "scraped_at": "2026-06-01T15:55:22.907Z"
+      "detail_html_length": 321377,
+      "detail_elapsed_ms": 12247,
+      "scraped_at": "2026-06-01T16:06:45.362Z"
     },
     {
       "id": "puj-2-ingressos-07-06-teatro-multiplan-sp",
@@ -64,33 +64,33 @@
       "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 320000,
-      "detail_elapsed_ms": 2545,
-      "scraped_at": "2026-06-01T15:55:25.453Z"
+      "detail_html_length": 321503,
+      "detail_elapsed_ms": 6875,
+      "scraped_at": "2026-06-01T16:06:52.613Z"
     },
     {
       "id": "puh-2-ingressos-04-06-teatro-multiplan-sp",
       "trace_id": "trace_puh-2-ingressos-04-06-teatro-multiplan-sp",
       "link": "https://clube.uol.com.br/campanhasdeingresso/puH-2-ingressos-04-06-teatro-multiplan-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/puH-2-ingressos-04-06-teatro-multiplan-sp",
-      "title": "2 INGRESSOS: 04/06 Teatro Multiplan SP",
+      "title": "Ingressos Exclusivos",
       "preview_title": "2 INGRESSOS: 04/06 Teatro Multiplan SP",
-      "validity": "Benefício válido de 01/06/2026 11:00 até 03/06/2026 23:59.",
-      "description": "Assinante UOL, prepare-se para uma experiência emocionante! Resgate 1 par de ingressos para “Allan Kardec – Um Olhar para a Eternidade” e encante-se com essa biografia teatral envolvente sobre a jornada do cientista pelo universo espiritual, no MorumbiShopping, em São Paulo (SP). Data: 04/06/2026, às 20h Local: Teatro Multiplan MorumbiShopping – Av. Roque Petroni Jr., 1089, Piso G2 – São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/21f4eb621489af9fb855e34e123fd47f.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0f3bef64eb2b2a5d061c616a1d12f216.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/21f4eb621489af9fb855e34e123fd47f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/21f4eb621489af9fb855e34e123fd47f.png",
-      "img_source": "meta_og",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0f3bef64eb2b2a5d061c616a1d12f216.png",
+      "img_source": "benefit_data_src",
       "detail_ok": true,
-      "detail_quality": "complete",
+      "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132744,
-      "detail_elapsed_ms": 1779,
-      "scraped_at": "2026-06-01T15:55:27.233Z"
+      "detail_html_length": 320267,
+      "detail_elapsed_ms": 4300,
+      "scraped_at": "2026-06-01T16:06:56.913Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131062,
-      "detail_elapsed_ms": 1819,
-      "scraped_at": "2026-06-01T15:55:29.052Z"
+      "detail_html_length": 129914,
+      "detail_elapsed_ms": 2745,
+      "scraped_at": "2026-06-01T16:06:59.658Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132948,
-      "detail_elapsed_ms": 2116,
-      "scraped_at": "2026-06-01T15:55:31.168Z"
+      "detail_html_length": 132899,
+      "detail_elapsed_ms": 3285,
+      "scraped_at": "2026-06-01T16:07:02.943Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131035,
-      "detail_elapsed_ms": 1814,
-      "scraped_at": "2026-06-01T15:55:32.982Z"
+      "detail_html_length": 129790,
+      "detail_elapsed_ms": 3598,
+      "scraped_at": "2026-06-01T16:07:06.541Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132567,
-      "detail_elapsed_ms": 1987,
-      "scraped_at": "2026-06-01T15:55:34.969Z"
+      "detail_html_length": 132559,
+      "detail_elapsed_ms": 5244,
+      "scraped_at": "2026-06-01T16:07:11.785Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124260,
-      "detail_elapsed_ms": 1774,
-      "scraped_at": "2026-06-01T15:55:36.743Z"
+      "detail_html_length": 130870,
+      "detail_elapsed_ms": 4040,
+      "scraped_at": "2026-06-01T16:07:15.825Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124777,
-      "detail_elapsed_ms": 2929,
-      "scraped_at": "2026-06-01T15:55:39.672Z"
+      "detail_html_length": 131151,
+      "detail_elapsed_ms": 2423,
+      "scraped_at": "2026-06-01T16:07:18.249Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131285,
-      "detail_elapsed_ms": 2530,
-      "scraped_at": "2026-06-01T15:55:42.202Z"
+      "detail_html_length": 131286,
+      "detail_elapsed_ms": 2565,
+      "scraped_at": "2026-06-01T16:07:20.814Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131227,
-      "detail_elapsed_ms": 3282,
-      "scraped_at": "2026-06-01T15:55:45.486Z"
+      "detail_html_length": 124875,
+      "detail_elapsed_ms": 1926,
+      "scraped_at": "2026-06-01T16:07:22.740Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131130,
-      "detail_elapsed_ms": 3363,
-      "scraped_at": "2026-06-01T15:55:48.849Z"
+      "detail_html_length": 131141,
+      "detail_elapsed_ms": 2131,
+      "scraped_at": "2026-06-01T16:07:24.871Z"
     }
   ]
 }
