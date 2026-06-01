@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-06-01T22:38:55.534193Z",
+  "updated_at": "2026-06-01T22:47:20.161402Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 9,
-    "duplicada_latest": 2,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -24,9 +24,9 @@
     },
     {
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
     },
     {
       "title": "38% OFF na Caixa de Bombom Angel 200g",
@@ -36,9 +36,9 @@
     },
     {
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos"
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos"
     },
     {
       "title": "15% OFF no site!",
@@ -66,21 +66,15 @@
     },
     {
       "title": "Resgate agora 1 Kit de Ímãs de Coração",
-      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pu0-resgate-agora-1-kit-de-imas-de-coracao"
+      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao"
     },
     {
       "title": "Cursinho ENEM com 20% OFF!",
       "link": "https://clube.uol.com.br/descomplica/puz-cursinho-enem-com-20-off",
       "reason": "duplicada_historico",
       "trace_id": "trace_puz-cursinho-enem-com-20-off"
-    },
-    {
-      "title": "Até 60% OFF +10% Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pus-ate-60-off-10-masculino"
     }
   ]
 }
