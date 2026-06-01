@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 159335,
-  "run_duration_seconds": 159.34,
-  "avg_detail_ms_per_offer": 13278,
-  "generated_at": "2026-05-31T23:44:38.068Z",
+  "run_duration_ms": 121650,
+  "run_duration_seconds": 121.65,
+  "avg_detail_ms_per_offer": 10138,
+  "generated_at": "2026-06-01T00:20:44.836Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130864,
-      "detail_elapsed_ms": 11093,
-      "scraped_at": "2026-05-31T23:43:50.903Z"
+      "detail_html_length": 131133,
+      "detail_elapsed_ms": 13995,
+      "scraped_at": "2026-06-01T00:19:36.083Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132912,
-      "detail_elapsed_ms": 7661,
-      "scraped_at": "2026-05-31T23:43:58.567Z"
+      "detail_html_length": 132909,
+      "detail_elapsed_ms": 8825,
+      "scraped_at": "2026-06-01T00:19:45.183Z"
     },
     {
       "id": "pua-2-ingressos-04-06-cine-theatro-brasil-mg",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126509,
-      "detail_elapsed_ms": 4042,
-      "scraped_at": "2026-05-31T23:44:02.609Z"
+      "detail_html_length": 132858,
+      "detail_elapsed_ms": 9724,
+      "scraped_at": "2026-06-01T00:19:54.907Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129871,
-      "detail_elapsed_ms": 2630,
-      "scraped_at": "2026-05-31T23:44:05.239Z"
+      "detail_html_length": 131026,
+      "detail_elapsed_ms": 2714,
+      "scraped_at": "2026-06-01T00:19:57.621Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,33 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131326,
-      "detail_elapsed_ms": 4059,
-      "scraped_at": "2026-05-31T23:44:09.298Z"
-    },
-    {
-      "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "title": "Resgate agora 1 Kit de Ímãs de Coração",
-      "preview_title": "Resgate agora 1 Kit de Ímãs de Coração",
-      "validity": "Benefício válido de 07/05/2026 15:11 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit com 9 Ímãs personalizados em formato Coração grátis da FotoRegistro. Regras: Oferta válida para 1 Kit com 9 unidades no formato Coração. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7 x 7cm cada. Frete não incluso. Validade do cupom até 30/06/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
-      "category": "Compras e Presentes",
-      "partner_name": "Foto Registro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131096,
-      "detail_elapsed_ms": 7232,
-      "scraped_at": "2026-05-31T23:44:16.530Z"
+      "detail_html_length": 132558,
+      "detail_elapsed_ms": 2815,
+      "scraped_at": "2026-06-01T00:20:00.436Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -184,33 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 3436,
-      "scraped_at": "2026-05-31T23:44:19.966Z"
-    },
-    {
-      "id": "put-lacoste-com-at-50-off-20-off-extra",
-      "trace_id": "trace_put-lacoste-com-at-50-off-20-off-extra",
-      "link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
-      "original_link": "https://clube.uol.com.br/dafitikl/put-lacoste-com-at-50-off-20-off-extra",
-      "title": "Lacoste com até 50% OFF + 20% OFF extra",
-      "preview_title": "Lacoste com até 50% OFF + 20% OFF extra",
-      "validity": "Benefício válido de 28/05/2026 13:20 até 31/05/2026 23:59.",
-      "description": "Sobre o parceiro: A Dafiti é uma das maiores plataformas de moda e lifestyle da América Latina, oferecendo roupas, calçados, acessórios e produtos das principais marcas nacionais e internacionais com praticidade e variedade para todos os estilos. Benefício: Lacoste com até 50% OFF + 20% OFF extra do cupom Regras: Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Dafiti",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/176009af291259a73c6116303b0d997f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131156,
-      "detail_elapsed_ms": 3924,
-      "scraped_at": "2026-05-31T23:44:23.890Z"
+      "detail_html_length": 129643,
+      "detail_elapsed_ms": 4803,
+      "scraped_at": "2026-06-01T00:20:05.239Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -232,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129918,
-      "detail_elapsed_ms": 2369,
-      "scraped_at": "2026-05-31T23:44:26.260Z"
+      "detail_html_length": 129970,
+      "detail_elapsed_ms": 3859,
+      "scraped_at": "2026-06-01T00:20:09.098Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -256,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124937,
-      "detail_elapsed_ms": 2693,
-      "scraped_at": "2026-05-31T23:44:28.954Z"
+      "detail_html_length": 130147,
+      "detail_elapsed_ms": 3787,
+      "scraped_at": "2026-06-01T00:20:12.885Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131221,
-      "detail_elapsed_ms": 4602,
-      "scraped_at": "2026-05-31T23:44:33.557Z"
+      "detail_html_length": 131207,
+      "detail_elapsed_ms": 3011,
+      "scraped_at": "2026-06-01T00:20:15.896Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -304,9 +256,57 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131134,
-      "detail_elapsed_ms": 3630,
-      "scraped_at": "2026-05-31T23:44:37.188Z"
+      "detail_html_length": 130973,
+      "detail_elapsed_ms": 14090,
+      "scraped_at": "2026-06-01T00:20:29.986Z"
+    },
+    {
+      "id": "pum-at-75-off-em-seleo-de-produtos",
+      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "title": "Até 75% OFF em seleção de produtos",
+      "preview_title": "Até 75% OFF em seleção de produtos",
+      "validity": "Benefício válido de 28/05/2026 09:23 até 14/06/2026 23:59.",
+      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: Até 75% OFF em seleção de produtos (Até 60% OFF no site + 15% OFF com o cupom da parceria). Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
+      "category": "Compras e Presentes",
+      "partner_name": "Zattini",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131075,
+      "detail_elapsed_ms": 3823,
+      "scraped_at": "2026-06-01T00:20:33.810Z"
+    },
+    {
+      "id": "pul-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pul-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
+      "title": "Até 75% OFF para compras no site",
+      "preview_title": "Até 75% OFF para compras no site",
+      "validity": "Benefício válido de 28/05/2026 09:18 até 14/06/2026 23:59.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Netshoes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56d6d367d1da5c927a8ce9d18cd85d1f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56d6d367d1da5c927a8ce9d18cd85d1f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56d6d367d1da5c927a8ce9d18cd85d1f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131354,
+      "detail_elapsed_ms": 9170,
+      "scraped_at": "2026-06-01T00:20:42.984Z"
     }
   ]
 }
