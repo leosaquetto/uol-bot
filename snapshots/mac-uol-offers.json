@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 2
   },
-  "run_duration_ms": 235348,
-  "run_duration_seconds": 235.35,
-  "avg_detail_ms_per_offer": 19612,
-  "generated_at": "2026-06-01T22:21:24.320Z",
+  "run_duration_ms": 352022,
+  "run_duration_seconds": 352.02,
+  "avg_detail_ms_per_offer": 29335,
+  "generated_at": "2026-06-01T22:37:31.035Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,32 +41,32 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12810,
-      "scraped_at": "2026-06-01T22:19:37.498Z"
+      "detail_elapsed_ms": 12050,
+      "scraped_at": "2026-06-01T22:35:34.305Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para a exposição “A alma humana, você e o universo de Jung” no Instituto Marcos Hacker de Melo, em Boa Viagem - Recife. A experiência é imersiva e promove autoconhecimento e reflexão! Validade:14/06/2026 Quando: Diariamente, das 9h às 19h. Local: Rua dos Navegantes, 1838 - Boa Viagem, Recife COMO RESGATAR O CUPOM: •Acesse pelo o link: https://megapass.com.br/eventos/a-alma-humana-voce-e-o-universo-de-jung-recife • Se for o primeiro acesso, cadastre-se antes de prosseguir. • Após o cadastro, volte à tela inicial, selecione o dia e a hora desejada. • Em seguida, selecione em opção INTEIRA, aplique o cupom conforme recebido. • Para prosseguir, preencha todos os campos conforme indicado. • Após aplicar o cupom, preencha os demais dados e finalize o pedido. • Não será necessário preencher os dados de pagamento • O cupom é composto apenas pela palavra, sem incluir números ou símbolos. Importante: • O cupom tem limite de retirada de 2 ingressos por CPF.; • Fique atento a data da sua visita, pois o cupom não poderá ser reutilizado; • O agendamento deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12003,
-      "scraped_at": "2026-06-01T22:20:02.557Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133605,
+      "detail_elapsed_ms": 11608,
+      "scraped_at": "2026-06-01T22:35:45.915Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -87,16 +87,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132933,
-      "detail_elapsed_ms": 10785,
-      "scraped_at": "2026-06-01T22:20:25.773Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132941,
+      "detail_elapsed_ms": 6159,
+      "scraped_at": "2026-06-01T22:35:52.074Z"
     },
     {
-      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
       "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
       "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132657,
-      "detail_elapsed_ms": 5766,
-      "scraped_at": "2026-06-01T22:20:31.539Z"
+      "detail_html_length": 131673,
+      "detail_elapsed_ms": 4109,
+      "scraped_at": "2026-06-01T22:35:56.184Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131002,
-      "detail_elapsed_ms": 10242,
-      "scraped_at": "2026-06-01T22:20:41.781Z"
+      "detail_html_length": 131000,
+      "detail_elapsed_ms": 4837,
+      "scraped_at": "2026-06-01T22:36:01.021Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132751,
-      "detail_elapsed_ms": 8940,
-      "scraped_at": "2026-06-01T22:20:50.721Z"
+      "detail_html_length": 132878,
+      "detail_elapsed_ms": 5230,
+      "scraped_at": "2026-06-01T22:36:06.252Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130950,
-      "detail_elapsed_ms": 11230,
-      "scraped_at": "2026-06-01T22:21:01.951Z"
+      "detail_html_length": 131035,
+      "detail_elapsed_ms": 4744,
+      "scraped_at": "2026-06-01T22:36:10.996Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -208,33 +208,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132483,
-      "detail_elapsed_ms": 2889,
-      "scraped_at": "2026-06-01T22:21:04.840Z"
+      "detail_html_length": 132547,
+      "detail_elapsed_ms": 9683,
+      "scraped_at": "2026-06-01T22:36:20.680Z"
     },
     {
-      "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "id": "pu0-resgate-agora-1-kit-de-imas-de-coracao",
+      "trace_id": "trace_pu0-resgate-agora-1-kit-de-imas-de-coracao",
+      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao",
       "title": "Resgate agora 1 Kit de Ímãs de Coração",
       "preview_title": "Resgate agora 1 Kit de Ímãs de Coração",
-      "validity": "Benefício válido de 07/05/2026 15:11 até 30/06/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit com 9 Ímãs personalizados em formato Coração grátis da FotoRegistro. Regras: Oferta válida para 1 Kit com 9 unidades no formato Coração. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7 x 7cm cada. Frete não incluso. Validade do cupom até 30/06/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130035,
-      "detail_elapsed_ms": 3660,
-      "scraped_at": "2026-06-01T22:21:08.500Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 13639,
+      "scraped_at": "2026-06-01T22:36:46.732Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130891,
-      "detail_elapsed_ms": 4560,
-      "scraped_at": "2026-06-01T22:21:13.060Z"
+      "detail_html_length": 130858,
+      "detail_elapsed_ms": 13238,
+      "scraped_at": "2026-06-01T22:36:59.970Z"
     },
     {
-      "id": "pus-at-60-off-10-masculino",
-      "trace_id": "trace_pus-at-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "id": "pus-ate-60-off-10-masculino",
+      "trace_id": "trace_pus-ate-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -279,16 +279,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131121,
-      "detail_elapsed_ms": 4313,
-      "scraped_at": "2026-06-01T22:21:17.373Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131125,
+      "detail_elapsed_ms": 11760,
+      "scraped_at": "2026-06-01T22:37:24.282Z"
     },
     {
-      "id": "pur-30-off-extra-em-seleo-acessrios",
-      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "id": "pur-30-off-extra-em-selecao-acessorios",
+      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131287,
-      "detail_elapsed_ms": 6040,
-      "scraped_at": "2026-06-01T22:21:23.413Z"
+      "detail_html_length": 131144,
+      "detail_elapsed_ms": 6261,
+      "scraped_at": "2026-06-01T22:37:30.543Z"
     }
   ]
 }
