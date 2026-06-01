@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 110628,
-  "run_duration_seconds": 110.63,
-  "avg_detail_ms_per_offer": 9219,
-  "generated_at": "2026-06-01T20:53:16.061Z",
+  "run_duration_ms": 144772,
+  "run_duration_seconds": 144.77,
+  "avg_detail_ms_per_offer": 12064,
+  "generated_at": "2026-06-01T21:05:52.237Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,28 +27,28 @@
       "original_link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
       "title": "37% OFF no Cubo Bombom Brigadeiro 130g",
       "preview_title": "37% OFF no Cubo Bombom Brigadeiro 130g",
-      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
-      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 37% de desconto no Cubo Bombom Brigadeiro 130g - De R$ 31,99 por R$ 19,99. Sobre o Cubo com Bombons de Chocolate ao Leite 130g: O Cubo com Bombons de Chocolate ao Leite é perfeito para compor presentes e cestas, trazendo o sabor clássico que todo brasileiro ama. Com bombons recheados de brigadeiro, oferece uma experiência cremosa e irresistível. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Cubo Bombom Brigadeiro 130g - De R$ 31,99 por R$ 19,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Cacau Show",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132782,
-      "detail_elapsed_ms": 13959,
-      "scraped_at": "2026-06-01T20:52:37.328Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12024,
+      "scraped_at": "2026-06-01T21:04:51.766Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132376,
-      "detail_elapsed_ms": 2511,
-      "scraped_at": "2026-06-01T20:52:39.842Z"
+      "detail_html_length": 133584,
+      "detail_elapsed_ms": 8830,
+      "scraped_at": "2026-06-01T21:05:00.602Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131437,
-      "detail_elapsed_ms": 2411,
-      "scraped_at": "2026-06-01T20:52:42.253Z"
+      "detail_html_length": 132784,
+      "detail_elapsed_ms": 8898,
+      "scraped_at": "2026-06-01T21:05:09.500Z"
     },
     {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
       "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
       "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132900,
-      "detail_elapsed_ms": 2872,
-      "scraped_at": "2026-06-01T20:52:45.125Z"
+      "detail_html_length": 126531,
+      "detail_elapsed_ms": 3246,
+      "scraped_at": "2026-06-01T21:05:12.746Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129497,
-      "detail_elapsed_ms": 4534,
-      "scraped_at": "2026-06-01T20:52:49.659Z"
+      "detail_html_length": 130936,
+      "detail_elapsed_ms": 4085,
+      "scraped_at": "2026-06-01T21:05:16.832Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132749,
-      "detail_elapsed_ms": 5670,
-      "scraped_at": "2026-06-01T20:52:55.329Z"
+      "detail_html_length": 132899,
+      "detail_elapsed_ms": 4760,
+      "scraped_at": "2026-06-01T21:05:21.593Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129875,
-      "detail_elapsed_ms": 2767,
-      "scraped_at": "2026-06-01T20:52:58.097Z"
+      "detail_html_length": 131036,
+      "detail_elapsed_ms": 3977,
+      "scraped_at": "2026-06-01T21:05:25.570Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132460,
-      "detail_elapsed_ms": 4108,
-      "scraped_at": "2026-06-01T20:53:02.205Z"
+      "detail_html_length": 131243,
+      "detail_elapsed_ms": 3630,
+      "scraped_at": "2026-06-01T21:05:29.200Z"
     },
     {
-      "id": "pu0-resgate-agora-1-kit-de-imas-de-coracao",
-      "trace_id": "trace_pu0-resgate-agora-1-kit-de-imas-de-coracao",
-      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao",
+      "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
       "title": "Resgate agora 1 Kit de Ímãs de Coração",
       "preview_title": "Resgate agora 1 Kit de Ímãs de Coração",
       "validity": "Benefício válido de 07/05/2026 15:11 até 30/06/2026 23:59.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130351,
-      "detail_elapsed_ms": 4017,
-      "scraped_at": "2026-06-01T20:53:06.222Z"
+      "detail_html_length": 131471,
+      "detail_elapsed_ms": 5420,
+      "scraped_at": "2026-06-01T21:05:34.620Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 3099,
-      "scraped_at": "2026-06-01T20:53:09.321Z"
+      "detail_html_length": 130891,
+      "detail_elapsed_ms": 7249,
+      "scraped_at": "2026-06-01T21:05:41.869Z"
     },
     {
-      "id": "pus-ate-60-off-10-masculino",
-      "trace_id": "trace_pus-ate-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "id": "pus-at-60-off-10-masculino",
+      "trace_id": "trace_pus-at-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131124,
-      "detail_elapsed_ms": 2320,
-      "scraped_at": "2026-06-01T20:53:11.641Z"
+      "detail_html_length": 130973,
+      "detail_elapsed_ms": 4585,
+      "scraped_at": "2026-06-01T21:05:46.454Z"
     },
     {
-      "id": "pur-30-off-extra-em-selecao-acessorios",
-      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "id": "pur-30-off-extra-em-seleo-acessrios",
+      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130054,
-      "detail_elapsed_ms": 3846,
-      "scraped_at": "2026-06-01T20:53:15.487Z"
+      "detail_html_length": 131296,
+      "detail_elapsed_ms": 5563,
+      "scraped_at": "2026-06-01T21:05:52.017Z"
     }
   ]
 }
