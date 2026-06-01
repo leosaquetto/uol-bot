@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 90134,
-  "run_duration_seconds": 90.13,
-  "avg_detail_ms_per_offer": 7511,
-  "generated_at": "2026-06-01T13:31:26.574Z",
+  "run_duration_ms": 62759,
+  "run_duration_seconds": 62.76,
+  "avg_detail_ms_per_offer": 5230,
+  "generated_at": "2026-06-01T13:42:39.418Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124165,
-      "detail_elapsed_ms": 3466,
-      "scraped_at": "2026-06-01T13:30:46.963Z"
+      "detail_html_length": 130102,
+      "detail_elapsed_ms": 3361,
+      "scraped_at": "2026-06-01T13:42:11.868Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132907,
-      "detail_elapsed_ms": 8607,
-      "scraped_at": "2026-06-01T13:30:55.572Z"
+      "detail_html_length": 131653,
+      "detail_elapsed_ms": 2651,
+      "scraped_at": "2026-06-01T13:42:14.521Z"
     },
     {
       "id": "pua-2-ingressos-04-06-cine-theatro-brasil-mg",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132856,
-      "detail_elapsed_ms": 4185,
-      "scraped_at": "2026-06-01T13:30:59.757Z"
+      "detail_html_length": 131700,
+      "detail_elapsed_ms": 2569,
+      "scraped_at": "2026-06-01T13:42:17.090Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131043,
-      "detail_elapsed_ms": 3440,
-      "scraped_at": "2026-06-01T13:31:03.197Z"
+      "detail_html_length": 131016,
+      "detail_elapsed_ms": 2366,
+      "scraped_at": "2026-06-01T13:42:19.457Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132558,
-      "detail_elapsed_ms": 2443,
-      "scraped_at": "2026-06-01T13:31:05.640Z"
+      "detail_html_length": 132559,
+      "detail_elapsed_ms": 2150,
+      "scraped_at": "2026-06-01T13:42:21.607Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129395,
-      "detail_elapsed_ms": 3368,
-      "scraped_at": "2026-06-01T13:31:09.008Z"
+      "detail_html_length": 130880,
+      "detail_elapsed_ms": 2183,
+      "scraped_at": "2026-06-01T13:42:23.790Z"
     },
     {
-      "id": "pus-at-60-off-10-masculino",
-      "trace_id": "trace_pus-at-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "id": "pus-ate-60-off-10-masculino",
+      "trace_id": "trace_pus-ate-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131129,
-      "detail_elapsed_ms": 2086,
-      "scraped_at": "2026-06-01T13:31:11.094Z"
+      "detail_html_length": 131125,
+      "detail_elapsed_ms": 2983,
+      "scraped_at": "2026-06-01T13:42:26.774Z"
     },
     {
-      "id": "pur-30-off-extra-em-seleo-acessrios",
-      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "id": "pur-30-off-extra-em-selecao-acessorios",
+      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131294,
-      "detail_elapsed_ms": 3919,
-      "scraped_at": "2026-06-01T13:31:15.013Z"
+      "detail_html_length": 131281,
+      "detail_elapsed_ms": 2790,
+      "scraped_at": "2026-06-01T13:42:29.564Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131227,
-      "detail_elapsed_ms": 2575,
-      "scraped_at": "2026-06-01T13:31:17.588Z"
+      "detail_html_length": 131219,
+      "detail_elapsed_ms": 2333,
+      "scraped_at": "2026-06-01T13:42:31.897Z"
     },
     {
-      "id": "pup-at-60-off-20-off-jeans",
-      "trace_id": "trace_pup-at-60-off-20-off-jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
+      "id": "pup-ate-60-off-20-off-jeans",
+      "trace_id": "trace_pup-ate-60-off-20-off-jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
       "title": "Até 60% OFF +20% OFF Jeans",
       "preview_title": "Até 60% OFF +20% OFF Jeans",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131141,
-      "detail_elapsed_ms": 2560,
-      "scraped_at": "2026-06-01T13:31:20.148Z"
+      "detail_html_length": 131632,
+      "detail_elapsed_ms": 2995,
+      "scraped_at": "2026-06-01T13:42:34.892Z"
     },
     {
-      "id": "pum-at-75-off-em-seleo-de-produtos",
-      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "id": "pum-ate-75-off-em-selecao-de-produtos",
+      "trace_id": "trace_pum-ate-75-off-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
       "title": "Até 75% OFF em seleção de produtos",
       "preview_title": "Até 75% OFF em seleção de produtos",
       "validity": "Benefício válido de 28/05/2026 09:23 até 14/06/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131097,
-      "detail_elapsed_ms": 2427,
-      "scraped_at": "2026-06-01T13:31:22.575Z"
+      "detail_html_length": 131101,
+      "detail_elapsed_ms": 2349,
+      "scraped_at": "2026-06-01T13:42:37.243Z"
     },
     {
-      "id": "pul-at-75-off-para-compras-no-site",
-      "trace_id": "trace_pul-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
+      "id": "pul-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_pul-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pul-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 28/05/2026 09:18 até 14/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131362,
-      "detail_elapsed_ms": 2340,
-      "scraped_at": "2026-06-01T13:31:24.915Z"
+      "detail_html_length": 131381,
+      "detail_elapsed_ms": 2045,
+      "scraped_at": "2026-06-01T13:42:39.288Z"
     }
   ]
 }
