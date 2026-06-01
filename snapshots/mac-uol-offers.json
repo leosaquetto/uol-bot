@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 103134,
-  "run_duration_seconds": 103.13,
-  "avg_detail_ms_per_offer": 8595,
-  "generated_at": "2026-06-01T16:55:07.178Z",
+  "run_duration_ms": 43177,
+  "run_duration_seconds": 43.18,
+  "avg_detail_ms_per_offer": 3598,
+  "generated_at": "2026-06-01T17:05:58.650Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132582,
-      "detail_elapsed_ms": 6902,
-      "scraped_at": "2026-06-01T16:54:26.651Z"
+      "detail_html_length": 131099,
+      "detail_elapsed_ms": 4930,
+      "scraped_at": "2026-06-01T17:05:35.083Z"
     },
     {
       "id": "puj-2-ingressos-07-06-teatro-multiplan-sp",
@@ -64,33 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131568,
-      "detail_elapsed_ms": 2916,
-      "scraped_at": "2026-06-01T16:54:29.570Z"
-    },
-    {
-      "id": "pug-2-ingressos-03-06-teatro-multiplan-sp",
-      "trace_id": "trace_pug-2-ingressos-03-06-teatro-multiplan-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puG-2-ingressos-03-06-teatro-multiplan-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puG-2-ingressos-03-06-teatro-multiplan-sp",
-      "title": "2 INGRESSOS: 03/06 Teatro Multiplan SP",
-      "preview_title": "2 INGRESSOS: 03/06 Teatro Multiplan SP",
-      "validity": "Benefício válido de 22/05/2026 18:29 até 03/06/2026 23:59.",
-      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para OS MENTALISTAS – ENTRE NÓS e viva uma experiência envolvente que mistura mentalismo, psicologia e interação com a plateia, em um espetáculo provocador no Teatro Multiplan, em São Paulo. Data: 03/06/2026, às 20h30 Local: Teatro Multiplan MorumbiShopping – Av. Roque Petroni Jr., 1089, Piso G2 – São Paulo – SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/41bd359e506ef39aec62bfa65b250df8.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/41bd359e506ef39aec62bfa65b250df8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/41bd359e506ef39aec62bfa65b250df8.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132693,
-      "detail_elapsed_ms": 2677,
-      "scraped_at": "2026-06-01T16:54:32.247Z"
+      "detail_html_length": 131579,
+      "detail_elapsed_ms": 3257,
+      "scraped_at": "2026-06-01T17:05:38.341Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131011,
-      "detail_elapsed_ms": 2907,
-      "scraped_at": "2026-06-01T16:54:35.154Z"
+      "detail_html_length": 131031,
+      "detail_elapsed_ms": 2081,
+      "scraped_at": "2026-06-01T17:05:40.422Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126526,
-      "detail_elapsed_ms": 3061,
-      "scraped_at": "2026-06-01T16:54:38.215Z"
+      "detail_html_length": 132898,
+      "detail_elapsed_ms": 2049,
+      "scraped_at": "2026-06-01T17:05:42.471Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131025,
-      "detail_elapsed_ms": 2879,
-      "scraped_at": "2026-06-01T16:54:41.094Z"
+      "detail_html_length": 131024,
+      "detail_elapsed_ms": 2294,
+      "scraped_at": "2026-06-01T17:05:44.765Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132558,
-      "detail_elapsed_ms": 4086,
-      "scraped_at": "2026-06-01T16:54:45.180Z"
+      "detail_html_length": 132569,
+      "detail_elapsed_ms": 2633,
+      "scraped_at": "2026-06-01T17:05:47.398Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -208,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130859,
-      "detail_elapsed_ms": 2940,
-      "scraped_at": "2026-06-01T16:54:48.120Z"
+      "detail_html_length": 130929,
+      "detail_elapsed_ms": 1810,
+      "scraped_at": "2026-06-01T17:05:49.208Z"
     },
     {
-      "id": "pus-at-60-off-10-masculino",
-      "trace_id": "trace_pus-at-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "id": "pus-ate-60-off-10-masculino",
+      "trace_id": "trace_pus-ate-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -232,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129894,
-      "detail_elapsed_ms": 2758,
-      "scraped_at": "2026-06-01T16:54:50.880Z"
+      "detail_html_length": 131165,
+      "detail_elapsed_ms": 1794,
+      "scraped_at": "2026-06-01T17:05:51.002Z"
     },
     {
-      "id": "pur-30-off-extra-em-seleo-acessrios",
-      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "id": "pur-30-off-extra-em-selecao-acessorios",
+      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131266,
-      "detail_elapsed_ms": 5984,
-      "scraped_at": "2026-06-01T16:54:56.865Z"
+      "detail_html_length": 131340,
+      "detail_elapsed_ms": 1802,
+      "scraped_at": "2026-06-01T17:05:52.804Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -280,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131226,
-      "detail_elapsed_ms": 6345,
-      "scraped_at": "2026-06-01T16:55:03.210Z"
+      "detail_html_length": 131237,
+      "detail_elapsed_ms": 1925,
+      "scraped_at": "2026-06-01T17:05:54.729Z"
     },
     {
-      "id": "pup-at-60-off-20-off-jeans",
-      "trace_id": "trace_pup-at-60-off-20-off-jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pup-at-60-off-20-off-jeans",
+      "id": "pup-ate-60-off-20-off-jeans",
+      "trace_id": "trace_pup-ate-60-off-20-off-jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
       "title": "Até 60% OFF +20% OFF Jeans",
       "preview_title": "Até 60% OFF +20% OFF Jeans",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131130,
-      "detail_elapsed_ms": 2199,
-      "scraped_at": "2026-06-01T16:55:05.409Z"
+      "detail_html_length": 131175,
+      "detail_elapsed_ms": 1822,
+      "scraped_at": "2026-06-01T17:05:56.551Z"
+    },
+    {
+      "id": "pum-ate-75-off-em-selecao-de-produtos",
+      "trace_id": "trace_pum-ate-75-off-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/pum-ate-75-off-em-selecao-de-produtos",
+      "title": "Até 75% OFF em seleção de produtos",
+      "preview_title": "Até 75% OFF em seleção de produtos",
+      "validity": "Benefício válido de 28/05/2026 09:23 até 14/06/2026 23:59.",
+      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: Até 75% OFF em seleção de produtos (Até 60% OFF no site + 15% OFF com o cupom da parceria). Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
+      "category": "Compras e Presentes",
+      "partner_name": "Zattini",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131154,
+      "detail_elapsed_ms": 1950,
+      "scraped_at": "2026-06-01T17:05:58.501Z"
     }
   ]
 }
