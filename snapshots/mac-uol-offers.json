@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 1
   },
-  "run_duration_ms": 352022,
-  "run_duration_seconds": 352.02,
-  "avg_detail_ms_per_offer": 29335,
-  "generated_at": "2026-06-01T22:37:31.035Z",
+  "run_duration_ms": 192239,
+  "run_duration_seconds": 192.24,
+  "avg_detail_ms_per_offer": 16020,
+  "generated_at": "2026-06-01T22:46:31.049Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,14 +41,14 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12050,
-      "scraped_at": "2026-06-01T22:35:34.305Z"
+      "detail_elapsed_ms": 12797,
+      "scraped_at": "2026-06-01T22:44:57.899Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133605,
-      "detail_elapsed_ms": 11608,
-      "scraped_at": "2026-06-01T22:35:45.915Z"
+      "detail_html_length": 133378,
+      "detail_elapsed_ms": 16707,
+      "scraped_at": "2026-06-01T22:45:14.607Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132941,
-      "detail_elapsed_ms": 6159,
-      "scraped_at": "2026-06-01T22:35:52.074Z"
+      "detail_html_length": 126578,
+      "detail_elapsed_ms": 4963,
+      "scraped_at": "2026-06-01T22:45:19.571Z"
     },
     {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
       "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
       "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131673,
-      "detail_elapsed_ms": 4109,
-      "scraped_at": "2026-06-01T22:35:56.184Z"
+      "detail_html_length": 132890,
+      "detail_elapsed_ms": 3088,
+      "scraped_at": "2026-06-01T22:45:22.662Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131000,
-      "detail_elapsed_ms": 4837,
-      "scraped_at": "2026-06-01T22:36:01.021Z"
+      "detail_html_length": 131271,
+      "detail_elapsed_ms": 13110,
+      "scraped_at": "2026-06-01T22:45:35.773Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -159,10 +159,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
+      "detail_attempts": 2,
       "detail_html_length": 132878,
-      "detail_elapsed_ms": 5230,
-      "scraped_at": "2026-06-01T22:36:06.252Z"
+      "detail_elapsed_ms": 6528,
+      "scraped_at": "2026-06-01T22:45:55.460Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131035,
-      "detail_elapsed_ms": 4744,
-      "scraped_at": "2026-06-01T22:36:10.996Z"
+      "detail_html_length": 131044,
+      "detail_elapsed_ms": 7797,
+      "scraped_at": "2026-06-01T22:46:03.257Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -208,33 +208,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132547,
-      "detail_elapsed_ms": 9683,
-      "scraped_at": "2026-06-01T22:36:20.680Z"
+      "detail_html_length": 132538,
+      "detail_elapsed_ms": 7185,
+      "scraped_at": "2026-06-01T22:46:10.442Z"
     },
     {
-      "id": "pu0-resgate-agora-1-kit-de-imas-de-coracao",
-      "trace_id": "trace_pu0-resgate-agora-1-kit-de-imas-de-coracao",
-      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao",
+      "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
       "title": "Resgate agora 1 Kit de Ímãs de Coração",
       "preview_title": "Resgate agora 1 Kit de Ímãs de Coração",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 07/05/2026 15:11 até 30/06/2026 23:59.",
+      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit com 9 Ímãs personalizados em formato Coração grátis da FotoRegistro. Regras: Oferta válida para 1 Kit com 9 unidades no formato Coração. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7 x 7cm cada. Frete não incluso. Validade do cupom até 30/06/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-imas-de-coracao\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 13639,
-      "scraped_at": "2026-06-01T22:36:46.732Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131546,
+      "detail_elapsed_ms": 10220,
+      "scraped_at": "2026-06-01T22:46:20.662Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130858,
-      "detail_elapsed_ms": 13238,
-      "scraped_at": "2026-06-01T22:36:59.970Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 3949,
+      "scraped_at": "2026-06-01T22:46:24.611Z"
     },
     {
-      "id": "pus-ate-60-off-10-masculino",
-      "trace_id": "trace_pus-ate-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "id": "pus-at-60-off-10-masculino",
+      "trace_id": "trace_pus-at-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -279,16 +279,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131125,
-      "detail_elapsed_ms": 11760,
-      "scraped_at": "2026-06-01T22:37:24.282Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131118,
+      "detail_elapsed_ms": 3000,
+      "scraped_at": "2026-06-01T22:46:27.613Z"
     },
     {
-      "id": "pur-30-off-extra-em-selecao-acessorios",
-      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "id": "pur-30-off-extra-em-seleo-acessrios",
+      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131144,
-      "detail_elapsed_ms": 6261,
-      "scraped_at": "2026-06-01T22:37:30.543Z"
+      "detail_html_length": 131275,
+      "detail_elapsed_ms": 3103,
+      "scraped_at": "2026-06-01T22:46:30.716Z"
     }
   ]
 }
