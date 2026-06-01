@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 112371,
-  "run_duration_seconds": 112.37,
-  "avg_detail_ms_per_offer": 9364,
-  "generated_at": "2026-06-01T20:30:02.836Z",
+  "run_duration_ms": 61162,
+  "run_duration_seconds": 61.16,
+  "avg_detail_ms_per_offer": 5097,
+  "generated_at": "2026-06-01T20:41:16.298Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,34 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131779,
-      "detail_elapsed_ms": 9983,
-      "scraped_at": "2026-06-01T20:29:22.530Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132782,
+      "detail_elapsed_ms": 4721,
+      "scraped_at": "2026-06-01T20:40:50.820Z"
+    },
+    {
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
+      "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
+      "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para a exposição “A alma humana, você e o universo de Jung” no Instituto Marcos Hacker de Melo, em Boa Viagem - Recife. A experiência é imersiva e promove autoconhecimento e reflexão! Validade:14/06/2026 Quando: Diariamente, das 9h às 19h. Local: Rua dos Navegantes, 1838 - Boa Viagem, Recife COMO RESGATAR O CUPOM: •Acesse pelo o link: https://megapass.com.br/eventos/a-alma-humana-voce-e-o-universo-de-jung-recife • Se for o primeiro acesso, cadastre-se antes de prosseguir. • Após o cadastro, volte à tela inicial, selecione o dia e a hora desejada. • Em seguida, selecione em opção INTEIRA, aplique o cupom conforme recebido. • Para prosseguir, preencha todos os campos conforme indicado. • Após aplicar o cupom, preencha os demais dados e finalize o pedido. • Não será necessário preencher os dados de pagamento • O cupom é composto apenas pela palavra, sem incluir números ou símbolos. Importante: • O cupom tem limite de retirada de 2 ingressos por CPF.; • Fique atento a data da sua visita, pois o cupom não poderá ser reutilizado; • O agendamento deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132367,
+      "detail_elapsed_ms": 3566,
+      "scraped_at": "2026-06-01T20:40:54.424Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -64,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132937,
-      "detail_elapsed_ms": 11182,
-      "scraped_at": "2026-06-01T20:29:33.715Z"
+      "detail_html_length": 132950,
+      "detail_elapsed_ms": 2565,
+      "scraped_at": "2026-06-01T20:40:56.990Z"
     },
     {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
       "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
       "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132897,
-      "detail_elapsed_ms": 4746,
-      "scraped_at": "2026-06-01T20:29:38.462Z"
+      "detail_html_length": 132931,
+      "detail_elapsed_ms": 2361,
+      "scraped_at": "2026-06-01T20:40:59.351Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130790,
-      "detail_elapsed_ms": 5627,
-      "scraped_at": "2026-06-01T20:29:44.089Z"
+      "detail_html_length": 131020,
+      "detail_elapsed_ms": 1902,
+      "scraped_at": "2026-06-01T20:41:01.254Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126522,
-      "detail_elapsed_ms": 2641,
-      "scraped_at": "2026-06-01T20:29:46.730Z"
+      "detail_html_length": 132897,
+      "detail_elapsed_ms": 2210,
+      "scraped_at": "2026-06-01T20:41:03.464Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131041,
-      "detail_elapsed_ms": 2331,
-      "scraped_at": "2026-06-01T20:29:49.061Z"
+      "detail_html_length": 131024,
+      "detail_elapsed_ms": 1965,
+      "scraped_at": "2026-06-01T20:41:05.430Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -184,9 +208,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132545,
-      "detail_elapsed_ms": 2167,
-      "scraped_at": "2026-06-01T20:29:51.228Z"
+      "detail_html_length": 132558,
+      "detail_elapsed_ms": 2560,
+      "scraped_at": "2026-06-01T20:41:07.990Z"
+    },
+    {
+      "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
+      "title": "Resgate agora 1 Kit de Ímãs de Coração",
+      "preview_title": "Resgate agora 1 Kit de Ímãs de Coração",
+      "validity": "Benefício válido de 07/05/2026 15:11 até 30/06/2026 23:59.",
+      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit com 9 Ímãs personalizados em formato Coração grátis da FotoRegistro. Regras: Oferta válida para 1 Kit com 9 unidades no formato Coração. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7 x 7cm cada. Frete não incluso. Validade do cupom até 30/06/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
+      "category": "Compras e Presentes",
+      "partner_name": "Foto Registro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/18d6031284e3242f39f594476c75524f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131547,
+      "detail_elapsed_ms": 2150,
+      "scraped_at": "2026-06-01T20:41:10.140Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -208,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130885,
-      "detail_elapsed_ms": 2267,
-      "scraped_at": "2026-06-01T20:29:53.495Z"
+      "detail_html_length": 130878,
+      "detail_elapsed_ms": 2025,
+      "scraped_at": "2026-06-01T20:41:12.165Z"
     },
     {
-      "id": "pus-ate-60-off-10-masculino",
-      "trace_id": "trace_pus-ate-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "id": "pus-at-60-off-10-masculino",
+      "trace_id": "trace_pus-at-60-off-10-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
       "title": "Até 60% OFF +10% Masculino",
       "preview_title": "Até 60% OFF +10% Masculino",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -232,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131152,
-      "detail_elapsed_ms": 2201,
-      "scraped_at": "2026-06-01T20:29:55.696Z"
+      "detail_html_length": 131108,
+      "detail_elapsed_ms": 1871,
+      "scraped_at": "2026-06-01T20:41:14.036Z"
     },
     {
-      "id": "pur-30-off-extra-em-selecao-acessorios",
-      "trace_id": "trace_pur-30-off-extra-em-selecao-acessorios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-selecao-de-acessorios",
+      "id": "pur-30-off-extra-em-seleo-acessrios",
+      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
+      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
       "title": "30% OFF extra em seleção de acessórios",
       "preview_title": "30% OFF extra em seleção de acessórios",
       "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131295,
-      "detail_elapsed_ms": 1912,
-      "scraped_at": "2026-06-01T20:29:57.608Z"
-    },
-    {
-      "id": "puq-20-off-extra-em-inverno-feminino",
-      "trace_id": "trace_puq-20-off-extra-em-inverno-feminino",
-      "link": "https://clube.uol.com.br/lojasrenner/puq-20-off-extra-em-inverno-feminino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/puq-20-off-extra-em-inverno-feminino",
-      "title": "20% OFF Extra em Inverno Feminino",
-      "preview_title": "20% OFF Extra em Inverno Feminino",
-      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
-      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 20% OFF extra em seleção feminina de inverno Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e5070646b2c14512ae53f2d04e015166.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e5070646b2c14512ae53f2d04e015166.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e5070646b2c14512ae53f2d04e015166.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131224,
-      "detail_elapsed_ms": 2211,
-      "scraped_at": "2026-06-01T20:29:59.819Z"
-    },
-    {
-      "id": "pup-ate-60-off-20-off-jeans",
-      "trace_id": "trace_pup-ate-60-off-20-off-jeans",
-      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
-      "title": "Até 60% OFF +20% OFF Jeans",
-      "preview_title": "Até 60% OFF +20% OFF Jeans",
-      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
-      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: Até 60% OFF + 20% OFF extra em seleção de jeans Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25fac38662d35d1ad58e3c7f35e38c8e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25fac38662d35d1ad58e3c7f35e38c8e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25fac38662d35d1ad58e3c7f35e38c8e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131131,
-      "detail_elapsed_ms": 2503,
-      "scraped_at": "2026-06-01T20:30:02.322Z"
+      "detail_html_length": 131274,
+      "detail_elapsed_ms": 2038,
+      "scraped_at": "2026-06-01T20:41:16.074Z"
     }
   ]
 }
