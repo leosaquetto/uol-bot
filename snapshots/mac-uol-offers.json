@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 9,
+  "detail_fail_count": 3,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 9,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 3
   },
-  "run_duration_ms": 157698,
-  "run_duration_seconds": 157.7,
-  "avg_detail_ms_per_offer": 13142,
-  "generated_at": "2026-06-01T18:30:10.669Z",
+  "run_duration_ms": 226746,
+  "run_duration_seconds": 226.75,
+  "avg_detail_ms_per_offer": 18896,
+  "generated_at": "2026-06-01T18:44:19.095Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124167,
-      "detail_elapsed_ms": 3006,
-      "scraped_at": "2026-06-01T18:29:45.048Z"
+      "detail_html_length": 130863,
+      "detail_elapsed_ms": 13277,
+      "scraped_at": "2026-06-01T18:42:02.349Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
       "title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
       "preview_title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
-      "validity": "Benefício válido de 29/05/2026 11:36 até 04/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Usiminas, em Ipatinga - MG. Data: 05/06/2026 | 21h. Local: Av. Pedro Linhares Gomes, 3.900 A, Bairro Industrial, Ipatinga (MG). Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131730,
-      "detail_elapsed_ms": 1810,
-      "scraped_at": "2026-06-01T18:29:46.876Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12245,
+      "scraped_at": "2026-06-01T18:42:26.961Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/seara/pu9-15-off-em-kits-seara-churrasco",
       "title": "15% OFF em Kits Seara Churrasco!",
       "preview_title": "15% OFF em Kits Seara Churrasco!",
-      "validity": "Benefício válido de 29/05/2026 10:31 até 15/06/2026 23:59.",
-      "description": "Benefício: 15% OFF em edição limitada de Kits Seara Churrasco! Pasta de pão de alho exclusiva (Lançamento) Bolsa térmica exclusiva que segura até 16h Entrega em 10 dias, os produtos chegam antes dos jogos da copa Frete Grátis Parcelamento em 2x no cartão Regras: Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons e ofertas. 1 utilização por CPF. A venda está disponível apenas para SP Estado e RJ Capital.",
+      "validity": "",
+      "description": "",
       "category": "Comer e Beber",
       "partner_name": "Seara",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/94d23d47f26f94cf277ce1efc183dd89.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0487d135b4ee541458fa5a9de36802d5.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0487d135b4ee541458fa5a9de36802d5.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0487d135b4ee541458fa5a9de36802d5.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131046,
-      "detail_elapsed_ms": 3276,
-      "scraped_at": "2026-06-01T18:29:50.152Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/seara/pu9-15-off-em-kits-seara-churrasco\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12151,
+      "scraped_at": "2026-06-01T18:42:52.758Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pu8-2-ingressos-14-06-teatro-tuca-sp",
       "title": "2 INGRESSOS: 14/06 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 14/06 Teatro Tuca - SP",
-      "validity": "Benefício válido de 28/05/2026 17:45 até 13/06/2026 23:59.",
-      "description": "Assinante UOL, viva essa experiência! Resgate 1 par de ingressos e emocione-se com o espetáculo Olhos nos Olhos protagonizado por Ana Lúcia Torre, que celebra 80 anos de vida e 60 anos de carreira em uma apresentação vibrante, reveladora e cheia de sensibilidade, no Teatro Tuca, em São Paulo – SP. Data: 14 de Junho, às 18h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a18b3e25b81b_6a18ad03a090f_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a18b3e25b81b_6a18ad03a090f_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a18b3e25b81b_6a18ad03a090f_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132550,
-      "detail_elapsed_ms": 2411,
-      "scraped_at": "2026-06-01T18:29:52.563Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pu8-2-ingressos-14-06-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 13598,
+      "scraped_at": "2026-06-01T18:43:21.932Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130879,
-      "detail_elapsed_ms": 2107,
-      "scraped_at": "2026-06-01T18:29:54.671Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130869,
+      "detail_elapsed_ms": 11721,
+      "scraped_at": "2026-06-01T18:43:46.294Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131120,
-      "detail_elapsed_ms": 2511,
-      "scraped_at": "2026-06-01T18:29:57.182Z"
+      "detail_html_length": 131119,
+      "detail_elapsed_ms": 4862,
+      "scraped_at": "2026-06-01T18:43:51.156Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131266,
-      "detail_elapsed_ms": 2235,
-      "scraped_at": "2026-06-01T18:29:59.417Z"
+      "detail_html_length": 130128,
+      "detail_elapsed_ms": 3129,
+      "scraped_at": "2026-06-01T18:43:54.285Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131239,
-      "detail_elapsed_ms": 2232,
-      "scraped_at": "2026-06-01T18:30:01.649Z"
+      "detail_html_length": 131217,
+      "detail_elapsed_ms": 5512,
+      "scraped_at": "2026-06-01T18:43:59.797Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131110,
-      "detail_elapsed_ms": 2292,
-      "scraped_at": "2026-06-01T18:30:03.941Z"
+      "detail_html_length": 130972,
+      "detail_elapsed_ms": 4766,
+      "scraped_at": "2026-06-01T18:44:04.564Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131079,
-      "detail_elapsed_ms": 2168,
-      "scraped_at": "2026-06-01T18:30:06.109Z"
+      "detail_html_length": 131095,
+      "detail_elapsed_ms": 3160,
+      "scraped_at": "2026-06-01T18:44:07.724Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131384,
-      "detail_elapsed_ms": 2198,
-      "scraped_at": "2026-06-01T18:30:08.307Z"
+      "detail_html_length": 129869,
+      "detail_elapsed_ms": 4395,
+      "scraped_at": "2026-06-01T18:44:12.119Z"
     },
     {
       "id": "puk-at-12-off-bola-trionda-adidas",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134184,
-      "detail_elapsed_ms": 2179,
-      "scraped_at": "2026-06-01T18:30:10.486Z"
+      "detail_html_length": 132560,
+      "detail_elapsed_ms": 4284,
+      "scraped_at": "2026-06-01T18:44:16.403Z"
     }
   ]
 }
