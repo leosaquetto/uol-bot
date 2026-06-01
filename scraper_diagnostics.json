@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-06-01T18:56:47.536082Z",
+  "updated_at": "2026-06-01T18:58:01.037428Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 2,
+    "duplicada_historico": 8,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 07/06 BTG Pactual Hall - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puQ-2-ingressos-07-06-btg-pactual-hall-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puq-2-ingressos-07-06-btg-pactual-hall-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 06/06 BTG Pactual Hall - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puO-2-ingressos-06-06-btg-pactual-hall-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puo-2-ingressos-06-06-btg-pactual-hall-sp"
+    },
     {
       "title": "15% OFF no site!",
       "link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
@@ -45,12 +57,6 @@
       "link": "https://clube.uol.com.br/descomplica/puz-cursinho-enem-com-20-off",
       "reason": "duplicada_historico",
       "trace_id": "trace_puz-cursinho-enem-com-20-off"
-    },
-    {
-      "title": "Até 60% OFF +10% Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pus-at-60-off-10-masculino"
     },
     {
       "title": "20% OFF Extra em Inverno Feminino",
