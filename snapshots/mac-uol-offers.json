@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 100384,
-  "run_duration_seconds": 100.38,
-  "avg_detail_ms_per_offer": 8365,
-  "generated_at": "2026-06-01T19:44:18.466Z",
+  "run_duration_ms": 59615,
+  "run_duration_seconds": 59.62,
+  "avg_detail_ms_per_offer": 4968,
+  "generated_at": "2026-06-01T19:55:25.681Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "puq-2-ingressos-07-06-btg-pactual-hall-sp",
-      "trace_id": "trace_puq-2-ingressos-07-06-btg-pactual-hall-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puQ-2-ingressos-07-06-btg-pactual-hall-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puQ-2-ingressos-07-06-btg-pactual-hall-sp",
-      "title": "2 INGRESSOS: 07/06 BTG Pactual Hall - SP",
-      "preview_title": "2 INGRESSOS: 07/06 BTG Pactual Hall - SP",
-      "validity": "Benefício válido de 01/06/2026 15:01 até 06/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para curtir o espetáculo “Viva – A Vida é uma Festa In Concert: Uma Experiência Além da Tela” no BTG Pactual Hall, em São Paulo (SP)! Data: 07 de Junho, às 16h e 11h. Local: Rua Bento Branco de Andrade Filho, 722 - Santo Amaro. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1dccffba6fd_6a1dc7e843f5f_69fa3fbd2bff9_69fa3dcb6ec9c_69fa37cab1034_69fa366f6a080_69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1dccffba6fd_6a1dc7e843f5f_69fa3fbd2bff9_69fa3dcb6ec9c_69fa37cab1034_69fa366f6a080_69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1dccffba6fd_6a1dc7e843f5f_69fa3fbd2bff9_69fa3dcb6ec9c_69fa37cab1034_69fa366f6a080_69fa34a568039_ae54106b89ae5c2af4bfb852627804f9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131733,
-      "detail_elapsed_ms": 10659,
-      "scraped_at": "2026-06-01T19:43:37.230Z"
-    },
     {
       "id": "puf-15-off-no-site",
       "trace_id": "trace_puf-15-off-no-site",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131021,
-      "detail_elapsed_ms": 6246,
-      "scraped_at": "2026-06-01T19:43:43.478Z"
+      "detail_html_length": 130854,
+      "detail_elapsed_ms": 9233,
+      "scraped_at": "2026-06-01T19:54:58.124Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131738,
-      "detail_elapsed_ms": 4290,
-      "scraped_at": "2026-06-01T19:43:47.768Z"
+      "detail_html_length": 126545,
+      "detail_elapsed_ms": 2781,
+      "scraped_at": "2026-06-01T19:55:00.906Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -113,8 +89,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131025,
-      "detail_elapsed_ms": 6574,
-      "scraped_at": "2026-06-01T19:43:54.343Z"
+      "detail_elapsed_ms": 3523,
+      "scraped_at": "2026-06-01T19:55:04.430Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131164,
-      "detail_elapsed_ms": 3952,
-      "scraped_at": "2026-06-01T19:43:58.338Z"
+      "detail_html_length": 131410,
+      "detail_elapsed_ms": 2577,
+      "scraped_at": "2026-06-01T19:55:07.007Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130878,
-      "detail_elapsed_ms": 2401,
-      "scraped_at": "2026-06-01T19:44:00.739Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 3435,
+      "scraped_at": "2026-06-01T19:55:10.442Z"
     },
     {
       "id": "pus-at-60-off-10-masculino",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129883,
-      "detail_elapsed_ms": 4455,
-      "scraped_at": "2026-06-01T19:44:05.194Z"
+      "detail_html_length": 131110,
+      "detail_elapsed_ms": 1931,
+      "scraped_at": "2026-06-01T19:55:12.373Z"
     },
     {
       "id": "pur-30-off-extra-em-seleo-acessrios",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131264,
-      "detail_elapsed_ms": 2118,
-      "scraped_at": "2026-06-01T19:44:07.312Z"
+      "detail_html_length": 131314,
+      "detail_elapsed_ms": 2076,
+      "scraped_at": "2026-06-01T19:55:14.449Z"
     },
     {
       "id": "puq-20-off-extra-em-inverno-feminino",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131225,
-      "detail_elapsed_ms": 2701,
-      "scraped_at": "2026-06-01T19:44:10.013Z"
+      "detail_html_length": 131218,
+      "detail_elapsed_ms": 2297,
+      "scraped_at": "2026-06-01T19:55:16.746Z"
     },
     {
       "id": "pup-at-60-off-20-off-jeans",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131119,
-      "detail_elapsed_ms": 3022,
-      "scraped_at": "2026-06-01T19:44:13.035Z"
+      "detail_html_length": 131121,
+      "detail_elapsed_ms": 2398,
+      "scraped_at": "2026-06-01T19:55:19.144Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131088,
-      "detail_elapsed_ms": 2134,
-      "scraped_at": "2026-06-01T19:44:15.169Z"
+      "detail_html_length": 131105,
+      "detail_elapsed_ms": 2202,
+      "scraped_at": "2026-06-01T19:55:21.347Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131363,
-      "detail_elapsed_ms": 2794,
-      "scraped_at": "2026-06-01T19:44:17.963Z"
+      "detail_html_length": 131395,
+      "detail_elapsed_ms": 2195,
+      "scraped_at": "2026-06-01T19:55:23.542Z"
+    },
+    {
+      "id": "puk-at-12-off-bola-trionda-adidas",
+      "trace_id": "trace_puk-at-12-off-bola-trionda-adidas",
+      "link": "https://clube.uol.com.br/movida/puk-at-12-off-bola-trionda-adidas",
+      "original_link": "https://clube.uol.com.br/movida/puk-at-12-off-bola-trionda-adidas",
+      "title": "Até 12% OFF + Bola Trionda Adidas",
+      "preview_title": "Até 12% OFF + Bola Trionda Adidas",
+      "validity": "Benefício válido de 28/05/2026 09:12 até 20/07/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% OFF em aluguéis de carro + Bola Trionda Exclusiva da Adidas. Desconto já aplicado no hotsite da parceria + 2% OFF utilizando a opção PAGAR AGORA. E ainda, se fizer lavagem especial, ganha a Bola Trionda Adidas. Modelo da bola varia de acordo com o tipo de lavagem escolhida: Lavagem Simples: Trionda Hacky Sack Lavagem Completa: Trionda Mini Lavagem Completa SUV Premium: Trionda Club Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "category": "Promoções do Mês",
+      "partner_name": "Movida",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/105d91fb56063ff4cfeba15b2967cdb2.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/105d91fb56063ff4cfeba15b2967cdb2.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/105d91fb56063ff4cfeba15b2967cdb2.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133687,
+      "detail_elapsed_ms": 1950,
+      "scraped_at": "2026-06-01T19:55:25.492Z"
     }
   ]
 }
