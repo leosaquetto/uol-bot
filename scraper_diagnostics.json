@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-06-01T20:20:10.316484Z",
+  "updated_at": "2026-06-01T20:30:48.059842Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
-    "duplicada_latest": 0,
+    "duplicada_historico": 10,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -30,9 +30,9 @@
     },
     {
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos"
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos"
     },
     {
       "title": "15% OFF no site!",
@@ -65,10 +65,22 @@
       "trace_id": "trace_puz-cursinho-enem-com-20-off"
     },
     {
+      "title": "Até 60% OFF +10% Masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/pus-ate-60-off-10-masculino",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pus-ate-60-off-10-masculino"
+    },
+    {
       "title": "20% OFF Extra em Inverno Feminino",
       "link": "https://clube.uol.com.br/lojasrenner/puq-20-off-extra-em-inverno-feminino",
       "reason": "duplicada_historico",
       "trace_id": "trace_puq-20-off-extra-em-inverno-feminino"
+    },
+    {
+      "title": "Até 60% OFF +20% OFF Jeans",
+      "link": "https://clube.uol.com.br/lojasrenner/pup-ate-60-off-20-off-jeans",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pup-ate-60-off-20-off-jeans"
     }
   ]
 }
