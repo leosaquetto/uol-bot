@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-02T17:04:20.140668Z",
+  "updated_at": "2026-06-02T17:14:05.606526Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -47,12 +47,6 @@
       "trace_id": "trace_pvc-2-ingressos-06-06-morumbi-park-sp"
     },
     {
-      "title": "2 INGRESSOS: 05/06 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvb-2-ingressos-05-06-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvb-2-ingressos-05-06-morumbi-park-sp"
-    },
-    {
       "title": "2 INGRESSOS: 14/06 Teatro Liberdade - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pva-2-ingressos-14-06-teatro-liberdade-sp",
       "reason": "duplicada_historico",
@@ -63,12 +57,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/puZ-2-ingressos-13-06-teatro-liberdade-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_puz-2-ingressos-13-06-teatro-liberdade-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 09/06 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puY-2-ingressos-09-06-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puy-2-ingressos-09-06-teatro-liberdade-sp"
     },
     {
       "title": "2 INGRESSOS: 07/06 Teatro Liberdade - SP",
@@ -87,6 +75,18 @@
       "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
       "reason": "duplicada_historico",
       "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g"
+    },
+    {
+      "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
+    },
+    {
+      "title": "38% OFF na Caixa de Bombom Angel 200g",
+      "link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pun-38-off-na-caixa-bombom-angel-200g"
     }
   ]
 }
