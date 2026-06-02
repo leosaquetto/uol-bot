@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29969,
-  "run_duration_seconds": 29.97,
-  "avg_detail_ms_per_offer": 2497,
-  "generated_at": "2026-06-02T20:04:18.353Z",
+  "run_duration_ms": 33404,
+  "run_duration_seconds": 33.4,
+  "avg_detail_ms_per_offer": 2784,
+  "generated_at": "2026-06-02T20:14:59.338Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pvk-ganhe-0-3-cashback-no-consrcio",
+      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consrcio",
+      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
+      "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
+      "title": "Ganhe 0,3% de cashback no consórcio!",
+      "preview_title": "Ganhe 0,3% de cashback no consórcio!",
+      "validity": "Benefício válido de 02/06/2026 16:57 até 31/12/2028 23:59.",
+      "description": "Sobre o parceiro: Conquiste seu imóvel ou veículo novo ou seminovo sem juros. Planeje seus objetivos com parcelas acessíveis e transforme seus sonhos em patrimônio. Benefício: Ganhe 0,3% de cashback ao contratar seu consórcio! Regras: Acesse o link da parceria, insira os seus dados e o código do benefício. Cashback à ser realizado em até 90 dias após o pagamento da 2ª parcela do consórcio. **Exceto segmentos: sustentável e bicicletas. Consulte o regulamento completo: https://promo.parceria.pro/consorcio-regulamento",
+      "category": "",
+      "partner_name": "Consórcio Porto Bank",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8554ae5e6202da20878736e976570520.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ab1ef2425a5c4a51a4284dd0c73e634.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ab1ef2425a5c4a51a4284dd0c73e634.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ab1ef2425a5c4a51a4284dd0c73e634.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131339,
+      "detail_elapsed_ms": 2521,
+      "scraped_at": "2026-06-02T20:14:40.456Z"
+    },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
       "trace_id": "trace_pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131491,
-      "detail_elapsed_ms": 2444,
-      "scraped_at": "2026-06-02T20:03:59.597Z"
+      "detail_html_length": 131633,
+      "detail_elapsed_ms": 2050,
+      "scraped_at": "2026-06-02T20:14:42.508Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133880,
-      "detail_elapsed_ms": 1932,
-      "scraped_at": "2026-06-02T20:04:01.530Z"
+      "detail_html_length": 133914,
+      "detail_elapsed_ms": 1951,
+      "scraped_at": "2026-06-02T20:14:44.459Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133882,
-      "detail_elapsed_ms": 1961,
-      "scraped_at": "2026-06-02T20:04:03.491Z"
+      "detail_html_length": 133866,
+      "detail_elapsed_ms": 1759,
+      "scraped_at": "2026-06-02T20:14:46.218Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133864,
-      "detail_elapsed_ms": 1717,
-      "scraped_at": "2026-06-02T20:04:05.208Z"
+      "detail_html_length": 133848,
+      "detail_elapsed_ms": 1845,
+      "scraped_at": "2026-06-02T20:14:48.063Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133767,
-      "detail_elapsed_ms": 1931,
-      "scraped_at": "2026-06-02T20:04:07.140Z"
+      "detail_html_length": 133840,
+      "detail_elapsed_ms": 1756,
+      "scraped_at": "2026-06-02T20:14:49.819Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133044,
-      "detail_elapsed_ms": 1762,
-      "scraped_at": "2026-06-02T20:04:08.902Z"
+      "detail_html_length": 133047,
+      "detail_elapsed_ms": 1692,
+      "scraped_at": "2026-06-02T20:14:51.511Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133071,
-      "detail_elapsed_ms": 1633,
-      "scraped_at": "2026-06-02T20:04:10.535Z"
+      "detail_html_length": 133076,
+      "detail_elapsed_ms": 1569,
+      "scraped_at": "2026-06-02T20:14:53.080Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133744,
-      "detail_elapsed_ms": 1587,
-      "scraped_at": "2026-06-02T20:04:12.123Z"
+      "detail_html_length": 133758,
+      "detail_elapsed_ms": 1517,
+      "scraped_at": "2026-06-02T20:14:54.598Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133082,
-      "detail_elapsed_ms": 1567,
-      "scraped_at": "2026-06-02T20:04:13.690Z"
+      "detail_html_length": 133076,
+      "detail_elapsed_ms": 1556,
+      "scraped_at": "2026-06-02T20:14:56.154Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133021,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-06-02T20:04:15.236Z"
+      "detail_html_length": 133034,
+      "detail_elapsed_ms": 1440,
+      "scraped_at": "2026-06-02T20:14:57.594Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131151,
-      "detail_elapsed_ms": 1580,
-      "scraped_at": "2026-06-02T20:04:16.816Z"
-    },
-    {
-      "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
-      "trace_id": "trace_pub-2-ingressos-05-06-cine-theatro-brasil-mg",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
-      "title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
-      "preview_title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
-      "validity": "Benefício válido de 29/05/2026 11:36 até 04/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Usiminas, em Ipatinga - MG. Data: 05/06/2026 | 21h. Local: Av. Pedro Linhares Gomes, 3.900 A, Bairro Industrial, Ipatinga (MG). Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133058,
-      "detail_elapsed_ms": 1492,
-      "scraped_at": "2026-06-02T20:04:18.308Z"
+      "detail_html_length": 131145,
+      "detail_elapsed_ms": 1679,
+      "scraped_at": "2026-06-02T20:14:59.273Z"
     }
   ]
 }
