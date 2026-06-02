@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 102206,
-  "run_duration_seconds": 102.21,
-  "avg_detail_ms_per_offer": 8517,
-  "generated_at": "2026-06-02T01:06:00.455Z",
+  "run_duration_ms": 42398,
+  "run_duration_seconds": 42.4,
+  "avg_detail_ms_per_offer": 3533,
+  "generated_at": "2026-06-02T01:53:38.179Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131518,
-      "detail_elapsed_ms": 6689,
-      "scraped_at": "2026-06-02T01:04:54.858Z"
+      "detail_html_length": 124606,
+      "detail_elapsed_ms": 2052,
+      "scraped_at": "2026-06-02T01:53:15.636Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para a exposição “A alma humana, você e o universo de Jung” no Instituto Marcos Hacker de Melo, em Boa Viagem - Recife. A experiência é imersiva e promove autoconhecimento e reflexão! Validade:14/06/2026 Quando: Diariamente, das 9h às 19h. Local: Rua dos Navegantes, 1838 - Boa Viagem, Recife COMO RESGATAR O CUPOM: •Acesse pelo o link: https://megapass.com.br/eventos/a-alma-humana-voce-e-o-universo-de-jung-recife • Se for o primeiro acesso, cadastre-se antes de prosseguir. • Após o cadastro, volte à tela inicial, selecione o dia e a hora desejada. • Em seguida, selecione em opção INTEIRA, aplique o cupom conforme recebido. • Para prosseguir, preencha todos os campos conforme indicado. • Após aplicar o cupom, preencha os demais dados e finalize o pedido. • Não será necessário preencher os dados de pagamento • O cupom é composto apenas pela palavra, sem incluir números ou símbolos. Importante: • O cupom tem limite de retirada de 2 ingressos por CPF.; • Fique atento a data da sua visita, pois o cupom não poderá ser reutilizado; • O agendamento deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12100,
-      "scraped_at": "2026-06-02T01:05:19.225Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132416,
+      "detail_elapsed_ms": 2491,
+      "scraped_at": "2026-06-02T01:53:18.130Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132915,
-      "detail_elapsed_ms": 12090,
-      "scraped_at": "2026-06-02T01:05:31.316Z"
+      "detail_html_length": 132921,
+      "detail_elapsed_ms": 2048,
+      "scraped_at": "2026-06-02T01:53:20.178Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132914,
-      "detail_elapsed_ms": 2934,
-      "scraped_at": "2026-06-02T01:05:34.250Z"
+      "detail_html_length": 132861,
+      "detail_elapsed_ms": 2223,
+      "scraped_at": "2026-06-02T01:53:22.401Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130996,
-      "detail_elapsed_ms": 5300,
-      "scraped_at": "2026-06-02T01:05:39.550Z"
+      "detail_html_length": 131021,
+      "detail_elapsed_ms": 2063,
+      "scraped_at": "2026-06-02T01:53:24.464Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132816,
-      "detail_elapsed_ms": 4597,
-      "scraped_at": "2026-06-02T01:05:44.147Z"
+      "detail_html_length": 132869,
+      "detail_elapsed_ms": 1803,
+      "scraped_at": "2026-06-02T01:53:26.267Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130999,
-      "detail_elapsed_ms": 3299,
-      "scraped_at": "2026-06-02T01:05:47.446Z"
+      "detail_html_length": 130995,
+      "detail_elapsed_ms": 1864,
+      "scraped_at": "2026-06-02T01:53:28.131Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132543,
-      "detail_elapsed_ms": 2881,
-      "scraped_at": "2026-06-02T01:05:50.330Z"
+      "detail_html_length": 132518,
+      "detail_elapsed_ms": 1928,
+      "scraped_at": "2026-06-02T01:53:30.060Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125193,
-      "detail_elapsed_ms": 3314,
-      "scraped_at": "2026-06-02T01:05:53.645Z"
+      "detail_html_length": 131518,
+      "detail_elapsed_ms": 2110,
+      "scraped_at": "2026-06-02T01:53:32.171Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 2360,
-      "scraped_at": "2026-06-02T01:05:56.005Z"
+      "detail_html_length": 130900,
+      "detail_elapsed_ms": 2167,
+      "scraped_at": "2026-06-02T01:53:34.338Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131070,
-      "detail_elapsed_ms": 2434,
-      "scraped_at": "2026-06-02T01:05:58.439Z"
+      "detail_html_length": 131491,
+      "detail_elapsed_ms": 1896,
+      "scraped_at": "2026-06-02T01:53:36.235Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131368,
-      "detail_elapsed_ms": 1946,
-      "scraped_at": "2026-06-02T01:06:00.385Z"
+      "detail_html_length": 131344,
+      "detail_elapsed_ms": 1744,
+      "scraped_at": "2026-06-02T01:53:37.979Z"
     }
   ]
 }
