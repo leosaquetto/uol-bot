@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 42554,
-  "run_duration_seconds": 42.55,
-  "avg_detail_ms_per_offer": 3546,
-  "generated_at": "2026-06-02T20:57:41.980Z",
+  "run_duration_ms": 29631,
+  "run_duration_seconds": 29.63,
+  "avg_detail_ms_per_offer": 2469,
+  "generated_at": "2026-06-02T21:08:16.434Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
+      "trace_id": "trace_pvs-dia-dos-namorados-leve-6-e-pague-3",
+      "link": "https://clube.uol.com.br/evino/pvs-dia-dos-namorados-leve-6-e-pague-3",
+      "original_link": "https://clube.uol.com.br/evino/pvs-dia-dos-namorados-leve-6-e-pague-3",
+      "title": "Dia dos Namorados: Leve 6 e Pague 3",
+      "preview_title": "Dia dos Namorados: Leve 6 e Pague 3",
+      "validity": "Benefício válido de 02/06/2026 17:45 até 15/06/2026 23:59.",
+      "description": "Benefício: Dia dos Namorados: Leve 6 e Pague 3 Regras: Válido somente na categoria presente no link. Comprando 6 vinhos da categoria, o desconto será aplicado aos 3 itens de menor valor. Não cumulativo com outros cupons, não se aplica ao frete. Um uso por CPF.",
+      "category": "Comer e Beber",
+      "partner_name": "Evino",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2008c042c2b7b797d51458c9c40cdfa5.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1f42894c019_b83887642479a2dcb45dfb3390d399f4.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1f42894c019_b83887642479a2dcb45dfb3390d399f4.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1f42894c019_b83887642479a2dcb45dfb3390d399f4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130756,
+      "detail_elapsed_ms": 2425,
+      "scraped_at": "2026-06-02T21:07:58.406Z"
+    },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
       "trace_id": "trace_pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -33,22 +57,22 @@
       "partner_name": "Evino",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2008c042c2b7b797d51458c9c40cdfa5.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/433ee5eedafde274d1088a0d9b06df52.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b16b47245faf11326efe645b28ad448f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/433ee5eedafde274d1088a0d9b06df52.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/433ee5eedafde274d1088a0d9b06df52.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130661,
-      "detail_elapsed_ms": 2106,
-      "scraped_at": "2026-06-02T20:57:24.078Z"
+      "detail_html_length": 130808,
+      "detail_elapsed_ms": 2033,
+      "scraped_at": "2026-06-02T21:08:00.441Z"
     },
     {
-      "id": "pvk-ganhe-0-3-cashback-no-consorcio",
-      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consorcio",
-      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
-      "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
+      "id": "pvk-ganhe-0-3-cashback-no-consrcio",
+      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consrcio",
+      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
+      "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
       "title": "Ganhe 0,3% de cashback no consórcio!",
       "preview_title": "Ganhe 0,3% de cashback no consórcio!",
       "validity": "Benefício válido de 02/06/2026 16:57 até 31/12/2028 23:59.",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131531,
-      "detail_elapsed_ms": 1674,
-      "scraped_at": "2026-06-02T20:57:25.754Z"
+      "detail_html_length": 132026,
+      "detail_elapsed_ms": 1548,
+      "scraped_at": "2026-06-02T21:08:01.989Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131689,
-      "detail_elapsed_ms": 1540,
-      "scraped_at": "2026-06-02T20:57:27.294Z"
+      "detail_html_length": 131707,
+      "detail_elapsed_ms": 1595,
+      "scraped_at": "2026-06-02T21:08:03.584Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133919,
-      "detail_elapsed_ms": 1738,
-      "scraped_at": "2026-06-02T20:57:29.032Z"
+      "detail_html_length": 133909,
+      "detail_elapsed_ms": 1657,
+      "scraped_at": "2026-06-02T21:08:05.242Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133883,
-      "detail_elapsed_ms": 1796,
-      "scraped_at": "2026-06-02T20:57:30.828Z"
+      "detail_html_length": 133881,
+      "detail_elapsed_ms": 1709,
+      "scraped_at": "2026-06-02T21:08:06.951Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133845,
-      "detail_elapsed_ms": 1534,
-      "scraped_at": "2026-06-02T20:57:32.362Z"
+      "detail_html_length": 133843,
+      "detail_elapsed_ms": 1728,
+      "scraped_at": "2026-06-02T21:08:08.680Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133847,
-      "detail_elapsed_ms": 1588,
-      "scraped_at": "2026-06-02T20:57:33.950Z"
+      "detail_html_length": 133815,
+      "detail_elapsed_ms": 1615,
+      "scraped_at": "2026-06-02T21:08:10.295Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133073,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-06-02T20:57:35.455Z"
+      "detail_html_length": 133063,
+      "detail_elapsed_ms": 1536,
+      "scraped_at": "2026-06-02T21:08:11.831Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -232,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133101,
-      "detail_elapsed_ms": 1692,
-      "scraped_at": "2026-06-02T20:57:37.148Z"
+      "detail_html_length": 133090,
+      "detail_elapsed_ms": 1506,
+      "scraped_at": "2026-06-02T21:08:13.337Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133774,
-      "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-06-02T20:57:38.662Z"
+      "detail_html_length": 133752,
+      "detail_elapsed_ms": 1512,
+      "scraped_at": "2026-06-02T21:08:14.850Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133091,
-      "detail_elapsed_ms": 1538,
-      "scraped_at": "2026-06-02T20:57:40.200Z"
-    },
-    {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
-      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 38% de desconto na Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Sobre a Caixa Angel Coleção Sortidos 290g: O coração Angel é o presente ideal para emocionar quem você ama. Com uma seleção especial de bombons sortidos, combina sabor irresistível e um design marcante que encanta em qualquer ocasião. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
-      "category": "Compras e Presentes",
-      "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133061,
-      "detail_elapsed_ms": 1693,
-      "scraped_at": "2026-06-02T20:57:41.893Z"
+      "detail_html_length": 133110,
+      "detail_elapsed_ms": 1539,
+      "scraped_at": "2026-06-02T21:08:16.389Z"
     }
   ]
 }
