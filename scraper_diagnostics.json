@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-06-02T14:57:08.974482Z",
+  "updated_at": "2026-06-02T15:07:00.285471Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 6,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
-    "duplicada_latest": 1,
+    "duplicada_historico": 6,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -51,30 +51,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
       "reason": "duplicada_historico",
       "trace_id": "trace_pub-2-ingressos-05-06-cine-theatro-brasil-mg"
-    },
-    {
-      "title": "15% OFF em Kits Seara Churrasco!",
-      "link": "https://clube.uol.com.br/seara/pu9-15-off-em-kits-seara-churrasco",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pu9-15-off-em-kits-seara-churrasco"
-    },
-    {
-      "title": "2 INGRESSOS: 14/06 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pu8-2-ingressos-14-06-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pu8-2-ingressos-14-06-teatro-tuca-sp"
-    },
-    {
-      "title": "Resgate agora 1 Kit de Ímãs de Coração",
-      "link": "https://clube.uol.com.br/fotoregistro/pu0-resgate-agora-1-kit-de-ms-de-corao",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pu0-resgate-agora-1-kit-de-ms-de-corao"
-    },
-    {
-      "title": "Cursinho ENEM com 20% OFF!",
-      "link": "https://clube.uol.com.br/descomplica/puz-cursinho-enem-com-20-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puz-cursinho-enem-com-20-off"
     }
   ]
 }
