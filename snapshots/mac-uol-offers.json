@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29631,
-  "run_duration_seconds": 29.63,
-  "avg_detail_ms_per_offer": 2469,
-  "generated_at": "2026-06-02T21:08:16.434Z",
+  "run_duration_ms": 30833,
+  "run_duration_seconds": 30.83,
+  "avg_detail_ms_per_offer": 2569,
+  "generated_at": "2026-06-02T21:18:52.391Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
+      "trace_id": "trace_pvt-dia-dos-namorados-20-off-em-todo-site",
+      "link": "https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site",
+      "original_link": "https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site",
+      "title": "Dia dos Namorados: 20% OFF em todo site",
+      "preview_title": "Dia dos Namorados: 20% OFF em todo site",
+      "validity": "Benefício válido de 02/06/2026 17:58 até 12/06/2026 23:59.",
+      "description": "Benefício: Dia dos Namorados: 20% OFF em todo o site Regras: Benefício válido em produtos vendidos e entregues pela Giuliana Flores, apenas por meio do link utilizando o cupom de desconto no carrinho. Essa ação não é cumulativa.",
+      "category": "Compras e Presentes",
+      "partner_name": "Giuliana Flores",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a6d7e333f037f5f5be40b4ac485635b2.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129592,
+      "detail_elapsed_ms": 2370,
+      "scraped_at": "2026-06-02T21:18:33.622Z"
+    },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
       "trace_id": "trace_pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130756,
-      "detail_elapsed_ms": 2425,
-      "scraped_at": "2026-06-02T21:07:58.406Z"
+      "detail_html_length": 130917,
+      "detail_elapsed_ms": 1999,
+      "scraped_at": "2026-06-02T21:18:35.622Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130808,
-      "detail_elapsed_ms": 2033,
-      "scraped_at": "2026-06-02T21:08:00.441Z"
+      "detail_html_length": 130831,
+      "detail_elapsed_ms": 1808,
+      "scraped_at": "2026-06-02T21:18:37.430Z"
     },
     {
       "id": "pvk-ganhe-0-3-cashback-no-consrcio",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132026,
-      "detail_elapsed_ms": 1548,
-      "scraped_at": "2026-06-02T21:08:01.989Z"
+      "detail_html_length": 131508,
+      "detail_elapsed_ms": 1836,
+      "scraped_at": "2026-06-02T21:18:39.266Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131707,
-      "detail_elapsed_ms": 1595,
-      "scraped_at": "2026-06-02T21:08:03.584Z"
+      "detail_html_length": 131700,
+      "detail_elapsed_ms": 1696,
+      "scraped_at": "2026-06-02T21:18:40.962Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133909,
-      "detail_elapsed_ms": 1657,
-      "scraped_at": "2026-06-02T21:08:05.242Z"
+      "detail_html_length": 133901,
+      "detail_elapsed_ms": 1641,
+      "scraped_at": "2026-06-02T21:18:42.604Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133881,
-      "detail_elapsed_ms": 1709,
-      "scraped_at": "2026-06-02T21:08:06.951Z"
+      "detail_html_length": 133874,
+      "detail_elapsed_ms": 1660,
+      "scraped_at": "2026-06-02T21:18:44.264Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133843,
-      "detail_elapsed_ms": 1728,
-      "scraped_at": "2026-06-02T21:08:08.680Z"
+      "detail_html_length": 133845,
+      "detail_elapsed_ms": 1552,
+      "scraped_at": "2026-06-02T21:18:45.816Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133815,
-      "detail_elapsed_ms": 1615,
-      "scraped_at": "2026-06-02T21:08:10.295Z"
+      "detail_html_length": 133818,
+      "detail_elapsed_ms": 1465,
+      "scraped_at": "2026-06-02T21:18:47.281Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 1536,
-      "scraped_at": "2026-06-02T21:08:11.831Z"
+      "detail_html_length": 133477,
+      "detail_elapsed_ms": 1912,
+      "scraped_at": "2026-06-02T21:18:49.193Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133090,
-      "detail_elapsed_ms": 1506,
-      "scraped_at": "2026-06-02T21:08:13.337Z"
+      "detail_html_length": 133072,
+      "detail_elapsed_ms": 1659,
+      "scraped_at": "2026-06-02T21:18:50.852Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133752,
-      "detail_elapsed_ms": 1512,
-      "scraped_at": "2026-06-02T21:08:14.850Z"
-    },
-    {
-      "id": "pun-38-off-na-caixa-bombom-angel-200g",
-      "trace_id": "trace_pun-38-off-na-caixa-bombom-angel-200g",
-      "link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
-      "original_link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
-      "title": "38% OFF na Caixa de Bombom Angel 200g",
-      "preview_title": "38% OFF na Caixa de Bombom Angel 200g",
-      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
-      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 38% de desconto na Caixa de Bombom Angel 200g - De R$61,99 por R$37,99. Sobre a Caixa de Bombom Angel 200g: A Caixa de Bombom Angel de Chocolate ao Leite é feita para transformar pequenos gestos em grandes demonstrações de carinho. Com bombons de chocolate ao leite cremosos e sabor equilibrado, é uma opção encantadora para surpreender, compartilhar e celebrar momentos especiais com quem você ama. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa de Bombom Angel 200g - De R$61,99 por R$37,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
-      "category": "Compras e Presentes",
-      "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6e18d328aa4ebe3051d6548d51e4ab2.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6e18d328aa4ebe3051d6548d51e4ab2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6e18d328aa4ebe3051d6548d51e4ab2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133110,
-      "detail_elapsed_ms": 1539,
-      "scraped_at": "2026-06-02T21:08:16.389Z"
+      "detail_html_length": 133755,
+      "detail_elapsed_ms": 1494,
+      "scraped_at": "2026-06-02T21:18:52.346Z"
     }
   ]
 }
