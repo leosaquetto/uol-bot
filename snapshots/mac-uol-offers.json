@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28596,
-  "run_duration_seconds": 28.6,
-  "avg_detail_ms_per_offer": 2383,
-  "generated_at": "2026-06-02T17:45:09.059Z",
+  "run_duration_ms": 28808,
+  "run_duration_seconds": 28.81,
+  "avg_detail_ms_per_offer": 2401,
+  "generated_at": "2026-06-02T17:55:45.569Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132121,
-      "detail_elapsed_ms": 2024,
-      "scraped_at": "2026-06-02T17:44:50.374Z"
+      "detail_html_length": 133712,
+      "detail_elapsed_ms": 2467,
+      "scraped_at": "2026-06-02T17:55:26.801Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133840,
-      "detail_elapsed_ms": 2009,
-      "scraped_at": "2026-06-02T17:44:52.391Z"
+      "detail_html_length": 133867,
+      "detail_elapsed_ms": 1846,
+      "scraped_at": "2026-06-02T17:55:28.649Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133782,
-      "detail_elapsed_ms": 1701,
-      "scraped_at": "2026-06-02T17:44:54.092Z"
+      "detail_html_length": 133828,
+      "detail_elapsed_ms": 1762,
+      "scraped_at": "2026-06-02T17:55:30.411Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133814,
-      "detail_elapsed_ms": 1877,
-      "scraped_at": "2026-06-02T17:44:55.969Z"
+      "detail_html_length": 133811,
+      "detail_elapsed_ms": 1756,
+      "scraped_at": "2026-06-02T17:55:32.167Z"
     },
     {
       "id": "pvc-2-ingressos-06-06-morumbi-park-sp",
@@ -136,33 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133786,
-      "detail_elapsed_ms": 1726,
-      "scraped_at": "2026-06-02T17:44:57.696Z"
-    },
-    {
-      "id": "puz-2-ingressos-13-06-teatro-liberdade-sp",
-      "trace_id": "trace_puz-2-ingressos-13-06-teatro-liberdade-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puZ-2-ingressos-13-06-teatro-liberdade-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puZ-2-ingressos-13-06-teatro-liberdade-sp",
-      "title": "2 INGRESSOS: 13/06 Teatro Liberdade - SP",
-      "preview_title": "2 INGRESSOS: 13/06 Teatro Liberdade - SP",
-      "validity": "Benefício válido de 02/06/2026 10:14 até 12/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para o musical “Diana – A Princesa do Povo” e emocione-se com essa superprodução que retrata a trajetória de uma das personalidades mais marcantes do século XX. Uma experiência intensa, com cenários grandiosos e uma história que vai te tocar do início ao fim, no Teatro Liberdade, em São Paulo. Data: 13 de Junho, às 20h. Local: R. São Joaquim, 129, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ee738f21fe_6a1ee1d457445_6a1edea1a8ed4_6a1edcd5d62f9_6a1ed5a6e181a_6a14514309bb0_6a14504767c6e_6a144ec6d16d5_6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ee738f21fe_6a1ee1d457445_6a1edea1a8ed4_6a1edcd5d62f9_6a1ed5a6e181a_6a14514309bb0_6a14504767c6e_6a144ec6d16d5_6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ee738f21fe_6a1ee1d457445_6a1edea1a8ed4_6a1edcd5d62f9_6a1ed5a6e181a_6a14514309bb0_6a14504767c6e_6a144ec6d16d5_6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133164,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-06-02T17:44:59.202Z"
+      "detail_html_length": 133741,
+      "detail_elapsed_ms": 1760,
+      "scraped_at": "2026-06-02T17:55:33.928Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133052,
-      "detail_elapsed_ms": 1754,
-      "scraped_at": "2026-06-02T17:45:00.956Z"
+      "detail_html_length": 133048,
+      "detail_elapsed_ms": 1894,
+      "scraped_at": "2026-06-02T17:55:35.822Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133070,
-      "detail_elapsed_ms": 1579,
-      "scraped_at": "2026-06-02T17:45:02.535Z"
+      "detail_html_length": 133065,
+      "detail_elapsed_ms": 1746,
+      "scraped_at": "2026-06-02T17:55:37.568Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133731,
-      "detail_elapsed_ms": 1601,
-      "scraped_at": "2026-06-02T17:45:04.136Z"
+      "detail_html_length": 133738,
+      "detail_elapsed_ms": 1700,
+      "scraped_at": "2026-06-02T17:55:39.269Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133090,
-      "detail_elapsed_ms": 1598,
-      "scraped_at": "2026-06-02T17:45:05.734Z"
+      "detail_html_length": 133075,
+      "detail_elapsed_ms": 1608,
+      "scraped_at": "2026-06-02T17:55:40.877Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133029,
-      "detail_elapsed_ms": 1553,
-      "scraped_at": "2026-06-02T17:45:07.287Z"
+      "detail_html_length": 133033,
+      "detail_elapsed_ms": 1554,
+      "scraped_at": "2026-06-02T17:55:42.431Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131129,
-      "detail_elapsed_ms": 1711,
-      "scraped_at": "2026-06-02T17:45:08.998Z"
+      "detail_html_length": 131146,
+      "detail_elapsed_ms": 1545,
+      "scraped_at": "2026-06-02T17:55:43.976Z"
+    },
+    {
+      "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
+      "trace_id": "trace_pub-2-ingressos-05-06-cine-theatro-brasil-mg",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
+      "title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
+      "preview_title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
+      "validity": "Benefício válido de 29/05/2026 11:36 até 04/06/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro Usiminas, em Ipatinga - MG. Data: 05/06/2026 | 21h. Local: Av. Pedro Linhares Gomes, 3.900 A, Bairro Industrial, Ipatinga (MG). Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a19a3f2a76b0_6a199da6a9342_6a0dc43a8bdf9_6a04e7ba82235_6a04e01b4dc8a_6a04d2880eccf_6a01d97e08c05_7d3037b1ea487c482b902917f9af161e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133063,
+      "detail_elapsed_ms": 1523,
+      "scraped_at": "2026-06-02T17:55:45.499Z"
     }
   ]
 }
