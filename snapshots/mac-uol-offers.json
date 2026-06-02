@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 76119,
-  "run_duration_seconds": 76.12,
-  "avg_detail_ms_per_offer": 6343,
-  "generated_at": "2026-06-01T23:50:13.540Z",
+  "run_duration_ms": 107508,
+  "run_duration_seconds": 107.51,
+  "avg_detail_ms_per_offer": 8959,
+  "generated_at": "2026-06-02T00:29:09.610Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132754,
-      "detail_elapsed_ms": 5533,
-      "scraped_at": "2026-06-01T23:49:43.335Z"
+      "detail_html_length": 132764,
+      "detail_elapsed_ms": 9769,
+      "scraped_at": "2026-06-02T00:28:41.181Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132414,
-      "detail_elapsed_ms": 2767,
-      "scraped_at": "2026-06-01T23:49:46.103Z"
+      "detail_html_length": 132416,
+      "detail_elapsed_ms": 2495,
+      "scraped_at": "2026-06-02T00:28:43.680Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132912,
-      "detail_elapsed_ms": 2278,
-      "scraped_at": "2026-06-01T23:49:48.381Z"
+      "detail_html_length": 131762,
+      "detail_elapsed_ms": 2280,
+      "scraped_at": "2026-06-02T00:28:45.960Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132850,
-      "detail_elapsed_ms": 2230,
-      "scraped_at": "2026-06-01T23:49:50.613Z"
+      "detail_html_length": 131626,
+      "detail_elapsed_ms": 2473,
+      "scraped_at": "2026-06-02T00:28:48.434Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130981,
-      "detail_elapsed_ms": 2627,
-      "scraped_at": "2026-06-01T23:49:53.241Z"
+      "detail_html_length": 129508,
+      "detail_elapsed_ms": 1828,
+      "scraped_at": "2026-06-02T00:28:50.262Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132869,
-      "detail_elapsed_ms": 3452,
-      "scraped_at": "2026-06-01T23:49:56.693Z"
+      "detail_html_length": 132888,
+      "detail_elapsed_ms": 2456,
+      "scraped_at": "2026-06-02T00:28:52.719Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130995,
-      "detail_elapsed_ms": 3668,
-      "scraped_at": "2026-06-01T23:50:00.361Z"
+      "detail_html_length": 131016,
+      "detail_elapsed_ms": 3280,
+      "scraped_at": "2026-06-02T00:28:55.999Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132538,
-      "detail_elapsed_ms": 2582,
-      "scraped_at": "2026-06-01T23:50:02.943Z"
+      "detail_html_length": 132548,
+      "detail_elapsed_ms": 2463,
+      "scraped_at": "2026-06-02T00:28:58.462Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131531,
-      "detail_elapsed_ms": 2400,
-      "scraped_at": "2026-06-01T23:50:05.343Z"
+      "detail_html_length": 130302,
+      "detail_elapsed_ms": 2872,
+      "scraped_at": "2026-06-02T00:29:01.334Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,57 +256,57 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130849,
-      "detail_elapsed_ms": 2520,
-      "scraped_at": "2026-06-01T23:50:07.864Z"
+      "detail_html_length": 129711,
+      "detail_elapsed_ms": 2542,
+      "scraped_at": "2026-06-02T00:29:03.876Z"
     },
     {
-      "id": "pus-at-60-off-10-masculino",
-      "trace_id": "trace_pus-at-60-off-10-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pus-at-60-off-10-masculino",
-      "title": "Até 60% OFF +10% Masculino",
-      "preview_title": "Até 60% OFF +10% Masculino",
-      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
-      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: Até 60% OFF + 10% OFF extra na seleção masculina Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/98f221d565cfccca507aa79263c8e60a.png",
+      "id": "pum-at-75-off-em-seleo-de-produtos",
+      "trace_id": "trace_pum-at-75-off-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/zattini/pum-at-75-off-em-seleo-de-produtos",
+      "title": "Até 75% OFF em seleção de produtos",
+      "preview_title": "Até 75% OFF em seleção de produtos",
+      "validity": "Benefício válido de 28/05/2026 09:23 até 14/06/2026 23:59.",
+      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício: Até 75% OFF em seleção de produtos (Até 60% OFF no site + 15% OFF com o cupom da parceria). Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
+      "category": "Compras e Presentes",
+      "partner_name": "Zattini",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/38ef1a004dd2f20258a203021cd2be71.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131099,
-      "detail_elapsed_ms": 2800,
-      "scraped_at": "2026-06-01T23:50:10.664Z"
+      "detail_html_length": 131065,
+      "detail_elapsed_ms": 2439,
+      "scraped_at": "2026-06-02T00:29:06.316Z"
     },
     {
-      "id": "pur-30-off-extra-em-seleo-acessrios",
-      "trace_id": "trace_pur-30-off-extra-em-seleo-acessrios",
-      "link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pur-30-off-extra-em-seleo-de-acessrios",
-      "title": "30% OFF extra em seleção de acessórios",
-      "preview_title": "30% OFF extra em seleção de acessórios",
-      "validity": "Benefício válido de 27/05/2026 13:25 até 01/06/2026 23:59.",
-      "description": "Benefício: Renner é uma das maiores redes de moda do Brasil, oferecendo roupas, calçados, acessórios e itens de lifestyle para todos os estilos. Reconhecida pela qualidade, variedade e inovação, está presente em lojas físicas e no digital, proporcionando uma experiência de compra prática e moderna. Benefício: 30% OFF extra em seleção de acessórios Regras: Válido para uma seleção de produtos. Válido para produtos vendidos e entregues por Lojas Renner. Não cumulativo. Sujeito à desativação sem aviso prévio. Não é válido para lojas físicas.",
+      "id": "pul-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pul-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pul-at-75-off-para-compras-no-site",
+      "title": "Até 75% OFF para compras no site",
+      "preview_title": "Até 75% OFF para compras no site",
+      "validity": "Benefício válido de 28/05/2026 09:18 até 14/06/2026 23:59.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
       "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56cbaf3c349bcbae78e3fb5d005cb3eb.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56cbaf3c349bcbae78e3fb5d005cb3eb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56cbaf3c349bcbae78e3fb5d005cb3eb.png",
+      "partner_name": "Netshoes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56d6d367d1da5c927a8ce9d18cd85d1f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56d6d367d1da5c927a8ce9d18cd85d1f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/56d6d367d1da5c927a8ce9d18cd85d1f.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131265,
-      "detail_elapsed_ms": 2642,
-      "scraped_at": "2026-06-01T23:50:13.306Z"
+      "detail_html_length": 131353,
+      "detail_elapsed_ms": 2589,
+      "scraped_at": "2026-06-02T00:29:08.906Z"
     }
   ]
 }
