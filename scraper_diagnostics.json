@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-06-02T20:59:14.796660Z",
+  "updated_at": "2026-06-02T21:09:01.252639Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
-    "duplicada_latest": 3,
+    "duplicada_historico": 11,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -24,9 +24,9 @@
     },
     {
       "title": "Ganhe 0,3% de cashback no consórcio!",
-      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consorcio"
+      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consrcio"
     },
     {
       "title": "10% OFF na Camisa Brasil Jordan II 2026",
@@ -72,21 +72,15 @@
     },
     {
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
     },
     {
       "title": "38% OFF na Caixa de Bombom Angel 200g",
       "link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
       "reason": "duplicada_historico",
       "trace_id": "trace_pun-38-off-na-caixa-bombom-angel-200g"
-    },
-    {
-      "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos"
     }
   ]
 }
