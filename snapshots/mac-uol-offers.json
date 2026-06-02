@@ -9,41 +9,17 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
-    "weak": 1,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 33695,
-  "run_duration_seconds": 33.7,
-  "avg_detail_ms_per_offer": 2808,
-  "generated_at": "2026-06-02T19:32:03.395Z",
+  "run_duration_ms": 32169,
+  "run_duration_seconds": 32.17,
+  "avg_detail_ms_per_offer": 2681,
+  "generated_at": "2026-06-02T19:42:41.233Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pvi-1-ingresso-16-08-meia-maratona-intl-rj",
-      "trace_id": "trace_pvi-1-ingresso-16-08-meia-maratona-intl-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvi-1-ingresso-16-08-meia-maratona-intl-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvi-1-ingresso-16-08-meia-maratona-intl-rj",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "1 ingresso:16/08 Meia Maratona Intl - RJ",
-      "validity": "",
-      "description": "",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/72fe6043786ab440f6f2613ae6774c6d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
-      "img_source": "benefit_data_src",
-      "detail_ok": true,
-      "detail_quality": "weak",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 331921,
-      "detail_elapsed_ms": 3362,
-      "scraped_at": "2026-06-02T19:31:45.218Z"
-    },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
       "trace_id": "trace_pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131648,
-      "detail_elapsed_ms": 1830,
-      "scraped_at": "2026-06-02T19:31:47.049Z"
+      "detail_html_length": 131479,
+      "detail_elapsed_ms": 2402,
+      "scraped_at": "2026-06-02T19:42:23.090Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133851,
-      "detail_elapsed_ms": 1727,
-      "scraped_at": "2026-06-02T19:31:48.777Z"
+      "detail_html_length": 133880,
+      "detail_elapsed_ms": 2083,
+      "scraped_at": "2026-06-02T19:42:25.174Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133882,
-      "detail_elapsed_ms": 1621,
-      "scraped_at": "2026-06-02T19:31:50.398Z"
+      "detail_html_length": 133861,
+      "detail_elapsed_ms": 1753,
+      "scraped_at": "2026-06-02T19:42:26.927Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133845,
-      "detail_elapsed_ms": 1605,
-      "scraped_at": "2026-06-02T19:31:52.004Z"
+      "detail_html_length": 133844,
+      "detail_elapsed_ms": 1772,
+      "scraped_at": "2026-06-02T19:42:28.700Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133806,
-      "detail_elapsed_ms": 1772,
-      "scraped_at": "2026-06-02T19:31:53.776Z"
+      "detail_html_length": 134287,
+      "detail_elapsed_ms": 1509,
+      "scraped_at": "2026-06-02T19:42:30.209Z"
     },
     {
       "id": "pvc-2-ingressos-06-06-morumbi-park-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133778,
-      "detail_elapsed_ms": 1656,
-      "scraped_at": "2026-06-02T19:31:55.432Z"
+      "detail_html_length": 133788,
+      "detail_elapsed_ms": 1764,
+      "scraped_at": "2026-06-02T19:42:31.973Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133053,
-      "detail_elapsed_ms": 1653,
-      "scraped_at": "2026-06-02T19:31:57.085Z"
+      "detail_html_length": 133033,
+      "detail_elapsed_ms": 1529,
+      "scraped_at": "2026-06-02T19:42:33.502Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133062,
-      "detail_elapsed_ms": 1612,
-      "scraped_at": "2026-06-02T19:31:58.697Z"
+      "detail_html_length": 133061,
+      "detail_elapsed_ms": 1547,
+      "scraped_at": "2026-06-02T19:42:35.049Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -257,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133733,
-      "detail_elapsed_ms": 1531,
-      "scraped_at": "2026-06-02T19:32:00.228Z"
+      "detail_elapsed_ms": 1555,
+      "scraped_at": "2026-06-02T19:42:36.604Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -281,8 +257,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133081,
-      "detail_elapsed_ms": 1543,
-      "scraped_at": "2026-06-02T19:32:01.772Z"
+      "detail_elapsed_ms": 1462,
+      "scraped_at": "2026-06-02T19:42:38.067Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133010,
-      "detail_elapsed_ms": 1572,
-      "scraped_at": "2026-06-02T19:32:03.344Z"
+      "detail_html_length": 133020,
+      "detail_elapsed_ms": 1508,
+      "scraped_at": "2026-06-02T19:42:39.575Z"
+    },
+    {
+      "id": "puf-15-off-no-site",
+      "trace_id": "trace_puf-15-off-no-site",
+      "link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
+      "original_link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
+      "title": "15% OFF no site!",
+      "preview_title": "15% OFF no site!",
+      "validity": "Benefício válido de 29/05/2026 16:42 até 31/12/2026 23:59.",
+      "description": "Sobre o Parceiro: A TopTherm é uma empresa brasileira fundada em 1994, especializada em produtos voltados para saúde, bem-estar e suplementação alimentar. A marca ficou conhecida principalmente por sua linha de ômega 3, vitaminas, colágenos, probióticos e pela tradicional iogurteira TopTherm, comercializada em todo o Brasil. Atualmente, a empresa atua com foco em qualidade de vida, oferecendo soluções voltadas à nutrição, beleza e cuidados com a saúde. Benefício: 15% OFF no site! Regras: Aplique o cupom no checkout. Cumulativo com demais promoções do site. Válido apenas 1 uso por CPF. Não cumulativo com demais cupons.",
+      "category": "",
+      "partner_name": "Top Therm",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b332eda111321152b53a045d0fe17127.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131160,
+      "detail_elapsed_ms": 1590,
+      "scraped_at": "2026-06-02T19:42:41.165Z"
     }
   ]
 }
