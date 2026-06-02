@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 184689,
-  "run_duration_seconds": 184.69,
-  "avg_detail_ms_per_offer": 15391,
-  "generated_at": "2026-06-02T02:59:22.567Z",
+  "run_duration_ms": 229993,
+  "run_duration_seconds": 229.99,
+  "avg_detail_ms_per_offer": 19166,
+  "generated_at": "2026-06-02T03:13:26.854Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133024,
-      "detail_elapsed_ms": 18495,
-      "scraped_at": "2026-06-02T02:57:46.637Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133022,
+      "detail_elapsed_ms": 21181,
+      "scraped_at": "2026-06-02T03:11:48.412Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133436,
-      "detail_elapsed_ms": 5153,
-      "scraped_at": "2026-06-02T02:57:51.798Z"
+      "detail_html_length": 133339,
+      "detail_elapsed_ms": 6849,
+      "scraped_at": "2026-06-02T03:11:55.348Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132165,
-      "detail_elapsed_ms": 5177,
-      "scraped_at": "2026-06-02T02:57:56.975Z"
+      "detail_html_length": 132793,
+      "detail_elapsed_ms": 11034,
+      "scraped_at": "2026-06-02T03:12:06.382Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132873,
-      "detail_elapsed_ms": 10558,
-      "scraped_at": "2026-06-02T02:58:21.602Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132634,
+      "detail_elapsed_ms": 6664,
+      "scraped_at": "2026-06-02T03:12:13.048Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130982,
-      "detail_elapsed_ms": 8670,
-      "scraped_at": "2026-06-02T02:58:30.272Z"
+      "detail_html_length": 131260,
+      "detail_elapsed_ms": 13883,
+      "scraped_at": "2026-06-02T03:12:26.931Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132731,
-      "detail_elapsed_ms": 12186,
-      "scraped_at": "2026-06-02T02:58:42.458Z"
+      "detail_html_length": 132720,
+      "detail_elapsed_ms": 13594,
+      "scraped_at": "2026-06-02T03:12:40.525Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131016,
-      "detail_elapsed_ms": 7416,
-      "scraped_at": "2026-06-02T02:58:49.875Z"
+      "detail_html_length": 130857,
+      "detail_elapsed_ms": 7740,
+      "scraped_at": "2026-06-02T03:12:48.265Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131212,
-      "detail_elapsed_ms": 5774,
-      "scraped_at": "2026-06-02T02:58:55.649Z"
+      "detail_html_length": 132389,
+      "detail_elapsed_ms": 7418,
+      "scraped_at": "2026-06-02T03:12:55.683Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131517,
-      "detail_elapsed_ms": 7273,
-      "scraped_at": "2026-06-02T02:59:02.922Z"
+      "detail_html_length": 131536,
+      "detail_elapsed_ms": 6874,
+      "scraped_at": "2026-06-02T03:13:02.558Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130860,
-      "detail_elapsed_ms": 6620,
-      "scraped_at": "2026-06-02T02:59:09.542Z"
+      "detail_html_length": 131108,
+      "detail_elapsed_ms": 15440,
+      "scraped_at": "2026-06-02T03:13:17.998Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131079,
-      "detail_elapsed_ms": 6532,
-      "scraped_at": "2026-06-02T02:59:16.075Z"
+      "detail_html_length": 131064,
+      "detail_elapsed_ms": 5023,
+      "scraped_at": "2026-06-02T03:13:23.021Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131354,
-      "detail_elapsed_ms": 5731,
-      "scraped_at": "2026-06-02T02:59:21.806Z"
+      "detail_html_length": 130193,
+      "detail_elapsed_ms": 3469,
+      "scraped_at": "2026-06-02T03:13:26.490Z"
     }
   ]
 }
