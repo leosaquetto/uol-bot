@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-02T17:46:41.350820Z",
+  "updated_at": "2026-06-02T17:56:31.155609Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -47,12 +47,6 @@
       "trace_id": "trace_pvc-2-ingressos-06-06-morumbi-park-sp"
     },
     {
-      "title": "2 INGRESSOS: 13/06 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puZ-2-ingressos-13-06-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puz-2-ingressos-13-06-teatro-liberdade-sp"
-    },
-    {
       "title": "2 INGRESSOS: 05/06 Teatro Liberdade - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/puV-2-ingressos-05-06-teatro-liberdade-sp",
       "reason": "duplicada_historico",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_puf-15-off-no-site"
+    },
+    {
+      "title": "2 INGRESSOS:05/06 Cine Theatro Brasil MG",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puB-2-ingressos-05-06-cine-theatro-brasil-mg",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pub-2-ingressos-05-06-cine-theatro-brasil-mg"
     }
   ]
 }
