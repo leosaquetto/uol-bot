@@ -1,21 +1,57 @@
 {
-  "updated_at": "2026-06-02T15:07:00.285471Z",
+  "updated_at": "2026-06-02T15:08:57.633497Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 6,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 14/06 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pva-2-ingressos-14-06-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pva-2-ingressos-14-06-teatro-liberdade-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 13/06 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puZ-2-ingressos-13-06-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puz-2-ingressos-13-06-teatro-liberdade-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 09/06 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puY-2-ingressos-09-06-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puy-2-ingressos-09-06-teatro-liberdade-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 07/06 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puX-2-ingressos-07-06-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pux-2-ingressos-07-06-teatro-liberdade-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 06/06 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puW-2-ingressos-06-06-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puw-2-ingressos-06-06-teatro-liberdade-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 05/06 Teatro Liberdade - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puV-2-ingressos-05-06-teatro-liberdade-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puv-2-ingressos-05-06-teatro-liberdade-sp"
+    },
     {
       "title": "37% OFF no Cubo Bombom Brigadeiro 130g",
       "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
