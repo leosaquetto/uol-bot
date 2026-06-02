@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 45300,
-  "run_duration_seconds": 45.3,
-  "avg_detail_ms_per_offer": 3775,
-  "generated_at": "2026-06-02T18:49:10.214Z",
+  "run_duration_ms": 43827,
+  "run_duration_seconds": 43.83,
+  "avg_detail_ms_per_offer": 3652,
+  "generated_at": "2026-06-02T18:59:58.931Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131490,
-      "detail_elapsed_ms": 2644,
-      "scraped_at": "2026-06-02T18:48:48.615Z"
+      "detail_html_length": 131478,
+      "detail_elapsed_ms": 2617,
+      "scraped_at": "2026-06-02T18:59:36.673Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133855,
-      "detail_elapsed_ms": 2132,
-      "scraped_at": "2026-06-02T18:48:50.756Z"
+      "detail_html_length": 133849,
+      "detail_elapsed_ms": 1994,
+      "scraped_at": "2026-06-02T18:59:38.669Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133817,
-      "detail_elapsed_ms": 1806,
-      "scraped_at": "2026-06-02T18:48:52.563Z"
+      "detail_html_length": 133861,
+      "detail_elapsed_ms": 1758,
+      "scraped_at": "2026-06-02T18:59:40.427Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133818,
-      "detail_elapsed_ms": 1730,
-      "scraped_at": "2026-06-02T18:48:54.293Z"
+      "detail_html_length": 133844,
+      "detail_elapsed_ms": 1946,
+      "scraped_at": "2026-06-02T18:59:42.373Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133790,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-06-02T18:48:55.980Z"
+      "detail_html_length": 133825,
+      "detail_elapsed_ms": 2243,
+      "scraped_at": "2026-06-02T18:59:44.616Z"
     },
     {
       "id": "pvc-2-ingressos-06-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133742,
-      "detail_elapsed_ms": 1910,
-      "scraped_at": "2026-06-02T18:48:57.891Z"
+      "detail_html_length": 133777,
+      "detail_elapsed_ms": 1899,
+      "scraped_at": "2026-06-02T18:59:46.515Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133027,
-      "detail_elapsed_ms": 2240,
-      "scraped_at": "2026-06-02T18:49:00.131Z"
+      "detail_html_length": 133053,
+      "detail_elapsed_ms": 1931,
+      "scraped_at": "2026-06-02T18:59:48.446Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133025,
-      "detail_elapsed_ms": 1992,
-      "scraped_at": "2026-06-02T18:49:02.123Z"
+      "detail_html_length": 133059,
+      "detail_elapsed_ms": 2119,
+      "scraped_at": "2026-06-02T18:59:50.565Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133710,
-      "detail_elapsed_ms": 1926,
-      "scraped_at": "2026-06-02T18:49:04.050Z"
+      "detail_html_length": 133733,
+      "detail_elapsed_ms": 1955,
+      "scraped_at": "2026-06-02T18:59:52.521Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133095,
-      "detail_elapsed_ms": 1954,
-      "scraped_at": "2026-06-02T18:49:06.005Z"
+      "detail_html_length": 133080,
+      "detail_elapsed_ms": 1964,
+      "scraped_at": "2026-06-02T18:59:54.487Z"
     },
     {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
       "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
       "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132995,
-      "detail_elapsed_ms": 1942,
-      "scraped_at": "2026-06-02T18:49:07.948Z"
+      "detail_html_length": 133020,
+      "detail_elapsed_ms": 1959,
+      "scraped_at": "2026-06-02T18:59:56.446Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131146,
-      "detail_elapsed_ms": 2070,
-      "scraped_at": "2026-06-02T18:49:10.018Z"
+      "detail_html_length": 131161,
+      "detail_elapsed_ms": 2288,
+      "scraped_at": "2026-06-02T18:59:58.734Z"
     }
   ]
 }
