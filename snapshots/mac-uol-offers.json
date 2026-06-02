@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 33697,
-  "run_duration_seconds": 33.7,
-  "avg_detail_ms_per_offer": 2808,
-  "generated_at": "2026-06-02T15:06:11.851Z",
+  "run_duration_ms": 28749,
+  "run_duration_seconds": 28.75,
+  "avg_detail_ms_per_offer": 2396,
+  "generated_at": "2026-06-02T15:16:46.849Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132987,
-      "detail_elapsed_ms": 2683,
-      "scraped_at": "2026-06-02T15:05:53.911Z"
+      "detail_html_length": 132986,
+      "detail_elapsed_ms": 2743,
+      "scraped_at": "2026-06-02T15:16:28.787Z"
     },
     {
       "id": "puz-2-ingressos-13-06-teatro-liberdade-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133164,
-      "detail_elapsed_ms": 1828,
-      "scraped_at": "2026-06-02T15:05:55.741Z"
+      "detail_html_length": 133104,
+      "detail_elapsed_ms": 1846,
+      "scraped_at": "2026-06-02T15:16:30.634Z"
     },
     {
       "id": "puy-2-ingressos-09-06-teatro-liberdade-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133117,
-      "detail_elapsed_ms": 1553,
-      "scraped_at": "2026-06-02T15:05:57.294Z"
+      "detail_html_length": 133127,
+      "detail_elapsed_ms": 1677,
+      "scraped_at": "2026-06-02T15:16:32.311Z"
     },
     {
       "id": "pux-2-ingressos-07-06-teatro-liberdade-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133098,
-      "detail_elapsed_ms": 1508,
-      "scraped_at": "2026-06-02T15:05:58.802Z"
+      "detail_html_length": 133116,
+      "detail_elapsed_ms": 1644,
+      "scraped_at": "2026-06-02T15:16:33.955Z"
     },
     {
       "id": "puw-2-ingressos-06-06-teatro-liberdade-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133109,
-      "detail_elapsed_ms": 1543,
-      "scraped_at": "2026-06-02T15:06:00.345Z"
+      "detail_html_length": 133108,
+      "detail_elapsed_ms": 1714,
+      "scraped_at": "2026-06-02T15:16:35.669Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133064,
-      "detail_elapsed_ms": 1647,
-      "scraped_at": "2026-06-02T15:06:01.992Z"
+      "detail_html_length": 133063,
+      "detail_elapsed_ms": 1584,
+      "scraped_at": "2026-06-02T15:16:37.253Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133062,
-      "detail_elapsed_ms": 1610,
-      "scraped_at": "2026-06-02T15:06:03.602Z"
+      "detail_html_length": 133051,
+      "detail_elapsed_ms": 1797,
+      "scraped_at": "2026-06-02T15:16:39.050Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133733,
-      "detail_elapsed_ms": 1963,
-      "scraped_at": "2026-06-02T15:06:05.565Z"
+      "detail_elapsed_ms": 1556,
+      "scraped_at": "2026-06-02T15:16:40.606Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133061,
-      "detail_elapsed_ms": 1659,
-      "scraped_at": "2026-06-02T15:06:07.224Z"
+      "detail_html_length": 133060,
+      "detail_elapsed_ms": 1554,
+      "scraped_at": "2026-06-02T15:16:42.160Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133020,
-      "detail_elapsed_ms": 1541,
-      "scraped_at": "2026-06-02T15:06:08.766Z"
+      "detail_html_length": 133029,
+      "detail_elapsed_ms": 1612,
+      "scraped_at": "2026-06-02T15:16:43.772Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131142,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-06-02T15:06:10.271Z"
+      "detail_html_length": 131150,
+      "detail_elapsed_ms": 1526,
+      "scraped_at": "2026-06-02T15:16:45.299Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133028,
-      "detail_elapsed_ms": 1538,
-      "scraped_at": "2026-06-02T15:06:11.809Z"
+      "detail_html_length": 133037,
+      "detail_elapsed_ms": 1508,
+      "scraped_at": "2026-06-02T15:16:46.808Z"
     }
   ]
 }
