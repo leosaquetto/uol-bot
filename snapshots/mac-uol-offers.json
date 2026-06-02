@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 264377,
-  "run_duration_seconds": 264.38,
-  "avg_detail_ms_per_offer": 22031,
-  "generated_at": "2026-06-02T02:21:32.271Z",
+  "run_duration_ms": 107314,
+  "run_duration_seconds": 107.31,
+  "avg_detail_ms_per_offer": 8943,
+  "generated_at": "2026-06-02T02:33:38.024Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
       "title": "37% OFF no Cubo Bombom Brigadeiro 130g",
       "preview_title": "37% OFF no Cubo Bombom Brigadeiro 130g",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
+      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 37% de desconto no Cubo Bombom Brigadeiro 130g - De R$ 31,99 por R$ 19,99. Sobre o Cubo com Bombons de Chocolate ao Leite 130g: O Cubo com Bombons de Chocolate ao Leite é perfeito para compor presentes e cestas, trazendo o sabor clássico que todo brasileiro ama. Com bombons recheados de brigadeiro, oferece uma experiência cremosa e irresistível. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Cubo Bombom Brigadeiro 130g - De R$ 31,99 por R$ 19,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
       "category": "Compras e Presentes",
       "partner_name": "Cacau Show",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12201,
-      "scraped_at": "2026-06-02T02:19:48.405Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132757,
+      "detail_elapsed_ms": 7568,
+      "scraped_at": "2026-06-02T02:33:09.665Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133834,
-      "detail_elapsed_ms": 14555,
-      "scraped_at": "2026-06-02T02:20:03.044Z"
+      "detail_html_length": 132329,
+      "detail_elapsed_ms": 2901,
+      "scraped_at": "2026-06-02T02:33:12.567Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132774,
-      "detail_elapsed_ms": 12556,
-      "scraped_at": "2026-06-02T02:20:15.600Z"
+      "detail_html_length": 131677,
+      "detail_elapsed_ms": 4095,
+      "scraped_at": "2026-06-02T02:33:16.662Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132862,
-      "detail_elapsed_ms": 10757,
-      "scraped_at": "2026-06-02T02:20:26.357Z"
+      "detail_html_length": 126489,
+      "detail_elapsed_ms": 2627,
+      "scraped_at": "2026-06-02T02:33:19.289Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130844,
-      "detail_elapsed_ms": 7630,
-      "scraped_at": "2026-06-02T02:20:33.988Z"
+      "detail_html_length": 131002,
+      "detail_elapsed_ms": 2337,
+      "scraped_at": "2026-06-02T02:33:21.627Z"
     },
     {
       "id": "pub-2-ingressos-05-06-cine-theatro-brasil-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132721,
-      "detail_elapsed_ms": 11101,
-      "scraped_at": "2026-06-02T02:20:45.089Z"
+      "detail_html_length": 132869,
+      "detail_elapsed_ms": 2436,
+      "scraped_at": "2026-06-02T02:33:24.063Z"
     },
     {
       "id": "pu9-15-off-em-kits-seara-churrasco",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131036,
-      "detail_elapsed_ms": 6898,
-      "scraped_at": "2026-06-02T02:20:51.987Z"
+      "detail_html_length": 130997,
+      "detail_elapsed_ms": 2282,
+      "scraped_at": "2026-06-02T02:33:26.345Z"
     },
     {
       "id": "pu8-2-ingressos-14-06-teatro-tuca-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126165,
-      "detail_elapsed_ms": 4544,
-      "scraped_at": "2026-06-02T02:20:56.531Z"
+      "detail_html_length": 132519,
+      "detail_elapsed_ms": 2170,
+      "scraped_at": "2026-06-02T02:33:28.515Z"
     },
     {
       "id": "pu0-resgate-agora-1-kit-de-ms-de-corao",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125174,
-      "detail_elapsed_ms": 3283,
-      "scraped_at": "2026-06-02T02:20:59.814Z"
+      "detail_html_length": 131562,
+      "detail_elapsed_ms": 2125,
+      "scraped_at": "2026-06-02T02:33:30.640Z"
     },
     {
       "id": "puz-cursinho-enem-com-20-off",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130839,
-      "detail_elapsed_ms": 8630,
-      "scraped_at": "2026-06-02T02:21:21.625Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130851,
+      "detail_elapsed_ms": 2358,
+      "scraped_at": "2026-06-02T02:33:32.998Z"
     },
     {
       "id": "pum-at-75-off-em-seleo-de-produtos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131059,
-      "detail_elapsed_ms": 5243,
-      "scraped_at": "2026-06-02T02:21:26.869Z"
+      "detail_html_length": 131066,
+      "detail_elapsed_ms": 2535,
+      "scraped_at": "2026-06-02T02:33:35.533Z"
     },
     {
       "id": "pul-at-75-off-para-compras-no-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124971,
-      "detail_elapsed_ms": 4275,
-      "scraped_at": "2026-06-02T02:21:31.144Z"
+      "detail_html_length": 124734,
+      "detail_elapsed_ms": 2182,
+      "scraped_at": "2026-06-02T02:33:37.715Z"
     }
   ]
 }
