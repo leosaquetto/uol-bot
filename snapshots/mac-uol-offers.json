@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 33404,
-  "run_duration_seconds": 33.4,
-  "avg_detail_ms_per_offer": 2784,
-  "generated_at": "2026-06-02T20:14:59.338Z",
+  "run_duration_ms": 34274,
+  "run_duration_seconds": 34.27,
+  "avg_detail_ms_per_offer": 2856,
+  "generated_at": "2026-06-02T20:25:39.234Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131339,
-      "detail_elapsed_ms": 2521,
-      "scraped_at": "2026-06-02T20:14:40.456Z"
+      "detail_html_length": 130081,
+      "detail_elapsed_ms": 2322,
+      "scraped_at": "2026-06-02T20:25:19.655Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131633,
-      "detail_elapsed_ms": 2050,
-      "scraped_at": "2026-06-02T20:14:42.508Z"
+      "detail_html_length": 131647,
+      "detail_elapsed_ms": 1959,
+      "scraped_at": "2026-06-02T20:25:21.615Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133914,
-      "detail_elapsed_ms": 1951,
-      "scraped_at": "2026-06-02T20:14:44.459Z"
+      "detail_html_length": 133889,
+      "detail_elapsed_ms": 2137,
+      "scraped_at": "2026-06-02T20:25:23.752Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133866,
-      "detail_elapsed_ms": 1759,
-      "scraped_at": "2026-06-02T20:14:46.218Z"
+      "detail_html_length": 133862,
+      "detail_elapsed_ms": 1778,
+      "scraped_at": "2026-06-02T20:25:25.530Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133848,
-      "detail_elapsed_ms": 1845,
-      "scraped_at": "2026-06-02T20:14:48.063Z"
+      "detail_html_length": 133844,
+      "detail_elapsed_ms": 1815,
+      "scraped_at": "2026-06-02T20:25:27.345Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133840,
-      "detail_elapsed_ms": 1756,
-      "scraped_at": "2026-06-02T20:14:49.819Z"
+      "detail_html_length": 133815,
+      "detail_elapsed_ms": 1709,
+      "scraped_at": "2026-06-02T20:25:29.055Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133047,
-      "detail_elapsed_ms": 1692,
-      "scraped_at": "2026-06-02T20:14:51.511Z"
+      "detail_html_length": 133031,
+      "detail_elapsed_ms": 1685,
+      "scraped_at": "2026-06-02T20:25:30.740Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133076,
-      "detail_elapsed_ms": 1569,
-      "scraped_at": "2026-06-02T20:14:53.080Z"
+      "detail_html_length": 133061,
+      "detail_elapsed_ms": 1498,
+      "scraped_at": "2026-06-02T20:25:32.238Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133758,
-      "detail_elapsed_ms": 1517,
-      "scraped_at": "2026-06-02T20:14:54.598Z"
+      "detail_html_length": 133742,
+      "detail_elapsed_ms": 1574,
+      "scraped_at": "2026-06-02T20:25:33.812Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133076,
-      "detail_elapsed_ms": 1556,
-      "scraped_at": "2026-06-02T20:14:56.154Z"
+      "detail_html_length": 133080,
+      "detail_elapsed_ms": 1665,
+      "scraped_at": "2026-06-02T20:25:35.477Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133034,
-      "detail_elapsed_ms": 1440,
-      "scraped_at": "2026-06-02T20:14:57.594Z"
+      "detail_html_length": 133019,
+      "detail_elapsed_ms": 1945,
+      "scraped_at": "2026-06-02T20:25:37.422Z"
     },
     {
       "id": "puf-15-off-no-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131145,
-      "detail_elapsed_ms": 1679,
-      "scraped_at": "2026-06-02T20:14:59.273Z"
+      "detail_html_length": 131151,
+      "detail_elapsed_ms": 1764,
+      "scraped_at": "2026-06-02T20:25:39.186Z"
     }
   ]
 }
