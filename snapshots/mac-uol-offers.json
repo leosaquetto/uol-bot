@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 32873,
-  "run_duration_seconds": 32.87,
-  "avg_detail_ms_per_offer": 2739,
-  "generated_at": "2026-06-02T20:36:18.628Z",
+  "run_duration_ms": 30063,
+  "run_duration_seconds": 30.06,
+  "avg_detail_ms_per_offer": 2505,
+  "generated_at": "2026-06-02T20:46:54.532Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
+      "trace_id": "trace_pvq-ganhe-20-off-em-compras-acima-de-r-99",
+      "link": "https://clube.uol.com.br/evino/pvq-ganhe-20-off-em-compras-acima-de-r-99",
+      "original_link": "https://clube.uol.com.br/evino/pvq-ganhe-20-off-em-compras-acima-de-r-99",
+      "title": "Ganhe 20% OFF em compras acima de R$99!",
+      "preview_title": "Ganhe 20% OFF em compras acima de R$99!",
+      "validity": "Benefício válido de 02/06/2026 17:35 até 17/06/2026 23:59.",
+      "description": "Benefício: Ganhe 20% OFF em compras acima de R$99! Regras: Válido para a seleção de produtos presente no link. Válido para compras acima de R$99. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Comer e Beber",
+      "partner_name": "Evino",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2008c042c2b7b797d51458c9c40cdfa5.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b16b47245faf11326efe645b28ad448f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b16b47245faf11326efe645b28ad448f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b16b47245faf11326efe645b28ad448f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129416,
+      "detail_elapsed_ms": 2379,
+      "scraped_at": "2026-06-02T20:46:35.781Z"
+    },
     {
       "id": "pvk-ganhe-0-3-cashback-no-consrcio",
       "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consrcio",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130985,
-      "detail_elapsed_ms": 2388,
-      "scraped_at": "2026-06-02T20:35:59.819Z"
+      "detail_html_length": 131466,
+      "detail_elapsed_ms": 1839,
+      "scraped_at": "2026-06-02T20:46:37.621Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131643,
-      "detail_elapsed_ms": 1971,
-      "scraped_at": "2026-06-02T20:36:01.815Z"
+      "detail_html_length": 131688,
+      "detail_elapsed_ms": 1855,
+      "scraped_at": "2026-06-02T20:46:39.476Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133916,
-      "detail_elapsed_ms": 1733,
-      "scraped_at": "2026-06-02T20:36:03.548Z"
+      "detail_html_length": 133890,
+      "detail_elapsed_ms": 1743,
+      "scraped_at": "2026-06-02T20:46:41.219Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133858,
-      "detail_elapsed_ms": 1852,
-      "scraped_at": "2026-06-02T20:36:05.400Z"
+      "detail_html_length": 134404,
+      "detail_elapsed_ms": 1758,
+      "scraped_at": "2026-06-02T20:46:42.978Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133830,
-      "detail_elapsed_ms": 1600,
-      "scraped_at": "2026-06-02T20:36:07.000Z"
+      "detail_html_length": 133845,
+      "detail_elapsed_ms": 1738,
+      "scraped_at": "2026-06-02T20:46:44.716Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133811,
-      "detail_elapsed_ms": 1751,
-      "scraped_at": "2026-06-02T20:36:08.751Z"
+      "detail_html_length": 133837,
+      "detail_elapsed_ms": 1550,
+      "scraped_at": "2026-06-02T20:46:46.266Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133038,
-      "detail_elapsed_ms": 1744,
-      "scraped_at": "2026-06-02T20:36:10.495Z"
+      "detail_html_length": 133064,
+      "detail_elapsed_ms": 1534,
+      "scraped_at": "2026-06-02T20:46:47.800Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133066,
-      "detail_elapsed_ms": 1670,
-      "scraped_at": "2026-06-02T20:36:12.165Z"
+      "detail_html_length": 133072,
+      "detail_elapsed_ms": 1507,
+      "scraped_at": "2026-06-02T20:46:49.307Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133739,
-      "detail_elapsed_ms": 1523,
-      "scraped_at": "2026-06-02T20:36:13.688Z"
+      "detail_html_length": 133753,
+      "detail_elapsed_ms": 1602,
+      "scraped_at": "2026-06-02T20:46:50.909Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133076,
-      "detail_elapsed_ms": 1687,
-      "scraped_at": "2026-06-02T20:36:15.375Z"
+      "detail_html_length": 133082,
+      "detail_elapsed_ms": 1793,
+      "scraped_at": "2026-06-02T20:46:52.702Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133015,
-      "detail_elapsed_ms": 1553,
-      "scraped_at": "2026-06-02T20:36:16.928Z"
-    },
-    {
-      "id": "puf-15-off-no-site",
-      "trace_id": "trace_puf-15-off-no-site",
-      "link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
-      "original_link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
-      "title": "15% OFF no site!",
-      "preview_title": "15% OFF no site!",
-      "validity": "Benefício válido de 29/05/2026 16:42 até 31/12/2026 23:59.",
-      "description": "Sobre o Parceiro: A TopTherm é uma empresa brasileira fundada em 1994, especializada em produtos voltados para saúde, bem-estar e suplementação alimentar. A marca ficou conhecida principalmente por sua linha de ômega 3, vitaminas, colágenos, probióticos e pela tradicional iogurteira TopTherm, comercializada em todo o Brasil. Atualmente, a empresa atua com foco em qualidade de vida, oferecendo soluções voltadas à nutrição, beleza e cuidados com a saúde. Benefício: 15% OFF no site! Regras: Aplique o cupom no checkout. Cumulativo com demais promoções do site. Válido apenas 1 uso por CPF. Não cumulativo com demais cupons.",
-      "category": "",
-      "partner_name": "Top Therm",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b332eda111321152b53a045d0fe17127.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131137,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-06-02T20:36:18.576Z"
+      "detail_html_length": 133031,
+      "detail_elapsed_ms": 1760,
+      "scraped_at": "2026-06-02T20:46:54.462Z"
     }
   ]
 }
