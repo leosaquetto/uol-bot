@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27883,
-  "run_duration_seconds": 27.88,
-  "avg_detail_ms_per_offer": 2324,
-  "generated_at": "2026-06-02T16:20:19.504Z",
+  "run_duration_ms": 29122,
+  "run_duration_seconds": 29.12,
+  "avg_detail_ms_per_offer": 2427,
+  "generated_at": "2026-06-02T16:30:53.799Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132208,
-      "detail_elapsed_ms": 1671,
-      "scraped_at": "2026-06-02T16:20:00.594Z"
+      "detail_html_length": 132486,
+      "detail_elapsed_ms": 2204,
+      "scraped_at": "2026-06-02T16:30:34.871Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133811,
-      "detail_elapsed_ms": 1818,
-      "scraped_at": "2026-06-02T16:20:02.413Z"
+      "detail_html_length": 133836,
+      "detail_elapsed_ms": 2137,
+      "scraped_at": "2026-06-02T16:30:37.012Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133854,
-      "detail_elapsed_ms": 1586,
-      "scraped_at": "2026-06-02T16:20:03.999Z"
+      "detail_html_length": 133858,
+      "detail_elapsed_ms": 1768,
+      "scraped_at": "2026-06-02T16:30:38.780Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133816,
-      "detail_elapsed_ms": 2035,
-      "scraped_at": "2026-06-02T16:20:06.034Z"
+      "detail_html_length": 133820,
+      "detail_elapsed_ms": 1582,
+      "scraped_at": "2026-06-02T16:30:40.362Z"
     },
     {
       "id": "pvc-2-ingressos-06-06-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133777,
-      "detail_elapsed_ms": 1910,
-      "scraped_at": "2026-06-02T16:20:07.944Z"
+      "detail_html_length": 133801,
+      "detail_elapsed_ms": 1635,
+      "scraped_at": "2026-06-02T16:30:41.998Z"
     },
     {
       "id": "pvb-2-ingressos-05-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133759,
-      "detail_elapsed_ms": 1847,
-      "scraped_at": "2026-06-02T16:20:09.791Z"
+      "detail_html_length": 133773,
+      "detail_elapsed_ms": 1865,
+      "scraped_at": "2026-06-02T16:30:43.863Z"
     },
     {
       "id": "pva-2-ingressos-14-06-teatro-liberdade-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133194,
-      "detail_elapsed_ms": 1694,
-      "scraped_at": "2026-06-02T16:20:11.485Z"
+      "detail_html_length": 133188,
+      "detail_elapsed_ms": 1861,
+      "scraped_at": "2026-06-02T16:30:45.724Z"
     },
     {
       "id": "puz-2-ingressos-13-06-teatro-liberdade-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133145,
-      "detail_elapsed_ms": 1685,
-      "scraped_at": "2026-06-02T16:20:13.170Z"
+      "detail_html_length": 133169,
+      "detail_elapsed_ms": 1588,
+      "scraped_at": "2026-06-02T16:30:47.312Z"
     },
     {
       "id": "puy-2-ingressos-09-06-teatro-liberdade-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133126,
-      "detail_elapsed_ms": 1532,
-      "scraped_at": "2026-06-02T16:20:14.703Z"
+      "detail_html_length": 133130,
+      "detail_elapsed_ms": 1720,
+      "scraped_at": "2026-06-02T16:30:49.033Z"
     },
     {
       "id": "pux-2-ingressos-07-06-teatro-liberdade-sp",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133106,
-      "detail_elapsed_ms": 1595,
-      "scraped_at": "2026-06-02T16:20:16.298Z"
+      "detail_html_length": 133130,
+      "detail_elapsed_ms": 1597,
+      "scraped_at": "2026-06-02T16:30:50.630Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133061,
-      "detail_elapsed_ms": 1616,
-      "scraped_at": "2026-06-02T16:20:17.914Z"
+      "detail_html_length": 133066,
+      "detail_elapsed_ms": 1558,
+      "scraped_at": "2026-06-02T16:30:52.188Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133061,
-      "detail_elapsed_ms": 1534,
-      "scraped_at": "2026-06-02T16:20:19.448Z"
+      "detail_html_length": 133065,
+      "detail_elapsed_ms": 1524,
+      "scraped_at": "2026-06-02T16:30:53.712Z"
     }
   ]
 }
