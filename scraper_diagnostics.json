@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-02T17:35:54.147682Z",
+  "updated_at": "2026-06-02T17:45:59.813415Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 2,
+    "duplicada_historico": 12,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -47,12 +47,6 @@
       "trace_id": "trace_pvc-2-ingressos-06-06-morumbi-park-sp"
     },
     {
-      "title": "2 INGRESSOS: 14/06 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pva-2-ingressos-14-06-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pva-2-ingressos-14-06-teatro-liberdade-sp"
-    },
-    {
       "title": "2 INGRESSOS: 13/06 Teatro Liberdade - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/puZ-2-ingressos-13-06-teatro-liberdade-sp",
       "reason": "duplicada_historico",
@@ -72,9 +66,9 @@
     },
     {
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
     },
     {
       "title": "38% OFF na Caixa de Bombom Angel 200g",
@@ -84,9 +78,15 @@
     },
     {
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos"
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos"
+    },
+    {
+      "title": "15% OFF no site!",
+      "link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puf-15-off-no-site"
     }
   ]
 }
