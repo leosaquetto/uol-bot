@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 32584,
-  "run_duration_seconds": 32.58,
-  "avg_detail_ms_per_offer": 2715,
-  "generated_at": "2026-06-02T17:34:34.301Z",
+  "run_duration_ms": 28596,
+  "run_duration_seconds": 28.6,
+  "avg_detail_ms_per_offer": 2383,
+  "generated_at": "2026-06-02T17:45:09.059Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132466,
-      "detail_elapsed_ms": 2241,
-      "scraped_at": "2026-06-02T17:34:16.182Z"
+      "detail_html_length": 132121,
+      "detail_elapsed_ms": 2024,
+      "scraped_at": "2026-06-02T17:44:50.374Z"
     },
     {
       "id": "pvf-2-ingressos-14-06-morumbi-park-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133831,
-      "detail_elapsed_ms": 1777,
-      "scraped_at": "2026-06-02T17:34:17.961Z"
+      "detail_html_length": 133840,
+      "detail_elapsed_ms": 2009,
+      "scraped_at": "2026-06-02T17:44:52.391Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133844,
-      "detail_elapsed_ms": 1735,
-      "scraped_at": "2026-06-02T17:34:19.696Z"
+      "detail_html_length": 133782,
+      "detail_elapsed_ms": 1701,
+      "scraped_at": "2026-06-02T17:44:54.092Z"
     },
     {
       "id": "pvd-2-ingressos-07-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133795,
-      "detail_elapsed_ms": 1677,
-      "scraped_at": "2026-06-02T17:34:21.373Z"
+      "detail_html_length": 133814,
+      "detail_elapsed_ms": 1877,
+      "scraped_at": "2026-06-02T17:44:55.969Z"
     },
     {
       "id": "pvc-2-ingressos-06-06-morumbi-park-sp",
@@ -136,33 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133767,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-06-02T17:34:23.059Z"
-    },
-    {
-      "id": "pva-2-ingressos-14-06-teatro-liberdade-sp",
-      "trace_id": "trace_pva-2-ingressos-14-06-teatro-liberdade-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pva-2-ingressos-14-06-teatro-liberdade-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pva-2-ingressos-14-06-teatro-liberdade-sp",
-      "title": "2 INGRESSOS: 14/06 Teatro Liberdade - SP",
-      "preview_title": "2 INGRESSOS: 14/06 Teatro Liberdade - SP",
-      "validity": "Benefício válido de 02/06/2026 10:14 até 13/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para o musical “Diana – A Princesa do Povo” e emocione-se com essa superprodução que retrata a trajetória de uma das personalidades mais marcantes do século XX. Uma experiência intensa, com cenários grandiosos e uma história que vai te tocar do início ao fim, no Teatro Liberdade, em São Paulo. Data: 14 de Junho, às 19h30. Local: R. São Joaquim, 129, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ee8ed38c54_6a1ee738f21fe_6a1ee1d457445_6a1edea1a8ed4_6a1edcd5d62f9_6a1ed5a6e181a_6a14514309bb0_6a14504767c6e_6a144ec6d16d5_6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ee8ed38c54_6a1ee738f21fe_6a1ee1d457445_6a1edea1a8ed4_6a1edcd5d62f9_6a1ed5a6e181a_6a14514309bb0_6a14504767c6e_6a144ec6d16d5_6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ee8ed38c54_6a1ee738f21fe_6a1ee1d457445_6a1edea1a8ed4_6a1edcd5d62f9_6a1ed5a6e181a_6a14514309bb0_6a14504767c6e_6a144ec6d16d5_6a0b14424d968_6a0b1205b96b4_769f9a1111aa1506ec764593225ab6e7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133184,
-      "detail_elapsed_ms": 1970,
-      "scraped_at": "2026-06-02T17:34:25.029Z"
+      "detail_html_length": 133786,
+      "detail_elapsed_ms": 1726,
+      "scraped_at": "2026-06-02T17:44:57.696Z"
     },
     {
       "id": "puz-2-ingressos-13-06-teatro-liberdade-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133155,
-      "detail_elapsed_ms": 1432,
-      "scraped_at": "2026-06-02T17:34:26.461Z"
+      "detail_html_length": 133164,
+      "detail_elapsed_ms": 1505,
+      "scraped_at": "2026-06-02T17:44:59.202Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133042,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-06-02T17:34:27.966Z"
+      "detail_html_length": 133052,
+      "detail_elapsed_ms": 1754,
+      "scraped_at": "2026-06-02T17:45:00.956Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -232,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133081,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-06-02T17:34:29.550Z"
+      "detail_html_length": 133070,
+      "detail_elapsed_ms": 1579,
+      "scraped_at": "2026-06-02T17:45:02.535Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133732,
-      "detail_elapsed_ms": 1569,
-      "scraped_at": "2026-06-02T17:34:31.119Z"
+      "detail_html_length": 133731,
+      "detail_elapsed_ms": 1601,
+      "scraped_at": "2026-06-02T17:45:04.136Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -280,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133071,
-      "detail_elapsed_ms": 1527,
-      "scraped_at": "2026-06-02T17:34:32.646Z"
+      "detail_html_length": 133090,
+      "detail_elapsed_ms": 1598,
+      "scraped_at": "2026-06-02T17:45:05.734Z"
     },
     {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
       "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
       "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133031,
-      "detail_elapsed_ms": 1610,
-      "scraped_at": "2026-06-02T17:34:34.256Z"
+      "detail_html_length": 133029,
+      "detail_elapsed_ms": 1553,
+      "scraped_at": "2026-06-02T17:45:07.287Z"
+    },
+    {
+      "id": "puf-15-off-no-site",
+      "trace_id": "trace_puf-15-off-no-site",
+      "link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
+      "original_link": "https://clube.uol.com.br/toptherm/puF-15-off-no-site",
+      "title": "15% OFF no site!",
+      "preview_title": "15% OFF no site!",
+      "validity": "Benefício válido de 29/05/2026 16:42 até 31/12/2026 23:59.",
+      "description": "Sobre o Parceiro: A TopTherm é uma empresa brasileira fundada em 1994, especializada em produtos voltados para saúde, bem-estar e suplementação alimentar. A marca ficou conhecida principalmente por sua linha de ômega 3, vitaminas, colágenos, probióticos e pela tradicional iogurteira TopTherm, comercializada em todo o Brasil. Atualmente, a empresa atua com foco em qualidade de vida, oferecendo soluções voltadas à nutrição, beleza e cuidados com a saúde. Benefício: 15% OFF no site! Regras: Aplique o cupom no checkout. Cumulativo com demais promoções do site. Válido apenas 1 uso por CPF. Não cumulativo com demais cupons.",
+      "category": "",
+      "partner_name": "Top Therm",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b332eda111321152b53a045d0fe17127.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/02fbdbb0e67afedcc2142c31546596d2.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131129,
+      "detail_elapsed_ms": 1711,
+      "scraped_at": "2026-06-02T17:45:08.998Z"
     }
   ]
 }
