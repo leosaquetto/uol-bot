@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 189661,
-  "run_duration_seconds": 189.66,
-  "avg_detail_ms_per_offer": 15805,
-  "generated_at": "2026-06-03T20:43:45.094Z",
+  "run_duration_ms": 67723,
+  "run_duration_seconds": 67.72,
+  "avg_detail_ms_per_offer": 5644,
+  "generated_at": "2026-06-03T21:07:54.015Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pv2-2-ingressos-18-06-teatro-ruth-escobar-sp",
       "title": "2 INGRESSOS 18/06 Teatro Ruth Escobar SP",
       "preview_title": "2 INGRESSOS 18/06 Teatro Ruth Escobar SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 03/06/2026 15:46 até 17/06/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para a comédia “Faça Mais Sobre Isso”, com Flávia Garrafa, e divirta-se com um espetáculo bem-humorado e reflexivo que provoca o público a pensar sobre o fazer, o não fazer e as contradições do comportamento humano, no Teatro Ruth Escobar, em São Paulo/SP. Data: 18 de Junho, às 20h30. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2077959978b_6a2076677da8d_6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2077959978b_6a2076677da8d_6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pv2-2-ingressos-18-06-teatro-ruth-escobar-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 13096,
-      "scraped_at": "2026-06-03T20:42:10.072Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2077959978b_6a2076677da8d_6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133755,
+      "detail_elapsed_ms": 6470,
+      "scraped_at": "2026-06-03T21:07:23.748Z"
     },
     {
       "id": "pv1-2-ingressos-11-06-teatro-ruth-escobar-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132512,
-      "detail_elapsed_ms": 5942,
-      "scraped_at": "2026-06-03T20:43:06.076Z"
+      "detail_html_length": 127522,
+      "detail_elapsed_ms": 3407,
+      "scraped_at": "2026-06-03T21:07:27.314Z"
     },
     {
       "id": "pv0-2-ingressos-27-06-teatro-ruth-escobar-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133813,
-      "detail_elapsed_ms": 10177,
-      "scraped_at": "2026-06-03T20:43:16.253Z"
+      "detail_html_length": 133793,
+      "detail_elapsed_ms": 2406,
+      "scraped_at": "2026-06-03T21:07:29.720Z"
     },
     {
       "id": "pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133785,
-      "detail_elapsed_ms": 3100,
-      "scraped_at": "2026-06-03T20:43:19.353Z"
+      "detail_html_length": 133764,
+      "detail_elapsed_ms": 2857,
+      "scraped_at": "2026-06-03T21:07:32.577Z"
     },
     {
-      "id": "pvx-at-75-off-para-compras-no-site",
-      "trace_id": "trace_pvx-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "id": "pvx-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131494,
-      "detail_elapsed_ms": 2530,
-      "scraped_at": "2026-06-03T20:43:21.883Z"
+      "detail_html_length": 131498,
+      "detail_elapsed_ms": 2495,
+      "scraped_at": "2026-06-03T21:07:35.072Z"
     },
     {
       "id": "pvu-2-ingressos-21-06-teatro-j-safra-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132829,
-      "detail_elapsed_ms": 2224,
-      "scraped_at": "2026-06-03T20:43:24.107Z"
+      "detail_html_length": 132828,
+      "detail_elapsed_ms": 2957,
+      "scraped_at": "2026-06-03T21:07:38.029Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130983,
-      "detail_elapsed_ms": 2520,
-      "scraped_at": "2026-06-03T20:43:26.627Z"
+      "detail_html_length": 130982,
+      "detail_elapsed_ms": 2549,
+      "scraped_at": "2026-06-03T21:07:40.578Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130914,
-      "detail_elapsed_ms": 2304,
-      "scraped_at": "2026-06-03T20:43:28.931Z"
+      "detail_html_length": 130924,
+      "detail_elapsed_ms": 2838,
+      "scraped_at": "2026-06-03T21:07:43.417Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130810,
-      "detail_elapsed_ms": 2438,
-      "scraped_at": "2026-06-03T20:43:31.372Z"
+      "detail_html_length": 130829,
+      "detail_elapsed_ms": 2821,
+      "scraped_at": "2026-06-03T21:07:46.242Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132852,
-      "detail_elapsed_ms": 2434,
-      "scraped_at": "2026-06-03T20:43:33.806Z"
+      "detail_html_length": 132851,
+      "detail_elapsed_ms": 2497,
+      "scraped_at": "2026-06-03T21:07:48.740Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132845,
-      "detail_elapsed_ms": 2129,
-      "scraped_at": "2026-06-03T20:43:35.936Z"
+      "detail_html_length": 132834,
+      "detail_elapsed_ms": 2527,
+      "scraped_at": "2026-06-03T21:07:51.270Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125719,
-      "detail_elapsed_ms": 2709,
-      "scraped_at": "2026-06-03T20:43:38.649Z"
+      "detail_html_length": 131668,
+      "detail_elapsed_ms": 2380,
+      "scraped_at": "2026-06-03T21:07:53.650Z"
     }
   ]
 }
