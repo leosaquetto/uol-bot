@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 55552,
-  "run_duration_seconds": 55.55,
-  "avg_detail_ms_per_offer": 4629,
-  "generated_at": "2026-06-03T23:07:23.833Z",
+  "run_duration_ms": 156220,
+  "run_duration_seconds": 156.22,
+  "avg_detail_ms_per_offer": 13018,
+  "generated_at": "2026-06-03T23:20:10.538Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133903,
-      "detail_elapsed_ms": 2741,
-      "scraped_at": "2026-06-03T23:06:54.515Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132283,
+      "detail_elapsed_ms": 5532,
+      "scraped_at": "2026-06-03T23:18:22.167Z"
     },
     {
       "id": "pv0-2-ingressos-27-06-teatro-ruth-escobar-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132656,
-      "detail_elapsed_ms": 3761,
-      "scraped_at": "2026-06-03T23:06:58.304Z"
+      "detail_html_length": 133658,
+      "detail_elapsed_ms": 8517,
+      "scraped_at": "2026-06-03T23:18:30.687Z"
     },
     {
       "id": "pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133777,
-      "detail_elapsed_ms": 2180,
-      "scraped_at": "2026-06-03T23:07:00.485Z"
+      "detail_html_length": 132554,
+      "detail_elapsed_ms": 4112,
+      "scraped_at": "2026-06-03T23:18:34.799Z"
     },
     {
-      "id": "pvx-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
+      "id": "pvx-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pvx-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131529,
-      "detail_elapsed_ms": 1984,
-      "scraped_at": "2026-06-03T23:07:02.469Z"
+      "detail_html_length": 131617,
+      "detail_elapsed_ms": 16100,
+      "scraped_at": "2026-06-03T23:18:50.899Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -123,22 +123,22 @@
       "original_link": "https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site",
       "title": "Dia dos Namorados: 20% OFF em todo site",
       "preview_title": "Dia dos Namorados: 20% OFF em todo site",
-      "validity": "Benefício válido de 02/06/2026 17:58 até 12/06/2026 23:59.",
-      "description": "Benefício: Dia dos Namorados: 20% OFF em todo o site Regras: Benefício válido em produtos vendidos e entregues pela Giuliana Flores, apenas por meio do link utilizando o cupom de desconto no carrinho. Essa ação não é cumulativa.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Giuliana Flores",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a6d7e333f037f5f5be40b4ac485635b2.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130974,
-      "detail_elapsed_ms": 1738,
-      "scraped_at": "2026-06-03T23:07:04.208Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12007,
+      "scraped_at": "2026-06-03T23:19:15.343Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130967,
-      "detail_elapsed_ms": 1752,
-      "scraped_at": "2026-06-03T23:07:05.961Z"
+      "detail_html_length": 130939,
+      "detail_elapsed_ms": 3373,
+      "scraped_at": "2026-06-03T23:19:18.716Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130860,
-      "detail_elapsed_ms": 1871,
-      "scraped_at": "2026-06-03T23:07:07.833Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 7918,
+      "scraped_at": "2026-06-03T23:19:27.025Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132853,
-      "detail_elapsed_ms": 1889,
-      "scraped_at": "2026-06-03T23:07:09.722Z"
+      "detail_html_length": 132866,
+      "detail_elapsed_ms": 10371,
+      "scraped_at": "2026-06-03T23:19:37.396Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132876,
-      "detail_elapsed_ms": 1687,
-      "scraped_at": "2026-06-03T23:07:11.409Z"
+      "detail_html_length": 132848,
+      "detail_elapsed_ms": 8108,
+      "scraped_at": "2026-06-03T23:19:45.504Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131669,
-      "detail_elapsed_ms": 5031,
-      "scraped_at": "2026-06-03T23:07:16.440Z"
+      "detail_html_length": 131513,
+      "detail_elapsed_ms": 10888,
+      "scraped_at": "2026-06-03T23:19:56.392Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133826,
-      "detail_elapsed_ms": 2082,
-      "scraped_at": "2026-06-03T23:07:18.522Z"
+      "detail_html_length": 133819,
+      "detail_elapsed_ms": 8253,
+      "scraped_at": "2026-06-03T23:20:04.669Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133034,
-      "detail_elapsed_ms": 4132,
-      "scraped_at": "2026-06-03T23:07:22.654Z"
+      "detail_html_length": 132950,
+      "detail_elapsed_ms": 4443,
+      "scraped_at": "2026-06-03T23:20:09.112Z"
     }
   ]
 }
