@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27889,
-  "run_duration_seconds": 27.89,
-  "avg_detail_ms_per_offer": 2324,
-  "generated_at": "2026-06-03T15:44:37.693Z",
+  "run_duration_ms": 206887,
+  "run_duration_seconds": 206.89,
+  "avg_detail_ms_per_offer": 17241,
+  "generated_at": "2026-06-03T17:00:14.311Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132695,
-      "detail_elapsed_ms": 2276,
-      "scraped_at": "2026-06-03T15:44:19.347Z"
+      "detail_html_length": 132681,
+      "detail_elapsed_ms": 3872,
+      "scraped_at": "2026-06-03T16:59:51.577Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131029,
-      "detail_elapsed_ms": 1849,
-      "scraped_at": "2026-06-03T15:44:21.197Z"
+      "detail_html_length": 129822,
+      "detail_elapsed_ms": 2857,
+      "scraped_at": "2026-06-03T16:59:54.435Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130961,
-      "detail_elapsed_ms": 1627,
-      "scraped_at": "2026-06-03T15:44:22.824Z"
+      "detail_html_length": 130934,
+      "detail_elapsed_ms": 2079,
+      "scraped_at": "2026-06-03T16:59:56.515Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130866,
-      "detail_elapsed_ms": 1781,
-      "scraped_at": "2026-06-03T15:44:24.605Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 1769,
+      "scraped_at": "2026-06-03T16:59:58.284Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132907,
-      "detail_elapsed_ms": 1523,
-      "scraped_at": "2026-06-03T15:44:26.128Z"
+      "detail_html_length": 132880,
+      "detail_elapsed_ms": 1924,
+      "scraped_at": "2026-06-03T17:00:00.208Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132871,
-      "detail_elapsed_ms": 1871,
-      "scraped_at": "2026-06-03T15:44:28.000Z"
+      "detail_html_length": 132833,
+      "detail_elapsed_ms": 1887,
+      "scraped_at": "2026-06-03T17:00:02.097Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131724,
-      "detail_elapsed_ms": 1723,
-      "scraped_at": "2026-06-03T15:44:29.723Z"
+      "detail_html_length": 131658,
+      "detail_elapsed_ms": 1862,
+      "scraped_at": "2026-06-03T17:00:03.959Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133927,
-      "detail_elapsed_ms": 1545,
-      "scraped_at": "2026-06-03T15:44:31.268Z"
+      "detail_html_length": 133920,
+      "detail_elapsed_ms": 2186,
+      "scraped_at": "2026-06-03T17:00:06.146Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133871,
-      "detail_elapsed_ms": 1526,
-      "scraped_at": "2026-06-03T15:44:32.794Z"
+      "detail_html_length": 133823,
+      "detail_elapsed_ms": 1932,
+      "scraped_at": "2026-06-03T17:00:08.078Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133089,
-      "detail_elapsed_ms": 1622,
-      "scraped_at": "2026-06-03T15:44:34.416Z"
+      "detail_html_length": 133033,
+      "detail_elapsed_ms": 2273,
+      "scraped_at": "2026-06-03T17:00:10.352Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134239,
-      "detail_elapsed_ms": 1473,
-      "scraped_at": "2026-06-03T15:44:35.889Z"
+      "detail_html_length": 134212,
+      "detail_elapsed_ms": 1903,
+      "scraped_at": "2026-06-03T17:00:12.255Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133117,
-      "detail_elapsed_ms": 1758,
-      "scraped_at": "2026-06-03T15:44:37.647Z"
+      "detail_html_length": 133040,
+      "detail_elapsed_ms": 1837,
+      "scraped_at": "2026-06-03T17:00:14.093Z"
     }
   ]
 }
