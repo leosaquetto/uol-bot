@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-03T01:46:17.790880Z",
+  "updated_at": "2026-06-03T01:56:12.489817Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -53,12 +53,6 @@
       "trace_id": "trace_pvg-2-ingressos-19-06-morumbi-park-sp"
     },
     {
-      "title": "2 INGRESSOS: 14/06 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvf-2-ingressos-14-06-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvf-2-ingressos-14-06-morumbi-park-sp"
-    },
-    {
       "title": "2 INGRESSOS: 12/06 Morumbi Park- SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pve-2-ingressos-12-06-morumbi-park-sp",
       "reason": "duplicada_historico",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "reason": "duplicada_historico",
       "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
+    },
+    {
+      "title": "38% OFF na Caixa de Bombom Angel 200g",
+      "link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pun-38-off-na-caixa-bombom-angel-200g"
     }
   ]
 }
