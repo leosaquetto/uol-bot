@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 29497,
-  "run_duration_seconds": 29.5,
-  "avg_detail_ms_per_offer": 2458,
-  "generated_at": "2026-06-03T14:51:36.914Z",
+  "run_duration_ms": 32809,
+  "run_duration_seconds": 32.81,
+  "avg_detail_ms_per_offer": 2734,
+  "generated_at": "2026-06-03T15:02:15.320Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129579,
-      "detail_elapsed_ms": 2121,
-      "scraped_at": "2026-06-03T14:51:18.055Z"
+      "detail_html_length": 130824,
+      "detail_elapsed_ms": 2442,
+      "scraped_at": "2026-06-03T15:01:56.895Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130945,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-06-03T14:51:19.775Z"
+      "detail_html_length": 130956,
+      "detail_elapsed_ms": 1756,
+      "scraped_at": "2026-06-03T15:01:58.656Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -88,33 +88,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130849,
-      "detail_elapsed_ms": 1628,
-      "scraped_at": "2026-06-03T14:51:21.403Z"
+      "detail_html_length": 130850,
+      "detail_elapsed_ms": 1527,
+      "scraped_at": "2026-06-03T15:02:00.183Z"
     },
     {
       "id": "pvk-ganhe-0-3-cashback-no-consorcio",
       "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consorcio",
       "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
       "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
-      "title": "Ganhe 0,3% de cashback no consórcio!",
+      "title": "Ingressos Exclusivos",
       "preview_title": "Ganhe 0,3% de cashback no consórcio!",
-      "validity": "Benefício válido de 02/06/2026 16:57 até 31/12/2028 23:59.",
-      "description": "Sobre o parceiro: Conquiste seu imóvel ou veículo novo ou seminovo sem juros. Planeje seus objetivos com parcelas acessíveis e transforme seus sonhos em patrimônio. Benefício: Ganhe 0,3% de cashback ao contratar seu consórcio! Regras: Acesse o link da parceria, insira os seus dados e o código do benefício. Cashback à ser realizado em até 90 dias após o pagamento da 2ª parcela do consórcio. **Exceto segmentos: sustentável e bicicletas. Consulte o regulamento completo: https://promo.parceria.pro/consorcio-regulamento",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Consórcio Porto Bank",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8554ae5e6202da20878736e976570520.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ab1ef2425a5c4a51a4284dd0c73e634.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ab1ef2425a5c4a51a4284dd0c73e634.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ab1ef2425a5c4a51a4284dd0c73e634.png",
-      "img_source": "meta_og",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
+      "img_source": "benefit_data_src",
       "detail_ok": true,
-      "detail_quality": "complete",
+      "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131523,
-      "detail_elapsed_ms": 1611,
-      "scraped_at": "2026-06-03T14:51:23.014Z"
+      "detail_html_length": 332382,
+      "detail_elapsed_ms": 2151,
+      "scraped_at": "2026-06-03T15:02:02.334Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -137,8 +137,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131698,
-      "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-06-03T14:51:24.528Z"
+      "detail_elapsed_ms": 1594,
+      "scraped_at": "2026-06-03T15:02:03.928Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133920,
-      "detail_elapsed_ms": 2008,
-      "scraped_at": "2026-06-03T14:51:26.536Z"
+      "detail_html_length": 133900,
+      "detail_elapsed_ms": 1819,
+      "scraped_at": "2026-06-03T15:02:05.748Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133845,
-      "detail_elapsed_ms": 1792,
-      "scraped_at": "2026-06-03T14:51:28.328Z"
+      "detail_html_length": 133844,
+      "detail_elapsed_ms": 1663,
+      "scraped_at": "2026-06-03T15:02:07.411Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 1640,
-      "scraped_at": "2026-06-03T14:51:29.968Z"
+      "detail_html_length": 133053,
+      "detail_elapsed_ms": 1751,
+      "scraped_at": "2026-06-03T15:02:09.162Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -233,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 134233,
-      "detail_elapsed_ms": 1679,
-      "scraped_at": "2026-06-03T14:51:31.647Z"
+      "detail_elapsed_ms": 1521,
+      "scraped_at": "2026-06-03T15:02:10.683Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133081,
-      "detail_elapsed_ms": 1748,
-      "scraped_at": "2026-06-03T14:51:33.395Z"
+      "detail_html_length": 133101,
+      "detail_elapsed_ms": 1513,
+      "scraped_at": "2026-06-03T15:02:12.196Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133776,
-      "detail_elapsed_ms": 1654,
-      "scraped_at": "2026-06-03T14:51:35.049Z"
+      "detail_html_length": 133756,
+      "detail_elapsed_ms": 1542,
+      "scraped_at": "2026-06-03T15:02:13.739Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133091,
-      "detail_elapsed_ms": 1812,
-      "scraped_at": "2026-06-03T14:51:36.861Z"
+      "detail_html_length": 133080,
+      "detail_elapsed_ms": 1536,
+      "scraped_at": "2026-06-03T15:02:15.275Z"
     }
   ]
 }
