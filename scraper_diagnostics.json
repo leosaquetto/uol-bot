@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-03T12:56:24.383908Z",
+  "updated_at": "2026-06-03T13:06:20.252049Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
-    "duplicada_latest": 0,
+    "duplicada_historico": 9,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -36,9 +36,9 @@
     },
     {
       "title": "Ganhe 0,3% de cashback no consórcio!",
-      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consrcio"
+      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consorcio"
     },
     {
       "title": "10% OFF na Camisa Brasil Jordan II 2026",
@@ -72,9 +72,9 @@
     },
     {
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe"
     },
     {
       "title": "38% OFF na Caixa de Bombom Angel 200g",
@@ -84,9 +84,9 @@
     },
     {
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos"
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos"
     }
   ]
 }
