@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-03T23:21:36.578632Z",
+  "updated_at": "2026-06-03T23:34:55.029642Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pv0-2-ingressos-27-06-teatro-ruth-escobar-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv0-2-ingressos-27-06-teatro-ruth-escobar-sp"
-    },
-    {
-      "title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvz-2-ingressos-20-06-teatro-ruth-escobar-sp"
     },
     {
       "title": "Dia dos Namorados: 20% OFF em todo site",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/puV-2-ingressos-05-06-teatro-liberdade-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_puv-2-ingressos-05-06-teatro-liberdade-sp"
+    },
+    {
+      "title": "50% OFF no ingresso",
+      "link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_puu-50-off-no-ingresso"
     }
   ]
 }
