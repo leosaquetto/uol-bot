@@ -1,21 +1,51 @@
 {
-  "updated_at": "2026-06-03T19:34:18.859533Z",
+  "updated_at": "2026-06-03T19:35:58.713011Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 6,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 11,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS 18/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pv2-2-ingressos-18-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv2-2-ingressos-18-06-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 11/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pv1-2-ingressos-11-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv1-2-ingressos-11-06-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 27/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pv0-2-ingressos-27-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv0-2-ingressos-27-06-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvz-2-ingressos-20-06-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 06/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvy-2-ingressos-06-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvy-2-ingressos-06-06-teatro-ruth-escobar-sp"
+    },
     {
       "title": "2 INGRESSOS: 21/06 Teatro J. Safra SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pvu-2-ingressos-21-06-teatro-j-safra-sp",
