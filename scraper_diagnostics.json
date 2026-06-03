@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-03T14:53:04.622478Z",
+  "updated_at": "2026-06-03T15:03:12.433528Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 2,
+    "duplicada_historico": 11,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -35,9 +35,9 @@
       "trace_id": "trace_pvq-ganhe-20-off-em-compras-acima-de-r-99"
     },
     {
-      "title": "Ganhe 0,3% de cashback no consórcio!",
+      "title": "Ingressos Exclusivos",
       "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
-      "reason": "duplicada_latest",
+      "reason": "duplicada_historico",
       "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consorcio"
     },
     {
