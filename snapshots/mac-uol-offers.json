@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 156220,
-  "run_duration_seconds": 156.22,
-  "avg_detail_ms_per_offer": 13018,
-  "generated_at": "2026-06-03T23:20:10.538Z",
+  "run_duration_ms": 222285,
+  "run_duration_seconds": 222.28,
+  "avg_detail_ms_per_offer": 18524,
+  "generated_at": "2026-06-03T23:34:09.094Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132283,
-      "detail_elapsed_ms": 5532,
-      "scraped_at": "2026-06-03T23:18:22.167Z"
+      "detail_html_length": 132280,
+      "detail_elapsed_ms": 12043,
+      "scraped_at": "2026-06-03T23:33:04.416Z"
     },
     {
       "id": "pv0-2-ingressos-27-06-teatro-ruth-escobar-sp",
@@ -64,39 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133658,
-      "detail_elapsed_ms": 8517,
-      "scraped_at": "2026-06-03T23:18:30.687Z"
+      "detail_html_length": 133790,
+      "detail_elapsed_ms": 10390,
+      "scraped_at": "2026-06-03T23:33:14.807Z"
     },
     {
-      "id": "pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 03/06/2026 15:19 até 19/06/2026 23:59.",
-      "description": "Assinante UOL, exclusivo para você! Resgate 1 par de ingressos para a comédia Confusões à Italiana e divirta‑se com uma história cheia de mal‑entendidos, exageros e muito humor, no Teatro Ruth Escobar, em São Paulo – SP. Data: 20 de Junho, às 20h30. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2074eb58b5c_6a206fe454aba_afac2a4cfc5eb8916f73734b2d105665.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2074eb58b5c_6a206fe454aba_afac2a4cfc5eb8916f73734b2d105665.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2074eb58b5c_6a206fe454aba_afac2a4cfc5eb8916f73734b2d105665.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132554,
-      "detail_elapsed_ms": 4112,
-      "scraped_at": "2026-06-03T23:18:34.799Z"
-    },
-    {
-      "id": "pvx-at-75-off-para-compras-no-site",
-      "trace_id": "trace_pvx-at-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "id": "pvx-ate-75-off-para-compras-no-site",
+      "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131617,
-      "detail_elapsed_ms": 16100,
-      "scraped_at": "2026-06-03T23:18:50.899Z"
+      "detail_html_length": 131497,
+      "detail_elapsed_ms": 3734,
+      "scraped_at": "2026-06-03T23:33:18.542Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -123,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site",
       "title": "Dia dos Namorados: 20% OFF em todo site",
       "preview_title": "Dia dos Namorados: 20% OFF em todo site",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 02/06/2026 17:58 até 12/06/2026 23:59.",
+      "description": "Benefício: Dia dos Namorados: 20% OFF em todo o site Regras: Benefício válido em produtos vendidos e entregues pela Giuliana Flores, apenas por meio do link utilizando o cupom de desconto no carrinho. Essa ação não é cumulativa.",
       "category": "Compras e Presentes",
       "partner_name": "Giuliana Flores",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a6d7e333f037f5f5be40b4ac485635b2.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12007,
-      "scraped_at": "2026-06-03T23:19:15.343Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/640789ccc658f449fe29c5661a976a5a.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130971,
+      "detail_elapsed_ms": 3142,
+      "scraped_at": "2026-06-03T23:33:21.684Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130939,
-      "detail_elapsed_ms": 3373,
-      "scraped_at": "2026-06-03T23:19:18.716Z"
+      "detail_html_length": 130913,
+      "detail_elapsed_ms": 6613,
+      "scraped_at": "2026-06-03T23:33:28.297Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130812,
-      "detail_elapsed_ms": 7918,
-      "scraped_at": "2026-06-03T23:19:27.025Z"
+      "detail_html_length": 130668,
+      "detail_elapsed_ms": 12776,
+      "scraped_at": "2026-06-03T23:33:41.073Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132866,
-      "detail_elapsed_ms": 10371,
-      "scraped_at": "2026-06-03T23:19:37.396Z"
+      "detail_html_length": 132859,
+      "detail_elapsed_ms": 9348,
+      "scraped_at": "2026-06-03T23:33:50.421Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132848,
-      "detail_elapsed_ms": 8108,
-      "scraped_at": "2026-06-03T23:19:45.504Z"
+      "detail_html_length": 132833,
+      "detail_elapsed_ms": 2555,
+      "scraped_at": "2026-06-03T23:33:52.976Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131513,
-      "detail_elapsed_ms": 10888,
-      "scraped_at": "2026-06-03T23:19:56.392Z"
+      "detail_html_length": 125294,
+      "detail_elapsed_ms": 2696,
+      "scraped_at": "2026-06-03T23:33:55.672Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133819,
-      "detail_elapsed_ms": 8253,
-      "scraped_at": "2026-06-03T23:20:04.669Z"
+      "detail_html_length": 132664,
+      "detail_elapsed_ms": 3672,
+      "scraped_at": "2026-06-03T23:33:59.344Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132950,
-      "detail_elapsed_ms": 4443,
-      "scraped_at": "2026-06-03T23:20:09.112Z"
+      "detail_html_length": 133042,
+      "detail_elapsed_ms": 6363,
+      "scraped_at": "2026-06-03T23:34:05.707Z"
+    },
+    {
+      "id": "puu-50-off-no-ingresso",
+      "trace_id": "trace_puu-50-off-no-ingresso",
+      "link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
+      "original_link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
+      "title": "50% OFF no ingresso",
+      "preview_title": "50% OFF no ingresso",
+      "validity": "Benefício válido de 01/06/2026 18:38 até 02/08/2026 23:59.",
+      "description": "Sobre o musical: Mais que um musical, um recordista de emoções. Vindos de Longe, a versão brasileira do premiado musical Come From Away traz aos palcos a emocionante história real da pequena cidade de Gander, no Canadá. Em um dos momentos mais incertos da história moderna, o fechamento do espaço aéreo desviou 38 aviões para esta comunidade remota, que acolheu de braços abertos mais de 7.000 passageiros de todas as partes do mundo. Benefício: Cupom de 50% OFF no ingresso do Vindos de Longe - Come From Away (O musical da Broadway). Regras: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e \"Ir para o site\". Ao ser direcionado para o site da ticketeira oficial do musical, o desconto já estará aplicado no ingresso. Apenas escolha a data, a quantidade de ingressos e prossiga com o fluxo de compra. Atenção: Desconto válido para o Assinante UOL. Desconto válido no ingresso para todos os setores e o desconto é aplicado apenas na modalidade inteira. Desconto não cumulativo com outras promoções vigentes. Horários: Quarta a sexta, às 20h30; sábado, às 17h e 20h30; e domingo, às 17h. Localização do Teatro Ruth Escobar: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Musical Come From Away",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/cbf9131f99428fc68f48592a31586c13.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f8c95eaf22e740dba406da89df1bc62f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f8c95eaf22e740dba406da89df1bc62f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f8c95eaf22e740dba406da89df1bc62f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 127828,
+      "detail_elapsed_ms": 2912,
+      "scraped_at": "2026-06-03T23:34:08.620Z"
     }
   ]
 }
