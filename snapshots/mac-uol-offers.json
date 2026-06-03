@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 206887,
-  "run_duration_seconds": 206.89,
-  "avg_detail_ms_per_offer": 17241,
-  "generated_at": "2026-06-03T17:00:14.311Z",
+  "run_duration_ms": 53734,
+  "run_duration_seconds": 53.73,
+  "avg_detail_ms_per_offer": 4478,
+  "generated_at": "2026-06-03T18:49:55.495Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pvx-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pvx-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "title": "Até 75% OFF para compras no site",
+      "preview_title": "Até 75% OFF para compras no site",
+      "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Netshoes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/20fdf1b0deda70afcbc596fa5db68136.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/20fdf1b0deda70afcbc596fa5db68136.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/20fdf1b0deda70afcbc596fa5db68136.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 126491,
+      "detail_elapsed_ms": 5468,
+      "scraped_at": "2026-06-03T18:49:32.189Z"
+    },
     {
       "id": "pvu-2-ingressos-21-06-teatro-j-safra-sp",
       "trace_id": "trace_pvu-2-ingressos-21-06-teatro-j-safra-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132681,
-      "detail_elapsed_ms": 3872,
-      "scraped_at": "2026-06-03T16:59:51.577Z"
+      "detail_html_length": 128475,
+      "detail_elapsed_ms": 2545,
+      "scraped_at": "2026-06-03T18:49:34.737Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129822,
-      "detail_elapsed_ms": 2857,
-      "scraped_at": "2026-06-03T16:59:54.435Z"
+      "detail_html_length": 126114,
+      "detail_elapsed_ms": 2050,
+      "scraped_at": "2026-06-03T18:49:36.787Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130934,
-      "detail_elapsed_ms": 2079,
-      "scraped_at": "2026-06-03T16:59:56.515Z"
+      "detail_html_length": 130958,
+      "detail_elapsed_ms": 2005,
+      "scraped_at": "2026-06-03T18:49:38.792Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130859,
-      "detail_elapsed_ms": 1769,
-      "scraped_at": "2026-06-03T16:59:58.284Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 1866,
+      "scraped_at": "2026-06-03T18:49:40.658Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132880,
-      "detail_elapsed_ms": 1924,
-      "scraped_at": "2026-06-03T17:00:00.208Z"
+      "detail_html_length": 132853,
+      "detail_elapsed_ms": 1892,
+      "scraped_at": "2026-06-03T18:49:42.550Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132833,
-      "detail_elapsed_ms": 1887,
-      "scraped_at": "2026-06-03T17:00:02.097Z"
+      "detail_html_length": 132847,
+      "detail_elapsed_ms": 2128,
+      "scraped_at": "2026-06-03T18:49:44.678Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -184,33 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131658,
-      "detail_elapsed_ms": 1862,
-      "scraped_at": "2026-06-03T17:00:03.959Z"
-    },
-    {
-      "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
-      "trace_id": "trace_pvg-2-ingressos-19-06-morumbi-park-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvg-2-ingressos-19-06-morumbi-park-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvg-2-ingressos-19-06-morumbi-park-sp",
-      "title": "2 INGRESSOS: 19/06 Morumbi Park- SP",
-      "preview_title": "2 INGRESSOS: 19/06 Morumbi Park- SP",
-      "validity": "Benefício válido de 02/06/2026 12:32 até 18/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para o Morumbi Park, e aproveite atrações como trampolins e arvorismo, além da área baby no Morumbi/SP. Data: 19 de Junho de 2026 (Passaporte 3 horas). Horário:Quarta a sexta, das 12h às 20h | sábado, das 12h às 22h | e domingos e feriados, das 10h às 20h. Local: Av. Major Sylvio de Magalhães Padilha - 16741. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ef9e23fd84_6a1ef998b0f75_6a1ef940c26c1_6a1ef8e732b79_6a1ef859a1195_6a1ef7746d0cb_6a0e02a790432_6a06385b9a4b0_6a0637fd313a9_6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ef9e23fd84_6a1ef998b0f75_6a1ef940c26c1_6a1ef8e732b79_6a1ef859a1195_6a1ef7746d0cb_6a0e02a790432_6a06385b9a4b0_6a0637fd313a9_6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1ef9e23fd84_6a1ef998b0f75_6a1ef940c26c1_6a1ef8e732b79_6a1ef859a1195_6a1ef7746d0cb_6a0e02a790432_6a06385b9a4b0_6a0637fd313a9_6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133920,
-      "detail_elapsed_ms": 2186,
-      "scraped_at": "2026-06-03T17:00:06.146Z"
+      "detail_html_length": 131651,
+      "detail_elapsed_ms": 2151,
+      "scraped_at": "2026-06-03T18:49:46.829Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133823,
-      "detail_elapsed_ms": 1932,
-      "scraped_at": "2026-06-03T17:00:08.078Z"
+      "detail_html_length": 133816,
+      "detail_elapsed_ms": 2160,
+      "scraped_at": "2026-06-03T18:49:48.989Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133033,
-      "detail_elapsed_ms": 2273,
-      "scraped_at": "2026-06-03T17:00:10.352Z"
+      "detail_html_length": 133025,
+      "detail_elapsed_ms": 2194,
+      "scraped_at": "2026-06-03T18:49:51.183Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134212,
-      "detail_elapsed_ms": 1903,
-      "scraped_at": "2026-06-03T17:00:12.255Z"
+      "detail_html_length": 134186,
+      "detail_elapsed_ms": 1971,
+      "scraped_at": "2026-06-03T18:49:53.154Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133040,
-      "detail_elapsed_ms": 1837,
-      "scraped_at": "2026-06-03T17:00:14.093Z"
+      "detail_html_length": 133044,
+      "detail_elapsed_ms": 2050,
+      "scraped_at": "2026-06-03T18:49:55.205Z"
     }
   ]
 }
