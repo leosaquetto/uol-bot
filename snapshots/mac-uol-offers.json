@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29636,
-  "run_duration_seconds": 29.64,
-  "avg_detail_ms_per_offer": 2470,
-  "generated_at": "2026-06-03T15:23:28.650Z",
+  "run_duration_ms": 30195,
+  "run_duration_seconds": 30.2,
+  "avg_detail_ms_per_offer": 2516,
+  "generated_at": "2026-06-03T15:34:04.309Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131525,
-      "detail_elapsed_ms": 2071,
-      "scraped_at": "2026-06-03T15:23:09.255Z"
+      "detail_html_length": 131122,
+      "detail_elapsed_ms": 2503,
+      "scraped_at": "2026-06-03T15:33:44.835Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130964,
-      "detail_elapsed_ms": 1975,
-      "scraped_at": "2026-06-03T15:23:11.231Z"
+      "detail_html_length": 124600,
+      "detail_elapsed_ms": 2216,
+      "scraped_at": "2026-06-03T15:33:47.061Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130947,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-06-03T15:23:12.879Z"
+      "detail_html_length": 130926,
+      "detail_elapsed_ms": 2007,
+      "scraped_at": "2026-06-03T15:33:49.068Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,33 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130861,
-      "detail_elapsed_ms": 1670,
-      "scraped_at": "2026-06-03T15:23:14.549Z"
-    },
-    {
-      "id": "pvo-2-ingressos-20-06-teatro-j-safra-sp",
-      "trace_id": "trace_pvo-2-ingressos-20-06-teatro-j-safra-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvo-2-ingressos-20-06-teatro-j-safra-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvo-2-ingressos-20-06-teatro-j-safra-sp",
-      "title": "2 INGRESSOS: 20/06 Teatro J. Safra SP",
-      "preview_title": "2 INGRESSOS: 20/06 Teatro J. Safra SP",
-      "validity": "Benefício válido de 02/06/2026 16:46 até 19/06/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo Concerto de Música de Cinema, com a Banda Filarmônica de São Paulo, e viva uma experiência emocionante que transforma grandes trilhas sonoras do cinema em uma apresentação sinfônica envolvente no Teatro J. Safra, em São Paulo. Data: Sábado, 20 de Junho, às 19h. Local: Rua Josef Kryss, 318 - Barra Funda - São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a53665a0fdac257d0cf249436e7197fa.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a53665a0fdac257d0cf249436e7197fa.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a53665a0fdac257d0cf249436e7197fa.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132880,
-      "detail_elapsed_ms": 1777,
-      "scraped_at": "2026-06-03T15:23:16.326Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 1595,
+      "scraped_at": "2026-06-03T15:33:50.663Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132842,
-      "detail_elapsed_ms": 1858,
-      "scraped_at": "2026-06-03T15:23:18.185Z"
+      "detail_html_length": 132892,
+      "detail_elapsed_ms": 1760,
+      "scraped_at": "2026-06-03T15:33:52.424Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132865,
-      "detail_elapsed_ms": 1855,
-      "scraped_at": "2026-06-03T15:23:20.040Z"
+      "detail_html_length": 132864,
+      "detail_elapsed_ms": 1622,
+      "scraped_at": "2026-06-03T15:33:54.046Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131700,
-      "detail_elapsed_ms": 1891,
-      "scraped_at": "2026-06-03T15:23:21.931Z"
+      "detail_html_length": 131698,
+      "detail_elapsed_ms": 1593,
+      "scraped_at": "2026-06-03T15:33:55.639Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133911,
-      "detail_elapsed_ms": 1524,
-      "scraped_at": "2026-06-03T15:23:23.455Z"
+      "detail_html_length": 133921,
+      "detail_elapsed_ms": 1683,
+      "scraped_at": "2026-06-03T15:33:57.322Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -257,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133845,
-      "detail_elapsed_ms": 1566,
-      "scraped_at": "2026-06-03T15:23:25.022Z"
+      "detail_elapsed_ms": 1816,
+      "scraped_at": "2026-06-03T15:33:59.138Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133074,
-      "detail_elapsed_ms": 1848,
-      "scraped_at": "2026-06-03T15:23:26.870Z"
+      "detail_html_length": 133054,
+      "detail_elapsed_ms": 1602,
+      "scraped_at": "2026-06-03T15:34:00.740Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134244,
-      "detail_elapsed_ms": 1716,
-      "scraped_at": "2026-06-03T15:23:28.586Z"
+      "detail_html_length": 134234,
+      "detail_elapsed_ms": 1752,
+      "scraped_at": "2026-06-03T15:34:02.492Z"
+    },
+    {
+      "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
+      "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g",
+      "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
+      "original_link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
+      "title": "37% OFF no Cubo Bombom Brigadeiro 130g",
+      "preview_title": "37% OFF no Cubo Bombom Brigadeiro 130g",
+      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
+      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 37% de desconto no Cubo Bombom Brigadeiro 130g - De R$ 31,99 por R$ 19,99. Sobre o Cubo com Bombons de Chocolate ao Leite 130g: O Cubo com Bombons de Chocolate ao Leite é perfeito para compor presentes e cestas, trazendo o sabor clássico que todo brasileiro ama. Com bombons recheados de brigadeiro, oferece uma experiência cremosa e irresistível. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Cubo Bombom Brigadeiro 130g - De R$ 31,99 por R$ 19,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
+      "category": "Compras e Presentes",
+      "partner_name": "Cacau Show",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de5d2dbc76_4a71dfbc70f583ee15a16cce9a6a1302.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133071,
+      "detail_elapsed_ms": 1655,
+      "scraped_at": "2026-06-03T15:34:04.147Z"
     }
   ]
 }
