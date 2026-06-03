@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 32674,
-  "run_duration_seconds": 32.67,
-  "avg_detail_ms_per_offer": 2723,
-  "generated_at": "2026-06-03T13:05:37.079Z",
+  "run_duration_ms": 29233,
+  "run_duration_seconds": 29.23,
+  "avg_detail_ms_per_offer": 2436,
+  "generated_at": "2026-06-03T13:16:12.096Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130835,
-      "detail_elapsed_ms": 2607,
-      "scraped_at": "2026-06-03T13:05:18.729Z"
+      "detail_html_length": 130814,
+      "detail_elapsed_ms": 2221,
+      "scraped_at": "2026-06-03T13:15:53.010Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130926,
-      "detail_elapsed_ms": 1938,
-      "scraped_at": "2026-06-03T13:05:20.668Z"
+      "detail_html_length": 130916,
+      "detail_elapsed_ms": 1610,
+      "scraped_at": "2026-06-03T13:15:54.621Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130860,
-      "detail_elapsed_ms": 1595,
-      "scraped_at": "2026-06-03T13:05:22.263Z"
+      "detail_html_length": 130849,
+      "detail_elapsed_ms": 1966,
+      "scraped_at": "2026-06-03T13:15:56.587Z"
     },
     {
-      "id": "pvk-ganhe-0-3-cashback-no-consorcio",
-      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consorcio",
-      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
-      "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
+      "id": "pvk-ganhe-0-3-cashback-no-consrcio",
+      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consrcio",
+      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
+      "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
       "title": "Ganhe 0,3% de cashback no consórcio!",
       "preview_title": "Ganhe 0,3% de cashback no consórcio!",
       "validity": "Benefício válido de 02/06/2026 16:57 até 31/12/2028 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131543,
-      "detail_elapsed_ms": 1550,
-      "scraped_at": "2026-06-03T13:05:23.813Z"
+      "detail_html_length": 131527,
+      "detail_elapsed_ms": 1599,
+      "scraped_at": "2026-06-03T13:15:58.187Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131708,
-      "detail_elapsed_ms": 1728,
-      "scraped_at": "2026-06-03T13:05:25.541Z"
+      "detail_html_length": 131689,
+      "detail_elapsed_ms": 1794,
+      "scraped_at": "2026-06-03T13:15:59.981Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133921,
-      "detail_elapsed_ms": 1575,
-      "scraped_at": "2026-06-03T13:05:27.116Z"
+      "detail_html_length": 133911,
+      "detail_elapsed_ms": 1697,
+      "scraped_at": "2026-06-03T13:16:01.678Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133855,
-      "detail_elapsed_ms": 1637,
-      "scraped_at": "2026-06-03T13:05:28.753Z"
+      "detail_html_length": 133844,
+      "detail_elapsed_ms": 1721,
+      "scraped_at": "2026-06-03T13:16:03.399Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +208,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 1609,
-      "scraped_at": "2026-06-03T13:05:30.362Z"
+      "detail_html_length": 133064,
+      "detail_elapsed_ms": 1692,
+      "scraped_at": "2026-06-03T13:16:05.091Z"
+    },
+    {
+      "id": "puu-50-off-no-ingresso",
+      "trace_id": "trace_puu-50-off-no-ingresso",
+      "link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
+      "original_link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
+      "title": "50% OFF no ingresso",
+      "preview_title": "50% OFF no ingresso",
+      "validity": "Benefício válido de 01/06/2026 18:38 até 02/08/2026 23:59.",
+      "description": "Sobre o musical: Mais que um musical, um recordista de emoções. Vindos de Longe, a versão brasileira do premiado musical Come From Away traz aos palcos a emocionante história real da pequena cidade de Gander, no Canadá. Em um dos momentos mais incertos da história moderna, o fechamento do espaço aéreo desviou 38 aviões para esta comunidade remota, que acolheu de braços abertos mais de 7.000 passageiros de todas as partes do mundo. Benefício: Cupom de 50% OFF no ingresso do Vindos de Longe - Come From Away (O musical da Broadway). Regras: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e \"Ir para o site\". Ao ser direcionado para o site da ticketeira oficial do musical, o desconto já estará aplicado no ingresso. Apenas escolha a data, a quantidade de ingressos e prossiga com o fluxo de compra. Atenção: Desconto válido para o Assinante UOL. Desconto válido no ingresso para todos os setores e o desconto é aplicado apenas na modalidade inteira. Desconto não cumulativo com outras promoções vigentes. Horários: Quarta a sexta, às 20h30; sábado, às 17h e 20h30; e domingo, às 17h. Localização do Teatro Ruth Escobar: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Musical Come From Away",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/cbf9131f99428fc68f48592a31586c13.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f8c95eaf22e740dba406da89df1bc62f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f8c95eaf22e740dba406da89df1bc62f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f8c95eaf22e740dba406da89df1bc62f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134233,
+      "detail_elapsed_ms": 1683,
+      "scraped_at": "2026-06-03T13:16:06.774Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -232,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133091,
-      "detail_elapsed_ms": 1807,
-      "scraped_at": "2026-06-03T13:05:32.170Z"
+      "detail_html_length": 133072,
+      "detail_elapsed_ms": 1722,
+      "scraped_at": "2026-06-03T13:16:08.496Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133793,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-06-03T13:05:33.856Z"
+      "detail_html_length": 133766,
+      "detail_elapsed_ms": 1945,
+      "scraped_at": "2026-06-03T13:16:10.441Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133052,
-      "detail_elapsed_ms": 1640,
-      "scraped_at": "2026-06-03T13:05:35.496Z"
-    },
-    {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
-      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 38% de desconto na Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Sobre a Caixa Angel Coleção Sortidos 290g: O coração Angel é o presente ideal para emocionar quem você ama. Com uma seleção especial de bombons sortidos, combina sabor irresistível e um design marcante que encanta em qualquer ocasião. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
-      "category": "Compras e Presentes",
-      "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133071,
-      "detail_elapsed_ms": 1545,
-      "scraped_at": "2026-06-03T13:05:37.042Z"
+      "detail_html_length": 133081,
+      "detail_elapsed_ms": 1536,
+      "scraped_at": "2026-06-03T13:16:11.977Z"
     }
   ]
 }
