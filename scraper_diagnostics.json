@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-03T15:13:41.097071Z",
+  "updated_at": "2026-06-03T15:15:17.297305Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 21/06 Teatro J. Safra SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvu-2-ingressos-21-06-teatro-j-safra-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvu-2-ingressos-21-06-teatro-j-safra-sp"
+    },
     {
       "title": "Dia dos Namorados: 20% OFF em todo site",
       "link": "https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -33,6 +39,24 @@
       "link": "https://clube.uol.com.br/evino/pvq-ganhe-20-off-em-compras-acima-de-r-99",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvq-ganhe-20-off-em-compras-acima-de-r-99"
+    },
+    {
+      "title": "2 INGRESSOS: 20/06 Teatro J. Safra SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvo-2-ingressos-20-06-teatro-j-safra-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvo-2-ingressos-20-06-teatro-j-safra-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 13/06 Teatro J. Safra SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvm-2-ingressos-13-06-teatro-j-safra-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvm-2-ingressos-13-06-teatro-j-safra-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 12/06 Teatro J. Safra SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvj-2-ingressos-12-06-teatro-j-safra-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvj-2-ingressos-12-06-teatro-j-safra-sp"
     },
     {
       "title": "10% OFF na Camisa Brasil Jordan II 2026",
