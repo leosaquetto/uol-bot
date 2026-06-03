@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 34329,
-  "run_duration_seconds": 34.33,
-  "avg_detail_ms_per_offer": 2861,
-  "generated_at": "2026-06-03T19:54:51.740Z",
+  "run_duration_ms": 164553,
+  "run_duration_seconds": 164.55,
+  "avg_detail_ms_per_offer": 13713,
+  "generated_at": "2026-06-03T20:08:01.679Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132194,
-      "detail_elapsed_ms": 2446,
-      "scraped_at": "2026-06-03T19:54:32.204Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133914,
+      "detail_elapsed_ms": 8894,
+      "scraped_at": "2026-06-03T20:07:16.578Z"
     },
     {
       "id": "pv1-2-ingressos-11-06-teatro-ruth-escobar-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133885,
-      "detail_elapsed_ms": 2472,
-      "scraped_at": "2026-06-03T19:54:34.677Z"
+      "detail_html_length": 132726,
+      "detail_elapsed_ms": 5445,
+      "scraped_at": "2026-06-03T20:07:22.025Z"
     },
     {
       "id": "pv0-2-ingressos-27-06-teatro-ruth-escobar-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133843,
-      "detail_elapsed_ms": 1742,
-      "scraped_at": "2026-06-03T19:54:36.419Z"
+      "detail_html_length": 132419,
+      "detail_elapsed_ms": 4183,
+      "scraped_at": "2026-06-03T20:07:26.209Z"
     },
     {
       "id": "pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133785,
-      "detail_elapsed_ms": 1551,
-      "scraped_at": "2026-06-03T19:54:37.970Z"
+      "detail_html_length": 133775,
+      "detail_elapsed_ms": 4051,
+      "scraped_at": "2026-06-03T20:07:30.260Z"
     },
     {
       "id": "pvx-at-75-off-para-compras-no-site",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131502,
-      "detail_elapsed_ms": 1804,
-      "scraped_at": "2026-06-03T19:54:39.777Z"
+      "detail_html_length": 130345,
+      "detail_elapsed_ms": 2412,
+      "scraped_at": "2026-06-03T20:07:32.673Z"
     },
     {
       "id": "pvu-2-ingressos-21-06-teatro-j-safra-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132899,
-      "detail_elapsed_ms": 2096,
-      "scraped_at": "2026-06-03T19:54:41.873Z"
+      "detail_html_length": 132691,
+      "detail_elapsed_ms": 4703,
+      "scraped_at": "2026-06-03T20:07:37.376Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131022,
-      "detail_elapsed_ms": 1581,
-      "scraped_at": "2026-06-03T19:54:43.454Z"
+      "detail_html_length": 130972,
+      "detail_elapsed_ms": 7835,
+      "scraped_at": "2026-06-03T20:07:45.211Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130965,
-      "detail_elapsed_ms": 1580,
-      "scraped_at": "2026-06-03T19:54:45.034Z"
+      "detail_html_length": 130925,
+      "detail_elapsed_ms": 2828,
+      "scraped_at": "2026-06-03T20:07:48.039Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 1548,
-      "scraped_at": "2026-06-03T19:54:46.582Z"
+      "detail_html_length": 130809,
+      "detail_elapsed_ms": 2980,
+      "scraped_at": "2026-06-03T20:07:51.019Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132901,
-      "detail_elapsed_ms": 1579,
-      "scraped_at": "2026-06-03T19:54:48.161Z"
+      "detail_html_length": 131477,
+      "detail_elapsed_ms": 4198,
+      "scraped_at": "2026-06-03T20:07:55.217Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132873,
-      "detail_elapsed_ms": 1644,
-      "scraped_at": "2026-06-03T19:54:49.805Z"
+      "detail_html_length": 132824,
+      "detail_elapsed_ms": 3062,
+      "scraped_at": "2026-06-03T20:07:58.279Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131716,
-      "detail_elapsed_ms": 1764,
-      "scraped_at": "2026-06-03T19:54:51.569Z"
+      "detail_html_length": 131658,
+      "detail_elapsed_ms": 2371,
+      "scraped_at": "2026-06-03T20:08:00.650Z"
     }
   ]
 }
