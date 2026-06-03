@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-06-03T17:01:04.267451Z",
+  "last_update": "2026-06-03T18:50:54.526416Z",
   "offers": [
     {
       "id": "puX-2-ingressos-07-06-teatro-liberdade-sp",
@@ -447,7 +447,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5366?thread=5363",
       "sent_at": "2026-06-03T15:14:03.983294Z",
-      "sold_out_at": "14:00"
+      "sold_out_at": "14:00",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
