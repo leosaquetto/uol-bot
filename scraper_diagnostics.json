@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-03T15:25:06.952687Z",
+  "updated_at": "2026-06-03T15:34:52.925512Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -39,12 +39,6 @@
       "link": "https://clube.uol.com.br/evino/pvq-ganhe-20-off-em-compras-acima-de-r-99",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvq-ganhe-20-off-em-compras-acima-de-r-99"
-    },
-    {
-      "title": "2 INGRESSOS: 20/06 Teatro J. Safra SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvo-2-ingressos-20-06-teatro-j-safra-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvo-2-ingressos-20-06-teatro-j-safra-sp"
     },
     {
       "title": "2 INGRESSOS: 13/06 Teatro J. Safra SP",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
       "reason": "duplicada_historico",
       "trace_id": "trace_puu-50-off-no-ingresso"
+    },
+    {
+      "title": "37% OFF no Cubo Bombom Brigadeiro 130g",
+      "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g"
     }
   ]
 }
