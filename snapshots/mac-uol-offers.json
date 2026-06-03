@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29203,
-  "run_duration_seconds": 29.2,
-  "avg_detail_ms_per_offer": 2434,
-  "generated_at": "2026-06-03T14:19:48.317Z",
+  "run_duration_ms": 30370,
+  "run_duration_seconds": 30.37,
+  "avg_detail_ms_per_offer": 2531,
+  "generated_at": "2026-06-03T14:30:25.145Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130834,
-      "detail_elapsed_ms": 2230,
-      "scraped_at": "2026-06-03T14:19:30.235Z"
+      "detail_html_length": 129665,
+      "detail_elapsed_ms": 2050,
+      "scraped_at": "2026-06-03T14:30:05.105Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130979,
-      "detail_elapsed_ms": 1943,
-      "scraped_at": "2026-06-03T14:19:32.178Z"
+      "detail_html_length": 130914,
+      "detail_elapsed_ms": 1796,
+      "scraped_at": "2026-06-03T14:30:06.902Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130864,
-      "detail_elapsed_ms": 1538,
-      "scraped_at": "2026-06-03T14:19:33.716Z"
+      "detail_html_length": 130848,
+      "detail_elapsed_ms": 2443,
+      "scraped_at": "2026-06-03T14:30:09.345Z"
     },
     {
-      "id": "pvk-ganhe-0-3-cashback-no-consorcio",
-      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consorcio",
-      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
-      "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consorcio",
+      "id": "pvk-ganhe-0-3-cashback-no-consrcio",
+      "trace_id": "trace_pvk-ganhe-0-3-cashback-no-consrcio",
+      "link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
+      "original_link": "https://clube.uol.com.br/consorcioportobank/pvk-ganhe-0-3-de-cashback-no-consrcio",
       "title": "Ganhe 0,3% de cashback no consórcio!",
       "preview_title": "Ganhe 0,3% de cashback no consórcio!",
       "validity": "Benefício válido de 02/06/2026 16:57 até 31/12/2028 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131939,
-      "detail_elapsed_ms": 1559,
-      "scraped_at": "2026-06-03T14:19:35.275Z"
+      "detail_html_length": 131535,
+      "detail_elapsed_ms": 1892,
+      "scraped_at": "2026-06-03T14:30:11.237Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131712,
-      "detail_elapsed_ms": 1555,
-      "scraped_at": "2026-06-03T14:19:36.830Z"
+      "detail_html_length": 131688,
+      "detail_elapsed_ms": 2024,
+      "scraped_at": "2026-06-03T14:30:13.261Z"
     },
     {
       "id": "pvg-2-ingressos-19-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133913,
-      "detail_elapsed_ms": 1537,
-      "scraped_at": "2026-06-03T14:19:38.367Z"
+      "detail_html_length": 133908,
+      "detail_elapsed_ms": 1654,
+      "scraped_at": "2026-06-03T14:30:14.915Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133857,
-      "detail_elapsed_ms": 1554,
-      "scraped_at": "2026-06-03T14:19:39.921Z"
+      "detail_html_length": 133843,
+      "detail_elapsed_ms": 1553,
+      "scraped_at": "2026-06-03T14:30:16.469Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133077,
-      "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-06-03T14:19:41.435Z"
+      "detail_html_length": 133062,
+      "detail_elapsed_ms": 1743,
+      "scraped_at": "2026-06-03T14:30:18.212Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134238,
-      "detail_elapsed_ms": 1598,
-      "scraped_at": "2026-06-03T14:19:43.033Z"
+      "detail_html_length": 134242,
+      "detail_elapsed_ms": 1613,
+      "scraped_at": "2026-06-03T14:30:19.825Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133106,
-      "detail_elapsed_ms": 1596,
-      "scraped_at": "2026-06-03T14:19:44.629Z"
+      "detail_html_length": 133091,
+      "detail_elapsed_ms": 1874,
+      "scraped_at": "2026-06-03T14:30:21.699Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133769,
-      "detail_elapsed_ms": 1842,
-      "scraped_at": "2026-06-03T14:19:46.471Z"
+      "detail_html_length": 133754,
+      "detail_elapsed_ms": 1669,
+      "scraped_at": "2026-06-03T14:30:23.369Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133096,
-      "detail_elapsed_ms": 1748,
-      "scraped_at": "2026-06-03T14:19:48.219Z"
+      "detail_html_length": 133100,
+      "detail_elapsed_ms": 1722,
+      "scraped_at": "2026-06-03T14:30:25.091Z"
     }
   ]
 }
