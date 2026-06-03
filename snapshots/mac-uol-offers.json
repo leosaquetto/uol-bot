@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 32931,
-  "run_duration_seconds": 32.93,
-  "avg_detail_ms_per_offer": 2744,
-  "generated_at": "2026-06-03T19:33:32.146Z",
+  "run_duration_ms": 34394,
+  "run_duration_seconds": 34.39,
+  "avg_detail_ms_per_offer": 2866,
+  "generated_at": "2026-06-03T19:44:12.097Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128905,
-      "detail_elapsed_ms": 2675,
-      "scraped_at": "2026-06-03T19:33:08.920Z"
+      "detail_html_length": 132528,
+      "detail_elapsed_ms": 2538,
+      "scraped_at": "2026-06-03T19:43:50.010Z"
     },
     {
       "id": "pv1-2-ingressos-11-06-teatro-ruth-escobar-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129060,
-      "detail_elapsed_ms": 2109,
-      "scraped_at": "2026-06-03T19:33:11.031Z"
+      "detail_html_length": 133884,
+      "detail_elapsed_ms": 2531,
+      "scraped_at": "2026-06-03T19:43:52.542Z"
     },
     {
       "id": "pv0-2-ingressos-27-06-teatro-ruth-escobar-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128988,
-      "detail_elapsed_ms": 2481,
-      "scraped_at": "2026-06-03T19:33:13.512Z"
+      "detail_html_length": 133803,
+      "detail_elapsed_ms": 2444,
+      "scraped_at": "2026-06-03T19:43:54.986Z"
     },
     {
       "id": "pvz-2-ingressos-20-06-teatro-ruth-escobar-sp",
@@ -112,33 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128959,
-      "detail_elapsed_ms": 2616,
-      "scraped_at": "2026-06-03T19:33:16.128Z"
-    },
-    {
-      "id": "pvy-2-ingressos-06-06-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pvy-2-ingressos-06-06-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvy-2-ingressos-06-06-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvy-2-ingressos-06-06-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 06/06 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 06/06 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 03/06/2026 15:19 até 05/06/2026 23:59.",
-      "description": "Assinante UOL, exclusivo para você! Resgate 1 par de ingressos para a comédia Confusões à Italiana e divirta‑se com uma história cheia de mal‑entendidos, exageros e muito humor, no Teatro Ruth Escobar, em São Paulo – SP. Data: 06 de Junho, às 20h30. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a206fe454aba_afac2a4cfc5eb8916f73734b2d105665.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a206fe454aba_afac2a4cfc5eb8916f73734b2d105665.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a206fe454aba_afac2a4cfc5eb8916f73734b2d105665.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 128942,
-      "detail_elapsed_ms": 2162,
-      "scraped_at": "2026-06-03T19:33:18.291Z"
+      "detail_html_length": 133824,
+      "detail_elapsed_ms": 1991,
+      "scraped_at": "2026-06-03T19:43:56.978Z"
     },
     {
       "id": "pvx-at-75-off-para-compras-no-site",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126678,
-      "detail_elapsed_ms": 1825,
-      "scraped_at": "2026-06-03T19:33:20.116Z"
+      "detail_html_length": 131542,
+      "detail_elapsed_ms": 2476,
+      "scraped_at": "2026-06-03T19:43:59.454Z"
     },
     {
       "id": "pvu-2-ingressos-21-06-teatro-j-safra-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128033,
-      "detail_elapsed_ms": 3085,
-      "scraped_at": "2026-06-03T19:33:23.201Z"
+      "detail_html_length": 132889,
+      "detail_elapsed_ms": 1588,
+      "scraped_at": "2026-06-03T19:44:01.042Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126157,
-      "detail_elapsed_ms": 1997,
-      "scraped_at": "2026-06-03T19:33:25.198Z"
+      "detail_html_length": 131031,
+      "detail_elapsed_ms": 1818,
+      "scraped_at": "2026-06-03T19:44:02.860Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130979,
-      "detail_elapsed_ms": 1956,
-      "scraped_at": "2026-06-03T19:33:27.154Z"
+      "detail_html_length": 130963,
+      "detail_elapsed_ms": 1949,
+      "scraped_at": "2026-06-03T19:44:04.809Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130863,
-      "detail_elapsed_ms": 1638,
-      "scraped_at": "2026-06-03T19:33:28.792Z"
+      "detail_html_length": 130878,
+      "detail_elapsed_ms": 1784,
+      "scraped_at": "2026-06-03T19:44:06.593Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132914,
-      "detail_elapsed_ms": 1570,
-      "scraped_at": "2026-06-03T19:33:30.362Z"
+      "detail_html_length": 132881,
+      "detail_elapsed_ms": 1778,
+      "scraped_at": "2026-06-03T19:44:08.371Z"
     },
     {
       "id": "pvj-2-ingressos-12-06-teatro-j-safra-sp",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132879,
-      "detail_elapsed_ms": 1740,
-      "scraped_at": "2026-06-03T19:33:32.102Z"
+      "detail_html_length": 132833,
+      "detail_elapsed_ms": 1716,
+      "scraped_at": "2026-06-03T19:44:10.088Z"
+    },
+    {
+      "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
+      "trace_id": "trace_pvh-10-off-na-camisa-brasil-jordan-ii-2026",
+      "link": "https://clube.uol.com.br/net_shoes/pvh-10-off-na-camisa-brasil-jordan-ii-2026",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvh-10-off-na-camisa-brasil-jordan-ii-2026",
+      "title": "10% OFF na Camisa Brasil Jordan II 2026",
+      "preview_title": "10% OFF na Camisa Brasil Jordan II 2026",
+      "validity": "Benefício válido de 02/06/2026 14:27 até 30/06/2026 23:59.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Cupom de 10% OFF na Camisa Brasil Jordan II 2026/27 Torcedor Pro. Como resgatar: Clique em \"Utilizar este benefício\", copie o cupom e clique em \"Ir para o site\". Ao ser direcionado para o site da Netshoes, é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Regras: O desconto vale apenas nos produtos: Camisa Brasil Jordan II 2026/27 Torcedor Pro Masculina e Camisa Brasil Jordan II 2026/27 Torcedora Pro Feminina. O benefício pode esgotar a qualquer momento.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Netshoes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c1006c4487f78e8ce36fe9f9c4c5aff4.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c1006c4487f78e8ce36fe9f9c4c5aff4.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c1006c4487f78e8ce36fe9f9c4c5aff4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131678,
+      "detail_elapsed_ms": 1683,
+      "scraped_at": "2026-06-03T19:44:11.771Z"
     }
   ]
 }
