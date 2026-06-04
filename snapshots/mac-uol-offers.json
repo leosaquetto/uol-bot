@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 90417,
-  "run_duration_seconds": 90.42,
-  "avg_detail_ms_per_offer": 7535,
-  "generated_at": "2026-06-04T13:22:58.321Z",
+  "run_duration_ms": 146073,
+  "run_duration_seconds": 146.07,
+  "avg_detail_ms_per_offer": 12173,
+  "generated_at": "2026-06-04T14:00:49.462Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pv2-2-ingressos-18-06-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pv2-2-ingressos-18-06-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pv2-2-ingressos-18-06-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pv2-2-ingressos-18-06-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 18/06 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 18/06 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 03/06/2026 15:46 até 17/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para a comédia “Faça Mais Sobre Isso”, com Flávia Garrafa, e divirta-se com um espetáculo bem-humorado e reflexivo que provoca o público a pensar sobre o fazer, o não fazer e as contradições do comportamento humano, no Teatro Ruth Escobar, em São Paulo/SP. Data: 18 de Junho, às 20h30. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2077959978b_6a2076677da8d_6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2077959978b_6a2076677da8d_6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2077959978b_6a2076677da8d_6a14874e196ab_f6f5e33e489659fe713a7fff8fd46ceb.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133768,
-      "detail_elapsed_ms": 8711,
-      "scraped_at": "2026-06-04T13:22:27.133Z"
-    },
     {
       "id": "pvx-ate-75-off-para-compras-no-site",
       "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131520,
-      "detail_elapsed_ms": 3577,
-      "scraped_at": "2026-06-04T13:22:30.717Z"
+      "detail_html_length": 131363,
+      "detail_elapsed_ms": 10520,
+      "scraped_at": "2026-06-04T14:00:08.224Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131003,
-      "detail_elapsed_ms": 2657,
-      "scraped_at": "2026-06-04T13:22:33.374Z"
+      "detail_html_length": 129481,
+      "detail_elapsed_ms": 3141,
+      "scraped_at": "2026-06-04T14:00:11.367Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130926,
-      "detail_elapsed_ms": 2347,
-      "scraped_at": "2026-06-04T13:22:35.721Z"
+      "detail_html_length": 130937,
+      "detail_elapsed_ms": 3162,
+      "scraped_at": "2026-06-04T14:00:14.530Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130839,
-      "detail_elapsed_ms": 3178,
-      "scraped_at": "2026-06-04T13:22:38.900Z"
+      "detail_html_length": 130763,
+      "detail_elapsed_ms": 4858,
+      "scraped_at": "2026-06-04T14:00:19.388Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131703,
-      "detail_elapsed_ms": 2700,
-      "scraped_at": "2026-06-04T13:22:41.600Z"
+      "detail_html_length": 132863,
+      "detail_elapsed_ms": 4574,
+      "scraped_at": "2026-06-04T14:00:23.964Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131679,
-      "detail_elapsed_ms": 2997,
-      "scraped_at": "2026-06-04T13:22:44.597Z"
+      "detail_html_length": 131670,
+      "detail_elapsed_ms": 4556,
+      "scraped_at": "2026-06-04T14:00:28.520Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127472,
-      "detail_elapsed_ms": 2537,
-      "scraped_at": "2026-06-04T13:22:47.134Z"
+      "detail_html_length": 133835,
+      "detail_elapsed_ms": 5651,
+      "scraped_at": "2026-06-04T14:00:34.171Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133044,
-      "detail_elapsed_ms": 3068,
-      "scraped_at": "2026-06-04T13:22:50.203Z"
+      "detail_html_length": 131819,
+      "detail_elapsed_ms": 2983,
+      "scraped_at": "2026-06-04T14:00:37.154Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134204,
-      "detail_elapsed_ms": 2479,
-      "scraped_at": "2026-06-04T13:22:52.682Z"
+      "detail_html_length": 134214,
+      "detail_elapsed_ms": 3402,
+      "scraped_at": "2026-06-04T14:00:40.556Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133072,
-      "detail_elapsed_ms": 2841,
-      "scraped_at": "2026-06-04T13:22:55.524Z"
+      "detail_html_length": 133073,
+      "detail_elapsed_ms": 2747,
+      "scraped_at": "2026-06-04T14:00:43.303Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132509,
-      "detail_elapsed_ms": 2449,
-      "scraped_at": "2026-06-04T13:22:57.973Z"
+      "detail_html_length": 132231,
+      "detail_elapsed_ms": 2781,
+      "scraped_at": "2026-06-04T14:00:46.084Z"
+    },
+    {
+      "id": "pun-38-off-na-caixa-bombom-angel-200g",
+      "trace_id": "trace_pun-38-off-na-caixa-bombom-angel-200g",
+      "link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
+      "original_link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
+      "title": "38% OFF na Caixa de Bombom Angel 200g",
+      "preview_title": "38% OFF na Caixa de Bombom Angel 200g",
+      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
+      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 38% de desconto na Caixa de Bombom Angel 200g - De R$61,99 por R$37,99. Sobre a Caixa de Bombom Angel 200g: A Caixa de Bombom Angel de Chocolate ao Leite é feita para transformar pequenos gestos em grandes demonstrações de carinho. Com bombons de chocolate ao leite cremosos e sabor equilibrado, é uma opção encantadora para surpreender, compartilhar e celebrar momentos especiais com quem você ama. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa de Bombom Angel 200g - De R$61,99 por R$37,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
+      "category": "Compras e Presentes",
+      "partner_name": "Cacau Show",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6e18d328aa4ebe3051d6548d51e4ab2.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6e18d328aa4ebe3051d6548d51e4ab2.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c6e18d328aa4ebe3051d6548d51e4ab2.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133072,
+      "detail_elapsed_ms": 2880,
+      "scraped_at": "2026-06-04T14:00:48.964Z"
     }
   ]
 }
