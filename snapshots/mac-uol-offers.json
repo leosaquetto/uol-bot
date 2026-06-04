@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 33126,
-  "run_duration_seconds": 33.13,
-  "avg_detail_ms_per_offer": 2761,
-  "generated_at": "2026-06-04T19:32:02.113Z",
+  "run_duration_ms": 30283,
+  "run_duration_seconds": 30.28,
+  "avg_detail_ms_per_offer": 2524,
+  "generated_at": "2026-06-04T19:42:37.093Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pvx-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
+      "id": "pvx-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pvx-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130190,
-      "detail_elapsed_ms": 2143,
-      "scraped_at": "2026-06-04T19:31:43.458Z"
+      "detail_html_length": 131337,
+      "detail_elapsed_ms": 2138,
+      "scraped_at": "2026-06-04T19:42:19.891Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131012,
-      "detail_elapsed_ms": 1810,
-      "scraped_at": "2026-06-04T19:31:45.270Z"
+      "detail_html_length": 131034,
+      "detail_elapsed_ms": 1561,
+      "scraped_at": "2026-06-04T19:42:21.453Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130974,
-      "detail_elapsed_ms": 1591,
-      "scraped_at": "2026-06-04T19:31:46.861Z"
+      "detail_html_length": 130967,
+      "detail_elapsed_ms": 1520,
+      "scraped_at": "2026-06-04T19:42:22.973Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,33 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130869,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-06-04T19:31:48.445Z"
-    },
-    {
-      "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
-      "trace_id": "trace_pvm-2-ingressos-13-06-teatro-j-safra-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvm-2-ingressos-13-06-teatro-j-safra-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvm-2-ingressos-13-06-teatro-j-safra-sp",
-      "title": "2 INGRESSOS: 13/06 Teatro J. Safra SP",
-      "preview_title": "2 INGRESSOS: 13/06 Teatro J. Safra SP",
-      "validity": "Benefício válido de 02/06/2026 16:46 até 12/06/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo “Um sim à vida”, com Viviane Mosé, direção de Lee Taylor, e viva uma experiência sensível que une teatro, filosofia, poesia e dança, em um encontro profundo com a condição humana no Teatro J. Safra, na Barra Funda, em São Paulo – SP. Data: Sábado, 13 de Junho, às 20h. Local: Rua Josef Kryss, 318 - Barra Funda - São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1f39aef096a_a18f74d89059d58c9867ceb85ec2103a.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1f39aef096a_a18f74d89059d58c9867ceb85ec2103a.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1f39aef096a_a18f74d89059d58c9867ceb85ec2103a.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132900,
-      "detail_elapsed_ms": 2217,
-      "scraped_at": "2026-06-04T19:31:50.663Z"
+      "detail_html_length": 130861,
+      "detail_elapsed_ms": 1568,
+      "scraped_at": "2026-06-04T19:42:24.541Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131718,
-      "detail_elapsed_ms": 1789,
-      "scraped_at": "2026-06-04T19:31:52.452Z"
+      "detail_html_length": 131709,
+      "detail_elapsed_ms": 1680,
+      "scraped_at": "2026-06-04T19:42:26.221Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133864,
-      "detail_elapsed_ms": 1751,
-      "scraped_at": "2026-06-04T19:31:54.203Z"
+      "detail_html_length": 133884,
+      "detail_elapsed_ms": 1669,
+      "scraped_at": "2026-06-04T19:42:27.890Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133072,
-      "detail_elapsed_ms": 1545,
-      "scraped_at": "2026-06-04T19:31:55.748Z"
+      "detail_html_length": 133064,
+      "detail_elapsed_ms": 1539,
+      "scraped_at": "2026-06-04T19:42:29.429Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134253,
-      "detail_elapsed_ms": 1472,
-      "scraped_at": "2026-06-04T19:31:57.220Z"
+      "detail_html_length": 134244,
+      "detail_elapsed_ms": 1543,
+      "scraped_at": "2026-06-04T19:42:30.972Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -256,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133099,
-      "detail_elapsed_ms": 1708,
-      "scraped_at": "2026-06-04T19:31:58.928Z"
+      "detail_html_length": 133082,
+      "detail_elapsed_ms": 1542,
+      "scraped_at": "2026-06-04T19:42:32.514Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133764,
-      "detail_elapsed_ms": 1487,
-      "scraped_at": "2026-06-04T19:32:00.415Z"
+      "detail_html_length": 133776,
+      "detail_elapsed_ms": 1519,
+      "scraped_at": "2026-06-04T19:42:34.033Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133099,
-      "detail_elapsed_ms": 1625,
-      "scraped_at": "2026-06-04T19:32:02.040Z"
+      "detail_html_length": 133092,
+      "detail_elapsed_ms": 1455,
+      "scraped_at": "2026-06-04T19:42:35.488Z"
+    },
+    {
+      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "title": "38% OFF na Caixa Angel Coleção Sortidos",
+      "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
+      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
+      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 38% de desconto na Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Sobre a Caixa Angel Coleção Sortidos 290g: O coração Angel é o presente ideal para emocionar quem você ama. Com uma seleção especial de bombons sortidos, combina sabor irresistível e um design marcante que encanta em qualquer ocasião. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
+      "category": "Compras e Presentes",
+      "partner_name": "Cacau Show",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133042,
+      "detail_elapsed_ms": 1553,
+      "scraped_at": "2026-06-04T19:42:37.041Z"
     }
   ]
 }
