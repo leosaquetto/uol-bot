@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-04T08:24:50.592270Z",
+  "updated_at": "2026-06-04T08:35:37.036681Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
+    "duplicada_historico": 10,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
       "reason": "duplicada_historico",
       "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g"
-    },
-    {
-      "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
     }
   ]
 }
