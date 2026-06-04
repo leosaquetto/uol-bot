@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-03T23:58:38.055937Z",
+  "updated_at": "2026-06-04T00:08:45.707450Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -53,12 +53,6 @@
       "trace_id": "trace_pvm-2-ingressos-13-06-teatro-j-safra-sp"
     },
     {
-      "title": "2 INGRESSOS: 12/06 Teatro J. Safra SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvj-2-ingressos-12-06-teatro-j-safra-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvj-2-ingressos-12-06-teatro-j-safra-sp"
-    },
-    {
       "title": "10% OFF na Camisa Brasil Jordan II 2026",
       "link": "https://clube.uol.com.br/net_shoes/pvh-10-off-na-camisa-brasil-jordan-ii-2026",
       "reason": "duplicada_historico",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
       "reason": "duplicada_historico",
       "trace_id": "trace_puu-50-off-no-ingresso"
+    },
+    {
+      "title": "37% OFF no Cubo Bombom Brigadeiro 130g",
+      "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g"
     }
   ]
 }
