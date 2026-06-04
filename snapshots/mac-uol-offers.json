@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 190257,
-  "run_duration_seconds": 190.26,
-  "avg_detail_ms_per_offer": 15855,
-  "generated_at": "2026-06-04T15:28:05.151Z",
+  "run_duration_ms": 172513,
+  "run_duration_seconds": 172.51,
+  "avg_detail_ms_per_offer": 14376,
+  "generated_at": "2026-06-04T15:41:12.133Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Até 60% off + desconto cumulativo com o cupom de 15% OFF para compras no site. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Netshoes",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/20fdf1b0deda70afcbc596fa5db68136.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/20fdf1b0deda70afcbc596fa5db68136.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12795,
-      "scraped_at": "2026-06-04T15:27:14.355Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/20fdf1b0deda70afcbc596fa5db68136.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131005,
+      "detail_elapsed_ms": 7547,
+      "scraped_at": "2026-06-04T15:40:21.869Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131272,
-      "detail_elapsed_ms": 11797,
-      "scraped_at": "2026-06-04T15:27:26.290Z"
+      "detail_html_length": 129827,
+      "detail_elapsed_ms": 4388,
+      "scraped_at": "2026-06-04T15:40:26.262Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130926,
-      "detail_elapsed_ms": 6594,
-      "scraped_at": "2026-06-04T15:27:32.884Z"
+      "detail_html_length": 130938,
+      "detail_elapsed_ms": 3858,
+      "scraped_at": "2026-06-04T15:40:30.120Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130830,
-      "detail_elapsed_ms": 5917,
-      "scraped_at": "2026-06-04T15:27:38.801Z"
+      "detail_html_length": 130813,
+      "detail_elapsed_ms": 2785,
+      "scraped_at": "2026-06-04T15:40:32.905Z"
     },
     {
       "id": "pvm-2-ingressos-13-06-teatro-j-safra-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132883,
-      "detail_elapsed_ms": 3080,
-      "scraped_at": "2026-06-04T15:27:41.881Z"
+      "detail_html_length": 133267,
+      "detail_elapsed_ms": 3351,
+      "scraped_at": "2026-06-04T15:40:36.257Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131689,
-      "detail_elapsed_ms": 3418,
-      "scraped_at": "2026-06-04T15:27:45.299Z"
+      "detail_html_length": 131444,
+      "detail_elapsed_ms": 5971,
+      "scraped_at": "2026-06-04T15:40:42.229Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132609,
-      "detail_elapsed_ms": 3227,
-      "scraped_at": "2026-06-04T15:27:48.526Z"
+      "detail_html_length": 133848,
+      "detail_elapsed_ms": 5738,
+      "scraped_at": "2026-06-04T15:40:47.967Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133035,
-      "detail_elapsed_ms": 3292,
-      "scraped_at": "2026-06-04T15:27:51.819Z"
+      "detail_html_length": 126674,
+      "detail_elapsed_ms": 2698,
+      "scraped_at": "2026-06-04T15:40:50.666Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134213,
-      "detail_elapsed_ms": 2522,
-      "scraped_at": "2026-06-04T15:27:54.342Z"
+      "detail_html_length": 134206,
+      "detail_elapsed_ms": 3032,
+      "scraped_at": "2026-06-04T15:40:53.698Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 3020,
-      "scraped_at": "2026-06-04T15:27:57.362Z"
+      "detail_html_length": 133054,
+      "detail_elapsed_ms": 5479,
+      "scraped_at": "2026-06-04T15:40:59.177Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133736,
-      "detail_elapsed_ms": 3643,
-      "scraped_at": "2026-06-04T15:28:01.007Z"
+      "detail_html_length": 133748,
+      "detail_elapsed_ms": 5393,
+      "scraped_at": "2026-06-04T15:41:04.570Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133072,
-      "detail_elapsed_ms": 3498,
-      "scraped_at": "2026-06-04T15:28:04.505Z"
+      "detail_html_length": 126702,
+      "detail_elapsed_ms": 2746,
+      "scraped_at": "2026-06-04T15:41:07.316Z"
     }
   ]
 }
