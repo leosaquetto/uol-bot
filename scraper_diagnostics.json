@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-04T13:24:34.584324Z",
+  "updated_at": "2026-06-04T14:01:32.915689Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS 18/06 Teatro Ruth Escobar SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pv2-2-ingressos-18-06-teatro-ruth-escobar-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv2-2-ingressos-18-06-teatro-ruth-escobar-sp"
-    },
     {
       "title": "Dia dos Namorados: 20% OFF em todo site",
       "link": "https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -75,6 +69,12 @@
       "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
       "reason": "duplicada_historico",
       "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g"
+    },
+    {
+      "title": "38% OFF na Caixa de Bombom Angel 200g",
+      "link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pun-38-off-na-caixa-bombom-angel-200g"
     }
   ]
 }
