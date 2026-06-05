@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-06-05T18:21:15.040729Z",
+  "updated_at": "2026-06-05T18:30:43.093208Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 1,
+    "duplicada_historico": 7,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "50% OFF no par de ingressos - BA",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv5-50-off-no-par-de-ingressos-rj"
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-ba",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pv5-50-off-no-par-de-ingressos-ba"
     },
     {
       "title": "50% OFF no par de ingressos - SP",
@@ -69,18 +69,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/puV-2-ingressos-05-06-teatro-liberdade-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_puv-2-ingressos-05-06-teatro-liberdade-sp"
-    },
-    {
-      "title": "50% OFF no ingresso",
-      "link": "https://clube.uol.com.br/musicalcomefromaway/puU-50-off-no-ingresso",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puu-50-off-no-ingresso"
-    },
-    {
-      "title": "37% OFF no Cubo Bombom Brigadeiro 130g",
-      "link": "https://clube.uol.com.br/cacaushow/puS-37-off-no-cubo-bombom-brigadeiro-130g",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g"
     }
   ]
 }
