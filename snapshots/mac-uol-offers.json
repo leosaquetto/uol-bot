@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 29463,
-  "run_duration_seconds": 29.46,
-  "avg_detail_ms_per_offer": 2455,
-  "generated_at": "2026-06-05T06:39:59.786Z",
+  "run_duration_ms": 32572,
+  "run_duration_seconds": 32.57,
+  "avg_detail_ms_per_offer": 2714,
+  "generated_at": "2026-06-05T06:50:37.667Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pvx-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
+      "id": "pvx-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pvx-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130203,
-      "detail_elapsed_ms": 2056,
-      "scraped_at": "2026-06-05T06:39:42.291Z"
+      "detail_html_length": 131336,
+      "detail_elapsed_ms": 2613,
+      "scraped_at": "2026-06-05T06:50:19.694Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131033,
-      "detail_elapsed_ms": 1897,
-      "scraped_at": "2026-06-05T06:39:44.189Z"
+      "detail_html_length": 131012,
+      "detail_elapsed_ms": 2009,
+      "scraped_at": "2026-06-05T06:50:21.704Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130965,
-      "detail_elapsed_ms": 1557,
-      "scraped_at": "2026-06-05T06:39:45.746Z"
+      "detail_html_length": 130966,
+      "detail_elapsed_ms": 1898,
+      "scraped_at": "2026-06-05T06:50:23.603Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130859,
-      "detail_elapsed_ms": 1627,
-      "scraped_at": "2026-06-05T06:39:47.373Z"
+      "detail_html_length": 130869,
+      "detail_elapsed_ms": 1581,
+      "scraped_at": "2026-06-05T06:50:25.184Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131718,
-      "detail_elapsed_ms": 1575,
-      "scraped_at": "2026-06-05T06:39:48.948Z"
+      "detail_html_length": 131698,
+      "detail_elapsed_ms": 1556,
+      "scraped_at": "2026-06-05T06:50:26.740Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133875,
-      "detail_elapsed_ms": 1493,
-      "scraped_at": "2026-06-05T06:39:50.441Z"
+      "detail_html_length": 133865,
+      "detail_elapsed_ms": 1550,
+      "scraped_at": "2026-06-05T06:50:28.290Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133093,
-      "detail_elapsed_ms": 1508,
-      "scraped_at": "2026-06-05T06:39:51.949Z"
+      "detail_html_length": 133082,
+      "detail_elapsed_ms": 1500,
+      "scraped_at": "2026-06-05T06:50:29.790Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134243,
-      "detail_elapsed_ms": 1501,
-      "scraped_at": "2026-06-05T06:39:53.450Z"
+      "detail_html_length": 134234,
+      "detail_elapsed_ms": 1485,
+      "scraped_at": "2026-06-05T06:50:31.275Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133092,
-      "detail_elapsed_ms": 1670,
-      "scraped_at": "2026-06-05T06:39:55.120Z"
+      "detail_html_length": 133081,
+      "detail_elapsed_ms": 1559,
+      "scraped_at": "2026-06-05T06:50:32.834Z"
     },
     {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
+      "id": "pur-2-ingressos-14-06-exposio-recife-pe",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
       "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
       "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133774,
-      "detail_elapsed_ms": 1649,
-      "scraped_at": "2026-06-05T06:39:56.770Z"
+      "detail_html_length": 133776,
+      "detail_elapsed_ms": 1571,
+      "scraped_at": "2026-06-05T06:50:34.406Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133111,
-      "detail_elapsed_ms": 1477,
-      "scraped_at": "2026-06-05T06:39:58.248Z"
+      "detail_html_length": 133102,
+      "detail_elapsed_ms": 1501,
+      "scraped_at": "2026-06-05T06:50:35.908Z"
     },
     {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
+      "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
       "title": "38% OFF na Caixa Angel Coleção Sortidos",
       "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
       "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133061,
-      "detail_elapsed_ms": 1486,
-      "scraped_at": "2026-06-05T06:39:59.734Z"
+      "detail_html_length": 133053,
+      "detail_elapsed_ms": 1719,
+      "scraped_at": "2026-06-05T06:50:37.627Z"
     }
   ]
 }
