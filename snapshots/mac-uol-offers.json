@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27303,
-  "run_duration_seconds": 27.3,
-  "avg_detail_ms_per_offer": 2275,
-  "generated_at": "2026-06-05T18:09:00.931Z",
+  "run_duration_ms": 26184,
+  "run_duration_seconds": 26.18,
+  "avg_detail_ms_per_offer": 2182,
+  "generated_at": "2026-06-05T18:19:31.849Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pv5-50-off-no-par-de-ingressos-rj",
+      "trace_id": "trace_pv5-50-off-no-par-de-ingressos-rj",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-rj",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-rj",
+      "title": "50% OFF no par de ingressos - BA",
+      "preview_title": "50% OFF no par de ingressos - RJ",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 11/07/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 11 de julho, na Casa de Apostas Arena Fonte Nova, em Salvador/BA. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores pistas premium, cadeiras inferiores oeste, cadeiras inferiores leste, cadeiras intermediárias norte, cadeiras intermediárias leste e pistas. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Promoções do Mês",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132321,
+      "detail_elapsed_ms": 2098,
+      "scraped_at": "2026-06-05T18:19:14.409Z"
+    },
     {
       "id": "pv4-50-off-no-par-de-ingressos-sp",
       "trace_id": "trace_pv4-50-off-no-par-de-ingressos-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132167,
-      "detail_elapsed_ms": 1982,
-      "scraped_at": "2026-06-05T18:08:43.567Z"
+      "detail_html_length": 132364,
+      "detail_elapsed_ms": 2004,
+      "scraped_at": "2026-06-05T18:19:16.414Z"
     },
     {
       "id": "pv3-50-off-no-par-de-ingressos-rj",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132321,
-      "detail_elapsed_ms": 1523,
-      "scraped_at": "2026-06-05T18:08:45.092Z"
+      "detail_html_length": 132740,
+      "detail_elapsed_ms": 1677,
+      "scraped_at": "2026-06-05T18:19:18.091Z"
     },
     {
       "id": "pvx-ate-75-off-para-compras-no-site",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131543,
-      "detail_elapsed_ms": 1681,
-      "scraped_at": "2026-06-05T18:08:46.773Z"
+      "detail_html_length": 131548,
+      "detail_elapsed_ms": 1448,
+      "scraped_at": "2026-06-05T18:19:19.539Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131026,
-      "detail_elapsed_ms": 1543,
-      "scraped_at": "2026-06-05T18:08:48.316Z"
+      "detail_html_length": 131032,
+      "detail_elapsed_ms": 1499,
+      "scraped_at": "2026-06-05T18:19:21.038Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130990,
-      "detail_elapsed_ms": 1508,
-      "scraped_at": "2026-06-05T18:08:49.826Z"
+      "detail_html_length": 130964,
+      "detail_elapsed_ms": 1502,
+      "scraped_at": "2026-06-05T18:19:22.540Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 1716,
-      "scraped_at": "2026-06-05T18:08:51.542Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 1508,
+      "scraped_at": "2026-06-05T18:19:24.049Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131712,
-      "detail_elapsed_ms": 1702,
-      "scraped_at": "2026-06-05T18:08:53.244Z"
+      "detail_html_length": 131707,
+      "detail_elapsed_ms": 1507,
+      "scraped_at": "2026-06-05T18:19:25.556Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133879,
-      "detail_elapsed_ms": 1569,
-      "scraped_at": "2026-06-05T18:08:54.813Z"
+      "detail_html_length": 133883,
+      "detail_elapsed_ms": 1543,
+      "scraped_at": "2026-06-05T18:19:27.100Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133077,
-      "detail_elapsed_ms": 1541,
-      "scraped_at": "2026-06-05T18:08:56.354Z"
+      "detail_html_length": 133072,
+      "detail_elapsed_ms": 1501,
+      "scraped_at": "2026-06-05T18:19:28.601Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134248,
-      "detail_elapsed_ms": 1533,
-      "scraped_at": "2026-06-05T18:08:57.887Z"
+      "detail_html_length": 134243,
+      "detail_elapsed_ms": 1626,
+      "scraped_at": "2026-06-05T18:19:30.227Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133096,
-      "detail_elapsed_ms": 1519,
-      "scraped_at": "2026-06-05T18:08:59.406Z"
-    },
-    {
-      "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
-      "trace_id": "trace_pur-2-ingressos-14-06-exposicao-recife-pe",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposicao-recife-pe",
-      "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "preview_title": "2 INGRESSOS:14/06 Exposição Recife - PE",
-      "validity": "Benefício válido de 01/06/2026 16:51 até 14/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para a exposição “A alma humana, você e o universo de Jung” no Instituto Marcos Hacker de Melo, em Boa Viagem - Recife. A experiência é imersiva e promove autoconhecimento e reflexão! Validade:14/06/2026 Quando: Diariamente, das 9h às 19h. Local: Rua dos Navegantes, 1838 - Boa Viagem, Recife COMO RESGATAR O CUPOM: •Acesse pelo o link: https://megapass.com.br/eventos/a-alma-humana-voce-e-o-universo-de-jung-recife • Se for o primeiro acesso, cadastre-se antes de prosseguir. • Após o cadastro, volte à tela inicial, selecione o dia e a hora desejada. • Em seguida, selecione em opção INTEIRA, aplique o cupom conforme recebido. • Para prosseguir, preencha todos os campos conforme indicado. • Após aplicar o cupom, preencha os demais dados e finalize o pedido. • Não será necessário preencher os dados de pagamento • O cupom é composto apenas pela palavra, sem incluir números ou símbolos. Importante: • O cupom tem limite de retirada de 2 ingressos por CPF.; • Fique atento a data da sua visita, pois o cupom não poderá ser reutilizado; • O agendamento deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a1de20a1be1f_83956a5d2fcc42331d35d6b145953115.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133777,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-06-05T18:09:00.889Z"
+      "detail_html_length": 133091,
+      "detail_elapsed_ms": 1566,
+      "scraped_at": "2026-06-05T18:19:31.793Z"
     }
   ]
 }
