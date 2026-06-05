@@ -9,40 +9,40 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
-    "weak": 1,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 30474,
-  "run_duration_seconds": 30.47,
-  "avg_detail_ms_per_offer": 2540,
-  "generated_at": "2026-06-05T17:37:13.214Z",
+  "run_duration_ms": 26013,
+  "run_duration_seconds": 26.01,
+  "avg_detail_ms_per_offer": 2168,
+  "generated_at": "2026-06-05T17:47:44.296Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pv3-30-off-na-compra-de-ingresso-sp",
-      "trace_id": "trace_pv3-30-off-na-compra-de-ingresso-sp",
-      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pv3-30-off-na-compra-de-ingresso-sp",
-      "original_link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pv3-30-off-na-compra-de-ingresso-sp",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "30% OFF na compra de ingresso - SP",
-      "validity": "",
-      "description": "",
+      "id": "pv4-50-off-no-par-de-ingressos-rj",
+      "trace_id": "trace_pv4-50-off-no-par-de-ingressos-rj",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv4-50-off-no-par-de-ingressos-rj",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv4-50-off-no-par-de-ingressos-rj",
+      "title": "50% OFF no par de ingressos - RJ",
+      "preview_title": "50% OFF no par de ingressos - RJ",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 12/06/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 12 de junho, na Farmasi Arena, no Rio de Janeiro/RJ. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas no setor cadeiras N3. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias. Endereço do Farmasi Arena: Av. Embaixador Abelardo Bueno, 3401 - Barra Olímpica, Rio de Janeiro - RJ.",
       "category": "Promoções do Mês",
-      "partner_name": "Turnê Ivete Clareou - Turnê 2026",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/6817680aed0c582dce40d06a117fc81e.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a230633def81_62f444604f0dba93f578df547af122ac.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
-      "img_source": "benefit_data_src",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a230b1b34a73_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a230b1b34a73_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a230b1b34a73_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
       "detail_ok": true,
-      "detail_quality": "weak",
+      "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 324248,
-      "detail_elapsed_ms": 3087,
-      "scraped_at": "2026-06-05T17:36:55.962Z"
+      "detail_html_length": 132303,
+      "detail_elapsed_ms": 2134,
+      "scraped_at": "2026-06-05T17:47:26.863Z"
     },
     {
       "id": "pvx-ate-75-off-para-compras-no-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131540,
-      "detail_elapsed_ms": 1578,
-      "scraped_at": "2026-06-05T17:36:57.541Z"
+      "detail_html_length": 131510,
+      "detail_elapsed_ms": 1507,
+      "scraped_at": "2026-06-05T17:47:28.371Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131035,
-      "detail_elapsed_ms": 1513,
-      "scraped_at": "2026-06-05T17:36:59.054Z"
+      "detail_html_length": 131032,
+      "detail_elapsed_ms": 1572,
+      "scraped_at": "2026-06-05T17:47:29.943Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130958,
-      "detail_elapsed_ms": 1531,
-      "scraped_at": "2026-06-05T17:37:00.585Z"
+      "detail_html_length": 130966,
+      "detail_elapsed_ms": 1454,
+      "scraped_at": "2026-06-05T17:47:31.397Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130872,
-      "detail_elapsed_ms": 1479,
-      "scraped_at": "2026-06-05T17:37:02.064Z"
+      "detail_html_length": 130860,
+      "detail_elapsed_ms": 1480,
+      "scraped_at": "2026-06-05T17:47:32.877Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131700,
-      "detail_elapsed_ms": 1567,
-      "scraped_at": "2026-06-05T17:37:03.631Z"
+      "detail_html_length": 131708,
+      "detail_elapsed_ms": 1622,
+      "scraped_at": "2026-06-05T17:47:34.499Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133866,
-      "detail_elapsed_ms": 1681,
-      "scraped_at": "2026-06-05T17:37:05.312Z"
+      "detail_html_length": 133863,
+      "detail_elapsed_ms": 1524,
+      "scraped_at": "2026-06-05T17:47:36.024Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133086,
-      "detail_elapsed_ms": 1631,
-      "scraped_at": "2026-06-05T17:37:06.943Z"
+      "detail_html_length": 133073,
+      "detail_elapsed_ms": 1621,
+      "scraped_at": "2026-06-05T17:47:37.645Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134256,
-      "detail_elapsed_ms": 1815,
-      "scraped_at": "2026-06-05T17:37:08.759Z"
+      "detail_html_length": 134254,
+      "detail_elapsed_ms": 1746,
+      "scraped_at": "2026-06-05T17:47:39.391Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133094,
-      "detail_elapsed_ms": 1463,
-      "scraped_at": "2026-06-05T17:37:10.222Z"
+      "detail_html_length": 133091,
+      "detail_elapsed_ms": 1681,
+      "scraped_at": "2026-06-05T17:47:41.072Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133778,
-      "detail_elapsed_ms": 1476,
-      "scraped_at": "2026-06-05T17:37:11.698Z"
+      "detail_html_length": 133785,
+      "detail_elapsed_ms": 1593,
+      "scraped_at": "2026-06-05T17:47:42.665Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133093,
-      "detail_elapsed_ms": 1475,
-      "scraped_at": "2026-06-05T17:37:13.174Z"
+      "detail_html_length": 133112,
+      "detail_elapsed_ms": 1581,
+      "scraped_at": "2026-06-05T17:47:44.246Z"
     }
   ]
 }
