@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-05T18:31:47.067944Z",
+  "updated_at": "2026-06-05T18:41:17.779367Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 6,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
-    "duplicada_execucao": 0
+    "duplicada_execucao": 1
   },
   "discarded_offers": [
+    {
+      "title": "50% OFF no par de ingressos - PE",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
+      "reason": "duplicada_execucao",
+      "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
+    },
     {
       "title": "50% OFF no par de ingressos - CE",
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
@@ -63,24 +69,6 @@
       "link": "https://clube.uol.com.br/evino/pvq-ganhe-20-off-em-compras-acima-de-r-99",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvq-ganhe-20-off-em-compras-acima-de-r-99"
-    },
-    {
-      "title": "10% OFF na Camisa Brasil Jordan II 2026",
-      "link": "https://clube.uol.com.br/net_shoes/pvh-10-off-na-camisa-brasil-jordan-ii-2026",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvh-10-off-na-camisa-brasil-jordan-ii-2026"
-    },
-    {
-      "title": "2 INGRESSOS: 12/06 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pve-2-ingressos-12-06-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pve-2-ingressos-12-06-morumbi-park-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 05/06 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/puV-2-ingressos-05-06-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_puv-2-ingressos-05-06-teatro-liberdade-sp"
     }
   ]
 }
