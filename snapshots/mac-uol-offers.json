@@ -9,17 +9,41 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 29921,
-  "run_duration_seconds": 29.92,
-  "avg_detail_ms_per_offer": 2493,
-  "generated_at": "2026-06-05T17:26:38.203Z",
+  "run_duration_ms": 30474,
+  "run_duration_seconds": 30.47,
+  "avg_detail_ms_per_offer": 2540,
+  "generated_at": "2026-06-05T17:37:13.214Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pv3-30-off-na-compra-de-ingresso-sp",
+      "trace_id": "trace_pv3-30-off-na-compra-de-ingresso-sp",
+      "link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pv3-30-off-na-compra-de-ingresso-sp",
+      "original_link": "https://clube.uol.com.br/turneiveteclareou-turne2026/pv3-30-off-na-compra-de-ingresso-sp",
+      "title": "Ingressos Exclusivos",
+      "preview_title": "30% OFF na compra de ingresso - SP",
+      "validity": "",
+      "description": "",
+      "category": "Promoções do Mês",
+      "partner_name": "Turnê Ivete Clareou - Turnê 2026",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/6817680aed0c582dce40d06a117fc81e.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a230633def81_62f444604f0dba93f578df547af122ac.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/006f46f3ee2701842023a5b6cba4ee10.png",
+      "img_source": "benefit_data_src",
+      "detail_ok": true,
+      "detail_quality": "weak",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 324248,
+      "detail_elapsed_ms": 3087,
+      "scraped_at": "2026-06-05T17:36:55.962Z"
+    },
     {
       "id": "pvx-ate-75-off-para-compras-no-site",
       "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131386,
-      "detail_elapsed_ms": 2226,
-      "scraped_at": "2026-06-05T17:26:21.482Z"
+      "detail_html_length": 131540,
+      "detail_elapsed_ms": 1578,
+      "scraped_at": "2026-06-05T17:36:57.541Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131024,
-      "detail_elapsed_ms": 1663,
-      "scraped_at": "2026-06-05T17:26:23.146Z"
+      "detail_html_length": 131035,
+      "detail_elapsed_ms": 1513,
+      "scraped_at": "2026-06-05T17:36:59.054Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130967,
-      "detail_elapsed_ms": 1576,
-      "scraped_at": "2026-06-05T17:26:24.722Z"
+      "detail_html_length": 130958,
+      "detail_elapsed_ms": 1531,
+      "scraped_at": "2026-06-05T17:37:00.585Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130861,
-      "detail_elapsed_ms": 1492,
-      "scraped_at": "2026-06-05T17:26:26.214Z"
+      "detail_html_length": 130872,
+      "detail_elapsed_ms": 1479,
+      "scraped_at": "2026-06-05T17:37:02.064Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131720,
-      "detail_elapsed_ms": 1442,
-      "scraped_at": "2026-06-05T17:26:27.657Z"
+      "detail_html_length": 131700,
+      "detail_elapsed_ms": 1567,
+      "scraped_at": "2026-06-05T17:37:03.631Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133867,
-      "detail_elapsed_ms": 1547,
-      "scraped_at": "2026-06-05T17:26:29.205Z"
+      "detail_html_length": 133866,
+      "detail_elapsed_ms": 1681,
+      "scraped_at": "2026-06-05T17:37:05.312Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -185,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133086,
-      "detail_elapsed_ms": 1433,
-      "scraped_at": "2026-06-05T17:26:30.638Z"
+      "detail_elapsed_ms": 1631,
+      "scraped_at": "2026-06-05T17:37:06.943Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134245,
-      "detail_elapsed_ms": 1485,
-      "scraped_at": "2026-06-05T17:26:32.123Z"
+      "detail_html_length": 134256,
+      "detail_elapsed_ms": 1815,
+      "scraped_at": "2026-06-05T17:37:08.759Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -233,8 +257,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133094,
-      "detail_elapsed_ms": 1530,
-      "scraped_at": "2026-06-05T17:26:33.654Z"
+      "detail_elapsed_ms": 1463,
+      "scraped_at": "2026-06-05T17:37:10.222Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposicao-recife-pe",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133775,
-      "detail_elapsed_ms": 1605,
-      "scraped_at": "2026-06-05T17:26:35.259Z"
+      "detail_html_length": 133778,
+      "detail_elapsed_ms": 1476,
+      "scraped_at": "2026-06-05T17:37:11.698Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133113,
-      "detail_elapsed_ms": 1463,
-      "scraped_at": "2026-06-05T17:26:36.723Z"
-    },
-    {
-      "id": "pul-38-off-na-caixa-angel-colecao-sortidos",
-      "trace_id": "trace_pul-38-off-na-caixa-angel-colecao-sortidos",
-      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "original_link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-colecao-sortidos",
-      "title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "preview_title": "38% OFF na Caixa Angel Coleção Sortidos",
-      "validity": "Benefício válido de 01/06/2026 12:27 até 12/06/2026 23:59.",
-      "description": "Sobre a Cacau Show: Fundada em 1988, a Cacau Show tornou‑se a maior rede de chocolates finos do mundo: um portfólio impecável que reúne trufas irresistíveis, tabletes incrivelmente cremosos, bombons artesanais e presentes de chocolate que combinam qualidade, sabor e afeto em cada detalhe. Benefício de Dia dos Namorados: Garanta 38% de desconto na Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Sobre a Caixa Angel Coleção Sortidos 290g: O coração Angel é o presente ideal para emocionar quem você ama. Com uma seleção especial de bombons sortidos, combina sabor irresistível e um design marcante que encanta em qualquer ocasião. Passo a passo para resgate: 1 - Clique em \"Utilizar este benefício\"; 2 - Copie o código e clique em \"Ir para o site\". 3 - Ao ser direcionado para o site oficial da Cacau Lovers, faça login ou crie sua conta rapidamente. 4 - Em seguida, na página inicial, clique no ícone de “Voucher” e aplique o código para liberar o crédito do resgate no produto. 5 - Após a aplicação, verifique em \"Meus resgates\" o seu benefício resgatado. Pronto! Agora vá até a loja Cacau Show de sua preferência, informe seu CPF no caixa e retire produto no valor promocional. Atenção! O Código é válido apenas no produto: Caixa Angel Coleção Sortidos 290g - De R$ 129,99 por R$ 79,99. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, válido apenas um código por Assinante UOL. Exclusivo para clientes cadastrados no programa Cacau Lovers. Promoção válida até 12/06/2026. A retirada do benefício é válido em todas as lojas Cacau Show, mediante disponibilidade de estoque, após o resgate no site da Cacau Lovers. O produto deve ser retirado em loja em até 7 dias após a utilização do voucher no site/app. O voucher é válido enquanto durarem os estoques.",
-      "category": "Compras e Presentes",
-      "partner_name": "Cacau Show",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2870cf8fd3fbf279a5824b71f34df66a.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fdf335e81ddfa559a4d88641f31f8812.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133074,
-      "detail_elapsed_ms": 1407,
-      "scraped_at": "2026-06-05T17:26:38.130Z"
+      "detail_html_length": 133093,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-06-05T17:37:13.174Z"
     }
   ]
 }
