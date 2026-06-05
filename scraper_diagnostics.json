@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-05T18:52:59.336904Z",
+  "updated_at": "2026-06-05T19:02:25.785982Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 7,
     "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/giulianaflores/pvt-dia-dos-namorados-20-off-em-todo-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvt-dia-dos-namorados-20-off-em-todo-site"
-    },
-    {
-      "title": "Dia dos Namorados: Leve 6 e Pague 3",
-      "link": "https://clube.uol.com.br/evino/pvs-dia-dos-namorados-leve-6-e-pague-3",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvs-dia-dos-namorados-leve-6-e-pague-3"
     }
   ]
 }
