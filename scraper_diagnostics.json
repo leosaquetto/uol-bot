@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-05T13:03:18.575807Z",
+  "updated_at": "2026-06-05T13:13:12.219792Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 11,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -65,10 +65,22 @@
       "trace_id": "trace_pus-37-off-no-cubo-bombom-brigadeiro-130g"
     },
     {
+      "title": "2 INGRESSOS:14/06 Exposição Recife - PE",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/puR-2-ingressos-14-06-exposio-recife-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pur-2-ingressos-14-06-exposio-recife-pe"
+    },
+    {
       "title": "38% OFF na Caixa de Bombom Angel 200g",
       "link": "https://clube.uol.com.br/cacaushow/puN-38-off-na-caixa-de-bombom-angel-200g",
       "reason": "duplicada_historico",
       "trace_id": "trace_pun-38-off-na-caixa-bombom-angel-200g"
+    },
+    {
+      "title": "38% OFF na Caixa Angel Coleção Sortidos",
+      "link": "https://clube.uol.com.br/cacaushow/puL-38-off-na-caixa-angel-coleo-sortidos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pul-38-off-na-caixa-angel-coleo-sortidos"
     }
   ]
 }
