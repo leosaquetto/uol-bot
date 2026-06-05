@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27279,
-  "run_duration_seconds": 27.28,
-  "avg_detail_ms_per_offer": 2273,
-  "generated_at": "2026-06-05T16:44:11.574Z",
+  "run_duration_ms": 33420,
+  "run_duration_seconds": 33.42,
+  "avg_detail_ms_per_offer": 2785,
+  "generated_at": "2026-06-05T16:54:49.618Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131360,
-      "detail_elapsed_ms": 2035,
-      "scraped_at": "2026-06-05T16:43:54.250Z"
+      "detail_html_length": 131748,
+      "detail_elapsed_ms": 2259,
+      "scraped_at": "2026-06-05T16:54:32.224Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131037,
-      "detail_elapsed_ms": 1657,
-      "scraped_at": "2026-06-05T16:43:55.908Z"
+      "detail_html_length": 131425,
+      "detail_elapsed_ms": 1661,
+      "scraped_at": "2026-06-05T16:54:33.887Z"
     },
     {
       "id": "pvs-dia-dos-namorados-leve-6-e-pague-3",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130970,
-      "detail_elapsed_ms": 1528,
-      "scraped_at": "2026-06-05T16:43:57.436Z"
+      "detail_html_length": 130954,
+      "detail_elapsed_ms": 1517,
+      "scraped_at": "2026-06-05T16:54:35.404Z"
     },
     {
       "id": "pvq-ganhe-20-off-em-compras-acima-de-r-99",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130875,
-      "detail_elapsed_ms": 1514,
-      "scraped_at": "2026-06-05T16:43:58.950Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 1573,
+      "scraped_at": "2026-06-05T16:54:36.977Z"
     },
     {
       "id": "pvh-10-off-na-camisa-brasil-jordan-ii-2026",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131724,
-      "detail_elapsed_ms": 1473,
-      "scraped_at": "2026-06-05T16:44:00.423Z"
+      "detail_html_length": 131708,
+      "detail_elapsed_ms": 1525,
+      "scraped_at": "2026-06-05T16:54:38.502Z"
     },
     {
       "id": "pve-2-ingressos-12-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133879,
-      "detail_elapsed_ms": 1797,
-      "scraped_at": "2026-06-05T16:44:02.220Z"
+      "detail_html_length": 133854,
+      "detail_elapsed_ms": 1627,
+      "scraped_at": "2026-06-05T16:54:40.130Z"
     },
     {
       "id": "puv-2-ingressos-05-06-teatro-liberdade-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133078,
-      "detail_elapsed_ms": 1715,
-      "scraped_at": "2026-06-05T16:44:03.935Z"
+      "detail_html_length": 133073,
+      "detail_elapsed_ms": 1467,
+      "scraped_at": "2026-06-05T16:54:41.597Z"
     },
     {
       "id": "puu-50-off-no-ingresso",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134258,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-06-05T16:44:05.418Z"
+      "detail_html_length": 134233,
+      "detail_elapsed_ms": 1472,
+      "scraped_at": "2026-06-05T16:54:43.069Z"
     },
     {
       "id": "pus-37-off-no-cubo-bombom-brigadeiro-130g",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133097,
-      "detail_elapsed_ms": 1585,
-      "scraped_at": "2026-06-05T16:44:07.003Z"
+      "detail_html_length": 133080,
+      "detail_elapsed_ms": 1681,
+      "scraped_at": "2026-06-05T16:54:44.750Z"
     },
     {
       "id": "pur-2-ingressos-14-06-exposio-recife-pe",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133780,
-      "detail_elapsed_ms": 1544,
-      "scraped_at": "2026-06-05T16:44:08.547Z"
+      "detail_html_length": 133753,
+      "detail_elapsed_ms": 1639,
+      "scraped_at": "2026-06-05T16:54:46.389Z"
     },
     {
       "id": "pun-38-off-na-caixa-bombom-angel-200g",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133106,
-      "detail_elapsed_ms": 1494,
-      "scraped_at": "2026-06-05T16:44:10.042Z"
+      "detail_html_length": 133090,
+      "detail_elapsed_ms": 1582,
+      "scraped_at": "2026-06-05T16:54:47.972Z"
     },
     {
       "id": "pul-38-off-na-caixa-angel-coleo-sortidos",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133055,
-      "detail_elapsed_ms": 1466,
-      "scraped_at": "2026-06-05T16:44:11.508Z"
+      "detail_html_length": 133050,
+      "detail_elapsed_ms": 1546,
+      "scraped_at": "2026-06-05T16:54:49.518Z"
     }
   ]
 }
