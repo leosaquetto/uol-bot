@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 35969,
-  "run_duration_seconds": 35.97,
-  "avg_detail_ms_per_offer": 2997,
-  "generated_at": "2026-06-06T00:31:37.919Z",
+  "run_duration_ms": 32773,
+  "run_duration_seconds": 32.77,
+  "avg_detail_ms_per_offer": 2731,
+  "generated_at": "2026-06-06T00:42:14.839Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132380,
-      "detail_elapsed_ms": 2816,
-      "scraped_at": "2026-06-06T00:31:20.651Z"
+      "detail_html_length": 132369,
+      "detail_elapsed_ms": 2013,
+      "scraped_at": "2026-06-06T00:41:55.582Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132539,
-      "detail_elapsed_ms": 1774,
-      "scraped_at": "2026-06-06T00:31:22.426Z"
+      "detail_html_length": 132529,
+      "detail_elapsed_ms": 1843,
+      "scraped_at": "2026-06-06T00:41:57.427Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132509,
-      "detail_elapsed_ms": 1541,
-      "scraped_at": "2026-06-06T00:31:23.967Z"
+      "detail_html_length": 132508,
+      "detail_elapsed_ms": 1940,
+      "scraped_at": "2026-06-06T00:41:59.367Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132464,
-      "detail_elapsed_ms": 1669,
-      "scraped_at": "2026-06-06T00:31:25.636Z"
+      "detail_html_length": 132463,
+      "detail_elapsed_ms": 1612,
+      "scraped_at": "2026-06-06T00:42:00.979Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132471,
-      "detail_elapsed_ms": 1515,
-      "scraped_at": "2026-06-06T00:31:27.152Z"
+      "detail_html_length": 132480,
+      "detail_elapsed_ms": 1686,
+      "scraped_at": "2026-06-06T00:42:02.665Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132447,
-      "detail_elapsed_ms": 1522,
-      "scraped_at": "2026-06-06T00:31:28.674Z"
+      "detail_html_length": 132445,
+      "detail_elapsed_ms": 1627,
+      "scraped_at": "2026-06-06T00:42:04.292Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132395,
-      "detail_elapsed_ms": 1484,
-      "scraped_at": "2026-06-06T00:31:30.158Z"
+      "detail_html_length": 132396,
+      "detail_elapsed_ms": 1597,
+      "scraped_at": "2026-06-06T00:42:05.889Z"
     },
     {
       "id": "pv5-50-off-no-par-de-ingressos-ba",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132466,
-      "detail_elapsed_ms": 1356,
-      "scraped_at": "2026-06-06T00:31:31.514Z"
+      "detail_elapsed_ms": 1608,
+      "scraped_at": "2026-06-06T00:42:07.497Z"
     },
     {
       "id": "pv4-50-off-no-par-de-ingressos-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132346,
-      "detail_elapsed_ms": 1781,
-      "scraped_at": "2026-06-06T00:31:33.296Z"
+      "detail_html_length": 132356,
+      "detail_elapsed_ms": 1672,
+      "scraped_at": "2026-06-06T00:42:09.169Z"
     },
     {
       "id": "pv3-50-off-no-par-de-ingressos-rj",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132317,
-      "detail_elapsed_ms": 1587,
-      "scraped_at": "2026-06-06T00:31:34.884Z"
+      "detail_html_length": 132316,
+      "detail_elapsed_ms": 1645,
+      "scraped_at": "2026-06-06T00:42:10.815Z"
     },
     {
-      "id": "pvx-ate-75-off-para-compras-no-site",
-      "trace_id": "trace_pvx-ate-75-off-para-compras-no-site",
-      "link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
-      "original_link": "https://clube.uol.com.br/net_shoes/pvx-ate-75-off-para-compras-no-site",
+      "id": "pvx-at-75-off-para-compras-no-site",
+      "trace_id": "trace_pvx-at-75-off-para-compras-no-site",
+      "link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
+      "original_link": "https://clube.uol.com.br/net_shoes/pvx-at-75-off-para-compras-no-site",
       "title": "Até 75% OFF para compras no site",
       "preview_title": "Até 75% OFF para compras no site",
       "validity": "Benefício válido de 03/06/2026 14:44 até 20/07/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131528,
-      "detail_elapsed_ms": 1495,
-      "scraped_at": "2026-06-06T00:31:36.380Z"
+      "detail_html_length": 131533,
+      "detail_elapsed_ms": 2076,
+      "scraped_at": "2026-06-06T00:42:12.891Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131022,
-      "detail_elapsed_ms": 1454,
-      "scraped_at": "2026-06-06T00:31:37.834Z"
+      "detail_html_length": 131020,
+      "detail_elapsed_ms": 1740,
+      "scraped_at": "2026-06-06T00:42:14.631Z"
     }
   ]
 }
