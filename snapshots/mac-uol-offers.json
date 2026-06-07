@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 35607,
-  "run_duration_seconds": 35.61,
-  "avg_detail_ms_per_offer": 2967,
-  "generated_at": "2026-06-07T05:23:04.571Z",
+  "run_duration_ms": 197009,
+  "run_duration_seconds": 197.01,
+  "avg_detail_ms_per_offer": 16417,
+  "generated_at": "2026-06-07T05:36:36.272Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvC-50-off-no-par-de-ingressos-mg",
       "title": "50% OFF no par de ingressos - MG",
       "preview_title": "50% OFF no par de ingressos - MG",
-      "validity": "Benefício válido de 05/06/2026 14:25 até 24/10/2026 23:59.",
-      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 24 de outubro, na Arena MRV, em Belo Horizonte/BH. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231af5be030_6a23185245ed5_6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231af5be030_6a23185245ed5_6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231af5be030_6a23185245ed5_6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132380,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-06-07T05:22:42.234Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvC-50-off-no-par-de-ingressos-mg\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12468,
+      "scraped_at": "2026-06-07T05:35:12.064Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132540,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-06-07T05:22:43.942Z"
+      "detail_html_length": 132761,
+      "detail_elapsed_ms": 16940,
+      "scraped_at": "2026-06-07T05:35:29.605Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132528,
-      "detail_elapsed_ms": 2070,
-      "scraped_at": "2026-06-07T05:22:46.012Z"
+      "detail_html_length": 132333,
+      "detail_elapsed_ms": 9185,
+      "scraped_at": "2026-06-07T05:35:38.790Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132474,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-06-07T05:22:47.496Z"
+      "detail_html_length": 132415,
+      "detail_elapsed_ms": 9829,
+      "scraped_at": "2026-06-07T05:35:48.619Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132480,
-      "detail_elapsed_ms": 1701,
-      "scraped_at": "2026-06-07T05:22:49.197Z"
+      "detail_html_length": 132702,
+      "detail_elapsed_ms": 13283,
+      "scraped_at": "2026-06-07T05:36:01.905Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132445,
-      "detail_elapsed_ms": 1434,
-      "scraped_at": "2026-06-07T05:22:50.631Z"
+      "detail_html_length": 132330,
+      "detail_elapsed_ms": 7361,
+      "scraped_at": "2026-06-07T05:36:09.266Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132397,
-      "detail_elapsed_ms": 1531,
-      "scraped_at": "2026-06-07T05:22:52.163Z"
+      "detail_html_length": 132348,
+      "detail_elapsed_ms": 3773,
+      "scraped_at": "2026-06-07T05:36:13.040Z"
     },
     {
       "id": "pv5-50-off-no-par-de-ingressos-ba",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132476,
-      "detail_elapsed_ms": 1477,
-      "scraped_at": "2026-06-07T05:22:53.640Z"
+      "detail_html_length": 132428,
+      "detail_elapsed_ms": 7639,
+      "scraped_at": "2026-06-07T05:36:20.679Z"
     },
     {
       "id": "pv4-50-off-no-par-de-ingressos-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132316,
-      "detail_elapsed_ms": 2421,
-      "scraped_at": "2026-06-07T05:22:56.061Z"
+      "detail_html_length": 132159,
+      "detail_elapsed_ms": 5365,
+      "scraped_at": "2026-06-07T05:36:26.044Z"
     },
     {
       "id": "pv3-50-off-no-par-de-ingressos-rj",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132317,
-      "detail_elapsed_ms": 2685,
-      "scraped_at": "2026-06-07T05:22:58.746Z"
+      "detail_html_length": 132277,
+      "detail_elapsed_ms": 4517,
+      "scraped_at": "2026-06-07T05:36:30.561Z"
     },
     {
       "id": "pvx-at-75-off-para-compras-no-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131542,
-      "detail_elapsed_ms": 3782,
-      "scraped_at": "2026-06-07T05:23:02.528Z"
+      "detail_html_length": 131494,
+      "detail_elapsed_ms": 2814,
+      "scraped_at": "2026-06-07T05:36:33.376Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131022,
-      "detail_elapsed_ms": 1929,
-      "scraped_at": "2026-06-07T05:23:04.457Z"
+      "detail_html_length": 130983,
+      "detail_elapsed_ms": 2452,
+      "scraped_at": "2026-06-07T05:36:35.829Z"
     }
   ]
 }
