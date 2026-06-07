@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 30723,
-  "run_duration_seconds": 30.72,
-  "avg_detail_ms_per_offer": 2560,
-  "generated_at": "2026-06-07T09:55:18.107Z",
+  "run_duration_ms": 25353,
+  "run_duration_seconds": 25.35,
+  "avg_detail_ms_per_offer": 2113,
+  "generated_at": "2026-06-07T10:05:48.204Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130620,
-      "detail_elapsed_ms": 1554,
-      "scraped_at": "2026-06-07T09:55:00.282Z"
+      "detail_html_length": 132370,
+      "detail_elapsed_ms": 2153,
+      "scraped_at": "2026-06-07T10:05:31.656Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -65,8 +65,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132530,
-      "detail_elapsed_ms": 1679,
-      "scraped_at": "2026-06-07T09:55:01.963Z"
+      "detail_elapsed_ms": 1487,
+      "scraped_at": "2026-06-07T10:05:33.144Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132510,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-06-07T09:55:03.509Z"
+      "detail_html_length": 132509,
+      "detail_elapsed_ms": 1539,
+      "scraped_at": "2026-06-07T10:05:34.683Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132465,
-      "detail_elapsed_ms": 1544,
-      "scraped_at": "2026-06-07T09:55:05.054Z"
+      "detail_html_length": 132453,
+      "detail_elapsed_ms": 1505,
+      "scraped_at": "2026-06-07T10:05:36.188Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132472,
-      "detail_elapsed_ms": 1538,
-      "scraped_at": "2026-06-07T09:55:06.592Z"
+      "detail_html_length": 132481,
+      "detail_elapsed_ms": 1601,
+      "scraped_at": "2026-06-07T10:05:37.789Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132446,
-      "detail_elapsed_ms": 1707,
-      "scraped_at": "2026-06-07T09:55:08.299Z"
+      "detail_html_length": 132447,
+      "detail_elapsed_ms": 1855,
+      "scraped_at": "2026-06-07T10:05:39.644Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132388,
-      "detail_elapsed_ms": 1377,
-      "scraped_at": "2026-06-07T09:55:09.676Z"
+      "detail_html_length": 132385,
+      "detail_elapsed_ms": 1441,
+      "scraped_at": "2026-06-07T10:05:41.085Z"
     },
     {
       "id": "pv5-50-off-no-par-de-ingressos-ba",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132468,
-      "detail_elapsed_ms": 2015,
-      "scraped_at": "2026-06-07T09:55:11.691Z"
+      "detail_html_length": 132467,
+      "detail_elapsed_ms": 1441,
+      "scraped_at": "2026-06-07T10:05:42.526Z"
     },
     {
       "id": "pv4-50-off-no-par-de-ingressos-sp",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132347,
-      "detail_elapsed_ms": 1809,
-      "scraped_at": "2026-06-07T09:55:13.500Z"
+      "detail_html_length": 132357,
+      "detail_elapsed_ms": 1424,
+      "scraped_at": "2026-06-07T10:05:43.950Z"
     },
     {
       "id": "pv3-50-off-no-par-de-ingressos-rj",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132317,
-      "detail_elapsed_ms": 1541,
-      "scraped_at": "2026-06-07T09:55:15.041Z"
+      "detail_html_length": 132316,
+      "detail_elapsed_ms": 1415,
+      "scraped_at": "2026-06-07T10:05:45.365Z"
     },
     {
       "id": "pvx-at-75-off-para-compras-no-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131533,
-      "detail_elapsed_ms": 1430,
-      "scraped_at": "2026-06-07T09:55:16.471Z"
+      "detail_html_length": 131543,
+      "detail_elapsed_ms": 1401,
+      "scraped_at": "2026-06-07T10:05:46.766Z"
     },
     {
       "id": "pvt-dia-dos-namorados-20-off-em-todo-site",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131023,
-      "detail_elapsed_ms": 1581,
-      "scraped_at": "2026-06-07T09:55:18.052Z"
+      "detail_html_length": 131012,
+      "detail_elapsed_ms": 1386,
+      "scraped_at": "2026-06-07T10:05:48.152Z"
     }
   ]
 }
