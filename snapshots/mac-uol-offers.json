@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 96238,
-  "run_duration_seconds": 96.24,
-  "avg_detail_ms_per_offer": 8020,
-  "generated_at": "2026-06-09T17:55:25.352Z",
+  "run_duration_ms": 115478,
+  "run_duration_seconds": 115.48,
+  "avg_detail_ms_per_offer": 9623,
+  "generated_at": "2026-06-09T18:07:27.404Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pvu-30-off-nos-pedidos-pelo-site-e-app",
+      "trace_id": "trace_pvu-30-off-nos-pedidos-pelo-site-e-app",
+      "link": "https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app",
+      "original_link": "https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app",
+      "title": "30% OFF nos pedidos pelo site e app",
+      "preview_title": "30% OFF nos pedidos pelo site e app",
+      "validity": "Benefício válido de 02/08/2024 13:26 até 31/12/2026 23:59.",
+      "description": "Sobre o parceiro: Faça o seu pedido online na maior pizzaria do mundo! Diversos tipos de pizzas, combos e promoções para você escolher. Benefício: Cupom de 30% OFF nos pedidos pelo site e app. Regras: Desconto válido para pedidos efetuados apenas no site ou App da Domino´s Pizza. Válido para Pizzas médias e grandes. Válido para massas fina ou tradicional e todos os sabores. Válido para todos os dias da semana. O desconto só é aplicado na pizza e não no pedido inteiro. Desconto não se aplica na taxa de entrega. Não cumulativo com outras promoções. Válido também para carryout: retirada na loja. O cupom de desconto deverá ser inserido no carrinho no momento do checkout. O desconto não é válido para pedidos no balcão.",
+      "category": "Comer e Beber",
+      "partner_name": "Domino's Pizza",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/e645a56cd83603b51200c690000d3d49.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131614,
+      "detail_elapsed_ms": 9975,
+      "scraped_at": "2026-06-09T18:06:44.187Z"
+    },
     {
       "id": "pvq-dia-dos-namorados-20-off-em-reservas",
       "trace_id": "trace_pvq-dia-dos-namorados-20-off-em-reservas",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132213,
-      "detail_elapsed_ms": 10608,
-      "scraped_at": "2026-06-09T17:54:49.966Z"
+      "detail_html_length": 132404,
+      "detail_elapsed_ms": 10635,
+      "scraped_at": "2026-06-09T18:06:55.567Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132615,
-      "detail_elapsed_ms": 3814,
-      "scraped_at": "2026-06-09T17:54:53.797Z"
+      "detail_html_length": 127480,
+      "detail_elapsed_ms": 4029,
+      "scraped_at": "2026-06-09T18:06:59.596Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132543,
-      "detail_elapsed_ms": 2318,
-      "scraped_at": "2026-06-09T17:54:56.115Z"
+      "detail_html_length": 133792,
+      "detail_elapsed_ms": 3736,
+      "scraped_at": "2026-06-09T18:07:03.333Z"
     },
     {
       "id": "pvh-2-ingressos-20-06-teatro-uol-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133536,
-      "detail_elapsed_ms": 2050,
-      "scraped_at": "2026-06-09T17:54:58.165Z"
+      "detail_html_length": 133529,
+      "detail_elapsed_ms": 4605,
+      "scraped_at": "2026-06-09T18:07:07.938Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132497,
-      "detail_elapsed_ms": 2352,
-      "scraped_at": "2026-06-09T17:55:00.518Z"
+      "detail_html_length": 132509,
+      "detail_elapsed_ms": 2370,
+      "scraped_at": "2026-06-09T18:07:10.310Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132480,
-      "detail_elapsed_ms": 6009,
-      "scraped_at": "2026-06-09T17:55:06.528Z"
+      "detail_html_length": 132473,
+      "detail_elapsed_ms": 2434,
+      "scraped_at": "2026-06-09T18:07:12.744Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132459,
-      "detail_elapsed_ms": 3840,
-      "scraped_at": "2026-06-09T17:55:10.368Z"
+      "detail_html_length": 132453,
+      "detail_elapsed_ms": 2572,
+      "scraped_at": "2026-06-09T18:07:15.316Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132405,
-      "detail_elapsed_ms": 2892,
-      "scraped_at": "2026-06-09T17:55:13.260Z"
+      "detail_html_length": 132407,
+      "detail_elapsed_ms": 2431,
+      "scraped_at": "2026-06-09T18:07:17.747Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132410,
-      "detail_elapsed_ms": 2892,
-      "scraped_at": "2026-06-09T17:55:16.152Z"
+      "detail_html_length": 132414,
+      "detail_elapsed_ms": 2643,
+      "scraped_at": "2026-06-09T18:07:20.390Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131079,
-      "detail_elapsed_ms": 3636,
-      "scraped_at": "2026-06-09T17:55:19.788Z"
+      "detail_html_length": 132380,
+      "detail_elapsed_ms": 2772,
+      "scraped_at": "2026-06-09T18:07:23.162Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132377,
-      "detail_elapsed_ms": 3111,
-      "scraped_at": "2026-06-09T17:55:22.899Z"
-    },
-    {
-      "id": "pv5-50-off-no-par-de-ingressos-ba",
-      "trace_id": "trace_pv5-50-off-no-par-de-ingressos-ba",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-ba",
-      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-ba",
-      "title": "50% OFF no par de ingressos - BA",
-      "preview_title": "50% OFF no par de ingressos - BA",
-      "validity": "Benefício válido de 05/06/2026 14:25 até 11/07/2026 23:59.",
-      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 11 de julho, na Casa de Apostas Arena Fonte Nova, em Salvador/BA. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores pista premium, cadeira inferior oeste, cadeira inferior leste, cadeira intermediária norte, cadeira intermediária leste e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
-      "category": "Promoções do Mês",
-      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132407,
-      "detail_elapsed_ms": 2117,
-      "scraped_at": "2026-06-09T17:55:25.017Z"
+      "detail_html_length": 131171,
+      "detail_elapsed_ms": 3804,
+      "scraped_at": "2026-06-09T18:07:26.966Z"
     }
   ]
 }
