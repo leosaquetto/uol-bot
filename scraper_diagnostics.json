@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T19:10:50.845137Z",
+  "updated_at": "2026-06-09T19:24:15.573281Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -17,22 +17,10 @@
   },
   "discarded_offers": [
     {
-      "title": "2 INGRESSOS 13/06 Teatro Claro SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvV-2-ingressos-13-06-teatro-claro-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvv-2-ingressos-13-06-teatro-claro-sp"
-    },
-    {
       "title": "30% OFF nos pedidos pelo site e app",
       "link": "https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvu-30-off-nos-pedidos-pelo-site-e-app"
-    },
-    {
-      "title": "2 INGRESSOS 18/06 Teatro Claro SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvS-2-ingressos-18-06-teatro-claro-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvs-2-ingressos-18-06-teatro-claro-sp"
     },
     {
       "title": "Dia dos Namorados: 20% OFF em reservas!",
@@ -87,6 +75,18 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
+    },
+    {
+      "title": "50% OFF no par de ingressos - CE",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce"
+    },
+    {
+      "title": "50% OFF no par de ingressos - DF",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv6-50-off-no-par-de-ingressos-df"
     }
   ]
 }
