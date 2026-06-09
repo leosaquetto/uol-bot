@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-06-09T17:57:37.943669Z",
+  "updated_at": "2026-06-09T18:08:20.796265Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 10,
-    "duplicada_latest": 2,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -81,12 +81,6 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv6-50-off-no-par-de-ingressos-df"
-    },
-    {
-      "title": "50% OFF no par de ingressos - BA",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-ba",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pv5-50-off-no-par-de-ingressos-ba"
     }
   ]
 }
