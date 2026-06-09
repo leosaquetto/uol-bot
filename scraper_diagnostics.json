@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T20:30:13.449184Z",
+  "updated_at": "2026-06-09T20:51:30.446181Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
-    "duplicada_latest": 1,
+    "duplicada_historico": 10,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -39,12 +39,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pvI-2-ingressos-06-08-barrashopping-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvi-2-ingressos-06-08-barrashopping-rj"
-    },
-    {
-      "title": "2 INGRESSOS: 20/06 Teatro UOL - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvH-2-ingressos-20-06-teatro-uol-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvh-2-ingressos-20-06-teatro-uol-sp"
     },
     {
       "title": "50% OFF no par de ingressos - MG",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv6-50-off-no-par-de-ingressos-df"
+    },
+    {
+      "title": "50% OFF no par de ingressos - BA",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-ba",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pv5-50-off-no-par-de-ingressos-ba"
     }
   ]
 }
