@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 118480,
-  "run_duration_seconds": 118.48,
-  "avg_detail_ms_per_offer": 9873,
-  "generated_at": "2026-06-09T18:34:52.635Z",
+  "run_duration_ms": 121555,
+  "run_duration_seconds": 121.56,
+  "avg_detail_ms_per_offer": 10130,
+  "generated_at": "2026-06-09T18:47:02.400Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pvv-2-ingressos-13-06-teatro-claro-sp",
+      "trace_id": "trace_pvv-2-ingressos-13-06-teatro-claro-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvV-2-ingressos-13-06-teatro-claro-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvV-2-ingressos-13-06-teatro-claro-sp",
+      "title": "2 INGRESSOS 13/06 Teatro Claro SP",
+      "preview_title": "2 INGRESSOS 13/06 Teatro Claro SP",
+      "validity": "Benefício válido de 09/06/2026 10:48 até 12/08/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para prestigiar Fafá de Belém – O Musical e celebre os 50 anos de carreira de uma das maiores vozes do Brasil em um espetáculo emocionante, repleto de música, história e grandes sucessos, no Teatro Claro, em São Paulo/SP. Quando: 13 de Junho, às 15h. Local: R. Olimpíadas, 360 – Vila Olímpia, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a285aa999a73_8bd3b6d4c725762933c0a66ab6d8f2f7.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a285aa999a73_8bd3b6d4c725762933c0a66ab6d8f2f7.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a285aa999a73_8bd3b6d4c725762933c0a66ab6d8f2f7.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132598,
+      "detail_elapsed_ms": 8854,
+      "scraped_at": "2026-06-09T18:46:12.886Z"
+    },
     {
       "id": "pvu-30-off-nos-pedidos-pelo-site-e-app",
       "trace_id": "trace_pvu-30-off-nos-pedidos-pelo-site-e-app",
@@ -40,33 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131613,
-      "detail_elapsed_ms": 13130,
-      "scraped_at": "2026-06-09T18:34:17.408Z"
-    },
-    {
-      "id": "pvt-2-ingressos-21-06-teatro-claro-sp",
-      "trace_id": "trace_pvt-2-ingressos-21-06-teatro-claro-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvT-2-ingressos-21-06-teatro-claro-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvT-2-ingressos-21-06-teatro-claro-sp",
-      "title": "2 INGRESSOS 21/06 Teatro Claro SP",
-      "preview_title": "2 INGRESSOS 21/06 Teatro Claro SP",
-      "validity": "Benefício válido de 09/06/2026 10:48 até 20/08/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para prestigiar Fafá de Belém – O Musical e celebre os 50 anos de carreira de uma das maiores vozes do Brasil em um espetáculo emocionante, repleto de música, história e grandes sucessos, no Teatro Claro, em São Paulo/SP. Quando: 21 de Junho, às 20h. Local: R. Olimpíadas, 360 – Vila Olímpia, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2660de5d47ba077bc2958880a2c4b6bf.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2660de5d47ba077bc2958880a2c4b6bf.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2660de5d47ba077bc2958880a2c4b6bf.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131484,
-      "detail_elapsed_ms": 2681,
-      "scraped_at": "2026-06-09T18:34:20.090Z"
+      "detail_html_length": 131771,
+      "detail_elapsed_ms": 6817,
+      "scraped_at": "2026-06-09T18:46:19.705Z"
     },
     {
       "id": "pvs-2-ingressos-18-06-teatro-claro-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132730,
-      "detail_elapsed_ms": 2349,
-      "scraped_at": "2026-06-09T18:34:22.440Z"
+      "detail_html_length": 132718,
+      "detail_elapsed_ms": 2579,
+      "scraped_at": "2026-06-09T18:46:22.284Z"
     },
     {
       "id": "pvr-2-ingressos-15-06-teatro-claro-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132730,
-      "detail_elapsed_ms": 3859,
-      "scraped_at": "2026-06-09T18:34:26.299Z"
+      "detail_html_length": 132729,
+      "detail_elapsed_ms": 2198,
+      "scraped_at": "2026-06-09T18:46:24.482Z"
     },
     {
       "id": "pvq-dia-dos-namorados-20-off-em-reservas",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132361,
-      "detail_elapsed_ms": 2882,
-      "scraped_at": "2026-06-09T18:34:29.181Z"
+      "detail_html_length": 132350,
+      "detail_elapsed_ms": 1966,
+      "scraped_at": "2026-06-09T18:46:26.448Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133841,
-      "detail_elapsed_ms": 2160,
-      "scraped_at": "2026-06-09T18:34:31.341Z"
+      "detail_html_length": 133849,
+      "detail_elapsed_ms": 1863,
+      "scraped_at": "2026-06-09T18:46:28.311Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132620,
-      "detail_elapsed_ms": 3084,
-      "scraped_at": "2026-06-09T18:34:34.425Z"
+      "detail_html_length": 133777,
+      "detail_elapsed_ms": 1946,
+      "scraped_at": "2026-06-09T18:46:30.258Z"
     },
     {
       "id": "pvh-2-ingressos-20-06-teatro-uol-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132376,
-      "detail_elapsed_ms": 2521,
-      "scraped_at": "2026-06-09T18:34:36.946Z"
+      "detail_html_length": 133534,
+      "detail_elapsed_ms": 12104,
+      "scraped_at": "2026-06-09T18:46:42.362Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132508,
-      "detail_elapsed_ms": 2537,
-      "scraped_at": "2026-06-09T18:34:39.483Z"
+      "detail_html_length": 132281,
+      "detail_elapsed_ms": 8582,
+      "scraped_at": "2026-06-09T18:46:50.945Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132480,
-      "detail_elapsed_ms": 2465,
-      "scraped_at": "2026-06-09T18:34:41.948Z"
+      "detail_html_length": 131243,
+      "detail_elapsed_ms": 3214,
+      "scraped_at": "2026-06-09T18:46:54.159Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132460,
-      "detail_elapsed_ms": 3009,
-      "scraped_at": "2026-06-09T18:34:44.958Z"
+      "detail_html_length": 132380,
+      "detail_elapsed_ms": 3610,
+      "scraped_at": "2026-06-09T18:46:57.769Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132403,
-      "detail_elapsed_ms": 3303,
-      "scraped_at": "2026-06-09T18:34:48.261Z"
+      "detail_html_length": 132393,
+      "detail_elapsed_ms": 4138,
+      "scraped_at": "2026-06-09T18:47:01.907Z"
     }
   ]
 }
