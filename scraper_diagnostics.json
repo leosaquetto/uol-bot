@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T19:05:17.180681Z",
+  "updated_at": "2026-06-09T19:10:04.982821Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -33,12 +33,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pvS-2-ingressos-18-06-teatro-claro-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvs-2-ingressos-18-06-teatro-claro-sp"
-    },
-    {
-      "title": "2 INGRESSOS 15/06 Teatro Claro SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvR-2-ingressos-15-06-teatro-claro-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvr-2-ingressos-15-06-teatro-claro-sp"
     },
     {
       "title": "Dia dos Namorados: 20% OFF em reservas!",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
       "reason": "duplicada_latest",
       "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
+    },
+    {
+      "title": "50% OFF no par de ingressos - RS",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
     }
   ]
 }
