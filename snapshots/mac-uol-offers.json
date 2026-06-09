@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 48566,
-  "run_duration_seconds": 48.57,
-  "avg_detail_ms_per_offer": 4047,
-  "generated_at": "2026-06-09T19:09:14.489Z",
+  "run_duration_ms": 202861,
+  "run_duration_seconds": 202.86,
+  "avg_detail_ms_per_offer": 16905,
+  "generated_at": "2026-06-09T19:23:07.555Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pvv-2-ingressos-13-06-teatro-claro-sp",
-      "trace_id": "trace_pvv-2-ingressos-13-06-teatro-claro-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvV-2-ingressos-13-06-teatro-claro-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvV-2-ingressos-13-06-teatro-claro-sp",
-      "title": "2 INGRESSOS 13/06 Teatro Claro SP",
-      "preview_title": "2 INGRESSOS 13/06 Teatro Claro SP",
-      "validity": "Benefício válido de 09/06/2026 10:48 até 12/08/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para prestigiar Fafá de Belém – O Musical e celebre os 50 anos de carreira de uma das maiores vozes do Brasil em um espetáculo emocionante, repleto de música, história e grandes sucessos, no Teatro Claro, em São Paulo/SP. Quando: 13 de Junho, às 15h. Local: R. Olimpíadas, 360 – Vila Olímpia, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a285aa999a73_8bd3b6d4c725762933c0a66ab6d8f2f7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a285aa999a73_8bd3b6d4c725762933c0a66ab6d8f2f7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a285aa999a73_8bd3b6d4c725762933c0a66ab6d8f2f7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132604,
-      "detail_elapsed_ms": 5001,
-      "scraped_at": "2026-06-09T19:08:51.132Z"
-    },
     {
       "id": "pvu-30-off-nos-pedidos-pelo-site-e-app",
       "trace_id": "trace_pvu-30-off-nos-pedidos-pelo-site-e-app",
@@ -63,34 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131764,
-      "detail_elapsed_ms": 2147,
-      "scraped_at": "2026-06-09T19:08:53.294Z"
-    },
-    {
-      "id": "pvs-2-ingressos-18-06-teatro-claro-sp",
-      "trace_id": "trace_pvs-2-ingressos-18-06-teatro-claro-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvS-2-ingressos-18-06-teatro-claro-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pvS-2-ingressos-18-06-teatro-claro-sp",
-      "title": "2 INGRESSOS 18/06 Teatro Claro SP",
-      "preview_title": "2 INGRESSOS 18/06 Teatro Claro SP",
-      "validity": "Benefício válido de 09/06/2026 10:48 até 14/08/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para prestigiar Fafá de Belém – O Musical e celebre os 50 anos de carreira de uma das maiores vozes do Brasil em um espetáculo emocionante, repleto de música, história e grandes sucessos, no Teatro Claro, em São Paulo/SP. Quando: 18 de Junho, às 20h. Local: R. Olimpíadas, 360 – Vila Olímpia, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bae3043bcf09a37d4e394633818a7480.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bae3043bcf09a37d4e394633818a7480.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bae3043bcf09a37d4e394633818a7480.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132722,
-      "detail_elapsed_ms": 1763,
-      "scraped_at": "2026-06-09T19:08:55.057Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130526,
+      "detail_elapsed_ms": 4233,
+      "scraped_at": "2026-06-09T19:21:36.498Z"
     },
     {
       "id": "pvq-dia-dos-namorados-20-off-em-reservas",
@@ -112,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132373,
-      "detail_elapsed_ms": 2484,
-      "scraped_at": "2026-06-09T19:08:57.542Z"
+      "detail_html_length": 132360,
+      "detail_elapsed_ms": 9754,
+      "scraped_at": "2026-06-09T19:21:46.255Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133852,
-      "detail_elapsed_ms": 1737,
-      "scraped_at": "2026-06-09T19:08:59.280Z"
+      "detail_html_length": 133840,
+      "detail_elapsed_ms": 5264,
+      "scraped_at": "2026-06-09T19:21:51.520Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -160,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133821,
-      "detail_elapsed_ms": 1708,
-      "scraped_at": "2026-06-09T19:09:00.988Z"
+      "detail_html_length": 133788,
+      "detail_elapsed_ms": 3991,
+      "scraped_at": "2026-06-09T19:21:55.511Z"
     },
     {
       "id": "pvh-2-ingressos-20-06-teatro-uol-sp",
@@ -184,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133567,
-      "detail_elapsed_ms": 1778,
-      "scraped_at": "2026-06-09T19:09:02.766Z"
+      "detail_html_length": 133525,
+      "detail_elapsed_ms": 6552,
+      "scraped_at": "2026-06-09T19:22:02.063Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -208,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132510,
-      "detail_elapsed_ms": 2028,
-      "scraped_at": "2026-06-09T19:09:05.039Z"
+      "detail_html_length": 132508,
+      "detail_elapsed_ms": 10630,
+      "scraped_at": "2026-06-09T19:22:12.693Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -232,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132522,
-      "detail_elapsed_ms": 2596,
-      "scraped_at": "2026-06-09T19:09:07.635Z"
+      "detail_html_length": 132739,
+      "detail_elapsed_ms": 11940,
+      "scraped_at": "2026-06-09T19:22:24.633Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -256,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132491,
-      "detail_elapsed_ms": 1896,
-      "scraped_at": "2026-06-09T19:09:09.532Z"
+      "detail_html_length": 132450,
+      "detail_elapsed_ms": 6598,
+      "scraped_at": "2026-06-09T19:22:31.231Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -280,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132395,
-      "detail_elapsed_ms": 2300,
-      "scraped_at": "2026-06-09T19:09:11.833Z"
+      "detail_html_length": 132169,
+      "detail_elapsed_ms": 8068,
+      "scraped_at": "2026-06-09T19:22:39.300Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -304,9 +256,57 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132423,
-      "detail_elapsed_ms": 2179,
-      "scraped_at": "2026-06-09T19:09:14.012Z"
+      "detail_html_length": 132411,
+      "detail_elapsed_ms": 6499,
+      "scraped_at": "2026-06-09T19:22:45.799Z"
+    },
+    {
+      "id": "pv7-50-off-no-par-de-ingressos-ce",
+      "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
+      "title": "50% OFF no par de ingressos - CE",
+      "preview_title": "50% OFF no par de ingressos - CE",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 25/07/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 22 de agosto, no Centro de Formação Olímpica, em Fortaleza/CE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores arquibancada e pista premium. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132228,
+      "detail_elapsed_ms": 8578,
+      "scraped_at": "2026-06-09T19:22:54.377Z"
+    },
+    {
+      "id": "pv6-50-off-no-par-de-ingressos-df",
+      "trace_id": "trace_pv6-50-off-no-par-de-ingressos-df",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
+      "title": "50% OFF no par de ingressos - DF",
+      "preview_title": "50% OFF no par de ingressos - DF",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 25/07/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 25 de julho, na Arena BRB Mané Garrincha, em Brasília/DF. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e setores pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132178,
+      "detail_elapsed_ms": 12500,
+      "scraped_at": "2026-06-09T19:23:06.877Z"
     }
   ]
 }
