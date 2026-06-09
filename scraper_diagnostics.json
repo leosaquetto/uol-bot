@@ -1,21 +1,45 @@
 {
-  "updated_at": "2026-06-09T16:16:43.606705Z",
+  "updated_at": "2026-06-09T16:18:21.166134Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 10,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Dia dos Namorados: 20% OFF em reservas!",
+      "link": "https://clube.uol.com.br/primeiramesa/pvQ-dia-dos-namorados-20-off-em-reservas",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvq-dia-dos-namorados-20-off-em-reservas"
+    },
+    {
+      "title": "2 ingressos: 09/08 BarraShopping - RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvL-2-ingressos-09-08-barrashopping-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvl-2-ingressos-09-08-barrashopping-rj"
+    },
+    {
+      "title": "2 ingressos: 06/08 BarraShopping - RJ",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvI-2-ingressos-06-08-barrashopping-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvi-2-ingressos-06-08-barrashopping-rj"
+    },
+    {
+      "title": "2 INGRESSOS: 20/06 Teatro UOL - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pvH-2-ingressos-20-06-teatro-uol-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvh-2-ingressos-20-06-teatro-uol-sp"
+    },
     {
       "title": "50% OFF no par de ingressos - MG",
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvC-50-off-no-par-de-ingressos-mg",
