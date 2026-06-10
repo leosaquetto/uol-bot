@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 66795,
-  "run_duration_seconds": 66.8,
-  "avg_detail_ms_per_offer": 5566,
-  "generated_at": "2026-06-10T03:38:51.396Z",
+  "run_duration_ms": 217423,
+  "run_duration_seconds": 217.42,
+  "avg_detail_ms_per_offer": 18119,
+  "generated_at": "2026-06-10T03:53:14.133Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130383,
-      "detail_elapsed_ms": 3497,
-      "scraped_at": "2026-06-10T03:38:18.104Z"
+      "detail_html_length": 131618,
+      "detail_elapsed_ms": 9923,
+      "scraped_at": "2026-06-10T03:52:28.364Z"
     },
     {
       "id": "pvq-dia-dos-namorados-20-off-em-reservas",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132378,
-      "detail_elapsed_ms": 11506,
-      "scraped_at": "2026-06-10T03:38:29.611Z"
+      "detail_html_length": 132374,
+      "detail_elapsed_ms": 11540,
+      "scraped_at": "2026-06-10T03:52:39.912Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133847,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-06-10T03:38:31.747Z"
+      "detail_html_length": 127490,
+      "detail_elapsed_ms": 3019,
+      "scraped_at": "2026-06-10T03:52:42.931Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133795,
-      "detail_elapsed_ms": 1925,
-      "scraped_at": "2026-06-10T03:38:33.672Z"
+      "detail_html_length": 132554,
+      "detail_elapsed_ms": 2960,
+      "scraped_at": "2026-06-10T03:52:45.892Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132553,
-      "detail_elapsed_ms": 2288,
-      "scraped_at": "2026-06-10T03:38:35.960Z"
+      "detail_html_length": 132508,
+      "detail_elapsed_ms": 2990,
+      "scraped_at": "2026-06-10T03:52:48.913Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132486,
-      "detail_elapsed_ms": 1684,
-      "scraped_at": "2026-06-10T03:38:37.644Z"
+      "detail_html_length": 132482,
+      "detail_elapsed_ms": 2717,
+      "scraped_at": "2026-06-10T03:52:51.630Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132505,
-      "detail_elapsed_ms": 2244,
-      "scraped_at": "2026-06-10T03:38:39.888Z"
+      "detail_html_length": 132462,
+      "detail_elapsed_ms": 4150,
+      "scraped_at": "2026-06-10T03:52:55.780Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132461,
-      "detail_elapsed_ms": 1665,
-      "scraped_at": "2026-06-10T03:38:41.553Z"
+      "detail_html_length": 132406,
+      "detail_elapsed_ms": 5298,
+      "scraped_at": "2026-06-10T03:53:01.079Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132416,
-      "detail_elapsed_ms": 2006,
-      "scraped_at": "2026-06-10T03:38:43.561Z"
+      "detail_html_length": 126059,
+      "detail_elapsed_ms": 4696,
+      "scraped_at": "2026-06-10T03:53:05.776Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132383,
-      "detail_elapsed_ms": 3151,
-      "scraped_at": "2026-06-10T03:38:46.712Z"
+      "detail_html_length": 126015,
+      "detail_elapsed_ms": 3025,
+      "scraped_at": "2026-06-10T03:53:08.802Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132790,
-      "detail_elapsed_ms": 1749,
-      "scraped_at": "2026-06-10T03:38:48.462Z"
+      "detail_html_length": 132329,
+      "detail_elapsed_ms": 3176,
+      "scraped_at": "2026-06-10T03:53:11.979Z"
     },
     {
       "id": "pv5-50-off-no-par-de-ingressos-ba",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132421,
-      "detail_elapsed_ms": 2007,
-      "scraped_at": "2026-06-10T03:38:50.470Z"
+      "detail_html_length": 132419,
+      "detail_elapsed_ms": 1907,
+      "scraped_at": "2026-06-10T03:53:13.886Z"
     }
   ]
 }
