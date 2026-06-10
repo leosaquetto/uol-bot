@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 175160,
-  "run_duration_seconds": 175.16,
-  "avg_detail_ms_per_offer": 14597,
-  "generated_at": "2026-06-10T03:15:35.607Z",
+  "run_duration_ms": 104359,
+  "run_duration_seconds": 104.36,
+  "avg_detail_ms_per_offer": 8697,
+  "generated_at": "2026-06-10T03:27:33.649Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app",
       "title": "30% OFF nos pedidos pelo site e app",
       "preview_title": "30% OFF nos pedidos pelo site e app",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 02/08/2024 13:26 até 31/12/2026 23:59.",
+      "description": "Sobre o parceiro: Faça o seu pedido online na maior pizzaria do mundo! Diversos tipos de pizzas, combos e promoções para você escolher. Benefício: Cupom de 30% OFF nos pedidos pelo site e app. Regras: Desconto válido para pedidos efetuados apenas no site ou App da Domino´s Pizza. Válido para Pizzas médias e grandes. Válido para massas fina ou tradicional e todos os sabores. Válido para todos os dias da semana. O desconto só é aplicado na pizza e não no pedido inteiro. Desconto não se aplica na taxa de entrega. Não cumulativo com outras promoções. Válido também para carryout: retirada na loja. O cupom de desconto deverá ser inserido no carrinho no momento do checkout. O desconto não é válido para pedidos no balcão.",
       "category": "Comer e Beber",
       "partner_name": "Domino's Pizza",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/e645a56cd83603b51200c690000d3d49.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app\", waiting until \"domcontentloaded\"",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12187,
-      "scraped_at": "2026-06-10T03:13:48.029Z"
+      "detail_html_length": 130676,
+      "detail_elapsed_ms": 2746,
+      "scraped_at": "2026-06-10T03:26:55.307Z"
     },
     {
       "id": "pvq-dia-dos-namorados-20-off-em-reservas",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/primeiramesa/pvQ-dia-dos-namorados-20-off-em-reservas",
       "title": "Dia dos Namorados: 20% OFF em reservas!",
       "preview_title": "Dia dos Namorados: 20% OFF em reservas!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 25/03/2026 15:04 até 14/06/2026 23:59.",
+      "description": "Sobre o Parceiro: O Primeira é o maior app de reservas com desconto do Brasil, feito para quem ama descobrir novos lugares e viver experiências incríveis! Você reserva um horário no restaurante de preferência pagando uma pequena taxa. É só chegar lá no horário e economizar até 50% do valor da conta! Benefício: Dia dos Namorados com 20% OFF em reservas! Regras: O benefício é válido exclusivamente para reservas realizadas no mesmo dia da utilização (não é possível reservar com antecedência). Após a reserva, é necessário apresentar o código de confirmação ao chegar no restaurante. Todos os integrantes devem chegar no horário da reserva (tolerância de até 30 minutos). Não será permitida a junção de mesas. Cada reserva corresponde a uma única mesa. O desconto será aplicado apenas à quantidade de pessoas informada na reserva. Crianças a partir de 4 anos devem ser incluídas e serão contabilizadas no desconto. As reservas são limitadas a até 6 pessoas por mesa (podendo variar conforme o restaurante). Como Utilizar: 1 - Após o cadastro, deverá selecionar o restaurante de sua preferência, bem como a data e o horário desejados. 2 - Será necessário inserir o cupom de desconto no campo indicado para prosseguir com a reserva. 3 - Em seguida, deverá efetuar o pagamento da taxa de reserva, conforme as condições apresentadas na plataforma. 4 - Efetue o pagamento da taxa de reserva. 5 - Pronto! Agora é só comparecer no horário e aproveitar a experiência.",
       "category": "Comer e Beber",
       "partner_name": "Primeira Mesa",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2b9c3c706a798e464d068b682246940c.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/de1f58e894d17b1cc23995dbe09122fd.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/de1f58e894d17b1cc23995dbe09122fd.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/primeiramesa/pvQ-dia-dos-namorados-20-off-em-reservas\" is interrupted by another navigation to \"https://clube.uol.com.br/primeiramesa/pvQ-dia-dos-namorados-20-off-em-reservas\" Call log: - navigating to \"https://clube.uol.com.br/primeiramesa/pvQ-dia-dos-namorados-20-off-em-reservas\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 2582,
-      "scraped_at": "2026-06-10T03:14:02.910Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/de1f58e894d17b1cc23995dbe09122fd.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 126002,
+      "detail_elapsed_ms": 2383,
+      "scraped_at": "2026-06-10T03:26:57.707Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133971,
-      "detail_elapsed_ms": 22194,
-      "scraped_at": "2026-06-10T03:14:26.331Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133863,
+      "detail_elapsed_ms": 4282,
+      "scraped_at": "2026-06-10T03:27:01.989Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 134051,
-      "detail_elapsed_ms": 16338,
-      "scraped_at": "2026-06-10T03:14:54.969Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132575,
+      "detail_elapsed_ms": 5354,
+      "scraped_at": "2026-06-10T03:27:07.343Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132511,
-      "detail_elapsed_ms": 6865,
-      "scraped_at": "2026-06-10T03:15:01.834Z"
+      "detail_html_length": 132370,
+      "detail_elapsed_ms": 4638,
+      "scraped_at": "2026-06-10T03:27:11.981Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131236,
-      "detail_elapsed_ms": 3380,
-      "scraped_at": "2026-06-10T03:15:05.215Z"
+      "detail_html_length": 132493,
+      "detail_elapsed_ms": 2313,
+      "scraped_at": "2026-06-10T03:27:14.294Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131977,
-      "detail_elapsed_ms": 8208,
-      "scraped_at": "2026-06-10T03:15:13.423Z"
+      "detail_html_length": 132473,
+      "detail_elapsed_ms": 2160,
+      "scraped_at": "2026-06-10T03:27:16.454Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132398,
-      "detail_elapsed_ms": 7905,
-      "scraped_at": "2026-06-10T03:15:21.328Z"
+      "detail_html_length": 132408,
+      "detail_elapsed_ms": 1946,
+      "scraped_at": "2026-06-10T03:27:18.400Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132423,
-      "detail_elapsed_ms": 4753,
-      "scraped_at": "2026-06-10T03:15:26.081Z"
+      "detail_html_length": 132433,
+      "detail_elapsed_ms": 2392,
+      "scraped_at": "2026-06-10T03:27:20.792Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131241,
-      "detail_elapsed_ms": 2757,
-      "scraped_at": "2026-06-10T03:15:28.838Z"
+      "detail_html_length": 132409,
+      "detail_elapsed_ms": 5084,
+      "scraped_at": "2026-06-10T03:27:25.877Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131094,
-      "detail_elapsed_ms": 3492,
-      "scraped_at": "2026-06-10T03:15:32.330Z"
+      "detail_html_length": 131200,
+      "detail_elapsed_ms": 3036,
+      "scraped_at": "2026-06-10T03:27:28.913Z"
     },
     {
       "id": "pv5-50-off-no-par-de-ingressos-ba",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132430,
-      "detail_elapsed_ms": 2489,
-      "scraped_at": "2026-06-10T03:15:34.819Z"
+      "detail_html_length": 131184,
+      "detail_elapsed_ms": 3716,
+      "scraped_at": "2026-06-10T03:27:32.629Z"
     }
   ]
 }
