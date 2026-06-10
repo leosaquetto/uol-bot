@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 127867,
-  "run_duration_seconds": 127.87,
-  "avg_detail_ms_per_offer": 10656,
-  "generated_at": "2026-06-10T00:49:28.050Z",
+  "run_duration_ms": 78288,
+  "run_duration_seconds": 78.29,
+  "avg_detail_ms_per_offer": 6524,
+  "generated_at": "2026-06-10T01:01:02.965Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app",
       "title": "30% OFF nos pedidos pelo site e app",
       "preview_title": "30% OFF nos pedidos pelo site e app",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 02/08/2024 13:26 até 31/12/2026 23:59.",
+      "description": "Sobre o parceiro: Faça o seu pedido online na maior pizzaria do mundo! Diversos tipos de pizzas, combos e promoções para você escolher. Benefício: Cupom de 30% OFF nos pedidos pelo site e app. Regras: Desconto válido para pedidos efetuados apenas no site ou App da Domino´s Pizza. Válido para Pizzas médias e grandes. Válido para massas fina ou tradicional e todos os sabores. Válido para todos os dias da semana. O desconto só é aplicado na pizza e não no pedido inteiro. Desconto não se aplica na taxa de entrega. Não cumulativo com outras promoções. Válido também para carryout: retirada na loja. O cupom de desconto deverá ser inserido no carrinho no momento do checkout. O desconto não é válido para pedidos no balcão.",
       "category": "Comer e Beber",
       "partner_name": "Domino's Pizza",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/e645a56cd83603b51200c690000d3d49.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 13517,
-      "scraped_at": "2026-06-10T00:48:30.524Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2850f884b91_4ed1101659d5531f6ac9c6618ecc7ef1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130044,
+      "detail_elapsed_ms": 3654,
+      "scraped_at": "2026-06-10T01:00:32.520Z"
     },
     {
       "id": "pvq-dia-dos-namorados-20-off-em-reservas",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132646,
-      "detail_elapsed_ms": 13259,
-      "scraped_at": "2026-06-10T00:48:56.144Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131192,
+      "detail_elapsed_ms": 2336,
+      "scraped_at": "2026-06-10T01:00:34.858Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132696,
-      "detail_elapsed_ms": 4244,
-      "scraped_at": "2026-06-10T00:49:00.389Z"
+      "detail_html_length": 132624,
+      "detail_elapsed_ms": 4437,
+      "scraped_at": "2026-06-10T01:00:39.296Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133642,
-      "detail_elapsed_ms": 5027,
-      "scraped_at": "2026-06-10T00:49:05.416Z"
+      "detail_html_length": 133777,
+      "detail_elapsed_ms": 3090,
+      "scraped_at": "2026-06-10T01:00:42.387Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131362,
-      "detail_elapsed_ms": 3133,
-      "scraped_at": "2026-06-10T00:49:08.549Z"
+      "detail_html_length": 132496,
+      "detail_elapsed_ms": 3094,
+      "scraped_at": "2026-06-10T01:00:45.481Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126120,
-      "detail_elapsed_ms": 3578,
-      "scraped_at": "2026-06-10T00:49:12.127Z"
+      "detail_html_length": 131253,
+      "detail_elapsed_ms": 3443,
+      "scraped_at": "2026-06-10T01:00:48.924Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126100,
-      "detail_elapsed_ms": 2087,
-      "scraped_at": "2026-06-10T00:49:14.214Z"
+      "detail_html_length": 132449,
+      "detail_elapsed_ms": 2026,
+      "scraped_at": "2026-06-10T01:00:50.950Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125779,
-      "detail_elapsed_ms": 1999,
-      "scraped_at": "2026-06-10T00:49:16.213Z"
+      "detail_html_length": 126031,
+      "detail_elapsed_ms": 2233,
+      "scraped_at": "2026-06-10T01:00:53.183Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126082,
-      "detail_elapsed_ms": 3070,
-      "scraped_at": "2026-06-10T00:49:19.283Z"
+      "detail_html_length": 126056,
+      "detail_elapsed_ms": 3122,
+      "scraped_at": "2026-06-10T01:00:56.305Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126028,
-      "detail_elapsed_ms": 2979,
-      "scraped_at": "2026-06-10T00:49:22.262Z"
+      "detail_html_length": 132384,
+      "detail_elapsed_ms": 1904,
+      "scraped_at": "2026-06-10T01:00:58.209Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131105,
-      "detail_elapsed_ms": 2489,
-      "scraped_at": "2026-06-10T00:49:24.751Z"
+      "detail_html_length": 132325,
+      "detail_elapsed_ms": 1965,
+      "scraped_at": "2026-06-10T01:01:00.176Z"
     },
     {
       "id": "pv5-50-off-no-par-de-ingressos-ba",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132410,
-      "detail_elapsed_ms": 3029,
-      "scraped_at": "2026-06-10T00:49:27.780Z"
+      "detail_html_length": 132406,
+      "detail_elapsed_ms": 2143,
+      "scraped_at": "2026-06-10T01:01:02.319Z"
     }
   ]
 }
