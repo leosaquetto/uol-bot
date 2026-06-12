@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-12T16:23:37.835254Z",
+  "updated_at": "2026-06-12T16:33:40.060162Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Até 75% OFF nos cursos!",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwj-ate-75-off-nos-cursos"
+    },
     {
       "title": "12% OFF EXTRA em todo o site!",
       "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
