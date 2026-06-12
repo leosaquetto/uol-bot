@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 50612,
-  "run_duration_seconds": 50.61,
-  "avg_detail_ms_per_offer": 4218,
-  "generated_at": "2026-06-12T22:06:59.610Z",
+  "run_duration_ms": 45112,
+  "run_duration_seconds": 45.11,
+  "avg_detail_ms_per_offer": 3759,
+  "generated_at": "2026-06-12T22:17:51.025Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,38 +41,14 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131474,
-      "detail_elapsed_ms": 2969,
-      "scraped_at": "2026-06-12T22:06:37.177Z"
+      "detail_elapsed_ms": 3942,
+      "scraped_at": "2026-06-12T22:17:26.201Z"
     },
     {
-      "id": "pwx-2-ingressos-28-06-teatro-claro-sp",
-      "trace_id": "trace_pwx-2-ingressos-28-06-teatro-claro-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pwx-2-ingressos-28-06-teatro-claro-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pwx-2-ingressos-28-06-teatro-claro-sp",
-      "title": "2 INGRESSOS 28/06 Teatro Claro SP",
-      "preview_title": "2 INGRESSOS 28/06 Teatro Claro SP",
-      "validity": "Benefício válido de 12/06/2026 17:23 até 24/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para prestigiar Fafá de Belém – O Musical e celebre os 50 anos de carreira de uma das maiores vozes do Brasil em um espetáculo emocionante, repleto de música, história e grandes sucessos, no Teatro Claro, em São Paulo/SP. Quando: 28 de Junho, às 16h e 20h. Local: R. Olimpíadas, 360 – Vila Olímpia, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c6c4407ade_6a2c6a95dc6f4_06b21aa44baf571ae7bf331a19070c5c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c6c4407ade_6a2c6a95dc6f4_06b21aa44baf571ae7bf331a19070c5c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c6c4407ade_6a2c6a95dc6f4_06b21aa44baf571ae7bf331a19070c5c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131585,
-      "detail_elapsed_ms": 1980,
-      "scraped_at": "2026-06-12T22:06:39.179Z"
-    },
-    {
-      "id": "pwj-at-75-off-nos-cursos",
-      "trace_id": "trace_pwj-at-75-off-nos-cursos",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
-      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
+      "id": "pwj-ate-75-off-nos-cursos",
+      "trace_id": "trace_pwj-ate-75-off-nos-cursos",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
       "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138874,
-      "detail_elapsed_ms": 2191,
-      "scraped_at": "2026-06-12T22:06:41.370Z"
+      "detail_html_length": 132878,
+      "detail_elapsed_ms": 2539,
+      "scraped_at": "2026-06-12T22:17:28.742Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131502,
-      "detail_elapsed_ms": 1783,
-      "scraped_at": "2026-06-12T22:06:43.153Z"
+      "detail_html_length": 131514,
+      "detail_elapsed_ms": 3020,
+      "scraped_at": "2026-06-12T22:17:31.763Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132280,
-      "detail_elapsed_ms": 1671,
-      "scraped_at": "2026-06-12T22:06:44.827Z"
+      "detail_html_length": 132284,
+      "detail_elapsed_ms": 2078,
+      "scraped_at": "2026-06-12T22:17:33.841Z"
     },
     {
       "id": "pvx-pague-apenas-r-80-taxa-no-ingresso",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134823,
-      "detail_elapsed_ms": 2140,
-      "scraped_at": "2026-06-12T22:06:46.967Z"
+      "detail_html_length": 134826,
+      "detail_elapsed_ms": 1835,
+      "scraped_at": "2026-06-12T22:17:35.678Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131771,
-      "detail_elapsed_ms": 2014,
-      "scraped_at": "2026-06-12T22:06:48.981Z"
+      "detail_html_length": 131783,
+      "detail_elapsed_ms": 2056,
+      "scraped_at": "2026-06-12T22:17:37.734Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133889,
-      "detail_elapsed_ms": 2057,
-      "scraped_at": "2026-06-12T22:06:51.039Z"
+      "detail_html_length": 133882,
+      "detail_elapsed_ms": 2373,
+      "scraped_at": "2026-06-12T22:17:40.108Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133827,
-      "detail_elapsed_ms": 2336,
-      "scraped_at": "2026-06-12T22:06:53.375Z"
+      "detail_html_length": 133830,
+      "detail_elapsed_ms": 2319,
+      "scraped_at": "2026-06-12T22:17:42.427Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132556,
-      "detail_elapsed_ms": 1936,
-      "scraped_at": "2026-06-12T22:06:55.312Z"
+      "detail_html_length": 132559,
+      "detail_elapsed_ms": 1765,
+      "scraped_at": "2026-06-12T22:17:44.192Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132558,
-      "detail_elapsed_ms": 2139,
-      "scraped_at": "2026-06-12T22:06:57.451Z"
+      "detail_html_length": 132531,
+      "detail_elapsed_ms": 2397,
+      "scraped_at": "2026-06-12T22:17:46.589Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132499,
-      "detail_elapsed_ms": 1936,
-      "scraped_at": "2026-06-12T22:06:59.388Z"
+      "detail_html_length": 132501,
+      "detail_elapsed_ms": 2229,
+      "scraped_at": "2026-06-12T22:17:48.818Z"
+    },
+    {
+      "id": "pv9-50-off-no-par-de-ingressos-pe",
+      "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
+      "title": "50% OFF no par de ingressos - PE",
+      "preview_title": "50% OFF no par de ingressos - PE",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 08/08/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 08 de agosto, no Classic Hall, em Recife/PE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas no setor frontstage. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132447,
+      "detail_elapsed_ms": 1946,
+      "scraped_at": "2026-06-12T22:17:50.764Z"
     }
   ]
 }
