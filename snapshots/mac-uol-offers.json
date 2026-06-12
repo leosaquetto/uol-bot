@@ -6,43 +6,43 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 25637,
-  "run_duration_seconds": 25.64,
-  "avg_detail_ms_per_offer": 2136,
-  "generated_at": "2026-06-12T13:46:15.159Z",
+  "run_duration_ms": 190532,
+  "run_duration_seconds": 190.53,
+  "avg_detail_ms_per_offer": 15878,
+  "generated_at": "2026-06-12T14:23:29.428Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pwj-at-75-off-nos-cursos",
-      "trace_id": "trace_pwj-at-75-off-nos-cursos",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
-      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
+      "id": "pwj-ate-75-off-nos-cursos",
+      "trace_id": "trace_pwj-ate-75-off-nos-cursos",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
-      "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
-      "description": "Sobre o Parceiro: A Fundação Santo André (FSA) é uma instituição de ensino superior do ABC Paulista, com tradição na formação acadêmica e profissional, oferecendo cursos de graduação, pós-graduação e extensão em diversas áreas do conhecimento. Benefício: Até 75% OFF nos cursos! Regras: Para regatar o benefício entre em contato com a instituição (11 49793353) e encaminhe a declaração de vínculo com o Clube Ben. Válido para dependentes. Para emitir a declaração de vínculo com o Clube Ben, clique em \"Baixar Declaração\".",
+      "validity": "",
+      "description": "",
       "category": "Educação",
       "partner_name": "Fundação Santo André - FSA",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2264b2bd2f6304fd13fa769789a46158.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133225,
-      "detail_elapsed_ms": 1841,
-      "scraped_at": "2026-06-12T13:45:58.004Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12005,
+      "scraped_at": "2026-06-12T14:22:01.099Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131520,
-      "detail_elapsed_ms": 1678,
-      "scraped_at": "2026-06-12T13:45:59.683Z"
+      "detail_html_length": 131482,
+      "detail_elapsed_ms": 9383,
+      "scraped_at": "2026-06-12T14:22:10.486Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132300,
-      "detail_elapsed_ms": 1741,
-      "scraped_at": "2026-06-12T13:46:01.424Z"
+      "detail_html_length": 132250,
+      "detail_elapsed_ms": 8193,
+      "scraped_at": "2026-06-12T14:22:18.680Z"
     },
     {
       "id": "pvx-pague-apenas-r-80-taxa-no-ingresso",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 135235,
-      "detail_elapsed_ms": 1434,
-      "scraped_at": "2026-06-12T13:46:02.858Z"
+      "detail_html_length": 134803,
+      "detail_elapsed_ms": 8138,
+      "scraped_at": "2026-06-12T14:22:26.818Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131810,
-      "detail_elapsed_ms": 1728,
-      "scraped_at": "2026-06-12T13:46:04.586Z"
+      "detail_html_length": 131760,
+      "detail_elapsed_ms": 10441,
+      "scraped_at": "2026-06-12T14:22:37.259Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133909,
-      "detail_elapsed_ms": 1555,
-      "scraped_at": "2026-06-12T13:46:06.142Z"
+      "detail_html_length": 133870,
+      "detail_elapsed_ms": 6974,
+      "scraped_at": "2026-06-12T14:22:44.233Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133866,
-      "detail_elapsed_ms": 1509,
-      "scraped_at": "2026-06-12T13:46:07.651Z"
+      "detail_html_length": 133808,
+      "detail_elapsed_ms": 6136,
+      "scraped_at": "2026-06-12T14:22:50.369Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132576,
-      "detail_elapsed_ms": 1447,
-      "scraped_at": "2026-06-12T13:46:09.099Z"
+      "detail_html_length": 131290,
+      "detail_elapsed_ms": 3965,
+      "scraped_at": "2026-06-12T14:22:54.334Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132538,
-      "detail_elapsed_ms": 1469,
-      "scraped_at": "2026-06-12T13:46:10.568Z"
+      "detail_html_length": 132412,
+      "detail_elapsed_ms": 5149,
+      "scraped_at": "2026-06-12T14:22:59.483Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132517,
-      "detail_elapsed_ms": 1408,
-      "scraped_at": "2026-06-12T13:46:11.976Z"
+      "detail_html_length": 132341,
+      "detail_elapsed_ms": 10265,
+      "scraped_at": "2026-06-12T14:23:09.748Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132452,
-      "detail_elapsed_ms": 1620,
-      "scraped_at": "2026-06-12T13:46:13.597Z"
+      "detail_html_length": 132422,
+      "detail_elapsed_ms": 10208,
+      "scraped_at": "2026-06-12T14:23:19.957Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132940,
-      "detail_elapsed_ms": 1484,
-      "scraped_at": "2026-06-12T13:46:15.081Z"
+      "detail_html_length": 132440,
+      "detail_elapsed_ms": 7226,
+      "scraped_at": "2026-06-12T14:23:27.184Z"
     }
   ]
 }
