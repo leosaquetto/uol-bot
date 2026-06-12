@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 28734,
-  "run_duration_seconds": 28.73,
-  "avg_detail_ms_per_offer": 2395,
-  "generated_at": "2026-06-12T13:35:44.811Z",
+  "run_duration_ms": 25637,
+  "run_duration_seconds": 25.64,
+  "avg_detail_ms_per_offer": 2136,
+  "generated_at": "2026-06-12T13:46:15.159Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139046,
-      "detail_elapsed_ms": 1871,
-      "scraped_at": "2026-06-12T13:35:28.171Z"
+      "detail_html_length": 133225,
+      "detail_elapsed_ms": 1841,
+      "scraped_at": "2026-06-12T13:45:58.004Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -64,9 +64,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131546,
-      "detail_elapsed_ms": 1522,
-      "scraped_at": "2026-06-12T13:35:29.694Z"
+      "detail_html_length": 131520,
+      "detail_elapsed_ms": 1678,
+      "scraped_at": "2026-06-12T13:45:59.683Z"
+    },
+    {
+      "id": "pwb-50-off-no-par-de-ingressos-sp",
+      "trace_id": "trace_pwb-50-off-no-par-de-ingressos-sp",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwb-50-off-no-par-de-ingressos-sp",
+      "original_link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwb-50-off-no-par-de-ingressos-sp",
+      "title": "50% OFF no par de ingressos - SP",
+      "preview_title": "50% OFF no par de ingressos - SP",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 27/06/2026 23:59.",
+      "description": "Sobre a Turnê: Com quase 20 anos de trajetória e dez álbuns em seu repertório, Tiago Iorc celebra os dez anos de Troco Likes, projeto autoral que o consagrou como uma das vozes mais relevantes da música brasileira contemporânea, com o anúncio de uma turnê comemorativa que irá contemplar dez cidades brasileiras, após lançar este mês uma versão especial do álbum com artistas de renome. Data do Show: 01 de agosto, no Espaço Unimed, em São Paulo/SP. Benefício: Cupom de 50% OFF no par de ingressos do Tiago Iorc - Turnê Troco Likes 10 Anos. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas no setor Pista Premium. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Promoções do Mês",
+      "partner_name": "Tiago Iorc - Turnê Troco Likes 10 Anos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/54362b394cbf6886c5ac9b72aaeed9f0.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/199e7def1bed9322c5e934d5ee2ac00c.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/199e7def1bed9322c5e934d5ee2ac00c.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/199e7def1bed9322c5e934d5ee2ac00c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132300,
+      "detail_elapsed_ms": 1741,
+      "scraped_at": "2026-06-12T13:46:01.424Z"
     },
     {
       "id": "pvx-pague-apenas-r-80-taxa-no-ingresso",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134848,
-      "detail_elapsed_ms": 1445,
-      "scraped_at": "2026-06-12T13:35:31.139Z"
+      "detail_html_length": 135235,
+      "detail_elapsed_ms": 1434,
+      "scraped_at": "2026-06-12T13:46:02.858Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131805,
-      "detail_elapsed_ms": 1403,
-      "scraped_at": "2026-06-12T13:35:32.542Z"
+      "detail_html_length": 131810,
+      "detail_elapsed_ms": 1728,
+      "scraped_at": "2026-06-12T13:46:04.586Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133904,
-      "detail_elapsed_ms": 1844,
-      "scraped_at": "2026-06-12T13:35:34.386Z"
+      "detail_html_length": 133909,
+      "detail_elapsed_ms": 1555,
+      "scraped_at": "2026-06-12T13:46:06.142Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133851,
-      "detail_elapsed_ms": 1655,
-      "scraped_at": "2026-06-12T13:35:36.041Z"
+      "detail_html_length": 133866,
+      "detail_elapsed_ms": 1509,
+      "scraped_at": "2026-06-12T13:46:07.651Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132571,
-      "detail_elapsed_ms": 1552,
-      "scraped_at": "2026-06-12T13:35:37.593Z"
+      "detail_html_length": 132576,
+      "detail_elapsed_ms": 1447,
+      "scraped_at": "2026-06-12T13:46:09.099Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133006,
-      "detail_elapsed_ms": 1440,
-      "scraped_at": "2026-06-12T13:35:39.033Z"
+      "detail_html_length": 132538,
+      "detail_elapsed_ms": 1469,
+      "scraped_at": "2026-06-12T13:46:10.568Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132512,
-      "detail_elapsed_ms": 1439,
-      "scraped_at": "2026-06-12T13:35:40.472Z"
+      "detail_html_length": 132517,
+      "detail_elapsed_ms": 1408,
+      "scraped_at": "2026-06-12T13:46:11.976Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132467,
-      "detail_elapsed_ms": 1447,
-      "scraped_at": "2026-06-12T13:35:41.919Z"
+      "detail_html_length": 132452,
+      "detail_elapsed_ms": 1620,
+      "scraped_at": "2026-06-12T13:46:13.597Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132474,
-      "detail_elapsed_ms": 1420,
-      "scraped_at": "2026-06-12T13:35:43.339Z"
-    },
-    {
-      "id": "pv7-50-off-no-par-de-ingressos-ce",
-      "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
-      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
-      "title": "50% OFF no par de ingressos - CE",
-      "preview_title": "50% OFF no par de ingressos - CE",
-      "validity": "Benefício válido de 05/06/2026 14:25 até 25/07/2026 23:59.",
-      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 22 de agosto, no Centro de Formação Olímpica, em Fortaleza/CE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores arquibancada e pista premium. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
-      "category": "Entretenimento e Viagens",
-      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132440,
-      "detail_elapsed_ms": 1427,
-      "scraped_at": "2026-06-12T13:35:44.766Z"
+      "detail_html_length": 132940,
+      "detail_elapsed_ms": 1484,
+      "scraped_at": "2026-06-12T13:46:15.081Z"
     }
   ]
 }
