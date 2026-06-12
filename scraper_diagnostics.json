@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-12T22:19:32.583280Z",
+  "updated_at": "2026-06-12T22:30:03.227015Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
+    "duplicada_historico": 10,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pwy-2-ingressos-20-06-teatro-claro-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwy-2-ingressos-20-06-teatro-claro-sp"
-    },
-    {
-      "title": "Até 75% OFF nos cursos!",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwj-ate-75-off-nos-cursos"
     },
     {
       "title": "12% OFF EXTRA em todo o site!",
