@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 206173,
-  "run_duration_seconds": 206.17,
-  "avg_detail_ms_per_offer": 17181,
-  "generated_at": "2026-06-12T04:21:58.583Z",
+  "run_duration_ms": 40728,
+  "run_duration_seconds": 40.73,
+  "avg_detail_ms_per_offer": 3394,
+  "generated_at": "2026-06-12T10:04:21.309Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
+      "description": "Sobre o Parceiro: A Fundação Santo André (FSA) é uma instituição de ensino superior do ABC Paulista, com tradição na formação acadêmica e profissional, oferecendo cursos de graduação, pós-graduação e extensão em diversas áreas do conhecimento. Benefício: Até 75% OFF nos cursos! Regras: Para regatar o benefício entre em contato com a instituição (11 49793353) e encaminhe a declaração de vínculo com o Clube Ben. Válido para dependentes. Para emitir a declaração de vínculo com o Clube Ben, clique em \"Baixar Declaração\".",
       "category": "Educação",
       "partner_name": "Fundação Santo André - FSA",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2264b2bd2f6304fd13fa769789a46158.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12002,
-      "scraped_at": "2026-06-12T04:19:57.679Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134907,
+      "detail_elapsed_ms": 2902,
+      "scraped_at": "2026-06-12T10:04:00.488Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131345,
-      "detail_elapsed_ms": 7999,
-      "scraped_at": "2026-06-12T04:20:05.685Z"
+      "detail_html_length": 125118,
+      "detail_elapsed_ms": 1689,
+      "scraped_at": "2026-06-12T10:04:02.193Z"
     },
     {
       "id": "pvx-pague-apenas-r-80-taxa-no-ingresso",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134795,
-      "detail_elapsed_ms": 9964,
-      "scraped_at": "2026-06-12T04:20:15.650Z"
+      "detail_html_length": 134843,
+      "detail_elapsed_ms": 2388,
+      "scraped_at": "2026-06-12T10:04:04.581Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131612,
-      "detail_elapsed_ms": 9280,
-      "scraped_at": "2026-06-12T04:20:24.930Z"
+      "detail_html_length": 131760,
+      "detail_elapsed_ms": 1882,
+      "scraped_at": "2026-06-12T10:04:06.463Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133863,
-      "detail_elapsed_ms": 7333,
-      "scraped_at": "2026-06-12T04:20:32.263Z"
+      "detail_html_length": 133869,
+      "detail_elapsed_ms": 1965,
+      "scraped_at": "2026-06-12T10:04:08.428Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133800,
-      "detail_elapsed_ms": 6542,
-      "scraped_at": "2026-06-12T04:20:38.805Z"
+      "detail_html_length": 133807,
+      "detail_elapsed_ms": 1831,
+      "scraped_at": "2026-06-12T10:04:10.259Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132519,
-      "detail_elapsed_ms": 6150,
-      "scraped_at": "2026-06-12T04:20:44.956Z"
+      "detail_html_length": 132515,
+      "detail_elapsed_ms": 1955,
+      "scraped_at": "2026-06-12T10:04:12.216Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132361,
-      "detail_elapsed_ms": 8239,
-      "scraped_at": "2026-06-12T04:20:53.196Z"
+      "detail_html_length": 132488,
+      "detail_elapsed_ms": 1779,
+      "scraped_at": "2026-06-12T10:04:13.995Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132782,
-      "detail_elapsed_ms": 8396,
-      "scraped_at": "2026-06-12T04:21:01.592Z"
+      "detail_html_length": 132518,
+      "detail_elapsed_ms": 1785,
+      "scraped_at": "2026-06-12T10:04:15.781Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131031,
-      "detail_elapsed_ms": 4782,
-      "scraped_at": "2026-06-12T04:21:06.383Z"
+      "detail_html_length": 132412,
+      "detail_elapsed_ms": 1801,
+      "scraped_at": "2026-06-12T10:04:17.582Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
       "title": "50% OFF no par de ingressos - RS",
       "preview_title": "50% OFF no par de ingressos - RS",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 26/09/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 26 de setembro, no Estádio Beira-Rio, em Porto Alegre/RS. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores cadeira inferior, pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 13943,
-      "scraped_at": "2026-06-12T04:21:41.879Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132478,
+      "detail_elapsed_ms": 1662,
+      "scraped_at": "2026-06-12T10:04:19.244Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -303,10 +303,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132408,
-      "detail_elapsed_ms": 2767,
-      "scraped_at": "2026-06-12T04:21:58.174Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132435,
+      "detail_elapsed_ms": 1804,
+      "scraped_at": "2026-06-12T10:04:21.048Z"
     }
   ]
 }
