@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-06-12T22:30:03.179854Z",
+  "last_update": "2026-06-12T22:30:07.923038Z",
   "offers": [
     {
       "id": "pvL-2-ingressos-09-08-barrashopping-rj",
@@ -471,7 +471,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5491?thread=5488",
       "sent_at": "2026-06-12T21:34:34.767258Z",
-      "sold_out_at": "19:29"
+      "sold_out_at": "19:29",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
