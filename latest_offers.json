@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-06-12T22:41:31.517343Z",
+  "last_update": "2026-06-12T22:41:36.970966Z",
   "offers": [
     {
       "id": "pvL-2-ingressos-09-08-barrashopping-rj",
@@ -448,7 +448,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5487?thread=5484",
       "sent_at": "2026-06-12T21:34:24.953893Z",
-      "sold_out_at": "19:40"
+      "sold_out_at": "19:40",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pww-2-ingressos-27-06-teatro-claro-sp",
