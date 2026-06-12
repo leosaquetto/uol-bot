@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-12T15:36:20.491103Z",
+  "updated_at": "2026-06-12T15:37:30.042685Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 10,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -27,6 +27,18 @@
       "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwi-12-off-extra-em-todo-o-site"
+    },
+    {
+      "title": "Pague apenas R$ 80 + taxa no ingresso",
+      "link": "https://clube.uol.com.br/festaclubedos30/pvX-pague-apenas-r-80-taxa-no-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvx-pague-apenas-r-80-taxa-no-ingresso"
+    },
+    {
+      "title": "502 Bad Gateway",
+      "link": "https://clube.uol.com.br/dominospizza/pvU-40-off-nos-pedidos-pelo-site-e-app",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pvu-40-off-nos-pedidos-pelo-site-e-app"
     },
     {
       "title": "2 ingressos: 09/08 BarraShopping - RJ",
