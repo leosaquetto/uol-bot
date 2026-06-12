@@ -6,44 +6,20 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 146669,
-  "run_duration_seconds": 146.67,
-  "avg_detail_ms_per_offer": 12222,
-  "generated_at": "2026-06-12T19:33:14.235Z",
+  "run_duration_ms": 41335,
+  "run_duration_seconds": 41.34,
+  "avg_detail_ms_per_offer": 3445,
+  "generated_at": "2026-06-12T20:40:03.827Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pwu-2-ingressos-26-06-teatro-tuca-sp",
-      "trace_id": "trace_pwu-2-ingressos-26-06-teatro-tuca-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pwu-2-ingressos-26-06-teatro-tuca-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pwu-2-ingressos-26-06-teatro-tuca-sp",
-      "title": "2 INGRESSOS: 26/06 Teatro Tuca - SP",
-      "preview_title": "2 INGRESSOS: 26/06 Teatro Tuca - SP",
-      "validity": "",
-      "description": "",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c3a9fd3af6_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c3a9fd3af6_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pwu-2-ingressos-26-06-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12002,
-      "scraped_at": "2026-06-12T19:32:04.693Z"
-    },
     {
       "id": "pwj-at-75-off-nos-cursos",
       "trace_id": "trace_pwj-at-75-off-nos-cursos",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139064,
-      "detail_elapsed_ms": 10295,
-      "scraped_at": "2026-06-12T19:32:14.995Z"
+      "detail_html_length": 133236,
+      "detail_elapsed_ms": 2529,
+      "scraped_at": "2026-06-12T20:39:42.777Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131481,
-      "detail_elapsed_ms": 5746,
-      "scraped_at": "2026-06-12T19:32:20.741Z"
+      "detail_html_length": 131490,
+      "detail_elapsed_ms": 2358,
+      "scraped_at": "2026-06-12T20:39:45.136Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132260,
-      "detail_elapsed_ms": 5978,
-      "scraped_at": "2026-06-12T19:32:26.719Z"
+      "detail_html_length": 132310,
+      "detail_elapsed_ms": 2269,
+      "scraped_at": "2026-06-12T20:39:47.405Z"
     },
     {
       "id": "pvx-pague-apenas-r-80-taxa-no-ingresso",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134803,
-      "detail_elapsed_ms": 4809,
-      "scraped_at": "2026-06-12T19:32:31.528Z"
+      "detail_html_length": 134813,
+      "detail_elapsed_ms": 1888,
+      "scraped_at": "2026-06-12T20:39:49.293Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131749,
-      "detail_elapsed_ms": 6315,
-      "scraped_at": "2026-06-12T19:32:37.845Z"
+      "detail_html_length": 131790,
+      "detail_elapsed_ms": 1605,
+      "scraped_at": "2026-06-12T20:39:50.899Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128655,
-      "detail_elapsed_ms": 5085,
-      "scraped_at": "2026-06-12T19:32:42.930Z"
+      "detail_html_length": 133910,
+      "detail_elapsed_ms": 1734,
+      "scraped_at": "2026-06-12T20:39:52.633Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132581,
-      "detail_elapsed_ms": 4058,
-      "scraped_at": "2026-06-12T19:32:46.998Z"
+      "detail_html_length": 133838,
+      "detail_elapsed_ms": 1779,
+      "scraped_at": "2026-06-12T20:39:54.414Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126153,
-      "detail_elapsed_ms": 3479,
-      "scraped_at": "2026-06-12T19:32:50.478Z"
+      "detail_html_length": 132515,
+      "detail_elapsed_ms": 1679,
+      "scraped_at": "2026-06-12T20:39:56.093Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131180,
-      "detail_elapsed_ms": 5053,
-      "scraped_at": "2026-06-12T19:32:55.531Z"
+      "detail_html_length": 132528,
+      "detail_elapsed_ms": 2003,
+      "scraped_at": "2026-06-12T20:39:58.096Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132880,
-      "detail_elapsed_ms": 9446,
-      "scraped_at": "2026-06-12T19:33:04.981Z"
+      "detail_html_length": 132479,
+      "detail_elapsed_ms": 1594,
+      "scraped_at": "2026-06-12T20:39:59.690Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132413,
-      "detail_elapsed_ms": 8559,
-      "scraped_at": "2026-06-12T19:33:13.541Z"
+      "detail_html_length": 132463,
+      "detail_elapsed_ms": 2235,
+      "scraped_at": "2026-06-12T20:40:01.925Z"
+    },
+    {
+      "id": "pv8-50-off-no-par-de-ingressos-rs",
+      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "title": "50% OFF no par de ingressos - RS",
+      "preview_title": "50% OFF no par de ingressos - RS",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 26/09/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 26 de setembro, no Estádio Beira-Rio, em Porto Alegre/RS. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores cadeira inferior, pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132470,
+      "detail_elapsed_ms": 1760,
+      "scraped_at": "2026-06-12T20:40:03.686Z"
     }
   ]
 }
