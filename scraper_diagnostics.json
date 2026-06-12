@@ -1,21 +1,45 @@
 {
-  "updated_at": "2026-06-12T17:17:40.394022Z",
+  "updated_at": "2026-06-12T17:19:13.071515Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 5,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 11,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 27/06 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pwv-2-ingressos-27-06-teatro-tuca-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwv-2-ingressos-27-06-teatro-tuca-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 26/06 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pwu-2-ingressos-26-06-teatro-tuca-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwu-2-ingressos-26-06-teatro-tuca-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 21/06 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pwt-2-ingressos-21-06-teatro-tuca-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwt-2-ingressos-21-06-teatro-tuca-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 20/06 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pws-2-ingressos-20-06-teatro-tuca-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pws-2-ingressos-20-06-teatro-tuca-sp"
+    },
     {
       "title": "12% OFF EXTRA em todo o site!",
       "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
