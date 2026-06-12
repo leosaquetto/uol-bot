@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 121041,
-  "run_duration_seconds": 121.04,
-  "avg_detail_ms_per_offer": 10087,
-  "generated_at": "2026-06-12T18:55:46.953Z",
+  "run_duration_ms": 200622,
+  "run_duration_seconds": 200.62,
+  "avg_detail_ms_per_offer": 16719,
+  "generated_at": "2026-06-12T19:09:28.859Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pwv-2-ingressos-27-06-teatro-tuca-sp",
       "title": "2 INGRESSOS: 27/06 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 27/06 Teatro Tuca - SP",
-      "validity": "Benefício válido de 12/06/2026 13:37 até 26/06/2026 23:59.",
-      "description": "Assinante UOL, viva essa experiência! Resgate 1 par de ingressos e emocione-se com o espetáculo Olhos nos Olhos protagonizado por Ana Lúcia Torre, que celebra 80 anos de vida e 60 anos de carreira em uma apresentação vibrante, reveladora e cheia de sensibilidade, no Teatro Tuca, em São Paulo – SP. Data: 27 de Junho, às 21h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c3b66bb455_6a2c3a9fd3af6_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c3b66bb455_6a2c3a9fd3af6_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2c3b66bb455_6a2c3a9fd3af6_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133112,
-      "detail_elapsed_ms": 13894,
-      "scraped_at": "2026-06-12T18:54:58.246Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pwv-2-ingressos-27-06-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12528,
+      "scraped_at": "2026-06-12T19:08:05.976Z"
     },
     {
       "id": "pwu-2-ingressos-26-06-teatro-tuca-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126608,
-      "detail_elapsed_ms": 4406,
-      "scraped_at": "2026-06-12T18:55:02.655Z"
+      "detail_html_length": 132982,
+      "detail_elapsed_ms": 6401,
+      "scraped_at": "2026-06-12T19:08:12.419Z"
     },
     {
       "id": "pwt-2-ingressos-21-06-teatro-tuca-sp",
@@ -88,33 +88,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132944,
-      "detail_elapsed_ms": 2839,
-      "scraped_at": "2026-06-12T18:55:05.494Z"
+      "detail_html_length": 132974,
+      "detail_elapsed_ms": 2986,
+      "scraped_at": "2026-06-12T19:08:15.410Z"
     },
     {
-      "id": "pwj-ate-75-off-nos-cursos",
-      "trace_id": "trace_pwj-ate-75-off-nos-cursos",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
-      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "id": "pwj-at-75-off-nos-cursos",
+      "trace_id": "trace_pwj-at-75-off-nos-cursos",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
+      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
-      "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
-      "description": "Sobre o Parceiro: A Fundação Santo André (FSA) é uma instituição de ensino superior do ABC Paulista, com tradição na formação acadêmica e profissional, oferecendo cursos de graduação, pós-graduação e extensão em diversas áreas do conhecimento. Benefício: Até 75% OFF nos cursos! Regras: Para regatar o benefício entre em contato com a instituição (11 49793353) e encaminhe a declaração de vínculo com o Clube Ben. Válido para dependentes. Para emitir a declaração de vínculo com o Clube Ben, clique em \"Baixar Declaração\".",
+      "validity": "",
+      "description": "",
       "category": "Educação",
       "partner_name": "Fundação Santo André - FSA",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2264b2bd2f6304fd13fa769789a46158.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 137592,
-      "detail_elapsed_ms": 4495,
-      "scraped_at": "2026-06-12T18:55:09.990Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12220,
+      "scraped_at": "2026-06-12T19:08:40.373Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131520,
-      "detail_elapsed_ms": 3896,
-      "scraped_at": "2026-06-12T18:55:13.886Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131501,
+      "detail_elapsed_ms": 12809,
+      "scraped_at": "2026-06-12T19:09:05.616Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132291,
-      "detail_elapsed_ms": 4011,
-      "scraped_at": "2026-06-12T18:55:17.897Z"
+      "detail_html_length": 131055,
+      "detail_elapsed_ms": 3792,
+      "scraped_at": "2026-06-12T19:09:09.408Z"
     },
     {
       "id": "pvx-pague-apenas-r-80-taxa-no-ingresso",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134675,
-      "detail_elapsed_ms": 8793,
-      "scraped_at": "2026-06-12T18:55:26.690Z"
+      "detail_html_length": 133598,
+      "detail_elapsed_ms": 4095,
+      "scraped_at": "2026-06-12T19:09:13.503Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131653,
-      "detail_elapsed_ms": 6725,
-      "scraped_at": "2026-06-12T18:55:33.415Z"
+      "detail_html_length": 131789,
+      "detail_elapsed_ms": 2266,
+      "scraped_at": "2026-06-12T19:09:15.769Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133900,
-      "detail_elapsed_ms": 2576,
-      "scraped_at": "2026-06-12T18:55:35.991Z"
+      "detail_html_length": 133898,
+      "detail_elapsed_ms": 2191,
+      "scraped_at": "2026-06-12T19:09:17.960Z"
     },
     {
       "id": "pvi-2-ingressos-06-08-barrashopping-rj",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132601,
-      "detail_elapsed_ms": 4173,
-      "scraped_at": "2026-06-12T18:55:40.164Z"
+      "detail_html_length": 133837,
+      "detail_elapsed_ms": 2441,
+      "scraped_at": "2026-06-12T19:09:20.401Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132567,
-      "detail_elapsed_ms": 3408,
-      "scraped_at": "2026-06-12T18:55:43.572Z"
+      "detail_html_length": 132557,
+      "detail_elapsed_ms": 5221,
+      "scraped_at": "2026-06-12T19:09:25.623Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132528,
-      "detail_elapsed_ms": 2983,
-      "scraped_at": "2026-06-12T18:55:46.555Z"
+      "detail_html_length": 131025,
+      "detail_elapsed_ms": 2917,
+      "scraped_at": "2026-06-12T19:09:28.540Z"
     }
   ]
 }
