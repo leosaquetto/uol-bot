@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-06-12T04:22:43.150331Z",
+  "updated_at": "2026-06-12T04:24:08.734120Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 9,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Até 75% OFF nos cursos!",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwj-ate-75-off-nos-cursos"
+    },
+    {
+      "title": "12% OFF EXTRA em todo o site!",
+      "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwi-12-off-extra-em-todo-o-site"
+    },
     {
       "title": "2 ingressos: 09/08 BarraShopping - RJ",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pvL-2-ingressos-09-08-barrashopping-rj",
