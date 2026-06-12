@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-12T20:30:51.031437Z",
+  "updated_at": "2026-06-12T20:40:53.889348Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 26/06 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pwu-2-ingressos-26-06-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwu-2-ingressos-26-06-teatro-tuca-sp"
-    },
     {
       "title": "12% OFF EXTRA em todo o site!",
       "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
@@ -75,6 +69,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
       "reason": "duplicada_historico",
       "trace_id": "trace_pva-50-off-no-par-de-ingressos-pr"
+    },
+    {
+      "title": "50% OFF no par de ingressos - RS",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
     }
   ]
 }
