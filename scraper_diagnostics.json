@@ -1,44 +1,26 @@
 {
-  "updated_at": "2026-06-12T19:10:59.922158Z",
+  "updated_at": "2026-06-12T19:34:05.555046Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
+    "duplicada_historico": 10,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
-      "title": "2 INGRESSOS: 27/06 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pwv-2-ingressos-27-06-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwv-2-ingressos-27-06-teatro-tuca-sp"
-    },
-    {
       "title": "2 INGRESSOS: 26/06 Teatro Tuca - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pwu-2-ingressos-26-06-teatro-tuca-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwu-2-ingressos-26-06-teatro-tuca-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 21/06 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pwt-2-ingressos-21-06-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwt-2-ingressos-21-06-teatro-tuca-sp"
-    },
-    {
-      "title": "Até 75% OFF nos cursos!",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwj-at-75-off-nos-cursos"
     },
     {
       "title": "12% OFF EXTRA em todo o site!",
@@ -87,6 +69,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvB-50-off-no-par-de-ingressos-sc",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvb-50-off-no-par-de-ingressos-sc"
+    },
+    {
+      "title": "50% OFF no par de ingressos - PR",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pva-50-off-no-par-de-ingressos-pr"
     }
   ]
 }
