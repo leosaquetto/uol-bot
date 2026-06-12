@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-06-12T20:40:53.831344Z",
+  "last_update": "2026-06-12T20:40:58.976933Z",
   "offers": [
     {
       "id": "pvA-50-off-no-par-de-ingressos-pr",
@@ -400,7 +400,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-06-12T17:17:52.042344Z",
-      "sold_out_at": "17:40"
+      "sold_out_at": "17:40",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pwu-2-ingressos-26-06-teatro-tuca-sp",
@@ -443,7 +444,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-06-12T17:18:12.699588Z",
-      "sold_out_at": "17:40"
+      "sold_out_at": "17:40",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pws-2-ingressos-20-06-teatro-tuca-sp",
