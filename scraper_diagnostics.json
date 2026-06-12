@@ -1,33 +1,21 @@
 {
-  "updated_at": "2026-06-12T00:23:12.181395Z",
+  "updated_at": "2026-06-12T04:22:43.150331Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 2,
+    "duplicada_historico": 7,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "30% OFF nos pedidos pelo site e app",
-      "link": "https://clube.uol.com.br/dominospizza/pvU-30-off-nos-pedidos-pelo-site-e-app",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvu-30-off-nos-pedidos-pelo-site-e-app"
-    },
-    {
-      "title": "Dia dos Namorados: 20% OFF em reservas!",
-      "link": "https://clube.uol.com.br/primeiramesa/pvQ-dia-dos-namorados-20-off-em-reservas",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvq-dia-dos-namorados-20-off-em-reservas"
-    },
     {
       "title": "2 ingressos: 09/08 BarraShopping - RJ",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pvL-2-ingressos-09-08-barrashopping-rj",
@@ -75,18 +63,6 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce"
-    },
-    {
-      "title": "50% OFF no par de ingressos - DF",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv6-50-off-no-par-de-ingressos-df"
-    },
-    {
-      "title": "50% OFF no par de ingressos - BA",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv5-50-off-no-par-de-ingressos-ba",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pv5-50-off-no-par-de-ingressos-ba"
     }
   ]
 }
