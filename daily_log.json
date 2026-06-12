@@ -1,15 +1,15 @@
 {
-  "date": "09/06/2026",
-  "message_id": null,
-  "previous_message_id": 5431,
+  "date": "12/06/2026",
+  "message_id": 5468,
+  "previous_message_id": null,
   "weekly_summary_sent_for": "2026-06-08",
   "last_success_check": "",
-  "last_new_offer_at": "09/06/2026 às 15:48",
+  "last_new_offer_at": "12/06/2026 às 01:23",
   "pending_count": 0,
-  "last_consumer_run": "09/06/2026 às 15:48",
-  "sold_out_edited_today": 7,
+  "last_consumer_run": "12/06/2026 às 01:23",
+  "sold_out_edited_today": 5,
   "lines": [
-    "[15:48] consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 1 | enviadas 1 | falhas 0 | adiadas 0 | pendentes 0"
+    "[01:23] consumer: ✅ filtradas 2 (bloqueio 7d 0 / dup 2 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 2 | enviadas 2 | falhas 0 | adiadas 0 | pendentes 0"
   ],
-  "last_rendered_text": "<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>Atualizado às 15:48</i>\n\n<b>STATUS DO SISTEMA</b>\n📱 <b>Scriptable:</b> ⚪ &lt;b&gt;Em espera&lt;/b&gt; (agora)\n🍎 <b>Scraper Mac:</b> 🟢 &lt;b&gt;Online&lt;/b&gt; (há 1min às 15:47)\n📦 <b>Consumer:</b> ✅ &lt;b&gt;Pronto&lt;/b&gt; (agora às 15:48)\n🧷 <b>Esgotadas editadas hoje:</b> 7\n\n<b>ÚLTIMA ATIVIDADE</b>\n🎯 <a href=\"https://t.me/c/3723320790/1604\">2 INGRESSOS 13/06 Teatro Claro SP</a>\n📅 <b>Enviada:</b> 09/06/2026 às 15:48\n⏳ 0min sem oferta nova\n\n<b>DETALHES TÉCNICOS</b>\n<code>• consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 1 | enviadas 1 | falhas 0 | adiadas 0 | pendentes 0</code>"
+  "last_rendered_text": "<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>Atualizado às 01:23</i>\n\n<b>STATUS DO SISTEMA</b>\n📱 <b>Scriptable:</b> ⚪ &lt;b&gt;Em espera&lt;/b&gt; (agora)\n🍎 <b>Scraper Mac:</b> 🟢 &lt;b&gt;Online&lt;/b&gt; (há 1min às 01:22)\n📦 <b>Consumer:</b> ✅ &lt;b&gt;Pronto&lt;/b&gt; (agora às 01:23)\n🧷 <b>Esgotadas editadas hoje:</b> 5\n\n<b>ÚLTIMA ATIVIDADE</b>\n🎯 <a href=\"https://t.me/c/3723320790/1606\">12% OFF EXTRA em todo o site!</a>\n📅 <b>Enviada:</b> 12/06/2026 às 01:23\n⏳ 0min sem oferta nova\n\n<b>DETALHES TÉCNICOS</b>\n<code>• consumer: ✅ filtradas 2 (bloqueio 7d 0 / dup 2 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 2 | enviadas 2 | falhas 0 | adiadas 0 | pendentes 0</code>"
 }
