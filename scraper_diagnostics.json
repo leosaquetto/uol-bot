@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-06-14T20:01:48.176862Z",
+  "updated_at": "2026-06-14T20:50:12.745899Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 1,
+    "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 10,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "Até 75% OFF nos cursos!",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwj-ate-75-off-nos-cursos"
-    },
     {
       "title": "12% OFF EXTRA em todo o site!",
       "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
@@ -35,12 +29,6 @@
       "trace_id": "trace_pwb-50-off-no-par-de-ingressos-sp"
     },
     {
-      "title": "Pague apenas R$ 80 + taxa no ingresso",
-      "link": "https://clube.uol.com.br/festaclubedos30/pvX-pague-apenas-r-80-taxa-no-ingresso",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pvx-pague-apenas-r-80-taxa-no-ingresso"
-    },
-    {
       "title": "40% OFF nos pedidos pelo site e app",
       "link": "https://clube.uol.com.br/dominospizza/pvU-40-off-nos-pedidos-pelo-site-e-app",
       "reason": "duplicada_historico",
@@ -51,12 +39,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pvL-2-ingressos-09-08-barrashopping-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvl-2-ingressos-09-08-barrashopping-rj"
-    },
-    {
-      "title": "2 ingressos: 06/08 BarraShopping - RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvI-2-ingressos-06-08-barrashopping-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvi-2-ingressos-06-08-barrashopping-rj"
     },
     {
       "title": "50% OFF no par de ingressos - MG",
@@ -81,6 +63,18 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
+    },
+    {
+      "title": "50% OFF no par de ingressos - CE",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce"
+    },
+    {
+      "title": "50% OFF no par de ingressos - DF",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv6-50-off-no-par-de-ingressos-df"
     }
   ]
 }
