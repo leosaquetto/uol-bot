@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 8,
+  "detail_fail_count": 4,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 8,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 4
   },
-  "run_duration_ms": 324609,
-  "run_duration_seconds": 324.61,
-  "avg_detail_ms_per_offer": 27051,
-  "generated_at": "2026-06-14T21:20:03.592Z",
+  "run_duration_ms": 347916,
+  "run_duration_seconds": 347.92,
+  "avg_detail_ms_per_offer": 28993,
+  "generated_at": "2026-06-14T22:01:16.413Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 138883,
-      "detail_elapsed_ms": 12615,
-      "scraped_at": "2026-06-14T21:18:20.458Z"
+      "detail_attempts": 1,
+      "detail_html_length": 139071,
+      "detail_elapsed_ms": 15439,
+      "scraped_at": "2026-06-14T21:57:23.598Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130099,
-      "detail_elapsed_ms": 5257,
-      "scraped_at": "2026-06-14T21:18:25.716Z"
+      "detail_html_length": 131624,
+      "detail_elapsed_ms": 18232,
+      "scraped_at": "2026-06-14T21:57:41.839Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132264,
-      "detail_elapsed_ms": 4754,
-      "scraped_at": "2026-06-14T21:18:30.470Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132273,
+      "detail_elapsed_ms": 6887,
+      "scraped_at": "2026-06-14T21:58:01.585Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125400,
-      "detail_elapsed_ms": 4134,
-      "scraped_at": "2026-06-14T21:18:34.732Z"
+      "detail_html_length": 131764,
+      "detail_elapsed_ms": 10899,
+      "scraped_at": "2026-06-14T21:58:12.485Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133873,
-      "detail_elapsed_ms": 7249,
-      "scraped_at": "2026-06-14T21:18:41.982Z"
+      "detail_html_length": 133872,
+      "detail_elapsed_ms": 9940,
+      "scraped_at": "2026-06-14T21:58:22.425Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvC-50-off-no-par-de-ingressos-mg",
       "title": "50% OFF no par de ingressos - MG",
       "preview_title": "50% OFF no par de ingressos - MG",
-      "validity": "Benefício válido de 05/06/2026 14:25 até 24/10/2026 23:59.",
-      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 24 de outubro, na Arena MRV, em Belo Horizonte/BH. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231af5be030_6a23185245ed5_6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231af5be030_6a23185245ed5_6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231af5be030_6a23185245ed5_6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 126187,
-      "detail_elapsed_ms": 3595,
-      "scraped_at": "2026-06-14T21:18:45.577Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvC-50-off-no-par-de-ingressos-mg\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12230,
+      "scraped_at": "2026-06-14T21:58:47.285Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132491,
-      "detail_elapsed_ms": 10536,
-      "scraped_at": "2026-06-14T21:18:56.113Z"
+      "detail_html_length": 132521,
+      "detail_elapsed_ms": 11034,
+      "scraped_at": "2026-06-14T21:58:58.319Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132481,
-      "detail_elapsed_ms": 11548,
-      "scraped_at": "2026-06-14T21:19:07.661Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132330,
+      "detail_elapsed_ms": 10019,
+      "scraped_at": "2026-06-14T21:59:21.725Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -219,22 +219,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
       "title": "50% OFF no par de ingressos - PE",
       "preview_title": "50% OFF no par de ingressos - PE",
-      "validity": "Benefício válido de 05/06/2026 14:25 até 08/08/2026 23:59.",
-      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 08 de agosto, no Classic Hall, em Recife/PE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas no setor frontstage. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132686,
-      "detail_elapsed_ms": 13968,
-      "scraped_at": "2026-06-14T21:19:21.630Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12239,
+      "scraped_at": "2026-06-14T21:59:46.808Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 132703,
-      "detail_elapsed_ms": 14210,
-      "scraped_at": "2026-06-14T21:19:48.299Z"
+      "detail_html_length": 132443,
+      "detail_elapsed_ms": 14267,
+      "scraped_at": "2026-06-14T22:00:14.338Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
       "title": "50% OFF no par de ingressos - CE",
       "preview_title": "50% OFF no par de ingressos - CE",
-      "validity": "Benefício válido de 05/06/2026 14:25 até 25/07/2026 23:59.",
-      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 22 de agosto, no Centro de Formação Olímpica, em Fortaleza/CE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores arquibancada e pista premium. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132399,
-      "detail_elapsed_ms": 6780,
-      "scraped_at": "2026-06-14T21:19:55.079Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 14454,
+      "scraped_at": "2026-06-14T22:00:41.047Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
       "title": "50% OFF no par de ingressos - DF",
       "preview_title": "50% OFF no par de ingressos - DF",
-      "validity": "Benefício válido de 05/06/2026 14:25 até 25/07/2026 23:59.",
-      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 25 de julho, na Arena BRB Mané Garrincha, em Brasília/DF. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e setores pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132349,
-      "detail_elapsed_ms": 7411,
-      "scraped_at": "2026-06-14T21:20:02.490Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12042,
+      "scraped_at": "2026-06-14T22:01:05.821Z"
     }
   ]
 }
