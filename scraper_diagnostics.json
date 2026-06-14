@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-14T22:53:56.827676Z",
+  "updated_at": "2026-06-14T22:55:05.351284Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "Até 75% OFF nos cursos!",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwj-at-75-off-nos-cursos"
-    },
     {
       "title": "12% OFF EXTRA em todo o site!",
       "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
@@ -63,6 +57,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
       "reason": "duplicada_historico",
       "trace_id": "trace_pva-50-off-no-par-de-ingressos-pr"
+    },
+    {
+      "title": "50% OFF no par de ingressos - PE",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
     },
     {
       "title": "50% OFF no par de ingressos - RS",
