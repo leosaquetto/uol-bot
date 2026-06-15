@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 58497,
-  "run_duration_seconds": 58.5,
-  "avg_detail_ms_per_offer": 4875,
-  "generated_at": "2026-06-15T08:58:18.933Z",
+  "run_duration_ms": 115712,
+  "run_duration_seconds": 115.71,
+  "avg_detail_ms_per_offer": 9643,
+  "generated_at": "2026-06-15T09:10:25.749Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pwj-ate-75-off-nos-cursos",
-      "trace_id": "trace_pwj-ate-75-off-nos-cursos",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
-      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "id": "pwj-at-75-off-nos-cursos",
+      "trace_id": "trace_pwj-at-75-off-nos-cursos",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
+      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
       "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133668,
-      "detail_elapsed_ms": 3616,
-      "scraped_at": "2026-06-15T08:57:48.601Z"
+      "detail_html_length": 139067,
+      "detail_elapsed_ms": 14168,
+      "scraped_at": "2026-06-15T09:09:43.330Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130322,
-      "detail_elapsed_ms": 3798,
-      "scraped_at": "2026-06-15T08:57:52.446Z"
+      "detail_html_length": 131500,
+      "detail_elapsed_ms": 5992,
+      "scraped_at": "2026-06-15T09:09:49.324Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125886,
-      "detail_elapsed_ms": 2653,
-      "scraped_at": "2026-06-15T08:57:55.283Z"
+      "detail_html_length": 132112,
+      "detail_elapsed_ms": 5894,
+      "scraped_at": "2026-06-15T09:09:55.218Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130600,
-      "detail_elapsed_ms": 2438,
-      "scraped_at": "2026-06-15T08:57:57.722Z"
+      "detail_html_length": 130590,
+      "detail_elapsed_ms": 3007,
+      "scraped_at": "2026-06-15T09:09:58.225Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132633,
-      "detail_elapsed_ms": 2961,
-      "scraped_at": "2026-06-15T08:58:00.683Z"
+      "detail_html_length": 132709,
+      "detail_elapsed_ms": 2285,
+      "scraped_at": "2026-06-15T09:10:00.511Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131013,
-      "detail_elapsed_ms": 2156,
-      "scraped_at": "2026-06-15T08:58:02.839Z"
+      "detail_html_length": 132448,
+      "detail_elapsed_ms": 3455,
+      "scraped_at": "2026-06-15T09:10:03.967Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131349,
-      "detail_elapsed_ms": 2424,
-      "scraped_at": "2026-06-15T08:58:05.263Z"
+      "detail_html_length": 132508,
+      "detail_elapsed_ms": 2678,
+      "scraped_at": "2026-06-15T09:10:06.645Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132467,
-      "detail_elapsed_ms": 3108,
-      "scraped_at": "2026-06-15T08:58:08.371Z"
+      "detail_html_length": 132340,
+      "detail_elapsed_ms": 4717,
+      "scraped_at": "2026-06-15T09:10:11.362Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131253,
-      "detail_elapsed_ms": 2655,
-      "scraped_at": "2026-06-15T08:58:11.026Z"
+      "detail_html_length": 131263,
+      "detail_elapsed_ms": 3417,
+      "scraped_at": "2026-06-15T09:10:14.779Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131280,
-      "detail_elapsed_ms": 2462,
-      "scraped_at": "2026-06-15T08:58:13.488Z"
+      "detail_html_length": 132447,
+      "detail_elapsed_ms": 3085,
+      "scraped_at": "2026-06-15T09:10:17.867Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -281,8 +281,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 126041,
-      "detail_elapsed_ms": 2071,
-      "scraped_at": "2026-06-15T08:58:15.559Z"
+      "detail_elapsed_ms": 2655,
+      "scraped_at": "2026-06-15T09:10:20.523Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132345,
-      "detail_elapsed_ms": 2430,
-      "scraped_at": "2026-06-15T08:58:17.990Z"
+      "detail_html_length": 132365,
+      "detail_elapsed_ms": 4076,
+      "scraped_at": "2026-06-15T09:10:24.600Z"
     }
   ]
 }
