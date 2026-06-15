@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-06-15T13:47:26.528362Z",
+  "last_update": "2026-06-15T13:47:30.971061Z",
   "offers": [
     {
       "id": "pvH-2-ingressos-20-06-teatro-uol-sp",
@@ -471,7 +471,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5500?thread=5497",
       "sent_at": "2026-06-15T12:57:45.181375Z",
-      "sold_out_at": "10:46"
+      "sold_out_at": "10:46",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
