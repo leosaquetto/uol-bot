@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-06-15T15:27:32.681628Z",
+  "updated_at": "2026-06-15T15:28:48.268940Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 10,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 21/06 Tokio Marine Hall SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pw1-2-ingressos-21-06-tokio-marine-hall-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pw1-2-ingressos-21-06-tokio-marine-hall-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 20/06 Tokio Marine Hall SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pw0-2-ingressos-20-06-tokio-marine-hall-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pw0-2-ingressos-20-06-tokio-marine-hall-sp"
+    },
     {
       "title": "Seu álbum: 40% OFF + frete grátis",
       "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
