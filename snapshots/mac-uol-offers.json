@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 348443,
-  "run_duration_seconds": 348.44,
-  "avg_detail_ms_per_offer": 29037,
-  "generated_at": "2026-06-15T22:17:43.392Z",
+  "run_duration_ms": 66665,
+  "run_duration_seconds": 66.67,
+  "avg_detail_ms_per_offer": 5555,
+  "generated_at": "2026-06-15T22:43:01.071Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp",
       "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 15/06/2026 13:39 até 19/06/2026 19:30.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para a comédia de sucesso “O Marido da Minha Mulher” e prepare-se para uma noite repleta de risadas, confusões e reviravoltas inesperadas, no Teatro Itália, em São Paulo – SP. Data: 20 de junho de 2026, às 20h. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12185,
-      "scraped_at": "2026-06-15T22:15:26.062Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131370,
+      "detail_elapsed_ms": 2520,
+      "scraped_at": "2026-06-15T22:42:24.225Z"
     },
     {
       "id": "pw5-2-ingressos-26-06-teatro-itlia-sp",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132761,
-      "detail_elapsed_ms": 11055,
-      "scraped_at": "2026-06-15T22:15:49.377Z"
+      "detail_attempts": 1,
+      "detail_html_length": 126417,
+      "detail_elapsed_ms": 3204,
+      "scraped_at": "2026-06-15T22:42:27.431Z"
     },
     {
       "id": "pwz-seu-lbum-40-off-frete-grtis",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131650,
-      "detail_elapsed_ms": 8807,
-      "scraped_at": "2026-06-15T22:15:58.184Z"
+      "detail_html_length": 131659,
+      "detail_elapsed_ms": 1805,
+      "scraped_at": "2026-06-15T22:42:29.236Z"
     },
     {
       "id": "pwr-3-paulaner-500ml-1-copo-exclusivo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133891,
-      "detail_elapsed_ms": 9580,
-      "scraped_at": "2026-06-15T22:16:07.764Z"
+      "detail_html_length": 133871,
+      "detail_elapsed_ms": 2972,
+      "scraped_at": "2026-06-15T22:42:32.208Z"
     },
     {
       "id": "pwj-at-75-off-nos-cursos",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138902,
-      "detail_elapsed_ms": 12365,
-      "scraped_at": "2026-06-15T22:16:20.129Z"
+      "detail_html_length": 137988,
+      "detail_elapsed_ms": 3289,
+      "scraped_at": "2026-06-15T22:42:35.497Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131363,
-      "detail_elapsed_ms": 12445,
-      "scraped_at": "2026-06-15T22:16:32.574Z"
+      "detail_html_length": 131373,
+      "detail_elapsed_ms": 2684,
+      "scraped_at": "2026-06-15T22:42:38.181Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132289,
-      "detail_elapsed_ms": 9662,
-      "scraped_at": "2026-06-15T22:16:42.236Z"
+      "detail_html_length": 132280,
+      "detail_elapsed_ms": 5302,
+      "scraped_at": "2026-06-15T22:42:43.483Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131770,
-      "detail_elapsed_ms": 9050,
-      "scraped_at": "2026-06-15T22:16:51.286Z"
+      "detail_html_length": 131791,
+      "detail_elapsed_ms": 3770,
+      "scraped_at": "2026-06-15T22:42:47.253Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132536,
-      "detail_elapsed_ms": 11021,
-      "scraped_at": "2026-06-15T22:17:02.307Z"
+      "detail_html_length": 132321,
+      "detail_elapsed_ms": 5961,
+      "scraped_at": "2026-06-15T22:42:53.214Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132508,
-      "detail_elapsed_ms": 13111,
-      "scraped_at": "2026-06-15T22:17:27.706Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132529,
+      "detail_elapsed_ms": 2748,
+      "scraped_at": "2026-06-15T22:42:55.962Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132488,
-      "detail_elapsed_ms": 8878,
-      "scraped_at": "2026-06-15T22:17:36.584Z"
+      "detail_html_length": 132518,
+      "detail_elapsed_ms": 2798,
+      "scraped_at": "2026-06-15T22:42:58.760Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132453,
-      "detail_elapsed_ms": 5309,
-      "scraped_at": "2026-06-15T22:17:41.893Z"
+      "detail_html_length": 132493,
+      "detail_elapsed_ms": 2173,
+      "scraped_at": "2026-06-15T22:43:00.933Z"
     }
   ]
 }
