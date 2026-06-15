@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 222581,
-  "run_duration_seconds": 222.58,
-  "avg_detail_ms_per_offer": 18548,
-  "generated_at": "2026-06-15T06:29:29.426Z",
+  "run_duration_ms": 471762,
+  "run_duration_seconds": 471.76,
+  "avg_detail_ms_per_offer": 39314,
+  "generated_at": "2026-06-15T07:04:20.542Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
-      "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
-      "description": "Sobre o Parceiro: A Fundação Santo André (FSA) é uma instituição de ensino superior do ABC Paulista, com tradição na formação acadêmica e profissional, oferecendo cursos de graduação, pós-graduação e extensão em diversas áreas do conhecimento. Benefício: Até 75% OFF nos cursos! Regras: Para regatar o benefício entre em contato com a instituição (11 49793353) e encaminhe a declaração de vínculo com o Clube Ben. Válido para dependentes. Para emitir a declaração de vínculo com o Clube Ben, clique em \"Baixar Declaração\".",
+      "validity": "",
+      "description": "",
       "category": "Educação",
       "partner_name": "Fundação Santo André - FSA",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2264b2bd2f6304fd13fa769789a46158.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ff55061c5550c8beae88821dc954951.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 141331,
-      "detail_elapsed_ms": 16601,
-      "scraped_at": "2026-06-15T06:28:32.636Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12041,
+      "scraped_at": "2026-06-15T07:00:48.370Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
       "title": "12% OFF EXTRA em todo o site!",
       "preview_title": "12% OFF EXTRA em todo o site!",
-      "validity": "Benefício válido de 11/06/2026 10:24 até 31/12/2026 23:59.",
-      "description": "Sobre o Parceiro: A Morana é uma das maiores redes de acessórios femininos do Brasil, especializada em brincos, colares, pulseiras, anéis, bolsas e outros itens de moda. A marca acompanha as principais tendências do mercado, oferecendo produtos que combinam estilo, variedade e preço acessível para diferentes ocasiões e perfis de consumidoras. Com centenas de lojas espalhadas pelo país, a Morana se destaca por renovar constantemente suas coleções e proporcionar uma experiência de compra voltada para mulheres que buscam complementar seus looks com acessórios modernos e versáteis. Benefício: 12% OFF EXTRA em todo o site! Regras: Válido apenas para loja online. Não aplicável ao frete. Válido para todo o site. Cumulativo com promoções vigentes. Não cumulativo com outros cupons.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Morana",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/c05a1fd14745e8def54601b351d2aea9.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fe3110935a91c5cbd89d226ec840678c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fe3110935a91c5cbd89d226ec840678c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fe3110935a91c5cbd89d226ec840678c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130260,
-      "detail_elapsed_ms": 3284,
-      "scraped_at": "2026-06-15T06:28:36.096Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12079,
+      "scraped_at": "2026-06-15T07:01:14.169Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131095,
-      "detail_elapsed_ms": 2478,
-      "scraped_at": "2026-06-15T06:28:38.578Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132111,
+      "detail_elapsed_ms": 12624,
+      "scraped_at": "2026-06-15T07:01:39.326Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132044,
-      "detail_elapsed_ms": 17821,
-      "scraped_at": "2026-06-15T06:28:56.400Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131769,
+      "detail_elapsed_ms": 10817,
+      "scraped_at": "2026-06-15T07:02:02.960Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132773,
-      "detail_elapsed_ms": 4071,
-      "scraped_at": "2026-06-15T06:29:00.471Z"
+      "detail_html_length": 133879,
+      "detail_elapsed_ms": 13466,
+      "scraped_at": "2026-06-15T07:02:16.427Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131134,
-      "detail_elapsed_ms": 3544,
-      "scraped_at": "2026-06-15T06:29:04.015Z"
+      "detail_html_length": 132795,
+      "detail_elapsed_ms": 13315,
+      "scraped_at": "2026-06-15T07:02:31.482Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132491,
-      "detail_elapsed_ms": 3757,
-      "scraped_at": "2026-06-15T06:29:07.773Z"
+      "detail_html_length": 131778,
+      "detail_elapsed_ms": 54871,
+      "scraped_at": "2026-06-15T07:03:26.353Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131323,
-      "detail_elapsed_ms": 2569,
-      "scraped_at": "2026-06-15T06:29:10.342Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132467,
+      "detail_elapsed_ms": 10071,
+      "scraped_at": "2026-06-15T07:03:49.093Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131182,
-      "detail_elapsed_ms": 2946,
-      "scraped_at": "2026-06-15T06:29:13.288Z"
+      "detail_html_length": 132422,
+      "detail_elapsed_ms": 13583,
+      "scraped_at": "2026-06-15T07:04:02.676Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132443,
-      "detail_elapsed_ms": 5895,
-      "scraped_at": "2026-06-15T06:29:19.184Z"
+      "detail_html_length": 132291,
+      "detail_elapsed_ms": 4992,
+      "scraped_at": "2026-06-15T07:04:07.668Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130157,
-      "detail_elapsed_ms": 2878,
-      "scraped_at": "2026-06-15T06:29:22.063Z"
+      "detail_html_length": 131236,
+      "detail_elapsed_ms": 6572,
+      "scraped_at": "2026-06-15T07:04:14.240Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132349,
-      "detail_elapsed_ms": 6611,
-      "scraped_at": "2026-06-15T06:29:28.674Z"
+      "detail_html_length": 131195,
+      "detail_elapsed_ms": 5589,
+      "scraped_at": "2026-06-15T07:04:19.830Z"
     }
   ]
 }
