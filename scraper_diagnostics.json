@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-15T17:36:21.115295Z",
+  "updated_at": "2026-06-15T17:48:01.865325Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -53,12 +53,6 @@
       "trace_id": "trace_pvu-40-off-nos-pedidos-pelo-site-e-app"
     },
     {
-      "title": "2 ingressos: 09/08 BarraShopping - RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pvL-2-ingressos-09-08-barrashopping-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvl-2-ingressos-09-08-barrashopping-rj"
-    },
-    {
       "title": "50% OFF no par de ingressos - MG",
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvC-50-off-no-par-de-ingressos-mg",
       "reason": "duplicada_historico",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
+    },
+    {
+      "title": "50% OFF no par de ingressos - CE",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce"
     }
   ]
 }
