@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-06-15T14:25:25.598882Z",
+  "updated_at": "2026-06-15T14:39:39.520132Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,11 +11,23 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 11,
-    "duplicada_latest": 0,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Seu álbum: 40% OFF + frete grátis",
+      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pwz-seu-lbum-40-off-frete-grtis"
+    },
+    {
+      "title": "Até 75% OFF nos cursos!",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwj-at-75-off-nos-cursos"
+    },
     {
       "title": "12% OFF EXTRA em todo o site!",
       "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
@@ -75,12 +87,6 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce"
-    },
-    {
-      "title": "50% OFF no par de ingressos - DF",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv6-50-off-no-par-de-ingressos-df",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv6-50-off-no-par-de-ingressos-df"
     }
   ]
 }
