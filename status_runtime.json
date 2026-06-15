@@ -22,21 +22,21 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "15/06/2026 às 12:16",
-    "last_finished_at": "15/06/2026 às 12:16",
-    "last_success_at": "15/06/2026 às 12:16",
-    "status": "sem_novidade",
-    "summary": "nenhuma enviada; descartadas 1 (reenvio_bloqueado_7d=1, validade_expirada=0, inicio_validade_antigo_sem_fim=0, scraped_at_antigo=0, duplicadas=0, sem_scraped_at_em_backlog=0)",
-    "processed": 0,
-    "sent": 0,
+    "last_started_at": "15/06/2026 às 12:27",
+    "last_finished_at": "15/06/2026 às 12:27",
+    "last_success_at": "15/06/2026 às 12:27",
+    "status": "ok",
+    "summary": "2 enviada(s) com sucesso",
+    "processed": 2,
+    "sent": 2,
     "failed": 0,
     "pending_count": 0,
-    "last_error": "consumer_sem_envio_com_pending: pending=1 descartadas=1 falhas_telegram=0"
+    "last_error": ""
   },
   "global": {
-    "last_offer_title": "Seu álbum: 40% OFF + frete grátis",
-    "last_offer_at": "15/06/2026 às 09:57",
-    "last_offer_id": "pwz-seu-album-40-off-frete-gratis",
-    "last_offer_link": "https://t.me/c/3723320790/1618"
+    "last_offer_title": "2 INGRESSOS: 20/06 Tokio Marine Hall SP",
+    "last_offer_at": "15/06/2026 às 12:27",
+    "last_offer_id": "pw0-2-ingressos-20-06-tokio-marine-hall-sp",
+    "last_offer_link": "https://t.me/c/3723320790/1620"
   }
 }
