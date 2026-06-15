@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 117944,
-  "run_duration_seconds": 117.94,
-  "avg_detail_ms_per_offer": 9829,
-  "generated_at": "2026-06-15T21:46:16.448Z",
+  "run_duration_ms": 265800,
+  "run_duration_seconds": 265.8,
+  "avg_detail_ms_per_offer": 22150,
+  "generated_at": "2026-06-15T22:01:22.633Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp",
       "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
-      "validity": "Benefício válido de 15/06/2026 13:39 até 19/06/2026 19:30.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para a comédia de sucesso “O Marido da Minha Mulher” e prepare-se para uma noite repleta de risadas, confusões e reviravoltas inesperadas, no Teatro Itália, em São Paulo – SP. Data: 20 de junho de 2026, às 20h. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132616,
-      "detail_elapsed_ms": 6080,
-      "scraped_at": "2026-06-15T21:45:19.105Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12025,
+      "scraped_at": "2026-06-15T21:59:09.427Z"
     },
     {
       "id": "pw5-2-ingressos-26-06-teatro-itlia-sp",
@@ -63,34 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132682,
-      "detail_elapsed_ms": 2263,
-      "scraped_at": "2026-06-15T21:45:21.370Z"
-    },
-    {
-      "id": "pwz-seu-lbum-40-off-frete-grtis",
-      "trace_id": "trace_pwz-seu-lbum-40-off-frete-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
-      "title": "Seu álbum: 40% OFF + frete grátis",
-      "preview_title": "Seu álbum: 40% OFF + frete grátis",
-      "validity": "Benefício válido de 15/06/2026 09:45 até 31/07/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: 40% OFF no Álbum de Figurinhas Personalizado da FotoRegistro + Frete Grátis. Regras: Oferta válida para 1 Álbum de Figurinhas - Tamanho 21x21cm com capa flexível - Figurinhas no tamanho 6,5 x 6,5 cm - Acabamento em grampo e verniz - Com espaço para 20 fotos - Frete Incluso na opção de entrega Econômica - Validade do cupom até 31/07/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
-      "category": "Compras e Presentes",
-      "partner_name": "Foto Registro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6dbfb532be1108ed1bed050caba66e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6dbfb532be1108ed1bed050caba66e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6dbfb532be1108ed1bed050caba66e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131649,
-      "detail_elapsed_ms": 2231,
-      "scraped_at": "2026-06-15T21:45:23.602Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132768,
+      "detail_elapsed_ms": 9936,
+      "scraped_at": "2026-06-15T21:59:31.740Z"
     },
     {
       "id": "pwr-3-paulaner-500ml-1-copo-exclusivo",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133881,
-      "detail_elapsed_ms": 2431,
-      "scraped_at": "2026-06-15T21:45:26.033Z"
+      "detail_html_length": 133732,
+      "detail_elapsed_ms": 8836,
+      "scraped_at": "2026-06-15T21:59:40.576Z"
     },
     {
       "id": "pwj-at-75-off-nos-cursos",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 141512,
-      "detail_elapsed_ms": 2986,
-      "scraped_at": "2026-06-15T21:45:29.019Z"
+      "detail_html_length": 139076,
+      "detail_elapsed_ms": 11507,
+      "scraped_at": "2026-06-15T21:59:52.083Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131521,
-      "detail_elapsed_ms": 3396,
-      "scraped_at": "2026-06-15T21:45:32.415Z"
+      "detail_html_length": 131511,
+      "detail_elapsed_ms": 9207,
+      "scraped_at": "2026-06-15T22:00:01.290Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132270,
-      "detail_elapsed_ms": 2063,
-      "scraped_at": "2026-06-15T21:45:34.478Z"
+      "detail_html_length": 132132,
+      "detail_elapsed_ms": 13289,
+      "scraped_at": "2026-06-15T22:00:14.579Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132071,
-      "detail_elapsed_ms": 11715,
-      "scraped_at": "2026-06-15T21:45:46.193Z"
+      "detail_html_length": 132070,
+      "detail_elapsed_ms": 11838,
+      "scraped_at": "2026-06-15T22:00:26.417Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -231,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132546,
-      "detail_elapsed_ms": 8421,
-      "scraped_at": "2026-06-15T21:46:07.256Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132825,
+      "detail_elapsed_ms": 13430,
+      "scraped_at": "2026-06-15T22:00:39.848Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132361,
-      "detail_elapsed_ms": 4486,
-      "scraped_at": "2026-06-15T21:46:11.742Z"
+      "detail_html_length": 132517,
+      "detail_elapsed_ms": 11738,
+      "scraped_at": "2026-06-15T22:00:51.586Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132529,
-      "detail_elapsed_ms": 2371,
-      "scraped_at": "2026-06-15T21:46:14.113Z"
+      "detail_html_length": 132508,
+      "detail_elapsed_ms": 12894,
+      "scraped_at": "2026-06-15T22:01:04.480Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132434,
-      "detail_elapsed_ms": 2103,
-      "scraped_at": "2026-06-15T21:46:16.216Z"
+      "detail_html_length": 132283,
+      "detail_elapsed_ms": 10894,
+      "scraped_at": "2026-06-15T22:01:15.375Z"
+    },
+    {
+      "id": "pv8-50-off-no-par-de-ingressos-rs",
+      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "title": "50% OFF no par de ingressos - RS",
+      "preview_title": "50% OFF no par de ingressos - RS",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 26/09/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 26 de setembro, no Estádio Beira-Rio, em Porto Alegre/RS. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores cadeira inferior, pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 127725,
+      "detail_elapsed_ms": 6481,
+      "scraped_at": "2026-06-15T22:01:21.858Z"
     }
   ]
 }
