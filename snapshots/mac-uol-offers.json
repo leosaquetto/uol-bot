@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 124126,
-  "run_duration_seconds": 124.13,
-  "avg_detail_ms_per_offer": 10344,
-  "generated_at": "2026-06-15T13:58:33.253Z",
+  "run_duration_ms": 115319,
+  "run_duration_seconds": 115.32,
+  "avg_detail_ms_per_offer": 9610,
+  "generated_at": "2026-06-15T14:10:44.113Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139072,
-      "detail_elapsed_ms": 12405,
-      "scraped_at": "2026-06-15T13:57:13.280Z"
+      "detail_html_length": 134861,
+      "detail_elapsed_ms": 12901,
+      "scraped_at": "2026-06-15T14:10:01.314Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131502,
-      "detail_elapsed_ms": 5332,
-      "scraped_at": "2026-06-15T13:57:18.613Z"
+      "detail_html_length": 125118,
+      "detail_elapsed_ms": 3130,
+      "scraped_at": "2026-06-15T14:10:04.449Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131101,
-      "detail_elapsed_ms": 2565,
-      "scraped_at": "2026-06-15T13:57:21.178Z"
+      "detail_html_length": 132251,
+      "detail_elapsed_ms": 4204,
+      "scraped_at": "2026-06-15T14:10:08.653Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130602,
-      "detail_elapsed_ms": 2952,
-      "scraped_at": "2026-06-15T13:57:24.130Z"
+      "detail_html_length": 131761,
+      "detail_elapsed_ms": 2977,
+      "scraped_at": "2026-06-15T14:10:11.630Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133859,
-      "detail_elapsed_ms": 2678,
-      "scraped_at": "2026-06-15T13:57:26.808Z"
+      "detail_html_length": 133813,
+      "detail_elapsed_ms": 5517,
+      "scraped_at": "2026-06-15T14:10:17.147Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126164,
-      "detail_elapsed_ms": 2722,
-      "scraped_at": "2026-06-15T13:57:29.531Z"
+      "detail_html_length": 132516,
+      "detail_elapsed_ms": 9006,
+      "scraped_at": "2026-06-15T14:10:26.153Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -185,8 +185,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132489,
-      "detail_elapsed_ms": 3118,
-      "scraped_at": "2026-06-15T13:57:32.650Z"
+      "detail_elapsed_ms": 3184,
+      "scraped_at": "2026-06-15T14:10:29.337Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132469,
-      "detail_elapsed_ms": 2738,
-      "scraped_at": "2026-06-15T13:57:35.388Z"
+      "detail_html_length": 132478,
+      "detail_elapsed_ms": 2717,
+      "scraped_at": "2026-06-15T14:10:32.054Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125912,
-      "detail_elapsed_ms": 3040,
-      "scraped_at": "2026-06-15T13:57:38.428Z"
+      "detail_html_length": 132423,
+      "detail_elapsed_ms": 2540,
+      "scraped_at": "2026-06-15T14:10:34.594Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132440,
-      "detail_elapsed_ms": 10076,
-      "scraped_at": "2026-06-15T13:58:01.063Z"
+      "detail_attempts": 1,
+      "detail_html_length": 126076,
+      "detail_elapsed_ms": 3083,
+      "scraped_at": "2026-06-15T14:10:37.678Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
       "title": "50% OFF no par de ingressos - CE",
       "preview_title": "50% OFF no par de ingressos - CE",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 25/07/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 22 de agosto, no Centro de Formação Olímpica, em Fortaleza/CE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores arquibancada e pista premium. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce\" is interrupted by another navigation to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce\" Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 11400,
-      "scraped_at": "2026-06-15T13:58:24.818Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131237,
+      "detail_elapsed_ms": 3079,
+      "scraped_at": "2026-06-15T14:10:40.757Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -303,10 +303,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132120,
-      "detail_elapsed_ms": 6022,
-      "scraped_at": "2026-06-15T13:58:31.783Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131120,
+      "detail_elapsed_ms": 2917,
+      "scraped_at": "2026-06-15T14:10:43.674Z"
     }
   ]
 }
