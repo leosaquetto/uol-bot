@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-06-15T20:38:00.803463Z",
+  "last_update": "2026-06-15T20:38:06.031417Z",
   "offers": [
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -449,7 +449,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5524?thread=5521",
       "sent_at": "2026-06-15T19:57:31.095672Z",
-      "sold_out_at": "17:37"
+      "sold_out_at": "17:37",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pw2-2-ingressos-20-06-teatro-itlia-sp",
@@ -473,7 +474,8 @@
       "comment_status": "sent",
       "comment_link": "https://t.me/c/3802235343/5528?thread=5525",
       "sent_at": "2026-06-15T19:57:42.673264Z",
-      "sold_out_at": "17:37"
+      "sold_out_at": "17:37",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
