@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-15T15:28:48.268940Z",
+  "updated_at": "2026-06-15T15:40:22.964011Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pw1-2-ingressos-21-06-tokio-marine-hall-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pw1-2-ingressos-21-06-tokio-marine-hall-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 20/06 Tokio Marine Hall SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw0-2-ingressos-20-06-tokio-marine-hall-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pw0-2-ingressos-20-06-tokio-marine-hall-sp"
     },
     {
       "title": "Seu álbum: 40% OFF + frete grátis",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
+    },
+    {
+      "title": "50% OFF no par de ingressos - RS",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
     }
   ]
 }
