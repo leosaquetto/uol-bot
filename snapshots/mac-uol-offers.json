@@ -6,49 +6,49 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 256236,
-  "run_duration_seconds": 256.24,
-  "avg_detail_ms_per_offer": 21353,
-  "generated_at": "2026-06-15T17:06:58.987Z",
+  "run_duration_ms": 265375,
+  "run_duration_seconds": 265.38,
+  "avg_detail_ms_per_offer": 22115,
+  "generated_at": "2026-06-15T17:22:49.923Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pwz-seu-album-40-off-frete-gratis",
-      "trace_id": "trace_pwz-seu-album-40-off-frete-gratis",
-      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
+      "id": "pwz-seu-lbum-40-off-frete-grtis",
+      "trace_id": "trace_pwz-seu-lbum-40-off-frete-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
       "title": "Seu álbum: 40% OFF + frete grátis",
       "preview_title": "Seu álbum: 40% OFF + frete grátis",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 15/06/2026 09:45 até 31/07/2026 23:59.",
+      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: 40% OFF no Álbum de Figurinhas Personalizado da FotoRegistro + Frete Grátis. Regras: Oferta válida para 1 Álbum de Figurinhas - Tamanho 21x21cm com capa flexível - Figurinhas no tamanho 6,5 x 6,5 cm - Acabamento em grampo e verniz - Com espaço para 20 fotos - Frete Incluso na opção de entrega Econômica - Validade do cupom até 31/07/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6dbfb532be1108ed1bed050caba66e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6dbfb532be1108ed1bed050caba66e.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12071,
-      "scraped_at": "2026-06-15T17:04:38.687Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6dbfb532be1108ed1bed050caba66e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131741,
+      "detail_elapsed_ms": 13821,
+      "scraped_at": "2026-06-15T17:21:02.698Z"
     },
     {
-      "id": "pwj-ate-75-off-nos-cursos",
-      "trace_id": "trace_pwj-ate-75-off-nos-cursos",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
-      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "id": "pwj-at-75-off-nos-cursos",
+      "trace_id": "trace_pwj-at-75-off-nos-cursos",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
+      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
       "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133423,
-      "detail_elapsed_ms": 15778,
-      "scraped_at": "2026-06-15T17:05:07.183Z"
+      "detail_attempts": 1,
+      "detail_html_length": 138853,
+      "detail_elapsed_ms": 8857,
+      "scraped_at": "2026-06-15T17:21:11.557Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125119,
-      "detail_elapsed_ms": 7834,
-      "scraped_at": "2026-06-15T17:05:15.017Z"
+      "detail_html_length": 130322,
+      "detail_elapsed_ms": 4227,
+      "scraped_at": "2026-06-15T17:21:15.784Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132262,
-      "detail_elapsed_ms": 8286,
-      "scraped_at": "2026-06-15T17:05:23.304Z"
+      "detail_html_length": 132184,
+      "detail_elapsed_ms": 5379,
+      "scraped_at": "2026-06-15T17:21:21.163Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131761,
-      "detail_elapsed_ms": 15811,
-      "scraped_at": "2026-06-15T17:05:39.115Z"
+      "detail_html_length": 131750,
+      "detail_elapsed_ms": 6516,
+      "scraped_at": "2026-06-15T17:21:27.679Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133861,
-      "detail_elapsed_ms": 10602,
-      "scraped_at": "2026-06-15T17:05:49.717Z"
+      "detail_html_length": 132562,
+      "detail_elapsed_ms": 3618,
+      "scraped_at": "2026-06-15T17:21:31.297Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132527,
-      "detail_elapsed_ms": 5372,
-      "scraped_at": "2026-06-15T17:05:55.089Z"
+      "detail_html_length": 132378,
+      "detail_elapsed_ms": 9864,
+      "scraped_at": "2026-06-15T17:21:41.161Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131253,
-      "detail_elapsed_ms": 2619,
-      "scraped_at": "2026-06-15T17:05:57.709Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132498,
+      "detail_elapsed_ms": 12010,
+      "scraped_at": "2026-06-15T17:22:11.296Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -233,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132469,
-      "detail_elapsed_ms": 8703,
-      "scraped_at": "2026-06-15T17:06:06.412Z"
+      "detail_elapsed_ms": 11577,
+      "scraped_at": "2026-06-15T17:22:22.873Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131189,
-      "detail_elapsed_ms": 2735,
-      "scraped_at": "2026-06-15T17:06:09.152Z"
+      "detail_html_length": 132423,
+      "detail_elapsed_ms": 7756,
+      "scraped_at": "2026-06-15T17:22:30.629Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131282,
-      "detail_elapsed_ms": 7840,
-      "scraped_at": "2026-06-15T17:06:16.994Z"
+      "detail_html_length": 132439,
+      "detail_elapsed_ms": 9621,
+      "scraped_at": "2026-06-15T17:22:40.251Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
       "title": "50% OFF no par de ingressos - CE",
       "preview_title": "50% OFF no par de ingressos - CE",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 25/07/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 22 de agosto, no Centro de Formação Olímpica, em Fortaleza/CE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores arquibancada e pista premium. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
       "category": "Entretenimento e Viagens",
       "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 16484,
-      "scraped_at": "2026-06-15T17:06:48.932Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132435,
+      "detail_elapsed_ms": 8657,
+      "scraped_at": "2026-06-15T17:22:48.908Z"
     }
   ]
 }
