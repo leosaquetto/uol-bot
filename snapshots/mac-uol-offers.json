@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 111957,
-  "run_duration_seconds": 111.96,
-  "avg_detail_ms_per_offer": 9330,
-  "generated_at": "2026-06-15T09:58:49.367Z",
+  "run_duration_ms": 135557,
+  "run_duration_seconds": 135.56,
+  "avg_detail_ms_per_offer": 11296,
+  "generated_at": "2026-06-15T10:11:14.176Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pwj-at-75-off-nos-cursos",
-      "trace_id": "trace_pwj-at-75-off-nos-cursos",
-      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
-      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-at-75-off-nos-cursos",
+      "id": "pwj-ate-75-off-nos-cursos",
+      "trace_id": "trace_pwj-ate-75-off-nos-cursos",
+      "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
+      "original_link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
       "title": "Até 75% OFF nos cursos!",
       "preview_title": "Até 75% OFF nos cursos!",
       "validity": "Benefício válido de 11/06/2026 11:41 até 31/12/2028 23:59.",
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 138713,
-      "detail_elapsed_ms": 10320,
-      "scraped_at": "2026-06-15T09:58:16.126Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133818,
+      "detail_elapsed_ms": 4758,
+      "scraped_at": "2026-06-15T10:10:30.859Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130250,
-      "detail_elapsed_ms": 2960,
-      "scraped_at": "2026-06-15T09:58:19.089Z"
+      "detail_html_length": 130266,
+      "detail_elapsed_ms": 4471,
+      "scraped_at": "2026-06-15T10:10:35.334Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131105,
-      "detail_elapsed_ms": 4375,
-      "scraped_at": "2026-06-15T09:58:23.465Z"
+      "detail_html_length": 132261,
+      "detail_elapsed_ms": 6802,
+      "scraped_at": "2026-06-15T10:10:42.136Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125401,
-      "detail_elapsed_ms": 2880,
-      "scraped_at": "2026-06-15T09:58:26.345Z"
+      "detail_html_length": 130515,
+      "detail_elapsed_ms": 2633,
+      "scraped_at": "2026-06-15T10:10:44.769Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133874,
-      "detail_elapsed_ms": 2530,
-      "scraped_at": "2026-06-15T09:58:28.875Z"
+      "detail_html_length": 132701,
+      "detail_elapsed_ms": 3216,
+      "scraped_at": "2026-06-15T10:10:47.985Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132521,
-      "detail_elapsed_ms": 2992,
-      "scraped_at": "2026-06-15T09:58:31.867Z"
+      "detail_html_length": 131291,
+      "detail_elapsed_ms": 2751,
+      "scraped_at": "2026-06-15T10:10:50.736Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130989,
-      "detail_elapsed_ms": 2716,
-      "scraped_at": "2026-06-15T09:58:34.583Z"
+      "detail_html_length": 132499,
+      "detail_elapsed_ms": 4288,
+      "scraped_at": "2026-06-15T10:10:55.024Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126120,
-      "detail_elapsed_ms": 2435,
-      "scraped_at": "2026-06-15T09:58:37.018Z"
+      "detail_html_length": 132468,
+      "detail_elapsed_ms": 3503,
+      "scraped_at": "2026-06-15T10:10:58.527Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131202,
-      "detail_elapsed_ms": 3089,
-      "scraped_at": "2026-06-15T09:58:40.108Z"
+      "detail_html_length": 131590,
+      "detail_elapsed_ms": 3627,
+      "scraped_at": "2026-06-15T10:11:02.154Z"
     },
     {
       "id": "pv8-50-off-no-par-de-ingressos-rs",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130941,
-      "detail_elapsed_ms": 3507,
-      "scraped_at": "2026-06-15T09:58:43.615Z"
+      "detail_html_length": 132291,
+      "detail_elapsed_ms": 3894,
+      "scraped_at": "2026-06-15T10:11:06.048Z"
     },
     {
       "id": "pv7-50-off-no-par-de-ingressos-ce",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132399,
-      "detail_elapsed_ms": 2904,
-      "scraped_at": "2026-06-15T09:58:46.519Z"
+      "detail_html_length": 126043,
+      "detail_elapsed_ms": 3693,
+      "scraped_at": "2026-06-15T10:11:09.742Z"
     },
     {
       "id": "pv6-50-off-no-par-de-ingressos-df",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131133,
-      "detail_elapsed_ms": 2484,
-      "scraped_at": "2026-06-15T09:58:49.003Z"
+      "detail_html_length": 132355,
+      "detail_elapsed_ms": 3576,
+      "scraped_at": "2026-06-15T10:11:13.318Z"
     }
   ]
 }
