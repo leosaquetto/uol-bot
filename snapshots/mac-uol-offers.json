@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 117270,
-  "run_duration_seconds": 117.27,
-  "avg_detail_ms_per_offer": 9773,
-  "generated_at": "2026-06-15T19:55:59.119Z",
+  "run_duration_ms": 199511,
+  "run_duration_seconds": 199.51,
+  "avg_detail_ms_per_offer": 16626,
+  "generated_at": "2026-06-15T20:09:39.814Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp",
       "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
-      "validity": "Benefício válido de 15/06/2026 13:39 até 25/06/2026 19:30.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para a comédia de sucesso “O Marido da Minha Mulher” e prepare-se para uma noite repleta de risadas, confusões e reviravoltas inesperadas, no Teatro Itália, em São Paulo – SP. Data: 20 de junho de 2026, às 20h. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae9fd64cd5a6475f4516d2c685c66ea2.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132592,
-      "detail_elapsed_ms": 8722,
-      "scraped_at": "2026-06-15T19:55:05.788Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 13272,
+      "scraped_at": "2026-06-15T20:08:15.847Z"
     },
     {
       "id": "pw5-2-ingressos-26-06-teatro-itlia-sp",
@@ -63,58 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131531,
-      "detail_elapsed_ms": 2804,
-      "scraped_at": "2026-06-15T19:55:08.593Z"
-    },
-    {
-      "id": "pw3-2-ingressos-27-06-teatro-itlia-sp",
-      "trace_id": "trace_pw3-2-ingressos-27-06-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw3-2-ingressos-27-06-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pw3-2-ingressos-27-06-teatro-itlia-sp",
-      "title": "2 INGRESSOS: 27/06 Teatro Itália - SP",
-      "preview_title": "2 INGRESSOS: 27/06 Teatro Itália - SP",
-      "validity": "Benefício válido de 15/06/2026 13:16 até 26/06/2026 19:30.",
-      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para “Katharine – O Estranho Caso do Dr. Jekyll e do Sr. Hyde” e mergulhe em um drama psicológico intenso que explora os limites da natureza humana, no Teatro Itália, em São Paulo. Data: 27 de junho, às 23h. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a30265b5edb6_6a30251b79da7_0b110c0350aed3a7cc77276a62c8bc22.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a30265b5edb6_6a30251b79da7_0b110c0350aed3a7cc77276a62c8bc22.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a30265b5edb6_6a30251b79da7_0b110c0350aed3a7cc77276a62c8bc22.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132816,
-      "detail_elapsed_ms": 2479,
-      "scraped_at": "2026-06-15T19:55:11.072Z"
-    },
-    {
-      "id": "pw2-2-ingressos-20-06-teatro-itlia-sp",
-      "trace_id": "trace_pw2-2-ingressos-20-06-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw2-2-ingressos-20-06-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pw2-2-ingressos-20-06-teatro-itlia-sp",
-      "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
-      "preview_title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
-      "validity": "Benefício válido de 15/06/2026 13:16 até 19/06/2026 19:30.",
-      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para “Katharine – O Estranho Caso do Dr. Jekyll e do Sr. Hyde” e mergulhe em um drama psicológico intenso que explora os limites da natureza humana, no Teatro Itália, em São Paulo. Data: 20 de junho, às 23h. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a30251b79da7_0b110c0350aed3a7cc77276a62c8bc22.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a30251b79da7_0b110c0350aed3a7cc77276a62c8bc22.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a30251b79da7_0b110c0350aed3a7cc77276a62c8bc22.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132649,
-      "detail_elapsed_ms": 11052,
-      "scraped_at": "2026-06-15T19:55:22.124Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131512,
+      "detail_elapsed_ms": 6985,
+      "scraped_at": "2026-06-15T20:08:35.502Z"
     },
     {
       "id": "pwz-seu-lbum-40-off-frete-grtis",
@@ -135,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131647,
-      "detail_elapsed_ms": 5191,
-      "scraped_at": "2026-06-15T19:55:40.411Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131649,
+      "detail_elapsed_ms": 7979,
+      "scraped_at": "2026-06-15T20:08:43.481Z"
     },
     {
       "id": "pwr-3-paulaner-500ml-1-copo-exclusivo",
@@ -160,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133869,
-      "detail_elapsed_ms": 2465,
-      "scraped_at": "2026-06-15T19:55:42.876Z"
+      "detail_html_length": 133712,
+      "detail_elapsed_ms": 7556,
+      "scraped_at": "2026-06-15T20:08:51.037Z"
     },
     {
       "id": "pwj-at-75-off-nos-cursos",
@@ -184,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132867,
-      "detail_elapsed_ms": 2419,
-      "scraped_at": "2026-06-15T19:55:45.295Z"
+      "detail_html_length": 134919,
+      "detail_elapsed_ms": 9197,
+      "scraped_at": "2026-06-15T20:09:00.234Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -208,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131509,
-      "detail_elapsed_ms": 2374,
-      "scraped_at": "2026-06-15T19:55:47.669Z"
+      "detail_html_length": 131500,
+      "detail_elapsed_ms": 7589,
+      "scraped_at": "2026-06-15T20:09:07.823Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -232,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132277,
-      "detail_elapsed_ms": 3301,
-      "scraped_at": "2026-06-15T19:55:50.970Z"
+      "detail_html_length": 132746,
+      "detail_elapsed_ms": 6065,
+      "scraped_at": "2026-06-15T20:09:13.888Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -256,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131777,
-      "detail_elapsed_ms": 2159,
-      "scraped_at": "2026-06-15T19:55:53.129Z"
+      "detail_html_length": 131789,
+      "detail_elapsed_ms": 10849,
+      "scraped_at": "2026-06-15T20:09:24.738Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -280,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132564,
-      "detail_elapsed_ms": 2056,
-      "scraped_at": "2026-06-15T19:55:55.185Z"
+      "detail_html_length": 132515,
+      "detail_elapsed_ms": 3184,
+      "scraped_at": "2026-06-15T20:09:27.922Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -304,9 +256,57 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132516,
-      "detail_elapsed_ms": 2959,
-      "scraped_at": "2026-06-15T19:55:58.144Z"
+      "detail_html_length": 132497,
+      "detail_elapsed_ms": 4246,
+      "scraped_at": "2026-06-15T20:09:32.168Z"
+    },
+    {
+      "id": "pva-50-off-no-par-de-ingressos-pr",
+      "trace_id": "trace_pva-50-off-no-par-de-ingressos-pr",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
+      "title": "50% OFF no par de ingressos - PR",
+      "preview_title": "50% OFF no par de ingressos - PR",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 10/10/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 10 de outubro, na Pedreira Paulo Leminski, em Curitiba/PR. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores pista e premium pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2317b2ad5e8_6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 126114,
+      "detail_elapsed_ms": 4489,
+      "scraped_at": "2026-06-15T20:09:36.657Z"
+    },
+    {
+      "id": "pv9-50-off-no-par-de-ingressos-pe",
+      "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
+      "title": "50% OFF no par de ingressos - PE",
+      "preview_title": "50% OFF no par de ingressos - PE",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 08/08/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 08 de agosto, no Classic Hall, em Recife/PE. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas no setor frontstage. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2316d0e9c1c_6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131263,
+      "detail_elapsed_ms": 2626,
+      "scraped_at": "2026-06-15T20:09:39.283Z"
     }
   ]
 }
