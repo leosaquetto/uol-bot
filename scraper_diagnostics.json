@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-15T19:45:29.720884Z",
+  "updated_at": "2026-06-15T19:56:53.107849Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 6,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -57,30 +57,6 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvB-50-off-no-par-de-ingressos-sc",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvb-50-off-no-par-de-ingressos-sc"
-    },
-    {
-      "title": "50% OFF no par de ingressos - PR",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pva-50-off-no-par-de-ingressos-pr"
-    },
-    {
-      "title": "50% OFF no par de ingressos - PE",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
-    },
-    {
-      "title": "50% OFF no par de ingressos - RS",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
-    },
-    {
-      "title": "50% OFF no par de ingressos - CE",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv7-50-off-no-par-de-ingressos-ce",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv7-50-off-no-par-de-ingressos-ce"
     }
   ]
 }
