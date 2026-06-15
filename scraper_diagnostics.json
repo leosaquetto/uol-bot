@@ -1,21 +1,45 @@
 {
-  "updated_at": "2026-06-15T19:56:53.107849Z",
+  "updated_at": "2026-06-15T19:58:37.225505Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 5,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 10,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pw6-2-ingressos-20-06-teatro-itlia-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 26/06 Teatro Itália - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pw5-2-ingressos-26-06-teatro-itlia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pw5-2-ingressos-26-06-teatro-itlia-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 27/06 Teatro Itália - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pw3-2-ingressos-27-06-teatro-itlia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pw3-2-ingressos-27-06-teatro-itlia-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pw2-2-ingressos-20-06-teatro-itlia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pw2-2-ingressos-20-06-teatro-itlia-sp"
+    },
     {
       "title": "Seu álbum: 40% OFF + frete grátis",
       "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
