@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-15T20:05:49.358463Z",
+  "updated_at": "2026-06-15T20:10:25.588926Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -27,18 +27,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pw5-2-ingressos-26-06-teatro-itlia-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pw5-2-ingressos-26-06-teatro-itlia-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 27/06 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw3-2-ingressos-27-06-teatro-itlia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pw3-2-ingressos-27-06-teatro-itlia-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw2-2-ingressos-20-06-teatro-itlia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pw2-2-ingressos-20-06-teatro-itlia-sp"
     },
     {
       "title": "Seu álbum: 40% OFF + frete grátis",
@@ -81,6 +69,18 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvB-50-off-no-par-de-ingressos-sc",
       "reason": "duplicada_historico",
       "trace_id": "trace_pvb-50-off-no-par-de-ingressos-sc"
+    },
+    {
+      "title": "50% OFF no par de ingressos - PR",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pva-50-off-no-par-de-ingressos-pr"
+    },
+    {
+      "title": "50% OFF no par de ingressos - PE",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
     }
   ]
 }
