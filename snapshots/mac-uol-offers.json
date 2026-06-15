@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 92073,
-  "run_duration_seconds": 92.07,
-  "avg_detail_ms_per_offer": 7673,
-  "generated_at": "2026-06-15T15:26:31.734Z",
+  "run_duration_ms": 158148,
+  "run_duration_seconds": 158.15,
+  "avg_detail_ms_per_offer": 13179,
+  "generated_at": "2026-06-15T15:39:24.049Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,46 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pw1-2-ingressos-21-06-tokio-marine-hall-sp",
       "title": "2 INGRESSOS: 21/06 Tokio Marine Hall SP",
       "preview_title": "2 INGRESSOS: 21/06 Tokio Marine Hall SP",
-      "validity": "Benefício válido de 15/06/2026 11:52 até 20/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para curtir Rodrigo Teaser – Tributo ao Rei do Pop, um show imperdível que homenageia Michael Jackson com música, coreografias marcantes e uma produção de alto impacto no Tokio Marine Hall, em São Paulo. Data: 21 de junho de 2026, às 22h. Local: Tokio Marine Hall - R. Bragança Paulista 1281, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d37ad082f1d138d440686da16bb6e6cc.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d37ad082f1d138d440686da16bb6e6cc.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d37ad082f1d138d440686da16bb6e6cc.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pw1-2-ingressos-21-06-tokio-marine-hall-sp\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
-      "detail_html_length": 126487,
-      "detail_elapsed_ms": 4372,
-      "scraped_at": "2026-06-15T15:26:00.842Z"
-    },
-    {
-      "id": "pw0-2-ingressos-20-06-tokio-marine-hall-sp",
-      "trace_id": "trace_pw0-2-ingressos-20-06-tokio-marine-hall-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw0-2-ingressos-20-06-tokio-marine-hall-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pw0-2-ingressos-20-06-tokio-marine-hall-sp",
-      "title": "2 INGRESSOS: 20/06 Tokio Marine Hall SP",
-      "preview_title": "2 INGRESSOS: 20/06 Tokio Marine Hall SP",
-      "validity": "Benefício válido de 15/06/2026 11:52 até 19/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para curtir Rodrigo Teaser – Tributo ao Rei do Pop, um show imperdível que homenageia Michael Jackson com música, coreografias marcantes e uma produção de alto impacto no Tokio Marine Hall, em São Paulo. Data: 20 de junho de 2026, às 22h. Local: Tokio Marine Hall - R. Bragança Paulista 1281, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4cb6c6762775c234d281c4d69f5d022e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4cb6c6762775c234d281c4d69f5d022e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4cb6c6762775c234d281c4d69f5d022e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132839,
-      "detail_elapsed_ms": 2490,
-      "scraped_at": "2026-06-15T15:26:03.333Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12029,
+      "scraped_at": "2026-06-15T15:38:33.798Z"
     },
     {
       "id": "pwz-seu-lbum-40-off-frete-grtis",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130470,
-      "detail_elapsed_ms": 2865,
-      "scraped_at": "2026-06-15T15:26:06.198Z"
+      "detail_html_length": 130383,
+      "detail_elapsed_ms": 7422,
+      "scraped_at": "2026-06-15T15:38:41.226Z"
     },
     {
       "id": "pwj-at-75-off-nos-cursos",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 139275,
-      "detail_elapsed_ms": 4504,
-      "scraped_at": "2026-06-15T15:26:10.702Z"
+      "detail_html_length": 139194,
+      "detail_elapsed_ms": 9544,
+      "scraped_at": "2026-06-15T15:38:50.770Z"
     },
     {
       "id": "pwi-12-off-extra-em-todo-o-site",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125127,
-      "detail_elapsed_ms": 2168,
-      "scraped_at": "2026-06-15T15:26:12.870Z"
+      "detail_html_length": 130245,
+      "detail_elapsed_ms": 3884,
+      "scraped_at": "2026-06-15T15:38:54.654Z"
     },
     {
       "id": "pwb-50-off-no-par-de-ingressos-sp",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132250,
-      "detail_elapsed_ms": 2502,
-      "scraped_at": "2026-06-15T15:26:15.372Z"
+      "detail_html_length": 132270,
+      "detail_elapsed_ms": 5152,
+      "scraped_at": "2026-06-15T15:38:59.806Z"
     },
     {
       "id": "pvu-40-off-nos-pedidos-pelo-site-e-app",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131750,
-      "detail_elapsed_ms": 3106,
-      "scraped_at": "2026-06-15T15:26:18.478Z"
+      "detail_html_length": 131770,
+      "detail_elapsed_ms": 3361,
+      "scraped_at": "2026-06-15T15:39:03.167Z"
     },
     {
       "id": "pvl-2-ingressos-09-08-barrashopping-rj",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127515,
-      "detail_elapsed_ms": 2603,
-      "scraped_at": "2026-06-15T15:26:21.081Z"
+      "detail_html_length": 127898,
+      "detail_elapsed_ms": 2170,
+      "scraped_at": "2026-06-15T15:39:05.338Z"
     },
     {
       "id": "pvc-50-off-no-par-de-ingressos-mg",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131290,
-      "detail_elapsed_ms": 2233,
-      "scraped_at": "2026-06-15T15:26:23.314Z"
+      "detail_html_length": 132516,
+      "detail_elapsed_ms": 4018,
+      "scraped_at": "2026-06-15T15:39:09.357Z"
     },
     {
       "id": "pvb-50-off-no-par-de-ingressos-sc",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131328,
-      "detail_elapsed_ms": 2405,
-      "scraped_at": "2026-06-15T15:26:25.719Z"
+      "detail_html_length": 132507,
+      "detail_elapsed_ms": 2992,
+      "scraped_at": "2026-06-15T15:39:12.349Z"
     },
     {
       "id": "pva-50-off-no-par-de-ingressos-pr",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131232,
-      "detail_elapsed_ms": 2810,
-      "scraped_at": "2026-06-15T15:26:28.529Z"
+      "detail_html_length": 131241,
+      "detail_elapsed_ms": 3283,
+      "scraped_at": "2026-06-15T15:39:15.632Z"
     },
     {
       "id": "pv9-50-off-no-par-de-ingressos-pe",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126059,
-      "detail_elapsed_ms": 2365,
-      "scraped_at": "2026-06-15T15:26:30.894Z"
+      "detail_html_length": 132422,
+      "detail_elapsed_ms": 4000,
+      "scraped_at": "2026-06-15T15:39:19.632Z"
+    },
+    {
+      "id": "pv8-50-off-no-par-de-ingressos-rs",
+      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "original_link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "title": "50% OFF no par de ingressos - RS",
+      "preview_title": "50% OFF no par de ingressos - RS",
+      "validity": "Benefício válido de 05/06/2026 14:25 até 26/09/2026 23:59.",
+      "description": "Sobre a Turnê: Vem amor que a hora é essa. Se o verso vale para 1984, vale também, e talvez mais ainda, para 2026. Porque uma grande celebração se anuncia. E tem a ver com esse Kid Abelha que você lembra. E com um Kid Abelha que talvez você ainda não conheça. E vai conhecer agora em grande estilo. O Kid Abelha está de volta aos palcos com a turnê \"Eu Tive Um Sonho\", que marca o reencontro de Paula Toller, George Israel e Bruno Fortunato após 13 anos. Data do Show: 26 de setembro, no Estádio Beira-Rio, em Porto Alegre/RS. Benefício: Cupom de 50% OFF no par de ingressos da Turnê Kid Abelha: Eu Tive Um Sonho. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas nos setores cadeira inferior, pista premium e pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Turnê Kid Abelha: Eu Tive Um Sonho",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4060d43c74fbbabd3244234ee141c8ca.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a2314d2a2b49_6a2313d0343d3_6a231326f0e86_6a231207bbbc0_26bc7ca8058b6ba5ac60a5b327c38021.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132448,
+      "detail_elapsed_ms": 3781,
+      "scraped_at": "2026-06-15T15:39:23.413Z"
     }
   ]
 }
