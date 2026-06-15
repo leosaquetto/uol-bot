@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-15T21:47:53.734038Z",
+  "updated_at": "2026-06-15T22:02:21.556659Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 1,
+    "duplicada_historico": 11,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pw5-2-ingressos-26-06-teatro-itlia-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pw5-2-ingressos-26-06-teatro-itlia-sp"
-    },
-    {
-      "title": "Seu álbum: 40% OFF + frete grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pwz-seu-lbum-40-off-frete-grtis"
     },
     {
       "title": "3 Paulaner 500ml + 1 copo exclusivo",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
       "reason": "duplicada_historico",
       "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
+    },
+    {
+      "title": "50% OFF no par de ingressos - RS",
+      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv8-50-off-no-par-de-ingressos-rs",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pv8-50-off-no-par-de-ingressos-rs"
     }
   ]
 }
