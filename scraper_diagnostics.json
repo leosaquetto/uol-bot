@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-15T12:57:31.152753Z",
+  "updated_at": "2026-06-15T12:58:40.383790Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Seu álbum: 40% OFF + frete grátis",
+      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwz-seu-album-40-off-frete-gratis"
+    },
     {
       "title": "Até 75% OFF nos cursos!",
       "link": "https://clube.uol.com.br/fundacaosantoandre/pwj-ate-75-off-nos-cursos",
