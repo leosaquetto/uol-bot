@@ -1,32 +1,26 @@
 {
-  "updated_at": "2026-06-17T01:45:07.657946Z",
+  "updated_at": "2026-06-17T04:22:27.381849Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 9,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 1,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
-    "duplicada_execucao": 0
+    "duplicada_execucao": 1
   },
   "discarded_offers": [
     {
-      "title": "2 INGRESSOS: 20/06 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw6-2-ingressos-20-06-teatro-itlia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pw6-2-ingressos-20-06-teatro-itlia-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 26/06 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pw5-2-ingressos-26-06-teatro-itlia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pw5-2-ingressos-26-06-teatro-itlia-sp"
+      "title": "50% OFF no par de ingressos - DF",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwU-50-off-no-par-de-ingressos-df",
+      "reason": "duplicada_execucao",
+      "trace_id": "trace_pwu-50-off-no-par-de-ingressos-df"
     },
     {
       "title": "Seu álbum: 40% OFF + frete grátis",
@@ -39,48 +33,6 @@
       "link": "https://clube.uol.com.br/casaflora/pwr-3-paulaner-500ml-1-copo-exclusivo",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwr-3-paulaner-500ml-1-copo-exclusivo"
-    },
-    {
-      "title": "12% OFF EXTRA em todo o site!",
-      "link": "https://clube.uol.com.br/morana/pwi-12-off-extra-em-todo-o-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwi-12-off-extra-em-todo-o-site"
-    },
-    {
-      "title": "50% OFF no par de ingressos - SP",
-      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwb-50-off-no-par-de-ingressos-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwb-50-off-no-par-de-ingressos-sp"
-    },
-    {
-      "title": "40% OFF nos pedidos pelo site e app",
-      "link": "https://clube.uol.com.br/dominospizza/pvU-40-off-nos-pedidos-pelo-site-e-app",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvu-40-off-nos-pedidos-pelo-site-e-app"
-    },
-    {
-      "title": "50% OFF no par de ingressos - MG",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvC-50-off-no-par-de-ingressos-mg",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvc-50-off-no-par-de-ingressos-mg"
-    },
-    {
-      "title": "50% OFF no par de ingressos - SC",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvB-50-off-no-par-de-ingressos-sc",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pvb-50-off-no-par-de-ingressos-sc"
-    },
-    {
-      "title": "50% OFF no par de ingressos - PR",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pvA-50-off-no-par-de-ingressos-pr",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pva-50-off-no-par-de-ingressos-pr"
-    },
-    {
-      "title": "50% OFF no par de ingressos - PE",
-      "link": "https://clube.uol.com.br/turnekidabelhaeutiveumsonho/pv9-50-off-no-par-de-ingressos-pe",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pv9-50-off-no-par-de-ingressos-pe"
     }
   ]
 }
