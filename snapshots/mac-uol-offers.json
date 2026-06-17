@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 61779,
-  "run_duration_seconds": 61.78,
-  "avg_detail_ms_per_offer": 5148,
-  "generated_at": "2026-06-17T18:36:18.044Z",
+  "run_duration_ms": 45648,
+  "run_duration_seconds": 45.65,
+  "avg_detail_ms_per_offer": 3804,
+  "generated_at": "2026-06-17T18:47:12.026Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127271,
-      "detail_elapsed_ms": 3455,
-      "scraped_at": "2026-06-17T18:35:52.802Z"
+      "detail_html_length": 133578,
+      "detail_elapsed_ms": 4614,
+      "scraped_at": "2026-06-17T18:46:45.187Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132996,
-      "detail_elapsed_ms": 2595,
-      "scraped_at": "2026-06-17T18:35:55.399Z"
+      "detail_html_length": 127803,
+      "detail_elapsed_ms": 2794,
+      "scraped_at": "2026-06-17T18:46:47.982Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132552,
-      "detail_elapsed_ms": 2827,
-      "scraped_at": "2026-06-17T18:35:58.227Z"
+      "detail_html_length": 132572,
+      "detail_elapsed_ms": 2228,
+      "scraped_at": "2026-06-17T18:46:50.211Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132498,
-      "detail_elapsed_ms": 2421,
-      "scraped_at": "2026-06-17T18:36:00.648Z"
+      "detail_html_length": 132529,
+      "detail_elapsed_ms": 2204,
+      "scraped_at": "2026-06-17T18:46:52.415Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131328,
-      "detail_elapsed_ms": 2217,
-      "scraped_at": "2026-06-17T18:36:02.865Z"
+      "detail_html_length": 132478,
+      "detail_elapsed_ms": 2264,
+      "scraped_at": "2026-06-17T18:46:54.679Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132451,
-      "detail_elapsed_ms": 1835,
-      "scraped_at": "2026-06-17T18:36:04.700Z"
+      "detail_html_length": 132460,
+      "detail_elapsed_ms": 2350,
+      "scraped_at": "2026-06-17T18:46:57.029Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132500,
-      "detail_elapsed_ms": 2110,
-      "scraped_at": "2026-06-17T18:36:06.810Z"
+      "detail_html_length": 132499,
+      "detail_elapsed_ms": 2343,
+      "scraped_at": "2026-06-17T18:46:59.373Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132369,
-      "detail_elapsed_ms": 1965,
-      "scraped_at": "2026-06-17T18:36:08.775Z"
+      "detail_html_length": 132370,
+      "detail_elapsed_ms": 2554,
+      "scraped_at": "2026-06-17T18:47:01.927Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132314,
-      "detail_elapsed_ms": 2420,
-      "scraped_at": "2026-06-17T18:36:11.196Z"
+      "detail_html_length": 132345,
+      "detail_elapsed_ms": 2487,
+      "scraped_at": "2026-06-17T18:47:04.415Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -256,33 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131184,
-      "detail_elapsed_ms": 2351,
-      "scraped_at": "2026-06-17T18:36:13.547Z"
-    },
-    {
-      "id": "pwe-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pwe-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pwE-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pwE-2-ingressos-20-06-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 16/06/2026 14:59 até 19/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para o musical A Bela e a Fera e encante-se com essa clássica história de amor, em um espetáculo ao vivo com cenários e figurinos deslumbrantes, perfeito para todas as idades, no Teatro Ruth Escobar, em São Paulo. Data: 20 de Junho, às 15h. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1df6b06db18078b08bd48bc1da4dce4f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1df6b06db18078b08bd48bc1da4dce4f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1df6b06db18078b08bd48bc1da4dce4f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133808,
-      "detail_elapsed_ms": 2277,
-      "scraped_at": "2026-06-17T18:36:15.824Z"
+      "detail_html_length": 132353,
+      "detail_elapsed_ms": 2103,
+      "scraped_at": "2026-06-17T18:47:06.519Z"
     },
     {
       "id": "pwc-20-off-em-todo-o-site",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130938,
-      "detail_elapsed_ms": 1845,
-      "scraped_at": "2026-06-17T18:36:17.669Z"
+      "detail_html_length": 130969,
+      "detail_elapsed_ms": 2123,
+      "scraped_at": "2026-06-17T18:47:08.642Z"
+    },
+    {
+      "id": "pwz-seu-lbum-40-off-frete-grtis",
+      "trace_id": "trace_pwz-seu-lbum-40-off-frete-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
+      "title": "Seu álbum: 40% OFF + frete grátis",
+      "preview_title": "Seu álbum: 40% OFF + frete grátis",
+      "validity": "Benefício válido de 15/06/2026 09:45 até 31/07/2026 23:59.",
+      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: 40% OFF no Álbum de Figurinhas Personalizado da FotoRegistro + Frete Grátis. Regras: Oferta válida para 1 Álbum de Figurinhas - Tamanho 21x21cm com capa flexível - Figurinhas no tamanho 6,5 x 6,5 cm - Acabamento em grampo e verniz - Com espaço para 20 fotos - Frete Incluso na opção de entrega Econômica - Validade do cupom até 31/07/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
+      "category": "Compras e Presentes",
+      "partner_name": "Foto Registro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f91155202a0841d3e635bc072b710851.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f91155202a0841d3e635bc072b710851.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f91155202a0841d3e635bc072b710851.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131715,
+      "detail_elapsed_ms": 3076,
+      "scraped_at": "2026-06-17T18:47:11.718Z"
     }
   ]
 }
