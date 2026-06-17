@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-06-17T17:05:09.700497Z",
+  "updated_at": "2026-06-17T17:07:05.714664Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS 28/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pxh-2-ingressos-28-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxh-2-ingressos-28-06-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "2 INGRESSOS 27/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pxg-2-ingressos-27-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxg-2-ingressos-27-06-teatro-ruth-escobar-sp"
+    },
     {
       "title": "10% OFF na compra de ingresso",
       "link": "https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso",
@@ -69,6 +81,12 @@
       "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwK-50-off-no-par-de-ingressos-bh",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwk-50-off-no-par-de-ingressos-bh"
+    },
+    {
+      "title": "2 INGRESSOS 26/06 Teatro Ruth Escobar SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pwJ-2-ingressos-26-06-teatro-ruth-escobar-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwj-2-ingressos-26-06-teatro-ruth-escobar-sp"
     }
   ]
 }
