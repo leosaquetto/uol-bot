@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-17T04:24:39.520388Z",
+  "updated_at": "2026-06-17T04:33:23.765359Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,9 +10,9 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 10,
     "duplicada_latest": 2,
-    "duplicada_pending": 1,
+    "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
@@ -73,7 +73,7 @@
     {
       "title": "20% OFF em todo o site!",
       "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_pwc-20-off-em-todo-o-site"
     },
     {
