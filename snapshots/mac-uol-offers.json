@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 35332,
-  "run_duration_seconds": 35.33,
-  "avg_detail_ms_per_offer": 2944,
-  "generated_at": "2026-06-17T17:03:52.036Z",
+  "run_duration_ms": 64001,
+  "run_duration_seconds": 64,
+  "avg_detail_ms_per_offer": 5333,
+  "generated_at": "2026-06-17T17:15:01.100Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133667,
-      "detail_elapsed_ms": 2253,
-      "scraped_at": "2026-06-17T17:03:34.047Z"
+      "detail_html_length": 133926,
+      "detail_elapsed_ms": 13536,
+      "scraped_at": "2026-06-17T17:14:34.182Z"
     },
     {
       "id": "pxg-2-ingressos-27-06-teatro-ruth-escobar-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133876,
-      "detail_elapsed_ms": 1686,
-      "scraped_at": "2026-06-17T17:03:35.773Z"
+      "detail_html_length": 133854,
+      "detail_elapsed_ms": 2353,
+      "scraped_at": "2026-06-17T17:14:36.536Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134214,
-      "detail_elapsed_ms": 1685,
-      "scraped_at": "2026-06-17T17:03:37.459Z"
+      "detail_html_length": 133514,
+      "detail_elapsed_ms": 2238,
+      "scraped_at": "2026-06-17T17:14:38.774Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132619,
-      "detail_elapsed_ms": 1534,
-      "scraped_at": "2026-06-17T17:03:38.993Z"
+      "detail_html_length": 126195,
+      "detail_elapsed_ms": 2440,
+      "scraped_at": "2026-06-17T17:14:41.214Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132556,
-      "detail_elapsed_ms": 1562,
-      "scraped_at": "2026-06-17T17:03:40.555Z"
+      "detail_html_length": 132525,
+      "detail_elapsed_ms": 2943,
+      "scraped_at": "2026-06-17T17:14:44.160Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132458,
-      "detail_elapsed_ms": 1616,
-      "scraped_at": "2026-06-17T17:03:42.172Z"
+      "detail_html_length": 132514,
+      "detail_elapsed_ms": 2336,
+      "scraped_at": "2026-06-17T17:14:46.496Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132509,
-      "detail_elapsed_ms": 1676,
-      "scraped_at": "2026-06-17T17:03:43.848Z"
+      "detail_html_length": 132468,
+      "detail_elapsed_ms": 2315,
+      "scraped_at": "2026-06-17T17:14:48.811Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132548,
-      "detail_elapsed_ms": 1430,
-      "scraped_at": "2026-06-17T17:03:45.278Z"
+      "detail_html_length": 132536,
+      "detail_elapsed_ms": 2221,
+      "scraped_at": "2026-06-17T17:14:51.032Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132408,
-      "detail_elapsed_ms": 1785,
-      "scraped_at": "2026-06-17T17:03:47.063Z"
+      "detail_html_length": 132376,
+      "detail_elapsed_ms": 1935,
+      "scraped_at": "2026-06-17T17:14:52.967Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132373,
-      "detail_elapsed_ms": 1781,
-      "scraped_at": "2026-06-17T17:03:48.844Z"
+      "detail_html_length": 132331,
+      "detail_elapsed_ms": 2895,
+      "scraped_at": "2026-06-17T17:14:55.862Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -280,33 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132402,
-      "detail_elapsed_ms": 1636,
-      "scraped_at": "2026-06-17T17:03:50.480Z"
+      "detail_html_length": 126008,
+      "detail_elapsed_ms": 2319,
+      "scraped_at": "2026-06-17T17:14:58.182Z"
     },
     {
-      "id": "pwj-2-ingressos-26-06-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pwj-2-ingressos-26-06-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pwJ-2-ingressos-26-06-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pwJ-2-ingressos-26-06-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 26/06 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 26/06 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 16/06/2026 14:59 até 26/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para Vindos de Longe, o emocionante musical inspirado em uma história real sobre solidariedade e acolhimento que conquistou o mundo, no Teatro Ruth Escobar, em São Paulo/SP. Data: 26 de Junho, às 20h30. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "id": "pwe-2-ingressos-20-06-teatro-ruth-escobar-sp",
+      "trace_id": "trace_pwe-2-ingressos-20-06-teatro-ruth-escobar-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pwE-2-ingressos-20-06-teatro-ruth-escobar-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pwE-2-ingressos-20-06-teatro-ruth-escobar-sp",
+      "title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
+      "preview_title": "2 INGRESSOS 20/06 Teatro Ruth Escobar SP",
+      "validity": "Benefício válido de 16/06/2026 14:59 até 19/06/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para o musical A Bela e a Fera e encante-se com essa clássica história de amor, em um espetáculo ao vivo com cenários e figurinos deslumbrantes, perfeito para todas as idades, no Teatro Ruth Escobar, em São Paulo. Data: 20 de Junho, às 15h. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/44e674fb675b44b465790f677733f556.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/44e674fb675b44b465790f677733f556.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/44e674fb675b44b465790f677733f556.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1df6b06db18078b08bd48bc1da4dce4f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1df6b06db18078b08bd48bc1da4dce4f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1df6b06db18078b08bd48bc1da4dce4f.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133811,
-      "detail_elapsed_ms": 1487,
-      "scraped_at": "2026-06-17T17:03:51.967Z"
+      "detail_html_length": 133797,
+      "detail_elapsed_ms": 2709,
+      "scraped_at": "2026-06-17T17:15:00.891Z"
     }
   ]
 }
