@@ -11,14 +11,14 @@
     "last_error": ""
   },
   "scraper": {
-    "last_started_at": "17/06/2026 às 01:22",
-    "last_finished_at": "17/06/2026 às 01:22",
-    "last_success_at": "17/06/2026 às 01:22",
-    "status": "ok",
-    "summary": "mac snapshot processado: 12 vistas, 9 novas, 3 descartadas por duplicidade, 0 expiradas | novas no pending: 9 | incompletas descartadas: 0",
+    "last_started_at": "17/06/2026 às 01:24",
+    "last_finished_at": "17/06/2026 às 01:24",
+    "last_success_at": "17/06/2026 às 01:24",
+    "status": "sem_novidade",
+    "summary": "mac snapshot processado: 12 vistas, 0 novas, 12 descartadas por duplicidade, 0 expiradas | sem ofertas prontas | incompletas descartadas: 0",
     "offers_seen": 12,
-    "new_offers": 9,
-    "pending_count": 9,
+    "new_offers": 0,
+    "pending_count": 1,
     "last_error": ""
   },
   "consumer": {

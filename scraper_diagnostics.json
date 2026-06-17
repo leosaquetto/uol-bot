@@ -1,26 +1,80 @@
 {
-  "updated_at": "2026-06-17T04:22:27.381849Z",
+  "updated_at": "2026-06-17T04:24:39.520388Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 9,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 1,
-    "duplicada_latest": 1,
-    "duplicada_pending": 0,
-    "duplicada_execucao": 1
+    "duplicada_historico": 9,
+    "duplicada_latest": 2,
+    "duplicada_pending": 1,
+    "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
+      "title": "10% OFF na compra de ingresso",
+      "link": "https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxf-10-off-na-compra-de-ingresso"
+    },
+    {
+      "title": "50% OFF no par de ingressos - PE",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwZ-50-off-no-par-de-ingressos-pe",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwz-50-off-no-par-de-ingressos-pe"
+    },
+    {
+      "title": "50% OFF no par de ingressos - DF",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwX-50-off-no-par-de-ingressos-df",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwx-50-off-no-par-de-ingressos-df"
+    },
+    {
       "title": "50% OFF no par de ingressos - DF",
       "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwU-50-off-no-par-de-ingressos-df",
-      "reason": "duplicada_execucao",
+      "reason": "duplicada_latest",
       "trace_id": "trace_pwu-50-off-no-par-de-ingressos-df"
+    },
+    {
+      "title": "50% OFF no par de ingressos - PR",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwT-50-off-no-par-de-ingressos-pr",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwt-50-off-no-par-de-ingressos-pr"
+    },
+    {
+      "title": "50% OFF no par de ingressos - RS",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwP-50-off-no-par-de-ingressos-rs",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwp-50-off-no-par-de-ingressos-rs"
+    },
+    {
+      "title": "50% OFF no par de ingressos - RJ",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwO-50-off-no-par-de-ingressos-rj",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwo-50-off-no-par-de-ingressos-rj"
+    },
+    {
+      "title": "50% OFF no par de ingressos - PA",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwM-50-off-no-par-de-ingressos-pa",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwm-50-off-no-par-de-ingressos-pa"
+    },
+    {
+      "title": "50% OFF no par de ingressos - BH",
+      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwK-50-off-no-par-de-ingressos-bh",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwk-50-off-no-par-de-ingressos-bh"
+    },
+    {
+      "title": "20% OFF em todo o site!",
+      "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pwc-20-off-em-todo-o-site"
     },
     {
       "title": "Seu álbum: 40% OFF + frete grátis",
