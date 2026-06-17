@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-17T21:22:04.732029Z",
+  "updated_at": "2026-06-17T21:32:45.904595Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "Ingressos Exclusivos",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pxw-2-ingressos-28-06-teatro-ruth-escobar-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxw-2-ingressos-28-06-teatro-ruth-escobar-sp"
-    },
     {
       "title": "2 INGRESSOS 28/06 Teatro Ruth Escobar SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pxh-2-ingressos-28-06-teatro-ruth-escobar-sp",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwK-50-off-no-par-de-ingressos-bh",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwk-50-off-no-par-de-ingressos-bh"
+    },
+    {
+      "title": "20% OFF em todo o site!",
+      "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwc-20-off-em-todo-o-site"
     }
   ]
 }
