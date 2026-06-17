@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 65256,
-  "run_duration_seconds": 65.26,
-  "avg_detail_ms_per_offer": 5438,
-  "generated_at": "2026-06-17T18:00:45.541Z",
+  "run_duration_ms": 103548,
+  "run_duration_seconds": 103.55,
+  "avg_detail_ms_per_offer": 8629,
+  "generated_at": "2026-06-17T18:12:37.659Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,34 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133243,
-      "detail_elapsed_ms": 4898,
-      "scraped_at": "2026-06-17T18:00:17.210Z"
-    },
-    {
-      "id": "pxg-2-ingressos-27-06-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pxg-2-ingressos-27-06-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pxg-2-ingressos-27-06-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pxg-2-ingressos-27-06-teatro-ruth-escobar-sp",
-      "title": "2 INGRESSOS 27/06 Teatro Ruth Escobar SP",
-      "preview_title": "2 INGRESSOS 27/06 Teatro Ruth Escobar SP",
-      "validity": "Benefício válido de 16/06/2026 14:59 até 26/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para o musical A Bela e a Fera e encante-se com essa clássica história de amor, em um espetáculo ao vivo com cenários e figurinos deslumbrantes, perfeito para todas as idades, no Teatro Ruth Escobar, em São Paulo. Data: 27 de Junho, às 15h. Local: Rua dos Ingleses, 209 - Morro dos Ingleses, São Paulo - SP. Antes de tudo, faça seu cadastro na Ticketmaster e no aplicativo Quentro, pois os ingressos serão enviados por essa plataforma. Caso você não tenha cadastro na Ticketmaster e no app Quentro no momento do envio, não será possível concluir o resgate, tornando sua participação inelegível. Por isso, recomendamos verificar esse ponto antes de resgatar. Veja como funciona: Você receberá hoje um e-mail da Ticketmaster com as instruções para acessar seus ingressos; Baixe o aplicativo Quentro na loja de apps e realize seu cadastro; Acesse o e-mail recebido e clique em “Acessar o seu portal”; Pronto! Seus ingressos estarão disponíveis no app Quentro para uso. O E-mail deve ser o mesmo de cadastro no UOL Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a31bc86d7a61_1df6b06db18078b08bd48bc1da4dce4f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a31bc86d7a61_1df6b06db18078b08bd48bc1da4dce4f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a31bc86d7a61_1df6b06db18078b08bd48bc1da4dce4f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133770,
-      "detail_elapsed_ms": 3781,
-      "scraped_at": "2026-06-17T18:00:20.994Z"
+      "detail_attempts": 2,
+      "detail_html_length": 127420,
+      "detail_elapsed_ms": 6128,
+      "scraped_at": "2026-06-17T18:12:07.644Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134176,
-      "detail_elapsed_ms": 2399,
-      "scraped_at": "2026-06-17T18:00:23.393Z"
+      "detail_html_length": 132670,
+      "detail_elapsed_ms": 3069,
+      "scraped_at": "2026-06-17T18:12:10.720Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132562,
-      "detail_elapsed_ms": 2604,
-      "scraped_at": "2026-06-17T18:00:25.998Z"
+      "detail_html_length": 126186,
+      "detail_elapsed_ms": 2356,
+      "scraped_at": "2026-06-17T18:12:13.076Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133074,
-      "detail_elapsed_ms": 2123,
-      "scraped_at": "2026-06-17T18:00:28.121Z"
+      "detail_html_length": 132505,
+      "detail_elapsed_ms": 2525,
+      "scraped_at": "2026-06-17T18:12:15.602Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132497,
-      "detail_elapsed_ms": 2617,
-      "scraped_at": "2026-06-17T18:00:30.738Z"
+      "detail_html_length": 132485,
+      "detail_elapsed_ms": 2534,
+      "scraped_at": "2026-06-17T18:12:18.136Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126098,
-      "detail_elapsed_ms": 2429,
-      "scraped_at": "2026-06-17T18:00:33.167Z"
+      "detail_html_length": 132448,
+      "detail_elapsed_ms": 2830,
+      "scraped_at": "2026-06-17T18:12:20.966Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132490,
-      "detail_elapsed_ms": 2052,
-      "scraped_at": "2026-06-17T18:00:35.219Z"
+      "detail_html_length": 131270,
+      "detail_elapsed_ms": 2277,
+      "scraped_at": "2026-06-17T18:12:23.243Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132360,
-      "detail_elapsed_ms": 2479,
-      "scraped_at": "2026-06-17T18:00:37.698Z"
+      "detail_html_length": 125994,
+      "detail_elapsed_ms": 2932,
+      "scraped_at": "2026-06-17T18:12:26.175Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132335,
-      "detail_elapsed_ms": 2930,
-      "scraped_at": "2026-06-17T18:00:40.628Z"
+      "detail_html_length": 125978,
+      "detail_elapsed_ms": 2415,
+      "scraped_at": "2026-06-17T18:12:28.590Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132363,
-      "detail_elapsed_ms": 2083,
-      "scraped_at": "2026-06-17T18:00:42.711Z"
+      "detail_html_length": 132338,
+      "detail_elapsed_ms": 2609,
+      "scraped_at": "2026-06-17T18:12:31.200Z"
     },
     {
       "id": "pwe-2-ingressos-20-06-teatro-ruth-escobar-sp",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133810,
-      "detail_elapsed_ms": 2415,
-      "scraped_at": "2026-06-17T18:00:45.126Z"
+      "detail_html_length": 133794,
+      "detail_elapsed_ms": 2665,
+      "scraped_at": "2026-06-17T18:12:33.866Z"
+    },
+    {
+      "id": "pwc-20-off-em-todo-o-site",
+      "trace_id": "trace_pwc-20-off-em-todo-o-site",
+      "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
+      "original_link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
+      "title": "20% OFF em todo o site!",
+      "preview_title": "20% OFF em todo o site!",
+      "validity": "Benefício válido de 16/06/2026 11:14 até 30/06/2026 23:59.",
+      "description": "Benefício: 20% OFF em todo o site! Regras: Desconto acumulativo com o desconto dos serviços de recorrência (semestral ou anual). Valor mínimo de R$ 210,00. O desconto se aplica somente ao valor do serviço, não abrangendo a taxa de serviço da região, quando houver. A loja permite a inserção de apenas um cupom por compra.",
+      "category": "",
+      "partner_name": "Dr. Lava Tudo",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d974f29779feef30f0d25700652d7f50.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 3318,
+      "scraped_at": "2026-06-17T18:12:37.184Z"
     }
   ]
 }
