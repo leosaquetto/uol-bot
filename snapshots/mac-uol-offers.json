@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 44193,
-  "run_duration_seconds": 44.19,
-  "avg_detail_ms_per_offer": 3683,
-  "generated_at": "2026-06-17T19:30:45.990Z",
+  "run_duration_ms": 49022,
+  "run_duration_seconds": 49.02,
+  "avg_detail_ms_per_offer": 4085,
+  "generated_at": "2026-06-17T19:41:42.353Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126426,
-      "detail_elapsed_ms": 3348,
-      "scraped_at": "2026-06-17T19:30:19.693Z"
+      "detail_html_length": 133291,
+      "detail_elapsed_ms": 5807,
+      "scraped_at": "2026-06-17T19:41:14.342Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134162,
-      "detail_elapsed_ms": 4476,
-      "scraped_at": "2026-06-17T19:30:24.170Z"
+      "detail_html_length": 134105,
+      "detail_elapsed_ms": 3267,
+      "scraped_at": "2026-06-17T19:41:17.610Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131552,
-      "detail_elapsed_ms": 2063,
-      "scraped_at": "2026-06-17T19:30:26.233Z"
+      "detail_html_length": 132558,
+      "detail_elapsed_ms": 2823,
+      "scraped_at": "2026-06-17T19:41:20.433Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132505,
-      "detail_elapsed_ms": 2433,
-      "scraped_at": "2026-06-17T19:30:28.667Z"
+      "detail_html_length": 132516,
+      "detail_elapsed_ms": 2774,
+      "scraped_at": "2026-06-17T19:41:23.208Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132503,
-      "detail_elapsed_ms": 2597,
-      "scraped_at": "2026-06-17T19:30:31.265Z"
+      "detail_html_length": 131325,
+      "detail_elapsed_ms": 2049,
+      "scraped_at": "2026-06-17T19:41:25.258Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132446,
-      "detail_elapsed_ms": 2220,
-      "scraped_at": "2026-06-17T19:30:33.485Z"
+      "detail_html_length": 132447,
+      "detail_elapsed_ms": 2463,
+      "scraped_at": "2026-06-17T19:41:27.722Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131316,
-      "detail_elapsed_ms": 1957,
-      "scraped_at": "2026-06-17T19:30:35.442Z"
+      "detail_html_length": 132486,
+      "detail_elapsed_ms": 2066,
+      "scraped_at": "2026-06-17T19:41:29.788Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132345,
-      "detail_elapsed_ms": 1786,
-      "scraped_at": "2026-06-17T19:30:37.228Z"
+      "detail_html_length": 132357,
+      "detail_elapsed_ms": 2556,
+      "scraped_at": "2026-06-17T19:41:32.344Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132341,
-      "detail_elapsed_ms": 1928,
-      "scraped_at": "2026-06-17T19:30:39.156Z"
+      "detail_html_length": 132331,
+      "detail_elapsed_ms": 2125,
+      "scraped_at": "2026-06-17T19:41:34.469Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -257,8 +257,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132350,
-      "detail_elapsed_ms": 2123,
-      "scraped_at": "2026-06-17T19:30:41.279Z"
+      "detail_elapsed_ms": 2635,
+      "scraped_at": "2026-06-17T19:41:37.105Z"
     },
     {
       "id": "pwc-20-off-em-todo-o-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131368,
-      "detail_elapsed_ms": 2257,
-      "scraped_at": "2026-06-17T19:30:43.544Z"
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 2396,
+      "scraped_at": "2026-06-17T19:41:39.501Z"
     },
     {
       "id": "pwz-seu-album-40-off-frete-gratis",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132126,
-      "detail_elapsed_ms": 2297,
-      "scraped_at": "2026-06-17T19:30:45.841Z"
+      "detail_html_length": 131660,
+      "detail_elapsed_ms": 2470,
+      "scraped_at": "2026-06-17T19:41:41.971Z"
     }
   ]
 }
