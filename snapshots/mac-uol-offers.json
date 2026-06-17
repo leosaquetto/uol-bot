@@ -9,41 +9,17 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
-    "weak": 1,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 38495,
-  "run_duration_seconds": 38.49,
-  "avg_detail_ms_per_offer": 3208,
-  "generated_at": "2026-06-17T21:20:20.805Z",
+  "run_duration_ms": 77652,
+  "run_duration_seconds": 77.65,
+  "avg_detail_ms_per_offer": 6471,
+  "generated_at": "2026-06-17T21:31:54.338Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pxw-2-ingressos-28-06-teatro-ruth-escobar-sp",
-      "trace_id": "trace_pxw-2-ingressos-28-06-teatro-ruth-escobar-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pxw-2-ingressos-28-06-teatro-ruth-escobar-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pxw-2-ingressos-28-06-teatro-ruth-escobar-sp",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "2 INGRESSOS 28/06 Teatro Ruth Escobar SP",
-      "validity": "",
-      "description": "",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a32bf4a4e66e_7197540e3ebdccd97daa7e163930eb68.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
-      "img_source": "benefit_data_src",
-      "detail_ok": true,
-      "detail_quality": "weak",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 327853,
-      "detail_elapsed_ms": 2925,
-      "scraped_at": "2026-06-17T21:20:00.177Z"
-    },
     {
       "id": "pxm-2-ingressos-28-06-teatro-ruth-escobar-sp",
       "trace_id": "trace_pxm-2-ingressos-28-06-teatro-ruth-escobar-sp",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133839,
-      "detail_elapsed_ms": 2072,
-      "scraped_at": "2026-06-17T21:20:02.250Z"
+      "detail_html_length": 133640,
+      "detail_elapsed_ms": 9275,
+      "scraped_at": "2026-06-17T21:31:29.026Z"
     },
     {
       "id": "pxh-2-ingressos-28-06-teatro-ruth-escobar-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133823,
-      "detail_elapsed_ms": 1644,
-      "scraped_at": "2026-06-17T21:20:03.894Z"
+      "detail_html_length": 132623,
+      "detail_elapsed_ms": 1855,
+      "scraped_at": "2026-06-17T21:31:30.884Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134190,
-      "detail_elapsed_ms": 1820,
-      "scraped_at": "2026-06-17T21:20:05.714Z"
+      "detail_html_length": 134192,
+      "detail_elapsed_ms": 3358,
+      "scraped_at": "2026-06-17T21:31:34.242Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132587,
-      "detail_elapsed_ms": 1990,
-      "scraped_at": "2026-06-17T21:20:07.704Z"
+      "detail_html_length": 131055,
+      "detail_elapsed_ms": 3334,
+      "scraped_at": "2026-06-17T21:31:37.576Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132535,
-      "detail_elapsed_ms": 2380,
-      "scraped_at": "2026-06-17T21:20:10.084Z"
+      "detail_html_length": 132505,
+      "detail_elapsed_ms": 2372,
+      "scraped_at": "2026-06-17T21:31:39.948Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132533,
-      "detail_elapsed_ms": 2108,
-      "scraped_at": "2026-06-17T21:20:12.192Z"
+      "detail_html_length": 132494,
+      "detail_elapsed_ms": 2213,
+      "scraped_at": "2026-06-17T21:31:42.161Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132486,
-      "detail_elapsed_ms": 1666,
-      "scraped_at": "2026-06-17T21:20:13.858Z"
+      "detail_html_length": 132446,
+      "detail_elapsed_ms": 2385,
+      "scraped_at": "2026-06-17T21:31:44.546Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132534,
-      "detail_elapsed_ms": 1750,
-      "scraped_at": "2026-06-17T21:20:15.608Z"
+      "detail_html_length": 132486,
+      "detail_elapsed_ms": 1835,
+      "scraped_at": "2026-06-17T21:31:46.381Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132396,
-      "detail_elapsed_ms": 1483,
-      "scraped_at": "2026-06-17T21:20:17.091Z"
+      "detail_html_length": 132356,
+      "detail_elapsed_ms": 1831,
+      "scraped_at": "2026-06-17T21:31:48.212Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -281,8 +257,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132350,
-      "detail_elapsed_ms": 1617,
-      "scraped_at": "2026-06-17T21:20:18.709Z"
+      "detail_elapsed_ms": 2063,
+      "scraped_at": "2026-06-17T21:31:50.275Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132389,
-      "detail_elapsed_ms": 1982,
-      "scraped_at": "2026-06-17T21:20:20.691Z"
+      "detail_html_length": 132340,
+      "detail_elapsed_ms": 1941,
+      "scraped_at": "2026-06-17T21:31:52.217Z"
+    },
+    {
+      "id": "pwc-20-off-em-todo-o-site",
+      "trace_id": "trace_pwc-20-off-em-todo-o-site",
+      "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
+      "original_link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
+      "title": "20% OFF em todo o site!",
+      "preview_title": "20% OFF em todo o site!",
+      "validity": "Benefício válido de 16/06/2026 11:14 até 30/06/2026 23:59.",
+      "description": "Benefício: 20% OFF em todo o site! Regras: Desconto acumulativo com o desconto dos serviços de recorrência (semestral ou anual). Valor mínimo de R$ 210,00. O desconto se aplica somente ao valor do serviço, não abrangendo a taxa de serviço da região, quando houver. A loja permite a inserção de apenas um cupom por compra.",
+      "category": "",
+      "partner_name": "Dr. Lava Tudo",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d974f29779feef30f0d25700652d7f50.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130946,
+      "detail_elapsed_ms": 1990,
+      "scraped_at": "2026-06-17T21:31:54.208Z"
     }
   ]
 }
