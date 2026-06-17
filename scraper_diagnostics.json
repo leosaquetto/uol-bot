@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-17T18:06:29.984692Z",
+  "updated_at": "2026-06-17T18:13:33.010143Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pxh-2-ingressos-28-06-teatro-ruth-escobar-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pxh-2-ingressos-28-06-teatro-ruth-escobar-sp"
-    },
-    {
-      "title": "2 INGRESSOS 27/06 Teatro Ruth Escobar SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pxg-2-ingressos-27-06-teatro-ruth-escobar-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxg-2-ingressos-27-06-teatro-ruth-escobar-sp"
     },
     {
       "title": "10% OFF na compra de ingresso",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pwE-2-ingressos-20-06-teatro-ruth-escobar-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwe-2-ingressos-20-06-teatro-ruth-escobar-sp"
+    },
+    {
+      "title": "20% OFF em todo o site!",
+      "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwc-20-off-em-todo-o-site"
     }
   ]
 }
