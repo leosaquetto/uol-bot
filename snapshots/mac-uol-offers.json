@@ -14,17 +14,41 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 51550,
-  "run_duration_seconds": 51.55,
-  "avg_detail_ms_per_offer": 4296,
-  "generated_at": "2026-06-18T17:05:04.799Z",
+  "run_duration_ms": 93033,
+  "run_duration_seconds": 93.03,
+  "avg_detail_ms_per_offer": 7753,
+  "generated_at": "2026-06-18T17:16:47.077Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "pxk-tnis-chinelos-e-sandlias-com-10-off",
-      "trace_id": "trace_pxk-tnis-chinelos-e-sandlias-com-10-off",
-      "link": "https://clube.uol.com.br/centauro/pxK-tnis-chinelos-e-sandlias-com-10-off",
-      "original_link": "https://clube.uol.com.br/centauro/pxK-tnis-chinelos-e-sandlias-com-10-off",
+      "id": "pxl-camiseta-bermuda-meia-e-mais-10-off",
+      "trace_id": "trace_pxl-camiseta-bermuda-meia-e-mais-10-off",
+      "link": "https://clube.uol.com.br/centauro/pxL-camiseta-bermuda-meia-e-mais-10-off",
+      "original_link": "https://clube.uol.com.br/centauro/pxL-camiseta-bermuda-meia-e-mais-10-off",
+      "title": "Camiseta, bermuda, meia e mais + 10% OFF",
+      "preview_title": "Camiseta, bermuda, meia e mais + 10% OFF",
+      "validity": "Benefício válido de 18/06/2026 13:56 até 30/06/2026 23:59.",
+      "description": "Benefício: Camiseta, bermuda, meia e mais + 10% OFF Regras: Desconto válido para seleção de produtos do link. Sujeito a disponibilidade do produto. Não cumulativo com demais cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Centauro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621656224f20c6584126e76f5e87a620.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621656224f20c6584126e76f5e87a620.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621656224f20c6584126e76f5e87a620.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129514,
+      "detail_elapsed_ms": 3980,
+      "scraped_at": "2026-06-18T17:15:53.238Z"
+    },
+    {
+      "id": "pxk-tenis-chinelos-e-sandalias-com-10-off",
+      "trace_id": "trace_pxk-tenis-chinelos-e-sandalias-com-10-off",
+      "link": "https://clube.uol.com.br/centauro/pxK-tenis-chinelos-e-sandalias-com-10-off",
+      "original_link": "https://clube.uol.com.br/centauro/pxK-tenis-chinelos-e-sandalias-com-10-off",
       "title": "Tênis, chinelos e sandálias com +10% OFF",
       "preview_title": "Tênis, chinelos e sandálias com +10% OFF",
       "validity": "Benefício válido de 18/06/2026 12:43 até 30/06/2026 23:59.",
@@ -40,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130779,
-      "detail_elapsed_ms": 5630,
-      "scraped_at": "2026-06-18T17:04:38.147Z"
+      "detail_html_length": 130921,
+      "detail_elapsed_ms": 3477,
+      "scraped_at": "2026-06-18T17:15:56.716Z"
     },
     {
-      "id": "pxj-at-10-de-desconto-nos-itens-da-coleo",
-      "trace_id": "trace_pxj-at-10-de-desconto-nos-itens-da-coleo",
-      "link": "https://clube.uol.com.br/casasbahia/pxJ-at-10-de-desconto-nos-itens-da-coleo",
-      "original_link": "https://clube.uol.com.br/casasbahia/pxJ-at-10-de-desconto-nos-itens-da-coleo",
+      "id": "pxj-ate-10-de-desconto-nos-itens-da-colecao",
+      "trace_id": "trace_pxj-ate-10-de-desconto-nos-itens-da-colecao",
+      "link": "https://clube.uol.com.br/casasbahia/pxJ-ate-10-de-desconto-nos-itens-da-colecao",
+      "original_link": "https://clube.uol.com.br/casasbahia/pxJ-ate-10-de-desconto-nos-itens-da-colecao",
       "title": "Até 10% de desconto nos itens da coleção",
       "preview_title": "Até 10% de desconto nos itens da coleção",
       "validity": "Benefício válido de 18/06/2026 12:23 até 31/07/2026 23:59.",
@@ -64,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124726,
-      "detail_elapsed_ms": 3517,
-      "scraped_at": "2026-06-18T17:04:41.666Z"
+      "detail_html_length": 131042,
+      "detail_elapsed_ms": 2116,
+      "scraped_at": "2026-06-18T17:15:58.832Z"
     },
     {
-      "id": "pxi-cmera-eos-rebel-t7-3-off-extra",
-      "trace_id": "trace_pxi-cmera-eos-rebel-t7-3-off-extra",
-      "link": "https://clube.uol.com.br/canon/pxI-cmera-eos-rebel-t7-3-off-extra",
-      "original_link": "https://clube.uol.com.br/canon/pxI-cmera-eos-rebel-t7-3-off-extra",
+      "id": "pxi-camera-eos-rebel-t7-3-off-extra",
+      "trace_id": "trace_pxi-camera-eos-rebel-t7-3-off-extra",
+      "link": "https://clube.uol.com.br/canon/pxI-camera-eos-rebel-t7-3-off-extra",
+      "original_link": "https://clube.uol.com.br/canon/pxI-camera-eos-rebel-t7-3-off-extra",
       "title": "Câmera EOS Rebel T7+ +3% OFF extra",
       "preview_title": "Câmera EOS Rebel T7+ +3% OFF extra",
       "validity": "Benefício válido de 18/06/2026 11:51 até 30/06/2026 23:59.",
@@ -88,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130800,
-      "detail_elapsed_ms": 2421,
-      "scraped_at": "2026-06-18T17:04:44.087Z"
+      "detail_html_length": 131301,
+      "detail_elapsed_ms": 1964,
+      "scraped_at": "2026-06-18T17:16:00.802Z"
     },
     {
-      "id": "pxh-cmera-eos-r50-com-3-off-extra",
-      "trace_id": "trace_pxh-cmera-eos-r50-com-3-off-extra",
-      "link": "https://clube.uol.com.br/canon/pxH-cmera-eos-r50-com-3-off-extra",
-      "original_link": "https://clube.uol.com.br/canon/pxH-cmera-eos-r50-com-3-off-extra",
+      "id": "pxh-camera-eos-r50-com-3-off-extra",
+      "trace_id": "trace_pxh-camera-eos-r50-com-3-off-extra",
+      "link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
+      "original_link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
       "title": "Câmera EOS R50 com 3% OFF extra",
       "preview_title": "Câmera EOS R50 com 3% OFF extra",
       "validity": "Benefício válido de 18/06/2026 11:18 até 30/06/2026 23:59.",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130465,
-      "detail_elapsed_ms": 1978,
-      "scraped_at": "2026-06-18T17:04:46.065Z"
+      "detail_html_length": 130473,
+      "detail_elapsed_ms": 1839,
+      "scraped_at": "2026-06-18T17:16:02.641Z"
     },
     {
       "id": "pxg-15-off-em-todo-o-site",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130420,
-      "detail_elapsed_ms": 2593,
-      "scraped_at": "2026-06-18T17:04:48.663Z"
+      "detail_html_length": 130454,
+      "detail_elapsed_ms": 2441,
+      "scraped_at": "2026-06-18T17:16:05.082Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134191,
-      "detail_elapsed_ms": 2775,
-      "scraped_at": "2026-06-18T17:04:51.438Z"
+      "detail_html_length": 134078,
+      "detail_elapsed_ms": 2197,
+      "scraped_at": "2026-06-18T17:16:07.279Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132608,
-      "detail_elapsed_ms": 2068,
-      "scraped_at": "2026-06-18T17:04:53.506Z"
+      "detail_html_length": 130830,
+      "detail_elapsed_ms": 10076,
+      "scraped_at": "2026-06-18T17:16:17.356Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -207,10 +231,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132505,
-      "detail_elapsed_ms": 2302,
-      "scraped_at": "2026-06-18T17:04:55.808Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131339,
+      "detail_elapsed_ms": 3020,
+      "scraped_at": "2026-06-18T17:16:33.986Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132504,
-      "detail_elapsed_ms": 2348,
-      "scraped_at": "2026-06-18T17:04:58.157Z"
+      "detail_html_length": 132478,
+      "detail_elapsed_ms": 7163,
+      "scraped_at": "2026-06-18T17:16:41.149Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132437,
-      "detail_elapsed_ms": 2012,
-      "scraped_at": "2026-06-18T17:05:00.169Z"
+      "detail_html_length": 132461,
+      "detail_elapsed_ms": 3097,
+      "scraped_at": "2026-06-18T17:16:44.247Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132475,
-      "detail_elapsed_ms": 2102,
-      "scraped_at": "2026-06-18T17:05:02.272Z"
-    },
-    {
-      "id": "pwo-50-off-no-par-de-ingressos-rj",
-      "trace_id": "trace_pwo-50-off-no-par-de-ingressos-rj",
-      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwO-50-off-no-par-de-ingressos-rj",
-      "original_link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwO-50-off-no-par-de-ingressos-rj",
-      "title": "50% OFF no par de ingressos - RJ",
-      "preview_title": "50% OFF no par de ingressos - RJ",
-      "validity": "Benefício válido de 16/06/2026 15:49 até 29/08/2026 23:59.",
-      "description": "Sobre a Turnê: Com quase 20 anos de trajetória e dez álbuns em seu repertório, Tiago Iorc celebra os dez anos de Troco Likes, projeto autoral que o consagrou como uma das vozes mais relevantes da música brasileira contemporânea, com o anúncio de uma turnê comemorativa que irá contemplar dez cidades brasileiras, após lançar este mês uma versão especial do álbum com artistas de renome. Data do Show: 29 de agosto, no Vivo Rio, no Rio de Janeiro/RJ. Benefício: Cupom de 50% OFF no par de ingressos do Tiago Iorc - Turnê Troco Likes 10 Anos. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas no setor pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
-      "category": "Promoções do Mês",
-      "partner_name": "Tiago Iorc - Turnê Troco Likes 10 Anos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/54362b394cbf6886c5ac9b72aaeed9f0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a319bdd5d031_6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a319bdd5d031_6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a319bdd5d031_6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132356,
-      "detail_elapsed_ms": 2246,
-      "scraped_at": "2026-06-18T17:05:04.518Z"
+      "detail_html_length": 132500,
+      "detail_elapsed_ms": 2480,
+      "scraped_at": "2026-06-18T17:16:46.727Z"
     }
   ]
 }
