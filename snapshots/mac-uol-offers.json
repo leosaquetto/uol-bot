@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 34072,
-  "run_duration_seconds": 34.07,
-  "avg_detail_ms_per_offer": 2839,
-  "generated_at": "2026-06-18T06:39:42.072Z",
+  "run_duration_ms": 33591,
+  "run_duration_seconds": 33.59,
+  "avg_detail_ms_per_offer": 2799,
+  "generated_at": "2026-06-18T06:50:20.849Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132521,
-      "detail_elapsed_ms": 2301,
-      "scraped_at": "2026-06-18T06:39:22.116Z"
+      "detail_html_length": 132777,
+      "detail_elapsed_ms": 2111,
+      "scraped_at": "2026-06-18T06:50:00.832Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132586,
-      "detail_elapsed_ms": 2820,
-      "scraped_at": "2026-06-18T06:39:24.939Z"
+      "detail_html_length": 132578,
+      "detail_elapsed_ms": 1905,
+      "scraped_at": "2026-06-18T06:50:02.739Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132555,
-      "detail_elapsed_ms": 1684,
-      "scraped_at": "2026-06-18T06:39:26.624Z"
+      "detail_html_length": 132544,
+      "detail_elapsed_ms": 1816,
+      "scraped_at": "2026-06-18T06:50:04.555Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -113,8 +113,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132524,
-      "detail_elapsed_ms": 1809,
-      "scraped_at": "2026-06-18T06:39:28.433Z"
+      "detail_elapsed_ms": 1846,
+      "scraped_at": "2026-06-18T06:50:06.402Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132497,
-      "detail_elapsed_ms": 1885,
-      "scraped_at": "2026-06-18T06:39:30.319Z"
+      "detail_html_length": 132487,
+      "detail_elapsed_ms": 2311,
+      "scraped_at": "2026-06-18T06:50:08.713Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132527,
-      "detail_elapsed_ms": 1805,
-      "scraped_at": "2026-06-18T06:39:32.124Z"
+      "detail_html_length": 132516,
+      "detail_elapsed_ms": 1988,
+      "scraped_at": "2026-06-18T06:50:10.701Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -185,8 +185,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132405,
-      "detail_elapsed_ms": 1586,
-      "scraped_at": "2026-06-18T06:39:33.710Z"
+      "detail_elapsed_ms": 1711,
+      "scraped_at": "2026-06-18T06:50:12.412Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132352,
-      "detail_elapsed_ms": 1541,
-      "scraped_at": "2026-06-18T06:39:35.251Z"
+      "detail_html_length": 132349,
+      "detail_elapsed_ms": 1793,
+      "scraped_at": "2026-06-18T06:50:14.205Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132361,
-      "detail_elapsed_ms": 1650,
-      "scraped_at": "2026-06-18T06:39:36.901Z"
+      "detail_html_length": 132390,
+      "detail_elapsed_ms": 1658,
+      "scraped_at": "2026-06-18T06:50:15.863Z"
     },
     {
       "id": "pwc-20-off-em-todo-o-site",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130985,
-      "detail_elapsed_ms": 1819,
-      "scraped_at": "2026-06-18T06:39:38.721Z"
+      "detail_html_length": 130995,
+      "detail_elapsed_ms": 1750,
+      "scraped_at": "2026-06-18T06:50:17.613Z"
     },
     {
-      "id": "pwz-seu-lbum-40-off-frete-grtis",
-      "trace_id": "trace_pwz-seu-lbum-40-off-frete-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
+      "id": "pwz-seu-album-40-off-frete-gratis",
+      "trace_id": "trace_pwz-seu-album-40-off-frete-gratis",
+      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
       "title": "Seu álbum: 40% OFF + frete grátis",
       "preview_title": "Seu álbum: 40% OFF + frete grátis",
       "validity": "Benefício válido de 15/06/2026 09:45 até 31/07/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131700,
-      "detail_elapsed_ms": 1595,
-      "scraped_at": "2026-06-18T06:39:40.316Z"
+      "detail_html_length": 131708,
+      "detail_elapsed_ms": 1493,
+      "scraped_at": "2026-06-18T06:50:19.106Z"
     },
     {
       "id": "pwr-3-paulaner-500ml-1-copo-exclusivo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133931,
-      "detail_elapsed_ms": 1693,
-      "scraped_at": "2026-06-18T06:39:42.009Z"
+      "detail_html_length": 133921,
+      "detail_elapsed_ms": 1692,
+      "scraped_at": "2026-06-18T06:50:20.798Z"
     }
   ]
 }
