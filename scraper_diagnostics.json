@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-06-18T18:52:50.705156Z",
+  "updated_at": "2026-06-18T18:54:06.232425Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 10,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Até 30% OFF + 15% OFF extra - Feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxt-ate-30-off-15-off-extra-feminina"
+    },
+    {
+      "title": "Até 60% OFF + 20% OFF extra - Feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxS-ate-60-off-20-off-extra-feminina",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxs-ate-60-off-20-off-extra-feminina"
+    },
     {
       "title": "15% OFF na 1ª compra no app Lojas Renner",
       "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
