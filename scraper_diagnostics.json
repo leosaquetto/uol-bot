@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-06-18T19:36:18.388577Z",
+  "updated_at": "2026-06-18T19:46:34.847531Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
-    "duplicada_latest": 2,
+    "duplicada_historico": 6,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -57,36 +57,6 @@
       "link": "https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off",
       "reason": "duplicada_latest",
       "trace_id": "trace_pxn-camiseta-tenis-bermuda-e-mais-10-off"
-    },
-    {
-      "title": "Camiseta, camisa de time, calção+10%OFF",
-      "link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calcao-10-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pxm-camiseta-camisa-de-time-calcao-10-off"
-    },
-    {
-      "title": "Camiseta, bermuda, meia e mais + 10% OFF",
-      "link": "https://clube.uol.com.br/centauro/pxL-camiseta-bermuda-meia-e-mais-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxl-camiseta-bermuda-meia-e-mais-10-off"
-    },
-    {
-      "title": "Tênis, chinelos e sandálias com +10% OFF",
-      "link": "https://clube.uol.com.br/centauro/pxK-tenis-chinelos-e-sandalias-com-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxk-tenis-chinelos-e-sandalias-com-10-off"
-    },
-    {
-      "title": "Até 10% de desconto nos itens da coleção",
-      "link": "https://clube.uol.com.br/casasbahia/pxJ-ate-10-de-desconto-nos-itens-da-colecao",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxj-ate-10-de-desconto-nos-itens-da-colecao"
-    },
-    {
-      "title": "Câmera EOS Rebel T7+ +3% OFF extra",
-      "link": "https://clube.uol.com.br/canon/pxI-camera-eos-rebel-t7-3-off-extra",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxi-camera-eos-rebel-t7-3-off-extra"
     }
   ]
 }
