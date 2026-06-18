@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 33325,
-  "run_duration_seconds": 33.33,
-  "avg_detail_ms_per_offer": 2777,
-  "generated_at": "2026-06-18T18:51:57.427Z",
+  "run_duration_ms": 33082,
+  "run_duration_seconds": 33.08,
+  "avg_detail_ms_per_offer": 2757,
+  "generated_at": "2026-06-18T19:02:35.637Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pxu-ate-30-off-10-off-extra-feminina",
+      "trace_id": "trace_pxu-ate-30-off-10-off-extra-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxU-ate-30-off-10-off-extra-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxU-ate-30-off-10-off-extra-feminina",
+      "title": "Até 30% OFF + 10% OFF extra - Feminina",
+      "preview_title": "Até 30% OFF + 10% OFF extra - Feminina",
+      "validity": "Benefício válido de 18/06/2026 15:51 até 30/06/2026 09:00.",
+      "description": "Benefício: Até 30% OFF + 10% OFF extra na seleção feminina! Regras: Válido para todos os itens da seleção. Não cumulativo com demais promoções. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1e03e4f29284ddd8e20812e53fba7324.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1e03e4f29284ddd8e20812e53fba7324.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1e03e4f29284ddd8e20812e53fba7324.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129418,
+      "detail_elapsed_ms": 3115,
+      "scraped_at": "2026-06-18T19:02:14.811Z"
+    },
     {
       "id": "pxt-ate-30-off-15-off-extra-feminina",
       "trace_id": "trace_pxt-ate-30-off-15-off-extra-feminina",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129497,
-      "detail_elapsed_ms": 2593,
-      "scraped_at": "2026-06-18T18:51:35.458Z"
+      "detail_html_length": 124517,
+      "detail_elapsed_ms": 2063,
+      "scraped_at": "2026-06-18T19:02:16.875Z"
     },
     {
       "id": "pxs-ate-60-off-20-off-extra-feminina",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130815,
-      "detail_elapsed_ms": 2128,
-      "scraped_at": "2026-06-18T18:51:37.587Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 1936,
+      "scraped_at": "2026-06-18T19:02:18.811Z"
     },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131161,
-      "detail_elapsed_ms": 2379,
-      "scraped_at": "2026-06-18T18:51:39.966Z"
+      "detail_html_length": 131130,
+      "detail_elapsed_ms": 1913,
+      "scraped_at": "2026-06-18T19:02:20.724Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130804,
-      "detail_elapsed_ms": 1965,
-      "scraped_at": "2026-06-18T18:51:41.931Z"
+      "detail_html_length": 130744,
+      "detail_elapsed_ms": 1715,
+      "scraped_at": "2026-06-18T19:02:22.439Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133040,
-      "detail_elapsed_ms": 1865,
-      "scraped_at": "2026-06-18T18:51:43.796Z"
+      "detail_html_length": 133006,
+      "detail_elapsed_ms": 1900,
+      "scraped_at": "2026-06-18T19:02:24.339Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130941,
-      "detail_elapsed_ms": 2019,
-      "scraped_at": "2026-06-18T18:51:45.815Z"
+      "detail_html_length": 130928,
+      "detail_elapsed_ms": 1746,
+      "scraped_at": "2026-06-18T19:02:26.085Z"
     },
     {
       "id": "pxm-camiseta-camisa-de-time-calcao-10-off",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131005,
-      "detail_elapsed_ms": 2041,
-      "scraped_at": "2026-06-18T18:51:47.857Z"
+      "detail_html_length": 130962,
+      "detail_elapsed_ms": 1986,
+      "scraped_at": "2026-06-18T19:02:28.071Z"
     },
     {
       "id": "pxl-camiseta-bermuda-meia-e-mais-10-off",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130959,
-      "detail_elapsed_ms": 1824,
-      "scraped_at": "2026-06-18T18:51:49.681Z"
+      "detail_html_length": 130916,
+      "detail_elapsed_ms": 1864,
+      "scraped_at": "2026-06-18T19:02:29.935Z"
     },
     {
       "id": "pxk-tenis-chinelos-e-sandalias-com-10-off",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130949,
-      "detail_elapsed_ms": 1730,
-      "scraped_at": "2026-06-18T18:51:51.411Z"
+      "detail_html_length": 130936,
+      "detail_elapsed_ms": 1749,
+      "scraped_at": "2026-06-18T19:02:31.685Z"
     },
     {
       "id": "pxj-ate-10-de-desconto-nos-itens-da-colecao",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131184,
-      "detail_elapsed_ms": 1801,
-      "scraped_at": "2026-06-18T18:51:53.213Z"
+      "detail_html_length": 131153,
+      "detail_elapsed_ms": 1914,
+      "scraped_at": "2026-06-18T19:02:33.599Z"
     },
     {
       "id": "pxi-camera-eos-rebel-t7-3-off-extra",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130825,
-      "detail_elapsed_ms": 1932,
-      "scraped_at": "2026-06-18T18:51:55.145Z"
-    },
-    {
-      "id": "pxh-camera-eos-r50-com-3-off-extra",
-      "trace_id": "trace_pxh-camera-eos-r50-com-3-off-extra",
-      "link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
-      "original_link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
-      "title": "Câmera EOS R50 com 3% OFF extra",
-      "preview_title": "Câmera EOS R50 com 3% OFF extra",
-      "validity": "Benefício válido de 18/06/2026 11:18 até 30/06/2026 23:59.",
-      "description": "Benefício: Câmera EOS R50 com 3% OFF extra Regras: Aplique o cupom no carrinho. Sujeito à desativação sem aviso prévio",
-      "category": "Eletrodomésticos e Eletrônicos",
-      "partner_name": "Canon",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0b894f329b35cafe0715a58136d19df9.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130541,
-      "detail_elapsed_ms": 2046,
-      "scraped_at": "2026-06-18T18:51:57.191Z"
+      "detail_html_length": 130833,
+      "detail_elapsed_ms": 1874,
+      "scraped_at": "2026-06-18T19:02:35.473Z"
     }
   ]
 }
