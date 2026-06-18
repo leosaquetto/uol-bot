@@ -1,23 +1,23 @@
 {
-  "updated_at": "2026-06-18T02:29:36.688705Z",
+  "updated_at": "2026-06-18T02:39:43.674744Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
-      "title": "10% OFF na compra de ingresso",
+      "title": "502 Bad Gateway",
       "link": "https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso",
       "reason": "duplicada_historico",
       "trace_id": "trace_pxf-10-off-na-compra-de-ingresso"
@@ -75,6 +75,12 @@
       "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwc-20-off-em-todo-o-site"
+    },
+    {
+      "title": "Seu álbum: 40% OFF + frete grátis",
+      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pwz-seu-album-40-off-frete-gratis"
     },
     {
       "title": "3 Paulaner 500ml + 1 copo exclusivo",
