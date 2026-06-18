@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 61199,
-  "run_duration_seconds": 61.2,
-  "avg_detail_ms_per_offer": 5100,
-  "generated_at": "2026-06-18T00:42:39.220Z",
+  "run_duration_ms": 112079,
+  "run_duration_seconds": 112.08,
+  "avg_detail_ms_per_offer": 9340,
+  "generated_at": "2026-06-18T00:54:38.916Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso",
       "title": "10% OFF na compra de ingresso",
       "preview_title": "10% OFF na compra de ingresso",
-      "validity": "Benefício válido de 16/06/2026 16:56 até 19/07/2026 23:59.",
-      "description": "Sobre o evento: A Arena Brasileira 2026 é uma experiência inédita no Parque Ibirapuera que une grandes shows da música brasileira, transmissão dos jogos e entretenimento em um só lugar. Entre junho e julho, o evento reúne artistas como Ivete Sangalo, Caetano Veloso, Marisa Monte, Thiaguinho, IZA, Ludmilla e muitos outros em encontros únicos ao longo da temporada. Benefício: Garanta 10% OFF nos ingressos da Arena Brasileira 2026! Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\" e \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, o seu desconto já vai estar aplicado, basta escolher o dia e prosseguir com o fluxo de compra dos seus ingressos. Regras: Benefício válido para Assinante UOL. Os ingressos para o festival podem esgotar a qualquer momento. Confira na página oficial da Ingresse a disponibilidade. O desconto de 10% é aplicado sobre o valor total dos ingressos da Arena Brasileira. Endereço da Arena Brasileira: Parque Ibirapuera - Av. Pedro Álvares Cabral, s/n - Vila Mariana, São Paulo - SP.",
+      "validity": "",
+      "description": "",
       "category": "Promoções do Mês",
       "partner_name": "Arena Brasileira",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a20c126ef30ba2af7ed8f7274d406a2e.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 134013,
-      "detail_elapsed_ms": 6149,
-      "scraped_at": "2026-06-18T00:42:10.748Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12017,
+      "scraped_at": "2026-06-18T00:54:13.487Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131325,
-      "detail_elapsed_ms": 2935,
-      "scraped_at": "2026-06-18T00:42:13.684Z"
+      "detail_html_length": 131389,
+      "detail_elapsed_ms": 2632,
+      "scraped_at": "2026-06-18T00:54:16.122Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132508,
-      "detail_elapsed_ms": 2284,
-      "scraped_at": "2026-06-18T00:42:15.968Z"
+      "detail_html_length": 132504,
+      "detail_elapsed_ms": 2115,
+      "scraped_at": "2026-06-18T00:54:18.238Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132478,
-      "detail_elapsed_ms": 2592,
-      "scraped_at": "2026-06-18T00:42:18.560Z"
+      "detail_html_length": 132473,
+      "detail_elapsed_ms": 1889,
+      "scraped_at": "2026-06-18T00:54:20.127Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132440,
-      "detail_elapsed_ms": 2585,
-      "scraped_at": "2026-06-18T00:42:21.146Z"
+      "detail_html_length": 132497,
+      "detail_elapsed_ms": 2128,
+      "scraped_at": "2026-06-18T00:54:22.255Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132499,
-      "detail_elapsed_ms": 2649,
-      "scraped_at": "2026-06-18T00:42:23.797Z"
+      "detail_html_length": 132484,
+      "detail_elapsed_ms": 1969,
+      "scraped_at": "2026-06-18T00:54:24.224Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132360,
-      "detail_elapsed_ms": 2325,
-      "scraped_at": "2026-06-18T00:42:26.122Z"
+      "detail_html_length": 132355,
+      "detail_elapsed_ms": 1855,
+      "scraped_at": "2026-06-18T00:54:26.079Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132314,
-      "detail_elapsed_ms": 2584,
-      "scraped_at": "2026-06-18T00:42:28.706Z"
+      "detail_html_length": 132330,
+      "detail_elapsed_ms": 2122,
+      "scraped_at": "2026-06-18T00:54:28.202Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132344,
-      "detail_elapsed_ms": 2370,
-      "scraped_at": "2026-06-18T00:42:31.077Z"
+      "detail_html_length": 132339,
+      "detail_elapsed_ms": 2637,
+      "scraped_at": "2026-06-18T00:54:30.839Z"
     },
     {
       "id": "pwc-20-off-em-todo-o-site",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130949,
-      "detail_elapsed_ms": 2529,
-      "scraped_at": "2026-06-18T00:42:33.607Z"
+      "detail_html_length": 129562,
+      "detail_elapsed_ms": 3810,
+      "scraped_at": "2026-06-18T00:54:34.650Z"
     },
     {
-      "id": "pwz-seu-lbum-40-off-frete-grtis",
-      "trace_id": "trace_pwz-seu-lbum-40-off-frete-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-lbum-40-off-frete-grtis",
+      "id": "pwz-seu-album-40-off-frete-gratis",
+      "trace_id": "trace_pwz-seu-album-40-off-frete-gratis",
+      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
       "title": "Seu álbum: 40% OFF + frete grátis",
       "preview_title": "Seu álbum: 40% OFF + frete grátis",
       "validity": "Benefício válido de 15/06/2026 09:45 até 31/07/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131653,
-      "detail_elapsed_ms": 2571,
-      "scraped_at": "2026-06-18T00:42:36.178Z"
+      "detail_html_length": 131647,
+      "detail_elapsed_ms": 1934,
+      "scraped_at": "2026-06-18T00:54:36.584Z"
     },
     {
       "id": "pwr-3-paulaner-500ml-1-copo-exclusivo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133884,
-      "detail_elapsed_ms": 2598,
-      "scraped_at": "2026-06-18T00:42:38.776Z"
+      "detail_html_length": 133880,
+      "detail_elapsed_ms": 2155,
+      "scraped_at": "2026-06-18T00:54:38.739Z"
     }
   ]
 }
