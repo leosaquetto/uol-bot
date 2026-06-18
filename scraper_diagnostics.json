@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-18T15:22:07.570851Z",
+  "updated_at": "2026-06-18T15:23:07.204032Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Câmera EOS Rebel T7+ +3% OFF extra",
+      "link": "https://clube.uol.com.br/canon/pxI-camera-eos-rebel-t7-3-off-extra",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxi-camera-eos-rebel-t7-3-off-extra"
+    },
     {
       "title": "Câmera EOS R50 com 3% OFF extra",
       "link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
