@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-18T21:20:49.290587Z",
+  "updated_at": "2026-06-18T21:46:03.014044Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
+    "duplicada_historico": 10,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -75,18 +75,6 @@
       "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
       "reason": "duplicada_historico",
       "trace_id": "trace_pxq-15-off-na-1a-compra-no-app-lojas-renner"
-    },
-    {
-      "title": "Até 20% de desconto em jaquetas no site!",
-      "link": "https://clube.uol.com.br/mizuno/pxP-ate-20-de-desconto-em-jaquetas-no-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxp-ate-20-de-desconto-em-jaquetas-no-site"
-    },
-    {
-      "title": "Especial Inverno: 2 peças por R$ 160",
-      "link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-pecas-por-r-160",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxo-especial-inverno-2-pecas-por-r-160"
     }
   ]
 }
