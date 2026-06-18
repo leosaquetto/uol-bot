@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-18T16:07:33.414100Z",
+  "updated_at": "2026-06-18T16:08:39.591038Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 11,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Tênis, chinelos e sandálias com +10% OFF",
+      "link": "https://clube.uol.com.br/centauro/pxK-tenis-chinelos-e-sandalias-com-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxk-tenis-chinelos-e-sandalias-com-10-off"
+    },
     {
       "title": "Até 10% de desconto nos itens da coleção",
       "link": "https://clube.uol.com.br/casasbahia/pxJ-ate-10-de-desconto-nos-itens-da-colecao",
