@@ -14,12 +14,60 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 35564,
-  "run_duration_seconds": 35.56,
-  "avg_detail_ms_per_offer": 2964,
-  "generated_at": "2026-06-18T14:17:29.499Z",
+  "run_duration_ms": 26994,
+  "run_duration_seconds": 26.99,
+  "avg_detail_ms_per_offer": 2250,
+  "generated_at": "2026-06-18T14:28:02.338Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pxh-camera-eos-r50-com-3-off-extra",
+      "trace_id": "trace_pxh-camera-eos-r50-com-3-off-extra",
+      "link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
+      "original_link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
+      "title": "Câmera EOS R50 com 3% OFF extra",
+      "preview_title": "Câmera EOS R50 com 3% OFF extra",
+      "validity": "Benefício válido de 18/06/2026 11:18 até 30/06/2026 23:59.",
+      "description": "Benefício: Câmera EOS R50 com 3% OFF extra Regras: Aplique o cupom no carrinho. Sujeito à desativação sem aviso prévio",
+      "category": "Eletrodomésticos e Eletrônicos",
+      "partner_name": "Canon",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0b894f329b35cafe0715a58136d19df9.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 123646,
+      "detail_elapsed_ms": 2249,
+      "scraped_at": "2026-06-18T14:27:45.115Z"
+    },
+    {
+      "id": "pxg-15-off-em-todo-o-site",
+      "trace_id": "trace_pxg-15-off-em-todo-o-site",
+      "link": "https://clube.uol.com.br/avon/pxG-15-off-em-todo-o-site",
+      "original_link": "https://clube.uol.com.br/avon/pxG-15-off-em-todo-o-site",
+      "title": "15% OFF em todo o site",
+      "preview_title": "15% OFF em todo o site",
+      "validity": "Benefício válido de 18/06/2026 10:53 até 26/06/2026 23:59.",
+      "description": "Benefício: 15% OFF em todo o site Regras: Cupom válido para 1 uso por CPF e apenas para produtos elegíveis da seleção. Sujeito à desativação sem aviso prévio.",
+      "category": "Beleza",
+      "partner_name": "Avon",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/fec82108d2afc57d203556f516da83fe.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130412,
+      "detail_elapsed_ms": 1779,
+      "scraped_at": "2026-06-18T14:27:46.896Z"
+    },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
       "trace_id": "trace_pxf-10-off-na-compra-de-ingresso",
@@ -40,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134033,
-      "detail_elapsed_ms": 2495,
-      "scraped_at": "2026-06-18T14:17:08.776Z"
+      "detail_html_length": 134213,
+      "detail_elapsed_ms": 1573,
+      "scraped_at": "2026-06-18T14:27:48.469Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -64,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132541,
-      "detail_elapsed_ms": 1619,
-      "scraped_at": "2026-06-18T14:17:10.397Z"
+      "detail_html_length": 132589,
+      "detail_elapsed_ms": 1486,
+      "scraped_at": "2026-06-18T14:27:49.955Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -88,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132548,
-      "detail_elapsed_ms": 2012,
-      "scraped_at": "2026-06-18T14:17:12.409Z"
+      "detail_html_length": 132546,
+      "detail_elapsed_ms": 1439,
+      "scraped_at": "2026-06-18T14:27:51.394Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -112,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132528,
-      "detail_elapsed_ms": 2575,
-      "scraped_at": "2026-06-18T14:17:14.984Z"
+      "detail_html_length": 132536,
+      "detail_elapsed_ms": 1403,
+      "scraped_at": "2026-06-18T14:27:52.797Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -136,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132501,
-      "detail_elapsed_ms": 1613,
-      "scraped_at": "2026-06-18T14:17:16.597Z"
+      "detail_html_length": 132498,
+      "detail_elapsed_ms": 1715,
+      "scraped_at": "2026-06-18T14:27:54.512Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -160,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132539,
-      "detail_elapsed_ms": 1670,
-      "scraped_at": "2026-06-18T14:17:18.267Z"
+      "detail_html_length": 132528,
+      "detail_elapsed_ms": 1397,
+      "scraped_at": "2026-06-18T14:27:55.909Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -184,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132399,
-      "detail_elapsed_ms": 1801,
-      "scraped_at": "2026-06-18T14:17:20.069Z"
+      "detail_html_length": 132387,
+      "detail_elapsed_ms": 1408,
+      "scraped_at": "2026-06-18T14:27:57.317Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -208,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132364,
-      "detail_elapsed_ms": 1878,
-      "scraped_at": "2026-06-18T14:17:21.947Z"
+      "detail_html_length": 132352,
+      "detail_elapsed_ms": 1649,
+      "scraped_at": "2026-06-18T14:27:58.967Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -232,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132394,
-      "detail_elapsed_ms": 1739,
-      "scraped_at": "2026-06-18T14:17:23.686Z"
+      "detail_html_length": 132401,
+      "detail_elapsed_ms": 1806,
+      "scraped_at": "2026-06-18T14:28:00.773Z"
     },
     {
       "id": "pwc-20-off-em-todo-o-site",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130959,
-      "detail_elapsed_ms": 1657,
-      "scraped_at": "2026-06-18T14:17:25.343Z"
-    },
-    {
-      "id": "pwz-seu-album-40-off-frete-gratis",
-      "trace_id": "trace_pwz-seu-album-40-off-frete-gratis",
-      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
-      "title": "Seu álbum: 40% OFF + frete grátis",
-      "preview_title": "Seu álbum: 40% OFF + frete grátis",
-      "validity": "Benefício válido de 15/06/2026 09:45 até 31/07/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: 40% OFF no Álbum de Figurinhas Personalizado da FotoRegistro + Frete Grátis. Regras: Oferta válida para 1 Álbum de Figurinhas - Tamanho 21x21cm com capa flexível - Figurinhas no tamanho 6,5 x 6,5 cm - Acabamento em grampo e verniz - Com espaço para 20 fotos - Frete Incluso na opção de entrega Econômica - Validade do cupom até 31/07/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
-      "category": "Compras e Presentes",
-      "partner_name": "Foto Registro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f91155202a0841d3e635bc072b710851.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f91155202a0841d3e635bc072b710851.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f91155202a0841d3e635bc072b710851.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131725,
-      "detail_elapsed_ms": 1449,
-      "scraped_at": "2026-06-18T14:17:26.792Z"
-    },
-    {
-      "id": "pwr-3-paulaner-500ml-1-copo-exclusivo",
-      "trace_id": "trace_pwr-3-paulaner-500ml-1-copo-exclusivo",
-      "link": "https://clube.uol.com.br/casaflora/pwr-3-paulaner-500ml-1-copo-exclusivo",
-      "original_link": "https://clube.uol.com.br/casaflora/pwr-3-paulaner-500ml-1-copo-exclusivo",
-      "title": "3 Paulaner 500ml + 1 copo exclusivo",
-      "preview_title": "3 Paulaner 500ml + 1 copo exclusivo",
-      "validity": "Benefício válido de 12/06/2026 10:48 até 31/07/2026 23:59.",
-      "description": "Sobre a Casa Flora: Há 55 anos, a Casa Flora Importadora conecta pessoas por meio de experiências gastronômicas únicas. A empresa importa bebidas, vinhos e alimentos de excelência de todo o mundo, com o propósito de reunir pessoas à mesa e transformar encontros em momentos memoráveis. Venha torcer pelo Brasil com o benefício da Casa Flora! Benefício: Compre 3 garrafas de Paulaner 500ml na Casa Flora e ganhe 1 copo exclusivo. Como utilizar: Para resgatar seu benefício de Assinante UOL, clique em \"Utilizar este benefício\" e, em seguida, em \"Ir para o site\". No site da parceria, selecione 3 unidades. Ao adicionar as cervejas Paulaner de sua preferência ao carrinho, o brinde do copo exclusivo será incluído automaticamente. Regras: Benefício válido para assinantes UOL. Na compra de 3 garrafas, ganhe 1 copo exclusivo (limitado a 1 por pedido).",
-      "category": "Promoções do Mês",
-      "partner_name": "Casa Flora",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/dece5595decc83a21cc8d8162a774d66.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1383fce57435042e31928ab0c54489fd.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1383fce57435042e31928ab0c54489fd.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1383fce57435042e31928ab0c54489fd.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133923,
-      "detail_elapsed_ms": 2657,
-      "scraped_at": "2026-06-18T14:17:29.449Z"
+      "detail_html_length": 130977,
+      "detail_elapsed_ms": 1511,
+      "scraped_at": "2026-06-18T14:28:02.284Z"
     }
   ]
 }
