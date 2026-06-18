@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 215100,
-  "run_duration_seconds": 215.1,
-  "avg_detail_ms_per_offer": 17925,
-  "generated_at": "2026-06-18T22:41:43.199Z",
+  "run_duration_ms": 178575,
+  "run_duration_seconds": 178.57,
+  "avg_detail_ms_per_offer": 14881,
+  "generated_at": "2026-06-18T22:54:58.071Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance",
       "title": "15% OFF em seleção Mizuno e New Balance",
       "preview_title": "15% OFF em seleção Mizuno e New Balance",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 18/06/2026 17:33 até 22/06/2026 23:59.",
+      "description": "Benefício: 15% OFF em seleção Mizuno e New Balance Regras: Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outras ofertas. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Dafiti",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3a4b53bc2a0901780dea5a39a65e362.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3a4b53bc2a0901780dea5a39a65e362.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance\", waiting until \"domcontentloaded\"",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3a4b53bc2a0901780dea5a39a65e362.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12132,
-      "scraped_at": "2026-06-18T22:40:09.825Z"
+      "detail_html_length": 130349,
+      "detail_elapsed_ms": 7336,
+      "scraped_at": "2026-06-18T22:53:30.371Z"
     },
     {
       "id": "pya-2-ingressos-21-06-cultura-artstica-sp",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133104,
-      "detail_elapsed_ms": 12370,
-      "scraped_at": "2026-06-18T22:40:34.543Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132967,
+      "detail_elapsed_ms": 12067,
+      "scraped_at": "2026-06-18T22:53:42.514Z"
     },
     {
       "id": "pxz-2-ingressos-28-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133956,
-      "detail_elapsed_ms": 9471,
-      "scraped_at": "2026-06-18T22:40:44.014Z"
+      "detail_html_length": 133848,
+      "detail_elapsed_ms": 11073,
+      "scraped_at": "2026-06-18T22:53:53.587Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134331,
-      "detail_elapsed_ms": 8277,
-      "scraped_at": "2026-06-18T22:40:52.294Z"
+      "detail_html_length": 133940,
+      "detail_elapsed_ms": 11444,
+      "scraped_at": "2026-06-18T22:54:05.032Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133911,
-      "detail_elapsed_ms": 8029,
-      "scraped_at": "2026-06-18T22:41:00.324Z"
+      "detail_html_length": 133922,
+      "detail_elapsed_ms": 9156,
+      "scraped_at": "2026-06-18T22:54:14.188Z"
     },
     {
       "id": "pxw-2-ingressos-21-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132498,
-      "detail_elapsed_ms": 4950,
-      "scraped_at": "2026-06-18T22:41:05.274Z"
+      "detail_html_length": 133735,
+      "detail_elapsed_ms": 6352,
+      "scraped_at": "2026-06-18T22:54:20.540Z"
     },
     {
       "id": "pxu-at-30-off-10-off-extra-feminina",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130811,
-      "detail_elapsed_ms": 5262,
-      "scraped_at": "2026-06-18T22:41:10.536Z"
+      "detail_html_length": 130822,
+      "detail_elapsed_ms": 7860,
+      "scraped_at": "2026-06-18T22:54:28.403Z"
     },
     {
       "id": "pxt-at-30-off-15-off-extra-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130858,
-      "detail_elapsed_ms": 3911,
-      "scraped_at": "2026-06-18T22:41:14.447Z"
+      "detail_html_length": 130880,
+      "detail_elapsed_ms": 8591,
+      "scraped_at": "2026-06-18T22:54:36.995Z"
     },
     {
       "id": "pxs-at-60-off-20-off-extra-feminina",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129643,
-      "detail_elapsed_ms": 4253,
-      "scraped_at": "2026-06-18T22:41:18.700Z"
+      "detail_html_length": 130672,
+      "detail_elapsed_ms": 8015,
+      "scraped_at": "2026-06-18T22:54:45.011Z"
     },
     {
       "id": "pxq-15-off-na-1-compra-no-app-lojas-renner",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129774,
-      "detail_elapsed_ms": 4339,
-      "scraped_at": "2026-06-18T22:41:23.039Z"
+      "detail_html_length": 131009,
+      "detail_elapsed_ms": 6580,
+      "scraped_at": "2026-06-18T22:54:51.592Z"
     },
     {
       "id": "pxp-at-20-de-desconto-em-jaquetas-no-site",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130593,
-      "detail_elapsed_ms": 9429,
-      "scraped_at": "2026-06-18T22:41:32.468Z"
+      "detail_html_length": 124381,
+      "detail_elapsed_ms": 3469,
+      "scraped_at": "2026-06-18T22:54:55.061Z"
     },
     {
       "id": "pxo-especial-inverno-2-peas-por-r-160",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132859,
-      "detail_elapsed_ms": 9327,
-      "scraped_at": "2026-06-18T22:41:41.795Z"
+      "detail_html_length": 131526,
+      "detail_elapsed_ms": 2684,
+      "scraped_at": "2026-06-18T22:54:57.746Z"
     }
   ]
 }
