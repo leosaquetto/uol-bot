@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-18T14:19:23.722026Z",
+  "updated_at": "2026-06-18T14:28:51.894932Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
+    "duplicada_historico": 9,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -75,18 +75,6 @@
       "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
       "reason": "duplicada_historico",
       "trace_id": "trace_pwc-20-off-em-todo-o-site"
-    },
-    {
-      "title": "Seu álbum: 40% OFF + frete grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/pwz-seu-album-40-off-frete-gratis",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwz-seu-album-40-off-frete-gratis"
-    },
-    {
-      "title": "3 Paulaner 500ml + 1 copo exclusivo",
-      "link": "https://clube.uol.com.br/casaflora/pwr-3-paulaner-500ml-1-copo-exclusivo",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pwr-3-paulaner-500ml-1-copo-exclusivo"
     }
   ]
 }
