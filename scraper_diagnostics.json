@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-18T21:46:03.014044Z",
+  "updated_at": "2026-06-18T21:47:12.230185Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -21,6 +21,18 @@
       "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-selecao-mizuno-e-new-balance",
       "reason": "duplicada_historico",
       "trace_id": "trace_pyc-15-off-em-selecao-mizuno-e-new-balance"
+    },
+    {
+      "title": "2 INGRESSOS 22/06 Cultura Artística SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pyb-2-ingressos-22-06-cultura-artistica-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pyb-2-ingressos-22-06-cultura-artistica-sp"
+    },
+    {
+      "title": "2 INGRESSOS 21/06 Cultura Artística SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pya-2-ingressos-21-06-cultura-artistica-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pya-2-ingressos-21-06-cultura-artistica-sp"
     },
     {
       "title": "2 INGRESSOS: 28/06 Morumbi Park- SP",
