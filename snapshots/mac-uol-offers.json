@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 146520,
-  "run_duration_seconds": 146.52,
-  "avg_detail_ms_per_offer": 12210,
-  "generated_at": "2026-06-18T20:09:11.745Z",
+  "run_duration_ms": 93066,
+  "run_duration_seconds": 93.07,
+  "avg_detail_ms_per_offer": 7756,
+  "generated_at": "2026-06-18T20:21:00.226Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134094,
-      "detail_elapsed_ms": 13474,
-      "scraped_at": "2026-06-18T20:07:35.153Z"
+      "detail_html_length": 131065,
+      "detail_elapsed_ms": 4996,
+      "scraped_at": "2026-06-18T20:20:28.275Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133709,
-      "detail_elapsed_ms": 6274,
-      "scraped_at": "2026-06-18T20:07:41.428Z"
+      "detail_html_length": 132798,
+      "detail_elapsed_ms": 3690,
+      "scraped_at": "2026-06-18T20:20:31.973Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133906,
-      "detail_elapsed_ms": 9589,
-      "scraped_at": "2026-06-18T20:07:51.017Z"
+      "detail_html_length": 133898,
+      "detail_elapsed_ms": 6000,
+      "scraped_at": "2026-06-18T20:20:37.974Z"
     },
     {
       "id": "pxw-2-ingressos-21-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134168,
-      "detail_elapsed_ms": 14615,
-      "scraped_at": "2026-06-18T20:08:05.633Z"
+      "detail_html_length": 132377,
+      "detail_elapsed_ms": 1777,
+      "scraped_at": "2026-06-18T20:20:39.751Z"
     },
     {
       "id": "pxv-2-ingressos-20-06-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133703,
-      "detail_elapsed_ms": 8116,
-      "scraped_at": "2026-06-18T20:08:13.749Z"
+      "detail_html_length": 133863,
+      "detail_elapsed_ms": 2344,
+      "scraped_at": "2026-06-18T20:20:42.095Z"
     },
     {
       "id": "pxu-ate-30-off-10-off-extra-feminina",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129575,
-      "detail_elapsed_ms": 4002,
-      "scraped_at": "2026-06-18T20:08:17.751Z"
+      "detail_html_length": 130815,
+      "detail_elapsed_ms": 2901,
+      "scraped_at": "2026-06-18T20:20:44.996Z"
     },
     {
       "id": "pxt-ate-30-off-15-off-extra-feminina",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130869,
-      "detail_elapsed_ms": 2657,
-      "scraped_at": "2026-06-18T20:08:20.408Z"
+      "detail_html_length": 130861,
+      "detail_elapsed_ms": 2860,
+      "scraped_at": "2026-06-18T20:20:47.856Z"
     },
     {
       "id": "pxs-ate-60-off-20-off-extra-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130665,
-      "detail_elapsed_ms": 9169,
-      "scraped_at": "2026-06-18T20:08:29.578Z"
+      "detail_html_length": 129655,
+      "detail_elapsed_ms": 2140,
+      "scraped_at": "2026-06-18T20:20:49.996Z"
     },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131092,
-      "detail_elapsed_ms": 4583,
-      "scraped_at": "2026-06-18T20:08:34.161Z"
+      "detail_html_length": 131132,
+      "detail_elapsed_ms": 2150,
+      "scraped_at": "2026-06-18T20:20:52.146Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124391,
-      "detail_elapsed_ms": 4064,
-      "scraped_at": "2026-06-18T20:08:38.225Z"
+      "detail_html_length": 130734,
+      "detail_elapsed_ms": 2362,
+      "scraped_at": "2026-06-18T20:20:54.508Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132948,
-      "detail_elapsed_ms": 7616,
-      "scraped_at": "2026-06-18T20:08:45.841Z"
+      "detail_html_length": 133020,
+      "detail_elapsed_ms": 3045,
+      "scraped_at": "2026-06-18T20:20:57.553Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off",
       "title": "Camiseta, tênis, bermuda e mais + 10%OFF",
       "preview_title": "Camiseta, tênis, bermuda e mais + 10%OFF",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 18/06/2026 14:14 até 30/06/2026 23:59.",
+      "description": "Benefício: Camiseta, tênis, bermuda e mais + 10% OFF Regras: Desconto válido para seleção de produtos do link. Sujeito à disponibilidade do produto. Não cumulativo com demais cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Centauro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8490bef8de0e0d15ddb11d92226b4fc7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8490bef8de0e0d15ddb11d92226b4fc7.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12071,
-      "scraped_at": "2026-06-18T20:09:10.353Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8490bef8de0e0d15ddb11d92226b4fc7.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130941,
+      "detail_elapsed_ms": 2348,
+      "scraped_at": "2026-06-18T20:20:59.902Z"
     }
   ]
 }
