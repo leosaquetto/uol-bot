@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 38069,
-  "run_duration_seconds": 38.07,
-  "avg_detail_ms_per_offer": 3172,
-  "generated_at": "2026-06-18T15:10:34.772Z",
+  "run_duration_ms": 29039,
+  "run_duration_seconds": 29.04,
+  "avg_detail_ms_per_offer": 2420,
+  "generated_at": "2026-06-18T15:21:10.018Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pxi-camera-eos-rebel-t7-3-off-extra",
+      "trace_id": "trace_pxi-camera-eos-rebel-t7-3-off-extra",
+      "link": "https://clube.uol.com.br/canon/pxI-camera-eos-rebel-t7-3-off-extra",
+      "original_link": "https://clube.uol.com.br/canon/pxI-camera-eos-rebel-t7-3-off-extra",
+      "title": "Câmera EOS Rebel T7+ +3% OFF extra",
+      "preview_title": "Câmera EOS Rebel T7+ +3% OFF extra",
+      "validity": "Benefício válido de 18/06/2026 11:51 até 30/06/2026 23:59.",
+      "description": "Benefício: Câmera EOS Rebel T7+ com Lente EF-S 18-55mm IS II + desconto da parceria Regras: Não cumulativo com outros cupons vigentes. Oferta válida apenas para a loja online e sujeita à desativação sem aviso prévio.",
+      "category": "Eletrodomésticos e Eletrônicos",
+      "partner_name": "Canon",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0b894f329b35cafe0715a58136d19df9.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d76f6fb90781e14c098177f8a1d68583.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d76f6fb90781e14c098177f8a1d68583.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d76f6fb90781e14c098177f8a1d68583.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130656,
+      "detail_elapsed_ms": 2094,
+      "scraped_at": "2026-06-18T15:20:53.298Z"
+    },
     {
       "id": "pxh-camera-eos-r50-com-3-off-extra",
       "trace_id": "trace_pxh-camera-eos-r50-com-3-off-extra",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130333,
-      "detail_elapsed_ms": 2496,
-      "scraped_at": "2026-06-18T15:10:13.252Z"
+      "detail_html_length": 130506,
+      "detail_elapsed_ms": 1574,
+      "scraped_at": "2026-06-18T15:20:54.873Z"
     },
     {
       "id": "pxg-15-off-em-todo-o-site",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130460,
-      "detail_elapsed_ms": 2375,
-      "scraped_at": "2026-06-18T15:10:15.642Z"
+      "detail_html_length": 130467,
+      "detail_elapsed_ms": 1613,
+      "scraped_at": "2026-06-18T15:20:56.486Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134202,
-      "detail_elapsed_ms": 1924,
-      "scraped_at": "2026-06-18T15:10:17.566Z"
+      "detail_html_length": 134210,
+      "detail_elapsed_ms": 1460,
+      "scraped_at": "2026-06-18T15:20:57.946Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -113,8 +137,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132597,
-      "detail_elapsed_ms": 1930,
-      "scraped_at": "2026-06-18T15:10:19.497Z"
+      "detail_elapsed_ms": 1432,
+      "scraped_at": "2026-06-18T15:20:59.378Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132546,
-      "detail_elapsed_ms": 1644,
-      "scraped_at": "2026-06-18T15:10:21.141Z"
+      "detail_html_length": 132554,
+      "detail_elapsed_ms": 1636,
+      "scraped_at": "2026-06-18T15:21:01.015Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132525,
-      "detail_elapsed_ms": 1705,
-      "scraped_at": "2026-06-18T15:10:22.847Z"
+      "detail_html_length": 132531,
+      "detail_elapsed_ms": 1768,
+      "scraped_at": "2026-06-18T15:21:02.783Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132498,
-      "detail_elapsed_ms": 1651,
-      "scraped_at": "2026-06-18T15:10:24.498Z"
+      "detail_html_length": 132496,
+      "detail_elapsed_ms": 1381,
+      "scraped_at": "2026-06-18T15:21:04.164Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132536,
-      "detail_elapsed_ms": 1452,
-      "scraped_at": "2026-06-18T15:10:25.950Z"
+      "detail_html_length": 132524,
+      "detail_elapsed_ms": 1403,
+      "scraped_at": "2026-06-18T15:21:05.568Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132406,
-      "detail_elapsed_ms": 1598,
-      "scraped_at": "2026-06-18T15:10:27.548Z"
+      "detail_html_length": 132405,
+      "detail_elapsed_ms": 1380,
+      "scraped_at": "2026-06-18T15:21:06.948Z"
     },
     {
       "id": "pwm-50-off-no-par-de-ingressos-pa",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132372,
-      "detail_elapsed_ms": 1936,
-      "scraped_at": "2026-06-18T15:10:29.485Z"
+      "detail_html_length": 132378,
+      "detail_elapsed_ms": 1547,
+      "scraped_at": "2026-06-18T15:21:08.495Z"
     },
     {
       "id": "pwk-50-off-no-par-de-ingressos-bh",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132410,
-      "detail_elapsed_ms": 3553,
-      "scraped_at": "2026-06-18T15:10:33.039Z"
-    },
-    {
-      "id": "pwc-20-off-em-todo-o-site",
-      "trace_id": "trace_pwc-20-off-em-todo-o-site",
-      "link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
-      "original_link": "https://clube.uol.com.br/drlavatudo/pwC-20-off-em-todo-o-site",
-      "title": "20% OFF em todo o site!",
-      "preview_title": "20% OFF em todo o site!",
-      "validity": "Benefício válido de 16/06/2026 11:14 até 30/06/2026 23:59.",
-      "description": "Benefício: 20% OFF em todo o site! Regras: Desconto acumulativo com o desconto dos serviços de recorrência (semestral ou anual). Valor mínimo de R$ 210,00. O desconto se aplica somente ao valor do serviço, não abrangendo a taxa de serviço da região, quando houver. A loja permite a inserção de apenas um cupom por compra.",
-      "category": "",
-      "partner_name": "Dr. Lava Tudo",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d974f29779feef30f0d25700652d7f50.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4fd7a1aff78c22185e07322135e6064c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131017,
-      "detail_elapsed_ms": 1668,
-      "scraped_at": "2026-06-18T15:10:34.707Z"
+      "detail_html_length": 132399,
+      "detail_elapsed_ms": 1473,
+      "scraped_at": "2026-06-18T15:21:09.968Z"
     }
   ]
 }
