@@ -14,12 +14,60 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 34944,
-  "run_duration_seconds": 34.94,
-  "avg_detail_ms_per_offer": 2912,
-  "generated_at": "2026-06-18T18:41:18.943Z",
+  "run_duration_ms": 33325,
+  "run_duration_seconds": 33.33,
+  "avg_detail_ms_per_offer": 2777,
+  "generated_at": "2026-06-18T18:51:57.427Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pxt-ate-30-off-15-off-extra-feminina",
+      "trace_id": "trace_pxt-ate-30-off-15-off-extra-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
+      "title": "Até 30% OFF + 15% OFF extra - Feminina",
+      "preview_title": "Até 30% OFF + 15% OFF extra - Feminina",
+      "validity": "Benefício válido de 18/06/2026 15:46 até 30/06/2026 09:00.",
+      "description": "Benefício: Até 30% OFF + 15% OFF extra na seleção feminina com cupom MARCAS15! Regras: Válido para todos os itens da seleção. Não cumulativo com demais promoções. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9a055a0f8636305ce56c9649046a2197.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9a055a0f8636305ce56c9649046a2197.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9a055a0f8636305ce56c9649046a2197.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129497,
+      "detail_elapsed_ms": 2593,
+      "scraped_at": "2026-06-18T18:51:35.458Z"
+    },
+    {
+      "id": "pxs-ate-60-off-20-off-extra-feminina",
+      "trace_id": "trace_pxs-ate-60-off-20-off-extra-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxS-ate-60-off-20-off-extra-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxS-ate-60-off-20-off-extra-feminina",
+      "title": "Até 60% OFF + 20% OFF extra - Feminina",
+      "preview_title": "Até 60% OFF + 20% OFF extra - Feminina",
+      "validity": "Benefício válido de 18/06/2026 15:37 até 30/06/2026 09:00.",
+      "description": "Benefício: Até 60% OFF + 20% OFF extra na seleção feminina! Regras: Válido para todos os itens da seleção. Não cumulativo com demais promoções. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1c07af7dc656848323d74ef993c60115.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1c07af7dc656848323d74ef993c60115.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1c07af7dc656848323d74ef993c60115.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130815,
+      "detail_elapsed_ms": 2128,
+      "scraped_at": "2026-06-18T18:51:37.587Z"
+    },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
       "trace_id": "trace_pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -40,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130935,
-      "detail_elapsed_ms": 3973,
-      "scraped_at": "2026-06-18T18:40:57.299Z"
+      "detail_html_length": 131161,
+      "detail_elapsed_ms": 2379,
+      "scraped_at": "2026-06-18T18:51:39.966Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -64,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130750,
-      "detail_elapsed_ms": 2261,
-      "scraped_at": "2026-06-18T18:40:59.566Z"
+      "detail_html_length": 130804,
+      "detail_elapsed_ms": 1965,
+      "scraped_at": "2026-06-18T18:51:41.931Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -88,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133024,
-      "detail_elapsed_ms": 2127,
-      "scraped_at": "2026-06-18T18:41:01.693Z"
+      "detail_html_length": 133040,
+      "detail_elapsed_ms": 1865,
+      "scraped_at": "2026-06-18T18:51:43.796Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -112,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130974,
-      "detail_elapsed_ms": 1998,
-      "scraped_at": "2026-06-18T18:41:03.691Z"
+      "detail_html_length": 130941,
+      "detail_elapsed_ms": 2019,
+      "scraped_at": "2026-06-18T18:51:45.815Z"
     },
     {
       "id": "pxm-camiseta-camisa-de-time-calcao-10-off",
@@ -136,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130948,
-      "detail_elapsed_ms": 1896,
-      "scraped_at": "2026-06-18T18:41:05.587Z"
+      "detail_html_length": 131005,
+      "detail_elapsed_ms": 2041,
+      "scraped_at": "2026-06-18T18:51:47.857Z"
     },
     {
       "id": "pxl-camiseta-bermuda-meia-e-mais-10-off",
@@ -160,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130922,
-      "detail_elapsed_ms": 2013,
-      "scraped_at": "2026-06-18T18:41:07.600Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 1824,
+      "scraped_at": "2026-06-18T18:51:49.681Z"
     },
     {
       "id": "pxk-tenis-chinelos-e-sandalias-com-10-off",
@@ -184,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130943,
-      "detail_elapsed_ms": 1901,
-      "scraped_at": "2026-06-18T18:41:09.501Z"
+      "detail_html_length": 130949,
+      "detail_elapsed_ms": 1730,
+      "scraped_at": "2026-06-18T18:51:51.411Z"
     },
     {
       "id": "pxj-ate-10-de-desconto-nos-itens-da-colecao",
@@ -208,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131136,
-      "detail_elapsed_ms": 1787,
-      "scraped_at": "2026-06-18T18:41:11.288Z"
+      "detail_html_length": 131184,
+      "detail_elapsed_ms": 1801,
+      "scraped_at": "2026-06-18T18:51:53.213Z"
     },
     {
       "id": "pxi-camera-eos-rebel-t7-3-off-extra",
@@ -232,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130848,
-      "detail_elapsed_ms": 1982,
-      "scraped_at": "2026-06-18T18:41:13.271Z"
+      "detail_html_length": 130825,
+      "detail_elapsed_ms": 1932,
+      "scraped_at": "2026-06-18T18:51:55.145Z"
     },
     {
       "id": "pxh-camera-eos-r50-com-3-off-extra",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130484,
-      "detail_elapsed_ms": 1695,
-      "scraped_at": "2026-06-18T18:41:14.966Z"
-    },
-    {
-      "id": "pxg-15-off-em-todo-o-site",
-      "trace_id": "trace_pxg-15-off-em-todo-o-site",
-      "link": "https://clube.uol.com.br/avon/pxG-15-off-em-todo-o-site",
-      "original_link": "https://clube.uol.com.br/avon/pxG-15-off-em-todo-o-site",
-      "title": "15% OFF em todo o site",
-      "preview_title": "15% OFF em todo o site",
-      "validity": "Benefício válido de 18/06/2026 10:53 até 26/06/2026 23:59.",
-      "description": "Benefício: 15% OFF em todo o site Regras: Cupom válido para 1 uso por CPF e apenas para produtos elegíveis da seleção. Sujeito à desativação sem aviso prévio.",
-      "category": "Beleza",
-      "partner_name": "Avon",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/fec82108d2afc57d203556f516da83fe.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130415,
-      "detail_elapsed_ms": 1836,
-      "scraped_at": "2026-06-18T18:41:16.802Z"
-    },
-    {
-      "id": "pxf-10-off-na-compra-de-ingresso",
-      "trace_id": "trace_pxf-10-off-na-compra-de-ingresso",
-      "link": "https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso",
-      "original_link": "https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso",
-      "title": "10% OFF na compra de ingresso",
-      "preview_title": "10% OFF na compra de ingresso",
-      "validity": "Benefício válido de 16/06/2026 16:56 até 19/07/2026 23:59.",
-      "description": "Sobre o evento: A Arena Brasileira 2026 é uma experiência inédita no Parque Ibirapuera que une grandes shows da música brasileira, transmissão dos jogos e entretenimento em um só lugar. Entre junho e julho, o evento reúne artistas como Ivete Sangalo, Caetano Veloso, Marisa Monte, Thiaguinho, IZA, Ludmilla e muitos outros em encontros únicos ao longo da temporada. Benefício: Garanta 10% OFF nos ingressos da Arena Brasileira 2026! Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\" e \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, o seu desconto já vai estar aplicado, basta escolher o dia e prosseguir com o fluxo de compra dos seus ingressos. Regras: Benefício válido para Assinante UOL. Os ingressos para o festival podem esgotar a qualquer momento. Confira na página oficial da Ingresse a disponibilidade. O desconto de 10% é aplicado sobre o valor total dos ingressos da Arena Brasileira. Endereço da Arena Brasileira: Parque Ibirapuera - Av. Pedro Álvares Cabral, s/n - Vila Mariana, São Paulo - SP.",
-      "category": "Promoções do Mês",
-      "partner_name": "Arena Brasileira",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a20c126ef30ba2af7ed8f7274d406a2e.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f646eb76277ba45ecca7ce5071f6cee.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 134166,
-      "detail_elapsed_ms": 1973,
-      "scraped_at": "2026-06-18T18:41:18.775Z"
+      "detail_html_length": 130541,
+      "detail_elapsed_ms": 2046,
+      "scraped_at": "2026-06-18T18:51:57.191Z"
     }
   ]
 }
