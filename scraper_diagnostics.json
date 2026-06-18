@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-18T18:43:06.560830Z",
+  "updated_at": "2026-06-18T18:52:50.705156Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 8,
     "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -75,18 +75,6 @@
       "link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
       "reason": "duplicada_historico",
       "trace_id": "trace_pxh-camera-eos-r50-com-3-off-extra"
-    },
-    {
-      "title": "15% OFF em todo o site",
-      "link": "https://clube.uol.com.br/avon/pxG-15-off-em-todo-o-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxg-15-off-em-todo-o-site"
-    },
-    {
-      "title": "10% OFF na compra de ingresso",
-      "link": "https://clube.uol.com.br/arenabrasileira/pxf-10-off-na-compra-de-ingresso",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxf-10-off-na-compra-de-ingresso"
     }
   ]
 }
