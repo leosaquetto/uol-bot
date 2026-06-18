@@ -6,20 +6,44 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 8,
-  "detail_fail_count": 4,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 8,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 4
+    "failed": 0
   },
-  "run_duration_ms": 205499,
-  "run_duration_seconds": 205.5,
-  "avg_detail_ms_per_offer": 17125,
-  "generated_at": "2026-06-18T18:06:25.444Z",
+  "run_duration_ms": 44244,
+  "run_duration_seconds": 44.24,
+  "avg_detail_ms_per_offer": 3687,
+  "generated_at": "2026-06-18T18:30:36.744Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
+      "trace_id": "trace_pxq-15-off-na-1a-compra-no-app-lojas-renner",
+      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
+      "title": "15% OFF na 1ª compra no app Lojas Renner",
+      "preview_title": "15% OFF na 1ª compra no app Lojas Renner",
+      "validity": "Benefício válido de 18/06/2026 14:58 até 01/07/2026 23:59.",
+      "description": "Benefício: Ganhe 15% OFF na 1ª compra no app Lojas Renner! Regras: Válido para todos os itens da seleção, exceto itens remarcados e lojas parceiras. Desconto válido para primeira compra no APP por CPF. Não cumulativo com demais promoções. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aff9e9cd73f9a94cd04110d1803ac5c8.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aff9e9cd73f9a94cd04110d1803ac5c8.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aff9e9cd73f9a94cd04110d1803ac5c8.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130660,
+      "detail_elapsed_ms": 2601,
+      "scraped_at": "2026-06-18T18:30:13.273Z"
+    },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
       "trace_id": "trace_pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130597,
-      "detail_elapsed_ms": 7144,
-      "scraped_at": "2026-06-18T18:03:54.069Z"
+      "detail_html_length": 130756,
+      "detail_elapsed_ms": 2844,
+      "scraped_at": "2026-06-18T18:30:16.118Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126634,
-      "detail_elapsed_ms": 3208,
-      "scraped_at": "2026-06-18T18:03:57.283Z"
+      "detail_html_length": 133007,
+      "detail_elapsed_ms": 2094,
+      "scraped_at": "2026-06-18T18:30:18.212Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130920,
-      "detail_elapsed_ms": 3858,
-      "scraped_at": "2026-06-18T18:04:01.141Z"
+      "detail_html_length": 130970,
+      "detail_elapsed_ms": 2012,
+      "scraped_at": "2026-06-18T18:30:20.225Z"
     },
     {
       "id": "pxm-camiseta-camisa-de-time-calcao-10-off",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124581,
-      "detail_elapsed_ms": 2638,
-      "scraped_at": "2026-06-18T18:04:03.779Z"
+      "detail_html_length": 130954,
+      "detail_elapsed_ms": 1837,
+      "scraped_at": "2026-06-18T18:30:22.062Z"
     },
     {
       "id": "pxl-camiseta-bermuda-meia-e-mais-10-off",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130918,
-      "detail_elapsed_ms": 7170,
-      "scraped_at": "2026-06-18T18:04:10.949Z"
+      "detail_html_length": 130919,
+      "detail_elapsed_ms": 2046,
+      "scraped_at": "2026-06-18T18:30:24.108Z"
     },
     {
       "id": "pxk-tenis-chinelos-e-sandalias-com-10-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130930,
-      "detail_elapsed_ms": 3325,
-      "scraped_at": "2026-06-18T18:04:14.274Z"
+      "detail_html_length": 131008,
+      "detail_elapsed_ms": 2393,
+      "scraped_at": "2026-06-18T18:30:26.501Z"
     },
     {
       "id": "pxj-ate-10-de-desconto-nos-itens-da-colecao",
@@ -171,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/casasbahia/pxJ-ate-10-de-desconto-nos-itens-da-colecao",
       "title": "Até 10% de desconto nos itens da coleção",
       "preview_title": "Até 10% de desconto nos itens da coleção",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 18/06/2026 12:23 até 31/07/2026 23:59.",
+      "description": "Benefício: Garanta até 10% de desconto nos itens da coleção Regras: Desconto válido para seleção de produtos do link. Não cumulativo com demais cupons promocionais. Válido um uso por CPF. Válido enquanto durarem os estoques. Sujeito à desativação sem aviso prévio.",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Casas Bahia",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2f4a0555cb2610144d69d79616078c39.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3f5393c2e80dd75d7c6dc35744ae39e4.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3f5393c2e80dd75d7c6dc35744ae39e4.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/casasbahia/pxJ-ate-10-de-desconto-nos-itens-da-colecao\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12796,
-      "scraped_at": "2026-06-18T18:04:39.950Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3f5393c2e80dd75d7c6dc35744ae39e4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131126,
+      "detail_elapsed_ms": 1850,
+      "scraped_at": "2026-06-18T18:30:28.352Z"
     },
     {
       "id": "pxi-camera-eos-rebel-t7-3-off-extra",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130917,
-      "detail_elapsed_ms": 15046,
-      "scraped_at": "2026-06-18T18:04:54.997Z"
+      "detail_html_length": 130805,
+      "detail_elapsed_ms": 2452,
+      "scraped_at": "2026-06-18T18:30:30.804Z"
     },
     {
       "id": "pxh-camera-eos-r50-com-3-off-extra",
@@ -219,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
       "title": "Câmera EOS R50 com 3% OFF extra",
       "preview_title": "Câmera EOS R50 com 3% OFF extra",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 18/06/2026 11:18 até 30/06/2026 23:59.",
+      "description": "Benefício: Câmera EOS R50 com 3% OFF extra Regras: Aplique o cupom no carrinho. Sujeito à desativação sem aviso prévio",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Canon",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0b894f329b35cafe0715a58136d19df9.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12223,
-      "scraped_at": "2026-06-18T18:05:19.503Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/92b4a3fb6fc7e1fd3dbeaa721f2c46ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130510,
+      "detail_elapsed_ms": 1949,
+      "scraped_at": "2026-06-18T18:30:32.754Z"
     },
     {
       "id": "pxg-15-off-em-todo-o-site",
@@ -243,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/avon/pxG-15-off-em-todo-o-site",
       "title": "15% OFF em todo o site",
       "preview_title": "15% OFF em todo o site",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 18/06/2026 10:53 até 26/06/2026 23:59.",
+      "description": "Benefício: 15% OFF em todo o site Regras: Cupom válido para 1 uso por CPF e apenas para produtos elegíveis da seleção. Sujeito à desativação sem aviso prévio.",
       "category": "Beleza",
       "partner_name": "Avon",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/fec82108d2afc57d203556f516da83fe.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/avon/pxG-15-off-em-todo-o-site\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12017,
-      "scraped_at": "2026-06-18T18:05:45.424Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621fbfc573445062cfa17907026a7a21.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130441,
+      "detail_elapsed_ms": 1780,
+      "scraped_at": "2026-06-18T18:30:34.534Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134033,
-      "detail_elapsed_ms": 13038,
-      "scraped_at": "2026-06-18T18:05:58.462Z"
-    },
-    {
-      "id": "pwz-50-off-no-par-de-ingressos-pe",
-      "trace_id": "trace_pwz-50-off-no-par-de-ingressos-pe",
-      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwZ-50-off-no-par-de-ingressos-pe",
-      "original_link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwZ-50-off-no-par-de-ingressos-pe",
-      "title": "50% OFF no par de ingressos - PE",
-      "preview_title": "50% OFF no par de ingressos - PE",
-      "validity": "",
-      "description": "",
-      "category": "Promoções do Mês",
-      "partner_name": "Tiago Iorc - Turnê Troco Likes 10 Anos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/54362b394cbf6886c5ac9b72aaeed9f0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a31a3b3e099f_6a31a223eda17_6a31a082c5da6_6a319fa77d798_6a319d4f863f0_6a319bdd5d031_6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a31a3b3e099f_6a31a223eda17_6a31a082c5da6_6a319fa77d798_6a319d4f863f0_6a319bdd5d031_6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwZ-50-off-no-par-de-ingressos-pe\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12288,
-      "scraped_at": "2026-06-18T18:06:23.526Z"
+      "detail_html_length": 134172,
+      "detail_elapsed_ms": 2013,
+      "scraped_at": "2026-06-18T18:30:36.547Z"
     }
   ]
 }
