@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 63938,
-  "run_duration_seconds": 63.94,
-  "avg_detail_ms_per_offer": 5328,
-  "generated_at": "2026-06-18T15:54:44.059Z",
+  "run_duration_ms": 100002,
+  "run_duration_seconds": 100,
+  "avg_detail_ms_per_offer": 8334,
+  "generated_at": "2026-06-18T16:06:32.140Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pxk-tenis-chinelos-e-sandalias-com-10-off",
+      "trace_id": "trace_pxk-tenis-chinelos-e-sandalias-com-10-off",
+      "link": "https://clube.uol.com.br/centauro/pxK-tenis-chinelos-e-sandalias-com-10-off",
+      "original_link": "https://clube.uol.com.br/centauro/pxK-tenis-chinelos-e-sandalias-com-10-off",
+      "title": "Tênis, chinelos e sandálias com +10% OFF",
+      "preview_title": "Tênis, chinelos e sandálias com +10% OFF",
+      "validity": "Benefício válido de 18/06/2026 12:43 até 30/06/2026 23:59.",
+      "description": "Benefício: Tênis, chinelos e sandálias com + 10% OFF Regras: Desconto válido para seleção de produtos do link. Sujeito à disponibilidade do produto. Não cumulativo com demais cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Centauro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1b8e3a548acd865d3e59744075de7f5b.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1b8e3a548acd865d3e59744075de7f5b.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/1b8e3a548acd865d3e59744075de7f5b.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130800,
+      "detail_elapsed_ms": 10049,
+      "scraped_at": "2026-06-18T16:05:52.099Z"
+    },
     {
       "id": "pxj-ate-10-de-desconto-nos-itens-da-colecao",
       "trace_id": "trace_pxj-ate-10-de-desconto-nos-itens-da-colecao",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124604,
-      "detail_elapsed_ms": 2931,
-      "scraped_at": "2026-06-18T15:54:13.147Z"
+      "detail_html_length": 131118,
+      "detail_elapsed_ms": 4579,
+      "scraped_at": "2026-06-18T16:05:56.682Z"
     },
     {
       "id": "pxi-camera-eos-rebel-t7-3-off-extra",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129626,
-      "detail_elapsed_ms": 2210,
-      "scraped_at": "2026-06-18T15:54:15.364Z"
+      "detail_html_length": 130797,
+      "detail_elapsed_ms": 3893,
+      "scraped_at": "2026-06-18T16:06:00.575Z"
     },
     {
       "id": "pxh-camera-eos-r50-com-3-off-extra",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130312,
-      "detail_elapsed_ms": 10732,
-      "scraped_at": "2026-06-18T15:54:26.096Z"
+      "detail_html_length": 130331,
+      "detail_elapsed_ms": 3916,
+      "scraped_at": "2026-06-18T16:06:04.491Z"
     },
     {
       "id": "pxg-15-off-em-todo-o-site",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130401,
-      "detail_elapsed_ms": 2444,
-      "scraped_at": "2026-06-18T15:54:28.541Z"
+      "detail_html_length": 124079,
+      "detail_elapsed_ms": 2825,
+      "scraped_at": "2026-06-18T16:06:07.317Z"
     },
     {
       "id": "pxf-10-off-na-compra-de-ingresso",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134151,
-      "detail_elapsed_ms": 2650,
-      "scraped_at": "2026-06-18T15:54:31.191Z"
+      "detail_html_length": 134195,
+      "detail_elapsed_ms": 2288,
+      "scraped_at": "2026-06-18T16:06:09.605Z"
     },
     {
       "id": "pwz-50-off-no-par-de-ingressos-pe",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132559,
-      "detail_elapsed_ms": 2124,
-      "scraped_at": "2026-06-18T15:54:33.315Z"
+      "detail_html_length": 132551,
+      "detail_elapsed_ms": 5682,
+      "scraped_at": "2026-06-18T16:06:15.287Z"
     },
     {
       "id": "pwx-50-off-no-par-de-ingressos-df",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132516,
-      "detail_elapsed_ms": 1699,
-      "scraped_at": "2026-06-18T15:54:35.015Z"
+      "detail_html_length": 132508,
+      "detail_elapsed_ms": 2625,
+      "scraped_at": "2026-06-18T16:06:17.912Z"
     },
     {
       "id": "pwu-50-off-no-par-de-ingressos-df",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132525,
-      "detail_elapsed_ms": 1811,
-      "scraped_at": "2026-06-18T15:54:36.826Z"
+      "detail_html_length": 131187,
+      "detail_elapsed_ms": 3510,
+      "scraped_at": "2026-06-18T16:06:21.423Z"
     },
     {
       "id": "pwt-50-off-no-par-de-ingressos-pr",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132437,
-      "detail_elapsed_ms": 1632,
-      "scraped_at": "2026-06-18T15:54:38.458Z"
+      "detail_html_length": 132480,
+      "detail_elapsed_ms": 1914,
+      "scraped_at": "2026-06-18T16:06:23.337Z"
     },
     {
       "id": "pwp-50-off-no-par-de-ingressos-rs",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132476,
-      "detail_elapsed_ms": 1943,
-      "scraped_at": "2026-06-18T15:54:40.402Z"
+      "detail_html_length": 132539,
+      "detail_elapsed_ms": 3405,
+      "scraped_at": "2026-06-18T16:06:26.742Z"
     },
     {
       "id": "pwo-50-off-no-par-de-ingressos-rj",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132396,
-      "detail_elapsed_ms": 1759,
-      "scraped_at": "2026-06-18T15:54:42.161Z"
-    },
-    {
-      "id": "pwm-50-off-no-par-de-ingressos-pa",
-      "trace_id": "trace_pwm-50-off-no-par-de-ingressos-pa",
-      "link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwM-50-off-no-par-de-ingressos-pa",
-      "original_link": "https://clube.uol.com.br/tiagoiorc-turnetrocolikes10anos/pwM-50-off-no-par-de-ingressos-pa",
-      "title": "50% OFF no par de ingressos - PA",
-      "preview_title": "50% OFF no par de ingressos - PA",
-      "validity": "Benefício válido de 16/06/2026 15:49 até 15/08/2026 23:59.",
-      "description": "Sobre a Turnê: Com quase 20 anos de trajetória e dez álbuns em seu repertório, Tiago Iorc celebra os dez anos de Troco Likes, projeto autoral que o consagrou como uma das vozes mais relevantes da música brasileira contemporânea, com o anúncio de uma turnê comemorativa que irá contemplar dez cidades brasileiras, após lançar este mês uma versão especial do álbum com artistas de renome. Data do Show: 15 de agosto, no BeFly Hall, em Belém/PA. Benefício: Cupom de 50% OFF no par de ingressos do Tiago Iorc - Turnê Troco Likes 10 Anos. Como utilizar: Para resgatar o desconto de 50% no ingresso, clique em \"Utilizar este benefício\" e copie o código. Ao ser direcionado para a ticketeira oficial do evento, escolha o setor válido para o desconto e a quantidade de ingressos. Em seguida, insira o cupom de desconto e prossiga com o fluxo de compra do ingresso. Regras: Benefício válido para Assinante UOL e apenas no setor pista. Cada assinante tem direito ao cupom exclusivo de 50% OFF no par de ingressos. Os ingressos com o desconto de Clube UOL podem esgotar antes das demais categorias.",
-      "category": "Promoções do Mês",
-      "partner_name": "Tiago Iorc - Turnê Troco Likes 10 Anos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/54362b394cbf6886c5ac9b72aaeed9f0.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a319b25dc0d2_6a319a406dee4_199e7def1bed9322c5e934d5ee2ac00c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132361,
-      "detail_elapsed_ms": 1667,
-      "scraped_at": "2026-06-18T15:54:43.828Z"
+      "detail_html_length": 132378,
+      "detail_elapsed_ms": 4135,
+      "scraped_at": "2026-06-18T16:06:30.878Z"
     }
   ]
 }
