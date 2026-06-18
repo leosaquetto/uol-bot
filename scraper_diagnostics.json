@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T16:42:00.992970Z",
+  "updated_at": "2026-06-18T17:05:57.118815Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,35 +10,35 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
-    "duplicada_latest": 1,
+    "duplicada_historico": 7,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "Tênis, chinelos e sandálias com +10% OFF",
-      "link": "https://clube.uol.com.br/centauro/pxK-tenis-chinelos-e-sandalias-com-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxk-tenis-chinelos-e-sandalias-com-10-off"
+      "link": "https://clube.uol.com.br/centauro/pxK-tnis-chinelos-e-sandlias-com-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxk-tnis-chinelos-e-sandlias-com-10-off"
     },
     {
       "title": "Até 10% de desconto nos itens da coleção",
-      "link": "https://clube.uol.com.br/casasbahia/pxJ-ate-10-de-desconto-nos-itens-da-colecao",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxj-ate-10-de-desconto-nos-itens-da-colecao"
+      "link": "https://clube.uol.com.br/casasbahia/pxJ-at-10-de-desconto-nos-itens-da-coleo",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxj-at-10-de-desconto-nos-itens-da-coleo"
     },
     {
       "title": "Câmera EOS Rebel T7+ +3% OFF extra",
-      "link": "https://clube.uol.com.br/canon/pxI-camera-eos-rebel-t7-3-off-extra",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxi-camera-eos-rebel-t7-3-off-extra"
+      "link": "https://clube.uol.com.br/canon/pxI-cmera-eos-rebel-t7-3-off-extra",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxi-cmera-eos-rebel-t7-3-off-extra"
     },
     {
       "title": "Câmera EOS R50 com 3% OFF extra",
-      "link": "https://clube.uol.com.br/canon/pxH-camera-eos-r50-com-3-off-extra",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxh-camera-eos-r50-com-3-off-extra"
+      "link": "https://clube.uol.com.br/canon/pxH-cmera-eos-r50-com-3-off-extra",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxh-cmera-eos-r50-com-3-off-extra"
     },
     {
       "title": "15% OFF em todo o site",
