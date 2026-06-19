@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 74535,
-  "run_duration_seconds": 74.53,
-  "avg_detail_ms_per_offer": 6211,
-  "generated_at": "2026-06-19T01:43:38.510Z",
+  "run_duration_ms": 73071,
+  "run_duration_seconds": 73.07,
+  "avg_detail_ms_per_offer": 6089,
+  "generated_at": "2026-06-19T01:54:58.824Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130577,
-      "detail_elapsed_ms": 5653,
-      "scraped_at": "2026-06-19T01:43:07.277Z"
+      "detail_html_length": 130322,
+      "detail_elapsed_ms": 5625,
+      "scraped_at": "2026-06-19T01:54:27.869Z"
     },
     {
       "id": "pya-2-ingressos-21-06-cultura-artstica-sp",
@@ -64,33 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133024,
-      "detail_elapsed_ms": 4304,
-      "scraped_at": "2026-06-19T01:43:11.582Z"
-    },
-    {
-      "id": "pxz-2-ingressos-28-06-morumbi-park-sp",
-      "trace_id": "trace_pxz-2-ingressos-28-06-morumbi-park-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pxZ-2-ingressos-28-06-morumbi-park-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pxZ-2-ingressos-28-06-morumbi-park-sp",
-      "title": "2 INGRESSOS: 28/06 Morumbi Park- SP",
-      "preview_title": "2 INGRESSOS: 28/06 Morumbi Park- SP",
-      "validity": "Benefício válido de 18/06/2026 16:00 até 27/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para o Morumbi Park, e aproveite atrações como trampolins e arvorismo, além da área baby no Morumbi/SP. Data: 28 de Junho de 2026 (Passaporte 3 horas). Horário:Quarta a sexta, das 12h às 20h | sábado, das 12h às 22h | e domingos e feriados, das 10h às 20h. Local: Av. Major Sylvio de Magalhães Padilha - 16741. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3445b1f0ac9_6a3444f8ec803_6a3443d72adf4_6a3442e2848b5_6a3440266039f_6a1ef8e732b79_6a1ef859a1195_6a1ef7746d0cb_6a0e02a790432_6a06385b9a4b0_6a0637fd313a9_6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3445b1f0ac9_6a3444f8ec803_6a3443d72adf4_6a3442e2848b5_6a3440266039f_6a1ef8e732b79_6a1ef859a1195_6a1ef7746d0cb_6a0e02a790432_6a06385b9a4b0_6a0637fd313a9_6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3445b1f0ac9_6a3444f8ec803_6a3443d72adf4_6a3442e2848b5_6a3440266039f_6a1ef8e732b79_6a1ef859a1195_6a1ef7746d0cb_6a0e02a790432_6a06385b9a4b0_6a0637fd313a9_6a06373063789_6a0635f4165ff_69f3cbafd6cde_69f3caaef2c03_69f3c53961878_69f3c4457ac4c_69f3bce2b3d4a_69ead8e7d4df3_69ead77a77acb_69cae33cce78d_69cae1e631b0b_69cae17eb0be5_69cae0e1919ca_69cae05a5c047_69cadfe63ea95_69cade7cd6ef0_69a599ba502c6_69a59812449e6_69a59798ad11a_69a5974d8b21e_69a5942d6721b_69790065bd20f_6979000604340_6978ff2f34427_6978fedd5c8b4_6978fe2ce6cec_6978fcfb7be22_6978fca4b1cc0_6978fc433763f_6978faae31d7c_8876b70bebd4a784e7d26d8bbeaf7cac.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133974,
-      "detail_elapsed_ms": 2739,
-      "scraped_at": "2026-06-19T01:43:14.321Z"
+      "detail_html_length": 131878,
+      "detail_elapsed_ms": 2804,
+      "scraped_at": "2026-06-19T01:54:30.676Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133946,
-      "detail_elapsed_ms": 2372,
-      "scraped_at": "2026-06-19T01:43:16.693Z"
+      "detail_html_length": 133948,
+      "detail_elapsed_ms": 4127,
+      "scraped_at": "2026-06-19T01:54:34.803Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133908,
-      "detail_elapsed_ms": 2674,
-      "scraped_at": "2026-06-19T01:43:19.367Z"
+      "detail_html_length": 132674,
+      "detail_elapsed_ms": 2499,
+      "scraped_at": "2026-06-19T01:54:37.303Z"
     },
     {
       "id": "pxu-at-30-off-10-off-extra-feminina",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130787,
-      "detail_elapsed_ms": 2514,
-      "scraped_at": "2026-06-19T01:43:21.881Z"
+      "detail_html_length": 130801,
+      "detail_elapsed_ms": 2405,
+      "scraped_at": "2026-06-19T01:54:39.708Z"
     },
     {
       "id": "pxt-at-30-off-15-off-extra-feminina",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130705,
-      "detail_elapsed_ms": 3299,
-      "scraped_at": "2026-06-19T01:43:25.180Z"
+      "detail_html_length": 124494,
+      "detail_elapsed_ms": 2081,
+      "scraped_at": "2026-06-19T01:54:41.790Z"
     },
     {
       "id": "pxs-at-60-off-20-off-extra-feminina",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130808,
-      "detail_elapsed_ms": 2233,
-      "scraped_at": "2026-06-19T01:43:27.413Z"
+      "detail_html_length": 129554,
+      "detail_elapsed_ms": 2521,
+      "scraped_at": "2026-06-19T01:54:44.311Z"
     },
     {
       "id": "pxq-15-off-na-1-compra-no-app-lojas-renner",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131125,
-      "detail_elapsed_ms": 2415,
-      "scraped_at": "2026-06-19T01:43:29.828Z"
+      "detail_html_length": 131149,
+      "detail_elapsed_ms": 2759,
+      "scraped_at": "2026-06-19T01:54:47.070Z"
     },
     {
       "id": "pxp-at-20-de-desconto-em-jaquetas-no-site",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130759,
-      "detail_elapsed_ms": 2436,
-      "scraped_at": "2026-06-19T01:43:32.265Z"
+      "detail_html_length": 130742,
+      "detail_elapsed_ms": 3087,
+      "scraped_at": "2026-06-19T01:54:50.158Z"
     },
     {
       "id": "pxo-especial-inverno-2-peas-por-r-160",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133012,
-      "detail_elapsed_ms": 3198,
-      "scraped_at": "2026-06-19T01:43:35.463Z"
+      "detail_html_length": 133015,
+      "detail_elapsed_ms": 2656,
+      "scraped_at": "2026-06-19T01:54:52.814Z"
     },
     {
       "id": "pxn-camiseta-tnis-bermuda-e-mais-10-off",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130934,
-      "detail_elapsed_ms": 2685,
-      "scraped_at": "2026-06-19T01:43:38.148Z"
+      "detail_html_length": 124555,
+      "detail_elapsed_ms": 2911,
+      "scraped_at": "2026-06-19T01:54:55.725Z"
+    },
+    {
+      "id": "pxm-camiseta-camisa-de-time-calo-10-off",
+      "trace_id": "trace_pxm-camiseta-camisa-de-time-calo-10-off",
+      "link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calo-10-off",
+      "original_link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calo-10-off",
+      "title": "Camiseta, camisa de time, calção+10%OFF",
+      "preview_title": "Camiseta, camisa de time, calção+10%OFF",
+      "validity": "Benefício válido de 18/06/2026 14:05 até 30/06/2026 23:59.",
+      "description": "Benefício: Camiseta, camisa de time, calção e mais + 10% OFF Regras: Desconto válido para seleção de produtos do link. Sujeito à disponibilidade do produto. Não cumulativo com demais cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Centauro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19270f6589b1f2bef03115181b028eaf.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19270f6589b1f2bef03115181b028eaf.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19270f6589b1f2bef03115181b028eaf.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130944,
+      "detail_elapsed_ms": 2783,
+      "scraped_at": "2026-06-19T01:54:58.508Z"
     }
   ]
 }
