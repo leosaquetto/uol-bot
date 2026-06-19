@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 40840,
-  "run_duration_seconds": 40.84,
-  "avg_detail_ms_per_offer": 3403,
-  "generated_at": "2026-06-19T08:35:44.068Z",
+  "run_duration_ms": 36342,
+  "run_duration_seconds": 36.34,
+  "avg_detail_ms_per_offer": 3029,
+  "generated_at": "2026-06-19T08:46:26.324Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129530,
-      "detail_elapsed_ms": 2363,
-      "scraped_at": "2026-06-19T08:35:24.100Z"
+      "detail_html_length": 129102,
+      "detail_elapsed_ms": 2203,
+      "scraped_at": "2026-06-19T08:46:06.440Z"
     },
     {
       "id": "pya-2-ingressos-21-06-cultura-artistica-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133126,
-      "detail_elapsed_ms": 2224,
-      "scraped_at": "2026-06-19T08:35:26.328Z"
+      "detail_html_length": 131946,
+      "detail_elapsed_ms": 2100,
+      "scraped_at": "2026-06-19T08:46:08.541Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133937,
-      "detail_elapsed_ms": 2015,
-      "scraped_at": "2026-06-19T08:35:28.344Z"
+      "detail_html_length": 133985,
+      "detail_elapsed_ms": 2118,
+      "scraped_at": "2026-06-19T08:46:10.659Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133960,
-      "detail_elapsed_ms": 1717,
-      "scraped_at": "2026-06-19T08:35:30.061Z"
+      "detail_html_length": 133958,
+      "detail_elapsed_ms": 1855,
+      "scraped_at": "2026-06-19T08:46:12.514Z"
     },
     {
       "id": "pxu-ate-30-off-10-off-extra-feminina",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130855,
-      "detail_elapsed_ms": 2044,
-      "scraped_at": "2026-06-19T08:35:32.106Z"
+      "detail_html_length": 130834,
+      "detail_elapsed_ms": 1617,
+      "scraped_at": "2026-06-19T08:46:14.132Z"
     },
     {
       "id": "pxt-ate-30-off-15-off-extra-feminina",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130911,
-      "detail_elapsed_ms": 2126,
-      "scraped_at": "2026-06-19T08:35:34.232Z"
+      "detail_html_length": 130899,
+      "detail_elapsed_ms": 1724,
+      "scraped_at": "2026-06-19T08:46:15.856Z"
     },
     {
       "id": "pxs-ate-60-off-20-off-extra-feminina",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130854,
-      "detail_elapsed_ms": 1680,
-      "scraped_at": "2026-06-19T08:35:35.912Z"
+      "detail_html_length": 130842,
+      "detail_elapsed_ms": 1672,
+      "scraped_at": "2026-06-19T08:46:17.528Z"
     },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131202,
-      "detail_elapsed_ms": 1673,
-      "scraped_at": "2026-06-19T08:35:37.585Z"
+      "detail_html_length": 131170,
+      "detail_elapsed_ms": 1790,
+      "scraped_at": "2026-06-19T08:46:19.319Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130806,
-      "detail_elapsed_ms": 1526,
-      "scraped_at": "2026-06-19T08:35:39.112Z"
+      "detail_html_length": 130785,
+      "detail_elapsed_ms": 1689,
+      "scraped_at": "2026-06-19T08:46:21.009Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133068,
-      "detail_elapsed_ms": 1655,
-      "scraped_at": "2026-06-19T08:35:40.767Z"
+      "detail_html_length": 133058,
+      "detail_elapsed_ms": 1571,
+      "scraped_at": "2026-06-19T08:46:22.580Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130991,
-      "detail_elapsed_ms": 1506,
-      "scraped_at": "2026-06-19T08:35:42.273Z"
+      "detail_html_length": 130980,
+      "detail_elapsed_ms": 1716,
+      "scraped_at": "2026-06-19T08:46:24.297Z"
     },
     {
       "id": "pxm-camiseta-camisa-de-time-calcao-10-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130995,
-      "detail_elapsed_ms": 1636,
-      "scraped_at": "2026-06-19T08:35:43.909Z"
+      "detail_html_length": 131002,
+      "detail_elapsed_ms": 1959,
+      "scraped_at": "2026-06-19T08:46:26.257Z"
     }
   ]
 }
