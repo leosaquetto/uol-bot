@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-19T19:40:22.486852Z",
+  "updated_at": "2026-06-19T19:41:40.861721Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 23/06 Teatro Itália - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pzx-2-ingressos-23-06-teatro-italia-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzx-2-ingressos-23-06-teatro-italia-sp"
+    },
     {
       "title": "2 INGRESSOS: 20/07 Hopi Hari - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pyh-2-ingressos-20-07-hopi-hari-sp",
