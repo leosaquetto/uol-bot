@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 36481,
-  "run_duration_seconds": 36.48,
-  "avg_detail_ms_per_offer": 3040,
-  "generated_at": "2026-06-19T12:10:15.282Z",
+  "run_duration_ms": 30668,
+  "run_duration_seconds": 30.67,
+  "avg_detail_ms_per_offer": 2556,
+  "generated_at": "2026-06-19T12:20:51.774Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130674,
-      "detail_elapsed_ms": 2849,
-      "scraped_at": "2026-06-19T12:09:54.998Z"
-    },
-    {
-      "id": "pya-2-ingressos-21-06-cultura-artistica-sp",
-      "trace_id": "trace_pya-2-ingressos-21-06-cultura-artistica-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pya-2-ingressos-21-06-cultura-artistica-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pya-2-ingressos-21-06-cultura-artistica-sp",
-      "title": "2 INGRESSOS 21/06 Cultura Artística SP",
-      "preview_title": "2 INGRESSOS 21/06 Cultura Artística SP",
-      "validity": "Benefício válido de 18/06/2026 17:15 até 20/06/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para viver a experiência única do duo André Mehmari e Sérgio Reze, um encontro que mistura a liberdade do jazz fusion com o lirismo brasileiro e atmosferas impressionistas, em uma apresentação envolvente no Teatro Cultura Artística, em São Paulo. Data: 21 de junho de 2026, às 11h. Local: R. Nestor Pestana, 196, Consolação, São Paulo - SP. ATENÇÃO: NÃO É PERMITIDA A ENTRADA APÓS O INÍCIO DO EVENTO. Recomendamos que planeje sua chegada ao teatro com antecedência, pois a apresentação se inicia rigorosamente no horário marcado. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d039f2b8f885cf469ab45a73d2f3ace.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d039f2b8f885cf469ab45a73d2f3ace.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d039f2b8f885cf469ab45a73d2f3ace.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133106,
-      "detail_elapsed_ms": 2284,
-      "scraped_at": "2026-06-19T12:09:57.283Z"
+      "detail_html_length": 129429,
+      "detail_elapsed_ms": 2376,
+      "scraped_at": "2026-06-19T12:20:32.187Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133995,
-      "detail_elapsed_ms": 1945,
-      "scraped_at": "2026-06-19T12:09:59.228Z"
+      "detail_html_length": 127574,
+      "detail_elapsed_ms": 2017,
+      "scraped_at": "2026-06-19T12:20:34.208Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133947,
-      "detail_elapsed_ms": 2167,
-      "scraped_at": "2026-06-19T12:10:01.396Z"
+      "detail_html_length": 133928,
+      "detail_elapsed_ms": 1815,
+      "scraped_at": "2026-06-19T12:20:36.023Z"
     },
     {
       "id": "pxu-ate-30-off-10-off-extra-feminina",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130844,
-      "detail_elapsed_ms": 1764,
-      "scraped_at": "2026-06-19T12:10:03.160Z"
+      "detail_html_length": 130833,
+      "detail_elapsed_ms": 1687,
+      "scraped_at": "2026-06-19T12:20:37.710Z"
     },
     {
       "id": "pxt-ate-30-off-15-off-extra-feminina",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 1689,
-      "scraped_at": "2026-06-19T12:10:04.849Z"
+      "detail_html_length": 130912,
+      "detail_elapsed_ms": 1827,
+      "scraped_at": "2026-06-19T12:20:39.537Z"
     },
     {
       "id": "pxs-ate-60-off-20-off-extra-feminina",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130844,
-      "detail_elapsed_ms": 1982,
-      "scraped_at": "2026-06-19T12:10:06.831Z"
+      "detail_html_length": 130833,
+      "detail_elapsed_ms": 1863,
+      "scraped_at": "2026-06-19T12:20:41.400Z"
     },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131181,
-      "detail_elapsed_ms": 1681,
-      "scraped_at": "2026-06-19T12:10:08.512Z"
+      "detail_html_length": 131180,
+      "detail_elapsed_ms": 1881,
+      "scraped_at": "2026-06-19T12:20:43.281Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130794,
-      "detail_elapsed_ms": 1700,
-      "scraped_at": "2026-06-19T12:10:10.212Z"
+      "detail_html_length": 130784,
+      "detail_elapsed_ms": 1946,
+      "scraped_at": "2026-06-19T12:20:45.227Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -257,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133068,
-      "detail_elapsed_ms": 1633,
-      "scraped_at": "2026-06-19T12:10:11.846Z"
+      "detail_elapsed_ms": 1450,
+      "scraped_at": "2026-06-19T12:20:46.677Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130970,
-      "detail_elapsed_ms": 1614,
-      "scraped_at": "2026-06-19T12:10:13.460Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 1646,
+      "scraped_at": "2026-06-19T12:20:48.323Z"
     },
     {
       "id": "pxm-camiseta-camisa-de-time-calcao-10-off",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130994,
-      "detail_elapsed_ms": 1762,
-      "scraped_at": "2026-06-19T12:10:15.222Z"
+      "detail_html_length": 130985,
+      "detail_elapsed_ms": 1703,
+      "scraped_at": "2026-06-19T12:20:50.026Z"
+    },
+    {
+      "id": "pxl-camiseta-bermuda-meia-e-mais-10-off",
+      "trace_id": "trace_pxl-camiseta-bermuda-meia-e-mais-10-off",
+      "link": "https://clube.uol.com.br/centauro/pxL-camiseta-bermuda-meia-e-mais-10-off",
+      "original_link": "https://clube.uol.com.br/centauro/pxL-camiseta-bermuda-meia-e-mais-10-off",
+      "title": "Camiseta, bermuda, meia e mais + 10% OFF",
+      "preview_title": "Camiseta, bermuda, meia e mais + 10% OFF",
+      "validity": "Benefício válido de 18/06/2026 13:56 até 30/06/2026 23:59.",
+      "description": "Benefício: Camiseta, bermuda, meia e mais + 10% OFF Regras: Desconto válido para seleção de produtos do link. Sujeito a disponibilidade do produto. Não cumulativo com demais cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Centauro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621656224f20c6584126e76f5e87a620.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621656224f20c6584126e76f5e87a620.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/621656224f20c6584126e76f5e87a620.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130909,
+      "detail_elapsed_ms": 1566,
+      "scraped_at": "2026-06-19T12:20:51.592Z"
     }
   ]
 }
