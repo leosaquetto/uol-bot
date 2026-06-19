@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-06-19T15:30:50.121644Z",
+  "updated_at": "2026-06-19T15:31:52.477256Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 10,
+    "duplicada_historico": 11,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 20/07 Hopi Hari - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pyh-2-ingressos-20-07-hopi-hari-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pyh-2-ingressos-20-07-hopi-hari-sp"
+    },
     {
       "title": "15% OFF em seleção Mizuno e New Balance",
       "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-selecao-mizuno-e-new-balance",
