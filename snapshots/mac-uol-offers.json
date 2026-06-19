@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 66239,
-  "run_duration_seconds": 66.24,
-  "avg_detail_ms_per_offer": 5520,
-  "generated_at": "2026-06-19T13:44:48.769Z",
+  "run_duration_ms": 146106,
+  "run_duration_seconds": 146.11,
+  "avg_detail_ms_per_offer": 12176,
+  "generated_at": "2026-06-19T14:08:56.908Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pyf-2-ingressos-25-06-teatro-liberdade-sp",
+      "trace_id": "trace_pyf-2-ingressos-25-06-teatro-liberdade-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pyf-2-ingressos-25-06-teatro-liberdade-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pyf-2-ingressos-25-06-teatro-liberdade-sp",
+      "title": "2 INGRESSOS: 25/06 Teatro Liberdade - SP",
+      "preview_title": "2 INGRESSOS: 25/06 Teatro Liberdade - SP",
+      "validity": "Benefício válido de 19/06/2026 10:33 até 24/06/2026 23:59.",
+      "description": "Assinante UOL, prepare-se para uma noite divertida! Resgate 1 par de ingressos para assistir ao espetáculo “O que pode dar errado na cama?”, com Cátia Damasceno, uma comédia irreverente que mistura humor e reflexões sobre a vida a dois, no Teatro Liberdade, em São Paulo. Data: 25 de Junho, às 20h. Local: R. São Joaquim, 129, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f6046dfa0cb87dfb768531f3da0e4e5b.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f6046dfa0cb87dfb768531f3da0e4e5b.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f6046dfa0cb87dfb768531f3da0e4e5b.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132695,
+      "detail_elapsed_ms": 7965,
+      "scraped_at": "2026-06-19T14:08:09.410Z"
+    },
     {
       "id": "pye-aproveite-12-off-na-stanley",
       "trace_id": "trace_pye-aproveite-12-off-na-stanley",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130929,
-      "detail_elapsed_ms": 5565,
-      "scraped_at": "2026-06-19T13:44:24.274Z"
+      "detail_html_length": 130937,
+      "detail_elapsed_ms": 3216,
+      "scraped_at": "2026-06-19T14:08:12.627Z"
     },
     {
       "id": "pyc-15-off-em-selecao-mizuno-e-new-balance",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129578,
-      "detail_elapsed_ms": 2462,
-      "scraped_at": "2026-06-19T13:44:26.738Z"
+      "detail_html_length": 124452,
+      "detail_elapsed_ms": 4367,
+      "scraped_at": "2026-06-19T14:08:16.995Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133948,
-      "detail_elapsed_ms": 2346,
-      "scraped_at": "2026-06-19T13:44:29.085Z"
+      "detail_html_length": 134352,
+      "detail_elapsed_ms": 7433,
+      "scraped_at": "2026-06-19T14:08:24.428Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133899,
-      "detail_elapsed_ms": 1978,
-      "scraped_at": "2026-06-19T13:44:31.064Z"
+      "detail_html_length": 133910,
+      "detail_elapsed_ms": 5673,
+      "scraped_at": "2026-06-19T14:08:30.101Z"
     },
     {
       "id": "pxu-ate-30-off-10-off-extra-feminina",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129646,
-      "detail_elapsed_ms": 1828,
-      "scraped_at": "2026-06-19T13:44:32.892Z"
+      "detail_html_length": 130806,
+      "detail_elapsed_ms": 5631,
+      "scraped_at": "2026-06-19T14:08:35.732Z"
     },
     {
       "id": "pxt-ate-30-off-15-off-extra-feminina",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130852,
-      "detail_elapsed_ms": 1871,
-      "scraped_at": "2026-06-19T13:44:34.763Z"
+      "detail_html_length": 129695,
+      "detail_elapsed_ms": 3695,
+      "scraped_at": "2026-06-19T14:08:39.427Z"
     },
     {
       "id": "pxs-ate-60-off-20-off-extra-feminina",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130836,
-      "detail_elapsed_ms": 1873,
-      "scraped_at": "2026-06-19T13:44:36.636Z"
+      "detail_html_length": 130805,
+      "detail_elapsed_ms": 4556,
+      "scraped_at": "2026-06-19T14:08:43.983Z"
     },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131143,
-      "detail_elapsed_ms": 2261,
-      "scraped_at": "2026-06-19T13:44:38.897Z"
+      "detail_html_length": 129650,
+      "detail_elapsed_ms": 3061,
+      "scraped_at": "2026-06-19T14:08:47.044Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130767,
-      "detail_elapsed_ms": 2375,
-      "scraped_at": "2026-06-19T13:44:41.273Z"
+      "detail_html_length": 129599,
+      "detail_elapsed_ms": 2470,
+      "scraped_at": "2026-06-19T14:08:49.516Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133021,
-      "detail_elapsed_ms": 2212,
-      "scraped_at": "2026-06-19T13:44:43.485Z"
+      "detail_html_length": 133012,
+      "detail_elapsed_ms": 4538,
+      "scraped_at": "2026-06-19T14:08:54.054Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130930,
-      "detail_elapsed_ms": 2947,
-      "scraped_at": "2026-06-19T13:44:46.433Z"
-    },
-    {
-      "id": "pxm-camiseta-camisa-de-time-calcao-10-off",
-      "trace_id": "trace_pxm-camiseta-camisa-de-time-calcao-10-off",
-      "link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calcao-10-off",
-      "original_link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calcao-10-off",
-      "title": "Camiseta, camisa de time, calção+10%OFF",
-      "preview_title": "Camiseta, camisa de time, calção+10%OFF",
-      "validity": "Benefício válido de 18/06/2026 14:05 até 30/06/2026 23:59.",
-      "description": "Benefício: Camiseta, camisa de time, calção e mais + 10% OFF Regras: Desconto válido para seleção de produtos do link. Sujeito à disponibilidade do produto. Não cumulativo com demais cupons. Sujeito à desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Centauro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19270f6589b1f2bef03115181b028eaf.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19270f6589b1f2bef03115181b028eaf.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/19270f6589b1f2bef03115181b028eaf.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129797,
-      "detail_elapsed_ms": 1972,
-      "scraped_at": "2026-06-19T13:44:48.406Z"
+      "detail_html_length": 130921,
+      "detail_elapsed_ms": 2484,
+      "scraped_at": "2026-06-19T14:08:56.538Z"
     }
   ]
 }
