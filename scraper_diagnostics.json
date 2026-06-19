@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-06-19T13:46:34.790631Z",
+  "updated_at": "2026-06-19T14:09:42.877068Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 10,
-    "duplicada_latest": 1,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -75,12 +75,6 @@
       "link": "https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off",
       "reason": "duplicada_historico",
       "trace_id": "trace_pxn-camiseta-tenis-bermuda-e-mais-10-off"
-    },
-    {
-      "title": "Camiseta, camisa de time, calção+10%OFF",
-      "link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calcao-10-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pxm-camiseta-camisa-de-time-calcao-10-off"
     }
   ]
 }
