@@ -1,38 +1,38 @@
 {
-  "updated_at": "2026-06-19T20:17:51.008572Z",
+  "updated_at": "2026-06-19T20:28:46.116253Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
-    "duplicada_latest": 1,
+    "duplicada_historico": 4,
+    "duplicada_latest": 7,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "Ganhe nécessaire em compras de +R$199",
-      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-necessaire-em-compras-de-r-199",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pz0-ganhe-necessaire-em-compras-de-r-199"
+      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-ncessaire-em-compras-de-r-199",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pz0-ganhe-ncessaire-em-compras-de-r-199"
     },
     {
       "title": "Pijamas, acessórios c/ até 30%OFF+10%OFF",
-      "link": "https://clube.uol.com.br/puket/pzz-pijamas-acessorios-c-ate-30-off-10-off",
+      "link": "https://clube.uol.com.br/puket/pzz-pijamas-acessrios-c-at-30-off-10-off",
       "reason": "duplicada_latest",
-      "trace_id": "trace_pzz-pijamas-acessorios-c-ate-30-off-10-off"
+      "trace_id": "trace_pzz-pijamas-acessrios-c-at-30-off-10-off"
     },
     {
       "title": "2 INGRESSOS: 23/06 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pzx-2-ingressos-23-06-teatro-italia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzx-2-ingressos-23-06-teatro-italia-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pzx-2-ingressos-23-06-teatro-itlia-sp",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pzx-2-ingressos-23-06-teatro-itlia-sp"
     },
     {
       "title": "2 INGRESSOS: 20/07 Hopi Hari - SP",
@@ -48,9 +48,9 @@
     },
     {
       "title": "15% OFF em seleção Mizuno e New Balance",
-      "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-selecao-mizuno-e-new-balance",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pyc-15-off-em-selecao-mizuno-e-new-balance"
+      "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pyc-15-off-em-seleo-mizuno-e-new-balance"
     },
     {
       "title": "2 INGRESSOS: 27/06 Morumbi Park- SP",
@@ -66,27 +66,21 @@
     },
     {
       "title": "Até 30% OFF + 10% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxU-ate-30-off-10-off-extra-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxu-ate-30-off-10-off-extra-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/pxU-at-30-off-10-off-extra-feminina",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxu-at-30-off-10-off-extra-feminina"
     },
     {
       "title": "Até 30% OFF + 15% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxt-ate-30-off-15-off-extra-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/pxT-at-30-off-15-off-extra-feminina",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxt-at-30-off-15-off-extra-feminina"
     },
     {
       "title": "Até 60% OFF + 20% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxS-ate-60-off-20-off-extra-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxs-ate-60-off-20-off-extra-feminina"
-    },
-    {
-      "title": "15% OFF na 1ª compra no app Lojas Renner",
-      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxq-15-off-na-1a-compra-no-app-lojas-renner"
+      "link": "https://clube.uol.com.br/lojasrenner/pxS-at-60-off-20-off-extra-feminina",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxs-at-60-off-20-off-extra-feminina"
     }
   ]
 }
