@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-06-19T19:13:32.957085Z",
+  "updated_at": "2026-06-19T19:40:22.486852Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
+    "duplicada_historico": 11,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -81,12 +81,6 @@
       "link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-pecas-por-r-160",
       "reason": "duplicada_historico",
       "trace_id": "trace_pxo-especial-inverno-2-pecas-por-r-160"
-    },
-    {
-      "title": "Camiseta, tênis, bermuda e mais + 10%OFF",
-      "link": "https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxn-camiseta-tenis-bermuda-e-mais-10-off"
     }
   ]
 }
