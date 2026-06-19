@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 104047,
-  "run_duration_seconds": 104.05,
-  "avg_detail_ms_per_offer": 8671,
-  "generated_at": "2026-06-19T18:18:06.510Z",
+  "run_duration_ms": 178843,
+  "run_duration_seconds": 178.84,
+  "avg_detail_ms_per_offer": 14904,
+  "generated_at": "2026-06-19T18:43:37.698Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132382,
-      "detail_elapsed_ms": 6413,
-      "scraped_at": "2026-06-19T18:17:22.735Z"
+      "detail_html_length": 125745,
+      "detail_elapsed_ms": 2754,
+      "scraped_at": "2026-06-19T18:42:06.683Z"
     },
     {
       "id": "pye-aproveite-12-off-na-stanley",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129924,
-      "detail_elapsed_ms": 3997,
-      "scraped_at": "2026-06-19T18:17:26.733Z"
+      "detail_html_length": 124700,
+      "detail_elapsed_ms": 2141,
+      "scraped_at": "2026-06-19T18:42:08.826Z"
     },
     {
       "id": "pyc-15-off-em-selecao-mizuno-e-new-balance",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124491,
-      "detail_elapsed_ms": 2911,
-      "scraped_at": "2026-06-19T18:17:29.645Z"
+      "detail_html_length": 129578,
+      "detail_elapsed_ms": 2817,
+      "scraped_at": "2026-06-19T18:42:11.643Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133957,
-      "detail_elapsed_ms": 2803,
-      "scraped_at": "2026-06-19T18:17:32.448Z"
+      "detail_html_length": 133937,
+      "detail_elapsed_ms": 2935,
+      "scraped_at": "2026-06-19T18:42:14.578Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133929,
-      "detail_elapsed_ms": 2979,
-      "scraped_at": "2026-06-19T18:17:35.428Z"
+      "detail_html_length": 133898,
+      "detail_elapsed_ms": 6159,
+      "scraped_at": "2026-06-19T18:42:20.738Z"
     },
     {
       "id": "pxu-ate-30-off-10-off-extra-feminina",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130815,
-      "detail_elapsed_ms": 3036,
-      "scraped_at": "2026-06-19T18:17:38.464Z"
+      "detail_html_length": 130718,
+      "detail_elapsed_ms": 5935,
+      "scraped_at": "2026-06-19T18:42:26.673Z"
     },
     {
       "id": "pxt-ate-30-off-15-off-extra-feminina",
@@ -171,22 +171,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
       "title": "Até 30% OFF + 15% OFF extra - Feminina",
       "preview_title": "Até 30% OFF + 15% OFF extra - Feminina",
-      "validity": "Benefício válido de 18/06/2026 15:46 até 30/06/2026 09:00.",
-      "description": "Benefício: Até 30% OFF + 15% OFF extra na seleção feminina com cupom MARCAS15! Regras: Válido para todos os itens da seleção. Não cumulativo com demais promoções. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9a055a0f8636305ce56c9649046a2197.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9a055a0f8636305ce56c9649046a2197.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9a055a0f8636305ce56c9649046a2197.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129636,
-      "detail_elapsed_ms": 3815,
-      "scraped_at": "2026-06-19T18:17:42.280Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12763,
+      "scraped_at": "2026-06-19T18:42:51.834Z"
     },
     {
       "id": "pxs-ate-60-off-20-off-extra-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130813,
-      "detail_elapsed_ms": 9075,
-      "scraped_at": "2026-06-19T18:17:51.355Z"
+      "detail_html_length": 130814,
+      "detail_elapsed_ms": 6987,
+      "scraped_at": "2026-06-19T18:42:58.821Z"
     },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131161,
-      "detail_elapsed_ms": 2441,
-      "scraped_at": "2026-06-19T18:17:53.796Z"
+      "detail_html_length": 129915,
+      "detail_elapsed_ms": 3769,
+      "scraped_at": "2026-06-19T18:43:02.590Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129606,
-      "detail_elapsed_ms": 2374,
-      "scraped_at": "2026-06-19T18:17:56.172Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130745,
+      "detail_elapsed_ms": 8794,
+      "scraped_at": "2026-06-19T18:43:24.902Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133049,
-      "detail_elapsed_ms": 2757,
-      "scraped_at": "2026-06-19T18:17:58.929Z"
+      "detail_html_length": 133030,
+      "detail_elapsed_ms": 7771,
+      "scraped_at": "2026-06-19T18:43:32.673Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130988,
-      "detail_elapsed_ms": 5901,
-      "scraped_at": "2026-06-19T18:18:04.830Z"
+      "detail_html_length": 130863,
+      "detail_elapsed_ms": 3601,
+      "scraped_at": "2026-06-19T18:43:36.274Z"
     }
   ]
 }
