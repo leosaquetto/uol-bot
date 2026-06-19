@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19T09:42:07.100994Z",
+  "updated_at": "2026-06-19T09:52:00.357008Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,23 +10,23 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
-    "duplicada_latest": 1,
+    "duplicada_historico": 4,
+    "duplicada_latest": 8,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "15% OFF em seleção Mizuno e New Balance",
-      "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-selecao-mizuno-e-new-balance",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pyc-15-off-em-selecao-mizuno-e-new-balance"
+      "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pyc-15-off-em-seleo-mizuno-e-new-balance"
     },
     {
       "title": "2 INGRESSOS 21/06 Cultura Artística SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pya-2-ingressos-21-06-cultura-artistica-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pya-2-ingressos-21-06-cultura-artistica-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pya-2-ingressos-21-06-cultura-artstica-sp",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pya-2-ingressos-21-06-cultura-artstica-sp"
     },
     {
       "title": "2 INGRESSOS: 27/06 Morumbi Park- SP",
@@ -42,51 +42,51 @@
     },
     {
       "title": "Até 30% OFF + 10% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxU-ate-30-off-10-off-extra-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxu-ate-30-off-10-off-extra-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/pxU-at-30-off-10-off-extra-feminina",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxu-at-30-off-10-off-extra-feminina"
     },
     {
       "title": "Até 30% OFF + 15% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxt-ate-30-off-15-off-extra-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/pxT-at-30-off-15-off-extra-feminina",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxt-at-30-off-15-off-extra-feminina"
     },
     {
       "title": "Até 60% OFF + 20% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxS-ate-60-off-20-off-extra-feminina",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxs-ate-60-off-20-off-extra-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/pxS-at-60-off-20-off-extra-feminina",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxs-at-60-off-20-off-extra-feminina"
     },
     {
       "title": "15% OFF na 1ª compra no app Lojas Renner",
-      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxq-15-off-na-1a-compra-no-app-lojas-renner"
+      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1-compra-no-app-lojas-renner",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxq-15-off-na-1-compra-no-app-lojas-renner"
     },
     {
       "title": "Até 20% de desconto em jaquetas no site!",
-      "link": "https://clube.uol.com.br/mizuno/pxP-ate-20-de-desconto-em-jaquetas-no-site",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxp-ate-20-de-desconto-em-jaquetas-no-site"
+      "link": "https://clube.uol.com.br/mizuno/pxP-at-20-de-desconto-em-jaquetas-no-site",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxp-at-20-de-desconto-em-jaquetas-no-site"
     },
     {
       "title": "Especial Inverno: 2 peças por R$ 160",
-      "link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-pecas-por-r-160",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxo-especial-inverno-2-pecas-por-r-160"
+      "link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-peas-por-r-160",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pxo-especial-inverno-2-peas-por-r-160"
     },
     {
       "title": "Camiseta, tênis, bermuda e mais + 10%OFF",
-      "link": "https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off",
+      "link": "https://clube.uol.com.br/centauro/pxN-camiseta-tnis-bermuda-e-mais-10-off",
       "reason": "duplicada_historico",
-      "trace_id": "trace_pxn-camiseta-tenis-bermuda-e-mais-10-off"
+      "trace_id": "trace_pxn-camiseta-tnis-bermuda-e-mais-10-off"
     },
     {
       "title": "Camiseta, camisa de time, calção+10%OFF",
-      "link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calcao-10-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pxm-camiseta-camisa-de-time-calcao-10-off"
+      "link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calo-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxm-camiseta-camisa-de-time-calo-10-off"
     }
   ]
 }
