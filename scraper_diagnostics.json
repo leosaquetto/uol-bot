@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19T12:11:51.545707Z",
+  "updated_at": "2026-06-19T12:21:37.619262Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-selecao-mizuno-e-new-balance",
       "reason": "duplicada_historico",
       "trace_id": "trace_pyc-15-off-em-selecao-mizuno-e-new-balance"
-    },
-    {
-      "title": "2 INGRESSOS 21/06 Cultura Artística SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pya-2-ingressos-21-06-cultura-artistica-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pya-2-ingressos-21-06-cultura-artistica-sp"
     },
     {
       "title": "2 INGRESSOS: 27/06 Morumbi Park- SP",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/centauro/pxM-camiseta-camisa-de-time-calcao-10-off",
       "reason": "duplicada_latest",
       "trace_id": "trace_pxm-camiseta-camisa-de-time-calcao-10-off"
+    },
+    {
+      "title": "Camiseta, bermuda, meia e mais + 10% OFF",
+      "link": "https://clube.uol.com.br/centauro/pxL-camiseta-bermuda-meia-e-mais-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pxl-camiseta-bermuda-meia-e-mais-10-off"
     }
   ]
 }
