@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 8,
+  "detail_fail_count": 4,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 8,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 4
   },
-  "run_duration_ms": 39344,
-  "run_duration_seconds": 39.34,
-  "avg_detail_ms_per_offer": 3279,
-  "generated_at": "2026-06-19T13:03:37.009Z",
+  "run_duration_ms": 226875,
+  "run_duration_seconds": 226.88,
+  "avg_detail_ms_per_offer": 18906,
+  "generated_at": "2026-06-19T13:18:03.945Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128934,
-      "detail_elapsed_ms": 2615,
-      "scraped_at": "2026-06-19T13:03:15.294Z"
+      "detail_html_length": 131089,
+      "detail_elapsed_ms": 9210,
+      "scraped_at": "2026-06-19T13:15:50.177Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133945,
-      "detail_elapsed_ms": 3075,
-      "scraped_at": "2026-06-19T13:03:18.371Z"
+      "detail_html_length": 132700,
+      "detail_elapsed_ms": 3182,
+      "scraped_at": "2026-06-19T13:15:53.360Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133938,
-      "detail_elapsed_ms": 1999,
-      "scraped_at": "2026-06-19T13:03:20.370Z"
+      "detail_html_length": 132759,
+      "detail_elapsed_ms": 2048,
+      "scraped_at": "2026-06-19T13:15:55.409Z"
     },
     {
       "id": "pxu-ate-30-off-10-off-extra-feminina",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130863,
-      "detail_elapsed_ms": 1878,
-      "scraped_at": "2026-06-19T13:03:22.248Z"
+      "detail_html_length": 130803,
+      "detail_elapsed_ms": 3187,
+      "scraped_at": "2026-06-19T13:15:58.597Z"
     },
     {
       "id": "pxt-ate-30-off-15-off-extra-feminina",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130880,
-      "detail_elapsed_ms": 1610,
-      "scraped_at": "2026-06-19T13:03:23.860Z"
+      "detail_html_length": 130861,
+      "detail_elapsed_ms": 2458,
+      "scraped_at": "2026-06-19T13:16:01.055Z"
     },
     {
       "id": "pxs-ate-60-off-20-off-extra-feminina",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 2064,
-      "scraped_at": "2026-06-19T13:03:25.924Z"
+      "detail_html_length": 130794,
+      "detail_elapsed_ms": 3110,
+      "scraped_at": "2026-06-19T13:16:04.165Z"
     },
     {
       "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
@@ -171,22 +171,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
       "title": "15% OFF na 1ª compra no app Lojas Renner",
       "preview_title": "15% OFF na 1ª compra no app Lojas Renner",
-      "validity": "Benefício válido de 18/06/2026 14:58 até 01/07/2026 23:59.",
-      "description": "Benefício: Ganhe 15% OFF na 1ª compra no app Lojas Renner! Regras: Válido para todos os itens da seleção, exceto itens remarcados e lojas parceiras. Desconto válido para primeira compra no APP por CPF. Não cumulativo com demais promoções. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aff9e9cd73f9a94cd04110d1803ac5c8.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aff9e9cd73f9a94cd04110d1803ac5c8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aff9e9cd73f9a94cd04110d1803ac5c8.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131211,
-      "detail_elapsed_ms": 1919,
-      "scraped_at": "2026-06-19T13:03:27.844Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12365,
+      "scraped_at": "2026-06-19T13:16:29.533Z"
     },
     {
       "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
@@ -195,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/mizuno/pxP-ate-20-de-desconto-em-jaquetas-no-site",
       "title": "Até 20% de desconto em jaquetas no site!",
       "preview_title": "Até 20% de desconto em jaquetas no site!",
-      "validity": "Benefício válido de 18/06/2026 14:50 até 30/06/2026 23:59.",
-      "description": "Benefício: Até 20% de desconto em jaquetas no site! Regras: Válido para seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mizuno",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8c21c5a17f7fabc6da132b95caa04161.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8c21c5a17f7fabc6da132b95caa04161.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8c21c5a17f7fabc6da132b95caa04161.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130718,
-      "detail_elapsed_ms": 1787,
-      "scraped_at": "2026-06-19T13:03:29.631Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/mizuno/pxP-ate-20-de-desconto-em-jaquetas-no-site\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12217,
+      "scraped_at": "2026-06-19T13:16:54.765Z"
     },
     {
       "id": "pxo-especial-inverno-2-pecas-por-r-160",
@@ -219,22 +219,22 @@
       "original_link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-pecas-por-r-160",
       "title": "Especial Inverno: 2 peças por R$ 160",
       "preview_title": "Especial Inverno: 2 peças por R$ 160",
-      "validity": "Benefício válido de 18/06/2026 14:23 até 30/06/2026 23:59.",
-      "description": "Benefício: Especial Inverno: 2 peças por R$ 160 Regras: Válido para seleção de produtos. O desconto já está aplicado automaticamente nos produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mizuno",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3f81713124260f7fafcbc1a499356a9.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3f81713124260f7fafcbc1a499356a9.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3f81713124260f7fafcbc1a499356a9.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133079,
-      "detail_elapsed_ms": 1801,
-      "scraped_at": "2026-06-19T13:03:31.433Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-pecas-por-r-160\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12491,
+      "scraped_at": "2026-06-19T13:17:20.980Z"
     },
     {
       "id": "pxn-camiseta-tenis-bermuda-e-mais-10-off",
@@ -243,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off",
       "title": "Camiseta, tênis, bermuda e mais + 10%OFF",
       "preview_title": "Camiseta, tênis, bermuda e mais + 10%OFF",
-      "validity": "Benefício válido de 18/06/2026 14:14 até 30/06/2026 23:59.",
-      "description": "Benefício: Camiseta, tênis, bermuda e mais + 10% OFF Regras: Desconto válido para seleção de produtos do link. Sujeito à disponibilidade do produto. Não cumulativo com demais cupons. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Centauro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8490bef8de0e0d15ddb11d92226b4fc7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8490bef8de0e0d15ddb11d92226b4fc7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8490bef8de0e0d15ddb11d92226b4fc7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130979,
-      "detail_elapsed_ms": 1925,
-      "scraped_at": "2026-06-19T13:03:33.358Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/centauro/pxN-camiseta-tenis-bermuda-e-mais-10-off\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12278,
+      "scraped_at": "2026-06-19T13:17:50.558Z"
     },
     {
       "id": "pxm-camiseta-camisa-de-time-calcao-10-off",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131014,
-      "detail_elapsed_ms": 1811,
-      "scraped_at": "2026-06-19T13:03:35.169Z"
+      "detail_html_length": 130954,
+      "detail_elapsed_ms": 10439,
+      "scraped_at": "2026-06-19T13:18:00.997Z"
     },
     {
       "id": "pxl-camiseta-bermuda-meia-e-mais-10-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130937,
-      "detail_elapsed_ms": 1787,
-      "scraped_at": "2026-06-19T13:03:36.956Z"
+      "detail_html_length": 130928,
+      "detail_elapsed_ms": 2588,
+      "scraped_at": "2026-06-19T13:18:03.585Z"
     }
   ]
 }
