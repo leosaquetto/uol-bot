@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-20T18:02:30.835498Z",
+  "updated_at": "2026-06-20T18:03:50.025582Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 3,
-    "duplicada_latest": 4,
+    "duplicada_historico": 4,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,6 +21,12 @@
       "link": "https://clube.uol.com.br/sephora/pz1-ganhe-gloss-bomb-em-compras-de-r-599",
       "reason": "duplicada_historico",
       "trace_id": "trace_pz1-ganhe-gloss-bomb-em-compras-de-r-599"
+    },
+    {
+      "title": "Ganhe nécessaire em compras de +R$199",
+      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-ncessaire-em-compras-de-r-199",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pz0-ganhe-ncessaire-em-compras-de-r-199"
     },
     {
       "title": "Pijamas, acessórios c/ até 30%OFF+10%OFF",
@@ -51,12 +57,6 @@
       "link": "https://clube.uol.com.br/lojasrenner/pxU-at-30-off-10-off-extra-feminina",
       "reason": "duplicada_latest",
       "trace_id": "trace_pxu-at-30-off-10-off-extra-feminina"
-    },
-    {
-      "title": "15% OFF na 1ª compra no app Lojas Renner",
-      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1-compra-no-app-lojas-renner",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pxq-15-off-na-1-compra-no-app-lojas-renner"
     }
   ]
 }
