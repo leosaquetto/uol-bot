@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-06-20T17:07:18.016896Z",
+  "updated_at": "2026-06-20T18:02:30.835498Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
-    "duplicada_latest": 7,
+    "duplicada_historico": 3,
+    "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -23,22 +23,10 @@
       "trace_id": "trace_pz1-ganhe-gloss-bomb-em-compras-de-r-599"
     },
     {
-      "title": "Ganhe nécessaire em compras de +R$199",
-      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-ncessaire-em-compras-de-r-199",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pz0-ganhe-ncessaire-em-compras-de-r-199"
-    },
-    {
       "title": "Pijamas, acessórios c/ até 30%OFF+10%OFF",
       "link": "https://clube.uol.com.br/puket/pzz-pijamas-acessrios-c-at-30-off-10-off",
       "reason": "duplicada_latest",
       "trace_id": "trace_pzz-pijamas-acessrios-c-at-30-off-10-off"
-    },
-    {
-      "title": "2 INGRESSOS: 20/07 Hopi Hari - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pyh-2-ingressos-20-07-hopi-hari-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pyh-2-ingressos-20-07-hopi-hari-sp"
     },
     {
       "title": "Aproveite 12% OFF na Stanley",
@@ -63,18 +51,6 @@
       "link": "https://clube.uol.com.br/lojasrenner/pxU-at-30-off-10-off-extra-feminina",
       "reason": "duplicada_latest",
       "trace_id": "trace_pxu-at-30-off-10-off-extra-feminina"
-    },
-    {
-      "title": "Até 30% OFF + 15% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxT-at-30-off-15-off-extra-feminina",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pxt-at-30-off-15-off-extra-feminina"
-    },
-    {
-      "title": "Até 60% OFF + 20% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxS-at-60-off-20-off-extra-feminina",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pxs-at-60-off-20-off-extra-feminina"
     },
     {
       "title": "15% OFF na 1ª compra no app Lojas Renner",
