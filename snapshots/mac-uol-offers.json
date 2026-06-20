@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 78139,
-  "run_duration_seconds": 78.14,
-  "avg_detail_ms_per_offer": 6512,
-  "generated_at": "2026-06-20T12:53:35.764Z",
+  "run_duration_ms": 147533,
+  "run_duration_seconds": 147.53,
+  "avg_detail_ms_per_offer": 12294,
+  "generated_at": "2026-06-20T13:06:10.380Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131214,
-      "detail_elapsed_ms": 5946,
-      "scraped_at": "2026-06-20T12:52:53.624Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133089,
+      "detail_elapsed_ms": 11061,
+      "scraped_at": "2026-06-20T13:05:07.281Z"
     },
     {
       "id": "pz0-ganhe-ncessaire-em-compras-de-r-199",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126727,
-      "detail_elapsed_ms": 3403,
-      "scraped_at": "2026-06-20T12:52:57.030Z"
+      "detail_html_length": 133085,
+      "detail_elapsed_ms": 10090,
+      "scraped_at": "2026-06-20T13:05:17.372Z"
     },
     {
       "id": "pzz-pijamas-acessrios-c-at-30-off-10-off",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129646,
-      "detail_elapsed_ms": 3937,
-      "scraped_at": "2026-06-20T12:53:00.967Z"
+      "detail_html_length": 129720,
+      "detail_elapsed_ms": 5539,
+      "scraped_at": "2026-06-20T13:05:22.911Z"
     },
     {
       "id": "pyh-2-ingressos-20-07-hopi-hari-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132624,
-      "detail_elapsed_ms": 5961,
-      "scraped_at": "2026-06-20T12:53:06.928Z"
+      "detail_html_length": 131118,
+      "detail_elapsed_ms": 4331,
+      "scraped_at": "2026-06-20T13:05:27.242Z"
     },
     {
       "id": "pye-aproveite-12-off-na-stanley",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131080,
-      "detail_elapsed_ms": 2067,
-      "scraped_at": "2026-06-20T12:53:08.995Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130928,
+      "detail_elapsed_ms": 9022,
+      "scraped_at": "2026-06-20T13:05:49.783Z"
     },
     {
       "id": "pyc-15-off-em-seleo-mizuno-e-new-balance",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130827,
-      "detail_elapsed_ms": 2883,
-      "scraped_at": "2026-06-20T12:53:11.878Z"
+      "detail_html_length": 130814,
+      "detail_elapsed_ms": 2491,
+      "scraped_at": "2026-06-20T13:05:52.275Z"
     },
     {
       "id": "pxy-2-ingressos-27-06-morumbi-park-sp",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133943,
-      "detail_elapsed_ms": 8658,
-      "scraped_at": "2026-06-20T12:53:20.536Z"
+      "detail_html_length": 133937,
+      "detail_elapsed_ms": 4303,
+      "scraped_at": "2026-06-20T13:05:56.579Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132679,
-      "detail_elapsed_ms": 4929,
-      "scraped_at": "2026-06-20T12:53:25.465Z"
+      "detail_html_length": 133961,
+      "detail_elapsed_ms": 3257,
+      "scraped_at": "2026-06-20T13:05:59.837Z"
     },
     {
       "id": "pxu-at-30-off-10-off-extra-feminina",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129645,
-      "detail_elapsed_ms": 2633,
-      "scraped_at": "2026-06-20T12:53:28.099Z"
+      "detail_html_length": 124447,
+      "detail_elapsed_ms": 1880,
+      "scraped_at": "2026-06-20T13:06:01.717Z"
     },
     {
       "id": "pxt-at-30-off-15-off-extra-feminina",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130863,
-      "detail_elapsed_ms": 3079,
-      "scraped_at": "2026-06-20T12:53:31.179Z"
+      "detail_html_length": 130858,
+      "detail_elapsed_ms": 3058,
+      "scraped_at": "2026-06-20T13:06:04.775Z"
     },
     {
       "id": "pxs-at-60-off-20-off-extra-feminina",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130795,
-      "detail_elapsed_ms": 2219,
-      "scraped_at": "2026-06-20T12:53:33.398Z"
+      "detail_html_length": 130791,
+      "detail_elapsed_ms": 3256,
+      "scraped_at": "2026-06-20T13:06:08.036Z"
     },
     {
       "id": "pxq-15-off-na-1-compra-no-app-lojas-renner",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131181,
-      "detail_elapsed_ms": 2217,
-      "scraped_at": "2026-06-20T12:53:35.615Z"
+      "detail_html_length": 131147,
+      "detail_elapsed_ms": 1878,
+      "scraped_at": "2026-06-20T13:06:09.914Z"
     }
   ]
 }
