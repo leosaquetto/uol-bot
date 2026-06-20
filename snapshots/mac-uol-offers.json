@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 52813,
-  "run_duration_seconds": 52.81,
-  "avg_detail_ms_per_offer": 4401,
-  "generated_at": "2026-06-20T19:28:33.963Z",
+  "run_duration_ms": 158713,
+  "run_duration_seconds": 158.71,
+  "avg_detail_ms_per_offer": 13226,
+  "generated_at": "2026-06-20T19:41:22.001Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/sephora/pz1-ganhe-gloss-bomb-em-compras-de-r-599",
       "title": "Ganhe Gloss Bomb em compras de +R$599",
       "preview_title": "Ganhe Gloss Bomb em compras de +R$599",
-      "validity": "Benefício válido de 19/06/2026 17:14 até 01/07/2026 23:59.",
-      "description": "Benefício: Ganhe um Gloss Bomb full size nas compras de Fenty Beauty a partir R$599 Regras: Desconto em Fenty Beauty nas compras acima de R$599, aplicado automaticamente no site. Não cumulativo. Sujeito à desativação sem aviso prévio ou por estoque.",
+      "validity": "",
+      "description": "",
       "category": "Beleza",
       "partner_name": "SEPHORA",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/425d206b12443c6e6e4a6bb4922675ba.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6312de95f630fa540aa07521fb4ae46e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6312de95f630fa540aa07521fb4ae46e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6312de95f630fa540aa07521fb4ae46e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132938,
-      "detail_elapsed_ms": 5351,
-      "scraped_at": "2026-06-20T19:28:07.331Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/sephora/pz1-ganhe-gloss-bomb-em-compras-de-r-599\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12257,
+      "scraped_at": "2026-06-20T19:40:41.096Z"
     },
     {
       "id": "pz0-ganhe-ncessaire-em-compras-de-r-199",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131914,
-      "detail_elapsed_ms": 4004,
-      "scraped_at": "2026-06-20T19:28:11.337Z"
+      "detail_html_length": 133074,
+      "detail_elapsed_ms": 10122,
+      "scraped_at": "2026-06-20T19:40:51.326Z"
     },
     {
       "id": "pzz-pijamas-acessrios-c-at-30-off-10-off",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129706,
-      "detail_elapsed_ms": 2859,
-      "scraped_at": "2026-06-20T19:28:14.196Z"
+      "detail_html_length": 124521,
+      "detail_elapsed_ms": 2040,
+      "scraped_at": "2026-06-20T19:40:53.367Z"
     },
     {
       "id": "pye-aproveite-12-off-na-stanley",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124711,
-      "detail_elapsed_ms": 2775,
-      "scraped_at": "2026-06-20T19:28:16.971Z"
+      "detail_html_length": 131074,
+      "detail_elapsed_ms": 2222,
+      "scraped_at": "2026-06-20T19:40:55.589Z"
     },
     {
       "id": "pyc-15-off-em-seleo-mizuno-e-new-balance",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130801,
-      "detail_elapsed_ms": 2731,
-      "scraped_at": "2026-06-20T19:28:19.703Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 7170,
+      "scraped_at": "2026-06-20T19:41:02.759Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133897,
-      "detail_elapsed_ms": 2113,
-      "scraped_at": "2026-06-20T19:28:21.816Z"
+      "detail_html_length": 132739,
+      "detail_elapsed_ms": 3933,
+      "scraped_at": "2026-06-20T19:41:06.692Z"
     },
     {
       "id": "pxu-at-30-off-10-off-extra-feminina",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130798,
-      "detail_elapsed_ms": 1816,
-      "scraped_at": "2026-06-20T19:28:23.632Z"
+      "detail_html_length": 130819,
+      "detail_elapsed_ms": 2167,
+      "scraped_at": "2026-06-20T19:41:08.860Z"
     },
     {
       "id": "pxt-at-30-off-15-off-extra-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130846,
-      "detail_elapsed_ms": 2716,
-      "scraped_at": "2026-06-20T19:28:26.348Z"
+      "detail_html_length": 129619,
+      "detail_elapsed_ms": 2898,
+      "scraped_at": "2026-06-20T19:41:11.759Z"
     },
     {
       "id": "pxs-at-60-off-20-off-extra-feminina",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130809,
-      "detail_elapsed_ms": 1821,
-      "scraped_at": "2026-06-20T19:28:28.169Z"
+      "detail_html_length": 130787,
+      "detail_elapsed_ms": 2023,
+      "scraped_at": "2026-06-20T19:41:13.783Z"
     },
     {
       "id": "pxq-15-off-na-1-compra-no-app-lojas-renner",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131175,
-      "detail_elapsed_ms": 2012,
-      "scraped_at": "2026-06-20T19:28:30.181Z"
+      "detail_html_length": 131134,
+      "detail_elapsed_ms": 2775,
+      "scraped_at": "2026-06-20T19:41:16.558Z"
     },
     {
       "id": "pxp-at-20-de-desconto-em-jaquetas-no-site",
@@ -281,8 +281,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130740,
-      "detail_elapsed_ms": 1925,
-      "scraped_at": "2026-06-20T19:28:32.106Z"
+      "detail_elapsed_ms": 2301,
+      "scraped_at": "2026-06-20T19:41:18.859Z"
     },
     {
       "id": "pxo-especial-inverno-2-peas-por-r-160",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133012,
-      "detail_elapsed_ms": 1641,
-      "scraped_at": "2026-06-20T19:28:33.747Z"
+      "detail_html_length": 133043,
+      "detail_elapsed_ms": 2516,
+      "scraped_at": "2026-06-20T19:41:21.375Z"
     }
   ]
 }
