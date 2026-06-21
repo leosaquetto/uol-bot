@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 185491,
-  "run_duration_seconds": 185.49,
-  "avg_detail_ms_per_offer": 15458,
-  "generated_at": "2026-06-21T12:56:29.183Z",
+  "run_duration_ms": 79001,
+  "run_duration_seconds": 79,
+  "avg_detail_ms_per_offer": 6583,
+  "generated_at": "2026-06-21T13:30:57.604Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132958,
-      "detail_elapsed_ms": 3911,
-      "scraped_at": "2026-06-21T12:54:12.434Z"
+      "detail_html_length": 132616,
+      "detail_elapsed_ms": 7502,
+      "scraped_at": "2026-06-21T13:30:24.211Z"
     },
     {
       "id": "pz0-ganhe-ncessaire-em-compras-de-r-199",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133094,
-      "detail_elapsed_ms": 5998,
-      "scraped_at": "2026-06-21T12:54:18.434Z"
+      "detail_html_length": 133084,
+      "detail_elapsed_ms": 7593,
+      "scraped_at": "2026-06-21T13:30:31.823Z"
     },
     {
       "id": "pzz-pijamas-acessrios-c-at-30-off-10-off",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130904,
-      "detail_elapsed_ms": 2493,
-      "scraped_at": "2026-06-21T12:54:20.927Z"
+      "detail_html_length": 129640,
+      "detail_elapsed_ms": 3448,
+      "scraped_at": "2026-06-21T13:30:35.271Z"
     },
     {
       "id": "pye-aproveite-12-off-na-stanley",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129934,
-      "detail_elapsed_ms": 9135,
-      "scraped_at": "2026-06-21T12:54:30.062Z"
+      "detail_html_length": 124711,
+      "detail_elapsed_ms": 2206,
+      "scraped_at": "2026-06-21T13:30:37.477Z"
     },
     {
       "id": "pyc-15-off-em-seleo-mizuno-e-new-balance",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130664,
-      "detail_elapsed_ms": 7207,
-      "scraped_at": "2026-06-21T12:54:49.543Z"
+      "detail_attempts": 1,
+      "detail_html_length": 129653,
+      "detail_elapsed_ms": 2224,
+      "scraped_at": "2026-06-21T13:30:39.701Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132749,
-      "detail_elapsed_ms": 2387,
-      "scraped_at": "2026-06-21T12:54:51.930Z"
+      "detail_html_length": 127547,
+      "detail_elapsed_ms": 2207,
+      "scraped_at": "2026-06-21T13:30:41.908Z"
     },
     {
       "id": "pxu-at-30-off-10-off-extra-feminina",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124436,
-      "detail_elapsed_ms": 2432,
-      "scraped_at": "2026-06-21T12:54:54.362Z"
+      "detail_html_length": 129660,
+      "detail_elapsed_ms": 2290,
+      "scraped_at": "2026-06-21T13:30:44.199Z"
     },
     {
       "id": "pxt-at-30-off-15-off-extra-feminina",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130865,
-      "detail_elapsed_ms": 10714,
-      "scraped_at": "2026-06-21T12:55:05.077Z"
+      "detail_html_length": 129473,
+      "detail_elapsed_ms": 3201,
+      "scraped_at": "2026-06-21T13:30:47.400Z"
     },
     {
       "id": "pxs-at-60-off-20-off-extra-feminina",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130671,
-      "detail_elapsed_ms": 13595,
-      "scraped_at": "2026-06-21T12:55:18.672Z"
+      "detail_html_length": 124288,
+      "detail_elapsed_ms": 2745,
+      "scraped_at": "2026-06-21T13:30:50.145Z"
     },
     {
       "id": "pxq-15-off-na-1-compra-no-app-lojas-renner",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130998,
-      "detail_elapsed_ms": 8859,
-      "scraped_at": "2026-06-21T12:55:39.884Z"
+      "detail_attempts": 1,
+      "detail_html_length": 129967,
+      "detail_elapsed_ms": 2643,
+      "scraped_at": "2026-06-21T13:30:52.788Z"
     },
     {
       "id": "pxp-at-20-de-desconto-em-jaquetas-no-site",
@@ -279,10 +279,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130612,
-      "detail_elapsed_ms": 10037,
-      "scraped_at": "2026-06-21T12:56:02.184Z"
+      "detail_attempts": 1,
+      "detail_html_length": 129504,
+      "detail_elapsed_ms": 1867,
+      "scraped_at": "2026-06-21T13:30:54.656Z"
     },
     {
       "id": "pxo-especial-inverno-2-peas-por-r-160",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-peas-por-r-160",
       "title": "Especial Inverno: 2 peças por R$ 160",
       "preview_title": "Especial Inverno: 2 peças por R$ 160",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 18/06/2026 14:23 até 30/06/2026 23:59.",
+      "description": "Benefício: Especial Inverno: 2 peças por R$ 160 Regras: Válido para seleção de produtos. O desconto já está aplicado automaticamente nos produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mizuno",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3f81713124260f7fafcbc1a499356a9.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3f81713124260f7fafcbc1a499356a9.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-peas-por-r-160\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12003,
-      "scraped_at": "2026-06-21T12:56:26.819Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f3f81713124260f7fafcbc1a499356a9.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 126651,
+      "detail_elapsed_ms": 2689,
+      "scraped_at": "2026-06-21T13:30:57.345Z"
     }
   ]
 }
