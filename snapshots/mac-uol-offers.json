@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 41101,
-  "run_duration_seconds": 41.1,
-  "avg_detail_ms_per_offer": 3425,
-  "generated_at": "2026-06-21T17:12:08.167Z",
+  "run_duration_ms": 34061,
+  "run_duration_seconds": 34.06,
+  "avg_detail_ms_per_offer": 2838,
+  "generated_at": "2026-06-21T17:22:46.904Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,15 +40,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132967,
-      "detail_elapsed_ms": 3676,
-      "scraped_at": "2026-06-21T17:11:46.631Z"
+      "detail_html_length": 131723,
+      "detail_elapsed_ms": 2241,
+      "scraped_at": "2026-06-21T17:22:26.645Z"
     },
     {
-      "id": "pz0-ganhe-ncessaire-em-compras-de-r-199",
-      "trace_id": "trace_pz0-ganhe-ncessaire-em-compras-de-r-199",
-      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-ncessaire-em-compras-de-r-199",
-      "original_link": "https://clube.uol.com.br/sephora/pz0-ganhe-ncessaire-em-compras-de-r-199",
+      "id": "pz0-ganhe-necessaire-em-compras-de-r-199",
+      "trace_id": "trace_pz0-ganhe-necessaire-em-compras-de-r-199",
+      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-necessaire-em-compras-de-r-199",
+      "original_link": "https://clube.uol.com.br/sephora/pz0-ganhe-necessaire-em-compras-de-r-199",
       "title": "Ganhe nécessaire em compras de +R$199",
       "preview_title": "Ganhe nécessaire em compras de +R$199",
       "validity": "Benefício válido de 19/06/2026 17:03 até 01/07/2026 23:59.",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131857,
-      "detail_elapsed_ms": 1868,
-      "scraped_at": "2026-06-21T17:11:48.500Z"
+      "detail_html_length": 133128,
+      "detail_elapsed_ms": 2285,
+      "scraped_at": "2026-06-21T17:22:28.932Z"
     },
     {
-      "id": "pzz-pijamas-acessrios-c-at-30-off-10-off",
-      "trace_id": "trace_pzz-pijamas-acessrios-c-at-30-off-10-off",
-      "link": "https://clube.uol.com.br/puket/pzz-pijamas-acessrios-c-at-30-off-10-off",
-      "original_link": "https://clube.uol.com.br/puket/pzz-pijamas-acessrios-c-at-30-off-10-off",
+      "id": "pzz-pijamas-acessorios-c-ate-30-off-10-off",
+      "trace_id": "trace_pzz-pijamas-acessorios-c-ate-30-off-10-off",
+      "link": "https://clube.uol.com.br/puket/pzz-pijamas-acessorios-c-ate-30-off-10-off",
+      "original_link": "https://clube.uol.com.br/puket/pzz-pijamas-acessorios-c-ate-30-off-10-off",
       "title": "Pijamas, acessórios c/ até 30%OFF+10%OFF",
       "preview_title": "Pijamas, acessórios c/ até 30%OFF+10%OFF",
       "validity": "Benefício válido de 19/06/2026 16:46 até 01/07/2026 23:59.",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130893,
-      "detail_elapsed_ms": 1933,
-      "scraped_at": "2026-06-21T17:11:50.433Z"
+      "detail_html_length": 130895,
+      "detail_elapsed_ms": 1785,
+      "scraped_at": "2026-06-21T17:22:30.717Z"
     },
     {
       "id": "pye-aproveite-12-off-na-stanley",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131113,
-      "detail_elapsed_ms": 2111,
-      "scraped_at": "2026-06-21T17:11:52.544Z"
+      "detail_html_length": 131144,
+      "detail_elapsed_ms": 2101,
+      "scraped_at": "2026-06-21T17:22:32.818Z"
     },
     {
-      "id": "pyc-15-off-em-seleo-mizuno-e-new-balance",
-      "trace_id": "trace_pyc-15-off-em-seleo-mizuno-e-new-balance",
-      "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance",
-      "original_link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance",
+      "id": "pyc-15-off-em-selecao-mizuno-e-new-balance",
+      "trace_id": "trace_pyc-15-off-em-selecao-mizuno-e-new-balance",
+      "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-selecao-mizuno-e-new-balance",
+      "original_link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-selecao-mizuno-e-new-balance",
       "title": "15% OFF em seleção Mizuno e New Balance",
       "preview_title": "15% OFF em seleção Mizuno e New Balance",
       "validity": "Benefício válido de 18/06/2026 17:33 até 22/06/2026 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130831,
-      "detail_elapsed_ms": 1685,
-      "scraped_at": "2026-06-21T17:11:54.229Z"
+      "detail_html_length": 130871,
+      "detail_elapsed_ms": 1737,
+      "scraped_at": "2026-06-21T17:22:34.555Z"
     },
     {
       "id": "pxx-2-ingressos-26-06-morumbi-park-sp",
@@ -161,14 +161,14 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133917,
-      "detail_elapsed_ms": 2053,
-      "scraped_at": "2026-06-21T17:11:56.282Z"
+      "detail_elapsed_ms": 1916,
+      "scraped_at": "2026-06-21T17:22:36.471Z"
     },
     {
-      "id": "pxu-at-30-off-10-off-extra-feminina",
-      "trace_id": "trace_pxu-at-30-off-10-off-extra-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxU-at-30-off-10-off-extra-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pxU-at-30-off-10-off-extra-feminina",
+      "id": "pxu-ate-30-off-10-off-extra-feminina",
+      "trace_id": "trace_pxu-ate-30-off-10-off-extra-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxU-ate-30-off-10-off-extra-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxU-ate-30-off-10-off-extra-feminina",
       "title": "Até 30% OFF + 10% OFF extra - Feminina",
       "preview_title": "Até 30% OFF + 10% OFF extra - Feminina",
       "validity": "Benefício válido de 18/06/2026 15:51 até 30/06/2026 09:00.",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130797,
-      "detail_elapsed_ms": 2116,
-      "scraped_at": "2026-06-21T17:11:58.399Z"
+      "detail_html_length": 130823,
+      "detail_elapsed_ms": 1538,
+      "scraped_at": "2026-06-21T17:22:38.009Z"
     },
     {
-      "id": "pxt-at-30-off-15-off-extra-feminina",
-      "trace_id": "trace_pxt-at-30-off-15-off-extra-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxT-at-30-off-15-off-extra-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pxT-at-30-off-15-off-extra-feminina",
+      "id": "pxt-ate-30-off-15-off-extra-feminina",
+      "trace_id": "trace_pxt-ate-30-off-15-off-extra-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxT-ate-30-off-15-off-extra-feminina",
       "title": "Até 30% OFF + 15% OFF extra - Feminina",
       "preview_title": "Até 30% OFF + 15% OFF extra - Feminina",
       "validity": "Benefício válido de 18/06/2026 15:46 até 30/06/2026 09:00.",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131392,
-      "detail_elapsed_ms": 1811,
-      "scraped_at": "2026-06-21T17:12:00.210Z"
+      "detail_html_length": 130871,
+      "detail_elapsed_ms": 1610,
+      "scraped_at": "2026-06-21T17:22:39.619Z"
     },
     {
-      "id": "pxs-at-60-off-20-off-extra-feminina",
-      "trace_id": "trace_pxs-at-60-off-20-off-extra-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxS-at-60-off-20-off-extra-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pxS-at-60-off-20-off-extra-feminina",
+      "id": "pxs-ate-60-off-20-off-extra-feminina",
+      "trace_id": "trace_pxs-ate-60-off-20-off-extra-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/pxS-ate-60-off-20-off-extra-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxS-ate-60-off-20-off-extra-feminina",
       "title": "Até 60% OFF + 20% OFF extra - Feminina",
       "preview_title": "Até 60% OFF + 20% OFF extra - Feminina",
       "validity": "Benefício válido de 18/06/2026 15:37 até 30/06/2026 09:00.",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130829,
-      "detail_elapsed_ms": 1579,
-      "scraped_at": "2026-06-21T17:12:01.790Z"
+      "detail_html_length": 130843,
+      "detail_elapsed_ms": 1837,
+      "scraped_at": "2026-06-21T17:22:41.456Z"
     },
     {
-      "id": "pxq-15-off-na-1-compra-no-app-lojas-renner",
-      "trace_id": "trace_pxq-15-off-na-1-compra-no-app-lojas-renner",
-      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1-compra-no-app-lojas-renner",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1-compra-no-app-lojas-renner",
+      "id": "pxq-15-off-na-1a-compra-no-app-lojas-renner",
+      "trace_id": "trace_pxq-15-off-na-1a-compra-no-app-lojas-renner",
+      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
+      "original_link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1a-compra-no-app-lojas-renner",
       "title": "15% OFF na 1ª compra no app Lojas Renner",
       "preview_title": "15% OFF na 1ª compra no app Lojas Renner",
       "validity": "Benefício válido de 18/06/2026 14:58 até 01/07/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131144,
-      "detail_elapsed_ms": 1709,
-      "scraped_at": "2026-06-21T17:12:03.499Z"
+      "detail_html_length": 131151,
+      "detail_elapsed_ms": 1705,
+      "scraped_at": "2026-06-21T17:22:43.161Z"
     },
     {
-      "id": "pxp-at-20-de-desconto-em-jaquetas-no-site",
-      "trace_id": "trace_pxp-at-20-de-desconto-em-jaquetas-no-site",
-      "link": "https://clube.uol.com.br/mizuno/pxP-at-20-de-desconto-em-jaquetas-no-site",
-      "original_link": "https://clube.uol.com.br/mizuno/pxP-at-20-de-desconto-em-jaquetas-no-site",
+      "id": "pxp-ate-20-de-desconto-em-jaquetas-no-site",
+      "trace_id": "trace_pxp-ate-20-de-desconto-em-jaquetas-no-site",
+      "link": "https://clube.uol.com.br/mizuno/pxP-ate-20-de-desconto-em-jaquetas-no-site",
+      "original_link": "https://clube.uol.com.br/mizuno/pxP-ate-20-de-desconto-em-jaquetas-no-site",
       "title": "Até 20% de desconto em jaquetas no site!",
       "preview_title": "Até 20% de desconto em jaquetas no site!",
       "validity": "Benefício válido de 18/06/2026 14:50 até 30/06/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129589,
-      "detail_elapsed_ms": 1881,
-      "scraped_at": "2026-06-21T17:12:05.381Z"
+      "detail_html_length": 130754,
+      "detail_elapsed_ms": 1883,
+      "scraped_at": "2026-06-21T17:22:45.044Z"
     },
     {
-      "id": "pxo-especial-inverno-2-peas-por-r-160",
-      "trace_id": "trace_pxo-especial-inverno-2-peas-por-r-160",
-      "link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-peas-por-r-160",
-      "original_link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-peas-por-r-160",
+      "id": "pxo-especial-inverno-2-pecas-por-r-160",
+      "trace_id": "trace_pxo-especial-inverno-2-pecas-por-r-160",
+      "link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-pecas-por-r-160",
+      "original_link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-pecas-por-r-160",
       "title": "Especial Inverno: 2 peças por R$ 160",
       "preview_title": "Especial Inverno: 2 peças por R$ 160",
       "validity": "Benefício válido de 18/06/2026 14:23 até 30/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133081,
-      "detail_elapsed_ms": 2472,
-      "scraped_at": "2026-06-21T17:12:07.853Z"
+      "detail_html_length": 133030,
+      "detail_elapsed_ms": 1710,
+      "scraped_at": "2026-06-21T17:22:46.754Z"
     }
   ]
 }
