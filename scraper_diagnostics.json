@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-23T01:29:18.332620Z",
+  "updated_at": "2026-06-23T05:50:11.979475Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -7,11 +7,11 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 0,
+    "validade_expirada": 1,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 6,
-    "duplicada_latest": 3,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -43,7 +43,7 @@
     {
       "title": "15% OFF em seleção Mizuno e New Balance",
       "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance",
-      "reason": "duplicada_latest",
+      "reason": "validade_expirada",
       "trace_id": "trace_pyc-15-off-em-seleo-mizuno-e-new-balance"
     },
     {
