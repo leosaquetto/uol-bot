@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-06-24T01:47:30.388646Z",
+  "updated_at": "2026-06-24T05:47:51.723414Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 11,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 1,
+    "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 2,
+    "duplicada_historico": 1,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,54 +21,6 @@
       "link": "https://clube.uol.com.br/sephora/pz1-ganhe-gloss-bomb-em-compras-de-r-599",
       "reason": "duplicada_historico",
       "trace_id": "trace_pz1-ganhe-gloss-bomb-em-compras-de-r-599"
-    },
-    {
-      "title": "Ganhe nécessaire em compras de +R$199",
-      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-ncessaire-em-compras-de-r-199",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pz0-ganhe-ncessaire-em-compras-de-r-199"
-    },
-    {
-      "title": "Pijamas, acessórios c/ até 30%OFF+10%OFF",
-      "link": "https://clube.uol.com.br/puket/pzz-pijamas-acessrios-c-at-30-off-10-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pzz-pijamas-acessrios-c-at-30-off-10-off"
-    },
-    {
-      "title": "Aproveite 12% OFF na Stanley",
-      "link": "https://clube.uol.com.br/stanley/pye-aproveite-12-off-na-stanley",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pye-aproveite-12-off-na-stanley"
-    },
-    {
-      "title": "15% OFF em seleção Mizuno e New Balance",
-      "link": "https://clube.uol.com.br/dafitikl/pyc-15-off-em-seleo-mizuno-e-new-balance",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pyc-15-off-em-seleo-mizuno-e-new-balance"
-    },
-    {
-      "title": "2 INGRESSOS: 26/06 Morumbi Park- SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pxX-2-ingressos-26-06-morumbi-park-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxx-2-ingressos-26-06-morumbi-park-sp"
-    },
-    {
-      "title": "Até 30% OFF + 10% OFF extra - Feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/pxU-at-30-off-10-off-extra-feminina",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pxu-at-30-off-10-off-extra-feminina"
-    },
-    {
-      "title": "15% OFF na 1ª compra no app Lojas Renner",
-      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1-compra-no-app-lojas-renner",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxq-15-off-na-1-compra-no-app-lojas-renner"
-    },
-    {
-      "title": "Especial Inverno: 2 peças por R$ 160",
-      "link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-peas-por-r-160",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pxo-especial-inverno-2-peas-por-r-160"
     }
   ]
 }
