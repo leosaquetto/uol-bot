@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-24T05:50:23.766407Z",
+  "updated_at": "2026-06-24T05:54:06.963906Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,9 +10,9 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
-    "duplicada_latest": 4,
-    "duplicada_pending": 3,
+    "duplicada_historico": 7,
+    "duplicada_latest": 5,
+    "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
@@ -67,19 +67,19 @@
     {
       "title": "10% OFF calçados femininos selecionados",
       "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_pzo-10-off-calados-femininos-selecionados"
     },
     {
       "title": "Perfumaria e Beleza com até 23% OFF!",
       "link": "https://clube.uol.com.br/carrefour/pzN-perfumaria-e-beleza-com-at-23-off",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_latest",
       "trace_id": "trace_pzn-perfumaria-e-beleza-com-at-23-off"
     },
     {
       "title": "10% OFF na primeira compra na Fut!",
       "link": "https://clube.uol.com.br/futfanaticsbr/pzL-10-off-na-primeira-compra-na-fut",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_pzl-10-off-na-primeira-compra-na-fut"
     },
     {
