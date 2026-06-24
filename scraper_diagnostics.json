@@ -1,21 +1,87 @@
 {
-  "updated_at": "2026-06-24T05:47:51.723414Z",
+  "updated_at": "2026-06-24T05:50:23.766407Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 11,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 1,
-    "duplicada_latest": 0,
-    "duplicada_pending": 0,
+    "duplicada_historico": 5,
+    "duplicada_latest": 4,
+    "duplicada_pending": 3,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Beleza com até 25% OFF e mais descontos",
+      "link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pzy-beleza-com-at-25-off-e-mais-descontos"
+    },
+    {
+      "title": "30% OFF sem mínimo!",
+      "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzx-30-off-sem-mnimo"
+    },
+    {
+      "title": "2 INGRESSOS 30/06 Teatro Claro SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pzW-2-ingressos-30-06-teatro-claro-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzw-2-ingressos-30-06-teatro-claro-sp"
+    },
+    {
+      "title": "20% OFF em vestuário da Copa Mizuno",
+      "link": "https://clube.uol.com.br/mizuno/pzT-20-off-em-vesturio-da-copa-mizuno",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzt-20-off-em-vesturio-da-copa-mizuno"
+    },
+    {
+      "title": "22% OFF em seleção de vôlei",
+      "link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-seleo-de-vlei",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pzs-22-off-em-seleo-de-vlei"
+    },
+    {
+      "title": "Lacoste com até 50% OFF em seleção",
+      "link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-at-50-off-em-seleo",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pzr-lacoste-com-at-50-off-em-seleo"
+    },
+    {
+      "title": "Aquecedores, Ar-Condicionado, etc R$129+",
+      "link": "https://clube.uol.com.br/carrefour/pzQ-aquecedores-ar-condicionado-etc-r-129",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzq-aquecedores-ar-condicionado-etc-r-129"
+    },
+    {
+      "title": "10% OFF em seleção de TVs",
+      "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-seleo-de-tvs",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pzp-10-off-em-seleo-de-tvs"
+    },
+    {
+      "title": "10% OFF calçados femininos selecionados",
+      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pzo-10-off-calados-femininos-selecionados"
+    },
+    {
+      "title": "Perfumaria e Beleza com até 23% OFF!",
+      "link": "https://clube.uol.com.br/carrefour/pzN-perfumaria-e-beleza-com-at-23-off",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pzn-perfumaria-e-beleza-com-at-23-off"
+    },
+    {
+      "title": "10% OFF na primeira compra na Fut!",
+      "link": "https://clube.uol.com.br/futfanaticsbr/pzL-10-off-na-primeira-compra-na-fut",
+      "reason": "duplicada_pending",
+      "trace_id": "trace_pzl-10-off-na-primeira-compra-na-fut"
+    },
     {
       "title": "Ganhe Gloss Bomb em compras de +R$599",
       "link": "https://clube.uol.com.br/sephora/pz1-ganhe-gloss-bomb-em-compras-de-r-599",
