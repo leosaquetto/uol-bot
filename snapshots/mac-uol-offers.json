@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 57097,
-  "run_duration_seconds": 57.1,
-  "avg_detail_ms_per_offer": 4758,
-  "generated_at": "2026-06-25T14:22:51.785Z",
+  "run_duration_ms": 219831,
+  "run_duration_seconds": 219.83,
+  "avg_detail_ms_per_offer": 18319,
+  "generated_at": "2026-06-25T16:26:02.323Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133198,
-      "detail_elapsed_ms": 3898,
-      "scraped_at": "2026-06-25T14:22:30.530Z"
+      "detail_html_length": 134245,
+      "detail_elapsed_ms": 8466,
+      "scraped_at": "2026-06-25T16:25:09.337Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130589,
-      "detail_elapsed_ms": 2191,
-      "scraped_at": "2026-06-25T14:22:32.722Z"
+      "detail_html_length": 130839,
+      "detail_elapsed_ms": 6673,
+      "scraped_at": "2026-06-25T16:25:16.010Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132922,
-      "detail_elapsed_ms": 1888,
-      "scraped_at": "2026-06-25T14:22:34.610Z"
+      "detail_html_length": 133172,
+      "detail_elapsed_ms": 4659,
+      "scraped_at": "2026-06-25T16:25:20.670Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132644,
-      "detail_elapsed_ms": 2095,
-      "scraped_at": "2026-06-25T14:22:36.705Z"
+      "detail_html_length": 132827,
+      "detail_elapsed_ms": 3969,
+      "scraped_at": "2026-06-25T16:25:24.642Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -125,7 +125,7 @@
       "preview_title": "Beleza com até 25% OFF e mais descontos",
       "validity": "Benefício válido de 23/06/2026 17:23 até 30/06/2026 23:59.",
       "description": "Benefício: Queridinhos de beleza com até 25% OFF + desconto progressivo Regras: 15% OFF acima de R$ 119; 20% OFF acima de R$ 149; 25% OFF acima de R$ 189; Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
-      "category": "",
+      "category": "Saúde e Beleza",
       "partner_name": "C&A",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-cea.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0b00e26b191510278097abf32ae5c313.png",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130983,
-      "detail_elapsed_ms": 1821,
-      "scraped_at": "2026-06-25T14:22:38.527Z"
+      "detail_html_length": 131251,
+      "detail_elapsed_ms": 3685,
+      "scraped_at": "2026-06-25T16:25:28.328Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130495,
-      "detail_elapsed_ms": 1785,
-      "scraped_at": "2026-06-25T14:22:40.313Z"
+      "detail_html_length": 130755,
+      "detail_elapsed_ms": 2479,
+      "scraped_at": "2026-06-25T16:25:30.807Z"
     },
     {
       "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130577,
-      "detail_elapsed_ms": 1819,
-      "scraped_at": "2026-06-25T14:22:42.133Z"
+      "detail_html_length": 131210,
+      "detail_elapsed_ms": 3595,
+      "scraped_at": "2026-06-25T16:25:34.402Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130494,
-      "detail_elapsed_ms": 1676,
-      "scraped_at": "2026-06-25T14:22:43.809Z"
+      "detail_html_length": 130737,
+      "detail_elapsed_ms": 5763,
+      "scraped_at": "2026-06-25T16:25:40.165Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133075,
-      "detail_elapsed_ms": 2201,
-      "scraped_at": "2026-06-25T14:22:46.010Z"
+      "detail_html_length": 133300,
+      "detail_elapsed_ms": 2405,
+      "scraped_at": "2026-06-25T16:25:42.570Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133045,
-      "detail_elapsed_ms": 1862,
-      "scraped_at": "2026-06-25T14:22:47.872Z"
+      "detail_html_length": 133305,
+      "detail_elapsed_ms": 8228,
+      "scraped_at": "2026-06-25T16:25:50.798Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130561,
-      "detail_elapsed_ms": 1930,
-      "scraped_at": "2026-06-25T14:22:49.802Z"
+      "detail_html_length": 130812,
+      "detail_elapsed_ms": 6752,
+      "scraped_at": "2026-06-25T16:25:57.550Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130701,
-      "detail_elapsed_ms": 1854,
-      "scraped_at": "2026-06-25T14:22:51.656Z"
+      "detail_html_length": 130959,
+      "detail_elapsed_ms": 4434,
+      "scraped_at": "2026-06-25T16:26:01.985Z"
     }
   ]
 }
