@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 58039,
-  "run_duration_seconds": 58.04,
-  "avg_detail_ms_per_offer": 4837,
-  "generated_at": "2026-06-25T04:25:16.358Z",
+  "run_duration_ms": 176435,
+  "run_duration_seconds": 176.44,
+  "avg_detail_ms_per_offer": 14703,
+  "generated_at": "2026-06-25T04:38:17.050Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127629,
-      "detail_elapsed_ms": 2685,
-      "scraped_at": "2026-06-25T04:24:50.100Z"
+      "detail_html_length": 132750,
+      "detail_elapsed_ms": 3604,
+      "scraped_at": "2026-06-25T04:35:57.570Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129430,
-      "detail_elapsed_ms": 2219,
-      "scraped_at": "2026-06-25T04:24:52.319Z"
+      "detail_html_length": 129355,
+      "detail_elapsed_ms": 2657,
+      "scraped_at": "2026-06-25T04:36:00.231Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131665,
-      "detail_elapsed_ms": 2800,
-      "scraped_at": "2026-06-25T04:24:55.119Z"
+      "detail_html_length": 132914,
+      "detail_elapsed_ms": 3564,
+      "scraped_at": "2026-06-25T04:36:03.796Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132643,
-      "detail_elapsed_ms": 1853,
-      "scraped_at": "2026-06-25T04:24:56.972Z"
+      "detail_html_length": 131476,
+      "detail_elapsed_ms": 2085,
+      "scraped_at": "2026-06-25T04:36:05.882Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130960,
-      "detail_elapsed_ms": 2117,
-      "scraped_at": "2026-06-25T04:24:59.090Z"
+      "detail_html_length": 124611,
+      "detail_elapsed_ms": 2045,
+      "scraped_at": "2026-06-25T04:36:07.927Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124122,
-      "detail_elapsed_ms": 2143,
-      "scraped_at": "2026-06-25T04:25:01.233Z"
+      "detail_html_length": 129327,
+      "detail_elapsed_ms": 2829,
+      "scraped_at": "2026-06-25T04:36:10.756Z"
     },
     {
       "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130546,
-      "detail_elapsed_ms": 2651,
-      "scraped_at": "2026-06-25T04:25:03.884Z"
+      "detail_html_length": 130410,
+      "detail_elapsed_ms": 71037,
+      "scraped_at": "2026-06-25T04:37:21.793Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -195,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-seleo-de-vlei",
       "title": "22% OFF em seleção de vôlei",
       "preview_title": "22% OFF em seleção de vôlei",
-      "validity": "Benefício válido de 23/06/2026 14:28 até 29/06/2026 23:59.",
-      "description": "Benefício: 22% de desconto em itens selecionados de vôlei Regras: Desconto não cumulativo. Válido em seleção. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mizuno",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ee3910782211ec6f0a8b9ffde25bbad5.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ee3910782211ec6f0a8b9ffde25bbad5.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ee3910782211ec6f0a8b9ffde25bbad5.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130483,
-      "detail_elapsed_ms": 2000,
-      "scraped_at": "2026-06-25T04:25:05.884Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/mizuno/pzS-22-off-em-seleo-de-vlei\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12362,
+      "scraped_at": "2026-06-25T04:38:06.159Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133039,
-      "detail_elapsed_ms": 2315,
-      "scraped_at": "2026-06-25T04:25:08.199Z"
+      "detail_html_length": 133041,
+      "detail_elapsed_ms": 3190,
+      "scraped_at": "2026-06-25T04:38:09.350Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133045,
-      "detail_elapsed_ms": 1869,
-      "scraped_at": "2026-06-25T04:25:10.069Z"
+      "detail_html_length": 126674,
+      "detail_elapsed_ms": 2715,
+      "scraped_at": "2026-06-25T04:38:12.065Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130610,
-      "detail_elapsed_ms": 3421,
-      "scraped_at": "2026-06-25T04:25:13.490Z"
+      "detail_html_length": 129394,
+      "detail_elapsed_ms": 2179,
+      "scraped_at": "2026-06-25T04:38:14.245Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130699,
-      "detail_elapsed_ms": 2251,
-      "scraped_at": "2026-06-25T04:25:15.741Z"
+      "detail_html_length": 129532,
+      "detail_elapsed_ms": 2535,
+      "scraped_at": "2026-06-25T04:38:16.780Z"
     }
   ]
 }
