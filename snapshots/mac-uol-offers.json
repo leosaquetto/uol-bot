@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 93116,
-  "run_duration_seconds": 93.12,
-  "avg_detail_ms_per_offer": 7760,
-  "generated_at": "2026-06-25T07:05:26.242Z",
+  "run_duration_ms": 52739,
+  "run_duration_seconds": 52.74,
+  "avg_detail_ms_per_offer": 4395,
+  "generated_at": "2026-06-25T07:16:28.371Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131903,
-      "detail_elapsed_ms": 3395,
-      "scraped_at": "2026-06-25T07:04:26.610Z"
+      "detail_html_length": 132766,
+      "detail_elapsed_ms": 2434,
+      "scraped_at": "2026-06-25T07:15:57.578Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129432,
-      "detail_elapsed_ms": 2682,
-      "scraped_at": "2026-06-25T07:04:29.292Z"
+      "detail_html_length": 129451,
+      "detail_elapsed_ms": 4813,
+      "scraped_at": "2026-06-25T07:16:02.391Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p0g-2-ingressos-30-06-teatro-claro-rj",
       "title": "2 INGRESSOS 30/06 Teatro Claro - RJ",
       "preview_title": "2 INGRESSOS 30/06 Teatro Claro - RJ",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 24/06/2026 13:34 até 30/06/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos para um espetáculo especial no Teatro Claro - Shopping Cidade Copacabana-RJ. Quando: Validade até 30/06/2026 Local: Teatro Claro Rio de Janeiro - Shopping Cidade Copacabana - Rua Siqueira Campos, 143, 2º Piso - Rio de Janeiro-RJ. Escolha um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaisrj.com.br/programacao Espetáculos em cartaz Victor ou Victoria - O Musical Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p0g-2-ingressos-30-06-teatro-claro-rj\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12644,
-      "scraped_at": "2026-06-25T07:04:54.193Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 126550,
+      "detail_elapsed_ms": 2783,
+      "scraped_at": "2026-06-25T07:16:05.175Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131476,
-      "detail_elapsed_ms": 11630,
-      "scraped_at": "2026-06-25T07:05:05.823Z"
+      "detail_html_length": 132645,
+      "detail_elapsed_ms": 2484,
+      "scraped_at": "2026-06-25T07:16:07.659Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124610,
-      "detail_elapsed_ms": 2232,
-      "scraped_at": "2026-06-25T07:05:08.055Z"
+      "detail_html_length": 130972,
+      "detail_elapsed_ms": 2987,
+      "scraped_at": "2026-06-25T07:16:10.648Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130527,
-      "detail_elapsed_ms": 6036,
-      "scraped_at": "2026-06-25T07:05:14.091Z"
+      "detail_html_length": 130485,
+      "detail_elapsed_ms": 3858,
+      "scraped_at": "2026-06-25T07:16:14.506Z"
     },
     {
       "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130587,
-      "detail_elapsed_ms": 2535,
-      "scraped_at": "2026-06-25T07:05:16.626Z"
+      "detail_html_length": 130557,
+      "detail_elapsed_ms": 3684,
+      "scraped_at": "2026-06-25T07:16:18.190Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130892,
-      "detail_elapsed_ms": 1793,
-      "scraped_at": "2026-06-25T07:05:18.419Z"
+      "detail_html_length": 130485,
+      "detail_elapsed_ms": 1882,
+      "scraped_at": "2026-06-25T07:16:20.072Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133031,
-      "detail_elapsed_ms": 2096,
-      "scraped_at": "2026-06-25T07:05:20.515Z"
+      "detail_html_length": 132961,
+      "detail_elapsed_ms": 2069,
+      "scraped_at": "2026-06-25T07:16:22.141Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133035,
-      "detail_elapsed_ms": 1788,
-      "scraped_at": "2026-06-25T07:05:22.303Z"
+      "detail_html_length": 133045,
+      "detail_elapsed_ms": 1963,
+      "scraped_at": "2026-06-25T07:16:24.104Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130553,
-      "detail_elapsed_ms": 1802,
-      "scraped_at": "2026-06-25T07:05:24.106Z"
+      "detail_html_length": 130562,
+      "detail_elapsed_ms": 1953,
+      "scraped_at": "2026-06-25T07:16:26.057Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130691,
-      "detail_elapsed_ms": 1979,
-      "scraped_at": "2026-06-25T07:05:26.085Z"
+      "detail_html_length": 130700,
+      "detail_elapsed_ms": 2049,
+      "scraped_at": "2026-06-25T07:16:28.106Z"
     }
   ]
 }
