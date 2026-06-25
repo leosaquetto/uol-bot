@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 50063,
-  "run_duration_seconds": 50.06,
-  "avg_detail_ms_per_offer": 4172,
-  "generated_at": "2026-06-25T12:56:14.578Z",
+  "run_duration_ms": 47457,
+  "run_duration_seconds": 47.46,
+  "avg_detail_ms_per_offer": 3955,
+  "generated_at": "2026-06-25T13:07:08.706Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127630,
-      "detail_elapsed_ms": 2824,
-      "scraped_at": "2026-06-25T12:55:53.567Z"
+      "detail_html_length": 132757,
+      "detail_elapsed_ms": 2832,
+      "scraped_at": "2026-06-25T13:06:46.785Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129431,
-      "detail_elapsed_ms": 2194,
-      "scraped_at": "2026-06-25T12:55:55.761Z"
+      "detail_html_length": 130580,
+      "detail_elapsed_ms": 2322,
+      "scraped_at": "2026-06-25T13:06:49.107Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132972,
-      "detail_elapsed_ms": 2013,
-      "scraped_at": "2026-06-25T12:55:57.774Z"
+      "detail_html_length": 132913,
+      "detail_elapsed_ms": 1871,
+      "scraped_at": "2026-06-25T13:06:50.978Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132655,
-      "detail_elapsed_ms": 1708,
-      "scraped_at": "2026-06-25T12:55:59.482Z"
+      "detail_html_length": 132684,
+      "detail_elapsed_ms": 2244,
+      "scraped_at": "2026-06-25T13:06:53.222Z"
     },
     {
-      "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
-      "trace_id": "trace_pzy-beleza-com-at-25-off-e-mais-descontos",
-      "link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
-      "original_link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
+      "id": "pzy-beleza-com-ate-25-off-e-mais-descontos",
+      "trace_id": "trace_pzy-beleza-com-ate-25-off-e-mais-descontos",
+      "link": "https://clube.uol.com.br/cea/pzY-beleza-com-ate-25-off-e-mais-descontos",
+      "original_link": "https://clube.uol.com.br/cea/pzY-beleza-com-ate-25-off-e-mais-descontos",
       "title": "Beleza com até 25% OFF e mais descontos",
       "preview_title": "Beleza com até 25% OFF e mais descontos",
       "validity": "Benefício válido de 23/06/2026 17:23 até 30/06/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130984,
-      "detail_elapsed_ms": 1940,
-      "scraped_at": "2026-06-25T12:56:01.423Z"
+      "detail_html_length": 130968,
+      "detail_elapsed_ms": 1850,
+      "scraped_at": "2026-06-25T13:06:55.076Z"
     },
     {
-      "id": "pzx-30-off-sem-mnimo",
-      "trace_id": "trace_pzx-30-off-sem-mnimo",
-      "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
-      "original_link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
+      "id": "pzx-30-off-sem-minimo",
+      "trace_id": "trace_pzx-30-off-sem-minimo",
+      "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-minimo",
+      "original_link": "https://clube.uol.com.br/cea/pzX-30-off-sem-minimo",
       "title": "30% OFF sem mínimo!",
       "preview_title": "30% OFF sem mínimo!",
       "validity": "Benefício válido de 23/06/2026 17:13 até 30/06/2026 23:59.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130496,
-      "detail_elapsed_ms": 1891,
-      "scraped_at": "2026-06-25T12:56:03.314Z"
+      "detail_html_length": 130491,
+      "detail_elapsed_ms": 1844,
+      "scraped_at": "2026-06-25T13:06:56.920Z"
     },
     {
-      "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
-      "trace_id": "trace_pzt-20-off-em-vesturio-da-copa-mizuno",
-      "link": "https://clube.uol.com.br/mizuno/pzT-20-off-em-vesturio-da-copa-mizuno",
-      "original_link": "https://clube.uol.com.br/mizuno/pzT-20-off-em-vesturio-da-copa-mizuno",
+      "id": "pzt-20-off-em-vestuario-da-copa-mizuno",
+      "trace_id": "trace_pzt-20-off-em-vestuario-da-copa-mizuno",
+      "link": "https://clube.uol.com.br/mizuno/pzT-20-off-em-vestuario-da-copa-mizuno",
+      "original_link": "https://clube.uol.com.br/mizuno/pzT-20-off-em-vestuario-da-copa-mizuno",
       "title": "20% OFF em vestuário da Copa Mizuno",
       "preview_title": "20% OFF em vestuário da Copa Mizuno",
       "validity": "Benefício válido de 23/06/2026 14:35 até 25/06/2026 23:59.",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130567,
-      "detail_elapsed_ms": 1915,
-      "scraped_at": "2026-06-25T12:56:05.229Z"
+      "detail_html_length": 130572,
+      "detail_elapsed_ms": 1750,
+      "scraped_at": "2026-06-25T13:06:58.670Z"
     },
     {
-      "id": "pzs-22-off-em-seleo-de-vlei",
-      "trace_id": "trace_pzs-22-off-em-seleo-de-vlei",
-      "link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-seleo-de-vlei",
-      "original_link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-seleo-de-vlei",
+      "id": "pzs-22-off-em-selecao-de-volei",
+      "trace_id": "trace_pzs-22-off-em-selecao-de-volei",
+      "link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-selecao-de-volei",
+      "original_link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-selecao-de-volei",
       "title": "22% OFF em seleção de vôlei",
       "preview_title": "22% OFF em seleção de vôlei",
       "validity": "Benefício válido de 23/06/2026 14:28 até 29/06/2026 23:59.",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130524,
-      "detail_elapsed_ms": 2011,
-      "scraped_at": "2026-06-25T12:56:07.240Z"
+      "detail_html_length": 130502,
+      "detail_elapsed_ms": 1756,
+      "scraped_at": "2026-06-25T13:07:00.427Z"
     },
     {
-      "id": "pzr-lacoste-com-at-50-off-em-seleo",
-      "trace_id": "trace_pzr-lacoste-com-at-50-off-em-seleo",
-      "link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-at-50-off-em-seleo",
-      "original_link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-at-50-off-em-seleo",
+      "id": "pzr-lacoste-com-ate-50-off-em-selecao",
+      "trace_id": "trace_pzr-lacoste-com-ate-50-off-em-selecao",
+      "link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-ate-50-off-em-selecao",
+      "original_link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-ate-50-off-em-selecao",
       "title": "Lacoste com até 50% OFF em seleção",
       "preview_title": "Lacoste com até 50% OFF em seleção",
       "validity": "Benefício válido de 23/06/2026 14:21 até 30/06/2026 23:59.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133044,
-      "detail_elapsed_ms": 1743,
-      "scraped_at": "2026-06-25T12:56:08.983Z"
+      "detail_html_length": 133050,
+      "detail_elapsed_ms": 1945,
+      "scraped_at": "2026-06-25T13:07:02.372Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133530,
-      "detail_elapsed_ms": 1748,
-      "scraped_at": "2026-06-25T12:56:10.732Z"
+      "detail_html_length": 133086,
+      "detail_elapsed_ms": 1876,
+      "scraped_at": "2026-06-25T13:07:04.248Z"
     },
     {
-      "id": "pzp-10-off-em-seleo-de-tvs",
-      "trace_id": "trace_pzp-10-off-em-seleo-de-tvs",
-      "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-seleo-de-tvs",
-      "original_link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-seleo-de-tvs",
+      "id": "pzp-10-off-em-selecao-de-tvs",
+      "trace_id": "trace_pzp-10-off-em-selecao-de-tvs",
+      "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-selecao-de-tvs",
+      "original_link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-selecao-de-tvs",
       "title": "10% OFF em seleção de TVs",
       "preview_title": "10% OFF em seleção de TVs",
       "validity": "Benefício válido de 23/06/2026 12:48 até 30/06/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130611,
-      "detail_elapsed_ms": 1848,
-      "scraped_at": "2026-06-25T12:56:12.581Z"
+      "detail_html_length": 130602,
+      "detail_elapsed_ms": 2332,
+      "scraped_at": "2026-06-25T13:07:06.580Z"
     },
     {
-      "id": "pzo-10-off-calados-femininos-selecionados",
-      "trace_id": "trace_pzo-10-off-calados-femininos-selecionados",
-      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
-      "original_link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
+      "id": "pzo-10-off-calcados-femininos-selecionados",
+      "trace_id": "trace_pzo-10-off-calcados-femininos-selecionados",
+      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calcados-femininos-selecionados",
+      "original_link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calcados-femininos-selecionados",
       "title": "10% OFF calçados femininos selecionados",
       "preview_title": "10% OFF calçados femininos selecionados",
       "validity": "Benefício válido de 23/06/2026 12:30 até 28/06/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130710,
-      "detail_elapsed_ms": 1786,
-      "scraped_at": "2026-06-25T12:56:14.367Z"
+      "detail_html_length": 130705,
+      "detail_elapsed_ms": 1897,
+      "scraped_at": "2026-06-25T13:07:08.478Z"
     }
   ]
 }
