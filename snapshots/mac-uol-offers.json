@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 254186,
-  "run_duration_seconds": 254.19,
-  "avg_detail_ms_per_offer": 21182,
-  "generated_at": "2026-06-25T19:45:15.983Z",
+  "run_duration_ms": 112544,
+  "run_duration_seconds": 112.54,
+  "avg_detail_ms_per_offer": 9379,
+  "generated_at": "2026-06-25T20:10:32.136Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p06-2-ingressos-30-06-shopping-cidade-sp",
       "title": "2 INGRESSOS: 30/06 Shopping Cidade SP",
       "preview_title": "2 INGRESSOS: 30/06 Shopping Cidade SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 24/06/2026 16:47 até 30/06/2026 23:59.",
+      "description": "Assinante UOL, experiência inesquecível! Resgate 1 par de ingressos para Toy Story “Ao Infinito e Além”: A Exposição, uma imersão única no universo de um dos filmes mais icônicos da Pixar, no Shopping Cidade São Paulo. Datas disponíveis: Terça a quinta, das 12h às 21h; sexta e sábado, das 11h às 21h; domingos e feriados, das 12h às 20h. Validade: 30/06/2026 Duração média: 50 min | Chegue 10 min antes. Local: Shopping Cidade São Paulo – 4º andar | Av. Paulista, 1230 – Bela Vista, São Paulo/SP Importante: O voucher inclui 2 códigos diferentes que equivalem a 01 par de ingressos. Você pode utilizar os dois vouchers no mesmo CPF, porém em compras separadas. Como resgatar meu beneficio: Acesse o link: https://www.ticketmaster.com.br/event/toy-story-cortesias-uol. Se for o primeiro acesso, cadastre-se antes de prosseguir. Após o cadastro, clique em Ingresso e selecione o dia e hora desejada. Após continuar, aceite o termo e insira o código que você recebeu e aplique na área de cupom. Após a compra, o ingresso será enviado para o mesmo e-mail cadastrado e também estará disponível no aplicativo Quentro. Basta ingressar com o mesmo e-mail que você acessou. Atenção: • É necessário apresentar na catraca de acesso, o QR Code diretamente pelo o aplicativo no seu smartphone Quentro no App Store ou Android; • O resgate deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade; • Fique atento a data da exposição, pois o QR Code não poderá ser reutilizado; • O ingresso é individual e intransferível; REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p06-2-ingressos-30-06-shopping-cidade-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12008,
-      "scraped_at": "2026-06-25T19:43:26.564Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134231,
+      "detail_elapsed_ms": 10632,
+      "scraped_at": "2026-06-25T20:09:34.913Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133434,
-      "detail_elapsed_ms": 13591,
-      "scraped_at": "2026-06-25T19:43:40.155Z"
+      "detail_html_length": 130671,
+      "detail_elapsed_ms": 7131,
+      "scraped_at": "2026-06-25T20:09:42.044Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 135490,
-      "detail_elapsed_ms": 9122,
-      "scraped_at": "2026-06-25T19:43:49.278Z"
+      "detail_html_length": 131845,
+      "detail_elapsed_ms": 5771,
+      "scraped_at": "2026-06-25T20:09:47.815Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 135570,
-      "detail_elapsed_ms": 9362,
-      "scraped_at": "2026-06-25T19:43:58.640Z"
+      "detail_html_length": 126523,
+      "detail_elapsed_ms": 4088,
+      "scraped_at": "2026-06-25T20:09:51.903Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133588,
-      "detail_elapsed_ms": 9297,
-      "scraped_at": "2026-06-25T19:44:07.937Z"
+      "detail_html_length": 124880,
+      "detail_elapsed_ms": 3401,
+      "scraped_at": "2026-06-25T20:09:55.304Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133073,
-      "detail_elapsed_ms": 10896,
-      "scraped_at": "2026-06-25T19:44:18.833Z"
+      "detail_html_length": 130747,
+      "detail_elapsed_ms": 5570,
+      "scraped_at": "2026-06-25T20:10:00.874Z"
     },
     {
       "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132992,
-      "detail_elapsed_ms": 9061,
-      "scraped_at": "2026-06-25T19:44:27.894Z"
+      "detail_html_length": 130798,
+      "detail_elapsed_ms": 5886,
+      "scraped_at": "2026-06-25T20:10:06.760Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132942,
-      "detail_elapsed_ms": 9318,
-      "scraped_at": "2026-06-25T19:44:37.212Z"
+      "detail_html_length": 130716,
+      "detail_elapsed_ms": 5908,
+      "scraped_at": "2026-06-25T20:10:12.668Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 135626,
-      "detail_elapsed_ms": 7281,
-      "scraped_at": "2026-06-25T19:44:44.493Z"
+      "detail_html_length": 126918,
+      "detail_elapsed_ms": 2990,
+      "scraped_at": "2026-06-25T20:10:15.658Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 135633,
-      "detail_elapsed_ms": 8880,
-      "scraped_at": "2026-06-25T19:44:53.373Z"
+      "detail_html_length": 126914,
+      "detail_elapsed_ms": 3490,
+      "scraped_at": "2026-06-25T20:10:19.148Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133402,
-      "detail_elapsed_ms": 9266,
-      "scraped_at": "2026-06-25T19:45:02.639Z"
+      "detail_html_length": 130794,
+      "detail_elapsed_ms": 7574,
+      "scraped_at": "2026-06-25T20:10:26.722Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133287,
-      "detail_elapsed_ms": 12270,
-      "scraped_at": "2026-06-25T19:45:14.909Z"
+      "detail_html_length": 130952,
+      "detail_elapsed_ms": 4744,
+      "scraped_at": "2026-06-25T20:10:31.466Z"
     }
   ]
 }
