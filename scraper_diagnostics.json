@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-06-25T01:52:51.641770Z",
+  "updated_at": "2026-06-25T04:26:00.695302Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 5,
+    "duplicada_historico": 4,
+    "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
       "reason": "duplicada_historico",
       "trace_id": "trace_pzx-30-off-sem-mnimo"
-    },
-    {
-      "title": "2 INGRESSOS 30/06 Teatro Claro SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pzW-2-ingressos-30-06-teatro-claro-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzw-2-ingressos-30-06-teatro-claro-sp"
     },
     {
       "title": "20% OFF em vestuário da Copa Mizuno",
@@ -69,24 +63,6 @@
       "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
       "reason": "duplicada_historico",
       "trace_id": "trace_pzo-10-off-calados-femininos-selecionados"
-    },
-    {
-      "title": "Perfumaria e Beleza com até 23% OFF!",
-      "link": "https://clube.uol.com.br/carrefour/pzN-perfumaria-e-beleza-com-at-23-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pzn-perfumaria-e-beleza-com-at-23-off"
-    },
-    {
-      "title": "10% OFF na primeira compra na Fut!",
-      "link": "https://clube.uol.com.br/futfanaticsbr/pzL-10-off-na-primeira-compra-na-fut",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzl-10-off-na-primeira-compra-na-fut"
-    },
-    {
-      "title": "Ganhe Gloss Bomb em compras de +R$599",
-      "link": "https://clube.uol.com.br/sephora/pz1-ganhe-gloss-bomb-em-compras-de-r-599",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pz1-ganhe-gloss-bomb-em-compras-de-r-599"
     }
   ]
 }
