@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 320456,
-  "run_duration_seconds": 320.46,
-  "avg_detail_ms_per_offer": 26705,
-  "generated_at": "2026-06-25T20:38:43.748Z",
+  "run_duration_ms": 151597,
+  "run_duration_seconds": 151.6,
+  "avg_detail_ms_per_offer": 12633,
+  "generated_at": "2026-06-25T21:51:52.250Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p06-2-ingressos-30-06-shopping-cidade-sp",
       "title": "2 INGRESSOS: 30/06 Shopping Cidade SP",
       "preview_title": "2 INGRESSOS: 30/06 Shopping Cidade SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 24/06/2026 16:47 até 30/06/2026 23:59.",
+      "description": "Assinante UOL, experiência inesquecível! Resgate 1 par de ingressos para Toy Story “Ao Infinito e Além”: A Exposição, uma imersão única no universo de um dos filmes mais icônicos da Pixar, no Shopping Cidade São Paulo. Datas disponíveis: Terça a quinta, das 12h às 21h; sexta e sábado, das 11h às 21h; domingos e feriados, das 12h às 20h. Validade: 30/06/2026 Duração média: 50 min | Chegue 10 min antes. Local: Shopping Cidade São Paulo – 4º andar | Av. Paulista, 1230 – Bela Vista, São Paulo/SP Importante: O voucher inclui 2 códigos diferentes que equivalem a 01 par de ingressos. Você pode utilizar os dois vouchers no mesmo CPF, porém em compras separadas. Como resgatar meu beneficio: Acesse o link: https://www.ticketmaster.com.br/event/toy-story-cortesias-uol. Se for o primeiro acesso, cadastre-se antes de prosseguir. Após o cadastro, clique em Ingresso e selecione o dia e hora desejada. Após continuar, aceite o termo e insira o código que você recebeu e aplique na área de cupom. Após a compra, o ingresso será enviado para o mesmo e-mail cadastrado e também estará disponível no aplicativo Quentro. Basta ingressar com o mesmo e-mail que você acessou. Atenção: • É necessário apresentar na catraca de acesso, o QR Code diretamente pelo o aplicativo no seu smartphone Quentro no App Store ou Android; • O resgate deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade; • Fique atento a data da exposição, pois o QR Code não poderá ser reutilizado; • O ingresso é individual e intransferível; REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p06-2-ingressos-30-06-shopping-cidade-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12066,
-      "scraped_at": "2026-06-25T20:35:44.695Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132505,
+      "detail_elapsed_ms": 4799,
+      "scraped_at": "2026-06-25T21:51:25.125Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/evino/p04-r-100-off-acima-de-r-299",
       "title": "R$100 OFF acima de R$299!",
       "preview_title": "R$100 OFF acima de R$299!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 24/06/2026 15:52 até 07/07/2026 23:59.",
+      "description": "Benefício: R$100 OFF acima de R$299! Regras: Desconto não cumulativo com outros cupons. Parceria válida apenas para o APP e loja online. Descontos não aplicados nas compras nas lojas físicas e para o frete.",
       "category": "Comer e Beber",
       "partner_name": "Evino",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2008c042c2b7b797d51458c9c40cdfa5.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/evino/p04-r-100-off-acima-de-r-299\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12104,
-      "scraped_at": "2026-06-25T20:36:09.679Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 124486,
+      "detail_elapsed_ms": 3576,
+      "scraped_at": "2026-06-25T21:51:28.701Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133281,
-      "detail_elapsed_ms": 14114,
-      "scraped_at": "2026-06-25T20:36:36.128Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131993,
+      "detail_elapsed_ms": 2625,
+      "scraped_at": "2026-06-25T21:51:31.326Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132901,
-      "detail_elapsed_ms": 10187,
-      "scraped_at": "2026-06-25T20:36:46.315Z"
+      "detail_html_length": 132883,
+      "detail_elapsed_ms": 2120,
+      "scraped_at": "2026-06-25T21:51:33.446Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131110,
-      "detail_elapsed_ms": 8413,
-      "scraped_at": "2026-06-25T20:36:54.728Z"
+      "detail_html_length": 131250,
+      "detail_elapsed_ms": 2807,
+      "scraped_at": "2026-06-25T21:51:36.253Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
       "title": "30% OFF sem mínimo!",
       "preview_title": "30% OFF sem mínimo!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/06/2026 17:13 até 30/06/2026 23:59.",
+      "description": "Benefício: 30% OFF sem mínimo em oportunidades imperdíveis Regras: Válido para a seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "C&A",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-cea.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/210a79b17522bcc01f117fabf9db4c20.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/210a79b17522bcc01f117fabf9db4c20.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12165,
-      "scraped_at": "2026-06-25T20:37:19.163Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/210a79b17522bcc01f117fabf9db4c20.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130744,
+      "detail_elapsed_ms": 2410,
+      "scraped_at": "2026-06-25T21:51:38.663Z"
     },
     {
       "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
@@ -183,10 +183,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130803,
-      "detail_elapsed_ms": 12699,
-      "scraped_at": "2026-06-25T20:37:44.169Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130804,
+      "detail_elapsed_ms": 2219,
+      "scraped_at": "2026-06-25T21:51:40.882Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 12896,
-      "scraped_at": "2026-06-25T20:37:57.065Z"
+      "detail_html_length": 130724,
+      "detail_elapsed_ms": 1837,
+      "scraped_at": "2026-06-25T21:51:42.719Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133566,
-      "detail_elapsed_ms": 12759,
-      "scraped_at": "2026-06-25T20:38:09.824Z"
+      "detail_html_length": 133284,
+      "detail_elapsed_ms": 2134,
+      "scraped_at": "2026-06-25T21:51:44.853Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133312,
-      "detail_elapsed_ms": 10247,
-      "scraped_at": "2026-06-25T20:38:20.072Z"
+      "detail_html_length": 133305,
+      "detail_elapsed_ms": 1966,
+      "scraped_at": "2026-06-25T21:51:46.819Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130810,
-      "detail_elapsed_ms": 11984,
-      "scraped_at": "2026-06-25T20:38:32.056Z"
+      "detail_html_length": 129651,
+      "detail_elapsed_ms": 2522,
+      "scraped_at": "2026-06-25T21:51:49.341Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130946,
-      "detail_elapsed_ms": 9492,
-      "scraped_at": "2026-06-25T20:38:41.548Z"
+      "detail_html_length": 130958,
+      "detail_elapsed_ms": 2777,
+      "scraped_at": "2026-06-25T21:51:52.118Z"
     }
   ]
 }
