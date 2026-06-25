@@ -1,15 +1,15 @@
 {
-  "date": "24/06/2026",
-  "message_id": 5713,
-  "previous_message_id": null,
+  "date": "25/06/2026",
+  "message_id": null,
+  "previous_message_id": 5713,
   "weekly_summary_sent_for": "2026-06-22",
   "last_success_check": "",
-  "last_new_offer_at": "24/06/2026 às 02:51",
+  "last_new_offer_at": "25/06/2026 às 01:26",
   "pending_count": 0,
-  "last_consumer_run": "24/06/2026 às 02:51",
+  "last_consumer_run": "25/06/2026 às 01:26",
   "sold_out_edited_today": 3,
   "lines": [
-    "[02:51] consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 3 | enviadas 3 | falhas 0 | adiadas 0 | pendentes 0"
+    "[01:26] consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 4 | enviadas 4 | falhas 4 | adiadas 0 | pendentes 0"
   ],
-  "last_rendered_text": "<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>Atualizado às 02:51</i>\n\n<b>STATUS DO SISTEMA</b>\n📱 <b>Scriptable:</b> ⚪ &lt;b&gt;Em espera&lt;/b&gt; (agora)\n🍎 <b>Scraper Mac:</b> ⚪ &lt;b&gt;Em espera&lt;/b&gt; (há 1min às 02:50)\n📦 <b>Consumer:</b> ✅ &lt;b&gt;Pronto&lt;/b&gt; (agora às 02:51)\n🧷 <b>Esgotadas editadas hoje:</b> 3\n\n<b>ÚLTIMA ATIVIDADE</b>\n🎯 <a href=\"https://t.me/c/3723320790/1682\">10% OFF na primeira compra na Fut!</a>\n📅 <b>Enviada:</b> 24/06/2026 às 02:51\n⏳ 0min sem oferta nova\n\n<b>DETALHES TÉCNICOS</b>\n<code>• consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 3 | enviadas 3 | falhas 0 | adiadas 0 | pendentes 0</code>"
+  "last_rendered_text": "<b>─── 🖥️ MONITOR CLUBE UOL ───</b>\n🕒 <i>Atualizado às 01:26</i>\n\n<b>STATUS DO SISTEMA</b>\n📱 <b>Scriptable:</b> ⚪ &lt;b&gt;Em espera&lt;/b&gt; (agora)\n🍎 <b>Scraper Mac:</b> 🟢 &lt;b&gt;Online&lt;/b&gt; (agora às 01:26)\n📦 <b>Consumer:</b> 🟡 &lt;b&gt;Instável&lt;/b&gt; (agora às 01:26)\n🧷 <b>Esgotadas editadas hoje:</b> 3\n\n<b>ÚLTIMA ATIVIDADE</b>\n🎯 <a href=\"https://t.me/c/3723320790/1686\">40% OFF no par de ingressos</a>\n📅 <b>Enviada:</b> 25/06/2026 às 01:26\n⏳ 0min sem oferta nova\n\n<b>DETALHES TÉCNICOS</b>\n<code>• consumer: ✅ filtradas 0 (bloqueio 7d 0 / dup 0 / validade expirada 0 / início antigo sem fim 0 / scraped_at antigo 0 / sem scraped_at 0) | processadas 4 | enviadas 4 | falhas 4 | adiadas 0 | pendentes 0</code>"
 }
