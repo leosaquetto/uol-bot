@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 173227,
-  "run_duration_seconds": 173.23,
-  "avg_detail_ms_per_offer": 14436,
-  "generated_at": "2026-06-25T06:30:43.829Z",
+  "run_duration_ms": 57028,
+  "run_duration_seconds": 57.03,
+  "avg_detail_ms_per_offer": 4752,
+  "generated_at": "2026-06-25T06:35:16.235Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -31,7 +31,7 @@
       "description": "Assinante UOL, experiência inesquecível! Resgate 1 par de ingressos para Toy Story “Ao Infinito e Além”: A Exposição, uma imersão única no universo de um dos filmes mais icônicos da Pixar, no Shopping Cidade São Paulo. Datas disponíveis: Terça a quinta, das 12h às 21h; sexta e sábado, das 11h às 21h; domingos e feriados, das 12h às 20h. Validade: 30/06/2026 Duração média: 50 min | Chegue 10 min antes. Local: Shopping Cidade São Paulo – 4º andar | Av. Paulista, 1230 – Bela Vista, São Paulo/SP Importante: O voucher inclui 2 códigos diferentes que equivalem a 01 par de ingressos. Você pode utilizar os dois vouchers no mesmo CPF, porém em compras separadas. Como resgatar meu beneficio: Acesse o link: https://www.ticketmaster.com.br/event/toy-story-cortesias-uol. Se for o primeiro acesso, cadastre-se antes de prosseguir. Após o cadastro, clique em Ingresso e selecione o dia e hora desejada. Após continuar, aceite o termo e insira o código que você recebeu e aplique na área de cupom. Após a compra, o ingresso será enviado para o mesmo e-mail cadastrado e também estará disponível no aplicativo Quentro. Basta ingressar com o mesmo e-mail que você acessou. Atenção: • É necessário apresentar na catraca de acesso, o QR Code diretamente pelo o aplicativo no seu smartphone Quentro no App Store ou Android; • O resgate deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade; • Fique atento a data da exposição, pois o QR Code não poderá ser reutilizado; • O ingresso é individual e intransferível; REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133991,
-      "detail_elapsed_ms": 7847,
-      "scraped_at": "2026-06-25T06:28:30.161Z"
+      "detail_html_length": 132756,
+      "detail_elapsed_ms": 2592,
+      "scraped_at": "2026-06-25T06:34:53.726Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -55,7 +55,7 @@
       "description": "Benefício: R$100 OFF acima de R$299! Regras: Desconto não cumulativo com outros cupons. Parceria válida apenas para o APP e loja online. Descontos não aplicados nas compras nas lojas físicas e para o frete.",
       "category": "Comer e Beber",
       "partner_name": "Evino",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2008c042c2b7b797d51458c9c40cdfa5.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
@@ -65,8 +65,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 129430,
-      "detail_elapsed_ms": 3255,
-      "scraped_at": "2026-06-25T06:28:33.421Z"
+      "detail_elapsed_ms": 2544,
+      "scraped_at": "2026-06-25T06:34:56.270Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -79,7 +79,7 @@
       "description": "Assinante UOL, resgate 1 par de ingressos para um espetáculo especial no Teatro Claro - Shopping Cidade Copacabana-RJ. Quando: Validade até 30/06/2026 Local: Teatro Claro Rio de Janeiro - Shopping Cidade Copacabana - Rua Siqueira Campos, 143, 2º Piso - Rio de Janeiro-RJ. Escolha um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaisrj.com.br/programacao Espetáculos em cartaz Victor ou Victoria - O Musical Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132901,
-      "detail_elapsed_ms": 4270,
-      "scraped_at": "2026-06-25T06:28:37.691Z"
+      "detail_html_length": 133381,
+      "detail_elapsed_ms": 2008,
+      "scraped_at": "2026-06-25T06:34:58.278Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132653,
-      "detail_elapsed_ms": 30884,
-      "scraped_at": "2026-06-25T06:29:08.576Z"
+      "detail_html_length": 132694,
+      "detail_elapsed_ms": 1981,
+      "scraped_at": "2026-06-25T06:35:00.259Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -123,22 +123,22 @@
       "original_link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
       "title": "Beleza com até 25% OFF e mais descontos",
       "preview_title": "Beleza com até 25% OFF e mais descontos",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/06/2026 17:23 até 30/06/2026 23:59.",
+      "description": "Benefício: Queridinhos de beleza com até 25% OFF + desconto progressivo Regras: 15% OFF acima de R$ 119; 20% OFF acima de R$ 149; 25% OFF acima de R$ 189; Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "",
       "partner_name": "C&A",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-cea.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0b00e26b191510278097abf32ae5c313.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0b00e26b191510278097abf32ae5c313.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: \u001b[2m - navigating to \"https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos\", waiting until \"domcontentloaded\"\u001b[22m",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12053,
-      "scraped_at": "2026-06-25T06:29:33.088Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0b00e26b191510278097abf32ae5c313.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130981,
+      "detail_elapsed_ms": 2225,
+      "scraped_at": "2026-06-25T06:35:02.484Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
       "title": "30% OFF sem mínimo!",
       "preview_title": "30% OFF sem mínimo!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/06/2026 17:13 até 30/06/2026 23:59.",
+      "description": "Benefício: 30% OFF sem mínimo em oportunidades imperdíveis Regras: Válido para a seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "C&A",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-cea.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/210a79b17522bcc01f117fabf9db4c20.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/210a79b17522bcc01f117fabf9db4c20.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: \u001b[2m - navigating to \"https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo\", waiting until \"domcontentloaded\"\u001b[22m",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12006,
-      "scraped_at": "2026-06-25T06:29:57.468Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/210a79b17522bcc01f117fabf9db4c20.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130485,
+      "detail_elapsed_ms": 2112,
+      "scraped_at": "2026-06-25T06:35:04.596Z"
     },
     {
       "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
@@ -171,22 +171,22 @@
       "original_link": "https://clube.uol.com.br/mizuno/pzT-20-off-em-vesturio-da-copa-mizuno",
       "title": "20% OFF em vestuário da Copa Mizuno",
       "preview_title": "20% OFF em vestuário da Copa Mizuno",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/06/2026 14:35 até 25/06/2026 23:59.",
+      "description": "Benefício: 20% OFF EM VESTUÁRIO DA COPA MIZUNO Regras: Desconto válido em seleção. Não cumulativo. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mizuno",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8d35e32c352bece440509f25664c80fe.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8d35e32c352bece440509f25664c80fe.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: \u001b[2m - navigating to \"https://clube.uol.com.br/mizuno/pzT-20-off-em-vesturio-da-copa-mizuno\", waiting until \"domcontentloaded\"\u001b[22m",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12002,
-      "scraped_at": "2026-06-25T06:30:21.836Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8d35e32c352bece440509f25664c80fe.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130586,
+      "detail_elapsed_ms": 1865,
+      "scraped_at": "2026-06-25T06:35:06.461Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -199,7 +199,7 @@
       "description": "Benefício: 22% de desconto em itens selecionados de vôlei Regras: Desconto não cumulativo. Válido em seleção. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mizuno",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4ff8349d8b586505cb078db965f67daa.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ee3910782211ec6f0a8b9ffde25bbad5.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ee3910782211ec6f0a8b9ffde25bbad5.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ee3910782211ec6f0a8b9ffde25bbad5.png",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130483,
-      "detail_elapsed_ms": 8865,
-      "scraped_at": "2026-06-25T06:30:30.701Z"
+      "detail_html_length": 130474,
+      "detail_elapsed_ms": 1778,
+      "scraped_at": "2026-06-25T06:35:08.239Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -223,7 +223,7 @@
       "description": "Benefício: PRODUTOS LACOSTE COM ATÉ 50% OFF EM SELEÇÃO ESPECIAL! Regras: Desconto válido para compras em seleção Lacoste. Não cumulativo. Aplicado automaticamente. Válido até data vigente ou enquanto durarem os estoques. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Dafiti",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d10cd1fd0454b4506e44068dfffdd754.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d10cd1fd0454b4506e44068dfffdd754.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d10cd1fd0454b4506e44068dfffdd754.png",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133039,
-      "detail_elapsed_ms": 2767,
-      "scraped_at": "2026-06-25T06:30:33.468Z"
+      "detail_html_length": 133064,
+      "detail_elapsed_ms": 2265,
+      "scraped_at": "2026-06-25T06:35:10.504Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -247,7 +247,7 @@
       "description": "Benefício: Aquecedores, Ar-Condicionado Quente e Frio muito mais a partir de R$ 129! Regras: Oferta válida para itens selecionados. Não cumulativa. Até vigência ou fim dos estoques. Sujeito à desativação sem aviso prévio.",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Carrefour",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-carrefour.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/03ca5f7be4098edc6b8c87a190847384.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/03ca5f7be4098edc6b8c87a190847384.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/03ca5f7be4098edc6b8c87a190847384.png",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133055,
-      "detail_elapsed_ms": 2701,
-      "scraped_at": "2026-06-25T06:30:36.169Z"
+      "detail_html_length": 133074,
+      "detail_elapsed_ms": 2237,
+      "scraped_at": "2026-06-25T06:35:12.742Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -271,7 +271,7 @@
       "description": "Benefício: 10% OFF em seleção de TVs Regras: Desconto não cumulativo. Válido em seleção da categoria. Válido enquanto durarem estoques. Sujeito à desativação sem aviso prévio.",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Carrefour",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-carrefour.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1cd4ec740d6f42137bb9a243bf1981b.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1cd4ec740d6f42137bb9a243bf1981b.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1cd4ec740d6f42137bb9a243bf1981b.png",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130570,
-      "detail_elapsed_ms": 2901,
-      "scraped_at": "2026-06-25T06:30:39.070Z"
+      "detail_html_length": 130551,
+      "detail_elapsed_ms": 1756,
+      "scraped_at": "2026-06-25T06:35:14.499Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -295,7 +295,7 @@
       "description": "Benefício: 10% OFF em calçados femininos selecionados Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Dafiti",
-      "partner_img_url": "",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130689,
-      "detail_elapsed_ms": 3821,
-      "scraped_at": "2026-06-25T06:30:42.891Z"
+      "detail_html_length": 130688,
+      "detail_elapsed_ms": 1639,
+      "scraped_at": "2026-06-25T06:35:16.138Z"
     }
   ]
 }
