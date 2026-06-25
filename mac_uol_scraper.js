@@ -20,6 +20,7 @@ const os = require('os');
 
 const TARGET_URL = process.env.UOL_TARGET_URL || 'https://clube.uol.com.br/?order=new';
 const EDGE_PROFILE_DIR = process.env.EDGE_PROFILE_DIR || '/Users/leosaquetto/Documents/GrabNumberAutomator/edge-profile';
+const { acquireEdgeProfileLock } = require('/Users/leosaquetto/Library/Application Support/GrabNumberFinance/finance_browser_guard');
 const DEFAULT_MAX_CARDS = 48;
 const MAX_VISIBLE_OFFERS = 48;
 const DEFAULT_SOLD_OUT_LOOKBACK_DAYS = 3;
@@ -654,7 +655,9 @@ async function enrichOffers(context, cards) {
 (async () => {
   const runStartedAt = Date.now();
   let browser;
+  let releaseEdgeProfileLock = null;
   try {
+    releaseEdgeProfileLock = await acquireEdgeProfileLock('uol-scraper');
     browser = await chromium.launchPersistentContext(EDGE_PROFILE_DIR, {
       channel: 'msedge',
       headless: true,
@@ -759,15 +762,18 @@ async function enrichOffers(context, cards) {
     }
 
     console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} workflow_trigger=${workflowTrigger.status} workflow_name=${workflowTrigger.workflow || 'none'} repo_path=${GITHUB_TARGET_PATH}`);
-    process.exit(0);
+    process.exitCode = 0;
   } catch (err) {
     console.error(`MAC_FAIL ${cleanText(err && err.message ? err.message : String(err))}`);
-    process.exit(2);
+    process.exitCode = 2;
   } finally {
     if (browser) {
       try {
         await browser.close();
       } catch (_) {}
+    }
+    if (releaseEdgeProfileLock) {
+      await releaseEdgeProfileLock().catch(() => {});
     }
   }
 })();
