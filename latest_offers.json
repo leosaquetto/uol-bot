@@ -1,31 +1,6 @@
 {
-  "last_update": "2026-06-25T04:26:55.936011Z",
+  "last_update": "2026-06-25T17:53:30.241816Z",
   "offers": [
-    {
-      "id": "pz0-ganhe-necessaire-em-compras-de-r-199",
-      "original_link": "https://clube.uol.com.br/sephora/pz0-ganhe-necessaire-em-compras-de-r-199",
-      "preview_title": "Ganhe nécessaire em compras de +R$199",
-      "title": "Ganhe nécessaire em compras de +R$199",
-      "link": "https://clube.uol.com.br/sephora/pz0-ganhe-necessaire-em-compras-de-r-199",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/865cd507c1b5751ba1bfffb9c51a9e0c.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/425d206b12443c6e6e4a6bb4922675ba.png",
-      "validity": "Benefício válido de 19/06/2026 17:03 até 01/07/2026 23:59.",
-      "description": "Benefício: Ganhe uma nécessaire prateado exclusivo nas compras da marca a partir de R$199 Regras: Desconto aplicado automaticamente no site. Válido para compras a partir de R$199 na seleção. Não cumulativo. Sujeito à desativação sem aviso prévio.",
-      "location_summary": "",
-      "dedupe_key": "ganhe-necessaire-em-compras-de-r-199|beneficio-valido-de-19-06-2026-17-03-ate-01-07-2026-23-59|beneficio-ganhe-uma-necessaire-prateado-exclusivo-nas-compras-da-marca-a-partir-de-r-199-regras-desconto-aplicado-automaticamente-no-site-valido-para-compras-a-",
-      "loose_dedupe_key": "ganhe-necessaire-em-compras-de-r-199|beneficio-ganhe-uma-necessaire-prateado-exclusivo-nas-compras-da-marca-a-partir-de-r-199-regras-desconto-aplicado-automaticamente-no-site-valido-para-compras-a-",
-      "scraped_at": "2026-06-19T20:15:28.883000Z",
-      "trace_id": "trace_pz0-ganhe-necessaire-em-compras-de-r-199",
-      "channel_message_id": 1667,
-      "channel_message_link": "https://t.me/c/3723320790/1667",
-      "comment_message_id": 5694,
-      "discussion_message_id": 5691,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/5694?thread=5691",
-      "sent_at": "2026-06-19T20:17:01.714321Z",
-      "sold_out_at": "17:51",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "pz1-ganhe-gloss-bomb-em-compras-de-r-599",
       "original_link": "https://clube.uol.com.br/sephora/pz1-ganhe-gloss-bomb-em-compras-de-r-599",
@@ -457,6 +432,27 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-06-25T04:26:55.787927Z"
+    },
+    {
+      "id": "pzO-10-off-calcados-femininos-selecionados",
+      "original_link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calcados-femininos-selecionados",
+      "preview_title": "10% OFF calçados femininos selecionados",
+      "title": "10% OFF calçados femininos selecionados",
+      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calcados-femininos-selecionados",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
+      "validity": null,
+      "description": "",
+      "location_summary": "",
+      "dedupe_key": "10-off-calcados-femininos-selecionados",
+      "loose_dedupe_key": "10-off-calcados-femininos-selecionados",
+      "scraped_at": "2026-06-25T17:52:01.913000Z",
+      "trace_id": "trace_pzo-10-off-calcados-femininos-selecionados",
+      "channel_message_id": 1687,
+      "channel_message_link": "https://t.me/c/3723320790/1687",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-06-25T17:53:30.089350Z"
     }
   ]
 }
