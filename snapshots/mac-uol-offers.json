@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 74035,
-  "run_duration_seconds": 74.03,
-  "avg_detail_ms_per_offer": 6170,
-  "generated_at": "2026-06-25T08:45:29.494Z",
+  "run_duration_ms": 244822,
+  "run_duration_seconds": 244.82,
+  "avg_detail_ms_per_offer": 20402,
+  "generated_at": "2026-06-25T09:00:35.041Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132746,
-      "detail_elapsed_ms": 3317,
-      "scraped_at": "2026-06-25T08:45:00.517Z"
+      "detail_attempts": 2,
+      "detail_html_length": 134427,
+      "detail_elapsed_ms": 65294,
+      "scraped_at": "2026-06-25T08:59:29.133Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129430,
-      "detail_elapsed_ms": 1824,
-      "scraped_at": "2026-06-25T08:45:02.341Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130595,
+      "detail_elapsed_ms": 7899,
+      "scraped_at": "2026-06-25T08:59:49.883Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131409,
-      "detail_elapsed_ms": 3208,
-      "scraped_at": "2026-06-25T08:45:05.549Z"
+      "detail_html_length": 132928,
+      "detail_elapsed_ms": 2738,
+      "scraped_at": "2026-06-25T08:59:52.622Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132644,
-      "detail_elapsed_ms": 1821,
-      "scraped_at": "2026-06-25T08:45:07.370Z"
+      "detail_html_length": 132671,
+      "detail_elapsed_ms": 4161,
+      "scraped_at": "2026-06-25T08:59:56.783Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130963,
-      "detail_elapsed_ms": 2115,
-      "scraped_at": "2026-06-25T08:45:09.485Z"
+      "detail_html_length": 130999,
+      "detail_elapsed_ms": 2300,
+      "scraped_at": "2026-06-25T08:59:59.083Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130476,
-      "detail_elapsed_ms": 2409,
-      "scraped_at": "2026-06-25T08:45:11.896Z"
+      "detail_html_length": 129265,
+      "detail_elapsed_ms": 2771,
+      "scraped_at": "2026-06-25T09:00:01.855Z"
     },
     {
       "id": "pzt-20-off-em-vesturio-da-copa-mizuno",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130547,
-      "detail_elapsed_ms": 2107,
-      "scraped_at": "2026-06-25T08:45:14.004Z"
+      "detail_html_length": 130584,
+      "detail_elapsed_ms": 3078,
+      "scraped_at": "2026-06-25T09:00:04.933Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130930,
-      "detail_elapsed_ms": 2289,
-      "scraped_at": "2026-06-25T08:45:16.293Z"
+      "detail_html_length": 130501,
+      "detail_elapsed_ms": 9965,
+      "scraped_at": "2026-06-25T09:00:14.898Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133039,
-      "detail_elapsed_ms": 4148,
-      "scraped_at": "2026-06-25T08:45:20.441Z"
+      "detail_html_length": 131897,
+      "detail_elapsed_ms": 6800,
+      "scraped_at": "2026-06-25T09:00:21.698Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133054,
-      "detail_elapsed_ms": 4270,
-      "scraped_at": "2026-06-25T08:45:24.712Z"
+      "detail_html_length": 133061,
+      "detail_elapsed_ms": 6685,
+      "scraped_at": "2026-06-25T09:00:28.383Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130551,
-      "detail_elapsed_ms": 2380,
-      "scraped_at": "2026-06-25T08:45:27.092Z"
+      "detail_html_length": 130501,
+      "detail_elapsed_ms": 2401,
+      "scraped_at": "2026-06-25T09:00:30.785Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130730,
-      "detail_elapsed_ms": 1984,
-      "scraped_at": "2026-06-25T08:45:29.077Z"
+      "detail_html_length": 130715,
+      "detail_elapsed_ms": 3517,
+      "scraped_at": "2026-06-25T09:00:34.303Z"
     }
   ]
 }
