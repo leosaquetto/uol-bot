@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 68698,
-  "run_duration_seconds": 68.7,
-  "avg_detail_ms_per_offer": 5725,
-  "generated_at": "2026-06-26T17:01:17.602Z",
+  "run_duration_ms": 41271,
+  "run_duration_seconds": 41.27,
+  "avg_detail_ms_per_offer": 3439,
+  "generated_at": "2026-06-26T17:12:08.897Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "p15-2-ingressos-casa-natura-musical-sp",
-      "trace_id": "trace_p15-2-ingressos-casa-natura-musical-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p15-2-ingressos-casa-natura-musical-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p15-2-ingressos-casa-natura-musical-sp",
-      "title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "preview_title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "validity": "Benefício válido de 25/06/2026 15:37 até 09/07/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos e viva a experiência de Day Limns – Show “7 Vidas”, uma apresentação intensa e emocionante que celebra a trajetória da artista, reunindo seus maiores sucessos e a força de sua nova fase, em uma noite vibrante na Casa Natura Musical, em São Paulo. Data: 10 de julho de 2026, às 21h. Local: Casa Natura Musical - Rua Artur de Azevedo, 2134, 05404-005 – São Paulo, São Paulo – Brasil. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d7050d22f823fee5d71dbe7a0f1d025c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d7050d22f823fee5d71dbe7a0f1d025c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d7050d22f823fee5d71dbe7a0f1d025c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 126639,
-      "detail_elapsed_ms": 3886,
-      "scraped_at": "2026-06-26T17:00:50.804Z"
-    },
     {
       "id": "p14-2-ingressos-casa-natura-musical-sp",
       "trace_id": "trace_p14-2-ingressos-casa-natura-musical-sp",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133220,
-      "detail_elapsed_ms": 5100,
-      "scraped_at": "2026-06-26T17:00:55.904Z"
+      "detail_html_length": 133046,
+      "detail_elapsed_ms": 2389,
+      "scraped_at": "2026-06-26T17:11:46.318Z"
     },
     {
       "id": "p06-2-ingressos-30-06-shopping-cidade-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134406,
-      "detail_elapsed_ms": 3181,
-      "scraped_at": "2026-06-26T17:00:59.086Z"
+      "detail_html_length": 134302,
+      "detail_elapsed_ms": 1953,
+      "scraped_at": "2026-06-26T17:11:48.271Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130856,
-      "detail_elapsed_ms": 2316,
-      "scraped_at": "2026-06-26T17:01:01.403Z"
+      "detail_html_length": 130828,
+      "detail_elapsed_ms": 2916,
+      "scraped_at": "2026-06-26T17:11:51.187Z"
     },
     {
       "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133178,
-      "detail_elapsed_ms": 2129,
-      "scraped_at": "2026-06-26T17:01:03.532Z"
+      "detail_html_length": 133181,
+      "detail_elapsed_ms": 2232,
+      "scraped_at": "2026-06-26T17:11:53.420Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132911,
-      "detail_elapsed_ms": 1855,
-      "scraped_at": "2026-06-26T17:01:05.387Z"
+      "detail_html_length": 132923,
+      "detail_elapsed_ms": 1645,
+      "scraped_at": "2026-06-26T17:11:55.065Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129764,
-      "detail_elapsed_ms": 2035,
-      "scraped_at": "2026-06-26T17:01:07.422Z"
+      "detail_html_length": 131250,
+      "detail_elapsed_ms": 1713,
+      "scraped_at": "2026-06-26T17:11:56.778Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130751,
-      "detail_elapsed_ms": 1947,
-      "scraped_at": "2026-06-26T17:01:09.369Z"
+      "detail_html_length": 130754,
+      "detail_elapsed_ms": 2163,
+      "scraped_at": "2026-06-26T17:11:58.941Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130741,
-      "detail_elapsed_ms": 2182,
-      "scraped_at": "2026-06-26T17:01:11.551Z"
+      "detail_html_length": 130773,
+      "detail_elapsed_ms": 2201,
+      "scraped_at": "2026-06-26T17:12:01.142Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133810,
-      "detail_elapsed_ms": 1931,
-      "scraped_at": "2026-06-26T17:01:13.483Z"
+      "detail_html_length": 133317,
+      "detail_elapsed_ms": 1823,
+      "scraped_at": "2026-06-26T17:12:02.966Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133311,
-      "detail_elapsed_ms": 2150,
-      "scraped_at": "2026-06-26T17:01:15.633Z"
+      "detail_html_length": 133324,
+      "detail_elapsed_ms": 2103,
+      "scraped_at": "2026-06-26T17:12:05.069Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130868,
-      "detail_elapsed_ms": 1825,
-      "scraped_at": "2026-06-26T17:01:17.458Z"
+      "detail_html_length": 130800,
+      "detail_elapsed_ms": 1896,
+      "scraped_at": "2026-06-26T17:12:06.966Z"
+    },
+    {
+      "id": "pzo-10-off-calados-femininos-selecionados",
+      "trace_id": "trace_pzo-10-off-calados-femininos-selecionados",
+      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
+      "original_link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
+      "title": "10% OFF calçados femininos selecionados",
+      "preview_title": "10% OFF calçados femininos selecionados",
+      "validity": "Benefício válido de 23/06/2026 12:30 até 28/06/2026 23:59.",
+      "description": "Benefício: 10% OFF em calçados femininos selecionados Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Dafiti",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130967,
+      "detail_elapsed_ms": 1858,
+      "scraped_at": "2026-06-26T17:12:08.824Z"
     }
   ]
 }
