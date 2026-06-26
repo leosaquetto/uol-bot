@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-26T17:03:00.190097Z",
+  "updated_at": "2026-06-26T17:13:02.878315Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p15-2-ingressos-casa-natura-musical-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p15-2-ingressos-casa-natura-musical-sp"
-    },
     {
       "title": "2 INGRESSOS: Casa Natura Musical - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/p14-2-ingressos-casa-natura-musical-sp",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-seleo-de-tvs",
       "reason": "duplicada_latest",
       "trace_id": "trace_pzp-10-off-em-seleo-de-tvs"
+    },
+    {
+      "title": "10% OFF calçados femininos selecionados",
+      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzo-10-off-calados-femininos-selecionados"
     }
   ]
 }
