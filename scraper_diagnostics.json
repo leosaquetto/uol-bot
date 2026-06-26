@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-26T22:01:29.227679Z",
+  "updated_at": "2026-06-26T22:12:03.036399Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
-    "duplicada_latest": 4,
+    "duplicada_historico": 10,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -48,27 +48,27 @@
     },
     {
       "title": "Beleza com até 25% OFF e mais descontos",
-      "link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pzy-beleza-com-at-25-off-e-mais-descontos"
+      "link": "https://clube.uol.com.br/cea/pzY-beleza-com-ate-25-off-e-mais-descontos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzy-beleza-com-ate-25-off-e-mais-descontos"
     },
     {
       "title": "30% OFF sem mínimo!",
-      "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzx-30-off-sem-mnimo"
+      "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-minimo",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pzx-30-off-sem-minimo"
     },
     {
       "title": "22% OFF em seleção de vôlei",
-      "link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-seleo-de-vlei",
+      "link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-selecao-de-volei",
       "reason": "duplicada_latest",
-      "trace_id": "trace_pzs-22-off-em-seleo-de-vlei"
+      "trace_id": "trace_pzs-22-off-em-selecao-de-volei"
     },
     {
       "title": "Lacoste com até 50% OFF em seleção",
-      "link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-at-50-off-em-seleo",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pzr-lacoste-com-at-50-off-em-seleo"
+      "link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-ate-50-off-em-selecao",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzr-lacoste-com-ate-50-off-em-selecao"
     },
     {
       "title": "Aquecedores, Ar-Condicionado, etc R$129+",
@@ -78,15 +78,15 @@
     },
     {
       "title": "10% OFF em seleção de TVs",
-      "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-seleo-de-tvs",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_pzp-10-off-em-seleo-de-tvs"
+      "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-selecao-de-tvs",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzp-10-off-em-selecao-de-tvs"
     },
     {
       "title": "10% OFF calçados femininos selecionados",
-      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
+      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calcados-femininos-selecionados",
       "reason": "duplicada_historico",
-      "trace_id": "trace_pzo-10-off-calados-femininos-selecionados"
+      "trace_id": "trace_pzo-10-off-calcados-femininos-selecionados"
     }
   ]
 }
