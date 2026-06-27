@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-27T00:08:16.418073Z",
+  "updated_at": "2026-06-27T00:19:05.828764Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/evino/p04-r-100-off-acima-de-r-299",
       "reason": "duplicada_historico",
       "trace_id": "trace_p04-r-100-off-acima-de-r-299"
-    },
-    {
-      "title": "2 INGRESSOS 30/06 Teatro Claro - RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p0g-2-ingressos-30-06-teatro-claro-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p0g-2-ingressos-30-06-teatro-claro-rj"
     },
     {
       "title": "40% OFF no par de ingressos",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/carrefour/pzN-perfumaria-e-beleza-com-at-23-off",
       "reason": "duplicada_latest",
       "trace_id": "trace_pzn-perfumaria-e-beleza-com-at-23-off"
+    },
+    {
+      "title": "10% OFF na primeira compra na Fut!",
+      "link": "https://clube.uol.com.br/futfanaticsbr/pzL-10-off-na-primeira-compra-na-fut",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pzl-10-off-na-primeira-compra-na-fut"
     }
   ]
 }
