@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 117197,
-  "run_duration_seconds": 117.2,
-  "avg_detail_ms_per_offer": 9766,
-  "generated_at": "2026-06-27T00:06:39.037Z",
+  "run_duration_ms": 92708,
+  "run_duration_seconds": 92.71,
+  "avg_detail_ms_per_offer": 7726,
+  "generated_at": "2026-06-27T00:18:22.143Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134220,
-      "detail_elapsed_ms": 6317,
-      "scraped_at": "2026-06-27T00:06:03.136Z"
+      "detail_html_length": 132396,
+      "detail_elapsed_ms": 3985,
+      "scraped_at": "2026-06-27T00:17:18.411Z"
     },
     {
       "id": "p04-r-100-off-acima-de-r-299",
@@ -64,33 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130831,
-      "detail_elapsed_ms": 3713,
-      "scraped_at": "2026-06-27T00:06:06.849Z"
-    },
-    {
-      "id": "p0g-2-ingressos-30-06-teatro-claro-rj",
-      "trace_id": "trace_p0g-2-ingressos-30-06-teatro-claro-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p0g-2-ingressos-30-06-teatro-claro-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p0g-2-ingressos-30-06-teatro-claro-rj",
-      "title": "2 INGRESSOS 30/06 Teatro Claro - RJ",
-      "preview_title": "2 INGRESSOS 30/06 Teatro Claro - RJ",
-      "validity": "Benefício válido de 24/06/2026 13:34 até 30/06/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para um espetáculo especial no Teatro Claro - Shopping Cidade Copacabana-RJ. Quando: Validade até 30/06/2026 Local: Teatro Claro Rio de Janeiro - Shopping Cidade Copacabana - Rua Siqueira Campos, 143, 2º Piso - Rio de Janeiro-RJ. Escolha um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaisrj.com.br/programacao Espetáculos em cartaz Victor ou Victoria - O Musical Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a7d191e149193bfddf22b5dc4a2002b.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133154,
-      "detail_elapsed_ms": 2787,
-      "scraped_at": "2026-06-27T00:06:09.636Z"
+      "detail_html_length": 129601,
+      "detail_elapsed_ms": 2909,
+      "scraped_at": "2026-06-27T00:17:21.320Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132887,
-      "detail_elapsed_ms": 2833,
-      "scraped_at": "2026-06-27T00:06:12.469Z"
+      "detail_html_length": 131714,
+      "detail_elapsed_ms": 4298,
+      "scraped_at": "2026-06-27T00:17:25.619Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129730,
-      "detail_elapsed_ms": 2766,
-      "scraped_at": "2026-06-27T00:06:15.235Z"
+      "detail_html_length": 131236,
+      "detail_elapsed_ms": 2576,
+      "scraped_at": "2026-06-27T00:17:28.195Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124364,
-      "detail_elapsed_ms": 2010,
-      "scraped_at": "2026-06-27T00:06:17.245Z"
+      "detail_html_length": 129339,
+      "detail_elapsed_ms": 3216,
+      "scraped_at": "2026-06-27T00:17:31.411Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130726,
-      "detail_elapsed_ms": 2049,
-      "scraped_at": "2026-06-27T00:06:19.294Z"
+      "detail_html_length": 130721,
+      "detail_elapsed_ms": 14445,
+      "scraped_at": "2026-06-27T00:17:45.856Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133281,
-      "detail_elapsed_ms": 3142,
-      "scraped_at": "2026-06-27T00:06:22.436Z"
+      "detail_html_length": 133277,
+      "detail_elapsed_ms": 3998,
+      "scraped_at": "2026-06-27T00:17:49.855Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133277,
-      "detail_elapsed_ms": 6865,
-      "scraped_at": "2026-06-27T00:06:29.301Z"
+      "detail_html_length": 133283,
+      "detail_elapsed_ms": 2469,
+      "scraped_at": "2026-06-27T00:17:52.324Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130843,
-      "detail_elapsed_ms": 4168,
-      "scraped_at": "2026-06-27T00:06:33.469Z"
+      "detail_html_length": 130789,
+      "detail_elapsed_ms": 2001,
+      "scraped_at": "2026-06-27T00:17:54.325Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130932,
-      "detail_elapsed_ms": 2335,
-      "scraped_at": "2026-06-27T00:06:35.804Z"
+      "detail_html_length": 130937,
+      "detail_elapsed_ms": 2018,
+      "scraped_at": "2026-06-27T00:17:56.343Z"
     },
     {
       "id": "pzn-perfumaria-e-beleza-com-at-23-off",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133085,
-      "detail_elapsed_ms": 3001,
-      "scraped_at": "2026-06-27T00:06:38.805Z"
+      "detail_html_length": 133071,
+      "detail_elapsed_ms": 6270,
+      "scraped_at": "2026-06-27T00:18:02.614Z"
+    },
+    {
+      "id": "pzl-10-off-na-primeira-compra-na-fut",
+      "trace_id": "trace_pzl-10-off-na-primeira-compra-na-fut",
+      "link": "https://clube.uol.com.br/futfanaticsbr/pzL-10-off-na-primeira-compra-na-fut",
+      "original_link": "https://clube.uol.com.br/futfanaticsbr/pzL-10-off-na-primeira-compra-na-fut",
+      "title": "10% OFF na primeira compra na Fut!",
+      "preview_title": "10% OFF na primeira compra na Fut!",
+      "validity": "Benefício válido de 23/06/2026 10:15 até 01/09/2026 23:59.",
+      "description": "Sobre o Parceiro: Especializada em camisas de futebol e artigos esportivos e com a maior variedade em camisas de times de futebol no mercado nacional, a FutFanatics trabalha em parceria com as principais marcas esportivas para comercializar somente produtos originais e com garantia de qualidade! Benefício: 10% OFF na primeira compra na FutFanatics! Regras: Aplique o cupom no carrinho. Válido apenas para a primeira compra. Válido para todo o site. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Fut Fanatics BR",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/5323c665c50a4596968bacb0d4caa3f8.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8029c30ad885c1554eb7b2b0303c3fa1.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8029c30ad885c1554eb7b2b0303c3fa1.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/8029c30ad885c1554eb7b2b0303c3fa1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 2,
+      "detail_html_length": 131483,
+      "detail_elapsed_ms": 6549,
+      "scraped_at": "2026-06-27T00:18:21.498Z"
     }
   ]
 }
