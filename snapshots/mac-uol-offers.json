@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 58979,
-  "run_duration_seconds": 58.98,
-  "avg_detail_ms_per_offer": 4915,
-  "generated_at": "2026-06-27T14:37:29.788Z",
+  "run_duration_ms": 51803,
+  "run_duration_seconds": 51.8,
+  "avg_detail_ms_per_offer": 4317,
+  "generated_at": "2026-06-27T14:48:39.887Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "p06-2-ingressos-30-06-shopping-cidade-sp",
-      "trace_id": "trace_p06-2-ingressos-30-06-shopping-cidade-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p06-2-ingressos-30-06-shopping-cidade-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p06-2-ingressos-30-06-shopping-cidade-sp",
-      "title": "2 INGRESSOS: 30/06 Shopping Cidade SP",
-      "preview_title": "2 INGRESSOS: 30/06 Shopping Cidade SP",
-      "validity": "Benefício válido de 24/06/2026 16:47 até 30/06/2026 23:59.",
-      "description": "Assinante UOL, experiência inesquecível! Resgate 1 par de ingressos para Toy Story “Ao Infinito e Além”: A Exposição, uma imersão única no universo de um dos filmes mais icônicos da Pixar, no Shopping Cidade São Paulo. Datas disponíveis: Terça a quinta, das 12h às 21h; sexta e sábado, das 11h às 21h; domingos e feriados, das 12h às 20h. Validade: 30/06/2026 Duração média: 50 min | Chegue 10 min antes. Local: Shopping Cidade São Paulo – 4º andar | Av. Paulista, 1230 – Bela Vista, São Paulo/SP Importante: O voucher inclui 2 códigos diferentes que equivalem a 01 par de ingressos. Você pode utilizar os dois vouchers no mesmo CPF, porém em compras separadas. Como resgatar meu beneficio: Acesse o link: https://www.ticketmaster.com.br/event/toy-story-cortesias-uol. Se for o primeiro acesso, cadastre-se antes de prosseguir. Após o cadastro, clique em Ingresso e selecione o dia e hora desejada. Após continuar, aceite o termo e insira o código que você recebeu e aplique na área de cupom. Após a compra, o ingresso será enviado para o mesmo e-mail cadastrado e também estará disponível no aplicativo Quentro. Basta ingressar com o mesmo e-mail que você acessou. Atenção: • É necessário apresentar na catraca de acesso, o QR Code diretamente pelo o aplicativo no seu smartphone Quentro no App Store ou Android; • O resgate deverá ser realizado com 01 dia que antecede a data da visita e mediante disponibilidade; • Fique atento a data da exposição, pois o QR Code não poderá ser reutilizado; • O ingresso é individual e intransferível; REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a3c3439b7e0a_96d7e7680d0fe305a464159c7a4b3c10.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 134249,
-      "detail_elapsed_ms": 6763,
-      "scraped_at": "2026-06-27T14:36:59.536Z"
-    },
     {
       "id": "p04-r-100-off-acima-de-r-299",
       "trace_id": "trace_p04-r-100-off-acima-de-r-299",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130846,
-      "detail_elapsed_ms": 7160,
-      "scraped_at": "2026-06-27T14:37:06.697Z"
+      "detail_html_length": 125839,
+      "detail_elapsed_ms": 3447,
+      "scraped_at": "2026-06-27T14:48:15.031Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131655,
-      "detail_elapsed_ms": 2527,
-      "scraped_at": "2026-06-27T14:37:09.224Z"
+      "detail_html_length": 131712,
+      "detail_elapsed_ms": 2357,
+      "scraped_at": "2026-06-27T14:48:17.388Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131258,
-      "detail_elapsed_ms": 2193,
-      "scraped_at": "2026-06-27T14:37:11.417Z"
+      "detail_html_length": 131227,
+      "detail_elapsed_ms": 2025,
+      "scraped_at": "2026-06-27T14:48:19.413Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130732,
-      "detail_elapsed_ms": 1843,
-      "scraped_at": "2026-06-27T14:37:13.260Z"
+      "detail_html_length": 130722,
+      "detail_elapsed_ms": 2235,
+      "scraped_at": "2026-06-27T14:48:21.648Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130751,
-      "detail_elapsed_ms": 2324,
-      "scraped_at": "2026-06-27T14:37:15.584Z"
+      "detail_html_length": 130720,
+      "detail_elapsed_ms": 2120,
+      "scraped_at": "2026-06-27T14:48:23.768Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133286,
-      "detail_elapsed_ms": 2660,
-      "scraped_at": "2026-06-27T14:37:18.244Z"
+      "detail_html_length": 133266,
+      "detail_elapsed_ms": 2072,
+      "scraped_at": "2026-06-27T14:48:25.844Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133292,
-      "detail_elapsed_ms": 2178,
-      "scraped_at": "2026-06-27T14:37:20.422Z"
+      "detail_html_length": 133272,
+      "detail_elapsed_ms": 2258,
+      "scraped_at": "2026-06-27T14:48:28.102Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130809,
-      "detail_elapsed_ms": 2769,
-      "scraped_at": "2026-06-27T14:37:23.191Z"
+      "detail_html_length": 130798,
+      "detail_elapsed_ms": 2646,
+      "scraped_at": "2026-06-27T14:48:30.748Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130957,
-      "detail_elapsed_ms": 1965,
-      "scraped_at": "2026-06-27T14:37:25.156Z"
+      "detail_html_length": 130936,
+      "detail_elapsed_ms": 2389,
+      "scraped_at": "2026-06-27T14:48:33.138Z"
     },
     {
       "id": "pzn-perfumaria-e-beleza-com-at-23-off",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133089,
-      "detail_elapsed_ms": 2005,
-      "scraped_at": "2026-06-27T14:37:27.161Z"
+      "detail_html_length": 133109,
+      "detail_elapsed_ms": 2043,
+      "scraped_at": "2026-06-27T14:48:35.181Z"
     },
     {
       "id": "pzl-10-off-na-primeira-compra-na-fut",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132212,
-      "detail_elapsed_ms": 2368,
-      "scraped_at": "2026-06-27T14:37:29.529Z"
+      "detail_html_length": 131631,
+      "detail_elapsed_ms": 2220,
+      "scraped_at": "2026-06-27T14:48:37.401Z"
+    },
+    {
+      "id": "pzk-30-off-no-ingresso-do-espetculo",
+      "trace_id": "trace_pzk-30-off-no-ingresso-do-espetculo",
+      "link": "https://clube.uol.com.br/espetaculoolhosnosolhos/pzK-30-off-no-ingresso-do-espetculo",
+      "original_link": "https://clube.uol.com.br/espetaculoolhosnosolhos/pzK-30-off-no-ingresso-do-espetculo",
+      "title": "30% OFF no ingresso do espetáculo",
+      "preview_title": "30% OFF no ingresso do espetáculo",
+      "validity": "Benefício válido de 22/06/2026 18:26 até 02/08/2026 23:59.",
+      "description": "Sobre o parceiro: Olhos nos Olhos, estrelado por Ana Lúcia Torre, com dramaturgia e direção de Sergio Módena. A peça celebra os 80 anos de vida e 60 anos de carreira desta que é uma das maiores atrizes brasileiras, mesclando histórias de sua trajetória pessoal e profissional com a obra de Chico Buarque de Holanda, em uma realização da Morente Forte, que também celebra 40 anos de intensa atuação na cena teatral brasileira. Benefício: Cupom de 30% OFF na compra de até 3 ingressos do Espetáculo Olhos nos Olhos. Regras: Para resgatar o desconto de 30% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para o site da ticketeira oficial do espetáculo, escolha seus ingressos e a opção INGRESSO UOL. Na tela de pagamento, insira seu código para obter seu desconto no ingresso. Atenção: Desconto válido para o Assinante UOL. Desconto válido apenas para ingressos inteira e para todos os setores. Temporada: Até 02 de agosto de 2026. Horários: Sextas e sábados, às 21h; domingos, às 18h. Localização do Tucarena / PUC-SP: Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - SP.",
+      "category": "Promoções do Mês",
+      "partner_name": "Espetáculo Olhos nos Olhos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a4699af1f2e34653d91e91e5abca02c2.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/637f9c364bca5467e62cfab14284ca74.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/637f9c364bca5467e62cfab14284ca74.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/637f9c364bca5467e62cfab14284ca74.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132449,
+      "detail_elapsed_ms": 2200,
+      "scraped_at": "2026-06-27T14:48:39.601Z"
     }
   ]
 }
