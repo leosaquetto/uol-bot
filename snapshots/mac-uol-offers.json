@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 156985,
-  "run_duration_seconds": 156.99,
-  "avg_detail_ms_per_offer": 13082,
-  "generated_at": "2026-06-27T15:01:38.947Z",
+  "run_duration_ms": 84729,
+  "run_duration_seconds": 84.73,
+  "avg_detail_ms_per_offer": 7061,
+  "generated_at": "2026-06-27T15:14:53.942Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130829,
-      "detail_elapsed_ms": 8618,
-      "scraped_at": "2026-06-27T15:00:23.951Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130680,
+      "detail_elapsed_ms": 9438,
+      "scraped_at": "2026-06-27T15:14:20.428Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131567,
-      "detail_elapsed_ms": 4749,
-      "scraped_at": "2026-06-27T15:00:28.701Z"
+      "detail_html_length": 132872,
+      "detail_elapsed_ms": 5776,
+      "scraped_at": "2026-06-27T15:14:26.204Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 123177,
-      "detail_elapsed_ms": 3207,
-      "scraped_at": "2026-06-27T15:00:31.909Z"
+      "detail_html_length": 131239,
+      "detail_elapsed_ms": 5625,
+      "scraped_at": "2026-06-27T15:14:31.862Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130725,
-      "detail_elapsed_ms": 8056,
-      "scraped_at": "2026-06-27T15:00:39.965Z"
+      "detail_html_length": 130714,
+      "detail_elapsed_ms": 3883,
+      "scraped_at": "2026-06-27T15:14:35.746Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130724,
-      "detail_elapsed_ms": 6386,
-      "scraped_at": "2026-06-27T15:00:46.351Z"
+      "detail_html_length": 130713,
+      "detail_elapsed_ms": 2448,
+      "scraped_at": "2026-06-27T15:14:38.194Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133279,
-      "detail_elapsed_ms": 8787,
-      "scraped_at": "2026-06-27T15:00:55.138Z"
+      "detail_html_length": 133278,
+      "detail_elapsed_ms": 2050,
+      "scraped_at": "2026-06-27T15:14:40.244Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133138,
-      "detail_elapsed_ms": 8781,
-      "scraped_at": "2026-06-27T15:01:03.919Z"
+      "detail_html_length": 133283,
+      "detail_elapsed_ms": 2168,
+      "scraped_at": "2026-06-27T15:14:42.412Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130802,
-      "detail_elapsed_ms": 6211,
-      "scraped_at": "2026-06-27T15:01:10.131Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 2263,
+      "scraped_at": "2026-06-27T15:14:44.675Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129713,
-      "detail_elapsed_ms": 4313,
-      "scraped_at": "2026-06-27T15:01:14.456Z"
+      "detail_html_length": 130978,
+      "detail_elapsed_ms": 2500,
+      "scraped_at": "2026-06-27T15:14:47.175Z"
     },
     {
       "id": "pzn-perfumaria-e-beleza-com-at-23-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133083,
-      "detail_elapsed_ms": 6114,
-      "scraped_at": "2026-06-27T15:01:20.570Z"
+      "detail_html_length": 133071,
+      "detail_elapsed_ms": 2019,
+      "scraped_at": "2026-06-27T15:14:49.194Z"
     },
     {
       "id": "pzl-10-off-na-primeira-compra-na-fut",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131644,
-      "detail_elapsed_ms": 9761,
-      "scraped_at": "2026-06-27T15:01:30.331Z"
+      "detail_html_length": 131631,
+      "detail_elapsed_ms": 2409,
+      "scraped_at": "2026-06-27T15:14:51.603Z"
     },
     {
       "id": "pzk-30-off-no-ingresso-do-espetculo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132462,
-      "detail_elapsed_ms": 8196,
-      "scraped_at": "2026-06-27T15:01:38.528Z"
+      "detail_html_length": 132440,
+      "detail_elapsed_ms": 1995,
+      "scraped_at": "2026-06-27T15:14:53.598Z"
     }
   ]
 }
