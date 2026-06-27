@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-06-26T23:55:18.940859Z",
+  "last_update": "2026-06-27T14:49:47.031873Z",
   "offers": [
-    {
-      "id": "pxQ-15-off-na-1-compra-no-app-lojas-renner",
-      "original_link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1-compra-no-app-lojas-renner",
-      "preview_title": "15% OFF na 1ª compra no app Lojas Renner",
-      "title": "15% OFF na 1ª compra no app Lojas Renner",
-      "link": "https://clube.uol.com.br/lojasrenner/pxQ-15-off-na-1-compra-no-app-lojas-renner",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aff9e9cd73f9a94cd04110d1803ac5c8.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "validity": null,
-      "description": "",
-      "location_summary": "",
-      "dedupe_key": "15-off-na-1-compra-no-app-lojas-renner",
-      "loose_dedupe_key": "15-off-na-1-compra-no-app-lojas-renner",
-      "scraped_at": "2026-06-20T20:44:25.789000Z",
-      "trace_id": "trace_pxq-15-off-na-1-compra-no-app-lojas-renner",
-      "channel_message_id": 1670,
-      "channel_message_link": "https://t.me/c/3723320790/1670",
-      "comment_message_id": 5707,
-      "discussion_message_id": 5704,
-      "comment_status": "sent",
-      "comment_link": "https://t.me/c/3802235343/5707?thread=5704",
-      "sent_at": "2026-06-20T20:46:16.395281Z"
-    },
     {
       "id": "pxO-especial-inverno-2-peas-por-r-160",
       "original_link": "https://clube.uol.com.br/mizuno/pxO-especial-inverno-2-peas-por-r-160",
@@ -433,7 +410,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-06-26T16:51:03.883747Z",
-      "sold_out_at": "14:34"
+      "sold_out_at": "14:34",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p14-2-ingressos-casa-natura-musical-sp",
@@ -458,7 +436,29 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-06-26T16:51:17.763277Z",
-      "sold_out_at": "20:54"
+      "sold_out_at": "20:54",
+      "_sold_out_synced_to_telegram": true
+    },
+    {
+      "id": "pzK-30-off-no-ingresso-do-espetculo",
+      "original_link": "https://clube.uol.com.br/espetaculoolhosnosolhos/pzK-30-off-no-ingresso-do-espetculo",
+      "preview_title": "30% OFF no ingresso do espetáculo",
+      "title": "30% OFF no ingresso do espetáculo",
+      "link": "https://clube.uol.com.br/espetaculoolhosnosolhos/pzK-30-off-no-ingresso-do-espetculo",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/637f9c364bca5467e62cfab14284ca74.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a4699af1f2e34653d91e91e5abca02c2.png",
+      "validity": "Benefício válido de 22/06/2026 18:26 até 02/08/2026 23:59.",
+      "description": "Sobre o parceiro: Olhos nos Olhos, estrelado por Ana Lúcia Torre, com dramaturgia e direção de Sergio Módena. A peça celebra os 80 anos de vida e 60 anos de carreira desta que é uma das maiores atrizes brasileiras, mesclando histórias de sua trajetória pessoal e profissional com a obra de Chico Buarque de Holanda, em uma realização da Morente Forte, que também celebra 40 anos de intensa atuação na cena teatral brasileira. Benefício: Cupom de 30% OFF na compra de até 3 ingressos do Espetáculo Olhos nos Olhos. Regras: Para resgatar o desconto de 30% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para o site da ticketeira oficial do espetáculo, escolha seus ingressos e a opção INGRESSO UOL. Na tela de pagamento, insira seu código para obter seu desconto no ingresso. Atenção: Desconto válido para o Assinante UOL. Desconto válido apenas para ingressos inteira e para todos os setores. Temporada: Até 02 de agosto de 2026. Horários: Sextas e sábados, às 21h; domingos, às 18h. Localização do Tucarena / PUC-SP: Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - SP.",
+      "location_summary": "São Paulo - SP",
+      "dedupe_key": "30-off-no-ingresso-do-espetaculo|beneficio-valido-de-22-06-2026-18-26-ate-02-08-2026-23-59|sobre-o-parceiro-olhos-nos-olhos-estrelado-por-ana-lucia-torre-com-dramaturgia-e-direcao-de-sergio-modena-a-peca-celebra-os-80-anos-de-vida-e-60-anos-de-carreir",
+      "loose_dedupe_key": "30-off-no-ingresso-do-espetaculo|sobre-o-parceiro-olhos-nos-olhos-estrelado-por-ana-lucia-torre-com-dramaturgia-e-direcao-de-sergio-modena-a-peca-celebra-os-80-anos-de-vida-e-60-anos-de-carreir",
+      "scraped_at": "2026-06-27T14:48:39.601000Z",
+      "trace_id": "trace_pzk-30-off-no-ingresso-do-espetculo",
+      "channel_message_id": 1690,
+      "channel_message_link": "https://t.me/c/3723320790/1690",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-06-27T14:49:46.879903Z"
     }
   ]
 }
