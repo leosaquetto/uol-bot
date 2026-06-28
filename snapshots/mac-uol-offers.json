@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 108241,
-  "run_duration_seconds": 108.24,
-  "avg_detail_ms_per_offer": 9020,
-  "generated_at": "2026-06-28T15:46:02.463Z",
+  "run_duration_ms": 94915,
+  "run_duration_seconds": 94.92,
+  "avg_detail_ms_per_offer": 7910,
+  "generated_at": "2026-06-28T15:58:18.254Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/evino/p04-r-100-off-acima-de-r-299",
       "title": "R$100 OFF acima de R$299!",
       "preview_title": "R$100 OFF acima de R$299!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 24/06/2026 15:52 até 07/07/2026 23:59.",
+      "description": "Benefício: R$100 OFF acima de R$299! Regras: Desconto não cumulativo com outros cupons. Parceria válida apenas para o APP e loja online. Descontos não aplicados nas compras nas lojas físicas e para o frete.",
       "category": "Comer e Beber",
       "partner_name": "Evino",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/2008c042c2b7b797d51458c9c40cdfa5.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/evino/p04-r-100-off-acima-de-r-299\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12008,
-      "scraped_at": "2026-06-28T15:45:02.585Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/d0c2b0a907734835f802c7a14f39b259.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130689,
+      "detail_elapsed_ms": 10063,
+      "scraped_at": "2026-06-28T15:57:31.616Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/espetaculovivavida/pzZ-40-off-no-par-de-ingressos",
       "title": "40% OFF no par de ingressos",
       "preview_title": "40% OFF no par de ingressos",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/06/2026 18:36 até 02/08/2026 23:59.",
+      "description": "Sobre o parceiro: Em “VIVA! VIDA”, Regina Casé leva o público para uma jornada surpreendente que atravessa o cosmos, mergulha na intimidade das células humanas e desemboca nas notificações do WhatsApp. Com humor, carisma e uma sensibilidade rara, ela conecta ciência, espiritualidade, meio ambiente e a vida moderna — tudo em um solo vibrante e instigante. Benefício: Cupom de 40% OFF no par de ingressos do Espetáculo VIVA! VIDA! Como resgatar: Para resgatar o desconto de 40% no par de ingressos, clique em \"Utilizar este benefício\" e, ao ser direcionado para o site da ticketeira oficial do espetáculo, escolha o setor \"Plateia SC\" e a opção \"Clube UOL\" para obter seu desconto. Importante: Após a compra do ingresso na ticketeira, retirar o voucher no site do Clube UOL e apresentar o respectivo junto ao ingresso na entrada do evento. A não apresentação do voucher ocorrerá na compra do complemento do valor inteiro do ingresso. Promoção não cumulativa com os demais descontos. Regras: Desconto válido para Assinante UOL de 40% na compra de até 2 ingressos por CPF, mediante apresentação do voucher (retirado na plataforma do Clube UOL) no acesso ao evento. Válido para compras online e na bilheteria. Atenção! Benefício válido apenas para o setor Plateia SC. Temporada: 9 de julho a 2 de agosto de 2026. Horário: Quinta, sexta e sábado às 20h; domingo às 17h. Localização do Teatro Sérgio Cardoso: Rua Rui Barbosa, 153, São Paulo - SP.",
       "category": "Promoções do Mês",
       "partner_name": "Espetáculo VIVA! VIDA!",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/40d7d54f8d02f8020e63db02c52cb713.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9cb9795befa2522907769d4ff7b3e04e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9cb9795befa2522907769d4ff7b3e04e.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/espetaculovivavida/pzZ-40-off-no-par-de-ingressos\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12015,
-      "scraped_at": "2026-06-28T15:45:26.919Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9cb9795befa2522907769d4ff7b3e04e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131737,
+      "detail_elapsed_ms": 3935,
+      "scraped_at": "2026-06-28T15:57:35.551Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
       "title": "Beleza com até 25% OFF e mais descontos",
       "preview_title": "Beleza com até 25% OFF e mais descontos",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/06/2026 17:23 até 30/06/2026 23:59.",
+      "description": "Benefício: Queridinhos de beleza com até 25% OFF + desconto progressivo Regras: 15% OFF acima de R$ 119; 20% OFF acima de R$ 149; 25% OFF acima de R$ 189; Válido para seleção de produtos. Aplique o cupom no carrinho. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "C&A",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-cea.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0b00e26b191510278097abf32ae5c313.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0b00e26b191510278097abf32ae5c313.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos\" is interrupted by another navigation to \"https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos\" Call log: - navigating to \"https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 3861,
-      "scraped_at": "2026-06-28T15:45:34.488Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0b00e26b191510278097abf32ae5c313.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 124889,
+      "detail_elapsed_ms": 1833,
+      "scraped_at": "2026-06-28T15:57:37.384Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 129563,
-      "detail_elapsed_ms": 3653,
-      "scraped_at": "2026-06-28T15:45:41.147Z"
+      "detail_attempts": 1,
+      "detail_html_length": 129511,
+      "detail_elapsed_ms": 2660,
+      "scraped_at": "2026-06-28T15:57:40.044Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130732,
-      "detail_elapsed_ms": 2789,
-      "scraped_at": "2026-06-28T15:45:43.937Z"
+      "detail_html_length": 130745,
+      "detail_elapsed_ms": 6191,
+      "scraped_at": "2026-06-28T15:57:46.235Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132117,
-      "detail_elapsed_ms": 2314,
-      "scraped_at": "2026-06-28T15:45:46.251Z"
+      "detail_html_length": 133301,
+      "detail_elapsed_ms": 6963,
+      "scraped_at": "2026-06-28T15:57:53.198Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132114,
-      "detail_elapsed_ms": 2877,
-      "scraped_at": "2026-06-28T15:45:49.128Z"
+      "detail_html_length": 133295,
+      "detail_elapsed_ms": 4877,
+      "scraped_at": "2026-06-28T15:57:58.076Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130788,
-      "detail_elapsed_ms": 2080,
-      "scraped_at": "2026-06-28T15:45:51.208Z"
+      "detail_html_length": 129513,
+      "detail_elapsed_ms": 3408,
+      "scraped_at": "2026-06-28T15:58:01.484Z"
     },
     {
       "id": "pzo-10-off-calados-femininos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130936,
-      "detail_elapsed_ms": 1822,
-      "scraped_at": "2026-06-28T15:45:53.030Z"
+      "detail_html_length": 131363,
+      "detail_elapsed_ms": 2774,
+      "scraped_at": "2026-06-28T15:58:04.258Z"
     },
     {
       "id": "pzn-perfumaria-e-beleza-com-at-23-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133059,
-      "detail_elapsed_ms": 2141,
-      "scraped_at": "2026-06-28T15:45:55.171Z"
+      "detail_html_length": 126740,
+      "detail_elapsed_ms": 2352,
+      "scraped_at": "2026-06-28T15:58:06.611Z"
     },
     {
       "id": "pzl-10-off-na-primeira-compra-na-fut",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125258,
-      "detail_elapsed_ms": 2047,
-      "scraped_at": "2026-06-28T15:45:57.219Z"
+      "detail_html_length": 125291,
+      "detail_elapsed_ms": 2727,
+      "scraped_at": "2026-06-28T15:58:09.338Z"
     },
     {
       "id": "pzk-30-off-no-ingresso-do-espetculo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132439,
-      "detail_elapsed_ms": 2414,
-      "scraped_at": "2026-06-28T15:45:59.633Z"
+      "detail_html_length": 132311,
+      "detail_elapsed_ms": 6493,
+      "scraped_at": "2026-06-28T15:58:15.831Z"
     }
   ]
 }
