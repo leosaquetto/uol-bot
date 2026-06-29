@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 65151,
-  "run_duration_seconds": 65.15,
-  "avg_detail_ms_per_offer": 5429,
-  "generated_at": "2026-06-28T23:53:10.820Z",
+  "run_duration_ms": 96362,
+  "run_duration_seconds": 96.36,
+  "avg_detail_ms_per_offer": 8030,
+  "generated_at": "2026-06-29T00:04:57.679Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129099,
-      "detail_elapsed_ms": 4481,
-      "scraped_at": "2026-06-28T23:52:39.944Z"
+      "detail_html_length": 130670,
+      "detail_elapsed_ms": 7230,
+      "scraped_at": "2026-06-29T00:04:26.028Z"
     },
     {
       "id": "pzz-40-off-no-par-de-ingressos",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132819,
-      "detail_elapsed_ms": 4042,
-      "scraped_at": "2026-06-28T23:52:43.986Z"
+      "detail_html_length": 126520,
+      "detail_elapsed_ms": 4416,
+      "scraped_at": "2026-06-29T00:04:30.445Z"
     },
     {
       "id": "pzy-beleza-com-at-25-off-e-mais-descontos",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131231,
-      "detail_elapsed_ms": 2776,
-      "scraped_at": "2026-06-28T23:52:46.762Z"
+      "detail_html_length": 131228,
+      "detail_elapsed_ms": 2305,
+      "scraped_at": "2026-06-29T00:04:32.750Z"
     },
     {
       "id": "pzx-30-off-sem-mnimo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130718,
-      "detail_elapsed_ms": 2548,
-      "scraped_at": "2026-06-28T23:52:49.310Z"
+      "detail_html_length": 130714,
+      "detail_elapsed_ms": 2821,
+      "scraped_at": "2026-06-29T00:04:35.571Z"
     },
     {
       "id": "pzs-22-off-em-seleo-de-vlei",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130736,
-      "detail_elapsed_ms": 2670,
-      "scraped_at": "2026-06-28T23:52:51.980Z"
+      "detail_html_length": 130712,
+      "detail_elapsed_ms": 2546,
+      "scraped_at": "2026-06-29T00:04:38.117Z"
     },
     {
       "id": "pzr-lacoste-com-at-50-off-em-seleo",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133271,
-      "detail_elapsed_ms": 2716,
-      "scraped_at": "2026-06-28T23:52:54.696Z"
+      "detail_html_length": 133277,
+      "detail_elapsed_ms": 2435,
+      "scraped_at": "2026-06-29T00:04:40.552Z"
     },
     {
       "id": "pzq-aquecedores-ar-condicionado-etc-r-129",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133288,
-      "detail_elapsed_ms": 2554,
-      "scraped_at": "2026-06-28T23:52:57.250Z"
+      "detail_html_length": 133274,
+      "detail_elapsed_ms": 2489,
+      "scraped_at": "2026-06-29T00:04:43.042Z"
     },
     {
       "id": "pzp-10-off-em-seleo-de-tvs",
@@ -208,33 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124431,
-      "detail_elapsed_ms": 3176,
-      "scraped_at": "2026-06-28T23:53:00.426Z"
-    },
-    {
-      "id": "pzo-10-off-calados-femininos-selecionados",
-      "trace_id": "trace_pzo-10-off-calados-femininos-selecionados",
-      "link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
-      "original_link": "https://clube.uol.com.br/dafitikl/pzO-10-off-calados-femininos-selecionados",
-      "title": "10% OFF calçados femininos selecionados",
-      "preview_title": "10% OFF calçados femininos selecionados",
-      "validity": "Benefício válido de 23/06/2026 12:30 até 28/06/2026 23:59.",
-      "description": "Benefício: 10% OFF em calçados femininos selecionados Regras: Válido para uma seleção de produtos. Não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Dafiti",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-dafiti.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/295e642e5350247851560cb9536c8257.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130952,
-      "detail_elapsed_ms": 2913,
-      "scraped_at": "2026-06-28T23:53:03.340Z"
+      "detail_html_length": 130799,
+      "detail_elapsed_ms": 2412,
+      "scraped_at": "2026-06-29T00:04:45.454Z"
     },
     {
       "id": "pzn-perfumaria-e-beleza-com-at-23-off",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133065,
-      "detail_elapsed_ms": 2315,
-      "scraped_at": "2026-06-28T23:53:05.655Z"
+      "detail_html_length": 133070,
+      "detail_elapsed_ms": 3303,
+      "scraped_at": "2026-06-29T00:04:48.757Z"
     },
     {
       "id": "pzl-10-off-na-primeira-compra-na-fut",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131635,
-      "detail_elapsed_ms": 2327,
-      "scraped_at": "2026-06-28T23:53:07.983Z"
+      "detail_html_length": 131641,
+      "detail_elapsed_ms": 2887,
+      "scraped_at": "2026-06-29T00:04:51.644Z"
     },
     {
       "id": "pzk-30-off-no-ingresso-do-espetculo",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132453,
-      "detail_elapsed_ms": 2605,
-      "scraped_at": "2026-06-28T23:53:10.588Z"
+      "detail_html_length": 132469,
+      "detail_elapsed_ms": 2433,
+      "scraped_at": "2026-06-29T00:04:54.077Z"
+    },
+    {
+      "id": "pzj-15-off-no-par-de-ingressos",
+      "trace_id": "trace_pzj-15-off-no-par-de-ingressos",
+      "link": "https://clube.uol.com.br/teatroculturaartistica/pzJ-15-off-no-par-de-ingressos",
+      "original_link": "https://clube.uol.com.br/teatroculturaartistica/pzJ-15-off-no-par-de-ingressos",
+      "title": "15% OFF no par de ingressos",
+      "preview_title": "15% OFF no par de ingressos",
+      "validity": "Benefício válido de 22/06/2026 17:07 até 31/12/2026 23:59.",
+      "description": "Sobre o parceiro: Fundado em 1912, o Cultura Artística é um espaço dedicado à música e à formação de público, reconhecido por sua atuação na difusão de repertórios e na construção de experiências musicais relevantes. Ao longo de sua trajetória, consolidou-se como um dos principais palcos do país, reunindo artistas nacionais e internacionais. Benefício: 15% OFF no par de ingressos no Teatro Cultura Artística. Como utilizar: Para obter o desconto de 15% no par de ingressos, clique em \"Utilizar este benefício\", copie o seu código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do teatro, escolha seu espetáculo e insira seu código em \"Iserir código ou cupom\" para obter seu benefício. Regras: Benefício válido para Assinante UOL e aplicável para todas as apresentações das Séries: Vermelha, Branca, Azul, Verde, Amarela, Marrom, Série Petrobras e Concertos Matinais. O desconto vale na compra de até 2 ingressos por CPF e é válido apenas para o valor do ingresso inteiro. Venha conhecer o Teatro Cultura Artística: R. Nestor Pestana, 196 - Consolação, São Paulo - SP.",
+      "category": "Entretenimento e Viagens",
+      "partner_name": "Teatro Cultura Artística",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b486e1ed22c4a1357342aa15c9726482.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4e071941230093725b4df3330fc673fb.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4e071941230093725b4df3330fc673fb.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4e071941230093725b4df3330fc673fb.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132481,
+      "detail_elapsed_ms": 3208,
+      "scraped_at": "2026-06-29T00:04:57.286Z"
     }
   ]
 }
