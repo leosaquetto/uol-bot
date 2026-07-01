@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-01T02:37:29.442508Z",
+  "updated_at": "2026-07-01T06:58:34.668232Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -7,11 +7,11 @@
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 1,
+    "validade_expirada": 6,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 4,
+    "duplicada_historico": 6,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -31,13 +31,13 @@
     {
       "title": "Beleza com até 25% OFF e mais descontos",
       "link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
-      "reason": "duplicada_latest",
+      "reason": "validade_expirada",
       "trace_id": "trace_pzy-beleza-com-at-25-off-e-mais-descontos"
     },
     {
       "title": "30% OFF sem mínimo!",
       "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
-      "reason": "duplicada_historico",
+      "reason": "validade_expirada",
       "trace_id": "trace_pzx-30-off-sem-mnimo"
     },
     {
@@ -49,7 +49,7 @@
     {
       "title": "Lacoste com até 50% OFF em seleção",
       "link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-at-50-off-em-seleo",
-      "reason": "duplicada_latest",
+      "reason": "validade_expirada",
       "trace_id": "trace_pzr-lacoste-com-at-50-off-em-seleo"
     },
     {
@@ -61,13 +61,13 @@
     {
       "title": "10% OFF em seleção de TVs",
       "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-seleo-de-tvs",
-      "reason": "duplicada_latest",
+      "reason": "validade_expirada",
       "trace_id": "trace_pzp-10-off-em-seleo-de-tvs"
     },
     {
       "title": "Perfumaria e Beleza com até 23% OFF!",
       "link": "https://clube.uol.com.br/carrefour/pzN-perfumaria-e-beleza-com-at-23-off",
-      "reason": "duplicada_latest",
+      "reason": "validade_expirada",
       "trace_id": "trace_pzn-perfumaria-e-beleza-com-at-23-off"
     },
     {
