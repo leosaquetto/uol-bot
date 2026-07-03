@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-03T17:53:44.775761Z",
+  "updated_at": "2026-07-03T17:58:20.788553Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,17 +10,17 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
-    "duplicada_latest": 5,
+    "duplicada_historico": 10,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "Chuteiras Umbro com até 50% OFF",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off"
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off"
     },
     {
       "title": "15% OFF na compra do ingresso",
@@ -30,21 +30,21 @@
     },
     {
       "title": "20% de desconto em seleção de produtos",
-      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos"
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3x-20-de-desconto-em-selecao-de-produtos"
     },
     {
       "title": "10% OFF no 1º abastecimento na Petrobras",
-      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras"
+      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3r-10-off-no-1o-abastecimento-na-petrobras"
     },
     {
       "title": "10% de desconto em seleção de itens",
-      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3o-10-de-desconto-em-seleo-de-itens"
+      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3o-10-de-desconto-em-selecao-de-itens"
     },
     {
       "title": "Brinde surpresa em compras de +R$349",
@@ -54,9 +54,9 @@
     },
     {
       "title": "40% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3m-40-off-extra-em-seleo-feminina"
+      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3m-40-off-extra-em-selecao-feminina"
     },
     {
       "title": "Alugue e Ganhe Bola da Copa",
