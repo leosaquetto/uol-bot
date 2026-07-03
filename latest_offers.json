@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-03T19:34:00.058685Z",
+  "last_update": "2026-07-03T19:34:04.236805Z",
   "offers": [
     {
       "id": "pzZ-40-off-no-par-de-ingressos",
@@ -423,7 +423,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T19:02:25.908139Z",
-      "sold_out_at": "16:33"
+      "sold_out_at": "16:33",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p4V-2-ingressos-09-07-teatro-sergio-cardoso",
