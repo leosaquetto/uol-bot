@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-03T12:14:48.037298Z",
+  "updated_at": "2026-07-03T12:22:33.213937Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,9 +10,9 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 10,
     "duplicada_latest": 0,
-    "duplicada_pending": 2,
+    "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
@@ -67,13 +67,13 @@
     {
       "title": "14% off nas linhas Diamond Cooling",
       "link": "https://clube.uol.com.br/emmacolchoes/p3A-14-off-nas-linhas-diamond-cooling",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_p3a-14-off-nas-linhas-diamond-cooling"
     },
     {
       "title": "14% off nas linhas Premium Hybrid 2.0",
       "link": "https://clube.uol.com.br/emmacolchoes/p39-14-off-nas-linhas-premium-hybrid-2-0",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_p39-14-off-nas-linhas-premium-hybrid-2-0"
     }
   ]
