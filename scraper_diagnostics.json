@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-03T19:03:47.435038Z",
+  "updated_at": "2026-07-03T19:12:32.879720Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -23,16 +23,10 @@
       "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis"
     },
     {
-      "title": "2 INGRESSOS: 11/07 Teatro Sérgio Cardoso",
+      "title": "Ingressos Exclusivos",
       "link": "https://clube.uol.com.br/campanhasdeingresso/p5d-2-ingressos-11-07-teatro-sergio-cardoso",
       "reason": "duplicada_historico",
       "trace_id": "trace_p5d-2-ingressos-11-07-teatro-sergio-cardoso"
-    },
-    {
-      "title": "2 INGRESSOS: 10/07 Teatro Sérgio Cardoso",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5c-2-ingressos-10-07-teatro-sergio-cardoso",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p5c-2-ingressos-10-07-teatro-sergio-cardoso"
     },
     {
       "title": "2 INGRESSOS: 09/07 Teatro Sérgio Cardoso",
@@ -75,6 +69,12 @@
       "link": "https://clube.uol.com.br/sephora/p3N-brinde-surpresa-em-compras-de-r-349",
       "reason": "duplicada_historico",
       "trace_id": "trace_p3n-brinde-surpresa-em-compras-de-r-349"
+    },
+    {
+      "title": "40% OFF extra em seleção feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3m-40-off-extra-em-selecao-feminina"
     }
   ]
 }
