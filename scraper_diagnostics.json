@@ -1,92 +1,19 @@
 {
-  "updated_at": "2026-07-03T10:17:37.219169Z",
+  "updated_at": "2026-07-03T12:12:02.788468Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 12,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
-    "validade_expirada": 6,
+    "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 0,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
-  "discarded_offers": [
-    {
-      "title": "R$100 OFF acima de R$299!",
-      "link": "https://clube.uol.com.br/evino/p04-r-100-off-acima-de-r-299",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p04-r-100-off-acima-de-r-299"
-    },
-    {
-      "title": "40% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/espetaculovivavida/pzZ-40-off-no-par-de-ingressos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzz-40-off-no-par-de-ingressos"
-    },
-    {
-      "title": "Beleza com até 25% OFF e mais descontos",
-      "link": "https://clube.uol.com.br/cea/pzY-beleza-com-at-25-off-e-mais-descontos",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pzy-beleza-com-at-25-off-e-mais-descontos"
-    },
-    {
-      "title": "30% OFF sem mínimo!",
-      "link": "https://clube.uol.com.br/cea/pzX-30-off-sem-mnimo",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pzx-30-off-sem-mnimo"
-    },
-    {
-      "title": "22% OFF em seleção de vôlei",
-      "link": "https://clube.uol.com.br/mizuno/pzS-22-off-em-seleo-de-vlei",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pzs-22-off-em-seleo-de-vlei"
-    },
-    {
-      "title": "Lacoste com até 50% OFF em seleção",
-      "link": "https://clube.uol.com.br/dafitikl/pzR-lacoste-com-at-50-off-em-seleo",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pzr-lacoste-com-at-50-off-em-seleo"
-    },
-    {
-      "title": "Aquecedores, Ar-Condicionado, etc R$129+",
-      "link": "https://clube.uol.com.br/carrefour/pzQ-aquecedores-ar-condicionado-etc-r-129",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzq-aquecedores-ar-condicionado-etc-r-129"
-    },
-    {
-      "title": "10% OFF em seleção de TVs",
-      "link": "https://clube.uol.com.br/carrefour/pzP-10-off-em-seleo-de-tvs",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pzp-10-off-em-seleo-de-tvs"
-    },
-    {
-      "title": "Perfumaria e Beleza com até 23% OFF!",
-      "link": "https://clube.uol.com.br/carrefour/pzN-perfumaria-e-beleza-com-at-23-off",
-      "reason": "validade_expirada",
-      "trace_id": "trace_pzn-perfumaria-e-beleza-com-at-23-off"
-    },
-    {
-      "title": "10% OFF na primeira compra na Fut!",
-      "link": "https://clube.uol.com.br/futfanaticsbr/pzL-10-off-na-primeira-compra-na-fut",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzl-10-off-na-primeira-compra-na-fut"
-    },
-    {
-      "title": "30% OFF no ingresso do espetáculo",
-      "link": "https://clube.uol.com.br/espetaculoolhosnosolhos/pzK-30-off-no-ingresso-do-espetculo",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzk-30-off-no-ingresso-do-espetculo"
-    },
-    {
-      "title": "15% OFF no par de ingressos",
-      "link": "https://clube.uol.com.br/teatroculturaartistica/pzJ-15-off-no-par-de-ingressos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pzj-15-off-no-par-de-ingressos"
-    }
-  ]
+  "discarded_offers": []
 }
