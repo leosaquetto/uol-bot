@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-03T18:29:58.692417Z",
+  "last_update": "2026-07-03T18:30:03.029205Z",
   "offers": [
     {
       "id": "p06-2-ingressos-30-06-shopping-cidade-sp",
@@ -424,7 +424,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T12:15:18.088132Z",
-      "sold_out_at": "15:29"
+      "sold_out_at": "15:29",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
