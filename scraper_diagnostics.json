@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-03T21:26:51.075003Z",
+  "updated_at": "2026-07-03T21:37:21.876790Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
+    "duplicada_historico": 3,
     "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -69,12 +69,6 @@
       "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
       "reason": "duplicada_latest",
       "trace_id": "trace_p3m-40-off-extra-em-seleo-feminina"
-    },
-    {
-      "title": "Alugue e Ganhe Bola da Copa",
-      "link": "https://clube.uol.com.br/movida/p3K-alugue-e-ganhe-bola-da-copa",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p3k-alugue-e-ganhe-bola-da-copa"
     }
   ]
 }
