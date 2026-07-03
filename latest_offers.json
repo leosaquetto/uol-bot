@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-03T23:38:41.520902Z",
+  "last_update": "2026-07-03T23:38:47.279316Z",
   "offers": [
     {
       "id": "p14-2-ingressos-casa-natura-musical-sp",
@@ -428,7 +428,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T21:25:55.934639Z",
-      "sold_out_at": "20:37"
+      "sold_out_at": "20:37",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p3S-ganhe-01-kookaburra-wings",
