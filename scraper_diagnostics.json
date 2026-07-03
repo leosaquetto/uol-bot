@@ -1,32 +1,32 @@
 {
-  "updated_at": "2026-07-03T18:52:08.812678Z",
+  "updated_at": "2026-07-03T19:01:55.870571Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
-    "duplicada_latest": 6,
+    "duplicada_historico": 6,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
       "title": "Ímãs Retrô da Casa do Dragão grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
       "reason": "duplicada_latest",
-      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis"
+      "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis"
     },
     {
       "title": "Chuteiras Umbro com até 50% OFF",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off"
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off"
     },
     {
       "title": "15% OFF na compra do ingresso",
@@ -36,45 +36,27 @@
     },
     {
       "title": "20% de desconto em seleção de produtos",
-      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos"
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3x-20-de-desconto-em-selecao-de-produtos"
     },
     {
       "title": "10% OFF no 1º abastecimento na Petrobras",
-      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras"
+      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3r-10-off-no-1o-abastecimento-na-petrobras"
     },
     {
       "title": "10% de desconto em seleção de itens",
-      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3o-10-de-desconto-em-seleo-de-itens"
+      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p3o-10-de-desconto-em-selecao-de-itens"
     },
     {
       "title": "Brinde surpresa em compras de +R$349",
       "link": "https://clube.uol.com.br/sephora/p3N-brinde-surpresa-em-compras-de-r-349",
       "reason": "duplicada_historico",
       "trace_id": "trace_p3n-brinde-surpresa-em-compras-de-r-349"
-    },
-    {
-      "title": "40% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3m-40-off-extra-em-seleo-feminina"
-    },
-    {
-      "title": "Alugue e Ganhe Bola da Copa",
-      "link": "https://clube.uol.com.br/movida/p3K-alugue-e-ganhe-bola-da-copa",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p3k-alugue-e-ganhe-bola-da-copa"
-    },
-    {
-      "title": "14% off nas linhas Diamond Cooling",
-      "link": "https://clube.uol.com.br/emmacolchoes/p3A-14-off-nas-linhas-diamond-cooling",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p3a-14-off-nas-linhas-diamond-cooling"
     }
   ]
 }
