@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 132136,
-  "run_duration_seconds": 132.14,
-  "avg_detail_ms_per_offer": 11011,
-  "generated_at": "2026-07-03T21:24:48.963Z",
+  "run_duration_ms": 76158,
+  "run_duration_seconds": 76.16,
+  "avg_detail_ms_per_offer": 6347,
+  "generated_at": "2026-07-03T21:36:23.292Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133138,
-      "detail_elapsed_ms": 16818,
-      "scraped_at": "2026-07-03T21:24:04.615Z"
+      "detail_html_length": 132858,
+      "detail_elapsed_ms": 7921,
+      "scraped_at": "2026-07-03T21:35:57.280Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131893,
-      "detail_elapsed_ms": 7331,
-      "scraped_at": "2026-07-03T21:24:11.946Z"
+      "detail_html_length": 130647,
+      "detail_elapsed_ms": 2497,
+      "scraped_at": "2026-07-03T21:35:59.777Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131708,
-      "detail_elapsed_ms": 3267,
-      "scraped_at": "2026-07-03T21:24:15.213Z"
+      "detail_html_length": 132952,
+      "detail_elapsed_ms": 2444,
+      "scraped_at": "2026-07-03T21:36:02.221Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130737,
-      "detail_elapsed_ms": 3746,
-      "scraped_at": "2026-07-03T21:24:18.959Z"
+      "detail_html_length": 131973,
+      "detail_elapsed_ms": 2580,
+      "scraped_at": "2026-07-03T21:36:04.802Z"
     },
     {
       "id": "p3x-20-de-desconto-em-seleo-de-produtos",
@@ -136,9 +136,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130367,
-      "detail_elapsed_ms": 2821,
-      "scraped_at": "2026-07-03T21:24:21.790Z"
+      "detail_html_length": 131504,
+      "detail_elapsed_ms": 2183,
+      "scraped_at": "2026-07-03T21:36:06.985Z"
+    },
+    {
+      "id": "p3s-ganhe-01-kookaburra-wings",
+      "trace_id": "trace_p3s-ganhe-01-kookaburra-wings",
+      "link": "https://clube.uol.com.br/outbacksteakhouse/p3S-ganhe-01-kookaburra-wings",
+      "original_link": "https://clube.uol.com.br/outbacksteakhouse/p3S-ganhe-01-kookaburra-wings",
+      "title": "Ganhe 01 Kookaburra Wings®",
+      "preview_title": "Ganhe 01 Kookaburra Wings®",
+      "validity": "Benefício válido de 01/07/2026 14:24 até 31/07/2026 23:59.",
+      "description": "Sobre o parceiro: Inspirado na cultura australiana, o Outback Steakhouse oferece uma experiência única e descontraída, marcada pelo alto padrão de qualidade. Reconhecido por seus cortes de carne especiais e aperitivos icônicos, o restaurante proporciona momentos saborosos e inesquecíveis para todos os clientes. Benefício: Ganhe uma Kookaburra Wings® na compra de um prato principal ou aperitivo. Sobre a Kookaburra Wings®: 10 coxinhas da asa de frango (cerca de 50g cada) empanadas com um blend de temperos à sua escolha. Servidas com molho tipo Blue Cheese e aipo crocante. Nas opções light, medium ou hot. Passo a Passo: Resgate o seu benefício, clicando no botão “Utilizar este benefício” e informe o código no Outback Steakhouse para garantir a cortesia. Benefício não cumulativo com outras promoções, sendo somente admitida a utilização de 1 (um) código por mesa. Antes de pedir a Kookaburra Wings®, informe que você possui o código do Clube UOL. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, da abertura ao fechamento dos restaurantes, mediante a compra de um prato principal ou aperitivo. Os vouchers são limitados enquanto durarem os estoques, sendo proibida a venda. O voucher não poderá ser trocado por outro produto, nem ter o seu valor utilizado como crédito para fins de desconto e nem ser convertido em dinheiro ou utilizado de forma parcial. Valido em todos os restaurantes Outback Brasil por tempo limitado. Clique no link abaixo e veja onde encontrar um Outback mais próximo: https://www.outback.com.br/restaurantes Válido todos os dias da semana, inclusive feriados, em todos os horários. A cortesia deve ser consumida no próprio restaurante e não é válida para Delivery e pedidos para viagem. Cortesia não cumulativa com outras promoções, Lunch Menu/Menu de Almoço e Happy Hour/Billabong Hour, sendo admitida apenas uma utilização por mesa. Atenção! Benefício válido até o dia 31/07/2026.",
+      "category": "Comer e Beber",
+      "partner_name": "Outback Steakhouse",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f711acfce1c968cdb51b9fa1165b5656.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b97b8d2b1c4ed98dce96e56525112bbd.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b97b8d2b1c4ed98dce96e56525112bbd.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b97b8d2b1c4ed98dce96e56525112bbd.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133676,
+      "detail_elapsed_ms": 2327,
+      "scraped_at": "2026-07-03T21:36:09.313Z"
     },
     {
       "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131045,
-      "detail_elapsed_ms": 3739,
-      "scraped_at": "2026-07-03T21:24:25.529Z"
+      "detail_html_length": 132310,
+      "detail_elapsed_ms": 2404,
+      "scraped_at": "2026-07-03T21:36:11.717Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133594,
-      "detail_elapsed_ms": 5098,
-      "scraped_at": "2026-07-03T21:24:30.628Z"
+      "detail_html_length": 133621,
+      "detail_elapsed_ms": 2717,
+      "scraped_at": "2026-07-03T21:36:14.434Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132328,
-      "detail_elapsed_ms": 3767,
-      "scraped_at": "2026-07-03T21:24:34.398Z"
+      "detail_html_length": 133740,
+      "detail_elapsed_ms": 2379,
+      "scraped_at": "2026-07-03T21:36:16.813Z"
     },
     {
       "id": "p3o-10-de-desconto-em-seleo-de-itens",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129828,
-      "detail_elapsed_ms": 3297,
-      "scraped_at": "2026-07-03T21:24:37.695Z"
+      "detail_html_length": 131010,
+      "detail_elapsed_ms": 2149,
+      "scraped_at": "2026-07-03T21:36:18.963Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129732,
-      "detail_elapsed_ms": 3219,
-      "scraped_at": "2026-07-03T21:24:40.914Z"
+      "detail_html_length": 130978,
+      "detail_elapsed_ms": 1865,
+      "scraped_at": "2026-07-03T21:36:20.828Z"
     },
     {
       "id": "p3m-40-off-extra-em-seleo-feminina",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129513,
-      "detail_elapsed_ms": 4334,
-      "scraped_at": "2026-07-03T21:24:45.248Z"
-    },
-    {
-      "id": "p3k-alugue-e-ganhe-bola-da-copa",
-      "trace_id": "trace_p3k-alugue-e-ganhe-bola-da-copa",
-      "link": "https://clube.uol.com.br/movida/p3K-alugue-e-ganhe-bola-da-copa",
-      "original_link": "https://clube.uol.com.br/movida/p3K-alugue-e-ganhe-bola-da-copa",
-      "title": "Alugue e Ganhe Bola da Copa",
-      "preview_title": "Alugue e Ganhe Bola da Copa",
-      "validity": "Benefício válido de 01/07/2026 11:29 até 19/07/2026 23:59.",
-      "description": "Benefício: Alugue e Ganhe Bola da Copa Regras: Ganhe uma bola exclusiva ao realizar a locação e contratar a lavagem antecipada pelo link da parceria. Não cumulativo com outras promoções. Sujeito à disponibilidade e às regras da locadora. Sujeito à desativação sem aviso prévio.",
-      "category": "",
-      "partner_name": "Movida",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/476aa8969aaa84dfb7b07eefc093f641.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/476aa8969aaa84dfb7b07eefc093f641.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/476aa8969aaa84dfb7b07eefc093f641.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131920,
-      "detail_elapsed_ms": 3282,
-      "scraped_at": "2026-07-03T21:24:48.530Z"
+      "detail_html_length": 124458,
+      "detail_elapsed_ms": 2230,
+      "scraped_at": "2026-07-03T21:36:23.059Z"
     }
   ]
 }
