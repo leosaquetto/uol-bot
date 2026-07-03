@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-03T20:08:17.011195Z",
+  "updated_at": "2026-07-03T20:23:47.636929Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 4,
+    "duplicada_historico": 3,
     "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -69,12 +69,6 @@
       "link": "https://clube.uol.com.br/movida/p3K-alugue-e-ganhe-bola-da-copa",
       "reason": "duplicada_historico",
       "trace_id": "trace_p3k-alugue-e-ganhe-bola-da-copa"
-    },
-    {
-      "title": "14% off nas linhas Diamond Cooling",
-      "link": "https://clube.uol.com.br/emmacolchoes/p3A-14-off-nas-linhas-diamond-cooling",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p3a-14-off-nas-linhas-diamond-cooling"
     }
   ]
 }
