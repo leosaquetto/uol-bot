@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 62046,
-  "run_duration_seconds": 62.05,
-  "avg_detail_ms_per_offer": 5171,
-  "generated_at": "2026-07-03T16:02:38.221Z",
+  "run_duration_ms": 51488,
+  "run_duration_seconds": 51.49,
+  "avg_detail_ms_per_offer": 4291,
+  "generated_at": "2026-07-03T16:13:37.457Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "p4u-chuteiras-umbro-com-at-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "id": "p4u-chuteiras-umbro-com-ate-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
       "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132488,
-      "detail_elapsed_ms": 5038,
-      "scraped_at": "2026-07-03T16:02:11.446Z"
+      "detail_html_length": 131588,
+      "detail_elapsed_ms": 2695,
+      "scraped_at": "2026-07-03T16:13:08.656Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130737,
-      "detail_elapsed_ms": 2543,
-      "scraped_at": "2026-07-03T16:02:13.989Z"
+      "detail_html_length": 131978,
+      "detail_elapsed_ms": 2297,
+      "scraped_at": "2026-07-03T16:13:10.953Z"
     },
     {
-      "id": "p3x-20-de-desconto-em-seleo-de-produtos",
-      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
+      "id": "p3x-20-de-desconto-em-selecao-de-produtos",
+      "trace_id": "trace_p3x-20-de-desconto-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
       "title": "20% de desconto em seleção de produtos",
       "preview_title": "20% de desconto em seleção de produtos",
       "validity": "Benefício válido de 02/07/2026 00:00 até 02/08/2026 23:59.",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131527,
-      "detail_elapsed_ms": 2517,
-      "scraped_at": "2026-07-03T16:02:16.506Z"
+      "detail_html_length": 131573,
+      "detail_elapsed_ms": 1790,
+      "scraped_at": "2026-07-03T16:13:12.744Z"
     },
     {
-      "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
-      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras",
-      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
-      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
+      "id": "p3r-10-off-no-1o-abastecimento-na-petrobras",
+      "trace_id": "trace_p3r-10-off-no-1o-abastecimento-na-petrobras",
+      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
+      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
       "title": "10% OFF no 1º abastecimento na Petrobras",
       "preview_title": "10% OFF no 1º abastecimento na Petrobras",
       "validity": "Benefício válido de 01/07/2026 14:28 até 31/12/2026 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132300,
-      "detail_elapsed_ms": 2116,
-      "scraped_at": "2026-07-03T16:02:18.622Z"
+      "detail_html_length": 132351,
+      "detail_elapsed_ms": 1812,
+      "scraped_at": "2026-07-03T16:13:14.556Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133933,
-      "detail_elapsed_ms": 3548,
-      "scraped_at": "2026-07-03T16:02:22.170Z"
+      "detail_html_length": 132433,
+      "detail_elapsed_ms": 2563,
+      "scraped_at": "2026-07-03T16:13:17.119Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133728,
-      "detail_elapsed_ms": 1783,
-      "scraped_at": "2026-07-03T16:02:23.953Z"
+      "detail_html_length": 133712,
+      "detail_elapsed_ms": 2716,
+      "scraped_at": "2026-07-03T16:13:19.835Z"
     },
     {
-      "id": "p3o-10-de-desconto-em-seleo-de-itens",
-      "trace_id": "trace_p3o-10-de-desconto-em-seleo-de-itens",
-      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
-      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
+      "id": "p3o-10-de-desconto-em-selecao-de-itens",
+      "trace_id": "trace_p3o-10-de-desconto-em-selecao-de-itens",
+      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
+      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
       "title": "10% de desconto em seleção de itens",
       "preview_title": "10% de desconto em seleção de itens",
       "validity": "Benefício válido de 01/07/2026 12:15 até 31/07/2026 23:59.",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131017,
-      "detail_elapsed_ms": 2229,
-      "scraped_at": "2026-07-03T16:02:26.185Z"
+      "detail_html_length": 131024,
+      "detail_elapsed_ms": 1700,
+      "scraped_at": "2026-07-03T16:13:21.535Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130978,
-      "detail_elapsed_ms": 1749,
-      "scraped_at": "2026-07-03T16:02:27.934Z"
+      "detail_html_length": 130963,
+      "detail_elapsed_ms": 1761,
+      "scraped_at": "2026-07-03T16:13:23.297Z"
     },
     {
-      "id": "p3m-40-off-extra-em-seleo-feminina",
-      "trace_id": "trace_p3m-40-off-extra-em-seleo-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
+      "id": "p3m-40-off-extra-em-selecao-feminina",
+      "trace_id": "trace_p3m-40-off-extra-em-selecao-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
       "title": "40% OFF extra em seleção feminina",
       "preview_title": "40% OFF extra em seleção feminina",
       "validity": "Benefício válido de 25/05/2026 09:00 até 06/07/2026 09:00.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129681,
-      "detail_elapsed_ms": 2531,
-      "scraped_at": "2026-07-03T16:02:30.465Z"
+      "detail_html_length": 130876,
+      "detail_elapsed_ms": 2170,
+      "scraped_at": "2026-07-03T16:13:25.468Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133237,
-      "detail_elapsed_ms": 2381,
-      "scraped_at": "2026-07-03T16:02:32.846Z"
+      "detail_html_length": 133284,
+      "detail_elapsed_ms": 1738,
+      "scraped_at": "2026-07-03T16:13:27.207Z"
     },
     {
       "id": "p3a-14-off-nas-linhas-diamond-cooling",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130941,
-      "detail_elapsed_ms": 2412,
-      "scraped_at": "2026-07-03T16:02:35.258Z"
+      "detail_html_length": 124563,
+      "detail_elapsed_ms": 2439,
+      "scraped_at": "2026-07-03T16:13:29.646Z"
     },
     {
       "id": "p39-14-off-nas-linhas-premium-hybrid-2-0",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130976,
-      "detail_elapsed_ms": 2579,
-      "scraped_at": "2026-07-03T16:02:37.837Z"
+      "detail_html_length": 130961,
+      "detail_elapsed_ms": 6662,
+      "scraped_at": "2026-07-03T16:13:36.308Z"
     }
   ]
 }
