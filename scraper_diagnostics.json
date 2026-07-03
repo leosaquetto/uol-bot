@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-03T18:08:58.777741Z",
+  "updated_at": "2026-07-03T18:10:13.588782Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,11 +11,17 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 4,
-    "duplicada_latest": 5,
+    "duplicada_latest": 6,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Ímãs Retrô da Casa do Dragão grátis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis"
+    },
     {
       "title": "Chuteiras Umbro com até 50% OFF",
       "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
