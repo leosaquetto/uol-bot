@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 29115,
-  "run_duration_seconds": 29.11,
-  "avg_detail_ms_per_offer": 2426,
-  "generated_at": "2026-07-03T19:01:03.312Z",
+  "run_duration_ms": 30743,
+  "run_duration_seconds": 30.74,
+  "avg_detail_ms_per_offer": 2562,
+  "generated_at": "2026-07-03T19:11:40.984Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,57 +40,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 123527,
-      "detail_elapsed_ms": 1896,
-      "scraped_at": "2026-07-03T19:00:45.133Z"
+      "detail_html_length": 125387,
+      "detail_elapsed_ms": 2166,
+      "scraped_at": "2026-07-03T19:11:22.040Z"
     },
     {
       "id": "p5d-2-ingressos-11-07-teatro-sergio-cardoso",
       "trace_id": "trace_p5d-2-ingressos-11-07-teatro-sergio-cardoso",
       "link": "https://clube.uol.com.br/campanhasdeingresso/p5d-2-ingressos-11-07-teatro-sergio-cardoso",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5d-2-ingressos-11-07-teatro-sergio-cardoso",
-      "title": "2 INGRESSOS: 11/07 Teatro Sérgio Cardoso",
+      "title": "Ingressos Exclusivos",
       "preview_title": "2 INGRESSOS: 11/07 Teatro Sérgio Cardoso",
-      "validity": "Benefício válido de 03/07/2026 15:51 até 10/07/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressose viva “VIVA! VIDA”, com Regina Casé. Uma experiência que mistura humor, emoção e reflexões sobre o mundo moderno em uma jornada divertida e inspiradora, no Teatro Sérgio Cardoso, em São Paulo. Data: 11 de Julho, às 20h. Local: Rua Rui Barbosa, 153, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "img_source": "meta_og",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
+      "img_source": "benefit_data_src",
       "detail_ok": true,
-      "detail_quality": "complete",
+      "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131896,
-      "detail_elapsed_ms": 2070,
-      "scraped_at": "2026-07-03T19:00:47.203Z"
-    },
-    {
-      "id": "p5c-2-ingressos-10-07-teatro-sergio-cardoso",
-      "trace_id": "trace_p5c-2-ingressos-10-07-teatro-sergio-cardoso",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5c-2-ingressos-10-07-teatro-sergio-cardoso",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5c-2-ingressos-10-07-teatro-sergio-cardoso",
-      "title": "2 INGRESSOS: 10/07 Teatro Sérgio Cardoso",
-      "preview_title": "2 INGRESSOS: 10/07 Teatro Sérgio Cardoso",
-      "validity": "Benefício válido de 03/07/2026 15:51 até 09/07/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressose viva “VIVA! VIDA”, com Regina Casé. Uma experiência que mistura humor, emoção e reflexões sobre o mundo moderno em uma jornada divertida e inspiradora, no Teatro Sérgio Cardoso, em São Paulo. Data: 10 de Julho, às 20h. Local: Rua Rui Barbosa, 153, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133113,
-      "detail_elapsed_ms": 1747,
-      "scraped_at": "2026-07-03T19:00:48.950Z"
+      "detail_html_length": 331946,
+      "detail_elapsed_ms": 2870,
+      "scraped_at": "2026-07-03T19:11:24.910Z"
     },
     {
       "id": "p4v-2-ingressos-09-07-teatro-sergio-cardoso",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133104,
-      "detail_elapsed_ms": 1530,
-      "scraped_at": "2026-07-03T19:00:50.480Z"
+      "detail_html_length": 133094,
+      "detail_elapsed_ms": 1591,
+      "scraped_at": "2026-07-03T19:11:26.501Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-ate-50-off",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133012,
-      "detail_elapsed_ms": 1694,
-      "scraped_at": "2026-07-03T19:00:52.174Z"
+      "detail_html_length": 132953,
+      "detail_elapsed_ms": 1543,
+      "scraped_at": "2026-07-03T19:11:28.044Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132008,
-      "detail_elapsed_ms": 1657,
-      "scraped_at": "2026-07-03T19:00:53.831Z"
+      "detail_html_length": 131999,
+      "detail_elapsed_ms": 1872,
+      "scraped_at": "2026-07-03T19:11:29.916Z"
     },
     {
       "id": "p3x-20-de-desconto-em-selecao-de-produtos",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131580,
-      "detail_elapsed_ms": 1609,
-      "scraped_at": "2026-07-03T19:00:55.440Z"
+      "detail_html_length": 131540,
+      "detail_elapsed_ms": 1639,
+      "scraped_at": "2026-07-03T19:11:31.555Z"
     },
     {
       "id": "p3r-10-off-no-1o-abastecimento-na-petrobras",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132349,
-      "detail_elapsed_ms": 1538,
-      "scraped_at": "2026-07-03T19:00:56.978Z"
+      "detail_html_length": 132341,
+      "detail_elapsed_ms": 1509,
+      "scraped_at": "2026-07-03T19:11:33.064Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133638,
-      "detail_elapsed_ms": 1537,
-      "scraped_at": "2026-07-03T19:00:58.515Z"
+      "detail_html_length": 133618,
+      "detail_elapsed_ms": 1437,
+      "scraped_at": "2026-07-03T19:11:34.501Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133788,
-      "detail_elapsed_ms": 1540,
-      "scraped_at": "2026-07-03T19:01:00.056Z"
+      "detail_html_length": 133759,
+      "detail_elapsed_ms": 1567,
+      "scraped_at": "2026-07-03T19:11:36.068Z"
     },
     {
       "id": "p3o-10-de-desconto-em-selecao-de-itens",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131064,
-      "detail_elapsed_ms": 1660,
-      "scraped_at": "2026-07-03T19:01:01.716Z"
+      "detail_html_length": 131042,
+      "detail_elapsed_ms": 1495,
+      "scraped_at": "2026-07-03T19:11:37.563Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131003,
-      "detail_elapsed_ms": 1550,
-      "scraped_at": "2026-07-03T19:01:03.266Z"
+      "detail_html_length": 130992,
+      "detail_elapsed_ms": 1622,
+      "scraped_at": "2026-07-03T19:11:39.185Z"
+    },
+    {
+      "id": "p3m-40-off-extra-em-selecao-feminina",
+      "trace_id": "trace_p3m-40-off-extra-em-selecao-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
+      "title": "40% OFF extra em seleção feminina",
+      "preview_title": "40% OFF extra em seleção feminina",
+      "validity": "Benefício válido de 25/05/2026 09:00 até 06/07/2026 09:00.",
+      "description": "Benefício: 40% OFF extra em seleção feminina Regras: Válido para todos os itens da seleção. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/71c99adf1a7865d352ff8cfddc90ad56.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/71c99adf1a7865d352ff8cfddc90ad56.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/71c99adf1a7865d352ff8cfddc90ad56.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130816,
+      "detail_elapsed_ms": 1622,
+      "scraped_at": "2026-07-03T19:11:40.808Z"
     }
   ]
 }
