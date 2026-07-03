@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 55684,
-  "run_duration_seconds": 55.68,
-  "avg_detail_ms_per_offer": 4640,
-  "generated_at": "2026-07-03T23:04:06.491Z",
+  "run_duration_ms": 31798,
+  "run_duration_seconds": 31.8,
+  "avg_detail_ms_per_offer": 2650,
+  "generated_at": "2026-07-03T23:14:46.666Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "p5g-2-ingressos-10-07-teatro-j-safra-sp",
-      "trace_id": "trace_p5g-2-ingressos-10-07-teatro-j-safra-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5g-2-ingressos-10-07-teatro-j-safra-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5g-2-ingressos-10-07-teatro-j-safra-sp",
-      "title": "2 INGRESSOS: 10/07 Teatro J. Safra SP",
-      "preview_title": "2 INGRESSOS: 10/07 Teatro J. Safra SP",
-      "validity": "Benefício válido de 03/07/2026 16:24 até 09/07/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para “Ensaio Sobre a Liberdade”, da Sopro Cia. de Dança, um espetáculo que une dança, teatro e poesia ao som de Chopin, no Teatro J. Safra, em São Paulo. Data: 10 de Julho, às 21h. Local: Rua Josef Kryss, 318 - Barra Funda - São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/77d4574810b068471a177288ac637f61.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/77d4574810b068471a177288ac637f61.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/77d4574810b068471a177288ac637f61.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131347,
-      "detail_elapsed_ms": 4101,
-      "scraped_at": "2026-07-03T23:03:40.130Z"
-    },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
       "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130727,
-      "detail_elapsed_ms": 2715,
-      "scraped_at": "2026-07-03T23:03:42.845Z"
+      "detail_html_length": 131734,
+      "detail_elapsed_ms": 2053,
+      "scraped_at": "2026-07-03T23:14:27.144Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132932,
-      "detail_elapsed_ms": 3979,
-      "scraped_at": "2026-07-03T23:03:46.824Z"
+      "detail_html_length": 126604,
+      "detail_elapsed_ms": 1615,
+      "scraped_at": "2026-07-03T23:14:28.759Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131952,
-      "detail_elapsed_ms": 2218,
-      "scraped_at": "2026-07-03T23:03:49.042Z"
+      "detail_html_length": 131969,
+      "detail_elapsed_ms": 1592,
+      "scraped_at": "2026-07-03T23:14:30.351Z"
     },
     {
       "id": "p3x-20-de-desconto-em-seleo-de-produtos",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131515,
-      "detail_elapsed_ms": 3862,
-      "scraped_at": "2026-07-03T23:03:52.904Z"
+      "detail_html_length": 131571,
+      "detail_elapsed_ms": 1870,
+      "scraped_at": "2026-07-03T23:14:32.221Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127302,
-      "detail_elapsed_ms": 2215,
-      "scraped_at": "2026-07-03T23:03:55.119Z"
+      "detail_html_length": 133710,
+      "detail_elapsed_ms": 2026,
+      "scraped_at": "2026-07-03T23:14:34.247Z"
     },
     {
       "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132287,
-      "detail_elapsed_ms": 1991,
-      "scraped_at": "2026-07-03T23:03:57.110Z"
+      "detail_html_length": 132345,
+      "detail_elapsed_ms": 1766,
+      "scraped_at": "2026-07-03T23:14:36.013Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133619,
-      "detail_elapsed_ms": 1533,
-      "scraped_at": "2026-07-03T23:03:58.643Z"
+      "detail_html_length": 133655,
+      "detail_elapsed_ms": 2005,
+      "scraped_at": "2026-07-03T23:14:38.018Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133728,
-      "detail_elapsed_ms": 2208,
-      "scraped_at": "2026-07-03T23:04:00.851Z"
+      "detail_html_length": 133795,
+      "detail_elapsed_ms": 2097,
+      "scraped_at": "2026-07-03T23:14:40.115Z"
     },
     {
       "id": "p3o-10-de-desconto-em-seleo-de-itens",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131035,
-      "detail_elapsed_ms": 1648,
-      "scraped_at": "2026-07-03T23:04:02.499Z"
+      "detail_html_length": 131073,
+      "detail_elapsed_ms": 1707,
+      "scraped_at": "2026-07-03T23:14:41.822Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130955,
-      "detail_elapsed_ms": 1607,
-      "scraped_at": "2026-07-03T23:04:04.107Z"
+      "detail_html_length": 131003,
+      "detail_elapsed_ms": 1397,
+      "scraped_at": "2026-07-03T23:14:43.219Z"
     },
     {
       "id": "p3m-40-off-extra-em-seleo-feminina",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130810,
-      "detail_elapsed_ms": 2276,
-      "scraped_at": "2026-07-03T23:04:06.383Z"
+      "detail_html_length": 130875,
+      "detail_elapsed_ms": 1425,
+      "scraped_at": "2026-07-03T23:14:44.644Z"
+    },
+    {
+      "id": "p3k-alugue-e-ganhe-bola-da-copa",
+      "trace_id": "trace_p3k-alugue-e-ganhe-bola-da-copa",
+      "link": "https://clube.uol.com.br/movida/p3K-alugue-e-ganhe-bola-da-copa",
+      "original_link": "https://clube.uol.com.br/movida/p3K-alugue-e-ganhe-bola-da-copa",
+      "title": "Alugue e Ganhe Bola da Copa",
+      "preview_title": "Alugue e Ganhe Bola da Copa",
+      "validity": "Benefício válido de 01/07/2026 11:29 até 19/07/2026 23:59.",
+      "description": "Benefício: Alugue e Ganhe Bola da Copa Regras: Ganhe uma bola exclusiva ao realizar a locação e contratar a lavagem antecipada pelo link da parceria. Não cumulativo com outras promoções. Sujeito à disponibilidade e às regras da locadora. Sujeito à desativação sem aviso prévio.",
+      "category": "",
+      "partner_name": "Movida",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/476aa8969aaa84dfb7b07eefc093f641.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/476aa8969aaa84dfb7b07eefc093f641.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/476aa8969aaa84dfb7b07eefc093f641.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133274,
+      "detail_elapsed_ms": 1943,
+      "scraped_at": "2026-07-03T23:14:46.587Z"
     }
   ]
 }
