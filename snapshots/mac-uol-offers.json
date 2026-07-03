@@ -14,17 +14,41 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27574,
-  "run_duration_seconds": 27.57,
-  "avg_detail_ms_per_offer": 2298,
-  "generated_at": "2026-07-03T17:57:29.480Z",
+  "run_duration_ms": 27788,
+  "run_duration_seconds": 27.79,
+  "avg_detail_ms_per_offer": 2316,
+  "generated_at": "2026-07-03T18:08:03.902Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "p4u-chuteiras-umbro-com-ate-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "id": "p5f-ms-retr-da-casa-do-drago-grtis",
+      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "title": "Ímãs Retrô da Casa do Dragão grátis",
+      "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
+      "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
+      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit de ímãs retrô com 12 unidades da Casa do Dragão da FotoRegistro. Regras: Oferta válida para 1 Kit com 12 unidades de Ímãs Retrô. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7x9cm cada. Frete não incluso. Validade do cupom até 31/08/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
+      "category": "Compras e Presentes",
+      "partner_name": "Foto Registro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130510,
+      "detail_elapsed_ms": 2191,
+      "scraped_at": "2026-07-03T18:07:46.203Z"
+    },
+    {
+      "id": "p4u-chuteiras-umbro-com-at-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
       "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131547,
-      "detail_elapsed_ms": 2354,
-      "scraped_at": "2026-07-03T17:57:12.453Z"
+      "detail_html_length": 132959,
+      "detail_elapsed_ms": 2260,
+      "scraped_at": "2026-07-03T18:07:48.463Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -64,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130742,
-      "detail_elapsed_ms": 1766,
-      "scraped_at": "2026-07-03T17:57:14.219Z"
+      "detail_html_length": 132026,
+      "detail_elapsed_ms": 1569,
+      "scraped_at": "2026-07-03T18:07:50.032Z"
     },
     {
-      "id": "p3x-20-de-desconto-em-selecao-de-produtos",
-      "trace_id": "trace_p3x-20-de-desconto-em-selecao-de-produtos",
-      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
-      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
+      "id": "p3x-20-de-desconto-em-seleo-de-produtos",
+      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
       "title": "20% de desconto em seleção de produtos",
       "preview_title": "20% de desconto em seleção de produtos",
       "validity": "Benefício válido de 02/07/2026 00:00 até 02/08/2026 23:59.",
@@ -88,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131510,
-      "detail_elapsed_ms": 1707,
-      "scraped_at": "2026-07-03T17:57:15.926Z"
+      "detail_html_length": 131561,
+      "detail_elapsed_ms": 1603,
+      "scraped_at": "2026-07-03T18:07:51.636Z"
     },
     {
-      "id": "p3r-10-off-no-1o-abastecimento-na-petrobras",
-      "trace_id": "trace_p3r-10-off-no-1o-abastecimento-na-petrobras",
-      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
-      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
+      "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
+      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras",
+      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
+      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
       "title": "10% OFF no 1º abastecimento na Petrobras",
       "preview_title": "10% OFF no 1º abastecimento na Petrobras",
       "validity": "Benefício válido de 01/07/2026 14:28 até 31/12/2026 23:59.",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132330,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-07-03T17:57:17.430Z"
+      "detail_html_length": 132335,
+      "detail_elapsed_ms": 1583,
+      "scraped_at": "2026-07-03T18:07:53.220Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -124,7 +148,7 @@
       "title": "Ganhe 01 Laramora 340ml",
       "preview_title": "Ganhe 01 Laramora 340ml",
       "validity": "Benefício válido de 01/07/2026 14:24 até 31/07/2026 23:59.",
-      "description": "Sobre o parceiro: Inspirado na cultura australiana, o Outback Steakhouse oferece uma experiência única e descontraída, marcada pelo alto padrão de qualidade. Reconhecido por seus cortes de carne especiais e aperitivos icônicos, o restaurante proporciona momentos saborosos e inesquecíveis para todos os clientes. Benefício: Ganhe um Laramora 340ml na compra de um prato principal ou aperitivo. Sobre o Laramora: Combinação do exclusivo suco de Morango Outback com suco natural de laranja. Passo a passo: Resgate o seu benefício, clicando no botão “Utilizar este benefício” e informe o código no Outback Steakhouse para garantir a cortesia. Lembre-se que este código é válido para apenas uma mesa e seu uso é pessoal e intransferível. Antes de pedir o Laramora, informe que você possui o código do Clube UOL. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, da abertura ao fechamento dos restaurantes, mediante a compra de um prato principal ou aperitivo. Os vouchers são limitados enquanto durarem os estoques, sendo proibida a venda. O voucher não poderá ser trocado por outro produto, nem ter o seu valor utilizado como crédito para fins de desconto e nem ser convertido em dinheiro ou utilizado de forma parcial. Valido em todos os restaurantes Outback Brasil por tempo limitado. Clique no link abaixo e veja onde encontrar um Outback mais próximo: https://www.outback.com.br/restaurantes Válido todos os dias da semana, inclusive feriados, em todos os horários. A cortesia deve ser consumida no próprio restaurante e não é válida para Delivery e pedidos para viagem. Cortesia não cumulativa com outras promoções, Lunch Menu/Menu de Almoço e Happy Hour/Billabong Hour, sendo admitida apenas uma utilização por mesa. Atenção! Benefício válido até o dia 31/07/2026.",
+      "description": "Sobre o parceiro: Inspirado na cultura australiana, o Outback Steakhouse oferece uma experiência única e descontraída, marcada pelo alto padrão de qualidade. Reconhecido por seus cortes de carne especiais e aperitivos icônicos, o restaurante proporciona momentos saborosos e inesquecíveis para todos os clientes. Benefício: Ganhe um Laramora 340ml na compra de um prato principal ou aperitivo. Sobre o Laramora: Combinação do exclusivo suco de Morango Outback com suco natural de laranja. Passo a Passo: Resgate o seu benefício, clicando no botão “Utilizar este benefício” e informe o código no Outback Steakhouse para garantir a cortesia. Benefício não cumulativo com outras promoções, sendo somente admitida a utilização de 1 (um) código por mesa. Antes de pedir o Laramora, informe que você possui o código do Clube UOL. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, da abertura ao fechamento dos restaurantes, mediante a compra de um prato principal ou aperitivo. Os vouchers são limitados enquanto durarem os estoques, sendo proibida a venda. O voucher não poderá ser trocado por outro produto, nem ter o seu valor utilizado como crédito para fins de desconto e nem ser convertido em dinheiro ou utilizado de forma parcial. Valido em todos os restaurantes Outback Brasil por tempo limitado. Clique no link abaixo e veja onde encontrar um Outback mais próximo: https://www.outback.com.br/restaurantes Válido todos os dias da semana, inclusive feriados, em todos os horários. A cortesia deve ser consumida no próprio restaurante e não é válida para Delivery e pedidos para viagem. Cortesia não cumulativa com outras promoções, Lunch Menu/Menu de Almoço e Happy Hour/Billabong Hour, sendo admitida apenas uma utilização por mesa. Atenção! Benefício válido até o dia 31/07/2026.",
       "category": "Comer e Beber",
       "partner_name": "Outback Steakhouse",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f711acfce1c968cdb51b9fa1165b5656.png",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133611,
-      "detail_elapsed_ms": 1533,
-      "scraped_at": "2026-07-03T17:57:18.963Z"
+      "detail_html_length": 133639,
+      "detail_elapsed_ms": 1443,
+      "scraped_at": "2026-07-03T18:07:54.663Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -148,7 +172,7 @@
       "title": "Ganhe 01 Cinnamon Oblivion",
       "preview_title": "Ganhe 01 Cinnamon Oblivion",
       "validity": "Benefício válido de 01/07/2026 13:45 até 31/07/2026 23:59.",
-      "description": "Sobre o parceiro: Inspirado na cultura australiana, o Outback Steakhouse oferece uma experiência única e descontraída, marcada pelo alto padrão de qualidade. Reconhecido por seus cortes de carne especiais e aperitivos icônicos, o restaurante proporciona momentos saborosos e inesquecíveis para todos os clientes. Benefício: Ganhe um Cinnamon Oblivion na compra de um prato principal ou aperitivo. Sobre o Cinnamon Oblivion: Uma verdadeira obra-prima de sabores feita de maçãs com toque de canela, sorvete sabor baunilha coberto com nozes-pecãs caramelizadas e crocantes. Passo a passo: Resgate o seu benefício, clicando no botão “Utilizar este benefício” e informe o código no Outback Steakhouse para garantir a cortesia. Lembre-se que este código é válido para apenas uma mesa e seu uso é pessoal e intransferível. Antes de pedir o Cinnamon Oblivion, informe que você possui o código do Clube UOL. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, da abertura ao fechamento dos restaurantes, mediante a compra de um prato principal ou aperitivo. Os vouchers são limitados enquanto durarem os estoques, sendo proibida a venda. O voucher não poderá ser trocado por outro produto, nem ter o seu valor utilizado como crédito para fins de desconto e nem ser convertido em dinheiro ou utilizado de forma parcial. Valido em todos os restaurantes Outback Brasil por tempo limitado. Clique no link abaixo e veja onde encontrar um Outback mais próximo: https://www.outback.com.br/restaurantes Válido todos os dias da semana, inclusive feriados, em todos os horários. A cortesia deve ser consumida no próprio restaurante e não é válida para Delivery e pedidos para viagem. Cortesia não cumulativa com outras promoções, Lunch Menu/Menu de Almoço e Happy Hour/Billabong Hour, sendo admitida apenas uma utilização por mesa. Atenção! Benefício válido até o dia 31/07/2026.",
+      "description": "Sobre o parceiro: Inspirado na cultura australiana, o Outback Steakhouse oferece uma experiência única e descontraída, marcada pelo alto padrão de qualidade. Reconhecido por seus cortes de carne especiais e aperitivos icônicos, o restaurante proporciona momentos saborosos e inesquecíveis para todos os clientes. Benefício: Ganhe um Cinnamon Oblivion na compra de um prato principal ou aperitivo. Sobre o Cinnamon Oblivion: Uma verdadeira obra-prima de sabores feita de maçãs com toque de canela, sorvete sabor baunilha coberto com nozes-pecãs caramelizadas e crocantes. Passo a Passo: Resgate o seu benefício, clicando no botão “Utilizar este benefício” e informe o código no Outback Steakhouse para garantir a cortesia. Benefício não cumulativo com outras promoções, sendo somente admitida a utilização de 1 (um) código por mesa. Antes de pedir o Cinnamon Oblivion, informe que você possui o código do Clube UOL. Regras do benefício: Benefício válido para Assinantes UOL. Esta oferta é pessoal e intransferível, da abertura ao fechamento dos restaurantes, mediante a compra de um prato principal ou aperitivo. Os vouchers são limitados enquanto durarem os estoques, sendo proibida a venda. O voucher não poderá ser trocado por outro produto, nem ter o seu valor utilizado como crédito para fins de desconto e nem ser convertido em dinheiro ou utilizado de forma parcial. Valido em todos os restaurantes Outback Brasil por tempo limitado. Clique no link abaixo e veja onde encontrar um Outback mais próximo: https://www.outback.com.br/restaurantes Válido todos os dias da semana, inclusive feriados, em todos os horários. A cortesia deve ser consumida no próprio restaurante e não é válida para Delivery e pedidos para viagem. Cortesia não cumulativa com outras promoções, Lunch Menu/Menu de Almoço e Happy Hour/Billabong Hour, sendo admitida apenas uma utilização por mesa. Atenção! Benefício válido até o dia 31/07/2026.",
       "category": "Comer e Beber",
       "partner_name": "Outback Steakhouse",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f711acfce1c968cdb51b9fa1165b5656.png",
@@ -160,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134242,
-      "detail_elapsed_ms": 1535,
-      "scraped_at": "2026-07-03T17:57:20.498Z"
+      "detail_html_length": 133788,
+      "detail_elapsed_ms": 1411,
+      "scraped_at": "2026-07-03T18:07:56.074Z"
     },
     {
-      "id": "p3o-10-de-desconto-em-selecao-de-itens",
-      "trace_id": "trace_p3o-10-de-desconto-em-selecao-de-itens",
-      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
-      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
+      "id": "p3o-10-de-desconto-em-seleo-de-itens",
+      "trace_id": "trace_p3o-10-de-desconto-em-seleo-de-itens",
+      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
+      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
       "title": "10% de desconto em seleção de itens",
       "preview_title": "10% de desconto em seleção de itens",
       "validity": "Benefício válido de 01/07/2026 12:15 até 31/07/2026 23:59.",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131541,
-      "detail_elapsed_ms": 1520,
-      "scraped_at": "2026-07-03T17:57:22.018Z"
+      "detail_html_length": 131052,
+      "detail_elapsed_ms": 1766,
+      "scraped_at": "2026-07-03T18:07:57.840Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -208,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130982,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-07-03T17:57:23.521Z"
+      "detail_html_length": 131012,
+      "detail_elapsed_ms": 1604,
+      "scraped_at": "2026-07-03T18:07:59.445Z"
     },
     {
-      "id": "p3m-40-off-extra-em-selecao-feminina",
-      "trace_id": "trace_p3m-40-off-extra-em-selecao-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
+      "id": "p3m-40-off-extra-em-seleo-feminina",
+      "trace_id": "trace_p3m-40-off-extra-em-seleo-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
       "title": "40% OFF extra em seleção feminina",
       "preview_title": "40% OFF extra em seleção feminina",
       "validity": "Benefício válido de 25/05/2026 09:00 até 06/07/2026 09:00.",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130825,
-      "detail_elapsed_ms": 1446,
-      "scraped_at": "2026-07-03T17:57:24.967Z"
+      "detail_html_length": 130896,
+      "detail_elapsed_ms": 1467,
+      "scraped_at": "2026-07-03T18:08:00.912Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133274,
-      "detail_elapsed_ms": 1583,
-      "scraped_at": "2026-07-03T17:57:26.550Z"
+      "detail_html_length": 133284,
+      "detail_elapsed_ms": 1474,
+      "scraped_at": "2026-07-03T18:08:02.386Z"
     },
     {
       "id": "p3a-14-off-nas-linhas-diamond-cooling",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130927,
-      "detail_elapsed_ms": 1425,
-      "scraped_at": "2026-07-03T17:57:27.975Z"
-    },
-    {
-      "id": "p39-14-off-nas-linhas-premium-hybrid-2-0",
-      "trace_id": "trace_p39-14-off-nas-linhas-premium-hybrid-2-0",
-      "link": "https://clube.uol.com.br/emmacolchoes/p39-14-off-nas-linhas-premium-hybrid-2-0",
-      "original_link": "https://clube.uol.com.br/emmacolchoes/p39-14-off-nas-linhas-premium-hybrid-2-0",
-      "title": "14% off nas linhas Premium Hybrid 2.0",
-      "preview_title": "14% off nas linhas Premium Hybrid 2.0",
-      "validity": "Benefício válido de 02/07/2026 00:00 até 03/07/2026 23:59.",
-      "description": "Benefício: 14% off nas linhas Premium Hybrid 2.0 Regras: Condição válida nas linhas Premium Hybrid 2.0. Não cumulativo. Sujeito à desativação sem aviso prévio.",
-      "category": "",
-      "partner_name": "Emma Colchões",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/11504f3ad4b7277eb0fcedc4015213ae.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa33fbe206c4de3c1014e1a11521b08d.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa33fbe206c4de3c1014e1a11521b08d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa33fbe206c4de3c1014e1a11521b08d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131000,
-      "detail_elapsed_ms": 1445,
-      "scraped_at": "2026-07-03T17:57:29.420Z"
+      "detail_html_length": 130957,
+      "detail_elapsed_ms": 1416,
+      "scraped_at": "2026-07-03T18:08:03.802Z"
     }
   ]
 }
