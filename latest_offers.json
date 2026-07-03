@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-03T13:11:15.369384Z",
+  "last_update": "2026-07-03T13:11:22.622644Z",
   "offers": [
     {
       "id": "pzL-10-off-na-primeira-compra-na-fut",
@@ -248,7 +248,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T12:12:18.054252Z",
-      "sold_out_at": "10:10"
+      "sold_out_at": "10:10",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p3Y-15-off-na-compra-do-ingresso",
@@ -291,7 +292,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T12:12:45.535786Z",
-      "sold_out_at": "10:10"
+      "sold_out_at": "10:10",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p3R-10-off-no-1o-abastecimento-na-petrobras",
@@ -313,7 +315,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T12:12:58.824432Z",
-      "sold_out_at": "10:10"
+      "sold_out_at": "10:10",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p3O-10-de-desconto-em-selecao-de-itens",
@@ -335,7 +338,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T12:13:11.920835Z",
-      "sold_out_at": "10:10"
+      "sold_out_at": "10:10",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p3N-brinde-surpresa-em-compras-de-r-349",
@@ -378,7 +382,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T12:13:38.961736Z",
-      "sold_out_at": "10:10"
+      "sold_out_at": "10:10",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p3K-alugue-e-ganhe-bola-da-copa",
