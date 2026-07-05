@@ -1,32 +1,6 @@
 {
-  "last_update": "2026-07-05T19:11:59.944366Z",
+  "last_update": "2026-07-05T19:13:10.871949Z",
   "offers": [
-    {
-      "id": "p14-2-ingressos-casa-natura-musical-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p14-2-ingressos-casa-natura-musical-sp",
-      "preview_title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "title": "2 INGRESSOS: Casa Natura Musical - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p14-2-ingressos-casa-natura-musical-sp",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/560fe7a8ba7923d3470bf6f4eb5142f2.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "validity": "Benefício válido de 25/06/2026 15:37 até 08/07/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos e viva a experiência do show “Animal Invisível” – lançamento do novo álbum de Gui Assis Brasil, com participações especiais de Otto, Rodrigo Campos e Tagua Tagua, em uma noite envolvente que mistura groove, intensidade rítmica e experimentação musical na Casa Natura Musical, em São Paulo. Data: 08 de julho de 2026, às 21h. Local: Casa Natura Musical - Rua Artur de Azevedo, 2134, 05404-005 – São Paulo, São Paulo – Brasil. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "location_summary": "",
-      "dedupe_key": "2-ingressos-casa-natura-musical-sp|beneficio-valido-de-25-06-2026-15-37-ate-08-07-2026-23-59|assinante-uol-resgate-1-par-de-ingressos-e-viva-a-experiencia-do-show-animal-invisivel-lancamento-do-novo-album-de-gui-assis-brasil-com-participacoes-especiais-",
-      "loose_dedupe_key": "2-ingressos-casa-natura-musical-sp|assinante-uol-resgate-1-par-de-ingressos-e-viva-a-experiencia-do-show-animal-invisivel-lancamento-do-novo-album-de-gui-assis-brasil-com-participacoes-especiais-",
-      "scraped_at": "2026-06-26T16:49:38.477000Z",
-      "trace_id": "trace_p14-2-ingressos-casa-natura-musical-sp",
-      "channel_message_id": 1689,
-      "channel_message_link": "https://t.me/c/3723320790/1689",
-      "canal2_message_id": 66,
-      "canal2_forward_status": "sent",
-      "canal2_forwarded_at": "2026-06-26T16:51:07.895941Z",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-06-26T16:51:17.763277Z",
-      "sold_out_at": "20:54",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "pzK-30-off-no-ingresso-do-espetculo",
       "original_link": "https://clube.uol.com.br/espetaculoolhosnosolhos/pzK-30-off-no-ingresso-do-espetculo",
@@ -451,6 +425,27 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-03T21:37:37.414798Z"
+    },
+    {
+      "id": "p3R-10-off-no-1-abastecimento-na-petrobras",
+      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
+      "preview_title": "10% OFF no 1º abastecimento na Petrobras",
+      "title": "10% OFF no 1º abastecimento na Petrobras",
+      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/5350ca2683ae68aa3ba324857cb92a15.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/110f6ed04ebf8fc98095b433d0982b7d.png",
+      "validity": null,
+      "description": "",
+      "location_summary": "",
+      "dedupe_key": "10-off-no-1-abastecimento-na-petrobras",
+      "loose_dedupe_key": "10-off-no-1-abastecimento-na-petrobras",
+      "scraped_at": "2026-07-05T19:10:39.797000Z",
+      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras",
+      "channel_message_id": 1709,
+      "channel_message_link": "https://t.me/c/3723320790/1709",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-07-05T19:13:10.702858Z"
     }
   ]
 }
