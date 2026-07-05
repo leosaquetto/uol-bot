@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-05T19:11:57.110556Z",
+  "updated_at": "2026-07-05T19:12:54.903072Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 4,
-    "duplicada_latest": 6,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -45,12 +45,6 @@
       "link": "https://clube.uol.com.br/outbacksteakhouse/p3S-ganhe-01-kookaburra-wings",
       "reason": "duplicada_historico",
       "trace_id": "trace_p3s-ganhe-01-kookaburra-wings"
-    },
-    {
-      "title": "10% OFF no 1º abastecimento na Petrobras",
-      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras"
     },
     {
       "title": "10% de desconto em seleção de itens",
