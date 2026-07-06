@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-06T06:08:46.841543Z",
+  "updated_at": "2026-07-06T06:30:42.196997Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 5,
-    "duplicada_latest": 5,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
       "reason": "duplicada_latest",
       "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis"
-    },
-    {
-      "title": "Chuteiras Umbro com até 50% OFF",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off"
     },
     {
       "title": "15% OFF na compra do ingresso",
@@ -63,12 +57,6 @@
       "link": "https://clube.uol.com.br/sephora/p3N-brinde-surpresa-em-compras-de-r-349",
       "reason": "duplicada_historico",
       "trace_id": "trace_p3n-brinde-surpresa-em-compras-de-r-349"
-    },
-    {
-      "title": "40% OFF extra em seleção feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p3m-40-off-extra-em-seleo-feminina"
     },
     {
       "title": "Alugue e Ganhe Bola da Copa",
