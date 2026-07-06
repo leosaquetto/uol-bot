@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 40385,
-  "run_duration_seconds": 40.38,
-  "avg_detail_ms_per_offer": 3365,
-  "generated_at": "2026-07-06T21:48:50.357Z",
+  "run_duration_ms": 33366,
+  "run_duration_seconds": 33.37,
+  "avg_detail_ms_per_offer": 2781,
+  "generated_at": "2026-07-06T21:59:30.570Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "p5o-make-descontos-progressivos-10-off",
+      "trace_id": "trace_p5o-make-descontos-progressivos-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5O-make-descontos-progressivos-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5O-make-descontos-progressivos-10-off",
+      "title": "Make Descontos Progressivos + 10% OFF",
+      "preview_title": "Make Descontos Progressivos + 10% OFF",
+      "validity": "Benefício válido de 06/07/2026 18:44 até 31/07/2026 23:59.",
+      "description": "Benefício: Make Descontos Progressivos + 10% OFF Regras: Não cumulativo com demais cupons. Sujeito à disponibilidade do estoque. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Marcyn",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4af77580c09eb470155469520035746f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4af77580c09eb470155469520035746f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4af77580c09eb470155469520035746f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129556,
+      "detail_elapsed_ms": 2946,
+      "scraped_at": "2026-07-06T21:59:10.681Z"
+    },
     {
       "id": "p5n-renda-por-menos-10-off",
       "trace_id": "trace_p5n-renda-por-menos-10-off",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129020,
-      "detail_elapsed_ms": 2431,
-      "scraped_at": "2026-07-06T21:48:30.456Z"
+      "detail_html_length": 124365,
+      "detail_elapsed_ms": 1935,
+      "scraped_at": "2026-07-06T21:59:12.616Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129509,
-      "detail_elapsed_ms": 2061,
-      "scraped_at": "2026-07-06T21:48:32.517Z"
+      "detail_html_length": 130699,
+      "detail_elapsed_ms": 2016,
+      "scraped_at": "2026-07-06T21:59:14.633Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130882,
-      "detail_elapsed_ms": 1685,
-      "scraped_at": "2026-07-06T21:48:34.202Z"
+      "detail_html_length": 130873,
+      "detail_elapsed_ms": 1823,
+      "scraped_at": "2026-07-06T21:59:16.457Z"
     },
     {
       "id": "p5k-sale-lingerie-at-70-off-10-off",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130876,
-      "detail_elapsed_ms": 1732,
-      "scraped_at": "2026-07-06T21:48:35.934Z"
+      "detail_html_length": 130887,
+      "detail_elapsed_ms": 1713,
+      "scraped_at": "2026-07-06T21:59:18.171Z"
     },
     {
       "id": "p5j-sale-moda-praia-at-70-off-10-off",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130922,
-      "detail_elapsed_ms": 1671,
-      "scraped_at": "2026-07-06T21:48:37.605Z"
+      "detail_html_length": 130921,
+      "detail_elapsed_ms": 1730,
+      "scraped_at": "2026-07-06T21:59:19.902Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130865,
-      "detail_elapsed_ms": 1952,
-      "scraped_at": "2026-07-06T21:48:39.557Z"
+      "detail_html_length": 130886,
+      "detail_elapsed_ms": 1702,
+      "scraped_at": "2026-07-06T21:59:21.604Z"
     },
     {
       "id": "p5g-2-ingressos-12-07-teatro-itlia-sp",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 1745,
-      "scraped_at": "2026-07-06T21:48:41.302Z"
+      "detail_html_length": 133053,
+      "detail_elapsed_ms": 1619,
+      "scraped_at": "2026-07-06T21:59:23.224Z"
     },
     {
       "id": "p5f-2-ingressos-11-07-teatro-itlia-sp",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133032,
-      "detail_elapsed_ms": 1716,
-      "scraped_at": "2026-07-06T21:48:43.018Z"
+      "detail_html_length": 133022,
+      "detail_elapsed_ms": 1660,
+      "scraped_at": "2026-07-06T21:59:24.884Z"
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133509,
-      "detail_elapsed_ms": 1682,
-      "scraped_at": "2026-07-06T21:48:44.700Z"
+      "detail_html_length": 133589,
+      "detail_elapsed_ms": 1853,
+      "scraped_at": "2026-07-06T21:59:26.737Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131886,
-      "detail_elapsed_ms": 1706,
-      "scraped_at": "2026-07-06T21:48:46.406Z"
+      "detail_html_length": 131896,
+      "detail_elapsed_ms": 1897,
+      "scraped_at": "2026-07-06T21:59:28.634Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132929,
-      "detail_elapsed_ms": 1799,
-      "scraped_at": "2026-07-06T21:48:48.205Z"
-    },
-    {
-      "id": "p3y-15-off-na-compra-do-ingresso",
-      "trace_id": "trace_p3y-15-off-na-compra-do-ingresso",
-      "link": "https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso",
-      "original_link": "https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso",
-      "title": "15% OFF na compra do ingresso",
-      "preview_title": "15% OFF na compra do ingresso",
-      "validity": "Benefício válido de 02/07/2026 10:00 até 31/12/2030 23:59.",
-      "description": "Benefício: 15% OFF na compra do ingresso Regras: Ao chegar no parque, dirija-se diretamente às catracas com o ingresso impresso e os comprovantes de meia-entrada, se aplicável. Ingressos disponíveis apenas para visitas posteriores à data da compra (não-válidos para o mesmo dia). O cadastro do site deve ser no mesmo nome e CPF do titular do cartão de pagamento. É desejável fazer a compra em um dispositivo que você usa normalmente para outras compras na Internet. Promoção não-cumulativa com outras ofertas. Promoção válida apenas por meio dos cupons. Consulte as políticas e regras de cancelamento antes de realizar a compra. Em caso de dúvida, entre em contato pelo telefone: (54) 3282-5050 ou WhatsApp: (54) 3282-5050, diariamente das 9h30 às 16h30. Sujeito à desativação sem aviso prévio.",
-      "category": "",
-      "partner_name": "Parque Terra Mágica Florybal",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a6a0c0fad722303b9b33629459761928.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131951,
-      "detail_elapsed_ms": 1895,
-      "scraped_at": "2026-07-06T21:48:50.100Z"
+      "detail_html_length": 132939,
+      "detail_elapsed_ms": 1640,
+      "scraped_at": "2026-07-06T21:59:30.274Z"
     }
   ]
 }
