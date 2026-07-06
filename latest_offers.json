@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-06T16:40:47.137604Z",
+  "last_update": "2026-07-06T16:40:56.077523Z",
   "offers": [
     {
       "id": "p3Y-15-off-na-compra-do-ingresso",
@@ -425,7 +425,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T10:04:51.952912Z",
-      "sold_out_at": "13:39"
+      "sold_out_at": "13:39",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
