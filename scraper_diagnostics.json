@@ -1,21 +1,39 @@
 {
-  "updated_at": "2026-07-06T21:49:41.564235Z",
+  "updated_at": "2026-07-06T21:51:16.011030Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 3,
-    "duplicada_latest": 5,
+    "duplicada_historico": 6,
+    "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Renda por menos + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5N-renda-por-menos-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5n-renda-por-menos-10-off"
+    },
+    {
+      "title": "Sale Fitness + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5M-sale-fitness-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5m-sale-fitness-10-off"
+    },
+    {
+      "title": "Power Cores Promocionais + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5L-power-cores-promocionais-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5l-power-cores-promocionais-10-off"
+    },
     {
       "title": "Sale Lingerie até 70% OFF + 10% OFF",
       "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
@@ -51,12 +69,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/p59-2-ingressos-10-07-tetro-uol-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_p59-2-ingressos-10-07-tetro-uol-sp"
-    },
-    {
-      "title": "Ímãs Retrô da Casa do Dragão grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis"
     },
     {
       "title": "15% OFF na compra do ingresso",
