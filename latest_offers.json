@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-06T20:59:09.840086Z",
+  "last_update": "2026-07-06T20:59:15.305924Z",
   "offers": [
     {
       "id": "p3N-brinde-surpresa-em-compras-de-r-349",
@@ -400,7 +400,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T20:24:38.612792Z",
-      "sold_out_at": "17:58"
+      "sold_out_at": "17:58",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p5F-2-ingressos-11-07-teatro-italia-sp",
@@ -422,7 +423,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T20:24:52.955206Z",
-      "sold_out_at": "17:58"
+      "sold_out_at": "17:58",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p5E-2-ingressos-11-07-teatro-italia-sp",
@@ -444,7 +446,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T20:25:07.053834Z",
-      "sold_out_at": "17:58"
+      "sold_out_at": "17:58",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
