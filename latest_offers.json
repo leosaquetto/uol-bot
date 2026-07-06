@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-06T07:15:18.450104Z",
+  "last_update": "2026-07-06T07:29:25.308814Z",
   "offers": [
     {
       "id": "pzJ-15-off-no-par-de-ingressos",
@@ -445,7 +445,8 @@
       "channel_message_link": "https://t.me/c/3723320790/1710",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-06T06:59:28.203517Z"
+      "sent_at": "2026-07-06T06:59:28.203517Z",
+      "sold_out_at": "04:28"
     }
   ]
 }
