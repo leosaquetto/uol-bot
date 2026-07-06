@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-06T22:11:30.378161Z",
+  "last_update": "2026-07-06T22:11:36.671753Z",
   "offers": [
     {
       "id": "p5c-2-ingressos-10-07-teatro-sergio-cardoso",
@@ -314,7 +314,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T21:39:05.443204Z",
-      "sold_out_at": "19:10"
+      "sold_out_at": "19:10",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p5J-sale-moda-praia-ate-70-off-10-off",
@@ -336,7 +337,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T21:39:19.908781Z",
-      "sold_out_at": "19:10"
+      "sold_out_at": "19:10",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p5I-tudo-por-50-moda-praia-10-off",
