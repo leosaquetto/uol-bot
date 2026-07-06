@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 66223,
-  "run_duration_seconds": 66.22,
-  "avg_detail_ms_per_offer": 5519,
-  "generated_at": "2026-07-06T03:23:05.998Z",
+  "run_duration_ms": 231106,
+  "run_duration_seconds": 231.11,
+  "avg_detail_ms_per_offer": 19259,
+  "generated_at": "2026-07-06T03:37:14.464Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
       "title": "Ímãs Retrô da Casa do Dragão grátis",
       "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
-      "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit de ímãs retrô com 12 unidades da Casa do Dragão da FotoRegistro. Regras: Oferta válida para 1 Kit com 12 unidades de Ímãs Retrô. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7x9cm cada. Frete não incluso. Validade do cupom até 31/08/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131411,
-      "detail_elapsed_ms": 7456,
-      "scraped_at": "2026-07-06T03:22:37.573Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12003,
+      "scraped_at": "2026-07-06T03:35:12.346Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131715,
-      "detail_elapsed_ms": 3098,
-      "scraped_at": "2026-07-06T03:22:40.672Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133063,
+      "detail_elapsed_ms": 13627,
+      "scraped_at": "2026-07-06T03:35:39.472Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131972,
-      "detail_elapsed_ms": 2307,
-      "scraped_at": "2026-07-06T03:22:42.979Z"
+      "detail_html_length": 131953,
+      "detail_elapsed_ms": 5622,
+      "scraped_at": "2026-07-06T03:35:45.095Z"
     },
     {
       "id": "p3x-20-de-desconto-em-seleo-de-produtos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131524,
-      "detail_elapsed_ms": 2840,
-      "scraped_at": "2026-07-06T03:22:45.819Z"
+      "detail_html_length": 131494,
+      "detail_elapsed_ms": 11168,
+      "scraped_at": "2026-07-06T03:35:56.263Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133686,
-      "detail_elapsed_ms": 3281,
-      "scraped_at": "2026-07-06T03:22:49.100Z"
+      "detail_html_length": 133946,
+      "detail_elapsed_ms": 18220,
+      "scraped_at": "2026-07-06T03:36:14.483Z"
     },
     {
       "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132307,
-      "detail_elapsed_ms": 2407,
-      "scraped_at": "2026-07-06T03:22:51.508Z"
+      "detail_html_length": 132299,
+      "detail_elapsed_ms": 8491,
+      "scraped_at": "2026-07-06T03:36:22.975Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133630,
-      "detail_elapsed_ms": 2624,
-      "scraped_at": "2026-07-06T03:22:54.133Z"
+      "detail_html_length": 132235,
+      "detail_elapsed_ms": 3700,
+      "scraped_at": "2026-07-06T03:36:26.675Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133759,
-      "detail_elapsed_ms": 2363,
-      "scraped_at": "2026-07-06T03:22:56.496Z"
+      "detail_html_length": 133852,
+      "detail_elapsed_ms": 14255,
+      "scraped_at": "2026-07-06T03:36:40.931Z"
     },
     {
       "id": "p3o-10-de-desconto-em-seleo-de-itens",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124645,
-      "detail_elapsed_ms": 2193,
-      "scraped_at": "2026-07-06T03:22:58.689Z"
+      "detail_html_length": 130996,
+      "detail_elapsed_ms": 11263,
+      "scraped_at": "2026-07-06T03:36:52.194Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130976,
-      "detail_elapsed_ms": 1993,
-      "scraped_at": "2026-07-06T03:23:00.683Z"
+      "detail_html_length": 130956,
+      "detail_elapsed_ms": 11755,
+      "scraped_at": "2026-07-06T03:37:03.949Z"
     },
     {
       "id": "p3m-40-off-extra-em-seleo-feminina",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130839,
-      "detail_elapsed_ms": 2953,
-      "scraped_at": "2026-07-06T03:23:03.636Z"
+      "detail_html_length": 130810,
+      "detail_elapsed_ms": 5742,
+      "scraped_at": "2026-07-06T03:37:09.691Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133258,
-      "detail_elapsed_ms": 2094,
-      "scraped_at": "2026-07-06T03:23:05.730Z"
+      "detail_html_length": 131982,
+      "detail_elapsed_ms": 3590,
+      "scraped_at": "2026-07-06T03:37:13.281Z"
     }
   ]
 }
