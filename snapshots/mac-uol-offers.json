@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 2
   },
-  "run_duration_ms": 259599,
-  "run_duration_seconds": 259.6,
-  "avg_detail_ms_per_offer": 21633,
-  "generated_at": "2026-07-06T07:13:13.901Z",
+  "run_duration_ms": 267459,
+  "run_duration_seconds": 267.46,
+  "avg_detail_ms_per_offer": 22288,
+  "generated_at": "2026-07-06T07:28:26.433Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12029,
-      "scraped_at": "2026-07-06T07:10:44.830Z"
+      "detail_elapsed_ms": 12005,
+      "scraped_at": "2026-07-06T07:25:30.506Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -65,8 +65,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12147,
-      "scraped_at": "2026-07-06T07:11:09.254Z"
+      "detail_elapsed_ms": 12070,
+      "scraped_at": "2026-07-06T07:25:54.840Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131805,
-      "detail_elapsed_ms": 10039,
-      "scraped_at": "2026-07-06T07:11:31.766Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132092,
+      "detail_elapsed_ms": 13803,
+      "scraped_at": "2026-07-06T07:26:08.643Z"
     },
     {
       "id": "p3x-20-de-desconto-em-seleo-de-produtos",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131358,
-      "detail_elapsed_ms": 10575,
-      "scraped_at": "2026-07-06T07:11:42.341Z"
+      "detail_html_length": 131783,
+      "detail_elapsed_ms": 12750,
+      "scraped_at": "2026-07-06T07:26:21.393Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133519,
-      "detail_elapsed_ms": 9808,
-      "scraped_at": "2026-07-06T07:11:52.150Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133795,
+      "detail_elapsed_ms": 12932,
+      "scraped_at": "2026-07-06T07:26:46.673Z"
     },
     {
       "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132293,
-      "detail_elapsed_ms": 12519,
-      "scraped_at": "2026-07-06T07:12:04.669Z"
+      "detail_html_length": 132409,
+      "detail_elapsed_ms": 12217,
+      "scraped_at": "2026-07-06T07:26:58.890Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133883,
-      "detail_elapsed_ms": 12750,
-      "scraped_at": "2026-07-06T07:12:17.419Z"
+      "detail_html_length": 133887,
+      "detail_elapsed_ms": 13203,
+      "scraped_at": "2026-07-06T07:27:12.093Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133603,
-      "detail_elapsed_ms": 10094,
-      "scraped_at": "2026-07-06T07:12:27.514Z"
+      "detail_attempts": 2,
+      "detail_html_length": 134058,
+      "detail_elapsed_ms": 12396,
+      "scraped_at": "2026-07-06T07:27:36.897Z"
     },
     {
       "id": "p3o-10-de-desconto-em-seleo-de-itens",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130999,
-      "detail_elapsed_ms": 10889,
-      "scraped_at": "2026-07-06T07:12:38.403Z"
+      "detail_html_length": 130985,
+      "detail_elapsed_ms": 11205,
+      "scraped_at": "2026-07-06T07:27:48.102Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130799,
-      "detail_elapsed_ms": 9933,
-      "scraped_at": "2026-07-06T07:12:48.336Z"
+      "detail_html_length": 130807,
+      "detail_elapsed_ms": 10633,
+      "scraped_at": "2026-07-06T07:27:58.735Z"
     },
     {
       "id": "p3m-40-off-extra-em-seleo-feminina",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130813,
-      "detail_elapsed_ms": 12200,
-      "scraped_at": "2026-07-06T07:13:00.536Z"
+      "detail_html_length": 130817,
+      "detail_elapsed_ms": 13463,
+      "scraped_at": "2026-07-06T07:28:12.199Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133070,
-      "detail_elapsed_ms": 12399,
-      "scraped_at": "2026-07-06T07:13:12.935Z"
+      "detail_html_length": 133347,
+      "detail_elapsed_ms": 12838,
+      "scraped_at": "2026-07-06T07:28:25.038Z"
     }
   ]
 }
