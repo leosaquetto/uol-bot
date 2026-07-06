@@ -1,21 +1,39 @@
 {
-  "updated_at": "2026-07-06T21:38:49.571123Z",
+  "updated_at": "2026-07-06T21:40:28.096843Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Sale Lingerie até 70% OFF + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5k-sale-lingerie-ate-70-off-10-off"
+    },
+    {
+      "title": "Sale Moda Praia até 70% OFF + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5j-sale-moda-praia-ate-70-off-10-off"
+    },
+    {
+      "title": "Tudo por 50% (moda praia) + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5I-tudo-por-50-moda-praia-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5i-tudo-por-50-moda-praia-10-off"
+    },
     {
       "title": "2 INGRESSOS: 12/07 Teatro Itália - SP",
       "link": "https://clube.uol.com.br/campanhasdeingresso/p5G-2-ingressos-12-07-teatro-italia-sp",
