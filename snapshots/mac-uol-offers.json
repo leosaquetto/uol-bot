@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 9,
+  "detail_fail_count": 3,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 9,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 3
   },
-  "run_duration_ms": 110809,
-  "run_duration_seconds": 110.81,
-  "avg_detail_ms_per_offer": 9234,
-  "generated_at": "2026-07-06T16:26:13.957Z",
+  "run_duration_ms": 192827,
+  "run_duration_seconds": 192.83,
+  "avg_detail_ms_per_offer": 16069,
+  "generated_at": "2026-07-06T16:39:53.086Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p59-2-ingressos-10-07-tetro-uol-sp",
       "title": "2 INGRESSOS: 10/07 Tetro UOL - SP",
       "preview_title": "2 INGRESSOS: 10/07 Tetro UOL - SP",
-      "validity": "Benefício válido de 06/07/2026 12:55 até 09/07/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e viva momentos de muita emoção em um espetáculo imperdível no Teatro UOL, no Shopping Pátio Higienópolis (SP). Data: 10 de Julho de 2026. Local: Av. Higienópolis, 618 - São Paulo/SP. Importante: O voucher inclui 01 par de ingressos. Escolha o horário e o espetáculo de sua preferência no site, utilizando o link indicado na descrição das regras. Como resgatar meu benefício: Cada códigos vale 01 par e são válidos para resgate de peças até o dia 10 de Julho de 2026. Clique no link abaixo e fique atento ao prazo de validade. 1 - Clique no link: https://teatrouol.showare.com.br/?websaleschannelkey=uol13 2 - Escolha a peça que gostaria de assistir e clique em COMPRAR; 3 - Insira o seu código e clique em Avançar: 4 - Escolha dois lugares disponíveis: 5 - Faça o cadastro e resgate o seu par de ingressos: Bom espetáculo! REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2c356fc8cdfb9d3ee9edd08b81ecd943.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2c356fc8cdfb9d3ee9edd08b81ecd943.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2c356fc8cdfb9d3ee9edd08b81ecd943.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133387,
-      "detail_elapsed_ms": 7273,
-      "scraped_at": "2026-07-06T16:25:29.707Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p59-2-ingressos-10-07-tetro-uol-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12940,
+      "scraped_at": "2026-07-06T16:38:13.026Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
       "title": "Ímãs Retrô da Casa do Dragão grátis",
       "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
-      "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit de ímãs retrô com 12 unidades da Casa do Dragão da FotoRegistro. Regras: Oferta válida para 1 Kit com 12 unidades de Ímãs Retrô. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7x9cm cada. Frete não incluso. Validade do cupom até 31/08/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Foto Registro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130749,
-      "detail_elapsed_ms": 4032,
-      "scraped_at": "2026-07-06T16:25:33.739Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12531,
+      "scraped_at": "2026-07-06T16:38:38.192Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
-      "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
-      "description": "Benefício: Chuteiras Umbro com até 50% OFF Regras: Desconto válido para seleção. Não cumulativo. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Centauro",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132961,
-      "detail_elapsed_ms": 2308,
-      "scraped_at": "2026-07-06T16:25:36.047Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12922,
+      "scraped_at": "2026-07-06T16:39:03.494Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131973,
-      "detail_elapsed_ms": 4826,
-      "scraped_at": "2026-07-06T16:25:40.873Z"
+      "detail_html_length": 131980,
+      "detail_elapsed_ms": 7684,
+      "scraped_at": "2026-07-06T16:39:11.178Z"
     },
     {
       "id": "p3x-20-de-desconto-em-seleo-de-produtos",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131526,
-      "detail_elapsed_ms": 3325,
-      "scraped_at": "2026-07-06T16:25:44.204Z"
+      "detail_html_length": 131772,
+      "detail_elapsed_ms": 11555,
+      "scraped_at": "2026-07-06T16:39:22.733Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133686,
-      "detail_elapsed_ms": 3007,
-      "scraped_at": "2026-07-06T16:25:47.211Z"
+      "detail_html_length": 133673,
+      "detail_elapsed_ms": 8677,
+      "scraped_at": "2026-07-06T16:39:31.411Z"
     },
     {
       "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132299,
-      "detail_elapsed_ms": 2418,
-      "scraped_at": "2026-07-06T16:25:49.629Z"
+      "detail_html_length": 132287,
+      "detail_elapsed_ms": 5367,
+      "scraped_at": "2026-07-06T16:39:36.778Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133640,
-      "detail_elapsed_ms": 6610,
-      "scraped_at": "2026-07-06T16:25:56.240Z"
+      "detail_html_length": 133597,
+      "detail_elapsed_ms": 2839,
+      "scraped_at": "2026-07-06T16:39:39.618Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133761,
-      "detail_elapsed_ms": 8203,
-      "scraped_at": "2026-07-06T16:26:04.443Z"
+      "detail_html_length": 133748,
+      "detail_elapsed_ms": 4878,
+      "scraped_at": "2026-07-06T16:39:44.496Z"
     },
     {
       "id": "p3o-10-de-desconto-em-seleo-de-itens",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129848,
-      "detail_elapsed_ms": 3263,
-      "scraped_at": "2026-07-06T16:26:07.707Z"
+      "detail_html_length": 124631,
+      "detail_elapsed_ms": 2263,
+      "scraped_at": "2026-07-06T16:39:46.759Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130743,
-      "detail_elapsed_ms": 3570,
-      "scraped_at": "2026-07-06T16:26:11.277Z"
+      "detail_html_length": 129816,
+      "detail_elapsed_ms": 3191,
+      "scraped_at": "2026-07-06T16:39:49.950Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133248,
-      "detail_elapsed_ms": 2255,
-      "scraped_at": "2026-07-06T16:26:13.533Z"
+      "detail_html_length": 132066,
+      "detail_elapsed_ms": 2634,
+      "scraped_at": "2026-07-06T16:39:52.584Z"
     }
   ]
 }
