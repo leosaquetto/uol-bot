@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 95926,
-  "run_duration_seconds": 95.93,
-  "avg_detail_ms_per_offer": 7994,
-  "generated_at": "2026-07-06T20:35:19.195Z",
+  "run_duration_ms": 86031,
+  "run_duration_seconds": 86.03,
+  "avg_detail_ms_per_offer": 7169,
+  "generated_at": "2026-07-06T20:47:01.863Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132939,
-      "detail_elapsed_ms": 10043,
-      "scraped_at": "2026-07-06T20:34:45.255Z"
+      "detail_html_length": 132817,
+      "detail_elapsed_ms": 4829,
+      "scraped_at": "2026-07-06T20:46:14.304Z"
     },
     {
       "id": "p5f-2-ingressos-11-07-teatro-itlia-sp",
@@ -64,33 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131770,
-      "detail_elapsed_ms": 4915,
-      "scraped_at": "2026-07-06T20:34:50.170Z"
-    },
-    {
-      "id": "p5e-2-ingressos-11-07-teatro-itlia-sp",
-      "trace_id": "trace_p5e-2-ingressos-11-07-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5E-2-ingressos-11-07-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5E-2-ingressos-11-07-teatro-itlia-sp",
-      "title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
-      "preview_title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
-      "validity": "Benefício válido de 06/07/2026 15:54 até 10/07/2026 19:30.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para “Nasci Pra Ser Dercy” e embarque na história de Vera, uma atriz que, ao se revoltar contra estereótipos, revela a força e o legado de Dercy Gonçalves, uma mulher à frente de seu tempo, no Teatro Itália, em São Paulo – SP. Data: 10 de julho de 2026, às 20h. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/190c022b6ba5a0212720f9b2cf35c221.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/190c022b6ba5a0212720f9b2cf35c221.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/190c022b6ba5a0212720f9b2cf35c221.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131897,
-      "detail_elapsed_ms": 3526,
-      "scraped_at": "2026-07-06T20:34:53.696Z"
+      "detail_html_length": 131796,
+      "detail_elapsed_ms": 2887,
+      "scraped_at": "2026-07-06T20:46:17.191Z"
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133533,
-      "detail_elapsed_ms": 2838,
-      "scraped_at": "2026-07-06T20:34:56.534Z"
+      "detail_html_length": 133519,
+      "detail_elapsed_ms": 2570,
+      "scraped_at": "2026-07-06T20:46:19.761Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131919,
-      "detail_elapsed_ms": 6238,
-      "scraped_at": "2026-07-06T20:35:02.773Z"
+      "detail_html_length": 131865,
+      "detail_elapsed_ms": 4343,
+      "scraped_at": "2026-07-06T20:46:24.104Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132952,
-      "detail_elapsed_ms": 2426,
-      "scraped_at": "2026-07-06T20:35:05.199Z"
+      "detail_html_length": 131722,
+      "detail_elapsed_ms": 3084,
+      "scraped_at": "2026-07-06T20:46:27.188Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131973,
-      "detail_elapsed_ms": 2130,
-      "scraped_at": "2026-07-06T20:35:07.329Z"
+      "detail_html_length": 131813,
+      "detail_elapsed_ms": 9423,
+      "scraped_at": "2026-07-06T20:46:36.611Z"
     },
     {
       "id": "p3x-20-de-desconto-em-seleo-de-produtos",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131507,
-      "detail_elapsed_ms": 2542,
-      "scraped_at": "2026-07-06T20:35:09.871Z"
+      "detail_html_length": 131772,
+      "detail_elapsed_ms": 12094,
+      "scraped_at": "2026-07-06T20:46:48.705Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133696,
-      "detail_elapsed_ms": 2907,
-      "scraped_at": "2026-07-06T20:35:12.778Z"
+      "detail_html_length": 133664,
+      "detail_elapsed_ms": 3526,
+      "scraped_at": "2026-07-06T20:46:52.231Z"
     },
     {
       "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132299,
-      "detail_elapsed_ms": 1978,
-      "scraped_at": "2026-07-06T20:35:14.757Z"
+      "detail_html_length": 132286,
+      "detail_elapsed_ms": 2477,
+      "scraped_at": "2026-07-06T20:46:54.708Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133611,
-      "detail_elapsed_ms": 1989,
-      "scraped_at": "2026-07-06T20:35:16.746Z"
+      "detail_html_length": 133598,
+      "detail_elapsed_ms": 2619,
+      "scraped_at": "2026-07-06T20:46:57.328Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133739,
-      "detail_elapsed_ms": 2023,
-      "scraped_at": "2026-07-06T20:35:18.770Z"
+      "detail_html_length": 133728,
+      "detail_elapsed_ms": 2166,
+      "scraped_at": "2026-07-06T20:46:59.494Z"
+    },
+    {
+      "id": "p3o-10-de-desconto-em-seleo-de-itens",
+      "trace_id": "trace_p3o-10-de-desconto-em-seleo-de-itens",
+      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
+      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
+      "title": "10% de desconto em seleção de itens",
+      "preview_title": "10% de desconto em seleção de itens",
+      "validity": "Benefício válido de 01/07/2026 12:15 até 31/07/2026 23:59.",
+      "description": "Benefício: 10% de desconto em seleção de itens Regras: Desconto válido para seleção de produtos. Não cumulativo. Sujeito a estoque. Sujeito à desativação sem aviso prévio.",
+      "category": "Eletrodomésticos e Eletrônicos",
+      "partner_name": "Shopclub Electrolux",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-shopclub.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/62ee981330a03043dbdebba4b174bf68.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/62ee981330a03043dbdebba4b174bf68.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/62ee981330a03043dbdebba4b174bf68.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131004,
+      "detail_elapsed_ms": 2180,
+      "scraped_at": "2026-07-06T20:47:01.674Z"
     }
   ]
 }
