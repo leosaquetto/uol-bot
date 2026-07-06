@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 2
   },
-  "run_duration_ms": 267459,
-  "run_duration_seconds": 267.46,
-  "avg_detail_ms_per_offer": 22288,
-  "generated_at": "2026-07-06T07:28:26.433Z",
+  "run_duration_ms": 243681,
+  "run_duration_seconds": 243.68,
+  "avg_detail_ms_per_offer": 20307,
+  "generated_at": "2026-07-06T07:43:10.132Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "p5f-ms-retr-da-casa-do-drago-grtis",
-      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "id": "p5f-imas-retro-da-casa-do-dragao-gratis",
+      "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
       "title": "Ímãs Retrô da Casa do Dragão grátis",
       "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
       "validity": "",
@@ -38,17 +38,17 @@
       "img_source": "error",
       "detail_ok": false,
       "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis\", waiting until \"domcontentloaded\"",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12005,
-      "scraped_at": "2026-07-06T07:25:30.506Z"
+      "detail_elapsed_ms": 12037,
+      "scraped_at": "2026-07-06T07:40:44.222Z"
     },
     {
-      "id": "p4u-chuteiras-umbro-com-at-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "id": "p4u-chuteiras-umbro-com-ate-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
       "validity": "",
@@ -62,11 +62,11 @@
       "img_source": "error",
       "detail_ok": false,
       "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off\", waiting until \"domcontentloaded\"",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12070,
-      "scraped_at": "2026-07-06T07:25:54.840Z"
+      "detail_elapsed_ms": 12009,
+      "scraped_at": "2026-07-06T07:41:08.598Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132092,
-      "detail_elapsed_ms": 13803,
-      "scraped_at": "2026-07-06T07:26:08.643Z"
+      "detail_html_length": 131972,
+      "detail_elapsed_ms": 13005,
+      "scraped_at": "2026-07-06T07:41:21.604Z"
     },
     {
-      "id": "p3x-20-de-desconto-em-seleo-de-produtos",
-      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos",
-      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
-      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
+      "id": "p3x-20-de-desconto-em-selecao-de-produtos",
+      "trace_id": "trace_p3x-20-de-desconto-em-selecao-de-produtos",
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
+      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
       "title": "20% de desconto em seleção de produtos",
       "preview_title": "20% de desconto em seleção de produtos",
       "validity": "Benefício válido de 02/07/2026 00:00 até 02/08/2026 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131783,
-      "detail_elapsed_ms": 12750,
-      "scraped_at": "2026-07-06T07:26:21.393Z"
+      "detail_html_length": 131514,
+      "detail_elapsed_ms": 10496,
+      "scraped_at": "2026-07-06T07:41:32.107Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -135,16 +135,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133795,
-      "detail_elapsed_ms": 12932,
-      "scraped_at": "2026-07-06T07:26:46.673Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133517,
+      "detail_elapsed_ms": 11203,
+      "scraped_at": "2026-07-06T07:41:43.316Z"
     },
     {
-      "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
-      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras",
-      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
-      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
+      "id": "p3r-10-off-no-1o-abastecimento-na-petrobras",
+      "trace_id": "trace_p3r-10-off-no-1o-abastecimento-na-petrobras",
+      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
+      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
       "title": "10% OFF no 1º abastecimento na Petrobras",
       "preview_title": "10% OFF no 1º abastecimento na Petrobras",
       "validity": "Benefício válido de 01/07/2026 14:28 até 31/12/2026 23:59.",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132409,
-      "detail_elapsed_ms": 12217,
-      "scraped_at": "2026-07-06T07:26:58.890Z"
+      "detail_html_length": 132293,
+      "detail_elapsed_ms": 10968,
+      "scraped_at": "2026-07-06T07:41:54.284Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133887,
-      "detail_elapsed_ms": 13203,
-      "scraped_at": "2026-07-06T07:27:12.093Z"
+      "detail_html_length": 133460,
+      "detail_elapsed_ms": 12163,
+      "scraped_at": "2026-07-06T07:42:06.447Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -207,16 +207,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 134058,
-      "detail_elapsed_ms": 12396,
-      "scraped_at": "2026-07-06T07:27:36.897Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133860,
+      "detail_elapsed_ms": 10990,
+      "scraped_at": "2026-07-06T07:42:17.437Z"
     },
     {
-      "id": "p3o-10-de-desconto-em-seleo-de-itens",
-      "trace_id": "trace_p3o-10-de-desconto-em-seleo-de-itens",
-      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
-      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
+      "id": "p3o-10-de-desconto-em-selecao-de-itens",
+      "trace_id": "trace_p3o-10-de-desconto-em-selecao-de-itens",
+      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
+      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
       "title": "10% de desconto em seleção de itens",
       "preview_title": "10% de desconto em seleção de itens",
       "validity": "Benefício válido de 01/07/2026 12:15 até 31/07/2026 23:59.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130985,
-      "detail_elapsed_ms": 11205,
-      "scraped_at": "2026-07-06T07:27:48.102Z"
+      "detail_html_length": 131005,
+      "detail_elapsed_ms": 11163,
+      "scraped_at": "2026-07-06T07:42:28.600Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130807,
-      "detail_elapsed_ms": 10633,
-      "scraped_at": "2026-07-06T07:27:58.735Z"
+      "detail_html_length": 131236,
+      "detail_elapsed_ms": 14392,
+      "scraped_at": "2026-07-06T07:42:42.992Z"
     },
     {
-      "id": "p3m-40-off-extra-em-seleo-feminina",
-      "trace_id": "trace_p3m-40-off-extra-em-seleo-feminina",
-      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-seleo-feminina",
+      "id": "p3m-40-off-extra-em-selecao-feminina",
+      "trace_id": "trace_p3m-40-off-extra-em-selecao-feminina",
+      "link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p3M-40-off-extra-em-selecao-feminina",
       "title": "40% OFF extra em seleção feminina",
       "preview_title": "40% OFF extra em seleção feminina",
       "validity": "Benefício válido de 25/05/2026 09:00 até 06/07/2026 09:00.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130817,
-      "detail_elapsed_ms": 13463,
-      "scraped_at": "2026-07-06T07:28:12.199Z"
+      "detail_html_length": 130829,
+      "detail_elapsed_ms": 12135,
+      "scraped_at": "2026-07-06T07:42:55.127Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133347,
-      "detail_elapsed_ms": 12838,
-      "scraped_at": "2026-07-06T07:28:25.038Z"
+      "detail_html_length": 133237,
+      "detail_elapsed_ms": 13529,
+      "scraped_at": "2026-07-06T07:43:08.656Z"
     }
   ]
 }
