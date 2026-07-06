@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 143613,
-  "run_duration_seconds": 143.61,
-  "avg_detail_ms_per_offer": 11968,
-  "generated_at": "2026-07-06T17:57:10.470Z",
+  "run_duration_ms": 75203,
+  "run_duration_seconds": 75.2,
+  "avg_detail_ms_per_offer": 6267,
+  "generated_at": "2026-07-06T18:24:58.482Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,15 +40,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133402,
-      "detail_elapsed_ms": 9161,
-      "scraped_at": "2026-07-06T17:55:35.810Z"
+      "detail_html_length": 133387,
+      "detail_elapsed_ms": 6785,
+      "scraped_at": "2026-07-06T18:24:26.379Z"
     },
     {
-      "id": "p5f-imas-retro-da-casa-do-dragao-gratis",
-      "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
+      "id": "p5f-ms-retr-da-casa-do-drago-grtis",
+      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
       "title": "Ímãs Retrô da Casa do Dragão grátis",
       "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
       "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129640,
-      "detail_elapsed_ms": 4866,
-      "scraped_at": "2026-07-06T17:55:40.676Z"
+      "detail_html_length": 131889,
+      "detail_elapsed_ms": 2937,
+      "scraped_at": "2026-07-06T18:24:29.316Z"
     },
     {
-      "id": "p4u-chuteiras-umbro-com-ate-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "id": "p4u-chuteiras-umbro-com-at-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
       "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131804,
-      "detail_elapsed_ms": 4570,
-      "scraped_at": "2026-07-06T17:55:45.246Z"
+      "detail_html_length": 132962,
+      "detail_elapsed_ms": 2997,
+      "scraped_at": "2026-07-06T18:24:32.313Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -99,28 +99,28 @@
       "original_link": "https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso",
       "title": "15% OFF na compra do ingresso",
       "preview_title": "15% OFF na compra do ingresso",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 02/07/2026 10:00 até 31/12/2030 23:59.",
+      "description": "Benefício: 15% OFF na compra do ingresso Regras: Ao chegar no parque, dirija-se diretamente às catracas com o ingresso impresso e os comprovantes de meia-entrada, se aplicável. Ingressos disponíveis apenas para visitas posteriores à data da compra (não-válidos para o mesmo dia). O cadastro do site deve ser no mesmo nome e CPF do titular do cartão de pagamento. É desejável fazer a compra em um dispositivo que você usa normalmente para outras compras na Internet. Promoção não-cumulativa com outras ofertas. Promoção válida apenas por meio dos cupons. Consulte as políticas e regras de cancelamento antes de realizar a compra. Em caso de dúvida, entre em contato pelo telefone: (54) 3282-5050 ou WhatsApp: (54) 3282-5050, diariamente das 9h30 às 16h30. Sujeito à desativação sem aviso prévio.",
       "category": "",
       "partner_name": "Parque Terra Mágica Florybal",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a6a0c0fad722303b9b33629459761928.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12252,
-      "scraped_at": "2026-07-06T17:56:11.036Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131974,
+      "detail_elapsed_ms": 2463,
+      "scraped_at": "2026-07-06T18:24:34.776Z"
     },
     {
-      "id": "p3x-20-de-desconto-em-selecao-de-produtos",
-      "trace_id": "trace_p3x-20-de-desconto-em-selecao-de-produtos",
-      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
-      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
+      "id": "p3x-20-de-desconto-em-seleo-de-produtos",
+      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
       "title": "20% de desconto em seleção de produtos",
       "preview_title": "20% de desconto em seleção de produtos",
       "validity": "Benefício válido de 02/07/2026 00:00 até 02/08/2026 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131376,
-      "detail_elapsed_ms": 8955,
-      "scraped_at": "2026-07-06T17:56:19.991Z"
+      "detail_html_length": 131516,
+      "detail_elapsed_ms": 3570,
+      "scraped_at": "2026-07-06T18:24:38.346Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -159,16 +159,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133663,
-      "detail_elapsed_ms": 10916,
-      "scraped_at": "2026-07-06T17:56:43.346Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133686,
+      "detail_elapsed_ms": 8104,
+      "scraped_at": "2026-07-06T18:24:46.450Z"
     },
     {
-      "id": "p3r-10-off-no-1o-abastecimento-na-petrobras",
-      "trace_id": "trace_p3r-10-off-no-1o-abastecimento-na-petrobras",
-      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
-      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1o-abastecimento-na-petrobras",
+      "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
+      "trace_id": "trace_p3r-10-off-no-1-abastecimento-na-petrobras",
+      "link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
+      "original_link": "https://clube.uol.com.br/premmia/p3R-10-off-no-1-abastecimento-na-petrobras",
       "title": "10% OFF no 1º abastecimento na Petrobras",
       "preview_title": "10% OFF no 1º abastecimento na Petrobras",
       "validity": "Benefício válido de 01/07/2026 14:28 até 31/12/2026 23:59.",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132292,
-      "detail_elapsed_ms": 5459,
-      "scraped_at": "2026-07-06T17:56:48.805Z"
+      "detail_html_length": 131043,
+      "detail_elapsed_ms": 2509,
+      "scraped_at": "2026-07-06T18:24:48.960Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127255,
-      "detail_elapsed_ms": 3317,
-      "scraped_at": "2026-07-06T17:56:52.123Z"
+      "detail_html_length": 132107,
+      "detail_elapsed_ms": 1987,
+      "scraped_at": "2026-07-06T18:24:50.947Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133748,
-      "detail_elapsed_ms": 4581,
-      "scraped_at": "2026-07-06T17:56:56.705Z"
+      "detail_html_length": 133731,
+      "detail_elapsed_ms": 2208,
+      "scraped_at": "2026-07-06T18:24:53.155Z"
     },
     {
-      "id": "p3o-10-de-desconto-em-selecao-de-itens",
-      "trace_id": "trace_p3o-10-de-desconto-em-selecao-de-itens",
-      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
-      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-selecao-de-itens",
+      "id": "p3o-10-de-desconto-em-seleo-de-itens",
+      "trace_id": "trace_p3o-10-de-desconto-em-seleo-de-itens",
+      "link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
+      "original_link": "https://clube.uol.com.br/shopclub/p3O-10-de-desconto-em-seleo-de-itens",
       "title": "10% de desconto em seleção de itens",
       "preview_title": "10% de desconto em seleção de itens",
       "validity": "Benefício válido de 01/07/2026 12:15 até 31/07/2026 23:59.",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131026,
-      "detail_elapsed_ms": 4964,
-      "scraped_at": "2026-07-06T17:57:01.669Z"
+      "detail_html_length": 130987,
+      "detail_elapsed_ms": 1635,
+      "scraped_at": "2026-07-06T18:24:54.790Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129728,
-      "detail_elapsed_ms": 3330,
-      "scraped_at": "2026-07-06T17:57:04.999Z"
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 1724,
+      "scraped_at": "2026-07-06T18:24:56.514Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132096,
-      "detail_elapsed_ms": 4577,
-      "scraped_at": "2026-07-06T17:57:09.576Z"
+      "detail_html_length": 133268,
+      "detail_elapsed_ms": 1683,
+      "scraped_at": "2026-07-06T18:24:58.197Z"
     }
   ]
 }
