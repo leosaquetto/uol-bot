@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-07-06T22:00:25.351223Z",
+  "last_update": "2026-07-06T22:00:43.580092Z",
   "offers": [
-    {
-      "id": "p5d-2-ingressos-11-07-teatro-sergio-cardoso",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5d-2-ingressos-11-07-teatro-sergio-cardoso",
-      "preview_title": "2 INGRESSOS: 11/07 Teatro Sérgio Cardoso",
-      "title": "2 INGRESSOS: 11/07 Teatro Sérgio Cardoso",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5d-2-ingressos-11-07-teatro-sergio-cardoso",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "validity": "Benefício válido de 03/07/2026 15:51 até 10/07/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressose viva “VIVA! VIDA”, com Regina Casé. Uma experiência que mistura humor, emoção e reflexões sobre o mundo moderno em uma jornada divertida e inspiradora, no Teatro Sérgio Cardoso, em São Paulo. Data: 11 de Julho, às 20h. Local: Rua Rui Barbosa, 153, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "location_summary": "",
-      "dedupe_key": "2-ingressos-11-07-teatro-sergio-cardoso|beneficio-valido-de-03-07-2026-15-51-ate-10-07-2026-20-59|assinante-uol-resgate-1-par-de-ingressose-viva-viva-vida-com-regina-case-uma-experiencia-que-mistura-humor-emocao-e-reflexoes-sobre-o-mundo-moderno-em-uma-jorna",
-      "loose_dedupe_key": "2-ingressos-11-07-teatro-sergio-cardoso|assinante-uol-resgate-1-par-de-ingressose-viva-viva-vida-com-regina-case-uma-experiencia-que-mistura-humor-emocao-e-reflexoes-sobre-o-mundo-moderno-em-uma-jorna",
-      "scraped_at": "2026-07-03T19:00:47.203000Z",
-      "trace_id": "trace_p5d-2-ingressos-11-07-teatro-sergio-cardoso",
-      "channel_message_id": 1703,
-      "channel_message_link": "https://t.me/c/3723320790/1703",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-03T19:02:11.766631Z",
-      "sold_out_at": "16:44",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "p5c-2-ingressos-10-07-teatro-sergio-cardoso",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5c-2-ingressos-10-07-teatro-sergio-cardoso",
@@ -245,7 +222,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T18:44:35.377906Z",
-      "sold_out_at": "18:59"
+      "sold_out_at": "18:59",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p5G-2-ingressos-12-07-teatro-italia-sp",
@@ -441,6 +419,27 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-06T21:50:23.854108Z"
+    },
+    {
+      "id": "p5O-make-descontos-progressivos-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5O-make-descontos-progressivos-10-off",
+      "preview_title": "Make Descontos Progressivos + 10% OFF",
+      "title": "Make Descontos Progressivos + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5O-make-descontos-progressivos-10-off",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4af77580c09eb470155469520035746f.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
+      "validity": "Benefício válido de 06/07/2026 18:44 até 31/07/2026 23:59.",
+      "description": "Benefício: Make Descontos Progressivos + 10% OFF Regras: Não cumulativo com demais cupons. Sujeito à disponibilidade do estoque. Sujeito à desativação sem aviso prévio.",
+      "location_summary": "",
+      "dedupe_key": "make-descontos-progressivos-10-off|beneficio-valido-de-06-07-2026-18-44-ate-31-07-2026-23-59|beneficio-make-descontos-progressivos-10-off-regras-nao-cumulativo-com-demais-cupons-sujeito-a-disponibilidade-do-estoque-sujeito-a-desativacao-sem-aviso-previo",
+      "loose_dedupe_key": "make-descontos-progressivos-10-off|beneficio-make-descontos-progressivos-10-off-regras-nao-cumulativo-com-demais-cupons-sujeito-a-disponibilidade-do-estoque-sujeito-a-desativacao-sem-aviso-previo",
+      "scraped_at": "2026-07-06T21:59:10.681000Z",
+      "trace_id": "trace_p5o-make-descontos-progressivos-10-off",
+      "channel_message_id": 1723,
+      "channel_message_link": "https://t.me/c/3723320790/1723",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-07-06T22:00:43.412662Z"
     }
   ]
 }
