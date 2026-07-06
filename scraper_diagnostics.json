@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-06T20:37:05.614973Z",
+  "updated_at": "2026-07-06T20:47:52.250306Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 5,
-    "duplicada_latest": 4,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-itlia-sp",
       "reason": "duplicada_latest",
       "trace_id": "trace_p5f-2-ingressos-11-07-teatro-itlia-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5E-2-ingressos-11-07-teatro-itlia-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p5e-2-ingressos-11-07-teatro-itlia-sp"
     },
     {
       "title": "2 INGRESSOS: 10/07 Tetro UOL - SP",
