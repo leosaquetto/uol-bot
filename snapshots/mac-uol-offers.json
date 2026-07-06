@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 2
   },
-  "run_duration_ms": 274739,
-  "run_duration_seconds": 274.74,
-  "avg_detail_ms_per_offer": 22895,
-  "generated_at": "2026-07-06T08:13:45.159Z",
+  "run_duration_ms": 257873,
+  "run_duration_seconds": 257.87,
+  "avg_detail_ms_per_offer": 21489,
+  "generated_at": "2026-07-06T08:28:56.595Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12119,
-      "scraped_at": "2026-07-06T08:10:51.985Z"
+      "detail_elapsed_ms": 12084,
+      "scraped_at": "2026-07-06T08:26:19.870Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -65,8 +65,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12003,
-      "scraped_at": "2026-07-06T08:11:16.344Z"
+      "detail_elapsed_ms": 12060,
+      "scraped_at": "2026-07-06T08:26:44.362Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso",
       "title": "15% OFF na compra do ingresso",
       "preview_title": "15% OFF na compra do ingresso",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 02/07/2026 10:00 até 31/12/2030 23:59.",
+      "description": "Benefício: 15% OFF na compra do ingresso Regras: Ao chegar no parque, dirija-se diretamente às catracas com o ingresso impresso e os comprovantes de meia-entrada, se aplicável. Ingressos disponíveis apenas para visitas posteriores à data da compra (não-válidos para o mesmo dia). O cadastro do site deve ser no mesmo nome e CPF do titular do cartão de pagamento. É desejável fazer a compra em um dispositivo que você usa normalmente para outras compras na Internet. Promoção não-cumulativa com outras ofertas. Promoção válida apenas por meio dos cupons. Consulte as políticas e regras de cancelamento antes de realizar a compra. Em caso de dúvida, entre em contato pelo telefone: (54) 3282-5050 ou WhatsApp: (54) 3282-5050, diariamente das 9h30 às 16h30. Sujeito à desativação sem aviso prévio.",
       "category": "",
       "partner_name": "Parque Terra Mágica Florybal",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a6a0c0fad722303b9b33629459761928.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso\", waiting until \"domcontentloaded\"",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12020,
-      "scraped_at": "2026-07-06T08:11:40.648Z"
+      "detail_html_length": 132112,
+      "detail_elapsed_ms": 14812,
+      "scraped_at": "2026-07-06T08:27:11.530Z"
     },
     {
       "id": "p3x-20-de-desconto-em-seleo-de-produtos",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131625,
-      "detail_elapsed_ms": 13430,
-      "scraped_at": "2026-07-06T08:12:06.334Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131512,
+      "detail_elapsed_ms": 11957,
+      "scraped_at": "2026-07-06T08:27:23.487Z"
     },
     {
       "id": "p3s-ganhe-01-kookaburra-wings",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133653,
-      "detail_elapsed_ms": 12502,
-      "scraped_at": "2026-07-06T08:12:18.844Z"
+      "detail_html_length": 133536,
+      "detail_elapsed_ms": 11564,
+      "scraped_at": "2026-07-06T08:27:35.051Z"
     },
     {
       "id": "p3r-10-off-no-1-abastecimento-na-petrobras",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132129,
-      "detail_elapsed_ms": 11191,
-      "scraped_at": "2026-07-06T08:12:30.035Z"
+      "detail_html_length": 132308,
+      "detail_elapsed_ms": 13276,
+      "scraped_at": "2026-07-06T08:27:48.328Z"
     },
     {
       "id": "p3q-ganhe-01-laramora-340ml",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133598,
-      "detail_elapsed_ms": 12535,
-      "scraped_at": "2026-07-06T08:12:42.570Z"
+      "detail_html_length": 133479,
+      "detail_elapsed_ms": 10649,
+      "scraped_at": "2026-07-06T08:27:58.977Z"
     },
     {
       "id": "p3p-ganhe-01-cinnamon-oblivion",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133600,
-      "detail_elapsed_ms": 11253,
-      "scraped_at": "2026-07-06T08:12:53.823Z"
+      "detail_html_length": 133609,
+      "detail_elapsed_ms": 10084,
+      "scraped_at": "2026-07-06T08:28:09.061Z"
     },
     {
       "id": "p3o-10-de-desconto-em-seleo-de-itens",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130849,
-      "detail_elapsed_ms": 11381,
-      "scraped_at": "2026-07-06T08:13:05.204Z"
+      "detail_html_length": 130876,
+      "detail_elapsed_ms": 10386,
+      "scraped_at": "2026-07-06T08:28:19.447Z"
     },
     {
       "id": "p3n-brinde-surpresa-em-compras-de-r-349",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130945,
-      "detail_elapsed_ms": 12142,
-      "scraped_at": "2026-07-06T08:13:17.348Z"
+      "detail_html_length": 130973,
+      "detail_elapsed_ms": 11244,
+      "scraped_at": "2026-07-06T08:28:30.691Z"
     },
     {
       "id": "p3m-40-off-extra-em-seleo-feminina",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131099,
-      "detail_elapsed_ms": 14170,
-      "scraped_at": "2026-07-06T08:13:31.521Z"
+      "detail_html_length": 130700,
+      "detail_elapsed_ms": 11458,
+      "scraped_at": "2026-07-06T08:28:42.149Z"
     },
     {
       "id": "p3k-alugue-e-ganhe-bola-da-copa",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133077,
-      "detail_elapsed_ms": 12156,
-      "scraped_at": "2026-07-06T08:13:43.677Z"
+      "detail_html_length": 133097,
+      "detail_elapsed_ms": 12492,
+      "scraped_at": "2026-07-06T08:28:54.641Z"
     }
   ]
 }
