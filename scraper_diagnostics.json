@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-07T21:26:40.664251Z",
+  "updated_at": "2026-07-07T21:36:17.237621Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 4,
+    "duplicada_historico": 6,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/p6E-2-ingressos-17-07-casa-natura-musical",
       "reason": "duplicada_historico",
       "trace_id": "trace_p6e-2-ingressos-17-07-casa-natura-musical"
-    },
-    {
-      "title": "Ingressos Exclusivos",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p6C-2-ingressos-16-07-casa-natura-musical",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p6c-2-ingressos-16-07-casa-natura-musical"
     },
     {
       "title": "15% OFF em todo o site",
@@ -81,6 +75,12 @@
       "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
       "reason": "duplicada_latest",
       "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off"
+    },
+    {
+      "title": "Sale Moda Praia até 70% OFF + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off"
     }
   ]
 }
