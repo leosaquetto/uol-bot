@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 43087,
-  "run_duration_seconds": 43.09,
-  "avg_detail_ms_per_offer": 3591,
-  "generated_at": "2026-07-07T17:29:10.925Z",
+  "run_duration_ms": 54361,
+  "run_duration_seconds": 54.36,
+  "avg_detail_ms_per_offer": 4530,
+  "generated_at": "2026-07-07T17:38:36.481Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "p5x-at-30-off-em-todo-o-site-r-100-off",
+      "trace_id": "trace_p5x-at-30-off-em-todo-o-site-r-100-off",
+      "link": "https://clube.uol.com.br/panasonic/p5X-at-30-off-em-todo-o-site-r-100-off",
+      "original_link": "https://clube.uol.com.br/panasonic/p5X-at-30-off-em-todo-o-site-r-100-off",
+      "title": "Até 30% OFF em todo o site + R$ 100 OFF",
+      "preview_title": "Até 30% OFF em todo o site + R$ 100 OFF",
+      "validity": "Benefício válido de 04/07/2026 00:00 até 31/07/2026 23:59.",
+      "description": "Benefício: Até 30% OFF em todo o site + R$ 100 OFF Regras: Desconto válido em todo site, exceto peças e acessórios, até 31/07. Não cumulativo com demais cupons. Sujeito a disponibilidade e desativação, sem aviso prévio. Se for seu primeiro acesso, clique em \"Quero me cadastrar\", informe o código da parceria: 2604PROXY, preencha os seus dados.",
+      "category": "Eletrodomésticos e Eletrônicos",
+      "partner_name": "Panasonic",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/df209a939e42dcb321acae7060740191.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fca372824b276fbebe0f636e72ea2cd1.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fca372824b276fbebe0f636e72ea2cd1.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/fca372824b276fbebe0f636e72ea2cd1.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131307,
+      "detail_elapsed_ms": 3631,
+      "scraped_at": "2026-07-07T17:38:15.397Z"
+    },
     {
       "id": "p5s-at-15-off-na-hospedagem",
       "trace_id": "trace_p5s-at-15-off-na-hospedagem",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130400,
-      "detail_elapsed_ms": 2320,
-      "scraped_at": "2026-07-07T17:28:44.247Z"
+      "detail_html_length": 125444,
+      "detail_elapsed_ms": 2610,
+      "scraped_at": "2026-07-07T17:38:18.008Z"
     },
     {
       "id": "p5r-at-20-off-na-compra-do-ingresso",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131691,
-      "detail_elapsed_ms": 1672,
-      "scraped_at": "2026-07-07T17:28:45.919Z"
+      "detail_html_length": 125348,
+      "detail_elapsed_ms": 1830,
+      "scraped_at": "2026-07-07T17:38:19.839Z"
     },
     {
       "id": "p5q-at-15-off-na-hospedagem",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131968,
-      "detail_elapsed_ms": 1643,
-      "scraped_at": "2026-07-07T17:28:47.562Z"
+      "detail_html_length": 131928,
+      "detail_elapsed_ms": 2035,
+      "scraped_at": "2026-07-07T17:38:21.874Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130979,
-      "detail_elapsed_ms": 1475,
-      "scraped_at": "2026-07-07T17:28:49.037Z"
+      "detail_html_length": 130952,
+      "detail_elapsed_ms": 1963,
+      "scraped_at": "2026-07-07T17:38:23.837Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130758,
-      "detail_elapsed_ms": 2305,
-      "scraped_at": "2026-07-07T17:28:51.343Z"
+      "detail_html_length": 130740,
+      "detail_elapsed_ms": 1751,
+      "scraped_at": "2026-07-07T17:38:25.588Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124168,
-      "detail_elapsed_ms": 3017,
-      "scraped_at": "2026-07-07T17:28:54.361Z"
+      "detail_html_length": 130698,
+      "detail_elapsed_ms": 1877,
+      "scraped_at": "2026-07-07T17:38:27.465Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129370,
-      "detail_elapsed_ms": 2115,
-      "scraped_at": "2026-07-07T17:28:56.476Z"
+      "detail_html_length": 130893,
+      "detail_elapsed_ms": 1889,
+      "scraped_at": "2026-07-07T17:38:29.354Z"
     },
     {
       "id": "p5k-sale-lingerie-at-70-off-10-off",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130877,
-      "detail_elapsed_ms": 3702,
-      "scraped_at": "2026-07-07T17:29:00.178Z"
+      "detail_html_length": 130968,
+      "detail_elapsed_ms": 1860,
+      "scraped_at": "2026-07-07T17:38:31.214Z"
     },
     {
       "id": "p5j-sale-moda-praia-at-70-off-10-off",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130923,
-      "detail_elapsed_ms": 2078,
-      "scraped_at": "2026-07-07T17:29:02.257Z"
+      "detail_html_length": 130942,
+      "detail_elapsed_ms": 1709,
+      "scraped_at": "2026-07-07T17:38:32.923Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130907,
-      "detail_elapsed_ms": 2636,
-      "scraped_at": "2026-07-07T17:29:04.893Z"
+      "detail_html_length": 130918,
+      "detail_elapsed_ms": 1567,
+      "scraped_at": "2026-07-07T17:38:34.491Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131865,
-      "detail_elapsed_ms": 2234,
-      "scraped_at": "2026-07-07T17:29:07.127Z"
-    },
-    {
-      "id": "p4u-chuteiras-umbro-com-at-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "title": "Chuteiras Umbro com até 50% OFF",
-      "preview_title": "Chuteiras Umbro com até 50% OFF",
-      "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
-      "description": "Benefício: Chuteiras Umbro com até 50% OFF Regras: Desconto válido para seleção. Não cumulativo. Sujeito à desativação sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Centauro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132939,
-      "detail_elapsed_ms": 3519,
-      "scraped_at": "2026-07-07T17:29:10.646Z"
+      "detail_html_length": 131936,
+      "detail_elapsed_ms": 1780,
+      "scraped_at": "2026-07-07T17:38:36.271Z"
     }
   ]
 }
