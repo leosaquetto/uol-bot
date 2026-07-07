@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 54361,
-  "run_duration_seconds": 54.36,
-  "avg_detail_ms_per_offer": 4530,
-  "generated_at": "2026-07-07T17:38:36.481Z",
+  "run_duration_ms": 40554,
+  "run_duration_seconds": 40.55,
+  "avg_detail_ms_per_offer": 3380,
+  "generated_at": "2026-07-07T17:49:22.824Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "p5y-15-off-em-todo-o-site",
+      "trace_id": "trace_p5y-15-off-em-todo-o-site",
+      "link": "https://clube.uol.com.br/avon/p5Y-15-off-em-todo-o-site",
+      "original_link": "https://clube.uol.com.br/avon/p5Y-15-off-em-todo-o-site",
+      "title": "15% OFF em todo o site",
+      "preview_title": "15% OFF em todo o site",
+      "validity": "Benefício válido de 07/07/2026 14:39 até 31/07/2026 23:59.",
+      "description": "Benefício: 15% OFF em todo o site Regras: Válido em todo o site, exceto para as linhas Biome, Bothânica, Alta Perfumaria e sabonetes em barra promocionados; Limitado a 1 utilização por CPF. Sujeito à desativação sem aviso prévio.",
+      "category": "Saúde e Beleza",
+      "partner_name": "Avon",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/fec82108d2afc57d203556f516da83fe.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/426ace86fcc998a7d8649b0473867a40.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/426ace86fcc998a7d8649b0473867a40.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/426ace86fcc998a7d8649b0473867a40.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129487,
+      "detail_elapsed_ms": 2313,
+      "scraped_at": "2026-07-07T17:49:03.515Z"
+    },
     {
       "id": "p5x-at-30-off-em-todo-o-site-r-100-off",
       "trace_id": "trace_p5x-at-30-off-em-todo-o-site-r-100-off",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131307,
-      "detail_elapsed_ms": 3631,
-      "scraped_at": "2026-07-07T17:38:15.397Z"
+      "detail_html_length": 131447,
+      "detail_elapsed_ms": 1954,
+      "scraped_at": "2026-07-07T17:49:05.469Z"
     },
     {
       "id": "p5s-at-15-off-na-hospedagem",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125444,
-      "detail_elapsed_ms": 2610,
-      "scraped_at": "2026-07-07T17:38:18.008Z"
+      "detail_html_length": 131786,
+      "detail_elapsed_ms": 1867,
+      "scraped_at": "2026-07-07T17:49:07.336Z"
     },
     {
       "id": "p5r-at-20-off-na-compra-do-ingresso",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125348,
-      "detail_elapsed_ms": 1830,
-      "scraped_at": "2026-07-07T17:38:19.839Z"
+      "detail_html_length": 131731,
+      "detail_elapsed_ms": 1745,
+      "scraped_at": "2026-07-07T17:49:09.081Z"
     },
     {
       "id": "p5q-at-15-off-na-hospedagem",
@@ -104,17 +128,17 @@
       "category": "",
       "partner_name": "Costa do Sauípe",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/720ceefcfe6c2253d7f29e57c85c7122.jpg",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/11bf5a144a0f6f4506d9be2620d73016.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e77b1d6944dbc7c7da6c65a773c6c252.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/11bf5a144a0f6f4506d9be2620d73016.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/11bf5a144a0f6f4506d9be2620d73016.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e77b1d6944dbc7c7da6c65a773c6c252.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131928,
-      "detail_elapsed_ms": 2035,
-      "scraped_at": "2026-07-07T17:38:21.874Z"
+      "detail_html_length": 131958,
+      "detail_elapsed_ms": 1819,
+      "scraped_at": "2026-07-07T17:49:10.900Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130952,
-      "detail_elapsed_ms": 1963,
-      "scraped_at": "2026-07-07T17:38:23.837Z"
+      "detail_html_length": 130971,
+      "detail_elapsed_ms": 1691,
+      "scraped_at": "2026-07-07T17:49:12.591Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130740,
-      "detail_elapsed_ms": 1751,
-      "scraped_at": "2026-07-07T17:38:25.588Z"
+      "detail_html_length": 130759,
+      "detail_elapsed_ms": 1672,
+      "scraped_at": "2026-07-07T17:49:14.263Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130698,
-      "detail_elapsed_ms": 1877,
-      "scraped_at": "2026-07-07T17:38:27.465Z"
+      "detail_html_length": 130719,
+      "detail_elapsed_ms": 1693,
+      "scraped_at": "2026-07-07T17:49:15.956Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130893,
-      "detail_elapsed_ms": 1889,
-      "scraped_at": "2026-07-07T17:38:29.354Z"
+      "detail_html_length": 130934,
+      "detail_elapsed_ms": 1834,
+      "scraped_at": "2026-07-07T17:49:17.790Z"
     },
     {
       "id": "p5k-sale-lingerie-at-70-off-10-off",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130968,
-      "detail_elapsed_ms": 1860,
-      "scraped_at": "2026-07-07T17:38:31.214Z"
+      "detail_html_length": 130917,
+      "detail_elapsed_ms": 1764,
+      "scraped_at": "2026-07-07T17:49:19.554Z"
     },
     {
       "id": "p5j-sale-moda-praia-at-70-off-10-off",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130942,
-      "detail_elapsed_ms": 1709,
-      "scraped_at": "2026-07-07T17:38:32.923Z"
+      "detail_html_length": 130962,
+      "detail_elapsed_ms": 1649,
+      "scraped_at": "2026-07-07T17:49:21.204Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -281,32 +305,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130918,
-      "detail_elapsed_ms": 1567,
-      "scraped_at": "2026-07-07T17:38:34.491Z"
-    },
-    {
-      "id": "p5f-ms-retr-da-casa-do-drago-grtis",
-      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
-      "title": "Ímãs Retrô da Casa do Dragão grátis",
-      "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
-      "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
-      "description": "Sobre o parceiro: Registre seus melhores momentos em Fotolivros, Fotopresentes ou imprimindo Fotos para álbuns. Acesse agora mesmo FotoRegistro e faça o seu pedido. Benefício: Resgate agora 1 Kit de ímãs retrô com 12 unidades da Casa do Dragão da FotoRegistro. Regras: Oferta válida para 1 Kit com 12 unidades de Ímãs Retrô. Revestimento em folha magnética flexível. Acabamento em laminação brilho. Tamanho 7x9cm cada. Frete não incluso. Validade do cupom até 31/08/2026. Válido apenas para opção \"Personalize Agora\". Insira o código no campo \"Meu Carrinho - Cupom de desconto ou Vale\". Cupom não cumulativo com outras ofertas e de uso único por CPF. Atenção! Válido apenas para opção \"Personalize Agora\". Confira as demais regras no site do parceiro.",
-      "category": "Compras e Presentes",
-      "partner_name": "Foto Registro",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/74640cf488837ad6465832d76d0d2278.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dcb1017744e770e9992949d0bfa982a1.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131936,
-      "detail_elapsed_ms": 1780,
-      "scraped_at": "2026-07-07T17:38:36.271Z"
+      "detail_elapsed_ms": 1540,
+      "scraped_at": "2026-07-07T17:49:22.744Z"
     }
   ]
 }
