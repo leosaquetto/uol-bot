@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-07T02:54:56.403205Z",
+  "updated_at": "2026-07-07T03:04:55.897105Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 3,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 7,
-    "duplicada_latest": 3,
+    "duplicada_latest": 2,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -57,12 +57,6 @@
       "link": "https://clube.uol.com.br/marcyn/p5I-tudo-por-50-moda-praia-10-off",
       "reason": "duplicada_historico",
       "trace_id": "trace_p5i-tudo-por-50-moda-praia-10-off"
-    },
-    {
-      "title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-itlia-sp",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p5f-2-ingressos-11-07-teatro-itlia-sp"
     },
     {
       "title": "2 INGRESSOS: 10/07 Tetro UOL - SP",
