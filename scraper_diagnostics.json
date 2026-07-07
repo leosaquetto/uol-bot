@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-07-07T21:25:27.714566Z",
+  "updated_at": "2026-07-07T21:26:40.664251Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 2,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
+    "duplicada_historico": 7,
     "duplicada_latest": 4,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 17/07 Casa Natura Musical",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p6E-2-ingressos-17-07-casa-natura-musical",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p6e-2-ingressos-17-07-casa-natura-musical"
+    },
     {
       "title": "Ingressos Exclusivos",
       "link": "https://clube.uol.com.br/campanhasdeingresso/p6C-2-ingressos-16-07-casa-natura-musical",
