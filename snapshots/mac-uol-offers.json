@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 81463,
-  "run_duration_seconds": 81.46,
-  "avg_detail_ms_per_offer": 6789,
-  "generated_at": "2026-07-07T16:01:54.567Z",
+  "run_duration_ms": 64938,
+  "run_duration_seconds": 64.94,
+  "avg_detail_ms_per_offer": 5412,
+  "generated_at": "2026-07-07T16:13:12.095Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131645,
-      "detail_elapsed_ms": 8263,
-      "scraped_at": "2026-07-07T16:01:27.615Z"
+      "detail_html_length": 131651,
+      "detail_elapsed_ms": 6014,
+      "scraped_at": "2026-07-07T16:12:50.528Z"
     },
     {
       "id": "p5r-at-20-off-na-compra-do-ingresso",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125317,
-      "detail_elapsed_ms": 2717,
-      "scraped_at": "2026-07-07T16:01:30.333Z"
+      "detail_html_length": 125339,
+      "detail_elapsed_ms": 2602,
+      "scraped_at": "2026-07-07T16:12:53.130Z"
     },
     {
       "id": "p5q-at-15-off-na-hospedagem",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127058,
-      "detail_elapsed_ms": 2384,
-      "scraped_at": "2026-07-07T16:01:32.717Z"
+      "detail_html_length": 131930,
+      "detail_elapsed_ms": 2267,
+      "scraped_at": "2026-07-07T16:12:55.397Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129752,
-      "detail_elapsed_ms": 2398,
-      "scraped_at": "2026-07-07T16:01:35.115Z"
+      "detail_html_length": 129783,
+      "detail_elapsed_ms": 3517,
+      "scraped_at": "2026-07-07T16:12:58.914Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130749,
-      "detail_elapsed_ms": 2452,
-      "scraped_at": "2026-07-07T16:01:37.567Z"
+      "detail_html_length": 130731,
+      "detail_elapsed_ms": 1533,
+      "scraped_at": "2026-07-07T16:13:00.448Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130679,
-      "detail_elapsed_ms": 2818,
-      "scraped_at": "2026-07-07T16:01:40.385Z"
+      "detail_html_length": 130741,
+      "detail_elapsed_ms": 1616,
+      "scraped_at": "2026-07-07T16:13:02.064Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130872,
-      "detail_elapsed_ms": 2350,
-      "scraped_at": "2026-07-07T16:01:42.735Z"
+      "detail_html_length": 130894,
+      "detail_elapsed_ms": 1536,
+      "scraped_at": "2026-07-07T16:13:03.600Z"
     },
     {
       "id": "p5k-sale-lingerie-at-70-off-10-off",
@@ -209,8 +209,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130898,
-      "detail_elapsed_ms": 2065,
-      "scraped_at": "2026-07-07T16:01:44.800Z"
+      "detail_elapsed_ms": 1530,
+      "scraped_at": "2026-07-07T16:13:05.130Z"
     },
     {
       "id": "p5j-sale-moda-praia-at-70-off-10-off",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130912,
-      "detail_elapsed_ms": 2732,
-      "scraped_at": "2026-07-07T16:01:47.532Z"
+      "detail_html_length": 130993,
+      "detail_elapsed_ms": 1856,
+      "scraped_at": "2026-07-07T16:13:06.986Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -256,33 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130867,
-      "detail_elapsed_ms": 2383,
-      "scraped_at": "2026-07-07T16:01:49.915Z"
-    },
-    {
-      "id": "p59-2-ingressos-10-07-tetro-uol-sp",
-      "trace_id": "trace_p59-2-ingressos-10-07-tetro-uol-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p59-2-ingressos-10-07-tetro-uol-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p59-2-ingressos-10-07-tetro-uol-sp",
-      "title": "2 INGRESSOS: 10/07 Tetro UOL - SP",
-      "preview_title": "2 INGRESSOS: 10/07 Tetro UOL - SP",
-      "validity": "Benefício válido de 06/07/2026 12:55 até 09/07/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e viva momentos de muita emoção em um espetáculo imperdível no Teatro UOL, no Shopping Pátio Higienópolis (SP). Data: 10 de Julho de 2026. Local: Av. Higienópolis, 618 - São Paulo/SP. Importante: O voucher inclui 01 par de ingressos. Escolha o horário e o espetáculo de sua preferência no site, utilizando o link indicado na descrição das regras. Como resgatar meu benefício: Cada códigos vale 01 par e são válidos para resgate de peças até o dia 10 de Julho de 2026. Clique no link abaixo e fique atento ao prazo de validade. 1 - Clique no link: https://teatrouol.showare.com.br/?websaleschannelkey=uol13 2 - Escolha a peça que gostaria de assistir e clique em COMPRAR; 3 - Insira o seu código e clique em Avançar: 4 - Escolha dois lugares disponíveis: 5 - Faça o cadastro e resgate o seu par de ingressos: Bom espetáculo! REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2c356fc8cdfb9d3ee9edd08b81ecd943.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2c356fc8cdfb9d3ee9edd08b81ecd943.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2c356fc8cdfb9d3ee9edd08b81ecd943.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132371,
-      "detail_elapsed_ms": 2018,
-      "scraped_at": "2026-07-07T16:01:51.933Z"
+      "detail_html_length": 130898,
+      "detail_elapsed_ms": 1657,
+      "scraped_at": "2026-07-07T16:13:08.643Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132355,
-      "detail_elapsed_ms": 2170,
-      "scraped_at": "2026-07-07T16:01:54.103Z"
+      "detail_html_length": 131917,
+      "detail_elapsed_ms": 1614,
+      "scraped_at": "2026-07-07T16:13:10.257Z"
+    },
+    {
+      "id": "p4u-chuteiras-umbro-com-at-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "title": "Chuteiras Umbro com até 50% OFF",
+      "preview_title": "Chuteiras Umbro com até 50% OFF",
+      "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
+      "description": "Benefício: Chuteiras Umbro com até 50% OFF Regras: Desconto válido para seleção. Não cumulativo. Sujeito à desativação sem aviso prévio.",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Centauro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/ff656024e9d9898bb0cf2e30a5e22b24.jpg",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/aa1e244603da7f3f5f9b0277a6e88694.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132952,
+      "detail_elapsed_ms": 1711,
+      "scraped_at": "2026-07-07T16:13:11.968Z"
     }
   ]
 }
