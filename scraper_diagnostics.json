@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-07-07T01:29:26.160612Z",
+  "updated_at": "2026-07-07T01:33:37.270220Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
-    "duplicada_latest": 0,
+    "duplicada_historico": 7,
+    "duplicada_latest": 3,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -42,15 +42,15 @@
     },
     {
       "title": "Sale Lingerie até 70% OFF + 10% OFF",
-      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p5k-sale-lingerie-ate-70-off-10-off"
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off"
     },
     {
       "title": "Sale Moda Praia até 70% OFF + 10% OFF",
-      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p5j-sale-moda-praia-ate-70-off-10-off"
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off"
     },
     {
       "title": "Tudo por 50% (moda praia) + 10% OFF",
@@ -59,16 +59,10 @@
       "trace_id": "trace_p5i-tudo-por-50-moda-praia-10-off"
     },
     {
-      "title": "2 INGRESSOS: 12/07 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5G-2-ingressos-12-07-teatro-italia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p5g-2-ingressos-12-07-teatro-italia-sp"
-    },
-    {
       "title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-italia-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p5f-2-ingressos-11-07-teatro-italia-sp"
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-itlia-sp",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5f-2-ingressos-11-07-teatro-itlia-sp"
     },
     {
       "title": "2 INGRESSOS: 10/07 Tetro UOL - SP",
@@ -77,16 +71,10 @@
       "trace_id": "trace_p59-2-ingressos-10-07-tetro-uol-sp"
     },
     {
-      "title": "Ímãs Retrô da Casa do Dragão grátis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
+      "title": "15% OFF na compra do ingresso",
+      "link": "https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso",
       "reason": "duplicada_historico",
-      "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis"
-    },
-    {
-      "title": "Chuteiras Umbro com até 50% OFF",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off"
+      "trace_id": "trace_p3y-15-off-na-compra-do-ingresso"
     }
   ]
 }
