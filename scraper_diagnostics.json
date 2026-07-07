@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-07-07T14:15:12.800180Z",
+  "updated_at": "2026-07-07T14:16:29.829610Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "Até 20% OFF na compra do ingresso",
+      "link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5r-ate-20-off-na-compra-do-ingresso"
+    },
     {
       "title": "Até 15% OFF na hospedagem",
       "link": "https://clube.uol.com.br/costadosauipe/p5Q-ate-15-off-na-hospedagem",
