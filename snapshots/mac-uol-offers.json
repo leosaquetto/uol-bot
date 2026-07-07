@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 45890,
-  "run_duration_seconds": 45.89,
-  "avg_detail_ms_per_offer": 3824,
-  "generated_at": "2026-07-07T01:05:40.242Z",
+  "run_duration_ms": 38821,
+  "run_duration_seconds": 38.82,
+  "avg_detail_ms_per_offer": 3235,
+  "generated_at": "2026-07-07T01:21:24.597Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130773,
-      "detail_elapsed_ms": 4566,
-      "scraped_at": "2026-07-07T01:05:15.182Z"
+      "detail_html_length": 130798,
+      "detail_elapsed_ms": 2616,
+      "scraped_at": "2026-07-07T01:21:06.305Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130738,
-      "detail_elapsed_ms": 2145,
-      "scraped_at": "2026-07-07T01:05:17.328Z"
+      "detail_html_length": 130736,
+      "detail_elapsed_ms": 1999,
+      "scraped_at": "2026-07-07T01:21:08.305Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130718,
-      "detail_elapsed_ms": 2093,
-      "scraped_at": "2026-07-07T01:05:19.421Z"
+      "detail_html_length": 130725,
+      "detail_elapsed_ms": 1626,
+      "scraped_at": "2026-07-07T01:21:09.931Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 2012,
-      "scraped_at": "2026-07-07T01:05:21.434Z"
+      "detail_html_length": 130920,
+      "detail_elapsed_ms": 1632,
+      "scraped_at": "2026-07-07T01:21:11.564Z"
     },
     {
-      "id": "p5k-sale-lingerie-at-70-off-10-off",
-      "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
+      "id": "p5k-sale-lingerie-ate-70-off-10-off",
+      "trace_id": "trace_p5k-sale-lingerie-ate-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
       "title": "Sale Lingerie até 70% OFF + 10% OFF",
       "preview_title": "Sale Lingerie até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:31 até 31/07/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130926,
-      "detail_elapsed_ms": 3114,
-      "scraped_at": "2026-07-07T01:05:24.548Z"
+      "detail_html_length": 130939,
+      "detail_elapsed_ms": 1498,
+      "scraped_at": "2026-07-07T01:21:13.062Z"
     },
     {
-      "id": "p5j-sale-moda-praia-at-70-off-10-off",
-      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "id": "p5j-sale-moda-praia-ate-70-off-10-off",
+      "trace_id": "trace_p5j-sale-moda-praia-ate-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
       "title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "preview_title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:27 até 31/07/2026 23:59.",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130911,
-      "detail_elapsed_ms": 2084,
-      "scraped_at": "2026-07-07T01:05:26.632Z"
+      "detail_html_length": 130963,
+      "detail_elapsed_ms": 1632,
+      "scraped_at": "2026-07-07T01:21:14.694Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130886,
-      "detail_elapsed_ms": 1867,
-      "scraped_at": "2026-07-07T01:05:28.500Z"
+      "detail_html_length": 130933,
+      "detail_elapsed_ms": 1635,
+      "scraped_at": "2026-07-07T01:21:16.329Z"
     },
     {
-      "id": "p5g-2-ingressos-12-07-teatro-itlia-sp",
-      "trace_id": "trace_p5g-2-ingressos-12-07-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5G-2-ingressos-12-07-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5G-2-ingressos-12-07-teatro-itlia-sp",
+      "id": "p5g-2-ingressos-12-07-teatro-italia-sp",
+      "trace_id": "trace_p5g-2-ingressos-12-07-teatro-italia-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p5G-2-ingressos-12-07-teatro-italia-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5G-2-ingressos-12-07-teatro-italia-sp",
       "title": "2 INGRESSOS: 12/07 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 12/07 Teatro Itália - SP",
       "validity": "Benefício válido de 06/07/2026 16:15 até 11/07/2026 19:30.",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133042,
-      "detail_elapsed_ms": 1806,
-      "scraped_at": "2026-07-07T01:05:30.306Z"
+      "detail_html_length": 133115,
+      "detail_elapsed_ms": 1554,
+      "scraped_at": "2026-07-07T01:21:17.883Z"
     },
     {
-      "id": "p5f-2-ingressos-11-07-teatro-itlia-sp",
-      "trace_id": "trace_p5f-2-ingressos-11-07-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-itlia-sp",
+      "id": "p5f-2-ingressos-11-07-teatro-italia-sp",
+      "trace_id": "trace_p5f-2-ingressos-11-07-teatro-italia-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-italia-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-italia-sp",
       "title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
       "preview_title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
       "validity": "Benefício válido de 06/07/2026 16:15 até 10/07/2026 19:30.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133004,
-      "detail_elapsed_ms": 2040,
-      "scraped_at": "2026-07-07T01:05:32.346Z"
+      "detail_html_length": 133054,
+      "detail_elapsed_ms": 1603,
+      "scraped_at": "2026-07-07T01:21:19.487Z"
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133520,
-      "detail_elapsed_ms": 2782,
-      "scraped_at": "2026-07-07T01:05:35.129Z"
+      "detail_html_length": 133576,
+      "detail_elapsed_ms": 1797,
+      "scraped_at": "2026-07-07T01:21:21.284Z"
     },
     {
-      "id": "p5f-ms-retr-da-casa-do-drago-grtis",
-      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "id": "p5f-imas-retro-da-casa-do-dragao-gratis",
+      "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
       "title": "Ímãs Retrô da Casa do Dragão grátis",
       "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
       "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131885,
-      "detail_elapsed_ms": 2808,
-      "scraped_at": "2026-07-07T01:05:37.937Z"
+      "detail_html_length": 131918,
+      "detail_elapsed_ms": 1641,
+      "scraped_at": "2026-07-07T01:21:22.926Z"
     },
     {
-      "id": "p4u-chuteiras-umbro-com-at-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "id": "p4u-chuteiras-umbro-com-ate-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
       "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132938,
-      "detail_elapsed_ms": 1959,
-      "scraped_at": "2026-07-07T01:05:39.896Z"
+      "detail_html_length": 133021,
+      "detail_elapsed_ms": 1558,
+      "scraped_at": "2026-07-07T01:21:24.485Z"
     }
   ]
 }
