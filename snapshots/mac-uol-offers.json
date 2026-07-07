@@ -14,17 +14,41 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 31935,
-  "run_duration_seconds": 31.93,
-  "avg_detail_ms_per_offer": 2661,
-  "generated_at": "2026-07-07T14:03:34.519Z",
+  "run_duration_ms": 30662,
+  "run_duration_seconds": 30.66,
+  "avg_detail_ms_per_offer": 2555,
+  "generated_at": "2026-07-07T14:14:11.889Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "p5q-at-15-off-na-hospedagem",
-      "trace_id": "trace_p5q-at-15-off-na-hospedagem",
-      "link": "https://clube.uol.com.br/costadosauipe/p5Q-at-15-off-na-hospedagem",
-      "original_link": "https://clube.uol.com.br/costadosauipe/p5Q-at-15-off-na-hospedagem",
+      "id": "p5r-ate-20-off-na-compra-do-ingresso",
+      "trace_id": "trace_p5r-ate-20-off-na-compra-do-ingresso",
+      "link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
+      "original_link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
+      "title": "Até 20% OFF na compra do ingresso",
+      "preview_title": "Até 20% OFF na compra do ingresso",
+      "validity": "Benefício válido de 07/07/2026 10:58 até 29/11/2028 23:59.",
+      "description": "Benefício: 20% OFF na compra do ingresso Regras: Entre em contato pelo telefone ou WhatsApp 11 4000-1449 e informe o código PARCAVICLBEN; ATENÇÃO: condição não-válida para reservas pelo site; Desconto aplicado sobre o valor do lote vigente; Promoção não cumulativa; Todos os hóspedes do Rio Quente Resorts contam com acesso gratuito ao Hot Park; Às quintas-feiras, o Hot Park está fechado para manutenção; As opções de lazer opcional não estão inclusas no ingresso e não são elegíveis às condições da parceria; Condições sujeitas à disponibilidade no período desejado e válidas para reservas até 29/05/2028, com utilização até 29/11/2028; Sujeito à desativação sem aviso prévio.",
+      "category": "",
+      "partner_name": "Hot Park",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/593cd46a66fda82b6c7828e5f30b89af.jpg",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a9cf044bb55d10fea46f88bcce53e319.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a9cf044bb55d10fea46f88bcce53e319.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a9cf044bb55d10fea46f88bcce53e319.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131572,
+      "detail_elapsed_ms": 2469,
+      "scraped_at": "2026-07-07T14:13:54.390Z"
+    },
+    {
+      "id": "p5q-ate-15-off-na-hospedagem",
+      "trace_id": "trace_p5q-ate-15-off-na-hospedagem",
+      "link": "https://clube.uol.com.br/costadosauipe/p5Q-ate-15-off-na-hospedagem",
+      "original_link": "https://clube.uol.com.br/costadosauipe/p5Q-ate-15-off-na-hospedagem",
       "title": "Até 15% OFF na hospedagem",
       "preview_title": "Até 15% OFF na hospedagem",
       "validity": "Benefício válido de 07/07/2026 10:24 até 29/11/2028 23:59.",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130267,
-      "detail_elapsed_ms": 2365,
-      "scraped_at": "2026-07-07T14:03:14.488Z"
+      "detail_html_length": 131942,
+      "detail_elapsed_ms": 1622,
+      "scraped_at": "2026-07-07T14:13:56.012Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130912,
-      "detail_elapsed_ms": 2317,
-      "scraped_at": "2026-07-07T14:03:16.805Z"
+      "detail_html_length": 130981,
+      "detail_elapsed_ms": 1475,
+      "scraped_at": "2026-07-07T14:13:57.487Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130720,
-      "detail_elapsed_ms": 1816,
-      "scraped_at": "2026-07-07T14:03:18.621Z"
+      "detail_html_length": 130778,
+      "detail_elapsed_ms": 1583,
+      "scraped_at": "2026-07-07T14:13:59.070Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130730,
-      "detail_elapsed_ms": 2546,
-      "scraped_at": "2026-07-07T14:03:21.167Z"
+      "detail_html_length": 130748,
+      "detail_elapsed_ms": 1671,
+      "scraped_at": "2026-07-07T14:14:00.743Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -136,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130883,
-      "detail_elapsed_ms": 1663,
-      "scraped_at": "2026-07-07T14:03:22.831Z"
+      "detail_html_length": 130943,
+      "detail_elapsed_ms": 1476,
+      "scraped_at": "2026-07-07T14:14:02.219Z"
     },
     {
-      "id": "p5k-sale-lingerie-at-70-off-10-off",
-      "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
+      "id": "p5k-sale-lingerie-ate-70-off-10-off",
+      "trace_id": "trace_p5k-sale-lingerie-ate-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
       "title": "Sale Lingerie até 70% OFF + 10% OFF",
       "preview_title": "Sale Lingerie até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:31 até 31/07/2026 23:59.",
@@ -160,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130896,
-      "detail_elapsed_ms": 1435,
-      "scraped_at": "2026-07-07T14:03:24.266Z"
+      "detail_html_length": 130944,
+      "detail_elapsed_ms": 1484,
+      "scraped_at": "2026-07-07T14:14:03.703Z"
     },
     {
-      "id": "p5j-sale-moda-praia-at-70-off-10-off",
-      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "id": "p5j-sale-moda-praia-ate-70-off-10-off",
+      "trace_id": "trace_p5j-sale-moda-praia-ate-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
       "title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "preview_title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:27 até 31/07/2026 23:59.",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130964,
-      "detail_elapsed_ms": 1805,
-      "scraped_at": "2026-07-07T14:03:26.071Z"
+      "detail_html_length": 130987,
+      "detail_elapsed_ms": 1579,
+      "scraped_at": "2026-07-07T14:14:05.282Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130917,
-      "detail_elapsed_ms": 1817,
-      "scraped_at": "2026-07-07T14:03:27.888Z"
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 1681,
+      "scraped_at": "2026-07-07T14:14:06.963Z"
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
@@ -232,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134046,
-      "detail_elapsed_ms": 1640,
-      "scraped_at": "2026-07-07T14:03:29.528Z"
+      "detail_html_length": 133579,
+      "detail_elapsed_ms": 1854,
+      "scraped_at": "2026-07-07T14:14:08.817Z"
     },
     {
-      "id": "p5f-ms-retr-da-casa-do-drago-grtis",
-      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "id": "p5f-imas-retro-da-casa-do-dragao-gratis",
+      "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
       "title": "Ímãs Retrô da Casa do Dragão grátis",
       "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
       "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
@@ -256,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131927,
-      "detail_elapsed_ms": 1604,
-      "scraped_at": "2026-07-07T14:03:31.132Z"
+      "detail_html_length": 131971,
+      "detail_elapsed_ms": 1488,
+      "scraped_at": "2026-07-07T14:14:10.306Z"
     },
     {
-      "id": "p4u-chuteiras-umbro-com-at-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "id": "p4u-chuteiras-umbro-com-ate-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
       "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132969,
-      "detail_elapsed_ms": 1683,
-      "scraped_at": "2026-07-07T14:03:32.815Z"
-    },
-    {
-      "id": "p3y-15-off-na-compra-do-ingresso",
-      "trace_id": "trace_p3y-15-off-na-compra-do-ingresso",
-      "link": "https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso",
-      "original_link": "https://clube.uol.com.br/parqueterramagicaflorybal%20/p3Y-15-off-na-compra-do-ingresso",
-      "title": "15% OFF na compra do ingresso",
-      "preview_title": "15% OFF na compra do ingresso",
-      "validity": "Benefício válido de 02/07/2026 10:00 até 31/12/2030 23:59.",
-      "description": "Benefício: 15% OFF na compra do ingresso Regras: Ao chegar no parque, dirija-se diretamente às catracas com o ingresso impresso e os comprovantes de meia-entrada, se aplicável. Ingressos disponíveis apenas para visitas posteriores à data da compra (não-válidos para o mesmo dia). O cadastro do site deve ser no mesmo nome e CPF do titular do cartão de pagamento. É desejável fazer a compra em um dispositivo que você usa normalmente para outras compras na Internet. Promoção não-cumulativa com outras ofertas. Promoção válida apenas por meio dos cupons. Consulte as políticas e regras de cancelamento antes de realizar a compra. Em caso de dúvida, entre em contato pelo telefone: (54) 3282-5050 ou WhatsApp: (54) 3282-5050, diariamente das 9h30 às 16h30. Sujeito à desativação sem aviso prévio.",
-      "category": "",
-      "partner_name": "Parque Terra Mágica Florybal",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/a6a0c0fad722303b9b33629459761928.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3d37099a81807e78aa371feead984840.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132002,
-      "detail_elapsed_ms": 1623,
-      "scraped_at": "2026-07-07T14:03:34.438Z"
+      "detail_html_length": 133023,
+      "detail_elapsed_ms": 1469,
+      "scraped_at": "2026-07-07T14:14:11.776Z"
     }
   ]
 }
