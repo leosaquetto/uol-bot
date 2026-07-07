@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 27120,
-  "run_duration_seconds": 27.12,
-  "avg_detail_ms_per_offer": 2260,
-  "generated_at": "2026-07-07T11:45:39.644Z",
+  "run_duration_ms": 30849,
+  "run_duration_seconds": 30.85,
+  "avg_detail_ms_per_offer": 2571,
+  "generated_at": "2026-07-07T11:56:17.598Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130782,
-      "detail_elapsed_ms": 2536,
-      "scraped_at": "2026-07-07T11:45:22.999Z"
+      "detail_html_length": 129623,
+      "detail_elapsed_ms": 2013,
+      "scraped_at": "2026-07-07T11:55:57.488Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130753,
-      "detail_elapsed_ms": 1544,
-      "scraped_at": "2026-07-07T11:45:24.543Z"
+      "detail_html_length": 130739,
+      "detail_elapsed_ms": 1912,
+      "scraped_at": "2026-07-07T11:55:59.400Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130733,
-      "detail_elapsed_ms": 1521,
-      "scraped_at": "2026-07-07T11:45:26.064Z"
+      "detail_html_length": 130719,
+      "detail_elapsed_ms": 1821,
+      "scraped_at": "2026-07-07T11:56:01.223Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130947,
-      "detail_elapsed_ms": 1496,
-      "scraped_at": "2026-07-07T11:45:27.561Z"
+      "detail_html_length": 130923,
+      "detail_elapsed_ms": 1897,
+      "scraped_at": "2026-07-07T11:56:03.120Z"
     },
     {
-      "id": "p5k-sale-lingerie-ate-70-off-10-off",
-      "trace_id": "trace_p5k-sale-lingerie-ate-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
+      "id": "p5k-sale-lingerie-at-70-off-10-off",
+      "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
       "title": "Sale Lingerie até 70% OFF + 10% OFF",
       "preview_title": "Sale Lingerie até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:31 até 31/07/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130956,
-      "detail_elapsed_ms": 1528,
-      "scraped_at": "2026-07-07T11:45:29.089Z"
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 1448,
+      "scraped_at": "2026-07-07T11:56:04.568Z"
     },
     {
-      "id": "p5j-sale-moda-praia-ate-70-off-10-off",
-      "trace_id": "trace_p5j-sale-moda-praia-ate-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
+      "id": "p5j-sale-moda-praia-at-70-off-10-off",
+      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
       "title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "preview_title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:27 até 31/07/2026 23:59.",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130991,
-      "detail_elapsed_ms": 1485,
-      "scraped_at": "2026-07-07T11:45:30.574Z"
+      "detail_html_length": 130961,
+      "detail_elapsed_ms": 1834,
+      "scraped_at": "2026-07-07T11:56:06.402Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130940,
-      "detail_elapsed_ms": 1498,
-      "scraped_at": "2026-07-07T11:45:32.073Z"
+      "detail_html_length": 130937,
+      "detail_elapsed_ms": 1668,
+      "scraped_at": "2026-07-07T11:56:08.070Z"
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133593,
-      "detail_elapsed_ms": 1426,
-      "scraped_at": "2026-07-07T11:45:33.499Z"
+      "detail_html_length": 133560,
+      "detail_elapsed_ms": 1585,
+      "scraped_at": "2026-07-07T11:56:09.655Z"
     },
     {
-      "id": "p5f-imas-retro-da-casa-do-dragao-gratis",
-      "trace_id": "trace_p5f-imas-retro-da-casa-do-dragao-gratis",
-      "link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
-      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-imas-retro-da-casa-do-dragao-gratis",
+      "id": "p5f-ms-retr-da-casa-do-drago-grtis",
+      "trace_id": "trace_p5f-ms-retr-da-casa-do-drago-grtis",
+      "link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
+      "original_link": "https://clube.uol.com.br/fotoregistro/p5f-ms-retr-da-casa-do-drago-grtis",
       "title": "Ímãs Retrô da Casa do Dragão grátis",
       "preview_title": "Ímãs Retrô da Casa do Dragão grátis",
       "validity": "Benefício válido de 03/07/2026 14:49 até 31/08/2026 23:59.",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131964,
-      "detail_elapsed_ms": 1836,
-      "scraped_at": "2026-07-07T11:45:35.335Z"
+      "detail_html_length": 131941,
+      "detail_elapsed_ms": 2030,
+      "scraped_at": "2026-07-07T11:56:11.685Z"
     },
     {
-      "id": "p4u-chuteiras-umbro-com-ate-50-off",
-      "trace_id": "trace_p4u-chuteiras-umbro-com-ate-50-off",
-      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
-      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-ate-50-off",
+      "id": "p4u-chuteiras-umbro-com-at-50-off",
+      "trace_id": "trace_p4u-chuteiras-umbro-com-at-50-off",
+      "link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
+      "original_link": "https://clube.uol.com.br/centauro/p4U-chuteiras-umbro-com-at-50-off",
       "title": "Chuteiras Umbro com até 50% OFF",
       "preview_title": "Chuteiras Umbro com até 50% OFF",
       "validity": "Benefício válido de 02/07/2026 18:05 até 15/07/2026 23:59.",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133008,
-      "detail_elapsed_ms": 1494,
-      "scraped_at": "2026-07-07T11:45:36.829Z"
+      "detail_html_length": 132997,
+      "detail_elapsed_ms": 1744,
+      "scraped_at": "2026-07-07T11:56:13.429Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132428,
-      "detail_elapsed_ms": 1338,
-      "scraped_at": "2026-07-07T11:45:38.167Z"
+      "detail_html_length": 132010,
+      "detail_elapsed_ms": 1583,
+      "scraped_at": "2026-07-07T11:56:15.012Z"
     },
     {
-      "id": "p3x-20-de-desconto-em-selecao-de-produtos",
-      "trace_id": "trace_p3x-20-de-desconto-em-selecao-de-produtos",
-      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
-      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-selecao-de-produtos",
+      "id": "p3x-20-de-desconto-em-seleo-de-produtos",
+      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
       "title": "20% de desconto em seleção de produtos",
       "preview_title": "20% de desconto em seleção de produtos",
       "validity": "Benefício válido de 02/07/2026 00:00 até 02/08/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131567,
-      "detail_elapsed_ms": 1413,
-      "scraped_at": "2026-07-07T11:45:39.580Z"
+      "detail_html_length": 131522,
+      "detail_elapsed_ms": 1794,
+      "scraped_at": "2026-07-07T11:56:16.806Z"
     }
   ]
 }
