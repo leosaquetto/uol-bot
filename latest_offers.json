@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-07T14:37:30.082981Z",
+  "last_update": "2026-07-07T14:46:54.650869Z",
   "offers": [
     {
       "id": "p5i-2-ingressos-12-07-teatro-j-safra-sp",
@@ -439,7 +439,8 @@
       "channel_message_link": "https://t.me/c/3723320790/1725",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-07T14:15:28.941150Z"
+      "sent_at": "2026-07-07T14:15:28.941150Z",
+      "sold_out_at": "11:46"
     }
   ]
 }
