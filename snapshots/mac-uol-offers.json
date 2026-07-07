@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 43436,
-  "run_duration_seconds": 43.44,
-  "avg_detail_ms_per_offer": 3620,
-  "generated_at": "2026-07-07T02:53:08.757Z",
+  "run_duration_ms": 49417,
+  "run_duration_seconds": 49.42,
+  "avg_detail_ms_per_offer": 4118,
+  "generated_at": "2026-07-07T03:04:04.818Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129192,
-      "detail_elapsed_ms": 2725,
-      "scraped_at": "2026-07-07T02:52:47.082Z"
+      "detail_html_length": 129528,
+      "detail_elapsed_ms": 3282,
+      "scraped_at": "2026-07-07T03:03:42.346Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129569,
-      "detail_elapsed_ms": 2371,
-      "scraped_at": "2026-07-07T02:52:49.453Z"
+      "detail_html_length": 124366,
+      "detail_elapsed_ms": 2723,
+      "scraped_at": "2026-07-07T03:03:45.069Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130668,
-      "detail_elapsed_ms": 1998,
-      "scraped_at": "2026-07-07T02:52:51.451Z"
+      "detail_html_length": 130690,
+      "detail_elapsed_ms": 1994,
+      "scraped_at": "2026-07-07T03:03:47.063Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130892,
-      "detail_elapsed_ms": 1800,
-      "scraped_at": "2026-07-07T02:52:53.252Z"
+      "detail_html_length": 130863,
+      "detail_elapsed_ms": 1852,
+      "scraped_at": "2026-07-07T03:03:48.915Z"
     },
     {
       "id": "p5k-sale-lingerie-at-70-off-10-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130888,
-      "detail_elapsed_ms": 2167,
-      "scraped_at": "2026-07-07T02:52:55.420Z"
+      "detail_html_length": 130878,
+      "detail_elapsed_ms": 2426,
+      "scraped_at": "2026-07-07T03:03:51.341Z"
     },
     {
       "id": "p5j-sale-moda-praia-at-70-off-10-off",
@@ -161,8 +161,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 130912,
-      "detail_elapsed_ms": 1954,
-      "scraped_at": "2026-07-07T02:52:57.374Z"
+      "detail_elapsed_ms": 2096,
+      "scraped_at": "2026-07-07T03:03:53.437Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -184,33 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130865,
-      "detail_elapsed_ms": 1888,
-      "scraped_at": "2026-07-07T02:52:59.262Z"
-    },
-    {
-      "id": "p5f-2-ingressos-11-07-teatro-itlia-sp",
-      "trace_id": "trace_p5f-2-ingressos-11-07-teatro-itlia-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-itlia-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p5F-2-ingressos-11-07-teatro-itlia-sp",
-      "title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
-      "preview_title": "2 INGRESSOS: 11/07 Teatro Itália - SP",
-      "validity": "Benefício válido de 06/07/2026 16:15 até 10/07/2026 19:30.",
-      "description": "Assinante UOL, aproveite! Resgate 1 par de ingressos para “Katharine – O Estranho Caso do Dr. Jekyll e do Sr. Hyde” e mergulhe em um drama psicológico intenso que explora os limites da natureza humana, no Teatro Itália, em São Paulo. Data: 11 de julho de 2026, às 23h. Local: Avenida Ipiranga, 344 - República, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2d827dae2d87a9c559b6476f4b8dc8b7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2d827dae2d87a9c559b6476f4b8dc8b7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2d827dae2d87a9c559b6476f4b8dc8b7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132992,
-      "detail_elapsed_ms": 1911,
-      "scraped_at": "2026-07-07T02:53:01.173Z"
+      "detail_html_length": 130868,
+      "detail_elapsed_ms": 1777,
+      "scraped_at": "2026-07-07T03:03:55.214Z"
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133539,
-      "detail_elapsed_ms": 1797,
-      "scraped_at": "2026-07-07T02:53:02.973Z"
+      "detail_html_length": 133511,
+      "detail_elapsed_ms": 1968,
+      "scraped_at": "2026-07-07T03:03:57.183Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131886,
-      "detail_elapsed_ms": 1808,
-      "scraped_at": "2026-07-07T02:53:04.783Z"
+      "detail_html_length": 131887,
+      "detail_elapsed_ms": 1868,
+      "scraped_at": "2026-07-07T03:03:59.051Z"
     },
     {
       "id": "p4u-chuteiras-umbro-com-at-50-off",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132966,
-      "detail_elapsed_ms": 1942,
-      "scraped_at": "2026-07-07T02:53:06.725Z"
+      "detail_html_length": 132939,
+      "detail_elapsed_ms": 1802,
+      "scraped_at": "2026-07-07T03:04:00.853Z"
     },
     {
       "id": "p3y-15-off-na-compra-do-ingresso",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131960,
-      "detail_elapsed_ms": 1900,
-      "scraped_at": "2026-07-07T02:53:08.625Z"
+      "detail_html_length": 131962,
+      "detail_elapsed_ms": 1834,
+      "scraped_at": "2026-07-07T03:04:02.688Z"
+    },
+    {
+      "id": "p3x-20-de-desconto-em-seleo-de-produtos",
+      "trace_id": "trace_p3x-20-de-desconto-em-seleo-de-produtos",
+      "link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
+      "original_link": "https://clube.uol.com.br/atlaseletrodomesticos/p3X-20-de-desconto-em-seleo-de-produtos",
+      "title": "20% de desconto em seleção de produtos",
+      "preview_title": "20% de desconto em seleção de produtos",
+      "validity": "Benefício válido de 02/07/2026 00:00 até 02/08/2026 23:59.",
+      "description": "Benefício: 20% de desconto em seleção de produtos Regras: Válido para seleção de produtos. Os descontos podem variar de acordo com o produto, confira informações nos selos. Consulte o prazo de entrega para a sua região. Aplique o cupom no carrinho. Sujeito à disponibilidade de estoque. Sujeito à desativação sem aviso prévio.",
+      "category": "Eletrodomésticos e Eletrônicos",
+      "partner_name": "Club Eletro",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4d70ce9843f50e4b0dc06eb1156d5ffc.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2b78b6a3e338ad68bcdafc223b4f4265.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2b78b6a3e338ad68bcdafc223b4f4265.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2b78b6a3e338ad68bcdafc223b4f4265.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131503,
+      "detail_elapsed_ms": 1882,
+      "scraped_at": "2026-07-07T03:04:04.570Z"
     }
   ]
 }
