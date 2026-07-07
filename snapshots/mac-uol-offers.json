@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 26627,
-  "run_duration_seconds": 26.63,
-  "avg_detail_ms_per_offer": 2219,
-  "generated_at": "2026-07-07T14:45:58.920Z",
+  "run_duration_ms": 27440,
+  "run_duration_seconds": 27.44,
+  "avg_detail_ms_per_offer": 2287,
+  "generated_at": "2026-07-07T14:56:33.327Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130402,
-      "detail_elapsed_ms": 2151,
-      "scraped_at": "2026-07-07T14:45:41.687Z"
+      "detail_html_length": 130139,
+      "detail_elapsed_ms": 2118,
+      "scraped_at": "2026-07-07T14:56:16.050Z"
     },
     {
       "id": "p5r-at-20-off-na-compra-do-ingresso",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131711,
-      "detail_elapsed_ms": 1610,
-      "scraped_at": "2026-07-07T14:45:43.297Z"
+      "detail_html_length": 131704,
+      "detail_elapsed_ms": 1609,
+      "scraped_at": "2026-07-07T14:56:17.660Z"
     },
     {
       "id": "p5q-at-15-off-na-hospedagem",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131978,
-      "detail_elapsed_ms": 1835,
-      "scraped_at": "2026-07-07T14:45:45.132Z"
+      "detail_html_length": 131981,
+      "detail_elapsed_ms": 1479,
+      "scraped_at": "2026-07-07T14:56:19.139Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130962,
-      "detail_elapsed_ms": 1590,
-      "scraped_at": "2026-07-07T14:45:46.723Z"
+      "detail_html_length": 130964,
+      "detail_elapsed_ms": 1401,
+      "scraped_at": "2026-07-07T14:56:20.540Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130770,
-      "detail_elapsed_ms": 1607,
-      "scraped_at": "2026-07-07T14:45:48.330Z"
+      "detail_html_length": 125911,
+      "detail_elapsed_ms": 1494,
+      "scraped_at": "2026-07-07T14:56:22.034Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130740,
-      "detail_elapsed_ms": 1451,
-      "scraped_at": "2026-07-07T14:45:49.781Z"
+      "detail_html_length": 125871,
+      "detail_elapsed_ms": 1426,
+      "scraped_at": "2026-07-07T14:56:23.460Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -176,17 +176,17 @@
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Marcyn",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ca6429634eddc1f7e10cc3b3dfc5e40.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9aaca85945d50c4d66c684e4bf0792eb.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ca6429634eddc1f7e10cc3b3dfc5e40.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2ca6429634eddc1f7e10cc3b3dfc5e40.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/9aaca85945d50c4d66c684e4bf0792eb.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130904,
-      "detail_elapsed_ms": 1487,
-      "scraped_at": "2026-07-07T14:45:51.269Z"
+      "detail_html_length": 126066,
+      "detail_elapsed_ms": 1506,
+      "scraped_at": "2026-07-07T14:56:24.966Z"
     },
     {
       "id": "p5k-sale-lingerie-at-70-off-10-off",
@@ -200,17 +200,17 @@
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Marcyn",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f00c4322c9190258592dcc0301747676.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ce1e50770016b9d57ff174a6954dfd7f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f00c4322c9190258592dcc0301747676.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/f00c4322c9190258592dcc0301747676.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ce1e50770016b9d57ff174a6954dfd7f.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130928,
-      "detail_elapsed_ms": 1389,
-      "scraped_at": "2026-07-07T14:45:52.658Z"
+      "detail_html_length": 126070,
+      "detail_elapsed_ms": 1410,
+      "scraped_at": "2026-07-07T14:56:26.376Z"
     },
     {
       "id": "p5j-sale-moda-praia-at-70-off-10-off",
@@ -224,17 +224,17 @@
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Marcyn",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae4e5cae7949a2f401e98d8c34bca13b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/77c5908cf9b7de1d13f8776b6f42df0e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae4e5cae7949a2f401e98d8c34bca13b.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ae4e5cae7949a2f401e98d8c34bca13b.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/77c5908cf9b7de1d13f8776b6f42df0e.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130962,
-      "detail_elapsed_ms": 1475,
-      "scraped_at": "2026-07-07T14:45:54.133Z"
+      "detail_html_length": 126104,
+      "detail_elapsed_ms": 1439,
+      "scraped_at": "2026-07-07T14:56:27.815Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -248,17 +248,17 @@
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Marcyn",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/4b816a7d643362e1cbc819878a09c255.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/66b9ab3e1f130d7ff44eaa6c2b22093b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/be631defb26e9e56081e067a99479710.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/66b9ab3e1f130d7ff44eaa6c2b22093b.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/66b9ab3e1f130d7ff44eaa6c2b22093b.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/be631defb26e9e56081e067a99479710.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130906,
-      "detail_elapsed_ms": 1503,
-      "scraped_at": "2026-07-07T14:45:55.636Z"
+      "detail_html_length": 130909,
+      "detail_elapsed_ms": 1570,
+      "scraped_at": "2026-07-07T14:56:29.386Z"
     },
     {
       "id": "p59-2-ingressos-10-07-tetro-uol-sp",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133560,
-      "detail_elapsed_ms": 1562,
-      "scraped_at": "2026-07-07T14:45:57.198Z"
+      "detail_html_length": 133562,
+      "detail_elapsed_ms": 1477,
+      "scraped_at": "2026-07-07T14:56:30.864Z"
     },
     {
       "id": "p5f-ms-retr-da-casa-do-drago-grtis",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131917,
-      "detail_elapsed_ms": 1651,
-      "scraped_at": "2026-07-07T14:45:58.849Z"
+      "detail_html_length": 127068,
+      "detail_elapsed_ms": 1663,
+      "scraped_at": "2026-07-07T14:56:32.527Z"
     }
   ]
 }
