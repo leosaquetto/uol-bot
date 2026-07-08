@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-08T15:45:58.297928Z",
+  "last_update": "2026-07-08T16:18:02.235845Z",
   "offers": [
     {
       "id": "p5G-2-ingressos-12-07-teatro-italia-sp",
@@ -379,7 +379,8 @@
       "channel_message_link": "https://t.me/c/3723320790/1730",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-08T15:44:24.692089Z"
+      "sent_at": "2026-07-08T15:44:24.692089Z",
+      "sold_out_at": "13:17"
     },
     {
       "id": "p6M-2-ingressos-18-07-teatro-srgio-cardoso",
@@ -400,7 +401,8 @@
       "channel_message_link": "https://t.me/c/3723320790/1731",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-08T15:44:38.142086Z"
+      "sent_at": "2026-07-08T15:44:38.142086Z",
+      "sold_out_at": "13:17"
     },
     {
       "id": "p6L-2-ingressos-17-07-teatro-srgio-cardoso",
@@ -421,7 +423,8 @@
       "channel_message_link": "https://t.me/c/3723320790/1732",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-08T15:44:51.528060Z"
+      "sent_at": "2026-07-08T15:44:51.528060Z",
+      "sold_out_at": "13:17"
     },
     {
       "id": "p6K-2-ingressos-16-07-teatro-srgio-cardoso",
@@ -442,7 +445,8 @@
       "channel_message_link": "https://t.me/c/3723320790/1733",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-08T15:45:04.896132Z"
+      "sent_at": "2026-07-08T15:45:04.896132Z",
+      "sold_out_at": "13:17"
     }
   ]
 }
