@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-08T22:16:53.646091Z",
+  "last_update": "2026-07-08T22:16:59.602663Z",
   "offers": [
     {
       "id": "p5K-sale-lingerie-ate-70-off-10-off",
@@ -403,7 +403,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-08T21:05:23.894905Z",
-      "sold_out_at": "19:16"
+      "sold_out_at": "19:16",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p6T-2-ingressos-24-07-teatro-tuca-sp",
@@ -425,7 +426,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-08T21:05:37.378735Z",
-      "sold_out_at": "19:16"
+      "sold_out_at": "19:16",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p6O-2-ingressos-17-07-teatro-tuca-sp",
@@ -447,7 +449,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-08T21:05:50.820158Z",
-      "sold_out_at": "19:16"
+      "sold_out_at": "19:16",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
