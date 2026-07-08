@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-08T21:34:20.576626Z",
+  "updated_at": "2026-07-08T21:52:23.395981Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,30 +10,12 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
-    "duplicada_latest": 3,
+    "duplicada_historico": 6,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 25/07 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p6Z-2-ingressos-25-07-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p6z-2-ingressos-25-07-teatro-tuca-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 24/07 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p6T-2-ingressos-24-07-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p6t-2-ingressos-24-07-teatro-tuca-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 17/07 Teatro Tuca - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p6O-2-ingressos-17-07-teatro-tuca-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p6o-2-ingressos-17-07-teatro-tuca-sp"
-    },
     {
       "title": "15% OFF em todo o site",
       "link": "https://clube.uol.com.br/avon/p5Y-15-off-em-todo-o-site",
@@ -81,6 +63,24 @@
       "link": "https://clube.uol.com.br/marcyn/p5L-power-cores-promocionais-10-off",
       "reason": "duplicada_historico",
       "trace_id": "trace_p5l-power-cores-promocionais-10-off"
+    },
+    {
+      "title": "Sale Lingerie até 70% OFF + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off"
+    },
+    {
+      "title": "Sale Moda Praia até 70% OFF + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off"
+    },
+    {
+      "title": "Tudo por 50% (moda praia) + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5I-tudo-por-50-moda-praia-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5i-tudo-por-50-moda-praia-10-off"
     }
   ]
 }
