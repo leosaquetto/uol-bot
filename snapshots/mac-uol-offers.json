@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 203216,
-  "run_duration_seconds": 203.22,
-  "avg_detail_ms_per_offer": 16935,
-  "generated_at": "2026-07-08T21:04:17.956Z",
+  "run_duration_ms": 182998,
+  "run_duration_seconds": 183,
+  "avg_detail_ms_per_offer": 15250,
+  "generated_at": "2026-07-08T21:17:44.717Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p6Z-2-ingressos-25-07-teatro-tuca-sp",
       "title": "2 INGRESSOS: 25/07 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 25/07 Teatro Tuca - SP",
-      "validity": "Benefício válido de 08/07/2026 15:26 até 24/07/2026 23:59.",
-      "description": "Assinante UOL, viva essa experiência! Resgate 1 par de ingressos e emocione-se com o espetáculo Olhos nos Olhos protagonizado por Ana Lúcia Torre, que celebra 80 anos de vida e 60 anos de carreira em uma apresentação vibrante, reveladora e cheia de sensibilidade, no Teatro Tuca, em São Paulo – SP. Data: 25 de Julho, às 21h. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133247,
-      "detail_elapsed_ms": 15117,
-      "scraped_at": "2026-07-08T21:02:50.220Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p6Z-2-ingressos-25-07-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12485,
+      "scraped_at": "2026-07-08T21:16:03.178Z"
     },
     {
       "id": "p6t-2-ingressos-24-07-teatro-tuca-sp",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133498,
-      "detail_elapsed_ms": 16666,
-      "scraped_at": "2026-07-08T21:03:06.886Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133496,
+      "detail_elapsed_ms": 13738,
+      "scraped_at": "2026-07-08T21:16:29.711Z"
     },
     {
       "id": "p6o-2-ingressos-17-07-teatro-tuca-sp",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133189,
-      "detail_elapsed_ms": 9502,
-      "scraped_at": "2026-07-08T21:03:28.723Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133336,
+      "detail_elapsed_ms": 9962,
+      "scraped_at": "2026-07-08T21:16:39.673Z"
     },
     {
       "id": "p5y-15-off-em-todo-o-site",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129657,
-      "detail_elapsed_ms": 3573,
-      "scraped_at": "2026-07-08T21:03:32.297Z"
+      "detail_html_length": 130920,
+      "detail_elapsed_ms": 7657,
+      "scraped_at": "2026-07-08T21:16:47.332Z"
     },
     {
-      "id": "p5x-ate-30-off-em-todo-o-site-r-100-off",
-      "trace_id": "trace_p5x-ate-30-off-em-todo-o-site-r-100-off",
-      "link": "https://clube.uol.com.br/panasonic/p5X-ate-30-off-em-todo-o-site-r-100-off",
-      "original_link": "https://clube.uol.com.br/panasonic/p5X-ate-30-off-em-todo-o-site-r-100-off",
+      "id": "p5x-at-30-off-em-todo-o-site-r-100-off",
+      "trace_id": "trace_p5x-at-30-off-em-todo-o-site-r-100-off",
+      "link": "https://clube.uol.com.br/panasonic/p5X-at-30-off-em-todo-o-site-r-100-off",
+      "original_link": "https://clube.uol.com.br/panasonic/p5X-at-30-off-em-todo-o-site-r-100-off",
       "title": "Até 30% OFF em todo o site + R$ 100 OFF",
       "preview_title": "Até 30% OFF em todo o site + R$ 100 OFF",
       "validity": "Benefício válido de 04/07/2026 00:00 até 31/07/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130324,
-      "detail_elapsed_ms": 3674,
-      "scraped_at": "2026-07-08T21:03:35.971Z"
+      "detail_html_length": 131319,
+      "detail_elapsed_ms": 7145,
+      "scraped_at": "2026-07-08T21:16:54.478Z"
     },
     {
-      "id": "p5s-ate-15-off-na-hospedagem",
-      "trace_id": "trace_p5s-ate-15-off-na-hospedagem",
-      "link": "https://clube.uol.com.br/rioquenteresorts/p5S-ate-15-off-na-hospedagem",
-      "original_link": "https://clube.uol.com.br/rioquenteresorts/p5S-ate-15-off-na-hospedagem",
+      "id": "p5s-at-15-off-na-hospedagem",
+      "trace_id": "trace_p5s-at-15-off-na-hospedagem",
+      "link": "https://clube.uol.com.br/rioquenteresorts/p5S-at-15-off-na-hospedagem",
+      "original_link": "https://clube.uol.com.br/rioquenteresorts/p5S-at-15-off-na-hospedagem",
       "title": "Até 15% OFF na hospedagem",
       "preview_title": "Até 15% OFF na hospedagem",
       "validity": "Benefício válido de 07/07/2026 11:20 até 29/11/2028 23:59.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131664,
-      "detail_elapsed_ms": 6098,
-      "scraped_at": "2026-07-08T21:03:42.069Z"
+      "detail_html_length": 131589,
+      "detail_elapsed_ms": 6115,
+      "scraped_at": "2026-07-08T21:17:00.608Z"
     },
     {
-      "id": "p5r-ate-20-off-na-compra-do-ingresso",
-      "trace_id": "trace_p5r-ate-20-off-na-compra-do-ingresso",
-      "link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
-      "original_link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
+      "id": "p5r-at-20-off-na-compra-do-ingresso",
+      "trace_id": "trace_p5r-at-20-off-na-compra-do-ingresso",
+      "link": "https://clube.uol.com.br/hotpark/p5R-at-20-off-na-compra-do-ingresso",
+      "original_link": "https://clube.uol.com.br/hotpark/p5R-at-20-off-na-compra-do-ingresso",
       "title": "Até 20% OFF na compra do ingresso",
       "preview_title": "Até 20% OFF na compra do ingresso",
       "validity": "Benefício válido de 07/07/2026 10:58 até 29/11/2028 23:59.",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131727,
-      "detail_elapsed_ms": 7795,
-      "scraped_at": "2026-07-08T21:03:49.865Z"
+      "detail_html_length": 131563,
+      "detail_elapsed_ms": 6951,
+      "scraped_at": "2026-07-08T21:17:07.559Z"
     },
     {
-      "id": "p5q-ate-15-off-na-hospedagem",
-      "trace_id": "trace_p5q-ate-15-off-na-hospedagem",
-      "link": "https://clube.uol.com.br/costadosauipe/p5Q-ate-15-off-na-hospedagem",
-      "original_link": "https://clube.uol.com.br/costadosauipe/p5Q-ate-15-off-na-hospedagem",
+      "id": "p5q-at-15-off-na-hospedagem",
+      "trace_id": "trace_p5q-at-15-off-na-hospedagem",
+      "link": "https://clube.uol.com.br/costadosauipe/p5Q-at-15-off-na-hospedagem",
+      "original_link": "https://clube.uol.com.br/costadosauipe/p5Q-at-15-off-na-hospedagem",
       "title": "Até 15% OFF na hospedagem",
       "preview_title": "Até 15% OFF na hospedagem",
       "validity": "Benefício válido de 07/07/2026 10:24 até 29/11/2028 23:59.",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130719,
-      "detail_elapsed_ms": 3367,
-      "scraped_at": "2026-07-08T21:03:53.232Z"
+      "detail_html_length": 131939,
+      "detail_elapsed_ms": 5782,
+      "scraped_at": "2026-07-08T21:17:13.347Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130727,
-      "detail_elapsed_ms": 4758,
-      "scraped_at": "2026-07-08T21:03:57.992Z"
+      "detail_html_length": 128965,
+      "detail_elapsed_ms": 5286,
+      "scraped_at": "2026-07-08T21:17:18.633Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130771,
-      "detail_elapsed_ms": 5600,
-      "scraped_at": "2026-07-08T21:04:03.592Z"
+      "detail_html_length": 129522,
+      "detail_elapsed_ms": 4444,
+      "scraped_at": "2026-07-08T21:17:23.078Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130551,
-      "detail_elapsed_ms": 5901,
-      "scraped_at": "2026-07-08T21:04:09.501Z"
+      "detail_html_length": 130709,
+      "detail_elapsed_ms": 9253,
+      "scraped_at": "2026-07-08T21:17:32.331Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130756,
-      "detail_elapsed_ms": 7644,
-      "scraped_at": "2026-07-08T21:04:17.145Z"
+      "detail_html_length": 130890,
+      "detail_elapsed_ms": 11381,
+      "scraped_at": "2026-07-08T21:17:43.712Z"
     }
   ]
 }
