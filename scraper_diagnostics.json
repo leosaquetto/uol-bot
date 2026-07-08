@@ -1,10 +1,86 @@
 {
-  "updated_at": "2026-07-08T20:15:03.432529Z",
+  "updated_at": "2026-07-08T20:23:57.036067Z",
   "snapshot_ids_pending": 0,
-  "mac_offers_loaded": 0,
-  "offers_consolidated": 0,
-  "candidates_added": 0,
+  "mac_offers_loaded": 12,
+  "offers_consolidated": 12,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
-  "discard_reasons": {},
-  "discarded_offers": []
+  "discard_reasons": {
+    "incompleta": 0,
+    "validade_expirada": 0,
+    "inicio_validade_antigo_sem_fim": 0,
+    "scraped_at_antigo": 0,
+    "duplicada_historico": 6,
+    "duplicada_latest": 5,
+    "duplicada_pending": 0,
+    "duplicada_execucao": 0
+  },
+  "discarded_offers": [
+    {
+      "title": "15% OFF em todo o site",
+      "link": "https://clube.uol.com.br/avon/p5Y-15-off-em-todo-o-site",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5y-15-off-em-todo-o-site"
+    },
+    {
+      "title": "Até 30% OFF em todo o site + R$ 100 OFF",
+      "link": "https://clube.uol.com.br/panasonic/p5X-at-30-off-em-todo-o-site-r-100-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5x-at-30-off-em-todo-o-site-r-100-off"
+    },
+    {
+      "title": "Até 15% OFF na hospedagem",
+      "link": "https://clube.uol.com.br/rioquenteresorts/p5S-at-15-off-na-hospedagem",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5s-at-15-off-na-hospedagem"
+    },
+    {
+      "title": "Até 15% OFF na hospedagem",
+      "link": "https://clube.uol.com.br/costadosauipe/p5Q-at-15-off-na-hospedagem",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5q-at-15-off-na-hospedagem"
+    },
+    {
+      "title": "Make Descontos Progressivos + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5O-make-descontos-progressivos-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5o-make-descontos-progressivos-10-off"
+    },
+    {
+      "title": "Renda por menos + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5N-renda-por-menos-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5n-renda-por-menos-10-off"
+    },
+    {
+      "title": "Sale Fitness + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5M-sale-fitness-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5m-sale-fitness-10-off"
+    },
+    {
+      "title": "Power Cores Promocionais + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5L-power-cores-promocionais-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5l-power-cores-promocionais-10-off"
+    },
+    {
+      "title": "Sale Lingerie até 70% OFF + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off"
+    },
+    {
+      "title": "Sale Moda Praia até 70% OFF + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off"
+    },
+    {
+      "title": "Tudo por 50% (moda praia) + 10% OFF",
+      "link": "https://clube.uol.com.br/marcyn/p5I-tudo-por-50-moda-praia-10-off",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p5i-tudo-por-50-moda-praia-10-off"
+    }
+  ]
 }
