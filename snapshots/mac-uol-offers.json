@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 71525,
-  "run_duration_seconds": 71.53,
-  "avg_detail_ms_per_offer": 5960,
-  "generated_at": "2026-07-09T12:52:07.858Z",
+  "run_duration_ms": 130666,
+  "run_duration_seconds": 130.67,
+  "avg_detail_ms_per_offer": 10889,
+  "generated_at": "2026-07-09T13:04:39.523Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,16 +39,16 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129262,
-      "detail_elapsed_ms": 6144,
-      "scraped_at": "2026-07-09T12:51:30.113Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131038,
+      "detail_elapsed_ms": 14166,
+      "scraped_at": "2026-07-09T13:03:50.268Z"
     },
     {
-      "id": "p5x-ate-30-off-em-todo-o-site-r-100-off",
-      "trace_id": "trace_p5x-ate-30-off-em-todo-o-site-r-100-off",
-      "link": "https://clube.uol.com.br/panasonic/p5X-ate-30-off-em-todo-o-site-r-100-off",
-      "original_link": "https://clube.uol.com.br/panasonic/p5X-ate-30-off-em-todo-o-site-r-100-off",
+      "id": "p5x-at-30-off-em-todo-o-site-r-100-off",
+      "trace_id": "trace_p5x-at-30-off-em-todo-o-site-r-100-off",
+      "link": "https://clube.uol.com.br/panasonic/p5X-at-30-off-em-todo-o-site-r-100-off",
+      "original_link": "https://clube.uol.com.br/panasonic/p5X-at-30-off-em-todo-o-site-r-100-off",
       "title": "Até 30% OFF em todo o site + R$ 100 OFF",
       "preview_title": "Até 30% OFF em todo o site + R$ 100 OFF",
       "validity": "Benefício válido de 04/07/2026 00:00 até 31/07/2026 23:59.",
@@ -64,15 +64,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131397,
-      "detail_elapsed_ms": 4320,
-      "scraped_at": "2026-07-09T12:51:34.433Z"
+      "detail_html_length": 131474,
+      "detail_elapsed_ms": 11418,
+      "scraped_at": "2026-07-09T13:04:01.687Z"
     },
     {
-      "id": "p5s-ate-15-off-na-hospedagem",
-      "trace_id": "trace_p5s-ate-15-off-na-hospedagem",
-      "link": "https://clube.uol.com.br/rioquenteresorts/p5S-ate-15-off-na-hospedagem",
-      "original_link": "https://clube.uol.com.br/rioquenteresorts/p5S-ate-15-off-na-hospedagem",
+      "id": "p5s-at-15-off-na-hospedagem",
+      "trace_id": "trace_p5s-at-15-off-na-hospedagem",
+      "link": "https://clube.uol.com.br/rioquenteresorts/p5S-at-15-off-na-hospedagem",
+      "original_link": "https://clube.uol.com.br/rioquenteresorts/p5S-at-15-off-na-hospedagem",
       "title": "Até 15% OFF na hospedagem",
       "preview_title": "Até 15% OFF na hospedagem",
       "validity": "Benefício válido de 07/07/2026 11:20 até 29/11/2028 23:59.",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130585,
-      "detail_elapsed_ms": 4469,
-      "scraped_at": "2026-07-09T12:51:38.902Z"
+      "detail_html_length": 131831,
+      "detail_elapsed_ms": 5425,
+      "scraped_at": "2026-07-09T13:04:07.112Z"
     },
     {
-      "id": "p5r-ate-20-off-na-compra-do-ingresso",
-      "trace_id": "trace_p5r-ate-20-off-na-compra-do-ingresso",
-      "link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
-      "original_link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
+      "id": "p5r-at-20-off-na-compra-do-ingresso",
+      "trace_id": "trace_p5r-at-20-off-na-compra-do-ingresso",
+      "link": "https://clube.uol.com.br/hotpark/p5R-at-20-off-na-compra-do-ingresso",
+      "original_link": "https://clube.uol.com.br/hotpark/p5R-at-20-off-na-compra-do-ingresso",
       "title": "Até 20% OFF na compra do ingresso",
       "preview_title": "Até 20% OFF na compra do ingresso",
       "validity": "Benefício válido de 07/07/2026 10:58 até 29/11/2028 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131727,
-      "detail_elapsed_ms": 5845,
-      "scraped_at": "2026-07-09T12:51:44.747Z"
+      "detail_html_length": 131717,
+      "detail_elapsed_ms": 3485,
+      "scraped_at": "2026-07-09T13:04:10.597Z"
     },
     {
-      "id": "p5q-ate-15-off-na-hospedagem",
-      "trace_id": "trace_p5q-ate-15-off-na-hospedagem",
-      "link": "https://clube.uol.com.br/costadosauipe/p5Q-ate-15-off-na-hospedagem",
-      "original_link": "https://clube.uol.com.br/costadosauipe/p5Q-ate-15-off-na-hospedagem",
+      "id": "p5q-at-15-off-na-hospedagem",
+      "trace_id": "trace_p5q-at-15-off-na-hospedagem",
+      "link": "https://clube.uol.com.br/costadosauipe/p5Q-at-15-off-na-hospedagem",
+      "original_link": "https://clube.uol.com.br/costadosauipe/p5Q-at-15-off-na-hospedagem",
       "title": "Até 15% OFF na hospedagem",
       "preview_title": "Até 15% OFF na hospedagem",
       "validity": "Benefício válido de 07/07/2026 10:24 até 29/11/2028 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131954,
-      "detail_elapsed_ms": 2531,
-      "scraped_at": "2026-07-09T12:51:47.280Z"
+      "detail_html_length": 131985,
+      "detail_elapsed_ms": 2975,
+      "scraped_at": "2026-07-09T13:04:13.604Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130953,
-      "detail_elapsed_ms": 3373,
-      "scraped_at": "2026-07-09T12:51:50.653Z"
+      "detail_html_length": 130838,
+      "detail_elapsed_ms": 5896,
+      "scraped_at": "2026-07-09T13:04:19.500Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130770,
-      "detail_elapsed_ms": 4232,
-      "scraped_at": "2026-07-09T12:51:54.885Z"
+      "detail_html_length": 129272,
+      "detail_elapsed_ms": 3079,
+      "scraped_at": "2026-07-09T13:04:22.579Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131225,
-      "detail_elapsed_ms": 2756,
-      "scraped_at": "2026-07-09T12:51:57.641Z"
+      "detail_html_length": 130554,
+      "detail_elapsed_ms": 4056,
+      "scraped_at": "2026-07-09T13:04:26.636Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130905,
-      "detail_elapsed_ms": 2279,
-      "scraped_at": "2026-07-09T12:51:59.920Z"
+      "detail_html_length": 130909,
+      "detail_elapsed_ms": 4164,
+      "scraped_at": "2026-07-09T13:04:30.804Z"
     },
     {
-      "id": "p5k-sale-lingerie-ate-70-off-10-off",
-      "trace_id": "trace_p5k-sale-lingerie-ate-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-ate-70-off-10-off",
+      "id": "p5k-sale-lingerie-at-70-off-10-off",
+      "trace_id": "trace_p5k-sale-lingerie-at-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5K-sale-lingerie-at-70-off-10-off",
       "title": "Sale Lingerie até 70% OFF + 10% OFF",
       "preview_title": "Sale Lingerie até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:31 até 31/07/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130925,
-      "detail_elapsed_ms": 2394,
-      "scraped_at": "2026-07-09T12:52:02.318Z"
+      "detail_html_length": 129699,
+      "detail_elapsed_ms": 2464,
+      "scraped_at": "2026-07-09T13:04:33.269Z"
     },
     {
-      "id": "p5j-sale-moda-praia-ate-70-off-10-off",
-      "trace_id": "trace_p5j-sale-moda-praia-ate-70-off-10-off",
-      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
-      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-ate-70-off-10-off",
+      "id": "p5j-sale-moda-praia-at-70-off-10-off",
+      "trace_id": "trace_p5j-sale-moda-praia-at-70-off-10-off",
+      "link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
+      "original_link": "https://clube.uol.com.br/marcyn/p5J-sale-moda-praia-at-70-off-10-off",
       "title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "preview_title": "Sale Moda Praia até 70% OFF + 10% OFF",
       "validity": "Benefício válido de 06/07/2026 18:27 até 31/07/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130949,
-      "detail_elapsed_ms": 3072,
-      "scraped_at": "2026-07-09T12:52:05.390Z"
+      "detail_html_length": 129810,
+      "detail_elapsed_ms": 2860,
+      "scraped_at": "2026-07-09T13:04:36.129Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130909,
-      "detail_elapsed_ms": 2226,
-      "scraped_at": "2026-07-09T12:52:07.616Z"
+      "detail_html_length": 129420,
+      "detail_elapsed_ms": 2994,
+      "scraped_at": "2026-07-09T13:04:39.123Z"
     }
   ]
 }
