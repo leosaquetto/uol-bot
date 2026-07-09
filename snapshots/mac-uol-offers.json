@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 52882,
-  "run_duration_seconds": 52.88,
-  "avg_detail_ms_per_offer": 4407,
-  "generated_at": "2026-07-09T21:32:04.303Z",
+  "run_duration_ms": 158639,
+  "run_duration_seconds": 158.64,
+  "avg_detail_ms_per_offer": 13220,
+  "generated_at": "2026-07-09T21:45:00.426Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 129477,
-      "detail_elapsed_ms": 4123,
-      "scraped_at": "2026-07-09T21:31:39.367Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130976,
+      "detail_elapsed_ms": 16760,
+      "scraped_at": "2026-07-09T21:43:36.221Z"
     },
     {
       "id": "p5x-at-30-off-em-todo-o-site-r-100-off",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130277,
-      "detail_elapsed_ms": 2469,
-      "scraped_at": "2026-07-09T21:31:41.836Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131432,
+      "detail_elapsed_ms": 8247,
+      "scraped_at": "2026-07-09T21:43:57.256Z"
     },
     {
       "id": "p5s-at-15-off-na-hospedagem",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131783,
-      "detail_elapsed_ms": 2638,
-      "scraped_at": "2026-07-09T21:31:44.474Z"
+      "detail_html_length": 131640,
+      "detail_elapsed_ms": 8716,
+      "scraped_at": "2026-07-09T21:44:05.972Z"
     },
     {
       "id": "p5r-at-20-off-na-compra-do-ingresso",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131680,
-      "detail_elapsed_ms": 2363,
-      "scraped_at": "2026-07-09T21:31:46.837Z"
+      "detail_html_length": 131686,
+      "detail_elapsed_ms": 7685,
+      "scraped_at": "2026-07-09T21:44:13.657Z"
     },
     {
       "id": "p5q-at-15-off-na-hospedagem",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131907,
-      "detail_elapsed_ms": 2295,
-      "scraped_at": "2026-07-09T21:31:49.134Z"
+      "detail_html_length": 130754,
+      "detail_elapsed_ms": 4482,
+      "scraped_at": "2026-07-09T21:44:18.139Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124548,
-      "detail_elapsed_ms": 2097,
-      "scraped_at": "2026-07-09T21:31:51.231Z"
+      "detail_html_length": 129540,
+      "detail_elapsed_ms": 4523,
+      "scraped_at": "2026-07-09T21:44:22.662Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130718,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-07-09T21:31:53.367Z"
+      "detail_html_length": 130724,
+      "detail_elapsed_ms": 5747,
+      "scraped_at": "2026-07-09T21:44:28.409Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125809,
-      "detail_elapsed_ms": 1985,
-      "scraped_at": "2026-07-09T21:31:55.352Z"
+      "detail_html_length": 130663,
+      "detail_elapsed_ms": 2657,
+      "scraped_at": "2026-07-09T21:44:31.067Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130862,
-      "detail_elapsed_ms": 1999,
-      "scraped_at": "2026-07-09T21:31:57.351Z"
+      "detail_html_length": 130857,
+      "detail_elapsed_ms": 8593,
+      "scraped_at": "2026-07-09T21:44:39.660Z"
     },
     {
       "id": "p5k-sale-lingerie-at-70-off-10-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130887,
-      "detail_elapsed_ms": 2165,
-      "scraped_at": "2026-07-09T21:31:59.517Z"
+      "detail_html_length": 126023,
+      "detail_elapsed_ms": 5917,
+      "scraped_at": "2026-07-09T21:44:45.577Z"
     },
     {
       "id": "p5j-sale-moda-praia-at-70-off-10-off",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 2453,
-      "scraped_at": "2026-07-09T21:32:01.970Z"
+      "detail_html_length": 130700,
+      "detail_elapsed_ms": 5283,
+      "scraped_at": "2026-07-09T21:44:50.860Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130867,
-      "detail_elapsed_ms": 2139,
-      "scraped_at": "2026-07-09T21:32:04.109Z"
+      "detail_html_length": 130752,
+      "detail_elapsed_ms": 7315,
+      "scraped_at": "2026-07-09T21:44:58.175Z"
     }
   ]
 }
