@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
-    "weak": 1,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 151988,
-  "run_duration_seconds": 151.99,
-  "avg_detail_ms_per_offer": 12666,
-  "generated_at": "2026-07-09T12:40:40.790Z",
+  "run_duration_ms": 71525,
+  "run_duration_seconds": 71.53,
+  "avg_detail_ms_per_offer": 5960,
+  "generated_at": "2026-07-09T12:52:07.858Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130753,
-      "detail_elapsed_ms": 11158,
-      "scraped_at": "2026-07-09T12:39:30.315Z"
+      "detail_html_length": 129262,
+      "detail_elapsed_ms": 6144,
+      "scraped_at": "2026-07-09T12:51:30.113Z"
     },
     {
       "id": "p5x-ate-30-off-em-todo-o-site-r-100-off",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130241,
-      "detail_elapsed_ms": 4382,
-      "scraped_at": "2026-07-09T12:39:34.697Z"
+      "detail_html_length": 131397,
+      "detail_elapsed_ms": 4320,
+      "scraped_at": "2026-07-09T12:51:34.433Z"
     },
     {
       "id": "p5s-ate-15-off-na-hospedagem",
@@ -88,33 +88,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131825,
-      "detail_elapsed_ms": 5385,
-      "scraped_at": "2026-07-09T12:39:40.082Z"
+      "detail_html_length": 130585,
+      "detail_elapsed_ms": 4469,
+      "scraped_at": "2026-07-09T12:51:38.902Z"
     },
     {
       "id": "p5r-ate-20-off-na-compra-do-ingresso",
       "trace_id": "trace_p5r-ate-20-off-na-compra-do-ingresso",
       "link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
       "original_link": "https://clube.uol.com.br/hotpark/p5R-ate-20-off-na-compra-do-ingresso",
-      "title": "502 Bad Gateway",
+      "title": "Até 20% OFF na compra do ingresso",
       "preview_title": "Até 20% OFF na compra do ingresso",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 07/07/2026 10:58 até 29/11/2028 23:59.",
+      "description": "Benefício: 20% OFF na compra do ingresso Regras: Entre em contato pelo telefone ou WhatsApp 11 4000-1449 e informe o código do cupom; ATENÇÃO: condição não-válida para reservas pelo site; Desconto aplicado sobre o valor do lote vigente; Promoção não cumulativa; Todos os hóspedes do Rio Quente Resorts contam com acesso gratuito ao Hot Park; Às quintas-feiras, o Hot Park está fechado para manutenção; As opções de lazer opcional não estão inclusas no ingresso e não são elegíveis às condições da parceria; Condições sujeitas à disponibilidade no período desejado e válidas para reservas até 29/05/2028, com utilização até 29/11/2028; Sujeito à desativação sem aviso prévio.",
       "category": "",
       "partner_name": "Hot Park",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/593cd46a66fda82b6c7828e5f30b89af.jpg",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ff14dfdcffaa7ad862524c5adaed5ac.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ff14dfdcffaa7ad862524c5adaed5ac.png",
-      "detail_img_url": "",
-      "img_source": "none",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3ff14dfdcffaa7ad862524c5adaed5ac.png",
+      "img_source": "meta_og",
       "detail_ok": true,
-      "detail_quality": "weak",
+      "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 121,
-      "detail_elapsed_ms": 1312,
-      "scraped_at": "2026-07-09T12:39:41.394Z"
+      "detail_html_length": 131727,
+      "detail_elapsed_ms": 5845,
+      "scraped_at": "2026-07-09T12:51:44.747Z"
     },
     {
       "id": "p5q-ate-15-off-na-hospedagem",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131947,
-      "detail_elapsed_ms": 8738,
-      "scraped_at": "2026-07-09T12:39:50.133Z"
+      "detail_html_length": 131954,
+      "detail_elapsed_ms": 2531,
+      "scraped_at": "2026-07-09T12:51:47.280Z"
     },
     {
       "id": "p5o-make-descontos-progressivos-10-off",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129797,
-      "detail_elapsed_ms": 5494,
-      "scraped_at": "2026-07-09T12:39:55.627Z"
+      "detail_html_length": 130953,
+      "detail_elapsed_ms": 3373,
+      "scraped_at": "2026-07-09T12:51:50.653Z"
     },
     {
       "id": "p5n-renda-por-menos-10-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130753,
-      "detail_elapsed_ms": 12287,
-      "scraped_at": "2026-07-09T12:40:07.914Z"
+      "detail_html_length": 130770,
+      "detail_elapsed_ms": 4232,
+      "scraped_at": "2026-07-09T12:51:54.885Z"
     },
     {
       "id": "p5m-sale-fitness-10-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130573,
-      "detail_elapsed_ms": 6084,
-      "scraped_at": "2026-07-09T12:40:13.998Z"
+      "detail_html_length": 131225,
+      "detail_elapsed_ms": 2756,
+      "scraped_at": "2026-07-09T12:51:57.641Z"
     },
     {
       "id": "p5l-power-cores-promocionais-10-off",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130918,
-      "detail_elapsed_ms": 4772,
-      "scraped_at": "2026-07-09T12:40:18.770Z"
+      "detail_html_length": 130905,
+      "detail_elapsed_ms": 2279,
+      "scraped_at": "2026-07-09T12:51:59.920Z"
     },
     {
       "id": "p5k-sale-lingerie-ate-70-off-10-off",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130840,
-      "detail_elapsed_ms": 4134,
-      "scraped_at": "2026-07-09T12:40:22.904Z"
+      "detail_html_length": 130925,
+      "detail_elapsed_ms": 2394,
+      "scraped_at": "2026-07-09T12:52:02.318Z"
     },
     {
       "id": "p5j-sale-moda-praia-ate-70-off-10-off",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131221,
-      "detail_elapsed_ms": 11366,
-      "scraped_at": "2026-07-09T12:40:34.270Z"
+      "detail_html_length": 130949,
+      "detail_elapsed_ms": 3072,
+      "scraped_at": "2026-07-09T12:52:05.390Z"
     },
     {
       "id": "p5i-tudo-por-50-moda-praia-10-off",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130912,
-      "detail_elapsed_ms": 5713,
-      "scraped_at": "2026-07-09T12:40:39.983Z"
+      "detail_html_length": 130909,
+      "detail_elapsed_ms": 2226,
+      "scraped_at": "2026-07-09T12:52:07.616Z"
     }
   ]
 }
