@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-24T21:52:33.495780Z",
+  "last_update": "2026-07-24T22:00:06.362865Z",
   "offers": [
     {
       "id": "p6M-2-ingressos-18-07-teatro-srgio-cardoso",
@@ -438,7 +438,8 @@
       "canal2_forwarded_at": "2026-07-24T21:34:20.309030Z",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-24T21:34:30.191265Z"
+      "sent_at": "2026-07-24T21:34:30.191265Z",
+      "sold_out_at": "18:59"
     }
   ]
 }
