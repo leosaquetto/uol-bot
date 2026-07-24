@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-24T22:00:06.408885Z",
+  "updated_at": "2026-07-24T22:03:56.569797Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 26/07 Marina da Gloria RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p9O-2-ingressos-26-07-marina-da-gloria-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9o-2-ingressos-26-07-marina-da-gloria-rj"
-    },
     {
       "title": "10% OFF no ingresso nos dias 04 a 06/09",
       "link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -87,6 +81,12 @@
       "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial"
+    },
+    {
+      "title": "Dia dos Pais: Desconto Progressivo + 5%",
+      "link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p8z-dia-dos-pais-desconto-progressivo-5"
     }
   ]
 }
