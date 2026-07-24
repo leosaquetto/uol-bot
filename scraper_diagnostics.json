@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-24T20:04:06.296780Z",
+  "updated_at": "2026-07-24T20:13:40.736945Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,9 +10,9 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
-    "duplicada_pending": 4,
+    "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
@@ -67,25 +67,25 @@
     {
       "title": "15% OFF em produtos selecionados",
       "link": "https://clube.uol.com.br/olympikus/p9s-15-off-em-produtos-selecionados",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_p9s-15-off-em-produtos-selecionados"
     },
     {
       "title": "Voucher Uber de R$30 + 7% de desconto",
       "link": "https://clube.uol.com.br/saudetrevo/p9i-voucher-uber-de-r-30-7-de-desconto",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_p9i-voucher-uber-de-r-30-7-de-desconto"
     },
     {
       "title": "Curso gratuito - Inteligência Artificial",
       "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial"
     },
     {
       "title": "Dia dos Pais: Desconto Progressivo + 5%",
       "link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
-      "reason": "duplicada_pending",
+      "reason": "duplicada_historico",
       "trace_id": "trace_p8z-dia-dos-pais-desconto-progressivo-5"
     }
   ]
