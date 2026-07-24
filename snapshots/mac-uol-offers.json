@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 39573,
-  "run_duration_seconds": 39.57,
-  "avg_detail_ms_per_offer": 3298,
-  "generated_at": "2026-07-24T21:59:13.099Z",
+  "run_duration_ms": 32802,
+  "run_duration_seconds": 32.8,
+  "avg_detail_ms_per_offer": 2734,
+  "generated_at": "2026-07-24T22:03:00.330Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "p9o-2-ingressos-26-07-marina-da-gloria-rj",
-      "trace_id": "trace_p9o-2-ingressos-26-07-marina-da-gloria-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p9O-2-ingressos-26-07-marina-da-gloria-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9O-2-ingressos-26-07-marina-da-gloria-rj",
-      "title": "2 INGRESSOS: 26/07 Marina da Gloria RJ",
-      "preview_title": "2 INGRESSOS: 26/07 Marina da Gloria RJ",
-      "validity": "Benefício válido de 24/07/2026 17:23 até 26/07/2026 23:59.",
-      "description": "Assinante UOL, viva uma noite inesquecível no Rio de Janeiro! Resgate 1 par de ingressos e aproveite encontros musicais exclusivos na Marina da Glória, com apresentações que unem grandes nomes da música brasileira em um dos cenários mais bonitos da cidade. Data: 26 de Julho, às 15h. Local: Av. Infante Dom Henrique, S/N - Glória, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a63c9956c49f_6a63c3c4cd968_59f84606e6c5c0b6701f032b719c9ebb.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a63c9956c49f_6a63c3c4cd968_59f84606e6c5c0b6701f032b719c9ebb.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a63c9956c49f_6a63c3c4cd968_59f84606e6c5c0b6701f032b719c9ebb.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131631,
-      "detail_elapsed_ms": 2641,
-      "scraped_at": "2026-07-24T21:58:49.382Z"
-    },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
       "trace_id": "trace_p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132734,
-      "detail_elapsed_ms": 3001,
-      "scraped_at": "2026-07-24T21:58:52.384Z"
+      "detail_html_length": 131367,
+      "detail_elapsed_ms": 2414,
+      "scraped_at": "2026-07-24T22:02:39.173Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131368,
-      "detail_elapsed_ms": 1792,
-      "scraped_at": "2026-07-24T21:58:54.176Z"
+      "detail_html_length": 131397,
+      "detail_elapsed_ms": 1925,
+      "scraped_at": "2026-07-24T22:02:41.098Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 140521,
-      "detail_elapsed_ms": 2000,
-      "scraped_at": "2026-07-24T21:58:56.176Z"
+      "detail_html_length": 138301,
+      "detail_elapsed_ms": 1925,
+      "scraped_at": "2026-07-24T22:02:43.024Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130842,
-      "detail_elapsed_ms": 1733,
-      "scraped_at": "2026-07-24T21:58:57.909Z"
+      "detail_html_length": 130898,
+      "detail_elapsed_ms": 1780,
+      "scraped_at": "2026-07-24T22:02:44.805Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 2170,
-      "scraped_at": "2026-07-24T21:59:00.079Z"
+      "detail_html_length": 130918,
+      "detail_elapsed_ms": 1841,
+      "scraped_at": "2026-07-24T22:02:46.646Z"
     },
     {
       "id": "p9x-ate-50-off-20-off-extra-masculino",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131053,
-      "detail_elapsed_ms": 2131,
-      "scraped_at": "2026-07-24T21:59:02.210Z"
+      "detail_html_length": 131041,
+      "detail_elapsed_ms": 1903,
+      "scraped_at": "2026-07-24T22:02:48.549Z"
     },
     {
       "id": "p9w-30-off-extra-na-selecao-de-vestidos",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130964,
-      "detail_elapsed_ms": 1870,
-      "scraped_at": "2026-07-24T21:59:04.080Z"
+      "detail_html_length": 131003,
+      "detail_elapsed_ms": 1706,
+      "scraped_at": "2026-07-24T22:02:50.255Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131299,
-      "detail_elapsed_ms": 1765,
-      "scraped_at": "2026-07-24T21:59:05.845Z"
+      "detail_html_length": 131335,
+      "detail_elapsed_ms": 3572,
+      "scraped_at": "2026-07-24T22:02:53.827Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131661,
-      "detail_elapsed_ms": 2312,
-      "scraped_at": "2026-07-24T21:59:08.159Z"
+      "detail_html_length": 131670,
+      "detail_elapsed_ms": 1494,
+      "scraped_at": "2026-07-24T22:02:55.322Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131425,
-      "detail_elapsed_ms": 2373,
-      "scraped_at": "2026-07-24T21:59:10.532Z"
+      "detail_html_length": 131443,
+      "detail_elapsed_ms": 1607,
+      "scraped_at": "2026-07-24T22:02:56.929Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133437,
-      "detail_elapsed_ms": 2001,
-      "scraped_at": "2026-07-24T21:59:12.533Z"
+      "detail_html_length": 133487,
+      "detail_elapsed_ms": 1544,
+      "scraped_at": "2026-07-24T22:02:58.473Z"
+    },
+    {
+      "id": "p8z-dia-dos-pais-desconto-progressivo-5",
+      "trace_id": "trace_p8z-dia-dos-pais-desconto-progressivo-5",
+      "link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
+      "original_link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
+      "title": "Dia dos Pais: Desconto Progressivo + 5%",
+      "preview_title": "Dia dos Pais: Desconto Progressivo + 5%",
+      "validity": "Benefício válido de 20/07/2026 10:00 até 09/08/2026 23:59.",
+      "description": "Benefício: Dia dos Pais: Desconto Progressivo + 5% OFF Regras: Cupom não cumulativo com outros cupons. O desconto não contempla o frete. Benefício válido para todo o site exceto produtos da marca Calvin Klein. Sujeito à desativação sem aviso prévio. O site contará com Desconto Progressivo: 3 peças → 15% 4 peças → 20% 5 peças ou mais → 25% Mais 5% OFF com cupom da parceria!",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Mash",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d25f80d500c9690ef406e0438c8e986e.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131509,
+      "detail_elapsed_ms": 1781,
+      "scraped_at": "2026-07-24T22:03:00.254Z"
     }
   ]
 }
