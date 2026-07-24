@@ -22,21 +22,21 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "10/07/2026 às 10:41",
-    "last_finished_at": "10/07/2026 às 10:41",
-    "last_success_at": "10/07/2026 às 10:41",
-    "status": "sem_novidade",
-    "summary": "nenhuma enviada; descartadas 1 (reenvio_bloqueado_7d=1, validade_expirada=0, inicio_validade_antigo_sem_fim=0, scraped_at_antigo=0, duplicadas=0, sem_scraped_at_em_backlog=0)",
-    "processed": 0,
-    "sent": 0,
-    "failed": 0,
-    "pending_count": 0,
-    "last_error": "consumer_sem_envio_com_pending: pending=1 descartadas=1 falhas_telegram=0"
+    "last_started_at": "24/07/2026 às 17:01",
+    "last_finished_at": "24/07/2026 às 17:03",
+    "last_success_at": "24/07/2026 às 17:03",
+    "status": "parcial",
+    "summary": "8 enviada(s), 8 falha(s), 4 pendente(s)",
+    "processed": 8,
+    "sent": 8,
+    "failed": 8,
+    "pending_count": 4,
+    "last_error": "comentário não enviado: discussion_message_id ausente"
   },
   "global": {
-    "last_offer_title": "2 INGRESSOS: 17/07 Teatro Tuca - SP",
-    "last_offer_at": "08/07/2026 às 18:05",
-    "last_offer_id": "p6O-2-ingressos-17-07-teatro-tuca-sp",
-    "last_offer_link": "https://t.me/c/3723320790/1736"
+    "last_offer_title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
+    "last_offer_at": "24/07/2026 às 17:03",
+    "last_offer_id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
+    "last_offer_link": "https://t.me/c/3723320790/1744"
   }
 }
