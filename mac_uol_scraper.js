@@ -59,7 +59,9 @@ const GITHUB_TARGET_PATH = process.env.GITHUB_TARGET_PATH || 'snapshots/mac-uol-
 const GITHUB_LATEST_OFFERS_PATH = process.env.GITHUB_LATEST_OFFERS_PATH || 'latest_offers.json';
 const GITHUB_SOLD_OUT_UPDATES_PATH = process.env.GITHUB_SOLD_OUT_UPDATES_PATH || 'sold_out_updates.json';
 const GITHUB_WORKFLOW_FILENAME = process.env.GITHUB_WORKFLOW_FILENAME || 'bot_leouol.yml';
-const TRIGGER_GITHUB_WORKFLOW = String(process.env.TRIGGER_GITHUB_WORKFLOW || '1').trim() !== '0';
+// O PUT do snapshot já gera um evento push que inicia bot_leouol.yml.
+// Um workflow_dispatch adicional duplica cada coleta e aumenta a fila.
+const TRIGGER_GITHUB_WORKFLOW = String(process.env.TRIGGER_GITHUB_WORKFLOW || '0').trim() !== '0';
 const REQUIRE_GITHUB_UPLOAD = String(process.env.REQUIRE_GITHUB_UPLOAD || '1') === '1';
 const PIPELINE_AUDIT_FILE = process.env.PIPELINE_AUDIT_FILE || 'pipeline_audit.jsonl';
 
@@ -436,7 +438,21 @@ function shouldRetryDetail(errorText) {
 }
 
 async function collectOfferCards(page) {
-  await page.goto(TARGET_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  const freshUrl = new URL(TARGET_URL);
+  freshUrl.searchParams.set('_uol_monitor_ts', String(Date.now()));
+
+  // O portal já devolveu uma listagem antiga apesar de novas ofertas estarem
+  // disponíveis. Desabilitar o cache do Chromium e variar a URL força uma
+  // consulta nova em cada rodada.
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Network.enable');
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+  await page.setExtraHTTPHeaders({
+    'Cache-Control': 'no-cache, no-store, max-age=0',
+    Pragma: 'no-cache',
+  });
+
+  await page.goto(freshUrl.href, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForTimeout(2000);
 
   const cards = await page.$$eval('div.beneficio', (nodes, limit) => {
