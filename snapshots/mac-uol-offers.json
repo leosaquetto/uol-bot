@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 174816,
-  "run_duration_seconds": 174.82,
-  "avg_detail_ms_per_offer": 14568,
-  "generated_at": "2026-07-25T06:24:44.501Z",
+  "run_duration_ms": 161704,
+  "run_duration_seconds": 161.7,
+  "avg_detail_ms_per_offer": 13475,
+  "generated_at": "2026-07-25T06:30:49.286Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 133014,
-      "detail_elapsed_ms": 12629,
-      "scraped_at": "2026-07-25T06:23:01.365Z"
+      "detail_html_length": 132865,
+      "detail_elapsed_ms": 13220,
+      "scraped_at": "2026-07-25T06:29:20.844Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131386,
-      "detail_elapsed_ms": 9291,
-      "scraped_at": "2026-07-25T06:23:10.657Z"
+      "detail_html_length": 131395,
+      "detail_elapsed_ms": 12760,
+      "scraped_at": "2026-07-25T06:29:33.604Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133937,
-      "detail_elapsed_ms": 9184,
-      "scraped_at": "2026-07-25T06:23:19.841Z"
+      "detail_html_length": 137825,
+      "detail_elapsed_ms": 5372,
+      "scraped_at": "2026-07-25T06:29:38.977Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130848,
-      "detail_elapsed_ms": 12696,
-      "scraped_at": "2026-07-25T06:23:32.537Z"
+      "detail_html_length": 131262,
+      "detail_elapsed_ms": 1794,
+      "scraped_at": "2026-07-25T06:29:40.771Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130691,
-      "detail_elapsed_ms": 5601,
-      "scraped_at": "2026-07-25T06:23:38.138Z"
+      "detail_html_length": 130846,
+      "detail_elapsed_ms": 6660,
+      "scraped_at": "2026-07-25T06:29:47.432Z"
     },
     {
       "id": "p9x-at-50-off-20-off-extra-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130996,
-      "detail_elapsed_ms": 3727,
-      "scraped_at": "2026-07-25T06:23:41.865Z"
+      "detail_html_length": 130866,
+      "detail_elapsed_ms": 10680,
+      "scraped_at": "2026-07-25T06:29:58.113Z"
     },
     {
       "id": "p9w-30-off-extra-na-seleo-de-vestidos",
@@ -183,10 +183,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130785,
-      "detail_elapsed_ms": 9381,
-      "scraped_at": "2026-07-25T06:24:03.914Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130930,
+      "detail_elapsed_ms": 8836,
+      "scraped_at": "2026-07-25T06:30:06.949Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -195,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off",
       "title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
       "preview_title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 31/07/2026 23:59.",
-      "description": "Benefício: Combo EOS R100 por R$5.308,00 + 3% OFF! Regras: Válido apenas para o Combo EOS R100 com Lente RF-S 18-45mm + Lente RF 75-300mm F4-5.6. Não cumulativo com demais cupons. Válido até data vigente ou enquanto durarem os estoques. Sujeito à desativação, sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Canon",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0b894f329b35cafe0715a58136d19df9.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131266,
-      "detail_elapsed_ms": 11442,
-      "scraped_at": "2026-07-25T06:24:15.356Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12002,
+      "scraped_at": "2026-07-25T06:30:38.719Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131630,
-      "detail_elapsed_ms": 9545,
-      "scraped_at": "2026-07-25T06:24:24.901Z"
+      "detail_html_length": 131657,
+      "detail_elapsed_ms": 2600,
+      "scraped_at": "2026-07-25T06:30:41.319Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131394,
-      "detail_elapsed_ms": 12916,
-      "scraped_at": "2026-07-25T06:24:37.817Z"
+      "detail_html_length": 131412,
+      "detail_elapsed_ms": 2016,
+      "scraped_at": "2026-07-25T06:30:43.335Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligncia-artificial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133422,
-      "detail_elapsed_ms": 2105,
-      "scraped_at": "2026-07-25T06:24:39.923Z"
+      "detail_html_length": 133438,
+      "detail_elapsed_ms": 2800,
+      "scraped_at": "2026-07-25T06:30:46.136Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131459,
-      "detail_elapsed_ms": 3926,
-      "scraped_at": "2026-07-25T06:24:43.849Z"
+      "detail_html_length": 131874,
+      "detail_elapsed_ms": 2647,
+      "scraped_at": "2026-07-25T06:30:48.783Z"
     }
   ]
 }
