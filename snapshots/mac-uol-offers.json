@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 127695,
-  "run_duration_seconds": 127.69,
-  "avg_detail_ms_per_offer": 10641,
-  "generated_at": "2026-07-25T07:24:06.888Z",
+  "run_duration_ms": 154324,
+  "run_duration_seconds": 154.32,
+  "avg_detail_ms_per_offer": 12860,
+  "generated_at": "2026-07-25T07:29:54.508Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
       "title": "10% OFF no ingresso nos dias 04 a 06/09",
       "preview_title": "10% OFF no ingresso nos dias 04 a 06/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 06/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, prossiga com o fluxo de compra e na \"tela de pagamento\", insira o cupom em \"cupom de desconto\" para obter o desconto de Assinante UOL. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 04 a 06 de setembro. Caso queira comprar com desconto para os dias 11 e 12 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "validity": "",
+      "description": "",
       "category": "Shows, Cinemas e Espetáculos",
       "partner_name": "Rodeio Itu Festival",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131356,
-      "detail_elapsed_ms": 3048,
-      "scraped_at": "2026-07-25T07:22:44.325Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12008,
+      "scraped_at": "2026-07-25T07:28:31.674Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125381,
-      "detail_elapsed_ms": 2518,
-      "scraped_at": "2026-07-25T07:22:46.843Z"
+      "detail_html_length": 131386,
+      "detail_elapsed_ms": 7021,
+      "scraped_at": "2026-07-25T07:28:38.695Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138244,
-      "detail_elapsed_ms": 13016,
-      "scraped_at": "2026-07-25T07:22:59.859Z"
+      "detail_html_length": 140517,
+      "detail_elapsed_ms": 15559,
+      "scraped_at": "2026-07-25T07:28:54.254Z"
     },
     {
-      "id": "p9z-15-off-extra-na-selecao-mascavo",
-      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "id": "p9z-15-off-extra-na-seleo-mascavo",
+      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo",
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 5544,
-      "scraped_at": "2026-07-25T07:23:05.403Z"
+      "detail_html_length": 130868,
+      "detail_elapsed_ms": 7810,
+      "scraped_at": "2026-07-25T07:29:02.064Z"
     },
     {
-      "id": "p9y-15-off-extra-na-selecao-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
+      "id": "p9y-15-off-extra-na-seleo-davines",
+      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines",
+      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130862,
-      "detail_elapsed_ms": 10108,
-      "scraped_at": "2026-07-25T07:23:15.527Z"
+      "detail_html_length": 131245,
+      "detail_elapsed_ms": 15608,
+      "scraped_at": "2026-07-25T07:29:17.672Z"
     },
     {
-      "id": "p9x-ate-50-off-20-off-extra-masculino",
-      "trace_id": "trace_p9x-ate-50-off-20-off-extra-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
+      "id": "p9x-at-50-off-20-off-extra-masculino",
+      "trace_id": "trace_p9x-at-50-off-20-off-extra-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/p9x-at-50-off-20-off-extra-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9x-at-50-off-20-off-extra-masculino",
       "title": "Até 50% OFF + 20% OFF extra - Masculino",
       "preview_title": "Até 50% OFF + 20% OFF extra - Masculino",
       "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131004,
-      "detail_elapsed_ms": 10544,
-      "scraped_at": "2026-07-25T07:23:26.076Z"
+      "detail_html_length": 129778,
+      "detail_elapsed_ms": 5601,
+      "scraped_at": "2026-07-25T07:29:23.273Z"
     },
     {
-      "id": "p9w-30-off-extra-na-selecao-de-vestidos",
-      "trace_id": "trace_p9w-30-off-extra-na-selecao-de-vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
+      "id": "p9w-30-off-extra-na-seleo-de-vestidos",
+      "trace_id": "trace_p9w-30-off-extra-na-seleo-de-vestidos",
+      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-seleo-de-vestidos",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-seleo-de-vestidos",
       "title": "30% OFF extra na seleção de vestidos",
       "preview_title": "30% OFF extra na seleção de vestidos",
       "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130944,
-      "detail_elapsed_ms": 7215,
-      "scraped_at": "2026-07-25T07:23:33.291Z"
+      "detail_html_length": 130873,
+      "detail_elapsed_ms": 5031,
+      "scraped_at": "2026-07-25T07:29:28.304Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131289,
-      "detail_elapsed_ms": 4776,
-      "scraped_at": "2026-07-25T07:23:38.067Z"
+      "detail_html_length": 131136,
+      "detail_elapsed_ms": 8787,
+      "scraped_at": "2026-07-25T07:29:37.092Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131632,
-      "detail_elapsed_ms": 1762,
-      "scraped_at": "2026-07-25T07:23:39.829Z"
+      "detail_html_length": 131648,
+      "detail_elapsed_ms": 2019,
+      "scraped_at": "2026-07-25T07:29:39.112Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131395,
-      "detail_elapsed_ms": 9181,
-      "scraped_at": "2026-07-25T07:23:49.010Z"
+      "detail_html_length": 131402,
+      "detail_elapsed_ms": 1714,
+      "scraped_at": "2026-07-25T07:29:40.826Z"
     },
     {
-      "id": "p9b-curso-gratuito-inteligencia-artificial",
-      "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial",
-      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
-      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
+      "id": "p9b-curso-gratuito-inteligncia-artificial",
+      "trace_id": "trace_p9b-curso-gratuito-inteligncia-artificial",
+      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
+      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
       "title": "Curso gratuito - Inteligência Artificial",
       "preview_title": "Curso gratuito - Inteligência Artificial",
       "validity": "Benefício válido de 21/07/2026 10:00 até 31/08/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133448,
-      "detail_elapsed_ms": 8856,
-      "scraped_at": "2026-07-25T07:23:57.881Z"
+      "detail_html_length": 132046,
+      "detail_elapsed_ms": 4491,
+      "scraped_at": "2026-07-25T07:29:45.317Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131312,
-      "detail_elapsed_ms": 8006,
-      "scraped_at": "2026-07-25T07:24:05.887Z"
+      "detail_html_length": 131391,
+      "detail_elapsed_ms": 6505,
+      "scraped_at": "2026-07-25T07:29:51.822Z"
     }
   ]
 }
