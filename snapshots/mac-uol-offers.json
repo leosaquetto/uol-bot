@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 1
   },
-  "run_duration_ms": 156439,
-  "run_duration_seconds": 156.44,
-  "avg_detail_ms_per_offer": 13037,
-  "generated_at": "2026-07-25T08:51:38.965Z",
+  "run_duration_ms": 164301,
+  "run_duration_seconds": 164.3,
+  "avg_detail_ms_per_offer": 13692,
+  "generated_at": "2026-07-25T08:57:57.991Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12038,
-      "scraped_at": "2026-07-25T08:50:14.732Z"
+      "detail_elapsed_ms": 12016,
+      "scraped_at": "2026-07-25T08:56:18.466Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 131401,
-      "detail_elapsed_ms": 9283,
-      "scraped_at": "2026-07-25T08:50:36.470Z"
+      "detail_html_length": 131248,
+      "detail_elapsed_ms": 5901,
+      "scraped_at": "2026-07-25T08:56:37.044Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138327,
-      "detail_elapsed_ms": 1629,
-      "scraped_at": "2026-07-25T08:50:38.099Z"
+      "detail_html_length": 138322,
+      "detail_elapsed_ms": 2278,
+      "scraped_at": "2026-07-25T08:56:39.322Z"
     },
     {
-      "id": "p9z-15-off-extra-na-seleo-mascavo",
-      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
+      "id": "p9z-15-off-extra-na-selecao-mascavo",
+      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo",
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129694,
-      "detail_elapsed_ms": 3479,
-      "scraped_at": "2026-07-25T08:50:41.578Z"
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 8886,
+      "scraped_at": "2026-07-25T08:56:48.208Z"
     },
     {
-      "id": "p9y-15-off-extra-na-seleo-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
+      "id": "p9y-15-off-extra-na-selecao-davines",
+      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines",
+      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130702,
-      "detail_elapsed_ms": 10573,
-      "scraped_at": "2026-07-25T08:50:52.151Z"
+      "detail_html_length": 129632,
+      "detail_elapsed_ms": 5106,
+      "scraped_at": "2026-07-25T08:56:53.314Z"
     },
     {
-      "id": "p9x-at-50-off-20-off-extra-masculino",
-      "trace_id": "trace_p9x-at-50-off-20-off-extra-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/p9x-at-50-off-20-off-extra-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9x-at-50-off-20-off-extra-masculino",
+      "id": "p9x-ate-50-off-20-off-extra-masculino",
+      "trace_id": "trace_p9x-ate-50-off-20-off-extra-masculino",
+      "link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
       "title": "Até 50% OFF + 20% OFF extra - Masculino",
       "preview_title": "Até 50% OFF + 20% OFF extra - Masculino",
       "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130859,
-      "detail_elapsed_ms": 9251,
-      "scraped_at": "2026-07-25T08:51:01.402Z"
+      "detail_html_length": 131021,
+      "detail_elapsed_ms": 9246,
+      "scraped_at": "2026-07-25T08:57:02.562Z"
     },
     {
-      "id": "p9w-30-off-extra-na-seleo-de-vestidos",
-      "trace_id": "trace_p9w-30-off-extra-na-seleo-de-vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-seleo-de-vestidos",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-seleo-de-vestidos",
+      "id": "p9w-30-off-extra-na-selecao-de-vestidos",
+      "trace_id": "trace_p9w-30-off-extra-na-selecao-de-vestidos",
+      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
       "title": "30% OFF extra na seleção de vestidos",
       "preview_title": "30% OFF extra na seleção de vestidos",
       "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130965,
-      "detail_elapsed_ms": 7248,
-      "scraped_at": "2026-07-25T08:51:08.650Z"
+      "detail_html_length": 130803,
+      "detail_elapsed_ms": 10073,
+      "scraped_at": "2026-07-25T08:57:12.635Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131290,
-      "detail_elapsed_ms": 8414,
-      "scraped_at": "2026-07-25T08:51:17.064Z"
+      "detail_html_length": 131149,
+      "detail_elapsed_ms": 7910,
+      "scraped_at": "2026-07-25T08:57:20.560Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131503,
-      "detail_elapsed_ms": 8622,
-      "scraped_at": "2026-07-25T08:51:25.686Z"
+      "detail_html_length": 131640,
+      "detail_elapsed_ms": 9821,
+      "scraped_at": "2026-07-25T08:57:30.381Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131398,
-      "detail_elapsed_ms": 7312,
-      "scraped_at": "2026-07-25T08:51:32.998Z"
+      "detail_html_length": 131434,
+      "detail_elapsed_ms": 7233,
+      "scraped_at": "2026-07-25T08:57:37.614Z"
     },
     {
-      "id": "p9b-curso-gratuito-inteligncia-artificial",
-      "trace_id": "trace_p9b-curso-gratuito-inteligncia-artificial",
-      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
-      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
+      "id": "p9b-curso-gratuito-inteligencia-artificial",
+      "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial",
+      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
+      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
       "title": "Curso gratuito - Inteligência Artificial",
       "preview_title": "Curso gratuito - Inteligência Artificial",
       "validity": "Benefício válido de 21/07/2026 10:00 até 31/08/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133445,
-      "detail_elapsed_ms": 3859,
-      "scraped_at": "2026-07-25T08:51:36.857Z"
+      "detail_html_length": 133446,
+      "detail_elapsed_ms": 8785,
+      "scraped_at": "2026-07-25T08:57:46.399Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131494,
-      "detail_elapsed_ms": 1934,
-      "scraped_at": "2026-07-25T08:51:38.792Z"
+      "detail_html_length": 131459,
+      "detail_elapsed_ms": 10301,
+      "scraped_at": "2026-07-25T08:57:56.700Z"
     }
   ]
 }
