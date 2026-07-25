@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 303735,
-  "run_duration_seconds": 303.74,
-  "avg_detail_ms_per_offer": 25311,
-  "generated_at": "2026-07-25T04:00:40.714Z",
+  "run_duration_ms": 124787,
+  "run_duration_seconds": 124.79,
+  "avg_detail_ms_per_offer": 10399,
+  "generated_at": "2026-07-25T04:06:51.203Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132887,
-      "detail_elapsed_ms": 14277,
-      "scraped_at": "2026-07-25T03:58:15.322Z"
+      "detail_html_length": 127086,
+      "detail_elapsed_ms": 4557,
+      "scraped_at": "2026-07-25T04:06:20.456Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131390,
-      "detail_elapsed_ms": 5406,
-      "scraped_at": "2026-07-25T03:58:20.728Z"
+      "detail_html_length": 131229,
+      "detail_elapsed_ms": 4409,
+      "scraped_at": "2026-07-25T04:06:24.865Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137029,
-      "detail_elapsed_ms": 4452,
-      "scraped_at": "2026-07-25T03:58:25.181Z"
+      "detail_html_length": 131929,
+      "detail_elapsed_ms": 2974,
+      "scraped_at": "2026-07-25T04:06:27.839Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130862,
-      "detail_elapsed_ms": 32361,
-      "scraped_at": "2026-07-25T03:58:57.542Z"
+      "detail_html_length": 124742,
+      "detail_elapsed_ms": 2261,
+      "scraped_at": "2026-07-25T04:06:30.100Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -135,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130853,
-      "detail_elapsed_ms": 6023,
-      "scraped_at": "2026-07-25T03:59:15.828Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130859,
+      "detail_elapsed_ms": 2347,
+      "scraped_at": "2026-07-25T04:06:32.447Z"
     },
     {
       "id": "p9x-at-50-off-20-off-extra-masculino",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9x-at-50-off-20-off-extra-masculino",
       "title": "Até 50% OFF + 20% OFF extra - Masculino",
       "preview_title": "Até 50% OFF + 20% OFF extra - Masculino",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
+      "description": "Benefício: Até 50% OFF + 20% OFF extra em toda a seleção masculina Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e7cd851ea4ad276bab84bb552acf026f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e7cd851ea4ad276bab84bb552acf026f.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9x-at-50-off-20-off-extra-masculino\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12644,
-      "scraped_at": "2026-07-25T03:59:46.568Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e7cd851ea4ad276bab84bb552acf026f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 129858,
+      "detail_elapsed_ms": 2706,
+      "scraped_at": "2026-07-25T04:06:35.153Z"
     },
     {
       "id": "p9w-30-off-extra-na-seleo-de-vestidos",
@@ -171,22 +171,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-seleo-de-vestidos",
       "title": "30% OFF extra na seleção de vestidos",
       "preview_title": "30% OFF extra na seleção de vestidos",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
+      "description": "Benefício: 30% OFF extra na seleção de vestidos Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4668103aad3d27f5d94b06e22406c02a.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4668103aad3d27f5d94b06e22406c02a.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-seleo-de-vestidos\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12016,
-      "scraped_at": "2026-07-25T04:00:14.386Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4668103aad3d27f5d94b06e22406c02a.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130931,
+      "detail_elapsed_ms": 2628,
+      "scraped_at": "2026-07-25T04:06:37.782Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131290,
-      "detail_elapsed_ms": 8908,
-      "scraped_at": "2026-07-25T04:00:23.294Z"
+      "detail_html_length": 131277,
+      "detail_elapsed_ms": 2401,
+      "scraped_at": "2026-07-25T04:06:40.183Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131653,
-      "detail_elapsed_ms": 5536,
-      "scraped_at": "2026-07-25T04:00:28.830Z"
+      "detail_html_length": 131630,
+      "detail_elapsed_ms": 2695,
+      "scraped_at": "2026-07-25T04:06:42.878Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125035,
-      "detail_elapsed_ms": 3094,
-      "scraped_at": "2026-07-25T04:00:31.924Z"
+      "detail_html_length": 131394,
+      "detail_elapsed_ms": 2665,
+      "scraped_at": "2026-07-25T04:06:45.543Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligncia-artificial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133444,
-      "detail_elapsed_ms": 3527,
-      "scraped_at": "2026-07-25T04:00:35.451Z"
+      "detail_html_length": 133429,
+      "detail_elapsed_ms": 2689,
+      "scraped_at": "2026-07-25T04:06:48.233Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131463,
-      "detail_elapsed_ms": 4376,
-      "scraped_at": "2026-07-25T04:00:39.827Z"
+      "detail_html_length": 131449,
+      "detail_elapsed_ms": 2501,
+      "scraped_at": "2026-07-25T04:06:50.734Z"
     }
   ]
 }
