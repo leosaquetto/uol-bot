@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-25T00:06:03.452476Z",
+  "updated_at": "2026-07-25T00:09:28.046651Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
-    "duplicada_latest": 5,
+    "duplicada_historico": 12,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -36,27 +36,27 @@
     },
     {
       "title": "15% OFF extra na seleção Mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo"
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo"
     },
     {
       "title": "15% OFF extra na seleção Davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines"
+      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines"
     },
     {
       "title": "Até 50% OFF + 20% OFF extra - Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/p9x-at-50-off-20-off-extra-masculino",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9x-at-50-off-20-off-extra-masculino"
+      "link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p9x-ate-50-off-20-off-extra-masculino"
     },
     {
       "title": "30% OFF extra na seleção de vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-seleo-de-vestidos",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9w-30-off-extra-na-seleo-de-vestidos"
+      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p9w-30-off-extra-na-selecao-de-vestidos"
     },
     {
       "title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
@@ -78,9 +78,9 @@
     },
     {
       "title": "Curso gratuito - Inteligência Artificial",
-      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9b-curso-gratuito-inteligncia-artificial"
+      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial"
     },
     {
       "title": "Dia dos Pais: Desconto Progressivo + 5%",
