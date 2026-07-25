@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 244008,
-  "run_duration_seconds": 244.01,
-  "avg_detail_ms_per_offer": 20334,
-  "generated_at": "2026-07-25T04:28:34.323Z",
+  "run_duration_ms": 152716,
+  "run_duration_seconds": 152.72,
+  "avg_detail_ms_per_offer": 12726,
+  "generated_at": "2026-07-25T04:34:51.370Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 132603,
-      "detail_elapsed_ms": 8207,
-      "scraped_at": "2026-07-25T04:25:43.011Z"
+      "detail_html_length": 125896,
+      "detail_elapsed_ms": 3046,
+      "scraped_at": "2026-07-25T04:33:38.557Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "title": "20% de desconto em qualquer plano!",
       "preview_title": "20% de desconto em qualquer plano!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: Zelus Pet, inteligência de saúde preventiva para cães e gatos, leitura de exames, farol de marcadores e acompanhamento no tempo. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
       "category": "",
       "partner_name": "Zelus Pet",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12014,
-      "scraped_at": "2026-07-25T04:26:07.352Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131375,
+      "detail_elapsed_ms": 10913,
+      "scraped_at": "2026-07-25T04:33:49.471Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
       "title": "10% OFF no ingresso nos dias 11 e 12/09",
       "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
+      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
       "category": "Shows, Cinemas e Espetáculos",
       "partner_name": "Rodeio Itu Festival",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12047,
-      "scraped_at": "2026-07-25T04:26:31.859Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 140517,
+      "detail_elapsed_ms": 15773,
+      "scraped_at": "2026-07-25T04:34:05.248Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130848,
-      "detail_elapsed_ms": 6012,
-      "scraped_at": "2026-07-25T04:26:37.871Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130827,
+      "detail_elapsed_ms": 7934,
+      "scraped_at": "2026-07-25T04:34:25.505Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130848,
-      "detail_elapsed_ms": 4888,
-      "scraped_at": "2026-07-25T04:26:42.759Z"
+      "detail_html_length": 130829,
+      "detail_elapsed_ms": 9319,
+      "scraped_at": "2026-07-25T04:34:34.824Z"
     },
     {
       "id": "p9x-at-50-off-20-off-extra-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131035,
-      "detail_elapsed_ms": 9801,
-      "scraped_at": "2026-07-25T04:26:52.560Z"
+      "detail_html_length": 131006,
+      "detail_elapsed_ms": 3589,
+      "scraped_at": "2026-07-25T04:34:38.413Z"
     },
     {
       "id": "p9w-30-off-extra-na-seleo-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130953,
-      "detail_elapsed_ms": 11022,
-      "scraped_at": "2026-07-25T04:27:03.582Z"
+      "detail_html_length": 130930,
+      "detail_elapsed_ms": 2115,
+      "scraped_at": "2026-07-25T04:34:40.528Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131307,
-      "detail_elapsed_ms": 12808,
-      "scraped_at": "2026-07-25T04:27:28.967Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131266,
+      "detail_elapsed_ms": 1968,
+      "scraped_at": "2026-07-25T04:34:42.496Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131502,
-      "detail_elapsed_ms": 9234,
-      "scraped_at": "2026-07-25T04:27:38.201Z"
+      "detail_html_length": 131619,
+      "detail_elapsed_ms": 2615,
+      "scraped_at": "2026-07-25T04:34:45.111Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131413,
-      "detail_elapsed_ms": 8120,
-      "scraped_at": "2026-07-25T04:27:46.321Z"
+      "detail_html_length": 131402,
+      "detail_elapsed_ms": 2444,
+      "scraped_at": "2026-07-25T04:34:47.556Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligncia-artificial",
@@ -279,10 +279,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133450,
-      "detail_elapsed_ms": 12051,
-      "scraped_at": "2026-07-25T04:28:10.703Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133430,
+      "detail_elapsed_ms": 1799,
+      "scraped_at": "2026-07-25T04:34:49.355Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -303,10 +303,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131459,
-      "detail_elapsed_ms": 9935,
-      "scraped_at": "2026-07-25T04:28:33.189Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131499,
+      "detail_elapsed_ms": 1802,
+      "scraped_at": "2026-07-25T04:34:51.157Z"
     }
   ]
 }
