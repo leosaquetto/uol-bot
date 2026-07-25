@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 182568,
-  "run_duration_seconds": 182.57,
-  "avg_detail_ms_per_offer": 15214,
-  "generated_at": "2026-07-25T04:53:40.639Z",
+  "run_duration_ms": 153720,
+  "run_duration_seconds": 153.72,
+  "avg_detail_ms_per_offer": 12810,
+  "generated_at": "2026-07-25T04:59:42.560Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126229,
-      "detail_elapsed_ms": 3774,
-      "scraped_at": "2026-07-25T04:51:40.478Z"
+      "detail_html_length": 132262,
+      "detail_elapsed_ms": 2821,
+      "scraped_at": "2026-07-25T04:57:46.333Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "title": "20% de desconto em qualquer plano!",
       "preview_title": "20% de desconto em qualquer plano!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: Zelus Pet, inteligência de saúde preventiva para cães e gatos, leitura de exames, farol de marcadores e acompanhamento no tempo. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
       "category": "",
       "partner_name": "Zelus Pet",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano\", waiting until \"domcontentloaded\"",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12024,
-      "scraped_at": "2026-07-25T04:52:04.762Z"
+      "detail_html_length": 131378,
+      "detail_elapsed_ms": 12450,
+      "scraped_at": "2026-07-25T04:58:11.158Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138316,
-      "detail_elapsed_ms": 14570,
-      "scraped_at": "2026-07-25T04:52:19.333Z"
+      "detail_html_length": 140521,
+      "detail_elapsed_ms": 11576,
+      "scraped_at": "2026-07-25T04:58:22.768Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130851,
-      "detail_elapsed_ms": 11380,
-      "scraped_at": "2026-07-25T04:52:30.713Z"
+      "detail_html_length": 130879,
+      "detail_elapsed_ms": 11478,
+      "scraped_at": "2026-07-25T04:58:34.246Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130901,
-      "detail_elapsed_ms": 7598,
-      "scraped_at": "2026-07-25T04:52:38.312Z"
+      "detail_html_length": 130850,
+      "detail_elapsed_ms": 3904,
+      "scraped_at": "2026-07-25T04:58:38.150Z"
     },
     {
       "id": "p9x-ate-50-off-20-off-extra-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131012,
-      "detail_elapsed_ms": 3383,
-      "scraped_at": "2026-07-25T04:52:41.695Z"
+      "detail_html_length": 131429,
+      "detail_elapsed_ms": 3697,
+      "scraped_at": "2026-07-25T04:58:41.848Z"
     },
     {
       "id": "p9w-30-off-extra-na-selecao-de-vestidos",
@@ -183,10 +183,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130964,
-      "detail_elapsed_ms": 10679,
-      "scraped_at": "2026-07-25T04:52:52.374Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130953,
+      "detail_elapsed_ms": 10361,
+      "scraped_at": "2026-07-25T04:59:04.833Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131279,
-      "detail_elapsed_ms": 11230,
-      "scraped_at": "2026-07-25T04:53:03.604Z"
+      "detail_html_length": 131268,
+      "detail_elapsed_ms": 9839,
+      "scraped_at": "2026-07-25T04:59:14.672Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -233,8 +233,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131483,
-      "detail_elapsed_ms": 13514,
-      "scraped_at": "2026-07-25T04:53:17.118Z"
+      "detail_elapsed_ms": 13261,
+      "scraped_at": "2026-07-25T04:59:27.933Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131407,
-      "detail_elapsed_ms": 11314,
-      "scraped_at": "2026-07-25T04:53:28.433Z"
+      "detail_html_length": 131416,
+      "detail_elapsed_ms": 8887,
+      "scraped_at": "2026-07-25T04:59:36.820Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133448,
-      "detail_elapsed_ms": 8963,
-      "scraped_at": "2026-07-25T04:53:37.396Z"
+      "detail_html_length": 133449,
+      "detail_elapsed_ms": 2135,
+      "scraped_at": "2026-07-25T04:59:38.955Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131502,
-      "detail_elapsed_ms": 1933,
-      "scraped_at": "2026-07-25T04:53:39.330Z"
+      "detail_html_length": 131471,
+      "detail_elapsed_ms": 3065,
+      "scraped_at": "2026-07-25T04:59:42.020Z"
     }
   ]
 }
