@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 169897,
-  "run_duration_seconds": 169.9,
-  "avg_detail_ms_per_offer": 14158,
-  "generated_at": "2026-07-25T09:47:10.529Z",
+  "run_duration_ms": 168310,
+  "run_duration_seconds": 168.31,
+  "avg_detail_ms_per_offer": 14026,
+  "generated_at": "2026-07-25T09:53:17.826Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 131261,
-      "detail_elapsed_ms": 4027,
-      "scraped_at": "2026-07-25T09:45:41.169Z"
+      "detail_html_length": 132585,
+      "detail_elapsed_ms": 8918,
+      "scraped_at": "2026-07-25T09:51:40.658Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130230,
-      "detail_elapsed_ms": 5341,
-      "scraped_at": "2026-07-25T09:45:46.510Z"
+      "detail_html_length": 131511,
+      "detail_elapsed_ms": 13219,
+      "scraped_at": "2026-07-25T09:51:53.877Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133498,
-      "detail_elapsed_ms": 11477,
-      "scraped_at": "2026-07-25T09:45:57.987Z"
+      "detail_html_length": 133637,
+      "detail_elapsed_ms": 12183,
+      "scraped_at": "2026-07-25T09:52:06.060Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130860,
-      "detail_elapsed_ms": 6869,
-      "scraped_at": "2026-07-25T09:46:04.856Z"
+      "detail_html_length": 130832,
+      "detail_elapsed_ms": 10581,
+      "scraped_at": "2026-07-25T09:52:16.641Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130860,
-      "detail_elapsed_ms": 7657,
-      "scraped_at": "2026-07-25T09:46:12.513Z"
+      "detail_html_length": 130861,
+      "detail_elapsed_ms": 10251,
+      "scraped_at": "2026-07-25T09:52:26.893Z"
     },
     {
       "id": "p9x-at-50-off-20-off-extra-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131027,
-      "detail_elapsed_ms": 12176,
-      "scraped_at": "2026-07-25T09:46:24.689Z"
+      "detail_html_length": 131009,
+      "detail_elapsed_ms": 6462,
+      "scraped_at": "2026-07-25T09:52:33.356Z"
     },
     {
       "id": "p9w-30-off-extra-na-seleo-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131086,
-      "detail_elapsed_ms": 13137,
-      "scraped_at": "2026-07-25T09:46:37.826Z"
+      "detail_html_length": 129560,
+      "detail_elapsed_ms": 4803,
+      "scraped_at": "2026-07-25T09:52:38.160Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131308,
-      "detail_elapsed_ms": 2522,
-      "scraped_at": "2026-07-25T09:46:40.349Z"
+      "detail_html_length": 131279,
+      "detail_elapsed_ms": 2117,
+      "scraped_at": "2026-07-25T09:52:40.277Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 5161,
-      "scraped_at": "2026-07-25T09:46:45.510Z"
+      "detail_html_length": 131632,
+      "detail_elapsed_ms": 1859,
+      "scraped_at": "2026-07-25T09:52:42.137Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131297,
-      "detail_elapsed_ms": 7806,
-      "scraped_at": "2026-07-25T09:46:53.316Z"
+      "detail_html_length": 131246,
+      "detail_elapsed_ms": 9057,
+      "scraped_at": "2026-07-25T09:52:51.194Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligncia-artificial",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
       "title": "Curso gratuito - Inteligência Artificial",
       "preview_title": "Curso gratuito - Inteligência Artificial",
-      "validity": "Benefício válido de 21/07/2026 10:00 até 31/08/2026 23:59.",
-      "description": "Benefício: Curso gratuito de Inteligência Artificial Regras: Preencher as informações no formulário do link. Após esse preenchimento, o link de acesso ao curso será enviado automaticamente para o e-mail informado. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Educação",
       "partner_name": "Descomplica",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/87a65164f9bc12f2812e3e667e204167.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2516e253f2593e37f6e229940f1b95bd.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2516e253f2593e37f6e229940f1b95bd.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2516e253f2593e37f6e229940f1b95bd.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133463,
-      "detail_elapsed_ms": 7874,
-      "scraped_at": "2026-07-25T09:47:01.191Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial Call log: - navigating to \"https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1156,
+      "scraped_at": "2026-07-25T09:53:04.700Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
       "title": "Dia dos Pais: Desconto Progressivo + 5%",
       "preview_title": "Dia dos Pais: Desconto Progressivo + 5%",
-      "validity": "Benefício válido de 20/07/2026 10:00 até 09/08/2026 23:59.",
-      "description": "Benefício: Dia dos Pais: Desconto Progressivo + 5% OFF Regras: Cupom não cumulativo com outros cupons. O desconto não contempla o frete. Benefício válido para todo o site exceto produtos da marca Calvin Klein. Sujeito à desativação sem aviso prévio. O site contará com Desconto Progressivo: 3 peças → 15% 4 peças → 20% 5 peças ou mais → 25% Mais 5% OFF com cupom da parceria!",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mash",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d25f80d500c9690ef406e0438c8e986e.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131462,
-      "detail_elapsed_ms": 8823,
-      "scraped_at": "2026-07-25T09:47:10.015Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5\" is interrupted by another navigation to \"https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5\" Call log: - navigating to \"https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 3684,
+      "scraped_at": "2026-07-25T09:53:16.047Z"
     }
   ]
 }
