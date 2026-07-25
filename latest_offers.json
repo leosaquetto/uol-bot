@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-25T02:00:44.240329Z",
+  "last_update": "2026-07-25T04:02:01.471593Z",
   "offers": [
     {
       "id": "p6M-2-ingressos-18-07-teatro-srgio-cardoso",
@@ -222,7 +222,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T20:02:15.202308Z",
-      "sold_out_at": "22:59"
+      "sold_out_at": "22:59",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -244,7 +245,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T20:02:28.179393Z",
-      "sold_out_at": "22:59"
+      "sold_out_at": "22:59",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9x-ate-50-off-20-off-extra-masculino",
@@ -266,7 +268,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T20:02:41.888226Z",
-      "sold_out_at": "22:59"
+      "sold_out_at": "22:59",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9w-30-off-extra-na-selecao-de-vestidos",
@@ -288,7 +291,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T20:02:55.242848Z",
-      "sold_out_at": "22:59"
+      "sold_out_at": "22:59",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -373,7 +377,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T20:04:51.031950Z",
-      "sold_out_at": "22:59"
+      "sold_out_at": "22:59",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p8Z-dia-dos-pais-desconto-progressivo-5",
@@ -395,7 +400,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T20:05:05.598067Z",
-      "sold_out_at": "18:51"
+      "sold_out_at": "18:51",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9O-2-ingressos-26-07-marina-da-gloria-rj",
@@ -420,7 +426,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T21:34:16.551275Z",
-      "sold_out_at": "19:21"
+      "sold_out_at": "19:21",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9N-2-ingressos-25-07-marina-da-gloria-rj",
@@ -445,7 +452,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-24T21:34:30.191265Z",
-      "sold_out_at": "18:59"
+      "sold_out_at": "18:59",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
