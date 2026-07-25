@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 99936,
-  "run_duration_seconds": 99.94,
-  "avg_detail_ms_per_offer": 8328,
-  "generated_at": "2026-07-25T07:57:44.723Z",
+  "run_duration_ms": 118512,
+  "run_duration_seconds": 118.51,
+  "avg_detail_ms_per_offer": 9876,
+  "generated_at": "2026-07-25T08:03:01.316Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
       "title": "10% OFF no ingresso nos dias 04 a 06/09",
       "preview_title": "10% OFF no ingresso nos dias 04 a 06/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 06/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, prossiga com o fluxo de compra e na \"tela de pagamento\", insira o cupom em \"cupom de desconto\" para obter o desconto de Assinante UOL. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 04 a 06 de setembro. Caso queira comprar com desconto para os dias 11 e 12 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "validity": "",
+      "description": "",
       "category": "Shows, Cinemas e Espetáculos",
       "partner_name": "Rodeio Itu Festival",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131366,
-      "detail_elapsed_ms": 2401,
-      "scraped_at": "2026-07-25T07:56:47.399Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12310,
+      "scraped_at": "2026-07-25T08:02:03.507Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131390,
-      "detail_elapsed_ms": 2487,
-      "scraped_at": "2026-07-25T07:56:49.886Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131220,
+      "detail_elapsed_ms": 11758,
+      "scraped_at": "2026-07-25T08:02:27.864Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 140522,
-      "detail_elapsed_ms": 1826,
-      "scraped_at": "2026-07-25T07:56:51.712Z"
+      "detail_html_length": 133478,
+      "detail_elapsed_ms": 9202,
+      "scraped_at": "2026-07-25T08:02:37.067Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130842,
-      "detail_elapsed_ms": 6640,
-      "scraped_at": "2026-07-25T07:56:58.353Z"
+      "detail_html_length": 125970,
+      "detail_elapsed_ms": 1883,
+      "scraped_at": "2026-07-25T08:02:38.951Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130692,
-      "detail_elapsed_ms": 8316,
-      "scraped_at": "2026-07-25T07:57:06.669Z"
+      "detail_html_length": 130841,
+      "detail_elapsed_ms": 1571,
+      "scraped_at": "2026-07-25T08:02:40.523Z"
     },
     {
       "id": "p9x-at-50-off-20-off-extra-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131018,
-      "detail_elapsed_ms": 9139,
-      "scraped_at": "2026-07-25T07:57:15.809Z"
+      "detail_html_length": 131007,
+      "detail_elapsed_ms": 1875,
+      "scraped_at": "2026-07-25T08:02:42.398Z"
     },
     {
       "id": "p9w-30-off-extra-na-seleo-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130964,
-      "detail_elapsed_ms": 8287,
-      "scraped_at": "2026-07-25T07:57:24.096Z"
+      "detail_html_length": 130932,
+      "detail_elapsed_ms": 1732,
+      "scraped_at": "2026-07-25T08:02:44.130Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131130,
-      "detail_elapsed_ms": 9632,
-      "scraped_at": "2026-07-25T07:57:33.728Z"
+      "detail_html_length": 131297,
+      "detail_elapsed_ms": 1560,
+      "scraped_at": "2026-07-25T08:02:45.690Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126495,
-      "detail_elapsed_ms": 4907,
-      "scraped_at": "2026-07-25T07:57:38.635Z"
+      "detail_html_length": 131630,
+      "detail_elapsed_ms": 1686,
+      "scraped_at": "2026-07-25T08:02:47.376Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131435,
-      "detail_elapsed_ms": 1680,
-      "scraped_at": "2026-07-25T07:57:40.317Z"
+      "detail_html_length": 126525,
+      "detail_elapsed_ms": 1830,
+      "scraped_at": "2026-07-25T08:02:49.206Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligncia-artificial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133446,
-      "detail_elapsed_ms": 2083,
-      "scraped_at": "2026-07-25T07:57:42.400Z"
+      "detail_html_length": 132195,
+      "detail_elapsed_ms": 3110,
+      "scraped_at": "2026-07-25T08:02:52.316Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131442,
-      "detail_elapsed_ms": 2135,
-      "scraped_at": "2026-07-25T07:57:44.537Z"
+      "detail_html_length": 131451,
+      "detail_elapsed_ms": 8295,
+      "scraped_at": "2026-07-25T08:03:00.611Z"
     }
   ]
 }
