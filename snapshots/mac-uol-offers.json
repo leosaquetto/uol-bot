@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 8,
-  "detail_fail_count": 4,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 8,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 4
+    "failed": 0
   },
-  "run_duration_ms": 412071,
-  "run_duration_seconds": 412.07,
-  "avg_detail_ms_per_offer": 34339,
-  "generated_at": "2026-07-26T07:39:51.275Z",
+  "run_duration_ms": 231151,
+  "run_duration_seconds": 231.15,
+  "avg_detail_ms_per_offer": 19263,
+  "generated_at": "2026-07-26T07:48:28.957Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 132885,
-      "detail_elapsed_ms": 20782,
-      "scraped_at": "2026-07-26T07:34:27.349Z"
+      "detail_html_length": 133041,
+      "detail_elapsed_ms": 14173,
+      "scraped_at": "2026-07-26T07:46:42.439Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131238,
-      "detail_elapsed_ms": 12658,
-      "scraped_at": "2026-07-26T07:34:52.273Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131386,
+      "detail_elapsed_ms": 7749,
+      "scraped_at": "2026-07-26T07:46:50.188Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
+      "detail_attempts": 1,
       "detail_html_length": 133634,
-      "detail_elapsed_ms": 11141,
-      "scraped_at": "2026-07-26T07:35:15.933Z"
+      "detail_elapsed_ms": 9746,
+      "scraped_at": "2026-07-26T07:46:59.934Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130890,
-      "detail_elapsed_ms": 11750,
-      "scraped_at": "2026-07-26T07:35:27.684Z"
+      "detail_html_length": 130702,
+      "detail_elapsed_ms": 12057,
+      "scraped_at": "2026-07-26T07:47:11.991Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -123,22 +123,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12076,
-      "scraped_at": "2026-07-26T07:35:52.027Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130858,
+      "detail_elapsed_ms": 11872,
+      "scraped_at": "2026-07-26T07:47:23.863Z"
     },
     {
       "id": "p9x-ate-50-off-20-off-extra-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131032,
-      "detail_elapsed_ms": 11682,
-      "scraped_at": "2026-07-26T07:36:03.709Z"
+      "detail_html_length": 131040,
+      "detail_elapsed_ms": 6863,
+      "scraped_at": "2026-07-26T07:47:30.727Z"
     },
     {
       "id": "p9w-30-off-extra-na-selecao-de-vestidos",
@@ -183,10 +183,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130943,
-      "detail_elapsed_ms": 9201,
-      "scraped_at": "2026-07-26T07:36:25.243Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130931,
+      "detail_elapsed_ms": 10358,
+      "scraped_at": "2026-07-26T07:47:41.085Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131287,
-      "detail_elapsed_ms": 11348,
-      "scraped_at": "2026-07-26T07:36:36.591Z"
+      "detail_html_length": 131138,
+      "detail_elapsed_ms": 8798,
+      "scraped_at": "2026-07-26T07:47:49.883Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131659,
-      "detail_elapsed_ms": 9910,
-      "scraped_at": "2026-07-26T07:36:46.501Z"
+      "detail_html_length": 131629,
+      "detail_elapsed_ms": 6108,
+      "scraped_at": "2026-07-26T07:47:55.991Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -243,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/saudetrevo/p9i-voucher-uber-de-r-30-7-de-desconto",
       "title": "Voucher Uber de R$30 + 7% de desconto",
       "preview_title": "Voucher Uber de R$30 + 7% de desconto",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 20/07/2026 00:00 até 26/07/2026 23:59.",
+      "description": "Benefício: Voucher Uber de R$30 + 7% de desconto no exame Regras: Ao agendar seus exames pela Trevo, você recebe um voucher Uber de R$ 30 para usar na corrida de volta para casa. Além disso, você ainda garante 7% de desconto usando o cupom. Válido enquanto durarem os vouchers. Sujeito à desativação sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Saúde Trevo",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f35e4b619e100b667b9318b805da3859.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6a229a36c1cd852731e156079fbc58.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6a229a36c1cd852731e156079fbc58.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/saudetrevo/p9i-voucher-uber-de-r-30-7-de-desconto\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12349,
-      "scraped_at": "2026-07-26T07:37:14.003Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3a6a229a36c1cd852731e156079fbc58.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131234,
+      "detail_elapsed_ms": 11992,
+      "scraped_at": "2026-07-26T07:48:07.983Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
       "title": "Curso gratuito - Inteligência Artificial",
       "preview_title": "Curso gratuito - Inteligência Artificial",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 21/07/2026 10:00 até 31/08/2026 23:59.",
+      "description": "Benefício: Curso gratuito de Inteligência Artificial Regras: Preencher as informações no formulário do link. Após esse preenchimento, o link de acesso ao curso será enviado automaticamente para o e-mail informado. Sujeito à desativação sem aviso prévio.",
       "category": "Educação",
       "partner_name": "Descomplica",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/87a65164f9bc12f2812e3e667e204167.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2516e253f2593e37f6e229940f1b95bd.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2516e253f2593e37f6e229940f1b95bd.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 13100,
-      "scraped_at": "2026-07-26T07:37:39.399Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2516e253f2593e37f6e229940f1b95bd.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133437,
+      "detail_elapsed_ms": 9948,
+      "scraped_at": "2026-07-26T07:48:17.931Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
       "title": "Dia dos Pais: Desconto Progressivo + 5%",
       "preview_title": "Dia dos Pais: Desconto Progressivo + 5%",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 20/07/2026 10:00 até 09/08/2026 23:59.",
+      "description": "Benefício: Dia dos Pais: Desconto Progressivo + 5% OFF Regras: Cupom não cumulativo com outros cupons. O desconto não contempla o frete. Benefício válido para todo o site exceto produtos da marca Calvin Klein. Sujeito à desativação sem aviso prévio. O site contará com Desconto Progressivo: 3 peças → 15% 4 peças → 20% 5 peças ou mais → 25% Mais 5% OFF com cupom da parceria!",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mash",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d25f80d500c9690ef406e0438c8e986e.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 19386,
-      "scraped_at": "2026-07-26T07:38:39.361Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 126589,
+      "detail_elapsed_ms": 8774,
+      "scraped_at": "2026-07-26T07:48:26.908Z"
     }
   ]
 }
