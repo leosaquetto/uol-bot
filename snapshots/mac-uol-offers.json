@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 42157,
-  "run_duration_seconds": 42.16,
-  "avg_detail_ms_per_offer": 3513,
-  "generated_at": "2026-07-26T18:41:13.143Z",
+  "run_duration_ms": 44725,
+  "run_duration_seconds": 44.73,
+  "avg_detail_ms_per_offer": 3727,
+  "generated_at": "2026-07-26T18:45:03.852Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132583,
-      "detail_elapsed_ms": 5661,
-      "scraped_at": "2026-07-26T18:40:48.586Z"
+      "detail_html_length": 132603,
+      "detail_elapsed_ms": 5928,
+      "scraped_at": "2026-07-26T18:44:37.975Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125013,
-      "detail_elapsed_ms": 2360,
-      "scraped_at": "2026-07-26T18:40:50.946Z"
+      "detail_html_length": 125014,
+      "detail_elapsed_ms": 3093,
+      "scraped_at": "2026-07-26T18:44:41.069Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137091,
-      "detail_elapsed_ms": 2405,
-      "scraped_at": "2026-07-26T18:40:53.351Z"
+      "detail_html_length": 136406,
+      "detail_elapsed_ms": 2275,
+      "scraped_at": "2026-07-26T18:44:43.345Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130838,
-      "detail_elapsed_ms": 2251,
-      "scraped_at": "2026-07-26T18:40:55.602Z"
+      "detail_html_length": 130889,
+      "detail_elapsed_ms": 2099,
+      "scraped_at": "2026-07-26T18:44:45.444Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130861,
-      "detail_elapsed_ms": 1755,
-      "scraped_at": "2026-07-26T18:40:57.376Z"
+      "detail_html_length": 129614,
+      "detail_elapsed_ms": 1975,
+      "scraped_at": "2026-07-26T18:44:47.419Z"
     },
     {
       "id": "p9x-ate-50-off-20-off-extra-masculino",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131020,
-      "detail_elapsed_ms": 2391,
-      "scraped_at": "2026-07-26T18:40:59.767Z"
+      "detail_html_length": 131021,
+      "detail_elapsed_ms": 2612,
+      "scraped_at": "2026-07-26T18:44:50.031Z"
     },
     {
       "id": "p9w-30-off-extra-na-selecao-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130940,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-07-26T18:41:01.903Z"
+      "detail_html_length": 124578,
+      "detail_elapsed_ms": 2282,
+      "scraped_at": "2026-07-26T18:44:52.313Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131287,
-      "detail_elapsed_ms": 2200,
-      "scraped_at": "2026-07-26T18:41:04.104Z"
+      "detail_html_length": 130060,
+      "detail_elapsed_ms": 2367,
+      "scraped_at": "2026-07-26T18:44:54.680Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132045,
-      "detail_elapsed_ms": 2102,
-      "scraped_at": "2026-07-26T18:41:06.207Z"
+      "detail_html_length": 131650,
+      "detail_elapsed_ms": 2098,
+      "scraped_at": "2026-07-26T18:44:56.778Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131393,
-      "detail_elapsed_ms": 2232,
-      "scraped_at": "2026-07-26T18:41:08.440Z"
+      "detail_html_length": 131403,
+      "detail_elapsed_ms": 2376,
+      "scraped_at": "2026-07-26T18:44:59.154Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128594,
-      "detail_elapsed_ms": 2232,
-      "scraped_at": "2026-07-26T18:41:10.672Z"
+      "detail_html_length": 133380,
+      "detail_elapsed_ms": 2356,
+      "scraped_at": "2026-07-26T18:45:01.511Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131449,
-      "detail_elapsed_ms": 2251,
-      "scraped_at": "2026-07-26T18:41:12.923Z"
+      "detail_html_length": 131470,
+      "detail_elapsed_ms": 2168,
+      "scraped_at": "2026-07-26T18:45:03.680Z"
     }
   ]
 }
