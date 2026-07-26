@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 11
   },
-  "run_duration_ms": 427211,
-  "run_duration_seconds": 427.21,
-  "avg_detail_ms_per_offer": 35601,
-  "generated_at": "2026-07-26T03:51:10.198Z",
+  "run_duration_ms": 396043,
+  "run_duration_seconds": 396.04,
+  "avg_detail_ms_per_offer": 33004,
+  "generated_at": "2026-07-26T04:01:52.406Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12510,
-      "scraped_at": "2026-07-26T03:46:07.705Z"
+      "detail_elapsed_ms": 12096,
+      "scraped_at": "2026-07-26T03:57:20.089Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -65,8 +65,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12064,
-      "scraped_at": "2026-07-26T03:46:32.192Z"
+      "detail_elapsed_ms": 12098,
+      "scraped_at": "2026-07-26T03:57:45.233Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -89,8 +89,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12581,
-      "scraped_at": "2026-07-26T03:46:57.227Z"
+      "detail_elapsed_ms": 12106,
+      "scraped_at": "2026-07-26T03:58:09.962Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -113,8 +113,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12205,
-      "scraped_at": "2026-07-26T03:47:22.079Z"
+      "detail_elapsed_ms": 12094,
+      "scraped_at": "2026-07-26T03:58:34.508Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -137,8 +137,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12189,
-      "scraped_at": "2026-07-26T03:47:46.920Z"
+      "detail_elapsed_ms": 12017,
+      "scraped_at": "2026-07-26T03:58:58.954Z"
     },
     {
       "id": "p9x-ate-50-off-20-off-extra-masculino",
@@ -161,8 +161,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 15432,
-      "scraped_at": "2026-07-26T03:48:14.668Z"
+      "detail_elapsed_ms": 12286,
+      "scraped_at": "2026-07-26T03:59:23.714Z"
     },
     {
       "id": "p9w-30-off-extra-na-selecao-de-vestidos",
@@ -185,8 +185,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12141,
-      "scraped_at": "2026-07-26T03:48:39.516Z"
+      "detail_elapsed_ms": 12652,
+      "scraped_at": "2026-07-26T03:59:49.012Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -195,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off",
       "title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
       "preview_title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 31/07/2026 23:59.",
+      "description": "Benefício: Combo EOS R100 por R$5.308,00 + 3% OFF! Regras: Válido apenas para o Combo EOS R100 com Lente RF-S 18-45mm + Lente RF 75-300mm F4-5.6. Não cumulativo com demais cupons. Válido até data vigente ou enquanto durarem os estoques. Sujeito à desativação, sem aviso prévio.",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Canon",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0b894f329b35cafe0715a58136d19df9.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12252,
-      "scraped_at": "2026-07-26T03:49:05.652Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131401,
+      "detail_elapsed_ms": 16113,
+      "scraped_at": "2026-07-26T04:00:05.125Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -219,22 +219,22 @@
       "original_link": "https://clube.uol.com.br/olympikus/p9s-15-off-em-produtos-selecionados",
       "title": "15% OFF em produtos selecionados",
       "preview_title": "15% OFF em produtos selecionados",
-      "validity": "Benefício válido de 22/07/2026 11:56 até 22/07/2027 23:59.",
-      "description": "Sobre o parceiro: A marca acredita e investe no esporte, buscando inovação e alta performance, por meio do seu Centro de Desenvolvimento e Tecnologia. Benefício: 15% OFF em produtos selecionados. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Olympikus.",
+      "validity": "",
+      "description": "",
       "category": "Compras e Presentes",
       "partner_name": "Olympikus",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/e9afd64c0ef7dd9cffe021d68cc93577.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a60da324ede4_a01f7d3dc52d7a76def88febc40dce27.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a60da324ede4_a01f7d3dc52d7a76def88febc40dce27.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a60da324ede4_a01f7d3dc52d7a76def88febc40dce27.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131763,
-      "detail_elapsed_ms": 41712,
-      "scraped_at": "2026-07-26T03:49:47.364Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/olympikus/p9s-15-off-em-produtos-selecionados\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12895,
+      "scraped_at": "2026-07-26T04:00:30.794Z"
     },
     {
       "id": "p9i-voucher-uber-de-r-30-7-de-desconto",
@@ -257,8 +257,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/saudetrevo/p9i-voucher-uber-de-r-30-7-de-desconto\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 13399,
-      "scraped_at": "2026-07-26T03:50:15.062Z"
+      "detail_elapsed_ms": 12097,
+      "scraped_at": "2026-07-26T04:00:56.142Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -281,8 +281,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 15920,
-      "scraped_at": "2026-07-26T03:50:40.154Z"
+      "detail_elapsed_ms": 12393,
+      "scraped_at": "2026-07-26T04:01:21.374Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -302,11 +302,11 @@
       "img_source": "error",
       "detail_ok": false,
       "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5\" is interrupted by another navigation to \"https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial\" Call log: - navigating to \"https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5\", waiting until \"domcontentloaded\"",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 5541,
-      "scraped_at": "2026-07-26T03:51:00.085Z"
+      "detail_elapsed_ms": 14040,
+      "scraped_at": "2026-07-26T04:01:50.035Z"
     }
   ]
 }
