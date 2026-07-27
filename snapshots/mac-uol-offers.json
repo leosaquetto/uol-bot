@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
-    "weak": 1,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 64664,
-  "run_duration_seconds": 64.66,
-  "avg_detail_ms_per_offer": 5389,
-  "generated_at": "2026-07-27T13:33:56.373Z",
+  "run_duration_ms": 54258,
+  "run_duration_seconds": 54.26,
+  "avg_detail_ms_per_offer": 4522,
+  "generated_at": "2026-07-27T13:38:04.837Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -25,24 +25,24 @@
       "trace_id": "trace_p9p-1-ingresso-30-07-neo-quimica-arena-sp",
       "link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-quimica-arena-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-quimica-arena-sp",
-      "title": "Ingressos Exclusivos",
+      "title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
       "preview_title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 09:50 até 30/07/2026 15:40.",
+      "description": "Assinante UOL, chegou a hora de sentir a emoção da Fiel! Resgate 1 ingresso individual para assistir à partida Corinthians x Atlhético-PR, pelo campeonato Brasileiro, no dia 30 de Julho de 2026, às 19h30, na Neo Química Arena - SP. Quando: 30 de Julho de 2026, às 19h30. Onde: Arena Neo Química - Av. Miguel Ignácio Curi, 111 - Itaquera, São Paulo. Atenção: Após finalizar o resgate, não se esqueça de realizar o cadastro facial no Fiel Torcedor. Caso a facial não esteja cadastrada, infelizmente será necessário prosseguir com a desclassificação, conforme as regras da campanha. A quantidade de ingressos é limitada, e apenas os primeiros que realizarem o cadastro facial garantem o ingresso. REGRAS DE RESGATE: O voucher resgatado é temporário. Seu cadastro será validado e, se estiver de acordo com as regras da campanha, você receberá o ingresso individual vinculado ao seu CPF no Fiel Torcedor, com confirmação enviada por e-mail pelo UOL. Para garantir seu ingresso, finalize o cadastro no site www.fieltorcedor.com.br. Se já possui cadastro, basta confirmar ou atualizar seus dados. Promoção válida por tempo limitado, enquanto durarem os estoques. Importante: É obrigatório incluir biometria facial para acesso ao estádio. O ingresso será garantido ao CPF após o cadastro no site. Seu cadastro será confirmado e, caso você esteja dentro das regras da promoção, você receberá um e-mail de confirmação. Atenção, Assinante UOL! A venda de ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato de sua participação em campanhas futuras e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
-      "img_source": "benefit_data_src",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "img_source": "meta_og",
       "detail_ok": true,
-      "detail_quality": "weak",
+      "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 332709,
-      "detail_elapsed_ms": 11256,
-      "scraped_at": "2026-07-27T13:33:24.932Z"
+      "detail_html_length": 133297,
+      "detail_elapsed_ms": 6222,
+      "scraped_at": "2026-07-27T13:37:35.568Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131516,
-      "detail_elapsed_ms": 2978,
-      "scraped_at": "2026-07-27T13:33:27.910Z"
+      "detail_html_length": 132751,
+      "detail_elapsed_ms": 4277,
+      "scraped_at": "2026-07-27T13:37:39.845Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131376,
-      "detail_elapsed_ms": 2604,
-      "scraped_at": "2026-07-27T13:33:30.514Z"
+      "detail_html_length": 130208,
+      "detail_elapsed_ms": 2172,
+      "scraped_at": "2026-07-27T13:37:42.017Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127302,
-      "detail_elapsed_ms": 2134,
-      "scraped_at": "2026-07-27T13:33:32.648Z"
+      "detail_html_length": 136643,
+      "detail_elapsed_ms": 2354,
+      "scraped_at": "2026-07-27T13:37:44.371Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130891,
-      "detail_elapsed_ms": 4449,
-      "scraped_at": "2026-07-27T13:33:37.103Z"
+      "detail_html_length": 130879,
+      "detail_elapsed_ms": 3658,
+      "scraped_at": "2026-07-27T13:37:48.029Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129709,
-      "detail_elapsed_ms": 2060,
-      "scraped_at": "2026-07-27T13:33:39.163Z"
+      "detail_html_length": 129701,
+      "detail_elapsed_ms": 1883,
+      "scraped_at": "2026-07-27T13:37:49.912Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124913,
-      "detail_elapsed_ms": 2456,
-      "scraped_at": "2026-07-27T13:33:41.619Z"
+      "detail_html_length": 131287,
+      "detail_elapsed_ms": 2609,
+      "scraped_at": "2026-07-27T13:37:52.521Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130403,
-      "detail_elapsed_ms": 2395,
-      "scraped_at": "2026-07-27T13:33:44.014Z"
+      "detail_html_length": 131629,
+      "detail_elapsed_ms": 2242,
+      "scraped_at": "2026-07-27T13:37:54.763Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133467,
-      "detail_elapsed_ms": 3141,
-      "scraped_at": "2026-07-27T13:33:47.155Z"
+      "detail_html_length": 133438,
+      "detail_elapsed_ms": 2253,
+      "scraped_at": "2026-07-27T13:37:57.017Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131459,
-      "detail_elapsed_ms": 3245,
-      "scraped_at": "2026-07-27T13:33:50.400Z"
+      "detail_html_length": 131855,
+      "detail_elapsed_ms": 2481,
+      "scraped_at": "2026-07-27T13:37:59.498Z"
     },
     {
       "id": "p8t-35-off-em-pos-graduacao",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130790,
-      "detail_elapsed_ms": 2623,
-      "scraped_at": "2026-07-27T13:33:53.023Z"
+      "detail_html_length": 130785,
+      "detail_elapsed_ms": 2482,
+      "scraped_at": "2026-07-27T13:38:01.980Z"
     },
     {
       "id": "p8o-20-off-em-produtos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131708,
-      "detail_elapsed_ms": 2861,
-      "scraped_at": "2026-07-27T13:33:55.884Z"
+      "detail_html_length": 131697,
+      "detail_elapsed_ms": 2183,
+      "scraped_at": "2026-07-27T13:38:04.163Z"
     }
   ]
 }
