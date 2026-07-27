@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 44322,
-  "run_duration_seconds": 44.32,
-  "avg_detail_ms_per_offer": 3694,
-  "generated_at": "2026-07-27T07:44:20.857Z",
+  "run_duration_ms": 40072,
+  "run_duration_seconds": 40.07,
+  "avg_detail_ms_per_offer": 3339,
+  "generated_at": "2026-07-27T07:48:06.095Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131362,
-      "detail_elapsed_ms": 4109,
-      "scraped_at": "2026-07-27T07:43:54.058Z"
+      "detail_html_length": 132526,
+      "detail_elapsed_ms": 5062,
+      "scraped_at": "2026-07-27T07:47:43.994Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130229,
-      "detail_elapsed_ms": 2576,
-      "scraped_at": "2026-07-27T07:43:56.634Z"
+      "detail_html_length": 130222,
+      "detail_elapsed_ms": 2508,
+      "scraped_at": "2026-07-27T07:47:46.503Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138166,
-      "detail_elapsed_ms": 2941,
-      "scraped_at": "2026-07-27T07:43:59.576Z"
+      "detail_html_length": 137912,
+      "detail_elapsed_ms": 2383,
+      "scraped_at": "2026-07-27T07:47:48.886Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130851,
-      "detail_elapsed_ms": 1958,
-      "scraped_at": "2026-07-27T07:44:01.535Z"
+      "detail_html_length": 130855,
+      "detail_elapsed_ms": 2089,
+      "scraped_at": "2026-07-27T07:47:50.975Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130862,
-      "detail_elapsed_ms": 2084,
-      "scraped_at": "2026-07-27T07:44:03.620Z"
+      "detail_html_length": 130854,
+      "detail_elapsed_ms": 2060,
+      "scraped_at": "2026-07-27T07:47:53.035Z"
     },
     {
       "id": "p9x-at-50-off-20-off-extra-masculino",
@@ -159,10 +159,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 129635,
-      "detail_elapsed_ms": 3589,
-      "scraped_at": "2026-07-27T07:44:07.689Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131010,
+      "detail_elapsed_ms": 2195,
+      "scraped_at": "2026-07-27T07:47:55.230Z"
     },
     {
       "id": "p9w-30-off-extra-na-seleo-de-vestidos",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129775,
-      "detail_elapsed_ms": 2616,
-      "scraped_at": "2026-07-27T07:44:10.305Z"
+      "detail_html_length": 130924,
+      "detail_elapsed_ms": 2011,
+      "scraped_at": "2026-07-27T07:47:57.241Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131289,
-      "detail_elapsed_ms": 2186,
-      "scraped_at": "2026-07-27T07:44:12.491Z"
+      "detail_html_length": 131280,
+      "detail_elapsed_ms": 1855,
+      "scraped_at": "2026-07-27T07:47:59.096Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 2021,
-      "scraped_at": "2026-07-27T07:44:14.512Z"
+      "detail_html_length": 131633,
+      "detail_elapsed_ms": 2102,
+      "scraped_at": "2026-07-27T07:48:01.198Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligncia-artificial",
@@ -256,33 +256,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133444,
-      "detail_elapsed_ms": 1907,
-      "scraped_at": "2026-07-27T07:44:16.419Z"
+      "detail_html_length": 133447,
+      "detail_elapsed_ms": 2000,
+      "scraped_at": "2026-07-27T07:48:03.198Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
       "trace_id": "trace_p8z-dia-dos-pais-desconto-progressivo-5",
       "link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
       "original_link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
-      "title": "Dia dos Pais: Desconto Progressivo + 5%",
+      "title": "Not Found",
       "preview_title": "Dia dos Pais: Desconto Progressivo + 5%",
-      "validity": "Benefício válido de 20/07/2026 10:00 até 09/08/2026 23:59.",
-      "description": "Benefício: Dia dos Pais: Desconto Progressivo + 5% OFF Regras: Cupom não cumulativo com outros cupons. O desconto não contempla o frete. Benefício válido para todo o site exceto produtos da marca Calvin Klein. Sujeito à desativação sem aviso prévio. O site contará com Desconto Progressivo: 3 peças → 15% 4 peças → 20% 5 peças ou mais → 25% Mais 5% OFF com cupom da parceria!",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Mash",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/d25f80d500c9690ef406e0438c8e986e.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/70f00f18eacfcfe87f1f479fee0e6097.png",
-      "img_source": "meta_og",
+      "detail_img_url": "",
+      "img_source": "none",
       "detail_ok": true,
-      "detail_quality": "complete",
+      "detail_quality": "weak",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131482,
-      "detail_elapsed_ms": 2220,
-      "scraped_at": "2026-07-27T07:44:18.639Z"
+      "detail_html_length": 145,
+      "detail_elapsed_ms": 930,
+      "scraped_at": "2026-07-27T07:48:04.128Z"
     },
     {
       "id": "p8t-35-off-em-ps-graduao",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130771,
-      "detail_elapsed_ms": 1957,
-      "scraped_at": "2026-07-27T07:44:20.596Z"
+      "detail_html_length": 130773,
+      "detail_elapsed_ms": 1685,
+      "scraped_at": "2026-07-27T07:48:05.813Z"
     }
   ]
 }
