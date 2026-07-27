@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 206782,
-  "run_duration_seconds": 206.78,
-  "avg_detail_ms_per_offer": 17232,
-  "generated_at": "2026-07-27T15:11:19.961Z",
+  "run_duration_ms": 69026,
+  "run_duration_seconds": 69.03,
+  "avg_detail_ms_per_offer": 5752,
+  "generated_at": "2026-07-27T15:15:55.253Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
       "title": "30% OFF em seleção especial",
       "preview_title": "30% OFF em seleção especial",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 12:03 até 09/08/2026 23:59.",
+      "description": "Sobre o parceiro: Nossa missão é tornar todos os atletas melhores por meio da paixão, design e busca incansável pela inovação. Benefício de Dia dos Pais: 30% OFF em seleção especial da Under Armour. Regras Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Under Armour.",
       "category": "Compras e Presentes",
       "partner_name": "Under Armour",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/76ef473d88dce518c6f15d7bfc30be8b.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/76ef473d88dce518c6f15d7bfc30be8b.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12009,
-      "scraped_at": "2026-07-27T15:10:34.816Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/76ef473d88dce518c6f15d7bfc30be8b.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131415,
+      "detail_elapsed_ms": 9782,
+      "scraped_at": "2026-07-27T15:15:19.165Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132616,
-      "detail_elapsed_ms": 4734,
-      "scraped_at": "2026-07-27T15:10:39.550Z"
+      "detail_html_length": 132745,
+      "detail_elapsed_ms": 5811,
+      "scraped_at": "2026-07-27T15:15:24.976Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130154,
-      "detail_elapsed_ms": 5546,
-      "scraped_at": "2026-07-27T15:10:45.096Z"
+      "detail_html_length": 125027,
+      "detail_elapsed_ms": 2335,
+      "scraped_at": "2026-07-27T15:15:27.313Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134013,
-      "detail_elapsed_ms": 6017,
-      "scraped_at": "2026-07-27T15:10:51.113Z"
+      "detail_html_length": 138234,
+      "detail_elapsed_ms": 5205,
+      "scraped_at": "2026-07-27T15:15:32.518Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130694,
-      "detail_elapsed_ms": 3757,
-      "scraped_at": "2026-07-27T15:10:54.872Z"
+      "detail_html_length": 130834,
+      "detail_elapsed_ms": 2973,
+      "scraped_at": "2026-07-27T15:15:35.491Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130842,
-      "detail_elapsed_ms": 2724,
-      "scraped_at": "2026-07-27T15:10:57.596Z"
+      "detail_html_length": 129328,
+      "detail_elapsed_ms": 2591,
+      "scraped_at": "2026-07-27T15:15:38.083Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131290,
-      "detail_elapsed_ms": 3986,
-      "scraped_at": "2026-07-27T15:11:01.583Z"
+      "detail_html_length": 130131,
+      "detail_elapsed_ms": 3375,
+      "scraped_at": "2026-07-27T15:15:41.458Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130408,
-      "detail_elapsed_ms": 2951,
-      "scraped_at": "2026-07-27T15:11:04.534Z"
+      "detail_html_length": 131643,
+      "detail_elapsed_ms": 2886,
+      "scraped_at": "2026-07-27T15:15:44.344Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligncia-artificial",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133455,
-      "detail_elapsed_ms": 3513,
-      "scraped_at": "2026-07-27T15:11:08.047Z"
+      "detail_html_length": 133436,
+      "detail_elapsed_ms": 2777,
+      "scraped_at": "2026-07-27T15:15:47.121Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130285,
-      "detail_elapsed_ms": 3180,
-      "scraped_at": "2026-07-27T15:11:11.227Z"
+      "detail_html_length": 130313,
+      "detail_elapsed_ms": 2505,
+      "scraped_at": "2026-07-27T15:15:49.626Z"
     },
     {
       "id": "p8t-35-off-em-ps-graduao",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130784,
-      "detail_elapsed_ms": 4910,
-      "scraped_at": "2026-07-27T15:11:16.137Z"
+      "detail_html_length": 129614,
+      "detail_elapsed_ms": 2228,
+      "scraped_at": "2026-07-27T15:15:51.854Z"
     },
     {
       "id": "p8o-20-off-em-produtos-selecionados",
@@ -292,7 +292,7 @@
       "title": "20% Off em produtos selecionados",
       "preview_title": "20% Off em produtos selecionados",
       "validity": "Benefício válido de 20/07/2026 12:27 até 09/08/2026 23:59.",
-      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Dia dos Pais com cupom de 20% OFF em produtos selecionados. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício de Dia dos Pais: Cupom de 20% OFF em produtos selecionados. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
       "category": "Compras e Presentes",
       "partner_name": "Netshoes",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130563,
-      "detail_elapsed_ms": 3160,
-      "scraped_at": "2026-07-27T15:11:19.298Z"
+      "detail_html_length": 130560,
+      "detail_elapsed_ms": 2822,
+      "scraped_at": "2026-07-27T15:15:54.677Z"
     }
   ]
 }
