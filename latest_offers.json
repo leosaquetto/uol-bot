@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-27T23:09:29.836098Z",
+  "last_update": "2026-07-27T23:31:11.974862Z",
   "offers": [
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -429,7 +429,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-27T21:18:39.489902Z",
-      "sold_out_at": "20:08"
+      "sold_out_at": "20:08",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAa-20-off-em-selecao-de-dia-dos-pais",
