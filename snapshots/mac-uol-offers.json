@@ -9,17 +9,41 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 52097,
-  "run_duration_seconds": 52.1,
-  "avg_detail_ms_per_offer": 4341,
-  "generated_at": "2026-07-27T13:29:42.950Z",
+  "run_duration_ms": 64664,
+  "run_duration_seconds": 64.66,
+  "avg_detail_ms_per_offer": 5389,
+  "generated_at": "2026-07-27T13:33:56.373Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "p9p-1-ingresso-30-07-neo-quimica-arena-sp",
+      "trace_id": "trace_p9p-1-ingresso-30-07-neo-quimica-arena-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-quimica-arena-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-quimica-arena-sp",
+      "title": "Ingressos Exclusivos",
+      "preview_title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
+      "validity": "",
+      "description": "",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "img_source": "benefit_data_src",
+      "detail_ok": true,
+      "detail_quality": "weak",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 332709,
+      "detail_elapsed_ms": 11256,
+      "scraped_at": "2026-07-27T13:33:24.932Z"
+    },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
       "trace_id": "trace_p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132607,
-      "detail_elapsed_ms": 6597,
-      "scraped_at": "2026-07-27T13:29:14.897Z"
+      "detail_html_length": 131516,
+      "detail_elapsed_ms": 2978,
+      "scraped_at": "2026-07-27T13:33:27.910Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131379,
-      "detail_elapsed_ms": 2992,
-      "scraped_at": "2026-07-27T13:29:17.896Z"
+      "detail_html_length": 131376,
+      "detail_elapsed_ms": 2604,
+      "scraped_at": "2026-07-27T13:33:30.514Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134119,
-      "detail_elapsed_ms": 3029,
-      "scraped_at": "2026-07-27T13:29:20.925Z"
+      "detail_html_length": 127302,
+      "detail_elapsed_ms": 2134,
+      "scraped_at": "2026-07-27T13:33:32.648Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130851,
-      "detail_elapsed_ms": 2774,
-      "scraped_at": "2026-07-27T13:29:23.699Z"
+      "detail_html_length": 130891,
+      "detail_elapsed_ms": 4449,
+      "scraped_at": "2026-07-27T13:33:37.103Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130862,
-      "detail_elapsed_ms": 2496,
-      "scraped_at": "2026-07-27T13:29:26.195Z"
+      "detail_html_length": 129709,
+      "detail_elapsed_ms": 2060,
+      "scraped_at": "2026-07-27T13:33:39.163Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131299,
-      "detail_elapsed_ms": 3018,
-      "scraped_at": "2026-07-27T13:29:29.213Z"
+      "detail_html_length": 124913,
+      "detail_elapsed_ms": 2456,
+      "scraped_at": "2026-07-27T13:33:41.619Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131632,
-      "detail_elapsed_ms": 2375,
-      "scraped_at": "2026-07-27T13:29:31.589Z"
+      "detail_html_length": 130403,
+      "detail_elapsed_ms": 2395,
+      "scraped_at": "2026-07-27T13:33:44.014Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132289,
-      "detail_elapsed_ms": 2154,
-      "scraped_at": "2026-07-27T13:29:33.743Z"
+      "detail_html_length": 133467,
+      "detail_elapsed_ms": 3141,
+      "scraped_at": "2026-07-27T13:33:47.155Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130303,
-      "detail_elapsed_ms": 2130,
-      "scraped_at": "2026-07-27T13:29:35.873Z"
+      "detail_html_length": 131459,
+      "detail_elapsed_ms": 3245,
+      "scraped_at": "2026-07-27T13:33:50.400Z"
     },
     {
       "id": "p8t-35-off-em-pos-graduacao",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130784,
-      "detail_elapsed_ms": 3003,
-      "scraped_at": "2026-07-27T13:29:38.876Z"
+      "detail_html_length": 130790,
+      "detail_elapsed_ms": 2623,
+      "scraped_at": "2026-07-27T13:33:53.023Z"
     },
     {
       "id": "p8o-20-off-em-produtos-selecionados",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130570,
-      "detail_elapsed_ms": 1978,
-      "scraped_at": "2026-07-27T13:29:40.854Z"
-    },
-    {
-      "id": "p8m-40-off-nos-pedidos-pelo-site-e-app",
-      "trace_id": "trace_p8m-40-off-nos-pedidos-pelo-site-e-app",
-      "link": "https://clube.uol.com.br/dominospizza/p8M-40-off-nos-pedidos-pelo-site-e-app",
-      "original_link": "https://clube.uol.com.br/dominospizza/p8M-40-off-nos-pedidos-pelo-site-e-app",
-      "title": "40% OFF nos pedidos pelo site e app",
-      "preview_title": "40% OFF nos pedidos pelo site e app",
-      "validity": "Benefício válido de 20/07/2026 12:19 até 31/07/2026 23:59.",
-      "description": "Sobre o parceiro: Faça o seu pedido online na maior pizzaria do mundo! Diversos tipos de pizzas, combos e promoções para você escolher. Benefício: Cupom de 40% OFF nos pedidos pelo site e app. Regras: Desconto válido para pedidos efetuados apenas no site ou App da Domino´s Pizza. Válido para Pizzas médias e grandes. Válido para massas fina ou tradicional e todos os sabores. Válido para todos os dias da semana. O desconto só é aplicado na pizza e não no pedido inteiro. Desconto não se aplica na taxa de entrega. Não cumulativo com outras promoções. Válido também para carryout: retirada na loja. O cupom de desconto deverá ser inserido no carrinho no momento do checkout. O desconto não é válido para pedidos no balcão.",
-      "category": "Comer e Beber",
-      "partner_name": "Domino's Pizza",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0f3a2de5fd184d70501deada1bc8a520.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/565efeb8db857eb87242b232a8db2e37.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/565efeb8db857eb87242b232a8db2e37.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/565efeb8db857eb87242b232a8db2e37.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130867,
-      "detail_elapsed_ms": 1934,
-      "scraped_at": "2026-07-27T13:29:42.788Z"
+      "detail_html_length": 131708,
+      "detail_elapsed_ms": 2861,
+      "scraped_at": "2026-07-27T13:33:55.884Z"
     }
   ]
 }
