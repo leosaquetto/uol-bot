@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-07-26T01:18:03.772085Z",
+  "last_update": "2026-07-27T02:18:23.644992Z",
   "offers": [
-    {
-      "id": "p6L-2-ingressos-17-07-teatro-srgio-cardoso",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p6L-2-ingressos-17-07-teatro-srgio-cardoso",
-      "preview_title": "2 INGRESSOS: 17/07 Teatro Sérgio Cardoso",
-      "title": "2 INGRESSOS: 17/07 Teatro Sérgio Cardoso",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p6L-2-ingressos-17-07-teatro-srgio-cardoso",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a4e630e94947_6a4e5a6a8e796_6a47e33eaeb7a_6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "validity": "Benefício válido de 08/07/2026 11:26 até 16/07/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressose viva “VIVA! VIDA”, com Regina Casé. Uma experiência que mistura humor, emoção e reflexões sobre o mundo moderno em uma jornada divertida e inspiradora, no Teatro Sérgio Cardoso, em São Paulo. Data: 17 de Julho, às 20h. Local: Rua Rui Barbosa, 153, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "location_summary": "",
-      "dedupe_key": "2-ingressos-17-07-teatro-sergio-cardoso|beneficio-valido-de-08-07-2026-11-26-ate-16-07-2026-20-59|assinante-uol-resgate-1-par-de-ingressose-viva-viva-vida-com-regina-case-uma-experiencia-que-mistura-humor-emocao-e-reflexoes-sobre-o-mundo-moderno-em-uma-jorna",
-      "loose_dedupe_key": "2-ingressos-17-07-teatro-sergio-cardoso|assinante-uol-resgate-1-par-de-ingressose-viva-viva-vida-com-regina-case-uma-experiencia-que-mistura-humor-emocao-e-reflexoes-sobre-o-mundo-moderno-em-uma-jorna",
-      "scraped_at": "2026-07-08T15:42:42.414000Z",
-      "trace_id": "trace_p6l-2-ingressos-17-07-teatro-srgio-cardoso",
-      "channel_message_id": 1732,
-      "channel_message_link": "https://t.me/c/3723320790/1732",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-08T15:44:51.528060Z",
-      "sold_out_at": "13:17",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "p6K-2-ingressos-16-07-teatro-srgio-cardoso",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p6K-2-ingressos-16-07-teatro-srgio-cardoso",
@@ -454,6 +431,27 @@
       "sent_at": "2026-07-25T06:08:27.051151Z",
       "sold_out_at": "11:05",
       "_sold_out_synced_to_telegram": true
+    },
+    {
+      "id": "p8T-35-off-em-ps-graduao",
+      "original_link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
+      "preview_title": "35% OFF em Pós-Graduação",
+      "title": "35% OFF em Pós-Graduação",
+      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4f0566c25f6de6961ca375d2f95337df.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/87a65164f9bc12f2812e3e667e204167.png",
+      "validity": "Benefício válido de 20/07/2026 10:00 até 31/12/2026 23:59.",
+      "description": "Benefício: 35% OFF em Pós-Graduação Regras: Desconto acumulativo com outras promoções; não cumulativo com outros cupons. Sujeito à desativação sem aviso prévio.",
+      "location_summary": "",
+      "dedupe_key": "35-off-em-pos-graduacao|beneficio-valido-de-20-07-2026-10-00-ate-31-12-2026-23-59|beneficio-35-off-em-pos-graduacao-regras-desconto-acumulativo-com-outras-promocoes-nao-cumulativo-com-outros-cupons-sujeito-a-desativacao-sem-aviso-previo",
+      "loose_dedupe_key": "35-off-em-pos-graduacao|beneficio-35-off-em-pos-graduacao-regras-desconto-acumulativo-com-outras-promocoes-nao-cumulativo-com-outros-cupons-sujeito-a-desativacao-sem-aviso-previo",
+      "scraped_at": "2026-07-27T02:17:04.339000Z",
+      "trace_id": "trace_p8t-35-off-em-ps-graduao",
+      "channel_message_id": 1752,
+      "channel_message_link": "https://t.me/c/3723320790/1752",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-07-27T02:18:23.467554Z"
     }
   ]
 }

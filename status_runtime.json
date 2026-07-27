@@ -22,21 +22,21 @@
     "last_error": ""
   },
   "consumer": {
-    "last_started_at": "25/07/2026 às 22:18",
-    "last_finished_at": "25/07/2026 às 22:18",
-    "last_success_at": "25/07/2026 às 22:18",
-    "status": "sem_novidade",
-    "summary": "nenhuma enviada; descartadas 1 (reenvio_bloqueado_7d=1, validade_expirada=0, inicio_validade_antigo_sem_fim=0, scraped_at_antigo=0, duplicadas=0, sem_scraped_at_em_backlog=0)",
-    "processed": 0,
-    "sent": 0,
-    "failed": 0,
+    "last_started_at": "26/07/2026 às 23:18",
+    "last_finished_at": "26/07/2026 às 23:18",
+    "last_success_at": "26/07/2026 às 23:18",
+    "status": "parcial",
+    "summary": "1 enviada(s), 1 falha(s), 0 pendente(s)",
+    "processed": 1,
+    "sent": 1,
+    "failed": 1,
     "pending_count": 0,
-    "last_error": "consumer_sem_envio_com_pending: pending=1 descartadas=1 falhas_telegram=0"
+    "last_error": "comentário não enviado: discussion_message_id ausente"
   },
   "global": {
-    "last_offer_title": "Curso gratuito - Inteligência Artificial",
-    "last_offer_at": "25/07/2026 às 03:08",
-    "last_offer_id": "p9b-curso-gratuito-inteligncia-artificial",
-    "last_offer_link": "https://t.me/c/3723320790/1751"
+    "last_offer_title": "35% OFF em Pós-Graduação",
+    "last_offer_at": "26/07/2026 às 23:18",
+    "last_offer_id": "p8T-35-off-em-ps-graduao",
+    "last_offer_link": "https://t.me/c/3723320790/1752"
   }
 }
