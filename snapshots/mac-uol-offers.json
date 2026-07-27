@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 55209,
-  "run_duration_seconds": 55.21,
-  "avg_detail_ms_per_offer": 4601,
-  "generated_at": "2026-07-27T09:48:20.609Z",
+  "run_duration_ms": 53027,
+  "run_duration_seconds": 53.03,
+  "avg_detail_ms_per_offer": 4419,
+  "generated_at": "2026-07-27T09:52:21.763Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 132617,
-      "detail_elapsed_ms": 6851,
-      "scraped_at": "2026-07-27T09:47:48.102Z"
+      "detail_elapsed_ms": 6800,
+      "scraped_at": "2026-07-27T09:51:52.253Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130173,
-      "detail_elapsed_ms": 3301,
-      "scraped_at": "2026-07-27T09:47:51.403Z"
+      "detail_html_length": 130151,
+      "detail_elapsed_ms": 3272,
+      "scraped_at": "2026-07-27T09:51:55.526Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132872,
-      "detail_elapsed_ms": 2635,
-      "scraped_at": "2026-07-27T09:47:54.038Z"
+      "detail_html_length": 127735,
+      "detail_elapsed_ms": 2854,
+      "scraped_at": "2026-07-27T09:51:58.381Z"
     },
     {
-      "id": "p9z-15-off-extra-na-selecao-mascavo",
-      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "id": "p9z-15-off-extra-na-seleo-mascavo",
+      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo",
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130873,
-      "detail_elapsed_ms": 2823,
-      "scraped_at": "2026-07-27T09:47:56.861Z"
+      "detail_html_length": 125981,
+      "detail_elapsed_ms": 2750,
+      "scraped_at": "2026-07-27T09:52:01.144Z"
     },
     {
-      "id": "p9y-15-off-extra-na-selecao-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
+      "id": "p9y-15-off-extra-na-seleo-davines",
+      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines",
+      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129627,
-      "detail_elapsed_ms": 2030,
-      "scraped_at": "2026-07-27T09:47:58.891Z"
+      "detail_html_length": 130842,
+      "detail_elapsed_ms": 2804,
+      "scraped_at": "2026-07-27T09:52:03.949Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131308,
-      "detail_elapsed_ms": 2209,
-      "scraped_at": "2026-07-27T09:48:01.100Z"
+      "detail_html_length": 131287,
+      "detail_elapsed_ms": 2532,
+      "scraped_at": "2026-07-27T09:52:06.481Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131642,
-      "detail_elapsed_ms": 2718,
-      "scraped_at": "2026-07-27T09:48:03.822Z"
+      "detail_html_length": 131641,
+      "detail_elapsed_ms": 2417,
+      "scraped_at": "2026-07-27T09:52:08.898Z"
     },
     {
-      "id": "p9b-curso-gratuito-inteligencia-artificial",
-      "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial",
-      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
-      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
+      "id": "p9b-curso-gratuito-inteligncia-artificial",
+      "trace_id": "trace_p9b-curso-gratuito-inteligncia-artificial",
+      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
+      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
       "title": "Curso gratuito - Inteligência Artificial",
       "preview_title": "Curso gratuito - Inteligência Artificial",
       "validity": "Benefício válido de 21/07/2026 10:00 até 31/08/2026 23:59.",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132150,
-      "detail_elapsed_ms": 4835,
-      "scraped_at": "2026-07-27T09:48:09.271Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133451,
+      "detail_elapsed_ms": 2657,
+      "scraped_at": "2026-07-27T09:52:11.555Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130290,
-      "detail_elapsed_ms": 3072,
-      "scraped_at": "2026-07-27T09:48:12.343Z"
+      "detail_html_length": 131471,
+      "detail_elapsed_ms": 2692,
+      "scraped_at": "2026-07-27T09:52:14.247Z"
     },
     {
-      "id": "p8t-35-off-em-pos-graduacao",
-      "trace_id": "trace_p8t-35-off-em-pos-graduacao",
-      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-pos-graduacao",
-      "original_link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-pos-graduacao",
+      "id": "p8t-35-off-em-ps-graduao",
+      "trace_id": "trace_p8t-35-off-em-ps-graduao",
+      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
+      "original_link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
       "title": "35% OFF em Pós-Graduação",
       "preview_title": "35% OFF em Pós-Graduação",
       "validity": "Benefício válido de 20/07/2026 10:00 até 31/12/2026 23:59.",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130795,
-      "detail_elapsed_ms": 2872,
-      "scraped_at": "2026-07-27T09:48:15.215Z"
+      "detail_html_length": 130778,
+      "detail_elapsed_ms": 2195,
+      "scraped_at": "2026-07-27T09:52:16.442Z"
     },
     {
       "id": "p8o-20-off-em-produtos-selecionados",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131738,
-      "detail_elapsed_ms": 2630,
-      "scraped_at": "2026-07-27T09:48:17.845Z"
+      "detail_html_length": 131718,
+      "detail_elapsed_ms": 2571,
+      "scraped_at": "2026-07-27T09:52:19.013Z"
     },
     {
       "id": "p8m-40-off-nos-pedidos-pelo-site-e-app",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132044,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-07-27T09:48:19.981Z"
+      "detail_html_length": 125671,
+      "detail_elapsed_ms": 2563,
+      "scraped_at": "2026-07-27T09:52:21.576Z"
     }
   ]
 }
