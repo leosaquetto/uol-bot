@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 50459,
-  "run_duration_seconds": 50.46,
-  "avg_detail_ms_per_offer": 4205,
-  "generated_at": "2026-07-27T09:08:51.683Z",
+  "run_duration_ms": 49541,
+  "run_duration_seconds": 49.54,
+  "avg_detail_ms_per_offer": 4128,
+  "generated_at": "2026-07-27T09:12:50.168Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127722,
-      "detail_elapsed_ms": 6555,
-      "scraped_at": "2026-07-27T09:08:23.863Z"
+      "detail_html_length": 132269,
+      "detail_elapsed_ms": 6712,
+      "scraped_at": "2026-07-27T09:12:21.490Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125367,
-      "detail_elapsed_ms": 2910,
-      "scraped_at": "2026-07-27T09:08:26.773Z"
+      "detail_html_length": 130218,
+      "detail_elapsed_ms": 3106,
+      "scraped_at": "2026-07-27T09:12:24.596Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137004,
-      "detail_elapsed_ms": 2560,
-      "scraped_at": "2026-07-27T09:08:29.333Z"
+      "detail_html_length": 136984,
+      "detail_elapsed_ms": 3008,
+      "scraped_at": "2026-07-27T09:12:27.604Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130847,
-      "detail_elapsed_ms": 2637,
-      "scraped_at": "2026-07-27T09:08:31.970Z"
+      "detail_html_length": 124497,
+      "detail_elapsed_ms": 3517,
+      "scraped_at": "2026-07-27T09:12:31.121Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -136,57 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130856,
-      "detail_elapsed_ms": 2563,
-      "scraped_at": "2026-07-27T09:08:34.533Z"
-    },
-    {
-      "id": "p9x-ate-50-off-20-off-extra-masculino",
-      "trace_id": "trace_p9x-ate-50-off-20-off-extra-masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
-      "title": "Até 50% OFF + 20% OFF extra - Masculino",
-      "preview_title": "Até 50% OFF + 20% OFF extra - Masculino",
-      "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
-      "description": "Benefício: Até 50% OFF + 20% OFF extra em toda a seleção masculina Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e7cd851ea4ad276bab84bb552acf026f.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e7cd851ea4ad276bab84bb552acf026f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e7cd851ea4ad276bab84bb552acf026f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131041,
-      "detail_elapsed_ms": 2240,
-      "scraped_at": "2026-07-27T09:08:36.773Z"
-    },
-    {
-      "id": "p9w-30-off-extra-na-selecao-de-vestidos",
-      "trace_id": "trace_p9w-30-off-extra-na-selecao-de-vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
-      "title": "30% OFF extra na seleção de vestidos",
-      "preview_title": "30% OFF extra na seleção de vestidos",
-      "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
-      "description": "Benefício: 30% OFF extra na seleção de vestidos Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "category": "Moda, Calçados e Acessórios",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4668103aad3d27f5d94b06e22406c02a.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4668103aad3d27f5d94b06e22406c02a.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/4668103aad3d27f5d94b06e22406c02a.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 124579,
-      "detail_elapsed_ms": 2073,
-      "scraped_at": "2026-07-27T09:08:38.846Z"
+      "detail_html_length": 130877,
+      "detail_elapsed_ms": 2595,
+      "scraped_at": "2026-07-27T09:12:33.717Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -208,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130126,
-      "detail_elapsed_ms": 2220,
-      "scraped_at": "2026-07-27T09:08:41.066Z"
+      "detail_html_length": 131287,
+      "detail_elapsed_ms": 2641,
+      "scraped_at": "2026-07-27T09:12:36.358Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -232,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131639,
-      "detail_elapsed_ms": 2571,
-      "scraped_at": "2026-07-27T09:08:43.638Z"
+      "detail_html_length": 131629,
+      "detail_elapsed_ms": 2280,
+      "scraped_at": "2026-07-27T09:12:38.638Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -256,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133457,
-      "detail_elapsed_ms": 2599,
-      "scraped_at": "2026-07-27T09:08:46.237Z"
+      "detail_html_length": 133448,
+      "detail_elapsed_ms": 2354,
+      "scraped_at": "2026-07-27T09:12:40.993Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -280,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131449,
-      "detail_elapsed_ms": 2669,
-      "scraped_at": "2026-07-27T09:08:48.907Z"
+      "detail_html_length": 131440,
+      "detail_elapsed_ms": 2243,
+      "scraped_at": "2026-07-27T09:12:43.236Z"
     },
     {
       "id": "p8t-35-off-em-pos-graduacao",
@@ -304,9 +256,57 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130803,
-      "detail_elapsed_ms": 2343,
-      "scraped_at": "2026-07-27T09:08:51.250Z"
+      "detail_html_length": 129645,
+      "detail_elapsed_ms": 1998,
+      "scraped_at": "2026-07-27T09:12:45.234Z"
+    },
+    {
+      "id": "p8o-20-off-em-produtos-selecionados",
+      "trace_id": "trace_p8o-20-off-em-produtos-selecionados",
+      "link": "https://clube.uol.com.br/net_shoes/p8O-20-off-em-produtos-selecionados",
+      "original_link": "https://clube.uol.com.br/net_shoes/p8O-20-off-em-produtos-selecionados",
+      "title": "20% Off em produtos selecionados",
+      "preview_title": "20% Off em produtos selecionados",
+      "validity": "Benefício válido de 20/07/2026 12:27 até 09/08/2026 23:59.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: Dia dos Pais com cupom de 20% OFF em produtos selecionados. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
+      "category": "Compras e Presentes",
+      "partner_name": "Netshoes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 125842,
+      "detail_elapsed_ms": 2344,
+      "scraped_at": "2026-07-27T09:12:47.579Z"
+    },
+    {
+      "id": "p8m-40-off-nos-pedidos-pelo-site-e-app",
+      "trace_id": "trace_p8m-40-off-nos-pedidos-pelo-site-e-app",
+      "link": "https://clube.uol.com.br/dominospizza/p8M-40-off-nos-pedidos-pelo-site-e-app",
+      "original_link": "https://clube.uol.com.br/dominospizza/p8M-40-off-nos-pedidos-pelo-site-e-app",
+      "title": "40% OFF nos pedidos pelo site e app",
+      "preview_title": "40% OFF nos pedidos pelo site e app",
+      "validity": "Benefício válido de 20/07/2026 12:19 até 31/07/2026 23:59.",
+      "description": "Sobre o parceiro: Faça o seu pedido online na maior pizzaria do mundo! Diversos tipos de pizzas, combos e promoções para você escolher. Benefício: Cupom de 40% OFF nos pedidos pelo site e app. Regras: Desconto válido para pedidos efetuados apenas no site ou App da Domino´s Pizza. Válido para Pizzas médias e grandes. Válido para massas fina ou tradicional e todos os sabores. Válido para todos os dias da semana. O desconto só é aplicado na pizza e não no pedido inteiro. Desconto não se aplica na taxa de entrega. Não cumulativo com outras promoções. Válido também para carryout: retirada na loja. O cupom de desconto deverá ser inserido no carrinho no momento do checkout. O desconto não é válido para pedidos no balcão.",
+      "category": "Comer e Beber",
+      "partner_name": "Domino's Pizza",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0f3a2de5fd184d70501deada1bc8a520.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/565efeb8db857eb87242b232a8db2e37.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/565efeb8db857eb87242b232a8db2e37.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/565efeb8db857eb87242b232a8db2e37.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132003,
+      "detail_elapsed_ms": 2251,
+      "scraped_at": "2026-07-27T09:12:49.830Z"
     }
   ]
 }
