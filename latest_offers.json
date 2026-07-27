@@ -1,27 +1,6 @@
 {
-  "last_update": "2026-07-27T17:33:16.067819Z",
+  "last_update": "2026-07-27T17:38:33.829008Z",
   "offers": [
-    {
-      "id": "p97-20-de-desconto-em-qualquer-plano",
-      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
-      "preview_title": "20% de desconto em qualquer plano!",
-      "title": "20% de desconto em qualquer plano!",
-      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
-      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
-      "description": "Sobre o Parceiro: Zelus Pet, inteligência de saúde preventiva para cães e gatos, leitura de exames, farol de marcadores e acompanhamento no tempo. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
-      "location_summary": "",
-      "dedupe_key": "20-de-desconto-em-qualquer-plano|beneficio-valido-de-23-07-2026-15-00-ate-23-07-2028-23-59|sobre-o-parceiro-zelus-pet-inteligencia-de-saude-preventiva-para-caes-e-gatos-leitura-de-exames-farol-de-marcadores-e-acompanhamento-no-tempo-apoio-educacional-",
-      "loose_dedupe_key": "20-de-desconto-em-qualquer-plano|sobre-o-parceiro-zelus-pet-inteligencia-de-saude-preventiva-para-caes-e-gatos-leitura-de-exames-farol-de-marcadores-e-acompanhamento-no-tempo-apoio-educacional-",
-      "scraped_at": "2026-07-24T20:00:11.759000Z",
-      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
-      "channel_message_id": 1738,
-      "channel_message_link": "https://t.me/c/3723320790/1738",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-24T20:01:49.034330Z"
-    },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
       "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -360,7 +339,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-27T09:14:05.224574Z",
-      "sold_out_at": "12:36"
+      "sold_out_at": "12:36",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9P-1-ingresso-30-07-neo-quimica-arena-sp",
@@ -426,7 +406,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-27T15:21:12.376300Z",
-      "sold_out_at": "14:32"
+      "sold_out_at": "14:32",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9S-15-off-em-produtos-marketplace",
@@ -448,6 +429,27 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-27T15:25:08.782360Z"
+    },
+    {
+      "id": "p9U-ate-12-off-em-alugueis-de-carro",
+      "original_link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
+      "preview_title": "Até 12% OFF em aluguéis de carro",
+      "title": "Até 12% OFF em aluguéis de carro",
+      "link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "location_summary": "",
+      "dedupe_key": "ate-12-off-em-alugueis-de-carro|beneficio-valido-de-27-07-2026-12-21-ate-02-08-2026-23-59|sobre-o-parceiro-desde-2006-no-mercado-de-aluguel-de-carros-a-movida-rent-a-car-conta-com-a-frota-mais-nova-do-brasil-e-dispoe-de-lojas-nas-principais-cidades-e",
+      "loose_dedupe_key": "ate-12-off-em-alugueis-de-carro|sobre-o-parceiro-desde-2006-no-mercado-de-aluguel-de-carros-a-movida-rent-a-car-conta-com-a-frota-mais-nova-do-brasil-e-dispoe-de-lojas-nas-principais-cidades-e",
+      "scraped_at": "2026-07-27T17:36:34.187000Z",
+      "trace_id": "trace_p9u-ate-12-off-em-alugueis-carro",
+      "channel_message_id": 1758,
+      "channel_message_link": "https://t.me/c/3723320790/1758",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-07-27T17:38:33.663670Z"
     }
   ]
 }
