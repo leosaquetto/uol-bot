@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-27T09:09:56.137781Z",
+  "updated_at": "2026-07-27T09:13:49.047502Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 2,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
+    "duplicada_historico": 10,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -45,18 +45,6 @@
       "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9y-15-off-extra-na-selecao-davines"
-    },
-    {
-      "title": "Até 50% OFF + 20% OFF extra - Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9x-ate-50-off-20-off-extra-masculino"
-    },
-    {
-      "title": "30% OFF extra na seleção de vestidos",
-      "link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9w-30-off-extra-na-selecao-de-vestidos"
     },
     {
       "title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
