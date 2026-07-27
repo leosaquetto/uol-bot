@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-27T02:18:06.278508Z",
+  "updated_at": "2026-07-27T02:21:35.547852Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
@@ -11,7 +11,7 @@
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
     "duplicada_historico": 7,
-    "duplicada_latest": 4,
+    "duplicada_latest": 5,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -81,6 +81,12 @@
       "link": "https://clube.uol.com.br/mash/p8Z-dia-dos-pais-desconto-progressivo-5",
       "reason": "duplicada_historico",
       "trace_id": "trace_p8z-dia-dos-pais-desconto-progressivo-5"
+    },
+    {
+      "title": "35% OFF em Pós-Graduação",
+      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p8t-35-off-em-ps-graduao"
     }
   ]
 }
