@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-27T20:23:08.399854Z",
+  "updated_at": "2026-07-27T20:30:04.897598Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -21,6 +21,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9w-2-ingressos-31-07-teatro-claro-rj"
+    },
+    {
+      "title": "Até 12% OFF em aluguéis de carro",
+      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro"
     },
     {
       "title": "15% OFF em produtos Marketplace",
@@ -57,12 +63,6 @@
       "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
       "reason": "duplicada_historico",
       "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09"
-    },
-    {
-      "title": "15% OFF extra na seleção Davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines"
     },
     {
       "title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
