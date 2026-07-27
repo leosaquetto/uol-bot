@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 55031,
-  "run_duration_seconds": 55.03,
-  "avg_detail_ms_per_offer": 4586,
-  "generated_at": "2026-07-27T14:16:42.991Z",
+  "run_duration_ms": 52363,
+  "run_duration_seconds": 52.36,
+  "avg_detail_ms_per_offer": 4364,
+  "generated_at": "2026-07-27T14:20:44.466Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "p9p-1-ingresso-30-07-neo-qumica-arena-sp",
-      "trace_id": "trace_p9p-1-ingresso-30-07-neo-qumica-arena-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-qumica-arena-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-qumica-arena-sp",
+      "id": "p9p-1-ingresso-30-07-neo-quimica-arena-sp",
+      "trace_id": "trace_p9p-1-ingresso-30-07-neo-quimica-arena-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-quimica-arena-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-quimica-arena-sp",
       "title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
       "preview_title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
       "validity": "Benefício válido de 27/07/2026 09:50 até 30/07/2026 15:40.",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133634,
-      "detail_elapsed_ms": 7147,
-      "scraped_at": "2026-07-27T14:16:11.656Z"
+      "detail_html_length": 133622,
+      "detail_elapsed_ms": 7346,
+      "scraped_at": "2026-07-27T14:20:15.205Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126378,
-      "detail_elapsed_ms": 2844,
-      "scraped_at": "2026-07-27T14:16:14.500Z"
+      "detail_html_length": 132664,
+      "detail_elapsed_ms": 3087,
+      "scraped_at": "2026-07-27T14:20:18.292Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131405,
-      "detail_elapsed_ms": 6322,
-      "scraped_at": "2026-07-27T14:16:20.822Z"
+      "detail_html_length": 125281,
+      "detail_elapsed_ms": 2595,
+      "scraped_at": "2026-07-27T14:20:20.888Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -112,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137100,
-      "detail_elapsed_ms": 2554,
-      "scraped_at": "2026-07-27T14:16:23.376Z"
+      "detail_html_length": 132850,
+      "detail_elapsed_ms": 2491,
+      "scraped_at": "2026-07-27T14:20:23.379Z"
     },
     {
-      "id": "p9z-15-off-extra-na-seleo-mascavo",
-      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
+      "id": "p9z-15-off-extra-na-selecao-mascavo",
+      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo",
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130870,
-      "detail_elapsed_ms": 2336,
-      "scraped_at": "2026-07-27T14:16:25.713Z"
+      "detail_html_length": 124506,
+      "detail_elapsed_ms": 2427,
+      "scraped_at": "2026-07-27T14:20:25.806Z"
     },
     {
-      "id": "p9y-15-off-extra-na-seleo-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
+      "id": "p9y-15-off-extra-na-selecao-davines",
+      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines",
+      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129700,
-      "detail_elapsed_ms": 2425,
-      "scraped_at": "2026-07-27T14:16:28.138Z"
+      "detail_html_length": 129614,
+      "detail_elapsed_ms": 3326,
+      "scraped_at": "2026-07-27T14:20:29.132Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124933,
-      "detail_elapsed_ms": 2445,
-      "scraped_at": "2026-07-27T14:16:30.583Z"
+      "detail_html_length": 131296,
+      "detail_elapsed_ms": 2793,
+      "scraped_at": "2026-07-27T14:20:31.925Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -208,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125265,
-      "detail_elapsed_ms": 2309,
-      "scraped_at": "2026-07-27T14:16:32.892Z"
+      "detail_html_length": 130433,
+      "detail_elapsed_ms": 2364,
+      "scraped_at": "2026-07-27T14:20:34.289Z"
     },
     {
-      "id": "p9b-curso-gratuito-inteligncia-artificial",
-      "trace_id": "trace_p9b-curso-gratuito-inteligncia-artificial",
-      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
-      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
+      "id": "p9b-curso-gratuito-inteligencia-artificial",
+      "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial",
+      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
+      "original_link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
       "title": "Curso gratuito - Inteligência Artificial",
       "preview_title": "Curso gratuito - Inteligência Artificial",
       "validity": "Benefício válido de 21/07/2026 10:00 até 31/08/2026 23:59.",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133439,
-      "detail_elapsed_ms": 2389,
-      "scraped_at": "2026-07-27T14:16:35.281Z"
+      "detail_html_length": 133434,
+      "detail_elapsed_ms": 2385,
+      "scraped_at": "2026-07-27T14:20:36.674Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131449,
-      "detail_elapsed_ms": 2894,
-      "scraped_at": "2026-07-27T14:16:38.175Z"
+      "detail_html_length": 131450,
+      "detail_elapsed_ms": 2412,
+      "scraped_at": "2026-07-27T14:20:39.086Z"
     },
     {
-      "id": "p8t-35-off-em-ps-graduao",
-      "trace_id": "trace_p8t-35-off-em-ps-graduao",
-      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
-      "original_link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
+      "id": "p8t-35-off-em-pos-graduacao",
+      "trace_id": "trace_p8t-35-off-em-pos-graduacao",
+      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-pos-graduacao",
+      "original_link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-pos-graduacao",
       "title": "35% OFF em Pós-Graduação",
       "preview_title": "35% OFF em Pós-Graduação",
       "validity": "Benefício válido de 20/07/2026 10:00 até 31/12/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130776,
-      "detail_elapsed_ms": 2330,
-      "scraped_at": "2026-07-27T14:16:40.505Z"
+      "detail_html_length": 124844,
+      "detail_elapsed_ms": 2655,
+      "scraped_at": "2026-07-27T14:20:41.741Z"
     },
     {
       "id": "p8o-20-off-em-produtos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125364,
-      "detail_elapsed_ms": 2121,
-      "scraped_at": "2026-07-27T14:16:42.627Z"
+      "detail_html_length": 131707,
+      "detail_elapsed_ms": 2275,
+      "scraped_at": "2026-07-27T14:20:44.016Z"
     }
   ]
 }
