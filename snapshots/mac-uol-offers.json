@@ -6,20 +6,44 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 203499,
-  "run_duration_seconds": 203.5,
-  "avg_detail_ms_per_offer": 16958,
-  "generated_at": "2026-07-27T22:28:24.715Z",
+  "run_duration_ms": 207623,
+  "run_duration_seconds": 207.62,
+  "avg_detail_ms_per_offer": 17302,
+  "generated_at": "2026-07-27T22:35:16.630Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "paa-20-off-em-selecao-de-dia-dos-pais",
+      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais",
+      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
+      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
+      "title": "20% OFF em seleção de Dia dos Pais",
+      "preview_title": "20% OFF em seleção de Dia dos Pais",
+      "validity": "",
+      "description": "",
+      "category": "Moda, Calçados e Acessórios",
+      "partner_name": "Nike",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8bd1776457768ba3072e73ccca68ece3.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12100,
+      "scraped_at": "2026-07-27T22:33:03.821Z"
+    },
     {
       "id": "p9z-2-ingressos-01-08-teatro-tuca-sp",
       "trace_id": "trace_p9z-2-ingressos-01-08-teatro-tuca-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 133367,
-      "detail_elapsed_ms": 12715,
-      "scraped_at": "2026-07-27T22:26:18.868Z"
+      "detail_html_length": 133083,
+      "detail_elapsed_ms": 14131,
+      "scraped_at": "2026-07-27T22:33:30.229Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132906,
-      "detail_elapsed_ms": 12468,
-      "scraped_at": "2026-07-27T22:26:31.336Z"
+      "detail_html_length": 132907,
+      "detail_elapsed_ms": 11079,
+      "scraped_at": "2026-07-27T22:33:41.316Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133265,
-      "detail_elapsed_ms": 12790,
-      "scraped_at": "2026-07-27T22:26:44.127Z"
+      "detail_html_length": 133284,
+      "detail_elapsed_ms": 9915,
+      "scraped_at": "2026-07-27T22:33:51.231Z"
     },
     {
       "id": "p9u-ate-12-off-em-alugueis-carro",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133501,
-      "detail_elapsed_ms": 9338,
-      "scraped_at": "2026-07-27T22:26:53.466Z"
+      "detail_html_length": 133541,
+      "detail_elapsed_ms": 9536,
+      "scraped_at": "2026-07-27T22:34:00.768Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131529,
-      "detail_elapsed_ms": 10455,
-      "scraped_at": "2026-07-27T22:27:03.921Z"
+      "detail_html_length": 131540,
+      "detail_elapsed_ms": 10793,
+      "scraped_at": "2026-07-27T22:34:11.561Z"
     },
     {
       "id": "p9r-20-off-em-selecao-especial",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131354,
-      "detail_elapsed_ms": 8644,
-      "scraped_at": "2026-07-27T22:27:12.565Z"
+      "detail_html_length": 131350,
+      "detail_elapsed_ms": 8613,
+      "scraped_at": "2026-07-27T22:34:20.175Z"
     },
     {
       "id": "p9q-30-off-em-selecao-especial",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131587,
-      "detail_elapsed_ms": 7271,
-      "scraped_at": "2026-07-27T22:27:19.836Z"
+      "detail_html_length": 131447,
+      "detail_elapsed_ms": 10784,
+      "scraped_at": "2026-07-27T22:34:30.959Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132755,
-      "detail_elapsed_ms": 11526,
-      "scraped_at": "2026-07-27T22:27:31.362Z"
+      "detail_html_length": 132605,
+      "detail_elapsed_ms": 9891,
+      "scraped_at": "2026-07-27T22:34:40.850Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -231,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131502,
-      "detail_elapsed_ms": 11562,
-      "scraped_at": "2026-07-27T22:27:55.184Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131388,
+      "detail_elapsed_ms": 11909,
+      "scraped_at": "2026-07-27T22:34:52.759Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138114,
-      "detail_elapsed_ms": 9713,
-      "scraped_at": "2026-07-27T22:28:04.897Z"
+      "detail_html_length": 138324,
+      "detail_elapsed_ms": 12423,
+      "scraped_at": "2026-07-27T22:35:05.183Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130854,
-      "detail_elapsed_ms": 7839,
-      "scraped_at": "2026-07-27T22:28:12.736Z"
-    },
-    {
-      "id": "p9y-15-off-extra-na-selecao-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "title": "15% OFF extra na seleção Davines",
-      "preview_title": "15% OFF extra na seleção Davines",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
-      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "category": "Saúde e Beleza",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130725,
-      "detail_elapsed_ms": 10335,
-      "scraped_at": "2026-07-27T22:28:23.071Z"
+      "detail_html_length": 130702,
+      "detail_elapsed_ms": 10277,
+      "scraped_at": "2026-07-27T22:35:15.460Z"
     }
   ]
 }
