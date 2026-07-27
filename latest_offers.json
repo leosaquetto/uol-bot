@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-27T19:52:59.828703Z",
+  "last_update": "2026-07-27T19:53:04.364387Z",
   "offers": [
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -431,7 +431,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-27T18:01:18.338923Z",
-      "sold_out_at": "16:52"
+      "sold_out_at": "16:52",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "p9W-2-ingressos-31-07-teatro-claro-rj",
