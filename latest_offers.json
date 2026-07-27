@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-07-27T20:16:25.509973Z",
+  "last_update": "2026-07-27T20:23:24.425314Z",
   "offers": [
-    {
-      "id": "p9y-15-off-extra-na-selecao-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "preview_title": "15% OFF extra na seleção Davines",
-      "title": "15% OFF extra na seleção Davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
-      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "location_summary": "",
-      "dedupe_key": "15-off-extra-na-selecao-davines|beneficio-valido-de-22-07-2026-14-00-ate-30-07-2026-23-59|beneficio-15-off-extra-na-selecao-davines-regras-valido-para-todos-os-itens-da-selecao-nao-cumulativo-e-sujeito-a-desativacao-sem-aviso-previo",
-      "loose_dedupe_key": "15-off-extra-na-selecao-davines|beneficio-15-off-extra-na-selecao-davines-regras-valido-para-todos-os-itens-da-selecao-nao-cumulativo-e-sujeito-a-desativacao-sem-aviso-previo",
-      "scraped_at": "2026-07-24T20:00:17.981000Z",
-      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines",
-      "channel_message_id": 1741,
-      "channel_message_link": "https://t.me/c/3723320790/1741",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-24T20:02:28.179393Z",
-      "sold_out_at": "22:59",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "p9x-ate-50-off-20-off-extra-masculino",
       "original_link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
@@ -454,6 +431,27 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-27T19:11:01.612948Z"
+    },
+    {
+      "id": "p9U-at-12-off-em-aluguis-de-carro",
+      "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "preview_title": "Até 12% OFF em aluguéis de carro",
+      "title": "Até 12% OFF em aluguéis de carro",
+      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
+      "validity": null,
+      "description": "",
+      "location_summary": "",
+      "dedupe_key": "ate-12-off-em-alugueis-de-carro",
+      "loose_dedupe_key": "ate-12-off-em-alugueis-de-carro",
+      "scraped_at": "2026-07-27T20:20:32.999000Z",
+      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro",
+      "channel_message_id": 1761,
+      "channel_message_link": "https://t.me/c/3723320790/1761",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-07-27T20:23:24.247139Z"
     }
   ]
 }
