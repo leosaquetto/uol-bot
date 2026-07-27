@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-27T09:57:14.152420Z",
+  "updated_at": "2026-07-27T10:01:20.130403Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
-    "duplicada_latest": 3,
+    "duplicada_historico": 11,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -36,15 +36,15 @@
     },
     {
       "title": "15% OFF extra na seleção Mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo"
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo"
     },
     {
       "title": "15% OFF extra na seleção Davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines"
+      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines"
     },
     {
       "title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
@@ -60,9 +60,9 @@
     },
     {
       "title": "Curso gratuito - Inteligência Artificial",
-      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligncia-artificial",
+      "link": "https://clube.uol.com.br/descomplica/p9b-curso-gratuito-inteligencia-artificial",
       "reason": "duplicada_historico",
-      "trace_id": "trace_p9b-curso-gratuito-inteligncia-artificial"
+      "trace_id": "trace_p9b-curso-gratuito-inteligencia-artificial"
     },
     {
       "title": "Dia dos Pais: Desconto Progressivo + 5%",
@@ -72,9 +72,9 @@
     },
     {
       "title": "35% OFF em Pós-Graduação",
-      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-ps-graduao",
-      "reason": "duplicada_latest",
-      "trace_id": "trace_p8t-35-off-em-ps-graduao"
+      "link": "https://clube.uol.com.br/descomplica/p8T-35-off-em-pos-graduacao",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p8t-35-off-em-pos-graduacao"
     },
     {
       "title": "20% Off em produtos selecionados",
