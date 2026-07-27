@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 67302,
-  "run_duration_seconds": 67.3,
-  "avg_detail_ms_per_offer": 5609,
-  "generated_at": "2026-07-27T13:50:22.607Z",
+  "run_duration_ms": 67162,
+  "run_duration_seconds": 67.16,
+  "avg_detail_ms_per_offer": 5597,
+  "generated_at": "2026-07-27T13:59:36.502Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133641,
-      "detail_elapsed_ms": 8166,
-      "scraped_at": "2026-07-27T13:49:50.239Z"
+      "detail_html_length": 133640,
+      "detail_elapsed_ms": 7091,
+      "scraped_at": "2026-07-27T13:59:03.285Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -65,8 +65,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131509,
-      "detail_elapsed_ms": 2899,
-      "scraped_at": "2026-07-27T13:49:53.138Z"
+      "detail_elapsed_ms": 2999,
+      "scraped_at": "2026-07-27T13:59:06.285Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131369,
-      "detail_elapsed_ms": 2485,
-      "scraped_at": "2026-07-27T13:49:55.623Z"
+      "detail_html_length": 130154,
+      "detail_elapsed_ms": 2018,
+      "scraped_at": "2026-07-27T13:59:08.304Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137893,
-      "detail_elapsed_ms": 3249,
-      "scraped_at": "2026-07-27T13:49:58.872Z"
+      "detail_html_length": 137094,
+      "detail_elapsed_ms": 2626,
+      "scraped_at": "2026-07-27T13:59:10.931Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130864,
-      "detail_elapsed_ms": 2589,
-      "scraped_at": "2026-07-27T13:50:01.474Z"
+      "detail_html_length": 130861,
+      "detail_elapsed_ms": 2861,
+      "scraped_at": "2026-07-27T13:59:13.792Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -147,22 +147,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 671,
-      "scraped_at": "2026-07-27T13:50:02.970Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130882,
+      "detail_elapsed_ms": 2231,
+      "scraped_at": "2026-07-27T13:59:16.023Z"
     },
     {
       "id": "p9u-combo-eos-r100-por-r-5-308-00-3-off",
@@ -171,22 +171,22 @@
       "original_link": "https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off",
       "title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
       "preview_title": "Combo EOS R100 por R$5.308,00 + 3% OFF!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 31/07/2026 23:59.",
+      "description": "Benefício: Combo EOS R100 por R$5.308,00 + 3% OFF! Regras: Válido apenas para o Combo EOS R100 com Lente RF-S 18-45mm + Lente RF 75-300mm F4-5.6. Não cumulativo com demais cupons. Válido até data vigente ou enquanto durarem os estoques. Sujeito à desativação, sem aviso prévio.",
       "category": "Eletrodomésticos e Eletrônicos",
       "partner_name": "Canon",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/0b894f329b35cafe0715a58136d19df9.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off\" is interrupted by another navigation to \"https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off\" Call log: - navigating to \"https://clube.uol.com.br/canon/p9u-combo-eos-r100-por-r-5-308-00-3-off\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 666,
-      "scraped_at": "2026-07-27T13:50:04.629Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2074f99bbab584fd1fdefebb468009f0.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131279,
+      "detail_elapsed_ms": 2753,
+      "scraped_at": "2026-07-27T13:59:18.776Z"
     },
     {
       "id": "p9s-15-off-em-produtos-selecionados",
@@ -207,10 +207,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131159,
-      "detail_elapsed_ms": 5905,
-      "scraped_at": "2026-07-27T13:50:11.325Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131642,
+      "detail_elapsed_ms": 4814,
+      "scraped_at": "2026-07-27T13:59:23.590Z"
     },
     {
       "id": "p9b-curso-gratuito-inteligencia-artificial",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132203,
-      "detail_elapsed_ms": 2681,
-      "scraped_at": "2026-07-27T13:50:14.006Z"
+      "detail_html_length": 133299,
+      "detail_elapsed_ms": 4422,
+      "scraped_at": "2026-07-27T13:59:28.012Z"
     },
     {
       "id": "p8z-dia-dos-pais-desconto-progressivo-5",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131462,
-      "detail_elapsed_ms": 3078,
-      "scraped_at": "2026-07-27T13:50:17.084Z"
+      "detail_html_length": 131463,
+      "detail_elapsed_ms": 2705,
+      "scraped_at": "2026-07-27T13:59:30.718Z"
     },
     {
       "id": "p8t-35-off-em-pos-graduacao",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124420,
-      "detail_elapsed_ms": 2135,
-      "scraped_at": "2026-07-27T13:50:19.219Z"
+      "detail_html_length": 130798,
+      "detail_elapsed_ms": 2323,
+      "scraped_at": "2026-07-27T13:59:33.041Z"
     },
     {
       "id": "p8o-20-off-em-produtos-selecionados",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131710,
-      "detail_elapsed_ms": 3015,
-      "scraped_at": "2026-07-27T13:50:22.234Z"
+      "detail_html_length": 131721,
+      "detail_elapsed_ms": 2332,
+      "scraped_at": "2026-07-27T13:59:35.373Z"
     }
   ]
 }
