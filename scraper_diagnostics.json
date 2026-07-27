@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-27T22:32:51.714424Z",
+  "updated_at": "2026-07-27T22:36:19.159049Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 1,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
+    "duplicada_historico": 11,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -81,12 +81,6 @@
       "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo"
-    },
-    {
-      "title": "15% OFF extra na seleção Davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines"
     }
   ]
 }
