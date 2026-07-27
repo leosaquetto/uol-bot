@@ -1,29 +1,6 @@
 {
-  "last_update": "2026-07-27T20:50:24.975319Z",
+  "last_update": "2026-07-27T20:57:21.540803Z",
   "offers": [
-    {
-      "id": "p9x-ate-50-off-20-off-extra-masculino",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
-      "preview_title": "Até 50% OFF + 20% OFF extra - Masculino",
-      "title": "Até 50% OFF + 20% OFF extra - Masculino",
-      "link": "https://clube.uol.com.br/lojasrenner/p9x-ate-50-off-20-off-extra-masculino",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e7cd851ea4ad276bab84bb552acf026f.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "validity": "Benefício válido de 20/07/2026 09:00 até 27/07/2026 09:00.",
-      "description": "Benefício: Até 50% OFF + 20% OFF extra em toda a seleção masculina Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "location_summary": "",
-      "dedupe_key": "ate-50-off-20-off-extra-masculino|beneficio-valido-de-20-07-2026-09-00-ate-27-07-2026-09-00|beneficio-ate-50-off-20-off-extra-em-toda-a-selecao-masculina-regras-valido-para-todos-os-itens-da-selecao-nao-cumulativo-e-sujeito-a-desativacao-sem-aviso-prev",
-      "loose_dedupe_key": "ate-50-off-20-off-extra-masculino|beneficio-ate-50-off-20-off-extra-em-toda-a-selecao-masculina-regras-valido-para-todos-os-itens-da-selecao-nao-cumulativo-e-sujeito-a-desativacao-sem-aviso-prev",
-      "scraped_at": "2026-07-24T20:00:19.695000Z",
-      "trace_id": "trace_p9x-ate-50-off-20-off-extra-masculino",
-      "channel_message_id": 1742,
-      "channel_message_link": "https://t.me/c/3723320790/1742",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-24T20:02:41.888226Z",
-      "sold_out_at": "22:59",
-      "_sold_out_synced_to_telegram": true
-    },
     {
       "id": "p9w-30-off-extra-na-selecao-de-vestidos",
       "original_link": "https://clube.uol.com.br/lojasrenner/p9w-30-off-extra-na-selecao-de-vestidos",
@@ -452,6 +429,27 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-27T20:23:24.247139Z"
+    },
+    {
+      "id": "p9X-2-ingressos-31-07-teatro-tuca-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp",
+      "preview_title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
+      "title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "validity": null,
+      "description": "",
+      "location_summary": "",
+      "dedupe_key": "2-ingressos-31-07-teatro-tuca-sp",
+      "loose_dedupe_key": "2-ingressos-31-07-teatro-tuca-sp",
+      "scraped_at": "2026-07-27T20:54:05.701000Z",
+      "trace_id": "trace_p9x-2-ingressos-31-07-teatro-tuca-sp",
+      "channel_message_id": 1762,
+      "channel_message_link": "https://t.me/c/3723320790/1762",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-07-27T20:57:21.360788Z"
     }
   ]
 }
