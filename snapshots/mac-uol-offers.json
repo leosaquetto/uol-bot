@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 109194,
-  "run_duration_seconds": 109.19,
-  "avg_detail_ms_per_offer": 9100,
-  "generated_at": "2026-07-28T20:36:48.085Z",
+  "run_duration_ms": 94484,
+  "run_duration_seconds": 94.48,
+  "avg_detail_ms_per_offer": 7874,
+  "generated_at": "2026-07-28T20:41:35.728Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134072,
-      "detail_elapsed_ms": 8640,
-      "scraped_at": "2026-07-28T20:36:09.927Z"
-    },
-    {
-      "id": "pak-2-ingressos-31-07-teatro-das-artes-sp",
-      "trace_id": "trace_pak-2-ingressos-31-07-teatro-das-artes-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAk-2-ingressos-31-07-teatro-das-artes-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAk-2-ingressos-31-07-teatro-das-artes-sp",
-      "title": "2 INGRESSOS: 31/07 Teatro das Artes SP",
-      "preview_title": "2 INGRESSOS: 31/07 Teatro das Artes SP",
-      "validity": "Benefício válido de 28/07/2026 16:14 até 30/07/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo “Meu Deus”, com Bianca Bin e Sérgio Guizé, e viva uma experiência envolvente, divertida e provocadora no teatro, em uma comédia inteligente que mistura humor ácido e reflexões profundas sobre a relação entre o divino e o humano, no Teatro das Artes, em São Paulo. Data: 31/07/2026 | 20h. Local: Av. Rebouças, 3970 - Store 409 - Pinheiros, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131937,
-      "detail_elapsed_ms": 3832,
-      "scraped_at": "2026-07-28T20:36:13.760Z"
+      "detail_html_length": 129206,
+      "detail_elapsed_ms": 8494,
+      "scraped_at": "2026-07-28T20:40:59.894Z"
     },
     {
       "id": "pae-2-ingressos-30-07-teatro-uol-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127050,
-      "detail_elapsed_ms": 2632,
-      "scraped_at": "2026-07-28T20:36:16.392Z"
+      "detail_html_length": 128625,
+      "detail_elapsed_ms": 5115,
+      "scraped_at": "2026-07-28T20:41:05.010Z"
     },
     {
       "id": "paa-20-off-em-selecao-de-dia-dos-pais",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124572,
-      "detail_elapsed_ms": 2629,
-      "scraped_at": "2026-07-28T20:36:19.022Z"
+      "detail_html_length": 124576,
+      "detail_elapsed_ms": 2232,
+      "scraped_at": "2026-07-28T20:41:07.243Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126929,
-      "detail_elapsed_ms": 2769,
-      "scraped_at": "2026-07-28T20:36:21.792Z"
+      "detail_html_length": 128275,
+      "detail_elapsed_ms": 3909,
+      "scraped_at": "2026-07-28T20:41:11.153Z"
     },
     {
       "id": "p9u-ate-12-off-em-alugueis-carro",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132269,
-      "detail_elapsed_ms": 3243,
-      "scraped_at": "2026-07-28T20:36:25.035Z"
+      "detail_html_length": 133660,
+      "detail_elapsed_ms": 4263,
+      "scraped_at": "2026-07-28T20:41:15.416Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131656,
-      "detail_elapsed_ms": 4269,
-      "scraped_at": "2026-07-28T20:36:29.304Z"
+      "detail_html_length": 130442,
+      "detail_elapsed_ms": 2446,
+      "scraped_at": "2026-07-28T20:41:17.863Z"
     },
     {
       "id": "p9r-20-off-em-selecao-especial",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124966,
-      "detail_elapsed_ms": 2989,
-      "scraped_at": "2026-07-28T20:36:32.293Z"
+      "detail_html_length": 131265,
+      "detail_elapsed_ms": 3073,
+      "scraped_at": "2026-07-28T20:41:20.937Z"
     },
     {
       "id": "p9q-30-off-em-selecao-especial",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130345,
-      "detail_elapsed_ms": 2913,
-      "scraped_at": "2026-07-28T20:36:35.207Z"
+      "detail_html_length": 125490,
+      "detail_elapsed_ms": 3085,
+      "scraped_at": "2026-07-28T20:41:24.022Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131516,
-      "detail_elapsed_ms": 2250,
-      "scraped_at": "2026-07-28T20:36:37.457Z"
+      "detail_html_length": 126410,
+      "detail_elapsed_ms": 2707,
+      "scraped_at": "2026-07-28T20:41:26.731Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131642,
-      "detail_elapsed_ms": 4709,
-      "scraped_at": "2026-07-28T20:36:42.166Z"
+      "detail_html_length": 130140,
+      "detail_elapsed_ms": 2535,
+      "scraped_at": "2026-07-28T20:41:29.267Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131515,
-      "detail_elapsed_ms": 5075,
-      "scraped_at": "2026-07-28T20:36:47.241Z"
+      "detail_html_length": 136655,
+      "detail_elapsed_ms": 3275,
+      "scraped_at": "2026-07-28T20:41:32.543Z"
+    },
+    {
+      "id": "p9z-15-off-extra-na-selecao-mascavo",
+      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo",
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "title": "15% OFF extra na seleção Mascavo",
+      "preview_title": "15% OFF extra na seleção Mascavo",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Mascavo Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
+      "category": "Saúde e Beleza",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 124487,
+      "detail_elapsed_ms": 2644,
+      "scraped_at": "2026-07-28T20:41:35.187Z"
     }
   ]
 }
