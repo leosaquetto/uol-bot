@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 148741,
-  "run_duration_seconds": 148.74,
-  "avg_detail_ms_per_offer": 12395,
-  "generated_at": "2026-07-28T14:13:56.242Z",
+  "run_duration_ms": 133920,
+  "run_duration_seconds": 133.92,
+  "avg_detail_ms_per_offer": 11160,
+  "generated_at": "2026-07-28T14:19:31.546Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 133830,
-      "detail_elapsed_ms": 11680,
-      "scraped_at": "2026-07-28T14:12:30.523Z"
-    },
-    {
-      "id": "pac-2-ingressos-01-08-teatro-tuca-sp",
-      "trace_id": "trace_pac-2-ingressos-01-08-teatro-tuca-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAc-2-ingressos-01-08-teatro-tuca-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAc-2-ingressos-01-08-teatro-tuca-sp",
-      "title": "2 INGRESSOS: 01/08 Teatro Tuca - SP",
-      "preview_title": "2 INGRESSOS: 01/08 Teatro Tuca - SP",
-      "validity": "Benefício válido de 28/07/2026 08:44 até 31/07/2026 23:59.",
-      "description": "Assinante UOL, viva essa experiência! Resgate 1 par de ingressos e emocione-se com o espetáculo Olhos nos Olhos protagonizado por Ana Lúcia Torre, que celebra 80 anos de vida e 60 anos de carreira em uma apresentação vibrante, reveladora e cheia de sensibilidade, no Teatro Tuca, em São Paulo – SP. Data: 01 de Agosto, às 21h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133316,
-      "detail_elapsed_ms": 10325,
-      "scraped_at": "2026-07-28T14:12:40.848Z"
+      "detail_html_length": 133423,
+      "detail_elapsed_ms": 9985,
+      "scraped_at": "2026-07-28T14:18:16.171Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130755,
-      "detail_elapsed_ms": 8283,
-      "scraped_at": "2026-07-28T14:12:49.131Z"
+      "detail_html_length": 130947,
+      "detail_elapsed_ms": 9296,
+      "scraped_at": "2026-07-28T14:18:25.467Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133061,
-      "detail_elapsed_ms": 10525,
-      "scraped_at": "2026-07-28T14:12:59.656Z"
+      "detail_html_length": 133062,
+      "detail_elapsed_ms": 8387,
+      "scraped_at": "2026-07-28T14:18:33.861Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133111,
-      "detail_elapsed_ms": 5890,
-      "scraped_at": "2026-07-28T14:13:05.549Z"
+      "detail_html_length": 132112,
+      "detail_elapsed_ms": 4490,
+      "scraped_at": "2026-07-28T14:18:38.351Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133494,
-      "detail_elapsed_ms": 6086,
-      "scraped_at": "2026-07-28T14:13:11.635Z"
+      "detail_html_length": 133500,
+      "detail_elapsed_ms": 7214,
+      "scraped_at": "2026-07-28T14:18:45.566Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131664,
-      "detail_elapsed_ms": 7549,
-      "scraped_at": "2026-07-28T14:13:19.185Z"
+      "detail_html_length": 131686,
+      "detail_elapsed_ms": 8848,
+      "scraped_at": "2026-07-28T14:18:54.414Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131329,
-      "detail_elapsed_ms": 5616,
-      "scraped_at": "2026-07-28T14:13:24.801Z"
+      "detail_html_length": 129967,
+      "detail_elapsed_ms": 6382,
+      "scraped_at": "2026-07-28T14:19:00.796Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131569,
-      "detail_elapsed_ms": 6691,
-      "scraped_at": "2026-07-28T14:13:31.492Z"
+      "detail_html_length": 131562,
+      "detail_elapsed_ms": 7683,
+      "scraped_at": "2026-07-28T14:19:08.479Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132738,
-      "detail_elapsed_ms": 7884,
-      "scraped_at": "2026-07-28T14:13:39.377Z"
+      "detail_html_length": 131367,
+      "detail_elapsed_ms": 3901,
+      "scraped_at": "2026-07-28T14:19:12.380Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131639,
-      "detail_elapsed_ms": 6222,
-      "scraped_at": "2026-07-28T14:13:45.599Z"
+      "detail_html_length": 130288,
+      "detail_elapsed_ms": 4184,
+      "scraped_at": "2026-07-28T14:19:16.564Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 140506,
-      "detail_elapsed_ms": 8833,
-      "scraped_at": "2026-07-28T14:13:54.432Z"
+      "detail_html_length": 137741,
+      "detail_elapsed_ms": 7948,
+      "scraped_at": "2026-07-28T14:19:24.513Z"
+    },
+    {
+      "id": "p9z-15-off-extra-na-seleo-mascavo",
+      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo",
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
+      "title": "15% OFF extra na seleção Mascavo",
+      "preview_title": "15% OFF extra na seleção Mascavo",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Mascavo Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
+      "category": "Saúde e Beleza",
+      "partner_name": "Lojas Renner",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130710,
+      "detail_elapsed_ms": 6169,
+      "scraped_at": "2026-07-28T14:19:30.682Z"
     }
   ]
 }
