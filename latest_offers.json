@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-28T23:27:57.017949Z",
+  "last_update": "2026-07-28T23:49:09.195321Z",
   "offers": [
     {
       "id": "p9T-2-ingressos-31-07-teatro-claro-sp",
@@ -222,7 +222,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T13:46:22.406279Z",
-      "sold_out_at": "20:26"
+      "sold_out_at": "20:26",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAi-2-ingressos-01-08-teatro-srgio-cardoso",
