@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 186834,
-  "run_duration_seconds": 186.83,
-  "avg_detail_ms_per_offer": 15570,
-  "generated_at": "2026-07-28T12:36:24.255Z",
+  "run_duration_ms": 158675,
+  "run_duration_seconds": 158.68,
+  "avg_detail_ms_per_offer": 13223,
+  "generated_at": "2026-07-28T12:42:51.890Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAd-2-ingressos-02-08-teatro-tuca-sp",
       "title": "2 INGRESSOS: 02/08 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 02/08 Teatro Tuca - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 28/07/2026 08:44 até 01/08/2026 23:59.",
+      "description": "Assinante UOL, viva essa experiência! Resgate 1 par de ingressos e emocione-se com o espetáculo Olhos nos Olhos protagonizado por Ana Lúcia Torre, que celebra 80 anos de vida e 60 anos de carreira em uma apresentação vibrante, reveladora e cheia de sensibilidade, no Teatro Tuca, em São Paulo – SP. Data: 02 de Agosto, às 18h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68994e2c2af_6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68994e2c2af_6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAd-2-ingressos-02-08-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68994e2c2af_6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12023,
-      "scraped_at": "2026-07-28T12:34:35.888Z"
+      "detail_html_length": 133788,
+      "detail_elapsed_ms": 16553,
+      "scraped_at": "2026-07-28T12:41:32.934Z"
     },
     {
       "id": "pac-2-ingressos-01-08-teatro-tuca-sp",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAc-2-ingressos-01-08-teatro-tuca-sp",
       "title": "2 INGRESSOS: 01/08 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 01/08 Teatro Tuca - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 28/07/2026 08:44 até 31/07/2026 23:59.",
+      "description": "Assinante UOL, viva essa experiência! Resgate 1 par de ingressos e emocione-se com o espetáculo Olhos nos Olhos protagonizado por Ana Lúcia Torre, que celebra 80 anos de vida e 60 anos de carreira em uma apresentação vibrante, reveladora e cheia de sensibilidade, no Teatro Tuca, em São Paulo – SP. Data: 01 de Agosto, às 21h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAc-2-ingressos-01-08-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12088,
-      "scraped_at": "2026-07-28T12:35:00.327Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68988ba859c_6a68961898960_6a5fc5206857d_6a4eb3824ef0b_6a4eacb679b0b_6a4e7c143cb6d_6a3963d3da6a3_6a39633602aed_6a3962215e81b_6a395afd56de1_6a2c397a648e4_6a2c34c7d599c_6a18aaba3b6f8_6a18a937a1491_6a18a72e46231_9a497aed8377c134a1b0f9833464c3b7.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133488,
+      "detail_elapsed_ms": 8383,
+      "scraped_at": "2026-07-28T12:41:41.317Z"
     },
     {
       "id": "pab-2-ingressos-31-07-teatro-tuca-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133687,
-      "detail_elapsed_ms": 14008,
-      "scraped_at": "2026-07-28T12:35:14.335Z"
+      "detail_html_length": 133440,
+      "detail_elapsed_ms": 8342,
+      "scraped_at": "2026-07-28T12:41:49.659Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130904,
-      "detail_elapsed_ms": 10038,
-      "scraped_at": "2026-07-28T12:35:24.373Z"
+      "detail_html_length": 130938,
+      "detail_elapsed_ms": 10668,
+      "scraped_at": "2026-07-28T12:42:00.327Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133062,
-      "detail_elapsed_ms": 9157,
-      "scraped_at": "2026-07-28T12:35:33.530Z"
+      "detail_html_length": 133075,
+      "detail_elapsed_ms": 11151,
+      "scraped_at": "2026-07-28T12:42:11.478Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133271,
-      "detail_elapsed_ms": 7374,
-      "scraped_at": "2026-07-28T12:35:40.904Z"
+      "detail_html_length": 132038,
+      "detail_elapsed_ms": 4149,
+      "scraped_at": "2026-07-28T12:42:15.627Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -185,8 +185,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133647,
-      "detail_elapsed_ms": 6008,
-      "scraped_at": "2026-07-28T12:35:46.912Z"
+      "detail_elapsed_ms": 7763,
+      "scraped_at": "2026-07-28T12:42:23.390Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131664,
-      "detail_elapsed_ms": 7735,
-      "scraped_at": "2026-07-28T12:35:54.647Z"
+      "detail_html_length": 131708,
+      "detail_elapsed_ms": 6028,
+      "scraped_at": "2026-07-28T12:42:29.418Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131337,
-      "detail_elapsed_ms": 7074,
-      "scraped_at": "2026-07-28T12:36:01.721Z"
+      "detail_html_length": 131343,
+      "detail_elapsed_ms": 5288,
+      "scraped_at": "2026-07-28T12:42:34.706Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131582,
-      "detail_elapsed_ms": 8572,
-      "scraped_at": "2026-07-28T12:36:10.293Z"
+      "detail_html_length": 130329,
+      "detail_elapsed_ms": 3015,
+      "scraped_at": "2026-07-28T12:42:37.721Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132740,
-      "detail_elapsed_ms": 6918,
-      "scraped_at": "2026-07-28T12:36:17.211Z"
+      "detail_html_length": 132745,
+      "detail_elapsed_ms": 6195,
+      "scraped_at": "2026-07-28T12:42:43.916Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131640,
-      "detail_elapsed_ms": 6173,
-      "scraped_at": "2026-07-28T12:36:23.384Z"
+      "detail_html_length": 131654,
+      "detail_elapsed_ms": 7616,
+      "scraped_at": "2026-07-28T12:42:51.532Z"
     }
   ]
 }
