@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 92386,
-  "run_duration_seconds": 92.39,
-  "avg_detail_ms_per_offer": 7699,
-  "generated_at": "2026-07-28T20:26:43.475Z",
+  "run_duration_ms": 100495,
+  "run_duration_seconds": 100.5,
+  "avg_detail_ms_per_offer": 8375,
+  "generated_at": "2026-07-28T20:31:43.077Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pao-10-de-desconto-no-primeiro-corte",
+      "trace_id": "trace_pao-10-de-desconto-no-primeiro-corte",
+      "link": "https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte",
+      "original_link": "https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte",
+      "title": "10% de desconto no primeiro corte",
+      "preview_title": "10% de desconto no primeiro corte",
+      "validity": "Benefício válido de 28/07/2026 17:00 até 28/07/2028 23:59.",
+      "description": "Sobre o Parceiro: Barbearia Masculina especializada em corte adulto e infantil. Referência na cidade de Indaiatuba por corte, barba e serviços extras! Clube de assinatura Navaggio: Pague um valor fixo mensal e corte quantas vezes quiser! Benefício: 10% de desconto no primeiro corte OU um serviço extra de CORTESIA (sobrancelha na cera, depilação de nariz ou orelha, etc.) Regras: Para ganhar o desconto, mostrar um print da tela onde consta o anúncio do desconto; Aplicável nas duas unidades da Barbearia Navaggio em INDAIATUBA; Válido apenas no primeiro corte; Sujeito à desativação sem aviso prévio.",
+      "category": "Saúde e Beleza",
+      "partner_name": "Barbearia Navaggio",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f0cc75eeec6ae4b96c634cde7426475a.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134059,
+      "detail_elapsed_ms": 10265,
+      "scraped_at": "2026-07-28T20:31:07.733Z"
+    },
     {
       "id": "pal-2-ingressos-01-08-teatro-das-artes-sp",
       "trace_id": "trace_pal-2-ingressos-01-08-teatro-das-artes-sp",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133052,
-      "detail_elapsed_ms": 9320,
-      "scraped_at": "2026-07-28T20:26:08.439Z"
+      "detail_html_length": 133200,
+      "detail_elapsed_ms": 4908,
+      "scraped_at": "2026-07-28T20:31:12.641Z"
     },
     {
       "id": "pak-2-ingressos-31-07-teatro-das-artes-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131947,
-      "detail_elapsed_ms": 4001,
-      "scraped_at": "2026-07-28T20:26:12.440Z"
+      "detail_html_length": 132003,
+      "detail_elapsed_ms": 3732,
+      "scraped_at": "2026-07-28T20:31:16.373Z"
     },
     {
       "id": "pae-2-ingressos-30-07-teatro-uol-sp",
@@ -88,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133561,
-      "detail_elapsed_ms": 3467,
-      "scraped_at": "2026-07-28T20:26:15.907Z"
+      "detail_html_length": 133560,
+      "detail_elapsed_ms": 2945,
+      "scraped_at": "2026-07-28T20:31:19.318Z"
     },
     {
-      "id": "paa-20-off-em-seleo-de-dia-dos-pais",
-      "trace_id": "trace_paa-20-off-em-seleo-de-dia-dos-pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
-      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
+      "id": "paa-20-off-em-selecao-de-dia-dos-pais",
+      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais",
+      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
+      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
       "title": "20% OFF em seleção de Dia dos Pais",
       "preview_title": "20% OFF em seleção de Dia dos Pais",
       "validity": "Benefício válido de 27/07/2026 12:00 até 02/08/2026 23:59.",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124572,
-      "detail_elapsed_ms": 2886,
-      "scraped_at": "2026-07-28T20:26:18.793Z"
+      "detail_html_length": 129700,
+      "detail_elapsed_ms": 3439,
+      "scraped_at": "2026-07-28T20:31:22.757Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133271,
-      "detail_elapsed_ms": 2541,
-      "scraped_at": "2026-07-28T20:26:21.334Z"
+      "detail_html_length": 126918,
+      "detail_elapsed_ms": 2628,
+      "scraped_at": "2026-07-28T20:31:25.386Z"
     },
     {
-      "id": "p9u-at-12-off-em-aluguis-carro",
-      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro",
-      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
-      "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "id": "p9u-ate-12-off-em-alugueis-carro",
+      "trace_id": "trace_p9u-ate-12-off-em-alugueis-carro",
+      "link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
+      "original_link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
       "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132401,
-      "detail_elapsed_ms": 3245,
-      "scraped_at": "2026-07-28T20:26:24.579Z"
+      "detail_html_length": 132431,
+      "detail_elapsed_ms": 2803,
+      "scraped_at": "2026-07-28T20:31:28.189Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131685,
-      "detail_elapsed_ms": 3089,
-      "scraped_at": "2026-07-28T20:26:27.668Z"
+      "detail_html_length": 125302,
+      "detail_elapsed_ms": 2465,
+      "scraped_at": "2026-07-28T20:31:30.655Z"
     },
     {
-      "id": "p9r-20-off-em-seleo-especial",
-      "trace_id": "trace_p9r-20-off-em-seleo-especial",
-      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
-      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
+      "id": "p9r-20-off-em-selecao-especial",
+      "trace_id": "trace_p9r-20-off-em-selecao-especial",
+      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
+      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
       "title": "20% OFF em seleção especial",
       "preview_title": "20% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:11 até 09/08/2026 23:59.",
@@ -208,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131744,
-      "detail_elapsed_ms": 3470,
-      "scraped_at": "2026-07-28T20:26:31.138Z"
+      "detail_html_length": 124987,
+      "detail_elapsed_ms": 3162,
+      "scraped_at": "2026-07-28T20:31:33.817Z"
     },
     {
-      "id": "p9q-30-off-em-seleo-especial",
-      "trace_id": "trace_p9q-30-off-em-seleo-especial",
-      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
-      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
+      "id": "p9q-30-off-em-selecao-especial",
+      "trace_id": "trace_p9q-30-off-em-selecao-especial",
+      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
+      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
       "title": "30% OFF em seleção especial",
       "preview_title": "30% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:03 até 09/08/2026 23:59.",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131551,
-      "detail_elapsed_ms": 2853,
-      "scraped_at": "2026-07-28T20:26:33.991Z"
+      "detail_html_length": 130402,
+      "detail_elapsed_ms": 2508,
+      "scraped_at": "2026-07-28T20:31:36.327Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126379,
-      "detail_elapsed_ms": 2975,
-      "scraped_at": "2026-07-28T20:26:36.966Z"
+      "detail_html_length": 126387,
+      "detail_elapsed_ms": 2562,
+      "scraped_at": "2026-07-28T20:31:38.889Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125288,
-      "detail_elapsed_ms": 2222,
-      "scraped_at": "2026-07-28T20:26:39.189Z"
-    },
-    {
-      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
-      "category": "Shows, Cinemas e Espetáculos",
-      "partner_name": "Rodeio Itu Festival",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132851,
-      "detail_elapsed_ms": 3548,
-      "scraped_at": "2026-07-28T20:26:42.737Z"
+      "detail_html_length": 130482,
+      "detail_elapsed_ms": 3430,
+      "scraped_at": "2026-07-28T20:31:42.319Z"
     }
   ]
 }
