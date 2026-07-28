@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 100495,
-  "run_duration_seconds": 100.5,
-  "avg_detail_ms_per_offer": 8375,
-  "generated_at": "2026-07-28T20:31:43.077Z",
+  "run_duration_ms": 109194,
+  "run_duration_seconds": 109.19,
+  "avg_detail_ms_per_offer": 9100,
+  "generated_at": "2026-07-28T20:36:48.085Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,33 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134059,
-      "detail_elapsed_ms": 10265,
-      "scraped_at": "2026-07-28T20:31:07.733Z"
-    },
-    {
-      "id": "pal-2-ingressos-01-08-teatro-das-artes-sp",
-      "trace_id": "trace_pal-2-ingressos-01-08-teatro-das-artes-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAl-2-ingressos-01-08-teatro-das-artes-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAl-2-ingressos-01-08-teatro-das-artes-sp",
-      "title": "2 INGRESSOS: 01/08 Teatro das Artes SP",
-      "preview_title": "2 INGRESSOS: 01/08 Teatro das Artes SP",
-      "validity": "Benefício válido de 28/07/2026 16:23 até 31/07/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo “Meu Deus”, com Bianca Bin e Sérgio Guizé, e viva uma experiência envolvente, divertida e provocadora no teatro, em uma comédia inteligente que mistura humor ácido e reflexões profundas sobre a relação entre o divino e o humano, no Teatro das Artes, em São Paulo. Data: 01/08/2026 | 20h. Local: Av. Rebouças, 3970 - Store 409 - Pinheiros, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69017b1b8c1_6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69017b1b8c1_6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69017b1b8c1_6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133200,
-      "detail_elapsed_ms": 4908,
-      "scraped_at": "2026-07-28T20:31:12.641Z"
+      "detail_html_length": 134072,
+      "detail_elapsed_ms": 8640,
+      "scraped_at": "2026-07-28T20:36:09.927Z"
     },
     {
       "id": "pak-2-ingressos-31-07-teatro-das-artes-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132003,
-      "detail_elapsed_ms": 3732,
-      "scraped_at": "2026-07-28T20:31:16.373Z"
+      "detail_html_length": 131937,
+      "detail_elapsed_ms": 3832,
+      "scraped_at": "2026-07-28T20:36:13.760Z"
     },
     {
       "id": "pae-2-ingressos-30-07-teatro-uol-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133560,
-      "detail_elapsed_ms": 2945,
-      "scraped_at": "2026-07-28T20:31:19.318Z"
+      "detail_html_length": 127050,
+      "detail_elapsed_ms": 2632,
+      "scraped_at": "2026-07-28T20:36:16.392Z"
     },
     {
       "id": "paa-20-off-em-selecao-de-dia-dos-pais",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129700,
-      "detail_elapsed_ms": 3439,
-      "scraped_at": "2026-07-28T20:31:22.757Z"
+      "detail_html_length": 124572,
+      "detail_elapsed_ms": 2629,
+      "scraped_at": "2026-07-28T20:36:19.022Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126918,
-      "detail_elapsed_ms": 2628,
-      "scraped_at": "2026-07-28T20:31:25.386Z"
+      "detail_html_length": 126929,
+      "detail_elapsed_ms": 2769,
+      "scraped_at": "2026-07-28T20:36:21.792Z"
     },
     {
       "id": "p9u-ate-12-off-em-alugueis-carro",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132431,
-      "detail_elapsed_ms": 2803,
-      "scraped_at": "2026-07-28T20:31:28.189Z"
+      "detail_html_length": 132269,
+      "detail_elapsed_ms": 3243,
+      "scraped_at": "2026-07-28T20:36:25.035Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125302,
-      "detail_elapsed_ms": 2465,
-      "scraped_at": "2026-07-28T20:31:30.655Z"
+      "detail_html_length": 131656,
+      "detail_elapsed_ms": 4269,
+      "scraped_at": "2026-07-28T20:36:29.304Z"
     },
     {
       "id": "p9r-20-off-em-selecao-especial",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124987,
-      "detail_elapsed_ms": 3162,
-      "scraped_at": "2026-07-28T20:31:33.817Z"
+      "detail_html_length": 124966,
+      "detail_elapsed_ms": 2989,
+      "scraped_at": "2026-07-28T20:36:32.293Z"
     },
     {
       "id": "p9q-30-off-em-selecao-especial",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130402,
-      "detail_elapsed_ms": 2508,
-      "scraped_at": "2026-07-28T20:31:36.327Z"
+      "detail_html_length": 130345,
+      "detail_elapsed_ms": 2913,
+      "scraped_at": "2026-07-28T20:36:35.207Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126387,
-      "detail_elapsed_ms": 2562,
-      "scraped_at": "2026-07-28T20:31:38.889Z"
+      "detail_html_length": 131516,
+      "detail_elapsed_ms": 2250,
+      "scraped_at": "2026-07-28T20:36:37.457Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130482,
-      "detail_elapsed_ms": 3430,
-      "scraped_at": "2026-07-28T20:31:42.319Z"
+      "detail_html_length": 131642,
+      "detail_elapsed_ms": 4709,
+      "scraped_at": "2026-07-28T20:36:42.166Z"
+    },
+    {
+      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
+      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "category": "Shows, Cinemas e Espetáculos",
+      "partner_name": "Rodeio Itu Festival",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131515,
+      "detail_elapsed_ms": 5075,
+      "scraped_at": "2026-07-28T20:36:47.241Z"
     }
   ]
 }
