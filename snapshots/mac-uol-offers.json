@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 2
   },
-  "run_duration_ms": 175398,
-  "run_duration_seconds": 175.4,
-  "avg_detail_ms_per_offer": 14617,
-  "generated_at": "2026-07-28T00:45:57.475Z",
+  "run_duration_ms": 190819,
+  "run_duration_seconds": 190.82,
+  "avg_detail_ms_per_offer": 15902,
+  "generated_at": "2026-07-28T00:52:31.732Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12161,
-      "scraped_at": "2026-07-28T00:44:17.826Z"
+      "detail_elapsed_ms": 12128,
+      "scraped_at": "2026-07-28T00:50:38.164Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp",
       "title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
-      "validity": "Benefício válido de 27/07/2026 16:47 até 29/07/2026 23:59.",
-      "description": "Assinante UOL, viva esse grande sucesso do teatro! Resgate 1 par de ingressos para assistir ao premiado espetáculo Dois Papas, com Celso Frateschi e Zécarlos Machado, um emocionante encontro entre o Papa Bento XVI e o futuro Papa Francisco, no TUCA, em São Paulo. Data: 31 de Julho, às 20h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133174,
-      "detail_elapsed_ms": 11462,
-      "scraped_at": "2026-07-28T00:44:29.288Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12003,
+      "scraped_at": "2026-07-28T00:51:02.876Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133269,
-      "detail_elapsed_ms": 9370,
-      "scraped_at": "2026-07-28T00:44:38.659Z"
+      "detail_html_length": 133135,
+      "detail_elapsed_ms": 7750,
+      "scraped_at": "2026-07-28T00:51:10.626Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133656,
-      "detail_elapsed_ms": 9001,
-      "scraped_at": "2026-07-28T00:44:47.660Z"
+      "detail_html_length": 133500,
+      "detail_elapsed_ms": 6464,
+      "scraped_at": "2026-07-28T00:51:17.093Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131515,
-      "detail_elapsed_ms": 7628,
-      "scraped_at": "2026-07-28T00:44:55.288Z"
+      "detail_html_length": 131518,
+      "detail_elapsed_ms": 9299,
+      "scraped_at": "2026-07-28T00:51:26.393Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131471,
-      "detail_elapsed_ms": 11163,
-      "scraped_at": "2026-07-28T00:45:06.452Z"
+      "detail_html_length": 131182,
+      "detail_elapsed_ms": 7920,
+      "scraped_at": "2026-07-28T00:51:34.313Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132031,
-      "detail_elapsed_ms": 9802,
-      "scraped_at": "2026-07-28T00:45:16.254Z"
+      "detail_html_length": 131565,
+      "detail_elapsed_ms": 7690,
+      "scraped_at": "2026-07-28T00:51:42.003Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132748,
-      "detail_elapsed_ms": 9692,
-      "scraped_at": "2026-07-28T00:45:25.946Z"
+      "detail_html_length": 132735,
+      "detail_elapsed_ms": 8502,
+      "scraped_at": "2026-07-28T00:51:50.505Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131501,
-      "detail_elapsed_ms": 8310,
-      "scraped_at": "2026-07-28T00:45:34.258Z"
+      "detail_html_length": 131654,
+      "detail_elapsed_ms": 11200,
+      "scraped_at": "2026-07-28T00:52:01.705Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138110,
-      "detail_elapsed_ms": 10243,
-      "scraped_at": "2026-07-28T00:45:44.501Z"
+      "detail_html_length": 138155,
+      "detail_elapsed_ms": 10636,
+      "scraped_at": "2026-07-28T00:52:12.341Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129603,
-      "detail_elapsed_ms": 4455,
-      "scraped_at": "2026-07-28T00:45:48.957Z"
+      "detail_html_length": 130693,
+      "detail_elapsed_ms": 9006,
+      "scraped_at": "2026-07-28T00:52:21.347Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130836,
-      "detail_elapsed_ms": 7946,
-      "scraped_at": "2026-07-28T00:45:56.903Z"
+      "detail_html_length": 130841,
+      "detail_elapsed_ms": 9399,
+      "scraped_at": "2026-07-28T00:52:30.746Z"
     }
   ]
 }
