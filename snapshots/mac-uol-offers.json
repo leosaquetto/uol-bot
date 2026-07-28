@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 9,
+  "detail_fail_count": 3,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 9,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 3
   },
-  "run_duration_ms": 236581,
-  "run_duration_seconds": 236.58,
-  "avg_detail_ms_per_offer": 19715,
-  "generated_at": "2026-07-28T17:02:17.103Z",
+  "run_duration_ms": 261101,
+  "run_duration_seconds": 261.1,
+  "avg_detail_ms_per_offer": 21758,
+  "generated_at": "2026-07-28T17:10:11.730Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAh-2-ingressos-31-07-teatro-srgio-cardoso\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12002,
-      "scraped_at": "2026-07-28T17:00:20.059Z"
+      "detail_elapsed_ms": 12045,
+      "scraped_at": "2026-07-28T17:07:11.503Z"
     },
     {
       "id": "pag-2-ingressos-30-07-teatro-srgio-cardoso",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAg-2-ingressos-30-07-teatro-srgio-cardoso",
       "title": "2 INGRESSOS: 30/07 Teatro Sérgio Cardoso",
       "preview_title": "2 INGRESSOS: 30/07 Teatro Sérgio Cardoso",
-      "validity": "Benefício válido de 28/07/2026 11:24 até 30/07/2026 20:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressose viva “VIVA! VIDA”, com Regina Casé. Uma experiência que mistura humor, emoção e reflexões sobre o mundo moderno em uma jornada divertida e inspiradora, no Teatro Sérgio Cardoso, em São Paulo. Data: 30 de Julho, às 20h. Local: Rua Rui Barbosa, 153, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68bb6734435_6a5e788264d74_6a5e77d6009b6_6a5e7711880bd_6a5e6a802607d_6a4e64cb55c5e_6a4e63f9bcdca_6a4e630e94947_6a4e5a6a8e796_6a47e33eaeb7a_6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68bb6734435_6a5e788264d74_6a5e77d6009b6_6a5e7711880bd_6a5e6a802607d_6a4e64cb55c5e_6a4e63f9bcdca_6a4e630e94947_6a4e5a6a8e796_6a47e33eaeb7a_6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68bb6734435_6a5e788264d74_6a5e77d6009b6_6a5e7711880bd_6a5e6a802607d_6a4e64cb55c5e_6a4e63f9bcdca_6a4e630e94947_6a4e5a6a8e796_6a47e33eaeb7a_6a47e08e42fd1_6a47d83a516f8_c7995f3aea32c23afafffda153dae184.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAg-2-ingressos-30-07-teatro-srgio-cardoso\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
-      "detail_html_length": 133385,
-      "detail_elapsed_ms": 11970,
-      "scraped_at": "2026-07-28T17:00:44.377Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12009,
+      "scraped_at": "2026-07-28T17:07:35.785Z"
     },
     {
       "id": "pae-2-ingressos-30-07-teatro-uol-sp",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133560,
-      "detail_elapsed_ms": 7293,
-      "scraped_at": "2026-07-28T17:00:51.671Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133579,
+      "detail_elapsed_ms": 13369,
+      "scraped_at": "2026-07-28T17:08:01.452Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130789,
-      "detail_elapsed_ms": 8203,
-      "scraped_at": "2026-07-28T17:00:59.875Z"
+      "detail_attempts": 2,
+      "detail_html_length": 130755,
+      "detail_elapsed_ms": 11600,
+      "scraped_at": "2026-07-28T17:08:25.360Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133043,
-      "detail_elapsed_ms": 6142,
-      "scraped_at": "2026-07-28T17:01:06.017Z"
+      "detail_html_length": 133060,
+      "detail_elapsed_ms": 11311,
+      "scraped_at": "2026-07-28T17:08:36.672Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133133,
-      "detail_elapsed_ms": 7397,
-      "scraped_at": "2026-07-28T17:01:13.414Z"
+      "detail_html_length": 133540,
+      "detail_elapsed_ms": 12114,
+      "scraped_at": "2026-07-28T17:08:48.786Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133644,
-      "detail_elapsed_ms": 10755,
-      "scraped_at": "2026-07-28T17:01:24.170Z"
+      "detail_html_length": 133639,
+      "detail_elapsed_ms": 10876,
+      "scraped_at": "2026-07-28T17:08:59.662Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131676,
-      "detail_elapsed_ms": 11605,
-      "scraped_at": "2026-07-28T17:01:35.775Z"
+      "detail_html_length": 131664,
+      "detail_elapsed_ms": 8768,
+      "scraped_at": "2026-07-28T17:09:08.430Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131452,
-      "detail_elapsed_ms": 12009,
-      "scraped_at": "2026-07-28T17:01:47.784Z"
+      "detail_html_length": 131169,
+      "detail_elapsed_ms": 11791,
+      "scraped_at": "2026-07-28T17:09:20.221Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131403,
-      "detail_elapsed_ms": 10506,
-      "scraped_at": "2026-07-28T17:01:58.290Z"
+      "detail_html_length": 131559,
+      "detail_elapsed_ms": 11833,
+      "scraped_at": "2026-07-28T17:09:32.054Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132751,
-      "detail_elapsed_ms": 7926,
-      "scraped_at": "2026-07-28T17:02:06.216Z"
+      "detail_html_length": 132863,
+      "detail_elapsed_ms": 13499,
+      "scraped_at": "2026-07-28T17:09:45.553Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "title": "20% de desconto em qualquer plano!",
       "preview_title": "20% de desconto em qualquer plano!",
-      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
-      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "",
       "partner_name": "Zelus Pet",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 9971,
-      "scraped_at": "2026-07-28T17:02:16.188Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12030,
+      "scraped_at": "2026-07-28T17:10:09.843Z"
     }
   ]
 }
