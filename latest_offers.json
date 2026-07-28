@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-28T13:09:12.271924Z",
+  "last_update": "2026-07-28T13:14:09.069334Z",
   "offers": [
     {
       "id": "p8Z-dia-dos-pais-desconto-progressivo-5",
@@ -450,7 +450,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T12:19:30.322210Z",
-      "sold_out_at": "10:08"
+      "sold_out_at": "10:08",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
