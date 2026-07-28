@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-28T21:02:20.704892Z",
+  "last_update": "2026-07-28T21:02:26.750491Z",
   "offers": [
     {
       "id": "p9T-2-ingressos-31-07-teatro-claro-sp",
@@ -427,7 +427,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T20:28:05.847137Z",
-      "sold_out_at": "18:01"
+      "sold_out_at": "18:01",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAo-10-de-desconto-no-primeiro-corte",
