@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 63543,
-  "run_duration_seconds": 63.54,
-  "avg_detail_ms_per_offer": 5295,
-  "generated_at": "2026-07-28T07:06:33.949Z",
+  "run_duration_ms": 44679,
+  "run_duration_seconds": 44.68,
+  "avg_detail_ms_per_offer": 3723,
+  "generated_at": "2026-07-28T07:10:26.581Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130446,
-      "detail_elapsed_ms": 6236,
-      "scraped_at": "2026-07-28T07:06:02.455Z"
+      "detail_html_length": 129264,
+      "detail_elapsed_ms": 4534,
+      "scraped_at": "2026-07-28T07:10:00.986Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp",
       "title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 16:47 até 29/07/2026 23:59.",
+      "description": "Assinante UOL, viva esse grande sucesso do teatro! Resgate 1 par de ingressos para assistir ao premiado espetáculo Dois Papas, com Celso Frateschi e Zécarlos Machado, um emocionante encontro entre o Papa Bento XVI e o futuro Papa Francisco, no TUCA, em São Paulo. Data: 31 de Julho, às 20h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 679,
-      "scraped_at": "2026-07-28T07:06:03.691Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131904,
+      "detail_elapsed_ms": 2982,
+      "scraped_at": "2026-07-28T07:10:03.968Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj",
       "title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
       "preview_title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 15:21 até 31/07/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos para um espetáculo especial no Teatro Claro - Shopping Cidade Copacabana-RJ. Quando: Validade até 31 de Julho de 2026. Local: Teatro Claro Rio de Janeiro - Shopping Cidade Copacabana - Rua Siqueira Campos, 143, 2º Piso - Rio de Janeiro-RJ. Escolha um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaisrj.com.br/programacao Espetáculos em cartaz Programação em destaque: Minha Estrela Dalva Horário: Qui 20h | Sex 17h | Sáb 20h Dom 17h. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj\" is interrupted by another navigation to \"https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj\" Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 443,
-      "scraped_at": "2026-07-28T07:06:04.885Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133272,
+      "detail_elapsed_ms": 2244,
+      "scraped_at": "2026-07-28T07:10:06.213Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -111,10 +111,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133519,
-      "detail_elapsed_ms": 5272,
-      "scraped_at": "2026-07-28T07:06:11.131Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133643,
+      "detail_elapsed_ms": 2342,
+      "scraped_at": "2026-07-28T07:10:08.555Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130506,
-      "detail_elapsed_ms": 2167,
-      "scraped_at": "2026-07-28T07:06:13.298Z"
+      "detail_html_length": 131676,
+      "detail_elapsed_ms": 2546,
+      "scraped_at": "2026-07-28T07:10:11.101Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131341,
-      "detail_elapsed_ms": 2033,
-      "scraped_at": "2026-07-28T07:06:15.331Z"
+      "detail_html_length": 131340,
+      "detail_elapsed_ms": 2177,
+      "scraped_at": "2026-07-28T07:10:13.278Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131593,
-      "detail_elapsed_ms": 1868,
-      "scraped_at": "2026-07-28T07:06:17.199Z"
+      "detail_html_length": 125190,
+      "detail_elapsed_ms": 2124,
+      "scraped_at": "2026-07-28T07:10:15.402Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132751,
-      "detail_elapsed_ms": 2301,
-      "scraped_at": "2026-07-28T07:06:19.500Z"
+      "detail_html_length": 132732,
+      "detail_elapsed_ms": 2002,
+      "scraped_at": "2026-07-28T07:10:17.404Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 3030,
-      "scraped_at": "2026-07-28T07:06:22.530Z"
+      "detail_html_length": 131662,
+      "detail_elapsed_ms": 2203,
+      "scraped_at": "2026-07-28T07:10:19.607Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138174,
-      "detail_elapsed_ms": 5524,
-      "scraped_at": "2026-07-28T07:06:28.054Z"
+      "detail_html_length": 136985,
+      "detail_elapsed_ms": 2365,
+      "scraped_at": "2026-07-28T07:10:21.972Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130840,
-      "detail_elapsed_ms": 3107,
-      "scraped_at": "2026-07-28T07:06:31.161Z"
+      "detail_html_length": 130848,
+      "detail_elapsed_ms": 2145,
+      "scraped_at": "2026-07-28T07:10:24.117Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130839,
-      "detail_elapsed_ms": 2294,
-      "scraped_at": "2026-07-28T07:06:33.455Z"
+      "detail_html_length": 129689,
+      "detail_elapsed_ms": 2128,
+      "scraped_at": "2026-07-28T07:10:26.245Z"
     }
   ]
 }
