@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 60398,
-  "run_duration_seconds": 60.4,
-  "avg_detail_ms_per_offer": 5033,
-  "generated_at": "2026-07-28T22:38:35.417Z",
+  "run_duration_ms": 59322,
+  "run_duration_seconds": 59.32,
+  "avg_detail_ms_per_offer": 4944,
+  "generated_at": "2026-07-28T22:42:41.713Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte",
       "title": "10% de desconto no primeiro corte",
       "preview_title": "10% de desconto no primeiro corte",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 28/07/2026 17:00 até 28/07/2028 23:59.",
+      "description": "Sobre o Parceiro: Barbearia Masculina especializada em corte adulto e infantil. Referência na cidade de Indaiatuba por corte, barba e serviços extras! Clube de assinatura Navaggio: Pague um valor fixo mensal e corte quantas vezes quiser! Benefício: 10% de desconto no primeiro corte OU um serviço extra de CORTESIA (sobrancelha na cera, depilação de nariz ou orelha, etc.) Regras: Para ganhar o desconto, mostrar um print da tela onde consta o anúncio do desconto; Aplicável nas duas unidades da Barbearia Navaggio em INDAIATUBA; Válido apenas no primeiro corte; Sujeito à desativação sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Barbearia Navaggio",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f0cc75eeec6ae4b96c634cde7426475a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 517,
-      "scraped_at": "2026-07-28T22:38:04.829Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134072,
+      "detail_elapsed_ms": 5695,
+      "scraped_at": "2026-07-28T22:42:13.664Z"
     },
     {
       "id": "pae-2-ingressos-30-07-teatro-uol-sp",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAe-2-ingressos-30-07-teatro-uol-sp",
       "title": "2 INGRESSOS: 30/07 Teatro UOL - SP",
       "preview_title": "2 INGRESSOS: 30/07 Teatro UOL - SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 28/07/2026 09:32 até 30/07/2026 23:59.",
+      "description": "Assinante UOL, resgate 1 par de ingressos e viva momentos de muita emoção em um espetáculo imperdível no Teatro UOL, no Shopping Pátio Higienópolis (SP). Data: 30 de Julho de 2026. Local: Av. Higienópolis, 618 - São Paulo/SP. Importante: O voucher inclui 01 par de ingressos. Escolha o horário e o espetáculo de sua preferência no site, utilizando o link indicado na descrição das regras. Como resgatar meu benefício: Cada códigos vale 01 par e são válidos para resgate de peças até o dia 30 de Julho de 2026. 1 - Clique no link, resgate seu benefício dentro do prazo de validade e escolha o espetáculo de sua preferência. https://teatrouol.showare.com.br/?websaleschannelkey=uol15 2 - Escolha a peça que gostaria de assistir e clique em COMPRAR; 3 - Insira o seu código e clique em Avançar: 4 - Escolha dois lugares disponíveis: 5 - Faça o cadastro e resgate o seu par de ingressos: Bom espetáculo! REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/28eb3ba8815a200d318437d24b19c04d.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/28eb3ba8815a200d318437d24b19c04d.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/campanhasdeingresso/pAe-2-ingressos-30-07-teatro-uol-sp\" is interrupted by another navigation to \"https://clube.uol.com.br/campanhasdeingresso/pAe-2-ingressos-30-07-teatro-uol-sp\" Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAe-2-ingressos-30-07-teatro-uol-sp\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 630,
-      "scraped_at": "2026-07-28T22:38:06.455Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/28eb3ba8815a200d318437d24b19c04d.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132417,
+      "detail_elapsed_ms": 3987,
+      "scraped_at": "2026-07-28T22:42:17.651Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 129306,
-      "detail_elapsed_ms": 4764,
-      "scraped_at": "2026-07-28T22:38:12.126Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130941,
+      "detail_elapsed_ms": 2596,
+      "scraped_at": "2026-07-28T22:42:20.247Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132118,
-      "detail_elapsed_ms": 3092,
-      "scraped_at": "2026-07-28T22:38:15.219Z"
+      "detail_html_length": 132127,
+      "detail_elapsed_ms": 2300,
+      "scraped_at": "2026-07-28T22:42:22.547Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132159,
-      "detail_elapsed_ms": 2947,
-      "scraped_at": "2026-07-28T22:38:18.166Z"
+      "detail_html_length": 133673,
+      "detail_elapsed_ms": 2897,
+      "scraped_at": "2026-07-28T22:42:25.444Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131681,
-      "detail_elapsed_ms": 3097,
-      "scraped_at": "2026-07-28T22:38:21.264Z"
+      "detail_html_length": 130168,
+      "detail_elapsed_ms": 2113,
+      "scraped_at": "2026-07-28T22:42:27.557Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131355,
-      "detail_elapsed_ms": 2289,
-      "scraped_at": "2026-07-28T22:38:23.553Z"
+      "detail_html_length": 131364,
+      "detail_elapsed_ms": 1862,
+      "scraped_at": "2026-07-28T22:42:29.419Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131566,
-      "detail_elapsed_ms": 2111,
-      "scraped_at": "2026-07-28T22:38:25.664Z"
+      "detail_html_length": 131568,
+      "detail_elapsed_ms": 2557,
+      "scraped_at": "2026-07-28T22:42:31.976Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131531,
-      "detail_elapsed_ms": 3040,
-      "scraped_at": "2026-07-28T22:38:28.704Z"
+      "detail_html_length": 132765,
+      "detail_elapsed_ms": 2360,
+      "scraped_at": "2026-07-28T22:42:34.336Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125304,
-      "detail_elapsed_ms": 2324,
-      "scraped_at": "2026-07-28T22:38:31.028Z"
+      "detail_html_length": 131656,
+      "detail_elapsed_ms": 2377,
+      "scraped_at": "2026-07-28T22:42:36.713Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132952,
-      "detail_elapsed_ms": 1953,
-      "scraped_at": "2026-07-28T22:38:32.981Z"
+      "detail_html_length": 137020,
+      "detail_elapsed_ms": 2151,
+      "scraped_at": "2026-07-28T22:42:38.864Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129717,
-      "detail_elapsed_ms": 2136,
-      "scraped_at": "2026-07-28T22:38:35.117Z"
+      "detail_html_length": 130843,
+      "detail_elapsed_ms": 2541,
+      "scraped_at": "2026-07-28T22:42:41.405Z"
     }
   ]
 }
