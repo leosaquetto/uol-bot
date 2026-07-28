@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 8,
+  "detail_fail_count": 4,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 8,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 4
   },
-  "run_duration_ms": 195368,
-  "run_duration_seconds": 195.37,
-  "avg_detail_ms_per_offer": 16281,
-  "generated_at": "2026-07-28T00:03:28.171Z",
+  "run_duration_ms": 254005,
+  "run_duration_seconds": 254,
+  "avg_detail_ms_per_offer": 21167,
+  "generated_at": "2026-07-28T00:11:16.434Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
       "title": "20% OFF em seleção de Dia dos Pais",
       "preview_title": "20% OFF em seleção de Dia dos Pais",
-      "validity": "Benefício válido de 27/07/2026 12:00 até 02/08/2026 23:59.",
-      "description": "Benefício: 20% OFF em seleção de Dia dos Pais Regras: 20% acumulativo, válido para seleção de produtos, sem pedido mínimo ou desconto máximo. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Nike",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8bd1776457768ba3072e73ccca68ece3.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
-      "detail_html_length": 130770,
-      "detail_elapsed_ms": 10428,
-      "scraped_at": "2026-07-28T00:01:23.830Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12260,
+      "scraped_at": "2026-07-28T00:08:25.614Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp",
       "title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
       "preview_title": "2 INGRESSOS: 31/07 Teatro Tuca - SP",
-      "validity": "Benefício válido de 27/07/2026 16:47 até 29/07/2026 23:59.",
-      "description": "Assinante UOL, viva esse grande sucesso do teatro! Resgate 1 par de ingressos para assistir ao premiado espetáculo Dois Papas, com Celso Frateschi e Zécarlos Machado, um emocionante encontro entre o Papa Bento XVI e o futuro Papa Francisco, no TUCA, em São Paulo. Data: 31 de Julho, às 20h. Local: Tucarena / PUC-SP - Rua Bartira esquina c/ R. Monte Alegre s/nº, São Paulo - São Paulo Importante: O voucher inclui 01 par de ingressos. Não é possível escolher horário, assento ou tipo de ingresso (como pista, VIP, premium, entre outros), pois a distribuição ocorre de forma automática e aleatória. REGRAS DE RESGATE: • Promoção válida por tempo limitado, enquanto durarem os estoques. • Benefício válido ao Assinante UOL pagante + 1 acompanhante. • Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. • O UOL não possui qualquer responsabilidade sobre a realização do evento. • Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/3796391cb9f6c167893aa5021de63032.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133187,
-      "detail_elapsed_ms": 15814,
-      "scraped_at": "2026-07-28T00:01:39.644Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p9X-2-ingressos-31-07-teatro-tuca-sp\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12649,
+      "scraped_at": "2026-07-28T00:08:50.536Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj",
       "title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
       "preview_title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
-      "validity": "Benefício válido de 27/07/2026 15:21 até 31/07/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para um espetáculo especial no Teatro Claro - Shopping Cidade Copacabana-RJ. Quando: Validade até 31 de Julho de 2026. Local: Teatro Claro Rio de Janeiro - Shopping Cidade Copacabana - Rua Siqueira Campos, 143, 2º Piso - Rio de Janeiro-RJ. Escolha um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaisrj.com.br/programacao Espetáculos em cartaz Programação em destaque: Minha Estrela Dalva Horário: Qui 20h | Sex 17h | Sáb 20h Dom 17h. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133281,
-      "detail_elapsed_ms": 12562,
-      "scraped_at": "2026-07-28T00:01:52.206Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12070,
+      "scraped_at": "2026-07-28T00:09:15.670Z"
     },
     {
       "id": "p9u-ate-12-off-em-alugueis-carro",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
-      "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
-      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Movida",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133654,
-      "detail_elapsed_ms": 8071,
-      "scraped_at": "2026-07-28T00:02:00.278Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12031,
+      "scraped_at": "2026-07-28T00:09:39.988Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131518,
-      "detail_elapsed_ms": 9284,
-      "scraped_at": "2026-07-28T00:02:09.562Z"
+      "detail_html_length": 131505,
+      "detail_elapsed_ms": 15976,
+      "scraped_at": "2026-07-28T00:09:55.964Z"
     },
     {
       "id": "p9r-20-off-em-selecao-especial",
@@ -159,10 +159,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131202,
-      "detail_elapsed_ms": 9650,
-      "scraped_at": "2026-07-28T00:02:19.212Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131191,
+      "detail_elapsed_ms": 9517,
+      "scraped_at": "2026-07-28T00:10:19.301Z"
     },
     {
       "id": "p9q-30-off-em-selecao-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131594,
-      "detail_elapsed_ms": 11348,
-      "scraped_at": "2026-07-28T00:02:30.560Z"
+      "detail_html_length": 131571,
+      "detail_elapsed_ms": 11077,
+      "scraped_at": "2026-07-28T00:10:30.378Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132866,
-      "detail_elapsed_ms": 13857,
-      "scraped_at": "2026-07-28T00:02:44.420Z"
+      "detail_html_length": 132740,
+      "detail_elapsed_ms": 7500,
+      "scraped_at": "2026-07-28T00:10:37.878Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131909,
-      "detail_elapsed_ms": 10805,
-      "scraped_at": "2026-07-28T00:02:55.225Z"
+      "detail_html_length": 131969,
+      "detail_elapsed_ms": 6819,
+      "scraped_at": "2026-07-28T00:10:44.698Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134076,
-      "detail_elapsed_ms": 7013,
-      "scraped_at": "2026-07-28T00:03:02.238Z"
+      "detail_html_length": 141159,
+      "detail_elapsed_ms": 12584,
+      "scraped_at": "2026-07-28T00:10:57.283Z"
     },
     {
       "id": "p9z-15-off-extra-na-selecao-mascavo",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131127,
-      "detail_elapsed_ms": 12342,
-      "scraped_at": "2026-07-28T00:03:14.580Z"
+      "detail_html_length": 130860,
+      "detail_elapsed_ms": 7736,
+      "scraped_at": "2026-07-28T00:11:05.019Z"
     },
     {
       "id": "p9y-15-off-extra-na-selecao-davines",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130851,
-      "detail_elapsed_ms": 12448,
-      "scraped_at": "2026-07-28T00:03:27.028Z"
+      "detail_html_length": 130850,
+      "detail_elapsed_ms": 11107,
+      "scraped_at": "2026-07-28T00:11:16.126Z"
     }
   ]
 }
