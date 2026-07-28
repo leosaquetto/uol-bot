@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 110971,
-  "run_duration_seconds": 110.97,
-  "avg_detail_ms_per_offer": 9248,
-  "generated_at": "2026-07-28T21:31:38.288Z",
+  "run_duration_ms": 88090,
+  "run_duration_seconds": 88.09,
+  "avg_detail_ms_per_offer": 7341,
+  "generated_at": "2026-07-28T21:36:27.058Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 134213,
-      "detail_elapsed_ms": 10401,
-      "scraped_at": "2026-07-28T21:30:58.374Z"
+      "detail_attempts": 1,
+      "detail_html_length": 134082,
+      "detail_elapsed_ms": 7660,
+      "scraped_at": "2026-07-28T21:35:48.883Z"
     },
     {
       "id": "pae-2-ingressos-30-07-teatro-uol-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133564,
-      "detail_elapsed_ms": 3359,
-      "scraped_at": "2026-07-28T21:31:01.733Z"
+      "detail_html_length": 132344,
+      "detail_elapsed_ms": 3988,
+      "scraped_at": "2026-07-28T21:35:52.871Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124547,
-      "detail_elapsed_ms": 2639,
-      "scraped_at": "2026-07-28T21:31:04.373Z"
+      "detail_html_length": 129553,
+      "detail_elapsed_ms": 4283,
+      "scraped_at": "2026-07-28T21:35:57.156Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131772,
-      "detail_elapsed_ms": 2744,
-      "scraped_at": "2026-07-28T21:31:07.117Z"
+      "detail_html_length": 126909,
+      "detail_elapsed_ms": 3121,
+      "scraped_at": "2026-07-28T21:36:00.277Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132435,
-      "detail_elapsed_ms": 3027,
-      "scraped_at": "2026-07-28T21:31:10.144Z"
+      "detail_html_length": 133664,
+      "detail_elapsed_ms": 4440,
+      "scraped_at": "2026-07-28T21:36:04.717Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130453,
-      "detail_elapsed_ms": 3264,
-      "scraped_at": "2026-07-28T21:31:13.408Z"
+      "detail_html_length": 131696,
+      "detail_elapsed_ms": 2909,
+      "scraped_at": "2026-07-28T21:36:07.626Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124962,
-      "detail_elapsed_ms": 2451,
-      "scraped_at": "2026-07-28T21:31:15.859Z"
+      "detail_html_length": 131328,
+      "detail_elapsed_ms": 2976,
+      "scraped_at": "2026-07-28T21:36:10.602Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131576,
-      "detail_elapsed_ms": 3660,
-      "scraped_at": "2026-07-28T21:31:19.519Z"
+      "detail_html_length": 125209,
+      "detail_elapsed_ms": 2931,
+      "scraped_at": "2026-07-28T21:36:13.533Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131520,
-      "detail_elapsed_ms": 2618,
-      "scraped_at": "2026-07-28T21:31:22.137Z"
+      "detail_html_length": 132752,
+      "detail_elapsed_ms": 3577,
+      "scraped_at": "2026-07-28T21:36:17.110Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130429,
-      "detail_elapsed_ms": 4148,
-      "scraped_at": "2026-07-28T21:31:26.285Z"
+      "detail_html_length": 131661,
+      "detail_elapsed_ms": 2678,
+      "scraped_at": "2026-07-28T21:36:19.788Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133649,
-      "detail_elapsed_ms": 6887,
-      "scraped_at": "2026-07-28T21:31:33.172Z"
+      "detail_html_length": 137899,
+      "detail_elapsed_ms": 4592,
+      "scraped_at": "2026-07-28T21:36:24.381Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129545,
-      "detail_elapsed_ms": 3950,
-      "scraped_at": "2026-07-28T21:31:37.122Z"
+      "detail_html_length": 129689,
+      "detail_elapsed_ms": 2473,
+      "scraped_at": "2026-07-28T21:36:26.854Z"
     }
   ]
 }
