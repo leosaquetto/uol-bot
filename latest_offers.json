@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-28T17:44:44.806387Z",
+  "last_update": "2026-07-28T17:55:47.329213Z",
   "offers": [
     {
       "id": "p9R-20-off-em-selecao-especial",
@@ -333,7 +333,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T15:50:04.749107Z",
-      "sold_out_at": "14:43"
+      "sold_out_at": "14:43",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAg-2-ingressos-30-07-teatro-srgio-cardoso",
@@ -355,7 +356,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T15:50:18.832582Z",
-      "sold_out_at": "14:43"
+      "sold_out_at": "14:43",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAj-2-ingressos-02-08-teatro-sergio-cardoso",
@@ -423,7 +425,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T16:10:49.802208Z",
-      "sold_out_at": "14:23"
+      "sold_out_at": "14:23",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAg-2-ingressos-30-07-teatro-sergio-cardoso",
