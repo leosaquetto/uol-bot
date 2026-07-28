@@ -14,12 +14,60 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 101192,
-  "run_duration_seconds": 101.19,
-  "avg_detail_ms_per_offer": 8433,
-  "generated_at": "2026-07-28T20:17:02.924Z",
+  "run_duration_ms": 92386,
+  "run_duration_seconds": 92.39,
+  "avg_detail_ms_per_offer": 7699,
+  "generated_at": "2026-07-28T20:26:43.475Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pal-2-ingressos-01-08-teatro-das-artes-sp",
+      "trace_id": "trace_pal-2-ingressos-01-08-teatro-das-artes-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pAl-2-ingressos-01-08-teatro-das-artes-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAl-2-ingressos-01-08-teatro-das-artes-sp",
+      "title": "2 INGRESSOS: 01/08 Teatro das Artes SP",
+      "preview_title": "2 INGRESSOS: 01/08 Teatro das Artes SP",
+      "validity": "Benefício válido de 28/07/2026 16:23 até 31/07/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo “Meu Deus”, com Bianca Bin e Sérgio Guizé, e viva uma experiência envolvente, divertida e provocadora no teatro, em uma comédia inteligente que mistura humor ácido e reflexões profundas sobre a relação entre o divino e o humano, no Teatro das Artes, em São Paulo. Data: 01/08/2026 | 20h. Local: Av. Rebouças, 3970 - Store 409 - Pinheiros, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69017b1b8c1_6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69017b1b8c1_6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69017b1b8c1_6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133052,
+      "detail_elapsed_ms": 9320,
+      "scraped_at": "2026-07-28T20:26:08.439Z"
+    },
+    {
+      "id": "pak-2-ingressos-31-07-teatro-das-artes-sp",
+      "trace_id": "trace_pak-2-ingressos-31-07-teatro-das-artes-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pAk-2-ingressos-31-07-teatro-das-artes-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAk-2-ingressos-31-07-teatro-das-artes-sp",
+      "title": "2 INGRESSOS: 31/07 Teatro das Artes SP",
+      "preview_title": "2 INGRESSOS: 31/07 Teatro das Artes SP",
+      "validity": "Benefício válido de 28/07/2026 16:14 até 30/07/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para o espetáculo “Meu Deus”, com Bianca Bin e Sérgio Guizé, e viva uma experiência envolvente, divertida e provocadora no teatro, em uma comédia inteligente que mistura humor ácido e reflexões profundas sobre a relação entre o divino e o humano, no Teatro das Artes, em São Paulo. Data: 31/07/2026 | 20h. Local: Av. Rebouças, 3970 - Store 409 - Pinheiros, São Paulo - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a68ff40437e4_06c5700b6cdf80fc8de02ece8d0c3654.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131947,
+      "detail_elapsed_ms": 4001,
+      "scraped_at": "2026-07-28T20:26:12.440Z"
+    },
     {
       "id": "pae-2-ingressos-30-07-teatro-uol-sp",
       "trace_id": "trace_pae-2-ingressos-30-07-teatro-uol-sp",
@@ -40,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133412,
-      "detail_elapsed_ms": 10445,
-      "scraped_at": "2026-07-28T20:16:22.194Z"
+      "detail_html_length": 133561,
+      "detail_elapsed_ms": 3467,
+      "scraped_at": "2026-07-28T20:26:15.907Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -64,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130948,
-      "detail_elapsed_ms": 4706,
-      "scraped_at": "2026-07-28T20:16:26.900Z"
+      "detail_html_length": 124572,
+      "detail_elapsed_ms": 2886,
+      "scraped_at": "2026-07-28T20:26:18.793Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133272,
-      "detail_elapsed_ms": 3650,
-      "scraped_at": "2026-07-28T20:16:30.551Z"
+      "detail_html_length": 133271,
+      "detail_elapsed_ms": 2541,
+      "scraped_at": "2026-07-28T20:26:21.334Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -112,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133657,
-      "detail_elapsed_ms": 3373,
-      "scraped_at": "2026-07-28T20:16:33.925Z"
+      "detail_html_length": 132401,
+      "detail_elapsed_ms": 3245,
+      "scraped_at": "2026-07-28T20:26:24.579Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -137,8 +185,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 131685,
-      "detail_elapsed_ms": 3531,
-      "scraped_at": "2026-07-28T20:16:37.456Z"
+      "detail_elapsed_ms": 3089,
+      "scraped_at": "2026-07-28T20:26:27.668Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -160,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131193,
-      "detail_elapsed_ms": 3507,
-      "scraped_at": "2026-07-28T20:16:40.963Z"
+      "detail_html_length": 131744,
+      "detail_elapsed_ms": 3470,
+      "scraped_at": "2026-07-28T20:26:31.138Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -184,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126733,
-      "detail_elapsed_ms": 3184,
-      "scraped_at": "2026-07-28T20:16:44.147Z"
+      "detail_html_length": 131551,
+      "detail_elapsed_ms": 2853,
+      "scraped_at": "2026-07-28T20:26:33.991Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132742,
-      "detail_elapsed_ms": 3438,
-      "scraped_at": "2026-07-28T20:16:47.585Z"
+      "detail_html_length": 126379,
+      "detail_elapsed_ms": 2975,
+      "scraped_at": "2026-07-28T20:26:36.966Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131651,
-      "detail_elapsed_ms": 2814,
-      "scraped_at": "2026-07-28T20:16:50.399Z"
+      "detail_html_length": 125288,
+      "detail_elapsed_ms": 2222,
+      "scraped_at": "2026-07-28T20:26:39.189Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131556,
-      "detail_elapsed_ms": 3387,
-      "scraped_at": "2026-07-28T20:16:53.787Z"
-    },
-    {
-      "id": "p9z-15-off-extra-na-seleo-mascavo",
-      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
-      "title": "15% OFF extra na seleção Mascavo",
-      "preview_title": "15% OFF extra na seleção Mascavo",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
-      "description": "Benefício: 15% OFF extra na seleção Mascavo Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "category": "Saúde e Beleza",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130850,
-      "detail_elapsed_ms": 5337,
-      "scraped_at": "2026-07-28T20:16:59.124Z"
-    },
-    {
-      "id": "p9y-15-off-extra-na-seleo-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "title": "15% OFF extra na seleção Davines",
-      "preview_title": "15% OFF extra na seleção Davines",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
-      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "category": "Saúde e Beleza",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130850,
-      "detail_elapsed_ms": 3395,
-      "scraped_at": "2026-07-28T20:17:02.519Z"
+      "detail_html_length": 132851,
+      "detail_elapsed_ms": 3548,
+      "scraped_at": "2026-07-28T20:26:42.737Z"
     }
   ]
 }
