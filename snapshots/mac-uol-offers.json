@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 133920,
-  "run_duration_seconds": 133.92,
-  "avg_detail_ms_per_offer": 11160,
-  "generated_at": "2026-07-28T14:19:31.546Z",
+  "run_duration_ms": 157934,
+  "run_duration_seconds": 157.93,
+  "avg_detail_ms_per_offer": 13161,
+  "generated_at": "2026-07-28T14:25:31.105Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAe-2-ingressos-30-07-teatro-uol-sp",
       "title": "2 INGRESSOS: 30/07 Teatro UOL - SP",
       "preview_title": "2 INGRESSOS: 30/07 Teatro UOL - SP",
-      "validity": "Benefício válido de 28/07/2026 09:32 até 30/07/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e viva momentos de muita emoção em um espetáculo imperdível no Teatro UOL, no Shopping Pátio Higienópolis (SP). Data: 30 de Julho de 2026. Local: Av. Higienópolis, 618 - São Paulo/SP. Importante: O voucher inclui 01 par de ingressos. Escolha o horário e o espetáculo de sua preferência no site, utilizando o link indicado na descrição das regras. Como resgatar meu benefício: Cada códigos vale 01 par e são válidos para resgate de peças até o dia 30 de Julho de 2026. 1 - Clique no link, resgate seu benefício dentro do prazo de validade e escolha o espetáculo de sua preferência. https://teatrouol.showare.com.br/?websaleschannelkey=uol15 2 - Escolha a peça que gostaria de assistir e clique em COMPRAR; 3 - Insira o seu código e clique em Avançar: 4 - Escolha dois lugares disponíveis: 5 - Faça o cadastro e resgate o seu par de ingressos: Bom espetáculo! REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/28eb3ba8815a200d318437d24b19c04d.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/28eb3ba8815a200d318437d24b19c04d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/28eb3ba8815a200d318437d24b19c04d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAe-2-ingressos-30-07-teatro-uol-sp\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
-      "detail_html_length": 133423,
-      "detail_elapsed_ms": 9985,
-      "scraped_at": "2026-07-28T14:18:16.171Z"
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12023,
+      "scraped_at": "2026-07-28T14:24:03.956Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130947,
-      "detail_elapsed_ms": 9296,
-      "scraped_at": "2026-07-28T14:18:25.467Z"
+      "detail_html_length": 131200,
+      "detail_elapsed_ms": 11858,
+      "scraped_at": "2026-07-28T14:24:15.814Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -89,8 +89,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 133062,
-      "detail_elapsed_ms": 8387,
-      "scraped_at": "2026-07-28T14:18:33.861Z"
+      "detail_elapsed_ms": 9626,
+      "scraped_at": "2026-07-28T14:24:25.440Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132112,
-      "detail_elapsed_ms": 4490,
-      "scraped_at": "2026-07-28T14:18:38.351Z"
+      "detail_html_length": 133124,
+      "detail_elapsed_ms": 7006,
+      "scraped_at": "2026-07-28T14:24:32.447Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133500,
-      "detail_elapsed_ms": 7214,
-      "scraped_at": "2026-07-28T14:18:45.566Z"
+      "detail_html_length": 133643,
+      "detail_elapsed_ms": 7578,
+      "scraped_at": "2026-07-28T14:24:40.025Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131686,
-      "detail_elapsed_ms": 8848,
-      "scraped_at": "2026-07-28T14:18:54.414Z"
+      "detail_html_length": 131665,
+      "detail_elapsed_ms": 5554,
+      "scraped_at": "2026-07-28T14:24:45.579Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129967,
-      "detail_elapsed_ms": 6382,
-      "scraped_at": "2026-07-28T14:19:00.796Z"
+      "detail_html_length": 131182,
+      "detail_elapsed_ms": 6208,
+      "scraped_at": "2026-07-28T14:24:51.787Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131562,
-      "detail_elapsed_ms": 7683,
-      "scraped_at": "2026-07-28T14:19:08.479Z"
+      "detail_html_length": 131423,
+      "detail_elapsed_ms": 7469,
+      "scraped_at": "2026-07-28T14:24:59.257Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131367,
-      "detail_elapsed_ms": 3901,
-      "scraped_at": "2026-07-28T14:19:12.380Z"
+      "detail_html_length": 132742,
+      "detail_elapsed_ms": 8709,
+      "scraped_at": "2026-07-28T14:25:07.967Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130288,
-      "detail_elapsed_ms": 4184,
-      "scraped_at": "2026-07-28T14:19:16.564Z"
+      "detail_html_length": 131493,
+      "detail_elapsed_ms": 6855,
+      "scraped_at": "2026-07-28T14:25:14.823Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137741,
-      "detail_elapsed_ms": 7948,
-      "scraped_at": "2026-07-28T14:19:24.513Z"
+      "detail_html_length": 133624,
+      "detail_elapsed_ms": 8675,
+      "scraped_at": "2026-07-28T14:25:23.498Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130710,
-      "detail_elapsed_ms": 6169,
-      "scraped_at": "2026-07-28T14:19:30.682Z"
+      "detail_html_length": 130829,
+      "detail_elapsed_ms": 6810,
+      "scraped_at": "2026-07-28T14:25:30.308Z"
     }
   ]
 }
