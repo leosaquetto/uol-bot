@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-28T13:31:56.720747Z",
+  "last_update": "2026-07-28T13:32:02.003388Z",
   "offers": [
     {
       "id": "p8Z-dia-dos-pais-desconto-progressivo-5",
@@ -408,7 +408,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T12:19:02.130406Z",
-      "sold_out_at": "10:31"
+      "sold_out_at": "10:31",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAc-2-ingressos-01-08-teatro-tuca-sp",
