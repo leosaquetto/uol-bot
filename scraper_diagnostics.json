@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-07-28T20:32:42.231732Z",
+  "updated_at": "2026-07-28T20:37:46.180964Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 1,
+  "candidates_added": 0,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 11,
+    "duplicada_historico": 12,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
     {
-      "title": "2 INGRESSOS: 01/08 Teatro das Artes SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAl-2-ingressos-01-08-teatro-das-artes-sp",
+      "title": "10% de desconto no primeiro corte",
+      "link": "https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte",
       "reason": "duplicada_historico",
-      "trace_id": "trace_pal-2-ingressos-01-08-teatro-das-artes-sp"
+      "trace_id": "trace_pao-10-de-desconto-no-primeiro-corte"
     },
     {
       "title": "2 INGRESSOS: 31/07 Teatro das Artes SP",
@@ -81,6 +81,12 @@
       "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "reason": "duplicada_historico",
       "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano"
+    },
+    {
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09"
     }
   ]
 }
