@@ -14,17 +14,17 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 44679,
-  "run_duration_seconds": 44.68,
-  "avg_detail_ms_per_offer": 3723,
-  "generated_at": "2026-07-28T07:10:26.581Z",
+  "run_duration_ms": 60773,
+  "run_duration_seconds": 60.77,
+  "avg_detail_ms_per_offer": 5064,
+  "generated_at": "2026-07-28T07:14:40.969Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
-      "id": "paa-20-off-em-seleo-de-dia-dos-pais",
-      "trace_id": "trace_paa-20-off-em-seleo-de-dia-dos-pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
-      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
+      "id": "paa-20-off-em-selecao-de-dia-dos-pais",
+      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais",
+      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
+      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
       "title": "20% OFF em seleção de Dia dos Pais",
       "preview_title": "20% OFF em seleção de Dia dos Pais",
       "validity": "Benefício válido de 27/07/2026 12:00 até 02/08/2026 23:59.",
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129264,
-      "detail_elapsed_ms": 4534,
-      "scraped_at": "2026-07-28T07:10:00.986Z"
+      "detail_html_length": 130783,
+      "detail_elapsed_ms": 6930,
+      "scraped_at": "2026-07-28T07:14:13.306Z"
     },
     {
       "id": "p9x-2-ingressos-31-07-teatro-tuca-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131904,
-      "detail_elapsed_ms": 2982,
-      "scraped_at": "2026-07-28T07:10:03.968Z"
+      "detail_html_length": 132982,
+      "detail_elapsed_ms": 4841,
+      "scraped_at": "2026-07-28T07:14:18.147Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,15 +88,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133272,
-      "detail_elapsed_ms": 2244,
-      "scraped_at": "2026-07-28T07:10:06.213Z"
+      "detail_html_length": 126648,
+      "detail_elapsed_ms": 2366,
+      "scraped_at": "2026-07-28T07:14:20.513Z"
     },
     {
-      "id": "p9u-at-12-off-em-aluguis-carro",
-      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro",
-      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
-      "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "id": "p9u-ate-12-off-em-alugueis-carro",
+      "trace_id": "trace_p9u-ate-12-off-em-alugueis-carro",
+      "link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
+      "original_link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
       "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133643,
-      "detail_elapsed_ms": 2342,
-      "scraped_at": "2026-07-28T07:10:08.555Z"
+      "detail_html_length": 133683,
+      "detail_elapsed_ms": 2476,
+      "scraped_at": "2026-07-28T07:14:22.989Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131676,
-      "detail_elapsed_ms": 2546,
-      "scraped_at": "2026-07-28T07:10:11.101Z"
+      "detail_html_length": 131681,
+      "detail_elapsed_ms": 2127,
+      "scraped_at": "2026-07-28T07:14:25.117Z"
     },
     {
-      "id": "p9r-20-off-em-seleo-especial",
-      "trace_id": "trace_p9r-20-off-em-seleo-especial",
-      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
-      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
+      "id": "p9r-20-off-em-selecao-especial",
+      "trace_id": "trace_p9r-20-off-em-selecao-especial",
+      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
+      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
       "title": "20% OFF em seleção especial",
       "preview_title": "20% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:11 até 09/08/2026 23:59.",
@@ -160,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131340,
-      "detail_elapsed_ms": 2177,
-      "scraped_at": "2026-07-28T07:10:13.278Z"
+      "detail_html_length": 129834,
+      "detail_elapsed_ms": 1969,
+      "scraped_at": "2026-07-28T07:14:27.086Z"
     },
     {
-      "id": "p9q-30-off-em-seleo-especial",
-      "trace_id": "trace_p9q-30-off-em-seleo-especial",
-      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
-      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
+      "id": "p9q-30-off-em-selecao-especial",
+      "trace_id": "trace_p9q-30-off-em-selecao-especial",
+      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
+      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
       "title": "30% OFF em seleção especial",
       "preview_title": "30% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:03 até 09/08/2026 23:59.",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125190,
-      "detail_elapsed_ms": 2124,
-      "scraped_at": "2026-07-28T07:10:15.402Z"
+      "detail_html_length": 130431,
+      "detail_elapsed_ms": 2362,
+      "scraped_at": "2026-07-28T07:14:29.448Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132732,
-      "detail_elapsed_ms": 2002,
-      "scraped_at": "2026-07-28T07:10:17.404Z"
+      "detail_html_length": 126384,
+      "detail_elapsed_ms": 2322,
+      "scraped_at": "2026-07-28T07:14:31.771Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131662,
-      "detail_elapsed_ms": 2203,
-      "scraped_at": "2026-07-28T07:10:19.607Z"
+      "detail_html_length": 131666,
+      "detail_elapsed_ms": 1894,
+      "scraped_at": "2026-07-28T07:14:33.666Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 136985,
-      "detail_elapsed_ms": 2365,
-      "scraped_at": "2026-07-28T07:10:21.972Z"
+      "detail_html_length": 137010,
+      "detail_elapsed_ms": 2445,
+      "scraped_at": "2026-07-28T07:14:36.111Z"
     },
     {
-      "id": "p9z-15-off-extra-na-seleo-mascavo",
-      "trace_id": "trace_p9z-15-off-extra-na-seleo-mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
+      "id": "p9z-15-off-extra-na-selecao-mascavo",
+      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo",
+      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -280,15 +280,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130848,
-      "detail_elapsed_ms": 2145,
-      "scraped_at": "2026-07-28T07:10:24.117Z"
+      "detail_html_length": 130857,
+      "detail_elapsed_ms": 2153,
+      "scraped_at": "2026-07-28T07:14:38.264Z"
     },
     {
-      "id": "p9y-15-off-extra-na-seleo-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
+      "id": "p9y-15-off-extra-na-selecao-davines",
+      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines",
+      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
+      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
       "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129689,
-      "detail_elapsed_ms": 2128,
-      "scraped_at": "2026-07-28T07:10:26.245Z"
+      "detail_html_length": 129686,
+      "detail_elapsed_ms": 2257,
+      "scraped_at": "2026-07-28T07:14:40.521Z"
     }
   ]
 }
