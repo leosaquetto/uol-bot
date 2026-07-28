@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-28T16:23:52.724075Z",
+  "last_update": "2026-07-28T16:30:23.998736Z",
   "offers": [
     {
       "id": "p9R-20-off-em-selecao-especial",
@@ -373,7 +373,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-28T15:56:16.787828Z",
-      "sold_out_at": "13:22"
+      "sold_out_at": "13:22",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pAi-2-ingressos-01-08-teatro-sergio-cardoso",
