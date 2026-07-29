@@ -14,60 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 91534,
-  "run_duration_seconds": 91.53,
-  "avg_detail_ms_per_offer": 7628,
-  "generated_at": "2026-07-29T21:55:56.361Z",
+  "run_duration_ms": 94784,
+  "run_duration_seconds": 94.78,
+  "avg_detail_ms_per_offer": 7899,
+  "generated_at": "2026-07-29T22:00:43.248Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pa5-2-ingressos-02-08-teatro-liberdade-sp",
-      "trace_id": "trace_pa5-2-ingressos-02-08-teatro-liberdade-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pA5-2-ingressos-02-08-teatro-liberdade-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pA5-2-ingressos-02-08-teatro-liberdade-sp",
-      "title": "2 INGRESSOS: 02/08 Teatro Liberdade - SP",
-      "preview_title": "2 INGRESSOS: 02/08 Teatro Liberdade - SP",
-      "validity": "Benefício válido de 29/07/2026 18:33 até 01/08/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia Mulheres em Chamas, com Miá Mello, Camila Raffanti e Juliana Araripe, um espetáculo divertido e emocionante que aborda a menopausa com muito humor, leveza e identificação, no Teatro Liberdade, em São Paulo - SP. Data: 02 de Agosto, às 18h. Local: R. São Joaquim, 129, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/df2b86e66df429b82a77598bd284dd50.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/df2b86e66df429b82a77598bd284dd50.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/df2b86e66df429b82a77598bd284dd50.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133233,
-      "detail_elapsed_ms": 14445,
-      "scraped_at": "2026-07-29T21:55:22.534Z"
-    },
-    {
-      "id": "pa4-2-ingressos-01-08-teatro-liberdade-sp",
-      "trace_id": "trace_pa4-2-ingressos-01-08-teatro-liberdade-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pA4-2-ingressos-01-08-teatro-liberdade-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pA4-2-ingressos-01-08-teatro-liberdade-sp",
-      "title": "2 INGRESSOS: 01/08 Teatro Liberdade - SP",
-      "preview_title": "2 INGRESSOS: 01/08 Teatro Liberdade - SP",
-      "validity": "Benefício válido de 29/07/2026 18:32 até 01/08/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia Mulheres em Chamas, com Miá Mello, Camila Raffanti e Juliana Araripe, um espetáculo divertido e emocionante que aborda a menopausa com muito humor, leveza e identificação, no Teatro Liberdade, em São Paulo - SP. Data: 01 de Agosto, às 20h. Local: R. São Joaquim, 129, São Paulo. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b43c9abf4f59756db66fab2c140dd742.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b43c9abf4f59756db66fab2c140dd742.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/b43c9abf4f59756db66fab2c140dd742.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133041,
-      "detail_elapsed_ms": 6789,
-      "scraped_at": "2026-07-29T21:55:29.323Z"
-    },
     {
       "id": "pay-50-off-no-festival-filmes-incrveis",
       "trace_id": "trace_pay-50-off-no-festival-filmes-incrveis",
@@ -88,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131235,
-      "detail_elapsed_ms": 2060,
-      "scraped_at": "2026-07-29T21:55:31.383Z"
+      "detail_html_length": 132221,
+      "detail_elapsed_ms": 11224,
+      "scraped_at": "2026-07-29T21:59:52.915Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -112,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132035,
-      "detail_elapsed_ms": 2347,
-      "scraped_at": "2026-07-29T21:55:33.730Z"
+      "detail_html_length": 131950,
+      "detail_elapsed_ms": 3641,
+      "scraped_at": "2026-07-29T21:59:56.557Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -136,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133071,
-      "detail_elapsed_ms": 3456,
-      "scraped_at": "2026-07-29T21:55:37.186Z"
+      "detail_html_length": 134202,
+      "detail_elapsed_ms": 3886,
+      "scraped_at": "2026-07-29T22:00:00.443Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -160,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130936,
-      "detail_elapsed_ms": 2911,
-      "scraped_at": "2026-07-29T21:55:40.097Z"
+      "detail_html_length": 130781,
+      "detail_elapsed_ms": 4518,
+      "scraped_at": "2026-07-29T22:00:04.961Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -184,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133281,
-      "detail_elapsed_ms": 2486,
-      "scraped_at": "2026-07-29T21:55:42.583Z"
+      "detail_html_length": 132116,
+      "detail_elapsed_ms": 3052,
+      "scraped_at": "2026-07-29T22:00:08.013Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -208,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132504,
-      "detail_elapsed_ms": 3401,
-      "scraped_at": "2026-07-29T21:55:45.984Z"
+      "detail_html_length": 133707,
+      "detail_elapsed_ms": 11824,
+      "scraped_at": "2026-07-29T22:00:19.837Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -232,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130429,
-      "detail_elapsed_ms": 2689,
-      "scraped_at": "2026-07-29T21:55:48.673Z"
+      "detail_html_length": 131679,
+      "detail_elapsed_ms": 2817,
+      "scraped_at": "2026-07-29T22:00:22.655Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -256,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131338,
-      "detail_elapsed_ms": 2383,
-      "scraped_at": "2026-07-29T21:55:51.056Z"
+      "detail_html_length": 131321,
+      "detail_elapsed_ms": 10659,
+      "scraped_at": "2026-07-29T22:00:33.314Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -280,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130422,
-      "detail_elapsed_ms": 2285,
-      "scraped_at": "2026-07-29T21:55:53.342Z"
+      "detail_html_length": 131584,
+      "detail_elapsed_ms": 3242,
+      "scraped_at": "2026-07-29T22:00:36.556Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -304,9 +256,57 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132752,
-      "detail_elapsed_ms": 2750,
-      "scraped_at": "2026-07-29T21:55:56.093Z"
+      "detail_html_length": 132745,
+      "detail_elapsed_ms": 1737,
+      "scraped_at": "2026-07-29T22:00:38.293Z"
+    },
+    {
+      "id": "p97-20-de-desconto-em-qualquer-plano",
+      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
+      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "title": "20% de desconto em qualquer plano!",
+      "preview_title": "20% de desconto em qualquer plano!",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
+      "category": "",
+      "partner_name": "Zelus Pet",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130408,
+      "detail_elapsed_ms": 1787,
+      "scraped_at": "2026-07-29T22:00:40.080Z"
+    },
+    {
+      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
+      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "category": "Shows, Cinemas e Espetáculos",
+      "partner_name": "Rodeio Itu Festival",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131881,
+      "detail_elapsed_ms": 2661,
+      "scraped_at": "2026-07-29T22:00:42.741Z"
     }
   ]
 }
