@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 81699,
-  "run_duration_seconds": 81.7,
-  "avg_detail_ms_per_offer": 6808,
-  "generated_at": "2026-07-29T13:04:50.909Z",
+  "run_duration_ms": 82379,
+  "run_duration_seconds": 82.38,
+  "avg_detail_ms_per_offer": 6865,
+  "generated_at": "2026-07-29T13:09:27.157Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132994,
-      "detail_elapsed_ms": 9764,
-      "scraped_at": "2026-07-29T13:04:16.279Z"
+      "detail_html_length": 133004,
+      "detail_elapsed_ms": 9324,
+      "scraped_at": "2026-07-29T13:08:54.629Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133137,
-      "detail_elapsed_ms": 5298,
-      "scraped_at": "2026-07-29T13:04:21.577Z"
+      "detail_html_length": 126776,
+      "detail_elapsed_ms": 3196,
+      "scraped_at": "2026-07-29T13:08:57.825Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -88,33 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126596,
-      "detail_elapsed_ms": 2765,
-      "scraped_at": "2026-07-29T13:04:24.342Z"
-    },
-    {
-      "id": "pap-1-ingresso-02-12-corrida-pampulha-mg",
-      "trace_id": "trace_pap-1-ingresso-02-12-corrida-pampulha-mg",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAp-1-ingresso-02-12-corrida-pampulha-mg",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAp-1-ingresso-02-12-corrida-pampulha-mg",
-      "title": "1 ingresso 02/12 Corrida Pampulha - MG",
-      "preview_title": "1 ingresso 02/12 Corrida Pampulha - MG",
-      "validity": "Benefício válido de 29/07/2026 08:48 até 30/07/2026 23:59.",
-      "description": "Assinante UOL, prepare-se para a largada! Resgate 1 ingresso individual para participar da 27ª Volta Internacional da Pampulha, uma das corridas de rua mais tradicionais e prestigiadas do Brasil. Viva a emoção de percorrer um trajeto histórico ao redor da Lagoa da Pampulha, cartão-postal de Belo Horizonte, em um evento que reúne atletas de elite e apaixonados por corrida em um cenário único e inspirador. Data: 02 de Dezembro de 2026 com largada a partir das 6h. Local: Estádio Mineirão – Av. Antônio Abrahão Caram, 1001, São José, Belo Horizonte – MG. Prazo de inscrição: Quinta - feira, 30/07/2026. Importante: O voucher que você resgatou corresponde a apenas 1 ingresso individual. Como resgatar meu benefício: Acesse o link do evento: https://www.yescom.com.br/voltadapampulha/2026/index.asp Antes de realizar o cadastro e seguir com a inscrição, clique em “Estou de acordo” e depois em “Quero continuar”. Preencha todos os dados obrigatórios para concluir o cadastro. Após finalizar o cadastro, retorne ao link indicado e clique em “Inscreva-se”. Selecione a opção Individual, escolha o participante e clique em “Continuar”. Escolha a modalidade Básica, informe a KM e selecione o tamanho da camiseta conforme disponibilidade no site. Na aba Confirmação, insira o cupom recebido no campo Desconto/Código, valide e clique em “Continuar”. Sua inscrição será concluída gratuitamente e o KIT poderá ser retirado no local indicado. Importante: O Cupom é limitado de 1 inscrição Fique atento a data da sua corrida, pois a inscrição não poderá ser reutilizado; Prazo de inscrição: Quinta - feira, 30/07/2026.. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133431,
-      "detail_elapsed_ms": 2364,
-      "scraped_at": "2026-07-29T13:04:26.706Z"
+      "detail_html_length": 133100,
+      "detail_elapsed_ms": 3725,
+      "scraped_at": "2026-07-29T13:09:01.550Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -136,15 +112,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132978,
-      "detail_elapsed_ms": 2761,
-      "scraped_at": "2026-07-29T13:04:29.467Z"
+      "detail_html_length": 132711,
+      "detail_elapsed_ms": 2274,
+      "scraped_at": "2026-07-29T13:09:03.824Z"
     },
     {
-      "id": "paa-20-off-em-selecao-de-dia-dos-pais",
-      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
-      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
+      "id": "paa-20-off-em-seleo-de-dia-dos-pais",
+      "trace_id": "trace_paa-20-off-em-seleo-de-dia-dos-pais",
+      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
+      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
       "title": "20% OFF em seleção de Dia dos Pais",
       "preview_title": "20% OFF em seleção de Dia dos Pais",
       "validity": "Benefício válido de 27/07/2026 12:00 até 02/08/2026 23:59.",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130951,
-      "detail_elapsed_ms": 3216,
-      "scraped_at": "2026-07-29T13:04:32.683Z"
+      "detail_html_length": 129752,
+      "detail_elapsed_ms": 2777,
+      "scraped_at": "2026-07-29T13:09:06.601Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -184,15 +160,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126922,
-      "detail_elapsed_ms": 3010,
-      "scraped_at": "2026-07-29T13:04:35.694Z"
+      "detail_html_length": 133277,
+      "detail_elapsed_ms": 2859,
+      "scraped_at": "2026-07-29T13:09:09.460Z"
     },
     {
-      "id": "p9u-ate-12-off-em-alugueis-carro",
-      "trace_id": "trace_p9u-ate-12-off-em-alugueis-carro",
-      "link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
-      "original_link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
+      "id": "p9u-at-12-off-em-aluguis-carro",
+      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro",
+      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
       "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132426,
-      "detail_elapsed_ms": 2804,
-      "scraped_at": "2026-07-29T13:04:38.499Z"
+      "detail_html_length": 133642,
+      "detail_elapsed_ms": 3298,
+      "scraped_at": "2026-07-29T13:09:12.758Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -232,15 +208,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130434,
-      "detail_elapsed_ms": 2729,
-      "scraped_at": "2026-07-29T13:04:41.228Z"
+      "detail_html_length": 131671,
+      "detail_elapsed_ms": 3233,
+      "scraped_at": "2026-07-29T13:09:15.991Z"
     },
     {
-      "id": "p9r-20-off-em-selecao-especial",
-      "trace_id": "trace_p9r-20-off-em-selecao-especial",
-      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
-      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
+      "id": "p9r-20-off-em-seleo-especial",
+      "trace_id": "trace_p9r-20-off-em-seleo-especial",
+      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
+      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
       "title": "20% OFF em seleção especial",
       "preview_title": "20% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:11 até 09/08/2026 23:59.",
@@ -256,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124980,
-      "detail_elapsed_ms": 3040,
-      "scraped_at": "2026-07-29T13:04:44.269Z"
+      "detail_html_length": 124971,
+      "detail_elapsed_ms": 2484,
+      "scraped_at": "2026-07-29T13:09:18.475Z"
     },
     {
-      "id": "p9q-30-off-em-selecao-especial",
-      "trace_id": "trace_p9q-30-off-em-selecao-especial",
-      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
-      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
+      "id": "p9q-30-off-em-seleo-especial",
+      "trace_id": "trace_p9q-30-off-em-seleo-especial",
+      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
+      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
       "title": "30% OFF em seleção especial",
       "preview_title": "30% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:03 até 09/08/2026 23:59.",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131576,
-      "detail_elapsed_ms": 3132,
-      "scraped_at": "2026-07-29T13:04:47.401Z"
+      "detail_html_length": 130438,
+      "detail_elapsed_ms": 2309,
+      "scraped_at": "2026-07-29T13:09:20.784Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131519,
-      "detail_elapsed_ms": 2810,
-      "scraped_at": "2026-07-29T13:04:50.211Z"
+      "detail_html_length": 132737,
+      "detail_elapsed_ms": 2862,
+      "scraped_at": "2026-07-29T13:09:23.646Z"
+    },
+    {
+      "id": "p97-20-de-desconto-em-qualquer-plano",
+      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
+      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "title": "20% de desconto em qualquer plano!",
+      "preview_title": "20% de desconto em qualquer plano!",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
+      "category": "",
+      "partner_name": "Zelus Pet",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130270,
+      "detail_elapsed_ms": 2964,
+      "scraped_at": "2026-07-29T13:09:26.626Z"
     }
   ]
 }
