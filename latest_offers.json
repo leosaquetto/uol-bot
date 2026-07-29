@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-29T22:26:21.461081Z",
+  "last_update": "2026-07-29T22:26:26.207693Z",
   "offers": [
     {
       "id": "pAh-2-ingressos-31-07-teatro-sergio-cardoso",
@@ -307,7 +307,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-29T14:33:25.762634Z",
-      "sold_out_at": "19:25"
+      "sold_out_at": "19:25",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pA0-2-ingressos-30-07-cultura-artstica-sp",
