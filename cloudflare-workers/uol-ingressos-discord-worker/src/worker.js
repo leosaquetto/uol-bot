@@ -1,7 +1,7 @@
 const LIST_URL = "https://clube.uol.com.br/?order=new";
 const STATE_KEY = "state:v1";
 const DEFAULT_MAX_STATE_OFFERS = 200;
-const ALARM_INTERVAL_MS = 3 * 60 * 1000;
+const ALARM_INTERVAL_MS = 60 * 1000;
 const USER_AGENT = "Mozilla/5.0 (compatible; UOLIngressosDiscordPilot/0.1)";
 
 export function cleanText(value) {
@@ -362,7 +362,7 @@ async function healthPayload(env, alarmState) {
     ok: true,
     worker: "uol-ingressos-discord-pilot",
     mode: deliveryMode(env),
-    schedule: "durable-object-alarm:3m",
+    schedule: "durable-object-alarm:1m",
     alarmScheduledAt: alarmState.alarmScheduledAt || "",
     lastRun: alarmState.lastRun || null,
     initialized: Boolean(state.initializedAt),
@@ -430,13 +430,25 @@ export class TicketAlarm {
       return jsonResponse({ ok: true, alarmScheduledAt, ...result });
     }
 
+    if (request.method === "POST" && url.pathname === "/test") {
+      if (!isAuthorized(request, this.env)) {
+        return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+      }
+      const discordMessageId = await sendDiscordWebhook(this.env, {
+        title: "Teste do monitor de ingressos",
+        link: LIST_URL,
+        imageUrl: "",
+      });
+      return jsonResponse({ ok: true, discordMessageId });
+    }
+
     return jsonResponse({ ok: false, error: "not_found" }, 404);
   }
 }
 
 async function handleFetch(request, env) {
   const url = new URL(request.url);
-  if (url.pathname !== "/health" && url.pathname !== "/run") {
+  if (url.pathname !== "/health" && url.pathname !== "/run" && url.pathname !== "/test") {
     return jsonResponse({ ok: false, error: "not_found" }, 404);
   }
   const id = env.TICKET_ALARM.idFromName("uol-ingressos-discord-pilot");

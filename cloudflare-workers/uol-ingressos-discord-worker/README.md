@@ -1,20 +1,21 @@
 # UOL Ingressos Discord Worker
 
-Piloto isolado para monitorar exclusivamente links de
-`/campanhasdeingresso/` no Clube UOL e, quando promovido para `live`, publicar
-as ofertas em um webhook do Discord.
+Worker isolado para monitorar exclusivamente links de
+`/campanhasdeingresso/` no Clube UOL e publicar novas ofertas em um webhook do
+Discord.
 
 ## Segurança do piloto
 
-- Um alarme de Durable Object roda a cada 3 minutos sem consumir um dos cinco
+- Um alarme de Durable Object roda a cada 1 minuto sem consumir um dos cinco
   Cron Triggers já usados pelo Backstage.
-- `DELIVERY_MODE` começa como `dry-run`.
+- `DELIVERY_MODE` está em `live` após a validação do baseline e do webhook.
 - A primeira execução cria um baseline e não envia ofertas já existentes.
 - O webhook e o token administrativo são secrets do Worker; nunca entram no
   repositório.
 - O KV só é escrito ao criar o baseline ou quando o estado de uma oferta muda.
-- O alarme usa cerca de 480 execuções e 960 escritas de linha por dia, abaixo
-  de 1% das cotas gratuitas compartilhadas correspondentes.
+- O alarme usa cerca de 1.440 execuções e 2.880 escritas de linha por dia:
+  aproximadamente 1,44% das requisições e 2,88% das escritas de linha
+  gratuitas compartilhadas correspondentes.
 
 ## Comandos
 
@@ -37,13 +38,11 @@ O namespace `UOL_TICKETS_STATE` já está criado e associado no
   <ADMIN_TOKEN>`.
 - `POST /run?send=1`: execução manual com envio, destinada apenas ao teste
   controlado após configurar o webhook.
+- `POST /test`: envia uma mensagem de teste ao webhook, sem alterar o estado
+  das ofertas.
 
-## Promoção para live
+## Validação realizada
 
-Após validar coleta, CPU e baseline no Cloudflare:
-
-1. criar o canal do Discord e copiar o webhook;
-2. cadastrar `DISCORD_WEBHOOK_URL`;
-3. executar um teste manual controlado;
-4. alterar `DELIVERY_MODE` para `live`;
-5. redeployar e acompanhar os logs das primeiras execuções.
+O baseline, a coleta automática, o consumo de CPU e o webhook foram validados
+antes da promoção para `live`. A rota `/test` permanece disponível para
+diagnóstico autenticado.
