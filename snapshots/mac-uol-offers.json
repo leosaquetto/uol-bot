@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 68918,
-  "run_duration_seconds": 68.92,
-  "avg_detail_ms_per_offer": 5743,
-  "generated_at": "2026-07-29T14:31:58.035Z",
+  "run_duration_ms": 91647,
+  "run_duration_seconds": 91.65,
+  "avg_detail_ms_per_offer": 7637,
+  "generated_at": "2026-07-29T14:36:39.501Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj",
       "title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
       "preview_title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
-      "validity": "Benefício válido de 29/07/2026 10:06 até 01/08/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia “Alta Sociedade”, estrelada por Julia Lemmertz e Orã Figueiredo, com direção de Emilio de Mello. Em uma montagem ácida, divertida e extremamente atual, o espetáculo traz uma crítica bem-humorada à elite brasileira, baseada no texto de Mauro Rasi, um dos maiores dramaturgos do país. Data: 02/08/2026 | 19h. Local: Teatro Vannucci - R. Marquês de São Vicente, 52 - 3° Andar - Loja: 371 - Gávea, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133089,
-      "detail_elapsed_ms": 7065,
-      "scraped_at": "2026-07-29T14:31:26.081Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 12090,
+      "scraped_at": "2026-07-29T14:35:56.617Z"
     },
     {
       "id": "pav-2-ingressos-01-08-teatro-vanucci-rj",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131986,
-      "detail_elapsed_ms": 3409,
-      "scraped_at": "2026-07-29T14:31:29.490Z"
+      "detail_html_length": 133053,
+      "detail_elapsed_ms": 5578,
+      "scraped_at": "2026-07-29T14:36:02.195Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126830,
-      "detail_elapsed_ms": 2593,
-      "scraped_at": "2026-07-29T14:31:32.084Z"
+      "detail_html_length": 133183,
+      "detail_elapsed_ms": 6634,
+      "scraped_at": "2026-07-29T14:36:08.830Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126780,
-      "detail_elapsed_ms": 2305,
-      "scraped_at": "2026-07-29T14:31:34.389Z"
+      "detail_html_length": 131964,
+      "detail_elapsed_ms": 3126,
+      "scraped_at": "2026-07-29T14:36:11.956Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126732,
-      "detail_elapsed_ms": 2867,
-      "scraped_at": "2026-07-29T14:31:37.256Z"
+      "detail_html_length": 131858,
+      "detail_elapsed_ms": 2696,
+      "scraped_at": "2026-07-29T14:36:14.653Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127847,
-      "detail_elapsed_ms": 3170,
-      "scraped_at": "2026-07-29T14:31:40.426Z"
+      "detail_html_length": 134071,
+      "detail_elapsed_ms": 4609,
+      "scraped_at": "2026-07-29T14:36:19.263Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130915,
-      "detail_elapsed_ms": 4279,
-      "scraped_at": "2026-07-29T14:31:44.705Z"
+      "detail_html_length": 129899,
+      "detail_elapsed_ms": 3251,
+      "scraped_at": "2026-07-29T14:36:22.514Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133291,
-      "detail_elapsed_ms": 2822,
-      "scraped_at": "2026-07-29T14:31:47.530Z"
+      "detail_html_length": 126918,
+      "detail_elapsed_ms": 2585,
+      "scraped_at": "2026-07-29T14:36:25.100Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127281,
-      "detail_elapsed_ms": 2520,
-      "scraped_at": "2026-07-29T14:31:50.050Z"
+      "detail_html_length": 133495,
+      "detail_elapsed_ms": 3462,
+      "scraped_at": "2026-07-29T14:36:28.562Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125817,
-      "detail_elapsed_ms": 2405,
-      "scraped_at": "2026-07-29T14:31:52.456Z"
+      "detail_html_length": 131599,
+      "detail_elapsed_ms": 3212,
+      "scraped_at": "2026-07-29T14:36:31.775Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124976,
-      "detail_elapsed_ms": 2246,
-      "scraped_at": "2026-07-29T14:31:54.702Z"
+      "detail_html_length": 124965,
+      "detail_elapsed_ms": 3226,
+      "scraped_at": "2026-07-29T14:36:35.001Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130316,
-      "detail_elapsed_ms": 2930,
-      "scraped_at": "2026-07-29T14:31:57.632Z"
+      "detail_html_length": 131562,
+      "detail_elapsed_ms": 3659,
+      "scraped_at": "2026-07-29T14:36:38.660Z"
     }
   ]
 }
