@@ -9,15 +9,15 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
-    "weak": 2,
+    "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 179302,
-  "run_duration_seconds": 179.3,
-  "avg_detail_ms_per_offer": 14942,
-  "generated_at": "2026-07-29T16:29:53.876Z",
+  "run_duration_ms": 112548,
+  "run_duration_seconds": 112.55,
+  "avg_detail_ms_per_offer": 9379,
+  "generated_at": "2026-07-29T16:35:04.987Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -25,24 +25,24 @@
       "trace_id": "trace_pa0-2-ingressos-30-07-cultura-artstica-sp",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pA0-2-ingressos-30-07-cultura-artstica-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pA0-2-ingressos-30-07-cultura-artstica-sp",
-      "title": "Ingressos Exclusivos",
+      "title": "2 INGRESSOS: 30/07 Cultura Artística SP",
       "preview_title": "2 INGRESSOS: 30/07 Cultura Artística SP",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 29/07/2026 12:40 até 30/07/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir a Xenia França, vencedora do Grammy Latino de Melhor Álbum Pop Contemporâneo em Língua Portuguesa. Em um show que reúne influências afro-brasileiras, R&B, jazz e eletrônica, a artista se apresenta no Teatro Cultura Artística, em São Paulo/SP. Data: 30 de julho de 2026, às 20h00. Local: Rua Nestor Pestana, 196 – São Paulo, SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/465500d7b7744430bf1424c0df46ef28.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/465500d7b7744430bf1424c0df46ef28.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
-      "img_source": "benefit_data_src",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/465500d7b7744430bf1424c0df46ef28.png",
+      "img_source": "meta_og",
       "detail_ok": true,
-      "detail_quality": "weak",
+      "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 332452,
-      "detail_elapsed_ms": 11551,
-      "scraped_at": "2026-07-29T16:28:05.510Z"
+      "detail_html_length": 133280,
+      "detail_elapsed_ms": 16410,
+      "scraped_at": "2026-07-29T16:34:21.528Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -63,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133186,
-      "detail_elapsed_ms": 7293,
-      "scraped_at": "2026-07-29T16:28:25.654Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131955,
+      "detail_elapsed_ms": 3684,
+      "scraped_at": "2026-07-29T16:34:25.212Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132975,
-      "detail_elapsed_ms": 3619,
-      "scraped_at": "2026-07-29T16:28:29.274Z"
+      "detail_html_length": 127863,
+      "detail_elapsed_ms": 2304,
+      "scraped_at": "2026-07-29T16:34:27.516Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130792,
-      "detail_elapsed_ms": 10528,
-      "scraped_at": "2026-07-29T16:28:39.802Z"
+      "detail_html_length": 124409,
+      "detail_elapsed_ms": 3463,
+      "scraped_at": "2026-07-29T16:34:30.979Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132124,
-      "detail_elapsed_ms": 4122,
-      "scraped_at": "2026-07-29T16:28:43.928Z"
+      "detail_html_length": 126935,
+      "detail_elapsed_ms": 4358,
+      "scraped_at": "2026-07-29T16:34:35.337Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133497,
-      "detail_elapsed_ms": 7407,
-      "scraped_at": "2026-07-29T16:28:51.335Z"
+      "detail_html_length": 132168,
+      "detail_elapsed_ms": 3854,
+      "scraped_at": "2026-07-29T16:34:39.192Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125304,
-      "detail_elapsed_ms": 3498,
-      "scraped_at": "2026-07-29T16:28:54.833Z"
+      "detail_html_length": 131683,
+      "detail_elapsed_ms": 4719,
+      "scraped_at": "2026-07-29T16:34:43.911Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130172,
-      "detail_elapsed_ms": 4252,
-      "scraped_at": "2026-07-29T16:28:59.086Z"
+      "detail_html_length": 124982,
+      "detail_elapsed_ms": 3582,
+      "scraped_at": "2026-07-29T16:34:47.493Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -231,34 +231,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 131573,
-      "detail_elapsed_ms": 10187,
-      "scraped_at": "2026-07-29T16:29:21.549Z"
-    },
-    {
-      "id": "p9p-1-ingresso-30-07-neo-qumica-arena-sp",
-      "trace_id": "trace_p9p-1-ingresso-30-07-neo-qumica-arena-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-qumica-arena-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-qumica-arena-sp",
-      "title": "Ingressos Exclusivos",
-      "preview_title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
-      "validity": "",
-      "description": "",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
-      "img_source": "benefit_data_src",
-      "detail_ok": true,
-      "detail_quality": "weak",
-      "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 332597,
-      "detail_elapsed_ms": 15622,
-      "scraped_at": "2026-07-29T16:29:37.171Z"
+      "detail_html_length": 125196,
+      "detail_elapsed_ms": 2179,
+      "scraped_at": "2026-07-29T16:34:49.672Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132585,
-      "detail_elapsed_ms": 8216,
-      "scraped_at": "2026-07-29T16:29:45.387Z"
+      "detail_html_length": 131512,
+      "detail_elapsed_ms": 3808,
+      "scraped_at": "2026-07-29T16:34:53.480Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131674,
-      "detail_elapsed_ms": 7706,
-      "scraped_at": "2026-07-29T16:29:53.093Z"
+      "detail_html_length": 131528,
+      "detail_elapsed_ms": 5874,
+      "scraped_at": "2026-07-29T16:34:59.354Z"
+    },
+    {
+      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
+      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "category": "Shows, Cinemas e Espetáculos",
+      "partner_name": "Rodeio Itu Festival",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131382,
+      "detail_elapsed_ms": 4442,
+      "scraped_at": "2026-07-29T16:35:03.796Z"
     }
   ]
 }
