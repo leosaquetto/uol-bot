@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 10,
+  "detail_fail_count": 2,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 10,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 2
   },
-  "run_duration_ms": 50289,
-  "run_duration_seconds": 50.29,
-  "avg_detail_ms_per_offer": 4191,
-  "generated_at": "2026-07-29T02:17:17.838Z",
+  "run_duration_ms": 47203,
+  "run_duration_seconds": 47.2,
+  "avg_detail_ms_per_offer": 3934,
+  "generated_at": "2026-07-29T02:26:11.503Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134072,
-      "detail_elapsed_ms": 6386,
-      "scraped_at": "2026-07-29T02:16:49.901Z"
+      "detail_html_length": 134081,
+      "detail_elapsed_ms": 5954,
+      "scraped_at": "2026-07-29T02:25:44.668Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130906,
-      "detail_elapsed_ms": 3186,
-      "scraped_at": "2026-07-29T02:16:53.092Z"
+      "detail_html_length": 129695,
+      "detail_elapsed_ms": 2809,
+      "scraped_at": "2026-07-29T02:25:47.477Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133292,
-      "detail_elapsed_ms": 2491,
-      "scraped_at": "2026-07-29T02:16:55.584Z"
+      "detail_html_length": 126923,
+      "detail_elapsed_ms": 2658,
+      "scraped_at": "2026-07-29T02:25:50.135Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133645,
-      "detail_elapsed_ms": 2710,
-      "scraped_at": "2026-07-29T02:16:58.294Z"
+      "detail_html_length": 133647,
+      "detail_elapsed_ms": 2274,
+      "scraped_at": "2026-07-29T02:25:52.409Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131676,
-      "detail_elapsed_ms": 2398,
-      "scraped_at": "2026-07-29T02:17:00.692Z"
+      "detail_html_length": 131680,
+      "detail_elapsed_ms": 2135,
+      "scraped_at": "2026-07-29T02:25:54.545Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126469,
-      "detail_elapsed_ms": 1970,
-      "scraped_at": "2026-07-29T02:17:02.662Z"
+      "detail_html_length": 131344,
+      "detail_elapsed_ms": 2089,
+      "scraped_at": "2026-07-29T02:25:56.635Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126712,
-      "detail_elapsed_ms": 2640,
-      "scraped_at": "2026-07-29T02:17:05.303Z"
+      "detail_html_length": 131556,
+      "detail_elapsed_ms": 2146,
+      "scraped_at": "2026-07-29T02:25:58.781Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126390,
-      "detail_elapsed_ms": 2363,
-      "scraped_at": "2026-07-29T02:17:07.666Z"
+      "detail_html_length": 132744,
+      "detail_elapsed_ms": 2283,
+      "scraped_at": "2026-07-29T02:26:01.064Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131653,
-      "detail_elapsed_ms": 3149,
-      "scraped_at": "2026-07-29T02:17:10.816Z"
+      "detail_html_length": 131655,
+      "detail_elapsed_ms": 2409,
+      "scraped_at": "2026-07-29T02:26:03.474Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -243,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
       "title": "10% OFF no ingresso nos dias 11 e 12/09",
       "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "validity": "",
+      "description": "",
       "category": "Shows, Cinemas e Espetáculos",
       "partner_name": "Rodeio Itu Festival",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 136730,
-      "detail_elapsed_ms": 2456,
-      "scraped_at": "2026-07-29T02:17:13.272Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 647,
+      "scraped_at": "2026-07-29T02:26:04.549Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
-      "description": "Benefício: 15% OFF extra na seleção Mascavo Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130840,
-      "detail_elapsed_ms": 2190,
-      "scraped_at": "2026-07-29T02:17:15.463Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\" is interrupted by another navigation to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\" Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 550,
+      "scraped_at": "2026-07-29T02:26:06.311Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -303,10 +303,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130839,
-      "detail_elapsed_ms": 2132,
-      "scraped_at": "2026-07-29T02:17:17.595Z"
+      "detail_attempts": 2,
+      "detail_html_length": 129444,
+      "detail_elapsed_ms": 3823,
+      "scraped_at": "2026-07-29T02:26:10.838Z"
     }
   ]
 }
