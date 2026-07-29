@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 91647,
-  "run_duration_seconds": 91.65,
-  "avg_detail_ms_per_offer": 7637,
-  "generated_at": "2026-07-29T14:36:39.501Z",
+  "run_duration_ms": 43715,
+  "run_duration_seconds": 43.72,
+  "avg_detail_ms_per_offer": 3643,
+  "generated_at": "2026-07-29T14:52:36.862Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,46 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj",
       "title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
       "preview_title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 29/07/2026 10:06 até 01/08/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia “Alta Sociedade”, estrelada por Julia Lemmertz e Orã Figueiredo, com direção de Emilio de Mello. Em uma montagem ácida, divertida e extremamente atual, o espetáculo traz uma crítica bem-humorada à elite brasileira, baseada no texto de Mauro Rasi, um dos maiores dramaturgos do país. Data: 02/08/2026 | 19h. Local: Teatro Vannucci - R. Marquês de São Vicente, 52 - 3° Andar - Loja: 371 - Gávea, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12090,
-      "scraped_at": "2026-07-29T14:35:56.617Z"
-    },
-    {
-      "id": "pav-2-ingressos-01-08-teatro-vanucci-rj",
-      "trace_id": "trace_pav-2-ingressos-01-08-teatro-vanucci-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAv-2-ingressos-01-08-teatro-vanucci-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAv-2-ingressos-01-08-teatro-vanucci-rj",
-      "title": "2 INGRESSOS: 01/08 Teatro Vanucci RJ",
-      "preview_title": "2 INGRESSOS: 01/08 Teatro Vanucci RJ",
-      "validity": "Benefício válido de 29/07/2026 10:06 até 31/07/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia “Alta Sociedade”, estrelada por Julia Lemmertz e Orã Figueiredo, com direção de Emilio de Mello. Em uma montagem ácida, divertida e extremamente atual, o espetáculo traz uma crítica bem-humorada à elite brasileira, baseada no texto de Mauro Rasi, um dos maiores dramaturgos do país. Data: 01/08/2026 | 20h30. Local: Teatro Vannucci - R. Marquês de São Vicente, 52 - 3° Andar - Loja: 371 - Gávea, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133053,
-      "detail_elapsed_ms": 5578,
-      "scraped_at": "2026-07-29T14:36:02.195Z"
+      "detail_html_length": 131877,
+      "detail_elapsed_ms": 2454,
+      "scraped_at": "2026-07-29T14:52:16.926Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133183,
-      "detail_elapsed_ms": 6634,
-      "scraped_at": "2026-07-29T14:36:08.830Z"
+      "detail_html_length": 133175,
+      "detail_elapsed_ms": 2507,
+      "scraped_at": "2026-07-29T14:52:19.433Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131964,
-      "detail_elapsed_ms": 3126,
-      "scraped_at": "2026-07-29T14:36:11.956Z"
+      "detail_html_length": 133145,
+      "detail_elapsed_ms": 1604,
+      "scraped_at": "2026-07-29T14:52:21.038Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131858,
-      "detail_elapsed_ms": 2696,
-      "scraped_at": "2026-07-29T14:36:14.653Z"
+      "detail_html_length": 133126,
+      "detail_elapsed_ms": 1751,
+      "scraped_at": "2026-07-29T14:52:22.789Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134071,
-      "detail_elapsed_ms": 4609,
-      "scraped_at": "2026-07-29T14:36:19.263Z"
+      "detail_html_length": 134252,
+      "detail_elapsed_ms": 1801,
+      "scraped_at": "2026-07-29T14:52:24.590Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129899,
-      "detail_elapsed_ms": 3251,
-      "scraped_at": "2026-07-29T14:36:22.514Z"
+      "detail_html_length": 130968,
+      "detail_elapsed_ms": 1610,
+      "scraped_at": "2026-07-29T14:52:26.200Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126918,
-      "detail_elapsed_ms": 2585,
-      "scraped_at": "2026-07-29T14:36:25.100Z"
+      "detail_html_length": 133284,
+      "detail_elapsed_ms": 1603,
+      "scraped_at": "2026-07-29T14:52:27.803Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133495,
-      "detail_elapsed_ms": 3462,
-      "scraped_at": "2026-07-29T14:36:28.562Z"
+      "detail_html_length": 133685,
+      "detail_elapsed_ms": 1579,
+      "scraped_at": "2026-07-29T14:52:29.382Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131599,
-      "detail_elapsed_ms": 3212,
-      "scraped_at": "2026-07-29T14:36:31.775Z"
+      "detail_html_length": 131728,
+      "detail_elapsed_ms": 1579,
+      "scraped_at": "2026-07-29T14:52:30.962Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124965,
-      "detail_elapsed_ms": 3226,
-      "scraped_at": "2026-07-29T14:36:35.001Z"
+      "detail_html_length": 131371,
+      "detail_elapsed_ms": 1698,
+      "scraped_at": "2026-07-29T14:52:32.661Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131562,
-      "detail_elapsed_ms": 3659,
-      "scraped_at": "2026-07-29T14:36:38.660Z"
+      "detail_html_length": 131602,
+      "detail_elapsed_ms": 2255,
+      "scraped_at": "2026-07-29T14:52:34.916Z"
+    },
+    {
+      "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
+      "trace_id": "trace_p98-10-off-no-ingresso-nos-dias-04-a-06-09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
+      "original_link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
+      "title": "10% OFF no ingresso nos dias 04 a 06/09",
+      "preview_title": "10% OFF no ingresso nos dias 04 a 06/09",
+      "validity": "Benefício válido de 23/07/2026 09:56 até 06/09/2026 23:59.",
+      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, prossiga com o fluxo de compra e na \"tela de pagamento\", insira o cupom em \"cupom de desconto\" para obter o desconto de Assinante UOL. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 04 a 06 de setembro. Caso queira comprar com desconto para os dias 11 e 12 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "category": "Shows, Cinemas e Espetáculos",
+      "partner_name": "Rodeio Itu Festival",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132783,
+      "detail_elapsed_ms": 1786,
+      "scraped_at": "2026-07-29T14:52:36.702Z"
     }
   ]
 }
