@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-29T22:38:04.043194Z",
+  "updated_at": "2026-07-29T22:42:52.363803Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 6,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -39,12 +39,6 @@
       "link": "https://clube.uol.com.br/net_shoes/p9S-15-off-em-produtos-marketplace",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9s-15-off-em-produtos-marketplace"
-    },
-    {
-      "title": "30% OFF em seleção especial",
-      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9q-30-off-em-seleo-especial"
     },
     {
       "title": "10% OFF no ingresso nos dias 04 a 06/09",
