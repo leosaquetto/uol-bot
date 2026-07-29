@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-29T16:41:51.035412Z",
+  "updated_at": "2026-07-29T16:47:28.745915Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
-    "duplicada_latest": 0,
+    "duplicada_historico": 7,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -21,6 +21,12 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pA0-2-ingressos-30-07-cultura-artstica-sp",
       "reason": "duplicada_historico",
       "trace_id": "trace_pa0-2-ingressos-30-07-cultura-artstica-sp"
+    },
+    {
+      "title": "50% OFF no Festival Filmes Incríveis",
+      "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_pay-50-off-no-festival-filmes-incrveis"
     },
     {
       "title": "2 INGRESSOS: 31/07 Teatro Vanucci RJ",
@@ -57,12 +63,6 @@
       "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "reason": "duplicada_historico",
       "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano"
-    },
-    {
-      "title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09"
     }
   ]
 }
