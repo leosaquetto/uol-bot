@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-29T21:57:00.973997Z",
+  "updated_at": "2026-07-29T22:01:47.748270Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,18 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 02/08 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pA5-2-ingressos-02-08-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pa5-2-ingressos-02-08-teatro-liberdade-sp"
-    },
-    {
-      "title": "2 INGRESSOS: 01/08 Teatro Liberdade - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pA4-2-ingressos-01-08-teatro-liberdade-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pa4-2-ingressos-01-08-teatro-liberdade-sp"
-    },
     {
       "title": "50% OFF no Festival Filmes Incríveis",
       "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
@@ -63,6 +51,18 @@
       "link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
       "reason": "duplicada_historico",
       "trace_id": "trace_p98-10-off-no-ingresso-nos-dias-04-a-06-09"
+    },
+    {
+      "title": "20% de desconto em qualquer plano!",
+      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano"
+    },
+    {
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09"
     }
   ]
 }
