@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-29T14:38:47.116767Z",
+  "updated_at": "2026-07-29T14:53:36.812789Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_paw-2-ingressos-02-08-teatro-vanucci-rj"
-    },
-    {
-      "title": "2 INGRESSOS: 01/08 Teatro Vanucci RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAv-2-ingressos-01-08-teatro-vanucci-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pav-2-ingressos-01-08-teatro-vanucci-rj"
     },
     {
       "title": "2 INGRESSOS: 31/07 Teatro Vanucci RJ",
@@ -63,6 +57,12 @@
       "link": "https://clube.uol.com.br/net_shoes/p9S-15-off-em-produtos-marketplace",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9s-15-off-em-produtos-marketplace"
+    },
+    {
+      "title": "10% OFF no ingresso nos dias 04 a 06/09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p98-10-off-no-ingresso-nos-dias-04-a-06-09"
     }
   ]
 }
