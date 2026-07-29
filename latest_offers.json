@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-29T16:00:26.637822Z",
+  "last_update": "2026-07-29T16:04:25.417285Z",
   "offers": [
     {
       "id": "pAb-2-ingressos-31-07-teatro-tuca-sp",
@@ -373,7 +373,8 @@
       "canal2_forwarded_at": "2026-07-29T13:01:48.150153Z",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-29T13:01:58.074949Z"
+      "sent_at": "2026-07-29T13:01:58.074949Z",
+      "sold_out_at": "13:03"
     },
     {
       "id": "pAv-2-ingressos-01-08-teatro-vanucci-rj",
