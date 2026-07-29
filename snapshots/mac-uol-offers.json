@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 137581,
-  "run_duration_seconds": 137.58,
-  "avg_detail_ms_per_offer": 11465,
-  "generated_at": "2026-07-29T16:40:36.163Z",
+  "run_duration_ms": 144889,
+  "run_duration_seconds": 144.89,
+  "avg_detail_ms_per_offer": 12074,
+  "generated_at": "2026-07-29T16:46:25.420Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132998,
-      "detail_elapsed_ms": 13082,
-      "scraped_at": "2026-07-29T16:39:37.166Z"
+      "detail_html_length": 128417,
+      "detail_elapsed_ms": 16291,
+      "scraped_at": "2026-07-29T16:45:26.908Z"
+    },
+    {
+      "id": "pay-50-off-no-festival-filmes-incrveis",
+      "trace_id": "trace_pay-50-off-no-festival-filmes-incrveis",
+      "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
+      "original_link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
+      "title": "50% OFF no Festival Filmes Incríveis",
+      "preview_title": "50% OFF no Festival Filmes Incríveis",
+      "validity": "Benefício válido de 29/07/2026 11:12 até 12/08/2026 23:59.",
+      "description": "Sobre o parceiro: O Cine Belas Artes é um cinema notável de São Paulo, conhecido por sua programação diversificada desde 1956, data de seu nascimento. Sobre o Festival Filmes Incríveis 2026: De 30 de julho a 12 de agosto, o Cine Belas Artes recebe o Festival Filmes Incríveis 2026, com longas inéditos de diversos países. A mostra reúne produções que passaram por festivais como Cannes, Berlim e Roterdã, destacando obras pouco vistas no circuito comercial. O FFI é uma iniciativa do Belas Artes Grupo com realização do Ministério da Cultura. Benefício: 50% de desconto no par de ingressos do Festival Filmes Incríveis 2026 no Cine Belas Artes. Regras: Benefício válido para Assinante UOL. Basta apresentar o voucher e documento original na bilheteria do cinema para obter sua meia-entrada no par de ingressos do Cine Belas Artes. Desconto válido para a programação regular do cinema. Atenção! Confira a programação clicando em \"Ir para o site\".",
+      "category": "Promoções do Mês",
+      "partner_name": "Cine Belas Artes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/52417b631f082ad9b303fa194747eaf5.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 127290,
+      "detail_elapsed_ms": 5032,
+      "scraped_at": "2026-07-29T16:45:31.940Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132036,
-      "detail_elapsed_ms": 3925,
-      "scraped_at": "2026-07-29T16:39:41.091Z"
+      "detail_html_length": 128187,
+      "detail_elapsed_ms": 5402,
+      "scraped_at": "2026-07-29T16:45:37.342Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 4657,
-      "scraped_at": "2026-07-29T16:39:45.748Z"
+      "detail_html_length": 134221,
+      "detail_elapsed_ms": 7065,
+      "scraped_at": "2026-07-29T16:45:44.407Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130703,
-      "detail_elapsed_ms": 4639,
-      "scraped_at": "2026-07-29T16:39:50.387Z"
+      "detail_html_length": 130917,
+      "detail_elapsed_ms": 8965,
+      "scraped_at": "2026-07-29T16:45:53.374Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132027,
-      "detail_elapsed_ms": 2905,
-      "scraped_at": "2026-07-29T16:39:53.293Z"
+      "detail_html_length": 133196,
+      "detail_elapsed_ms": 7434,
+      "scraped_at": "2026-07-29T16:46:00.808Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127303,
-      "detail_elapsed_ms": 2495,
-      "scraped_at": "2026-07-29T16:39:55.788Z"
+      "detail_html_length": 132486,
+      "detail_elapsed_ms": 2794,
+      "scraped_at": "2026-07-29T16:46:03.602Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130432,
-      "detail_elapsed_ms": 3921,
-      "scraped_at": "2026-07-29T16:39:59.709Z"
+      "detail_html_length": 130420,
+      "detail_elapsed_ms": 3547,
+      "scraped_at": "2026-07-29T16:46:07.149Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130181,
-      "detail_elapsed_ms": 5113,
-      "scraped_at": "2026-07-29T16:40:04.823Z"
+      "detail_html_length": 124967,
+      "detail_elapsed_ms": 4585,
+      "scraped_at": "2026-07-29T16:46:11.734Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131689,
-      "detail_elapsed_ms": 11541,
-      "scraped_at": "2026-07-29T16:40:16.364Z"
+      "detail_html_length": 125202,
+      "detail_elapsed_ms": 3346,
+      "scraped_at": "2026-07-29T16:46:15.080Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132734,
-      "detail_elapsed_ms": 9410,
-      "scraped_at": "2026-07-29T16:40:25.776Z"
+      "detail_html_length": 132656,
+      "detail_elapsed_ms": 4749,
+      "scraped_at": "2026-07-29T16:46:19.831Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -281,32 +305,8 @@
       "detail_error": "",
       "detail_attempts": 1,
       "detail_html_length": 125300,
-      "detail_elapsed_ms": 4054,
-      "scraped_at": "2026-07-29T16:40:29.830Z"
-    },
-    {
-      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
-      "category": "Shows, Cinemas e Espetáculos",
-      "partner_name": "Rodeio Itu Festival",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132863,
-      "detail_elapsed_ms": 4113,
-      "scraped_at": "2026-07-29T16:40:33.946Z"
+      "detail_elapsed_ms": 4868,
+      "scraped_at": "2026-07-29T16:46:24.699Z"
     }
   ]
 }
