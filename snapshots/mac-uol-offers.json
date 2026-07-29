@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 12,
-  "detail_fail_count": 0,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
     "weak": 0,
-    "failed": 0
+    "failed": 1
   },
-  "run_duration_ms": 49331,
-  "run_duration_seconds": 49.33,
-  "avg_detail_ms_per_offer": 4111,
-  "generated_at": "2026-07-29T06:30:41.961Z",
+  "run_duration_ms": 75839,
+  "run_duration_seconds": 75.84,
+  "avg_detail_ms_per_offer": 6320,
+  "generated_at": "2026-07-29T06:35:05.738Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134082,
-      "detail_elapsed_ms": 5714,
-      "scraped_at": "2026-07-29T06:30:13.065Z"
+      "detail_html_length": 134061,
+      "detail_elapsed_ms": 11462,
+      "scraped_at": "2026-07-29T06:34:28.834Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124557,
-      "detail_elapsed_ms": 2562,
-      "scraped_at": "2026-07-29T06:30:15.627Z"
+      "detail_html_length": 130927,
+      "detail_elapsed_ms": 4675,
+      "scraped_at": "2026-07-29T06:34:33.518Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133295,
-      "detail_elapsed_ms": 2900,
-      "scraped_at": "2026-07-29T06:30:18.527Z"
+      "detail_html_length": 126919,
+      "detail_elapsed_ms": 3078,
+      "scraped_at": "2026-07-29T06:34:36.597Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127289,
-      "detail_elapsed_ms": 3232,
-      "scraped_at": "2026-07-29T06:30:21.759Z"
+      "detail_html_length": 132486,
+      "detail_elapsed_ms": 2138,
+      "scraped_at": "2026-07-29T06:34:38.735Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125307,
-      "detail_elapsed_ms": 2461,
-      "scraped_at": "2026-07-29T06:30:24.220Z"
+      "detail_html_length": 131657,
+      "detail_elapsed_ms": 3338,
+      "scraped_at": "2026-07-29T06:34:42.073Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131334,
-      "detail_elapsed_ms": 3058,
-      "scraped_at": "2026-07-29T06:30:27.278Z"
+      "detail_html_length": 130105,
+      "detail_elapsed_ms": 5181,
+      "scraped_at": "2026-07-29T06:34:47.254Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125234,
-      "detail_elapsed_ms": 2383,
-      "scraped_at": "2026-07-29T06:30:29.661Z"
+      "detail_html_length": 130395,
+      "detail_elapsed_ms": 2830,
+      "scraped_at": "2026-07-29T06:34:50.085Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131608,
-      "detail_elapsed_ms": 2667,
-      "scraped_at": "2026-07-29T06:30:32.328Z"
+      "detail_html_length": 132743,
+      "detail_elapsed_ms": 3228,
+      "scraped_at": "2026-07-29T06:34:53.313Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125313,
-      "detail_elapsed_ms": 2241,
-      "scraped_at": "2026-07-29T06:30:34.569Z"
+      "detail_html_length": 130514,
+      "detail_elapsed_ms": 2500,
+      "scraped_at": "2026-07-29T06:34:55.813Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132855,
-      "detail_elapsed_ms": 2563,
-      "scraped_at": "2026-07-29T06:30:37.133Z"
+      "detail_html_length": 137900,
+      "detail_elapsed_ms": 4110,
+      "scraped_at": "2026-07-29T06:34:59.923Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129715,
-      "detail_elapsed_ms": 2303,
-      "scraped_at": "2026-07-29T06:30:39.436Z"
+      "detail_html_length": 130832,
+      "detail_elapsed_ms": 3346,
+      "scraped_at": "2026-07-29T06:35:03.269Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
-      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130844,
-      "detail_elapsed_ms": 2239,
-      "scraped_at": "2026-07-29T06:30:41.675Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 603,
+      "scraped_at": "2026-07-29T06:35:04.591Z"
     }
   ]
 }
