@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-07-29T11:42:05.045351Z",
+  "updated_at": "2026-07-29T11:46:23.652418Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 0,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 12,
-    "duplicada_latest": 0,
+    "duplicada_historico": 6,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -23,12 +23,6 @@
       "trace_id": "trace_pao-10-de-desconto-no-primeiro-corte"
     },
     {
-      "title": "20% OFF em seleção de Dia dos Pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais"
-    },
-    {
       "title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
       "link": "https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj",
       "reason": "duplicada_historico",
@@ -36,27 +30,15 @@
     },
     {
       "title": "Até 12% OFF em aluguéis de carro",
-      "link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9u-ate-12-off-em-alugueis-carro"
+      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "reason": "duplicada_latest",
+      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro"
     },
     {
       "title": "15% OFF em produtos Marketplace",
       "link": "https://clube.uol.com.br/net_shoes/p9S-15-off-em-produtos-marketplace",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9s-15-off-em-produtos-marketplace"
-    },
-    {
-      "title": "20% OFF em seleção especial",
-      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9r-20-off-em-selecao-especial"
-    },
-    {
-      "title": "30% OFF em seleção especial",
-      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9q-30-off-em-selecao-especial"
     },
     {
       "title": "10% OFF no ingresso nos dias 04 a 06/09",
@@ -75,18 +57,6 @@
       "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
       "reason": "duplicada_historico",
       "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09"
-    },
-    {
-      "title": "15% OFF extra na seleção Mascavo",
-      "link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-selecao-mascavo",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9z-15-off-extra-na-selecao-mascavo"
-    },
-    {
-      "title": "15% OFF extra na seleção Davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-selecao-davines",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9y-15-off-extra-na-selecao-davines"
     }
   ]
 }
