@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-29T13:25:45.684060Z",
+  "last_update": "2026-07-29T13:28:49.929997Z",
   "offers": [
     {
       "id": "p9Z-2-ingressos-01-08-teatro-tuca-sp",
@@ -387,7 +387,8 @@
       "canal2_forwarded_at": "2026-07-29T12:05:09.749814Z",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-29T12:05:19.662717Z"
+      "sent_at": "2026-07-29T12:05:19.662717Z",
+      "sold_out_at": "10:27"
     },
     {
       "id": "pAs-2-ingressos-02-08-masp-sp",
