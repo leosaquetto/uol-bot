@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 113076,
-  "run_duration_seconds": 113.08,
-  "avg_detail_ms_per_offer": 9423,
-  "generated_at": "2026-07-29T15:11:27.572Z",
+  "run_duration_ms": 70507,
+  "run_duration_seconds": 70.51,
+  "avg_detail_ms_per_offer": 5876,
+  "generated_at": "2026-07-29T15:15:54.161Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,10 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133110,
-      "detail_elapsed_ms": 7112,
-      "scraped_at": "2026-07-29T15:10:43.387Z"
+      "detail_attempts": 1,
+      "detail_html_length": 133033,
+      "detail_elapsed_ms": 6296,
+      "scraped_at": "2026-07-29T15:15:24.591Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133204,
-      "detail_elapsed_ms": 4089,
-      "scraped_at": "2026-07-29T15:10:47.476Z"
+      "detail_html_length": 131947,
+      "detail_elapsed_ms": 2907,
+      "scraped_at": "2026-07-29T15:15:27.498Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126751,
-      "detail_elapsed_ms": 2198,
-      "scraped_at": "2026-07-29T15:10:49.674Z"
+      "detail_html_length": 133144,
+      "detail_elapsed_ms": 4289,
+      "scraped_at": "2026-07-29T15:15:31.788Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131926,
-      "detail_elapsed_ms": 3164,
-      "scraped_at": "2026-07-29T15:10:52.963Z"
+      "detail_html_length": 133125,
+      "detail_elapsed_ms": 2066,
+      "scraped_at": "2026-07-29T15:15:33.855Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134200,
-      "detail_elapsed_ms": 3841,
-      "scraped_at": "2026-07-29T15:10:56.812Z"
+      "detail_html_length": 134230,
+      "detail_elapsed_ms": 2750,
+      "scraped_at": "2026-07-29T15:15:36.606Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130926,
-      "detail_elapsed_ms": 4807,
-      "scraped_at": "2026-07-29T15:11:01.619Z"
+      "detail_html_length": 130935,
+      "detail_elapsed_ms": 2605,
+      "scraped_at": "2026-07-29T15:15:39.211Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133263,
-      "detail_elapsed_ms": 2779,
-      "scraped_at": "2026-07-29T15:11:04.399Z"
+      "detail_html_length": 126929,
+      "detail_elapsed_ms": 2424,
+      "scraped_at": "2026-07-29T15:15:41.635Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -195,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
       "category": "Entretenimento e Viagens",
       "partner_name": "Movida",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 809,
-      "scraped_at": "2026-07-29T15:11:05.928Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133663,
+      "detail_elapsed_ms": 2406,
+      "scraped_at": "2026-07-29T15:15:44.041Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -219,22 +219,22 @@
       "original_link": "https://clube.uol.com.br/net_shoes/p9S-15-off-em-produtos-marketplace",
       "title": "15% OFF em produtos Marketplace",
       "preview_title": "15% OFF em produtos Marketplace",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 12:17 até 31/12/2026 23:59.",
+      "description": "Sobre o parceiro: Com atuação no Brasil, Argentina e México, somos apontados como o maior e-commerce de artigos esportivos do mundo. O esporte está no nosso DNA, assim como a inovação, praticidade e agilidade. Benefício: 15% OFF em produtos Marketplace. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras para resgatar do seu cupom de desconto. Benefício não válido para produtos com o selo “OFERTAS” e de marketplace.",
       "category": "Compras e Presentes",
       "partner_name": "Netshoes",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73b80b9ec933fb8f80c7cad16ef5bf52.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7d73198d3ee899cf7014c7d693728ab7.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7d73198d3ee899cf7014c7d693728ab7.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/net_shoes/p9S-15-off-em-produtos-marketplace\" is interrupted by another navigation to \"https://clube.uol.com.br/net_shoes/p9S-15-off-em-produtos-marketplace\" Call log: - navigating to \"https://clube.uol.com.br/net_shoes/p9S-15-off-em-produtos-marketplace\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 736,
-      "scraped_at": "2026-07-29T15:11:08.136Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7d73198d3ee899cf7014c7d693728ab7.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131686,
+      "detail_elapsed_ms": 2353,
+      "scraped_at": "2026-07-29T15:15:46.394Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -243,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
       "title": "20% OFF em seleção especial",
       "preview_title": "20% OFF em seleção especial",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 12:11 até 09/08/2026 23:59.",
+      "description": "Sobre o parceiro: Mais de 28 mil produtos de 280 marcas, entre calçados, vestuários e acessórios, do Outlet ao espaço Boutique. Benefício de Dia dos Pais: 20% OFF em seleção especial da Zattini. Regras: Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. As regras da campanha estão no hotsite da parceria.",
       "category": "Compras e Presentes",
       "partner_name": "Zattini",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/1f57e84048e2e20943b47240474dfe4a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a6db805a0121eeed54293fc64dfe92a4.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a6db805a0121eeed54293fc64dfe92a4.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial\" is interrupted by another navigation to \"https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial\" Call log: - navigating to \"https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 632,
-      "scraped_at": "2026-07-29T15:11:09.968Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/a6db805a0121eeed54293fc64dfe92a4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130189,
+      "detail_elapsed_ms": 2003,
+      "scraped_at": "2026-07-29T15:15:48.397Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -279,10 +279,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132145,
-      "detail_elapsed_ms": 12520,
-      "scraped_at": "2026-07-29T15:11:23.289Z"
+      "detail_attempts": 1,
+      "detail_html_length": 130069,
+      "detail_elapsed_ms": 2588,
+      "scraped_at": "2026-07-29T15:15:50.986Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -297,16 +297,16 @@
       "partner_name": "Rodeio Itu Festival",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dffb34b68ab23499f85c9119e484f4b6.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dffb34b68ab23499f85c9119e484f4b6.png",
       "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/dffb34b68ab23499f85c9119e484f4b6.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131517,
-      "detail_elapsed_ms": 3663,
-      "scraped_at": "2026-07-29T15:11:26.953Z"
+      "detail_html_length": 132772,
+      "detail_elapsed_ms": 2734,
+      "scraped_at": "2026-07-29T15:15:53.720Z"
     }
   ]
 }
