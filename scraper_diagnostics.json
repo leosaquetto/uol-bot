@@ -1,21 +1,27 @@
 {
-  "updated_at": "2026-07-29T16:36:12.761464Z",
+  "updated_at": "2026-07-29T16:41:51.035412Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 5,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 8,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 30/07 Cultura Artística SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pA0-2-ingressos-30-07-cultura-artstica-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pa0-2-ingressos-30-07-cultura-artstica-sp"
+    },
     {
       "title": "2 INGRESSOS: 31/07 Teatro Vanucci RJ",
       "link": "https://clube.uol.com.br/campanhasdeingresso/pAt-2-ingressos-31-07-teatro-vanucci-rj",
