@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 58262,
-  "run_duration_seconds": 58.26,
-  "avg_detail_ms_per_offer": 4855,
-  "generated_at": "2026-07-29T14:19:04.071Z",
+  "run_duration_ms": 62170,
+  "run_duration_seconds": 62.17,
+  "avg_detail_ms_per_offer": 5181,
+  "generated_at": "2026-07-29T14:23:15.976Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pay-50-off-no-par-de-ingressos-de-cinema",
-      "trace_id": "trace_pay-50-off-no-par-de-ingressos-de-cinema",
-      "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-par-de-ingressos-de-cinema",
-      "original_link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-par-de-ingressos-de-cinema",
-      "title": "50% OFF no Festival Filmes Incríveis",
-      "preview_title": "50% OFF no par de ingressos de cinema",
-      "validity": "Benefício válido de 29/07/2026 11:12 até 12/08/2026 23:59.",
-      "description": "Sobre o parceiro: O Cine Belas Artes é um cinema notável de São Paulo, conhecido por sua programação diversificada desde 1956, data de seu nascimento. Sobre o Festival Filmes Incríveis 2026: De 30 de julho a 12 de agosto, o Cine Belas Artes recebe o Festival Filmes Incríveis 2026, com longas inéditos de diversos países. A mostra reúne produções que passaram por festivais como Cannes, Berlim e Roterdã, destacando obras pouco vistas no circuito comercial. O FFI é uma iniciativa do Belas Artes Grupo com realização do Ministério da Cultura. Benefício: 50% de desconto no par de ingressos do Festival Filmes Incríveis 2026 no Cine Belas Artes. Regras: Benefício válido para Assinante UOL. Basta apresentar o voucher e documento original na bilheteria do cinema para obter sua meia-entrada no par de ingressos do Cine Belas Artes. Desconto válido para a programação regular do cinema. Atenção! Confira a programação clicando em \"Ir para o site\".",
-      "category": "Promoções do Mês",
-      "partner_name": "Cine Belas Artes",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/52417b631f082ad9b303fa194747eaf5.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6a0a2a7838c_766beb2eca3620cef2d1b2ffbbbf6e75.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132239,
-      "detail_elapsed_ms": 8850,
-      "scraped_at": "2026-07-29T14:18:32.448Z"
-    },
     {
       "id": "pav-2-ingressos-01-08-teatro-vanucci-rj",
       "trace_id": "trace_pav-2-ingressos-01-08-teatro-vanucci-rj",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126850,
-      "detail_elapsed_ms": 3131,
-      "scraped_at": "2026-07-29T14:18:35.579Z"
+      "detail_html_length": 133063,
+      "detail_elapsed_ms": 7796,
+      "scraped_at": "2026-07-29T14:22:39.991Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133113,
-      "detail_elapsed_ms": 2762,
-      "scraped_at": "2026-07-29T14:18:38.342Z"
+      "detail_html_length": 131908,
+      "detail_elapsed_ms": 3134,
+      "scraped_at": "2026-07-29T14:22:43.126Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133085,
-      "detail_elapsed_ms": 3125,
-      "scraped_at": "2026-07-29T14:18:41.467Z"
+      "detail_html_length": 132265,
+      "detail_elapsed_ms": 2931,
+      "scraped_at": "2026-07-29T14:22:46.057Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134221,
-      "detail_elapsed_ms": 2778,
-      "scraped_at": "2026-07-29T14:18:44.246Z"
+      "detail_html_length": 132975,
+      "detail_elapsed_ms": 2891,
+      "scraped_at": "2026-07-29T14:22:48.949Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124563,
-      "detail_elapsed_ms": 2430,
-      "scraped_at": "2026-07-29T14:18:46.677Z"
+      "detail_html_length": 130916,
+      "detail_elapsed_ms": 2671,
+      "scraped_at": "2026-07-29T14:22:51.621Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133272,
-      "detail_elapsed_ms": 3079,
-      "scraped_at": "2026-07-29T14:18:49.756Z"
+      "detail_html_length": 133282,
+      "detail_elapsed_ms": 2997,
+      "scraped_at": "2026-07-29T14:22:54.618Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127134,
-      "detail_elapsed_ms": 3162,
-      "scraped_at": "2026-07-29T14:18:52.918Z"
+      "detail_html_length": 133644,
+      "detail_elapsed_ms": 3203,
+      "scraped_at": "2026-07-29T14:22:57.821Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131687,
-      "detail_elapsed_ms": 2331,
-      "scraped_at": "2026-07-29T14:18:55.249Z"
+      "detail_html_length": 131656,
+      "detail_elapsed_ms": 6534,
+      "scraped_at": "2026-07-29T14:23:04.355Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124968,
-      "detail_elapsed_ms": 2516,
-      "scraped_at": "2026-07-29T14:18:57.765Z"
+      "detail_html_length": 124957,
+      "detail_elapsed_ms": 2371,
+      "scraped_at": "2026-07-29T14:23:06.726Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131573,
-      "detail_elapsed_ms": 2926,
-      "scraped_at": "2026-07-29T14:19:00.691Z"
+      "detail_html_length": 131552,
+      "detail_elapsed_ms": 2915,
+      "scraped_at": "2026-07-29T14:23:09.644Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132743,
-      "detail_elapsed_ms": 3063,
-      "scraped_at": "2026-07-29T14:19:03.754Z"
+      "detail_html_length": 131583,
+      "detail_elapsed_ms": 2391,
+      "scraped_at": "2026-07-29T14:23:12.035Z"
+    },
+    {
+      "id": "p97-20-de-desconto-em-qualquer-plano",
+      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
+      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "title": "20% de desconto em qualquer plano!",
+      "preview_title": "20% de desconto em qualquer plano!",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
+      "category": "",
+      "partner_name": "Zelus Pet",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131662,
+      "detail_elapsed_ms": 3043,
+      "scraped_at": "2026-07-29T14:23:15.078Z"
     }
   ]
 }
