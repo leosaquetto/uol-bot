@@ -9,17 +9,41 @@
   "detail_ok_count": 12,
   "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 12,
+    "complete": 11,
     "partial": 0,
-    "weak": 0,
+    "weak": 1,
     "failed": 0
   },
-  "run_duration_ms": 28408,
-  "run_duration_seconds": 28.41,
-  "avg_detail_ms_per_offer": 2367,
-  "generated_at": "2026-07-29T19:06:26.113Z",
+  "run_duration_ms": 28916,
+  "run_duration_seconds": 28.92,
+  "avg_detail_ms_per_offer": 2410,
+  "generated_at": "2026-07-29T19:10:00.445Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pa2-2-ingressos-30-07-cultura-artstica-sp",
+      "trace_id": "trace_pa2-2-ingressos-30-07-cultura-artstica-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pA2-2-ingressos-30-07-cultura-artstica-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pA2-2-ingressos-30-07-cultura-artstica-sp",
+      "title": "Ingressos Exclusivos",
+      "preview_title": "2 INGRESSOS: 30/07 Cultura Artística SP",
+      "validity": "",
+      "description": "",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6a4d71e2c88_465500d7b7744430bf1424c0df46ef28.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/24d35dbc6124116b9c7302b04c7625e5.png",
+      "img_source": "benefit_data_src",
+      "detail_ok": true,
+      "detail_quality": "weak",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 331295,
+      "detail_elapsed_ms": 2802,
+      "scraped_at": "2026-07-29T19:09:42.555Z"
+    },
     {
       "id": "pay-50-off-no-festival-filmes-incrveis",
       "trace_id": "trace_pay-50-off-no-festival-filmes-incrveis",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131068,
-      "detail_elapsed_ms": 1872,
-      "scraped_at": "2026-07-29T19:06:08.197Z"
+      "detail_html_length": 127565,
+      "detail_elapsed_ms": 2086,
+      "scraped_at": "2026-07-29T19:09:44.642Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133193,
-      "detail_elapsed_ms": 1718,
-      "scraped_at": "2026-07-29T19:06:09.916Z"
+      "detail_html_length": 128354,
+      "detail_elapsed_ms": 1523,
+      "scraped_at": "2026-07-29T19:09:46.166Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134240,
-      "detail_elapsed_ms": 1546,
-      "scraped_at": "2026-07-29T19:06:11.463Z"
+      "detail_html_length": 134260,
+      "detail_elapsed_ms": 1450,
+      "scraped_at": "2026-07-29T19:09:47.616Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130965,
-      "detail_elapsed_ms": 1596,
-      "scraped_at": "2026-07-29T19:06:13.059Z"
+      "detail_html_length": 126106,
+      "detail_elapsed_ms": 1511,
+      "scraped_at": "2026-07-29T19:09:49.127Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133311,
-      "detail_elapsed_ms": 1584,
-      "scraped_at": "2026-07-29T19:06:14.644Z"
+      "detail_html_length": 128472,
+      "detail_elapsed_ms": 1639,
+      "scraped_at": "2026-07-29T19:09:50.766Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133684,
-      "detail_elapsed_ms": 1621,
-      "scraped_at": "2026-07-29T19:06:16.265Z"
+      "detail_html_length": 128824,
+      "detail_elapsed_ms": 1478,
+      "scraped_at": "2026-07-29T19:09:52.244Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131706,
-      "detail_elapsed_ms": 1616,
-      "scraped_at": "2026-07-29T19:06:17.881Z"
+      "detail_html_length": 126846,
+      "detail_elapsed_ms": 1670,
+      "scraped_at": "2026-07-29T19:09:53.914Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131377,
-      "detail_elapsed_ms": 1547,
-      "scraped_at": "2026-07-29T19:06:19.428Z"
+      "detail_html_length": 126529,
+      "detail_elapsed_ms": 1490,
+      "scraped_at": "2026-07-29T19:09:55.404Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131612,
-      "detail_elapsed_ms": 1617,
-      "scraped_at": "2026-07-29T19:06:21.045Z"
+      "detail_html_length": 126753,
+      "detail_elapsed_ms": 1564,
+      "scraped_at": "2026-07-29T19:09:56.968Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132781,
-      "detail_elapsed_ms": 1505,
-      "scraped_at": "2026-07-29T19:06:22.550Z"
+      "detail_html_length": 127932,
+      "detail_elapsed_ms": 1486,
+      "scraped_at": "2026-07-29T19:09:58.454Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131701,
-      "detail_elapsed_ms": 1675,
-      "scraped_at": "2026-07-29T19:06:24.225Z"
-    },
-    {
-      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
-      "category": "Shows, Cinemas e Espetáculos",
-      "partner_name": "Rodeio Itu Festival",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 140549,
-      "detail_elapsed_ms": 1746,
-      "scraped_at": "2026-07-29T19:06:25.971Z"
+      "detail_html_length": 126842,
+      "detail_elapsed_ms": 1863,
+      "scraped_at": "2026-07-29T19:10:00.317Z"
     }
   ]
 }
