@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-29T17:19:05.564695Z",
+  "updated_at": "2026-07-29T17:33:33.140146Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -16,12 +16,6 @@
     "duplicada_execucao": 0
   },
   "discarded_offers": [
-    {
-      "title": "2 INGRESSOS: 30/07 Cultura Artística SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pA0-2-ingressos-30-07-cultura-artstica-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pa0-2-ingressos-30-07-cultura-artstica-sp"
-    },
     {
       "title": "50% OFF no Festival Filmes Incríveis",
       "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
@@ -63,6 +57,12 @@
       "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "reason": "duplicada_historico",
       "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano"
+    },
+    {
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09"
     }
   ]
 }

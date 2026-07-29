@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-29T17:19:08.651157Z",
+  "last_update": "2026-07-29T17:33:33.086426Z",
   "offers": [
     {
       "id": "pAh-2-ingressos-31-07-teatro-srgio-cardoso",
@@ -443,7 +443,8 @@
       "canal2_forwarded_at": "2026-07-29T17:01:58.321650Z",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-29T17:02:08.189154Z"
+      "sent_at": "2026-07-29T17:02:08.189154Z",
+      "sold_out_at": "14:31"
     },
     {
       "id": "pAy-50-off-no-festival-filmes-incriveis",
@@ -464,7 +465,8 @@
       "channel_message_link": "https://t.me/c/3723320790/1789",
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-29T17:02:20.950078Z"
+      "sent_at": "2026-07-29T17:02:20.950078Z",
+      "sold_out_at": "14:31"
     }
   ]
 }
