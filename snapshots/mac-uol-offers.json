@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 91972,
-  "run_duration_seconds": 91.97,
-  "avg_detail_ms_per_offer": 7664,
-  "generated_at": "2026-07-29T15:43:09.292Z",
+  "run_duration_ms": 47492,
+  "run_duration_seconds": 47.49,
+  "avg_detail_ms_per_offer": 3958,
+  "generated_at": "2026-07-29T15:47:13.649Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133081,
-      "detail_elapsed_ms": 9844,
-      "scraped_at": "2026-07-29T15:42:32.836Z"
+      "detail_html_length": 133100,
+      "detail_elapsed_ms": 5724,
+      "scraped_at": "2026-07-29T15:46:44.382Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126822,
-      "detail_elapsed_ms": 2502,
-      "scraped_at": "2026-07-29T15:42:35.338Z"
+      "detail_html_length": 133194,
+      "detail_elapsed_ms": 2501,
+      "scraped_at": "2026-07-29T15:46:46.884Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -88,33 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126752,
-      "detail_elapsed_ms": 3578,
-      "scraped_at": "2026-07-29T15:42:38.916Z"
-    },
-    {
-      "id": "paq-2-ingressos-31-07-masp-sp",
-      "trace_id": "trace_paq-2-ingressos-31-07-masp-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAq-2-ingressos-31-07-masp-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAq-2-ingressos-31-07-masp-sp",
-      "title": "2 INGRESSOS 31/07 MASP - SP",
-      "preview_title": "2 INGRESSOS 31/07 MASP - SP",
-      "validity": "Benefício válido de 29/07/2026 09:22 até 30/07/2026 18:00.",
-      "description": "Assinante UOL, prepare-se para se surpreender! Resgate 1 par de ingressos para assistir a Édipo, aclamada adaptação contemporânea da tragédia clássica de Sófocles. Com suspense, drama e reviravoltas, o espetáculo transforma uma das histórias mais famosas da humanidade em um envolvente thriller político. Quando: 31 de Julho, às 20h. Local: MASP | Av. Paulista, 1578 - Bela Vista - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ecf1425ad_6a5a745512270_6a5a73c6f1360_6a5a70bd4e230_6a590203e204f_6a59013f95341_c4cb74854ebe54e8fbf762bac62afb77.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ecf1425ad_6a5a745512270_6a5a73c6f1360_6a5a70bd4e230_6a590203e204f_6a59013f95341_c4cb74854ebe54e8fbf762bac62afb77.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ecf1425ad_6a5a745512270_6a5a73c6f1360_6a5a70bd4e230_6a590203e204f_6a59013f95341_c4cb74854ebe54e8fbf762bac62afb77.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131937,
-      "detail_elapsed_ms": 4781,
-      "scraped_at": "2026-07-29T15:42:43.700Z"
+      "detail_html_length": 126771,
+      "detail_elapsed_ms": 2292,
+      "scraped_at": "2026-07-29T15:46:49.181Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127858,
-      "detail_elapsed_ms": 3040,
-      "scraped_at": "2026-07-29T15:42:46.740Z"
+      "detail_html_length": 134219,
+      "detail_elapsed_ms": 2012,
+      "scraped_at": "2026-07-29T15:46:51.194Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126046,
-      "detail_elapsed_ms": 2980,
-      "scraped_at": "2026-07-29T15:42:49.720Z"
+      "detail_html_length": 129423,
+      "detail_elapsed_ms": 2164,
+      "scraped_at": "2026-07-29T15:46:53.359Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126909,
-      "detail_elapsed_ms": 3357,
-      "scraped_at": "2026-07-29T15:42:53.077Z"
+      "detail_html_length": 133291,
+      "detail_elapsed_ms": 1993,
+      "scraped_at": "2026-07-29T15:46:55.352Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 128785,
-      "detail_elapsed_ms": 2843,
-      "scraped_at": "2026-07-29T15:42:55.920Z"
+      "detail_html_length": 133644,
+      "detail_elapsed_ms": 2035,
+      "scraped_at": "2026-07-29T15:46:57.387Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125313,
-      "detail_elapsed_ms": 3089,
-      "scraped_at": "2026-07-29T15:42:59.009Z"
+      "detail_html_length": 130526,
+      "detail_elapsed_ms": 1831,
+      "scraped_at": "2026-07-29T15:46:59.218Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130084,
-      "detail_elapsed_ms": 2681,
-      "scraped_at": "2026-07-29T15:43:01.690Z"
+      "detail_html_length": 131338,
+      "detail_elapsed_ms": 2229,
+      "scraped_at": "2026-07-29T15:47:01.447Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131562,
-      "detail_elapsed_ms": 3654,
-      "scraped_at": "2026-07-29T15:43:05.345Z"
+      "detail_html_length": 131571,
+      "detail_elapsed_ms": 2363,
+      "scraped_at": "2026-07-29T15:47:03.810Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -303,10 +279,34 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
+      "detail_attempts": 2,
+      "detail_html_length": 132604,
+      "detail_elapsed_ms": 4941,
+      "scraped_at": "2026-07-29T15:47:09.259Z"
+    },
+    {
+      "id": "p97-20-de-desconto-em-qualquer-plano",
+      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
+      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "title": "20% de desconto em qualquer plano!",
+      "preview_title": "20% de desconto em qualquer plano!",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
+      "category": "",
+      "partner_name": "Zelus Pet",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132772,
-      "detail_elapsed_ms": 3008,
-      "scraped_at": "2026-07-29T15:43:08.353Z"
+      "detail_html_length": 130513,
+      "detail_elapsed_ms": 4010,
+      "scraped_at": "2026-07-29T15:47:13.269Z"
     }
   ]
 }
