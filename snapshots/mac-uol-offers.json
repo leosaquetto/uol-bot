@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 57578,
-  "run_duration_seconds": 57.58,
-  "avg_detail_ms_per_offer": 4798,
-  "generated_at": "2026-07-29T16:03:24.717Z",
+  "run_duration_ms": 177383,
+  "run_duration_seconds": 177.38,
+  "avg_detail_ms_per_offer": 14782,
+  "generated_at": "2026-07-29T16:09:31.677Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -39,34 +39,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131801,
-      "detail_elapsed_ms": 4211,
-      "scraped_at": "2026-07-29T16:02:54.471Z"
-    },
-    {
-      "id": "par-2-ingressos-01-08-masp-sp",
-      "trace_id": "trace_par-2-ingressos-01-08-masp-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAr-2-ingressos-01-08-masp-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAr-2-ingressos-01-08-masp-sp",
-      "title": "2 INGRESSOS 01/08 MASP - SP",
-      "preview_title": "2 INGRESSOS 01/08 MASP - SP",
-      "validity": "Benefício válido de 29/07/2026 09:22 até 30/07/2026 18:00.",
-      "description": "Assinante UOL, prepare-se para se surpreender! Resgate 1 par de ingressos para assistir a Édipo, aclamada adaptação contemporânea da tragédia clássica de Sófocles. Com suspense, drama e reviravoltas, o espetáculo transforma uma das histórias mais famosas da humanidade em um envolvente thriller político. Quando: 01 de Agosto, às 20h. Local: MASP | Av. Paulista, 1578 - Bela Vista - SP. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69f2980b58c_6a69ecf1425ad_6a5a745512270_6a5a73c6f1360_6a5a70bd4e230_6a590203e204f_6a59013f95341_c4cb74854ebe54e8fbf762bac62afb77.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69f2980b58c_6a69ecf1425ad_6a5a745512270_6a5a73c6f1360_6a5a70bd4e230_6a590203e204f_6a59013f95341_c4cb74854ebe54e8fbf762bac62afb77.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69f2980b58c_6a69ecf1425ad_6a5a745512270_6a5a73c6f1360_6a5a70bd4e230_6a590203e204f_6a59013f95341_c4cb74854ebe54e8fbf762bac62afb77.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131995,
-      "detail_elapsed_ms": 2739,
-      "scraped_at": "2026-07-29T16:02:57.211Z"
+      "detail_attempts": 2,
+      "detail_html_length": 132024,
+      "detail_elapsed_ms": 4251,
+      "scraped_at": "2026-07-29T16:07:47.243Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134201,
-      "detail_elapsed_ms": 2964,
-      "scraped_at": "2026-07-29T16:03:00.175Z"
+      "detail_html_length": 133070,
+      "detail_elapsed_ms": 3367,
+      "scraped_at": "2026-07-29T16:07:50.610Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130917,
-      "detail_elapsed_ms": 3373,
-      "scraped_at": "2026-07-29T16:03:03.548Z"
+      "detail_html_length": 130926,
+      "detail_elapsed_ms": 7721,
+      "scraped_at": "2026-07-29T16:07:58.332Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133273,
-      "detail_elapsed_ms": 2736,
-      "scraped_at": "2026-07-29T16:03:06.285Z"
+      "detail_html_length": 126929,
+      "detail_elapsed_ms": 2738,
+      "scraped_at": "2026-07-29T16:08:01.070Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -159,10 +135,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133675,
-      "detail_elapsed_ms": 2795,
-      "scraped_at": "2026-07-29T16:03:09.081Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133644,
+      "detail_elapsed_ms": 9421,
+      "scraped_at": "2026-07-29T16:08:23.147Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131656,
-      "detail_elapsed_ms": 2508,
-      "scraped_at": "2026-07-29T16:03:11.590Z"
+      "detail_html_length": 130292,
+      "detail_elapsed_ms": 4126,
+      "scraped_at": "2026-07-29T16:08:27.274Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131320,
-      "detail_elapsed_ms": 2462,
-      "scraped_at": "2026-07-29T16:03:14.052Z"
+      "detail_html_length": 131203,
+      "detail_elapsed_ms": 7974,
+      "scraped_at": "2026-07-29T16:08:35.249Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131572,
-      "detail_elapsed_ms": 2527,
-      "scraped_at": "2026-07-29T16:03:16.580Z"
+      "detail_html_length": 131846,
+      "detail_elapsed_ms": 13904,
+      "scraped_at": "2026-07-29T16:08:49.153Z"
     },
     {
       "id": "p9p-1-ingresso-30-07-neo-qumica-arena-sp",
@@ -255,10 +231,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 127411,
-      "detail_elapsed_ms": 2933,
-      "scraped_at": "2026-07-29T16:03:19.513Z"
+      "detail_attempts": 2,
+      "detail_html_length": 133763,
+      "detail_elapsed_ms": 12092,
+      "scraped_at": "2026-07-29T16:09:13.998Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131594,
-      "detail_elapsed_ms": 2435,
-      "scraped_at": "2026-07-29T16:03:21.949Z"
+      "detail_html_length": 132752,
+      "detail_elapsed_ms": 8681,
+      "scraped_at": "2026-07-29T16:09:22.679Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130493,
-      "detail_elapsed_ms": 2460,
-      "scraped_at": "2026-07-29T16:03:24.409Z"
+      "detail_html_length": 125319,
+      "detail_elapsed_ms": 2762,
+      "scraped_at": "2026-07-29T16:09:25.442Z"
+    },
+    {
+      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
+      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
+      "category": "Shows, Cinemas e Espetáculos",
+      "partner_name": "Rodeio Itu Festival",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/67d4a00f16e1d12c371f34106004891e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 138240,
+      "detail_elapsed_ms": 5617,
+      "scraped_at": "2026-07-29T16:09:31.059Z"
     }
   ]
 }
