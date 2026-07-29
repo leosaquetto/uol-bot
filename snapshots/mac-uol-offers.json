@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 75101,
-  "run_duration_seconds": 75.1,
-  "avg_detail_ms_per_offer": 6258,
-  "generated_at": "2026-07-29T14:14:46.612Z",
+  "run_duration_ms": 58262,
+  "run_duration_seconds": 58.26,
+  "avg_detail_ms_per_offer": 4855,
+  "generated_at": "2026-07-29T14:19:04.071Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pay-50-off-no-par-de-ingressos-de-cinema",
+      "trace_id": "trace_pay-50-off-no-par-de-ingressos-de-cinema",
+      "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-par-de-ingressos-de-cinema",
+      "original_link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-par-de-ingressos-de-cinema",
+      "title": "50% OFF no Festival Filmes Incríveis",
+      "preview_title": "50% OFF no par de ingressos de cinema",
+      "validity": "Benefício válido de 29/07/2026 11:12 até 12/08/2026 23:59.",
+      "description": "Sobre o parceiro: O Cine Belas Artes é um cinema notável de São Paulo, conhecido por sua programação diversificada desde 1956, data de seu nascimento. Sobre o Festival Filmes Incríveis 2026: De 30 de julho a 12 de agosto, o Cine Belas Artes recebe o Festival Filmes Incríveis 2026, com longas inéditos de diversos países. A mostra reúne produções que passaram por festivais como Cannes, Berlim e Roterdã, destacando obras pouco vistas no circuito comercial. O FFI é uma iniciativa do Belas Artes Grupo com realização do Ministério da Cultura. Benefício: 50% de desconto no par de ingressos do Festival Filmes Incríveis 2026 no Cine Belas Artes. Regras: Benefício válido para Assinante UOL. Basta apresentar o voucher e documento original na bilheteria do cinema para obter sua meia-entrada no par de ingressos do Cine Belas Artes. Desconto válido para a programação regular do cinema. Atenção! Confira a programação clicando em \"Ir para o site\".",
+      "category": "Promoções do Mês",
+      "partner_name": "Cine Belas Artes",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/52417b631f082ad9b303fa194747eaf5.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6a0a2a7838c_766beb2eca3620cef2d1b2ffbbbf6e75.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132239,
+      "detail_elapsed_ms": 8850,
+      "scraped_at": "2026-07-29T14:18:32.448Z"
+    },
     {
       "id": "pav-2-ingressos-01-08-teatro-vanucci-rj",
       "trace_id": "trace_pav-2-ingressos-01-08-teatro-vanucci-rj",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133063,
-      "detail_elapsed_ms": 7343,
-      "scraped_at": "2026-07-29T14:14:09.460Z"
+      "detail_html_length": 126850,
+      "detail_elapsed_ms": 3131,
+      "scraped_at": "2026-07-29T14:18:35.579Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131956,
-      "detail_elapsed_ms": 3918,
-      "scraped_at": "2026-07-29T14:14:13.378Z"
+      "detail_html_length": 133113,
+      "detail_elapsed_ms": 2762,
+      "scraped_at": "2026-07-29T14:18:38.342Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126752,
-      "detail_elapsed_ms": 2682,
-      "scraped_at": "2026-07-29T14:14:16.060Z"
+      "detail_html_length": 133085,
+      "detail_elapsed_ms": 3125,
+      "scraped_at": "2026-07-29T14:18:41.467Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -112,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133052,
-      "detail_elapsed_ms": 2502,
-      "scraped_at": "2026-07-29T14:14:18.575Z"
+      "detail_html_length": 134221,
+      "detail_elapsed_ms": 2778,
+      "scraped_at": "2026-07-29T14:18:44.246Z"
     },
     {
-      "id": "paa-20-off-em-selecao-de-dia-dos-pais",
-      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
-      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
+      "id": "paa-20-off-em-seleo-de-dia-dos-pais",
+      "trace_id": "trace_paa-20-off-em-seleo-de-dia-dos-pais",
+      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
+      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
       "title": "20% OFF em seleção de Dia dos Pais",
       "preview_title": "20% OFF em seleção de Dia dos Pais",
       "validity": "Benefício válido de 27/07/2026 12:00 até 02/08/2026 23:59.",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124553,
-      "detail_elapsed_ms": 2291,
-      "scraped_at": "2026-07-29T14:14:20.866Z"
+      "detail_html_length": 124563,
+      "detail_elapsed_ms": 2430,
+      "scraped_at": "2026-07-29T14:18:46.677Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -160,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133273,
-      "detail_elapsed_ms": 2637,
-      "scraped_at": "2026-07-29T14:14:23.503Z"
+      "detail_html_length": 133272,
+      "detail_elapsed_ms": 3079,
+      "scraped_at": "2026-07-29T14:18:49.756Z"
     },
     {
-      "id": "p9u-ate-12-off-em-alugueis-carro",
-      "trace_id": "trace_p9u-ate-12-off-em-alugueis-carro",
-      "link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
-      "original_link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
+      "id": "p9u-at-12-off-em-aluguis-carro",
+      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro",
+      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
       "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133655,
-      "detail_elapsed_ms": 3100,
-      "scraped_at": "2026-07-29T14:14:26.603Z"
+      "detail_html_length": 127134,
+      "detail_elapsed_ms": 3162,
+      "scraped_at": "2026-07-29T14:18:52.918Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -208,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131677,
-      "detail_elapsed_ms": 2593,
-      "scraped_at": "2026-07-29T14:14:29.196Z"
+      "detail_html_length": 131687,
+      "detail_elapsed_ms": 2331,
+      "scraped_at": "2026-07-29T14:18:55.249Z"
     },
     {
-      "id": "p9r-20-off-em-selecao-especial",
-      "trace_id": "trace_p9r-20-off-em-selecao-especial",
-      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
-      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
+      "id": "p9r-20-off-em-seleo-especial",
+      "trace_id": "trace_p9r-20-off-em-seleo-especial",
+      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
+      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
       "title": "20% OFF em seleção especial",
       "preview_title": "20% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:11 até 09/08/2026 23:59.",
@@ -232,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131352,
-      "detail_elapsed_ms": 2886,
-      "scraped_at": "2026-07-29T14:14:32.083Z"
+      "detail_html_length": 124968,
+      "detail_elapsed_ms": 2516,
+      "scraped_at": "2026-07-29T14:18:57.765Z"
     },
     {
-      "id": "p9q-30-off-em-selecao-especial",
-      "trace_id": "trace_p9q-30-off-em-selecao-especial",
-      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
-      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
+      "id": "p9q-30-off-em-seleo-especial",
+      "trace_id": "trace_p9q-30-off-em-seleo-especial",
+      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
+      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
       "title": "30% OFF em seleção especial",
       "preview_title": "30% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:03 até 09/08/2026 23:59.",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125212,
-      "detail_elapsed_ms": 2731,
-      "scraped_at": "2026-07-29T14:14:34.814Z"
+      "detail_html_length": 131573,
+      "detail_elapsed_ms": 2926,
+      "scraped_at": "2026-07-29T14:19:00.691Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132596,
-      "detail_elapsed_ms": 5232,
-      "scraped_at": "2026-07-29T14:14:40.048Z"
-    },
-    {
-      "id": "p97-20-de-desconto-em-qualquer-plano",
-      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
-      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
-      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
-      "title": "20% de desconto em qualquer plano!",
-      "preview_title": "20% de desconto em qualquer plano!",
-      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
-      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
-      "category": "",
-      "partner_name": "Zelus Pet",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131526,
-      "detail_elapsed_ms": 6175,
-      "scraped_at": "2026-07-29T14:14:46.223Z"
+      "detail_html_length": 132743,
+      "detail_elapsed_ms": 3063,
+      "scraped_at": "2026-07-29T14:19:03.754Z"
     }
   ]
 }
