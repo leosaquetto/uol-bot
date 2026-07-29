@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 126222,
-  "run_duration_seconds": 126.22,
-  "avg_detail_ms_per_offer": 10519,
-  "generated_at": "2026-07-29T12:31:01.186Z",
+  "run_duration_ms": 116268,
+  "run_duration_seconds": 116.27,
+  "avg_detail_ms_per_offer": 9689,
+  "generated_at": "2026-07-29T12:36:10.929Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAp-1-ingresso-02-12-corrida-pampulha-mg",
       "title": "1 ingresso 02/12 Corrida Pampulha - MG",
       "preview_title": "1 ingresso 02/12 Corrida Pampulha - MG",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 29/07/2026 08:48 até 30/07/2026 23:59.",
+      "description": "Assinante UOL, prepare-se para a largada! Resgate 1 ingresso individual para participar da 27ª Volta Internacional da Pampulha, uma das corridas de rua mais tradicionais e prestigiadas do Brasil. Viva a emoção de percorrer um trajeto histórico ao redor da Lagoa da Pampulha, cartão-postal de Belo Horizonte, em um evento que reúne atletas de elite e apaixonados por corrida em um cenário único e inspirador. Data: 02 de Dezembro de 2026 com largada a partir das 6h. Local: Estádio Mineirão – Av. Antônio Abrahão Caram, 1001, São José, Belo Horizonte – MG. Prazo de inscrição: Quinta - feira, 30/07/2026. Importante: O voucher que você resgatou corresponde a apenas 1 ingresso individual. Como resgatar meu benefício: Acesse o link do evento: https://www.yescom.com.br/voltadapampulha/2026/index.asp Antes de realizar o cadastro e seguir com a inscrição, clique em “Estou de acordo” e depois em “Quero continuar”. Preencha todos os dados obrigatórios para concluir o cadastro. Após finalizar o cadastro, retorne ao link indicado e clique em “Inscreva-se”. Selecione a opção Individual, escolha o participante e clique em “Continuar”. Escolha a modalidade Básica, informe a KM e selecione o tamanho da camiseta conforme disponibilidade no site. Na aba Confirmação, insira o cupom recebido no campo Desconto/Código, valide e clique em “Continuar”. Sua inscrição será concluída gratuitamente e o KIT poderá ser retirado no local indicado. Importante: O Cupom é limitado de 1 inscrição Fique atento a data da sua corrida, pois a inscrição não poderá ser reutilizado; Prazo de inscrição: Quinta - feira, 30/07/2026.. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/pAp-1-ingresso-02-12-corrida-pampulha-mg\", waiting until \"domcontentloaded\"",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12046,
-      "scraped_at": "2026-07-29T12:30:25.566Z"
+      "detail_html_length": 133289,
+      "detail_elapsed_ms": 4619,
+      "scraped_at": "2026-07-29T12:35:28.099Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134211,
-      "detail_elapsed_ms": 7095,
-      "scraped_at": "2026-07-29T12:30:32.661Z"
+      "detail_html_length": 134072,
+      "detail_elapsed_ms": 4923,
+      "scraped_at": "2026-07-29T12:35:33.022Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124543,
-      "detail_elapsed_ms": 2766,
-      "scraped_at": "2026-07-29T12:30:35.428Z"
+      "detail_html_length": 129531,
+      "detail_elapsed_ms": 3952,
+      "scraped_at": "2026-07-29T12:35:36.974Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133261,
-      "detail_elapsed_ms": 2805,
-      "scraped_at": "2026-07-29T12:30:38.233Z"
+      "detail_html_length": 126909,
+      "detail_elapsed_ms": 4726,
+      "scraped_at": "2026-07-29T12:35:41.700Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132428,
-      "detail_elapsed_ms": 2783,
-      "scraped_at": "2026-07-29T12:30:41.016Z"
+      "detail_html_length": 132475,
+      "detail_elapsed_ms": 3225,
+      "scraped_at": "2026-07-29T12:35:44.925Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125581,
-      "detail_elapsed_ms": 2388,
-      "scraped_at": "2026-07-29T12:30:43.405Z"
+      "detail_html_length": 130182,
+      "detail_elapsed_ms": 3254,
+      "scraped_at": "2026-07-29T12:35:48.179Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124978,
-      "detail_elapsed_ms": 2765,
-      "scraped_at": "2026-07-29T12:30:46.170Z"
+      "detail_html_length": 130179,
+      "detail_elapsed_ms": 3338,
+      "scraped_at": "2026-07-29T12:35:51.517Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131555,
-      "detail_elapsed_ms": 2767,
-      "scraped_at": "2026-07-29T12:30:48.937Z"
+      "detail_html_length": 130317,
+      "detail_elapsed_ms": 2840,
+      "scraped_at": "2026-07-29T12:35:54.357Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126380,
-      "detail_elapsed_ms": 2607,
-      "scraped_at": "2026-07-29T12:30:51.544Z"
+      "detail_html_length": 131444,
+      "detail_elapsed_ms": 3176,
+      "scraped_at": "2026-07-29T12:35:57.533Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130427,
-      "detail_elapsed_ms": 2607,
-      "scraped_at": "2026-07-29T12:30:54.151Z"
+      "detail_html_length": 131513,
+      "detail_elapsed_ms": 4031,
+      "scraped_at": "2026-07-29T12:36:01.564Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132842,
-      "detail_elapsed_ms": 3059,
-      "scraped_at": "2026-07-29T12:30:57.211Z"
+      "detail_html_length": 133928,
+      "detail_elapsed_ms": 5577,
+      "scraped_at": "2026-07-29T12:36:07.141Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130851,
-      "detail_elapsed_ms": 3274,
-      "scraped_at": "2026-07-29T12:31:00.485Z"
+      "detail_html_length": 129604,
+      "detail_elapsed_ms": 3388,
+      "scraped_at": "2026-07-29T12:36:10.529Z"
     }
   ]
 }
