@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-29T15:12:33.571834Z",
+  "updated_at": "2026-07-29T15:16:54.039178Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 3,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 9,
+    "duplicada_historico": 8,
     "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -51,12 +51,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_p9w-2-ingressos-31-07-teatro-claro-rj"
-    },
-    {
-      "title": "Até 12% OFF em aluguéis de carro",
-      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro"
     },
     {
       "title": "15% OFF em produtos Marketplace",
