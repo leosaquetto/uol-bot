@@ -1,0 +1,15 @@
+{
+  "name": "uol-ingressos-discord-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check src/worker.js && node --test test/*.test.js && wrangler deploy --dry-run",
+    "test": "node --test test/*.test.js",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "4.115.0"
+  }
+}

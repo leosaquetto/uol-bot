@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "uol-ingressos-discord-pilot",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-07-29",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "DELIVERY_MODE": "dry-run",
+    "MAX_STATE_OFFERS": "200"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "TICKET_ALARM",
+        "class_name": "TicketAlarm"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["TicketAlarm"]
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "UOL_TICKETS_STATE",
+      "id": "633cda9adb884af6a94fa929c640bdda"
+    }
+  ]
+}
