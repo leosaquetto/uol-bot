@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-29T16:04:25.468676Z",
+  "updated_at": "2026-07-29T16:11:47.195187Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/campanhasdeingresso/pAt-2-ingressos-31-07-teatro-vanucci-rj",
       "reason": "duplicada_historico",
       "trace_id": "trace_pat-2-ingressos-31-07-teatro-vanucci-rj"
-    },
-    {
-      "title": "2 INGRESSOS 01/08 MASP - SP",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAr-2-ingressos-01-08-masp-sp",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_par-2-ingressos-01-08-masp-sp"
     },
     {
       "title": "10% de desconto no primeiro corte",
@@ -57,6 +51,12 @@
       "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "reason": "duplicada_historico",
       "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano"
+    },
+    {
+      "title": "10% OFF no ingresso nos dias 11 e 12/09",
+      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09"
     }
   ]
 }
