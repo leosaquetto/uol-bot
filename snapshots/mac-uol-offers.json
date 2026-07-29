@@ -6,20 +6,44 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 9,
-  "detail_fail_count": 3,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 9,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 3
+    "failed": 0
   },
-  "run_duration_ms": 87936,
-  "run_duration_seconds": 87.94,
-  "avg_detail_ms_per_offer": 7328,
-  "generated_at": "2026-07-29T11:59:19.501Z",
+  "run_duration_ms": 89776,
+  "run_duration_seconds": 89.78,
+  "avg_detail_ms_per_offer": 7481,
+  "generated_at": "2026-07-29T12:04:03.654Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pap-1-ingresso-02-12-corrida-pampulha-mg",
+      "trace_id": "trace_pap-1-ingresso-02-12-corrida-pampulha-mg",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pAp-1-ingresso-02-12-corrida-pampulha-mg",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAp-1-ingresso-02-12-corrida-pampulha-mg",
+      "title": "1 ingresso 02/12 Corrida Pampulha - MG",
+      "preview_title": "1 ingresso 02/12 Corrida Pampulha - MG",
+      "validity": "Benefício válido de 29/07/2026 08:48 até 30/07/2026 23:59.",
+      "description": "Assinante UOL, prepare-se para a largada! Resgate 1 ingresso individual para participar da 27ª Volta Internacional da Pampulha, uma das corridas de rua mais tradicionais e prestigiadas do Brasil. Viva a emoção de percorrer um trajeto histórico ao redor da Lagoa da Pampulha, cartão-postal de Belo Horizonte, em um evento que reúne atletas de elite e apaixonados por corrida em um cenário único e inspirador. Data: 02 de Dezembro de 2026 com largada a partir das 6h. Local: Estádio Mineirão – Av. Antônio Abrahão Caram, 1001, São José, Belo Horizonte – MG. Prazo de inscrição: Quinta - feira, 30/07/2026. Importante: O voucher que você resgatou corresponde a apenas 1 ingresso individual. Como resgatar meu benefício: Acesse o link do evento: https://www.yescom.com.br/voltadapampulha/2026/index.asp Antes de realizar o cadastro e seguir com a inscrição, clique em “Estou de acordo” e depois em “Quero continuar”. Preencha todos os dados obrigatórios para concluir o cadastro. Após finalizar o cadastro, retorne ao link indicado e clique em “Inscreva-se”. Selecione a opção Individual, escolha o participante e clique em “Continuar”. Escolha a modalidade Básica, informe a KM e selecione o tamanho da camiseta conforme disponibilidade no site. Na aba Confirmação, insira o cupom recebido no campo Desconto/Código, valide e clique em “Continuar”. Sua inscrição será concluída gratuitamente e o KIT poderá ser retirado no local indicado. Importante: O Cupom é limitado de 1 inscrição Fique atento a data da sua corrida, pois a inscrição não poderá ser reutilizado; Prazo de inscrição: Quinta - feira, 30/07/2026.. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/c3c4ac6d2350de4b2729c5c96a62fe8e.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 134719,
+      "detail_elapsed_ms": 12579,
+      "scraped_at": "2026-07-29T12:03:21.936Z"
+    },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
       "trace_id": "trace_pao-10-de-desconto-no-primeiro-corte",
@@ -40,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134082,
-      "detail_elapsed_ms": 9270,
-      "scraped_at": "2026-07-29T11:58:42.628Z"
+      "detail_html_length": 133071,
+      "detail_elapsed_ms": 3479,
+      "scraped_at": "2026-07-29T12:03:25.415Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129690,
-      "detail_elapsed_ms": 4013,
-      "scraped_at": "2026-07-29T11:58:46.641Z"
+      "detail_html_length": 129610,
+      "detail_elapsed_ms": 3910,
+      "scraped_at": "2026-07-29T12:03:29.325Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133302,
-      "detail_elapsed_ms": 2843,
-      "scraped_at": "2026-07-29T11:58:49.484Z"
+      "detail_html_length": 132046,
+      "detail_elapsed_ms": 3115,
+      "scraped_at": "2026-07-29T12:03:32.441Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133596,
-      "detail_elapsed_ms": 4382,
-      "scraped_at": "2026-07-29T11:58:53.866Z"
+      "detail_html_length": 133638,
+      "detail_elapsed_ms": 5094,
+      "scraped_at": "2026-07-29T12:03:37.535Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125312,
-      "detail_elapsed_ms": 2498,
-      "scraped_at": "2026-07-29T11:58:56.364Z"
+      "detail_html_length": 131677,
+      "detail_elapsed_ms": 4422,
+      "scraped_at": "2026-07-29T12:03:41.958Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130201,
-      "detail_elapsed_ms": 2500,
-      "scraped_at": "2026-07-29T11:58:58.864Z"
+      "detail_html_length": 130183,
+      "detail_elapsed_ms": 2668,
+      "scraped_at": "2026-07-29T12:03:44.626Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130422,
-      "detail_elapsed_ms": 2296,
-      "scraped_at": "2026-07-29T11:59:01.160Z"
+      "detail_html_length": 130336,
+      "detail_elapsed_ms": 3639,
+      "scraped_at": "2026-07-29T12:03:48.265Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126408,
-      "detail_elapsed_ms": 2680,
-      "scraped_at": "2026-07-29T11:59:03.840Z"
+      "detail_html_length": 131359,
+      "detail_elapsed_ms": 4302,
+      "scraped_at": "2026-07-29T12:03:52.567Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -219,22 +243,22 @@
       "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
       "title": "20% de desconto em qualquer plano!",
       "preview_title": "20% de desconto em qualquer plano!",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
       "category": "",
       "partner_name": "Zelus Pet",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 386,
-      "scraped_at": "2026-07-29T11:59:04.848Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130426,
+      "detail_elapsed_ms": 3338,
+      "scraped_at": "2026-07-29T12:03:55.905Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -243,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
       "title": "10% OFF no ingresso nos dias 11 e 12/09",
       "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
+      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
       "category": "Shows, Cinemas e Espetáculos",
       "partner_name": "Rodeio Itu Festival",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09\" is interrupted by another navigation to \"https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09\" Call log: - navigating to \"https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 641,
-      "scraped_at": "2026-07-29T11:59:06.587Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132949,
+      "detail_elapsed_ms": 3567,
+      "scraped_at": "2026-07-29T12:03:59.472Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -267,46 +291,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Mascavo Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\" is interrupted by another navigation to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\" Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 1116,
-      "scraped_at": "2026-07-29T11:59:08.971Z"
-    },
-    {
-      "id": "p9y-15-off-extra-na-seleo-davines",
-      "trace_id": "trace_p9y-15-off-extra-na-seleo-davines",
-      "link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
-      "title": "15% OFF extra na seleção Davines",
-      "preview_title": "15% OFF extra na seleção Davines",
-      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
-      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
-      "category": "Saúde e Beleza",
-      "partner_name": "Lojas Renner",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
       "img_source": "meta_og",
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130730,
-      "detail_elapsed_ms": 8714,
-      "scraped_at": "2026-07-29T11:59:18.588Z"
+      "detail_attempts": 1,
+      "detail_html_length": 129670,
+      "detail_elapsed_ms": 3643,
+      "scraped_at": "2026-07-29T12:04:03.115Z"
     }
   ]
 }
