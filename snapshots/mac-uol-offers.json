@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 63466,
-  "run_duration_seconds": 63.47,
-  "avg_detail_ms_per_offer": 5289,
-  "generated_at": "2026-07-29T14:27:32.212Z",
+  "run_duration_ms": 68918,
+  "run_duration_seconds": 68.92,
+  "avg_detail_ms_per_offer": 5743,
+  "generated_at": "2026-07-29T14:31:58.035Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "paw-2-ingressos-02-08-teatro-vanucci-rj",
+      "trace_id": "trace_paw-2-ingressos-02-08-teatro-vanucci-rj",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj",
+      "title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
+      "preview_title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
+      "validity": "Benefício válido de 29/07/2026 10:06 até 01/08/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia “Alta Sociedade”, estrelada por Julia Lemmertz e Orã Figueiredo, com direção de Emilio de Mello. Em uma montagem ácida, divertida e extremamente atual, o espetáculo traz uma crítica bem-humorada à elite brasileira, baseada no texto de Mauro Rasi, um dos maiores dramaturgos do país. Data: 02/08/2026 | 19h. Local: Teatro Vannucci - R. Marquês de São Vicente, 52 - 3° Andar - Loja: 371 - Gávea, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133089,
+      "detail_elapsed_ms": 7065,
+      "scraped_at": "2026-07-29T14:31:26.081Z"
+    },
     {
       "id": "pav-2-ingressos-01-08-teatro-vanucci-rj",
       "trace_id": "trace_pav-2-ingressos-01-08-teatro-vanucci-rj",
@@ -40,9 +64,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133065,
-      "detail_elapsed_ms": 7716,
-      "scraped_at": "2026-07-29T14:26:56.690Z"
+      "detail_html_length": 131986,
+      "detail_elapsed_ms": 3409,
+      "scraped_at": "2026-07-29T14:31:29.490Z"
+    },
+    {
+      "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
+      "trace_id": "trace_pat-2-ingressos-31-07-teatro-vanucci-rj",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pAt-2-ingressos-31-07-teatro-vanucci-rj",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAt-2-ingressos-31-07-teatro-vanucci-rj",
+      "title": "2 INGRESSOS: 31/07 Teatro Vanucci RJ",
+      "preview_title": "2 INGRESSOS: 31/07 Teatro Vanucci RJ",
+      "validity": "Benefício válido de 29/07/2026 10:06 até 31/07/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia “Alta Sociedade”, estrelada por Julia Lemmertz e Orã Figueiredo, com direção de Emilio de Mello. Em uma montagem ácida, divertida e extremamente atual, o espetáculo traz uma crítica bem-humorada à elite brasileira, baseada no texto de Mauro Rasi, um dos maiores dramaturgos do país. Data: 31/07/2026 | 20h30. Local: Teatro Vannucci - R. Marquês de São Vicente, 52 - 3° Andar - Loja: 371 - Gávea, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/486ee84cc41dcd2c406c50707a3a07e6.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/486ee84cc41dcd2c406c50707a3a07e6.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/486ee84cc41dcd2c406c50707a3a07e6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 126830,
+      "detail_elapsed_ms": 2593,
+      "scraped_at": "2026-07-29T14:31:32.084Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -64,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131888,
-      "detail_elapsed_ms": 4373,
-      "scraped_at": "2026-07-29T14:27:01.069Z"
+      "detail_html_length": 126780,
+      "detail_elapsed_ms": 2305,
+      "scraped_at": "2026-07-29T14:31:34.389Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -88,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133085,
-      "detail_elapsed_ms": 3528,
-      "scraped_at": "2026-07-29T14:27:04.598Z"
+      "detail_html_length": 126732,
+      "detail_elapsed_ms": 2867,
+      "scraped_at": "2026-07-29T14:31:37.256Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -112,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134221,
-      "detail_elapsed_ms": 3315,
-      "scraped_at": "2026-07-29T14:27:07.913Z"
+      "detail_html_length": 127847,
+      "detail_elapsed_ms": 3170,
+      "scraped_at": "2026-07-29T14:31:40.426Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -136,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129681,
-      "detail_elapsed_ms": 3030,
-      "scraped_at": "2026-07-29T14:27:10.943Z"
+      "detail_html_length": 130915,
+      "detail_elapsed_ms": 4279,
+      "scraped_at": "2026-07-29T14:31:44.705Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -160,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132103,
-      "detail_elapsed_ms": 2800,
-      "scraped_at": "2026-07-29T14:27:13.743Z"
+      "detail_html_length": 133291,
+      "detail_elapsed_ms": 2822,
+      "scraped_at": "2026-07-29T14:31:47.530Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -184,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127295,
-      "detail_elapsed_ms": 2692,
-      "scraped_at": "2026-07-29T14:27:16.435Z"
+      "detail_html_length": 127281,
+      "detail_elapsed_ms": 2520,
+      "scraped_at": "2026-07-29T14:31:50.050Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -208,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131666,
-      "detail_elapsed_ms": 3173,
-      "scraped_at": "2026-07-29T14:27:19.608Z"
+      "detail_html_length": 125817,
+      "detail_elapsed_ms": 2405,
+      "scraped_at": "2026-07-29T14:31:52.456Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -232,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131319,
-      "detail_elapsed_ms": 3108,
-      "scraped_at": "2026-07-29T14:27:22.716Z"
+      "detail_html_length": 124976,
+      "detail_elapsed_ms": 2246,
+      "scraped_at": "2026-07-29T14:31:54.702Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -256,57 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131563,
-      "detail_elapsed_ms": 2830,
-      "scraped_at": "2026-07-29T14:27:25.546Z"
-    },
-    {
-      "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
-      "trace_id": "trace_p98-10-off-no-ingresso-nos-dias-04-a-06-09",
-      "link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
-      "original_link": "https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09",
-      "title": "10% OFF no ingresso nos dias 04 a 06/09",
-      "preview_title": "10% OFF no ingresso nos dias 04 a 06/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 06/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, prossiga com o fluxo de compra e na \"tela de pagamento\", insira o cupom em \"cupom de desconto\" para obter o desconto de Assinante UOL. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 04 a 06 de setembro. Caso queira comprar com desconto para os dias 11 e 12 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
-      "category": "Shows, Cinemas e Espetáculos",
-      "partner_name": "Rodeio Itu Festival",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/25a1f4df9f74745962d8985a855bff5d.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 126369,
-      "detail_elapsed_ms": 2977,
-      "scraped_at": "2026-07-29T14:27:28.523Z"
-    },
-    {
-      "id": "p97-20-de-desconto-em-qualquer-plano",
-      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
-      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
-      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
-      "title": "20% de desconto em qualquer plano!",
-      "preview_title": "20% de desconto em qualquer plano!",
-      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
-      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
-      "category": "",
-      "partner_name": "Zelus Pet",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131663,
-      "detail_elapsed_ms": 3044,
-      "scraped_at": "2026-07-29T14:27:31.567Z"
+      "detail_html_length": 130316,
+      "detail_elapsed_ms": 2930,
+      "scraped_at": "2026-07-29T14:31:57.632Z"
     }
   ]
 }
