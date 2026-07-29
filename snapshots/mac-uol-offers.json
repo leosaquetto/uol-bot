@@ -14,12 +14,36 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 99104,
-  "run_duration_seconds": 99.1,
-  "avg_detail_ms_per_offer": 8259,
-  "generated_at": "2026-07-29T14:10:15.127Z",
+  "run_duration_ms": 75101,
+  "run_duration_seconds": 75.1,
+  "avg_detail_ms_per_offer": 6258,
+  "generated_at": "2026-07-29T14:14:46.612Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
+    {
+      "id": "pav-2-ingressos-01-08-teatro-vanucci-rj",
+      "trace_id": "trace_pav-2-ingressos-01-08-teatro-vanucci-rj",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pAv-2-ingressos-01-08-teatro-vanucci-rj",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAv-2-ingressos-01-08-teatro-vanucci-rj",
+      "title": "2 INGRESSOS: 01/08 Teatro Vanucci RJ",
+      "preview_title": "2 INGRESSOS: 01/08 Teatro Vanucci RJ",
+      "validity": "Benefício válido de 29/07/2026 10:06 até 31/07/2026 23:59.",
+      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia “Alta Sociedade”, estrelada por Julia Lemmertz e Orã Figueiredo, com direção de Emilio de Mello. Em uma montagem ácida, divertida e extremamente atual, o espetáculo traz uma crítica bem-humorada à elite brasileira, baseada no texto de Mauro Rasi, um dos maiores dramaturgos do país. Data: 01/08/2026 | 20h30. Local: Teatro Vannucci - R. Marquês de São Vicente, 52 - 3° Andar - Loja: 371 - Gávea, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133063,
+      "detail_elapsed_ms": 7343,
+      "scraped_at": "2026-07-29T14:14:09.460Z"
+    },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
       "trace_id": "trace_par-2-ingressos-01-08-masp-sp",
@@ -39,10 +63,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 133117,
-      "detail_elapsed_ms": 8436,
-      "scraped_at": "2026-07-29T14:09:38.171Z"
+      "detail_attempts": 1,
+      "detail_html_length": 131956,
+      "detail_elapsed_ms": 3918,
+      "scraped_at": "2026-07-29T14:14:13.378Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -64,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131801,
-      "detail_elapsed_ms": 4120,
-      "scraped_at": "2026-07-29T14:09:42.291Z"
+      "detail_html_length": 126752,
+      "detail_elapsed_ms": 2682,
+      "scraped_at": "2026-07-29T14:14:16.060Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -88,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134202,
-      "detail_elapsed_ms": 4906,
-      "scraped_at": "2026-07-29T14:09:47.198Z"
+      "detail_html_length": 133052,
+      "detail_elapsed_ms": 2502,
+      "scraped_at": "2026-07-29T14:14:18.575Z"
     },
     {
       "id": "paa-20-off-em-selecao-de-dia-dos-pais",
@@ -112,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124567,
-      "detail_elapsed_ms": 2503,
-      "scraped_at": "2026-07-29T14:09:49.701Z"
+      "detail_html_length": 124553,
+      "detail_elapsed_ms": 2291,
+      "scraped_at": "2026-07-29T14:14:20.866Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -136,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131643,
-      "detail_elapsed_ms": 2751,
-      "scraped_at": "2026-07-29T14:09:52.452Z"
+      "detail_html_length": 133273,
+      "detail_elapsed_ms": 2637,
+      "scraped_at": "2026-07-29T14:14:23.503Z"
     },
     {
       "id": "p9u-ate-12-off-em-alugueis-carro",
@@ -160,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132164,
-      "detail_elapsed_ms": 2846,
-      "scraped_at": "2026-07-29T14:09:55.298Z"
+      "detail_html_length": 133655,
+      "detail_elapsed_ms": 3100,
+      "scraped_at": "2026-07-29T14:14:26.603Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -184,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125295,
-      "detail_elapsed_ms": 2748,
-      "scraped_at": "2026-07-29T14:09:58.046Z"
+      "detail_html_length": 131677,
+      "detail_elapsed_ms": 2593,
+      "scraped_at": "2026-07-29T14:14:29.196Z"
     },
     {
       "id": "p9r-20-off-em-selecao-especial",
@@ -208,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131334,
-      "detail_elapsed_ms": 2820,
-      "scraped_at": "2026-07-29T14:10:00.866Z"
+      "detail_html_length": 131352,
+      "detail_elapsed_ms": 2886,
+      "scraped_at": "2026-07-29T14:14:32.083Z"
     },
     {
       "id": "p9q-30-off-em-selecao-especial",
@@ -232,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131565,
-      "detail_elapsed_ms": 3803,
-      "scraped_at": "2026-07-29T14:10:04.669Z"
+      "detail_html_length": 125212,
+      "detail_elapsed_ms": 2731,
+      "scraped_at": "2026-07-29T14:14:34.814Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -256,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132754,
-      "detail_elapsed_ms": 3318,
-      "scraped_at": "2026-07-29T14:10:07.987Z"
+      "detail_html_length": 132596,
+      "detail_elapsed_ms": 5232,
+      "scraped_at": "2026-07-29T14:14:40.048Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -280,33 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 125292,
-      "detail_elapsed_ms": 2726,
-      "scraped_at": "2026-07-29T14:10:10.713Z"
-    },
-    {
-      "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "trace_id": "trace_p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "original_link": "https://clube.uol.com.br/rodeioitufestival/p95-10-off-no-ingresso-nos-dias-11-e-12-09",
-      "title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "preview_title": "10% OFF no ingresso nos dias 11 e 12/09",
-      "validity": "Benefício válido de 23/07/2026 09:56 até 12/09/2026 23:59.",
-      "description": "Sobre o Rodeio Itu Festival: Há 20 anos, o Rodeio Itu Festival faz história e reúne multidões de todo o Brasil. Em 2026, a celebração será ainda maior, com mais emoção, música e experiências inesquecíveis. Um festival que conecta gerações, cria memórias e marca vidas. O lugar onde a emoção acontece. Benefício: Cupom de 10% OFF no ingresso do Rodeio Itu Festival. Como utilizar: Para resgatar o desconto de 10% no ingresso, clique em \"Utilizar este benefício\", copie o código e clique em \"Ir para o site\". Ao ser direcionado para a ticketeira oficial do evento, clique em \"Possui código\" e insira em \"Código promocional\". Em seguida, prossiga com a compra do ingresso com desconto. Regras: Benefício válido para Assinante UOL. Cada assinante tem direito ao cupom exclusivo de 10% OFF em até 3 ingressos. O desconto é válido para todas as categorias. Atenção! O desconto desta campanha vale apenas para 11 e 12 de setembro. Caso queira comprar com desconto para os dias 04, 05 e 06 de setembro, resgate o benefício em https://clube.uol.com.br/rodeioitufestival/p98-10-off-no-ingresso-nos-dias-04-a-06-09 Mais informações: Data do Rodeio Itu Festival: 04 a 12 de setembro de 2026. Localização da Arena Itu: Rod. Dep. Archimedes Lammoglia, Km 18, Itu - SP.",
-      "category": "Shows, Cinemas e Espetáculos",
-      "partner_name": "Rodeio Itu Festival",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/325df46d79f37a50e798e0f317cbed71.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/bba53f8c4ae89025c190a5a07029a6f6.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 138234,
-      "detail_elapsed_ms": 3943,
-      "scraped_at": "2026-07-29T14:10:14.656Z"
+      "detail_html_length": 131526,
+      "detail_elapsed_ms": 6175,
+      "scraped_at": "2026-07-29T14:14:46.223Z"
     }
   ]
 }
