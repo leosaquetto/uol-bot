@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-07-29T22:21:02.658904Z",
+  "last_update": "2026-07-29T22:21:09.723915Z",
   "offers": [
     {
       "id": "pAh-2-ingressos-31-07-teatro-sergio-cardoso",
@@ -446,7 +446,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-29T21:52:27.062956Z",
-      "sold_out_at": "19:19"
+      "sold_out_at": "19:19",
+      "_sold_out_synced_to_telegram": true
     },
     {
       "id": "pA4-2-ingressos-01-08-teatro-liberdade-sp",
@@ -468,7 +469,8 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-29T21:52:41.485005Z",
-      "sold_out_at": "19:19"
+      "sold_out_at": "19:19",
+      "_sold_out_synced_to_telegram": true
     }
   ]
 }
