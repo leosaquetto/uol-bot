@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 10,
-  "detail_fail_count": 2,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 10,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 2
+    "failed": 0
   },
-  "run_duration_ms": 65446,
-  "run_duration_seconds": 65.45,
-  "avg_detail_ms_per_offer": 5454,
-  "generated_at": "2026-07-29T02:01:07.837Z",
+  "run_duration_ms": 61289,
+  "run_duration_seconds": 61.29,
+  "avg_detail_ms_per_offer": 5107,
+  "generated_at": "2026-07-29T02:05:20.029Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134056,
-      "detail_elapsed_ms": 9418,
-      "scraped_at": "2026-07-29T02:00:38.922Z"
+      "detail_html_length": 134073,
+      "detail_elapsed_ms": 7823,
+      "scraped_at": "2026-07-29T02:04:46.276Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 129673,
-      "detail_elapsed_ms": 2699,
-      "scraped_at": "2026-07-29T02:00:41.622Z"
+      "detail_html_length": 124556,
+      "detail_elapsed_ms": 3063,
+      "scraped_at": "2026-07-29T02:04:49.340Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133681,
-      "detail_elapsed_ms": 2548,
-      "scraped_at": "2026-07-29T02:00:44.170Z"
+      "detail_html_length": 128402,
+      "detail_elapsed_ms": 2736,
+      "scraped_at": "2026-07-29T02:04:52.077Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133646,
-      "detail_elapsed_ms": 2491,
-      "scraped_at": "2026-07-29T02:00:46.662Z"
+      "detail_html_length": 127645,
+      "detail_elapsed_ms": 2051,
+      "scraped_at": "2026-07-29T02:04:54.128Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131668,
-      "detail_elapsed_ms": 2316,
-      "scraped_at": "2026-07-29T02:00:48.978Z"
+      "detail_html_length": 126796,
+      "detail_elapsed_ms": 2601,
+      "scraped_at": "2026-07-29T02:04:56.729Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130173,
-      "detail_elapsed_ms": 2450,
-      "scraped_at": "2026-07-29T02:00:51.431Z"
+      "detail_html_length": 126461,
+      "detail_elapsed_ms": 2290,
+      "scraped_at": "2026-07-29T02:04:59.020Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131576,
-      "detail_elapsed_ms": 3322,
-      "scraped_at": "2026-07-29T02:00:54.753Z"
+      "detail_html_length": 125212,
+      "detail_elapsed_ms": 1923,
+      "scraped_at": "2026-07-29T02:05:00.943Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132744,
-      "detail_elapsed_ms": 2470,
-      "scraped_at": "2026-07-29T02:00:57.223Z"
+      "detail_html_length": 127177,
+      "detail_elapsed_ms": 3026,
+      "scraped_at": "2026-07-29T02:05:03.969Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131674,
-      "detail_elapsed_ms": 2512,
-      "scraped_at": "2026-07-29T02:00:59.736Z"
+      "detail_html_length": 126793,
+      "detail_elapsed_ms": 8083,
+      "scraped_at": "2026-07-29T02:05:12.052Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 138233,
-      "detail_elapsed_ms": 3881,
-      "scraped_at": "2026-07-29T02:01:03.617Z"
+      "detail_html_length": 128069,
+      "detail_elapsed_ms": 2579,
+      "scraped_at": "2026-07-29T02:05:14.632Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -267,22 +267,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Mascavo Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\" is interrupted by another navigation to \"chrome-error://chromewebdata/\" Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 516,
-      "scraped_at": "2026-07-29T02:01:04.728Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130851,
+      "detail_elapsed_ms": 2603,
+      "scraped_at": "2026-07-29T02:05:17.235Z"
     },
     {
       "id": "p9y-15-off-extra-na-seleo-davines",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines",
       "title": "15% OFF extra na seleção Davines",
       "preview_title": "15% OFF extra na seleção Davines",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Davines Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines\" is interrupted by another navigation to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines\" Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9y-15-off-extra-na-seleo-davines\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 578,
-      "scraped_at": "2026-07-29T02:01:07.280Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/ef30b5ac59e0e7c59f3b8c66182e7ae8.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130840,
+      "detail_elapsed_ms": 2364,
+      "scraped_at": "2026-07-29T02:05:19.599Z"
     }
   ]
 }
