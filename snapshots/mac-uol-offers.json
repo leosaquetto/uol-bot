@@ -14,10 +14,10 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 80220,
-  "run_duration_seconds": 80.22,
-  "avg_detail_ms_per_offer": 6685,
-  "generated_at": "2026-07-29T13:00:13.718Z",
+  "run_duration_ms": 81699,
+  "run_duration_seconds": 81.7,
+  "avg_detail_ms_per_offer": 6808,
+  "generated_at": "2026-07-29T13:04:50.909Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -40,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133023,
-      "detail_elapsed_ms": 10815,
-      "scraped_at": "2026-07-29T12:59:40.132Z"
+      "detail_html_length": 132994,
+      "detail_elapsed_ms": 9764,
+      "scraped_at": "2026-07-29T13:04:16.279Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 126770,
-      "detail_elapsed_ms": 2981,
-      "scraped_at": "2026-07-29T12:59:43.113Z"
+      "detail_html_length": 133137,
+      "detail_elapsed_ms": 5298,
+      "scraped_at": "2026-07-29T13:04:21.577Z"
     },
     {
       "id": "paq-2-ingressos-31-07-masp-sp",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131935,
-      "detail_elapsed_ms": 2428,
-      "scraped_at": "2026-07-29T12:59:45.542Z"
+      "detail_html_length": 126596,
+      "detail_elapsed_ms": 2765,
+      "scraped_at": "2026-07-29T13:04:24.342Z"
     },
     {
       "id": "pap-1-ingresso-02-12-corrida-pampulha-mg",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133427,
-      "detail_elapsed_ms": 2647,
-      "scraped_at": "2026-07-29T12:59:48.189Z"
+      "detail_html_length": 133431,
+      "detail_elapsed_ms": 2364,
+      "scraped_at": "2026-07-29T13:04:26.706Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -136,15 +136,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134220,
-      "detail_elapsed_ms": 2884,
-      "scraped_at": "2026-07-29T12:59:51.073Z"
+      "detail_html_length": 132978,
+      "detail_elapsed_ms": 2761,
+      "scraped_at": "2026-07-29T13:04:29.467Z"
     },
     {
-      "id": "paa-20-off-em-seleo-de-dia-dos-pais",
-      "trace_id": "trace_paa-20-off-em-seleo-de-dia-dos-pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
-      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
+      "id": "paa-20-off-em-selecao-de-dia-dos-pais",
+      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais",
+      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
+      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
       "title": "20% OFF em seleção de Dia dos Pais",
       "preview_title": "20% OFF em seleção de Dia dos Pais",
       "validity": "Benefício válido de 27/07/2026 12:00 até 02/08/2026 23:59.",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130916,
-      "detail_elapsed_ms": 3105,
-      "scraped_at": "2026-07-29T12:59:54.178Z"
+      "detail_html_length": 130951,
+      "detail_elapsed_ms": 3216,
+      "scraped_at": "2026-07-29T13:04:32.683Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -184,15 +184,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132026,
-      "detail_elapsed_ms": 2271,
-      "scraped_at": "2026-07-29T12:59:56.450Z"
+      "detail_html_length": 126922,
+      "detail_elapsed_ms": 3010,
+      "scraped_at": "2026-07-29T13:04:35.694Z"
     },
     {
-      "id": "p9u-at-12-off-em-aluguis-carro",
-      "trace_id": "trace_p9u-at-12-off-em-aluguis-carro",
-      "link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
-      "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
+      "id": "p9u-ate-12-off-em-alugueis-carro",
+      "trace_id": "trace_p9u-ate-12-off-em-alugueis-carro",
+      "link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
+      "original_link": "https://clube.uol.com.br/movida/p9U-ate-12-off-em-alugueis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
       "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133643,
-      "detail_elapsed_ms": 2709,
-      "scraped_at": "2026-07-29T12:59:59.160Z"
+      "detail_html_length": 132426,
+      "detail_elapsed_ms": 2804,
+      "scraped_at": "2026-07-29T13:04:38.499Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -232,15 +232,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131653,
-      "detail_elapsed_ms": 2680,
-      "scraped_at": "2026-07-29T13:00:01.854Z"
+      "detail_html_length": 130434,
+      "detail_elapsed_ms": 2729,
+      "scraped_at": "2026-07-29T13:04:41.228Z"
     },
     {
-      "id": "p9r-20-off-em-seleo-especial",
-      "trace_id": "trace_p9r-20-off-em-seleo-especial",
-      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
-      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-seleo-especial",
+      "id": "p9r-20-off-em-selecao-especial",
+      "trace_id": "trace_p9r-20-off-em-selecao-especial",
+      "link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
+      "original_link": "https://clube.uol.com.br/zattini/p9R-20-off-em-selecao-especial",
       "title": "20% OFF em seleção especial",
       "preview_title": "20% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:11 até 09/08/2026 23:59.",
@@ -256,15 +256,15 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131329,
-      "detail_elapsed_ms": 3253,
-      "scraped_at": "2026-07-29T13:00:05.109Z"
+      "detail_html_length": 124980,
+      "detail_elapsed_ms": 3040,
+      "scraped_at": "2026-07-29T13:04:44.269Z"
     },
     {
-      "id": "p9q-30-off-em-seleo-especial",
-      "trace_id": "trace_p9q-30-off-em-seleo-especial",
-      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
-      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
+      "id": "p9q-30-off-em-selecao-especial",
+      "trace_id": "trace_p9q-30-off-em-selecao-especial",
+      "link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
+      "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-selecao-especial",
       "title": "30% OFF em seleção especial",
       "preview_title": "30% OFF em seleção especial",
       "validity": "Benefício válido de 27/07/2026 12:03 até 09/08/2026 23:59.",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131581,
-      "detail_elapsed_ms": 4428,
-      "scraped_at": "2026-07-29T13:00:09.537Z"
+      "detail_html_length": 131576,
+      "detail_elapsed_ms": 3132,
+      "scraped_at": "2026-07-29T13:04:47.401Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132741,
-      "detail_elapsed_ms": 3614,
-      "scraped_at": "2026-07-29T13:00:13.151Z"
+      "detail_html_length": 131519,
+      "detail_elapsed_ms": 2810,
+      "scraped_at": "2026-07-29T13:04:50.211Z"
     }
   ]
 }
