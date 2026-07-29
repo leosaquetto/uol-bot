@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-29T22:01:47.748270Z",
+  "updated_at": "2026-07-29T22:07:40.828085Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 7,
+    "duplicada_historico": 6,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
@@ -21,12 +21,6 @@
       "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
       "reason": "duplicada_latest",
       "trace_id": "trace_pay-50-off-no-festival-filmes-incrveis"
-    },
-    {
-      "title": "2 INGRESSOS: 31/07 Teatro Vanucci RJ",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAt-2-ingressos-31-07-teatro-vanucci-rj",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_pat-2-ingressos-31-07-teatro-vanucci-rj"
     },
     {
       "title": "10% de desconto no primeiro corte",
