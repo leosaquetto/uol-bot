@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 49197,
-  "run_duration_seconds": 49.2,
-  "avg_detail_ms_per_offer": 4100,
-  "generated_at": "2026-07-29T20:17:10.133Z",
+  "run_duration_ms": 49310,
+  "run_duration_seconds": 49.31,
+  "avg_detail_ms_per_offer": 4109,
+  "generated_at": "2026-07-29T20:26:04.381Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "pa3-2-ingressos-08-08-teatro-das-artes-sp",
-      "trace_id": "trace_pa3-2-ingressos-08-08-teatro-das-artes-sp",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pA3-2-ingressos-08-08-teatro-das-artes-sp",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pA3-2-ingressos-08-08-teatro-das-artes-sp",
-      "title": "2 INGRESSOS: 08/08 Teatro das Artes SP",
-      "preview_title": "2 INGRESSOS: 08/08 Teatro das Artes SP",
-      "validity": "Benefício válido de 29/07/2026 16:01 até 07/08/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos e prepare-se para rir muito com o stand-up Maurício Meirelles – Surto Coletivo, um dos shows mais interativos e comentados da comédia brasileira, no Teatro das Artes, no Shopping Eldorado - SP. Data: 08/08/2026 | 22h30. Local: Av. Rebouças, 3970 - Pinheiros, São Paulo - SP Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6a526a1e52d_1ae73f06a410130e245944e49c5855a1.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6a526a1e52d_1ae73f06a410130e245944e49c5855a1.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6a526a1e52d_1ae73f06a410130e245944e49c5855a1.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 132919,
-      "detail_elapsed_ms": 6757,
-      "scraped_at": "2026-07-29T20:16:41.871Z"
-    },
     {
       "id": "pa2-2-ingressos-01-08-teatro-das-artes-sp",
       "trace_id": "trace_pa2-2-ingressos-01-08-teatro-das-artes-sp",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131883,
-      "detail_elapsed_ms": 2955,
-      "scraped_at": "2026-07-29T20:16:44.826Z"
+      "detail_html_length": 132911,
+      "detail_elapsed_ms": 6002,
+      "scraped_at": "2026-07-29T20:25:36.230Z"
     },
     {
       "id": "pay-50-off-no-festival-filmes-incrveis",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132369,
-      "detail_elapsed_ms": 2543,
-      "scraped_at": "2026-07-29T20:16:47.369Z"
+      "detail_html_length": 126033,
+      "detail_elapsed_ms": 2967,
+      "scraped_at": "2026-07-29T20:25:39.197Z"
     },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133177,
-      "detail_elapsed_ms": 2463,
-      "scraped_at": "2026-07-29T20:16:49.833Z"
+      "detail_html_length": 133205,
+      "detail_elapsed_ms": 2693,
+      "scraped_at": "2026-07-29T20:25:41.890Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134224,
-      "detail_elapsed_ms": 2666,
-      "scraped_at": "2026-07-29T20:16:52.499Z"
+      "detail_html_length": 134241,
+      "detail_elapsed_ms": 2473,
+      "scraped_at": "2026-07-29T20:25:44.364Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130919,
-      "detail_elapsed_ms": 2406,
-      "scraped_at": "2026-07-29T20:16:54.905Z"
+      "detail_html_length": 130927,
+      "detail_elapsed_ms": 2589,
+      "scraped_at": "2026-07-29T20:25:46.953Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133275,
-      "detail_elapsed_ms": 2831,
-      "scraped_at": "2026-07-29T20:16:57.736Z"
+      "detail_html_length": 133283,
+      "detail_elapsed_ms": 2438,
+      "scraped_at": "2026-07-29T20:25:49.391Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133667,
-      "detail_elapsed_ms": 2578,
-      "scraped_at": "2026-07-29T20:17:00.314Z"
+      "detail_html_length": 133655,
+      "detail_elapsed_ms": 2533,
+      "scraped_at": "2026-07-29T20:25:51.925Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131669,
-      "detail_elapsed_ms": 2404,
-      "scraped_at": "2026-07-29T20:17:02.718Z"
+      "detail_html_length": 131687,
+      "detail_elapsed_ms": 2539,
+      "scraped_at": "2026-07-29T20:25:54.464Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -256,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130096,
-      "detail_elapsed_ms": 2424,
-      "scraped_at": "2026-07-29T20:17:05.142Z"
+      "detail_html_length": 131339,
+      "detail_elapsed_ms": 2466,
+      "scraped_at": "2026-07-29T20:25:56.930Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -280,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131555,
-      "detail_elapsed_ms": 2150,
-      "scraped_at": "2026-07-29T20:17:07.293Z"
+      "detail_html_length": 131573,
+      "detail_elapsed_ms": 2279,
+      "scraped_at": "2026-07-29T20:25:59.210Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -304,9 +280,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132775,
-      "detail_elapsed_ms": 2400,
-      "scraped_at": "2026-07-29T20:17:09.693Z"
+      "detail_html_length": 132752,
+      "detail_elapsed_ms": 2213,
+      "scraped_at": "2026-07-29T20:26:01.424Z"
+    },
+    {
+      "id": "p97-20-de-desconto-em-qualquer-plano",
+      "trace_id": "trace_p97-20-de-desconto-em-qualquer-plano",
+      "link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "original_link": "https://clube.uol.com.br/zeluspet/p97-20-de-desconto-em-qualquer-plano",
+      "title": "20% de desconto em qualquer plano!",
+      "preview_title": "20% de desconto em qualquer plano!",
+      "validity": "Benefício válido de 23/07/2026 15:00 até 23/07/2028 23:59.",
+      "description": "Sobre o Parceiro: O Zelus Pet é a IA premium que cuida da saúde do seu cão ou gato o ano inteiro, não só quando ele adoece. Ele faz a leitura completa dos exames, transforma dezenas de marcadores num farol simples de entender, cruza as informações e acompanha a evolução da saúde do seu pet ao longo do tempo, avisando você quando algo começa a mudar. Tecnologia de ponta na palma da sua mão, ao lado do seu veterinário. Apoio educacional, não substitui o veterinário. Benefício: 20% de desconto em qualquer plano Regras: Aplique o cupom no momento da compra. Desconto válido por 12 meses. Aplicável às assinaturas. Sujeito à desativação sem aviso prévio.",
+      "category": "",
+      "partner_name": "Zelus Pet",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/9d6119d810176dab18289100f9dbac86.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/35d33ad861f5b1571d691eade98bc9ca.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 132069,
+      "detail_elapsed_ms": 2411,
+      "scraped_at": "2026-07-29T20:26:03.835Z"
     }
   ]
 }
