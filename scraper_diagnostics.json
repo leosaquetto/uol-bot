@@ -1,21 +1,33 @@
 {
-  "updated_at": "2026-07-29T19:51:56.941740Z",
+  "updated_at": "2026-07-29T19:56:31.891831Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 6,
+  "candidates_added": 4,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 5,
+    "duplicada_historico": 7,
     "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
   "discarded_offers": [
+    {
+      "title": "2 INGRESSOS: 08/08 Teatro das Artes SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pA3-2-ingressos-08-08-teatro-das-artes-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pa3-2-ingressos-08-08-teatro-das-artes-sp"
+    },
+    {
+      "title": "2 INGRESSOS: 01/08 Teatro das Artes SP",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/pA2-2-ingressos-01-08-teatro-das-artes-sp",
+      "reason": "duplicada_historico",
+      "trace_id": "trace_pa2-2-ingressos-01-08-teatro-das-artes-sp"
+    },
     {
       "title": "50% OFF no Festival Filmes Incríveis",
       "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
