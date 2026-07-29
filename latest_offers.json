@@ -1,27 +1,6 @@
 {
-  "last_update": "2026-07-29T14:16:21.038703Z",
+  "last_update": "2026-07-29T14:20:22.966669Z",
   "offers": [
-    {
-      "id": "pAa-20-off-em-selecao-de-dia-dos-pais",
-      "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
-      "preview_title": "20% OFF em seleção de Dia dos Pais",
-      "title": "20% OFF em seleção de Dia dos Pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-selecao-de-dia-dos-pais",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8bd1776457768ba3072e73ccca68ece3.png",
-      "validity": null,
-      "description": "",
-      "location_summary": "",
-      "dedupe_key": "20-off-em-selecao-de-dia-dos-pais",
-      "loose_dedupe_key": "20-off-em-selecao-de-dia-dos-pais",
-      "scraped_at": "2026-07-27T22:33:03.821000Z",
-      "trace_id": "trace_paa-20-off-em-selecao-de-dia-dos-pais",
-      "channel_message_id": 1764,
-      "channel_message_link": "https://t.me/c/3723320790/1764",
-      "comment_status": "failed",
-      "comment_error": "comentário não enviado: discussion_message_id ausente",
-      "sent_at": "2026-07-27T22:36:35.319660Z"
-    },
     {
       "id": "pAd-2-ingressos-02-08-teatro-tuca-sp",
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAd-2-ingressos-02-08-teatro-tuca-sp",
@@ -462,6 +441,27 @@
       "comment_status": "failed",
       "comment_error": "comentário não enviado: discussion_message_id ausente",
       "sent_at": "2026-07-29T14:16:20.848802Z"
+    },
+    {
+      "id": "pAy-50-off-no-par-de-ingressos-de-cinema",
+      "original_link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-par-de-ingressos-de-cinema",
+      "preview_title": "50% OFF no par de ingressos de cinema",
+      "title": "50% OFF no Festival Filmes Incríveis",
+      "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-par-de-ingressos-de-cinema",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/52417b631f082ad9b303fa194747eaf5.png",
+      "validity": "Benefício válido de 29/07/2026 11:12 até 12/08/2026 23:59.",
+      "description": "Sobre o parceiro: O Cine Belas Artes é um cinema notável de São Paulo, conhecido por sua programação diversificada desde 1956, data de seu nascimento. Sobre o Festival Filmes Incríveis 2026: De 30 de julho a 12 de agosto, o Cine Belas Artes recebe o Festival Filmes Incríveis 2026, com longas inéditos de diversos países. A mostra reúne produções que passaram por festivais como Cannes, Berlim e Roterdã, destacando obras pouco vistas no circuito comercial. O FFI é uma iniciativa do Belas Artes Grupo com realização do Ministério da Cultura. Benefício: 50% de desconto no par de ingressos do Festival Filmes Incríveis 2026 no Cine Belas Artes. Regras: Benefício válido para Assinante UOL. Basta apresentar o voucher e documento original na bilheteria do cinema para obter sua meia-entrada no par de ingressos do Cine Belas Artes. Desconto válido para a programação regular do cinema. Atenção! Confira a programação clicando em \"Ir para o site\".",
+      "location_summary": "",
+      "dedupe_key": "50-off-no-festival-filmes-incriveis|beneficio-valido-de-29-07-2026-11-12-ate-12-08-2026-23-59|sobre-o-parceiro-o-cine-belas-artes-e-um-cinema-notavel-de-sao-paulo-conhecido-por-sua-programacao-diversificada-desde-1956-data-de-seu-nascimento-sobre-o-festi",
+      "loose_dedupe_key": "50-off-no-festival-filmes-incriveis|sobre-o-parceiro-o-cine-belas-artes-e-um-cinema-notavel-de-sao-paulo-conhecido-por-sua-programacao-diversificada-desde-1956-data-de-seu-nascimento-sobre-o-festi",
+      "scraped_at": "2026-07-29T14:18:32.448000Z",
+      "trace_id": "trace_pay-50-off-no-par-de-ingressos-de-cinema",
+      "channel_message_id": 1784,
+      "channel_message_link": "https://t.me/c/3723320790/1784",
+      "comment_status": "failed",
+      "comment_error": "comentário não enviado: discussion_message_id ausente",
+      "sent_at": "2026-07-29T14:20:22.791576Z"
     }
   ]
 }
