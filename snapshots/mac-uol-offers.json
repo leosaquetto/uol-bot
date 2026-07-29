@@ -14,36 +14,12 @@
     "weak": 0,
     "failed": 0
   },
-  "run_duration_ms": 53631,
-  "run_duration_seconds": 53.63,
-  "avg_detail_ms_per_offer": 4469,
-  "generated_at": "2026-07-29T15:51:13.818Z",
+  "run_duration_ms": 52695,
+  "run_duration_seconds": 52.7,
+  "avg_detail_ms_per_offer": 4391,
+  "generated_at": "2026-07-29T15:55:13.058Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
-    {
-      "id": "paw-2-ingressos-02-08-teatro-vanucci-rj",
-      "trace_id": "trace_paw-2-ingressos-02-08-teatro-vanucci-rj",
-      "link": "https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj",
-      "original_link": "https://clube.uol.com.br/campanhasdeingresso/pAw-2-ingressos-02-08-teatro-vanucci-rj",
-      "title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
-      "preview_title": "2 INGRESSOS: 02/08 Teatro Vanucci RJ",
-      "validity": "Benefício válido de 29/07/2026 10:06 até 01/08/2026 23:59.",
-      "description": "Assinante UOL, Resgate 1 par de ingressos para assistir à comédia “Alta Sociedade”, estrelada por Julia Lemmertz e Orã Figueiredo, com direção de Emilio de Mello. Em uma montagem ácida, divertida e extremamente atual, o espetáculo traz uma crítica bem-humorada à elite brasileira, baseada no texto de Mauro Rasi, um dos maiores dramaturgos do país. Data: 02/08/2026 | 19h. Local: Teatro Vannucci - R. Marquês de São Vicente, 52 - 3° Andar - Loja: 371 - Gávea, Rio de Janeiro - RJ Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
-      "category": "Ingressos Exclusivos",
-      "partner_name": "Campanhas de ingressos",
-      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
-      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a69ff6e6b837_6a69fe3f67e8f_486ee84cc41dcd2c406c50707a3a07e6.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133085,
-      "detail_elapsed_ms": 4567,
-      "scraped_at": "2026-07-29T15:50:47.914Z"
-    },
     {
       "id": "pat-2-ingressos-31-07-teatro-vanucci-rj",
       "trace_id": "trace_pat-2-ingressos-31-07-teatro-vanucci-rj",
@@ -64,9 +40,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131688,
-      "detail_elapsed_ms": 2354,
-      "scraped_at": "2026-07-29T15:50:50.269Z"
+      "detail_html_length": 126686,
+      "detail_elapsed_ms": 3937,
+      "scraped_at": "2026-07-29T15:54:47.346Z"
     },
     {
       "id": "par-2-ingressos-01-08-masp-sp",
@@ -88,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133120,
-      "detail_elapsed_ms": 2355,
-      "scraped_at": "2026-07-29T15:50:52.629Z"
+      "detail_html_length": 131890,
+      "detail_elapsed_ms": 2396,
+      "scraped_at": "2026-07-29T15:54:49.742Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -112,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 127854,
-      "detail_elapsed_ms": 2106,
-      "scraped_at": "2026-07-29T15:50:54.736Z"
+      "detail_html_length": 134221,
+      "detail_elapsed_ms": 2936,
+      "scraped_at": "2026-07-29T15:54:52.679Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -136,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 124570,
-      "detail_elapsed_ms": 2154,
-      "scraped_at": "2026-07-29T15:50:56.890Z"
+      "detail_html_length": 130918,
+      "detail_elapsed_ms": 2281,
+      "scraped_at": "2026-07-29T15:54:54.960Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -160,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133279,
-      "detail_elapsed_ms": 2016,
-      "scraped_at": "2026-07-29T15:50:58.906Z"
+      "detail_html_length": 133284,
+      "detail_elapsed_ms": 2393,
+      "scraped_at": "2026-07-29T15:54:57.353Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -184,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133639,
-      "detail_elapsed_ms": 2012,
-      "scraped_at": "2026-07-29T15:51:00.918Z"
+      "detail_html_length": 133655,
+      "detail_elapsed_ms": 2139,
+      "scraped_at": "2026-07-29T15:54:59.492Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -208,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131672,
-      "detail_elapsed_ms": 2422,
-      "scraped_at": "2026-07-29T15:51:03.342Z"
+      "detail_html_length": 131658,
+      "detail_elapsed_ms": 2485,
+      "scraped_at": "2026-07-29T15:55:01.977Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -232,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131335,
-      "detail_elapsed_ms": 2384,
-      "scraped_at": "2026-07-29T15:51:05.726Z"
+      "detail_html_length": 129828,
+      "detail_elapsed_ms": 2201,
+      "scraped_at": "2026-07-29T15:55:04.179Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -256,9 +232,33 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131569,
-      "detail_elapsed_ms": 1984,
-      "scraped_at": "2026-07-29T15:51:07.716Z"
+      "detail_html_length": 131584,
+      "detail_elapsed_ms": 2244,
+      "scraped_at": "2026-07-29T15:55:06.423Z"
+    },
+    {
+      "id": "p9p-1-ingresso-30-07-neo-qumica-arena-sp",
+      "trace_id": "trace_p9p-1-ingresso-30-07-neo-qumica-arena-sp",
+      "link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-qumica-arena-sp",
+      "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9P-1-ingresso-30-07-neo-qumica-arena-sp",
+      "title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
+      "preview_title": "1 INGRESSO: 30/07 Neo Química Arena- SP",
+      "validity": "Benefício válido de 27/07/2026 09:50 até 30/07/2026 15:40.",
+      "description": "Assinante UOL, chegou a hora de sentir a emoção da Fiel! Resgate 1 ingresso individual para assistir à partida Corinthians x Atlhético-PR, pelo campeonato Brasileiro, no dia 30 de Julho de 2026, às 19h30, na Neo Química Arena - SP. Quando: 30 de Julho de 2026, às 19h30. Onde: Arena Neo Química - Av. Miguel Ignácio Curi, 111 - Itaquera, São Paulo. Atenção: Após finalizar o resgate, não se esqueça de realizar o cadastro facial no Fiel Torcedor. Caso a facial não esteja cadastrada, infelizmente será necessário prosseguir com a desclassificação, conforme as regras da campanha. A quantidade de ingressos é limitada, e apenas os primeiros que realizarem o cadastro facial garantem o ingresso. REGRAS DE RESGATE: O voucher resgatado é temporário. Seu cadastro será validado e, se estiver de acordo com as regras da campanha, você receberá o ingresso individual vinculado ao seu CPF no Fiel Torcedor, com confirmação enviada por e-mail pelo UOL. Para garantir seu ingresso, finalize o cadastro no site www.fieltorcedor.com.br. Se já possui cadastro, basta confirmar ou atualizar seus dados. Promoção válida por tempo limitado, enquanto durarem os estoques. Importante: É obrigatório incluir biometria facial para acesso ao estádio. O ingresso será garantido ao CPF após o cadastro no site. Seu cadastro será confirmado e, caso você esteja dentro das regras da promoção, você receberá um e-mail de confirmação. Atenção, Assinante UOL! A venda de ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato de sua participação em campanhas futuras e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "category": "Ingressos Exclusivos",
+      "partner_name": "Campanhas de ingressos",
+      "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
+      "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/6a6753de42589_6a579da30db4c_6a15974e4b789_6a0ca4947a954_6a021e2a8ef90_69fb3f961857a_69f9eafa60a75_69ef5bb1c772d_37f5903bd81132b963b1056b1733752f.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 133755,
+      "detail_elapsed_ms": 1975,
+      "scraped_at": "2026-07-29T15:55:08.398Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132738,
-      "detail_elapsed_ms": 2492,
-      "scraped_at": "2026-07-29T15:51:10.208Z"
+      "detail_html_length": 132734,
+      "detail_elapsed_ms": 2315,
+      "scraped_at": "2026-07-29T15:55:10.714Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130340,
-      "detail_elapsed_ms": 3422,
-      "scraped_at": "2026-07-29T15:51:13.630Z"
+      "detail_html_length": 131653,
+      "detail_elapsed_ms": 2034,
+      "scraped_at": "2026-07-29T15:55:12.748Z"
     }
   ]
 }
