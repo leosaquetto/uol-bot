@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-07-30T05:02:41.328977Z",
+  "updated_at": "2026-07-30T05:07:44.573734Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
-  "candidates_added": 4,
+  "candidates_added": 5,
   "dropped_incomplete": 0,
   "discard_reasons": {
     "incompleta": 0,
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 8,
-    "duplicada_latest": 0,
+    "duplicada_historico": 6,
+    "duplicada_latest": 1,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -19,7 +19,7 @@
     {
       "title": "50% OFF no Festival Filmes Incríveis",
       "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
-      "reason": "duplicada_historico",
+      "reason": "duplicada_latest",
       "trace_id": "trace_pay-50-off-no-festival-filmes-incrveis"
     },
     {
@@ -27,12 +27,6 @@
       "link": "https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte",
       "reason": "duplicada_historico",
       "trace_id": "trace_pao-10-de-desconto-no-primeiro-corte"
-    },
-    {
-      "title": "20% OFF em seleção de Dia dos Pais",
-      "link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
-      "reason": "duplicada_historico",
-      "trace_id": "trace_paa-20-off-em-seleo-de-dia-dos-pais"
     },
     {
       "title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
