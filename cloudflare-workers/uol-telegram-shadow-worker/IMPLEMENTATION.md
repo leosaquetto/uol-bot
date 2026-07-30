@@ -76,6 +76,8 @@ Na promoção:
 - o workflow e a credencial temporária de Cloudflare foram removidos após o
   sucesso;
 - rotas mutáveis exigem `ADMIN_TOKEN`;
+- a cópia local do `ADMIN_TOKEN` fica no Chaves do macOS, no serviço
+  `uol-telegram-cloudflare-worker-admin-token`;
 - logs contêm somente eventos, contagens e erros sanitizados.
 
 ## Validação
@@ -89,6 +91,19 @@ Na promoção:
 - dry-run do pacote;
 - migração SQLite remota;
 - saúde e cadência do alarme verificadas em produção.
+
+## Ativação confirmada
+
+- Data: 30/07/2026
+- Início do modo live: `2026-07-30T06:38:57.696Z`
+- Version ID: `447a4e10-bf21-4462-9969-6a5056f0aaa0`
+- Startup remoto: 6 ms
+- Inventário no corte: 48 ofertas de baseline
+- Pendências no corte: zero
+- Erros de entrega no corte: zero
+- Teste real: principal e canal 2 confirmados
+- Workflow automático legado: removido
+- LaunchAgent `com.leosaquetto.uolmonitor`: descarregado
 
 ## Rollback
 
