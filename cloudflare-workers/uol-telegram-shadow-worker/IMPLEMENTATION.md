@@ -22,8 +22,25 @@ O estado SQLite contém:
 - últimas 240 execuções;
 - baseline e início do modo live.
 
+Antes de inserir um card, o Worker compara as identidades canônicas do endereço.
+Além do slug completo, é usada a combinação estável
+`parceiro + código interno da oferta`. Essa segunda chave protege contra
+alterações de codificação como `tênis/tnis`, `cardápio/cardpio` e
+`grátis/grtis` sem confundir ofertas de parceiros diferentes.
+
+A canonicalização foi alinhada ao consumidor legado: percent-encoding,
+mojibake, remoção de diacríticos, variantes `de`/`João` e correções conhecidas
+como `seleo/selecao`, `ps/pos`, `at/ate` e `grtis/gratis`. A deduplicação
+também conserva as chaves de conteúdo estrita/solta e o bloqueio recente por
+título + validade durante sete dias.
+
 O alarme é reprogramado ao final de toda execução. Uma listagem vazia ou
 suspeitamente pequena falha de forma segura e não produz esgotamentos.
+
+O modo operacional também é persistido no Durable Object e pode ser alterado
+imediatamente pela rota autenticada `POST /mode`. Isso evita depender da
+reciclagem de uma instância aquecida após um deploy e permite contenção
+`live -> shadow` sem aguardar uma nova publicação.
 
 ## Entrega ao Telegram
 
@@ -105,9 +122,38 @@ Na promoção:
 - Workflow automático legado: removido
 - LaunchAgent `com.leosaquetto.uolmonitor`: descarregado
 
+## Incidente de canonicalização de 30/07/2026
+
+Às `07:05Z`, a listagem alternou endereços com letras acentuadas perdidas para
+endereços corrigidos. Como o baseline inicial armazenava apenas o slug visto
+naquele momento, 20 aliases foram inicialmente classificados como novos.
+
+- oito mensagens chegaram ao canal principal antes da contenção;
+- nenhuma foi encaminhada ao canal 2;
+- o modo foi alterado imediatamente para `shadow`;
+- as 12 decisões ainda não enviadas foram bloqueadas;
+- os 20 pares foram reconciliados por `parceiro + código interno`;
+- os oito registros enviados foram preservados para permitir edição futura de
+  esgotamento;
+- após o reparo: zero pendências, zero aliases ativos e zero erros de entrega.
+
+O caso real foi convertido em testes de regressão para `grtis/gratis`,
+`cardpio/cardapio`, `tnis/tenis`, mojibake e variantes do consumidor legado.
+
+### Estado após a correção
+
+- Version ID: `c6b4de31-2955-4333-99fd-92c80fc09d6b`
+- modo persistido: `live`
+- listagem saudável: 48 ofertas
+- identidades ativas: 48
+- aliases ativos: zero
+- pendências de entrega: zero
+- erros de entrega: zero
+- primeiro alarme após a retomada: `48 vistas / 0 novas / 0 envios`
+
 ## Rollback
 
-1. retornar `DELIVERY_MODE` para `shadow`;
+1. executar `POST /mode` com `{"mode":"shadow"}`;
 2. publicar a versão protegida;
 3. executar `bot leouol scraper - fallback manual`;
 4. se necessário, recarregar

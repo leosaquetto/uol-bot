@@ -4,17 +4,89 @@ export function cleanText(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
-export function normalizeText(value) {
-  return cleanText(value)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+function decodeRepeatedly(value) {
+  let decoded = String(value || "");
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const next = decodeURIComponent(decoded);
+      if (next === decoded) break;
+      decoded = next;
+    } catch {
+      break;
+    }
+  }
+  return decoded;
 }
 
-export function normalizeOfferId(value) {
+function repairMojibake(value) {
+  const replacements = new Map([
+    ["Ã¡", "á"],
+    ["Ã ", "à"],
+    ["Ã¢", "â"],
+    ["Ã£", "ã"],
+    ["Ã©", "é"],
+    ["Ãª", "ê"],
+    ["Ã­", "í"],
+    ["Ã³", "ó"],
+    ["Ã´", "ô"],
+    ["Ãµ", "õ"],
+    ["Ãº", "ú"],
+    ["Ã§", "ç"],
+    ["Ã‰", "É"],
+    ["Ã‡", "Ç"],
+  ]);
+  let repaired = String(value || "");
+  for (const [bad, good] of replacements) repaired = repaired.replaceAll(bad, good);
+  return repaired;
+}
+
+function applyKnownCanonicalFixes(value) {
+  let canonical = String(value || "");
+  const knownFixes = new Map([
+    ["ltima", "ultima"],
+    ["ltimo", "ultimo"],
+    ["seleo", "selecao"],
+    ["graduao", "graduacao"],
+    ["grtis", "gratis"],
+    ["ms", "imas"],
+    ["preo", "preco"],
+  ]);
+  for (const [bad, good] of knownFixes) {
+    canonical = canonical.replace(
+      new RegExp(`(^|-)${bad}(?=-|$)`, "g"),
+      (_, prefix) => `${prefix}${good}`,
+    );
+  }
+  canonical = canonical.replace(/(^|-)ps(?=-|$)/g, (_, prefix) => `${prefix}pos`);
+  canonical = canonical.replaceAll("-at-", "-ate-");
+  return canonical.replace(/-+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+export function canonicalKey(value) {
+  let raw = cleanText(value);
+  if (!raw) return "";
+  raw = repairMojibake(decodeRepeatedly(raw))
+    .replaceAll("\u00a0", " ")
+    .toLowerCase()
+    .split("?")[0]
+    .split("#")[0]
+    .replaceAll("&", " e ")
+    .replaceAll("º", "o")
+    .replaceAll("ª", "a")
+    .replace(/[\s_]+/g, "-")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return applyKnownCanonicalFixes(raw);
+}
+
+export function normalizeText(value) {
+  return canonicalKey(value).replaceAll("-", " ");
+}
+
+function rawOfferTail(value) {
   const raw = String(value || "").trim();
   if (!raw) return "";
 
@@ -26,19 +98,45 @@ export function normalizeOfferId(value) {
     tail = raw.split("?")[0].split("#")[0].replace(/\/+$/, "").split("/").pop() || "";
   }
 
-  try {
-    tail = decodeURIComponent(tail);
-  } catch {
-    // O slug original ainda é uma identidade útil.
-  }
+  return decodeRepeatedly(tail);
+}
 
-  return tail
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "");
+export function slugTailVariants(value) {
+  const base = canonicalKey(rawOfferTail(value));
+  if (!base) return [];
+  const variants = new Set([base, base.replaceAll("-de-", "-")]);
+  if (base.includes("joo")) variants.add(base.replaceAll("joo", "joao"));
+  if (base.includes("joao")) variants.add(base.replaceAll("joao", "joo"));
+  return [...variants].filter(Boolean).sort();
+}
+
+export function normalizeOfferId(value) {
+  return slugTailVariants(value)[0] || "";
+}
+
+export function offerSourceKey(value) {
+  try {
+    const url = new URL(String(value || ""), BASE_URL);
+    const segments = url.pathname
+      .split("/")
+      .filter(Boolean)
+      .map(decodeRepeatedly);
+    if (segments.length < 2) return "";
+    const partner = canonicalKey(segments.at(-2));
+    const firstToken = String(segments.at(-1) || "").split("-")[0];
+    const offerCode = canonicalKey(firstToken);
+    if (!partner || !/^p[a-z0-9]{2,5}$/.test(offerCode)) return "";
+    return `${partner}|${offerCode}`;
+  } catch {
+    return "";
+  }
+}
+
+export function offerIdentityKeys(value) {
+  const keys = slugTailVariants(value).map((variant) => `slug:${variant}`);
+  const sourceKey = offerSourceKey(value);
+  if (sourceKey) keys.push(`source:${sourceKey}`);
+  return [...new Set(keys)];
 }
 
 export function normalizePublicLink(value) {
@@ -71,13 +169,17 @@ export function normalizeCard(raw) {
 }
 
 export function dedupeCards(rawCards) {
-  const byId = new Map();
+  const cards = [];
+  const seenKeys = new Set();
   for (const raw of rawCards || []) {
     const card = normalizeCard(raw);
-    if (!card || byId.has(card.id)) continue;
-    byId.set(card.id, card);
+    if (!card) continue;
+    const identityKeys = offerIdentityKeys(card.link);
+    if (identityKeys.some((key) => seenKeys.has(key))) continue;
+    cards.push(card);
+    for (const key of identityKeys) seenKeys.add(key);
   }
-  return [...byId.values()];
+  return cards;
 }
 
 export function isTicketCampaign(offer) {
@@ -191,6 +293,7 @@ export async function buildDedupeKeys(offer) {
   return {
     dedupeKey: await sha256Hex(`${title}|${validity}|${description}`),
     looseDedupeKey: await sha256Hex(`${title}|${description.slice(0, 280)}`),
+    titleValidityKey: title && validity ? await sha256Hex(`${title}|${validity}`) : "",
   };
 }
 

@@ -4,12 +4,16 @@ import assert from "node:assert/strict";
 import {
   buildDedupeKeys,
   buildTelegramCaption,
+  canonicalKey,
   decideShadowDelivery,
   dedupeCards,
   evaluateDetailQuality,
   extractValidity,
   normalizeOfferId,
+  offerIdentityKeys,
+  offerSourceKey,
   parseValidityWindow,
+  slugTailVariants,
   shouldSendToCanal2,
 } from "../src/core.js";
 
@@ -25,6 +29,35 @@ test("normaliza a identidade a partir do slug público", () => {
   assert.equal(normalizeOfferId(showOffer.link), "pa4-2-ingressos-show-sp");
 });
 
+test("porta as correções canônicas do consumidor legado", () => {
+  assert.equal(canonicalKey("SeleÃ§Ã£o grÃ¡tis"), "selecao-gratis");
+  assert.equal(canonicalKey("seleÃ§Ã£o grÃ¡tis"), "selecao-gratis");
+  assert.equal(canonicalKey("seleção grtis"), "selecao-gratis");
+  assert.equal(canonicalKey("Pós-graduação até 70%"), "pos-graduacao-ate-70");
+  assert.deepEqual(
+    slugTailVariants("https://clube.uol.com.br/parceiro/p01-show-de-joao"),
+    ["p01-show-de-joao", "p01-show-de-joo", "p01-show-joao"],
+  );
+});
+
+test("mantém identidade estável quando o texto acentuado do slug muda", () => {
+  const malformed = "https://clube.uol.com.br/evino/p70-r-30-off-frete-grtis-acima-de-r-199";
+  const corrected = "https://clube.uol.com.br/evino/p70-r-30-off-frete-gratis-acima-de-r-199";
+  assert.equal(normalizeOfferId(malformed), normalizeOfferId(corrected));
+  assert.equal(offerSourceKey(malformed), "evino|p70");
+  assert.equal(offerSourceKey(malformed), offerSourceKey(corrected));
+  assert.ok(
+    offerIdentityKeys(malformed).some((key) => offerIdentityKeys(corrected).includes(key)),
+  );
+});
+
+test("identidade parceiro mais código cobre letras perdidas fora das correções conhecidas", () => {
+  const malformed = "https://clube.uol.com.br/dominos/p7T-40-off-no-cardpio-de-pizzas-delivery";
+  const corrected = "https://clube.uol.com.br/dominos/p7T-40-off-no-cardapio-de-pizzas-delivery";
+  assert.notEqual(normalizeOfferId(malformed), normalizeOfferId(corrected));
+  assert.equal(offerSourceKey(malformed), offerSourceKey(corrected));
+});
+
 test("deduplica cards repetidos da listagem", () => {
   const cards = dedupeCards([
     { ...showOffer, title: showOffer.title },
@@ -32,6 +65,20 @@ test("deduplica cards repetidos da listagem", () => {
   ]);
   assert.equal(cards.length, 1);
   assert.equal(cards[0].previewTitle, showOffer.title);
+});
+
+test("deduplica duas variantes do mesmo parceiro e código na listagem", () => {
+  const cards = dedupeCards([
+    {
+      link: "https://clube.uol.com.br/centauro/p8f-tnis-de-racket-15-off",
+      title: "Tênis de Racket + 15% OFF",
+    },
+    {
+      link: "https://clube.uol.com.br/centauro/p8f-tenis-de-racket-15-off",
+      title: "Tênis de Racket + 15% OFF",
+    },
+  ]);
+  assert.equal(cards.length, 1);
 });
 
 test("canal principal recebe toda oferta elegível e canal 2 recebe show", () => {

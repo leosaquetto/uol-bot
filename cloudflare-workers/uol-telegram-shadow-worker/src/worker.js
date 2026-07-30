@@ -7,6 +7,8 @@ import {
   dedupeCards,
   evaluateDetailQuality,
   extractValidity,
+  offerIdentityKeys,
+  offerSourceKey,
 } from "./core.js";
 import {
   editSoldOutMessage,
@@ -443,6 +445,14 @@ export class UolTelegramShadow extends DurableObject {
           ON offers(status, main_sent_at, canal2_sent_at, first_seen_at);
       `);
     }
+    if (currentVersion < 3) {
+      this.ctx.storage.sql.exec(`
+        ALTER TABLE offers ADD COLUMN title_validity_key TEXT NOT NULL DEFAULT '';
+        CREATE INDEX IF NOT EXISTS offers_title_validity_idx
+          ON offers(title_validity_key, main_sent_at);
+        INSERT INTO _sql_schema_migrations (id) VALUES (3);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -459,6 +469,24 @@ export class UolTelegramShadow extends DurableObject {
       key,
       String(value || ""),
     );
+  }
+
+  currentDeliveryMode() {
+    const override = this.metadataValue("delivery_mode_override");
+    if (override === "live" || override === "shadow") return override;
+    return deliveryMode(this.env);
+  }
+
+  setDeliveryMode(mode) {
+    const normalized = String(mode || "").trim().toLowerCase();
+    if (normalized !== "live" && normalized !== "shadow") {
+      throw new Error("delivery_mode_invalid");
+    }
+    this.setMetadata("delivery_mode_override", normalized);
+    return {
+      ok: true,
+      mode: normalized,
+    };
   }
 
   async ensureAlarm() {
@@ -520,6 +548,141 @@ export class UolTelegramShadow extends DurableObject {
     );
   }
 
+  chooseIdentityKeeper(rows) {
+    return [...rows].sort((a, b) => {
+      const aSent = Boolean(a.main_sent_at || a.canal2_sent_at);
+      const bSent = Boolean(b.main_sent_at || b.canal2_sent_at);
+      if (aSent !== bSent) return aSent ? -1 : 1;
+      const aBaseline = a.status === "baseline";
+      const bBaseline = b.status === "baseline";
+      if (aBaseline !== bBaseline) return aBaseline ? -1 : 1;
+      return String(a.first_seen_at).localeCompare(String(b.first_seen_at));
+    })[0];
+  }
+
+  reconcileIdentityAliases() {
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT id, link, status, first_seen_at, main_sent_at, canal2_sent_at
+       FROM offers
+       WHERE status <> 'discarded'`,
+    ).toArray();
+    const groups = new Map();
+    for (const row of rows) {
+      const sourceKey = offerSourceKey(row.link);
+      if (!sourceKey) continue;
+      const group = groups.get(sourceKey) || [];
+      group.push(row);
+      groups.set(sourceKey, group);
+    }
+
+    let reconciled = 0;
+    for (const group of groups.values()) {
+      if (group.length < 2) continue;
+      const keeper = this.chooseIdentityKeeper(group);
+      for (const duplicate of group) {
+        if (duplicate.id === keeper.id) continue;
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET
+             status = 'discarded',
+             decision_at = CASE WHEN decision_at = '' THEN datetime('now') ELSE decision_at END,
+             would_send_main = 0,
+             would_send_canal2 = 0,
+             discard_reason = 'duplicada_identidade',
+             missing_since = '',
+             absence_count = 0
+           WHERE id = ?`,
+          duplicate.id,
+        );
+        reconciled += 1;
+      }
+    }
+    return reconciled;
+  }
+
+  async backfillTitleValidityKeys() {
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT id, preview_title, title, validity, description
+       FROM offers
+       WHERE title_validity_key = ''
+         AND (title <> '' OR preview_title <> '')
+         AND validity <> ''
+       ORDER BY first_seen_at DESC
+       LIMIT 300`,
+    ).toArray();
+    for (const row of rows) {
+      const keys = await buildDedupeKeys({
+        title: row.title || row.preview_title,
+        validity: row.validity,
+        description: row.description,
+      });
+      this.ctx.storage.sql.exec(
+        "UPDATE offers SET title_validity_key = ? WHERE id = ?",
+        keys.titleValidityKey,
+        row.id,
+      );
+    }
+    return rows.length;
+  }
+
+  resolveListingCards(cards, nowIso, newStatus) {
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT id, link
+       FROM offers
+       WHERE status <> 'discarded'`,
+    ).toArray();
+    const byId = new Map(rows.map((row) => [row.id, row]));
+    const byIdentity = new Map();
+    for (const row of rows) {
+      for (const key of offerIdentityKeys(row.link)) {
+        if (!byIdentity.has(key)) byIdentity.set(key, row);
+      }
+    }
+
+    const resolved = [];
+    const resolvedIds = new Set();
+    let inserted = 0;
+    for (const card of cards) {
+      let existing = byId.get(card.id);
+      if (!existing) {
+        for (const key of offerIdentityKeys(card.link)) {
+          existing = byIdentity.get(key);
+          if (existing) break;
+        }
+      }
+
+      if (existing) {
+        if (resolvedIds.has(existing.id)) continue;
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET
+             link = ?, preview_title = ?, category = ?, card_image_url = ?,
+             partner_image_url = ?, partner_name = ?, last_seen_at = ?,
+             missing_since = '', absence_count = 0
+           WHERE id = ?`,
+          card.link,
+          card.previewTitle,
+          card.category,
+          card.cardImageUrl,
+          card.partnerImageUrl,
+          card.partnerName,
+          nowIso,
+          existing.id,
+        );
+        resolved.push({ ...card, id: existing.id });
+        resolvedIds.add(existing.id);
+        continue;
+      }
+
+      this.insertCard(card, nowIso, newStatus);
+      const row = { id: card.id, link: card.link };
+      byId.set(row.id, row);
+      for (const key of offerIdentityKeys(card.link)) byIdentity.set(key, row);
+      resolved.push(card);
+      resolvedIds.add(card.id);
+      inserted += 1;
+    }
+    return { cards: resolved, inserted };
+  }
+
   async processPending(cardsById, now, mode) {
     const batchSize = envNumber(this.env, "DETAIL_BATCH_SIZE", 4, 1, 8);
     const pendingRows = this.ctx.storage.sql.exec(
@@ -563,17 +726,31 @@ export class UolTelegramShadow extends DurableObject {
       }
 
       const keys = await buildDedupeKeys(offer);
+      const resendThreshold = new Date(
+        now.getTime() -
+          envNumber(this.env, "RECENT_RESEND_BLOCK_HOURS", 168, 1, 720) * 3_600_000,
+      ).toISOString();
       const duplicate = this.ctx.storage.sql.exec(
         `SELECT id FROM offers
          WHERE id <> ?
            AND (
              (dedupe_key <> '' AND dedupe_key = ?)
              OR (loose_dedupe_key <> '' AND loose_dedupe_key = ?)
+             OR (
+               title_validity_key <> ''
+               AND title_validity_key = ?
+               AND (
+                 main_sent_at >= ?
+                 OR status = 'baseline'
+               )
+             )
            )
          LIMIT 1`,
         offer.id,
         keys.dedupeKey,
         keys.looseDedupeKey,
+        keys.titleValidityKey,
+        resendThreshold,
       ).toArray()[0];
 
       const decision = duplicate
@@ -594,7 +771,8 @@ export class UolTelegramShadow extends DurableObject {
       this.ctx.storage.sql.exec(
         `UPDATE offers SET
           title = ?, image_url = ?, validity = ?, description = ?,
-          dedupe_key = ?, loose_dedupe_key = ?, detail_quality = ?,
+          dedupe_key = ?, loose_dedupe_key = ?, title_validity_key = ?,
+          detail_quality = ?,
           detail_attempts = ?, detail_error = ?, decision_at = ?,
           would_send_main = ?, would_send_canal2 = ?, discard_reason = ?,
           status = ?, delivery_mode = ?
@@ -605,6 +783,7 @@ export class UolTelegramShadow extends DurableObject {
         offer.description,
         keys.dedupeKey,
         keys.looseDedupeKey,
+        keys.titleValidityKey,
         offer.quality,
         attempts,
         offer.detailError,
@@ -628,7 +807,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async processDeliveries(now) {
-    if (deliveryMode(this.env) !== "live") {
+    if (this.currentDeliveryMode() !== "live") {
       return { mainSent: 0, canal2Sent: 0, failed: 0 };
     }
     const configuration = telegramConfiguration(this.env);
@@ -743,7 +922,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async processSoldOutSync(now) {
-    if (deliveryMode(this.env) !== "live") {
+    if (this.currentDeliveryMode() !== "live") {
       return { mainEdited: 0, canal2Edited: 0, failed: 0 };
     }
     const configuration = telegramConfiguration(this.env);
@@ -965,7 +1144,7 @@ export class UolTelegramShadow extends DurableObject {
     };
 
     try {
-      const mode = deliveryMode(this.env);
+      const mode = this.currentDeliveryMode();
       if (mode === "live" && !this.metadataValue("live_started_at")) {
         this.setMetadata("live_started_at", startedAt.toISOString());
       }
@@ -980,20 +1159,16 @@ export class UolTelegramShadow extends DurableObject {
       const initializedAt = this.metadataValue("initialized_at");
 
       if (!initializedAt) {
-        for (const card of cards) this.insertCard(card, nowIso, "baseline");
+        this.resolveListingCards(cards, nowIso, "baseline");
+        await this.backfillTitleValidityKeys();
         this.setMetadata("initialized_at", nowIso);
         run.outcome = "baseline_created";
       } else {
-        const knownIds = new Set(
-          this.ctx.storage.sql.exec("SELECT id FROM offers").toArray().map((row) => row.id),
-        );
-        for (const card of cards) {
-          if (knownIds.has(card.id)) continue;
-          this.insertCard(card, nowIso, "pending_enrichment");
-          run.newOffers += 1;
-        }
-
-        const cardsById = new Map(cards.map((card) => [card.id, card]));
+        const identityAliasesReconciled = this.reconcileIdentityAliases();
+        await this.backfillTitleValidityKeys();
+        const resolution = this.resolveListingCards(cards, nowIso, "pending_enrichment");
+        run.newOffers = resolution.inserted;
+        const cardsById = new Map(resolution.cards.map((card) => [card.id, card]));
         const processed = await this.processPending(cardsById, now, mode);
         run.enriched = processed.enriched;
         run.wouldSendMain = processed.wouldSendMain;
@@ -1017,6 +1192,9 @@ export class UolTelegramShadow extends DurableObject {
             : "shadow_decisions_recorded";
         } else {
           run.outcome = "no_change";
+        }
+        if (identityAliasesReconciled > 0 && run.outcome === "no_change") {
+          run.outcome = "identity_aliases_reconciled";
         }
       }
       this.pruneOffers();
@@ -1138,7 +1316,7 @@ export class UolTelegramShadow extends DurableObject {
     return {
       ok: true,
       worker: "uol-telegram-shadow-pilot",
-      mode: deliveryMode(this.env),
+      mode: this.currentDeliveryMode(),
       telegram: telegramConfiguration(this.env),
       schedule: "durable-object-alarm:1m",
       alarmScheduledAt,
@@ -1193,6 +1371,45 @@ export class UolTelegramShadow extends DurableObject {
       boundedLimit,
     ).toArray().map(rowToPublicDecision);
   }
+
+  getIdentityDiagnostics() {
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT id, link, status, main_sent_at, canal2_sent_at
+       FROM offers
+       WHERE status <> 'discarded'
+       ORDER BY first_seen_at ASC`,
+    ).toArray();
+    const groups = new Map();
+    for (const row of rows) {
+      const sourceKey = offerSourceKey(row.link);
+      if (!sourceKey) continue;
+      const group = groups.get(sourceKey) || [];
+      group.push({
+        id: row.id,
+        status: row.status,
+        mainSent: Boolean(row.main_sent_at),
+        canal2Sent: Boolean(row.canal2_sent_at),
+      });
+      groups.set(sourceKey, group);
+    }
+    const aliases = [...groups.entries()]
+      .filter(([, group]) => group.length > 1)
+      .map(([sourceKey, group]) => ({ sourceKey, offers: group }));
+    return {
+      tracked: rows.length,
+      aliasGroups: aliases.length,
+      aliases,
+    };
+  }
+
+  repairIdentityAliases() {
+    const reconciled = this.reconcileIdentityAliases();
+    return {
+      ok: true,
+      reconciled,
+      diagnostics: this.getIdentityDiagnostics(),
+    };
+  }
 }
 
 export default {
@@ -1216,6 +1433,13 @@ export default {
         }
         return jsonResponse(await stub.testTransport());
       }
+      if (request.method === "POST" && url.pathname === "/mode") {
+        if (!isAuthorized(request, env)) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        const body = await request.json();
+        return jsonResponse(await stub.setDeliveryMode(body?.mode));
+      }
       if (request.method === "GET" && url.pathname === "/decisions") {
         if (!isAuthorized(request, env)) {
           return jsonResponse({ ok: false, error: "unauthorized" }, 401);
@@ -1233,6 +1457,21 @@ export default {
           ok: true,
           inventory: await stub.getInventory(url.searchParams.get("limit")),
         });
+      }
+      if (request.method === "GET" && url.pathname === "/identity-diagnostics") {
+        if (!isAuthorized(request, env)) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        return jsonResponse({
+          ok: true,
+          diagnostics: await stub.getIdentityDiagnostics(),
+        });
+      }
+      if (request.method === "POST" && url.pathname === "/repair-identities") {
+        if (!isAuthorized(request, env)) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        return jsonResponse(await stub.repairIdentityAliases());
       }
       return jsonResponse({ ok: false, error: "not_found" }, 404);
     } catch (error) {
