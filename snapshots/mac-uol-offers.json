@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 12,
+  "detail_fail_count": 0,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 12,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 0
   },
-  "run_duration_ms": 194929,
-  "run_duration_seconds": 194.93,
-  "avg_detail_ms_per_offer": 16244,
-  "generated_at": "2026-07-30T01:57:41.221Z",
+  "run_duration_ms": 49693,
+  "run_duration_seconds": 49.69,
+  "avg_detail_ms_per_offer": 4141,
+  "generated_at": "2026-07-30T02:04:29.769Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -27,22 +27,22 @@
       "original_link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
       "title": "50% OFF no Festival Filmes Incríveis",
       "preview_title": "50% OFF no Festival Filmes Incríveis",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 29/07/2026 11:12 até 12/08/2026 23:59.",
+      "description": "Sobre o parceiro: O Cine Belas Artes é um cinema notável de São Paulo, conhecido por sua programação diversificada desde 1956, data de seu nascimento. Sobre o Festival Filmes Incríveis 2026: De 30 de julho a 12 de agosto, o Cine Belas Artes recebe o Festival Filmes Incríveis 2026, com longas inéditos de diversos países. A mostra reúne produções que passaram por festivais como Cannes, Berlim e Roterdã, destacando obras pouco vistas no circuito comercial. O FFI é uma iniciativa do Belas Artes Grupo com realização do Ministério da Cultura. Benefício: 50% de desconto no par de ingressos do Festival Filmes Incríveis 2026 no Cine Belas Artes. Regras: Benefício válido para Assinante UOL. Basta apresentar o voucher e documento original na bilheteria do cinema para obter sua meia-entrada no par de ingressos do Cine Belas Artes. Desconto válido para a programação regular do cinema. Atenção! Confira a programação clicando em \"Ir para o site\".",
       "category": "Promoções do Mês",
       "partner_name": "Cine Belas Artes",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/52417b631f082ad9b303fa194747eaf5.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12364,
-      "scraped_at": "2026-07-30T01:56:20.741Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/0fcc03f3546b2509fd4638248617efc4.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 125888,
+      "detail_elapsed_ms": 2377,
+      "scraped_at": "2026-07-30T02:04:08.799Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -64,9 +64,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 134346,
-      "detail_elapsed_ms": 15391,
-      "scraped_at": "2026-07-30T01:56:36.132Z"
+      "detail_html_length": 134205,
+      "detail_elapsed_ms": 2258,
+      "scraped_at": "2026-07-30T02:04:11.058Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -88,9 +88,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130791,
-      "detail_elapsed_ms": 4789,
-      "scraped_at": "2026-07-30T01:56:40.921Z"
+      "detail_html_length": 130931,
+      "detail_elapsed_ms": 1602,
+      "scraped_at": "2026-07-30T02:04:12.661Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132128,
-      "detail_elapsed_ms": 3488,
-      "scraped_at": "2026-07-30T01:56:44.410Z"
+      "detail_html_length": 133267,
+      "detail_elapsed_ms": 2185,
+      "scraped_at": "2026-07-30T02:04:14.846Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -136,9 +136,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133518,
-      "detail_elapsed_ms": 10786,
-      "scraped_at": "2026-07-30T01:56:55.594Z"
+      "detail_html_length": 133649,
+      "detail_elapsed_ms": 2293,
+      "scraped_at": "2026-07-30T02:04:17.139Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131690,
-      "detail_elapsed_ms": 5135,
-      "scraped_at": "2026-07-30T01:57:00.729Z"
+      "detail_html_length": 131710,
+      "detail_elapsed_ms": 1857,
+      "scraped_at": "2026-07-30T02:04:18.997Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130137,
-      "detail_elapsed_ms": 3179,
-      "scraped_at": "2026-07-30T01:57:03.908Z"
+      "detail_html_length": 131324,
+      "detail_elapsed_ms": 1596,
+      "scraped_at": "2026-07-30T02:04:20.593Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130437,
-      "detail_elapsed_ms": 3618,
-      "scraped_at": "2026-07-30T01:57:07.526Z"
+      "detail_html_length": 131598,
+      "detail_elapsed_ms": 1675,
+      "scraped_at": "2026-07-30T02:04:22.269Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 132627,
-      "detail_elapsed_ms": 11443,
-      "scraped_at": "2026-07-30T01:57:18.970Z"
+      "detail_html_length": 132768,
+      "detail_elapsed_ms": 1765,
+      "scraped_at": "2026-07-30T02:04:24.035Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131677,
-      "detail_elapsed_ms": 9963,
-      "scraped_at": "2026-07-30T01:57:28.933Z"
+      "detail_html_length": 131648,
+      "detail_elapsed_ms": 1764,
+      "scraped_at": "2026-07-30T02:04:25.799Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 141035,
-      "detail_elapsed_ms": 6799,
-      "scraped_at": "2026-07-30T01:57:35.733Z"
+      "detail_html_length": 138286,
+      "detail_elapsed_ms": 2084,
+      "scraped_at": "2026-07-30T02:04:27.883Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130724,
-      "detail_elapsed_ms": 5074,
-      "scraped_at": "2026-07-30T01:57:40.808Z"
+      "detail_html_length": 126034,
+      "detail_elapsed_ms": 1744,
+      "scraped_at": "2026-07-30T02:04:29.627Z"
     }
   ]
 }
