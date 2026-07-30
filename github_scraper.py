@@ -810,6 +810,8 @@ def cleanup_snapshot_files(snapshot_id: str, meta: Optional[Dict[str, Any]] = No
     paths = {
         os.path.join(SNAPSHOT_DIR, f"snapshot_{snapshot_id}.json"),
         os.path.join(SNAPSHOT_DIR, f"detail_{snapshot_id}.json"),
+        os.path.join(SNAPSHOT_DIR, f"stage1_{snapshot_id}.json"),
+        os.path.join(SNAPSHOT_DIR, f"stage2_{snapshot_id}.json"),
     }
 
     if isinstance(meta, dict):
@@ -855,6 +857,10 @@ def cleanup_old_snapshot_files() -> None:
                 snapshot_id = name[len("snapshot_") : -len(".html")]
             elif name.startswith("detail_") and name.endswith(".json"):
                 snapshot_id = name[len("detail_") : -len(".json")]
+            elif name.startswith("stage1_") and name.endswith(".json"):
+                snapshot_id = name[len("stage1_") : -len(".json")]
+            elif name.startswith("stage2_") and name.endswith(".json"):
+                snapshot_id = name[len("stage2_") : -len(".json")]
 
             if not snapshot_id:
                 continue

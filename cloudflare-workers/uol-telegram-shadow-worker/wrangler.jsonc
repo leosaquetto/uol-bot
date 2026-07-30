@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "uol-telegram-shadow-pilot",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-07-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "SHADOW_MODE": "1",
+    "ALARM_INTERVAL_SECONDS": "60",
+    "DETAIL_BATCH_SIZE": "4",
+    "MAX_STATE_OFFERS": "300",
+    "MIN_HEALTHY_LISTING_OFFERS": "5",
+    "MAX_VALID_FROM_AGE_HOURS": "36",
+    "SOLD_OUT_LOOKBACK_DAYS": "3",
+    "SOLD_OUT_MIN_MISSES": "2",
+    "SOLD_OUT_MIN_ABSENCE_MINUTES": "15"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "UOL_TELEGRAM_SHADOW",
+        "class_name": "UolTelegramShadow"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["UolTelegramShadow"]
+    }
+  ]
+}
