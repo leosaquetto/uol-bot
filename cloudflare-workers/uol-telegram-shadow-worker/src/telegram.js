@@ -144,5 +144,11 @@ export async function sendTransportTest(env, fetchImpl = fetch) {
     disable_notification: true,
     link_preview_options: { is_disabled: true },
   }, fetchImpl);
-  return { messageId: Number(result?.message_id || 0) };
+  const mainMessageId = Number(result?.message_id || 0);
+  if (!mainMessageId) throw new Error("telegram_test_main_message_id_missing");
+  const canal2 = await forwardToCanal2(env, mainMessageId, fetchImpl);
+  return {
+    mainMessageId,
+    canal2MessageId: canal2.messageId,
+  };
 }

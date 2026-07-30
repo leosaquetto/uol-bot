@@ -1,18 +1,7 @@
-name: bot leouol scraper
+name: bot leouol scraper - fallback manual
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - snapshots/**
-      - github_scraper.py
-      - requirements.txt
-      - requirements-consumer.txt
-      - bot_leouol.py
-      - status_runtime_utils.py
-      - .github/workflows/bot_leouol.yml
-  schedule:
-    - cron: "*/5 * * * *"
 
 permissions:
   contents: write

@@ -1081,11 +1081,13 @@ export class UolTelegramShadow extends DurableObject {
     }
     const result = await sendTransportTest(this.env);
     logEvent("info", "uol_telegram_transport_test", {
-      ok: Boolean(result.messageId),
+      mainOk: Boolean(result.mainMessageId),
+      canal2Ok: Boolean(result.canal2MessageId),
     });
     return {
-      ok: Boolean(result.messageId),
-      messageId: result.messageId,
+      ok: Boolean(result.mainMessageId && result.canal2MessageId),
+      mainMessageId: result.mainMessageId,
+      canal2MessageId: result.canal2MessageId,
     };
   }
 

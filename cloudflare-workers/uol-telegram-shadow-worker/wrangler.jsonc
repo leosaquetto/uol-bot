@@ -10,7 +10,7 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    "DELIVERY_MODE": "shadow",
+    "DELIVERY_MODE": "live",
     "ALARM_INTERVAL_SECONDS": "60",
     "DETAIL_BATCH_SIZE": "4",
     "DELIVERY_BATCH_SIZE": "4",

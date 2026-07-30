@@ -5,6 +5,7 @@ import {
   editSoldOutMessage,
   forwardToCanal2,
   sendMainOffer,
+  sendTransportTest,
   telegramConfiguration,
 } from "../src/telegram.js";
 
@@ -107,4 +108,20 @@ test("edita foto esgotada no canal correto", async () => {
   assert.equal(payload.chat_id, env.CANAL2_ID);
   assert.equal(payload.message_id, 99);
   assert.match(payload.caption, /\[ESGOTADO\]/);
+});
+
+test("teste de transporte confirma principal e canal 2", async () => {
+  const methods = [];
+  const result = await sendTransportTest(env, async (url) => {
+    const method = url.split("/").pop();
+    methods.push(method);
+    return jsonResponse({
+      message_id: method === "sendMessage" ? 501 : 502,
+    });
+  });
+  assert.deepEqual(methods, ["sendMessage", "forwardMessage"]);
+  assert.deepEqual(result, {
+    mainMessageId: 501,
+    canal2MessageId: 502,
+  });
 });

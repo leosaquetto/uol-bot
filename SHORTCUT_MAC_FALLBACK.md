@@ -1,6 +1,10 @@
-# Fluxo recomendado: iOS tenta Mac primeiro, fallback para Scriptable
+# Fallback legado: Mac e Scriptable
 
-Sim, é viável fazer exatamente esse desenho em **duas vias**:
+> Este fluxo não é mais o caminho automático principal. Desde a migração para
+> o Cloudflare Worker, ele deve ser usado somente em rollback ou diagnóstico
+> manual. O Worker consulta o Clube UOL e envia ao Telegram sem depender do Mac.
+
+O fallback legado continua viável em **duas vias**:
 
 1. **Via A (preferida):** iOS chama o Mac via SSH para rodar `mac_uol_scraper.js`.
 2. **Via B (fallback):** se SSH falhar, timeout, ou retorno sem `MAC_OK`, o atalho continua para as 3 partes do Scriptable no iPhone.
