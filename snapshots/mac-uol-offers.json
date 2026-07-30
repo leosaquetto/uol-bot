@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 11,
-  "detail_fail_count": 1,
+  "detail_ok_count": 7,
+  "detail_fail_count": 5,
   "detail_quality_counts": {
-    "complete": 11,
+    "complete": 7,
     "partial": 0,
     "weak": 0,
-    "failed": 1
+    "failed": 5
   },
-  "run_duration_ms": 226159,
-  "run_duration_seconds": 226.16,
-  "avg_detail_ms_per_offer": 18847,
-  "generated_at": "2026-07-30T03:17:55.693Z",
+  "run_duration_ms": 242386,
+  "run_duration_seconds": 242.39,
+  "avg_detail_ms_per_offer": 20199,
+  "generated_at": "2026-07-30T03:36:32.455Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12020,
-      "scraped_at": "2026-07-30T03:16:33.226Z"
+      "detail_elapsed_ms": 12442,
+      "scraped_at": "2026-07-30T03:35:02.969Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte",
       "title": "10% de desconto no primeiro corte",
       "preview_title": "10% de desconto no primeiro corte",
-      "validity": "Benefício válido de 28/07/2026 17:00 até 28/07/2028 23:59.",
-      "description": "Sobre o Parceiro: Barbearia Masculina especializada em corte adulto e infantil. Referência na cidade de Indaiatuba por corte, barba e serviços extras! Clube de assinatura Navaggio: Pague um valor fixo mensal e corte quantas vezes quiser! Benefício: 10% de desconto no primeiro corte OU um serviço extra de CORTESIA (sobrancelha na cera, depilação de nariz ou orelha, etc.) Regras: Para ganhar o desconto, mostrar um print da tela onde consta o anúncio do desconto; Aplicável nas duas unidades da Barbearia Navaggio em INDAIATUBA; Válido apenas no primeiro corte; Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Saúde e Beleza",
       "partner_name": "Barbearia Navaggio",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f0cc75eeec6ae4b96c634cde7426475a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 134061,
-      "detail_elapsed_ms": 8498,
-      "scraped_at": "2026-07-30T03:16:41.724Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte\" is interrupted by another navigation to \"https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte\" Call log: - navigating to \"https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1834,
+      "scraped_at": "2026-07-30T03:35:17.556Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -75,22 +75,22 @@
       "original_link": "https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais",
       "title": "20% OFF em seleção de Dia dos Pais",
       "preview_title": "20% OFF em seleção de Dia dos Pais",
-      "validity": "Benefício válido de 27/07/2026 12:00 até 02/08/2026 23:59.",
-      "description": "Benefício: 20% OFF em seleção de Dia dos Pais Regras: 20% acumulativo, válido para seleção de produtos, sem pedido mínimo ou desconto máximo. Sujeito à desativação sem aviso prévio.",
+      "validity": "",
+      "description": "",
       "category": "Moda, Calçados e Acessórios",
       "partner_name": "Nike",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/8bd1776457768ba3072e73ccca68ece3.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/2372f0e3b7f35fae2ebbf91cc1779fa0.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 130767,
-      "detail_elapsed_ms": 11855,
-      "scraped_at": "2026-07-30T03:16:53.580Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais\" is interrupted by another navigation to \"https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais\" Call log: - navigating to \"https://clube.uol.com.br/nike/pAa-20-off-em-seleo-de-dia-dos-pais\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 975,
+      "scraped_at": "2026-07-30T03:35:20.093Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -99,22 +99,22 @@
       "original_link": "https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj",
       "title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
       "preview_title": "2 INGRESSOS 31/07 Teatro Claro - RJ",
-      "validity": "Benefício válido de 27/07/2026 15:21 até 31/07/2026 23:59.",
-      "description": "Assinante UOL, resgate 1 par de ingressos para um espetáculo especial no Teatro Claro - Shopping Cidade Copacabana-RJ. Quando: Validade até 31 de Julho de 2026. Local: Teatro Claro Rio de Janeiro - Shopping Cidade Copacabana - Rua Siqueira Campos, 143, 2º Piso - Rio de Janeiro-RJ. Escolha um espetáculo de sua preferência acessando o link abaixo: https://teatroclaromaisrj.com.br/programacao Espetáculos em cartaz Programação em destaque: Minha Estrela Dalva Horário: Qui 20h | Sex 17h | Sáb 20h Dom 17h. Importante: O voucher inclui 01 par de ingressos. Não é possível escolher o horário, pois a distribuição ocorre de maneira automática e aleatória. ATENÇÃO AS REGRAS DE RESGATE: Promoção válida por tempo limitado, enquanto durarem os estoques. Benefício válido ao Assinante UOL pagante + 1 acompanhante. Cada Assinante UOL (validado por CPF) tem direito a resgatar apenas 1 par de ingressos para qualquer evento no mês vigente. Caso, já tenha resgatado algum ingresso neste mês, não estará elegível a esta promoção. O UOL não possui qualquer responsabilidade sobre a realização do evento. Não é possível alterar/substituir os ingressos resgatados. Atenção, Assinante UOL! A venda dos ingressos resgatados pelo Clube UOL é proibida. Essa prática pode resultar no banimento imediato da sua participação em futuras campanhas e no cancelamento dos ingressos já resgatados. Valorize seu benefício. Use com responsabilidade!",
+      "validity": "",
+      "description": "",
       "category": "Ingressos Exclusivos",
       "partner_name": "Campanhas de ingressos",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/b262fba623c914d0172deefd9292be0b.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/e1687cc9cd92518c96ac3204fc0e325f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133282,
-      "detail_elapsed_ms": 5155,
-      "scraped_at": "2026-07-30T03:16:58.735Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj\" is interrupted by another navigation to \"https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj\" Call log: - navigating to \"https://clube.uol.com.br/campanhasdeingresso/p9W-2-ingressos-31-07-teatro-claro-rj\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 891,
+      "scraped_at": "2026-07-30T03:35:22.370Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -123,22 +123,22 @@
       "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
-      "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
-      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
+      "validity": "",
+      "description": "",
       "category": "Entretenimento e Viagens",
       "partner_name": "Movida",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
-      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
-      "img_source": "meta_og",
-      "detail_ok": true,
-      "detail_quality": "complete",
-      "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 133693,
-      "detail_elapsed_ms": 7659,
-      "scraped_at": "2026-07-30T03:17:06.394Z"
+      "detail_img_url": "",
+      "img_source": "error",
+      "detail_ok": false,
+      "detail_quality": "failed",
+      "detail_error": "page.goto: Navigation to \"https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro\" is interrupted by another navigation to \"https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro\" Call log: - navigating to \"https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro\", waiting until \"domcontentloaded\"",
+      "detail_attempts": 2,
+      "detail_html_length": 0,
+      "detail_elapsed_ms": 1218,
+      "scraped_at": "2026-07-30T03:35:24.629Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -159,10 +159,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131518,
-      "detail_elapsed_ms": 10022,
-      "scraped_at": "2026-07-30T03:17:16.416Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131185,
+      "detail_elapsed_ms": 8019,
+      "scraped_at": "2026-07-30T03:35:33.379Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131242,
-      "detail_elapsed_ms": 5519,
-      "scraped_at": "2026-07-30T03:17:21.936Z"
+      "detail_html_length": 126460,
+      "detail_elapsed_ms": 5041,
+      "scraped_at": "2026-07-30T03:35:38.420Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -208,9 +208,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130423,
-      "detail_elapsed_ms": 2896,
-      "scraped_at": "2026-07-30T03:17:24.832Z"
+      "detail_html_length": 131552,
+      "detail_elapsed_ms": 5917,
+      "scraped_at": "2026-07-30T03:35:44.337Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -232,9 +232,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131572,
-      "detail_elapsed_ms": 3195,
-      "scraped_at": "2026-07-30T03:17:28.027Z"
+      "detail_html_length": 132743,
+      "detail_elapsed_ms": 6319,
+      "scraped_at": "2026-07-30T03:35:50.656Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -255,10 +255,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 131565,
-      "detail_elapsed_ms": 4373,
-      "scraped_at": "2026-07-30T03:17:32.401Z"
+      "detail_attempts": 2,
+      "detail_html_length": 131515,
+      "detail_elapsed_ms": 15728,
+      "scraped_at": "2026-07-30T03:36:19.374Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -280,9 +280,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 137740,
-      "detail_elapsed_ms": 12613,
-      "scraped_at": "2026-07-30T03:17:45.015Z"
+      "detail_html_length": 138232,
+      "detail_elapsed_ms": 8002,
+      "scraped_at": "2026-07-30T03:36:27.376Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -304,9 +304,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 130740,
-      "detail_elapsed_ms": 9910,
-      "scraped_at": "2026-07-30T03:17:54.925Z"
+      "detail_html_length": 129543,
+      "detail_elapsed_ms": 4221,
+      "scraped_at": "2026-07-30T03:36:31.597Z"
     }
   ]
 }
