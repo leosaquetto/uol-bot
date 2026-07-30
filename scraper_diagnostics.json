@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-30T01:25:01.458126Z",
+  "updated_at": "2026-07-30T01:31:58.998333Z",
   "snapshot_ids_pending": 0,
   "mac_offers_loaded": 12,
   "offers_consolidated": 12,
@@ -10,8 +10,8 @@
     "validade_expirada": 0,
     "inicio_validade_antigo_sem_fim": 0,
     "scraped_at_antigo": 0,
-    "duplicada_historico": 6,
-    "duplicada_latest": 1,
+    "duplicada_historico": 7,
+    "duplicada_latest": 0,
     "duplicada_pending": 0,
     "duplicada_execucao": 0
   },
@@ -19,7 +19,7 @@
     {
       "title": "50% OFF no Festival Filmes Incríveis",
       "link": "https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis",
-      "reason": "duplicada_latest",
+      "reason": "duplicada_historico",
       "trace_id": "trace_pay-50-off-no-festival-filmes-incrveis"
     },
     {
