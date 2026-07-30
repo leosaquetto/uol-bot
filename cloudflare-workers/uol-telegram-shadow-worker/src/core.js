@@ -239,3 +239,111 @@ export function decideShadowDelivery(offer, options = {}) {
     wouldSendCanal2: shouldSendToCanal2(offer),
   };
 }
+
+export function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+const HASHTAG_RULES = [
+  ["#ingresso", ["ingresso", "ingressos"]],
+  ["#show", ["show", "festival", "musical", "turne", "apresentacao"]],
+  ["#teatro", ["teatro", "musical", "espetaculo", "peca"]],
+  ["#standup", ["stand up", "standup", "comediante", "humor"]],
+  ["#entretenimentoviagens", ["cinema", "ingressos", "espetaculo", "evento"]],
+  ["#servicos", ["terapia"]],
+  ["#beleza", ["depilacao", "axilas", "beleza", "barba"]],
+  ["#comerbeber", ["vinho", "cerveja", "jantar", "almoco", "sobremesa", "restaurante"]],
+  ["#cursos", ["curso", "cursos", "ingles", "english"]],
+  ["#compraspresentes", ["ovo de pascoa", "vivara", "presente"]],
+  ["#educacao", ["graduacao", "pos", "ead", "aprender", "enem"]],
+  ["#viagem", ["viagem", "viagens"]],
+  ["#eletrodomesticoseletronicos", ["dell", "lg", "eletro", "geladeira", "lavadora"]],
+];
+
+const SILENT_HASHTAGS = new Set([
+  "#servicos",
+  "#beleza",
+  "#cursos",
+  "#educacao",
+  "#eletrodomesticoseletronicos",
+]);
+
+export function buildSmartHashtags(offer) {
+  const title = normalizeText(offer?.title || offer?.previewTitle);
+  const description = normalizeText(offer?.description);
+  const full = `${title} ${description}`;
+  const tags = [];
+
+  if (isTicketCampaign(offer)) tags.push("#campanhasdeingresso");
+  for (const [tag, keywords] of HASHTAG_RULES) {
+    const haystack = [
+      "#servicos",
+      "#beleza",
+      "#cursos",
+      "#compraspresentes",
+      "#educacao",
+      "#viagem",
+      "#eletrodomesticoseletronicos",
+    ].includes(tag) ? title : full;
+    if (keywords.some((keyword) => containsWord(haystack, keyword))) tags.push(tag);
+  }
+  return [...new Set(tags)];
+}
+
+export function shouldSendSilent(offer) {
+  if (isTicketCampaign(offer)) return false;
+  return buildSmartHashtags(offer).some((tag) => SILENT_HASHTAGS.has(tag));
+}
+
+export function extractLocationSummary(description) {
+  const text = cleanText(description);
+  if (!text) return "";
+  const explicit = text.match(/\blocal\s*:\s*([^|.;]{2,120})/i);
+  const candidate = cleanText(explicit?.[1] || "");
+  if (!candidate) return "";
+  const cityState = candidate.match(
+    /([A-Za-zÀ-ÖØ-öø-ÿ'`\- ]+?)\s*[-/]\s*([A-Za-z]{2})(?=$|[\s,;)])/i,
+  );
+  if (cityState) {
+    return `${cleanText(cityState[1]).replace(/[.,;]+$/, "")} - ${cityState[2].toUpperCase()}`;
+  }
+  return candidate.slice(0, 100);
+}
+
+function formatSoldOutTime(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return cleanText(value);
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+}
+
+export function buildTelegramCaption(offer, options = {}) {
+  const title = cleanText(offer?.title || offer?.previewTitle || "Oferta").slice(0, 280);
+  const link = normalizePublicLink(offer?.link);
+  const tags = buildSmartHashtags(offer);
+  const validity = cleanText(offer?.validity).replace(/\s+\./g, ".").slice(0, 360);
+  const location = extractLocationSummary(offer?.description);
+  const soldOutAt = options.soldOutAt || offer?.soldOutAt || offer?.sold_out_at || "";
+  const ticketTitle = isTicketCampaign(offer) ? `‼️ ${title} ‼️` : title;
+  const decoratedTitle = soldOutAt ? `[ESGOTADO] ${ticketTitle}` : ticketTitle;
+  const titleHtml = soldOutAt
+    ? `<s>${escapeHtml(decoratedTitle)}</s>`
+    : escapeHtml(decoratedTitle);
+  const lines = [`<b>${titleHtml}</b>`];
+
+  if (tags.length) lines.push(escapeHtml(tags.join(" ")));
+  if (location) lines.push(`📍 ${escapeHtml(location)}`);
+  if (validity) lines.push(`📅 ${escapeHtml(validity.endsWith(".") ? validity : `${validity}.`)}`);
+  if (soldOutAt) lines.push(`❌ Oferta esgotada às ${escapeHtml(formatSoldOutTime(soldOutAt))}.`);
+  if (link) lines.push(`🔗 ${escapeHtml(link)}`);
+
+  return lines.join("\n\n");
+}

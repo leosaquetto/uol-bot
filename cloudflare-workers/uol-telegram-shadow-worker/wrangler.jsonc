@@ -10,9 +10,11 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    "SHADOW_MODE": "1",
+    "DELIVERY_MODE": "shadow",
     "ALARM_INTERVAL_SECONDS": "60",
     "DETAIL_BATCH_SIZE": "4",
+    "DELIVERY_BATCH_SIZE": "4",
+    "DELIVERY_MAX_ATTEMPTS": "10",
     "MAX_STATE_OFFERS": "300",
     "MIN_HEALTHY_LISTING_OFFERS": "5",
     "MAX_VALID_FROM_AGE_HOURS": "36",

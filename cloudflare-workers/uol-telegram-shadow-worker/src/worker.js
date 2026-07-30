@@ -8,10 +8,17 @@ import {
   evaluateDetailQuality,
   extractValidity,
 } from "./core.js";
+import {
+  editSoldOutMessage,
+  forwardToCanal2,
+  sendMainOffer,
+  sendTransportTest,
+  telegramConfiguration,
+} from "./telegram.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
-const USER_AGENT = "Mozilla/5.0 (compatible; UOLTelegramShadowPilot/0.1)";
+const USER_AGENT = "Mozilla/5.0 (compatible; UOLTelegramCloudflare/1.0)";
 const INSTANCE_NAME = "clube-uol-global-monitor";
 const MAX_HTML_BYTES = 2_000_000;
 
@@ -23,6 +30,12 @@ function envNumber(env, name, fallback, min = 1, max = Number.MAX_SAFE_INTEGER) 
 
 function sanitizeError(error) {
   return cleanText(error?.message || error).slice(0, 240);
+}
+
+function deliveryMode(env) {
+  return String(env.DELIVERY_MODE || "shadow").trim().toLowerCase() === "live"
+    ? "live"
+    : "shadow";
 }
 
 function logEvent(level, event, data = {}) {
@@ -306,6 +319,28 @@ function rowToPublicDecision(row) {
     wouldSendCanal2: Boolean(row.would_send_canal2),
     discardReason: row.discard_reason || "",
     soldOutAt: row.sold_out_at || "",
+    mainSent: Boolean(row.main_sent_at),
+    canal2Sent: Boolean(row.canal2_sent_at),
+    mainDeliveryError: row.main_delivery_error || "",
+    canal2DeliveryError: row.canal2_delivery_error || "",
+    soldOutMainSynced: Boolean(row.main_sold_out_synced_at),
+    soldOutCanal2Synced: Boolean(row.canal2_sold_out_synced_at),
+  };
+}
+
+function rowToOffer(row) {
+  return {
+    id: row.id,
+    link: row.link,
+    previewTitle: row.preview_title,
+    title: row.title,
+    category: row.category,
+    cardImageUrl: row.card_image_url,
+    partnerImageUrl: row.partner_image_url,
+    partnerName: row.partner_name,
+    imageUrl: row.image_url,
+    validity: row.validity,
+    description: row.description,
   };
 }
 
@@ -375,6 +410,39 @@ export class UolTelegramShadow extends DurableObject {
       CREATE INDEX IF NOT EXISTS runs_started_idx ON runs(started_at DESC);
       INSERT OR IGNORE INTO _sql_schema_migrations (id) VALUES (1);
     `);
+    const currentVersion = Number(
+      this.ctx.storage.sql
+        .exec("SELECT COALESCE(MAX(id), 0) AS version FROM _sql_schema_migrations")
+        .one().version || 0,
+    );
+    if (currentVersion < 2) {
+      this.ctx.storage.sql.exec(`
+        ALTER TABLE offers ADD COLUMN delivery_mode TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN main_message_id INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN main_message_kind TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN main_sent_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN main_delivery_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN main_delivery_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN canal2_message_id INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN canal2_sent_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN canal2_delivery_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN canal2_delivery_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN main_sold_out_synced_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN main_sold_out_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN main_sold_out_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN canal2_sold_out_synced_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN canal2_sold_out_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN canal2_sold_out_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE runs ADD COLUMN main_sent INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE runs ADD COLUMN canal2_sent INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE runs ADD COLUMN delivery_failed INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE runs ADD COLUMN sold_out_main_edited INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE runs ADD COLUMN sold_out_canal2_edited INTEGER NOT NULL DEFAULT 0;
+        INSERT INTO _sql_schema_migrations (id) VALUES (2);
+        CREATE INDEX IF NOT EXISTS offers_delivery_idx
+          ON offers(status, main_sent_at, canal2_sent_at, first_seen_at);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -406,8 +474,10 @@ export class UolTelegramShadow extends DurableObject {
     this.ctx.storage.sql.exec(
       `INSERT INTO runs(
         started_at, finished_at, source, outcome, offers_seen, new_offers,
-        enriched, would_send_main, would_send_canal2, sold_out_detected, error
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        enriched, would_send_main, would_send_canal2, sold_out_detected,
+        main_sent, canal2_sent, delivery_failed,
+        sold_out_main_edited, sold_out_canal2_edited, error
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       run.startedAt,
       run.finishedAt,
       run.source,
@@ -418,6 +488,11 @@ export class UolTelegramShadow extends DurableObject {
       run.wouldSendMain,
       run.wouldSendCanal2,
       run.soldOutDetected,
+      run.mainSent,
+      run.canal2Sent,
+      run.deliveryFailed,
+      run.soldOutMainEdited,
+      run.soldOutCanal2Edited,
       run.error,
     );
     this.ctx.storage.sql.exec(
@@ -445,7 +520,7 @@ export class UolTelegramShadow extends DurableObject {
     );
   }
 
-  async processPending(cardsById, now) {
+  async processPending(cardsById, now, mode) {
     const batchSize = envNumber(this.env, "DETAIL_BATCH_SIZE", 4, 1, 8);
     const pendingRows = this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, category, card_image_url,
@@ -512,7 +587,9 @@ export class UolTelegramShadow extends DurableObject {
             now,
             maxValidFromAgeHours: envNumber(this.env, "MAX_VALID_FROM_AGE_HOURS", 36, 1, 720),
           });
-      const status = decision.eligible ? "shadow_candidate" : "discarded";
+      const status = decision.eligible
+        ? (mode === "live" ? "delivery_pending" : "shadow_candidate")
+        : "discarded";
       const decisionAt = now.toISOString();
       this.ctx.storage.sql.exec(
         `UPDATE offers SET
@@ -520,7 +597,7 @@ export class UolTelegramShadow extends DurableObject {
           dedupe_key = ?, loose_dedupe_key = ?, detail_quality = ?,
           detail_attempts = ?, detail_error = ?, decision_at = ?,
           would_send_main = ?, would_send_canal2 = ?, discard_reason = ?,
-          status = ?
+          status = ?, delivery_mode = ?
          WHERE id = ?`,
         offer.title,
         offer.imageUrl,
@@ -536,6 +613,7 @@ export class UolTelegramShadow extends DurableObject {
         decision.wouldSendCanal2 ? 1 : 0,
         decision.discardReason,
         status,
+        mode,
         offer.id,
       );
       wouldSendMain += decision.wouldSendMain ? 1 : 0;
@@ -547,6 +625,233 @@ export class UolTelegramShadow extends DurableObject {
       wouldSendMain,
       wouldSendCanal2,
     };
+  }
+
+  async processDeliveries(now) {
+    if (deliveryMode(this.env) !== "live") {
+      return { mainSent: 0, canal2Sent: 0, failed: 0 };
+    }
+    const configuration = telegramConfiguration(this.env);
+    if (!configuration.liveReady) {
+      throw new Error("telegram_live_configuration_incomplete");
+    }
+
+    const batchSize = envNumber(this.env, "DELIVERY_BATCH_SIZE", 4, 1, 8);
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT *
+       FROM offers
+       WHERE status IN ('delivery_pending', 'partial_delivery')
+       ORDER BY first_seen_at ASC
+       LIMIT ?`,
+      batchSize,
+    ).toArray();
+    let mainSent = 0;
+    let canal2Sent = 0;
+    let failed = 0;
+
+    for (const row of rows) {
+      let mainMessageId = Number(row.main_message_id || 0);
+      let mainMessageKind = row.main_message_kind || "";
+      let mainSentAt = row.main_sent_at || "";
+      let canal2SentAt = row.canal2_sent_at || "";
+
+      if (!mainSentAt && Number(row.main_delivery_attempts || 0) < maxAttempts) {
+        const attempts = Number(row.main_delivery_attempts || 0) + 1;
+        this.ctx.storage.sql.exec(
+          `UPDATE offers
+           SET main_delivery_attempts = ?, main_delivery_error = ''
+           WHERE id = ?`,
+          attempts,
+          row.id,
+        );
+        try {
+          const result = await sendMainOffer(this.env, rowToOffer(row));
+          if (!result.messageId) throw new Error("telegram_main_message_id_missing");
+          mainMessageId = result.messageId;
+          mainMessageKind = result.messageKind;
+          mainSentAt = now.toISOString();
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
+              main_delivery_error = ''
+             WHERE id = ?`,
+            mainMessageId,
+            mainMessageKind,
+            mainSentAt,
+            row.id,
+          );
+          mainSent += 1;
+        } catch (error) {
+          this.ctx.storage.sql.exec(
+            "UPDATE offers SET main_delivery_error = ? WHERE id = ?",
+            sanitizeError(error),
+            row.id,
+          );
+          failed += 1;
+        }
+      }
+
+      if (
+        mainSentAt &&
+        Boolean(row.would_send_canal2) &&
+        !canal2SentAt &&
+        Number(row.canal2_delivery_attempts || 0) < maxAttempts
+      ) {
+        const attempts = Number(row.canal2_delivery_attempts || 0) + 1;
+        this.ctx.storage.sql.exec(
+          `UPDATE offers
+           SET canal2_delivery_attempts = ?, canal2_delivery_error = ''
+           WHERE id = ?`,
+          attempts,
+          row.id,
+        );
+        try {
+          const result = await forwardToCanal2(this.env, mainMessageId);
+          if (!result.messageId) throw new Error("telegram_canal2_message_id_missing");
+          canal2SentAt = now.toISOString();
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              canal2_message_id = ?, canal2_sent_at = ?, canal2_delivery_error = ''
+             WHERE id = ?`,
+            result.messageId,
+            canal2SentAt,
+            row.id,
+          );
+          canal2Sent += 1;
+        } catch (error) {
+          this.ctx.storage.sql.exec(
+            "UPDATE offers SET canal2_delivery_error = ? WHERE id = ?",
+            sanitizeError(error),
+            row.id,
+          );
+          failed += 1;
+        }
+      }
+
+      const complete = Boolean(
+        mainSentAt && (!Boolean(row.would_send_canal2) || canal2SentAt),
+      );
+      this.ctx.storage.sql.exec(
+        "UPDATE offers SET status = ? WHERE id = ?",
+        complete ? "delivered" : "partial_delivery",
+        row.id,
+      );
+    }
+
+    return { mainSent, canal2Sent, failed };
+  }
+
+  async processSoldOutSync(now) {
+    if (deliveryMode(this.env) !== "live") {
+      return { mainEdited: 0, canal2Edited: 0, failed: 0 };
+    }
+    const configuration = telegramConfiguration(this.env);
+    if (!configuration.liveReady) {
+      throw new Error("telegram_live_configuration_incomplete");
+    }
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT *
+       FROM offers
+       WHERE status = 'sold_out'
+         AND main_message_id > 0
+         AND (
+           main_sold_out_synced_at = ''
+           OR (
+             would_send_canal2 = 1
+             AND canal2_message_id > 0
+             AND canal2_sold_out_synced_at = ''
+           )
+         )
+       ORDER BY sold_out_at ASC
+       LIMIT 4`,
+    ).toArray();
+    let mainEdited = 0;
+    let canal2Edited = 0;
+    let failed = 0;
+
+    for (const row of rows) {
+      const offer = rowToOffer(row);
+      if (
+        !row.main_sold_out_synced_at &&
+        Number(row.main_sold_out_attempts || 0) < maxAttempts
+      ) {
+        const attempts = Number(row.main_sold_out_attempts || 0) + 1;
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET
+            main_sold_out_attempts = ?, main_sold_out_error = ''
+           WHERE id = ?`,
+          attempts,
+          row.id,
+        );
+        try {
+          await editSoldOutMessage(this.env, {
+            chatId: String(this.env.TELEGRAM_CHAT_ID || ""),
+            messageId: row.main_message_id,
+            messageKind: row.main_message_kind,
+            offer,
+            soldOutAt: row.sold_out_at || now.toISOString(),
+          });
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              main_sold_out_synced_at = ?, main_sold_out_error = ''
+             WHERE id = ?`,
+            now.toISOString(),
+            row.id,
+          );
+          mainEdited += 1;
+        } catch (error) {
+          this.ctx.storage.sql.exec(
+            "UPDATE offers SET main_sold_out_error = ? WHERE id = ?",
+            sanitizeError(error),
+            row.id,
+          );
+          failed += 1;
+        }
+      }
+
+      if (
+        Boolean(row.would_send_canal2) &&
+        Number(row.canal2_message_id || 0) > 0 &&
+        !row.canal2_sold_out_synced_at &&
+        Number(row.canal2_sold_out_attempts || 0) < maxAttempts
+      ) {
+        const attempts = Number(row.canal2_sold_out_attempts || 0) + 1;
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET
+            canal2_sold_out_attempts = ?, canal2_sold_out_error = ''
+           WHERE id = ?`,
+          attempts,
+          row.id,
+        );
+        try {
+          await editSoldOutMessage(this.env, {
+            chatId: String(this.env.CANAL2_ID || ""),
+            messageId: row.canal2_message_id,
+            messageKind: row.main_message_kind,
+            offer,
+            soldOutAt: row.sold_out_at || now.toISOString(),
+          });
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              canal2_sold_out_synced_at = ?, canal2_sold_out_error = ''
+             WHERE id = ?`,
+            now.toISOString(),
+            row.id,
+          );
+          canal2Edited += 1;
+        } catch (error) {
+          this.ctx.storage.sql.exec(
+            "UPDATE offers SET canal2_sold_out_error = ? WHERE id = ?",
+            sanitizeError(error),
+            row.id,
+          );
+          failed += 1;
+        }
+      }
+    }
+    return { mainEdited, canal2Edited, failed };
   }
 
   evaluateSoldOut(activeIds, now) {
@@ -561,9 +866,9 @@ export class UolTelegramShadow extends DurableObject {
     );
     const threshold = new Date(now.getTime() - lookbackDays * 86_400_000).toISOString();
     const candidates = this.ctx.storage.sql.exec(
-      `SELECT id, missing_since, absence_count
+      `SELECT id, status, missing_since, absence_count
        FROM offers
-       WHERE status = 'shadow_candidate'
+       WHERE status IN ('shadow_candidate', 'delivered', 'partial_delivery')
          AND sold_out_at = ''
          AND decision_at >= ?`,
       threshold,
@@ -604,9 +909,13 @@ export class UolTelegramShadow extends DurableObject {
         );
       }
       if (nextCount >= minMisses && absentMinutes >= minAbsenceMinutes) {
+        const soldOutStatus = candidate.status === "shadow_candidate"
+          ? "shadow_sold_out"
+          : "sold_out";
         this.ctx.storage.sql.exec(
-          "UPDATE offers SET sold_out_at = ?, status = 'shadow_sold_out' WHERE id = ?",
+          "UPDATE offers SET sold_out_at = ?, status = ? WHERE id = ?",
           now.toISOString(),
+          soldOutStatus,
           candidate.id,
         );
         soldOutDetected += 1;
@@ -647,12 +956,18 @@ export class UolTelegramShadow extends DurableObject {
       wouldSendMain: 0,
       wouldSendCanal2: 0,
       soldOutDetected: 0,
+      mainSent: 0,
+      canal2Sent: 0,
+      deliveryFailed: 0,
+      soldOutMainEdited: 0,
+      soldOutCanal2Edited: 0,
       error: "",
     };
 
     try {
-      if (String(this.env.SHADOW_MODE || "") !== "1") {
-        throw new Error("shadow_mode_guard_disabled");
+      const mode = deliveryMode(this.env);
+      if (mode === "live" && !this.metadataValue("live_started_at")) {
+        this.setMetadata("live_started_at", startedAt.toISOString());
       }
       const cards = await fetchListing();
       const minimum = envNumber(this.env, "MIN_HEALTHY_LISTING_OFFERS", 5, 1, 48);
@@ -679,14 +994,30 @@ export class UolTelegramShadow extends DurableObject {
         }
 
         const cardsById = new Map(cards.map((card) => [card.id, card]));
-        const processed = await this.processPending(cardsById, now);
+        const processed = await this.processPending(cardsById, now, mode);
         run.enriched = processed.enriched;
         run.wouldSendMain = processed.wouldSendMain;
         run.wouldSendCanal2 = processed.wouldSendCanal2;
         run.soldOutDetected = this.evaluateSoldOut(new Set(cardsById.keys()), now);
-        run.outcome = run.newOffers > 0 || run.enriched > 0
-          ? "shadow_decisions_recorded"
-          : "no_change";
+        const delivered = await this.processDeliveries(now);
+        run.mainSent = delivered.mainSent;
+        run.canal2Sent = delivered.canal2Sent;
+        run.deliveryFailed += delivered.failed;
+        const soldOutSync = await this.processSoldOutSync(now);
+        run.soldOutMainEdited = soldOutSync.mainEdited;
+        run.soldOutCanal2Edited = soldOutSync.canal2Edited;
+        run.deliveryFailed += soldOutSync.failed;
+        if (mode === "live" && (run.mainSent > 0 || run.canal2Sent > 0)) {
+          run.outcome = "telegram_delivered";
+        } else if (mode === "live" && run.deliveryFailed > 0) {
+          run.outcome = "telegram_delivery_partial";
+        } else if (run.newOffers > 0 || run.enriched > 0) {
+          run.outcome = mode === "live"
+            ? "live_decisions_recorded"
+            : "shadow_decisions_recorded";
+        } else {
+          run.outcome = "no_change";
+        }
       }
       this.pruneOffers();
     } catch (error) {
@@ -708,6 +1039,11 @@ export class UolTelegramShadow extends DurableObject {
       wouldSendMain: run.wouldSendMain,
       wouldSendCanal2: run.wouldSendCanal2,
       soldOutDetected: run.soldOutDetected,
+      mainSent: run.mainSent,
+      canal2Sent: run.canal2Sent,
+      deliveryFailed: run.deliveryFailed,
+      soldOutMainEdited: run.soldOutMainEdited,
+      soldOutCanal2Edited: run.soldOutCanal2Edited,
       error: run.error,
     });
     return {
@@ -738,6 +1074,21 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  async testTransport() {
+    const configuration = telegramConfiguration(this.env);
+    if (!configuration.liveReady) {
+      throw new Error("telegram_live_configuration_incomplete");
+    }
+    const result = await sendTransportTest(this.env);
+    logEvent("info", "uol_telegram_transport_test", {
+      ok: Boolean(result.messageId),
+    });
+    return {
+      ok: Boolean(result.messageId),
+      messageId: result.messageId,
+    };
+  }
+
   async getHealth() {
     const alarmScheduledAt = await this.ensureAlarm();
     const counts = this.ctx.storage.sql.exec(
@@ -747,23 +1098,35 @@ export class UolTelegramShadow extends DurableObject {
         SUM(CASE WHEN status = 'pending_enrichment' THEN 1 ELSE 0 END) AS pending,
         SUM(CASE WHEN would_send_main = 1 THEN 1 ELSE 0 END) AS would_send_main,
         SUM(CASE WHEN would_send_canal2 = 1 THEN 1 ELSE 0 END) AS would_send_canal2,
-        SUM(CASE WHEN status = 'shadow_sold_out' THEN 1 ELSE 0 END) AS sold_out
+        SUM(CASE WHEN main_sent_at <> '' THEN 1 ELSE 0 END) AS main_sent,
+        SUM(CASE WHEN canal2_sent_at <> '' THEN 1 ELSE 0 END) AS canal2_sent,
+        SUM(CASE WHEN status IN ('delivery_pending', 'partial_delivery') THEN 1 ELSE 0 END)
+          AS delivery_pending,
+        SUM(CASE WHEN status IN ('shadow_sold_out', 'sold_out') THEN 1 ELSE 0 END) AS sold_out,
+        SUM(CASE WHEN main_delivery_error <> '' OR canal2_delivery_error <> '' THEN 1 ELSE 0 END)
+          AS delivery_errors
        FROM offers`,
     ).one();
     const lastRun = this.ctx.storage.sql.exec(
       `SELECT started_at, finished_at, source, outcome, offers_seen, new_offers,
-              enriched, would_send_main, would_send_canal2, sold_out_detected, error
+              enriched, would_send_main, would_send_canal2, sold_out_detected,
+              main_sent, canal2_sent, delivery_failed,
+              sold_out_main_edited, sold_out_canal2_edited, error
        FROM runs ORDER BY id DESC LIMIT 1`,
     ).toArray()[0] || null;
     const recentRuns = this.ctx.storage.sql.exec(
       `SELECT started_at, finished_at, source, outcome, offers_seen, new_offers,
-              enriched, would_send_main, would_send_canal2, sold_out_detected, error
+              enriched, would_send_main, would_send_canal2, sold_out_detected,
+              main_sent, canal2_sent, delivery_failed,
+              sold_out_main_edited, sold_out_canal2_edited, error
        FROM runs ORDER BY id DESC LIMIT 5`,
     ).toArray();
     const recent = this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
-              discard_reason, sold_out_at
+              discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
+              main_delivery_error, canal2_delivery_error,
+              main_sold_out_synced_at, canal2_sold_out_synced_at
        FROM offers
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
@@ -773,11 +1136,12 @@ export class UolTelegramShadow extends DurableObject {
     return {
       ok: true,
       worker: "uol-telegram-shadow-pilot",
-      mode: "shadow-only",
-      telegramConfigured: false,
+      mode: deliveryMode(this.env),
+      telegram: telegramConfiguration(this.env),
       schedule: "durable-object-alarm:1m",
       alarmScheduledAt,
       initializedAt: this.metadataValue("initialized_at"),
+      liveStartedAt: this.metadataValue("live_started_at"),
       lastScanAt: this.metadataValue("last_scan_at"),
       counts: {
         tracked: Number(counts.tracked || 0),
@@ -785,6 +1149,10 @@ export class UolTelegramShadow extends DurableObject {
         pending: Number(counts.pending || 0),
         wouldSendMain: Number(counts.would_send_main || 0),
         wouldSendCanal2: Number(counts.would_send_canal2 || 0),
+        mainSent: Number(counts.main_sent || 0),
+        canal2Sent: Number(counts.canal2_sent || 0),
+        deliveryPending: Number(counts.delivery_pending || 0),
+        deliveryErrors: Number(counts.delivery_errors || 0),
         soldOut: Number(counts.sold_out || 0),
       },
       lastRun,
@@ -798,7 +1166,9 @@ export class UolTelegramShadow extends DurableObject {
     return this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
-              discard_reason, sold_out_at
+              discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
+              main_delivery_error, canal2_delivery_error,
+              main_sold_out_synced_at, canal2_sold_out_synced_at
        FROM offers
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
@@ -812,7 +1182,9 @@ export class UolTelegramShadow extends DurableObject {
     return this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
-              discard_reason, sold_out_at
+              discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
+              main_delivery_error, canal2_delivery_error,
+              main_sold_out_synced_at, canal2_sold_out_synced_at
        FROM offers
        ORDER BY first_seen_at DESC, id ASC
        LIMIT ?`,
@@ -835,6 +1207,12 @@ export default {
           return jsonResponse({ ok: false, error: "unauthorized" }, 401);
         }
         return jsonResponse(await stub.runNow());
+      }
+      if (request.method === "POST" && url.pathname === "/test") {
+        if (!isAuthorized(request, env)) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        return jsonResponse(await stub.testTransport());
       }
       if (request.method === "GET" && url.pathname === "/decisions") {
         if (!isAuthorized(request, env)) {

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   buildDedupeKeys,
+  buildTelegramCaption,
   decideShadowDelivery,
   dedupeCards,
   evaluateDetailQuality,
@@ -92,4 +93,26 @@ test("classifica detalhe completo e gera dedupe estável", async () => {
   };
   assert.equal(evaluateDetailQuality(detail), "complete");
   assert.deepEqual(await buildDedupeKeys(detail), await buildDedupeKeys({ ...detail }));
+});
+
+test("gera legenda Telegram segura e destaca ingressos", () => {
+  const caption = buildTelegramCaption({
+    ...showOffer,
+    title: "Show <Especial> & Convidados",
+    validity: "Benefício válido até 31/08/2026 23:59",
+  });
+  assert.match(caption, /‼️ Show &lt;Especial&gt; &amp; Convidados ‼️/);
+  assert.match(caption, /#campanhasdeingresso/);
+  assert.match(caption, /31\/08\/2026/);
+  assert.match(caption, /https:\/\/clube\.uol\.com\.br/);
+});
+
+test("gera edição de esgotamento sem perder o link", () => {
+  const caption = buildTelegramCaption(showOffer, {
+    soldOutAt: "2026-07-30T12:34:00Z",
+  });
+  assert.match(caption, /\[ESGOTADO\]/);
+  assert.match(caption, /<s>/);
+  assert.match(caption, /Oferta esgotada às 09:34/);
+  assert.match(caption, /https:\/\/clube\.uol\.com\.br/);
 });

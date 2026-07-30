@@ -1,0 +1,110 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+
+import {
+  editSoldOutMessage,
+  forwardToCanal2,
+  sendMainOffer,
+  telegramConfiguration,
+} from "../src/telegram.js";
+
+const env = {
+  TELEGRAM_TOKEN: "123456:test-token",
+  TELEGRAM_CHAT_ID: "-100111",
+  CANAL2_ID: "-100222",
+};
+
+const offer = {
+  link: "https://clube.uol.com.br/campanhasdeingresso/show-teste",
+  title: "2 ingressos: Show Teste",
+  previewTitle: "2 ingressos: Show Teste",
+  category: "Ingressos Exclusivos",
+  description: "Local: São Paulo - SP. Regras completas da oferta.",
+  imageUrl: "https://example.com/show.jpg",
+};
+
+function jsonResponse(result, status = 200) {
+  return new Response(JSON.stringify({
+    ok: status >= 200 && status < 300,
+    result,
+  }), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+test("configuração live exige token e os dois canais", () => {
+  assert.deepEqual(telegramConfiguration(env), {
+    tokenConfigured: true,
+    mainConfigured: true,
+    canal2Configured: true,
+    liveReady: true,
+  });
+  assert.equal(telegramConfiguration({ ...env, CANAL2_ID: "" }).liveReady, false);
+});
+
+test("envia foto ao canal principal sem expor token no payload", async () => {
+  let requestUrl = "";
+  let payload = {};
+  const result = await sendMainOffer(env, offer, async (url, init) => {
+    requestUrl = url;
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 41 });
+  });
+  assert.equal(result.messageId, 41);
+  assert.equal(result.messageKind, "photo");
+  assert.match(requestUrl, /sendPhoto$/);
+  assert.equal(payload.chat_id, env.TELEGRAM_CHAT_ID);
+  assert.equal(payload.disable_notification, false);
+  assert.equal(JSON.stringify(payload).includes(env.TELEGRAM_TOKEN), false);
+});
+
+test("usa texto quando o Telegram rejeita a imagem", async () => {
+  const methods = [];
+  const result = await sendMainOffer(env, offer, async (url) => {
+    methods.push(url.split("/").pop());
+    if (url.endsWith("/sendPhoto")) {
+      return new Response(JSON.stringify({ ok: false, description: "bad photo" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    return jsonResponse({ message_id: 42 });
+  });
+  assert.deepEqual(methods, ["sendPhoto", "sendMessage"]);
+  assert.equal(result.messageKind, "text");
+  assert.equal(result.messageId, 42);
+});
+
+test("encaminha para o canal 2 somente após ter a mensagem principal", async () => {
+  let payload = {};
+  const result = await forwardToCanal2(env, 41, async (_url, init) => {
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 99 });
+  });
+  assert.equal(result.messageId, 99);
+  assert.equal(payload.from_chat_id, env.TELEGRAM_CHAT_ID);
+  assert.equal(payload.chat_id, env.CANAL2_ID);
+  assert.equal(payload.message_id, 41);
+  assert.equal(payload.disable_notification, true);
+});
+
+test("edita foto esgotada no canal correto", async () => {
+  let method = "";
+  let payload = {};
+  await editSoldOutMessage(env, {
+    chatId: env.CANAL2_ID,
+    messageId: 99,
+    messageKind: "photo",
+    offer,
+    soldOutAt: "2026-07-30T12:34:00Z",
+  }, async (url, init) => {
+    method = url.split("/").pop();
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 99 });
+  });
+  assert.equal(method, "editMessageCaption");
+  assert.equal(payload.chat_id, env.CANAL2_ID);
+  assert.equal(payload.message_id, 99);
+  assert.match(payload.caption, /\[ESGOTADO\]/);
+});
