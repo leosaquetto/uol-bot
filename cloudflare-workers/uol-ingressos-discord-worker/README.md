@@ -4,6 +4,9 @@ Worker isolado para monitorar exclusivamente links de
 `/campanhasdeingresso/` no Clube UOL e publicar novas ofertas em um webhook do
 Discord.
 
+O histórico técnico, as decisões e as validações estão registrados em
+[`IMPLEMENTATION.md`](./IMPLEMENTATION.md).
+
 ## Segurança do piloto
 
 - Um alarme de Durable Object roda a cada 1 minuto sem consumir um dos cinco
