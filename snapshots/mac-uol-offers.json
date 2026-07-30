@@ -6,18 +6,18 @@
   "detail_page_timeout_ms": 12000,
   "collected_cards_count": 12,
   "enriched_offers_count": 12,
-  "detail_ok_count": 8,
-  "detail_fail_count": 4,
+  "detail_ok_count": 11,
+  "detail_fail_count": 1,
   "detail_quality_counts": {
-    "complete": 7,
+    "complete": 11,
     "partial": 0,
-    "weak": 1,
-    "failed": 4
+    "weak": 0,
+    "failed": 1
   },
-  "run_duration_ms": 354382,
-  "run_duration_seconds": 354.38,
-  "avg_detail_ms_per_offer": 29532,
-  "generated_at": "2026-07-30T05:16:01.852Z",
+  "run_duration_ms": 174857,
+  "run_duration_seconds": 174.86,
+  "avg_detail_ms_per_offer": 14571,
+  "generated_at": "2026-07-30T05:22:24.821Z",
   "host": "MacBook-Air-de-Leo.local",
   "offers": [
     {
@@ -41,8 +41,8 @@
       "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/cinebelasartes/pAy-50-off-no-festival-filmes-incrveis\", waiting until \"domcontentloaded\"",
       "detail_attempts": 2,
       "detail_html_length": 0,
-      "detail_elapsed_ms": 12045,
-      "scraped_at": "2026-07-30T05:13:03.983Z"
+      "detail_elapsed_ms": 13640,
+      "scraped_at": "2026-07-30T05:20:42.353Z"
     },
     {
       "id": "pao-10-de-desconto-no-primeiro-corte",
@@ -51,22 +51,22 @@
       "original_link": "https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte",
       "title": "10% de desconto no primeiro corte",
       "preview_title": "10% de desconto no primeiro corte",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 28/07/2026 17:00 até 28/07/2028 23:59.",
+      "description": "Sobre o Parceiro: Barbearia Masculina especializada em corte adulto e infantil. Referência na cidade de Indaiatuba por corte, barba e serviços extras! Clube de assinatura Navaggio: Pague um valor fixo mensal e corte quantas vezes quiser! Benefício: 10% de desconto no primeiro corte OU um serviço extra de CORTESIA (sobrancelha na cera, depilação de nariz ou orelha, etc.) Regras: Para ganhar o desconto, mostrar um print da tela onde consta o anúncio do desconto; Aplicável nas duas unidades da Barbearia Navaggio em INDAIATUBA; Válido apenas no primeiro corte; Sujeito à desativação sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Barbearia Navaggio",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/f0cc75eeec6ae4b96c634cde7426475a.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/barbearianavaggio/pAo-10-de-desconto-no-primeiro-corte\", waiting until \"domcontentloaded\"",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/da7cca0e4ed28c2fcdae07e14644f6ae.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
       "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12007,
-      "scraped_at": "2026-07-30T05:13:28.410Z"
+      "detail_html_length": 134208,
+      "detail_elapsed_ms": 10791,
+      "scraped_at": "2026-07-30T05:21:05.416Z"
     },
     {
       "id": "paa-20-off-em-seleo-de-dia-dos-pais",
@@ -87,10 +87,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 130916,
-      "detail_elapsed_ms": 11673,
-      "scraped_at": "2026-07-30T05:13:52.605Z"
+      "detail_attempts": 1,
+      "detail_html_length": 124552,
+      "detail_elapsed_ms": 3054,
+      "scraped_at": "2026-07-30T05:21:08.470Z"
     },
     {
       "id": "p9w-2-ingressos-31-07-teatro-claro-rj",
@@ -112,9 +112,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 133135,
-      "detail_elapsed_ms": 9233,
-      "scraped_at": "2026-07-30T05:14:01.839Z"
+      "detail_html_length": 132044,
+      "detail_elapsed_ms": 3532,
+      "scraped_at": "2026-07-30T05:21:12.002Z"
     },
     {
       "id": "p9u-at-12-off-em-aluguis-carro",
@@ -123,22 +123,22 @@
       "original_link": "https://clube.uol.com.br/movida/p9U-at-12-off-em-aluguis-de-carro",
       "title": "Até 12% OFF em aluguéis de carro",
       "preview_title": "Até 12% OFF em aluguéis de carro",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 12:21 até 02/08/2026 23:59.",
+      "description": "Sobre o parceiro: Desde 2006 no mercado de Aluguel de Carros, a Movida Rent a Car conta com a frota mais nova do Brasil e dispõe de lojas nas principais cidades e aeroportos do país. Benefício: Até 12% off (10% off da parceria + 2% off utilizando a opção pagar agora). Regras: Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Movida. Desconto já aplicado no hotsite da parceria.",
       "category": "Entretenimento e Viagens",
       "partner_name": "Movida",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/086bd23f71f9884e8f9e0e94f71d326f.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
-      "detail_img_url": "",
-      "img_source": "none",
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/7581535214ff8356ff3c5ea85ecd484f.png",
+      "img_source": "meta_og",
       "detail_ok": true,
-      "detail_quality": "weak",
+      "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 39,
-      "detail_elapsed_ms": 1570,
-      "scraped_at": "2026-07-30T05:14:03.409Z"
+      "detail_html_length": 133484,
+      "detail_elapsed_ms": 12217,
+      "scraped_at": "2026-07-30T05:21:24.219Z"
     },
     {
       "id": "p9s-15-off-em-produtos-marketplace",
@@ -160,9 +160,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131666,
-      "detail_elapsed_ms": 9961,
-      "scraped_at": "2026-07-30T05:14:13.372Z"
+      "detail_html_length": 131517,
+      "detail_elapsed_ms": 6416,
+      "scraped_at": "2026-07-30T05:21:30.635Z"
     },
     {
       "id": "p9r-20-off-em-seleo-especial",
@@ -184,9 +184,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131192,
-      "detail_elapsed_ms": 9881,
-      "scraped_at": "2026-07-30T05:14:23.253Z"
+      "detail_html_length": 124954,
+      "detail_elapsed_ms": 2118,
+      "scraped_at": "2026-07-30T05:21:32.753Z"
     },
     {
       "id": "p9q-30-off-em-seleo-especial",
@@ -195,22 +195,22 @@
       "original_link": "https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial",
       "title": "30% OFF em seleção especial",
       "preview_title": "30% OFF em seleção especial",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 27/07/2026 12:03 até 09/08/2026 23:59.",
+      "description": "Sobre o parceiro: Nossa missão é tornar todos os atletas melhores por meio da paixão, design e busca incansável pela inovação. Benefício de Dia dos Pais: 30% OFF em seleção especial da Under Armour. Regras Para resgatar o desconto é necessário inserir o cupom corretamente no carrinho de compras após a tela de confirmação de seu pedido, ou seja, antes das informações de pagamento. Clique em \"Utilizar este benefício\" e confira o regulamento com todas as regras e condições para resgatar o seu cupom de desconto no site do parceiro - Under Armour.",
       "category": "Compras e Presentes",
       "partner_name": "Under Armour",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/73dfa95f40523598a2a428a3c2b248b0.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/76ef473d88dce518c6f15d7bfc30be8b.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/76ef473d88dce518c6f15d7bfc30be8b.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/underarmour/p9Q-30-off-em-seleo-especial\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12713,
-      "scraped_at": "2026-07-30T05:14:49.352Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/76ef473d88dce518c6f15d7bfc30be8b.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 131561,
+      "detail_elapsed_ms": 2307,
+      "scraped_at": "2026-07-30T05:21:35.060Z"
     },
     {
       "id": "p98-10-off-no-ingresso-nos-dias-04-a-06-09",
@@ -231,10 +231,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 2,
-      "detail_html_length": 132733,
-      "detail_elapsed_ms": 9361,
-      "scraped_at": "2026-07-30T05:15:12.556Z"
+      "detail_attempts": 1,
+      "detail_html_length": 132874,
+      "detail_elapsed_ms": 12094,
+      "scraped_at": "2026-07-30T05:21:47.154Z"
     },
     {
       "id": "p97-20-de-desconto-em-qualquer-plano",
@@ -256,9 +256,9 @@
       "detail_quality": "complete",
       "detail_error": "",
       "detail_attempts": 1,
-      "detail_html_length": 131915,
-      "detail_elapsed_ms": 12739,
-      "scraped_at": "2026-07-30T05:15:25.295Z"
+      "detail_html_length": 131922,
+      "detail_elapsed_ms": 13025,
+      "scraped_at": "2026-07-30T05:22:00.179Z"
     },
     {
       "id": "p95-10-off-no-ingresso-nos-dias-11-e-12-09",
@@ -279,10 +279,10 @@
       "detail_ok": true,
       "detail_quality": "complete",
       "detail_error": "",
-      "detail_attempts": 1,
-      "detail_html_length": 138103,
-      "detail_elapsed_ms": 10264,
-      "scraped_at": "2026-07-30T05:15:35.559Z"
+      "detail_attempts": 2,
+      "detail_html_length": 138219,
+      "detail_elapsed_ms": 8353,
+      "scraped_at": "2026-07-30T05:22:20.815Z"
     },
     {
       "id": "p9z-15-off-extra-na-seleo-mascavo",
@@ -291,22 +291,22 @@
       "original_link": "https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo",
       "title": "15% OFF extra na seleção Mascavo",
       "preview_title": "15% OFF extra na seleção Mascavo",
-      "validity": "",
-      "description": "",
+      "validity": "Benefício válido de 22/07/2026 14:00 até 30/07/2026 23:59.",
+      "description": "Benefício: 15% OFF extra na seleção Mascavo Regras: Válido para todos os itens da seleção. Não cumulativo e sujeito à desativação, sem aviso prévio.",
       "category": "Saúde e Beleza",
       "partner_name": "Lojas Renner",
       "partner_img_url": "https://ddrxgn8ucibei.cloudfront.net/parceiros/logo-renner.png",
       "img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
       "card_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
-      "detail_img_url": "",
-      "img_source": "error",
-      "detail_ok": false,
-      "detail_quality": "failed",
-      "detail_error": "page.goto: Timeout 12000ms exceeded. Call log: - navigating to \"https://clube.uol.com.br/lojasrenner/p9z-15-off-extra-na-seleo-mascavo\", waiting until \"domcontentloaded\"",
-      "detail_attempts": 2,
-      "detail_html_length": 0,
-      "detail_elapsed_ms": 12068,
-      "scraped_at": "2026-07-30T05:16:00.156Z"
+      "detail_img_url": "https://ddrxgn8ucibei.cloudfront.net/beneficios/49b725afb899288224be39fe1b475e9c.png",
+      "img_source": "meta_og",
+      "detail_ok": true,
+      "detail_quality": "complete",
+      "detail_error": "",
+      "detail_attempts": 1,
+      "detail_html_length": 130837,
+      "detail_elapsed_ms": 3415,
+      "scraped_at": "2026-07-30T05:22:24.230Z"
     }
   ]
 }
