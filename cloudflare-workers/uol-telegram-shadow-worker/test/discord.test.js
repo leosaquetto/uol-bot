@@ -19,6 +19,7 @@ test("mantém o formato aprovado do Discord com thumbnail", () => {
   assert.equal(payload.embeds[0].title, offer.title);
   assert.equal(payload.embeds[0].url, offer.link);
   assert.equal(payload.embeds[0].image.url, offer.cardImageUrl);
+  assert.equal(payload.content, `🚨 **${offer.title}**`);
 });
 
 test("envia pelo webhook consolidado e confirma o ID", async () => {

@@ -2,7 +2,6 @@ import {
   buildTelegramCaption,
   buildDiscussionCommentChunks,
   cleanText,
-  shouldSendSilent,
 } from "./core.js";
 
 const TELEGRAM_TIMEOUT_MS = 15_000;
@@ -75,7 +74,12 @@ async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNoti
   form.set("caption", caption);
   form.set("parse_mode", "HTML");
   form.set("disable_notification", String(disableNotification));
-  form.set("photo", new Blob([bytes], { type: contentType }), "oferta.jpg");
+  const extension = contentType.includes("png")
+    ? "png"
+    : contentType.includes("webp")
+      ? "webp"
+      : "jpg";
+  form.set("photo", new Blob([bytes], { type: contentType }), `oferta.${extension}`);
   const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
     body: form,
@@ -99,9 +103,10 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   const caption = buildTelegramCaption(offer, {
     commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
   });
-  const disableNotification = shouldSendSilent(offer);
+  const disableNotification = false;
   const imageUrl = String(offer?.imageUrl || offer?.cardImageUrl || "").trim();
 
+  let imageError = "";
   if (imageUrl) {
     try {
       const result = await telegramCall(env, "sendPhoto", {
@@ -115,7 +120,8 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         messageId: Number(result?.message_id || 0),
         messageKind: "photo",
       };
-    } catch {
+    } catch (error) {
+      imageError = cleanText(error?.message || error).slice(0, 160);
       try {
         const result = await uploadTelegramPhoto(env, {
           chatId: mainChatId,
@@ -127,7 +133,11 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           messageId: Number(result?.message_id || 0),
           messageKind: "photo",
         };
-      } catch {
+      } catch (error) {
+        imageError = [imageError, cleanText(error?.message || error)]
+          .filter(Boolean)
+          .join("|")
+          .slice(0, 240);
         // Uma imagem recusada pelo Telegram não pode impedir a oferta em texto.
       }
     }
@@ -143,6 +153,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   return {
     messageId: Number(result?.message_id || 0),
     messageKind: "text",
+    imageError,
   };
 }
 
@@ -156,7 +167,7 @@ export async function sendDiscussionComments(env, offer, discussionMessageId, fe
       chat_id: groupChatId,
       text,
       parse_mode: "HTML",
-      disable_notification: true,
+      disable_notification: false,
       reply_parameters: {
         message_id: Number(discussionMessageId),
         allow_sending_without_reply: false,
@@ -175,7 +186,7 @@ export async function sendDiscussionComment(env, text, discussionMessageId, fetc
     chat_id: groupChatId,
     text,
     parse_mode: "HTML",
-    disable_notification: true,
+    disable_notification: false,
     reply_parameters: {
       message_id: Number(discussionMessageId),
       allow_sending_without_reply: false,
@@ -216,7 +227,7 @@ export async function forwardToCanal2(env, mainMessageId, fetchImpl = fetch) {
     chat_id: canal2Id,
     from_chat_id: mainChatId,
     message_id: Number(mainMessageId),
-    disable_notification: true,
+    disable_notification: false,
   }, fetchImpl);
   return {
     messageId: Number(result?.message_id || 0),
@@ -282,7 +293,7 @@ export async function sendTransportTest(env, fetchImpl = fetch) {
   const result = await telegramCall(env, "sendMessage", {
     chat_id: mainChatId,
     text: "✅ Teste técnico do monitor Cloudflare concluído. Nenhuma oferta foi registrada por esta mensagem.",
-    disable_notification: true,
+    disable_notification: false,
     link_preview_options: { is_disabled: true },
   }, fetchImpl);
   const mainMessageId = Number(result?.message_id || 0);

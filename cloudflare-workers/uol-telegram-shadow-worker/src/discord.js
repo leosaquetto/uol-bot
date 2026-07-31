@@ -28,7 +28,7 @@ export function buildDiscordPayload(offer) {
   if (imageUrl) embed.image = { url: imageUrl };
   return {
     username: "Clube UOL • Ingressos",
-    content: "🚨 **Novo benefício de ingressos disponível**",
+    content: `🚨 **${title}**`,
     embeds: [embed],
     allowed_mentions: { parse: [] },
   };

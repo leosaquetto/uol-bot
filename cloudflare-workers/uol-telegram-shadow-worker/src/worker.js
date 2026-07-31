@@ -22,6 +22,10 @@ import {
   ticketApiConfiguration,
 } from "./uol-api.js";
 import {
+  browserAuthConfiguration,
+  capturePersonalAuthorization,
+} from "./uol-browser-auth.js";
+import {
   editSoldOutMessage,
   editMainOfferMessage,
   forwardToCanal2,
@@ -505,6 +509,18 @@ export class UolTelegramShadow extends DurableObject {
           ON offers(discord_sent_at, first_seen_at);
       `);
     }
+    if (currentVersion < 5) {
+      this.ctx.storage.sql.exec(`
+        CREATE TABLE IF NOT EXISTS pending_discussion_forwards (
+          origin_message_id INTEGER PRIMARY KEY,
+          discussion_message_id INTEGER NOT NULL,
+          received_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS pending_discussion_received_idx
+          ON pending_discussion_forwards(received_at);
+        INSERT INTO _sql_schema_migrations (id) VALUES (5);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -945,6 +961,12 @@ export class UolTelegramShadow extends DurableObject {
             row.id,
           );
           mainSent += 1;
+          if (result.value.imageError) {
+            logEvent("error", "uol_telegram_image_fallback", {
+              offerId: row.id,
+              error: result.value.imageError,
+            });
+          }
         } else if (delivery.kind === "discord" && result.status === "fulfilled") {
           this.ctx.storage.sql.exec(
             `UPDATE offers SET
@@ -1207,6 +1229,37 @@ export class UolTelegramShadow extends DurableObject {
     return { sent, failed };
   }
 
+  reconcileDiscussionForwards() {
+    const pending = this.ctx.storage.sql.exec(
+      `SELECT origin_message_id, discussion_message_id
+       FROM pending_discussion_forwards
+       ORDER BY received_at ASC
+       LIMIT 32`,
+    ).toArray();
+    let matched = 0;
+    for (const forward of pending) {
+      const offer = this.ctx.storage.sql.exec(
+        "SELECT id FROM offers WHERE main_message_id = ? LIMIT 1",
+        Number(forward.origin_message_id),
+      ).toArray()[0];
+      if (!offer?.id) continue;
+      this.ctx.storage.sql.exec(
+        "UPDATE offers SET discussion_message_id = ? WHERE id = ?",
+        Number(forward.discussion_message_id),
+        offer.id,
+      );
+      this.ctx.storage.sql.exec(
+        "DELETE FROM pending_discussion_forwards WHERE origin_message_id = ?",
+        Number(forward.origin_message_id),
+      );
+      matched += 1;
+    }
+    this.ctx.storage.sql.exec(
+      "DELETE FROM pending_discussion_forwards WHERE received_at < datetime('now', '-7 days')",
+    );
+    return matched;
+  }
+
   async processSoldOutSync(now) {
     if (this.currentDeliveryMode() !== "live") {
       return { mainEdited: 0, canal2Edited: 0, failed: 0 };
@@ -1465,10 +1518,35 @@ export class UolTelegramShadow extends DurableObject {
       if (mode === "live" && !this.metadataValue("live_started_at")) {
         this.setMetadata("live_started_at", startedAt.toISOString());
       }
+      if (
+        browserAuthConfiguration(this.env).configured &&
+        this.metadataValue("browser_auth_bootstrap_version") !== "11"
+      ) {
+        const browserStartedAt = Date.now();
+        try {
+          const browserAuth = await capturePersonalAuthorization(this.env);
+          this.setMetadata("browser_auth_bootstrap_at", new Date().toISOString());
+          this.setMetadata("browser_auth_bootstrap_version", "11");
+          this.setMetadata("browser_auth_outcome", browserAuth.outcome);
+          this.setMetadata("browser_auth_elapsed_ms", Date.now() - browserStartedAt);
+          this.setMetadata("browser_auth_error", "");
+          if (browserAuth.authorization) {
+            this.setMetadata("personal_runtime_authorization", browserAuth.authorization);
+            this.setMetadata("personal_runtime_authorization_at", new Date().toISOString());
+          }
+        } catch (error) {
+          this.setMetadata("browser_auth_bootstrap_at", new Date().toISOString());
+          this.setMetadata("browser_auth_bootstrap_version", "11");
+          this.setMetadata("browser_auth_outcome", "failed");
+          this.setMetadata("browser_auth_elapsed_ms", Date.now() - browserStartedAt);
+          this.setMetadata("browser_auth_error", sanitizeError(error));
+        }
+      }
       const apiStartedAt = Date.now();
+      const runtimeAuthorization = this.metadataValue("personal_runtime_authorization");
       const [listingResult, apiResult] = await Promise.allSettled([
         fetchListing(),
-        fetchTicketOffersFromApi(this.env),
+        fetchTicketOffersFromApi(this.env, fetch, runtimeAuthorization),
       ]);
       run.apiElapsedMs = Date.now() - apiStartedAt;
       if (apiResult.status === "rejected") {
@@ -1537,6 +1615,7 @@ export class UolTelegramShadow extends DurableObject {
         run.canal2Sent += delivered.canal2Sent;
         run.discordSent += delivered.discordSent;
         run.deliveryFailed += delivered.failed;
+        this.reconcileDiscussionForwards();
         const comments = await this.processDiscussionComments();
         run.commentsSent = comments.sent;
         run.deliveryFailed += comments.failed;
@@ -1631,16 +1710,19 @@ export class UolTelegramShadow extends DurableObject {
     ) {
       return { ok: true, matched: false };
     }
-    const rows = this.ctx.storage.sql.exec(
-      "SELECT id FROM offers WHERE main_message_id = ? LIMIT 1",
-      Number(origin.message_id),
-    ).toArray();
-    if (!rows[0]?.id) return { ok: true, matched: false };
     this.ctx.storage.sql.exec(
-      `UPDATE offers SET discussion_message_id = ? WHERE id = ?`,
+      `INSERT INTO pending_discussion_forwards(
+         origin_message_id, discussion_message_id, received_at
+       ) VALUES (?, ?, ?)
+       ON CONFLICT(origin_message_id) DO UPDATE SET
+         discussion_message_id = excluded.discussion_message_id,
+         received_at = excluded.received_at`,
+      Number(origin.message_id),
       Number(message.message_id),
-      rows[0].id,
+      new Date().toISOString(),
     );
+    const matched = this.reconcileDiscussionForwards();
+    if (!matched) return { ok: true, matched: false, queued: true };
     const comments = await this.processDiscussionComments(1);
     return { ok: true, matched: true, comments };
   }
@@ -1730,6 +1812,14 @@ export class UolTelegramShadow extends DurableObject {
         lastElapsedMs: Number(this.metadataValue("api_last_elapsed_ms") || 0),
         lastError: this.metadataValue("api_last_error"),
         lastSuccessAt: this.metadataValue("api_last_success_at"),
+      },
+      browserAuth: {
+        ...browserAuthConfiguration(this.env),
+        testedAt: this.metadataValue("browser_auth_bootstrap_at"),
+        outcome: this.metadataValue("browser_auth_outcome"),
+        elapsedMs: Number(this.metadataValue("browser_auth_elapsed_ms") || 0),
+        error: this.metadataValue("browser_auth_error"),
+        runtimeAuthorizationAt: this.metadataValue("personal_runtime_authorization_at"),
       },
       discussion: {
         configured: Boolean(String(this.env.GRUPO_COMENTARIO_ID || "").trim()),

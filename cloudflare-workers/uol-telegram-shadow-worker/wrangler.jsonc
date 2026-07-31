@@ -26,6 +26,9 @@
     "GRUPO_COMENTARIO_ID": "-1003802235343",
     "PUBLIC_BASE_URL": "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev"
   },
+  "browser": {
+    "binding": "UOL_BROWSER"
+  },
   "durable_objects": {
     "bindings": [
       {

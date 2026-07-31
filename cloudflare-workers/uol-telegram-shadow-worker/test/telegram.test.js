@@ -87,7 +87,7 @@ test("faz upload da imagem quando o Telegram recusa a URL pública", async () =>
     if (url === offer.imageUrl) {
       return new Response(new Uint8Array([1, 2, 3]), {
         status: 200,
-        headers: { "Content-Type": "image/jpeg", "Content-Length": "3" },
+        headers: { "Content-Type": "image/png", "Content-Length": "3" },
       });
     }
     if (url.endsWith("/sendPhoto") && typeof init.body === "string") {
@@ -102,6 +102,7 @@ test("faz upload da imagem quando o Telegram recusa a URL pública", async () =>
   assert.equal(calls.length, 3);
   assert.equal(result.messageKind, "photo");
   assert.equal(result.messageId, 43);
+  assert.equal(calls[2].body.get("photo").name, "oferta.png");
 });
 
 test("encaminha para o canal 2 somente após ter a mensagem principal", async () => {
@@ -114,7 +115,7 @@ test("encaminha para o canal 2 somente após ter a mensagem principal", async ()
   assert.equal(payload.from_chat_id, env.TELEGRAM_CHAT_ID);
   assert.equal(payload.chat_id, env.CANAL2_ID);
   assert.equal(payload.message_id, 41);
-  assert.equal(payload.disable_notification, true);
+  assert.equal(payload.disable_notification, false);
 });
 
 test("edita foto esgotada no canal correto", async () => {
@@ -187,7 +188,7 @@ test("envia detalhe como resposta à discussão automática", async () => {
   assert.equal(result.messageId, 779);
   assert.equal(payload.chat_id, "-1003802235343");
   assert.equal(payload.reply_parameters.message_id, 778);
-  assert.equal(payload.disable_notification, true);
+  assert.equal(payload.disable_notification, false);
 });
 
 test("registra webhook descartando atualizações antigas", async () => {

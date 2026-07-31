@@ -115,7 +115,11 @@ export function mergeOfferCards(primary, secondary) {
   return merged;
 }
 
-export async function fetchTicketOffersFromApi(env, fetchImpl = fetch) {
+export async function fetchTicketOffersFromApi(
+  env,
+  fetchImpl = fetch,
+  personalAuthorization = "",
+) {
   if (!ticketApiConfiguration(env).configured) throw new Error("uol_api_not_configured");
   const url = new URL(API_URL);
   url.searchParams.set("offset", "0");
@@ -126,7 +130,9 @@ export async function fetchTicketOffersFromApi(env, fetchImpl = fetch) {
   const response = await fetchImpl(url.href, {
     headers: {
       Authorization: authorizationValue(env.UOL_API_AUTHORIZATION),
-      "X-Authorization": authorizationValue(env.UOL_OAUTH_AUTHORIZATION),
+      "X-Authorization": authorizationValue(
+        personalAuthorization || env.UOL_OAUTH_AUTHORIZATION,
+      ),
       Accept: "application/json",
       "Cache-Control": "no-cache, no-store, max-age=0",
       "User-Agent": "UOLTelegramCloudflare/1.0",
