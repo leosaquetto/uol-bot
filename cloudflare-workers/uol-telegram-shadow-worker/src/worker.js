@@ -17,6 +17,11 @@ import {
   sendDiscordOffer,
 } from "./discord.js";
 import {
+  fetchTicketOffersFromApi,
+  mergeOfferCards,
+  ticketApiConfiguration,
+} from "./uol-api.js";
+import {
   editSoldOutMessage,
   editMainOfferMessage,
   forwardToCanal2,
@@ -297,6 +302,15 @@ async function parseDetail(response, card) {
 
 async function enrichCard(card, fetchImpl = fetch) {
   const startedAt = Date.now();
+  if (card.apiDetail) {
+    return {
+      ...card,
+      ...card.apiDetail,
+      detailOk: true,
+      detailError: "",
+      detailElapsedMs: Date.now() - startedAt,
+    };
+  }
   try {
     const response = await fetchHtml(card.link, "_uol_shadow_detail_ts", fetchImpl);
     const detail = await parseDetail(response, card);
@@ -1440,6 +1454,9 @@ export class UolTelegramShadow extends DurableObject {
       soldOutCanal2Edited: 0,
       discordSent: 0,
       commentsSent: 0,
+      apiOffersSeen: 0,
+      apiElapsedMs: 0,
+      apiError: "",
       error: "",
     };
 
@@ -1448,11 +1465,33 @@ export class UolTelegramShadow extends DurableObject {
       if (mode === "live" && !this.metadataValue("live_started_at")) {
         this.setMetadata("live_started_at", startedAt.toISOString());
       }
-      const cards = await fetchListing();
-      const minimum = envNumber(this.env, "MIN_HEALTHY_LISTING_OFFERS", 5, 1, 48);
-      if (cards.length < minimum) {
-        throw new Error(`uol_listing_suspeita_${cards.length}`);
+      const apiStartedAt = Date.now();
+      const [listingResult, apiResult] = await Promise.allSettled([
+        fetchListing(),
+        fetchTicketOffersFromApi(this.env),
+      ]);
+      run.apiElapsedMs = Date.now() - apiStartedAt;
+      if (apiResult.status === "rejected") {
+        run.apiError = sanitizeError(apiResult.reason);
       }
+      const listingCards = listingResult.status === "fulfilled" ? listingResult.value : [];
+      const apiCards = apiResult.status === "fulfilled" ? apiResult.value : [];
+      run.apiOffersSeen = apiCards.length;
+      this.setMetadata("api_last_offers_seen", apiCards.length);
+      this.setMetadata("api_last_elapsed_ms", run.apiElapsedMs);
+      this.setMetadata("api_last_error", run.apiError);
+      if (apiResult.status === "fulfilled") {
+        this.setMetadata("api_last_success_at", new Date().toISOString());
+      }
+      if (listingResult.status === "rejected" && apiCards.length === 0) {
+        throw listingResult.reason;
+      }
+      const minimum = envNumber(this.env, "MIN_HEALTHY_LISTING_OFFERS", 5, 1, 48);
+      const listingHealthy = listingCards.length >= minimum;
+      if (!listingHealthy && apiCards.length === 0) {
+        throw new Error(`uol_listing_suspeita_${listingCards.length}`);
+      }
+      const cards = mergeOfferCards(apiCards, listingCards);
       run.offersSeen = cards.length;
       const now = new Date();
       const nowIso = now.toISOString();
@@ -1480,7 +1519,19 @@ export class UolTelegramShadow extends DurableObject {
         run.enriched = processed.enriched;
         run.wouldSendMain = processed.wouldSendMain;
         run.wouldSendCanal2 = processed.wouldSendCanal2;
-        run.soldOutDetected = this.evaluateSoldOut(new Set(cardsById.keys()), now);
+        if (listingHealthy) {
+          const listingIdentityKeys = new Set(
+            listingCards.flatMap((card) => offerIdentityKeys(card.link)),
+          );
+          const listingResolvedIds = new Set(
+            resolution.cards
+              .filter((card) => offerIdentityKeys(card.link).some(
+                (key) => listingIdentityKeys.has(key),
+              ))
+              .map((card) => card.id),
+          );
+          run.soldOutDetected = this.evaluateSoldOut(listingResolvedIds, now);
+        }
         const delivered = await this.processDeliveries(now);
         run.mainSent += delivered.mainSent;
         run.canal2Sent += delivered.canal2Sent;
@@ -1531,6 +1582,9 @@ export class UolTelegramShadow extends DurableObject {
       canal2Sent: run.canal2Sent,
       discordSent: run.discordSent,
       commentsSent: run.commentsSent,
+      apiOffersSeen: run.apiOffersSeen,
+      apiElapsedMs: run.apiElapsedMs,
+      apiError: run.apiError,
       deliveryFailed: run.deliveryFailed,
       soldOutMainEdited: run.soldOutMainEdited,
       soldOutCanal2Edited: run.soldOutCanal2Edited,
@@ -1670,6 +1724,13 @@ export class UolTelegramShadow extends DurableObject {
       mode: this.currentDeliveryMode(),
       telegram: telegramConfiguration(this.env),
       discord: discordConfiguration(this.env),
+      ticketApi: {
+        ...ticketApiConfiguration(this.env),
+        lastOffersSeen: Number(this.metadataValue("api_last_offers_seen") || 0),
+        lastElapsedMs: Number(this.metadataValue("api_last_elapsed_ms") || 0),
+        lastError: this.metadataValue("api_last_error"),
+        lastSuccessAt: this.metadataValue("api_last_success_at"),
+      },
       discussion: {
         configured: Boolean(String(this.env.GRUPO_COMENTARIO_ID || "").trim()),
         webhookRegistered: Boolean(this.metadataValue("telegram_webhook_registered_at")),
