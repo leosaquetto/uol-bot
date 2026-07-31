@@ -1,7 +1,7 @@
 # UOL Telegram Cloudflare Worker
 
 Monitor remoto do Clube UOL que substitui a coleta do Mac e o envio automático
-do GitHub Actions. O Worker consulta a listagem a cada minuto, enriquece apenas
+do GitHub Actions. O Worker consulta a listagem a cada 30 segundos, enriquece apenas
 ofertas inéditas e envia diretamente ao Telegram.
 
 O Worker do Discord é independente e não compartilha estado, secrets ou
@@ -9,7 +9,7 @@ agendamento com este projeto.
 
 ## Fluxo
 
-1. um Durable Object Alarm executa a cada minuto;
+1. um Durable Object Alarm executa a cada 30 segundos;
 2. a listagem `https://clube.uol.com.br/?order=new` é obtida por HTTP sem cache;
 3. o baseline impede o envio das ofertas existentes durante a implantação;
 4. aliases de endereço são reconciliados antes de decidir se o card é inédito;
@@ -30,6 +30,10 @@ agendamento com este projeto.
 - **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
   15 minutos, limitada às ofertas decididas nos últimos três dias.
 - **Enriquecimento:** apenas ofertas novas; no máximo quatro por rodada.
+- **Imagem:** tenta a URL pública primeiro e, se o Telegram não conseguir
+  baixá-la, faz upload do arquivo obtido pelo Worker antes de recorrer a texto.
+- **Detalhes estruturados:** validade e endereço são extraídos dos blocos
+  próprios da página; abreviações como `Av.` não interrompem o endereço.
 - **Identidade:** combina slug canônico, variantes históricas e
   `parceiro + código interno da oferta`; alterações de acentuação no endereço
   não criam uma oferta nova.

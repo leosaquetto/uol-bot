@@ -202,6 +202,7 @@ async function parseDetail(response, card) {
   let h2 = "";
   let description = "";
   let bodyText = "";
+  let validityText = "";
   const images = [];
 
   const appendBounded = (current, value, max) => {
@@ -223,6 +224,11 @@ async function parseDetail(response, card) {
     .on(".info-beneficio", {
       text(text) {
         description = appendBounded(description, text.text, 5_000);
+      },
+    })
+    .on(".descricao hr + p", {
+      text(text) {
+        validityText = appendBounded(validityText, text.text, 600);
       },
     })
     .on("body", {
@@ -267,7 +273,7 @@ async function parseDetail(response, card) {
     .find((candidate) => candidate && !isBadOfferImage(candidate)) ||
     card.cardImageUrl ||
     "";
-  const validity = extractValidity(`${bodyText} ${description}`);
+  const validity = extractValidity(`${validityText} ${bodyText} ${description}`);
   const detail = {
     title: cleanText(h2) || cleanText(h1) || card.previewTitle,
     validity,
@@ -1318,7 +1324,7 @@ export class UolTelegramShadow extends DurableObject {
       worker: "uol-telegram-shadow-pilot",
       mode: this.currentDeliveryMode(),
       telegram: telegramConfiguration(this.env),
-      schedule: "durable-object-alarm:1m",
+      schedule: `durable-object-alarm:${envNumber(this.env, "ALARM_INTERVAL_SECONDS", 60, 30, 3_600)}s`,
       alarmScheduledAt,
       initializedAt: this.metadataValue("initialized_at"),
       liveStartedAt: this.metadataValue("live_started_at"),

@@ -405,16 +405,19 @@ export function shouldSendSilent(offer) {
 export function extractLocationSummary(description) {
   const text = cleanText(description);
   if (!text) return "";
-  const explicit = text.match(/\blocal\s*:\s*([^|.;]{2,120})/i);
+  const explicit = text.match(
+    /\blocal\s*:\s*(.{2,220}?)(?=\s+(?:importante|regras?(?:\s+de\s+resgate)?|aten[cç][aã]o|observa[cç][oõ]es?)\s*:|$)/i,
+  );
   const candidate = cleanText(explicit?.[1] || "");
   if (!candidate) return "";
+  if (candidate.length <= 160) return candidate.replace(/[.,;]+$/, "");
   const cityState = candidate.match(
     /([A-Za-zÀ-ÖØ-öø-ÿ'`\- ]+?)\s*[-/]\s*([A-Za-z]{2})(?=$|[\s,;)])/i,
   );
   if (cityState) {
     return `${cleanText(cityState[1]).replace(/[.,;]+$/, "")} - ${cityState[2].toUpperCase()}`;
   }
-  return candidate.slice(0, 100);
+  return candidate.slice(0, 157).replace(/\s+\S*$/, "") + "…";
 }
 
 function formatSoldOutTime(value) {

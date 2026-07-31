@@ -154,6 +154,15 @@ test("gera legenda Telegram segura e destaca ingressos", () => {
   assert.match(caption, /https:\/\/clube\.uol\.com\.br/);
 });
 
+test("preserva endereço com abreviação pontuada", () => {
+  const caption = buildTelegramCaption({
+    ...showOffer,
+    description: "Data: 02 de Agosto. Local: Av. Infante Dom Henrique, S/N - Glória, Rio de Janeiro - RJ Importante: sujeito a estoque.",
+  });
+  assert.match(caption, /📍 Av\. Infante Dom Henrique, S\/N - Glória, Rio de Janeiro - RJ/);
+  assert.doesNotMatch(caption, /📍 Av(?:\s|$)/);
+});
+
 test("gera edição de esgotamento sem perder o link", () => {
   const caption = buildTelegramCaption(showOffer, {
     soldOutAt: "2026-07-30T12:34:00Z",

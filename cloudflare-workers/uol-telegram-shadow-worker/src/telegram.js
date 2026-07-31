@@ -5,6 +5,8 @@ import {
 } from "./core.js";
 
 const TELEGRAM_TIMEOUT_MS = 15_000;
+const IMAGE_FETCH_TIMEOUT_MS = 6_000;
+const MAX_UPLOAD_IMAGE_BYTES = 8 * 1024 * 1024;
 
 function telegramConfig(env) {
   return {
@@ -51,6 +53,45 @@ export async function telegramCall(env, method, payload, fetchImpl = fetch) {
   return data.result;
 }
 
+async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNotification }, fetchImpl) {
+  const { token } = telegramConfig(env);
+  const imageResponse = await fetchImpl(imageUrl, {
+    headers: { Accept: "image/*" },
+    signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
+  });
+  if (!imageResponse.ok) throw new Error(`offer_image_http_${imageResponse.status}`);
+  const contentType = String(imageResponse.headers.get("Content-Type") || "").toLowerCase();
+  if (!contentType.startsWith("image/")) throw new Error("offer_image_invalid_content_type");
+  const declaredSize = Number(imageResponse.headers.get("Content-Length") || 0);
+  if (declaredSize > MAX_UPLOAD_IMAGE_BYTES) throw new Error("offer_image_too_large");
+  const bytes = await imageResponse.arrayBuffer();
+  if (!bytes.byteLength || bytes.byteLength > MAX_UPLOAD_IMAGE_BYTES) {
+    throw new Error("offer_image_invalid_size");
+  }
+
+  const form = new FormData();
+  form.set("chat_id", chatId);
+  form.set("caption", caption);
+  form.set("parse_mode", "HTML");
+  form.set("disable_notification", String(disableNotification));
+  form.set("photo", new Blob([bytes], { type: contentType }), "oferta.jpg");
+  const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendPhoto`, {
+    method: "POST",
+    body: form,
+    signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
+  });
+  let data = {};
+  try {
+    data = await response.json();
+  } catch {
+    // O status HTTP ainda identifica a falha sem registrar o corpo bruto.
+  }
+  if (!response.ok || data?.ok !== true) {
+    throw telegramError("sendPhoto", response.status, data);
+  }
+  return data.result;
+}
+
 export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   const { mainChatId } = telegramConfig(env);
   if (!mainChatId) throw new Error("telegram_main_chat_missing");
@@ -72,7 +113,20 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         messageKind: "photo",
       };
     } catch {
-      // Uma imagem recusada pelo Telegram não pode atrasar a oferta.
+      try {
+        const result = await uploadTelegramPhoto(env, {
+          chatId: mainChatId,
+          imageUrl,
+          caption,
+          disableNotification,
+        }, fetchImpl);
+        return {
+          messageId: Number(result?.message_id || 0),
+          messageKind: "photo",
+        };
+      } catch {
+        // Uma imagem recusada pelo Telegram não pode impedir a oferta em texto.
+      }
     }
   }
 

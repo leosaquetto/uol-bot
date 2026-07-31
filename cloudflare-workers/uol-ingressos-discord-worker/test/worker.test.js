@@ -7,7 +7,9 @@ import {
   dedupeOffers,
   isTicketCampaignLink,
   normalizeOfferId,
+  offerSourceKey,
   pruneStateOffers,
+  reconcileStateOffers,
   runCollector,
 } from "../src/worker.js";
 
@@ -42,6 +44,76 @@ const ticketA = {
 test("normaliza texto e ID estável", () => {
   assert.equal(cleanText("  Olá \n mundo  "), "Olá mundo");
   assert.equal(normalizeOfferId(ticketA.link), "pa4-2-ingressos-show-sp");
+  assert.equal(offerSourceKey(ticketA.link), "campanhasdeingresso|pa4");
+});
+
+test("deduplica correções do slug pela origem estável", () => {
+  const malformed = {
+    ...ticketA,
+    link: "https://clube.uol.com.br/campanhasdeingresso/pAC-2-ribeirao-preto-sp-joao-rock",
+  };
+  const corrected = {
+    ...ticketA,
+    link: "https://clube.uol.com.br/campanhasdeingresso/pAC-2-ribeiro-preto-sp-joao-rock",
+  };
+  assert.equal(dedupeOffers([malformed, corrected]).length, 1);
+  assert.equal(offerSourceKey(malformed.link), offerSourceKey(corrected.link));
+});
+
+test("reconcilia aliases antigos preservando a entrega mais antiga", () => {
+  const reconciled = reconcileStateOffers({
+    antigo: {
+      id: "pac-2-ribeirao",
+      link: "https://clube.uol.com.br/campanhasdeingresso/pAC-2-ribeirao-preto-sp-joao-rock",
+      status: "sent",
+      firstSeenAt: "2026-07-31T13:40:00.000Z",
+      discordMessageId: "first",
+    },
+    corrigido: {
+      id: "pac-2-ribeiro",
+      link: "https://clube.uol.com.br/campanhasdeingresso/pAC-2-ribeiro-preto-sp-joao-rock",
+      status: "sent",
+      firstSeenAt: "2026-07-31T13:42:00.000Z",
+      discordMessageId: "duplicate",
+    },
+  });
+  assert.equal(Object.keys(reconciled).length, 1);
+  assert.equal(Object.values(reconciled)[0].discordMessageId, "first");
+});
+
+test("não reenvia quando a mesma origem reaparece com slug corrigido", async () => {
+  const initialized = JSON.stringify({
+    version: 1,
+    initializedAt: "2026-07-29T00:00:00.000Z",
+    updatedAt: "2026-07-29T00:00:00.000Z",
+    offers: {
+      antigo: {
+        id: "pac-2-ribeirao",
+        link: "https://clube.uol.com.br/campanhasdeingresso/pAC-2-ribeirao-preto-sp-joao-rock",
+        title: "João Rock",
+        status: "sent",
+        firstSeenAt: "2026-07-31T13:40:00.000Z",
+        sentAt: "2026-07-31T13:40:02.000Z",
+      },
+    },
+  });
+  const kv = memoryKv(initialized);
+  const corrected = dedupeOffers([{
+    ...ticketA,
+    link: "https://clube.uol.com.br/campanhasdeingresso/pAC-2-ribeiro-preto-sp-joao-rock",
+    title: "João Rock corrigido",
+  }]);
+  const result = await runCollector(
+    { UOL_TICKETS_STATE: kv, DELIVERY_MODE: "live", MAX_STATE_OFFERS: "200" },
+    {
+      offers: corrected,
+      sendEnabled: true,
+      fetchImpl: async () => { throw new Error("não deveria reenviar"); },
+    },
+  );
+  assert.equal(result.newOffers, 0);
+  assert.equal(result.sent, 0);
+  assert.equal(Object.keys(kv.snapshot().offers).length, 1);
 });
 
 test("aceita somente campanhas de ingresso do Clube UOL", () => {

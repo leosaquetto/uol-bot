@@ -72,9 +72,33 @@ test("usa texto quando o Telegram rejeita a imagem", async () => {
     }
     return jsonResponse({ message_id: 42 });
   });
-  assert.deepEqual(methods, ["sendPhoto", "sendMessage"]);
+  assert.deepEqual(methods, ["sendPhoto", "show.jpg", "sendMessage"]);
   assert.equal(result.messageKind, "text");
   assert.equal(result.messageId, 42);
+});
+
+test("faz upload da imagem quando o Telegram recusa a URL pública", async () => {
+  const calls = [];
+  const result = await sendMainOffer(env, offer, async (url, init = {}) => {
+    calls.push({ url, body: init.body });
+    if (url === offer.imageUrl) {
+      return new Response(new Uint8Array([1, 2, 3]), {
+        status: 200,
+        headers: { "Content-Type": "image/jpeg", "Content-Length": "3" },
+      });
+    }
+    if (url.endsWith("/sendPhoto") && typeof init.body === "string") {
+      return new Response(JSON.stringify({ ok: false, description: "bad photo URL" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    assert.ok(init.body instanceof FormData);
+    return jsonResponse({ message_id: 43 });
+  });
+  assert.equal(calls.length, 3);
+  assert.equal(result.messageKind, "photo");
+  assert.equal(result.messageId, 43);
 });
 
 test("encaminha para o canal 2 somente após ter a mensagem principal", async () => {

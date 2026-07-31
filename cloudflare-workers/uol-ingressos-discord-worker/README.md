@@ -13,6 +13,9 @@ O histórico técnico, as decisões e as validações estão registrados em
   Cron Triggers já usados pelo Backstage.
 - `DELIVERY_MODE` está em `live` após a validação do baseline e do webhook.
 - A primeira execução cria um baseline e não envia ofertas já existentes.
+- A identidade persistente usa `parceiro + código interno`; correções no restante
+  do slug não geram uma segunda mensagem. Estados antigos equivalentes são
+  reconciliados automaticamente antes de cada decisão.
 - O webhook e o token administrativo são secrets do Worker; nunca entram no
   repositório.
 - O KV só é escrito ao criar o baseline ou quando o estado de uma oferta muda.

@@ -35,6 +35,19 @@ export function normalizeOfferId(value) {
     .replace(/^-+|-+$/g, "");
 }
 
+export function offerSourceKey(value) {
+  try {
+    const url = new URL(String(value || ""), "https://clube.uol.com.br");
+    const parts = url.pathname.split("/").filter(Boolean);
+    const partner = normalizeOfferId(parts.at(-2) || "");
+    const slug = normalizeOfferId(parts.at(-1) || "");
+    const code = slug.match(/^(p[a-z0-9]+)(?:-|$)/i)?.[1] || "";
+    return partner && code ? `${partner}|${code.toLowerCase()}` : "";
+  } catch {
+    return "";
+  }
+}
+
 export function isTicketCampaignLink(value) {
   try {
     const url = new URL(String(value || ""), "https://clube.uol.com.br");
@@ -53,6 +66,7 @@ export function normalizeOffer(raw) {
 
   return {
     id,
+    sourceKey: offerSourceKey(link),
     title: cleanText(raw.title) || "Novo benefício de ingressos",
     link,
     category: cleanText(raw.category),
@@ -64,10 +78,50 @@ export function dedupeOffers(rawOffers) {
   const byId = new Map();
   for (const raw of rawOffers || []) {
     const offer = normalizeOffer(raw);
-    if (!offer || byId.has(offer.id)) continue;
-    byId.set(offer.id, offer);
+    if (!offer) continue;
+    const key = offer.sourceKey || offer.id;
+    if (byId.has(key)) continue;
+    byId.set(key, offer);
   }
   return [...byId.values()];
+}
+
+function sourceKeyForEntry(key, entry) {
+  return cleanText(entry?.sourceKey) || offerSourceKey(entry?.link) || `id|${entry?.id || key}`;
+}
+
+function statusRank(value) {
+  return { sent: 4, baseline: 3, pending: 2, failed: 1 }[String(value || "")] || 0;
+}
+
+export function reconcileStateOffers(offers) {
+  const groups = new Map();
+  for (const [key, entry] of Object.entries(offers || {})) {
+    const sourceKey = sourceKeyForEntry(key, entry);
+    const current = groups.get(sourceKey);
+    if (!current) {
+      groups.set(sourceKey, { key, entry: { ...entry, sourceKey } });
+      continue;
+    }
+    const currentRank = statusRank(current.entry?.status);
+    const candidateRank = statusRank(entry?.status);
+    const currentTime = String(current.entry?.firstSeenAt || "9999");
+    const candidateTime = String(entry?.firstSeenAt || "9999");
+    if (candidateRank > currentRank || (candidateRank === currentRank && candidateTime < currentTime)) {
+      groups.set(sourceKey, { key, entry: { ...current.entry, ...entry, sourceKey } });
+    }
+  }
+  return Object.fromEntries([...groups.values()].map(({ key, entry }) => [key, entry]));
+}
+
+function findStateEntry(offers, offer) {
+  if (offers[offer.id]) return { key: offer.id, entry: offers[offer.id] };
+  const sourceKey = offer.sourceKey || offerSourceKey(offer.link);
+  if (!sourceKey) return null;
+  for (const [key, entry] of Object.entries(offers)) {
+    if (sourceKeyForEntry(key, entry) === sourceKey) return { key, entry };
+  }
+  return null;
 }
 
 export function createInitialState(nowIso) {
@@ -204,7 +258,7 @@ async function loadState(env, nowIso) {
 async function saveState(env, state, maxEntries) {
   const payload = {
     ...state,
-    offers: pruneStateOffers(state.offers, maxEntries),
+    offers: pruneStateOffers(reconcileStateOffers(state.offers), maxEntries),
   };
   await env.UOL_TICKETS_STATE.put(STATE_KEY, JSON.stringify(payload));
   return payload;
@@ -243,6 +297,9 @@ export async function runCollector(env, options = {}) {
   const fetchImpl = options.fetchImpl || fetch;
   const offers = options.offers || await fetchTicketOffers(fetchImpl, now.getTime());
   let state = await loadState(env, nowIso);
+  const reconciled = reconcileStateOffers(state.offers);
+  let stateChanged = Object.keys(reconciled).length !== Object.keys(state.offers).length;
+  state.offers = reconciled;
 
   if (!state.initializedAt) {
     for (const offer of offers) {
@@ -271,10 +328,9 @@ export async function runCollector(env, options = {}) {
   }
 
   const pending = [];
-  let stateChanged = false;
   for (const offer of offers) {
-    const previous = state.offers[offer.id];
-    if (!previous) {
+    const matched = findStateEntry(state.offers, offer);
+    if (!matched) {
       state.offers[offer.id] = {
         ...offer,
         status: "pending",
@@ -287,8 +343,13 @@ export async function runCollector(env, options = {}) {
       stateChanged = true;
       continue;
     }
+    const { key, entry: previous } = matched;
+    state.offers[key] = { ...previous, ...offer, id: previous.id || key };
+    if (key !== offer.id || previous.link !== offer.link || previous.title !== offer.title) {
+      stateChanged = true;
+    }
     if (previous.status === "pending" || previous.status === "failed") {
-      pending.push({ ...offer, ...previous });
+      pending.push({ ...previous, ...offer, stateKey: key });
     }
   }
 
@@ -301,10 +362,11 @@ export async function runCollector(env, options = {}) {
   let failed = 0;
   if (sendEnabled) {
     for (const offer of pending) {
+      const stateKey = offer.stateKey || offer.id;
       try {
         const messageId = await sendDiscordWebhook(env, offer, fetchImpl);
-        state.offers[offer.id] = {
-          ...state.offers[offer.id],
+        state.offers[stateKey] = {
+          ...state.offers[stateKey],
           status: "sent",
           sentAt: new Date().toISOString(),
           discordMessageId: messageId,
@@ -312,8 +374,8 @@ export async function runCollector(env, options = {}) {
         };
         sent += 1;
       } catch (error) {
-        state.offers[offer.id] = {
-          ...state.offers[offer.id],
+        state.offers[stateKey] = {
+          ...state.offers[stateKey],
           status: "failed",
           lastError: cleanText(error?.message || error).slice(0, 240),
         };
