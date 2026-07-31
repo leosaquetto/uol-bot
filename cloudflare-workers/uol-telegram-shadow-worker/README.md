@@ -87,19 +87,27 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
 As rotas autenticadas exigem `Authorization: Bearer <ADMIN_TOKEN>`.
 
-## Fallback
+## Fallback arquivado
 
-O workflow `.github/workflows/bot_leouol.yml` permanece disponível apenas por
-`workflow_dispatch`. O LaunchAgent do Mac fica descarregado durante a operação
-normal. Em rollback:
+Os workflows UOL estão desativados no GitHub e preservados fora da pasta de
+execução em `.github/workflows-archive/`. O LaunchAgent foi removido do domínio
+do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 
 1. usar `POST /mode` com `shadow` para contenção imediata;
    `DELIVERY_MODE` funciona como padrão quando ainda não existe override
    persistido;
 2. remover o webhook do Telegram antes de reativar um consumidor que use
    `getUpdates`;
-3. executar manualmente o workflow legado ou recarregar o LaunchAgent;
+3. restaurar conscientemente um workflow arquivado ou o LaunchAgent desativado;
 4. investigar o Worker antes de uma nova promoção.
+
+## Orçamento no tier gratuito
+
+Em estado estável, o alarme de 15 segundos representa 5.760 invocações por dia.
+As ofertas conhecidas só são atualizadas se algum campo realmente mudar. Sem
+oferta nova, o SQLite escreve aproximadamente 17.280 linhas por dia: alarme,
+registro da execução e descarte do registro mais antigo. Enriquecimento,
+Telegram, comentários e Discord só acrescentam operações quando existe novidade.
 
 ## Comandos
 

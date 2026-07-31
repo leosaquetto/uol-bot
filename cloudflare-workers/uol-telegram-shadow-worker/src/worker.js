@@ -700,17 +700,27 @@ export class UolTelegramShadow extends DurableObject {
         this.ctx.storage.sql.exec(
           `UPDATE offers SET
              link = ?, preview_title = ?, category = ?, card_image_url = ?,
-             partner_image_url = ?, partner_name = ?, last_seen_at = ?,
+             partner_image_url = ?, partner_name = ?,
              missing_since = '', absence_count = 0
-           WHERE id = ?`,
+           WHERE id = ?
+             AND (
+               link <> ? OR preview_title <> ? OR category <> ? OR
+               card_image_url <> ? OR partner_image_url <> ? OR partner_name <> ? OR
+               missing_since <> '' OR absence_count <> 0
+             )`,
           card.link,
           card.previewTitle,
           card.category,
           card.cardImageUrl,
           card.partnerImageUrl,
           card.partnerName,
-          nowIso,
           existing.id,
+          card.link,
+          card.previewTitle,
+          card.category,
+          card.cardImageUrl,
+          card.partnerImageUrl,
+          card.partnerName,
         );
         resolved.push({ ...card, id: existing.id });
         resolvedIds.add(existing.id);
@@ -1476,7 +1486,6 @@ export class UolTelegramShadow extends DurableObject {
     } finally {
       run.finishedAt = new Date().toISOString();
       this.insertRun(run);
-      this.setMetadata("last_scan_at", run.finishedAt);
       this.scanInFlight = false;
     }
 
@@ -1640,7 +1649,7 @@ export class UolTelegramShadow extends DurableObject {
       alarmScheduledAt,
       initializedAt: this.metadataValue("initialized_at"),
       liveStartedAt: this.metadataValue("live_started_at"),
-      lastScanAt: this.metadataValue("last_scan_at"),
+      lastScanAt: lastRun?.finished_at || "",
       counts: {
         tracked: Number(counts.tracked || 0),
         baseline: Number(counts.baseline || 0),

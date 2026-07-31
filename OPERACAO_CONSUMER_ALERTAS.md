@@ -1,4 +1,8 @@
-# Operação do Consumer (BOT LEOUOL) — Alertas de Falha
+# Operação do Consumer (BOT LEOUOL) — Alertas de Falha (arquivado)
+
+> Este runbook é apenas histórico. O workflow correspondente foi desativado e
+> movido para `.github/workflows-archive/` em 31/07/2026. A operação ativa está
+> no Worker `uol-telegram-shadow-pilot` da Cloudflare.
 
 ## Quando considerar incidente
 

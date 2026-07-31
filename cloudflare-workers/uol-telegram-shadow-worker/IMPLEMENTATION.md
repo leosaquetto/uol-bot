@@ -190,7 +190,7 @@ consumer legado baseado em `getUpdates`, o webhook deve ser removido primeiro.
 ### Estado da ativação
 
 - Worker central: `uol-telegram-shadow-pilot`
-- Version ID final: `df550012-fe56-4c07-aab4-ea8f81b733af`
+- Version ID final de baixa latência: `df550012-fe56-4c07-aab4-ea8f81b733af`
 - intervalo: 15 segundos
 - grupo vinculado: `-1003802235343`
 - Discord consolidado: configurado
@@ -198,3 +198,20 @@ consumer legado baseado em `getUpdates`, o webhook deve ser removido primeiro.
 - ofertas novas durante a migração: zero
 - reenvios durante a migração: zero
 - erros de entrega durante a migração: zero
+
+## Encerramento dos consumidores legados e otimização de escrita
+
+Em 31/07/2026, os dois workflows UOL foram desativados na API do GitHub e
+movidos para `.github/workflows-archive/`. O LaunchAgent foi descarregado e o
+plist passou para `~/Library/LaunchAgents.disabled/`.
+
+O update periódico de `last_seen_at` também foi removido. Cards conhecidos só
+geram `UPDATE` quando URL, título, categoria, imagens ou estado de ausência
+mudam. Isso eliminou cerca de 276 mil escritas redundantes por dia na cadência
+de 15 segundos.
+
+- versão otimizada: `bcfe236f-89ea-4e94-9c23-56b3e605bd81`
+- invocações projetadas do alarme: 5.760/dia
+- escritas SQLite estáveis projetadas: aproximadamente 17.280/dia
+- aliases ativos após a mudança: zero
+- erros de entrega após a mudança: zero
