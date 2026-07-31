@@ -51,7 +51,10 @@ como rollback, mas não publica mensagens.
   título + validade bloqueia reenvio recente por sete dias.
 - **Validade:** ofertas expiradas e inícios antigos sem data final são
   descartados conforme a janela de 36 horas.
-- **Retenção:** no máximo 300 ofertas recentes e 240 execuções.
+- **Retenção:** limpeza automática diária; ofertas terminais e ausentes há mais
+  de 30 dias são removidas, mantendo no máximo 300 registros terminais. Cards
+  ainda visíveis e entregas pendentes nunca entram nessa limpeza. As últimas
+  240 execuções ficam disponíveis por aproximadamente uma hora.
 - **Retries:** principal, canal 2 e edições de esgotamento possuem contadores,
   erros e confirmações independentes.
 
@@ -108,6 +111,8 @@ As ofertas conhecidas só são atualizadas se algum campo realmente mudar. Sem
 oferta nova, o SQLite escreve aproximadamente 17.280 linhas por dia: alarme,
 registro da execução e descarte do registro mais antigo. Enriquecimento,
 Telegram, comentários e Discord só acrescentam operações quando existe novidade.
+A limpeza das ofertas roda apenas uma vez por dia e acrescenta escritas somente
+quando efetivamente encontra registros antigos.
 
 ## Comandos
 

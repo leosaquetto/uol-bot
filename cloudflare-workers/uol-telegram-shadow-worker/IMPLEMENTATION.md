@@ -19,7 +19,7 @@ O estado SQLite contém:
 - decisão do canal principal e do canal 2;
 - IDs, horários, tentativas e erros de cada entrega;
 - sincronização de esgotamento por canal;
-- últimas 240 execuções;
+- últimas 240 execuções (aproximadamente uma hora na cadência atual);
 - baseline e início do modo live.
 
 Antes de inserir um card, o Worker compara as identidades canônicas do endereço.
@@ -215,3 +215,11 @@ de 15 segundos.
 - escritas SQLite estáveis projetadas: aproximadamente 17.280/dia
 - aliases ativos após a mudança: zero
 - erros de entrega após a mudança: zero
+
+### Retenção automática
+
+A manutenção diária remove ofertas terminais que não estão mais na listagem e
+tenham mais de 30 dias. O teto adicional preserva no máximo 300 registros
+terminais. Ofertas ainda visíveis e estados com entrega pendente são protegidos,
+portanto a limpeza não pode apagar um alerta antes do envio nem transformar um
+card antigo ainda publicado em uma oferta nova.

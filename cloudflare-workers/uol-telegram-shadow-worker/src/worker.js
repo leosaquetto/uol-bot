@@ -1375,15 +1375,41 @@ export class UolTelegramShadow extends DurableObject {
     return soldOutDetected;
   }
 
-  pruneOffers() {
+  pruneOffers(now, activeIds = new Set()) {
+    const cleanupDay = now.toISOString().slice(0, 10);
+    if (this.metadataValue("offers_cleanup_day") === cleanupDay) return;
+
+    const retentionDays = envNumber(this.env, "OFFER_RETENTION_DAYS", 30, 7, 365);
     const maxOffers = envNumber(this.env, "MAX_STATE_OFFERS", 300, 50, 2_000);
+    const cutoff = new Date(now.getTime() - retentionDays * 86_400_000).toISOString();
+    const active = [...activeIds];
+    const activeClause = active.length
+      ? `AND id NOT IN (${active.map(() => "?").join(", ")})`
+      : "";
+
+    // Retain every currently visible card and every unfinished delivery. Old
+    // terminal rows are only dedupe/history state and can be safely removed.
     this.ctx.storage.sql.exec(
       `DELETE FROM offers
-       WHERE id NOT IN (
-         SELECT id FROM offers ORDER BY first_seen_at DESC LIMIT ?
+       WHERE first_seen_at < ?
+         AND status IN ('baseline', 'discarded', 'delivered', 'shadow_sold_out', 'sold_out')
+         ${activeClause}`,
+      cutoff,
+      ...active,
+    );
+    this.ctx.storage.sql.exec(
+      `DELETE FROM offers
+       WHERE id IN (
+         SELECT id FROM offers
+          WHERE status IN ('baseline', 'discarded', 'delivered', 'shadow_sold_out', 'sold_out')
+            ${activeClause}
+          ORDER BY first_seen_at DESC
+          LIMIT -1 OFFSET ?
        )`,
+      ...active,
       maxOffers,
     );
+    this.setMetadata("offers_cleanup_day", cleanupDay);
   }
 
   async scan(source = "alarm") {
@@ -1431,9 +1457,11 @@ export class UolTelegramShadow extends DurableObject {
       const now = new Date();
       const nowIso = now.toISOString();
       const initializedAt = this.metadataValue("initialized_at");
+      let activeOfferIds = new Set(cards.map((card) => card.id));
 
       if (!initializedAt) {
-        this.resolveListingCards(cards, nowIso, "baseline");
+        const resolution = this.resolveListingCards(cards, nowIso, "baseline");
+        activeOfferIds = new Set(resolution.cards.map((card) => card.id));
         await this.backfillTitleValidityKeys();
         this.setMetadata("initialized_at", nowIso);
         run.outcome = "baseline_created";
@@ -1441,6 +1469,7 @@ export class UolTelegramShadow extends DurableObject {
         const identityAliasesReconciled = this.reconcileIdentityAliases();
         await this.backfillTitleValidityKeys();
         const resolution = this.resolveListingCards(cards, nowIso, "pending_enrichment");
+        activeOfferIds = new Set(resolution.cards.map((card) => card.id));
         run.newOffers = resolution.inserted;
         const cardsById = new Map(resolution.cards.map((card) => [card.id, card]));
         const fastDelivered = await this.processFastTicketDeliveries(resolution.cards, now, mode);
@@ -1479,7 +1508,7 @@ export class UolTelegramShadow extends DurableObject {
           run.outcome = "identity_aliases_reconciled";
         }
       }
-      this.pruneOffers();
+      this.pruneOffers(now, activeOfferIds);
     } catch (error) {
       run.error = sanitizeError(error);
       run.outcome = "failed";
@@ -1644,6 +1673,12 @@ export class UolTelegramShadow extends DurableObject {
       discussion: {
         configured: Boolean(String(this.env.GRUPO_COMENTARIO_ID || "").trim()),
         webhookRegistered: Boolean(this.metadataValue("telegram_webhook_registered_at")),
+      },
+      retention: {
+        offerDays: envNumber(this.env, "OFFER_RETENTION_DAYS", 30, 7, 365),
+        maxTerminalOffers: envNumber(this.env, "MAX_STATE_OFFERS", 300, 50, 2_000),
+        recentRuns: 240,
+        lastCleanupDay: this.metadataValue("offers_cleanup_day"),
       },
       schedule: `durable-object-alarm:${envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600)}s`,
       alarmScheduledAt,
