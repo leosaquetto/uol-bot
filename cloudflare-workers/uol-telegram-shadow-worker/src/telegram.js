@@ -1,5 +1,6 @@
 import {
   buildTelegramCaption,
+  buildDiscussionCommentChunks,
   cleanText,
   shouldSendSilent,
 } from "./core.js";
@@ -95,7 +96,9 @@ async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNoti
 export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   const { mainChatId } = telegramConfig(env);
   if (!mainChatId) throw new Error("telegram_main_chat_missing");
-  const caption = buildTelegramCaption(offer);
+  const caption = buildTelegramCaption(offer, {
+    commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
+  });
   const disableNotification = shouldSendSilent(offer);
   const imageUrl = String(offer?.imageUrl || offer?.cardImageUrl || "").trim();
 
@@ -143,6 +146,68 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   };
 }
 
+export async function sendDiscussionComments(env, offer, discussionMessageId, fetchImpl = fetch) {
+  const groupChatId = String(env.GRUPO_COMENTARIO_ID || "").trim();
+  if (!groupChatId) throw new Error("telegram_discussion_group_missing");
+  const chunks = buildDiscussionCommentChunks(offer);
+  const messageIds = [];
+  for (const text of chunks) {
+    const result = await telegramCall(env, "sendMessage", {
+      chat_id: groupChatId,
+      text,
+      parse_mode: "HTML",
+      disable_notification: true,
+      reply_parameters: {
+        message_id: Number(discussionMessageId),
+        allow_sending_without_reply: false,
+      },
+      link_preview_options: { is_disabled: true },
+    }, fetchImpl);
+    messageIds.push(Number(result?.message_id || 0));
+  }
+  return { messageIds };
+}
+
+export async function sendDiscussionComment(env, text, discussionMessageId, fetchImpl = fetch) {
+  const groupChatId = String(env.GRUPO_COMENTARIO_ID || "").trim();
+  if (!groupChatId) throw new Error("telegram_discussion_group_missing");
+  const result = await telegramCall(env, "sendMessage", {
+    chat_id: groupChatId,
+    text,
+    parse_mode: "HTML",
+    disable_notification: true,
+    reply_parameters: {
+      message_id: Number(discussionMessageId),
+      allow_sending_without_reply: false,
+    },
+    link_preview_options: { is_disabled: true },
+  }, fetchImpl);
+  return { messageId: Number(result?.message_id || 0) };
+}
+
+export async function registerTelegramWebhook(env, fetchImpl = fetch) {
+  const token = String(env.TELEGRAM_TOKEN || "").trim();
+  const baseUrl = String(env.PUBLIC_BASE_URL || "").replace(/\/+$/, "");
+  const secret = String(env.TELEGRAM_WEBHOOK_SECRET || "").trim();
+  if (!token || !baseUrl || !secret) throw new Error("telegram_webhook_configuration_incomplete");
+  const response = await fetchImpl(`https://api.telegram.org/bot${token}/setWebhook`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      url: `${baseUrl}/telegram-webhook`,
+      secret_token: secret,
+      allowed_updates: ["message"],
+      drop_pending_updates: true,
+    }),
+    signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data?.ok !== true) {
+    throw telegramError("setWebhook", response.status, data);
+  }
+  return { ok: true };
+}
+
 export async function forwardToCanal2(env, mainMessageId, fetchImpl = fetch) {
   const { mainChatId, canal2Id } = telegramConfig(env);
   if (!mainChatId) throw new Error("telegram_main_chat_missing");
@@ -156,6 +221,28 @@ export async function forwardToCanal2(env, mainMessageId, fetchImpl = fetch) {
   return {
     messageId: Number(result?.message_id || 0),
   };
+}
+
+export async function editMainOfferMessage(env, { messageId, messageKind, offer }, fetchImpl = fetch) {
+  const { mainChatId } = telegramConfig(env);
+  const caption = buildTelegramCaption(offer, {
+    commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
+  });
+  const common = {
+    chat_id: mainChatId,
+    message_id: Number(messageId),
+    parse_mode: "HTML",
+  };
+  if (messageKind === "photo") {
+    await telegramCall(env, "editMessageCaption", { ...common, caption }, fetchImpl);
+  } else {
+    await telegramCall(env, "editMessageText", {
+      ...common,
+      text: caption,
+      link_preview_options: { is_disabled: true },
+    }, fetchImpl);
+  }
+  return { ok: true };
 }
 
 export async function editSoldOutMessage(

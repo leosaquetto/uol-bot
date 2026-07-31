@@ -1,6 +1,6 @@
 # UOL Ingressos Discord Worker
 
-Worker isolado para monitorar exclusivamente links de
+Worker isolado de rollback para monitorar exclusivamente links de
 `/campanhasdeingresso/` no Clube UOL e publicar novas ofertas em um webhook do
 Discord.
 
@@ -11,7 +11,9 @@ O histórico técnico, as decisões e as validações estão registrados em
 
 - Um alarme de Durable Object roda a cada 1 minuto sem consumir um dos cinco
   Cron Triggers já usados pelo Backstage.
-- `DELIVERY_MODE` está em `live` após a validação do baseline e do webhook.
+- `DELIVERY_MODE` está em `dry-run`: o fan-out ativo foi consolidado no Worker
+  do Telegram e este Worker não publica mais mensagens.
+- `COLLECTOR_ENABLED=false` remove o alarme: não há polling duplicado do UOL.
 - A primeira execução cria um baseline e não envia ofertas já existentes.
 - A identidade persistente usa `parceiro + código interno`; correções no restante
   do slug não geram uma segunda mensagem. Estados antigos equivalentes são

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   buildDedupeKeys,
+  buildDiscussionCommentChunks,
   buildTelegramCaption,
   canonicalKey,
   decideShadowDelivery,
@@ -171,4 +172,18 @@ test("gera edição de esgotamento sem perder o link", () => {
   assert.match(caption, /<s>/);
   assert.match(caption, /Oferta esgotada às 09:34/);
   assert.match(caption, /https:\/\/clube\.uol\.com\.br/);
+});
+
+test("formata e divide o histórico completo para a discussão", () => {
+  const chunks = buildDiscussionCommentChunks({
+    ...showOffer,
+    description: "Assinante UOL, resgate seu par. Data: 02 de Agosto. Local: Av. Paulista, 1000 - SP. Importante: sujeito a estoque. REGRAS DE RESGATE: Uma oferta por CPF.",
+    validity: "Benefício válido até 02/08/2026 23:59.",
+  });
+  assert.ok(chunks.length >= 1);
+  assert.match(chunks.join("\n"), /📋 <b>2 INGRESSOS/);
+  assert.match(chunks.join("\n"), /📍 <b>Local:<\/b>/);
+  assert.match(chunks.join("\n"), /📌 <b>REGRAS DE RESGATE:<\/b>/);
+  assert.match(chunks.at(-1), /clube\.uol\.com\.br/);
+  assert.ok(chunks.every((chunk) => chunk.length <= 3_800));
 });

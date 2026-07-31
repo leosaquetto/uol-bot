@@ -290,6 +290,10 @@ function maxStateOffers(env) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_MAX_STATE_OFFERS;
 }
 
+function collectorEnabled(env) {
+  return String(env.COLLECTOR_ENABLED || "true").trim().toLowerCase() === "true";
+}
+
 export async function runCollector(env, options = {}) {
   const now = new Date();
   const nowIso = now.toISOString();
@@ -424,7 +428,7 @@ async function healthPayload(env, alarmState) {
     ok: true,
     worker: "uol-ingressos-discord-pilot",
     mode: deliveryMode(env),
-    schedule: "durable-object-alarm:1m",
+    schedule: collectorEnabled(env) ? "durable-object-alarm:1m" : "disabled",
     alarmScheduledAt: alarmState.alarmScheduledAt || "",
     lastRun: alarmState.lastRun || null,
     initialized: Boolean(state.initializedAt),
@@ -443,6 +447,10 @@ export class TicketAlarm {
   }
 
   async ensureAlarm() {
+    if (!collectorEnabled(this.env)) {
+      await this.ctx.storage.deleteAlarm();
+      return "";
+    }
     let scheduledAt = await this.ctx.storage.getAlarm();
     if (scheduledAt == null) {
       scheduledAt = Date.now() + ALARM_INTERVAL_MS;
@@ -452,6 +460,15 @@ export class TicketAlarm {
   }
 
   async alarm() {
+    if (!collectorEnabled(this.env)) {
+      await this.ctx.storage.deleteAlarm();
+      await this.ctx.storage.put("lastRun", {
+        at: new Date().toISOString(),
+        ok: true,
+        result: { outcome: "collector_disabled", sent: 0, failed: 0 },
+      });
+      return;
+    }
     let record;
     try {
       const result = await runCollector(this.env);

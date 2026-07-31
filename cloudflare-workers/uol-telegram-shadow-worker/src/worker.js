@@ -2,20 +2,29 @@ import { DurableObject } from "cloudflare:workers";
 
 import {
   buildDedupeKeys,
+  buildDiscussionCommentChunks,
   cleanText,
   decideShadowDelivery,
   dedupeCards,
   evaluateDetailQuality,
   extractValidity,
+  isTicketCampaign,
   offerIdentityKeys,
   offerSourceKey,
 } from "./core.js";
 import {
+  discordConfiguration,
+  sendDiscordOffer,
+} from "./discord.js";
+import {
   editSoldOutMessage,
+  editMainOfferMessage,
   forwardToCanal2,
   sendMainOffer,
+  sendDiscussionComment,
   sendTransportTest,
   telegramConfiguration,
+  registerTelegramWebhook,
 } from "./telegram.js";
 
 const BASE_URL = "https://clube.uol.com.br";
@@ -459,6 +468,29 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (3);
       `);
     }
+    if (currentVersion < 4) {
+      this.ctx.storage.sql.exec(`
+        ALTER TABLE offers ADD COLUMN discord_message_id TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_sent_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_delivery_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN discord_delivery_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discussion_message_id INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN comment_message_ids TEXT NOT NULL DEFAULT '[]';
+        ALTER TABLE offers ADD COLUMN comment_chunks_sent INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN comment_sent_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN comment_delivery_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN comment_delivery_error TEXT NOT NULL DEFAULT '';
+        UPDATE offers
+           SET discord_sent_at = main_sent_at
+         WHERE main_sent_at <> ''
+           AND link LIKE '%/campanhasdeingresso/%';
+        INSERT INTO _sql_schema_migrations (id) VALUES (4);
+        CREATE INDEX IF NOT EXISTS offers_comment_idx
+          ON offers(discussion_message_id, comment_sent_at, first_seen_at);
+        CREATE INDEX IF NOT EXISTS offers_discord_idx
+          ON offers(discord_sent_at, first_seen_at);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -498,10 +530,17 @@ export class UolTelegramShadow extends DurableObject {
   async ensureAlarm() {
     let alarm = await this.ctx.storage.getAlarm();
     if (alarm == null) {
-      alarm = Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 60, 30, 3_600) * 1_000;
+      alarm = Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600) * 1_000;
       await this.ctx.storage.setAlarm(alarm);
     }
     return new Date(alarm).toISOString();
+  }
+
+  async ensureTelegramWebhook() {
+    if (this.metadataValue("telegram_webhook_registered_at")) return true;
+    await registerTelegramWebhook(this.env);
+    this.setMetadata("telegram_webhook_registered_at", new Date().toISOString());
+    return true;
   }
 
   insertRun(run) {
@@ -693,7 +732,8 @@ export class UolTelegramShadow extends DurableObject {
     const batchSize = envNumber(this.env, "DETAIL_BATCH_SIZE", 4, 1, 8);
     const pendingRows = this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, category, card_image_url,
-              partner_image_url, partner_name, detail_attempts
+              partner_image_url, partner_name, detail_attempts,
+              main_message_id, main_message_kind
        FROM offers
        WHERE status = 'pending_enrichment'
        ORDER BY first_seen_at ASC
@@ -801,6 +841,20 @@ export class UolTelegramShadow extends DurableObject {
         mode,
         offer.id,
       );
+      if (decision.eligible && Number(pendingRows[index]?.main_message_id || 0) > 0) {
+        try {
+          await editMainOfferMessage(this.env, {
+            messageId: Number(pendingRows[index].main_message_id),
+            messageKind: pendingRows[index].main_message_kind,
+            offer,
+          });
+        } catch (error) {
+          logEvent("error", "uol_telegram_fast_post_enrichment_edit_failed", {
+            offerId: offer.id,
+            error: sanitizeError(error),
+          });
+        }
+      }
       wouldSendMain += decision.wouldSendMain ? 1 : 0;
       wouldSendCanal2 += decision.wouldSendCanal2 ? 1 : 0;
     }
@@ -812,14 +866,93 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  async processFastTicketDeliveries(cards, now, mode) {
+    if (mode !== "live") return { mainSent: 0, discordSent: 0, failed: 0 };
+    const configuration = telegramConfiguration(this.env);
+    if (!configuration.liveReady) throw new Error("telegram_live_configuration_incomplete");
+    const discordReady = discordConfiguration(this.env).configured;
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    let mainSent = 0;
+    let discordSent = 0;
+    let failed = 0;
+    for (const card of cards.filter((item) => isTicketCampaign(item))) {
+      const row = this.ctx.storage.sql.exec(
+        `SELECT * FROM offers
+         WHERE id = ? AND status = 'pending_enrichment'
+         LIMIT 1`,
+        card.id,
+      ).toArray()[0];
+      if (!row) continue;
+      const offer = rowToOffer(row);
+      const deliveries = [];
+      if (!row.main_sent_at && Number(row.main_delivery_attempts || 0) < maxAttempts) {
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET
+            main_delivery_attempts = main_delivery_attempts + 1,
+            main_delivery_error = '' WHERE id = ?`,
+          row.id,
+        );
+        deliveries.push({ kind: "telegram", promise: sendMainOffer(this.env, offer) });
+      }
+      if (
+        discordReady && !row.discord_sent_at &&
+        Number(row.discord_delivery_attempts || 0) < maxAttempts
+      ) {
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET
+            discord_delivery_attempts = discord_delivery_attempts + 1,
+            discord_delivery_error = '' WHERE id = ?`,
+          row.id,
+        );
+        deliveries.push({ kind: "discord", promise: sendDiscordOffer(this.env, offer) });
+      }
+      const settled = await Promise.allSettled(deliveries.map((item) => item.promise));
+      for (let index = 0; index < deliveries.length; index += 1) {
+        const delivery = deliveries[index];
+        const result = settled[index];
+        if (delivery.kind === "telegram" && result.status === "fulfilled" && result.value.messageId) {
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
+              main_delivery_error = '' WHERE id = ?`,
+            result.value.messageId,
+            result.value.messageKind,
+            now.toISOString(),
+            row.id,
+          );
+          mainSent += 1;
+        } else if (delivery.kind === "discord" && result.status === "fulfilled") {
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              discord_message_id = ?, discord_sent_at = ?, discord_delivery_error = ''
+             WHERE id = ?`,
+            result.value.messageId,
+            now.toISOString(),
+            row.id,
+          );
+          discordSent += 1;
+        } else {
+          const column = delivery.kind === "telegram" ? "main_delivery_error" : "discord_delivery_error";
+          const error = result.status === "rejected"
+            ? sanitizeError(result.reason)
+            : `${delivery.kind}_message_id_missing`;
+          this.ctx.storage.sql.exec(`UPDATE offers SET ${column} = ? WHERE id = ?`, error, row.id);
+          failed += 1;
+        }
+      }
+    }
+    return { mainSent, discordSent, failed };
+  }
+
   async processDeliveries(now) {
     if (this.currentDeliveryMode() !== "live") {
-      return { mainSent: 0, canal2Sent: 0, failed: 0 };
+      return { mainSent: 0, canal2Sent: 0, discordSent: 0, failed: 0 };
     }
     const configuration = telegramConfiguration(this.env);
     if (!configuration.liveReady) {
       throw new Error("telegram_live_configuration_incomplete");
     }
+    const discordReady = discordConfiguration(this.env).configured;
 
     const batchSize = envNumber(this.env, "DELIVERY_BATCH_SIZE", 4, 1, 8);
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
@@ -833,13 +966,19 @@ export class UolTelegramShadow extends DurableObject {
     ).toArray();
     let mainSent = 0;
     let canal2Sent = 0;
+    let discordSent = 0;
     let failed = 0;
 
     for (const row of rows) {
+      const offer = rowToOffer(row);
+      const ticket = isTicketCampaign(offer);
       let mainMessageId = Number(row.main_message_id || 0);
       let mainMessageKind = row.main_message_kind || "";
       let mainSentAt = row.main_sent_at || "";
       let canal2SentAt = row.canal2_sent_at || "";
+      let discordSentAt = row.discord_sent_at || "";
+
+      const deliveries = [];
 
       if (!mainSentAt && Number(row.main_delivery_attempts || 0) < maxAttempts) {
         const attempts = Number(row.main_delivery_attempts || 0) + 1;
@@ -850,9 +989,38 @@ export class UolTelegramShadow extends DurableObject {
           attempts,
           row.id,
         );
-        try {
-          const result = await sendMainOffer(this.env, rowToOffer(row));
-          if (!result.messageId) throw new Error("telegram_main_message_id_missing");
+        deliveries.push({ kind: "telegram", promise: sendMainOffer(this.env, offer) });
+      }
+      if (
+        ticket && discordReady && !discordSentAt &&
+        Number(row.discord_delivery_attempts || 0) < maxAttempts
+      ) {
+        const attempts = Number(row.discord_delivery_attempts || 0) + 1;
+        this.ctx.storage.sql.exec(
+          `UPDATE offers
+           SET discord_delivery_attempts = ?, discord_delivery_error = ''
+           WHERE id = ?`,
+          attempts,
+          row.id,
+        );
+        deliveries.push({ kind: "discord", promise: sendDiscordOffer(this.env, offer) });
+      }
+
+      const results = await Promise.allSettled(deliveries.map((item) => item.promise));
+      for (let index = 0; index < deliveries.length; index += 1) {
+        const delivery = deliveries[index];
+        const settled = results[index];
+        if (delivery.kind === "telegram" && settled.status === "fulfilled") {
+          const result = settled.value;
+          if (!result.messageId) {
+            this.ctx.storage.sql.exec(
+              "UPDATE offers SET main_delivery_error = ? WHERE id = ?",
+              "telegram_main_message_id_missing",
+              row.id,
+            );
+            failed += 1;
+            continue;
+          }
           mainMessageId = result.messageId;
           mainMessageKind = result.messageKind;
           mainSentAt = now.toISOString();
@@ -867,10 +1035,28 @@ export class UolTelegramShadow extends DurableObject {
             row.id,
           );
           mainSent += 1;
-        } catch (error) {
+        } else if (delivery.kind === "telegram") {
           this.ctx.storage.sql.exec(
             "UPDATE offers SET main_delivery_error = ? WHERE id = ?",
-            sanitizeError(error),
+            sanitizeError(settled.reason),
+            row.id,
+          );
+          failed += 1;
+        } else if (delivery.kind === "discord" && settled.status === "fulfilled") {
+          discordSentAt = now.toISOString();
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              discord_message_id = ?, discord_sent_at = ?, discord_delivery_error = ''
+             WHERE id = ?`,
+            settled.value.messageId,
+            discordSentAt,
+            row.id,
+          );
+          discordSent += 1;
+        } else {
+          this.ctx.storage.sql.exec(
+            "UPDATE offers SET discord_delivery_error = ? WHERE id = ?",
+            sanitizeError(settled.reason),
             row.id,
           );
           failed += 1;
@@ -915,7 +1101,9 @@ export class UolTelegramShadow extends DurableObject {
       }
 
       const complete = Boolean(
-        mainSentAt && (!Boolean(row.would_send_canal2) || canal2SentAt),
+        mainSentAt &&
+        (!Boolean(row.would_send_canal2) || canal2SentAt) &&
+        (!ticket || !discordReady || discordSentAt),
       );
       this.ctx.storage.sql.exec(
         "UPDATE offers SET status = ? WHERE id = ?",
@@ -924,7 +1112,75 @@ export class UolTelegramShadow extends DurableObject {
       );
     }
 
-    return { mainSent, canal2Sent, failed };
+    return { mainSent, canal2Sent, discordSent, failed };
+  }
+
+  async processDiscussionComments(limit = 4) {
+    if (this.currentDeliveryMode() !== "live") return { sent: 0, failed: 0 };
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT * FROM offers
+       WHERE discussion_message_id > 0
+         AND comment_sent_at = ''
+         AND description <> ''
+         AND status <> 'discarded'
+         AND comment_delivery_attempts < ?
+       ORDER BY first_seen_at ASC
+       LIMIT ?`,
+      maxAttempts,
+      Math.min(8, Math.max(1, Number(limit || 4))),
+    ).toArray();
+    let sent = 0;
+    let failed = 0;
+    for (const row of rows) {
+      const chunks = buildDiscussionCommentChunks(rowToOffer(row));
+      let sentCount = Number(row.comment_chunks_sent || 0);
+      let messageIds = [];
+      try {
+        messageIds = JSON.parse(row.comment_message_ids || "[]");
+      } catch {
+        messageIds = [];
+      }
+      this.ctx.storage.sql.exec(
+        `UPDATE offers SET
+          comment_delivery_attempts = comment_delivery_attempts + 1,
+          comment_delivery_error = ''
+         WHERE id = ?`,
+        row.id,
+      );
+      try {
+        for (let index = sentCount; index < chunks.length; index += 1) {
+          const result = await sendDiscussionComment(
+            this.env,
+            chunks[index],
+            Number(row.discussion_message_id),
+          );
+          if (!result.messageId) throw new Error("telegram_comment_message_id_missing");
+          messageIds.push(result.messageId);
+          sentCount = index + 1;
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET comment_message_ids = ?, comment_chunks_sent = ? WHERE id = ?`,
+            JSON.stringify(messageIds),
+            sentCount,
+            row.id,
+          );
+        }
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET comment_sent_at = ?, comment_delivery_error = '' WHERE id = ?`,
+          new Date().toISOString(),
+          row.id,
+        );
+        sent += 1;
+      } catch (error) {
+        this.ctx.storage.sql.exec(
+          "UPDATE offers SET comment_delivery_error = ? WHERE id = ?",
+          sanitizeError(error),
+          row.id,
+        );
+        failed += 1;
+      }
+    }
+    return { sent, failed };
   }
 
   async processSoldOutSync(now) {
@@ -1146,6 +1402,8 @@ export class UolTelegramShadow extends DurableObject {
       deliveryFailed: 0,
       soldOutMainEdited: 0,
       soldOutCanal2Edited: 0,
+      discordSent: 0,
+      commentsSent: 0,
       error: "",
     };
 
@@ -1175,15 +1433,23 @@ export class UolTelegramShadow extends DurableObject {
         const resolution = this.resolveListingCards(cards, nowIso, "pending_enrichment");
         run.newOffers = resolution.inserted;
         const cardsById = new Map(resolution.cards.map((card) => [card.id, card]));
+        const fastDelivered = await this.processFastTicketDeliveries(resolution.cards, now, mode);
+        run.mainSent += fastDelivered.mainSent;
+        run.discordSent += fastDelivered.discordSent;
+        run.deliveryFailed += fastDelivered.failed;
         const processed = await this.processPending(cardsById, now, mode);
         run.enriched = processed.enriched;
         run.wouldSendMain = processed.wouldSendMain;
         run.wouldSendCanal2 = processed.wouldSendCanal2;
         run.soldOutDetected = this.evaluateSoldOut(new Set(cardsById.keys()), now);
         const delivered = await this.processDeliveries(now);
-        run.mainSent = delivered.mainSent;
-        run.canal2Sent = delivered.canal2Sent;
+        run.mainSent += delivered.mainSent;
+        run.canal2Sent += delivered.canal2Sent;
+        run.discordSent += delivered.discordSent;
         run.deliveryFailed += delivered.failed;
+        const comments = await this.processDiscussionComments();
+        run.commentsSent = comments.sent;
+        run.deliveryFailed += comments.failed;
         const soldOutSync = await this.processSoldOutSync(now);
         run.soldOutMainEdited = soldOutSync.mainEdited;
         run.soldOutCanal2Edited = soldOutSync.canal2Edited;
@@ -1225,6 +1491,8 @@ export class UolTelegramShadow extends DurableObject {
       soldOutDetected: run.soldOutDetected,
       mainSent: run.mainSent,
       canal2Sent: run.canal2Sent,
+      discordSent: run.discordSent,
+      commentsSent: run.commentsSent,
       deliveryFailed: run.deliveryFailed,
       soldOutMainEdited: run.soldOutMainEdited,
       soldOutCanal2Edited: run.soldOutCanal2Edited,
@@ -1238,15 +1506,51 @@ export class UolTelegramShadow extends DurableObject {
 
   async alarm() {
     try {
+      try {
+        await this.ensureTelegramWebhook();
+      } catch (error) {
+        logEvent("error", "uol_telegram_webhook_registration_failed", {
+          error: sanitizeError(error),
+        });
+      }
       await this.scan("alarm");
     } catch (error) {
       logEvent("error", "uol_telegram_shadow_alarm_unhandled", {
         error: sanitizeError(error),
       });
     } finally {
-      const interval = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 60, 30, 3_600);
+      const interval = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600);
       await this.ctx.storage.setAlarm(Date.now() + interval * 1_000);
     }
+  }
+
+  async handleTelegramUpdate(update) {
+    const message = update?.message;
+    const origin = message?.forward_origin;
+    const expectedGroup = String(this.env.GRUPO_COMENTARIO_ID || "").trim();
+    const expectedChannel = String(this.env.TELEGRAM_CHAT_ID || "").trim();
+    if (
+      !message?.is_automatic_forward ||
+      String(message?.chat?.id || "") !== expectedGroup ||
+      origin?.type !== "channel" ||
+      String(origin?.chat?.id || "") !== expectedChannel ||
+      !Number(origin?.message_id) ||
+      !Number(message?.message_id)
+    ) {
+      return { ok: true, matched: false };
+    }
+    const rows = this.ctx.storage.sql.exec(
+      "SELECT id FROM offers WHERE main_message_id = ? LIMIT 1",
+      Number(origin.message_id),
+    ).toArray();
+    if (!rows[0]?.id) return { ok: true, matched: false };
+    this.ctx.storage.sql.exec(
+      `UPDATE offers SET discussion_message_id = ? WHERE id = ?`,
+      Number(message.message_id),
+      rows[0].id,
+    );
+    const comments = await this.processDiscussionComments(1);
+    return { ok: true, matched: true, comments };
   }
 
   async runNow() {
@@ -1286,10 +1590,13 @@ export class UolTelegramShadow extends DurableObject {
         SUM(CASE WHEN would_send_canal2 = 1 THEN 1 ELSE 0 END) AS would_send_canal2,
         SUM(CASE WHEN main_sent_at <> '' THEN 1 ELSE 0 END) AS main_sent,
         SUM(CASE WHEN canal2_sent_at <> '' THEN 1 ELSE 0 END) AS canal2_sent,
+        SUM(CASE WHEN discord_sent_at <> '' THEN 1 ELSE 0 END) AS discord_sent,
+        SUM(CASE WHEN comment_sent_at <> '' THEN 1 ELSE 0 END) AS comments_sent,
         SUM(CASE WHEN status IN ('delivery_pending', 'partial_delivery') THEN 1 ELSE 0 END)
           AS delivery_pending,
         SUM(CASE WHEN status IN ('shadow_sold_out', 'sold_out') THEN 1 ELSE 0 END) AS sold_out,
-        SUM(CASE WHEN main_delivery_error <> '' OR canal2_delivery_error <> '' THEN 1 ELSE 0 END)
+        SUM(CASE WHEN main_delivery_error <> '' OR canal2_delivery_error <> ''
+                  OR discord_delivery_error <> '' OR comment_delivery_error <> '' THEN 1 ELSE 0 END)
           AS delivery_errors
        FROM offers`,
     ).one();
@@ -1324,7 +1631,12 @@ export class UolTelegramShadow extends DurableObject {
       worker: "uol-telegram-shadow-pilot",
       mode: this.currentDeliveryMode(),
       telegram: telegramConfiguration(this.env),
-      schedule: `durable-object-alarm:${envNumber(this.env, "ALARM_INTERVAL_SECONDS", 60, 30, 3_600)}s`,
+      discord: discordConfiguration(this.env),
+      discussion: {
+        configured: Boolean(String(this.env.GRUPO_COMENTARIO_ID || "").trim()),
+        webhookRegistered: Boolean(this.metadataValue("telegram_webhook_registered_at")),
+      },
+      schedule: `durable-object-alarm:${envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600)}s`,
       alarmScheduledAt,
       initializedAt: this.metadataValue("initialized_at"),
       liveStartedAt: this.metadataValue("live_started_at"),
@@ -1337,6 +1649,8 @@ export class UolTelegramShadow extends DurableObject {
         wouldSendCanal2: Number(counts.would_send_canal2 || 0),
         mainSent: Number(counts.main_sent || 0),
         canal2Sent: Number(counts.canal2_sent || 0),
+        discordSent: Number(counts.discord_sent || 0),
+        commentsSent: Number(counts.comments_sent || 0),
         deliveryPending: Number(counts.delivery_pending || 0),
         deliveryErrors: Number(counts.delivery_errors || 0),
         soldOut: Number(counts.sold_out || 0),
@@ -1424,6 +1738,14 @@ export default {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
 
     try {
+      if (request.method === "POST" && url.pathname === "/telegram-webhook") {
+        const expected = String(env.TELEGRAM_WEBHOOK_SECRET || "").trim();
+        const supplied = request.headers.get("X-Telegram-Bot-Api-Secret-Token") || "";
+        if (!expected || !constantTimeEqual(expected, supplied)) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        return jsonResponse(await stub.handleTelegramUpdate(await request.json()));
+      }
       if (request.method === "GET" && url.pathname === "/health") {
         return jsonResponse(await stub.getHealth());
       }

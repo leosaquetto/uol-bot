@@ -1,25 +1,28 @@
 # UOL Telegram Cloudflare Worker
 
 Monitor remoto do Clube UOL que substitui a coleta do Mac e o envio automático
-do GitHub Actions. O Worker consulta a listagem a cada 30 segundos, enriquece apenas
-ofertas inéditas e envia diretamente ao Telegram.
+do GitHub Actions. O Worker consulta a listagem a cada 15 segundos, enriquece apenas
+ofertas inéditas e faz o fan-out para Telegram e Discord a partir do mesmo estado.
 
-O Worker do Discord é independente e não compartilha estado, secrets ou
-agendamento com este projeto.
+O Worker antigo do Discord permanece temporariamente implantado em `dry-run`
+como rollback, mas não publica mensagens.
 
 ## Fluxo
 
-1. um Durable Object Alarm executa a cada 30 segundos;
+1. um Durable Object Alarm executa a cada 15 segundos;
 2. a listagem `https://clube.uol.com.br/?order=new` é obtida por HTTP sem cache;
 3. o baseline impede o envio das ofertas existentes durante a implantação;
 4. aliases de endereço são reconciliados antes de decidir se o card é inédito;
-5. somente cards genuinamente inéditos são abertos e enriquecidos;
+5. ingressos genuinamente inéditos disparam Telegram e Discord em paralelo com
+   a thumbnail, antes de abrir a página de detalhe;
 6. título, validade, descrição e imagem são extraídos da página de detalhe;
-7. a oferta é deduplicada e validada;
-8. a mensagem é enviada ao canal principal;
+7. a publicação curta é enriquecida por edição e a oferta é validada;
+8. benefícios comuns continuam sendo enviados depois do enriquecimento;
 9. campanhas elegíveis de ingressos são encaminhadas ao canal 2;
-10. cada resultado e tentativa é persistido separadamente;
-11. ofertas recentes ausentes são confirmadas como esgotadas e as mensagens
+10. o webhook do Telegram associa a cópia automática no grupo vinculado e
+    publica a descrição completa como comentário;
+11. cada resultado e tentativa é persistido separadamente;
+12. ofertas recentes ausentes são confirmadas como esgotadas e as mensagens
     correspondentes são editadas.
 
 ## Regras
@@ -34,6 +37,10 @@ agendamento com este projeto.
   baixá-la, faz upload do arquivo obtido pelo Worker antes de recorrer a texto.
 - **Detalhes estruturados:** validade e endereço são extraídos dos blocos
   próprios da página; abreviações como `Av.` não interrompem o endereço.
+- **Discussão:** a publicação principal continua compacta e o texto completo é
+  respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
+  repetidos em um retry parcial.
+- **Discord:** somente campanhas de ingressos, mantendo o embed com thumbnail.
 - **Identidade:** combina slug canônico, variantes históricas e
   `parceiro + código interno da oferta`; alterações de acentuação no endereço
   não criam uma oferta nova.
@@ -57,7 +64,8 @@ agendamento com este projeto.
 - Estado: SQLite interno do Durable Object
 - Modo padrão: `DELIVERY_MODE=live`; o modo operacional persistido é controlado
   por `POST /mode`
-- Secrets: `ADMIN_TOKEN`, `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`, `CANAL2_ID`
+- Secrets: `ADMIN_TOKEN`, `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`, `CANAL2_ID`,
+  `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL`
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
@@ -74,6 +82,8 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 - `GET /inventory`: inventário observado, autenticada.
 - `GET /identity-diagnostics`: aliases ativos, autenticada.
 - `POST /repair-identities`: reconciliação idempotente de aliases, autenticada.
+- `POST /telegram-webhook`: entrada validada por secret para encaminhamentos
+  automáticos do canal ao grupo de discussão.
 
 As rotas autenticadas exigem `Authorization: Bearer <ADMIN_TOKEN>`.
 
@@ -86,8 +96,10 @@ normal. Em rollback:
 1. usar `POST /mode` com `shadow` para contenção imediata;
    `DELIVERY_MODE` funciona como padrão quando ainda não existe override
    persistido;
-2. executar manualmente o workflow legado ou recarregar o LaunchAgent;
-3. investigar o Worker antes de uma nova promoção.
+2. remover o webhook do Telegram antes de reativar um consumidor que use
+   `getUpdates`;
+3. executar manualmente o workflow legado ou recarregar o LaunchAgent;
+4. investigar o Worker antes de uma nova promoção.
 
 ## Comandos
 

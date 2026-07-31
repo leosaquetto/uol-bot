@@ -9,7 +9,8 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    "DELIVERY_MODE": "live",
+    "DELIVERY_MODE": "dry-run",
+    "COLLECTOR_ENABLED": "false",
     "MAX_STATE_OFFERS": "200"
   },
   "durable_objects": {

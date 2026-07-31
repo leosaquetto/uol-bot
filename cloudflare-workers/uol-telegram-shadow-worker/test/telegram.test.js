@@ -3,10 +3,13 @@ import assert from "node:assert/strict";
 
 import {
   editSoldOutMessage,
+  editMainOfferMessage,
   forwardToCanal2,
   sendMainOffer,
+  sendDiscussionComment,
   sendTransportTest,
   telegramConfiguration,
+  registerTelegramWebhook,
 } from "../src/telegram.js";
 
 const env = {
@@ -134,6 +137,26 @@ test("edita foto esgotada no canal correto", async () => {
   assert.match(payload.caption, /\[ESGOTADO\]/);
 });
 
+test("completa a legenda urgente depois do enriquecimento", async () => {
+  let method = "";
+  let payload = {};
+  await editMainOfferMessage({ ...env, GRUPO_COMENTARIO_ID: "-1003802235343" }, {
+    messageId: 41,
+    messageKind: "photo",
+    offer: {
+      ...offer,
+      validity: "Benefício válido até 02/08/2026 23:59.",
+    },
+  }, async (url, init) => {
+    method = url.split("/").pop();
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 41 });
+  });
+  assert.equal(method, "editMessageCaption");
+  assert.match(payload.caption, /02\/08\/2026/);
+  assert.match(payload.caption, /detalhes completos nos comentários/);
+});
+
 test("teste de transporte confirma principal e canal 2", async () => {
   const methods = [];
   const result = await sendTransportTest(env, async (url) => {
@@ -148,4 +171,37 @@ test("teste de transporte confirma principal e canal 2", async () => {
     mainMessageId: 501,
     canal2MessageId: 502,
   });
+});
+
+test("envia detalhe como resposta à discussão automática", async () => {
+  let payload = {};
+  const result = await sendDiscussionComment(
+    { ...env, GRUPO_COMENTARIO_ID: "-1003802235343" },
+    "📋 <b>Oferta</b>",
+    778,
+    async (_url, init) => {
+      payload = JSON.parse(init.body);
+      return jsonResponse({ message_id: 779 });
+    },
+  );
+  assert.equal(result.messageId, 779);
+  assert.equal(payload.chat_id, "-1003802235343");
+  assert.equal(payload.reply_parameters.message_id, 778);
+  assert.equal(payload.disable_notification, true);
+});
+
+test("registra webhook descartando atualizações antigas", async () => {
+  let payload = {};
+  await registerTelegramWebhook({
+    ...env,
+    PUBLIC_BASE_URL: "https://worker.example",
+    TELEGRAM_WEBHOOK_SECRET: "secret-value",
+  }, async (_url, init) => {
+    payload = JSON.parse(init.body);
+    return jsonResponse(true);
+  });
+  assert.equal(payload.url, "https://worker.example/telegram-webhook");
+  assert.equal(payload.secret_token, "secret-value");
+  assert.equal(payload.drop_pending_updates, true);
+  assert.deepEqual(payload.allowed_updates, ["message"]);
 });

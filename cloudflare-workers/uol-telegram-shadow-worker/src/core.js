@@ -450,6 +450,78 @@ export function buildTelegramCaption(offer, options = {}) {
   if (validity) lines.push(`📅 ${escapeHtml(validity.endsWith(".") ? validity : `${validity}.`)}`);
   if (soldOutAt) lines.push(`❌ Oferta esgotada às ${escapeHtml(formatSoldOutTime(soldOutAt))}.`);
   if (link) lines.push(`🔗 ${escapeHtml(link)}`);
+  if (options.commentsEnabled && !soldOutAt) {
+    lines.push("💬 Veja os detalhes completos nos comentários.");
+  }
 
   return lines.join("\n\n");
+}
+
+function splitBoundedText(value, maxLength) {
+  const chunks = [];
+  let remaining = cleanText(value);
+  while (remaining.length > maxLength) {
+    let cut = remaining.lastIndexOf(" ", maxLength);
+    if (cut < Math.floor(maxLength * 0.6)) cut = maxLength;
+    chunks.push(remaining.slice(0, cut).trim());
+    remaining = remaining.slice(cut).trim();
+  }
+  if (remaining) chunks.push(remaining);
+  return chunks;
+}
+
+export function buildDiscussionCommentChunks(offer) {
+  const title = cleanText(offer?.title || offer?.previewTitle || "Oferta");
+  let description = cleanText(offer?.description);
+  const validity = cleanText(offer?.validity);
+  const link = normalizePublicLink(offer?.link);
+  const labels = [
+    "Sobre o Parceiro", "Benefício", "Regras do benefício", "Regras",
+    "Como utilizar", "Como resgatar", "Passo a passo para resgate",
+    "Data do Show", "Data", "Quando", "Local", "Importante",
+    "REGRAS DE RESGATE", "Atenção, Assinante UOL!",
+  ];
+  const labelPattern = labels
+    .sort((a, b) => b.length - a.length)
+    .map((label) => label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("|");
+  description = description.replace(
+    new RegExp(`\\s*(${labelPattern})\\s*:?\\s*`, "gi"),
+    "\n\n$1: ",
+  );
+  description = description
+    .replace(/\s*•\s*/g, "\n• ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  const blocks = [`📋 <b>${escapeHtml(title)}</b>`];
+  for (const rawBlock of description.split(/\n\n+/).map((item) => item.trim()).filter(Boolean)) {
+    const labelMatch = rawBlock.match(/^([^:!]{2,60})([:!])\s*(.*)$/s);
+    if (labelMatch) {
+      const [, label, punctuation, rest] = labelMatch;
+      const icon = /^(data|quando)/i.test(label) ? "🗓️ "
+        : /^local/i.test(label) ? "📍 "
+        : /^(importante|atenção)/i.test(label) ? "❗ "
+        : /^regras/i.test(label) ? "📌 " : "";
+      blocks.push(`${icon}<b>${escapeHtml(label)}${escapeHtml(punctuation)}</b>${rest ? ` ${escapeHtml(rest)}` : ""}`);
+    } else {
+      blocks.push(escapeHtml(rawBlock));
+    }
+  }
+  if (validity) blocks.push(`📅 ${escapeHtml(validity.endsWith(".") ? validity : `${validity}.`)}`);
+  if (link) blocks.push(`🔗 ${escapeHtml(link)}`);
+
+  const chunks = [];
+  let current = "";
+  for (const block of blocks.flatMap((item) => splitBoundedText(item, 3_600))) {
+    const candidate = current ? `${current}\n\n${block}` : block;
+    if (candidate.length > 3_800 && current) {
+      chunks.push(current);
+      current = block;
+    } else {
+      current = candidate;
+    }
+  }
+  if (current) chunks.push(current);
+  return chunks;
 }

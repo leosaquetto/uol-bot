@@ -160,3 +160,41 @@ O caso real foi convertido em testes de regressão para `grtis/gratis`,
    `~/Library/LaunchAgents/com.leosaquetto.uolmonitor.plist`.
 
 O Discord não participa desse rollback.
+
+## Consolidação de baixa latência de 31/07/2026
+
+O coletor passou a ser a fonte única para Telegram e Discord:
+
+- alarme reduzido de 30 para 15 segundos;
+- uma única leitura e uma única decisão durável por oferta;
+- Telegram e Discord disparados em paralelo antes do enriquecimento para
+  ingressos novos; a legenda é completada por edição logo depois;
+- Discord preserva o embed aprovado com thumbnail;
+- o coletor Discord anterior ficou com `COLLECTOR_ENABLED=false`, sem alarme;
+- ofertas históricas foram marcadas como já entregues no Discord durante a
+  migração, impedindo replay.
+
+O histórico completo do Telegram foi recuperado por webhook:
+
+1. o canal recebe thumbnail e legenda compacta;
+2. o Telegram encaminha automaticamente a publicação ao `LeoUOL Chat`;
+3. o webhook valida `X-Telegram-Bot-Api-Secret-Token`;
+4. `forward_origin.message_id` é associado ao `main_message_id` durável;
+5. a descrição completa é formatada e enviada como resposta nessa discussão;
+6. cada chunk confirmado é persistido para que retries não o repitam.
+
+O registro do webhook usa `drop_pending_updates=true`, portanto mensagens
+anteriores à ativação não geram comentários retroativos. Para um rollback ao
+consumer legado baseado em `getUpdates`, o webhook deve ser removido primeiro.
+
+### Estado da ativação
+
+- Worker central: `uol-telegram-shadow-pilot`
+- Version ID final: `df550012-fe56-4c07-aab4-ea8f81b733af`
+- intervalo: 15 segundos
+- grupo vinculado: `-1003802235343`
+- Discord consolidado: configurado
+- webhook Telegram: registrado
+- ofertas novas durante a migração: zero
+- reenvios durante a migração: zero
+- erros de entrega durante a migração: zero
