@@ -6,6 +6,7 @@ import {
   editMainOfferMessage,
   forwardToCanal2,
   sendMainOffer,
+  sendOperationsAlert,
   sendDiscussionComment,
   sendTransportTest,
   telegramConfiguration,
@@ -38,11 +39,27 @@ function jsonResponse(result, status = 200) {
   });
 }
 
+test("envia alerta operacional com notificação normal e fallback para o canal principal", async () => {
+  let payload;
+  const result = await sendOperationsAlert(env, "⚠️ teste operacional", async (url, init) => {
+    assert.match(url, /sendMessage$/);
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 901 });
+  });
+  assert.equal(result.messageId, 901);
+  assert.equal(payload.chat_id, env.TELEGRAM_CHAT_ID);
+  assert.equal(payload.disable_notification, false);
+  assert.equal(payload.link_preview_options.is_disabled, true);
+  assert.equal(telegramConfiguration(env).operationsUsesMainFallback, true);
+});
+
 test("configuração live exige token e os dois canais", () => {
   assert.deepEqual(telegramConfiguration(env), {
     tokenConfigured: true,
     mainConfigured: true,
     canal2Configured: true,
+    operationsConfigured: true,
+    operationsUsesMainFallback: true,
     liveReady: true,
   });
   assert.equal(telegramConfiguration({ ...env, CANAL2_ID: "" }).liveReady, false);

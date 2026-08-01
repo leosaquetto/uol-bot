@@ -34,12 +34,28 @@ function offerLinkPreview(offer) {
 
 export function telegramConfiguration(env) {
   const config = telegramConfig(env);
+  const opsChatId = String(env.OPS_TELEGRAM_CHAT_ID || config.mainChatId).trim();
   return {
     tokenConfigured: Boolean(config.token),
     mainConfigured: Boolean(config.mainChatId),
     canal2Configured: Boolean(config.canal2Id),
+    operationsConfigured: Boolean(opsChatId),
+    operationsUsesMainFallback: Boolean(opsChatId && !String(env.OPS_TELEGRAM_CHAT_ID || "").trim()),
     liveReady: Boolean(config.token && config.mainChatId && config.canal2Id),
   };
+}
+
+export async function sendOperationsAlert(env, text, fetchImpl = fetch) {
+  const { mainChatId } = telegramConfig(env);
+  const chatId = String(env.OPS_TELEGRAM_CHAT_ID || mainChatId).trim();
+  if (!chatId) throw new Error("telegram_operations_chat_missing");
+  const result = await telegramCall(env, "sendMessage", {
+    chat_id: chatId,
+    text: cleanText(text).slice(0, 3_900),
+    disable_notification: false,
+    link_preview_options: { is_disabled: true },
+  }, fetchImpl);
+  return { messageId: Number(result?.message_id || 0) };
 }
 
 export async function telegramCall(env, method, payload, fetchImpl = fetch) {

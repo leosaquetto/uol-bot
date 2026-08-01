@@ -33,10 +33,16 @@ import {
   sendMainOffer,
   sendDiscussionComment,
   sendTransportTest,
+  sendOperationsAlert,
   telegramConfiguration,
   registerTelegramWebhook,
   getTelegramWebhookInfo,
 } from "./telegram.js";
+import {
+  buildIncidentSignals,
+  buildLatencyMetrics,
+  buildOperationsAlert,
+} from "./operations.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
@@ -523,6 +529,27 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (5);
       `);
     }
+    if (currentVersion < 6) {
+      this.ctx.storage.sql.exec(`
+        CREATE TABLE IF NOT EXISTS incidents (
+          key TEXT PRIMARY KEY,
+          status TEXT NOT NULL,
+          severity TEXT NOT NULL,
+          summary TEXT NOT NULL,
+          details TEXT NOT NULL DEFAULT '',
+          first_detected_at TEXT NOT NULL,
+          last_detected_at TEXT NOT NULL,
+          last_attempted_at TEXT NOT NULL DEFAULT '',
+          last_alerted_at TEXT NOT NULL DEFAULT '',
+          resolved_at TEXT NOT NULL DEFAULT '',
+          occurrence_count INTEGER NOT NULL DEFAULT 1,
+          alert_error TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS incidents_status_idx
+          ON incidents(status, last_detected_at DESC);
+        INSERT INTO _sql_schema_migrations (id) VALUES (6);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -619,6 +646,151 @@ export class UolTelegramShadow extends DurableObject {
     this.ctx.storage.sql.exec(
       "DELETE FROM runs WHERE id NOT IN (SELECT id FROM runs ORDER BY id DESC LIMIT 240)",
     );
+  }
+
+  failedRunStreak() {
+    const rows = this.ctx.storage.sql.exec(
+      "SELECT outcome, error FROM runs ORDER BY id DESC LIMIT 12",
+    ).toArray();
+    let streak = 0;
+    for (const row of rows) {
+      if (row.outcome !== "failed" && !row.error) break;
+      streak += 1;
+    }
+    return streak;
+  }
+
+  recentTicketDeliveryIssues(now) {
+    let monitoringStartedAt = this.metadataValue("ops_monitor_started_at");
+    if (!monitoringStartedAt) {
+      monitoringStartedAt = now.toISOString();
+      this.setMetadata("ops_monitor_started_at", monitoringStartedAt);
+      return [];
+    }
+    const graceMinutes = envNumber(this.env, "OPS_TICKET_GRACE_MINUTES", 3, 1, 60);
+    const graceCutoff = new Date(now.getTime() - graceMinutes * 60_000).toISOString();
+    const recentCutoff = [
+      new Date(now.getTime() - 24 * 60 * 60_000).toISOString(),
+      monitoringStartedAt,
+    ].sort().at(-1);
+    return this.ctx.storage.sql.exec(
+      `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title,
+              main_message_kind, comment_sent_at, discussion_message_id
+       FROM offers
+       WHERE link LIKE '%/campanhasdeingresso/%'
+         AND main_sent_at <> ''
+         AND first_seen_at >= ?
+         AND first_seen_at <= ?
+         AND (main_message_kind <> 'photo' OR comment_sent_at = '')
+       ORDER BY first_seen_at DESC
+       LIMIT 12`,
+      recentCutoff,
+      graceCutoff,
+    ).toArray().map((row) => ({
+      id: row.id,
+      title: row.title,
+      missingPhoto: row.main_message_kind !== "photo",
+      missingComment: !row.comment_sent_at,
+    }));
+  }
+
+  async processOperationalHealth(now = new Date()) {
+    const apiFailureStreak = Number(this.metadataValue("api_failure_streak") || 0);
+    const signals = buildIncidentSignals({
+      apiError: this.metadataValue("api_last_error"),
+      apiFailureStreak,
+      webhookUrlMatches: this.metadataValue("telegram_webhook_url_matches") === "true",
+      webhookPendingUpdates: Number(this.metadataValue("telegram_webhook_pending_updates") || 0),
+      webhookError: this.metadataValue("telegram_webhook_last_error") ||
+        this.metadataValue("telegram_webhook_check_error"),
+      failedRunStreak: this.failedRunStreak(),
+      ticketIssues: this.recentTicketDeliveryIssues(now),
+    });
+    const activeKeys = new Set(signals.map((signal) => signal.key));
+    const existing = new Map(this.ctx.storage.sql.exec(
+      "SELECT * FROM incidents",
+    ).toArray().map((row) => [row.key, row]));
+    const nowIso = now.toISOString();
+    const cooldownMinutes = envNumber(this.env, "OPS_ALERT_COOLDOWN_MINUTES", 360, 15, 1_440);
+    let alerted = 0;
+    let recovered = 0;
+
+    for (const signal of signals) {
+      const row = existing.get(signal.key);
+      const lastAttempt = Date.parse(row?.last_attempted_at || "");
+      const newlyActive = !row || row.status !== "active";
+      const cooldownElapsed = !Number.isFinite(lastAttempt) ||
+        now.getTime() - lastAttempt >= cooldownMinutes * 60_000;
+      this.ctx.storage.sql.exec(
+        `INSERT INTO incidents(
+           key, status, severity, summary, details, first_detected_at, last_detected_at
+         ) VALUES (?, 'active', ?, ?, ?, ?, ?)
+         ON CONFLICT(key) DO UPDATE SET
+           status = 'active', severity = excluded.severity, summary = excluded.summary,
+           details = excluded.details, last_detected_at = excluded.last_detected_at,
+           resolved_at = '', occurrence_count = incidents.occurrence_count + 1`,
+        signal.key, signal.severity, signal.summary, signal.details, nowIso, nowIso,
+      );
+      if (!newlyActive && !cooldownElapsed) continue;
+      this.ctx.storage.sql.exec(
+        "UPDATE incidents SET last_attempted_at = ?, alert_error = '' WHERE key = ?",
+        nowIso,
+        signal.key,
+      );
+      try {
+        await sendOperationsAlert(this.env, buildOperationsAlert(signal));
+        this.ctx.storage.sql.exec(
+          "UPDATE incidents SET last_alerted_at = ?, alert_error = '' WHERE key = ?",
+          nowIso,
+          signal.key,
+        );
+        alerted += 1;
+      } catch (error) {
+        this.ctx.storage.sql.exec(
+          "UPDATE incidents SET alert_error = ? WHERE key = ?",
+          sanitizeError(error),
+          signal.key,
+        );
+      }
+    }
+
+    for (const row of existing.values()) {
+      if (row.status !== "active" || activeKeys.has(row.key)) continue;
+      const signal = {
+        key: row.key,
+        severity: row.severity,
+        summary: row.summary,
+        details: row.details,
+      };
+      this.ctx.storage.sql.exec(
+        `UPDATE incidents SET status = 'resolved', resolved_at = ?,
+          last_attempted_at = ?, alert_error = '' WHERE key = ?`,
+        nowIso,
+        nowIso,
+        row.key,
+      );
+      if (row.severity !== "critical") {
+        recovered += 1;
+        continue;
+      }
+      try {
+        await sendOperationsAlert(this.env, buildOperationsAlert(signal, { recovered: true }));
+        this.ctx.storage.sql.exec(
+          "UPDATE incidents SET last_alerted_at = ? WHERE key = ?",
+          nowIso,
+          row.key,
+        );
+        recovered += 1;
+      } catch (error) {
+        this.ctx.storage.sql.exec(
+          "UPDATE incidents SET alert_error = ? WHERE key = ?",
+          sanitizeError(error),
+          row.key,
+        );
+      }
+    }
+    this.setMetadata("ops_health_checked_at", nowIso);
+    return { active: signals.length, alerted, recovered };
   }
 
   insertCard(card, nowIso, status) {
@@ -970,7 +1142,7 @@ export class UolTelegramShadow extends DurableObject {
               discord_message_id = ?, discord_sent_at = ?, discord_delivery_error = ''
              WHERE id = ?`,
             discord.messageId,
-            now.toISOString(),
+            new Date().toISOString(),
             row.id,
           );
           discordSent += 1;
@@ -1011,7 +1183,7 @@ export class UolTelegramShadow extends DurableObject {
               main_delivery_error = '' WHERE id = ?`,
             telegram.messageId,
             telegram.messageKind,
-            now.toISOString(),
+            new Date().toISOString(),
             row.id,
           );
           mainSent += 1;
@@ -1113,7 +1285,7 @@ export class UolTelegramShadow extends DurableObject {
           }
           mainMessageId = result.messageId;
           mainMessageKind = result.messageKind;
-          mainSentAt = now.toISOString();
+          mainSentAt = new Date().toISOString();
           this.ctx.storage.sql.exec(
             `UPDATE offers SET
               main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
@@ -1133,7 +1305,7 @@ export class UolTelegramShadow extends DurableObject {
           );
           failed += 1;
         } else if (delivery.kind === "discord" && settled.status === "fulfilled") {
-          discordSentAt = now.toISOString();
+          discordSentAt = new Date().toISOString();
           this.ctx.storage.sql.exec(
             `UPDATE offers SET
               discord_message_id = ?, discord_sent_at = ?, discord_delivery_error = ''
@@ -1170,7 +1342,7 @@ export class UolTelegramShadow extends DurableObject {
         try {
           const result = await forwardToCanal2(this.env, mainMessageId);
           if (!result.messageId) throw new Error("telegram_canal2_message_id_missing");
-          canal2SentAt = now.toISOString();
+          canal2SentAt = new Date().toISOString();
           this.ctx.storage.sql.exec(
             `UPDATE offers SET
               canal2_message_id = ?, canal2_sent_at = ?, canal2_delivery_error = ''
@@ -1603,6 +1775,12 @@ export class UolTelegramShadow extends DurableObject {
       this.setMetadata("api_last_error", run.apiError);
       if (apiResult.status === "fulfilled") {
         this.setMetadata("api_last_success_at", new Date().toISOString());
+        this.setMetadata("api_failure_streak", 0);
+      } else {
+        this.setMetadata(
+          "api_failure_streak",
+          Number(this.metadataValue("api_failure_streak") || 0) + 1,
+        );
       }
       if (listingResult.status === "rejected" && apiCards.length === 0) {
         throw listingResult.reason;
@@ -1688,6 +1866,15 @@ export class UolTelegramShadow extends DurableObject {
     } finally {
       run.finishedAt = new Date().toISOString();
       this.insertRun(run);
+      try {
+        await this.processOperationalHealth(new Date(run.finishedAt));
+        this.setMetadata("ops_health_error", "");
+      } catch (error) {
+        this.setMetadata("ops_health_error", sanitizeError(error));
+        logEvent("error", "uol_operational_health_failed", {
+          error: sanitizeError(error),
+        });
+      }
       this.scanInFlight = false;
     }
 
@@ -1722,7 +1909,9 @@ export class UolTelegramShadow extends DurableObject {
     try {
       try {
         await this.ensureTelegramWebhook();
+        this.setMetadata("telegram_webhook_check_error", "");
       } catch (error) {
+        this.setMetadata("telegram_webhook_check_error", sanitizeError(error));
         logEvent("error", "uol_telegram_webhook_registration_failed", {
           error: sanitizeError(error),
         });
@@ -1842,6 +2031,27 @@ export class UolTelegramShadow extends DurableObject {
        ORDER BY first_seen_at DESC
        LIMIT 8`,
     ).toArray().map(rowToPublicDecision);
+    const latencyStartedAt = this.metadataValue("ops_monitor_started_at") ||
+      new Date().toISOString();
+    const latencyCutoff = [
+      new Date(Date.now() - 24 * 60 * 60_000).toISOString(),
+      latencyStartedAt,
+    ].sort().at(-1);
+    const latencyRows = this.ctx.storage.sql.exec(
+      `SELECT id, preview_title, title, first_seen_at, discord_sent_at,
+              main_sent_at, canal2_sent_at, comment_sent_at
+       FROM offers
+       WHERE first_seen_at >= ?
+         AND (main_sent_at <> '' OR discord_sent_at <> '')
+       ORDER BY first_seen_at DESC
+       LIMIT 100`,
+      latencyCutoff,
+    ).toArray();
+    const incidents = this.ctx.storage.sql.exec(
+      `SELECT key, status, severity, summary, first_detected_at, last_detected_at,
+              last_alerted_at, resolved_at, occurrence_count, alert_error
+       FROM incidents ORDER BY last_detected_at DESC LIMIT 12`,
+    ).toArray();
 
     return {
       ok: true,
@@ -1872,6 +2082,16 @@ export class UolTelegramShadow extends DurableObject {
         pendingUpdates: Number(this.metadataValue("telegram_webhook_pending_updates") || 0),
         lastError: this.metadataValue("telegram_webhook_last_error"),
       },
+      operations: {
+        checkedAt: this.metadataValue("ops_health_checked_at"),
+        error: this.metadataValue("ops_health_error"),
+        apiFailureStreak: Number(this.metadataValue("api_failure_streak") || 0),
+        failedRunStreak: this.failedRunStreak(),
+        activeIncidents: incidents.filter((incident) => incident.status === "active").length,
+        alertUsesMainFallback: telegramConfiguration(this.env).operationsUsesMainFallback,
+        incidents,
+      },
+      latency: buildLatencyMetrics(latencyRows),
       retention: {
         offerDays: envNumber(this.env, "OFFER_RETENTION_DAYS", 30, 7, 365),
         maxTerminalOffers: envNumber(this.env, "MAX_STATE_OFFERS", 300, 50, 2_000),

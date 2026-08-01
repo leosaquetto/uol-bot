@@ -223,3 +223,24 @@ tenham mais de 30 dias. O teto adicional preserva no máximo 300 registros
 terminais. Ofertas ainda visíveis e estados com entrega pendente são protegidos,
 portanto a limpeza não pode apagar um alerta antes do envio nem transformar um
 card antigo ainda publicado em uma oferta nova.
+
+## Métricas e alertas operacionais de 01/08/2026
+
+O mesmo Durable Object passou a medir a latência ponta a ponta e guardar
+incidentes numa tabela SQLite própria. A janela de 24 horas começa na ativação,
+evitando que comentários históricos recuperados horas depois distorçam p50 e
+p95. Cada confirmação de Discord, Telegram, canal 2 e comentário registra o
+instante efetivo de conclusão da chamada.
+
+Alertas cobrem autorização da API de ingressos, três falhas consecutivas da API
+ou do scan, webhook incorreto/acumulado e ingresso novo sem foto ou comentário
+após três minutos. A chave durável impede duplicatas, o cooldown é de seis horas
+e somente incidentes críticos geram mensagem de recuperação. A falha do próprio
+alerta é persistida e nunca interrompe a coleta.
+
+- versão publicada: `b57d1754-c915-40d2-8ef5-78eeb7ff71b2`
+- intervalo preservado: 15 segundos
+- migração interna: esquema v6 (`incidents`)
+- API na verificação: 3 ingressos, erro vazio
+- webhook: URL correta, zero updates pendentes
+- observação: três ciclos consecutivos, zero falhas e zero incidentes ativos

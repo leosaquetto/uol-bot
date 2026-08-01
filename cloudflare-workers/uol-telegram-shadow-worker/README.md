@@ -33,8 +33,9 @@ como rollback, mas não publica mensagens.
 - **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
   15 minutos, limitada às ofertas decididas nos últimos três dias.
 - **Enriquecimento:** apenas ofertas novas; no máximo quatro por rodada.
-- **Imagem:** tenta a URL pública primeiro e, se o Telegram não conseguir
-  baixá-la, faz upload do arquivo obtido pelo Worker antes de recorrer a texto.
+- **Imagem:** em ingressos, usa primeiro o proxy da imagem já cacheada pelo
+  Discord; nas demais ofertas, tenta URL pública e upload antes de recorrer a
+  texto.
 - **Detalhes estruturados:** validade e endereço são extraídos dos blocos
   próprios da página; abreviações como `Av.` não interrompem o endereço.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
@@ -57,6 +58,14 @@ como rollback, mas não publica mensagens.
   240 execuções ficam disponíveis por aproximadamente uma hora.
 - **Retries:** principal, canal 2 e edições de esgotamento possuem contadores,
   erros e confirmações independentes.
+- **Operação:** falha de autorização da API alerta imediatamente; erros comuns
+  exigem três ciclos. Também são monitorados três scans quebrados, webhook
+  pendente/incorreto e ingresso novo sem foto ou comentário após três minutos.
+  Incidentes são deduplicados por chave, têm cooldown de seis horas e ficam no
+  SQLite com resolução registrada.
+- **Latência:** `/health` mede descoberta até Discord, Telegram, canal 2 e
+  comentário para ofertas observadas após a ativação das métricas, com último
+  valor, p50, p95 e máximo numa janela de 24 horas.
 
 ## Recursos
 
@@ -68,14 +77,16 @@ como rollback, mas não publica mensagens.
 - Modo padrão: `DELIVERY_MODE=live`; o modo operacional persistido é controlado
   por `POST /mode`
 - Secrets: `ADMIN_TOKEN`, `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`, `CANAL2_ID`,
-  `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL`
+  `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL` e, opcionalmente,
+  `OPS_TELEGRAM_CHAT_ID`. Sem este último, alertas operacionais usam o canal
+  principal.
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
 ## Rotas
 
-- `GET /health`: estado sanitizado, configuração booleana, contagens e últimas
-  execuções.
+- `GET /health`: estado sanitizado, configuração booleana, contagens, últimas
+  execuções, latências e incidentes operacionais.
 - `POST /run`: coleta manual autenticada.
 - `POST /test`: teste autenticado do principal e do canal 2, sem registrar uma
   oferta.
