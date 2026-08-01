@@ -14,6 +14,7 @@ import {
 } from "./core.js";
 import {
   discordConfiguration,
+  getDiscordMessageImageProxy,
   sendDiscordOffer,
 } from "./discord.js";
 import {
@@ -941,16 +942,17 @@ export class UolTelegramShadow extends DurableObject {
       ).toArray()[0];
       if (!row) continue;
       const offer = rowToOffer(row);
-      const deliveries = [];
-      if (!row.main_sent_at && Number(row.main_delivery_attempts || 0) < maxAttempts) {
-        this.ctx.storage.sql.exec(
-          `UPDATE offers SET
-            main_delivery_attempts = main_delivery_attempts + 1,
-            main_delivery_error = '' WHERE id = ?`,
-          row.id,
-        );
-        deliveries.push({ kind: "telegram", promise: sendMainOffer(this.env, offer) });
+      let telegramOffer = offer;
+
+      if (discordReady && row.discord_message_id) {
+        try {
+          const proxyUrl = await getDiscordMessageImageProxy(this.env, row.discord_message_id);
+          if (proxyUrl) telegramOffer = { ...offer, imageUrl: proxyUrl };
+        } catch {
+          // O envio do Telegram continua com a imagem original se o proxy expirou.
+        }
       }
+
       if (
         discordReady && !row.discord_sent_at &&
         Number(row.discord_delivery_attempts || 0) < maxAttempts
@@ -961,45 +963,70 @@ export class UolTelegramShadow extends DurableObject {
             discord_delivery_error = '' WHERE id = ?`,
           row.id,
         );
-        deliveries.push({ kind: "discord", promise: sendDiscordOffer(this.env, offer) });
-      }
-      const settled = await Promise.allSettled(deliveries.map((item) => item.promise));
-      for (let index = 0; index < deliveries.length; index += 1) {
-        const delivery = deliveries[index];
-        const result = settled[index];
-        if (delivery.kind === "telegram" && result.status === "fulfilled" && result.value.messageId) {
-          this.ctx.storage.sql.exec(
-            `UPDATE offers SET
-              main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
-              main_delivery_error = '' WHERE id = ?`,
-            result.value.messageId,
-            result.value.messageKind,
-            now.toISOString(),
-            row.id,
-          );
-          mainSent += 1;
-          if (result.value.imageError) {
-            logEvent("error", "uol_telegram_image_fallback", {
-              offerId: row.id,
-              error: result.value.imageError,
-            });
-          }
-        } else if (delivery.kind === "discord" && result.status === "fulfilled") {
+        try {
+          const discord = await sendDiscordOffer(this.env, offer);
           this.ctx.storage.sql.exec(
             `UPDATE offers SET
               discord_message_id = ?, discord_sent_at = ?, discord_delivery_error = ''
              WHERE id = ?`,
-            result.value.messageId,
+            discord.messageId,
             now.toISOString(),
             row.id,
           );
           discordSent += 1;
-        } else {
-          const column = delivery.kind === "telegram" ? "main_delivery_error" : "discord_delivery_error";
-          const error = result.status === "rejected"
-            ? sanitizeError(result.reason)
-            : `${delivery.kind}_message_id_missing`;
-          this.ctx.storage.sql.exec(`UPDATE offers SET ${column} = ? WHERE id = ?`, error, row.id);
+          let proxyUrl = discord.imageProxyUrl;
+          if (!proxyUrl) {
+            try {
+              proxyUrl = await getDiscordMessageImageProxy(this.env, discord.messageId);
+            } catch {
+              // Discord foi entregue; só a otimização da imagem ficou indisponível.
+            }
+          }
+          if (proxyUrl) {
+            telegramOffer = { ...offer, imageUrl: proxyUrl };
+          }
+        } catch (error) {
+          this.ctx.storage.sql.exec(
+            "UPDATE offers SET discord_delivery_error = ? WHERE id = ?",
+            sanitizeError(error),
+            row.id,
+          );
+          failed += 1;
+        }
+      }
+
+      if (!row.main_sent_at && Number(row.main_delivery_attempts || 0) < maxAttempts) {
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET
+            main_delivery_attempts = main_delivery_attempts + 1,
+            main_delivery_error = '' WHERE id = ?`,
+          row.id,
+        );
+        try {
+          const telegram = await sendMainOffer(this.env, telegramOffer);
+          if (!telegram.messageId) throw new Error("telegram_main_message_id_missing");
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET
+              main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
+              main_delivery_error = '' WHERE id = ?`,
+            telegram.messageId,
+            telegram.messageKind,
+            now.toISOString(),
+            row.id,
+          );
+          mainSent += 1;
+          if (telegram.imageError) {
+            logEvent("error", "uol_telegram_image_fallback", {
+              offerId: row.id,
+              error: telegram.imageError,
+            });
+          }
+        } catch (error) {
+          this.ctx.storage.sql.exec(
+            "UPDATE offers SET main_delivery_error = ? WHERE id = ?",
+            sanitizeError(error),
+            row.id,
+          );
           failed += 1;
         }
       }

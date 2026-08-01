@@ -46,11 +46,14 @@ test("API ganha do HTML ao consolidar a mesma oferta", () => {
   const htmlCard = {
     ...apiCard,
     previewTitle: "Título do HTML",
+    cardImageUrl: "https://public.example.com/beneficios/oferta.png",
     apiDetail: undefined,
   };
   const merged = mergeOfferCards([apiCard], [htmlCard]);
   assert.equal(merged.length, 1);
   assert.ok(merged[0].apiDetail);
+  assert.equal(merged[0].previewTitle, apiCard.previewTitle);
+  assert.equal(merged[0].cardImageUrl, htmlCard.cardImageUrl);
 });
 
 test("envia os dois cabeçalhos e restringe a categoria a ingressos", async () => {

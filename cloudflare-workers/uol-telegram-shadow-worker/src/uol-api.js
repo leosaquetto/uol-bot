@@ -105,12 +105,34 @@ export function mapTicketApiPayload(payload) {
 
 export function mergeOfferCards(primary, secondary) {
   const merged = [];
-  const seen = new Set();
-  for (const card of [...(primary || []), ...(secondary || [])]) {
+  const indexesByIdentity = new Map();
+  for (const card of primary || []) {
     const keys = offerIdentityKeys(card.link);
-    if (!keys.length || keys.some((key) => seen.has(key))) continue;
+    if (!keys.length || keys.some((key) => indexesByIdentity.has(key))) continue;
     merged.push(card);
-    for (const key of keys) seen.add(key);
+    const index = merged.length - 1;
+    for (const key of keys) indexesByIdentity.set(key, index);
+  }
+  for (const card of secondary || []) {
+    const keys = offerIdentityKeys(card.link);
+    if (!keys.length) continue;
+    const existingIndex = keys.map((key) => indexesByIdentity.get(key))
+      .find((index) => Number.isInteger(index));
+    if (Number.isInteger(existingIndex)) {
+      const existing = merged[existingIndex];
+      merged[existingIndex] = {
+        ...existing,
+        // A imagem exposta na listagem pública é acessível ao Telegram. A
+        // variante devolvida pela API da UOL pode exigir contexto e retornar 403.
+        cardImageUrl: card.cardImageUrl || existing.cardImageUrl,
+        partnerImageUrl: card.partnerImageUrl || existing.partnerImageUrl,
+        partnerName: card.partnerName || existing.partnerName,
+      };
+      continue;
+    }
+    merged.push(card);
+    const index = merged.length - 1;
+    for (const key of keys) indexesByIdentity.set(key, index);
   }
   return merged;
 }
