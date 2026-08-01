@@ -169,9 +169,11 @@ test("completa a legenda urgente depois do enriquecimento", async () => {
 
 test("teste de transporte confirma principal e canal 2", async () => {
   const methods = [];
-  const result = await sendTransportTest(env, async (url) => {
+  let mainPayload = {};
+  const result = await sendTransportTest(env, async (url, init) => {
     const method = url.split("/").pop();
     methods.push(method);
+    if (method === "sendMessage") mainPayload = JSON.parse(init.body);
     return jsonResponse({
       message_id: method === "sendMessage" ? 501 : 502,
     });
@@ -181,6 +183,8 @@ test("teste de transporte confirma principal e canal 2", async () => {
     mainMessageId: 501,
     canal2MessageId: 502,
   });
+  assert.equal(mainPayload.link_preview_options.prefer_small_media, true);
+  assert.equal(mainPayload.link_preview_options.show_above_text, true);
 });
 
 test("envia detalhe como resposta à discussão automática", async () => {

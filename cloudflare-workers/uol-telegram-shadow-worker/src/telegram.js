@@ -314,9 +314,14 @@ export async function sendTransportTest(env, fetchImpl = fetch) {
   if (!mainChatId) throw new Error("telegram_main_chat_missing");
   const result = await telegramCall(env, "sendMessage", {
     chat_id: mainChatId,
-    text: "✅ Teste técnico do monitor Cloudflare concluído. Nenhuma oferta foi registrada por esta mensagem.",
+    text: "✅ Teste técnico da thumbnail do monitor Cloudflare. Nenhuma oferta foi registrada por esta mensagem.\n\n🔗 https://clube.uol.com.br/",
     disable_notification: false,
-    link_preview_options: { is_disabled: true },
+    link_preview_options: {
+      is_disabled: false,
+      url: "https://clube.uol.com.br/",
+      prefer_small_media: true,
+      show_above_text: true,
+    },
   }, fetchImpl);
   const mainMessageId = Number(result?.message_id || 0);
   if (!mainMessageId) throw new Error("telegram_test_main_message_id_missing");
