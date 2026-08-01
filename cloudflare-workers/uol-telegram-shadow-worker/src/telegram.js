@@ -21,6 +21,17 @@ function telegramError(method, status, payload) {
   return new Error(`telegram_${method}_${status}${description ? `:${description}` : ""}`);
 }
 
+function offerLinkPreview(offer) {
+  const url = String(offer?.link || "").trim();
+  if (!url) return { is_disabled: true };
+  return {
+    is_disabled: false,
+    url,
+    prefer_small_media: true,
+    show_above_text: true,
+  };
+}
+
 export function telegramConfiguration(env) {
   const config = telegramConfig(env);
   return {
@@ -148,7 +159,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     text: caption,
     parse_mode: "HTML",
     disable_notification: disableNotification,
-    link_preview_options: { is_disabled: true },
+    link_preview_options: offerLinkPreview(offer),
   }, fetchImpl);
   return {
     messageId: Number(result?.message_id || 0),
@@ -208,7 +219,7 @@ export async function registerTelegramWebhook(env, fetchImpl = fetch) {
       url: `${baseUrl}/telegram-webhook`,
       secret_token: secret,
       allowed_updates: ["message"],
-      drop_pending_updates: true,
+      drop_pending_updates: false,
     }),
     signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
   });
@@ -217,6 +228,17 @@ export async function registerTelegramWebhook(env, fetchImpl = fetch) {
     throw telegramError("setWebhook", response.status, data);
   }
   return { ok: true };
+}
+
+export async function getTelegramWebhookInfo(env, fetchImpl = fetch) {
+  const info = await telegramCall(env, "getWebhookInfo", {}, fetchImpl);
+  return {
+    url: String(info?.url || ""),
+    pendingUpdateCount: Number(info?.pending_update_count || 0),
+    lastErrorDate: Number(info?.last_error_date || 0),
+    lastErrorMessage: cleanText(info?.last_error_message || "").slice(0, 200),
+    allowedUpdates: Array.isArray(info?.allowed_updates) ? info.allowed_updates : [],
+  };
 }
 
 export async function forwardToCanal2(env, mainMessageId, fetchImpl = fetch) {
@@ -250,7 +272,7 @@ export async function editMainOfferMessage(env, { messageId, messageKind, offer 
     await telegramCall(env, "editMessageText", {
       ...common,
       text: caption,
-      link_preview_options: { is_disabled: true },
+      link_preview_options: offerLinkPreview(offer),
     }, fetchImpl);
   }
   return { ok: true };
@@ -282,7 +304,7 @@ export async function editSoldOutMessage(
     await telegramCall(env, "editMessageText", {
       ...common,
       text: caption,
-      link_preview_options: { is_disabled: true },
+      link_preview_options: offerLinkPreview(offer),
     }, fetchImpl);
   }
 }

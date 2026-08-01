@@ -34,6 +34,7 @@ import {
   sendTransportTest,
   telegramConfiguration,
   registerTelegramWebhook,
+  getTelegramWebhookInfo,
 } from "./telegram.js";
 
 const BASE_URL = "https://clube.uol.com.br";
@@ -567,9 +568,25 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async ensureTelegramWebhook() {
-    if (this.metadataValue("telegram_webhook_registered_at")) return true;
-    await registerTelegramWebhook(this.env);
-    this.setMetadata("telegram_webhook_registered_at", new Date().toISOString());
+    const now = Date.now();
+    const lastChecked = Date.parse(this.metadataValue("telegram_webhook_checked_at") || "");
+    if (Number.isFinite(lastChecked) && now - lastChecked < 5 * 60_000) return true;
+
+    const expectedUrl = `${String(this.env.PUBLIC_BASE_URL || "").replace(/\/+$/, "")}/telegram-webhook`;
+    let info = await getTelegramWebhookInfo(this.env);
+    const needsRepair = info.url !== expectedUrl || (
+      info.pendingUpdateCount > 0 && Boolean(info.lastErrorMessage)
+    );
+    if (needsRepair) {
+      await registerTelegramWebhook(this.env);
+      info = await getTelegramWebhookInfo(this.env);
+    }
+    const checkedAt = new Date(now).toISOString();
+    this.setMetadata("telegram_webhook_checked_at", checkedAt);
+    this.setMetadata("telegram_webhook_registered_at", checkedAt);
+    this.setMetadata("telegram_webhook_url_matches", info.url === expectedUrl ? "true" : "false");
+    this.setMetadata("telegram_webhook_pending_updates", info.pendingUpdateCount);
+    this.setMetadata("telegram_webhook_last_error", info.lastErrorMessage);
     return true;
   }
 
@@ -1168,7 +1185,6 @@ export class UolTelegramShadow extends DurableObject {
       `SELECT * FROM offers
        WHERE discussion_message_id > 0
          AND comment_sent_at = ''
-         AND description <> ''
          AND status <> 'discarded'
          AND comment_delivery_attempts < ?
        ORDER BY first_seen_at ASC
@@ -1824,6 +1840,10 @@ export class UolTelegramShadow extends DurableObject {
       discussion: {
         configured: Boolean(String(this.env.GRUPO_COMENTARIO_ID || "").trim()),
         webhookRegistered: Boolean(this.metadataValue("telegram_webhook_registered_at")),
+        webhookCheckedAt: this.metadataValue("telegram_webhook_checked_at"),
+        webhookUrlMatches: this.metadataValue("telegram_webhook_url_matches") === "true",
+        pendingUpdates: Number(this.metadataValue("telegram_webhook_pending_updates") || 0),
+        lastError: this.metadataValue("telegram_webhook_last_error"),
       },
       retention: {
         offerDays: envNumber(this.env, "OFFER_RETENTION_DAYS", 30, 7, 365),

@@ -10,6 +10,7 @@ import {
   sendTransportTest,
   telegramConfiguration,
   registerTelegramWebhook,
+  getTelegramWebhookInfo,
 } from "../src/telegram.js";
 
 const env = {
@@ -65,7 +66,8 @@ test("envia foto ao canal principal sem expor token no payload", async () => {
 
 test("usa texto quando o Telegram rejeita a imagem", async () => {
   const methods = [];
-  const result = await sendMainOffer(env, offer, async (url) => {
+  let textPayload = {};
+  const result = await sendMainOffer(env, offer, async (url, init = {}) => {
     methods.push(url.split("/").pop());
     if (url.endsWith("/sendPhoto")) {
       return new Response(JSON.stringify({ ok: false, description: "bad photo" }), {
@@ -73,11 +75,18 @@ test("usa texto quando o Telegram rejeita a imagem", async () => {
         headers: { "Content-Type": "application/json" },
       });
     }
+    if (url.endsWith("/sendMessage")) textPayload = JSON.parse(init.body);
     return jsonResponse({ message_id: 42 });
   });
   assert.deepEqual(methods, ["sendPhoto", "show.jpg", "sendMessage"]);
   assert.equal(result.messageKind, "text");
   assert.equal(result.messageId, 42);
+  assert.deepEqual(textPayload.link_preview_options, {
+    is_disabled: false,
+    url: offer.link,
+    prefer_small_media: true,
+    show_above_text: true,
+  });
 });
 
 test("faz upload da imagem quando o Telegram recusa a URL pública", async () => {
@@ -191,7 +200,7 @@ test("envia detalhe como resposta à discussão automática", async () => {
   assert.equal(payload.disable_notification, false);
 });
 
-test("registra webhook descartando atualizações antigas", async () => {
+test("registra webhook preservando atualizações pendentes", async () => {
   let payload = {};
   await registerTelegramWebhook({
     ...env,
@@ -203,6 +212,23 @@ test("registra webhook descartando atualizações antigas", async () => {
   });
   assert.equal(payload.url, "https://worker.example/telegram-webhook");
   assert.equal(payload.secret_token, "secret-value");
-  assert.equal(payload.drop_pending_updates, true);
+  assert.equal(payload.drop_pending_updates, false);
   assert.deepEqual(payload.allowed_updates, ["message"]);
+});
+
+test("consulta o estado seguro do webhook", async () => {
+  const result = await getTelegramWebhookInfo(env, async () => jsonResponse({
+    url: "https://worker.example/telegram-webhook",
+    pending_update_count: 2,
+    last_error_date: 123,
+    last_error_message: "Wrong response from the webhook: 401 Unauthorized",
+    allowed_updates: ["message"],
+  }));
+  assert.deepEqual(result, {
+    url: "https://worker.example/telegram-webhook",
+    pendingUpdateCount: 2,
+    lastErrorDate: 123,
+    lastErrorMessage: "Wrong response from the webhook: 401 Unauthorized",
+    allowedUpdates: ["message"],
+  });
 });
