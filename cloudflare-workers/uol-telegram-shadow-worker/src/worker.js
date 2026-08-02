@@ -30,6 +30,7 @@ import {
 } from "./uol-browser-auth.js";
 import {
   editSoldOutMessage,
+  sendSoldOutNotice,
   editMainOfferMessage,
   forwardToCanal2,
   sendMainOffer,
@@ -399,10 +400,16 @@ function rowToPublicDecision(row) {
     soldOutAt: row.sold_out_at || "",
     mainSent: Boolean(row.main_sent_at),
     canal2Sent: Boolean(row.canal2_sent_at),
+    mainMessageId: Number(row.main_message_id || 0),
+    canal2MessageId: Number(row.canal2_message_id || 0),
     mainDeliveryError: row.main_delivery_error || "",
     canal2DeliveryError: row.canal2_delivery_error || "",
     soldOutMainSynced: Boolean(row.main_sold_out_synced_at),
     soldOutCanal2Synced: Boolean(row.canal2_sold_out_synced_at),
+    soldOutMainAttempts: Number(row.main_sold_out_attempts || 0),
+    soldOutMainError: row.main_sold_out_error || "",
+    soldOutCanal2Attempts: Number(row.canal2_sold_out_attempts || 0),
+    soldOutCanal2Error: row.canal2_sold_out_error || "",
   };
 }
 
@@ -625,6 +632,17 @@ export class UolTelegramShadow extends DurableObject {
         INSERT OR IGNORE INTO image_strategy_health(strategy) VALUES
           ('file_id'), ('remote_url'), ('discord_proxy'), ('upload');
         INSERT INTO _sql_schema_migrations (id) VALUES (7);
+      `);
+    }
+    if (currentVersion < 8) {
+      this.ctx.storage.sql.exec(`
+        UPDATE offers
+           SET main_sold_out_attempts = 0
+         WHERE status = 'sold_out' AND main_sold_out_synced_at = '';
+        UPDATE offers
+           SET canal2_sold_out_attempts = 0
+         WHERE status = 'sold_out' AND canal2_sold_out_synced_at = '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (8);
       `);
     }
   }
@@ -1894,15 +1912,18 @@ export class UolTelegramShadow extends DurableObject {
        WHERE status = 'sold_out'
          AND main_message_id > 0
          AND (
-           main_sold_out_synced_at = ''
+           (main_sold_out_synced_at = '' AND main_sold_out_attempts < ?)
            OR (
              would_send_canal2 = 1
              AND canal2_message_id > 0
              AND canal2_sold_out_synced_at = ''
+             AND canal2_sold_out_attempts < ?
            )
          )
        ORDER BY sold_out_at ASC
        LIMIT 4`,
+      maxAttempts,
+      maxAttempts,
     ).toArray();
     let mainEdited = 0;
     let canal2Edited = 0;
@@ -1979,12 +2000,31 @@ export class UolTelegramShadow extends DurableObject {
           );
           canal2Edited += 1;
         } catch (error) {
-          this.ctx.storage.sql.exec(
-            "UPDATE offers SET canal2_sold_out_error = ? WHERE id = ?",
-            sanitizeError(error),
-            row.id,
-          );
-          failed += 1;
+          const editError = sanitizeError(error);
+          try {
+            const notice = await sendSoldOutNotice(this.env, {
+              chatId: String(this.env.CANAL2_ID || ""),
+              replyToMessageId: row.canal2_message_id,
+              offer,
+            });
+            if (!notice.messageId) throw new Error("telegram_sold_out_notice_id_missing");
+            this.ctx.storage.sql.exec(
+              `UPDATE offers SET
+                canal2_sold_out_synced_at = ?, canal2_sold_out_error = ?
+               WHERE id = ?`,
+              now.toISOString(),
+              `edit_failed_notice_sent:${editError}`.slice(0, 240),
+              row.id,
+            );
+            canal2Edited += 1;
+          } catch (noticeError) {
+            this.ctx.storage.sql.exec(
+              "UPDATE offers SET canal2_sold_out_error = ? WHERE id = ?",
+              `${editError}|notice:${sanitizeError(noticeError)}`.slice(0, 240),
+              row.id,
+            );
+            failed += 1;
+          }
         }
       }
     }
@@ -2451,8 +2491,11 @@ export class UolTelegramShadow extends DurableObject {
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
+              main_message_id, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
-              main_sold_out_synced_at, canal2_sold_out_synced_at
+              main_sold_out_synced_at, canal2_sold_out_synced_at,
+              main_sold_out_attempts, main_sold_out_error,
+              canal2_sold_out_attempts, canal2_sold_out_error
        FROM offers
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
@@ -2578,8 +2621,11 @@ export class UolTelegramShadow extends DurableObject {
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
+              main_message_id, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
-              main_sold_out_synced_at, canal2_sold_out_synced_at
+              main_sold_out_synced_at, canal2_sold_out_synced_at,
+              main_sold_out_attempts, main_sold_out_error,
+              canal2_sold_out_attempts, canal2_sold_out_error
        FROM offers
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
@@ -2594,8 +2640,11 @@ export class UolTelegramShadow extends DurableObject {
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
+              main_message_id, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
-              main_sold_out_synced_at, canal2_sold_out_synced_at
+              main_sold_out_synced_at, canal2_sold_out_synced_at,
+              main_sold_out_attempts, main_sold_out_error,
+              canal2_sold_out_attempts, canal2_sold_out_error
        FROM offers
        ORDER BY first_seen_at DESC, id ASC
        LIMIT ?`,

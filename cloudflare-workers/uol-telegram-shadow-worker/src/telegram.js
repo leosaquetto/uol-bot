@@ -417,6 +417,26 @@ export async function editSoldOutMessage(
   }
 }
 
+export async function sendSoldOutNotice(
+  env,
+  { chatId, replyToMessageId, offer },
+  fetchImpl = fetch,
+) {
+  const title = cleanText(offer?.title || offer?.previewTitle || "Oferta").slice(0, 500);
+  const link = String(offer?.link || "").trim();
+  const result = await telegramCall(env, "sendMessage", {
+    chat_id: String(chatId || "").trim(),
+    text: [`🚫 [ESGOTADO] ${title}`, link].filter(Boolean).join("\n\n"),
+    disable_notification: false,
+    link_preview_options: { is_disabled: true },
+    reply_parameters: {
+      message_id: Number(replyToMessageId),
+      allow_sending_without_reply: true,
+    },
+  }, fetchImpl);
+  return { messageId: Number(result?.message_id || 0) };
+}
+
 export async function sendTransportTest(env, fetchImpl = fetch) {
   const { mainChatId } = telegramConfig(env);
   if (!mainChatId) throw new Error("telegram_main_chat_missing");

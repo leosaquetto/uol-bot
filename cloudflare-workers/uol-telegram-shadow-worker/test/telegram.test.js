@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   editSoldOutMessage,
+  sendSoldOutNotice,
   editMainOfferMessage,
   forwardToCanal2,
   sendMainOffer,
@@ -246,6 +247,26 @@ test("edita foto esgotada no canal correto", async () => {
   assert.equal(payload.chat_id, env.CANAL2_ID);
   assert.equal(payload.message_id, 99);
   assert.match(payload.caption, /\[ESGOTADO\]/);
+});
+
+test("avisa esgotamento respondendo ao encaminhamento do canal 2", async () => {
+  let payload = {};
+  const result = await sendSoldOutNotice(env, {
+    chatId: env.CANAL2_ID,
+    replyToMessageId: 99,
+    offer,
+  }, async (url, init) => {
+    assert.match(url, /sendMessage$/);
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 100 });
+  });
+  assert.equal(result.messageId, 100);
+  assert.equal(payload.chat_id, env.CANAL2_ID);
+  assert.equal(payload.reply_parameters.message_id, 99);
+  assert.equal(payload.reply_parameters.allow_sending_without_reply, true);
+  assert.equal(payload.disable_notification, false);
+  assert.match(payload.text, /^🚫 \[ESGOTADO\]/);
+  assert.equal(payload.link_preview_options.is_disabled, true);
 });
 
 test("completa a legenda urgente depois do enriquecimento", async () => {

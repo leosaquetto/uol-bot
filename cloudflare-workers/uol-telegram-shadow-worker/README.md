@@ -32,7 +32,9 @@ como rollback, mas não publica mensagens.
 - **Canal 2:** somente campanhas em `/campanhasdeingresso/`, exceto teatro,
   stand-up, partidas, campeonatos, futebol e jogos.
 - **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
-  15 minutos, limitada às ofertas decididas nos últimos três dias.
+  15 minutos, limitada às ofertas decididas nos últimos três dias. A publicação
+  principal é editada; como encaminhamentos do canal exclusivo não são
+  editáveis pelo bot, ele responde à cópia com um aviso `[ESGOTADO]`.
 - **Enriquecimento:** apenas ofertas novas; no máximo quatro por rodada.
 - **Imagem:** reutiliza primeiro o `file_id` devolvido pelo Telegram; depois
   tenta URL pública, proxy já cacheado pelo Discord e upload binário antes de
