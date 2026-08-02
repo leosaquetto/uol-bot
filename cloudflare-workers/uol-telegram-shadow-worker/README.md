@@ -46,6 +46,8 @@ como rollback, mas não publica mensagens.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
   respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
   repetidos em um retry parcial.
+- **Alertas operacionais:** são enviados diretamente ao `LeoUOL Chat`, sem
+  poluir o canal principal de ofertas.
 - **Discord:** somente campanhas de ingressos, mantendo o embed com thumbnail.
 - **Identidade:** combina slug canônico, variantes históricas e
   `parceiro + código interno da oferta`; alterações de acentuação no endereço
