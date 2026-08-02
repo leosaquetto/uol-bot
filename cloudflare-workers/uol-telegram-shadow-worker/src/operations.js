@@ -51,6 +51,7 @@ export function buildLatencyMetrics(rows, now = new Date()) {
 export function buildIncidentSignals({
   apiError = "",
   apiFailureStreak = 0,
+  apiAuthorizationExpiresAt = "",
   webhookUrlMatches = true,
   webhookPendingUpdates = 0,
   webhookError = "",
@@ -61,6 +62,7 @@ export function buildIncidentSignals({
   secondsSinceFullSourceSuccess = 0,
   sourceDetails = "",
   ticketIssues = [],
+  now = new Date(),
 } = {}) {
   const signals = [];
   const normalizedApiError = cleanText(apiError).slice(0, 180);
@@ -74,6 +76,22 @@ export function buildIncidentSignals({
         ? "A API de ingressos rejeitou a autorização"
         : "A API de ingressos falhou em ciclos consecutivos",
       details: `${apiFailureStreak} ciclo(s): ${normalizedApiError}`,
+    });
+  }
+  const apiExpiry = Date.parse(apiAuthorizationExpiresAt);
+  const millisecondsUntilApiExpiry = apiExpiry - now.getTime();
+  if (
+    Number.isFinite(apiExpiry) &&
+    millisecondsUntilApiExpiry > 0 &&
+    millisecondsUntilApiExpiry <= 14 * 86_400_000
+  ) {
+    const days = Math.max(1, Math.ceil(millisecondsUntilApiExpiry / 86_400_000));
+    signals.push({
+      key: "ticket-api-expiry",
+      severity: "warning",
+      summary: "A credencial técnica da API de ingressos vence em breve",
+      details: `${days} dia(s), em ${new Date(apiExpiry).toISOString()}; ` +
+        "as duas fontes HTML públicas continuarão ativas",
     });
   }
   if (!webhookUrlMatches || webhookPendingUpdates > 0 || webhookError) {

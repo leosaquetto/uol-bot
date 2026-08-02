@@ -22,7 +22,8 @@ export function renderDashboard(data) {
   const source = data.sourceComparison || {};
   const image = data.imageDelivery || {};
   const usage = data.usageEstimate || {};
-  const auth = data.browserAuth || {};
+  const auth = data.authentication || {};
+  const publicTickets = data.publicTicketListing || {};
   const incidents = (ops.incidents || []).map((incident) => `
     <tr><td>${escapeHtml(incident.severity)}</td><td>${escapeHtml(incident.summary)}</td><td>${escapeHtml(incident.status)}</td><td>${escapeHtml(incident.last_detected_at)}</td></tr>`).join("") ||
     '<tr><td colspan="4">Nenhum incidente registrado.</td></tr>';
@@ -50,12 +51,14 @@ ${metric("Modo", data.mode || "—", data.mode === "live" ? "good" : "")}
 ${metric("Último scan", data.lastScanAt || "—")}
 ${metric("Incidentes ativos", ops.activeIncidents ?? 0, ops.activeIncidents ? "bad" : "good")}
 ${metric("API ingressos", data.ticketApi?.lastOffersSeen ?? "—", data.ticketApi?.lastError ? "bad" : "good")}
+${metric("HTML ingressos", publicTickets.lastOffersSeen ?? "—", publicTickets.lastError ? "bad" : "good")}
 ${metric("Telegram p50", duration(latency.telegram?.p50Ms))}
 ${metric("Discord p50", duration(latency.discord?.p50Ms))}
 ${metric("API vence", source.apiWins ?? 0)}
 ${metric("HTML vence", source.listingWins ?? 0)}
 ${metric("Cache file_id", image.cacheEntries ?? 0)}
-${metric("Token automático", auth.autoRefreshConfigured ? "ativo" : "indisponível", auth.autoRefreshConfigured ? "good" : "bad")}
+${metric("Login pessoal", auth.personalAuthorizationRequired ? "necessário" : "dispensado", auth.personalAuthorizationRequired ? "bad" : "good")}
+${metric("API expira", String(data.ticketApi?.applicationAuthorizationExpiresAt || "—").slice(0, 10))}
 ${metric("Scans estimados/dia", usage.alarmInvocationsPerDay ?? "—")}
 ${metric("Scans estimados/30d", usage.alarmInvocationsPer30Days ?? "—")}
 </div>

@@ -276,21 +276,28 @@ O alarme também ganhou autorreparo: um agendamento ausente ou atrasado por mais
 de dois intervalos é rearmado para o próximo ciclo. Isso recuperou em produção
 um alarme antigo que estava vencido, e os scans voltaram à cadência de 15–17 s.
 
-### Renovação da autorização pessoal
+### Descoberta de autenticação e eliminação do login pessoal
 
-O Worker verifica expiração JWT e respostas 401/403, respeita cooldown, abre um
-navegador remoto somente quando necessário, tenta autenticar com credentials em
-secrets e captura o próximo `X-Authorization` diretamente das requisições ao
-gateway. Uma falha conserva o token anterior e nunca interrompe o HTML.
+A rota administrativa `POST /auth-discovery` testa combinações de cabeçalhos e
+devolve somente status HTTP, contagem de ofertas, formato do token, expiração e
+nomes dos claims. Nenhum token ou valor de claim sai do Worker. O ensaio real
+confirmou que `Authorization` técnico sozinho retorna HTTP 200, enquanto token
+pessoal sozinho e requisição sem credencial retornam HTTP 401. Portanto,
+`X-Authorization`, login UOL e senha não participam da leitura das ofertas.
 
-O ensaio real chegou à página oficial da Conta UOL, porém a camada antifraude
-UOL/PagSeguro não concluiu dentro do Browser Rendering: no Chromium nativo o
-login respondeu 403; em identidade móvel coerente a página abriu, mas o botão
-permaneceu em `Carregando...` após falhas do serviço de device fingerprint. Isso
-é uma limitação externa atualmente observada, não uma ausência de tratamento:
-o retry automático por 401/403, a retenção segura do token vigente, o alerta e o
-fallback HTML estão ativos. O caminho OAuth com refresh token é preferível se o
-UOL habilitar credenciais próprias para esta integração.
+O fluxo automático de senha pelo Browser Rendering foi retirado. O navegador
+remoto permanece apenas como último fallback de enriquecimento de uma oferta
+genuinamente nova, jamais em cada scan. A credencial técnica atual expira em
+23/10/2026 e gera alerta operacional 14 dias antes; ainda assim, sua expiração
+não interrompe a coleta porque o Worker passou a consultar em paralelo duas
+fontes totalmente públicas: a listagem geral e a categoria dedicada
+`/?categoria=ingressosexclusivos&order=new`.
+
+Essa categoria pública funciona como fonte permanente e sem credencial; a API
+fica como acelerador e como fonte estruturada adicional. Assim, descobrir o
+mecanismo privado de emissão do token técnico deixou de ser requisito de
+continuidade. A sonda continua disponível para detectar automaticamente se o
+contrato público de autenticação mudar.
 
 ### Retenção adicional
 
@@ -301,13 +308,16 @@ UOL habilitar credenciais próprias para esta integração.
 
 ### Verificação final
 
-- esquema remoto: v7;
-- Version ID: `549b3594-66f2-48d1-8d38-49e7a09ba8f5`;
-- testes: 48 aprovados;
+- esquema remoto preservado: v9;
+- Version ID: `de37c8e7-3bba-499b-82b7-d336edc9f624`;
+- testes: 56 aprovados;
 - pacote: tipos atualizados e deploy dry-run aprovado;
 - painel HTML/JSON autenticado: HTTP 200; sem autenticação: HTTP 401;
-- comparação: 3 ingressos observados, 1 pareado, API 934 ms antes;
-- três execuções consecutivas: `no_change`, zero novas, zero erro de API,
-  zero divergência persistente e zero incidente ativo;
+- sonda: `Authorization` técnico sozinho HTTP 200; token pessoal sozinho e
+  nenhuma credencial HTTP 401;
+- ciclo real: 48 ofertas na listagem geral, 1 na categoria pública exclusiva e
+  1 na API; `no_change`, zero envios, zero erro de API e zero incidente ativo;
+- autenticação: senha pessoal fora do fluxo; expiração técnica exposta apenas
+  como data sanitizada em `/health`;
 - cache `file_id`: ativo, aguardando a próxima oferta genuinamente nova para a
   primeira entrada real; payload e persistência cobertos por teste unitário.

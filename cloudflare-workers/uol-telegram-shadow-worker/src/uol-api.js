@@ -10,6 +10,15 @@ const BASE_URL = "https://clube.uol.com.br";
 const TICKET_CATEGORY_ID = "162";
 const MAX_API_BYTES = 1_000_000;
 
+function couponUrl(categoryId = "") {
+  const url = new URL(API_URL);
+  url.searchParams.set("offset", "0");
+  if (categoryId) url.searchParams.set("category_id", categoryId);
+  url.searchParams.set("order", "new");
+  url.searchParams.set("_uol_worker_ts", String(Date.now()));
+  return url;
+}
+
 function authorizationValue(value) {
   const raw = String(value || "").trim();
   if (!raw) return "";
@@ -18,10 +27,8 @@ function authorizationValue(value) {
 
 export function ticketApiConfiguration(env) {
   return {
-    configured: Boolean(
-      authorizationValue(env.UOL_API_AUTHORIZATION) &&
-      authorizationValue(env.UOL_OAUTH_AUTHORIZATION),
-    ),
+    configured: Boolean(authorizationValue(env.UOL_API_AUTHORIZATION)),
+    personalAuthorizationRequired: false,
   };
 }
 
@@ -149,25 +156,20 @@ export function mergeOfferCards(primary, secondary) {
 export async function fetchOffersFromApi(
   env,
   fetchImpl = fetch,
-  personalAuthorization = "",
   { categoryId = "" } = {},
 ) {
   if (!ticketApiConfiguration(env).configured) throw new Error("uol_api_not_configured");
-  const url = new URL(API_URL);
-  url.searchParams.set("offset", "0");
-  if (categoryId) url.searchParams.set("category_id", categoryId);
-  url.searchParams.set("order", "new");
-  url.searchParams.set("_uol_worker_ts", String(Date.now()));
+  const url = couponUrl(categoryId);
 
+  const headers = {
+    Authorization: authorizationValue(env.UOL_API_AUTHORIZATION),
+    Accept: "application/json",
+    "Cache-Control": "no-cache, no-store, max-age=0",
+    "User-Agent": "UOLTelegramCloudflare/1.0",
+  };
   const response = await fetchImpl(url.href, {
     headers: {
-      Authorization: authorizationValue(env.UOL_API_AUTHORIZATION),
-      "X-Authorization": authorizationValue(
-        personalAuthorization || env.UOL_OAUTH_AUTHORIZATION,
-      ),
-      Accept: "application/json",
-      "Cache-Control": "no-cache, no-store, max-age=0",
-      "User-Agent": "UOLTelegramCloudflare/1.0",
+      ...headers,
     },
     cf: { cacheTtl: 0, cacheEverything: false },
     signal: AbortSignal.timeout(10_000),
@@ -186,12 +188,59 @@ export async function fetchOffersFromApi(
     : "");
 }
 
-export async function fetchTicketOffersFromApi(
+export async function probeCouponAuthentication(
   env,
   fetchImpl = fetch,
   personalAuthorization = "",
 ) {
-  return fetchOffersFromApi(env, fetchImpl, personalAuthorization, {
+  const application = authorizationValue(env.UOL_API_AUTHORIZATION);
+  const personal = authorizationValue(personalAuthorization || env.UOL_OAUTH_AUTHORIZATION);
+  const variants = [
+    { name: "both", application: true, personal: true },
+    { name: "application_only", application: true, personal: false },
+    { name: "personal_only", application: false, personal: true },
+    { name: "none", application: false, personal: false },
+  ];
+  const results = [];
+  for (const variant of variants) {
+    const headers = {
+      Accept: "application/json",
+      "Cache-Control": "no-cache, no-store, max-age=0",
+      "User-Agent": "UOLTelegramCloudflare/1.0",
+    };
+    if (variant.application && application) headers.Authorization = application;
+    if (variant.personal && personal) headers["X-Authorization"] = personal;
+    const response = await fetchImpl(couponUrl(TICKET_CATEGORY_ID).href, {
+      headers,
+      cf: { cacheTtl: 0, cacheEverything: false },
+      signal: AbortSignal.timeout(10_000),
+    });
+    const text = await response.text();
+    let payload = {};
+    try {
+      payload = JSON.parse(text);
+    } catch {
+      payload = {};
+    }
+    results.push({
+      name: variant.name,
+      status: response.status,
+      accepted: response.ok,
+      offers: Array.isArray(payload?.beneficios) ? payload.beneficios.length : 0,
+      challenge: Boolean(response.headers.get("www-authenticate")),
+      errorCode: cleanText(payload?.error || "").slice(0, 80),
+    });
+  }
+  return results;
+}
+
+export async function fetchTicketOffersFromApi(
+  env,
+  fetchImpl = fetch,
+  options = {},
+) {
+  return fetchOffersFromApi(env, fetchImpl, {
     categoryId: TICKET_CATEGORY_ID,
+    ...options,
   });
 }

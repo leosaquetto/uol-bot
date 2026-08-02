@@ -10,15 +10,16 @@ como rollback, mas não publica mensagens.
 ## Fluxo
 
 1. um Durable Object Alarm executa a cada 15 segundos;
-2. a API de ingressos e a listagem `https://clube.uol.com.br/?order=new` são
-   obtidas em paralelo e sem cache;
+2. três fontes são obtidas em paralelo e sem cache: a categoria pública
+   `/?categoria=ingressosexclusivos&order=new`, a listagem geral `/?order=new`
+   e a API de ingressos;
 3. o baseline impede o envio das ofertas existentes durante a implantação;
 4. aliases de endereço são reconciliados antes de decidir se o card é inédito;
 5. ingressos genuinamente inéditos disparam Telegram e Discord em paralelo com
    a thumbnail, antes de abrir a página de detalhe;
-6. título, validade, descrição e imagem vêm da API ou da página de detalhe; uma
+6. título, validade, descrição e imagem vêm da API ou das páginas públicas; uma
    oferta comum nova também consulta a API geral sob demanda e Browser Rendering
-   só entra quando o detalhe continua incompleto;
+   só entra quando o detalhe público de uma novidade continua incompleto;
 7. a publicação curta é enriquecida por edição e a oferta é validada;
 8. benefícios comuns continuam sendo enviados depois do enriquecimento;
 9. campanhas elegíveis de ingressos são copiadas com `copyMessage` ao canal 2;
@@ -70,18 +71,22 @@ como rollback, mas não publica mensagens.
   240 execuções ficam disponíveis por aproximadamente uma hora.
 - **Retries:** principal, canal 2 e edições de esgotamento possuem contadores,
   erros e confirmações independentes.
-- **Operação:** falha de autorização da API alerta imediatamente; erros comuns
-  exigem três ciclos. Também são monitorados três scans quebrados, webhook
+- **Operação:** falha de autorização da API aceleradora alerta imediatamente;
+  erros comuns exigem três ciclos, e sua credencial técnica gera aviso 14 dias
+  antes de expirar. Também são monitorados três scans quebrados, webhook
   pendente/incorreto e ingresso novo sem foto ou comentário após três minutos.
   Incidentes são deduplicados por chave, têm cooldown de seis horas e ficam no
   SQLite com resolução registrada.
 - **Fontes:** mede por oferta se API ou HTML descobriu primeiro e a diferença em
-  milissegundos. Alerta somente por listagem vazia/queda repetida, ausência de
+  milissegundos. A página pública exclusiva de ingressos é independente da
+  listagem geral. Alerta somente por listagem vazia/queda repetida, ausência de
   ciclos combinados saudáveis ou divergência total persistente; não alerta
   apenas porque ofertas esgotadas continuam aparecendo na API.
-- **Autenticação:** tenta renovar o `X-Authorization` uma hora antes da expiração
-  de tokens JWT e imediatamente após 401/403, com cooldown de seis horas. O
-  token anterior nunca é apagado numa falha e a listagem HTML continua ativa.
+- **Autenticação:** uma sonda autenticada confirmou que a API aceita somente o
+  `Authorization` técnico e rejeita requisições sem ele; `X-Authorization`,
+  login UOL, senha e token pessoal não são necessários. A API é um acelerador:
+  se a credencial técnica vencer, as duas fontes HTML públicas continuam
+  descobrindo e enriquecendo ofertas sem depender de renovação ou conta.
 - **Latência:** `/health` mede descoberta até Discord, Telegram, canal 2 e
   comentário para ofertas observadas após a ativação das métricas, com último
   valor, p50, p95 e máximo numa janela de 24 horas.
@@ -96,10 +101,9 @@ como rollback, mas não publica mensagens.
 - Modo padrão: `DELIVERY_MODE=live`; o modo operacional persistido é controlado
   por `POST /mode`
 - Secrets: `ADMIN_TOKEN`, `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`, `CANAL2_ID`,
-  `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL` e, opcionalmente,
-  `OPS_TELEGRAM_CHAT_ID`. A renovação por navegador usa ainda
-  `UOL_LOGIN_USERNAME` e `UOL_LOGIN_PASSWORD`. Sem o chat operacional, alertas
-  usam o canal principal.
+  `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL`, `UOL_API_AUTHORIZATION` e,
+  opcionalmente, `OPS_TELEGRAM_CHAT_ID`. Não há automação ativa de senha ou
+  login pessoal. Sem o chat operacional, alertas usam o canal principal.
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
@@ -110,7 +114,8 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 - `GET /dashboard`: painel HTML operacional; aceita Bearer ou HTTP Basic com
   usuário `admin` e senha igual ao `ADMIN_TOKEN`.
 - `GET /dashboard.json`: os mesmos dados estruturados e autenticados.
-- `POST /refresh-auth`: força uma tentativa de renovação da autorização pessoal.
+- `POST /auth-discovery`: sonda administrativa que compara as combinações de
+  autenticação sem devolver os tokens nem os valores de seus claims.
 - `POST /run`: coleta manual autenticada.
 - `POST /test`: teste autenticado do principal e do canal 2, sem registrar uma
   oferta.
@@ -142,11 +147,11 @@ do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 ## Orçamento no tier gratuito
 
 Em estado estável, o alarme de 15 segundos representa 5.760 invocações por dia,
-172.800 em 30 dias. Cada ciclo saudável faz duas leituras externas em paralelo
-(API de ingressos e HTML). A API geral só é consultada quando surge uma oferta
-comum nova. Browser Rendering não é usado em cada scan: apenas para renovar a
-autorização quando necessário ou recuperar o detalhe de uma novidade que API e
-HTTP não completaram.
+172.800 em 30 dias. Cada ciclo saudável faz três leituras externas em paralelo
+(API de ingressos, HTML geral e HTML exclusivo de ingressos). A API geral só é
+consultada quando surge uma oferta comum nova. Browser Rendering não é usado em
+cada scan: entra somente para recuperar o detalhe público de uma novidade que
+API e HTTP não completaram.
 As ofertas conhecidas só são atualizadas se algum campo realmente mudar. Sem
 oferta nova, o SQLite escreve aproximadamente 17.280 linhas por dia: alarme,
 registro da execução e descarte do registro mais antigo. Enriquecimento,

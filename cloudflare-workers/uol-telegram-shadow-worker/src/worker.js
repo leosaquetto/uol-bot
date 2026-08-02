@@ -22,13 +22,12 @@ import {
   fetchTicketOffersFromApi,
   mergeOfferCards,
   ticketApiConfiguration,
+  probeCouponAuthentication,
 } from "./uol-api.js";
 import {
-  browserAuthConfiguration,
-  capturePersonalAuthorization,
   authorizationExpiresAt,
-  shouldAttemptAuthorizationRefresh,
-} from "./uol-browser-auth.js";
+  authorizationDiagnostics,
+} from "./uol-auth.js";
 import { captureOfferDetailInBrowser } from "./uol-browser-detail.js";
 import {
   editSoldOutMessage,
@@ -59,6 +58,7 @@ import { nextImageCircuitState } from "./image-strategy.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
+const TICKET_LIST_URL = `${BASE_URL}/?categoria=ingressosexclusivos&order=new`;
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
   "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36";
@@ -235,8 +235,8 @@ async function parseListing(response) {
   return dedupeCards(cards);
 }
 
-async function fetchListing(fetchImpl = fetch) {
-  const response = await fetchHtml(LIST_URL, "_uol_shadow_ts", fetchImpl);
+async function fetchListing(fetchImpl = fetch, url = LIST_URL, marker = "_uol_shadow_ts") {
+  const response = await fetchHtml(url, marker, fetchImpl);
   return parseListing(response);
 }
 
@@ -780,7 +780,9 @@ export class UolTelegramShadow extends DurableObject {
            link = excluded.link,
            title = CASE WHEN excluded.title <> '' THEN excluded.title ELSE source_observations.title END,
            ${firstColumn} = CASE
-             WHEN source_observations.${firstColumn} = '' THEN excluded.${firstColumn}
+             WHEN source_observations.${firstColumn} = '' OR
+                  excluded.${firstColumn} < source_observations.${firstColumn}
+               THEN excluded.${firstColumn}
              ELSE source_observations.${firstColumn}
            END,
            ${lastColumn} = excluded.${lastColumn}`,
@@ -992,69 +994,33 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
-  async refreshPersonalAuthorization(reason = "scheduled", force = false) {
-    const configured = browserAuthConfiguration(this.env).configured;
-    if (!configured) return { attempted: false, refreshed: false, outcome: "not_configured" };
-    const now = new Date();
-    const current = this.metadataValue("personal_runtime_authorization") ||
+  async fetchTicketApi() {
+    return fetchTicketOffersFromApi(this.env, fetch);
+  }
+
+  async fetchAllApi() {
+    return fetchOffersFromApi(this.env, fetch);
+  }
+
+  async discoverAuthenticationProtocol() {
+    const personalAuthorization = this.metadataValue("personal_runtime_authorization") ||
       String(this.env.UOL_OAUTH_AUTHORIZATION || "");
-    const cooldownMinutes = envNumber(this.env, "AUTH_REFRESH_COOLDOWN_MINUTES", 360, 15, 1_440);
-    const refreshBeforeMinutes = envNumber(this.env, "AUTH_REFRESH_BEFORE_MINUTES", 60, 5, 1_440);
-    if (!force && !shouldAttemptAuthorizationRefresh({
-      authorization: current,
-      apiError: reason,
-      lastAttemptAt: this.metadataValue("auth_refresh_last_attempt_at"),
-      now,
-      refreshBeforeMinutes,
-      cooldownMinutes,
-    })) return { attempted: false, refreshed: false, outcome: "not_due" };
-    this.setMetadata("auth_refresh_last_attempt_at", now.toISOString());
-    this.setMetadata("auth_refresh_reason", reason);
-    try {
-      const result = await capturePersonalAuthorization(this.env);
-      if (!result.authorization) throw new Error(`uol_auth_refresh_${result.outcome}`);
-      const refreshedAt = new Date().toISOString();
-      this.setMetadata("personal_runtime_authorization", result.authorization);
-      this.setMetadata("personal_runtime_authorization_at", refreshedAt);
-      this.setMetadata("auth_refresh_last_success_at", refreshedAt);
-      this.setMetadata("auth_refresh_last_outcome", result.outcome);
-      this.setMetadata("auth_refresh_last_error", "");
-      return { attempted: true, refreshed: true, outcome: result.outcome };
-    } catch (error) {
-      this.setMetadata("auth_refresh_last_outcome", "failed");
-      this.setMetadata("auth_refresh_last_error", sanitizeError(error));
-      return { attempted: true, refreshed: false, outcome: "failed" };
-    }
-  }
-
-  async fetchTicketApiWithRecovery() {
-    await this.refreshPersonalAuthorization("proactive");
-    let authorization = this.metadataValue("personal_runtime_authorization");
-    try {
-      return await fetchTicketOffersFromApi(this.env, fetch, authorization);
-    } catch (error) {
-      const message = sanitizeError(error);
-      if (!/(?:uol_api_http_401|uol_api_http_403)/i.test(message)) throw error;
-      const refresh = await this.refreshPersonalAuthorization(message);
-      if (!refresh.refreshed) throw error;
-      authorization = this.metadataValue("personal_runtime_authorization");
-      return fetchTicketOffersFromApi(this.env, fetch, authorization);
-    }
-  }
-
-  async fetchAllApiWithRecovery() {
-    await this.refreshPersonalAuthorization("proactive");
-    let authorization = this.metadataValue("personal_runtime_authorization");
-    try {
-      return await fetchOffersFromApi(this.env, fetch, authorization);
-    } catch (error) {
-      const message = sanitizeError(error);
-      if (!/(?:uol_api_http_401|uol_api_http_403)/i.test(message)) throw error;
-      const refresh = await this.refreshPersonalAuthorization(message);
-      if (!refresh.refreshed) throw error;
-      authorization = this.metadataValue("personal_runtime_authorization");
-      return fetchOffersFromApi(this.env, fetch, authorization);
-    }
+    return {
+      checkedAt: new Date().toISOString(),
+      applicationToken: authorizationDiagnostics(this.env.UOL_API_AUTHORIZATION),
+      personalToken: authorizationDiagnostics(personalAuthorization),
+      oauth: {
+        responseType: "code",
+        scope: "publicid",
+        pkceObserved: false,
+        callbackHost: "clube.uol.com.br",
+      },
+      couponAuthentication: await probeCouponAuthentication(
+        this.env,
+        fetch,
+        personalAuthorization,
+      ),
+    };
   }
 
   currentDeliveryMode() {
@@ -1205,6 +1171,7 @@ export class UolTelegramShadow extends DurableObject {
     const signals = buildIncidentSignals({
       apiError: this.metadataValue("api_last_error"),
       apiFailureStreak,
+      apiAuthorizationExpiresAt: authorizationExpiresAt(this.env.UOL_API_AUTHORIZATION),
       webhookUrlMatches: this.metadataValue("telegram_webhook_url_matches") === "true",
       webhookPendingUpdates: Number(this.metadataValue("telegram_webhook_pending_updates") || 0),
       webhookError: this.metadataValue("telegram_webhook_last_error") ||
@@ -1216,6 +1183,7 @@ export class UolTelegramShadow extends DurableObject {
       secondsSinceFullSourceSuccess,
       sourceDetails,
       ticketIssues: this.recentTicketDeliveryIssues(now),
+      now,
     });
     const activeKeys = new Set(signals.map((signal) => signal.key));
     const existing = new Map(this.ctx.storage.sql.exec(
@@ -2419,12 +2387,16 @@ export class UolTelegramShadow extends DurableObject {
         this.setMetadata("live_started_at", startedAt.toISOString());
       }
       const apiStartedAt = Date.now();
-      const [listingResult, apiResult] = await Promise.allSettled([
+      const [listingResult, ticketListingResult, apiResult] = await Promise.allSettled([
         fetchListing().then((cards) => ({
           cards,
           completedAt: new Date().toISOString(),
         })),
-        this.fetchTicketApiWithRecovery().then((cards) => ({
+        fetchListing(fetch, TICKET_LIST_URL, "_uol_ticket_listing_ts").then((cards) => ({
+          cards,
+          completedAt: new Date().toISOString(),
+        })),
+        this.fetchTicketApi().then((cards) => ({
           cards,
           completedAt: new Date().toISOString(),
         })),
@@ -2433,13 +2405,40 @@ export class UolTelegramShadow extends DurableObject {
       if (apiResult.status === "rejected") {
         run.apiError = sanitizeError(apiResult.reason);
       }
-      const listingCards = listingResult.status === "fulfilled" ? listingResult.value.cards : [];
+      const mainListingCards = listingResult.status === "fulfilled" ? listingResult.value.cards : [];
+      const ticketListingCards = ticketListingResult.status === "fulfilled"
+        ? ticketListingResult.value.cards
+        : [];
+      const listingCards = mergeOfferCards(ticketListingCards, mainListingCards);
       const apiCards = apiResult.status === "fulfilled" ? apiResult.value.cards : [];
       if (listingResult.status === "fulfilled") {
-        this.recordSourceCards("listing", listingCards, listingResult.value.completedAt);
+        this.recordSourceCards("listing", mainListingCards, listingResult.value.completedAt);
+      }
+      if (ticketListingResult.status === "fulfilled") {
+        this.recordSourceCards(
+          "listing",
+          ticketListingCards,
+          ticketListingResult.value.completedAt,
+        );
       }
       if (apiResult.status === "fulfilled") {
         this.recordSourceCards("api", apiCards, apiResult.value.completedAt);
+      }
+      this.setMetadata("main_listing_last_offers_seen", mainListingCards.length);
+      this.setMetadata(
+        "main_listing_last_error",
+        listingResult.status === "rejected" ? sanitizeError(listingResult.reason) : "",
+      );
+      if (listingResult.status === "fulfilled") {
+        this.setMetadata("main_listing_last_success_at", listingResult.value.completedAt);
+      }
+      this.setMetadata("ticket_listing_last_offers_seen", ticketListingCards.length);
+      this.setMetadata(
+        "ticket_listing_last_error",
+        ticketListingResult.status === "rejected" ? sanitizeError(ticketListingResult.reason) : "",
+      );
+      if (ticketListingResult.status === "fulfilled") {
+        this.setMetadata("ticket_listing_last_success_at", ticketListingResult.value.completedAt);
       }
       this.updateSourceHealth({
         listingResult,
@@ -2461,8 +2460,10 @@ export class UolTelegramShadow extends DurableObject {
           Number(this.metadataValue("api_failure_streak") || 0) + 1,
         );
       }
-      if (listingResult.status === "rejected" && apiCards.length === 0) {
-        throw listingResult.reason;
+      if (listingCards.length === 0 && apiCards.length === 0) {
+        throw listingResult.status === "rejected"
+          ? listingResult.reason
+          : new Error("uol_fontes_sem_ofertas");
       }
       const minimum = envNumber(this.env, "MIN_HEALTHY_LISTING_OFFERS", 5, 1, 48);
       const listingHealthy = listingCards.length >= minimum;
@@ -2500,7 +2501,7 @@ export class UolTelegramShadow extends DurableObject {
         );
         if (newNonTicketIds.size > 0) {
           try {
-            const allApiCards = await this.fetchAllApiWithRecovery();
+            const allApiCards = await this.fetchAllApi();
             const apiByIdentity = new Map();
             for (const apiCard of allApiCards) {
               for (const key of offerIdentityKeys(apiCard.link)) apiByIdentity.set(key, apiCard);
@@ -2700,17 +2701,6 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
-  async forceAuthorizationRefresh() {
-    const result = await this.refreshPersonalAuthorization("manual", true);
-    return {
-      ok: result.refreshed,
-      attempted: result.attempted,
-      outcome: result.outcome,
-      refreshedAt: this.metadataValue("auth_refresh_last_success_at"),
-      error: this.metadataValue("auth_refresh_last_error"),
-    };
-  }
-
   async getHealth() {
     const alarmScheduledAt = await this.ensureAlarm();
     const alarmIntervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600);
@@ -2785,8 +2775,6 @@ export class UolTelegramShadow extends DurableObject {
               last_alerted_at, resolved_at, occurrence_count, alert_error
        FROM incidents ORDER BY last_detected_at DESC LIMIT 12`,
     ).toArray();
-    const runtimeAuthorization = this.metadataValue("personal_runtime_authorization") ||
-      String(this.env.UOL_OAUTH_AUTHORIZATION || "");
     const sourceComparison = this.getSourceComparison();
     const imageDelivery = this.getImageDeliveryHealth();
 
@@ -2798,24 +2786,31 @@ export class UolTelegramShadow extends DurableObject {
       discord: discordConfiguration(this.env),
       ticketApi: {
         ...ticketApiConfiguration(this.env),
+        applicationAuthorizationExpiresAt: authorizationExpiresAt(
+          this.env.UOL_API_AUTHORIZATION,
+        ),
         lastOffersSeen: Number(this.metadataValue("api_last_offers_seen") || 0),
         lastElapsedMs: Number(this.metadataValue("api_last_elapsed_ms") || 0),
         lastError: this.metadataValue("api_last_error"),
         lastSuccessAt: this.metadataValue("api_last_success_at"),
       },
-      browserAuth: {
-        ...browserAuthConfiguration(this.env),
-        autoRefreshConfigured: browserAuthConfiguration(this.env).configured,
-        testedAt: this.metadataValue("browser_auth_bootstrap_at"),
-        outcome: this.metadataValue("browser_auth_outcome"),
-        elapsedMs: Number(this.metadataValue("browser_auth_elapsed_ms") || 0),
-        error: this.metadataValue("browser_auth_error"),
-        runtimeAuthorizationAt: this.metadataValue("personal_runtime_authorization_at"),
-        runtimeAuthorizationExpiresAt: authorizationExpiresAt(runtimeAuthorization),
-        refreshLastAttemptAt: this.metadataValue("auth_refresh_last_attempt_at"),
-        refreshLastSuccessAt: this.metadataValue("auth_refresh_last_success_at"),
-        refreshLastOutcome: this.metadataValue("auth_refresh_last_outcome"),
-        refreshLastError: this.metadataValue("auth_refresh_last_error"),
+      publicTicketListing: {
+        url: "/?categoria=ingressosexclusivos&order=new",
+        lastOffersSeen: Number(this.metadataValue("ticket_listing_last_offers_seen") || 0),
+        lastSuccessAt: this.metadataValue("ticket_listing_last_success_at"),
+        lastError: this.metadataValue("ticket_listing_last_error"),
+      },
+      publicMainListing: {
+        url: "/?order=new",
+        lastOffersSeen: Number(this.metadataValue("main_listing_last_offers_seen") || 0),
+        lastSuccessAt: this.metadataValue("main_listing_last_success_at"),
+        lastError: this.metadataValue("main_listing_last_error"),
+      },
+      authentication: {
+        mode: "application-bearer",
+        personalAuthorizationRequired: false,
+        passwordAutomationActive: false,
+        discoveryRoute: "POST /auth-discovery",
       },
       discussion: {
         configured: Boolean(String(this.env.GRUPO_COMENTARIO_ID || "").trim()),
@@ -2840,7 +2835,7 @@ export class UolTelegramShadow extends DurableObject {
       usageEstimate: {
         alarmInvocationsPerDay: Math.ceil(86_400 / alarmIntervalSeconds),
         alarmInvocationsPer30Days: Math.ceil((86_400 * 30) / alarmIntervalSeconds),
-        sourceRequestsPerHealthyScan: 2,
+        sourceRequestsPerHealthyScan: 3,
         detailAndDeliveryRequestsOnlyForNewOffers: true,
       },
       retention: {
@@ -3005,11 +3000,11 @@ export default {
         }
         return jsonResponse(await stub.testTransport());
       }
-      if (request.method === "POST" && url.pathname === "/refresh-auth") {
+      if (request.method === "POST" && url.pathname === "/auth-discovery") {
         if (!isAuthorized(request, env)) {
           return jsonResponse({ ok: false, error: "unauthorized" }, 401);
         }
-        return jsonResponse(await stub.forceAuthorizationRefresh());
+        return jsonResponse({ ok: true, discovery: await stub.discoverAuthenticationProtocol() });
       }
       if (request.method === "POST" && url.pathname === "/mode") {
         if (!isAuthorized(request, env)) {

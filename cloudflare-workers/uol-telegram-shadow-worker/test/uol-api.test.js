@@ -7,6 +7,7 @@ import {
   mapTicketApiItem,
   mapTicketApiPayload,
   mergeOfferCards,
+  probeCouponAuthentication,
   ticketApiConfiguration,
 } from "../src/uol-api.js";
 
@@ -57,11 +58,32 @@ test("API ganha do HTML ao consolidar a mesma oferta", () => {
   assert.equal(merged[0].cardImageUrl, htmlCard.cardImageUrl);
 });
 
-test("envia os dois cabeçalhos e restringe a categoria a ingressos", async () => {
+test("mescla duas listagens já normalizadas sem descartar os demais cards", () => {
+  const ticket = {
+    id: "pa1-ingresso",
+    link: "https://clube.uol.com.br/campanhasdeingresso/pA1-ingresso",
+    previewTitle: "2 INGRESSOS",
+    category: "campanhasdeingresso",
+    cardImageUrl: "https://img.example/ticket.jpg",
+  };
+  const common = {
+    id: "pb2-beneficio",
+    link: "https://clube.uol.com.br/parceiro/pB2-beneficio",
+    previewTitle: "20% OFF",
+    category: "descontos",
+    cardImageUrl: "https://img.example/common.jpg",
+  };
+  assert.deepEqual(
+    mergeOfferCards([ticket], [ticket, common]).map((card) => card.id),
+    [ticket.id, common.id],
+  );
+});
+
+test("consulta ingressos somente com a credencial técnica", async () => {
   let request;
   const cards = await fetchTicketOffersFromApi({
     UOL_API_AUTHORIZATION: "api-token",
-    UOL_OAUTH_AUTHORIZATION: "Bearer personal-token",
+    UOL_OAUTH_AUTHORIZATION: "personal-token-ignored",
   }, async (url, init) => {
     request = { url: new URL(url), init };
     return new Response(JSON.stringify({ beneficios: [apiItem] }), {
@@ -71,7 +93,7 @@ test("envia os dois cabeçalhos e restringe a categoria a ingressos", async () =
   assert.equal(cards.length, 1);
   assert.equal(request.url.searchParams.get("category_id"), "162");
   assert.equal(request.init.headers.Authorization, "Bearer api-token");
-  assert.equal(request.init.headers["X-Authorization"], "Bearer personal-token");
+  assert.equal(request.init.headers["X-Authorization"], undefined);
 });
 
 test("consulta a API geral sob demanda e preserva a categoria da URL", async () => {
@@ -98,6 +120,29 @@ test("consulta a API geral sob demanda e preserva a categoria da URL", async () 
 test("status de configuração nunca expõe tokens", () => {
   assert.deepEqual(ticketApiConfiguration({
     UOL_API_AUTHORIZATION: "segredo-1",
-    UOL_OAUTH_AUTHORIZATION: "segredo-2",
-  }), { configured: true });
+  }), { configured: true, personalAuthorizationRequired: false });
+});
+
+test("diagnóstico testa combinações sem devolver credenciais", async () => {
+  const seenHeaders = [];
+  const result = await probeCouponAuthentication({
+    UOL_API_AUTHORIZATION: "application-secret",
+    UOL_OAUTH_AUTHORIZATION: "personal-secret",
+  }, async (_url, init) => {
+    seenHeaders.push(init.headers);
+    const accepted = Boolean(init.headers.Authorization) && !init.headers["X-Authorization"];
+    return new Response(JSON.stringify(accepted
+      ? { beneficios: [apiItem] }
+      : { error: "unauthorized" }), {
+      status: accepted ? 200 : 401,
+      headers: { "content-type": "application/json" },
+    });
+  });
+  assert.deepEqual(result.map((item) => item.name), [
+    "both", "application_only", "personal_only", "none",
+  ]);
+  assert.equal(result.find((item) => item.name === "application_only").offers, 1);
+  assert.equal(JSON.stringify(result).includes("application-secret"), false);
+  assert.equal(seenHeaders[1].Authorization, "Bearer application-secret");
+  assert.equal(seenHeaders[1]["X-Authorization"], undefined);
 });

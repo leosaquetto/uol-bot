@@ -76,3 +76,18 @@ test("abre incidente quando API e HTML permanecem divergentes", () => {
   assert.equal(signals[0].key, "source-health");
   assert.match(signals[0].details, /divergências: 5/);
 });
+
+test("avisa antes de a credencial técnica vencer sem tratar o HTML como indisponível", () => {
+  const now = new Date("2026-08-02T00:00:00.000Z");
+  const signals = buildIncidentSignals({
+    apiAuthorizationExpiresAt: "2026-08-12T00:00:00.000Z",
+    now,
+  });
+  assert.equal(signals[0].key, "ticket-api-expiry");
+  assert.equal(signals[0].severity, "warning");
+  assert.match(signals[0].details, /duas fontes HTML públicas continuarão ativas/);
+  assert.deepEqual(buildIncidentSignals({
+    apiAuthorizationExpiresAt: "2026-08-20T00:00:00.000Z",
+    now,
+  }), []);
+});
