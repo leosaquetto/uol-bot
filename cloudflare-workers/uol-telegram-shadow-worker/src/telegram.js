@@ -8,6 +8,34 @@ const TELEGRAM_TIMEOUT_MS = 15_000;
 const IMAGE_FETCH_TIMEOUT_MS = 6_000;
 const MAX_UPLOAD_IMAGE_BYTES = 8 * 1024 * 1024;
 
+function detectedImageFormat(bytes, declaredContentType = "") {
+  const view = new Uint8Array(bytes);
+  if (view.length >= 3 && view[0] === 0xff && view[1] === 0xd8 && view[2] === 0xff) {
+    return { contentType: "image/jpeg", extension: "jpg" };
+  }
+  if (view.length >= 8 &&
+      view[0] === 0x89 && view[1] === 0x50 && view[2] === 0x4e && view[3] === 0x47 &&
+      view[4] === 0x0d && view[5] === 0x0a && view[6] === 0x1a && view[7] === 0x0a) {
+    return { contentType: "image/png", extension: "png" };
+  }
+  if (view.length >= 12 &&
+      String.fromCharCode(...view.slice(0, 4)) === "RIFF" &&
+      String.fromCharCode(...view.slice(8, 12)) === "WEBP") {
+    return { contentType: "image/webp", extension: "webp" };
+  }
+  const contentType = String(declaredContentType || "").split(";", 1)[0].trim();
+  return {
+    contentType,
+    extension: contentType.includes("png")
+      ? "png"
+      : contentType.includes("webp")
+        ? "webp"
+        : contentType.includes("gif")
+          ? "gif"
+          : "jpg",
+  };
+}
+
 function telegramConfig(env) {
   return {
     token: String(env.TELEGRAM_TOKEN || "").trim(),
@@ -104,18 +132,18 @@ async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNoti
   if (!bytes.byteLength || bytes.byteLength > MAX_UPLOAD_IMAGE_BYTES) {
     throw new Error("offer_image_invalid_size");
   }
+  const imageFormat = detectedImageFormat(bytes, contentType);
 
   const form = new FormData();
   form.set("chat_id", chatId);
   form.set("caption", caption);
   form.set("parse_mode", "HTML");
   form.set("disable_notification", String(disableNotification));
-  const extension = contentType.includes("png")
-    ? "png"
-    : contentType.includes("webp")
-      ? "webp"
-      : "jpg";
-  form.set("photo", new Blob([bytes], { type: contentType }), `oferta.${extension}`);
+  form.set(
+    "photo",
+    new Blob([bytes], { type: imageFormat.contentType }),
+    `oferta.${imageFormat.extension}`,
+  );
   const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
     body: form,

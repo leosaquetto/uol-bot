@@ -191,6 +191,30 @@ test("faz upload da imagem quando o Telegram recusa a URL pública", async () =>
   assert.equal(calls[2].body.get("photo").name, "oferta.png");
 });
 
+test("corrige MIME PNG incorreto quando os bytes são JPEG", async () => {
+  let uploadedPhoto;
+  const jpegBytes = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
+  const result = await sendMainOffer(env, offer, async (url, init = {}) => {
+    if (url === offer.imageUrl) {
+      return new Response(jpegBytes, {
+        status: 200,
+        headers: { "Content-Type": "image/png" },
+      });
+    }
+    if (url.endsWith("/sendPhoto") && typeof init.body === "string") {
+      return new Response(JSON.stringify({ ok: false, description: "bad photo URL" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    uploadedPhoto = init.body.get("photo");
+    return jsonResponse({ message_id: 47 });
+  });
+  assert.equal(result.messageKind, "photo");
+  assert.equal(uploadedPhoto.name, "oferta.jpg");
+  assert.equal(uploadedPhoto.type, "image/jpeg");
+});
+
 test("encaminha para o canal 2 somente após ter a mensagem principal", async () => {
   let payload = {};
   const result = await forwardToCanal2(env, 41, async (_url, init) => {
