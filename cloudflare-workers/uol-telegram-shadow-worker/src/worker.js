@@ -739,7 +739,9 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   imageCacheKey(offer) {
-    return String(offer?.cardImageUrl || offer?.imageUrl || "").trim().slice(0, 1_500);
+    return String(
+      offer?.imageUrl || offer?.cardImageUrl || offer?.partnerImageUrl || "",
+    ).trim().slice(0, 1_500);
   }
 
   cachedTelegramPhoto(imageKey) {

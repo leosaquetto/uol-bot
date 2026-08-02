@@ -140,7 +140,12 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
   });
   const disableNotification = false;
-  const imageUrl = String(offer?.imageUrl || offer?.cardImageUrl || "").trim();
+  // Some ordinary benefits expose only the partner artwork in the listing and
+  // the detail page may transiently reject Worker-origin requests. A verified
+  // partner image is preferable to silently degrading the alert to text.
+  const imageUrl = String(
+    offer?.imageUrl || offer?.cardImageUrl || offer?.partnerImageUrl || "",
+  ).trim();
   const cachedPhotoFileId = String(offer?.telegramPhotoFileId || "").trim();
   const strategyEnabled = {
     file_id: offer?.imageStrategies?.file_id !== false,

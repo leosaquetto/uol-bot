@@ -81,6 +81,24 @@ test("envia foto ao canal principal sem expor token no payload", async () => {
   assert.equal(JSON.stringify(payload).includes(env.TELEGRAM_TOKEN), false);
 });
 
+test("usa a imagem oficial do parceiro quando o detalhe não fornece thumbnail", async () => {
+  let payload = {};
+  const partnerImageUrl = "https://example.com/hot-park.jpg";
+  const result = await sendMainOffer(env, {
+    ...offer,
+    imageUrl: "",
+    cardImageUrl: "",
+    partnerImageUrl,
+  }, async (url, init) => {
+    assert.match(url, /sendPhoto$/);
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 46 });
+  });
+  assert.equal(payload.photo, partnerImageUrl);
+  assert.equal(result.messageKind, "photo");
+  assert.equal(result.imageStrategy, "remote_url");
+});
+
 test("reutiliza file_id antes de qualquer URL e devolve a identidade da foto", async () => {
   let payload;
   const result = await sendMainOffer(env, {
