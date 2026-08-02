@@ -10,7 +10,8 @@ como rollback, mas não publica mensagens.
 ## Fluxo
 
 1. um Durable Object Alarm executa a cada 15 segundos;
-2. a listagem `https://clube.uol.com.br/?order=new` é obtida por HTTP sem cache;
+2. a API de ingressos e a listagem `https://clube.uol.com.br/?order=new` são
+   obtidas em paralelo e sem cache;
 3. o baseline impede o envio das ofertas existentes durante a implantação;
 4. aliases de endereço são reconciliados antes de decidir se o card é inédito;
 5. ingressos genuinamente inéditos disparam Telegram e Discord em paralelo com
@@ -33,9 +34,13 @@ como rollback, mas não publica mensagens.
 - **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
   15 minutos, limitada às ofertas decididas nos últimos três dias.
 - **Enriquecimento:** apenas ofertas novas; no máximo quatro por rodada.
-- **Imagem:** em ingressos, usa primeiro o proxy da imagem já cacheada pelo
-  Discord; nas demais ofertas, tenta URL pública e upload antes de recorrer a
-  texto.
+- **Imagem:** reutiliza primeiro o `file_id` devolvido pelo Telegram; depois
+  tenta URL pública, proxy já cacheado pelo Discord e upload binário antes de
+  recorrer a texto. O cache guarda no máximo 500 imagens e expira usos inativos
+  após 90 dias.
+- **Circuit breaker de imagem:** cada estratégia abre separadamente após três
+  falhas, descansa por dez minutos, faz uma tentativa em `half-open` e fecha
+  assim que volta a funcionar.
 - **Detalhes estruturados:** validade e endereço são extraídos dos blocos
   próprios da página; abreviações como `Av.` não interrompem o endereço.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
@@ -63,6 +68,13 @@ como rollback, mas não publica mensagens.
   pendente/incorreto e ingresso novo sem foto ou comentário após três minutos.
   Incidentes são deduplicados por chave, têm cooldown de seis horas e ficam no
   SQLite com resolução registrada.
+- **Fontes:** mede por oferta se API ou HTML descobriu primeiro e a diferença em
+  milissegundos. Alerta somente por listagem vazia/queda repetida, ausência de
+  ciclos combinados saudáveis ou divergência total persistente; não alerta
+  apenas porque ofertas esgotadas continuam aparecendo na API.
+- **Autenticação:** tenta renovar o `X-Authorization` uma hora antes da expiração
+  de tokens JWT e imediatamente após 401/403, com cooldown de seis horas. O
+  token anterior nunca é apagado numa falha e a listagem HTML continua ativa.
 - **Latência:** `/health` mede descoberta até Discord, Telegram, canal 2 e
   comentário para ofertas observadas após a ativação das métricas, com último
   valor, p50, p95 e máximo numa janela de 24 horas.
@@ -78,8 +90,9 @@ como rollback, mas não publica mensagens.
   por `POST /mode`
 - Secrets: `ADMIN_TOKEN`, `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`, `CANAL2_ID`,
   `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL` e, opcionalmente,
-  `OPS_TELEGRAM_CHAT_ID`. Sem este último, alertas operacionais usam o canal
-  principal.
+  `OPS_TELEGRAM_CHAT_ID`. A renovação por navegador usa ainda
+  `UOL_LOGIN_USERNAME` e `UOL_LOGIN_PASSWORD`. Sem o chat operacional, alertas
+  usam o canal principal.
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
@@ -87,6 +100,10 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
 - `GET /health`: estado sanitizado, configuração booleana, contagens, últimas
   execuções, latências e incidentes operacionais.
+- `GET /dashboard`: painel HTML operacional; aceita Bearer ou HTTP Basic com
+  usuário `admin` e senha igual ao `ADMIN_TOKEN`.
+- `GET /dashboard.json`: os mesmos dados estruturados e autenticados.
+- `POST /refresh-auth`: força uma tentativa de renovação da autorização pessoal.
 - `POST /run`: coleta manual autenticada.
 - `POST /test`: teste autenticado do principal e do canal 2, sem registrar uma
   oferta.
@@ -117,7 +134,10 @@ do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 
 ## Orçamento no tier gratuito
 
-Em estado estável, o alarme de 15 segundos representa 5.760 invocações por dia.
+Em estado estável, o alarme de 15 segundos representa 5.760 invocações por dia,
+172.800 em 30 dias. Cada ciclo saudável faz duas leituras externas em paralelo
+(API e HTML). Browser Rendering não é usado em cada scan: só quando uma
+renovação de autenticação vence o controle de expiração/erro e cooldown.
 As ofertas conhecidas só são atualizadas se algum campo realmente mudar. Sem
 oferta nova, o SQLite escreve aproximadamente 17.280 linhas por dia: alarme,
 registro da execução e descarte do registro mais antigo. Enriquecimento,

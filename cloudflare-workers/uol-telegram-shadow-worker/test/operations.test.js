@@ -66,3 +66,13 @@ test("falha de autorização é crítica imediatamente e sinais são deduplicáv
   assert.match(buildOperationsAlert(signals[0]), /Alerta do monitor Clube UOL/);
   assert.match(buildOperationsAlert(signals[0], { recovered: true }), /Incidente resolvido/);
 });
+
+test("abre incidente quando API e HTML permanecem divergentes", () => {
+  const signals = buildIncidentSignals({
+    sourceDivergenceStreak: 5,
+    secondsSinceFullSourceSuccess: 90,
+    sourceDetails: "API 3, HTML 0",
+  });
+  assert.equal(signals[0].key, "source-health");
+  assert.match(signals[0].details, /divergências: 5/);
+});

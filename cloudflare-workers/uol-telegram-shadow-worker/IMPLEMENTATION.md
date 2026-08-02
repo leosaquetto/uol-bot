@@ -244,3 +244,69 @@ alerta é persistida e nunca interrompe a coleta.
 - API na verificação: 3 ingressos, erro vazio
 - webhook: URL correta, zero updates pendentes
 - observação: três ciclos consecutivos, zero falhas e zero incidentes ativos
+
+## Fontes, imagens, painel e autenticação de 01/08/2026
+
+O esquema v7 adicionou comparação durável entre API e HTML, cache de imagens do
+Telegram e saúde independente por estratégia de entrega. O Worker registra
+somente campanhas de ingresso na comparação, preserva o primeiro instante visto
+em cada fonte e calcula vencedor, delta, p50, p95 e máximo por oferta.
+
+Na primeira amostra real pareada, a API descobriu `2 INGRESSOS: 02/08 Shopping
+Cidade SP` 934 ms antes da listagem. Duas ofertas do Teatro J. Safra estavam
+somente na API, comportamento compatível com a listagem pública ser a autoridade
+de disponibilidade/esgotamento. Por isso, diferença parcial não é incidente:
+somente ausência total de sobreposição persistente é tratada como divergência.
+
+O Telegram agora guarda o maior `file_id` devolvido por `sendPhoto`. Uma imagem
+já conhecida deixa de depender novamente do servidor do Clube, do Discord ou de
+upload. Falhas de `file_id`, URL remota, proxy do Discord e upload alimentam
+circuitos separados; três falhas abrem a estratégia por dez minutos. O estado e
+o cache aparecem no painel e em `/health` sem expor identificadores sensíveis.
+
+O painel autenticado em `/dashboard` é renderizado no servidor, não executa
+JavaScript e atualiza a cada 30 segundos. Ele mostra ofertas recentes, fonte
+vencedora, latências de Discord/Telegram/comentário, circuitos de imagem,
+incidentes, saúde de autenticação e consumo estimado. `/dashboard.json` oferece
+o mesmo snapshot para diagnóstico automatizado. Ambas as rotas retornam 401 sem
+Bearer ou HTTP Basic válido.
+
+O alarme também ganhou autorreparo: um agendamento ausente ou atrasado por mais
+de dois intervalos é rearmado para o próximo ciclo. Isso recuperou em produção
+um alarme antigo que estava vencido, e os scans voltaram à cadência de 15–17 s.
+
+### Renovação da autorização pessoal
+
+O Worker verifica expiração JWT e respostas 401/403, respeita cooldown, abre um
+navegador remoto somente quando necessário, tenta autenticar com credentials em
+secrets e captura o próximo `X-Authorization` diretamente das requisições ao
+gateway. Uma falha conserva o token anterior e nunca interrompe o HTML.
+
+O ensaio real chegou à página oficial da Conta UOL, porém a camada antifraude
+UOL/PagSeguro não concluiu dentro do Browser Rendering: no Chromium nativo o
+login respondeu 403; em identidade móvel coerente a página abriu, mas o botão
+permaneceu em `Carregando...` após falhas do serviço de device fingerprint. Isso
+é uma limitação externa atualmente observada, não uma ausência de tratamento:
+o retry automático por 401/403, a retenção segura do token vigente, o alerta e o
+fallback HTML estão ativos. O caminho OAuth com refresh token é preferível se o
+UOL habilitar credenciais próprias para esta integração.
+
+### Retenção adicional
+
+- observações de fonte: 30 dias;
+- cache de `file_id`: 90 dias sem uso e no máximo 500 entradas;
+- ofertas terminais: 30 dias e no máximo 300, preservando visíveis e pendentes;
+- execuções: últimas 240.
+
+### Verificação final
+
+- esquema remoto: v7;
+- Version ID: `549b3594-66f2-48d1-8d38-49e7a09ba8f5`;
+- testes: 48 aprovados;
+- pacote: tipos atualizados e deploy dry-run aprovado;
+- painel HTML/JSON autenticado: HTTP 200; sem autenticação: HTTP 401;
+- comparação: 3 ingressos observados, 1 pareado, API 934 ms antes;
+- três execuções consecutivas: `no_change`, zero novas, zero erro de API,
+  zero divergência persistente e zero incidente ativo;
+- cache `file_id`: ativo, aguardando a próxima oferta genuinamente nova para a
+  primeira entrada real; payload e persistência cobertos por teste unitário.

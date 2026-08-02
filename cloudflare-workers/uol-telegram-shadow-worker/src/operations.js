@@ -55,6 +55,11 @@ export function buildIncidentSignals({
   webhookPendingUpdates = 0,
   webhookError = "",
   failedRunStreak = 0,
+  listingFailureStreak = 0,
+  listingDropStreak = 0,
+  sourceDivergenceStreak = 0,
+  secondsSinceFullSourceSuccess = 0,
+  sourceDetails = "",
   ticketIssues = [],
 } = {}) {
   const signals = [];
@@ -89,6 +94,27 @@ export function buildIncidentSignals({
       severity: "critical",
       summary: "O monitor falhou em três ou mais ciclos consecutivos",
       details: `${failedRunStreak} ciclos consecutivos com falha`,
+    });
+  }
+  if (
+    listingFailureStreak >= 3 ||
+    listingDropStreak >= 3 ||
+    sourceDivergenceStreak >= 5 ||
+    secondsSinceFullSourceSuccess >= 180
+  ) {
+    signals.push({
+      key: "source-health",
+      severity: listingFailureStreak >= 3 || secondsSinceFullSourceSuccess >= 300
+        ? "critical"
+        : "warning",
+      summary: "As fontes do Clube UOL estão divergentes ou degradadas",
+      details: cleanText([
+        `falhas HTML: ${listingFailureStreak}`,
+        `quedas: ${listingDropStreak}`,
+        `divergências: ${sourceDivergenceStreak}`,
+        `sem ciclo conjunto: ${Math.round(secondsSinceFullSourceSuccess)}s`,
+        sourceDetails,
+      ].filter(Boolean).join("; ")).slice(0, 240),
     });
   }
   for (const issue of ticketIssues) {

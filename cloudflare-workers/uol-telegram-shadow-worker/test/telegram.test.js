@@ -81,6 +81,48 @@ test("envia foto ao canal principal sem expor token no payload", async () => {
   assert.equal(JSON.stringify(payload).includes(env.TELEGRAM_TOKEN), false);
 });
 
+test("reutiliza file_id antes de qualquer URL e devolve a identidade da foto", async () => {
+  let payload;
+  const result = await sendMainOffer(env, {
+    ...offer,
+    telegramPhotoFileId: "cached-file-id",
+  }, async (_url, init) => {
+    payload = JSON.parse(init.body);
+    return jsonResponse({
+      message_id: 44,
+      photo: [
+        { file_id: "small", file_unique_id: "same-photo" },
+        { file_id: "largest", file_unique_id: "same-photo" },
+      ],
+    });
+  });
+  assert.equal(payload.photo, "cached-file-id");
+  assert.equal(result.imageStrategy, "file_id");
+  assert.equal(result.photoFileId, "largest");
+  assert.equal(result.photoFileUniqueId, "same-photo");
+  assert.deepEqual(result.imageAttempts, [{ strategy: "file_id", ok: true, error: "" }]);
+});
+
+test("pula estratégia remota aberta e tenta upload diretamente", async () => {
+  const calls = [];
+  const result = await sendMainOffer(env, {
+    ...offer,
+    imageStrategies: { remote_url: false },
+  }, async (url, init = {}) => {
+    calls.push(url);
+    if (url === offer.imageUrl) {
+      return new Response(new Uint8Array([1, 2, 3]), {
+        status: 200,
+        headers: { "Content-Type": "image/png" },
+      });
+    }
+    assert.ok(init.body instanceof FormData);
+    return jsonResponse({ message_id: 45 });
+  });
+  assert.deepEqual(calls, [offer.imageUrl, "https://api.telegram.org/bot123456:test-token/sendPhoto"]);
+  assert.equal(result.imageStrategy, "upload");
+});
+
 test("usa texto quando o Telegram rejeita a imagem", async () => {
   const methods = [];
   let textPayload = {};

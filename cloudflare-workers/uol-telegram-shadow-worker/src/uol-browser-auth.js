@@ -1,9 +1,7 @@
 import puppeteer from "@cloudflare/puppeteer";
 
-const AUTH_URL = "https://api.uol.com.br/oauth/auth";
+const AUTH_URL = "https://clube.uol.com.br/auth/uol/login";
 const CLUB_URL = "https://clube.uol.com.br/?order=new";
-const OAUTH_CLIENT_ID = "aefe43150d4f4af39c6a2553fcfa817e";
-const REDIRECT_URI = "http://localhost/";
 
 export function browserAuthConfiguration(env) {
   return {
@@ -13,6 +11,43 @@ export function browserAuthConfiguration(env) {
       String(env.UOL_LOGIN_PASSWORD || ""),
     ),
   };
+}
+
+function rawAuthorizationToken(value) {
+  return String(value || "").trim().replace(/^bearer\s+/i, "");
+}
+
+export function authorizationExpiresAt(value) {
+  const parts = rawAuthorizationToken(value).split(".");
+  if (parts.length !== 3) return "";
+  try {
+    const normalized = parts[1].replaceAll("-", "+").replaceAll("_", "/");
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+    const payload = JSON.parse(atob(padded));
+    const expiresAt = Number(payload?.exp || 0) * 1_000;
+    return Number.isFinite(expiresAt) && expiresAt > 0
+      ? new Date(expiresAt).toISOString()
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+export function shouldAttemptAuthorizationRefresh({
+  authorization = "",
+  apiError = "",
+  lastAttemptAt = "",
+  now = new Date(),
+  refreshBeforeMinutes = 60,
+  cooldownMinutes = 360,
+} = {}) {
+  const lastAttempt = Date.parse(lastAttemptAt);
+  if (Number.isFinite(lastAttempt) &&
+      now.getTime() - lastAttempt < cooldownMinutes * 60_000) return false;
+  if (/(?:uol_api_http_401|uol_api_http_403|unauthor|forbidden)/i.test(apiError)) return true;
+  const expiresAt = Date.parse(authorizationExpiresAt(authorization));
+  return Number.isFinite(expiresAt) &&
+    expiresAt - now.getTime() <= refreshBeforeMinutes * 60_000;
 }
 
 async function fillInFrames(page, selectors, value) {
@@ -57,8 +92,12 @@ async function clickSubmit(page) {
   for (const frame of page.frames()) {
     const direct = await frame.$('button[type="submit"], input[type="submit"]');
     if (direct) {
-      await direct.click();
-      return true;
+      const disabled = await direct.evaluate((element) =>
+        Boolean(element.disabled || element.getAttribute("aria-disabled") === "true"));
+      if (!disabled) {
+        await direct.click();
+        return true;
+      }
     }
     const clicked = await frame.evaluate(() => {
       const labels = /^(entrar|continuar|acessar|login|concordar|autorizar)$/i;
@@ -72,8 +111,10 @@ async function clickSubmit(page) {
         ...root.querySelectorAll('button[type="submit"], input[type="submit"], button, a'),
       ]);
       const element = elements.find((item) =>
-        item.matches?.('button[type="submit"], input[type="submit"]') ||
-        labels.test(String(item.textContent || item.value || "").trim()));
+        !item.disabled && item.getAttribute?.("aria-disabled") !== "true" && (
+          item.matches?.('button[type="submit"], input[type="submit"]') ||
+          labels.test(String(item.textContent || item.value || "").trim())
+        ));
       element?.click();
       return Boolean(element);
     });
@@ -82,7 +123,22 @@ async function clickSubmit(page) {
   return false;
 }
 
-async function waitAndFillInFrames(page, selectors, value, timeout = 12_000) {
+async function waitAndSubmit(page, timeout = 20_000) {
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    if (await clickSubmit(page)) return true;
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  for (const frame of page.frames()) {
+    const activeInput = await frame.$('input:focus');
+    if (!activeInput) continue;
+    await activeInput.press("Enter");
+    return true;
+  }
+  return false;
+}
+
+async function waitAndFillInFrames(page, selectors, value, timeout = 30_000) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
     if (await fillInFrames(page, selectors, value)) return true;
@@ -150,15 +206,27 @@ export async function capturePersonalAuthorization(env) {
   let capturedAuthorization = "";
   let authorizationCodeSeen = false;
   const resourceFailures = [];
+  const networkTrace = [];
   try {
     const page = await browser.newPage();
     page.setDefaultTimeout(15_000);
-    await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
+    // The native data-center desktop identity is rejected by Conta UOL. Keep
+    // the engine and UA coherent so the PagSeguro anti-fraud bootstrap runs.
+    await page.setViewport({ width: 412, height: 915, deviceScaleFactor: 1 });
     await page.setUserAgent(
-      "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) " +
-      "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
+      "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 " +
+      "(KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36",
     );
     page.on("response", (response) => {
+      try {
+        const request = response.request();
+        if (["document", "xhr", "fetch"].includes(request.resourceType()) && networkTrace.length < 16) {
+          const url = new URL(response.url());
+          networkTrace.push(`${response.status()}:${request.resourceType()}:${url.hostname}${url.pathname}`);
+        }
+      } catch {
+        // Diagnostics are best effort and never include query strings or bodies.
+      }
       if (response.status() < 400 || resourceFailures.length >= 8) return;
       try {
         const url = new URL(response.url());
@@ -187,14 +255,7 @@ export async function capturePersonalAuthorization(env) {
       }
     });
 
-    const state = crypto.randomUUID().replaceAll("-", "");
-    const authUrl = new URL(AUTH_URL);
-    authUrl.searchParams.set("response_type", "code");
-    authUrl.searchParams.set("redirect_uri", REDIRECT_URI);
-    authUrl.searchParams.set("state", state);
-    authUrl.searchParams.set("client_id", OAUTH_CLIENT_ID);
-    authUrl.searchParams.set("login_params", "t=default");
-    await page.goto(authUrl.href, { waitUntil: "domcontentloaded", timeout: 25_000 });
+    await page.goto(AUTH_URL, { waitUntil: "domcontentloaded", timeout: 25_000 });
     await new Promise((resolve) => setTimeout(resolve, 3_000));
 
     const usernameFilled = await fillInFrames(page, [
@@ -206,11 +267,13 @@ export async function capturePersonalAuthorization(env) {
     ], String(env.UOL_LOGIN_USERNAME).trim());
     if (!usernameFilled) {
       throw new Error(
-        `uol_browser_username_field_missing:failures=${resourceFailures.join(",")}:` +
-        await safePageShape(page),
+        `uol_browser_username_field_missing:shape=${await safePageShape(page)}:` +
+        `failures=${resourceFailures.join(",")}`,
       );
     }
-    await clickSubmit(page);
+    if (!await waitAndSubmit(page)) {
+      throw new Error(`uol_browser_username_submit_missing:shape=${await safePageShape(page)}`);
+    }
     await waitBriefly(page);
 
     const passwordFilled = await waitAndFillInFrames(page, [
@@ -220,11 +283,14 @@ export async function capturePersonalAuthorization(env) {
     ], String(env.UOL_LOGIN_PASSWORD));
     if (!passwordFilled) {
       throw new Error(
-        `uol_browser_password_field_missing:failures=${resourceFailures.join(",")}:` +
-        await safePageShape(page),
+        `uol_browser_password_field_missing:trace=${networkTrace.join(",")}:` +
+        `failures=${resourceFailures.join(",")}:` +
+        `shape=${await safePageShape(page)}`,
       );
     }
-    await clickSubmit(page);
+    if (!await waitAndSubmit(page)) {
+      throw new Error(`uol_browser_password_submit_missing:shape=${await safePageShape(page)}`);
+    }
     await waitBriefly(page, 12_000);
 
     const currentUrl = page.url();

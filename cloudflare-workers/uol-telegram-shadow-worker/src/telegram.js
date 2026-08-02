@@ -32,6 +32,15 @@ function offerLinkPreview(offer) {
   };
 }
 
+function telegramPhotoIdentity(result) {
+  const photos = Array.isArray(result?.photo) ? result.photo : [];
+  const largest = photos.at(-1) || {};
+  return {
+    photoFileId: String(largest.file_id || ""),
+    photoFileUniqueId: String(largest.file_unique_id || ""),
+  };
+}
+
 export function telegramConfiguration(env) {
   const config = telegramConfig(env);
   const opsChatId = String(env.OPS_TELEGRAM_CHAT_ID || config.mainChatId).trim();
@@ -132,23 +141,69 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   });
   const disableNotification = false;
   const imageUrl = String(offer?.imageUrl || offer?.cardImageUrl || "").trim();
+  const cachedPhotoFileId = String(offer?.telegramPhotoFileId || "").trim();
+  const strategyEnabled = {
+    file_id: offer?.imageStrategies?.file_id !== false,
+    remote_url: offer?.imageStrategies?.remote_url !== false,
+    discord_proxy: offer?.imageStrategies?.discord_proxy !== false,
+    upload: offer?.imageStrategies?.upload !== false,
+  };
+  const remoteStrategy = offer?.telegramImageRemoteStrategy === "discord_proxy"
+    ? "discord_proxy"
+    : "remote_url";
+  const imageAttempts = [];
 
-  let imageError = "";
-  if (imageUrl) {
+  if (cachedPhotoFileId && strategyEnabled.file_id) {
     try {
       const result = await telegramCall(env, "sendPhoto", {
         chat_id: mainChatId,
-        photo: imageUrl,
+        photo: cachedPhotoFileId,
         caption,
         parse_mode: "HTML",
         disable_notification: disableNotification,
       }, fetchImpl);
+      imageAttempts.push({ strategy: "file_id", ok: true, error: "" });
       return {
         messageId: Number(result?.message_id || 0),
         messageKind: "photo",
+        imageStrategy: "file_id",
+        imageAttempts,
+        ...telegramPhotoIdentity(result),
       };
     } catch (error) {
-      imageError = cleanText(error?.message || error).slice(0, 160);
+      imageAttempts.push({
+        strategy: "file_id",
+        ok: false,
+        error: cleanText(error?.message || error).slice(0, 160),
+      });
+    }
+  }
+
+  let imageError = "";
+  if (imageUrl) {
+    if (strategyEnabled[remoteStrategy]) {
+      try {
+        const result = await telegramCall(env, "sendPhoto", {
+          chat_id: mainChatId,
+          photo: imageUrl,
+          caption,
+          parse_mode: "HTML",
+          disable_notification: disableNotification,
+        }, fetchImpl);
+        imageAttempts.push({ strategy: remoteStrategy, ok: true, error: "" });
+        return {
+          messageId: Number(result?.message_id || 0),
+          messageKind: "photo",
+          imageStrategy: remoteStrategy,
+          imageAttempts,
+          ...telegramPhotoIdentity(result),
+        };
+      } catch (error) {
+        imageError = cleanText(error?.message || error).slice(0, 160);
+        imageAttempts.push({ strategy: remoteStrategy, ok: false, error: imageError });
+      }
+    }
+    if (strategyEnabled.upload) {
       try {
         const result = await uploadTelegramPhoto(env, {
           chatId: mainChatId,
@@ -156,16 +211,18 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           caption,
           disableNotification,
         }, fetchImpl);
+        imageAttempts.push({ strategy: "upload", ok: true, error: "" });
         return {
           messageId: Number(result?.message_id || 0),
           messageKind: "photo",
+          imageStrategy: "upload",
+          imageAttempts,
+          ...telegramPhotoIdentity(result),
         };
       } catch (error) {
-        imageError = [imageError, cleanText(error?.message || error)]
-          .filter(Boolean)
-          .join("|")
-          .slice(0, 240);
-        // Uma imagem recusada pelo Telegram não pode impedir a oferta em texto.
+        const uploadError = cleanText(error?.message || error).slice(0, 160);
+        imageAttempts.push({ strategy: "upload", ok: false, error: uploadError });
+        imageError = [imageError, uploadError].filter(Boolean).join("|").slice(0, 240);
       }
     }
   }
@@ -181,6 +238,8 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     messageId: Number(result?.message_id || 0),
     messageKind: "text",
     imageError,
+    imageStrategy: "text",
+    imageAttempts,
   };
 }
 
