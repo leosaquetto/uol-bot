@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  fetchOffersFromApi,
   fetchTicketOffersFromApi,
   mapTicketApiItem,
   mapTicketApiPayload,
@@ -71,6 +72,27 @@ test("envia os dois cabeçalhos e restringe a categoria a ingressos", async () =
   assert.equal(request.url.searchParams.get("category_id"), "162");
   assert.equal(request.init.headers.Authorization, "Bearer api-token");
   assert.equal(request.init.headers["X-Authorization"], "Bearer personal-token");
+});
+
+test("consulta a API geral sob demanda e preserva a categoria da URL", async () => {
+  let requestedUrl;
+  const commonItem = {
+    ...apiItem,
+    titulo: "36% OFF na caixa de trufas",
+    url: "/cacaushow/p8u-36-off-na-caixa-de-trufas",
+  };
+  const cards = await fetchOffersFromApi({
+    UOL_API_AUTHORIZATION: "api-token",
+    UOL_OAUTH_AUTHORIZATION: "personal-token",
+  }, async (url) => {
+    requestedUrl = new URL(url);
+    return new Response(JSON.stringify({ beneficios: [commonItem] }), {
+      headers: { "content-type": "application/json" },
+    });
+  });
+  assert.equal(requestedUrl.searchParams.has("category_id"), false);
+  assert.equal(cards[0].category, "cacaushow");
+  assert.match(cards[0].apiDetail.description, /resgate um par/);
 });
 
 test("status de configuração nunca expõe tokens", () => {

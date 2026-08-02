@@ -197,9 +197,8 @@ export async function capturePersonalAuthorization(env) {
   }
 
   const limits = await puppeteer.limits(env.UOL_BROWSER);
-  const remaining = Number(limits?.remaining);
-  if (Number.isFinite(remaining) && remaining > 0 && remaining < 30_000) {
-    throw new Error("uol_browser_daily_quota_low");
+  if (Number(limits?.allowedBrowserAcquisitions || 0) < 1) {
+    throw new Error("uol_browser_session_unavailable");
   }
 
   const browser = await puppeteer.launch(env.UOL_BROWSER);

@@ -18,6 +18,7 @@ import {
   sendDiscordOffer,
 } from "./discord.js";
 import {
+  fetchOffersFromApi,
   fetchTicketOffersFromApi,
   mergeOfferCards,
   ticketApiConfiguration,
@@ -28,6 +29,7 @@ import {
   authorizationExpiresAt,
   shouldAttemptAuthorizationRefresh,
 } from "./uol-browser-auth.js";
+import { captureOfferDetailInBrowser } from "./uol-browser-detail.js";
 import {
   editSoldOutMessage,
   sendSoldOutNotice,
@@ -35,6 +37,7 @@ import {
   forwardToCanal2,
   sendMainOffer,
   sendDiscussionComment,
+  editDiscussionComment,
   sendTransportTest,
   sendOperationsAlert,
   telegramConfiguration,
@@ -56,7 +59,9 @@ import { nextImageCircuitState } from "./image-strategy.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
-const USER_AGENT = "Mozilla/5.0 (compatible; UOLTelegramCloudflare/1.0)";
+const USER_AGENT =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
+  "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36";
 const INSTANCE_NAME = "clube-uol-global-monitor";
 const MAX_HTML_BYTES = 2_000_000;
 
@@ -265,6 +270,7 @@ async function parseDetail(response, card) {
   let description = "";
   let bodyText = "";
   let validityText = "";
+  let metaDescription = "";
   const images = [];
 
   const appendBounded = (current, value, max) => {
@@ -288,7 +294,10 @@ async function parseDetail(response, card) {
         description = appendBounded(description, text.text, 5_000);
       },
     })
-    .on(".descricao hr + p", {
+    // HTMLRewriter não implementa o combinador adjacente `+`. Capturar todos
+    // os parágrafos da área é seguro porque extractValidity seleciona apenas
+    // as datas no texto acumulado.
+    .on(".descricao p", {
       text(text) {
         validityText = appendBounded(validityText, text.text, 600);
       },
@@ -311,6 +320,16 @@ async function parseDetail(response, card) {
     .on('meta[name="twitter:image"]', {
       element(element) {
         images.push(element.getAttribute("content") || "");
+      },
+    })
+    .on('meta[name="description"]', {
+      element(element) {
+        metaDescription ||= element.getAttribute("content") || "";
+      },
+    })
+    .on('meta[property="og:description"]', {
+      element(element) {
+        metaDescription ||= element.getAttribute("content") || "";
       },
     })
     .on('[data-src*="/beneficios/"]', {
@@ -339,7 +358,7 @@ async function parseDetail(response, card) {
   const detail = {
     title: cleanText(h2) || cleanText(h1) || card.previewTitle,
     validity,
-    description: cleanText(description).slice(0, 4_000),
+    description: cleanText(description || metaDescription).slice(0, 4_000),
     imageUrl,
   };
   return {
@@ -348,37 +367,104 @@ async function parseDetail(response, card) {
   };
 }
 
-async function enrichCard(card, fetchImpl = fetch) {
+function detailIsUsable(detail) {
+  return cleanText(detail?.description).length >= 60 &&
+    ["complete", "partial"].includes(evaluateDetailQuality(detail));
+}
+
+function mergeDetails(card, ...details) {
+  const merged = {
+    title: card.previewTitle,
+    validity: "",
+    description: "",
+    imageUrl: card.cardImageUrl || "",
+  };
+  for (const detail of details) {
+    if (!detail) continue;
+    if (String(detail.title || "").trim()) merged.title = detail.title;
+    if (String(detail.validity || "").trim()) merged.validity = detail.validity;
+    if (cleanText(detail.description).length > cleanText(merged.description).length) {
+      merged.description = detail.description;
+    }
+    if (!String(merged.imageUrl || "").trim() && String(detail.imageUrl || "").trim()) {
+      merged.imageUrl = detail.imageUrl;
+    }
+  }
+  return { ...merged, quality: evaluateDetailQuality(merged) };
+}
+
+function assertDetailStayedOnOffer(requestedUrl, finalUrl) {
+  if (!finalUrl) return;
+  const requestedKeys = new Set(offerIdentityKeys(requestedUrl));
+  const finalKeys = offerIdentityKeys(finalUrl);
+  if (!finalKeys.some((key) => requestedKeys.has(key))) {
+    throw new Error("uol_detail_redirected");
+  }
+}
+
+export async function enrichCard(
+  card,
+  env = {},
+  fetchImpl = fetch,
+  browserImpl = captureOfferDetailInBrowser,
+) {
   const startedAt = Date.now();
-  if (card.apiDetail) {
+  const apiDetail = card.apiDetail
+    ? { ...card.apiDetail, quality: evaluateDetailQuality(card.apiDetail) }
+    : null;
+  if (detailIsUsable(apiDetail)) {
     return {
       ...card,
-      ...card.apiDetail,
+      ...apiDetail,
       detailOk: true,
       detailError: "",
       detailElapsedMs: Date.now() - startedAt,
     };
   }
+  let bestDetail = mergeDetails(card, apiDetail);
+  const errors = [];
   try {
     const response = await fetchHtml(card.link, "_uol_shadow_detail_ts", fetchImpl);
+    assertDetailStayedOnOffer(card.link, response.url);
     const detail = await parseDetail(response, card);
+    bestDetail = mergeDetails(card, apiDetail, detail);
+    if (!detailIsUsable(bestDetail)) throw new Error(`uol_detail_${bestDetail.quality}`);
     return {
       ...card,
-      ...detail,
+      ...bestDetail,
       detailOk: true,
       detailError: "",
       detailElapsedMs: Date.now() - startedAt,
     };
   } catch (error) {
+    errors.push(sanitizeError(error));
+  }
+
+  try {
+    const browserDetail = await browserImpl(env, card.link);
+    assertDetailStayedOnOffer(card.link, browserDetail?.finalUrl);
+    const normalizedBrowserDetail = {
+      title: cleanText(browserDetail?.title),
+      validity: extractValidity(`${browserDetail?.bodyText || ""} ${browserDetail?.description || ""}`),
+      description: cleanText(browserDetail?.description).slice(0, 4_000),
+      imageUrl: safeAbsoluteImage(browserDetail?.imageUrl),
+    };
+    bestDetail = mergeDetails(card, apiDetail, normalizedBrowserDetail);
+    if (!detailIsUsable(bestDetail)) throw new Error(`uol_browser_detail_${bestDetail.quality}`);
     return {
       ...card,
-      title: card.previewTitle,
-      validity: "",
-      description: "",
-      imageUrl: card.cardImageUrl,
-      quality: "failed",
+      ...bestDetail,
+      detailOk: true,
+      detailError: "",
+      detailElapsedMs: Date.now() - startedAt,
+    };
+  } catch (error) {
+    errors.push(sanitizeError(error));
+    return {
+      ...card,
+      ...bestDetail,
       detailOk: false,
-      detailError: sanitizeError(error),
+      detailError: errors.join("|").slice(0, 240),
       detailElapsedMs: Date.now() - startedAt,
     };
   }
@@ -392,6 +478,11 @@ function rowToPublicDecision(row) {
     category: row.category || "",
     status: row.status,
     detailQuality: row.detail_quality || "",
+    descriptionLength: Number(row.description_length || 0),
+    detailError: row.detail_error || "",
+    detailRepairAttempts: Number(row.detail_repair_attempts || 0),
+    detailRepairError: row.detail_repair_error || "",
+    detailRepairedAt: row.detail_repaired_at || "",
     firstSeenAt: row.first_seen_at,
     decisionAt: row.decision_at || "",
     wouldSendMain: Boolean(row.would_send_main),
@@ -404,6 +495,9 @@ function rowToPublicDecision(row) {
     canal2MessageId: Number(row.canal2_message_id || 0),
     mainDeliveryError: row.main_delivery_error || "",
     canal2DeliveryError: row.canal2_delivery_error || "",
+    commentSent: Boolean(row.comment_sent_at),
+    commentChunksSent: Number(row.comment_chunks_sent || 0),
+    commentDeliveryError: row.comment_delivery_error || "",
     soldOutMainSynced: Boolean(row.main_sold_out_synced_at),
     soldOutCanal2Synced: Boolean(row.canal2_sold_out_synced_at),
     soldOutMainAttempts: Number(row.main_sold_out_attempts || 0),
@@ -643,6 +737,16 @@ export class UolTelegramShadow extends DurableObject {
            SET canal2_sold_out_attempts = 0
          WHERE status = 'sold_out' AND canal2_sold_out_synced_at = '';
         INSERT INTO _sql_schema_migrations (id) VALUES (8);
+      `);
+    }
+    if (currentVersion < 9) {
+      this.ctx.storage.sql.exec(`
+        ALTER TABLE offers ADD COLUMN detail_repair_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN detail_repair_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN detail_repaired_at TEXT NOT NULL DEFAULT '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (9);
+        CREATE INDEX IF NOT EXISTS offers_detail_repair_idx
+          ON offers(detail_repaired_at, detail_repair_attempts, first_seen_at);
       `);
     }
   }
@@ -935,6 +1039,21 @@ export class UolTelegramShadow extends DurableObject {
       if (!refresh.refreshed) throw error;
       authorization = this.metadataValue("personal_runtime_authorization");
       return fetchTicketOffersFromApi(this.env, fetch, authorization);
+    }
+  }
+
+  async fetchAllApiWithRecovery() {
+    await this.refreshPersonalAuthorization("proactive");
+    let authorization = this.metadataValue("personal_runtime_authorization");
+    try {
+      return await fetchOffersFromApi(this.env, fetch, authorization);
+    } catch (error) {
+      const message = sanitizeError(error);
+      if (!/(?:uol_api_http_401|uol_api_http_403)/i.test(message)) throw error;
+      const refresh = await this.refreshPersonalAuthorization(message);
+      if (!refresh.refreshed) throw error;
+      authorization = this.metadataValue("personal_runtime_authorization");
+      return fetchOffersFromApi(this.env, fetch, authorization);
     }
   }
 
@@ -1298,6 +1417,7 @@ export class UolTelegramShadow extends DurableObject {
     const resolved = [];
     const resolvedIds = new Set();
     let inserted = 0;
+    const insertedIds = [];
     for (const card of cards) {
       let existing = byId.get(card.id);
       if (!existing) {
@@ -1354,8 +1474,9 @@ export class UolTelegramShadow extends DurableObject {
       resolvedIds.add(card.id);
       knownIds.add(card.id);
       inserted += 1;
+      insertedIds.push(card.id);
     }
-    return { cards: resolved, inserted };
+    return { cards: resolved, inserted, insertedIds };
   }
 
   async processPending(cardsById, now, mode) {
@@ -1380,7 +1501,7 @@ export class UolTelegramShadow extends DurableObject {
       partnerImageUrl: row.partner_image_url,
       partnerName: row.partner_name,
     });
-    const enriched = await Promise.all(cards.map((card) => enrichCard(card)));
+    const enriched = await Promise.all(cards.map((card) => enrichCard(card, this.env)));
     let wouldSendMain = 0;
     let wouldSendCanal2 = 0;
 
@@ -1866,6 +1987,109 @@ export class UolTelegramShadow extends DurableObject {
     return { sent, failed };
   }
 
+  async syncExistingDiscussionComments(row, offer) {
+    if (!Number(row.discussion_message_id || 0)) return { updated: 0, added: 0 };
+    const chunks = buildDiscussionCommentChunks(offer);
+    let messageIds = [];
+    try {
+      messageIds = JSON.parse(row.comment_message_ids || "[]");
+    } catch {
+      messageIds = [];
+    }
+    let updated = 0;
+    let added = 0;
+    for (let index = 0; index < chunks.length; index += 1) {
+      const existingMessageId = Number(messageIds[index] || 0);
+      if (existingMessageId) {
+        await editDiscussionComment(this.env, chunks[index], existingMessageId);
+        updated += 1;
+      } else {
+        const result = await sendDiscussionComment(
+          this.env,
+          chunks[index],
+          Number(row.discussion_message_id),
+        );
+        if (!result.messageId) throw new Error("telegram_comment_message_id_missing");
+        messageIds.push(result.messageId);
+        added += 1;
+      }
+    }
+    this.ctx.storage.sql.exec(
+      `UPDATE offers SET
+         comment_message_ids = ?, comment_chunks_sent = ?, comment_sent_at = ?,
+         comment_delivery_error = ''
+       WHERE id = ?`,
+      JSON.stringify(messageIds),
+      chunks.length,
+      new Date().toISOString(),
+      row.id,
+    );
+    return { updated, added };
+  }
+
+  async repairWeakDetails(activeOfferIds, limit = 1) {
+    if (this.currentDeliveryMode() !== "live") return { repaired: 0, failed: 0 };
+    const activeIds = [...(activeOfferIds || [])];
+    if (!activeIds.length) return { repaired: 0, failed: 0 };
+    const placeholders = activeIds.map(() => "?").join(", ");
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT * FROM offers
+       WHERE main_sent_at <> ''
+         AND length(trim(description)) < 60
+         AND detail_repaired_at = ''
+         AND detail_repair_attempts < 3
+         AND first_seen_at >= datetime('now', '-7 days')
+         AND status NOT IN ('sold_out', 'shadow_sold_out', 'discarded')
+         AND id IN (${placeholders})
+       ORDER BY first_seen_at DESC
+       LIMIT ?`,
+      ...activeIds,
+      Math.min(2, Math.max(1, Number(limit || 1))),
+    ).toArray();
+    let repaired = 0;
+    let failed = 0;
+    for (const row of rows) {
+      const attempt = Number(row.detail_repair_attempts || 0) + 1;
+      const offer = await enrichCard(rowToOffer(row), this.env);
+      if (!offer.detailOk) {
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET detail_repair_attempts = ?, detail_repair_error = ? WHERE id = ?`,
+          attempt,
+          offer.detailError,
+          row.id,
+        );
+        failed += 1;
+        continue;
+      }
+      const repairedAt = new Date().toISOString();
+      this.ctx.storage.sql.exec(
+        `UPDATE offers SET
+           title = ?, image_url = ?, validity = ?, description = ?, detail_quality = ?,
+           detail_repair_attempts = ?, detail_repair_error = '', detail_repaired_at = ?
+         WHERE id = ?`,
+        offer.title,
+        offer.imageUrl,
+        offer.validity,
+        offer.description,
+        offer.quality,
+        attempt,
+        repairedAt,
+        row.id,
+      );
+      try {
+        await this.syncExistingDiscussionComments(row, offer);
+      } catch (error) {
+        this.ctx.storage.sql.exec(
+          "UPDATE offers SET comment_delivery_error = ? WHERE id = ?",
+          sanitizeError(error),
+          row.id,
+        );
+      }
+      repaired += 1;
+    }
+    return { repaired, failed };
+  }
+
   reconcileDiscussionForwards() {
     const pending = this.ctx.storage.sql.exec(
       `SELECT origin_message_id, discussion_message_id
@@ -2269,10 +2493,46 @@ export class UolTelegramShadow extends DurableObject {
         run.mainSent += fastDelivered.mainSent;
         run.discordSent += fastDelivered.discordSent;
         run.deliveryFailed += fastDelivered.failed;
+        const newNonTicketIds = new Set(
+          resolution.cards
+            .filter((card) => resolution.insertedIds.includes(card.id) && !isTicketCampaign(card))
+            .map((card) => card.id),
+        );
+        if (newNonTicketIds.size > 0) {
+          try {
+            const allApiCards = await this.fetchAllApiWithRecovery();
+            const apiByIdentity = new Map();
+            for (const apiCard of allApiCards) {
+              for (const key of offerIdentityKeys(apiCard.link)) apiByIdentity.set(key, apiCard);
+            }
+            for (const card of resolution.cards) {
+              if (!newNonTicketIds.has(card.id)) continue;
+              const apiCard = offerIdentityKeys(card.link)
+                .map((key) => apiByIdentity.get(key))
+                .find(Boolean);
+              if (!apiCard) continue;
+              cardsById.set(card.id, {
+                ...apiCard,
+                id: card.id,
+                link: card.link,
+                previewTitle: card.previewTitle || apiCard.previewTitle,
+                category: card.category || apiCard.category,
+                cardImageUrl: card.cardImageUrl || apiCard.cardImageUrl,
+                partnerImageUrl: card.partnerImageUrl || apiCard.partnerImageUrl,
+                partnerName: card.partnerName || apiCard.partnerName,
+              });
+            }
+          } catch (error) {
+            logEvent("error", "uol_all_api_new_offer_enrichment_failed", {
+              error: sanitizeError(error),
+            });
+          }
+        }
         const processed = await this.processPending(cardsById, now, mode);
         run.enriched = processed.enriched;
         run.wouldSendMain = processed.wouldSendMain;
         run.wouldSendCanal2 = processed.wouldSendCanal2;
+        await this.repairWeakDetails(activeOfferIds, 1);
         if (listingHealthy) {
           const listingIdentityKeys = new Set(
             listingCards.flatMap((card) => offerIdentityKeys(card.link)),
@@ -2489,10 +2749,13 @@ export class UolTelegramShadow extends DurableObject {
     ).toArray();
     const recent = this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
+              length(description) AS description_length, detail_error,
+              detail_repair_attempts, detail_repair_error, detail_repaired_at,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
               main_message_id, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
+              comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
               canal2_sold_out_attempts, canal2_sold_out_error
@@ -2619,10 +2882,13 @@ export class UolTelegramShadow extends DurableObject {
     const boundedLimit = Math.min(100, Math.max(1, Number(limit || 30)));
     return this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
+              length(description) AS description_length, detail_error,
+              detail_repair_attempts, detail_repair_error, detail_repaired_at,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
               main_message_id, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
+              comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
               canal2_sold_out_attempts, canal2_sold_out_error
@@ -2638,10 +2904,13 @@ export class UolTelegramShadow extends DurableObject {
     const boundedLimit = Math.min(300, Math.max(1, Number(limit || 48)));
     return this.ctx.storage.sql.exec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
+              length(description) AS description_length, detail_error,
+              detail_repair_attempts, detail_repair_error, detail_repaired_at,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
               main_message_id, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
+              comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
               canal2_sold_out_attempts, canal2_sold_out_error

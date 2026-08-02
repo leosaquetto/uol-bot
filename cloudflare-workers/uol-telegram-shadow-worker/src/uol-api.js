@@ -62,12 +62,21 @@ function validityText(item) {
   return "";
 }
 
-export function mapTicketApiItem(item) {
+function categoryFromLink(link, fallback = "") {
+  try {
+    return new URL(link).pathname.split("/").filter(Boolean)[0] || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function mapTicketApiItem(item, fallbackCategory = "campanhasdeingresso") {
   const partner = parsePartner(item?.parceiro);
+  const link = publicOfferLink(item);
   const card = normalizeCard({
-    link: publicOfferLink(item),
+    link,
     title: item?.titulo,
-    category: "campanhasdeingresso",
+    category: categoryFromLink(link, fallbackCategory),
     cardImageUrl: item?.imagem,
     partnerImageUrl: partner?.imagem,
     partnerName: partner?.titulo,
@@ -89,11 +98,11 @@ export function mapTicketApiItem(item) {
   };
 }
 
-export function mapTicketApiPayload(payload) {
+export function mapTicketApiPayload(payload, fallbackCategory = "campanhasdeingresso") {
   const cards = [];
   const seen = new Set();
   for (const item of payload?.beneficios || []) {
-    const card = mapTicketApiItem(item);
+    const card = mapTicketApiItem(item, fallbackCategory);
     if (!card) continue;
     const keys = offerIdentityKeys(card.link);
     if (keys.some((key) => seen.has(key))) continue;
@@ -137,15 +146,16 @@ export function mergeOfferCards(primary, secondary) {
   return merged;
 }
 
-export async function fetchTicketOffersFromApi(
+export async function fetchOffersFromApi(
   env,
   fetchImpl = fetch,
   personalAuthorization = "",
+  { categoryId = "" } = {},
 ) {
   if (!ticketApiConfiguration(env).configured) throw new Error("uol_api_not_configured");
   const url = new URL(API_URL);
   url.searchParams.set("offset", "0");
-  url.searchParams.set("category_id", TICKET_CATEGORY_ID);
+  if (categoryId) url.searchParams.set("category_id", categoryId);
   url.searchParams.set("order", "new");
   url.searchParams.set("_uol_worker_ts", String(Date.now()));
 
@@ -171,5 +181,17 @@ export async function fetchTicketOffersFromApi(
   if (contentLength > MAX_API_BYTES) throw new Error("uol_api_json_excede_limite");
   const text = await response.text();
   if (text.length > MAX_API_BYTES) throw new Error("uol_api_json_excede_limite");
-  return mapTicketApiPayload(JSON.parse(text));
+  return mapTicketApiPayload(JSON.parse(text), categoryId === TICKET_CATEGORY_ID
+    ? "campanhasdeingresso"
+    : "");
+}
+
+export async function fetchTicketOffersFromApi(
+  env,
+  fetchImpl = fetch,
+  personalAuthorization = "",
+) {
+  return fetchOffersFromApi(env, fetchImpl, personalAuthorization, {
+    categoryId: TICKET_CATEGORY_ID,
+  });
 }

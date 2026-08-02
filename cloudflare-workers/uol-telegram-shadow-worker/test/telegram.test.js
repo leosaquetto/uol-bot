@@ -6,6 +6,7 @@ import {
   sendSoldOutNotice,
   editMainOfferMessage,
   forwardToCanal2,
+  editDiscussionComment,
   sendMainOffer,
   sendOperationsAlert,
   sendDiscussionComment,
@@ -217,12 +218,15 @@ test("corrige MIME PNG incorreto quando os bytes são JPEG", async () => {
 });
 
 test("encaminha para o canal 2 somente após ter a mensagem principal", async () => {
+  let method = "";
   let payload = {};
-  const result = await forwardToCanal2(env, 41, async (_url, init) => {
+  const result = await forwardToCanal2(env, 41, async (url, init) => {
+    method = url.split("/").pop();
     payload = JSON.parse(init.body);
     return jsonResponse({ message_id: 99 });
   });
   assert.equal(result.messageId, 99);
+  assert.equal(method, "copyMessage");
   assert.equal(payload.from_chat_id, env.TELEGRAM_CHAT_ID);
   assert.equal(payload.chat_id, env.CANAL2_ID);
   assert.equal(payload.message_id, 41);
@@ -300,7 +304,7 @@ test("teste de transporte confirma principal e canal 2", async () => {
       message_id: method === "sendMessage" ? 501 : 502,
     });
   });
-  assert.deepEqual(methods, ["sendMessage", "forwardMessage"]);
+  assert.deepEqual(methods, ["sendMessage", "copyMessage"]);
   assert.deepEqual(result, {
     mainMessageId: 501,
     canal2MessageId: 502,
@@ -324,6 +328,24 @@ test("envia detalhe como resposta à discussão automática", async () => {
   assert.equal(payload.chat_id, "-1003802235343");
   assert.equal(payload.reply_parameters.message_id, 778);
   assert.equal(payload.disable_notification, false);
+});
+
+test("atualiza comentário existente quando o detalhe é recuperado", async () => {
+  let payload = {};
+  const result = await editDiscussionComment(
+    { ...env, GRUPO_COMENTARIO_ID: "-1003802235343" },
+    "📋 <b>Oferta completa</b>",
+    779,
+    async (url, init) => {
+      assert.match(url, /editMessageText$/);
+      payload = JSON.parse(init.body);
+      return jsonResponse({ message_id: 779 });
+    },
+  );
+  assert.equal(result.messageId, 779);
+  assert.equal(payload.chat_id, "-1003802235343");
+  assert.equal(payload.message_id, 779);
+  assert.equal(payload.link_preview_options.is_disabled, true);
 });
 
 test("registra webhook preservando atualizações pendentes", async () => {

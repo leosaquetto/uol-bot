@@ -315,6 +315,19 @@ export async function sendDiscussionComment(env, text, discussionMessageId, fetc
   return { messageId: Number(result?.message_id || 0) };
 }
 
+export async function editDiscussionComment(env, text, messageId, fetchImpl = fetch) {
+  const groupChatId = String(env.GRUPO_COMENTARIO_ID || "").trim();
+  if (!groupChatId) throw new Error("telegram_discussion_group_missing");
+  await telegramCall(env, "editMessageText", {
+    chat_id: groupChatId,
+    message_id: Number(messageId),
+    text,
+    parse_mode: "HTML",
+    link_preview_options: { is_disabled: true },
+  }, fetchImpl);
+  return { messageId: Number(messageId) };
+}
+
 export async function registerTelegramWebhook(env, fetchImpl = fetch) {
   const token = String(env.TELEGRAM_TOKEN || "").trim();
   const baseUrl = String(env.PUBLIC_BASE_URL || "").replace(/\/+$/, "");
@@ -353,7 +366,7 @@ export async function forwardToCanal2(env, mainMessageId, fetchImpl = fetch) {
   const { mainChatId, canal2Id } = telegramConfig(env);
   if (!mainChatId) throw new Error("telegram_main_chat_missing");
   if (!canal2Id) throw new Error("telegram_canal2_missing");
-  const result = await telegramCall(env, "forwardMessage", {
+  const result = await telegramCall(env, "copyMessage", {
     chat_id: canal2Id,
     from_chat_id: mainChatId,
     message_id: Number(mainMessageId),

@@ -49,7 +49,8 @@ O Worker utiliza a Bot API diretamente:
 1. tenta `sendPhoto` usando a imagem pública da oferta;
 2. usa `sendMessage` imediatamente caso o Telegram rejeite a imagem;
 3. persiste a confirmação do canal principal;
-4. para ingressos elegíveis, usa `forwardMessage` para o canal 2;
+4. para ingressos elegíveis, usa `copyMessage` para o canal 2, criando uma
+   mensagem independente e editável;
 5. uma falha no canal 2 não apaga o sucesso do canal principal;
 6. novas tentativas processam somente o destino ainda pendente.
 
@@ -102,7 +103,7 @@ Na promoção:
 - testes unitários de coleta, deduplicação, validade e filtros;
 - testes de legenda HTML e marcação de esgotamento;
 - testes do fallback `sendPhoto` para `sendMessage`;
-- testes do encaminhamento ao canal 2;
+- testes da cópia independente ao canal 2;
 - teste real do transporte no canal principal e no canal 2;
 - geração de tipos pelo Wrangler;
 - dry-run do pacote;

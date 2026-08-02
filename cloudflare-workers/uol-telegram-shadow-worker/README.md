@@ -16,10 +16,12 @@ como rollback, mas não publica mensagens.
 4. aliases de endereço são reconciliados antes de decidir se o card é inédito;
 5. ingressos genuinamente inéditos disparam Telegram e Discord em paralelo com
    a thumbnail, antes de abrir a página de detalhe;
-6. título, validade, descrição e imagem são extraídos da página de detalhe;
+6. título, validade, descrição e imagem vêm da API ou da página de detalhe; uma
+   oferta comum nova também consulta a API geral sob demanda e Browser Rendering
+   só entra quando o detalhe continua incompleto;
 7. a publicação curta é enriquecida por edição e a oferta é validada;
 8. benefícios comuns continuam sendo enviados depois do enriquecimento;
-9. campanhas elegíveis de ingressos são encaminhadas ao canal 2;
+9. campanhas elegíveis de ingressos são copiadas com `copyMessage` ao canal 2;
 10. o webhook do Telegram associa a cópia automática no grupo vinculado e
     publica a descrição completa como comentário;
 11. cada resultado e tentativa é persistido separadamente;
@@ -33,9 +35,10 @@ como rollback, mas não publica mensagens.
   stand-up, partidas, campeonatos, futebol e jogos.
 - **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
   15 minutos, limitada às ofertas decididas nos últimos três dias. A publicação
-  principal é editada; como encaminhamentos do canal exclusivo não são
-  editáveis pelo bot, ele responde à cópia com um aviso `[ESGOTADO]`.
-- **Enriquecimento:** apenas ofertas novas; no máximo quatro por rodada.
+  principal e as novas cópias do canal exclusivo são editadas. Encaminhamentos
+  históricos recebem como fallback uma resposta `[ESGOTADO]`.
+- **Enriquecimento:** apenas ofertas novas ou reparo de detalhe recente ainda
+  ativo; no máximo quatro novidades e um reparo por rodada.
 - **Imagem:** reutiliza primeiro o `file_id` devolvido pelo Telegram; depois
   tenta URL pública, proxy já cacheado pelo Discord e upload binário antes de
   recorrer a texto. O cache guarda no máximo 500 imagens e expira usos inativos
@@ -140,8 +143,10 @@ do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 
 Em estado estável, o alarme de 15 segundos representa 5.760 invocações por dia,
 172.800 em 30 dias. Cada ciclo saudável faz duas leituras externas em paralelo
-(API e HTML). Browser Rendering não é usado em cada scan: só quando uma
-renovação de autenticação vence o controle de expiração/erro e cooldown.
+(API de ingressos e HTML). A API geral só é consultada quando surge uma oferta
+comum nova. Browser Rendering não é usado em cada scan: apenas para renovar a
+autorização quando necessário ou recuperar o detalhe de uma novidade que API e
+HTTP não completaram.
 As ofertas conhecidas só são atualizadas se algum campo realmente mudar. Sem
 oferta nova, o SQLite escreve aproximadamente 17.280 linhas por dia: alarme,
 registro da execução e descarte do registro mais antigo. Enriquecimento,
