@@ -3442,16 +3442,17 @@ export class UolTelegramShadow extends DurableObject {
         }
       }
 
-      const imageUpgrades = await this.upgradeTimedOutMainImages(new Date());
-      result.mainImagesUpgraded = imageUpgrades.upgraded;
-      result.deliveryFailed += imageUpgrades.failed;
-
       const secondary = await this.processDeliveryQueue(new Date(), {
         targetNames: ["canal2", "discord"],
       });
       result.canal2Sent = secondary.canal2Sent;
       result.discordSent = secondary.discordSent;
       result.deliveryFailed += secondary.failed;
+
+      const imageUpgrades = await this.upgradeTimedOutMainImages(new Date());
+      result.mainImagesUpgraded = imageUpgrades.upgraded;
+      result.deliveryFailed += imageUpgrades.failed;
+
       this.reconcileDiscussionForwards();
       const comments = await this.processDiscussionComments(2);
       result.commentsSent = comments.sent;

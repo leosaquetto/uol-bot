@@ -39,6 +39,11 @@ test("HTML e destinos secundários ficam isolados na manutenção", () => {
   assert.match(maintenance, /fetchListing\(/);
   assert.match(maintenance, /targetNames:\s*\["canal2",\s*"discord"\]/);
   assert.match(maintenance, /upgradeTimedOutMainImages\(/);
+  assert.ok(
+    maintenance.indexOf("this.processDeliveryQueue(") <
+      maintenance.indexOf("this.upgradeTimedOutMainImages("),
+    "Discord e canal 2 devem sair antes do upgrade tardio de imagem",
+  );
   assert.doesNotMatch(maintenance, /targetNames:\s*\["main"\]/);
 });
 
