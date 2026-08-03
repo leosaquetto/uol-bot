@@ -17,10 +17,10 @@ function methodSource(start, end) {
   return workerSource.slice(startIndex, endIndex);
 }
 
-test("polling crítico usa somente API e envio principal text-first", () => {
+test("polling crítico usa somente API e envio principal com prazo de imagem", () => {
   const scan = methodSource("  async scan(", "  async runMaintenanceTick(");
   assert.match(scan, /this\.fetchAllApi\(\)/);
-  assert.match(scan, /fastTextFirst:\s*true/);
+  assert.match(scan, /waitForMainImage:\s*true/);
   assert.match(scan, /targetNames:\s*\["main"\]/);
   assert.doesNotMatch(scan, /fetchListing\(/);
   assert.doesNotMatch(scan, /ensureTelegramWebhook\(/);

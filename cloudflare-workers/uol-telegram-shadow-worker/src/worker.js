@@ -30,6 +30,7 @@ import {
 } from "./uol-api.js";
 import { authorizationExpiresAt } from "./uol-auth.js";
 import {
+  editMainOfferMedia,
   editSoldOutMessage,
   editMainOfferMessage,
   forwardToCanal2,
@@ -59,6 +60,10 @@ import {
   isAmbiguousDeliveryError,
 } from "./delivery-state.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
+import {
+  lateImageUpgradeDue,
+  mainImageDeliveryOffer,
+} from "./image-deadline.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
@@ -403,6 +408,7 @@ function rowToOffer(row) {
     imageUrl: row.image_url,
     validity: row.validity,
     description: row.description,
+    firstSeenAt: row.first_seen_at,
   };
 }
 
@@ -694,6 +700,17 @@ export class UolTelegramShadow extends DurableObject {
         CREATE INDEX IF NOT EXISTS offers_restock_retry_idx
           ON offers(status, restocked_at, main_restock_next_attempt_at,
                     canal2_restock_next_attempt_at);
+      `);
+    }
+    if (currentVersion < 14) {
+      this.ctx.storage.sql.exec(`
+        ALTER TABLE offers ADD COLUMN main_image_upgrade_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN main_image_upgrade_next_attempt_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN main_image_upgrade_error TEXT NOT NULL DEFAULT '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (14);
+        CREATE INDEX IF NOT EXISTS offers_main_image_upgrade_idx
+          ON offers(telegram_image_strategy, main_image_upgrade_next_attempt_at,
+                    main_image_upgrade_attempts, first_seen_at);
       `);
     }
   }
@@ -995,6 +1012,70 @@ export class UolTelegramShadow extends DurableObject {
         imageStrategies: this.imageStrategyAvailability(),
       },
     };
+  }
+
+  async upgradeTimedOutMainImages(now = new Date(), limit = 4) {
+    if (this.currentDeliveryMode() !== "live") return { upgraded: 0, failed: 0 };
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const rows = this.ctx.storage.sql.exec(
+      `SELECT * FROM offers
+       WHERE telegram_image_strategy = 'text_timeout'
+         AND main_message_kind = 'text'
+         AND main_message_id > 0
+         AND main_image_upgrade_attempts < ?
+       ORDER BY first_seen_at ASC
+       LIMIT ?`,
+      maxAttempts,
+      Math.max(1, Math.min(16, Number(limit || 4))),
+    ).toArray().filter((row) => lateImageUpgradeDue(row, now, maxAttempts));
+    let upgraded = 0;
+    let failed = 0;
+
+    for (const row of rows) {
+      const attempts = Number(row.main_image_upgrade_attempts || 0) + 1;
+      const telegramState = this.telegramOfferWithImageState(rowToOffer(row));
+      try {
+        const result = await editMainOfferMedia(this.env, {
+          messageId: Number(row.main_message_id),
+          offer: telegramState.offer,
+          telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
+        });
+        this.recordImageDelivery(row.id, telegramState.imageKey, result, now);
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET main_message_kind = 'photo',
+             main_image_upgrade_attempts = ?, main_image_upgrade_next_attempt_at = '',
+             main_image_upgrade_error = '' WHERE id = ?`,
+          attempts,
+          row.id,
+        );
+        upgraded += 1;
+      } catch (error) {
+        const message = sanitizeError(error);
+        if (message.toLowerCase().includes("message is not modified")) {
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET main_message_kind = 'photo',
+               telegram_image_strategy = 'edit_confirmed_not_modified',
+               main_image_upgrade_attempts = ?, main_image_upgrade_next_attempt_at = '',
+               main_image_upgrade_error = '' WHERE id = ?`,
+            attempts,
+            row.id,
+          );
+          upgraded += 1;
+          continue;
+        }
+        this.ctx.storage.sql.exec(
+          `UPDATE offers SET main_image_upgrade_attempts = ?,
+             main_image_upgrade_next_attempt_at = ?, main_image_upgrade_error = ?
+           WHERE id = ?`,
+          attempts,
+          deliveryRetryAt(error, attempts, now),
+          `${isAmbiguousDeliveryError(error) ? "ambiguous:" : ""}${message}`.slice(0, 240),
+          row.id,
+        );
+        failed += 1;
+      }
+    }
+    return { upgraded, failed };
   }
 
   getImageDeliveryHealth() {
@@ -2021,7 +2102,7 @@ export class UolTelegramShadow extends DurableObject {
 
   async processDeliveryQueue(
     now,
-    { priorityIds = [], fastTextFirst = true, targetNames = [] } = {},
+    { priorityIds = [], waitForMainImage = true, targetNames = [] } = {},
   ) {
     if (this.currentDeliveryMode() !== "live") {
       return { mainSent: 0, canal2Sent: 0, discordSent: 0, failed: 0 };
@@ -2170,11 +2251,7 @@ export class UolTelegramShadow extends DurableObject {
         row,
         classification,
         offer,
-        // O fast path não consulta cache nem circuitos de imagem. Só a API,
-        // a decisão persistida e um sendMessage participam da entrega urgente.
-        telegramState: fastTextFirst
-          ? { imageKey: "", offer }
-          : this.telegramOfferWithImageState(offer),
+        telegramState: this.telegramOfferWithImageState(offer),
       };
     });
     const stillCurrent = () => this.currentDeliveryMode() === "live" &&
@@ -2189,11 +2266,28 @@ export class UolTelegramShadow extends DurableObject {
       if (!target) return;
       const attempts = target.attempts + 1;
       beginAttempt(entry.row.id, "main", attempts, new Date().toISOString());
-      const mainOffer = fastTextFirst
-        ? { ...entry.telegramState.offer, telegramTextFirst: true }
-        : entry.telegramState.offer;
+      const mainOffer = waitForMainImage
+        ? mainImageDeliveryOffer(
+            entry.telegramState.offer,
+            new Date(),
+            envNumber(this.env, "MAIN_IMAGE_WAIT_SECONDS", 60, 1, 300),
+          )
+        : { ...entry.telegramState.offer, deferTextFallback: false };
       try {
         const result = await sendMainOffer(this.env, mainOffer);
+        if (result.deferred) {
+          const deadlineMs = Date.parse(mainOffer.imageDeadlineAt || "");
+          const nextAttemptMs = Number.isFinite(deadlineMs)
+            ? Math.min(deadlineMs, Date.now() + 1_000)
+            : Date.now() + 1_000;
+          this.ctx.storage.sql.exec(
+            `UPDATE offers SET main_delivery_error = '', main_delivery_in_flight_at = '',
+               main_delivery_next_attempt_at = ? WHERE id = ?`,
+            new Date(nextAttemptMs).toISOString(),
+            entry.row.id,
+          );
+          return;
+        }
         if (!result.messageId) {
           throw Object.assign(new Error("telegram_main_message_id_missing"), { ambiguous: true });
         }
@@ -2202,11 +2296,17 @@ export class UolTelegramShadow extends DurableObject {
         this.ctx.storage.sql.exec(
           `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
              main_delivery_error = '', main_delivery_in_flight_at = '',
-             main_delivery_next_attempt_at = '', main_delivery_unknown_at = ''
+             main_delivery_next_attempt_at = '', main_delivery_unknown_at = '',
+             main_image_upgrade_next_attempt_at = ?
            WHERE id = ?`,
           result.messageId,
           result.messageKind,
           sentAt,
+          result.imageStrategy === "text_timeout"
+            ? new Date(
+                Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600) * 1_000,
+              ).toISOString()
+            : "",
           entry.row.id,
         );
         mainSent += 1;
@@ -2988,6 +3088,7 @@ export class UolTelegramShadow extends DurableObject {
       apiFastElapsedMs: 0,
       htmlReconciled: false,
       mainAmbiguousReleased: 0,
+      mainImagesUpgraded: 0,
       apiError: "",
       error: "",
     };
@@ -3061,7 +3162,7 @@ export class UolTelegramShadow extends DurableObject {
         for (const priorityIds of deliveryBatches) {
           const delivered = await this.processDeliveryQueue(new Date(), {
             priorityIds,
-            fastTextFirst: true,
+            waitForMainImage: true,
             targetNames: ["main"],
           });
           run.mainSent += delivered.mainSent;
@@ -3086,13 +3187,16 @@ export class UolTelegramShadow extends DurableObject {
         run.wouldSendMain += catchUp.wouldSendMain;
         run.wouldSendCanal2 += catchUp.wouldSendCanal2;
         const delivered = await this.processDeliveryQueue(new Date(), {
-          fastTextFirst: true,
+          waitForMainImage: true,
           targetNames: ["main"],
         });
         run.mainSent = delivered.mainSent;
         run.deliveryFailed = delivered.failed;
         run.outcome = run.mainSent > 0 ? "telegram_delivered" : "api_degraded";
       }
+      const imageUpgrades = await this.upgradeTimedOutMainImages(new Date());
+      run.mainImagesUpgraded = imageUpgrades.upgraded;
+      run.deliveryFailed += imageUpgrades.failed;
       if (apiCards.length) {
         try {
           this.recordSourceCards("api", apiCards, apiLastSuccessAt);
@@ -3176,6 +3280,7 @@ export class UolTelegramShadow extends DurableObject {
       restockMainEdited: 0,
       restockCanal2Edited: 0,
       deliveryFailed: 0,
+      mainImagesUpgraded: 0,
       error: "",
     };
     let activeOfferIds = new Set();
@@ -3328,6 +3433,10 @@ export class UolTelegramShadow extends DurableObject {
           }
         }
       }
+
+      const imageUpgrades = await this.upgradeTimedOutMainImages(new Date());
+      result.mainImagesUpgraded = imageUpgrades.upgraded;
+      result.deliveryFailed += imageUpgrades.failed;
 
       const secondary = await this.processDeliveryQueue(new Date(), {
         targetNames: ["canal2", "discord"],

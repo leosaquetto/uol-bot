@@ -24,7 +24,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           .one().sql,
       );
 
-      expect(version).toBeGreaterThanOrEqual(13);
+      expect(version).toBeGreaterThanOrEqual(14);
       expect(tables).toEqual(expect.arrayContaining([
         "metadata",
         "offers",
@@ -43,6 +43,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "restocked_at",
         "main_sold_out_next_attempt_at",
         "canal2_restock_next_attempt_at",
+        "main_image_upgrade_attempts",
+        "main_image_upgrade_next_attempt_at",
+        "main_image_upgrade_error",
       ]) {
         expect(offersSchema).toContain(column);
       }
@@ -93,7 +96,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(deliveryCalls).toHaveLength(1);
     expect(deliveryCalls[0]).toMatchObject({
       priorityIds: ["oferta-relampago-1"],
-      fastTextFirst: true,
+      waitForMainImage: true,
       targetNames: ["main"],
     });
   });
