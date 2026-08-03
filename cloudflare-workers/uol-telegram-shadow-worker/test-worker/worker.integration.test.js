@@ -24,7 +24,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           .one().sql,
       );
 
-      expect(version).toBeGreaterThanOrEqual(17);
+      expect(version).toBeGreaterThanOrEqual(18);
       expect(tables).toEqual(expect.arrayContaining([
         "metadata",
         "offers",
@@ -51,13 +51,22 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "discord_image_cache_attempts",
         "discord_image_cache_next_attempt_at",
         "discord_image_cache_error",
+        "discord_image_cache_sent_at",
+        "discord_sold_out_synced_at",
+        "discord_sold_out_attempts",
+        "discord_sold_out_error",
+        "discord_sold_out_next_attempt_at",
+        "discord_restock_synced_at",
+        "discord_restock_attempts",
+        "discord_restock_error",
+        "discord_restock_next_attempt_at",
       ]) {
         expect(offersSchema).toContain(column);
       }
     });
   });
 
-  it("envia a oferta da API no principal sem aguardar HTML ou manutenção", async () => {
+  it("envia Discord, principal e canal 2 no ciclo rápido sem aguardar manutenção", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-fast-path");
     const deliveryCalls = [];
 
@@ -82,7 +91,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
       });
       instance.processDeliveryQueue = async (_now, options) => {
         deliveryCalls.push(options);
-        return { mainSent: 1, canal2Sent: 0, discordSent: 0, failed: 0 };
+        return options.targetNames.includes("discord")
+          ? { mainSent: 0, canal2Sent: 0, discordSent: 1, failed: 0 }
+          : { mainSent: 1, canal2Sent: 1, discordSent: 0, failed: 0 };
       };
       instance.runMaintenanceTick = async () => {
         throw new Error("maintenance_must_not_run_in_api_scan");
@@ -98,11 +109,15 @@ describe("UOL Worker no runtime Cloudflare", () => {
       });
     });
 
-    expect(deliveryCalls).toHaveLength(1);
+    expect(deliveryCalls).toHaveLength(2);
     expect(deliveryCalls[0]).toMatchObject({
       priorityIds: ["oferta-relampago-1"],
+      targetNames: ["discord"],
+    });
+    expect(deliveryCalls[1]).toMatchObject({
+      priorityIds: ["oferta-relampago-1"],
       waitForMainImage: true,
-      targetNames: ["main"],
+      targetNames: ["main", "canal2"],
     });
   });
 

@@ -60,15 +60,17 @@ agenda coleta. Estado de produção exige verificação própria.
   e reconciliação de resultado incerto. Depois envia texto sem preview. Foto tardia usa
   `editMessageMedia` e conserva o mesmo `message_id`, com foto + legenda.
   Para ingressos, o proxy já criado pelo Discord é reutilizado antes do upload.
-  `DISCORD_IMAGE_CACHE_WEBHOOK_URL` habilita um canal privado opcional que faz o
-  mesmo para ofertas comuns sem publicá-las no canal visível de ingressos. Canal
-  2 copia a mensagem depois do upgrade de foto.
+  `DISCORD_IMAGE_CACHE_WEBHOOK_URL` publica as ofertas comuns em um segundo canal
+  Discord como `Clube UOL` e fornece o mesmo proxy de foto. Para ingressos, o
+  principal e o Canal 2 são concluídos no mesmo ciclo rápido: o segundo usa
+  `copyMessage` logo após a confirmação do primeiro, sem aguardar manutenção.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
   respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
   repetidos em um retry parcial.
 - **Alertas operacionais:** são enviados diretamente ao `LeoUOL Chat`, sem
   poluir o canal principal de ofertas.
-- **Discord:** somente campanhas de ingressos, mantendo o embed com thumbnail.
+- **Discord:** ingressos no canal original e ofertas comuns no segundo webhook,
+  ambos com embed, thumbnail e edição automática de esgotamento/reabertura.
 - **Identidade:** combina slug canônico, variantes históricas e
   `parceiro + código interno da oferta`; alterações de acentuação no endereço
   não criam uma oferta nova.
@@ -129,8 +131,8 @@ agenda coleta. Estado de produção exige verificação própria.
   `TELEGRAM_CHAT_ID`, `CANAL2_ID`, `GRUPO_COMENTARIO_ID`,
   `OPS_TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET` e `DISCORD_WEBHOOK_URL`.
   `DISCORD_OPS_WEBHOOK_URL` é opcional e cria um segundo transporte para alertas.
-  `DISCORD_IMAGE_CACHE_WEBHOOK_URL` é opcional e aponta para canal privado usado
-  somente como cache de thumbnails de ofertas comuns.
+  `DISCORD_IMAGE_CACHE_WEBHOOK_URL` é opcional e aponta para o segundo canal que
+  recebe as ofertas comuns e também fornece suas thumbnails ao Telegram.
   Não há automação ativa de senha ou login pessoal.
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.

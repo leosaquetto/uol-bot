@@ -1,4 +1,4 @@
-import { cleanText } from "./core.js";
+import { cleanText, isTicketCampaign } from "./core.js";
 import {
   createAmbiguousResponseTransportError,
   createHttpTransportError,
@@ -16,27 +16,34 @@ export function discordConfiguration(env) {
   };
 }
 
-export function buildDiscordPayload(offer) {
-  const title = cleanText(offer?.title || offer?.previewTitle || "Novo benefício de ingressos");
+export function buildDiscordPayload(offer, { soldOutAt = "" } = {}) {
+  const title = cleanText(offer?.title || offer?.previewTitle || "Novo benefício do Clube UOL");
   const link = String(offer?.link || "").trim();
   const imageUrl = String(offer?.imageUrl || offer?.cardImageUrl || "").trim();
+  const soldOut = Boolean(String(soldOutAt || "").trim());
+  const ticket = isTicketCampaign(offer);
+  const decoratedTitle = soldOut ? `[ESGOTADO] ${title}` : title;
   const embed = {
-    title,
+    title: decoratedTitle,
     url: link,
-    color: 0xf5a623,
-    description: "🎟️ Novo benefício na categoria de ingressos do Clube UOL.",
+    color: soldOut ? 0xd83c3e : 0xf5a623,
+    description: soldOut
+      ? "❌ Esta oferta não está mais disponível no Clube UOL."
+      : ticket
+        ? "🎟️ Novo benefício na categoria de ingressos do Clube UOL."
+        : "✨ Novo benefício disponível no Clube UOL.",
     fields: [{
       name: "Abrir oferta",
       value: `[Acessar agora no Clube UOL](${link})`,
       inline: false,
     }],
     footer: { text: "Clube UOL • monitor independente" },
-    timestamp: new Date().toISOString(),
+    timestamp: soldOut ? String(soldOutAt) : new Date().toISOString(),
   };
   if (imageUrl) embed.image = { url: imageUrl };
   return {
-    username: "Clube UOL • Ingressos",
-    content: `🚨 **${title}**`,
+    username: "Clube UOL",
+    content: `${soldOut ? "❌" : "🚨"} **${decoratedTitle}**`,
     embeds: [embed],
     allowed_mentions: { parse: [] },
   };
@@ -105,24 +112,18 @@ export async function sendDiscordOffer(env, offer, fetchImpl = fetch) {
 export async function cacheDiscordOfferImage(env, offer, fetchImpl = fetch) {
   const webhookUrl = String(env.DISCORD_IMAGE_CACHE_WEBHOOK_URL || "").trim();
   if (!webhookUrl) throw new Error("discord_image_cache_webhook_missing");
-  const imageUrl = String(
-    offer?.imageUrl || offer?.cardImageUrl || offer?.partnerImageUrl || "",
-  ).trim();
-  if (!imageUrl) throw new Error("discord_image_cache_source_missing");
+  const feedOffer = {
+    ...offer,
+    imageUrl: String(
+      offer?.imageUrl || offer?.cardImageUrl || offer?.partnerImageUrl || "",
+    ).trim(),
+  };
   const url = new URL(webhookUrl);
   url.searchParams.set("wait", "true");
   const response = await discordRequest(url.href, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: "Clube UOL • Cache de imagens",
-      embeds: [{
-        title: cleanText(offer?.title || offer?.previewTitle || "Oferta").slice(0, 240),
-        url: String(offer?.link || "").trim(),
-        image: { url: imageUrl },
-      }],
-      allowed_mentions: { parse: [] },
-    }),
+    body: JSON.stringify(buildDiscordPayload(feedOffer)),
     signal: AbortSignal.timeout(DISCORD_TIMEOUT_MS),
   }, "cacheImage", true, fetchImpl);
   const payload = await response.json().catch(() => ({}));
@@ -138,6 +139,29 @@ export async function cacheDiscordOfferImage(env, offer, fetchImpl = fetch) {
     messageId: String(payload.id),
     imageProxyUrl: String(payload?.embeds?.[0]?.image?.proxy_url || ""),
   };
+}
+
+export async function editDiscordOffer(
+  env,
+  { messageId, offer, soldOutAt = "", webhookUrl = "" },
+  fetchImpl = fetch,
+) {
+  const resolvedWebhookUrl = String(webhookUrl || env.DISCORD_WEBHOOK_URL || "").trim();
+  if (!resolvedWebhookUrl) throw new Error("discord_webhook_missing");
+  if (!String(messageId || "").trim()) throw new Error("discord_message_id_missing");
+  const url = new URL(resolvedWebhookUrl);
+  url.pathname = `${url.pathname.replace(/\/+$/, "")}/messages/${encodeURIComponent(messageId)}`;
+  url.search = "";
+  const { username: _username, ...payload } = buildDiscordPayload(offer, { soldOutAt });
+  const response = await discordRequest(url.href, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(DISCORD_TIMEOUT_MS),
+  }, "editWebhookMessage", true, fetchImpl);
+  const responsePayload = await response.json().catch(() => ({}));
+  if (!response.ok) throw discordError("editWebhookMessage", response, responsePayload);
+  return { messageId: String(responsePayload?.id || messageId) };
 }
 
 export async function sendDiscordOperationsAlert(env, text, fetchImpl = fetch) {

@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 17);
+  assert.equal(blocks.length, 18);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 17);
+  assert.equal(Number(version), 18);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -43,6 +43,15 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "discord_image_cache_attempts",
     "discord_image_cache_next_attempt_at",
     "discord_image_cache_error",
+    "discord_image_cache_sent_at",
+    "discord_sold_out_synced_at",
+    "discord_sold_out_attempts",
+    "discord_sold_out_error",
+    "discord_sold_out_next_attempt_at",
+    "discord_restock_synced_at",
+    "discord_restock_attempts",
+    "discord_restock_error",
+    "discord_restock_next_attempt_at",
   ]) {
     assert.equal(columns.has(column), true, `coluna ausente: ${column}`);
   }
@@ -98,7 +107,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    17,
+    18,
   );
   database.close();
 });
@@ -234,6 +243,38 @@ test("v17 recupera Canal 2 e fotos do incidente atual sem reenviar histórico", 
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
     17,
+  );
+  database.close();
+});
+
+test("v18 inicia o feed comum sem despejar ofertas históricas", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 17)) database.exec(sql);
+  database.prepare(
+    `INSERT INTO offers(
+       id, link, preview_title, first_seen_at, last_seen_at, status,
+       would_send_main, main_sent_at
+     ) VALUES (?, ?, ?, ?, ?, 'delivered', 1, ?)`,
+  ).run(
+    "oferta-comum-antiga",
+    "https://clube.uol.com.br/beneficios/oferta-comum-antiga",
+    "Oferta comum antiga",
+    "2026-08-03T18:00:00.000Z",
+    "2026-08-03T18:00:00.000Z",
+    "2026-08-03T18:00:10.000Z",
+  );
+
+  database.exec(blocks[17]);
+  const row = database.prepare(
+    "SELECT discord_image_cache_sent_at FROM offers WHERE id = ?",
+  ).get("oferta-comum-antiga");
+  assert.equal(row.discord_image_cache_sent_at, "2026-08-03T18:00:00.000Z");
+  assert.equal(
+    Number(database.prepare(
+      "SELECT MAX(id) AS version FROM _sql_schema_migrations",
+    ).get().version),
+    18,
   );
   database.close();
 });

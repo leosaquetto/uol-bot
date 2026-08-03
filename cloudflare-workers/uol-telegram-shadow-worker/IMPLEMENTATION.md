@@ -61,10 +61,9 @@ O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
    mutações param 38 segundos antes para reservar timeout e reconciliação;
 3. envia texto sem preview somente quando o prazo expira e persiste a confirmação;
 4. despacha todos os principais da rajada com concorrência limitada;
-5. processa Discord em alarme secundário antecipado e reutiliza seu proxy de
-   thumbnail quando URL/upload do UOL falham;
-6. para campanhas de ingresso, usa `copyMessage` para o canal 2 depois do
-   upgrade de imagem, criando uma mensagem independente e editável;
+5. para ingressos, publica primeiro no Discord e reutiliza seu proxy de thumbnail;
+6. envia o principal e usa `copyMessage` para o canal 2 no mesmo ciclo rápido,
+   criando uma mensagem independente e editável;
 7. uma falha secundária não apaga o sucesso do canal principal;
 8. novas tentativas processam somente o destino ainda pendente.
 
@@ -72,9 +71,9 @@ Se a foto aparecer depois do texto, `editMessageMedia` substitui o conteúdo da
 mesma mensagem por `InputMediaPhoto` com a legenda completa. O `message_id` é
 preservado e nenhuma segunda publicação é criada.
 
-Um webhook opcional `DISCORD_IMAGE_CACHE_WEBHOOK_URL` permite usar canal privado
-como cache para ofertas comuns. Nada é publicado no canal visível de ingressos;
-o cache só é acionado após falha das fontes diretas de imagem.
+O webhook `DISCORD_IMAGE_CACHE_WEBHOOK_URL` publica ofertas comuns em um segundo
+canal como `Clube UOL`. O ID e o proxy de cada mensagem ficam persistidos para
+alimentar as fotos do Telegram e permitir edição de esgotamento/reabertura.
 
 As legendas utilizam HTML escapado, link canônico, validade, localização quando
 disponível e as hashtags relevantes. Campanhas de ingresso não são silenciosas.
@@ -89,8 +88,9 @@ Uma oferta entregue passa a ser candidata a esgotamento somente quando:
 - permaneceu ausente por no mínimo 15 minutos.
 
 Depois da confirmação, o Worker usa `editMessageCaption` para fotos ou
-`editMessageText` para mensagens sem imagem. Principal e canal 2 possuem
-confirmações e retries independentes. `message to edit not found` é terminal no
+`editMessageText` para mensagens sem imagem e `Edit Webhook Message` no Discord.
+Principal, canal 2 e Discord possuem confirmações e retries independentes.
+`message to edit not found` é terminal no
 esgotamento; na reabertura, a oferta é republicada e o novo `message_id` passa a
 ser a referência durável. Envio substituto ambíguo não é repetido automaticamente.
 

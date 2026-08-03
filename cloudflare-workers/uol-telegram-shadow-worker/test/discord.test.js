@@ -5,6 +5,7 @@ import {
   buildDiscordPayload,
   cacheDiscordOfferImage,
   discordConfiguration,
+  editDiscordOffer,
   getDiscordMessageImageProxy,
   sendDiscordOffer,
   sendDiscordOperationsAlert,
@@ -23,6 +24,7 @@ test("mantém o formato aprovado do Discord com thumbnail", () => {
   assert.equal(payload.embeds[0].url, offer.link);
   assert.equal(payload.embeds[0].image.url, offer.cardImageUrl);
   assert.equal(payload.content, `🚨 **${offer.title}**`);
+  assert.equal(payload.username, "Clube UOL");
 });
 
 test("envia pelo webhook consolidado e confirma o ID", async () => {
@@ -56,16 +58,24 @@ test("recupera a imagem já cacheada pelo Discord", async () => {
   assert.equal(proxyUrl, "https://media.discordapp.net/proxy.jpg");
 });
 
-test("canal privado cacheia imagem de oferta comum sem publicar no canal de ingressos", async () => {
+test("segundo canal recebe a oferta comum completa como Clube UOL", async () => {
   const env = {
     DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/tickets/token",
     DISCORD_IMAGE_CACHE_WEBHOOK_URL: "https://discord.com/api/webhooks/cache/token",
   };
   assert.equal(discordConfiguration(env).imageCacheConfigured, true);
-  const result = await cacheDiscordOfferImage(env, offer, async (url, init) => {
+  const normalOffer = {
+    ...offer,
+    title: "20% off em produtos selecionados",
+    link: "https://clube.uol.com.br/beneficios/loja-teste",
+  };
+  const result = await cacheDiscordOfferImage(env, normalOffer, async (url, init) => {
     assert.match(url, /webhooks\/cache\/token\?wait=true$/);
     const payload = JSON.parse(init.body);
-    assert.equal(payload.embeds[0].image.url, offer.cardImageUrl);
+    assert.equal(payload.username, "Clube UOL");
+    assert.equal(payload.content, `🚨 **${normalOffer.title}**`);
+    assert.match(payload.embeds[0].description, /Novo benefício/);
+    assert.equal(payload.embeds[0].image.url, normalOffer.cardImageUrl);
     return new Response(JSON.stringify({
       id: "cache-1",
       embeds: [{ image: { proxy_url: "https://media.discordapp.net/cache.jpg" } }],
@@ -75,6 +85,29 @@ test("canal privado cacheia imagem de oferta comum sem publicar no canal de ingr
     messageId: "cache-1",
     imageProxyUrl: "https://media.discordapp.net/cache.jpg",
   });
+});
+
+test("edita a mensagem do webhook para informar esgotamento", async () => {
+  let payload = {};
+  const result = await editDiscordOffer({
+    DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/123/token",
+  }, {
+    messageId: "discord-1",
+    offer,
+    soldOutAt: "2026-08-03T20:00:00.000Z",
+  }, async (url, init) => {
+    assert.equal(url, "https://discord.com/api/webhooks/123/token/messages/discord-1");
+    assert.equal(init.method, "PATCH");
+    payload = JSON.parse(init.body);
+    return new Response(JSON.stringify({ id: "discord-1" }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  });
+  assert.equal(result.messageId, "discord-1");
+  assert.equal(payload.username, undefined);
+  assert.match(payload.content, /\[ESGOTADO\]/);
+  assert.match(payload.embeds[0].description, /não está mais disponível/);
+  assert.deepEqual(payload.allowed_mentions, { parse: [] });
 });
 
 test("consulta proxy no webhook privado quando solicitado", async () => {

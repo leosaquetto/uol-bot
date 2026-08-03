@@ -21,6 +21,7 @@ import {
 import {
   cacheDiscordOfferImage,
   discordConfiguration,
+  editDiscordOffer,
   getDiscordMessageImageProxy,
   sendDiscordOffer,
   sendDiscordOperationsAlert,
@@ -384,6 +385,8 @@ function rowToPublicDecision(row) {
     canal2Sent: Boolean(row.canal2_sent_at),
     discordSent: Boolean(row.discord_sent_at),
     discordMessageId: String(row.discord_message_id || ""),
+    discordOfferMessageId: String(row.discord_image_cache_message_id || ""),
+    discordOfferSent: Boolean(row.discord_image_cache_sent_at),
     mainMessageId: Number(row.main_message_id || 0),
     mainMessageKind: row.main_message_kind || "",
     telegramImageStrategy: row.telegram_image_strategy || "",
@@ -407,6 +410,8 @@ function rowToPublicDecision(row) {
     soldOutMainError: row.main_sold_out_error || "",
     soldOutCanal2Attempts: Number(row.canal2_sold_out_attempts || 0),
     soldOutCanal2Error: row.canal2_sold_out_error || "",
+    soldOutDiscordSynced: Boolean(row.discord_sold_out_synced_at),
+    soldOutDiscordError: row.discord_sold_out_error || "",
   };
 }
 
@@ -1006,6 +1011,30 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (17);
       `);
     }
+    if (currentVersion < 18) {
+      this.sqlExec(`
+        ALTER TABLE offers ADD COLUMN discord_image_cache_sent_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_sold_out_synced_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_sold_out_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN discord_sold_out_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_sold_out_next_attempt_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_restock_synced_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_restock_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN discord_restock_error TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_restock_next_attempt_at TEXT NOT NULL DEFAULT '';
+        UPDATE offers SET discord_image_cache_sent_at = first_seen_at
+         WHERE link NOT LIKE '%/campanhasdeingresso/%';
+        UPDATE offers SET discord_restock_synced_at = restocked_at
+         WHERE restocked_at <> '';
+        CREATE INDEX IF NOT EXISTS offers_discord_feed_idx
+          ON offers(discord_image_cache_sent_at, discord_image_cache_next_attempt_at,
+                    discord_image_cache_attempts, first_seen_at);
+        CREATE INDEX IF NOT EXISTS offers_discord_availability_idx
+          ON offers(status, sold_out_at, restocked_at,
+                    discord_sold_out_next_attempt_at, discord_restock_next_attempt_at);
+        INSERT INTO _sql_schema_migrations (id) VALUES (18);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -1315,16 +1344,20 @@ export class UolTelegramShadow extends DurableObject {
     const storedProxy = String(row?.discord_image_proxy_url || "").trim();
     if (storedProxy) return storedProxy;
 
-    let messageId = String(row?.discord_message_id || "").trim();
-    let webhookUrl = String(this.env.DISCORD_WEBHOOK_URL || "").trim();
+    const usesImageCache = !isTicketCampaign(offer);
+    let messageId = String(
+      usesImageCache ? row?.discord_image_cache_message_id : row?.discord_message_id,
+    ).trim();
+    let webhookUrl = String(
+      usesImageCache
+        ? this.env.DISCORD_IMAGE_CACHE_WEBHOOK_URL
+        : this.env.DISCORD_WEBHOOK_URL,
+    ).trim();
     let proxyUrl = "";
     let cacheMessageId = String(row?.discord_image_cache_message_id || "").trim();
-    const usesImageCache = !messageId;
 
     if (usesImageCache) {
-      webhookUrl = String(this.env.DISCORD_IMAGE_CACHE_WEBHOOK_URL || "").trim();
       if (!webhookUrl) return "";
-      messageId = cacheMessageId;
       if (!messageId) {
         const cached = await cacheDiscordOfferImage(this.env, offer);
         messageId = cached.messageId;
@@ -1347,11 +1380,15 @@ export class UolTelegramShadow extends DurableObject {
       `UPDATE offers SET discord_image_proxy_url = ?,
          discord_image_cache_message_id = CASE WHEN ? <> '' THEN ?
            ELSE discord_image_cache_message_id END,
+         discord_image_cache_sent_at = CASE WHEN ? <> '' THEN ?
+           ELSE discord_image_cache_sent_at END,
          discord_image_cache_error = '', discord_image_cache_next_attempt_at = ''
        WHERE id = ?`,
       proxyUrl,
       cacheMessageId,
       cacheMessageId,
+      cacheMessageId,
+      new Date().toISOString(),
       row.id,
     );
     return proxyUrl;
@@ -1364,16 +1401,14 @@ export class UolTelegramShadow extends DurableObject {
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const rows = this.sqlExec(
       `SELECT * FROM offers
-       WHERE main_sent_at = '' AND would_send_main = 1
-         AND telegram_image_strategy = 'pending_image'
+       WHERE would_send_main = 1
          AND link NOT LIKE '%/campanhasdeingresso/%'
-         AND discord_image_proxy_url = ''
+         AND discord_image_cache_sent_at = ''
+         AND status NOT IN ('baseline', 'discarded', 'shadow_sold_out', 'sold_out')
          AND discord_image_cache_attempts < ?
-         AND COALESCE(NULLIF(image_url, ''), NULLIF(card_image_url, ''),
-                      partner_image_url) <> ''
          AND (discord_image_cache_next_attempt_at = ''
               OR discord_image_cache_next_attempt_at <= ?)
-       ORDER BY first_seen_at ASC LIMIT ?`,
+       ORDER BY first_seen_at DESC LIMIT ?`,
       maxAttempts,
       now.toISOString(),
       Math.max(1, Math.min(16, Number(limit || 4))),
@@ -1383,12 +1418,17 @@ export class UolTelegramShadow extends DurableObject {
     for (const row of rows) {
       const attempts = Number(row.discord_image_cache_attempts || 0) + 1;
       try {
-        await this.discordImageProxyForOffer(row, rowToOffer(row));
+        const cached = await cacheDiscordOfferImage(this.env, rowToOffer(row));
         this.sqlExec(
           `UPDATE offers SET discord_image_cache_attempts = ?,
+             discord_image_cache_message_id = ?, discord_image_cache_sent_at = ?,
+             discord_image_proxy_url = COALESCE(NULLIF(?, ''), discord_image_proxy_url),
              discord_image_cache_error = '', discord_image_cache_next_attempt_at = ''
            WHERE id = ?`,
           attempts,
+          cached.messageId,
+          new Date().toISOString(),
+          cached.imageProxyUrl || "",
           row.id,
         );
         primed += 1;
@@ -1818,8 +1858,11 @@ export class UolTelegramShadow extends DurableObject {
               would_send_canal2, canal2_message_id,
               main_restock_synced_at, main_restock_attempts, main_restock_error,
               canal2_restock_synced_at, canal2_restock_attempts, canal2_restock_error,
+              discord_restock_synced_at, discord_restock_attempts, discord_restock_error,
               main_sold_out_synced_at, main_sold_out_attempts, main_sold_out_error,
               canal2_sold_out_synced_at, canal2_sold_out_attempts, canal2_sold_out_error,
+              discord_sold_out_synced_at, discord_sold_out_attempts, discord_sold_out_error,
+              discord_message_id, discord_image_cache_message_id,
               comment_sent_at, discussion_message_id,
               comment_delivery_attempts, comment_delivery_error
        FROM offers
@@ -1827,17 +1870,23 @@ export class UolTelegramShadow extends DurableObject {
          (status = 'restocked_pending_sync' AND (
            (main_restock_synced_at = '' AND main_restock_attempts >= ?) OR
            (would_send_canal2 = 1 AND canal2_message_id > 0 AND
-             canal2_restock_synced_at = '' AND canal2_restock_attempts >= ?)
+             canal2_restock_synced_at = '' AND canal2_restock_attempts >= ?) OR
+           ((discord_message_id <> '' OR discord_image_cache_message_id <> '') AND
+             discord_restock_synced_at = '' AND discord_restock_attempts >= ?)
          )) OR
          (status = 'sold_out' AND (
            (main_sold_out_synced_at = '' AND main_sold_out_attempts >= ?) OR
            (would_send_canal2 = 1 AND canal2_message_id > 0 AND
-             canal2_sold_out_synced_at = '' AND canal2_sold_out_attempts >= ?)
+             canal2_sold_out_synced_at = '' AND canal2_sold_out_attempts >= ?) OR
+           ((discord_message_id <> '' OR discord_image_cache_message_id <> '') AND
+             discord_sold_out_synced_at = '' AND discord_sold_out_attempts >= ?)
          )) OR
          (comment_sent_at = '' AND discussion_message_id > 0 AND
            comment_delivery_attempts >= ?)
        ORDER BY first_seen_at ASC
        LIMIT 20`,
+      maxAttempts,
+      maxAttempts,
       maxAttempts,
       maxAttempts,
       maxAttempts,
@@ -1855,26 +1904,34 @@ export class UolTelegramShadow extends DurableObject {
         };
       }
       if (row.status === "restocked_pending_sync") {
+        const discord = (row.discord_message_id || row.discord_image_cache_message_id) &&
+          !row.discord_restock_synced_at && Number(row.discord_restock_attempts || 0) >= maxAttempts;
         const canal2 = row.would_send_canal2 && Number(row.canal2_message_id || 0) > 0 &&
           !row.canal2_restock_synced_at && Number(row.canal2_restock_attempts || 0) >= maxAttempts;
         return {
           id: row.id,
           title: row.title,
-          target: canal2 ? "canal2_restock" : "main_restock",
+          target: discord ? "discord_restock" : canal2 ? "canal2_restock" : "main_restock",
           state: "dead_letter",
-          error: canal2
+          error: discord
+            ? row.discord_restock_error || "discord_restock_attempts_exhausted"
+            : canal2
             ? row.canal2_restock_error || "canal2_restock_attempts_exhausted"
             : row.main_restock_error || "main_restock_attempts_exhausted",
         };
       }
+      const discord = (row.discord_message_id || row.discord_image_cache_message_id) &&
+        !row.discord_sold_out_synced_at && Number(row.discord_sold_out_attempts || 0) >= maxAttempts;
       const canal2 = row.would_send_canal2 && Number(row.canal2_message_id || 0) > 0 &&
         !row.canal2_sold_out_synced_at && Number(row.canal2_sold_out_attempts || 0) >= maxAttempts;
       return {
         id: row.id,
         title: row.title,
-        target: canal2 ? "canal2_sold_out" : "main_sold_out",
+        target: discord ? "discord_sold_out" : canal2 ? "canal2_sold_out" : "main_sold_out",
         state: "dead_letter",
-        error: canal2
+        error: discord
+          ? row.discord_sold_out_error || "discord_sold_out_attempts_exhausted"
+          : canal2
           ? row.canal2_sold_out_error || "canal2_sold_out_attempts_exhausted"
           : row.main_sold_out_error || "main_sold_out_attempts_exhausted",
       };
@@ -2264,9 +2321,13 @@ export class UolTelegramShadow extends DurableObject {
                delivery_generation = ?,
                missing_since = '', absence_count = 0,
                main_restock_synced_at = '', canal2_restock_synced_at = '',
+               discord_restock_synced_at = '',
                main_restock_attempts = 0, canal2_restock_attempts = 0,
+               discord_restock_attempts = 0,
                main_restock_error = '', canal2_restock_error = '',
-               main_restock_next_attempt_at = '', canal2_restock_next_attempt_at = ''
+               discord_restock_error = '',
+               main_restock_next_attempt_at = '', canal2_restock_next_attempt_at = '',
+               discord_restock_next_attempt_at = ''
              WHERE id = ?`,
             restockedStatus,
             nowIso,
@@ -3116,7 +3177,9 @@ export class UolTelegramShadow extends DurableObject {
     let failed = 0;
 
     for (const row of rows) {
-      const offer = rowToOffer(row);
+      const originalOffer = rowToOffer(row);
+      const proxyUrl = String(row.discord_image_proxy_url || "").trim();
+      const offer = proxyUrl ? { ...originalOffer, imageUrl: proxyUrl } : originalOffer;
       if (
         configuration.main.ready && !row.main_sold_out_synced_at &&
         Number(row.main_sold_out_attempts || 0) < maxAttempts
@@ -3243,6 +3306,99 @@ export class UolTelegramShadow extends DurableObject {
       }
     }
     return { mainEdited, canal2Edited, messageMissing, failed };
+  }
+
+  async processDiscordAvailabilitySync(now = new Date(), limit = 4) {
+    if (this.currentDeliveryMode() !== "live") {
+      return { soldOutEdited: 0, restockEdited: 0, messageMissing: 0, failed: 0 };
+    }
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const rows = this.sqlExec(
+      `SELECT * FROM offers
+       WHERE (
+         status = 'sold_out' AND discord_sold_out_synced_at = ''
+         AND (discord_message_id <> '' OR discord_image_cache_message_id <> '')
+         AND discord_sold_out_attempts < ?
+         AND (discord_sold_out_next_attempt_at = '' OR discord_sold_out_next_attempt_at <= ?)
+       ) OR (
+         restocked_at <> '' AND discord_restock_synced_at = ''
+         AND (discord_message_id <> '' OR discord_image_cache_message_id <> '')
+         AND discord_restock_attempts < ?
+         AND (discord_restock_next_attempt_at = '' OR discord_restock_next_attempt_at <= ?)
+       )
+       ORDER BY CASE WHEN status = 'sold_out' THEN sold_out_at ELSE restocked_at END ASC
+       LIMIT ?`,
+      maxAttempts,
+      now.toISOString(),
+      maxAttempts,
+      now.toISOString(),
+      Math.max(1, Math.min(16, Number(limit || 4))),
+    ).toArray();
+    let soldOutEdited = 0;
+    let restockEdited = 0;
+    let messageMissing = 0;
+    let failed = 0;
+
+    for (const row of rows) {
+      const originalOffer = rowToOffer(row);
+      const proxyUrl = String(row.discord_image_proxy_url || "").trim();
+      const offer = proxyUrl ? { ...originalOffer, imageUrl: proxyUrl } : originalOffer;
+      const ticket = isTicketCampaign(offer);
+      const messageId = String(
+        ticket ? row.discord_message_id : row.discord_image_cache_message_id,
+      ).trim();
+      const webhookUrl = String(
+        ticket
+          ? this.env.DISCORD_WEBHOOK_URL
+          : this.env.DISCORD_IMAGE_CACHE_WEBHOOK_URL,
+      ).trim();
+      if (!messageId || !webhookUrl) continue;
+      const soldOut = row.status === "sold_out";
+      const prefix = soldOut ? "discord_sold_out" : "discord_restock";
+      const attempts = Number(row[`${prefix}_attempts`] || 0) + 1;
+      this.sqlExec(
+        `UPDATE offers SET ${prefix}_attempts = ?, ${prefix}_error = '' WHERE id = ?`,
+        attempts,
+        row.id,
+      );
+      try {
+        await editDiscordOffer(this.env, {
+          messageId,
+          offer,
+          soldOutAt: soldOut ? row.sold_out_at || now.toISOString() : "",
+          webhookUrl,
+        });
+        this.sqlExec(
+          `UPDATE offers SET ${prefix}_synced_at = ?, ${prefix}_error = '',
+             ${prefix}_next_attempt_at = '' WHERE id = ?`,
+          now.toISOString(),
+          row.id,
+        );
+        if (soldOut) soldOutEdited += 1;
+        else restockEdited += 1;
+      } catch (error) {
+        const missing = Number(error?.httpStatus || error?.status || 0) === 404;
+        if (missing) {
+          this.sqlExec(
+            `UPDATE offers SET ${prefix}_synced_at = ?, ${prefix}_error = '',
+               ${prefix}_next_attempt_at = '' WHERE id = ?`,
+            now.toISOString(),
+            row.id,
+          );
+          messageMissing += 1;
+          continue;
+        }
+        this.sqlExec(
+          `UPDATE offers SET ${prefix}_error = ?, ${prefix}_next_attempt_at = ?
+           WHERE id = ?`,
+          sanitizeError(error),
+          deliveryRetryAt(error, attempts, now),
+          row.id,
+        );
+        failed += 1;
+      }
+    }
+    return { soldOutEdited, restockEdited, messageMissing, failed };
   }
 
   async processRestockSync(now) {
@@ -3563,9 +3719,13 @@ export class UolTelegramShadow extends DurableObject {
              main_restock_error = '', canal2_restock_error = '',
              main_restock_next_attempt_at = '', canal2_restock_next_attempt_at = '',
              main_sold_out_synced_at = '', canal2_sold_out_synced_at = '',
+             discord_sold_out_synced_at = '',
              main_sold_out_attempts = 0, canal2_sold_out_attempts = 0,
+             discord_sold_out_attempts = 0,
              main_sold_out_error = '', canal2_sold_out_error = '',
-             main_sold_out_next_attempt_at = '', canal2_sold_out_next_attempt_at = ''
+             discord_sold_out_error = '',
+             main_sold_out_next_attempt_at = '', canal2_sold_out_next_attempt_at = '',
+             discord_sold_out_next_attempt_at = ''
            WHERE id = ?`,
           now.toISOString(),
           candidate.status,
@@ -3707,6 +3867,7 @@ export class UolTelegramShadow extends DurableObject {
       deliveryFailed: 0,
       soldOutMainEdited: 0,
       soldOutCanal2Edited: 0,
+      soldOutDiscordEdited: 0,
       restockMainEdited: 0,
       restockCanal2Edited: 0,
       discordSent: 0,
@@ -3789,12 +3950,19 @@ export class UolTelegramShadow extends DurableObject {
             )
           : [[]];
         for (const priorityIds of deliveryBatches) {
+          const discordDelivered = await this.processDeliveryQueue(new Date(), {
+            priorityIds,
+            targetNames: ["discord"],
+          });
+          run.discordSent += discordDelivered.discordSent;
+          run.deliveryFailed += discordDelivered.failed;
           const delivered = await this.processDeliveryQueue(new Date(), {
             priorityIds,
             waitForMainImage: true,
-            targetNames: ["main"],
+            targetNames: ["main", "canal2"],
           });
           run.mainSent += delivered.mainSent;
+          run.canal2Sent += delivered.canal2Sent;
           run.deliveryFailed += delivered.failed;
         }
         run.apiFastMainSent = run.mainSent;
@@ -3815,12 +3983,18 @@ export class UolTelegramShadow extends DurableObject {
         run.enriched += catchUp.enriched;
         run.wouldSendMain += catchUp.wouldSendMain;
         run.wouldSendCanal2 += catchUp.wouldSendCanal2;
+        const discordDelivered = await this.processDeliveryQueue(new Date(), {
+          targetNames: ["discord"],
+        });
+        run.discordSent = discordDelivered.discordSent;
+        run.deliveryFailed += discordDelivered.failed;
         const delivered = await this.processDeliveryQueue(new Date(), {
           waitForMainImage: true,
-          targetNames: ["main"],
+          targetNames: ["main", "canal2"],
         });
         run.mainSent = delivered.mainSent;
-        run.deliveryFailed = delivered.failed;
+        run.canal2Sent = delivered.canal2Sent;
+        run.deliveryFailed += delivered.failed;
         run.outcome = run.mainSent > 0 ? "telegram_delivered" : "api_degraded";
       }
       if (apiCards.length) {
@@ -3945,10 +4119,12 @@ export class UolTelegramShadow extends DurableObject {
       soldOutDetected: 0,
       soldOutMainEdited: 0,
       soldOutCanal2Edited: 0,
+      soldOutDiscordEdited: 0,
       restockMainEdited: 0,
       restockCanal2Edited: 0,
       restockMainReposted: 0,
       restockCanal2Reposted: 0,
+      restockDiscordEdited: 0,
       soldOutMessageMissing: 0,
       deliveryFailed: 0,
       mainImagesUpgraded: 0,
@@ -4141,6 +4317,11 @@ export class UolTelegramShadow extends DurableObject {
       result.soldOutCanal2Edited = soldOut.canal2Edited;
       result.soldOutMessageMissing = soldOut.messageMissing;
       result.deliveryFailed += soldOut.failed;
+      const discordAvailability = await this.processDiscordAvailabilitySync(new Date());
+      result.soldOutDiscordEdited = discordAvailability.soldOutEdited;
+      result.restockDiscordEdited = discordAvailability.restockEdited;
+      result.soldOutMessageMissing += discordAvailability.messageMissing;
+      result.deliveryFailed += discordAvailability.failed;
       if (completeListingSnapshot) this.pruneOffers(new Date(), activeOfferIds);
 
       try {
@@ -4156,9 +4337,10 @@ export class UolTelegramShadow extends DurableObject {
         this.setMetadataIfChanged("ops_health_error", sanitizeError(error));
       }
       if (
-        result.newOffers || result.canal2Sent ||
+        result.newOffers || result.canal2Sent || result.imageCachesPrimed ||
         result.discordSent || result.commentsSent || result.soldOutDetected ||
         result.soldOutMainEdited || result.soldOutCanal2Edited ||
+        result.soldOutDiscordEdited || result.restockDiscordEdited ||
         result.restockMainEdited || result.restockCanal2Edited ||
         result.restockMainReposted || result.restockCanal2Reposted ||
         result.soldOutMessageMissing
@@ -4587,6 +4769,8 @@ export class UolTelegramShadow extends DurableObject {
         SUM(CASE WHEN main_sent_at <> '' THEN 1 ELSE 0 END) AS main_sent,
         SUM(CASE WHEN canal2_sent_at <> '' THEN 1 ELSE 0 END) AS canal2_sent,
         SUM(CASE WHEN discord_sent_at <> '' THEN 1 ELSE 0 END) AS discord_sent,
+        SUM(CASE WHEN discord_image_cache_sent_at <> '' THEN 1 ELSE 0 END)
+          AS discord_offer_sent,
         SUM(CASE WHEN comment_sent_at <> '' THEN 1 ELSE 0 END) AS comments_sent,
         SUM(CASE WHEN status IN ('delivery_pending', 'partial_delivery') THEN 1 ELSE 0 END)
           AS delivery_pending,
@@ -4625,12 +4809,14 @@ export class UolTelegramShadow extends DurableObject {
               main_message_id, main_message_kind, telegram_image_strategy,
               main_image_upgrade_attempts, main_image_upgrade_error,
               discord_message_id, discord_sent_at, discord_image_proxy_url,
+              discord_image_cache_message_id, discord_image_cache_sent_at,
               canal2_message_id,
               main_delivery_error, canal2_delivery_error,
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
-              canal2_sold_out_attempts, canal2_sold_out_error
+              canal2_sold_out_attempts, canal2_sold_out_error,
+              discord_sold_out_synced_at, discord_sold_out_error
        FROM offers
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
@@ -4834,6 +5020,7 @@ export class UolTelegramShadow extends DurableObject {
         mainSent: Number(counts.main_sent || 0),
         canal2Sent: Number(counts.canal2_sent || 0),
         discordSent: Number(counts.discord_sent || 0),
+        discordOfferSent: Number(counts.discord_offer_sent || 0),
         commentsSent: Number(counts.comments_sent || 0),
         deliveryPending: Number(counts.delivery_pending || 0),
         deadLetter: Number(counts.dead_letter || 0),
@@ -4897,6 +5084,9 @@ export class UolTelegramShadow extends DurableObject {
              (
                would_send_canal2 = 1 AND canal2_message_id > 0 AND
                canal2_restock_synced_at = '' AND canal2_restock_attempts >= ?
+             ) OR (
+               (discord_message_id <> '' OR discord_image_cache_message_id <> '') AND
+               discord_restock_synced_at = '' AND discord_restock_attempts >= ?
              )
            ) THEN 1 ELSE 0 END) AS restock_dead_letter,
          SUM(CASE WHEN
@@ -4905,6 +5095,9 @@ export class UolTelegramShadow extends DurableObject {
              (
                would_send_canal2 = 1 AND canal2_message_id > 0 AND
                canal2_sold_out_synced_at = '' AND canal2_sold_out_attempts >= ?
+             ) OR (
+               (discord_message_id <> '' OR discord_image_cache_message_id <> '') AND
+               discord_sold_out_synced_at = '' AND discord_sold_out_attempts >= ?
              )
            ) THEN 1 ELSE 0 END) AS sold_out_dead_letter,
          SUM(CASE WHEN
@@ -4912,6 +5105,8 @@ export class UolTelegramShadow extends DurableObject {
            comment_delivery_attempts >= ?
            THEN 1 ELSE 0 END) AS comment_dead_letter
        FROM offers`,
+      maxAttempts,
+      maxAttempts,
       maxAttempts,
       maxAttempts,
       maxAttempts,
