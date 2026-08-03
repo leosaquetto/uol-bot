@@ -159,7 +159,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "oferta-incerta-1",
       ).one();
       expect(row).toMatchObject({
-        status: "delivery_pending",
+        // O ambiente de integração não possui token. O envio é liberado da
+        // janela ambígua e imediatamente classificado como configuração ausente.
+        status: "delivery_blocked_configuration",
         main_delivery_unknown_at: "",
         delivery_unknown_target: "",
       });
