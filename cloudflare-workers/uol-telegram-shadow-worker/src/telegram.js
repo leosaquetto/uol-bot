@@ -14,6 +14,17 @@ const TELEGRAM_TIMEOUT_MS = 8_000;
 const IMAGE_FETCH_TIMEOUT_MS = 6_000;
 const MAX_UPLOAD_IMAGE_BYTES = 8 * 1024 * 1024;
 
+function deadlineTimeoutMs(deadlineAt, maximumMs) {
+  const deadlineMs = Date.parse(String(deadlineAt || ""));
+  if (!Number.isFinite(deadlineMs)) return maximumMs;
+  return Math.max(1, Math.min(maximumMs, Math.floor(deadlineMs - Date.now())));
+}
+
+function deadlineOpen(deadlineAt) {
+  const deadlineMs = Date.parse(String(deadlineAt || ""));
+  return !Number.isFinite(deadlineMs) || Date.now() < deadlineMs;
+}
+
 function detectedImageFormat(bytes, declaredContentType = "") {
   const view = new Uint8Array(bytes);
   if (view.length >= 3 && view[0] === 0xff && view[1] === 0xd8 && view[2] === 0xff) {
@@ -134,7 +145,13 @@ export async function sendOperationsAlert(env, text, fetchImpl = fetch) {
   return { messageId: Number(result?.message_id || 0) };
 }
 
-export async function telegramCall(env, method, payload, fetchImpl = fetch) {
+export async function telegramCall(
+  env,
+  method,
+  payload,
+  fetchImpl = fetch,
+  timeoutMs = TELEGRAM_TIMEOUT_MS,
+) {
   const { token } = telegramConfig(env);
   if (!token) throw new Error("telegram_token_missing");
 
@@ -142,7 +159,7 @@ export async function telegramCall(env, method, payload, fetchImpl = fetch) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
+    signal: AbortSignal.timeout(Math.max(1, Math.min(TELEGRAM_TIMEOUT_MS, timeoutMs))),
   }, method, fetchImpl);
   let data = {};
   try {
@@ -163,11 +180,15 @@ export async function telegramCall(env, method, payload, fetchImpl = fetch) {
   return data.result;
 }
 
-async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNotification }, fetchImpl) {
+async function uploadTelegramPhoto(
+  env,
+  { chatId, imageUrl, caption, disableNotification, imageDeadlineAt = "" },
+  fetchImpl,
+) {
   const { token } = telegramConfig(env);
   const imageResponse = await fetchImpl(imageUrl, {
     headers: { Accept: "image/*" },
-    signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
+    signal: AbortSignal.timeout(deadlineTimeoutMs(imageDeadlineAt, IMAGE_FETCH_TIMEOUT_MS)),
   });
   if (!imageResponse.ok) throw new Error(`offer_image_http_${imageResponse.status}`);
   const contentType = String(imageResponse.headers.get("Content-Type") || "").toLowerCase();
@@ -193,7 +214,7 @@ async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNoti
   const response = await telegramRequest(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
     body: form,
-    signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
+    signal: AbortSignal.timeout(deadlineTimeoutMs(imageDeadlineAt, TELEGRAM_TIMEOUT_MS)),
   }, "sendPhoto", fetchImpl);
   let data = {};
   try {
@@ -214,6 +235,64 @@ async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNoti
   return data.result;
 }
 
+async function uploadTelegramPhotoEdit(
+  env,
+  { chatId, messageId, imageUrl, caption },
+  fetchImpl,
+) {
+  const { token } = telegramConfig(env);
+  const imageResponse = await fetchImpl(imageUrl, {
+    headers: { Accept: "image/*" },
+    signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
+  });
+  if (!imageResponse.ok) throw new Error(`offer_image_http_${imageResponse.status}`);
+  const contentType = String(imageResponse.headers.get("Content-Type") || "").toLowerCase();
+  if (!contentType.startsWith("image/")) throw new Error("offer_image_invalid_content_type");
+  const declaredSize = Number(imageResponse.headers.get("Content-Length") || 0);
+  if (declaredSize > MAX_UPLOAD_IMAGE_BYTES) throw new Error("offer_image_too_large");
+  const bytes = await imageResponse.arrayBuffer();
+  if (!bytes.byteLength || bytes.byteLength > MAX_UPLOAD_IMAGE_BYTES) {
+    throw new Error("offer_image_invalid_size");
+  }
+  const imageFormat = detectedImageFormat(bytes, contentType);
+  const form = new FormData();
+  form.set("chat_id", chatId);
+  form.set("message_id", String(messageId));
+  form.set("media", JSON.stringify({
+    type: "photo",
+    media: "attach://photo",
+    caption,
+    parse_mode: "HTML",
+  }));
+  form.set(
+    "photo",
+    new Blob([bytes], { type: imageFormat.contentType }),
+    `oferta.${imageFormat.extension}`,
+  );
+  const response = await telegramRequest(`https://api.telegram.org/bot${token}/editMessageMedia`, {
+    method: "POST",
+    body: form,
+    signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
+  }, "editMessageMedia", fetchImpl);
+  let data = {};
+  try {
+    data = await response.json();
+  } catch {
+    // O status HTTP ainda identifica a falha sem registrar o corpo bruto.
+  }
+  if (response.ok && data?.ok !== true && data?.ok !== false) {
+    throw createAmbiguousResponseTransportError({
+      transport: "telegram",
+      operation: "editMessageMedia",
+      httpStatus: response.status,
+    });
+  }
+  if (!response.ok || data?.ok !== true) {
+    throw telegramError("editMessageMedia", response.status, data);
+  }
+  return data.result;
+}
+
 export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   const { mainChatId } = telegramConfig(env);
   if (!mainChatId) throw new Error("telegram_main_chat_missing");
@@ -221,25 +300,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
   });
   const disableNotification = false;
-  // Ofertas descobertas pela API entram por este caminho para que imagem,
-  // download e upload nunca atrasem a publicação. O preview do próprio link
-  // ainda pode exibir mídia, mas há somente uma chamada mutável ao Telegram.
-  if (offer?.telegramTextFirst === true) {
-    const result = await telegramCall(env, "sendMessage", {
-      chat_id: mainChatId,
-      text: caption,
-      parse_mode: "HTML",
-      disable_notification: disableNotification,
-      link_preview_options: offerLinkPreview(offer),
-    }, fetchImpl);
-    return {
-      messageId: Number(result?.message_id || 0),
-      messageKind: "text",
-      imageError: "",
-      imageStrategy: "text_fast",
-      imageAttempts: [],
-    };
-  }
+  const imageDeadlineAt = String(offer?.imageDeadlineAt || "").trim();
   // Some ordinary benefits expose only the partner artwork in the listing and
   // the detail page may transiently reject Worker-origin requests. A verified
   // partner image is preferable to silently degrading the alert to text.
@@ -258,7 +319,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     : "remote_url";
   const imageAttempts = [];
 
-  if (cachedPhotoFileId && strategyEnabled.file_id) {
+  if (cachedPhotoFileId && strategyEnabled.file_id && deadlineOpen(imageDeadlineAt)) {
     try {
       const result = await telegramCall(env, "sendPhoto", {
         chat_id: mainChatId,
@@ -266,7 +327,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         caption,
         parse_mode: "HTML",
         disable_notification: disableNotification,
-      }, fetchImpl);
+      }, fetchImpl, deadlineTimeoutMs(imageDeadlineAt, TELEGRAM_TIMEOUT_MS));
       imageAttempts.push({ strategy: "file_id", ok: true, error: "" });
       return {
         messageId: Number(result?.message_id || 0),
@@ -286,8 +347,8 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   }
 
   let imageError = "";
-  if (imageUrl) {
-    if (strategyEnabled[remoteStrategy]) {
+  if (imageUrl && deadlineOpen(imageDeadlineAt)) {
+    if (strategyEnabled[remoteStrategy] && deadlineOpen(imageDeadlineAt)) {
       try {
         const result = await telegramCall(env, "sendPhoto", {
           chat_id: mainChatId,
@@ -295,7 +356,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           caption,
           parse_mode: "HTML",
           disable_notification: disableNotification,
-        }, fetchImpl);
+        }, fetchImpl, deadlineTimeoutMs(imageDeadlineAt, TELEGRAM_TIMEOUT_MS));
         imageAttempts.push({ strategy: remoteStrategy, ok: true, error: "" });
         return {
           messageId: Number(result?.message_id || 0),
@@ -310,13 +371,14 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         imageAttempts.push({ strategy: remoteStrategy, ok: false, error: imageError });
       }
     }
-    if (strategyEnabled.upload) {
+    if (strategyEnabled.upload && deadlineOpen(imageDeadlineAt)) {
       try {
         const result = await uploadTelegramPhoto(env, {
           chatId: mainChatId,
           imageUrl,
           caption,
           disableNotification,
+          imageDeadlineAt,
         }, fetchImpl);
         imageAttempts.push({ strategy: "upload", ok: true, error: "" });
         return {
@@ -335,19 +397,95 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     }
   }
 
+  if (offer?.deferTextFallback === true && deadlineOpen(imageDeadlineAt)) {
+    return {
+      deferred: true,
+      messageId: 0,
+      messageKind: "",
+      imageError,
+      imageStrategy: "pending_image",
+      imageAttempts,
+    };
+  }
+
   const result = await telegramCall(env, "sendMessage", {
     chat_id: mainChatId,
     text: caption,
     parse_mode: "HTML",
     disable_notification: disableNotification,
-    link_preview_options: offerLinkPreview(offer),
+    link_preview_options: { is_disabled: true },
   }, fetchImpl);
   return {
     messageId: Number(result?.message_id || 0),
     messageKind: "text",
     imageError,
-    imageStrategy: "text",
+    imageStrategy: "text_timeout",
     imageAttempts,
+  };
+}
+
+export async function editMainOfferMedia(
+  env,
+  { messageId, offer, telegramPhotoFileId = "" },
+  fetchImpl = fetch,
+) {
+  const { mainChatId } = telegramConfig(env);
+  if (!mainChatId) throw new Error("telegram_main_chat_missing");
+  const imageUrl = String(
+    offer?.imageUrl || offer?.cardImageUrl || offer?.partnerImageUrl || "",
+  ).trim();
+  const cachedPhotoFileId = String(telegramPhotoFileId || "").trim();
+  if (!cachedPhotoFileId && !imageUrl) throw new Error("telegram_main_image_missing");
+  const caption = buildTelegramCaption(offer, {
+    commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
+  });
+  const imageAttempts = [];
+  for (const candidate of [
+    cachedPhotoFileId && { media: cachedPhotoFileId, strategy: "file_id" },
+    imageUrl && { media: imageUrl, strategy: "remote_url" },
+  ].filter(Boolean)) {
+    try {
+      const result = await telegramCall(env, "editMessageMedia", {
+        chat_id: mainChatId,
+        message_id: Number(messageId || 0),
+        media: {
+          type: "photo",
+          media: candidate.media,
+          caption,
+          parse_mode: "HTML",
+        },
+      }, fetchImpl);
+      imageAttempts.push({ strategy: candidate.strategy, ok: true, error: "" });
+      return {
+        messageId: Number(result?.message_id || messageId || 0),
+        messageKind: "photo",
+        imageStrategy: `${candidate.strategy}_edit`,
+        imageAttempts,
+        ...telegramPhotoIdentity(result),
+      };
+    } catch (error) {
+      if (shouldDeferTransportFallback(error)) throw error;
+      imageAttempts.push({
+        strategy: candidate.strategy,
+        ok: false,
+        error: cleanText(error?.message || error).slice(0, 160),
+      });
+    }
+  }
+  if (!imageUrl) throw new Error("telegram_main_image_edit_failed");
+  const result = await uploadTelegramPhotoEdit(env, {
+    chatId: mainChatId,
+    messageId: Number(messageId || 0),
+    imageUrl,
+    caption,
+  }, fetchImpl);
+  imageAttempts.push({ strategy: "upload", ok: true, error: "" });
+  return {
+    messageId: Number(result?.message_id || messageId || 0),
+    messageKind: "photo",
+    imageStrategy: "upload_edit",
+    imageAttempts,
+    ...telegramPhotoIdentity(result),
   };
 }
 

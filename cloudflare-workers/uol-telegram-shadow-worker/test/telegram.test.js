@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  editMainOfferMedia,
   editSoldOutMessage,
   editMainOfferMessage,
   forwardToCanal2,
@@ -169,25 +170,35 @@ test("envia foto ao canal principal sem expor token no payload", async () => {
   assert.equal(JSON.stringify(payload).includes(env.TELEGRAM_TOKEN), false);
 });
 
-test("fast path da API publica texto em uma única chamada sem tentar imagem", async () => {
+test("limita tentativa de imagem ao prazo absoluto restante", async () => {
+  let requestSignal;
+  const imageDeadlineAt = new Date(Date.now() + 30).toISOString();
+  await sendMainOffer(env, { ...offer, imageDeadlineAt }, async (_url, init) => {
+    requestSignal = init.signal;
+    return jsonResponse({ message_id: 52 });
+  });
+  await new Promise((resolve) => setTimeout(resolve, 60));
+  assert.equal(requestSignal.aborted, true);
+});
+
+test("adia texto enquanto prazo de imagem ainda está aberto", async () => {
   const calls = [];
-  let payload = {};
   const result = await sendMainOffer(env, {
     ...offer,
-    telegramTextFirst: true,
+    imageUrl: "",
+    cardImageUrl: "",
+    partnerImageUrl: "",
+    deferTextFallback: true,
   }, async (url, init) => {
     calls.push(url);
-    payload = JSON.parse(init.body);
     return jsonResponse({ message_id: 48 });
   });
 
-  assert.equal(calls.length, 1);
-  assert.match(calls[0], /sendMessage$/);
-  assert.equal(result.messageId, 48);
-  assert.equal(result.messageKind, "text");
-  assert.equal(result.imageStrategy, "text_fast");
-  assert.equal(payload.chat_id, env.TELEGRAM_CHAT_ID);
-  assert.equal(payload.link_preview_options.url, offer.link);
+  assert.deepEqual(calls, []);
+  assert.equal(result.deferred, true);
+  assert.equal(result.messageId, 0);
+  assert.equal(result.messageKind, "");
+  assert.equal(result.imageStrategy, "pending_image");
 });
 
 test("usa a imagem oficial do parceiro quando o detalhe não fornece thumbnail", async () => {
@@ -206,6 +217,71 @@ test("usa a imagem oficial do parceiro quando o detalhe não fornece thumbnail",
   assert.equal(payload.photo, partnerImageUrl);
   assert.equal(result.messageKind, "photo");
   assert.equal(result.imageStrategy, "remote_url");
+});
+
+test("edita texto tardio para foto com a legenda completa no mesmo message_id", async () => {
+  let requestUrl = "";
+  let payload = {};
+  const result = await editMainOfferMedia(env, {
+    messageId: 48,
+    offer,
+  }, async (url, init) => {
+    requestUrl = url;
+    payload = JSON.parse(init.body);
+    return jsonResponse({
+      message_id: 48,
+      photo: [{ file_id: "late-photo", file_unique_id: "late-photo-unique" }],
+    });
+  });
+
+  assert.match(requestUrl, /editMessageMedia$/);
+  assert.equal(payload.chat_id, env.TELEGRAM_CHAT_ID);
+  assert.equal(payload.message_id, 48);
+  assert.equal(payload.media.type, "photo");
+  assert.equal(payload.media.media, offer.imageUrl);
+  assert.match(payload.media.caption, /2 ingressos: Show Teste/);
+  assert.equal(payload.media.parse_mode, "HTML");
+  assert.equal(result.messageId, 48);
+  assert.equal(result.messageKind, "photo");
+  assert.equal(result.imageStrategy, "remote_url_edit");
+  assert.equal(result.photoFileId, "late-photo");
+});
+
+test("faz upload ao editar quando Telegram rejeita URL tardia", async () => {
+  const calls = [];
+  const result = await editMainOfferMedia(env, {
+    messageId: 49,
+    offer,
+  }, async (url, init = {}) => {
+    calls.push({ url, body: init.body });
+    if (url === offer.imageUrl) {
+      return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+        status: 200,
+        headers: { "Content-Type": "image/png" },
+      });
+    }
+    if (url.endsWith("/editMessageMedia") && typeof init.body === "string") {
+      return new Response(JSON.stringify({ ok: false, description: "bad photo URL" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    assert.ok(init.body instanceof FormData);
+    const media = JSON.parse(init.body.get("media"));
+    assert.equal(media.type, "photo");
+    assert.equal(media.media, "attach://photo");
+    assert.match(media.caption, /2 ingressos: Show Teste/);
+    assert.equal(init.body.get("photo").name, "oferta.png");
+    return jsonResponse({
+      message_id: 49,
+      photo: [{ file_id: "uploaded-late-photo", file_unique_id: "late-unique" }],
+    });
+  });
+
+  assert.equal(calls.length, 3);
+  assert.equal(result.messageId, 49);
+  assert.equal(result.imageStrategy, "upload_edit");
+  assert.equal(result.photoFileId, "uploaded-late-photo");
 });
 
 test("reutiliza file_id antes de qualquer URL e devolve a identidade da foto", async () => {
@@ -267,12 +343,8 @@ test("usa texto quando o Telegram rejeita a imagem", async () => {
   assert.deepEqual(methods, ["sendPhoto", "show.jpg", "sendMessage"]);
   assert.equal(result.messageKind, "text");
   assert.equal(result.messageId, 42);
-  assert.deepEqual(textPayload.link_preview_options, {
-    is_disabled: false,
-    url: offer.link,
-    prefer_small_media: true,
-    show_above_text: true,
-  });
+  assert.deepEqual(textPayload.link_preview_options, { is_disabled: true });
+  assert.equal(result.imageStrategy, "text_timeout");
 });
 
 test("faz upload da imagem quando o Telegram recusa a URL pública", async () => {
