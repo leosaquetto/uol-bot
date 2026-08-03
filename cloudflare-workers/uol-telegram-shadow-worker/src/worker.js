@@ -13,11 +13,13 @@ import {
   offerIdentityKeys,
   offerSourceKey,
   parseRuntimeSnapshot,
+  rollingReadEstimate,
   storageReadBudget,
   shouldPersistRunSummary,
   shouldTouchObservation,
 } from "./core.js";
 import {
+  cacheDiscordOfferImage,
   discordConfiguration,
   getDiscordMessageImageProxy,
   sendDiscordOffer,
@@ -381,6 +383,11 @@ function rowToPublicDecision(row) {
     mainSent: Boolean(row.main_sent_at),
     canal2Sent: Boolean(row.canal2_sent_at),
     mainMessageId: Number(row.main_message_id || 0),
+    mainMessageKind: row.main_message_kind || "",
+    telegramImageStrategy: row.telegram_image_strategy || "",
+    mainImageUpgradeAttempts: Number(row.main_image_upgrade_attempts || 0),
+    mainImageUpgradeError: row.main_image_upgrade_error || "",
+    discordImageProxyCached: Boolean(row.discord_image_proxy_url),
     canal2MessageId: Number(row.canal2_message_id || 0),
     mainDeliveryError: row.main_delivery_error || "",
     canal2DeliveryError: row.canal2_delivery_error || "",
@@ -431,6 +438,7 @@ export class UolTelegramShadow extends DurableObject {
       rowsRead: 0,
       rowsWritten: 0,
       primaryMaxRowsRead: 0,
+      primaryEstimatedRowsRead: 0,
       maintenanceMaxRowsRead: 0,
       maintenanceSkipped: 0,
       lastPersistedAt: "",
@@ -547,6 +555,7 @@ export class UolTelegramShadow extends DurableObject {
       rowsRead: 0,
       rowsWritten: 0,
       primaryMaxRowsRead: 0,
+      primaryEstimatedRowsRead: 0,
       maintenanceMaxRowsRead: 0,
       maintenanceSkipped: 0,
       lastPersistedAt: "",
@@ -573,7 +582,7 @@ export class UolTelegramShadow extends DurableObject {
       ...this.storageUsage,
       ...storageReadBudget({
         rowsRead: this.storageUsage.rowsRead,
-        primaryMaxRowsRead: this.storageUsage.primaryMaxRowsRead,
+        primaryEstimatedRowsRead: this.storageUsage.primaryEstimatedRowsRead,
         now,
         pollIntervalSeconds: intervalSeconds,
         limit,
@@ -593,6 +602,10 @@ export class UolTelegramShadow extends DurableObject {
     if (kind === "primary") {
       this.storageUsage.primaryMaxRowsRead = Math.max(
         Number(this.storageUsage.primaryMaxRowsRead || 0),
+        cycleRowsRead,
+      );
+      this.storageUsage.primaryEstimatedRowsRead = rollingReadEstimate(
+        this.storageUsage.primaryEstimatedRowsRead,
         cycleRowsRead,
       );
     } else if (kind === "maintenance") {
@@ -960,6 +973,37 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (16);
       `);
     }
+    if (currentVersion < 17) {
+      this.sqlExec(`
+        ALTER TABLE offers ADD COLUMN discord_image_proxy_url TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_image_cache_message_id TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_image_cache_attempts INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN discord_image_cache_next_attempt_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN discord_image_cache_error TEXT NOT NULL DEFAULT '';
+        UPDATE offers SET
+          would_send_canal2 = 1, status = 'partial_delivery',
+          canal2_delivery_attempts = 0, canal2_delivery_error = '',
+          canal2_delivery_in_flight_at = '', canal2_delivery_next_attempt_at = '',
+          canal2_delivery_unknown_at = '', delivery_dead_letter_at = '',
+          delivery_dead_letter_reason = '', delivery_unknown_at = '',
+          delivery_unknown_target = '', delivery_quarantine_reason = ''
+        WHERE link LIKE '%/campanhasdeingresso/%'
+          AND would_send_main = 1 AND main_sent_at <> '' AND canal2_sent_at = ''
+          AND first_seen_at >= '2026-08-03T19:30:00.000Z';
+        UPDATE offers SET
+          telegram_image_strategy = 'text_timeout',
+          main_image_upgrade_attempts = 0,
+          main_image_upgrade_next_attempt_at = '', main_image_upgrade_error = ''
+        WHERE main_sent_at <> '' AND main_message_kind = 'text'
+          AND first_seen_at >= '2026-08-03T19:30:00.000Z'
+          AND COALESCE(NULLIF(image_url, ''), NULLIF(card_image_url, ''),
+                       partner_image_url) <> '';
+        CREATE INDEX IF NOT EXISTS offers_discord_image_cache_idx
+          ON offers(discord_image_proxy_url, discord_image_cache_next_attempt_at,
+                    discord_image_cache_attempts, first_seen_at);
+        INSERT INTO _sql_schema_migrations (id) VALUES (17);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -1265,6 +1309,103 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  async discordImageProxyForOffer(row, offer) {
+    const storedProxy = String(row?.discord_image_proxy_url || "").trim();
+    if (storedProxy) return storedProxy;
+
+    let messageId = String(row?.discord_message_id || "").trim();
+    let webhookUrl = String(this.env.DISCORD_WEBHOOK_URL || "").trim();
+    let proxyUrl = "";
+    let cacheMessageId = String(row?.discord_image_cache_message_id || "").trim();
+    const usesImageCache = !messageId;
+
+    if (usesImageCache) {
+      webhookUrl = String(this.env.DISCORD_IMAGE_CACHE_WEBHOOK_URL || "").trim();
+      if (!webhookUrl) return "";
+      messageId = cacheMessageId;
+      if (!messageId) {
+        const cached = await cacheDiscordOfferImage(this.env, offer);
+        messageId = cached.messageId;
+        cacheMessageId = cached.messageId;
+        proxyUrl = cached.imageProxyUrl;
+      }
+    }
+
+    if (!proxyUrl && messageId) {
+      proxyUrl = await getDiscordMessageImageProxy(
+        this.env,
+        messageId,
+        fetch,
+        webhookUrl,
+      );
+    }
+    if (!proxyUrl) throw new Error("discord_image_proxy_missing");
+
+    this.sqlExec(
+      `UPDATE offers SET discord_image_proxy_url = ?,
+         discord_image_cache_message_id = CASE WHEN ? <> '' THEN ?
+           ELSE discord_image_cache_message_id END,
+         discord_image_cache_error = '', discord_image_cache_next_attempt_at = ''
+       WHERE id = ?`,
+      proxyUrl,
+      cacheMessageId,
+      cacheMessageId,
+      row.id,
+    );
+    return proxyUrl;
+  }
+
+  async primePendingDiscordImageCache(now = new Date(), limit = 4) {
+    if (!discordConfiguration(this.env).imageCacheConfigured) {
+      return { primed: 0, failed: 0 };
+    }
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const rows = this.sqlExec(
+      `SELECT * FROM offers
+       WHERE main_sent_at = '' AND would_send_main = 1
+         AND telegram_image_strategy = 'pending_image'
+         AND link NOT LIKE '%/campanhasdeingresso/%'
+         AND discord_image_proxy_url = ''
+         AND discord_image_cache_attempts < ?
+         AND COALESCE(NULLIF(image_url, ''), NULLIF(card_image_url, ''),
+                      partner_image_url) <> ''
+         AND (discord_image_cache_next_attempt_at = ''
+              OR discord_image_cache_next_attempt_at <= ?)
+       ORDER BY first_seen_at ASC LIMIT ?`,
+      maxAttempts,
+      now.toISOString(),
+      Math.max(1, Math.min(16, Number(limit || 4))),
+    ).toArray();
+    let primed = 0;
+    let failed = 0;
+    for (const row of rows) {
+      const attempts = Number(row.discord_image_cache_attempts || 0) + 1;
+      try {
+        await this.discordImageProxyForOffer(row, rowToOffer(row));
+        this.sqlExec(
+          `UPDATE offers SET discord_image_cache_attempts = ?,
+             discord_image_cache_error = '', discord_image_cache_next_attempt_at = ''
+           WHERE id = ?`,
+          attempts,
+          row.id,
+        );
+        primed += 1;
+      } catch (error) {
+        this.sqlExec(
+          `UPDATE offers SET discord_image_cache_attempts = ?,
+             discord_image_cache_error = ?, discord_image_cache_next_attempt_at = ?
+           WHERE id = ?`,
+          attempts,
+          sanitizeError(error),
+          deliveryRetryAt(error, attempts, now),
+          row.id,
+        );
+        failed += 1;
+      }
+    }
+    return { primed, failed };
+  }
+
   async upgradeTimedOutMainImages(now = new Date(), limit = 4) {
     if (this.currentDeliveryMode() !== "live") return { upgraded: 0, failed: 0 };
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
@@ -1289,13 +1430,46 @@ export class UolTelegramShadow extends DurableObject {
 
     for (const row of rows) {
       const attempts = Number(row.main_image_upgrade_attempts || 0) + 1;
-      const telegramState = this.telegramOfferWithImageState(rowToOffer(row));
+      const originalOffer = rowToOffer(row);
+      const telegramState = this.telegramOfferWithImageState(originalOffer);
+      let deliveryOffer = telegramState.offer;
+      let usedDiscordProxy = false;
       try {
-        const result = await editMainOfferMedia(this.env, {
-          messageId: Number(row.main_message_id),
-          offer: telegramState.offer,
-          telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
+        const proxyUrl = await this.discordImageProxyForOffer(row, originalOffer);
+        if (proxyUrl) {
+          deliveryOffer = {
+            ...telegramState.offer,
+            imageUrl: proxyUrl,
+            telegramImageRemoteStrategy: "discord_proxy",
+          };
+          usedDiscordProxy = true;
+        }
+      } catch (error) {
+        logEvent("warn", "uol_discord_image_proxy_unavailable", {
+          offerId: row.id,
+          error: sanitizeError(error),
         });
+      }
+      try {
+        let result;
+        try {
+          result = await editMainOfferMedia(this.env, {
+            messageId: Number(row.main_message_id),
+            offer: deliveryOffer,
+            telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
+          });
+        } catch (proxyError) {
+          if (!usedDiscordProxy) throw proxyError;
+          this.sqlExec(
+            "UPDATE offers SET discord_image_proxy_url = '' WHERE id = ?",
+            row.id,
+          );
+          result = await editMainOfferMedia(this.env, {
+            messageId: Number(row.main_message_id),
+            offer: telegramState.offer,
+            telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
+          });
+        }
         this.recordImageDelivery(row.id, telegramState.imageKey, result, now);
         this.sqlExec(
           `UPDATE offers SET main_message_kind = 'photo',
@@ -1349,9 +1523,25 @@ export class UolTelegramShadow extends DurableObject {
     const cache = this.sqlExec(
       "SELECT COUNT(*) AS count, COALESCE(SUM(use_count), 0) AS uses FROM telegram_image_cache",
     ).one();
+    const delivery = this.sqlExec(
+      `SELECT
+         SUM(CASE WHEN main_sent_at <> '' AND main_message_kind = 'photo' THEN 1 ELSE 0 END)
+           AS photo_sent,
+         SUM(CASE WHEN main_sent_at <> '' AND main_message_kind = 'text' THEN 1 ELSE 0 END)
+           AS text_sent,
+         SUM(CASE WHEN main_sent_at <> '' AND main_message_kind = 'text'
+                   AND telegram_image_strategy = 'text_timeout'
+                  THEN 1 ELSE 0 END) AS pending_upgrade,
+         SUM(CASE WHEN discord_image_proxy_url <> '' THEN 1 ELSE 0 END) AS proxy_cached
+       FROM offers`,
+    ).one();
     return {
       cacheEntries: Number(cache.count || 0),
       cacheUses: Number(cache.uses || 0),
+      photoSent: Number(delivery.photo_sent || 0),
+      textSent: Number(delivery.text_sent || 0),
+      pendingUpgrade: Number(delivery.pending_upgrade || 0),
+      discordProxyCached: Number(delivery.proxy_cached || 0),
       strategies,
     };
   }
@@ -2523,11 +2713,18 @@ export class UolTelegramShadow extends DurableObject {
     const concurrency = envNumber(this.env, "DELIVERY_CONCURRENCY", 6, 1, 6);
     const selected = actionable.slice(0, batchSize).map(({ row, classification }) => {
       const offer = rowToOffer(row);
+      const imageProxyUrl = String(row.discord_image_proxy_url || "").trim();
       return {
         row,
         classification,
         offer,
-        telegramState: this.telegramOfferWithImageState(offer),
+        telegramState: this.telegramOfferWithImageState(
+          offer,
+          imageProxyUrl ? {
+            imageUrl: imageProxyUrl,
+            telegramImageRemoteStrategy: "discord_proxy",
+          } : {},
+        ),
       };
     });
     const stillCurrent = () => this.currentDeliveryMode() === "live" &&
@@ -2554,6 +2751,7 @@ export class UolTelegramShadow extends DurableObject {
       try {
         const result = await sendMainOffer(this.env, mainOffer);
         if (result.deferred) {
+          this.recordImageDelivery(entry.row.id, entry.telegramState.imageKey, result);
           const deferred = deferredMainDeliveryState(
             target.attempts,
             mainOffer.imageDeadlineAt,
@@ -2668,11 +2866,13 @@ export class UolTelegramShadow extends DurableObject {
         }
         this.sqlExec(
           `UPDATE offers SET discord_message_id = ?, discord_sent_at = ?,
+             discord_image_proxy_url = COALESCE(NULLIF(?, ''), discord_image_proxy_url),
              discord_delivery_error = '', discord_delivery_in_flight_at = '',
              discord_delivery_next_attempt_at = '', discord_delivery_unknown_at = ''
            WHERE id = ?`,
           result.messageId,
           new Date().toISOString(),
+          result.imageProxyUrl || "",
           row.id,
         );
         discordSent += 1;
@@ -3746,6 +3946,7 @@ export class UolTelegramShadow extends DurableObject {
       soldOutMessageMissing: 0,
       deliveryFailed: 0,
       mainImagesUpgraded: 0,
+      imageCachesPrimed: 0,
       error: "",
     };
     let activeOfferIds = new Set();
@@ -3899,16 +4100,25 @@ export class UolTelegramShadow extends DurableObject {
         }
       }
 
-      const secondary = await this.processDeliveryQueue(new Date(), {
-        targetNames: ["canal2", "discord"],
+      const discordDelivery = await this.processDeliveryQueue(new Date(), {
+        targetNames: ["discord"],
       });
-      result.canal2Sent = secondary.canal2Sent;
-      result.discordSent = secondary.discordSent;
-      result.deliveryFailed += secondary.failed;
+      result.discordSent = discordDelivery.discordSent;
+      result.deliveryFailed += discordDelivery.failed;
+
+      const imageCaches = await this.primePendingDiscordImageCache(new Date());
+      result.imageCachesPrimed = imageCaches.primed;
+      result.deliveryFailed += imageCaches.failed;
 
       const imageUpgrades = await this.upgradeTimedOutMainImages(new Date());
       result.mainImagesUpgraded = imageUpgrades.upgraded;
       result.deliveryFailed += imageUpgrades.failed;
+
+      const canal2Delivery = await this.processDeliveryQueue(new Date(), {
+        targetNames: ["canal2"],
+      });
+      result.canal2Sent = canal2Delivery.canal2Sent;
+      result.deliveryFailed += canal2Delivery.failed;
 
       this.reconcileDiscussionForwards();
       const comments = await this.processDiscussionComments(2);
@@ -4017,9 +4227,12 @@ export class UolTelegramShadow extends DurableObject {
       );
       const maintenanceBootstrapDue = !Number.isFinite(lastMaintenanceBootstrap) ||
         Date.now() - lastMaintenanceBootstrap >= 5 * 60_000;
-      if (result.apiError || result.error || maintenanceBootstrapDue) {
+      const maintenanceUrgent = Boolean(
+        result.apiError || result.error || result.newOffers || result.mainSent,
+      );
+      if (maintenanceUrgent || maintenanceBootstrapDue) {
         try {
-          await this.ensureMaintenanceAlarm(Boolean(result.apiError || result.error));
+          await this.ensureMaintenanceAlarm(maintenanceUrgent);
           this.setMetadata("maintenance_alarm_last_ensured_at", new Date().toISOString());
         } catch (error) {
           logEvent("error", "uol_telegram_maintenance_bootstrap_failed", {
@@ -4403,7 +4616,9 @@ export class UolTelegramShadow extends DurableObject {
               detail_repair_attempts, detail_repair_error, detail_repaired_at,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
-              main_message_id, canal2_message_id,
+              main_message_id, main_message_kind, telegram_image_strategy,
+              main_image_upgrade_attempts, main_image_upgrade_error,
+              discord_image_proxy_url, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
@@ -4783,7 +4998,9 @@ export class UolTelegramShadow extends DurableObject {
               detail_repair_attempts, detail_repair_error, detail_repaired_at,
               first_seen_at, decision_at, would_send_main, would_send_canal2,
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
-              main_message_id, canal2_message_id,
+              main_message_id, main_message_kind, telegram_image_strategy,
+              main_image_upgrade_attempts, main_image_upgrade_error,
+              discord_image_proxy_url, canal2_message_id,
               main_delivery_error, canal2_delivery_error,
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,

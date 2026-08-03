@@ -263,6 +263,27 @@ test("edita texto tardio para foto com a legenda completa no mesmo message_id", 
   assert.equal(result.photoFileId, "late-photo");
 });
 
+test("identifica edição feita com proxy de imagem do Discord", async () => {
+  const proxyOffer = {
+    ...offer,
+    imageUrl: "https://media.discordapp.net/proxy.jpg",
+    telegramImageRemoteStrategy: "discord_proxy",
+  };
+  const result = await editMainOfferMedia(env, {
+    messageId: 50,
+    offer: proxyOffer,
+  }, async (_url, init) => {
+    const payload = JSON.parse(init.body);
+    assert.equal(payload.media.media, proxyOffer.imageUrl);
+    return jsonResponse({
+      message_id: 50,
+      photo: [{ file_id: "discord-photo", file_unique_id: "discord-unique" }],
+    });
+  });
+  assert.equal(result.imageStrategy, "discord_proxy_edit");
+  assert.equal(result.photoFileId, "discord-photo");
+});
+
 test("faz upload ao editar quando Telegram rejeita URL tardia", async () => {
   const calls = [];
   const result = await editMainOfferMedia(env, {

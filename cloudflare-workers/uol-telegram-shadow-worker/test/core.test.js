@@ -17,6 +17,7 @@ import {
   offerSourceKey,
   parseRuntimeSnapshot,
   parseValidityWindow,
+  rollingReadEstimate,
   shouldTouchObservation,
   shouldPersistRunSummary,
   storageReadBudget,
@@ -68,7 +69,7 @@ test("cadência rápida mantém orçamento estável abaixo do plano gratuito", (
 test("reserva leituras críticas e corta manutenção antes do limite diário", () => {
   const healthy = storageReadBudget({
     rowsRead: 250_000,
-    primaryMaxRowsRead: 64,
+    primaryEstimatedRowsRead: 64,
     now: new Date("2026-08-03T12:00:00.000Z"),
   });
   assert.equal(healthy.limit, 5_000_000);
@@ -77,7 +78,7 @@ test("reserva leituras críticas e corta manutenção antes do limite diário", 
 
   const protectedState = storageReadBudget({
     rowsRead: 4_000_001,
-    primaryMaxRowsRead: 64,
+    primaryEstimatedRowsRead: 64,
     now: new Date("2026-08-03T12:00:00.000Z"),
   });
   assert.equal(protectedState.maintenanceAllowed, false);
@@ -85,10 +86,10 @@ test("reserva leituras críticas e corta manutenção antes do limite diário", 
   assert.ok(protectedState.remaining >= protectedState.criticalReserve - 1);
 });
 
-test("pico medido aumenta reserva do polling restante", () => {
+test("estimativa sustentada aumenta reserva do polling restante", () => {
   const budget = storageReadBudget({
     rowsRead: 100_000,
-    primaryMaxRowsRead: 500,
+    primaryEstimatedRowsRead: 500,
     now: new Date("2026-08-03T00:00:00.000Z"),
   });
   assert.equal(budget.remainingPrimaryScans, 5_760);
@@ -101,7 +102,7 @@ test("pico medido aumenta reserva do polling restante", () => {
 test("polling desacelera quando o custo crítico medido cresce", () => {
   const budget = storageReadBudget({
     rowsRead: 100_000,
-    primaryMaxRowsRead: 1_000,
+    primaryEstimatedRowsRead: 1_000,
     now: new Date("2026-08-03T00:00:00.000Z"),
   });
   assert.equal(budget.recommendedPollIntervalSeconds, 27);
@@ -111,12 +112,19 @@ test("polling desacelera quando o custo crítico medido cresce", () => {
 test("polling pausa antes de ultrapassar o limite e aponta o reset UTC", () => {
   const budget = storageReadBudget({
     rowsRead: 4_999_950,
-    primaryMaxRowsRead: 64,
+    primaryEstimatedRowsRead: 64,
     now: new Date("2026-08-03T23:59:00.000Z"),
   });
   assert.equal(budget.primaryAllowed, false);
   assert.equal(budget.affordablePrimaryScans, 0);
   assert.equal(budget.resetAt, "2026-08-04T00:00:00.000Z");
+});
+
+test("estimativa móvel reage a custo sustentado sem eternizar pico isolado", () => {
+  assert.equal(rollingReadEstimate(100, 3_400), 1_750);
+  assert.equal(rollingReadEstimate(1_750, 100), 1_585);
+  assert.equal(rollingReadEstimate(0, 88), 88);
+  assert.equal(rollingReadEstimate(0, 3_400), 512);
 });
 
 test("histórico grava eventos e só amostra ciclos sem mudança", () => {
@@ -211,15 +219,16 @@ test("canal principal recebe toda oferta elegível e canal 2 recebe show", () =>
   assert.equal(decision.wouldSendCanal2, true);
 });
 
-test("canal 2 bloqueia teatro, stand-up e esporte sem bloquear o canal principal", () => {
+test("canal 2 recebe toda campanha de ingresso, incluindo teatro e esporte", () => {
   for (const title of [
     "2 ingressos Teatro Claro",
     "Ingressos para stand-up",
     "Ingressos para jogo de futebol",
   ]) {
     const offer = { ...showOffer, title, previewTitle: title };
-    assert.equal(shouldSendToCanal2(offer), false);
+    assert.equal(shouldSendToCanal2(offer), true);
     assert.equal(decideShadowDelivery(offer).wouldSendMain, true);
+    assert.equal(decideShadowDelivery(offer).wouldSendCanal2, true);
   }
 });
 

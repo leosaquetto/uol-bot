@@ -61,15 +61,20 @@ O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
    mutações param 38 segundos antes para reservar timeout e reconciliação;
 3. envia texto sem preview somente quando o prazo expira e persiste a confirmação;
 4. despacha todos os principais da rajada com concorrência limitada;
-5. para ingressos elegíveis, usa `copyMessage` para o canal 2, criando uma
-   mensagem independente e editável;
-6. processa Discord depois dos destinos Telegram;
+5. processa Discord em alarme secundário antecipado e reutiliza seu proxy de
+   thumbnail quando URL/upload do UOL falham;
+6. para campanhas de ingresso, usa `copyMessage` para o canal 2 depois do
+   upgrade de imagem, criando uma mensagem independente e editável;
 7. uma falha secundária não apaga o sucesso do canal principal;
 8. novas tentativas processam somente o destino ainda pendente.
 
 Se a foto aparecer depois do texto, `editMessageMedia` substitui o conteúdo da
 mesma mensagem por `InputMediaPhoto` com a legenda completa. O `message_id` é
 preservado e nenhuma segunda publicação é criada.
+
+Um webhook opcional `DISCORD_IMAGE_CACHE_WEBHOOK_URL` permite usar canal privado
+como cache para ofertas comuns. Nada é publicado no canal visível de ingressos;
+o cache só é acionado após falha das fontes diretas de imagem.
 
 As legendas utilizam HTML escapado, link canônico, validade, localização quando
 disponível e as hashtags relevantes. Campanhas de ingresso não são silenciosas.
@@ -355,7 +360,7 @@ exposta.
 - dead letters não criam head-of-line blocking e dependências impossíveis não
   ficam em backoff eterno;
 - reabertura restaura `partial_delivery` quando havia secundários pendentes;
-- schema local: v14;
+- schema local: v17;
 - não há Version ID nem recibo de produção nesta seção porque não houve commit,
   push ou deploy nesta revisão.
 

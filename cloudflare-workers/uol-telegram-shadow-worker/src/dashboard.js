@@ -58,6 +58,10 @@ ${metric("Discord p50", duration(latency.discord?.p50Ms))}
 ${metric("API vence", source.apiWins ?? 0)}
 ${metric("HTML vence", source.listingWins ?? 0)}
 ${metric("Cache file_id", image.cacheEntries ?? 0)}
+${metric("Telegram com foto", image.photoSent ?? 0, "good")}
+${metric("Telegram em texto", image.textSent ?? 0)}
+${metric("Fotos pendentes", image.pendingUpgrade ?? 0, image.pendingUpgrade ? "bad" : "good")}
+${metric("Proxies Discord", image.discordProxyCached ?? 0)}
 ${metric("Login pessoal", auth.personalAuthorizationRequired ? "necessário" : "dispensado", auth.personalAuthorizationRequired ? "bad" : "good")}
 ${metric("API expira", String(data.ticketApi?.applicationAuthorizationExpiresAt || "—").slice(0, 10))}
 ${metric("Scans estimados/dia", usage.alarmInvocationsPerDay ?? "—")}

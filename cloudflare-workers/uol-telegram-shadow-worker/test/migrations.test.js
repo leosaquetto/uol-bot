@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 16);
+  assert.equal(blocks.length, 17);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 16);
+  assert.equal(Number(version), 17);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -38,6 +38,11 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "main_image_upgrade_attempts",
     "main_image_upgrade_next_attempt_at",
     "main_image_upgrade_error",
+    "discord_image_proxy_url",
+    "discord_image_cache_message_id",
+    "discord_image_cache_attempts",
+    "discord_image_cache_next_attempt_at",
+    "discord_image_cache_error",
   ]) {
     assert.equal(columns.has(column), true, `coluna ausente: ${column}`);
   }
@@ -93,7 +98,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    16,
+    17,
   );
   database.close();
 });
@@ -172,6 +177,63 @@ test("v16 encerra edições impossíveis e libera retry de restock", () => {
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
     16,
+  );
+  database.close();
+});
+
+test("v17 recupera Canal 2 e fotos do incidente atual sem reenviar histórico", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 16)) database.exec(sql);
+  const insert = database.prepare(
+    `INSERT INTO offers(
+       id, link, preview_title, first_seen_at, last_seen_at, status,
+       decision_at, would_send_main, would_send_canal2,
+       main_message_id, main_message_kind, main_sent_at,
+       image_url, telegram_image_strategy, main_image_upgrade_attempts,
+       main_image_upgrade_error
+     ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, 1, 0, 101, 'text', ?, ?, ?, 10, ?)`,
+  );
+  insert.run(
+    "ticket-atual",
+    "https://clube.uol.com.br/campanhasdeingresso/ticket-atual",
+    "2 ingressos Teatro Itália",
+    "2026-08-03T19:31:00.000Z",
+    "2026-08-03T19:31:00.000Z",
+    "2026-08-03T19:31:00.000Z",
+    "2026-08-03T19:31:10.000Z",
+    "https://example.com/ticket.png",
+    "text_timeout",
+    "offer_image_http_403",
+  );
+  insert.run(
+    "ticket-antigo",
+    "https://clube.uol.com.br/campanhasdeingresso/ticket-antigo",
+    "2 ingressos antigos",
+    "2026-08-03T18:00:00.000Z",
+    "2026-08-03T18:00:00.000Z",
+    "2026-08-03T18:00:00.000Z",
+    "2026-08-03T18:00:10.000Z",
+    "https://example.com/antigo.png",
+    "text_timeout",
+    "offer_image_http_403",
+  );
+
+  database.exec(blocks[16]);
+  const current = database.prepare("SELECT * FROM offers WHERE id = 'ticket-atual'").get();
+  assert.equal(Number(current.would_send_canal2), 1);
+  assert.equal(current.status, "partial_delivery");
+  assert.equal(Number(current.main_image_upgrade_attempts), 0);
+  assert.equal(current.main_image_upgrade_error, "");
+  assert.equal(current.discord_image_proxy_url, "");
+  const old = database.prepare("SELECT * FROM offers WHERE id = 'ticket-antigo'").get();
+  assert.equal(Number(old.would_send_canal2), 0);
+  assert.equal(Number(old.main_image_upgrade_attempts), 10);
+  assert.equal(
+    Number(database.prepare(
+      "SELECT MAX(id) AS version FROM _sql_schema_migrations",
+    ).get().version),
+    17,
   );
   database.close();
 });

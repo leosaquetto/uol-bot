@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   buildDiscordPayload,
+  cacheDiscordOfferImage,
   discordConfiguration,
   getDiscordMessageImageProxy,
   sendDiscordOffer,
@@ -53,6 +54,42 @@ test("recupera a imagem já cacheada pelo Discord", async () => {
     }), { headers: { "Content-Type": "application/json" } });
   });
   assert.equal(proxyUrl, "https://media.discordapp.net/proxy.jpg");
+});
+
+test("canal privado cacheia imagem de oferta comum sem publicar no canal de ingressos", async () => {
+  const env = {
+    DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/tickets/token",
+    DISCORD_IMAGE_CACHE_WEBHOOK_URL: "https://discord.com/api/webhooks/cache/token",
+  };
+  assert.equal(discordConfiguration(env).imageCacheConfigured, true);
+  const result = await cacheDiscordOfferImage(env, offer, async (url, init) => {
+    assert.match(url, /webhooks\/cache\/token\?wait=true$/);
+    const payload = JSON.parse(init.body);
+    assert.equal(payload.embeds[0].image.url, offer.cardImageUrl);
+    return new Response(JSON.stringify({
+      id: "cache-1",
+      embeds: [{ image: { proxy_url: "https://media.discordapp.net/cache.jpg" } }],
+    }), { headers: { "Content-Type": "application/json" } });
+  });
+  assert.deepEqual(result, {
+    messageId: "cache-1",
+    imageProxyUrl: "https://media.discordapp.net/cache.jpg",
+  });
+});
+
+test("consulta proxy no webhook privado quando solicitado", async () => {
+  const proxy = await getDiscordMessageImageProxy(
+    { DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/tickets/token" },
+    "cache-1",
+    async (url) => {
+      assert.equal(url, "https://discord.com/api/webhooks/cache/token/messages/cache-1");
+      return new Response(JSON.stringify({
+        embeds: [{ image: { proxy_url: "https://media.discordapp.net/private.jpg" } }],
+      }), { headers: { "Content-Type": "application/json" } });
+    },
+    "https://discord.com/api/webhooks/cache/token",
+  );
+  assert.equal(proxy, "https://media.discordapp.net/private.jpg");
 });
 
 test("preserva status e retry_after de erro do Discord", async () => {

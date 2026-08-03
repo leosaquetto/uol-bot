@@ -24,7 +24,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           .one().sql,
       );
 
-      expect(version).toBeGreaterThanOrEqual(16);
+      expect(version).toBeGreaterThanOrEqual(17);
       expect(tables).toEqual(expect.arrayContaining([
         "metadata",
         "offers",
@@ -46,6 +46,11 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "main_image_upgrade_attempts",
         "main_image_upgrade_next_attempt_at",
         "main_image_upgrade_error",
+        "discord_image_proxy_url",
+        "discord_image_cache_message_id",
+        "discord_image_cache_attempts",
+        "discord_image_cache_next_attempt_at",
+        "discord_image_cache_error",
       ]) {
         expect(offersSchema).toContain(column);
       }

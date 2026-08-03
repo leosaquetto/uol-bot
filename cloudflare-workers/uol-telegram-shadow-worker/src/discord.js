@@ -10,6 +10,9 @@ const DISCORD_TIMEOUT_MS = 10_000;
 export function discordConfiguration(env) {
   return {
     configured: Boolean(String(env.DISCORD_WEBHOOK_URL || "").trim()),
+    imageCacheConfigured: Boolean(
+      String(env.DISCORD_IMAGE_CACHE_WEBHOOK_URL || "").trim(),
+    ),
   };
 }
 
@@ -99,6 +102,44 @@ export async function sendDiscordOffer(env, offer, fetchImpl = fetch) {
   };
 }
 
+export async function cacheDiscordOfferImage(env, offer, fetchImpl = fetch) {
+  const webhookUrl = String(env.DISCORD_IMAGE_CACHE_WEBHOOK_URL || "").trim();
+  if (!webhookUrl) throw new Error("discord_image_cache_webhook_missing");
+  const imageUrl = String(
+    offer?.imageUrl || offer?.cardImageUrl || offer?.partnerImageUrl || "",
+  ).trim();
+  if (!imageUrl) throw new Error("discord_image_cache_source_missing");
+  const url = new URL(webhookUrl);
+  url.searchParams.set("wait", "true");
+  const response = await discordRequest(url.href, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: "Clube UOL • Cache de imagens",
+      embeds: [{
+        title: cleanText(offer?.title || offer?.previewTitle || "Oferta").slice(0, 240),
+        url: String(offer?.link || "").trim(),
+        image: { url: imageUrl },
+      }],
+      allowed_mentions: { parse: [] },
+    }),
+    signal: AbortSignal.timeout(DISCORD_TIMEOUT_MS),
+  }, "cacheImage", true, fetchImpl);
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw discordError("cacheImage", response, payload);
+  if (!String(payload?.id || "")) {
+    throw createAmbiguousResponseTransportError({
+      transport: "discord",
+      operation: "cacheImage",
+      httpStatus: response.status,
+    });
+  }
+  return {
+    messageId: String(payload.id),
+    imageProxyUrl: String(payload?.embeds?.[0]?.image?.proxy_url || ""),
+  };
+}
+
 export async function sendDiscordOperationsAlert(env, text, fetchImpl = fetch) {
   const webhookUrl = String(env.DISCORD_OPS_WEBHOOK_URL || "").trim();
   if (!webhookUrl) throw new Error("discord_operations_webhook_missing");
@@ -119,8 +160,13 @@ export async function sendDiscordOperationsAlert(env, text, fetchImpl = fetch) {
   return { ok: true };
 }
 
-export async function getDiscordMessageImageProxy(env, messageId, fetchImpl = fetch) {
-  const webhookUrl = String(env.DISCORD_WEBHOOK_URL || "").trim();
+export async function getDiscordMessageImageProxy(
+  env,
+  messageId,
+  fetchImpl = fetch,
+  webhookOverride = "",
+) {
+  const webhookUrl = String(webhookOverride || env.DISCORD_WEBHOOK_URL || "").trim();
   if (!webhookUrl) throw new Error("discord_webhook_missing");
   if (!String(messageId || "").trim()) throw new Error("discord_message_id_missing");
   const url = new URL(webhookUrl);

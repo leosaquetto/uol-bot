@@ -25,8 +25,9 @@ agenda coleta. Estado de produção exige verificação própria.
    tenta foto da própria API e aguarda no máximo 60 segundos, sem depender de
    preview ou confirmação do HTML;
 6. em rajadas, o alarme crítico despacha os canais principais com concorrência
-   limitada; outro Durable Object agenda canal 2, Discord e manutenção sem
-   segurar a próxima consulta da API;
+   limitada; novidade antecipa o outro Durable Object, que envia Discord,
+   recupera a thumbnail e só então encaminha ao canal 2, sem segurar a próxima
+   consulta da API;
 7. as duas páginas HTML são reconciliadas a cada 60 segundos, ou imediatamente
    se a API falhar/voltar vazia; elas são fallback de descoberta e autoridade de
    esgotamento/reabertura, nunca confirmação prévia para publicar;
@@ -46,8 +47,8 @@ agenda coleta. Estado de produção exige verificação própria.
 ## Regras
 
 - **Canal principal:** toda oferta nova elegível.
-- **Canal 2:** somente campanhas em `/campanhasdeingresso/`, exceto teatro,
-  stand-up, partidas, campeonatos, futebol e jogos.
+- **Canal 2:** toda campanha em `/campanhasdeingresso/`, incluindo teatro,
+  stand-up e esporte.
 - **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
   15 minutos, limitada às ofertas decididas nos últimos três dias. A publicação
   principal e as cópias do canal exclusivo são editadas idempotentemente. Falha
@@ -58,7 +59,10 @@ agenda coleta. Estado de produção exige verificação própria.
   de 60 segundos. Novas mutações param 38 segundos antes para reservar timeout
   e reconciliação de resultado incerto. Depois envia texto sem preview. Foto tardia usa
   `editMessageMedia` e conserva o mesmo `message_id`, com foto + legenda.
-  Discord mantém seu fluxo rápido com thumbnail; canal 2 copia a mensagem pronta.
+  Para ingressos, o proxy já criado pelo Discord é reutilizado antes do upload.
+  `DISCORD_IMAGE_CACHE_WEBHOOK_URL` habilita um canal privado opcional que faz o
+  mesmo para ofertas comuns sem publicá-las no canal visível de ingressos. Canal
+  2 copia a mensagem depois do upgrade de foto.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
   respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
   repetidos em um retry parcial.
@@ -125,6 +129,8 @@ agenda coleta. Estado de produção exige verificação própria.
   `TELEGRAM_CHAT_ID`, `CANAL2_ID`, `GRUPO_COMENTARIO_ID`,
   `OPS_TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET` e `DISCORD_WEBHOOK_URL`.
   `DISCORD_OPS_WEBHOOK_URL` é opcional e cria um segundo transporte para alertas.
+  `DISCORD_IMAGE_CACHE_WEBHOOK_URL` é opcional e aponta para canal privado usado
+  somente como cache de thumbnails de ofertas comuns.
   Não há automação ativa de senha ou login pessoal.
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.

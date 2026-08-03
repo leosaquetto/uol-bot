@@ -37,12 +37,19 @@ test("polling crítico usa somente API e envio principal com prazo de imagem", (
 test("HTML e destinos secundários ficam isolados na manutenção", () => {
   const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
   assert.match(maintenance, /fetchListing\(/);
-  assert.match(maintenance, /targetNames:\s*\["canal2",\s*"discord"\]/);
+  assert.match(maintenance, /targetNames:\s*\["discord"\]/);
+  assert.match(maintenance, /targetNames:\s*\["canal2"\]/);
+  assert.match(maintenance, /primePendingDiscordImageCache\(/);
   assert.match(maintenance, /upgradeTimedOutMainImages\(/);
   assert.ok(
     maintenance.indexOf("this.processDeliveryQueue(") <
       maintenance.indexOf("this.upgradeTimedOutMainImages("),
-    "Discord e canal 2 devem sair antes do upgrade tardio de imagem",
+    "Discord deve fornecer proxy antes do upgrade tardio de imagem",
+  );
+  assert.ok(
+    maintenance.lastIndexOf("this.processDeliveryQueue(") >
+      maintenance.indexOf("this.upgradeTimedOutMainImages("),
+    "Canal 2 deve encaminhar depois do upgrade de imagem",
   );
   assert.doesNotMatch(maintenance, /targetNames:\s*\["main"\]/);
 });
@@ -62,6 +69,19 @@ test("lote tardio filtra imagem e backoff antes do limite", () => {
     const filterIndex = upgrade.indexOf(filter);
     assert.ok(filterIndex > 0 && filterIndex < limitIndex, `filtro tardio fora do SQL: ${filter}`);
   }
+  assert.match(upgrade, /discordImageProxyForOffer\(row, originalOffer\)/);
+  assert.match(upgrade, /telegramImageRemoteStrategy:\s*"discord_proxy"/);
+});
+
+test("proxy Discord aquece próximo envio principal sem bloquear primeiro scan", () => {
+  const delivery = methodSource("  async processDeliveryQueue(", "  async processDiscussionComments(");
+  const primaryAlarm = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
+  assert.match(delivery, /row\.discord_image_proxy_url/);
+  assert.match(delivery, /telegramImageRemoteStrategy:\s*"discord_proxy"/);
+  assert.match(delivery, /discord_image_proxy_url = COALESCE\(NULLIF\(\?, ''\)/);
+  assert.match(delivery, /if \(result\.deferred\) \{[\s\S]*recordImageDelivery/);
+  assert.match(primaryAlarm, /result\.newOffers \|\| result\.mainSent/);
+  assert.match(primaryAlarm, /ensureMaintenanceAlarm\(maintenanceUrgent\)/);
 });
 
 test("telemetria frequente usa snapshots e observações limitadas", () => {
@@ -127,6 +147,7 @@ test("polling usa aliases indexados e mede rowsRead reais", () => {
   assert.match(tracking, /cursor\.rowsRead/);
   assert.match(tracking, /cursor\.rowsWritten/);
   assert.match(maintenance, /storage_read_budget_guard/);
+  assert.match(workerSource, /primaryEstimatedRowsRead/);
   assert.match(primary, /budget\.recommendedPollIntervalSeconds/);
   assert.match(primary, /!budget\.primaryAllowed/);
 });

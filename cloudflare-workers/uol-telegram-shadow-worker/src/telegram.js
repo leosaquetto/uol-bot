@@ -428,6 +428,9 @@ export async function editMainOfferMedia(
     offer?.imageUrl || offer?.cardImageUrl || offer?.partnerImageUrl || "",
   ).trim();
   const cachedPhotoFileId = String(telegramPhotoFileId || "").trim();
+  const remoteStrategy = offer?.telegramImageRemoteStrategy === "discord_proxy"
+    ? "discord_proxy"
+    : "remote_url";
   if (!cachedPhotoFileId && !imageUrl) throw new Error("telegram_main_image_missing");
   const caption = buildTelegramCaption(offer, {
     commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
@@ -435,7 +438,7 @@ export async function editMainOfferMedia(
   const imageAttempts = [];
   for (const candidate of [
     cachedPhotoFileId && { media: cachedPhotoFileId, strategy: "file_id" },
-    imageUrl && { media: imageUrl, strategy: "remote_url" },
+    imageUrl && { media: imageUrl, strategy: remoteStrategy },
   ].filter(Boolean)) {
     try {
       const result = await telegramCall(env, "editMessageMedia", {

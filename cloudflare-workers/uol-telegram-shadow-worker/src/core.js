@@ -75,7 +75,7 @@ export function estimateDailyRowWrites({
 
 export function storageReadBudget({
   rowsRead = 0,
-  primaryMaxRowsRead = 0,
+  primaryEstimatedRowsRead = 0,
   now = new Date(),
   pollIntervalSeconds = 15,
   limit = FREE_TIER_ROW_READS_PER_DAY,
@@ -91,16 +91,16 @@ export function storageReadBudget({
     Math.max(0, nextUtcDay - instant.getTime()) /
       (Math.max(1, Number(pollIntervalSeconds) || 15) * 1_000),
   );
-  const observedPrimaryMax = Math.max(64, Number(primaryMaxRowsRead || 0));
+  const observedPrimaryEstimate = Math.max(64, Number(primaryEstimatedRowsRead || 0));
   const criticalReserve = Math.max(
     Number(reserveFloor || 0),
-    Math.ceil(observedPrimaryMax * remainingPrimaryScans * 1.5),
+    Math.ceil(observedPrimaryEstimate * remainingPrimaryScans * 1.5),
   );
   const normalizedLimit = Math.max(1, Number(limit) || FREE_TIER_ROW_READS_PER_DAY);
   const normalizedRowsRead = Math.max(0, Number(rowsRead) || 0);
   const remaining = Math.max(0, normalizedLimit - normalizedRowsRead);
   const remainingSeconds = Math.ceil(Math.max(0, nextUtcDay - instant.getTime()) / 1_000);
-  const primaryRowsWithSafety = Math.max(1, Math.ceil(observedPrimaryMax * 1.5));
+  const primaryRowsWithSafety = Math.max(1, Math.ceil(observedPrimaryEstimate * 1.5));
   const affordablePrimaryScans = Math.floor(remaining / primaryRowsWithSafety);
   const configuredPollIntervalSeconds = Math.max(
     1,
@@ -119,7 +119,7 @@ export function storageReadBudget({
     remaining,
     resetAt: new Date(nextUtcDay).toISOString(),
     remainingPrimaryScans,
-    observedPrimaryMax,
+    observedPrimaryEstimate,
     primaryRowsWithSafety,
     affordablePrimaryScans,
     recommendedPollIntervalSeconds,
@@ -129,6 +129,14 @@ export function storageReadBudget({
     maintenanceAllowed: normalizedRowsRead < maintenanceCeiling,
     withinFreeTier: normalizedRowsRead < normalizedLimit,
   };
+}
+
+export function rollingReadEstimate(previous, observed) {
+  const current = Math.max(0, Number(previous || 0));
+  const sample = Math.max(0, Number(observed || 0));
+  if (!current) return Math.min(512, Math.ceil(sample));
+  const weight = sample > current ? 0.5 : 0.1;
+  return Math.ceil(current * (1 - weight) + sample * weight);
 }
 
 export function cleanText(value) {
@@ -325,27 +333,6 @@ function containsWord(text, term) {
 }
 
 export function shouldSendToCanal2(offer) {
-  const blob = normalizeText([
-    offer?.title,
-    offer?.previewTitle,
-    offer?.description,
-    offer?.category,
-    offer?.link,
-  ].filter(Boolean).join(" "));
-
-  const blockedTerms = [
-    "partida",
-    "partidas",
-    "campeonato",
-    "campeonatos",
-    "futebol",
-    "jogo",
-    "jogos",
-    "teatro",
-    "stand up",
-    "standup",
-  ];
-  if (blockedTerms.some((term) => containsWord(blob, term))) return false;
   return isTicketCampaign(offer);
 }
 
