@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 15);
+  assert.equal(blocks.length, 16);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 15);
+  assert.equal(Number(version), 16);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -93,7 +93,85 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    15,
+    16,
+  );
+  database.close();
+});
+
+test("v16 encerra edições impossíveis e libera retry de restock", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 15)) database.exec(sql);
+  const insert = database.prepare(
+    `INSERT INTO offers(
+       id, link, preview_title, first_seen_at, last_seen_at, status,
+       main_message_id, main_sent_at, sold_out_at,
+       main_sold_out_attempts, main_sold_out_error,
+       main_restock_attempts, main_restock_error
+     ) VALUES (?, ?, ?, ?, ?, ?, 101, ?, ?, ?, ?, ?, ?)`,
+  );
+  insert.run(
+    "sold-out-missing",
+    "https://clube.uol.com.br/beneficios/sold-out-missing",
+    "Esgotada",
+    "2026-08-03T12:00:00.000Z",
+    "2026-08-03T12:00:00.000Z",
+    "sold_out",
+    "2026-08-03T12:00:01.000Z",
+    "2026-08-03T13:00:00.000Z",
+    10,
+    "telegram_editMessageText_400:Bad Request: message to edit not found",
+    0,
+    "",
+  );
+  insert.run(
+    "restock-missing",
+    "https://clube.uol.com.br/beneficios/restock-missing",
+    "Disponível novamente",
+    "2026-08-03T12:00:00.000Z",
+    "2026-08-03T12:00:00.000Z",
+    "restocked_pending_sync",
+    "2026-08-03T12:00:01.000Z",
+    "2026-08-03T13:00:00.000Z",
+    0,
+    "",
+    10,
+    "telegram_editMessageText_400:Bad Request: message to edit not found",
+  );
+  database.prepare(
+    `INSERT INTO incidents(
+       key, status, severity, summary, details, first_detected_at, last_detected_at
+     ) VALUES (?, 'active', 'critical', 'Falha', 'Teste', ?, ?)`,
+  ).run(
+    "delivery-queue:sold-out-missing:main_sold_out",
+    "2026-08-03T13:00:00.000Z",
+    "2026-08-03T13:00:00.000Z",
+  );
+
+  database.exec(blocks[15]);
+  const soldOut = database.prepare(
+    `SELECT main_sold_out_synced_at, main_sold_out_error
+     FROM offers WHERE id = 'sold-out-missing'`,
+  ).get();
+  assert.notEqual(soldOut.main_sold_out_synced_at, "");
+  assert.equal(soldOut.main_sold_out_error, "");
+  assert.equal(
+    database.prepare(
+      "SELECT status FROM incidents WHERE key = ?",
+    ).get("delivery-queue:sold-out-missing:main_sold_out").status,
+    "resolved",
+  );
+  const restock = database.prepare(
+    `SELECT main_restock_attempts, main_restock_error
+     FROM offers WHERE id = 'restock-missing'`,
+  ).get();
+  assert.equal(Number(restock.main_restock_attempts), 0);
+  assert.equal(restock.main_restock_error, "");
+  assert.equal(
+    Number(database.prepare(
+      "SELECT MAX(id) AS version FROM _sql_schema_migrations",
+    ).get().version),
+    16,
   );
   database.close();
 });

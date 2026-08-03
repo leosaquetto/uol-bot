@@ -131,6 +131,20 @@ test("polling usa aliases indexados e mede rowsRead reais", () => {
   assert.match(primary, /!budget\.primaryAllowed/);
 });
 
+test("mensagem Telegram ausente encerra sold-out e republica restock", () => {
+  const soldOut = methodSource("  async processSoldOutSync(", "  async processRestockSync(");
+  const restock = methodSource("  async processRestockSync(", "  evaluateSoldOut(");
+
+  assert.match(soldOut, /isTelegramMessageMissingError\(error\)/);
+  assert.match(soldOut, /main_sold_out_synced_at = \?/);
+  assert.match(soldOut, /canal2_sold_out_synced_at = \?/);
+  assert.match(soldOut, /resolveIncidentWithoutAlert/);
+  assert.match(restock, /isTelegramMessageMissingError\(editError\)/);
+  assert.match(restock, /sendMainOffer\(this\.env, telegramState\.offer\)/);
+  assert.match(restock, /forwardToCanal2\(this\.env, mainMessageId\)/);
+  assert.match(restock, /ambiguous \? maxAttempts : attempts/);
+});
+
 test("coletor Discord legado falha fechado sem configuração explícita", () => {
   assert.match(
     discordRollbackSource,

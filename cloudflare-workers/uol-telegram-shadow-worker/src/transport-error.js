@@ -58,7 +58,18 @@ export class DeliveryTransportError extends Error {
     this.retry_after = normalizedRetryAfter;
     this.ambiguous = Boolean(ambiguous);
     this.retryable = Boolean(retryable);
+    this.description = normalizedDescription;
   }
+}
+
+export function isTelegramMessageMissingError(error) {
+  const status = Number(error?.status || error?.httpStatus || 0);
+  const transport = String(error?.transport || "").trim().toLowerCase();
+  const operation = String(error?.operation || "").trim();
+  const description = String(error?.description || error?.message || "").toLowerCase();
+  return transport === "telegram" && status === 400 &&
+    ["editMessageText", "editMessageCaption", "editMessageMedia"].includes(operation) &&
+    description.includes("message to edit not found");
 }
 
 export function createHttpTransportError({

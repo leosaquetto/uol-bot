@@ -24,7 +24,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           .one().sql,
       );
 
-      expect(version).toBeGreaterThanOrEqual(14);
+      expect(version).toBeGreaterThanOrEqual(16);
       expect(tables).toEqual(expect.arrayContaining([
         "metadata",
         "offers",

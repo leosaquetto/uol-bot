@@ -61,6 +61,7 @@ import {
   deliveryRetryAt,
   isAmbiguousDeliveryError,
 } from "./delivery-state.js";
+import { isTelegramMessageMissingError } from "./transport-error.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
 import {
   deferredMainDeliveryState,
@@ -920,6 +921,45 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (15);
       `);
     }
+    if (currentVersion < 16) {
+      this.sqlExec(`
+        UPDATE offers SET
+          main_sold_out_synced_at = COALESCE(
+            NULLIF(sold_out_at, ''), strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+          ),
+          main_sold_out_error = '', main_sold_out_next_attempt_at = ''
+        WHERE main_sold_out_synced_at = ''
+          AND lower(main_sold_out_error) LIKE '%message to edit not found%';
+        UPDATE offers SET
+          canal2_sold_out_synced_at = COALESCE(
+            NULLIF(sold_out_at, ''), strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+          ),
+          canal2_sold_out_error = '', canal2_sold_out_next_attempt_at = ''
+        WHERE canal2_sold_out_synced_at = ''
+          AND lower(canal2_sold_out_error) LIKE '%message to edit not found%';
+        UPDATE offers SET
+          main_restock_attempts = 0, main_restock_error = '',
+          main_restock_next_attempt_at = ''
+        WHERE status = 'restocked_pending_sync'
+          AND lower(main_restock_error) LIKE '%message to edit not found%';
+        UPDATE offers SET
+          canal2_restock_attempts = 0, canal2_restock_error = '',
+          canal2_restock_next_attempt_at = ''
+        WHERE status = 'restocked_pending_sync'
+          AND lower(canal2_restock_error) LIKE '%message to edit not found%';
+        UPDATE incidents SET
+          status = 'resolved', resolved_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
+          last_attempted_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now'), alert_error = ''
+        WHERE status = 'active' AND key IN (
+          SELECT 'delivery-queue:' || id || ':main_sold_out'
+          FROM offers WHERE main_sold_out_synced_at <> ''
+          UNION
+          SELECT 'delivery-queue:' || id || ':canal2_sold_out'
+          FROM offers WHERE canal2_sold_out_synced_at <> ''
+        );
+        INSERT INTO _sql_schema_migrations (id) VALUES (16);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -1673,6 +1713,17 @@ export class UolTelegramShadow extends DurableObject {
         : "")
       .filter(Boolean)
       .join("|") || "operations_alert_no_transport");
+  }
+
+  resolveIncidentWithoutAlert(key, now = new Date()) {
+    this.sqlExec(
+      `UPDATE incidents SET status = 'resolved', resolved_at = ?,
+         last_attempted_at = ?, alert_error = ''
+       WHERE key = ? AND status = 'active'`,
+      now.toISOString(),
+      now.toISOString(),
+      key,
+    );
   }
 
   async processOperationalHealth(now = new Date()) {
@@ -2855,6 +2906,7 @@ export class UolTelegramShadow extends DurableObject {
     ).toArray();
     let mainEdited = 0;
     let canal2Edited = 0;
+    let messageMissing = 0;
     let failed = 0;
 
     for (const row of rows) {
@@ -2889,14 +2941,33 @@ export class UolTelegramShadow extends DurableObject {
           );
           mainEdited += 1;
         } catch (error) {
-          this.sqlExec(
-            `UPDATE offers SET main_sold_out_error = ?,
-               main_sold_out_next_attempt_at = ? WHERE id = ?`,
-            sanitizeError(error),
-            deliveryRetryAt(error, attempts, now),
-            row.id,
-          );
-          failed += 1;
+          if (isTelegramMessageMissingError(error)) {
+            this.sqlExec(
+              `UPDATE offers SET main_sold_out_synced_at = ?,
+                 main_sold_out_error = '', main_sold_out_next_attempt_at = ''
+               WHERE id = ?`,
+              now.toISOString(),
+              row.id,
+            );
+            messageMissing += 1;
+            logEvent("warn", "uol_telegram_sold_out_message_missing", {
+              offerId: row.id,
+              target: "main",
+            });
+            this.resolveIncidentWithoutAlert(
+              `delivery-queue:${row.id}:main_sold_out`,
+              now,
+            );
+          } else {
+            this.sqlExec(
+              `UPDATE offers SET main_sold_out_error = ?,
+                 main_sold_out_next_attempt_at = ? WHERE id = ?`,
+              sanitizeError(error),
+              deliveryRetryAt(error, attempts, now),
+              row.id,
+            );
+            failed += 1;
+          }
         }
       }
 
@@ -2933,20 +3004,39 @@ export class UolTelegramShadow extends DurableObject {
           );
           canal2Edited += 1;
         } catch (error) {
-          // Re-editar a mesma mensagem é idempotente. Não enviamos um aviso
-          // substituto sem outbox, pois uma resposta ambígua poderia duplicá-lo.
-          this.sqlExec(
-            `UPDATE offers SET canal2_sold_out_error = ?,
-               canal2_sold_out_next_attempt_at = ? WHERE id = ?`,
-            sanitizeError(error),
-            deliveryRetryAt(error, attempts, now),
-            row.id,
-          );
-          failed += 1;
+          if (isTelegramMessageMissingError(error)) {
+            this.sqlExec(
+              `UPDATE offers SET canal2_sold_out_synced_at = ?,
+                 canal2_sold_out_error = '', canal2_sold_out_next_attempt_at = ''
+               WHERE id = ?`,
+              now.toISOString(),
+              row.id,
+            );
+            messageMissing += 1;
+            logEvent("warn", "uol_telegram_sold_out_message_missing", {
+              offerId: row.id,
+              target: "canal2",
+            });
+            this.resolveIncidentWithoutAlert(
+              `delivery-queue:${row.id}:canal2_sold_out`,
+              now,
+            );
+          } else {
+            // Re-editar a mesma mensagem é idempotente. Não enviamos um aviso
+            // substituto sem outbox, pois uma resposta ambígua poderia duplicá-lo.
+            this.sqlExec(
+              `UPDATE offers SET canal2_sold_out_error = ?,
+                 canal2_sold_out_next_attempt_at = ? WHERE id = ?`,
+              sanitizeError(error),
+              deliveryRetryAt(error, attempts, now),
+              row.id,
+            );
+            failed += 1;
+          }
         }
       }
     }
-    return { mainEdited, canal2Edited, failed };
+    return { mainEdited, canal2Edited, messageMissing, failed };
   }
 
   async processRestockSync(now) {
@@ -2994,12 +3084,16 @@ export class UolTelegramShadow extends DurableObject {
     ).toArray();
     let mainEdited = 0;
     let canal2Edited = 0;
+    let mainReposted = 0;
+    let canal2Reposted = 0;
     let failed = 0;
 
     for (const row of rows) {
       const offer = rowToOffer(row);
       let mainSynced = Boolean(row.main_restock_synced_at);
       let canal2Synced = Boolean(row.canal2_restock_synced_at);
+      let mainMessageId = Number(row.main_message_id || 0);
+      let mainReplacementFailed = false;
       if (
         configuration.main.ready && Number(row.main_message_id || 0) > 0 &&
         !mainSynced && Number(row.main_restock_attempts || 0) < maxAttempts &&
@@ -3027,14 +3121,68 @@ export class UolTelegramShadow extends DurableObject {
           );
           mainEdited += 1;
         } catch (editError) {
-          this.sqlExec(
-            `UPDATE offers SET main_restock_error = ?,
-               main_restock_next_attempt_at = ? WHERE id = ?`,
-            sanitizeError(editError),
-            deliveryRetryAt(editError, attempts, now),
-            row.id,
-          );
-          failed += 1;
+          if (isTelegramMessageMissingError(editError)) {
+            try {
+              const telegramState = this.telegramOfferWithImageState(offer, {
+                deferTextFallback: false,
+              });
+              const replacement = await sendMainOffer(this.env, telegramState.offer);
+              if (!replacement.messageId) {
+                throw Object.assign(
+                  new Error("telegram_restock_message_id_missing"),
+                  { ambiguous: true },
+                );
+              }
+              const replacedAt = new Date().toISOString();
+              mainMessageId = Number(replacement.messageId);
+              this.recordImageDelivery(row.id, telegramState.imageKey, replacement, now);
+              this.sqlExec(
+                `UPDATE offers SET main_message_id = ?, main_message_kind = ?,
+                   main_sent_at = ?, main_restock_synced_at = ?,
+                   main_restock_error = '', main_restock_next_attempt_at = '',
+                   discussion_message_id = 0, comment_sent_at = '',
+                   comment_chunks_sent = 0, comment_message_ids = '[]',
+                   comment_delivery_attempts = 0, comment_delivery_error = '',
+                   comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = '',
+                   comment_delivery_unknown_at = ''
+                 WHERE id = ?`,
+                mainMessageId,
+                replacement.messageKind,
+                replacedAt,
+                replacedAt,
+                row.id,
+              );
+              mainSynced = true;
+              mainReposted += 1;
+              logEvent("warn", "uol_telegram_restock_reposted", {
+                offerId: row.id,
+                target: "main",
+                messageId: mainMessageId,
+              });
+            } catch (replacementError) {
+              const ambiguous = isAmbiguousDeliveryError(replacementError);
+              this.sqlExec(
+                `UPDATE offers SET main_restock_attempts = ?, main_restock_error = ?,
+                   main_restock_next_attempt_at = ? WHERE id = ?`,
+                ambiguous ? maxAttempts : attempts,
+                `${ambiguous ? "ambiguous:" : ""}restock_repost:${sanitizeError(replacementError)}`
+                  .slice(0, 240),
+                ambiguous ? "" : deliveryRetryAt(replacementError, attempts, now),
+                row.id,
+              );
+              mainReplacementFailed = true;
+              failed += 1;
+            }
+          } else {
+            this.sqlExec(
+              `UPDATE offers SET main_restock_error = ?,
+                 main_restock_next_attempt_at = ? WHERE id = ?`,
+              sanitizeError(editError),
+              deliveryRetryAt(editError, attempts, now),
+              row.id,
+            );
+            failed += 1;
+          }
         }
       }
 
@@ -3045,7 +3193,7 @@ export class UolTelegramShadow extends DurableObject {
       if (
         canal2Required && configuration.canal2.ready && !canal2Synced &&
         Number(row.canal2_restock_attempts || 0) < maxAttempts &&
-        this.currentDeliveryMode() === "live"
+        this.currentDeliveryMode() === "live" && !mainReplacementFailed
       ) {
         const attempts = Number(row.canal2_restock_attempts || 0) + 1;
         this.sqlExec(
@@ -3071,14 +3219,55 @@ export class UolTelegramShadow extends DurableObject {
           );
           canal2Edited += 1;
         } catch (editError) {
-          this.sqlExec(
-            `UPDATE offers SET canal2_restock_error = ?,
-               canal2_restock_next_attempt_at = ? WHERE id = ?`,
-            sanitizeError(editError),
-            deliveryRetryAt(editError, attempts, now),
-            row.id,
-          );
-          failed += 1;
+          if (isTelegramMessageMissingError(editError)) {
+            try {
+              const replacement = await forwardToCanal2(this.env, mainMessageId);
+              if (!replacement.messageId) {
+                throw Object.assign(
+                  new Error("telegram_canal2_restock_message_id_missing"),
+                  { ambiguous: true },
+                );
+              }
+              const replacedAt = new Date().toISOString();
+              this.sqlExec(
+                `UPDATE offers SET canal2_message_id = ?, canal2_sent_at = ?,
+                   canal2_restock_synced_at = ?, canal2_restock_error = '',
+                   canal2_restock_next_attempt_at = '' WHERE id = ?`,
+                Number(replacement.messageId),
+                replacedAt,
+                replacedAt,
+                row.id,
+              );
+              canal2Synced = true;
+              canal2Reposted += 1;
+              logEvent("warn", "uol_telegram_restock_reposted", {
+                offerId: row.id,
+                target: "canal2",
+                messageId: Number(replacement.messageId),
+              });
+            } catch (replacementError) {
+              const ambiguous = isAmbiguousDeliveryError(replacementError);
+              this.sqlExec(
+                `UPDATE offers SET canal2_restock_attempts = ?, canal2_restock_error = ?,
+                   canal2_restock_next_attempt_at = ? WHERE id = ?`,
+                ambiguous ? maxAttempts : attempts,
+                `${ambiguous ? "ambiguous:" : ""}restock_repost:${sanitizeError(replacementError)}`
+                  .slice(0, 240),
+                ambiguous ? "" : deliveryRetryAt(replacementError, attempts, now),
+                row.id,
+              );
+              failed += 1;
+            }
+          } else {
+            this.sqlExec(
+              `UPDATE offers SET canal2_restock_error = ?,
+                 canal2_restock_next_attempt_at = ? WHERE id = ?`,
+              sanitizeError(editError),
+              deliveryRetryAt(editError, attempts, now),
+              row.id,
+            );
+            failed += 1;
+          }
         }
       }
 
@@ -3094,7 +3283,7 @@ export class UolTelegramShadow extends DurableObject {
         );
       }
     }
-    return { mainEdited, canal2Edited, failed };
+    return { mainEdited, canal2Edited, mainReposted, canal2Reposted, failed };
   }
 
   evaluateSoldOut(activeIds, now, category = "all") {
@@ -3552,6 +3741,9 @@ export class UolTelegramShadow extends DurableObject {
       soldOutCanal2Edited: 0,
       restockMainEdited: 0,
       restockCanal2Edited: 0,
+      restockMainReposted: 0,
+      restockCanal2Reposted: 0,
+      soldOutMessageMissing: 0,
       deliveryFailed: 0,
       mainImagesUpgraded: 0,
       error: "",
@@ -3725,10 +3917,13 @@ export class UolTelegramShadow extends DurableObject {
       const restock = await this.processRestockSync(new Date());
       result.restockMainEdited = restock.mainEdited;
       result.restockCanal2Edited = restock.canal2Edited;
+      result.restockMainReposted = restock.mainReposted;
+      result.restockCanal2Reposted = restock.canal2Reposted;
       result.deliveryFailed += restock.failed;
       const soldOut = await this.processSoldOutSync(new Date());
       result.soldOutMainEdited = soldOut.mainEdited;
       result.soldOutCanal2Edited = soldOut.canal2Edited;
+      result.soldOutMessageMissing = soldOut.messageMissing;
       result.deliveryFailed += soldOut.failed;
       if (completeListingSnapshot) this.pruneOffers(new Date(), activeOfferIds);
 
@@ -3748,7 +3943,9 @@ export class UolTelegramShadow extends DurableObject {
         result.newOffers || result.canal2Sent ||
         result.discordSent || result.commentsSent || result.soldOutDetected ||
         result.soldOutMainEdited || result.soldOutCanal2Edited ||
-        result.restockMainEdited || result.restockCanal2Edited
+        result.restockMainEdited || result.restockCanal2Edited ||
+        result.restockMainReposted || result.restockCanal2Reposted ||
+        result.soldOutMessageMissing
       ) {
         result.outcome = "maintenance_applied";
       }

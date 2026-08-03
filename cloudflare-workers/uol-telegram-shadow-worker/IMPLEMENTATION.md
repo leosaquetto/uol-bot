@@ -85,7 +85,9 @@ Uma oferta entregue passa a ser candidata a esgotamento somente quando:
 
 Depois da confirmação, o Worker usa `editMessageCaption` para fotos ou
 `editMessageText` para mensagens sem imagem. Principal e canal 2 possuem
-confirmações e retries independentes.
+confirmações e retries independentes. `message to edit not found` é terminal no
+esgotamento; na reabertura, a oferta é republicada e o novo `message_id` passa a
+ser a referência durável. Envio substituto ambíguo não é repetido automaticamente.
 
 ## Baseline e corte
 

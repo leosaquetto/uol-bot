@@ -40,7 +40,8 @@ agenda coleta. Estado de produção exige verificação própria.
     confirmação independentes;
 12. ofertas recentes ausentes no HTML saudável são confirmadas como esgotadas;
     se reaparecerem no HTML, as mensagens voltam ao estado disponível sem perder
-    entregas secundárias que já estavam pendentes.
+    entregas secundárias que já estavam pendentes; mensagem apagada encerra a
+    edição de esgotamento e gera nova publicação somente quando a oferta volta.
 
 ## Regras
 
