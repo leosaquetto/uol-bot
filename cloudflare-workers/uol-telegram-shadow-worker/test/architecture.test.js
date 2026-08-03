@@ -114,14 +114,6 @@ test("cada alarme periódico rearma uma vez por execução", () => {
   );
 });
 
-test("watchdog externo rearma os dois alarmes após reset diário", () => {
-  assert.match(workerConfig, /"crons":\s*\["\*\/5 \* \* \* \*"\]/);
-  const scheduled = methodSource("  async scheduled(", "\n  },\n};");
-  assert.match(scheduled, /main\.ensureAlarm\(\)/);
-  assert.match(scheduled, /maintenance\.ensureAlarm\(\)/);
-  assert.match(scheduled, /Promise\.allSettled/);
-});
-
 test("polling usa aliases indexados e mede rowsRead reais", () => {
   const primary = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
   const resolution = methodSource("  resolveListingCards(", "  async processPending(");

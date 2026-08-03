@@ -4904,26 +4904,4 @@ export default {
       return jsonResponse({ ok: false, error: "internal_error" }, 500);
     }
   },
-  async scheduled(_controller, env, ctx) {
-    ctx.waitUntil((async () => {
-      const main = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
-      const maintenance = env.UOL_TELEGRAM_MAINTENANCE
-        .getByName(MAINTENANCE_INSTANCE_NAME);
-      const results = await Promise.allSettled([
-        main.ensureAlarm(),
-        maintenance.ensureAlarm(),
-      ]);
-      const failures = results.filter((result) => result.status === "rejected");
-      if (failures.length) {
-        logEvent("error", "uol_alarm_watchdog_failed", {
-          failures: failures.map((result) => sanitizeError(result.reason)),
-        });
-      } else {
-        logEvent("info", "uol_alarm_watchdog_ok", {
-          mainAlarm: results[0].value,
-          maintenanceAlarm: results[1].value,
-        });
-      }
-    })());
-  },
 };

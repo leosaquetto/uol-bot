@@ -189,8 +189,8 @@ continuam imediatos. Cada handler periódico rearma seu alarme uma vez.
 As leituras SQLite reais são medidas por `rowsRead` e acumuladas por dia UTC.
 A manutenção para antes de invadir a reserva do polling principal. Se o custo
 observado crescer, o polling desacelera automaticamente; sem orçamento seguro,
-ele rearma para depois do reset diário. Um cron externo verifica os dois alarmes
-a cada 5 minutos, inclusive após uma falha de cota.
+ele rearma para depois do reset diário. Os dois alarmes se rearmam antes de
+qualquer leitura pesada, então uma falha de cota não interrompe a retomada.
 
 O diagnóstico calcula o orçamento em `usageEstimate.durableObjectRowsWrittenPerDay`.
 Com 48 cards ativos na API e 48 no HTML, a projeção conservadora é 57.920
