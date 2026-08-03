@@ -1,6 +1,7 @@
 const BASE_URL = "https://clube.uol.com.br";
 const DAY_SECONDS = 86_400;
 const FREE_TIER_ROW_WRITES_PER_DAY = 100_000;
+const FREE_TIER_ROW_READS_PER_DAY = 5_000_000;
 
 export function parseRuntimeSnapshot(value) {
   try {
@@ -69,6 +70,64 @@ export function estimateDailyRowWrites({
     headroom: FREE_TIER_ROW_WRITES_PER_DAY - projected,
     withinFreeTier: projected < FREE_TIER_ROW_WRITES_PER_DAY,
     components,
+  };
+}
+
+export function storageReadBudget({
+  rowsRead = 0,
+  primaryMaxRowsRead = 0,
+  now = new Date(),
+  pollIntervalSeconds = 15,
+  limit = FREE_TIER_ROW_READS_PER_DAY,
+  reserveFloor = 1_000_000,
+} = {}) {
+  const instant = now instanceof Date ? now : new Date(now);
+  const nextUtcDay = Date.UTC(
+    instant.getUTCFullYear(),
+    instant.getUTCMonth(),
+    instant.getUTCDate() + 1,
+  );
+  const remainingPrimaryScans = Math.ceil(
+    Math.max(0, nextUtcDay - instant.getTime()) /
+      (Math.max(1, Number(pollIntervalSeconds) || 15) * 1_000),
+  );
+  const observedPrimaryMax = Math.max(64, Number(primaryMaxRowsRead || 0));
+  const criticalReserve = Math.max(
+    Number(reserveFloor || 0),
+    Math.ceil(observedPrimaryMax * remainingPrimaryScans * 1.5),
+  );
+  const normalizedLimit = Math.max(1, Number(limit) || FREE_TIER_ROW_READS_PER_DAY);
+  const normalizedRowsRead = Math.max(0, Number(rowsRead) || 0);
+  const remaining = Math.max(0, normalizedLimit - normalizedRowsRead);
+  const remainingSeconds = Math.ceil(Math.max(0, nextUtcDay - instant.getTime()) / 1_000);
+  const primaryRowsWithSafety = Math.max(1, Math.ceil(observedPrimaryMax * 1.5));
+  const affordablePrimaryScans = Math.floor(remaining / primaryRowsWithSafety);
+  const configuredPollIntervalSeconds = Math.max(
+    1,
+    Number(pollIntervalSeconds) || 15,
+  );
+  const recommendedPollIntervalSeconds = affordablePrimaryScans > 0
+    ? Math.max(
+        configuredPollIntervalSeconds,
+        Math.ceil(remainingSeconds / affordablePrimaryScans),
+      )
+    : remainingSeconds + 1;
+  const maintenanceCeiling = Math.max(0, normalizedLimit - criticalReserve);
+  return {
+    limit: normalizedLimit,
+    rowsRead: normalizedRowsRead,
+    remaining,
+    resetAt: new Date(nextUtcDay).toISOString(),
+    remainingPrimaryScans,
+    observedPrimaryMax,
+    primaryRowsWithSafety,
+    affordablePrimaryScans,
+    recommendedPollIntervalSeconds,
+    primaryAllowed: affordablePrimaryScans > 0,
+    criticalReserve,
+    maintenanceCeiling,
+    maintenanceAllowed: normalizedRowsRead < maintenanceCeiling,
+    withinFreeTier: normalizedRowsRead < normalizedLimit,
   };
 }
 

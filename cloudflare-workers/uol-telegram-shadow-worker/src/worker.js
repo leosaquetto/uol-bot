@@ -13,6 +13,7 @@ import {
   offerIdentityKeys,
   offerSourceKey,
   parseRuntimeSnapshot,
+  storageReadBudget,
   shouldPersistRunSummary,
   shouldTouchObservation,
 } from "./core.js";
@@ -76,6 +77,8 @@ const USER_AGENT =
 const INSTANCE_NAME = "clube-uol-global-monitor";
 const MAINTENANCE_INSTANCE_NAME = "clube-uol-maintenance";
 const MAX_HTML_BYTES = 2_000_000;
+const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
+const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
 
 function envNumber(env, name, fallback, min = 1, max = Number.MAX_SAFE_INTEGER) {
   const parsed = Number.parseInt(String(env[name] || ""), 10);
@@ -419,12 +422,197 @@ export class UolTelegramShadow extends DurableObject {
     super(ctx, env);
     this.scanInFlight = false;
     this.maintenanceInFlight = false;
+    this.metadataCache = new Map();
     this.runtimeSnapshotCache = new Map();
-    ctx.blockConcurrencyWhile(async () => this.migrate());
+    this.storageUsageReady = false;
+    this.storageUsage = {
+      day: new Date().toISOString().slice(0, 10),
+      rowsRead: 0,
+      rowsWritten: 0,
+      primaryMaxRowsRead: 0,
+      maintenanceMaxRowsRead: 0,
+      maintenanceSkipped: 0,
+      lastPersistedAt: "",
+    };
+    ctx.blockConcurrencyWhile(async () => {
+      this.migrate();
+      this.loadStorageUsage();
+    });
+  }
+
+  sqlExec(query, ...bindings) {
+    const cursor = this.ctx.storage.sql.exec(query, ...bindings);
+    if (!this.storageUsageReady) return cursor;
+    return this.trackSqlCursor(cursor);
+  }
+
+  trackSqlCursor(cursor) {
+    let accountedRead = 0;
+    let accountedWritten = 0;
+    const sync = () => {
+      const rowsRead = Number(cursor.rowsRead || 0);
+      const rowsWritten = Number(cursor.rowsWritten || 0);
+      this.recordStorageUsage(
+        Math.max(0, rowsRead - accountedRead),
+        Math.max(0, rowsWritten - accountedWritten),
+      );
+      accountedRead = rowsRead;
+      accountedWritten = rowsWritten;
+    };
+    const wrapIterator = (iterator) => ({
+      next: (...args) => {
+        try {
+          return iterator.next(...args);
+        } finally {
+          sync();
+        }
+      },
+      return: (...args) => {
+        try {
+          return iterator.return ? iterator.return(...args) : { done: true };
+        } finally {
+          sync();
+        }
+      },
+      throw: (...args) => {
+        try {
+          if (iterator.throw) return iterator.throw(...args);
+          throw args[0];
+        } finally {
+          sync();
+        }
+      },
+      [Symbol.iterator]() {
+        return this;
+      },
+    });
+    sync();
+    return new Proxy(cursor, {
+      get: (target, property) => {
+        if (["toArray", "one", "next"].includes(property)) {
+          return (...args) => {
+            try {
+              return target[property](...args);
+            } finally {
+              sync();
+            }
+          };
+        }
+        if (property === "raw") {
+          return (...args) => wrapIterator(target.raw(...args));
+        }
+        if (property === Symbol.iterator) {
+          return () => wrapIterator(target[Symbol.iterator]());
+        }
+        if (property === "rowsRead" || property === "rowsWritten") sync();
+        const value = Reflect.get(target, property, target);
+        return typeof value === "function" ? value.bind(target) : value;
+      },
+    });
+  }
+
+  loadStorageUsage() {
+    const cursor = this.ctx.storage.sql.exec(
+      "SELECT value FROM metadata WHERE key = 'runtime:storage_usage' LIMIT 1",
+    );
+    const row = cursor.toArray()[0];
+    let previous = {};
+    try {
+      previous = JSON.parse(row?.value || "{}");
+    } catch {
+      previous = {};
+    }
+    const day = new Date().toISOString().slice(0, 10);
+    if (previous.day === day) {
+      this.storageUsage = {
+        ...this.storageUsage,
+        ...previous,
+        day,
+        rowsRead: Number(previous.rowsRead || 0) + Number(cursor.rowsRead || 0),
+        rowsWritten: Number(previous.rowsWritten || 0),
+      };
+    } else {
+      this.storageUsage.day = day;
+      this.storageUsage.rowsRead = Number(cursor.rowsRead || 0);
+    }
+    this.storageUsageReady = true;
+  }
+
+  rollStorageUsageDay(now = new Date()) {
+    const day = now.toISOString().slice(0, 10);
+    if (this.storageUsage.day === day) return;
+    this.storageUsage = {
+      day,
+      rowsRead: 0,
+      rowsWritten: 0,
+      primaryMaxRowsRead: 0,
+      maintenanceMaxRowsRead: 0,
+      maintenanceSkipped: 0,
+      lastPersistedAt: "",
+    };
+  }
+
+  recordStorageUsage(rowsRead = 0, rowsWritten = 0) {
+    this.rollStorageUsageDay();
+    this.storageUsage.rowsRead += Number(rowsRead || 0);
+    this.storageUsage.rowsWritten += Number(rowsWritten || 0);
+  }
+
+  storageUsageSnapshot(now = new Date()) {
+    this.rollStorageUsageDay(now);
+    const limit = envNumber(
+      this.env,
+      "DURABLE_OBJECT_ROWS_READ_DAILY_LIMIT",
+      DURABLE_OBJECT_FREE_ROWS_READ_LIMIT,
+      1_000_000,
+      100_000_000_000,
+    );
+    const intervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600);
+    return {
+      ...this.storageUsage,
+      ...storageReadBudget({
+        rowsRead: this.storageUsage.rowsRead,
+        primaryMaxRowsRead: this.storageUsage.primaryMaxRowsRead,
+        now,
+        pollIntervalSeconds: intervalSeconds,
+        limit,
+        reserveFloor: DURABLE_OBJECT_CRITICAL_READ_RESERVE,
+      }),
+    };
+  }
+
+  completeStorageUsageCycle(kind, startedRowsRead) {
+    this.rollStorageUsageDay();
+    // Reserva conservadora para getAlarm/setAlarm e para o próprio snapshot.
+    this.recordStorageUsage(2, 1);
+    const cycleRowsRead = Math.max(
+      0,
+      Number(this.storageUsage.rowsRead || 0) - Number(startedRowsRead || 0),
+    );
+    if (kind === "primary") {
+      this.storageUsage.primaryMaxRowsRead = Math.max(
+        Number(this.storageUsage.primaryMaxRowsRead || 0),
+        cycleRowsRead,
+      );
+    } else if (kind === "maintenance") {
+      this.storageUsage.maintenanceMaxRowsRead = Math.max(
+        Number(this.storageUsage.maintenanceMaxRowsRead || 0),
+        cycleRowsRead,
+      );
+    }
+    this.storageUsage.lastPersistedAt = new Date().toISOString();
+    const serialized = JSON.stringify(this.storageUsage);
+    this.ctx.storage.sql.exec(
+      `INSERT INTO metadata(key, value) VALUES ('runtime:storage_usage', ?)
+       ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+      serialized,
+    );
+    this.metadataCache.set("runtime:storage_usage", serialized);
+    return cycleRowsRead;
   }
 
   migrate() {
-    this.ctx.storage.sql.exec(`
+    this.sqlExec(`
       CREATE TABLE IF NOT EXISTS _sql_schema_migrations (
         id INTEGER PRIMARY KEY,
         applied_at TEXT NOT NULL DEFAULT (datetime('now'))
@@ -483,12 +671,11 @@ export class UolTelegramShadow extends DurableObject {
       INSERT OR IGNORE INTO _sql_schema_migrations (id) VALUES (1);
     `);
     const currentVersion = Number(
-      this.ctx.storage.sql
-        .exec("SELECT COALESCE(MAX(id), 0) AS version FROM _sql_schema_migrations")
+      this.sqlExec("SELECT COALESCE(MAX(id), 0) AS version FROM _sql_schema_migrations")
         .one().version || 0,
     );
     if (currentVersion < 2) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN delivery_mode TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN main_message_id INTEGER NOT NULL DEFAULT 0;
         ALTER TABLE offers ADD COLUMN main_message_kind TEXT NOT NULL DEFAULT '';
@@ -516,7 +703,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 3) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN title_validity_key TEXT NOT NULL DEFAULT '';
         CREATE INDEX IF NOT EXISTS offers_title_validity_idx
           ON offers(title_validity_key, main_sent_at);
@@ -524,7 +711,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 4) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN discord_message_id TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN discord_sent_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN discord_delivery_attempts INTEGER NOT NULL DEFAULT 0;
@@ -547,7 +734,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 5) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         CREATE TABLE IF NOT EXISTS pending_discussion_forwards (
           origin_message_id INTEGER PRIMARY KEY,
           discussion_message_id INTEGER NOT NULL,
@@ -559,7 +746,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 6) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         CREATE TABLE IF NOT EXISTS incidents (
           key TEXT PRIMARY KEY,
           status TEXT NOT NULL,
@@ -580,7 +767,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 7) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN telegram_photo_file_id TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN telegram_photo_file_unique_id TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN telegram_image_strategy TEXT NOT NULL DEFAULT '';
@@ -622,7 +809,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 8) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         UPDATE offers
            SET main_sold_out_attempts = 0
          WHERE status = 'sold_out' AND main_sold_out_synced_at = '';
@@ -633,7 +820,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 9) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN detail_repair_attempts INTEGER NOT NULL DEFAULT 0;
         ALTER TABLE offers ADD COLUMN detail_repair_error TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN detail_repaired_at TEXT NOT NULL DEFAULT '';
@@ -643,7 +830,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 10) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN delivery_generation INTEGER NOT NULL DEFAULT 1;
         ALTER TABLE offers ADD COLUMN main_delivery_next_attempt_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN main_delivery_in_flight_at TEXT NOT NULL DEFAULT '';
@@ -666,7 +853,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 11) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN status_before_sold_out TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN restocked_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN main_restock_synced_at TEXT NOT NULL DEFAULT '';
@@ -679,7 +866,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 12) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN main_delivery_unknown_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN canal2_delivery_unknown_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN discord_delivery_unknown_at TEXT NOT NULL DEFAULT '';
@@ -693,7 +880,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 13) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN main_sold_out_next_attempt_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN canal2_sold_out_next_attempt_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN main_restock_next_attempt_at TEXT NOT NULL DEFAULT '';
@@ -705,7 +892,7 @@ export class UolTelegramShadow extends DurableObject {
       `);
     }
     if (currentVersion < 14) {
-      this.ctx.storage.sql.exec(`
+      this.sqlExec(`
         ALTER TABLE offers ADD COLUMN main_image_upgrade_attempts INTEGER NOT NULL DEFAULT 0;
         ALTER TABLE offers ADD COLUMN main_image_upgrade_next_attempt_at TEXT NOT NULL DEFAULT '';
         ALTER TABLE offers ADD COLUMN main_image_upgrade_error TEXT NOT NULL DEFAULT '';
@@ -715,22 +902,44 @@ export class UolTelegramShadow extends DurableObject {
                     main_image_upgrade_attempts, first_seen_at);
       `);
     }
+    if (currentVersion < 15) {
+      this.sqlExec(`
+        CREATE TABLE IF NOT EXISTS offer_identity_aliases (
+          alias TEXT NOT NULL,
+          offer_id TEXT NOT NULL,
+          first_seen_at TEXT NOT NULL,
+          PRIMARY KEY(alias, offer_id)
+        );
+        CREATE INDEX IF NOT EXISTS offer_identity_aliases_offer_idx
+          ON offer_identity_aliases(offer_id);
+        CREATE INDEX IF NOT EXISTS offers_main_unknown_due_idx
+          ON offers(main_delivery_unknown_at, main_delivery_attempts)
+          WHERE main_sent_at = '';
+        INSERT OR IGNORE INTO offer_identity_aliases(alias, offer_id, first_seen_at)
+          SELECT 'id:' || id, id, first_seen_at FROM offers;
+        INSERT INTO _sql_schema_migrations (id) VALUES (15);
+      `);
+    }
   }
 
   metadataValue(key) {
-    const rows = this.ctx.storage.sql
-      .exec("SELECT value FROM metadata WHERE key = ?", key)
+    if (this.metadataCache.has(key)) return this.metadataCache.get(key);
+    const rows = this.sqlExec("SELECT value FROM metadata WHERE key = ?", key)
       .toArray();
-    return rows[0]?.value || "";
+    const value = rows[0]?.value || "";
+    this.metadataCache.set(key, value);
+    return value;
   }
 
   setMetadata(key, value) {
-    this.ctx.storage.sql.exec(
+    const normalized = String(value || "");
+    this.sqlExec(
       `INSERT INTO metadata(key, value) VALUES (?, ?)
        ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
       key,
-      String(value || ""),
+      normalized,
     );
+    this.metadataCache.set(key, normalized);
   }
 
   setMetadataIfChanged(key, value) {
@@ -765,7 +974,7 @@ export class UolTelegramShadow extends DurableObject {
     const lastColumn = source === "api" ? "api_last_seen_at" : "listing_last_seen_at";
     const touchMinutes = envNumber(this.env, "OFFER_LAST_SEEN_TOUCH_MINUTES", 15, 1, 1_440);
     for (const card of cards.filter(isTicketCampaign)) {
-      const previous = this.ctx.storage.sql.exec(
+      const previous = this.sqlExec(
         `SELECT link, title, ${lastColumn} AS last_seen_at
          FROM source_observations WHERE offer_key = ? LIMIT 1`,
         card.id,
@@ -778,7 +987,7 @@ export class UolTelegramShadow extends DurableObject {
         previous && !contentChanged &&
         !shouldTouchObservation(previous.last_seen_at, observedAt, touchMinutes)
       ) continue;
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `INSERT INTO source_observations(
            offer_key, link, title, ${firstColumn}, ${lastColumn}
          ) VALUES (?, ?, ?, ?, ?)
@@ -873,7 +1082,7 @@ export class UolTelegramShadow extends DurableObject {
 
   getSourceComparison() {
     const cutoff = new Date(Date.now() - 30 * 86_400_000).toISOString();
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT offer_key, title, api_first_seen_at, listing_first_seen_at
        FROM source_observations
        WHERE link LIKE '%/campanhasdeingresso/%'
@@ -914,7 +1123,7 @@ export class UolTelegramShadow extends DurableObject {
 
   cachedTelegramPhoto(imageKey) {
     if (!imageKey) return null;
-    return this.ctx.storage.sql.exec(
+    return this.sqlExec(
       "SELECT file_id, file_unique_id FROM telegram_image_cache WHERE image_key = ? LIMIT 1",
       imageKey,
     ).toArray()[0] || null;
@@ -922,14 +1131,14 @@ export class UolTelegramShadow extends DurableObject {
 
   imageStrategyAvailability(now = new Date()) {
     const result = { file_id: true, remote_url: true, discord_proxy: true, upload: true };
-    const rows = this.ctx.storage.sql.exec("SELECT strategy, state, opened_until FROM image_strategy_health")
+    const rows = this.sqlExec("SELECT strategy, state, opened_until FROM image_strategy_health")
       .toArray();
     for (const row of rows) {
       const openedUntil = Date.parse(row.opened_until || "");
       if (row.state === "open" && Number.isFinite(openedUntil) && openedUntil > now.getTime()) {
         result[row.strategy] = false;
       } else if (row.state === "open") {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE image_strategy_health SET state = 'half_open' WHERE strategy = ?",
           row.strategy,
         );
@@ -943,7 +1152,7 @@ export class UolTelegramShadow extends DurableObject {
     const threshold = envNumber(this.env, "IMAGE_CIRCUIT_FAILURE_THRESHOLD", 3, 2, 20);
     const cooldownMinutes = envNumber(this.env, "IMAGE_CIRCUIT_COOLDOWN_MINUTES", 10, 1, 120);
     for (const attempt of delivery.imageAttempts || []) {
-      const row = this.ctx.storage.sql.exec(
+      const row = this.sqlExec(
         "SELECT consecutive_failures FROM image_strategy_health WHERE strategy = ?",
         attempt.strategy,
       ).toArray()[0];
@@ -951,7 +1160,7 @@ export class UolTelegramShadow extends DurableObject {
         consecutiveFailures: Number(row?.consecutive_failures || 0),
       }, attempt, { now, threshold, cooldownMinutes });
       if (attempt.ok) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE image_strategy_health SET state = 'closed', consecutive_failures = 0,
              opened_until = '', last_success_at = ?, last_error = '' WHERE strategy = ?`,
           nowIso,
@@ -959,7 +1168,7 @@ export class UolTelegramShadow extends DurableObject {
         );
         continue;
       }
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE image_strategy_health SET state = ?, consecutive_failures = ?,
            opened_until = ?, last_failure_at = ?, last_error = ? WHERE strategy = ?`,
         next.state,
@@ -970,14 +1179,14 @@ export class UolTelegramShadow extends DurableObject {
         attempt.strategy,
       );
       if (attempt.strategy === "file_id" && imageKey) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "DELETE FROM telegram_image_cache WHERE image_key = ?",
           imageKey,
         );
       }
     }
     if (delivery.photoFileId && imageKey) {
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `INSERT INTO telegram_image_cache(
            image_key, file_id, file_unique_id, created_at, last_used_at, use_count
          ) VALUES (?, ?, ?, ?, ?, 1)
@@ -992,7 +1201,7 @@ export class UolTelegramShadow extends DurableObject {
         nowIso,
       );
     }
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `UPDATE offers SET telegram_photo_file_id = ?, telegram_photo_file_unique_id = ?,
          telegram_image_strategy = ? WHERE id = ?`,
       delivery.photoFileId || "",
@@ -1019,7 +1228,7 @@ export class UolTelegramShadow extends DurableObject {
   async upgradeTimedOutMainImages(now = new Date(), limit = 4) {
     if (this.currentDeliveryMode() !== "live") return { upgraded: 0, failed: 0 };
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT * FROM offers
        WHERE telegram_image_strategy = 'text_timeout'
          AND main_message_kind = 'text'
@@ -1048,7 +1257,7 @@ export class UolTelegramShadow extends DurableObject {
           telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
         });
         this.recordImageDelivery(row.id, telegramState.imageKey, result, now);
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET main_message_kind = 'photo',
              main_image_upgrade_attempts = ?, main_image_upgrade_next_attempt_at = '',
              main_image_upgrade_error = '' WHERE id = ?`,
@@ -1059,7 +1268,7 @@ export class UolTelegramShadow extends DurableObject {
       } catch (error) {
         const message = sanitizeError(error);
         if (message.toLowerCase().includes("message is not modified")) {
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET main_message_kind = 'photo',
                telegram_image_strategy = 'edit_confirmed_not_modified',
                main_image_upgrade_attempts = ?, main_image_upgrade_next_attempt_at = '',
@@ -1070,7 +1279,7 @@ export class UolTelegramShadow extends DurableObject {
           upgraded += 1;
           continue;
         }
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET main_image_upgrade_attempts = ?,
              main_image_upgrade_next_attempt_at = ?, main_image_upgrade_error = ?
            WHERE id = ?`,
@@ -1087,7 +1296,7 @@ export class UolTelegramShadow extends DurableObject {
 
   getImageDeliveryHealth() {
     const now = Date.now();
-    const strategies = this.ctx.storage.sql.exec(
+    const strategies = this.sqlExec(
       `SELECT strategy, state, consecutive_failures, opened_until,
               last_failure_at, last_success_at, last_error
        FROM image_strategy_health ORDER BY strategy`,
@@ -1097,7 +1306,7 @@ export class UolTelegramShadow extends DurableObject {
         ? "half_open"
         : row.state,
     }));
-    const cache = this.ctx.storage.sql.exec(
+    const cache = this.sqlExec(
       "SELECT COUNT(*) AS count, COALESCE(SUM(use_count), 0) AS uses FROM telegram_image_cache",
     ).one();
     return {
@@ -1140,7 +1349,7 @@ export class UolTelegramShadow extends DurableObject {
     this.setMetadata("delivery_mode_generation", generation);
     let quarantined = 0;
     if (normalized === "shadow") {
-      const result = this.ctx.storage.sql.exec(
+      const result = this.sqlExec(
         `UPDATE offers
          SET status = 'delivery_quarantined',
              delivery_quarantine_reason = 'mode_changed_to_shadow'
@@ -1212,7 +1421,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   insertRun(run) {
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `INSERT INTO runs(
         started_at, finished_at, source, outcome, offers_seen, new_offers,
         enriched, would_send_main, would_send_canal2, sold_out_detected,
@@ -1236,7 +1445,7 @@ export class UolTelegramShadow extends DurableObject {
       run.soldOutCanal2Edited,
       run.error,
     );
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       "DELETE FROM runs WHERE id NOT IN (SELECT id FROM runs ORDER BY id DESC LIMIT 240)",
     );
   }
@@ -1246,7 +1455,7 @@ export class UolTelegramShadow extends DurableObject {
     if (snapshot.runFailureStreak !== undefined) {
       return Number(snapshot.runFailureStreak || 0);
     }
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       "SELECT outcome, error FROM runs ORDER BY id DESC LIMIT 12",
     ).toArray();
     let streak = 0;
@@ -1270,7 +1479,7 @@ export class UolTelegramShadow extends DurableObject {
       new Date(now.getTime() - 24 * 60 * 60_000).toISOString(),
       monitoringStartedAt,
     ].sort().at(-1);
-    return this.ctx.storage.sql.exec(
+    return this.sqlExec(
       `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title,
               main_message_kind, telegram_image_strategy,
               comment_sent_at, discussion_message_id
@@ -1315,7 +1524,7 @@ export class UolTelegramShadow extends DurableObject {
     const ambiguousRetryCutoff = new Date(
       now.getTime() - ambiguousRetrySeconds * 1_000,
     ).toISOString();
-    const queueIssues = this.ctx.storage.sql.exec(
+    const queueIssues = this.sqlExec(
       `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title, status,
               delivery_unknown_target, delivery_dead_letter_reason,
               main_delivery_error, main_delivery_unknown_at,
@@ -1368,7 +1577,7 @@ export class UolTelegramShadow extends DurableObject {
     }).filter(Boolean);
 
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-    const maintenanceIssues = this.ctx.storage.sql.exec(
+    const maintenanceIssues = this.sqlExec(
       `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title, status,
               would_send_canal2, canal2_message_id,
               main_restock_synced_at, main_restock_attempts, main_restock_error,
@@ -1515,7 +1724,7 @@ export class UolTelegramShadow extends DurableObject {
       now,
     });
     const activeKeys = new Set(signals.map((signal) => signal.key));
-    const existing = new Map(this.ctx.storage.sql.exec(
+    const existing = new Map(this.sqlExec(
       "SELECT * FROM incidents",
     ).toArray().map((row) => [row.key, row]));
     const nowIso = now.toISOString();
@@ -1534,7 +1743,7 @@ export class UolTelegramShadow extends DurableObject {
         now.getTime() - lastAttempt >= retrySeconds * 1_000;
       const cooldownElapsed = !Number.isFinite(lastAlert) ||
         now.getTime() - lastAlert >= cooldownMinutes * 60_000;
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `INSERT INTO incidents(
            key, status, severity, summary, details, first_detected_at, last_detected_at
          ) VALUES (?, 'active', ?, ?, ?, ?, ?)
@@ -1548,21 +1757,21 @@ export class UolTelegramShadow extends DurableObject {
         !newlyActive &&
         !(previousAttemptFailed ? retryElapsed : cooldownElapsed)
       ) continue;
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         "UPDATE incidents SET last_attempted_at = ?, alert_error = '' WHERE key = ?",
         nowIso,
         signal.key,
       );
       try {
         await this.sendOperationalAlert(buildOperationsAlert(signal));
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE incidents SET last_alerted_at = ?, alert_error = '' WHERE key = ?",
           nowIso,
           signal.key,
         );
         alerted += 1;
       } catch (error) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE incidents SET alert_error = ? WHERE key = ?",
           sanitizeError(error),
           signal.key,
@@ -1578,7 +1787,7 @@ export class UolTelegramShadow extends DurableObject {
         summary: row.summary,
         details: row.details,
       };
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE incidents SET status = 'resolved', resolved_at = ?,
           last_attempted_at = ?, alert_error = '' WHERE key = ?`,
         nowIso,
@@ -1591,14 +1800,14 @@ export class UolTelegramShadow extends DurableObject {
       }
       try {
         await this.sendOperationalAlert(buildOperationsAlert(signal, { recovered: true }));
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE incidents SET last_alerted_at = ? WHERE key = ?",
           nowIso,
           row.key,
         );
         recovered += 1;
       } catch (error) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE incidents SET alert_error = ? WHERE key = ?",
           sanitizeError(error),
           row.key,
@@ -1611,7 +1820,7 @@ export class UolTelegramShadow extends DurableObject {
 
   insertCard(card, nowIso, status) {
     const firstObservedAt = String(card.observedAt || nowIso);
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `INSERT OR IGNORE INTO offers(
         id, link, preview_title, title, category, card_image_url,
         partner_image_url, partner_name, first_seen_at, last_seen_at, status
@@ -1628,6 +1837,40 @@ export class UolTelegramShadow extends DurableObject {
       nowIso,
       status,
     );
+    this.recordIdentityAliases(card.id, card.id, card.link, firstObservedAt);
+  }
+
+  identityAliases(id, link) {
+    return [...new Set([
+      String(id || "").trim() ? `id:${String(id).trim()}` : "",
+      ...offerIdentityKeys(link),
+    ].filter(Boolean))];
+  }
+
+  recordIdentityAliases(offerId, sourceId, link, firstSeenAt) {
+    const aliases = this.identityAliases(sourceId, link);
+    if (!offerId || !aliases.length) return;
+    const values = aliases.map(() => "(?, ?, ?)").join(", ");
+    this.sqlExec(
+      `INSERT OR IGNORE INTO offer_identity_aliases(alias, offer_id, first_seen_at)
+       VALUES ${values}`,
+      ...aliases.flatMap((alias) => [alias, offerId, firstSeenAt]),
+    );
+  }
+
+  findIdentityRows(card) {
+    const aliases = this.identityAliases(card.id, card.link);
+    if (!aliases.length) return [];
+    return this.sqlExec(
+      `SELECT DISTINCT
+         o.id, o.link, o.status, o.status_before_sold_out, o.main_sent_at,
+         o.canal2_sent_at, o.first_seen_at, o.last_seen_at
+       FROM offer_identity_aliases AS a
+       JOIN offers AS o ON o.id = a.offer_id
+       WHERE a.alias IN (${aliases.map(() => "?").join(", ")})
+       LIMIT 32`,
+      ...aliases,
+    ).toArray();
   }
 
   chooseIdentityKeeper(rows) {
@@ -1643,7 +1886,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   reconcileIdentityAliases() {
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT id, link, status, first_seen_at, main_sent_at, canal2_sent_at
        FROM offers
        WHERE status <> 'discarded'`,
@@ -1663,7 +1906,7 @@ export class UolTelegramShadow extends DurableObject {
       const keeper = this.chooseIdentityKeeper(group);
       for (const duplicate of group) {
         if (duplicate.id === keeper.id) continue;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET
              status = 'discarded',
              decision_at = CASE WHEN decision_at = '' THEN datetime('now') ELSE decision_at END,
@@ -1682,7 +1925,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async backfillTitleValidityKeys() {
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT id, preview_title, title, validity, description
        FROM offers
        WHERE title_validity_key = ''
@@ -1697,7 +1940,7 @@ export class UolTelegramShadow extends DurableObject {
         validity: row.validity,
         description: row.description,
       });
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         "UPDATE offers SET title_validity_key = ? WHERE id = ?",
         keys.titleValidityKey,
         row.id,
@@ -1717,36 +1960,18 @@ export class UolTelegramShadow extends DurableObject {
     const lastSeenTouchCutoff = new Date(
       Date.parse(nowIso) - lastSeenTouchMinutes * 60_000,
     ).toISOString();
-    const allRows = this.ctx.storage.sql.exec(
-      `SELECT id, link, status, status_before_sold_out, main_sent_at, last_seen_at
-       FROM offers`,
-    ).toArray();
-    const rows = allRows.filter((row) => row.status !== "discarded");
-    const knownIds = new Set(allRows.map((row) => row.id));
-    const byId = new Map(rows.map((row) => [row.id, row]));
-    const byIdentity = new Map();
-    for (const row of rows) {
-      for (const key of offerIdentityKeys(row.link)) {
-        if (!byIdentity.has(key)) byIdentity.set(key, row);
-      }
-    }
-
     const resolved = [];
     const resolvedIds = new Set();
     let inserted = 0;
     const insertedIds = [];
     for (const card of cards) {
-      let existing = byId.get(card.id);
-      if (!existing) {
-        for (const key of offerIdentityKeys(card.link)) {
-          existing = byIdentity.get(key);
-          if (existing) break;
-        }
-      }
+      const identityRows = this.findIdentityRows(card);
+      const activeRows = identityRows.filter((row) => row.status !== "discarded");
+      const existing = activeRows.length ? this.chooseIdentityKeeper(activeRows) : null;
 
       if (existing) {
         if (resolvedIds.has(existing.id)) continue;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET
              link = ?, preview_title = ?, category = ?, card_image_url = ?,
              partner_image_url = ?, partner_name = ?,
@@ -1776,6 +2001,7 @@ export class UolTelegramShadow extends DurableObject {
           card.partnerName,
           lastSeenTouchCutoff,
         );
+        this.recordIdentityAliases(existing.id, card.id, card.link, nowIso);
         if (
           restockIdentityKeys &&
           offerIdentityKeys(card.link).some((key) => restockIdentityKeys.has(key)) &&
@@ -1786,7 +2012,7 @@ export class UolTelegramShadow extends DurableObject {
             : existing.main_sent_at
               ? "restocked_pending_sync"
               : existing.status_before_sold_out || "delivery_pending";
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET status = ?, sold_out_at = '', restocked_at = ?,
                delivery_generation = ?,
                missing_since = '', absence_count = 0,
@@ -1808,8 +2034,8 @@ export class UolTelegramShadow extends DurableObject {
 
       // Um ID terminal já conhecido não volta a ser novidade só porque uma
       // fonte mais lenta ainda o mantém no payload.
-      if (knownIds.has(card.id)) {
-        const terminal = allRows.find((row) => row.id === card.id);
+      const terminal = identityRows.find((row) => row.id === card.id);
+      if (terminal) {
         const lastSeenAt = Date.parse(terminal?.last_seen_at || "");
         const reuseCooldownHours = envNumber(
           this.env,
@@ -1824,12 +2050,8 @@ export class UolTelegramShadow extends DurableObject {
           const cycle = nowIso.replace(/\D/g, "").slice(0, 12);
           const reusedCard = { ...card, id: `${card.id}--${cycle}` };
           this.insertCard(reusedCard, nowIso, newStatus);
-          const row = { id: reusedCard.id, link: reusedCard.link };
-          byId.set(row.id, row);
-          for (const key of offerIdentityKeys(row.link)) byIdentity.set(key, row);
           resolved.push(reusedCard);
           resolvedIds.add(reusedCard.id);
-          knownIds.add(reusedCard.id);
           inserted += 1;
           insertedIds.push(reusedCard.id);
           continue;
@@ -1839,12 +2061,8 @@ export class UolTelegramShadow extends DurableObject {
       }
 
       this.insertCard(card, nowIso, newStatus);
-      const row = { id: card.id, link: card.link };
-      byId.set(row.id, row);
-      for (const key of offerIdentityKeys(card.link)) byIdentity.set(key, row);
       resolved.push(card);
       resolvedIds.add(card.id);
-      knownIds.add(card.id);
       inserted += 1;
       insertedIds.push(card.id);
     }
@@ -1858,7 +2076,7 @@ export class UolTelegramShadow extends DurableObject {
     const priorityOrder = priority.length
       ? `CASE WHEN id IN (${priority.map(() => "?").join(", ")}) THEN 0 ELSE 1 END,`
       : "";
-    const pendingRows = this.ctx.storage.sql.exec(
+    const pendingRows = this.sqlExec(
       `SELECT id, link, preview_title, category, card_image_url,
               partner_image_url, partner_name, detail_attempts,
               main_message_id, main_message_kind
@@ -1891,7 +2109,7 @@ export class UolTelegramShadow extends DurableObject {
       const previousAttempts = Number(pendingRows[index]?.detail_attempts || 0);
       const attempts = previousAttempts + 1;
       if (!offer.detailOk && attempts < 3) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers
            SET detail_attempts = ?, detail_error = ?, detail_quality = ?
            WHERE id = ?`,
@@ -1908,7 +2126,7 @@ export class UolTelegramShadow extends DurableObject {
         now.getTime() -
           envNumber(this.env, "RECENT_RESEND_BLOCK_HOURS", 168, 1, 720) * 3_600_000,
       ).toISOString();
-      const duplicate = this.ctx.storage.sql.exec(
+      const duplicate = this.sqlExec(
         `SELECT id FROM offers
          WHERE id <> ?
            AND (
@@ -1955,7 +2173,7 @@ export class UolTelegramShadow extends DurableObject {
         ? (currentMode === "live" ? "delivery_pending" : "shadow_candidate")
         : "discarded";
       const decisionAt = now.toISOString();
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET
           title = ?, image_url = ?, validity = ?, description = ?,
           dedupe_key = ?, loose_dedupe_key = ?, title_validity_key = ?,
@@ -1996,7 +2214,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   refreshDeliveryStatus(id, now = new Date()) {
-    const row = this.ctx.storage.sql.exec(
+    const row = this.sqlExec(
       "SELECT * FROM offers WHERE id = ? LIMIT 1",
       id,
     ).toArray()[0];
@@ -2026,7 +2244,7 @@ export class UolTelegramShadow extends DurableObject {
       (target, index, values) => values.indexOf(target) === index,
     );
     if (unknownTargets.length) {
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET status = 'delivery_unknown',
            delivery_unknown_at = CASE
              WHEN delivery_unknown_at = '' THEN ? ELSE delivery_unknown_at END,
@@ -2036,14 +2254,14 @@ export class UolTelegramShadow extends DurableObject {
         row.id,
       );
     } else if (classification.state === "complete") {
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET status = 'delivered', delivery_dead_letter_at = '',
            delivery_dead_letter_reason = '', delivery_unknown_at = '',
            delivery_unknown_target = '' WHERE id = ?`,
         row.id,
       );
     } else if (classification.state === "dead_letter") {
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET status = 'delivery_dead_letter',
            delivery_dead_letter_at = CASE
              WHEN delivery_dead_letter_at = '' THEN ? ELSE delivery_dead_letter_at END,
@@ -2052,13 +2270,13 @@ export class UolTelegramShadow extends DurableObject {
         row.id,
       );
     } else if (classification.state === "blocked_configuration") {
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET status = 'delivery_blocked_configuration',
            delivery_dead_letter_reason = 'delivery_configuration_incomplete' WHERE id = ?`,
         row.id,
       );
     } else {
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET status = ?, delivery_dead_letter_at = '',
            delivery_dead_letter_reason = '', delivery_unknown_at = '',
            delivery_unknown_target = '' WHERE id = ?`,
@@ -2079,7 +2297,7 @@ export class UolTelegramShadow extends DurableObject {
     );
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const cutoff = new Date(now.getTime() - retrySeconds * 1_000).toISOString();
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT id FROM offers
        WHERE main_sent_at = ''
          AND main_delivery_unknown_at <> ''
@@ -2094,7 +2312,7 @@ export class UolTelegramShadow extends DurableObject {
       // Telegram não oferece chave de idempotência. O forward da discussão
       // tem uma janela curta para reconciliar o primeiro envio. Depois dela,
       // o principal prefere duplicata rara a perder uma oferta curta.
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET main_delivery_unknown_at = '',
            main_delivery_in_flight_at = '', main_delivery_next_attempt_at = '',
            delivery_unknown_at = '', delivery_unknown_target = '',
@@ -2139,7 +2357,7 @@ export class UolTelegramShadow extends DurableObject {
       ? `CASE WHEN id IN (${priorityList.map(() => "?").join(", ")}) THEN 0 ELSE 1 END,`
       : "";
     const candidateLimit = Math.min(256, Math.max(batchSize * 8, priorityList.length + 32));
-    const candidates = this.ctx.storage.sql.exec(
+    const candidates = this.sqlExec(
       `SELECT * FROM offers
        WHERE status IN (
          'delivery_pending', 'partial_delivery', 'delivery_blocked_configuration',
@@ -2169,7 +2387,7 @@ export class UolTelegramShadow extends DurableObject {
           discord: ["discord_delivery_in_flight_at", "discord_delivery_unknown_at"],
         }[target];
         if (!columns) continue;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET ${columns[0]} = '', ${columns[1]} = ?,
              status = 'delivery_unknown', delivery_unknown_at = ?,
              delivery_unknown_target = ? WHERE id = ?`,
@@ -2204,7 +2422,7 @@ export class UolTelegramShadow extends DurableObject {
           "discord_delivery_in_flight_at", "discord_delivery_next_attempt_at",
           "discord_delivery_unknown_at"],
       }[target];
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '',
            ${columns[2]} = ?, ${columns[3]} = '', ${columns[4]} = '' WHERE id = ?`,
         attempts,
@@ -2224,7 +2442,7 @@ export class UolTelegramShadow extends DurableObject {
       }[target];
       const message = sanitizeError(error);
       if (isAmbiguousDeliveryError(error)) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '',
              ${columns[2]} = '', ${columns[3]} = ?,
              status = 'delivery_unknown', delivery_unknown_at = ?,
@@ -2237,7 +2455,7 @@ export class UolTelegramShadow extends DurableObject {
         );
         return "unknown";
       }
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '', ${columns[2]} = ?
          WHERE id = ?`,
         message,
@@ -2290,7 +2508,7 @@ export class UolTelegramShadow extends DurableObject {
             mainOffer.imageDeadlineAt,
             new Date(),
           );
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET main_delivery_attempts = ?,
                main_delivery_error = '', main_delivery_in_flight_at = '',
                main_delivery_next_attempt_at = ? WHERE id = ?`,
@@ -2305,7 +2523,7 @@ export class UolTelegramShadow extends DurableObject {
         }
         const sentAt = new Date().toISOString();
         this.recordImageDelivery(entry.row.id, entry.telegramState.imageKey, result);
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
              main_delivery_error = '', main_delivery_in_flight_at = '',
              main_delivery_next_attempt_at = '', main_delivery_unknown_at = '',
@@ -2334,7 +2552,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!allowedTargets.length || allowedTargets.includes("canal2")) {
       await runBounded(selected, concurrency, async (entry) => {
       if (!stillCurrent()) return;
-      const row = this.ctx.storage.sql.exec(
+      const row = this.sqlExec(
         "SELECT * FROM offers WHERE id = ? LIMIT 1",
         entry.row.id,
       ).toArray()[0];
@@ -2357,7 +2575,7 @@ export class UolTelegramShadow extends DurableObject {
             { ambiguous: true },
           );
         }
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET canal2_message_id = ?, canal2_sent_at = ?,
              canal2_delivery_error = '', canal2_delivery_in_flight_at = '',
              canal2_delivery_next_attempt_at = '', canal2_delivery_unknown_at = ''
@@ -2377,7 +2595,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!allowedTargets.length || allowedTargets.includes("discord")) {
       await runBounded(selected, concurrency, async (entry) => {
       if (!stillCurrent()) return;
-      const row = this.ctx.storage.sql.exec(
+      const row = this.sqlExec(
         "SELECT * FROM offers WHERE id = ? LIMIT 1",
         entry.row.id,
       ).toArray()[0];
@@ -2397,7 +2615,7 @@ export class UolTelegramShadow extends DurableObject {
         if (!result.messageId) {
           throw Object.assign(new Error("discord_message_id_missing"), { ambiguous: true });
         }
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET discord_message_id = ?, discord_sent_at = ?,
              discord_delivery_error = '', discord_delivery_in_flight_at = '',
              discord_delivery_next_attempt_at = '', discord_delivery_unknown_at = ''
@@ -2427,7 +2645,7 @@ export class UolTelegramShadow extends DurableObject {
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const generation = this.currentDeliveryGeneration();
     const now = new Date();
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `UPDATE offers SET comment_delivery_unknown_at = ?,
          comment_delivery_error = CASE
            WHEN comment_delivery_error = '' THEN 'ambiguous:comment_delivery_interrupted'
@@ -2444,7 +2662,7 @@ export class UolTelegramShadow extends DurableObject {
       now.toISOString(),
       generation,
     );
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT * FROM offers
        WHERE discussion_message_id > 0
          AND comment_sent_at = ''
@@ -2490,7 +2708,7 @@ export class UolTelegramShadow extends DurableObject {
             break;
           }
           if (attempts >= maxAttempts) {
-            this.ctx.storage.sql.exec(
+            this.sqlExec(
               "UPDATE offers SET comment_delivery_error = ? WHERE id = ?",
               "comment_delivery_attempts_exhausted",
               row.id,
@@ -2500,7 +2718,7 @@ export class UolTelegramShadow extends DurableObject {
             break;
           }
           attempts += 1;
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET comment_delivery_attempts = ?,
                comment_delivery_error = '', comment_delivery_in_flight_at = ?,
                comment_delivery_next_attempt_at = ''
@@ -2521,7 +2739,7 @@ export class UolTelegramShadow extends DurableObject {
           }
           messageIds.push(result.messageId);
           sentCount = index + 1;
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET comment_message_ids = ?, comment_chunks_sent = ?,
                comment_delivery_in_flight_at = '' WHERE id = ?`,
             JSON.stringify(messageIds),
@@ -2530,7 +2748,7 @@ export class UolTelegramShadow extends DurableObject {
           );
         }
         if (interrupted) continue;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET comment_sent_at = ?, comment_delivery_error = '',
              comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = ''
            WHERE id = ?`,
@@ -2541,7 +2759,7 @@ export class UolTelegramShadow extends DurableObject {
       } catch (error) {
         const message = sanitizeError(error);
         if (isAmbiguousDeliveryError(error)) {
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET comment_delivery_error = ?,
                comment_delivery_in_flight_at = '', comment_delivery_unknown_at = ?
              WHERE id = ?`,
@@ -2550,7 +2768,7 @@ export class UolTelegramShadow extends DurableObject {
             row.id,
           );
         } else {
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET comment_delivery_error = ?,
                comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = ?
              WHERE id = ?`,
@@ -2566,7 +2784,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   reconcileDiscussionForwards() {
-    const pending = this.ctx.storage.sql.exec(
+    const pending = this.sqlExec(
       `SELECT origin_message_id, discussion_message_id
        FROM pending_discussion_forwards
        ORDER BY received_at ASC
@@ -2574,23 +2792,23 @@ export class UolTelegramShadow extends DurableObject {
     ).toArray();
     let matched = 0;
     for (const forward of pending) {
-      const offer = this.ctx.storage.sql.exec(
+      const offer = this.sqlExec(
         "SELECT id FROM offers WHERE main_message_id = ? LIMIT 1",
         Number(forward.origin_message_id),
       ).toArray()[0];
       if (!offer?.id) continue;
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         "UPDATE offers SET discussion_message_id = ? WHERE id = ?",
         Number(forward.discussion_message_id),
         offer.id,
       );
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         "DELETE FROM pending_discussion_forwards WHERE origin_message_id = ?",
         Number(forward.origin_message_id),
       );
       matched += 1;
     }
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       "DELETE FROM pending_discussion_forwards WHERE received_at < datetime('now', '-7 days')",
     );
     return matched;
@@ -2607,7 +2825,7 @@ export class UolTelegramShadow extends DurableObject {
       discordConfiguration(this.env),
     );
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT *
        FROM offers
        WHERE status = 'sold_out'
@@ -2646,7 +2864,7 @@ export class UolTelegramShadow extends DurableObject {
         Number(row.main_sold_out_attempts || 0) < maxAttempts
       ) {
         const attempts = Number(row.main_sold_out_attempts || 0) + 1;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET
             main_sold_out_attempts = ?, main_sold_out_error = ''
            WHERE id = ?`,
@@ -2661,7 +2879,7 @@ export class UolTelegramShadow extends DurableObject {
             offer,
             soldOutAt: row.sold_out_at || now.toISOString(),
           });
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET
               main_sold_out_synced_at = ?, main_sold_out_error = '',
               main_sold_out_next_attempt_at = ''
@@ -2671,7 +2889,7 @@ export class UolTelegramShadow extends DurableObject {
           );
           mainEdited += 1;
         } catch (error) {
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET main_sold_out_error = ?,
                main_sold_out_next_attempt_at = ? WHERE id = ?`,
             sanitizeError(error),
@@ -2690,7 +2908,7 @@ export class UolTelegramShadow extends DurableObject {
         Number(row.canal2_sold_out_attempts || 0) < maxAttempts
       ) {
         const attempts = Number(row.canal2_sold_out_attempts || 0) + 1;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET
             canal2_sold_out_attempts = ?, canal2_sold_out_error = ''
            WHERE id = ?`,
@@ -2705,7 +2923,7 @@ export class UolTelegramShadow extends DurableObject {
             offer,
             soldOutAt: row.sold_out_at || now.toISOString(),
           });
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET
               canal2_sold_out_synced_at = ?, canal2_sold_out_error = '',
               canal2_sold_out_next_attempt_at = ''
@@ -2717,7 +2935,7 @@ export class UolTelegramShadow extends DurableObject {
         } catch (error) {
           // Re-editar a mesma mensagem é idempotente. Não enviamos um aviso
           // substituto sem outbox, pois uma resposta ambígua poderia duplicá-lo.
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET canal2_sold_out_error = ?,
                canal2_sold_out_next_attempt_at = ? WHERE id = ?`,
             sanitizeError(error),
@@ -2742,7 +2960,7 @@ export class UolTelegramShadow extends DurableObject {
       discordConfiguration(this.env),
     );
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT * FROM offers
        WHERE status = 'restocked_pending_sync'
          AND (
@@ -2788,7 +3006,7 @@ export class UolTelegramShadow extends DurableObject {
         this.currentDeliveryMode() === "live"
       ) {
         const attempts = Number(row.main_restock_attempts || 0) + 1;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE offers SET main_restock_attempts = ?, main_restock_error = '' WHERE id = ?",
           attempts,
           row.id,
@@ -2800,7 +3018,7 @@ export class UolTelegramShadow extends DurableObject {
             offer,
           });
           mainSynced = true;
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET main_restock_synced_at = ?, main_restock_error = '',
                main_restock_next_attempt_at = ''
              WHERE id = ?`,
@@ -2809,7 +3027,7 @@ export class UolTelegramShadow extends DurableObject {
           );
           mainEdited += 1;
         } catch (editError) {
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET main_restock_error = ?,
                main_restock_next_attempt_at = ? WHERE id = ?`,
             sanitizeError(editError),
@@ -2830,7 +3048,7 @@ export class UolTelegramShadow extends DurableObject {
         this.currentDeliveryMode() === "live"
       ) {
         const attempts = Number(row.canal2_restock_attempts || 0) + 1;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET canal2_restock_attempts = ?, canal2_restock_error = ''
            WHERE id = ?`,
           attempts,
@@ -2844,7 +3062,7 @@ export class UolTelegramShadow extends DurableObject {
             offer,
           });
           canal2Synced = true;
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET canal2_restock_synced_at = ?, canal2_restock_error = '',
                canal2_restock_next_attempt_at = ''
              WHERE id = ?`,
@@ -2853,7 +3071,7 @@ export class UolTelegramShadow extends DurableObject {
           );
           canal2Edited += 1;
         } catch (editError) {
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             `UPDATE offers SET canal2_restock_error = ?,
                canal2_restock_next_attempt_at = ? WHERE id = ?`,
             sanitizeError(editError),
@@ -2868,7 +3086,7 @@ export class UolTelegramShadow extends DurableObject {
         const resumeStatus = row.status_before_sold_out === "partial_delivery"
           ? "partial_delivery"
           : "delivered";
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET status = ?, status_before_sold_out = '',
              missing_since = '', absence_count = 0 WHERE id = ?`,
           resumeStatus,
@@ -2895,7 +3113,7 @@ export class UolTelegramShadow extends DurableObject {
       : category === "main"
         ? "AND link NOT LIKE '%/campanhasdeingresso/%'"
         : "";
-    const candidates = this.ctx.storage.sql.exec(
+    const candidates = this.sqlExec(
       `SELECT id, status, missing_since, absence_count
        FROM offers
        WHERE status IN ('shadow_candidate', 'delivered', 'partial_delivery')
@@ -2909,7 +3127,7 @@ export class UolTelegramShadow extends DurableObject {
     for (const candidate of candidates) {
       if (activeIds.has(candidate.id)) {
         if (candidate.missing_since || Number(candidate.absence_count || 0) > 0) {
-          this.ctx.storage.sql.exec(
+          this.sqlExec(
             "UPDATE offers SET missing_since = '', absence_count = 0 WHERE id = ?",
             candidate.id,
           );
@@ -2919,7 +3137,7 @@ export class UolTelegramShadow extends DurableObject {
 
       const previousCount = Number(candidate.absence_count || 0);
       if (!candidate.missing_since) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE offers SET missing_since = ?, absence_count = 1 WHERE id = ?",
           now.toISOString(),
           candidate.id,
@@ -2933,7 +3151,7 @@ export class UolTelegramShadow extends DurableObject {
         : (now.getTime() - missingSince.getTime()) / 60_000;
       const nextCount = Math.min(minMisses, previousCount + 1);
       if (nextCount !== previousCount) {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           "UPDATE offers SET absence_count = ? WHERE id = ?",
           nextCount,
           candidate.id,
@@ -2943,7 +3161,7 @@ export class UolTelegramShadow extends DurableObject {
         const soldOutStatus = candidate.status === "shadow_candidate"
           ? "shadow_sold_out"
           : "sold_out";
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET sold_out_at = ?, status_before_sold_out = ?, status = ?,
              restocked_at = '', main_restock_synced_at = '', canal2_restock_synced_at = '',
              main_restock_attempts = 0, canal2_restock_attempts = 0,
@@ -2979,7 +3197,7 @@ export class UolTelegramShadow extends DurableObject {
 
     // Retain every currently visible card and every unfinished delivery. Old
     // terminal rows are only dedupe/history state and can be safely removed.
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `DELETE FROM offers
        WHERE first_seen_at < ?
          AND status IN ('baseline', 'discarded', 'delivered', 'shadow_sold_out', 'sold_out')
@@ -2987,7 +3205,7 @@ export class UolTelegramShadow extends DurableObject {
       cutoff,
       ...active,
     );
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `DELETE FROM offers
        WHERE id IN (
          SELECT id FROM offers
@@ -2999,22 +3217,26 @@ export class UolTelegramShadow extends DurableObject {
       ...active,
       maxOffers,
     );
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `DELETE FROM source_observations
        WHERE api_last_seen_at < ? AND listing_last_seen_at < ?`,
       cutoff,
       cutoff,
     );
     const imageCutoff = new Date(now.getTime() - 90 * 86_400_000).toISOString();
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       "DELETE FROM telegram_image_cache WHERE last_used_at < ?",
       imageCutoff,
     );
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `DELETE FROM telegram_image_cache WHERE image_key IN (
          SELECT image_key FROM telegram_image_cache
          ORDER BY last_used_at DESC LIMIT -1 OFFSET 500
        )`,
+    );
+    this.sqlExec(
+      `DELETE FROM offer_identity_aliases
+       WHERE offer_id NOT IN (SELECT id FROM offers)`,
     );
     this.setMetadata("offers_cleanup_day", cleanupDay);
   }
@@ -3031,7 +3253,7 @@ export class UolTelegramShadow extends DurableObject {
     const cutoff = new Date(
       now.getTime() - observationFreshnessMinutes(touchMinutes) * 60_000,
     ).toISOString();
-    return this.ctx.storage.sql.exec(
+    return this.sqlExec(
       `SELECT offer_key AS id, link, title AS preview_title
        FROM source_observations
        WHERE api_last_seen_at >= ?
@@ -3053,6 +3275,7 @@ export class UolTelegramShadow extends DurableObject {
     if (this.scanInFlight) {
       return { ok: false, outcome: "scan_in_progress", source };
     }
+    const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.scanInFlight = true;
     const startedAt = new Date();
     const previousApi = this.runtimeSnapshot("api");
@@ -3238,7 +3461,7 @@ export class UolTelegramShadow extends DurableObject {
           fastLastMainSent,
           runFailureStreak,
         });
-        const lastPersistedRun = this.ctx.storage.sql.exec(
+        const lastPersistedRun = this.sqlExec(
           "SELECT outcome, error, finished_at FROM runs ORDER BY id DESC LIMIT 1",
         ).toArray()[0] || null;
         if (shouldPersistRunSummary(run, lastPersistedRun, run.finishedAt)) {
@@ -3246,6 +3469,17 @@ export class UolTelegramShadow extends DurableObject {
         }
       } catch (error) {
         logEvent("warn", "uol_api_poll_telemetry_failed", {
+          error: sanitizeError(error),
+        });
+      }
+      try {
+        run.storageRowsRead = this.completeStorageUsageCycle(
+          "primary",
+          storageReadStartedAt,
+        );
+      } catch (error) {
+        logEvent("error", "uol_storage_usage_persist_failed", {
+          cycle: "primary",
           error: sanitizeError(error),
         });
       }
@@ -3272,8 +3506,39 @@ export class UolTelegramShadow extends DurableObject {
     if (this.maintenanceInFlight) {
       return { ok: false, outcome: "maintenance_in_progress" };
     }
+    const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.maintenanceInFlight = true;
     const startedAt = new Date();
+    const budget = this.storageUsageSnapshot(startedAt);
+    if (!budget.maintenanceAllowed) {
+      this.storageUsage.maintenanceSkipped += 1;
+      const result = {
+        ok: false,
+        outcome: "storage_read_budget_guard",
+        error: "durable_object_rows_read_reserve_active",
+        rowsRead: budget.rowsRead,
+        limit: budget.limit,
+        criticalReserve: budget.criticalReserve,
+      };
+      this.maintenanceInFlight = false;
+      try {
+        this.setRuntimeSnapshot("maintenance", {
+          lastStartedAt: startedAt.toISOString(),
+          lastCompletedAt: new Date().toISOString(),
+          lastElapsedMs: Date.now() - startedAt.getTime(),
+          lastError: result.error,
+          lastOutcome: result.outcome,
+        });
+        this.completeStorageUsageCycle("maintenance", storageReadStartedAt);
+      } catch (error) {
+        logEvent("error", "uol_storage_usage_persist_failed", {
+          cycle: "maintenance_guard",
+          error: sanitizeError(error),
+        });
+      }
+      logEvent("error", "uol_telegram_maintenance", result);
+      return result;
+    }
     const result = {
       ok: true,
       outcome: "no_change",
@@ -3506,15 +3771,40 @@ export class UolTelegramShadow extends DurableObject {
           error: sanitizeError(error),
         });
       }
+      try {
+        result.storageRowsRead = this.completeStorageUsageCycle(
+          "maintenance",
+          storageReadStartedAt,
+        );
+      } catch (error) {
+        logEvent("error", "uol_storage_usage_persist_failed", {
+          cycle: "maintenance",
+          error: sanitizeError(error),
+        });
+      }
     }
     logEvent(result.error ? "error" : "info", "uol_telegram_maintenance", result);
     return result;
   }
 
   async alarm() {
-    const interval = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600);
-    const cadenceTarget = Date.now() + interval * 1_000;
+    const budget = this.storageUsageSnapshot();
+    const cadenceTarget = budget.primaryAllowed
+      ? Date.now() + budget.recommendedPollIntervalSeconds * 1_000
+      : Date.parse(budget.resetAt) + 1_000;
     let result = null;
+
+    // Rearmar antes de qualquer leitura SQL. Mesmo se a leitura seguinte
+    // falhar por cota, o próximo disparo já existe e pode retomar após reset.
+    await this.ctx.storage.setAlarm(Math.max(Date.now() + 1_000, cadenceTarget));
+    if (!budget.primaryAllowed) {
+      logEvent("error", "uol_primary_storage_read_budget_guard", {
+        rowsRead: budget.rowsRead,
+        limit: budget.limit,
+        resetAt: budget.resetAt,
+      });
+      return;
+    }
     try {
       // Este alarme possui uma única responsabilidade: descobrir na API,
       // persistir a decisão e enviar o destino principal imediatamente.
@@ -3524,9 +3814,6 @@ export class UolTelegramShadow extends DurableObject {
         error: sanitizeError(error),
       });
     }
-
-    // Uma única gravação de alarme por ciclo, antes de qualquer RPC auxiliar.
-    await this.ctx.storage.setAlarm(Math.max(Date.now() + 1_000, cadenceTarget));
     if (result) {
       const lastMaintenanceBootstrap = Date.parse(
         this.metadataValue("maintenance_alarm_last_ensured_at") || "",
@@ -3551,7 +3838,7 @@ export class UolTelegramShadow extends DurableObject {
       telegramOfferUrls(message).flatMap((url) => offerIdentityKeys(url)),
     );
     if (!identityKeys.size) return "";
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT id, link FROM offers
        WHERE main_sent_at = ''
          AND (
@@ -3570,7 +3857,7 @@ export class UolTelegramShadow extends DurableObject {
     const sentAt = Number.isFinite(originTimestamp) && originTimestamp > 0
       ? new Date(originTimestamp).toISOString()
       : new Date().toISOString();
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
          main_delivery_error = '', main_delivery_in_flight_at = '',
          main_delivery_next_attempt_at = '', main_delivery_unknown_at = ''
@@ -3604,7 +3891,7 @@ export class UolTelegramShadow extends DurableObject {
       return { ok: true, matched: false };
     }
     const reconciledOfferId = this.reconcileUnknownMainFromForward(message, origin);
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `INSERT INTO pending_discussion_forwards(
          origin_message_id, discussion_message_id, received_at
        ) VALUES (?, ?, ?)
@@ -3642,7 +3929,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!["sent", "not_sent"].includes(normalizedOutcome)) {
       throw new Error("delivery_resolution_outcome_invalid");
     }
-    const row = this.ctx.storage.sql.exec(
+    const row = this.sqlExec(
       "SELECT * FROM offers WHERE id = ? LIMIT 1",
       String(id || "").trim(),
     ).toArray()[0];
@@ -3682,7 +3969,7 @@ export class UolTelegramShadow extends DurableObject {
           throw new Error("delivery_resolution_message_ids_invalid");
         }
         const completed = messageIds.length === expectedChunks;
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET comment_message_ids = ?, comment_chunks_sent = ?,
              comment_sent_at = ?, comment_delivery_error = '',
              comment_delivery_attempts = CASE WHEN ? THEN comment_delivery_attempts ELSE 0 END,
@@ -3695,7 +3982,7 @@ export class UolTelegramShadow extends DurableObject {
           row.id,
         );
       } else {
-        this.ctx.storage.sql.exec(
+        this.sqlExec(
           `UPDATE offers SET comment_delivery_attempts = 0, comment_delivery_error = '',
              comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = '',
              comment_delivery_unknown_at = '' WHERE id = ?`,
@@ -3717,7 +4004,7 @@ export class UolTelegramShadow extends DurableObject {
       const messageKind = ["photo", "text"].includes(payload?.messageKind)
         ? payload.messageKind
         : "text";
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
            main_delivery_error = '', main_delivery_in_flight_at = '',
            main_delivery_next_attempt_at = '', main_delivery_unknown_at = '' WHERE id = ?`,
@@ -3731,7 +4018,7 @@ export class UolTelegramShadow extends DurableObject {
       if (!Number.isInteger(numericId) || numericId <= 0) {
         throw new Error("delivery_resolution_message_id_invalid");
       }
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET canal2_message_id = ?, canal2_sent_at = ?,
            canal2_delivery_error = '', canal2_delivery_in_flight_at = '',
            canal2_delivery_next_attempt_at = '', canal2_delivery_unknown_at = '' WHERE id = ?`,
@@ -3740,7 +4027,7 @@ export class UolTelegramShadow extends DurableObject {
         row.id,
       );
     } else if (normalizedOutcome === "sent") {
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET discord_message_id = ?, discord_sent_at = ?,
            discord_delivery_error = '', discord_delivery_in_flight_at = '',
            discord_delivery_next_attempt_at = '', discord_delivery_unknown_at = '' WHERE id = ?`,
@@ -3759,7 +4046,7 @@ export class UolTelegramShadow extends DurableObject {
           "discord_delivery_in_flight_at", "discord_delivery_next_attempt_at",
           "discord_delivery_unknown_at"],
       }[normalizedTarget];
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET ${columns[0]} = 0, ${columns[1]} = '', ${columns[2]} = '',
            ${columns[3]} = '', ${columns[4]} = '' WHERE id = ?`,
         row.id,
@@ -3779,7 +4066,7 @@ export class UolTelegramShadow extends DurableObject {
     if (this.currentDeliveryMode() !== "live") {
       throw new Error("delivery_requeue_requires_live_mode");
     }
-    const row = this.ctx.storage.sql.exec(
+    const row = this.sqlExec(
       "SELECT * FROM offers WHERE id = ? LIMIT 1",
       String(id || "").trim(),
     ).toArray()[0];
@@ -3792,7 +4079,7 @@ export class UolTelegramShadow extends DurableObject {
       if (row.comment_delivery_unknown_at) {
         throw new Error("delivery_unknown_requires_resolution");
       }
-      this.ctx.storage.sql.exec(
+      this.sqlExec(
         `UPDATE offers SET comment_delivery_attempts = 0, comment_delivery_error = '',
            comment_delivery_next_attempt_at = '', comment_delivery_in_flight_at = '',
            delivery_generation = ? WHERE id = ?`,
@@ -3840,7 +4127,7 @@ export class UolTelegramShadow extends DurableObject {
       const [attempts, error, inFlight, nextAttempt] = targetColumns[name];
       return [`${attempts} = 0`, `${error} = ''`, `${inFlight} = ''`, `${nextAttempt} = ''`];
     });
-    this.ctx.storage.sql.exec(
+    this.sqlExec(
       `UPDATE offers SET ${resets.join(", ")}, delivery_generation = ?,
          delivery_dead_letter_at = '', delivery_dead_letter_reason = '',
          delivery_quarantine_reason = '' WHERE id = ?`,
@@ -3874,7 +4161,7 @@ export class UolTelegramShadow extends DurableObject {
       30,
       3_600,
     );
-    const counts = this.ctx.storage.sql.exec(
+    const counts = this.sqlExec(
       `SELECT
         COUNT(*) AS tracked,
         SUM(CASE WHEN status = 'baseline' THEN 1 ELSE 0 END) AS baseline,
@@ -3899,21 +4186,21 @@ export class UolTelegramShadow extends DurableObject {
           AS delivery_errors
        FROM offers`,
     ).one();
-    const lastRun = this.ctx.storage.sql.exec(
+    const lastRun = this.sqlExec(
       `SELECT started_at, finished_at, source, outcome, offers_seen, new_offers,
               enriched, would_send_main, would_send_canal2, sold_out_detected,
               main_sent, canal2_sent, delivery_failed,
               sold_out_main_edited, sold_out_canal2_edited, error
        FROM runs ORDER BY id DESC LIMIT 1`,
     ).toArray()[0] || null;
-    const recentRuns = this.ctx.storage.sql.exec(
+    const recentRuns = this.sqlExec(
       `SELECT started_at, finished_at, source, outcome, offers_seen, new_offers,
               enriched, would_send_main, would_send_canal2, sold_out_detected,
               main_sent, canal2_sent, delivery_failed,
               sold_out_main_edited, sold_out_canal2_edited, error
        FROM runs ORDER BY id DESC LIMIT 5`,
     ).toArray();
-    const recent = this.ctx.storage.sql.exec(
+    const recent = this.sqlExec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               length(description) AS description_length, detail_error,
               detail_repair_attempts, detail_repair_error, detail_repaired_at,
@@ -3936,7 +4223,7 @@ export class UolTelegramShadow extends DurableObject {
       new Date(Date.now() - 24 * 60 * 60_000).toISOString(),
       latencyStartedAt,
     ].sort().at(-1);
-    const latencyRows = this.ctx.storage.sql.exec(
+    const latencyRows = this.sqlExec(
       `SELECT id, preview_title, title, first_seen_at, discord_sent_at,
               main_sent_at, canal2_sent_at, comment_sent_at
        FROM offers
@@ -3946,7 +4233,7 @@ export class UolTelegramShadow extends DurableObject {
        LIMIT 100`,
       latencyCutoff,
     ).toArray();
-    const incidents = this.ctx.storage.sql.exec(
+    const incidents = this.sqlExec(
       `SELECT key, status, severity, summary, first_detected_at, last_detected_at,
               last_alerted_at, resolved_at, occurrence_count, alert_error
        FROM incidents ORDER BY last_detected_at DESC LIMIT 12`,
@@ -3979,6 +4266,7 @@ export class UolTelegramShadow extends DurableObject {
       listingCards: Number(html.mainLastOffersSeen || 0) +
         Number(html.ticketLastOffersSeen || 0),
     });
+    const storageReadBudget = this.storageUsageSnapshot();
 
     return {
       ok: true,
@@ -4087,6 +4375,7 @@ export class UolTelegramShadow extends DurableObject {
         htmlRequestsPerReconciliation: 2,
         detailAndDeliveryRequestsOnlyForNewOffers: true,
         durableObjectRowsWrittenPerDay: usageBudget,
+        durableObjectRowsReadToday: storageReadBudget,
       },
       retention: {
         offerDays: envNumber(this.env, "OFFER_RETENTION_DAYS", 30, 7, 365),
@@ -4155,7 +4444,7 @@ export class UolTelegramShadow extends DurableObject {
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const alarm = await this.ctx.storage.getAlarm();
     const alarmFresh = Number.isFinite(alarm) && alarm >= now - intervalSeconds * 2_000;
-    const lastRun = this.ctx.storage.sql.exec(
+    const lastRun = this.sqlExec(
       "SELECT finished_at FROM runs ORDER BY id DESC LIMIT 1",
     ).toArray()[0];
     const lastScanAt = Date.parse(
@@ -4168,14 +4457,14 @@ export class UolTelegramShadow extends DurableObject {
     );
     const maintenanceFresh = Number.isFinite(lastMaintenanceAt) &&
       now - lastMaintenanceAt <= Math.max(120_000, maintenanceIntervalSeconds * 6_000);
-    const incidents = this.ctx.storage.sql.exec(
+    const incidents = this.sqlExec(
       `SELECT
          SUM(CASE WHEN status = 'active' AND severity = 'critical' THEN 1 ELSE 0 END)
            AS critical,
          SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS active
        FROM incidents`,
     ).one();
-    const queue = this.ctx.storage.sql.exec(
+    const queue = this.sqlExec(
       `SELECT
          SUM(CASE WHEN status = 'delivery_dead_letter' THEN 1 ELSE 0 END) AS dead_letter,
          SUM(CASE WHEN status = 'delivery_unknown' THEN 1 ELSE 0 END) AS unknown,
@@ -4225,10 +4514,14 @@ export class UolTelegramShadow extends DurableObject {
     const blockedConfiguration = Number(queue.blocked_configuration || 0);
     const maintenanceDeadLetters = Number(queue.restock_dead_letter || 0) +
       Number(queue.sold_out_dead_letter || 0) + Number(queue.comment_dead_letter || 0);
+    const storageReadBudget = this.storageUsageSnapshot(new Date(now));
+    const storageReadBudgetHealthy = storageReadBudget.withinFreeTier &&
+      storageReadBudget.maintenanceAllowed;
     const ok = Boolean(
       modeLive && alarmFresh && scanFresh && maintenanceFresh && deliveryConfigured &&
       criticalIncidents === 0 && deadLetters === 0 && unknown === 0 &&
-      blockedConfiguration === 0 && maintenanceDeadLetters === 0
+      blockedConfiguration === 0 && maintenanceDeadLetters === 0 &&
+      storageReadBudgetHealthy
     );
     return {
       ok,
@@ -4245,7 +4538,9 @@ export class UolTelegramShadow extends DurableObject {
         unknown,
         blockedConfiguration,
         maintenanceDeadLetters,
+        storageReadBudgetHealthy,
       },
+      storageReadBudget,
       lastScanAt: Number.isFinite(lastScanAt) ? new Date(lastScanAt).toISOString() : "",
       checkedAt: new Date(now).toISOString(),
     };
@@ -4256,7 +4551,7 @@ export class UolTelegramShadow extends DurableObject {
     const boundedLimit = Number.isFinite(requestedLimit)
       ? Math.min(12, Math.max(1, Math.floor(requestedLimit)))
       : 4;
-    const offers = this.ctx.storage.sql.exec(
+    const offers = this.sqlExec(
       `SELECT id, COALESCE(NULLIF(title, ''), preview_title) AS title, link,
               COALESCE(NULLIF(image_url, ''), NULLIF(card_image_url, ''), partner_image_url)
                 AS image_url,
@@ -4285,7 +4580,7 @@ export class UolTelegramShadow extends DurableObject {
 
   async getDecisions(limit = 30) {
     const boundedLimit = Math.min(100, Math.max(1, Number(limit || 30)));
-    return this.ctx.storage.sql.exec(
+    return this.sqlExec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               length(description) AS description_length, detail_error,
               detail_repair_attempts, detail_repair_error, detail_repaired_at,
@@ -4307,7 +4602,7 @@ export class UolTelegramShadow extends DurableObject {
 
   async getInventory(limit = 48) {
     const boundedLimit = Math.min(300, Math.max(1, Number(limit || 48)));
-    return this.ctx.storage.sql.exec(
+    return this.sqlExec(
       `SELECT id, link, preview_title, title, category, status, detail_quality,
               length(description) AS description_length, detail_error,
               detail_repair_attempts, detail_repair_error, detail_repaired_at,
@@ -4327,7 +4622,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   getIdentityDiagnostics() {
-    const rows = this.ctx.storage.sql.exec(
+    const rows = this.sqlExec(
       `SELECT id, link, status, main_sent_at, canal2_sent_at
        FROM offers
        WHERE status <> 'discarded'
@@ -4406,6 +4701,11 @@ export class UolTelegramMaintenance extends DurableObject {
 
   async alarm() {
     const cadenceTarget = Date.now() + this.maintenanceIntervalMs();
+    const requestedAlarm = await this.ctx.storage.getAlarm();
+    const nextAlarm = requestedAlarm == null
+      ? cadenceTarget
+      : Math.min(cadenceTarget, requestedAlarm);
+    await this.ctx.storage.setAlarm(Math.max(Date.now() + 1_000, nextAlarm));
     try {
       const stub = this.env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
       await stub.runMaintenanceTick("alarm");
@@ -4413,12 +4713,6 @@ export class UolTelegramMaintenance extends DurableObject {
       logEvent("error", "uol_telegram_maintenance_alarm_failed", {
         error: sanitizeError(error),
       });
-    } finally {
-      const requestedAlarm = await this.ctx.storage.getAlarm();
-      const nextAlarm = requestedAlarm == null
-        ? cadenceTarget
-        : Math.min(cadenceTarget, requestedAlarm);
-      await this.ctx.storage.setAlarm(Math.max(Date.now() + 1_000, nextAlarm));
     }
   }
 }
@@ -4609,5 +4903,27 @@ export default {
       });
       return jsonResponse({ ok: false, error: "internal_error" }, 500);
     }
+  },
+  async scheduled(_controller, env, ctx) {
+    ctx.waitUntil((async () => {
+      const main = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
+      const maintenance = env.UOL_TELEGRAM_MAINTENANCE
+        .getByName(MAINTENANCE_INSTANCE_NAME);
+      const results = await Promise.allSettled([
+        main.ensureAlarm(),
+        maintenance.ensureAlarm(),
+      ]);
+      const failures = results.filter((result) => result.status === "rejected");
+      if (failures.length) {
+        logEvent("error", "uol_alarm_watchdog_failed", {
+          failures: failures.map((result) => sanitizeError(result.reason)),
+        });
+      } else {
+        logEvent("info", "uol_alarm_watchdog_ok", {
+          mainAlarm: results[0].value,
+          maintenanceAlarm: results[1].value,
+        });
+      }
+    })());
   },
 };

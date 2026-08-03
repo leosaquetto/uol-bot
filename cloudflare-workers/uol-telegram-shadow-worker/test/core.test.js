@@ -19,6 +19,7 @@ import {
   parseValidityWindow,
   shouldTouchObservation,
   shouldPersistRunSummary,
+  storageReadBudget,
   slugTailVariants,
   shouldSendToCanal2,
 } from "../src/core.js";
@@ -62,6 +63,60 @@ test("cadência rápida mantém orçamento estável abaixo do plano gratuito", (
   assert.equal(budget.withinFreeTier, true);
   assert.ok(budget.projected < 75_000);
   assert.ok(budget.headroom > 25_000);
+});
+
+test("reserva leituras críticas e corta manutenção antes do limite diário", () => {
+  const healthy = storageReadBudget({
+    rowsRead: 250_000,
+    primaryMaxRowsRead: 64,
+    now: new Date("2026-08-03T12:00:00.000Z"),
+  });
+  assert.equal(healthy.limit, 5_000_000);
+  assert.equal(healthy.criticalReserve, 1_000_000);
+  assert.equal(healthy.maintenanceAllowed, true);
+
+  const protectedState = storageReadBudget({
+    rowsRead: 4_000_001,
+    primaryMaxRowsRead: 64,
+    now: new Date("2026-08-03T12:00:00.000Z"),
+  });
+  assert.equal(protectedState.maintenanceAllowed, false);
+  assert.equal(protectedState.withinFreeTier, true);
+  assert.ok(protectedState.remaining >= protectedState.criticalReserve - 1);
+});
+
+test("pico medido aumenta reserva do polling restante", () => {
+  const budget = storageReadBudget({
+    rowsRead: 100_000,
+    primaryMaxRowsRead: 500,
+    now: new Date("2026-08-03T00:00:00.000Z"),
+  });
+  assert.equal(budget.remainingPrimaryScans, 5_760);
+  assert.equal(budget.criticalReserve, 4_320_000);
+  assert.equal(budget.maintenanceAllowed, true);
+  assert.equal(budget.maintenanceCeiling, 680_000);
+  assert.equal(budget.recommendedPollIntervalSeconds, 15);
+});
+
+test("polling desacelera quando o custo crítico medido cresce", () => {
+  const budget = storageReadBudget({
+    rowsRead: 100_000,
+    primaryMaxRowsRead: 1_000,
+    now: new Date("2026-08-03T00:00:00.000Z"),
+  });
+  assert.equal(budget.recommendedPollIntervalSeconds, 27);
+  assert.equal(budget.maintenanceAllowed, false);
+});
+
+test("polling pausa antes de ultrapassar o limite e aponta o reset UTC", () => {
+  const budget = storageReadBudget({
+    rowsRead: 4_999_950,
+    primaryMaxRowsRead: 64,
+    now: new Date("2026-08-03T23:59:00.000Z"),
+  });
+  assert.equal(budget.primaryAllowed, false);
+  assert.equal(budget.affordablePrimaryScans, 0);
+  assert.equal(budget.resetAt, "2026-08-04T00:00:00.000Z");
 });
 
 test("histórico grava eventos e só amostra ciclos sem mudança", () => {

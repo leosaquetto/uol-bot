@@ -339,6 +339,9 @@ exposta.
 - ciclos `no_change` são amostrados no histórico a cada 15 minutos; eventos,
   falhas e recuperações continuam imediatos;
 - cada handler periódico rearma o alarme uma vez e a concorrência de entrega é 6;
+- leituras SQLite reais são acumuladas por dia UTC; manutenção é cortada primeiro
+  e o polling adapta a cadência antes do limite de 5 milhões;
+- cron de 5 minutos rearma os dois alarmes após falha ou reset da cota;
 - o orçamento conservador com 48 cards por fonte é 57.920 gravações/dia,
   incluindo reserva de 20.000, abaixo do limite gratuito de 100.000;
 - o alarme crítico não chama HTML, webhook, Discord, comentários ou esgotamento;

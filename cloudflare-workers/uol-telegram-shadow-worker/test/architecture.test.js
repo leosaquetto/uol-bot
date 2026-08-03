@@ -104,6 +104,39 @@ test("cada alarme periódico rearma uma vez por execução", () => {
 
   assert.equal((primary.match(/setAlarm\(/g) || []).length, 1);
   assert.equal((maintenanceAlarm.match(/setAlarm\(/g) || []).length, 1);
+  assert.ok(
+    primary.indexOf("setAlarm(") < primary.indexOf('this.scan("alarm")'),
+    "alarme crítico deve existir antes de qualquer leitura do scan",
+  );
+  assert.ok(
+    maintenanceAlarm.indexOf("setAlarm(") < maintenanceAlarm.indexOf("runMaintenanceTick"),
+    "alarme de manutenção deve existir antes do RPC pesado",
+  );
+});
+
+test("watchdog externo rearma os dois alarmes após reset diário", () => {
+  assert.match(workerConfig, /"crons":\s*\["\*\/5 \* \* \* \*"\]/);
+  const scheduled = methodSource("  async scheduled(", "\n  },\n};");
+  assert.match(scheduled, /main\.ensureAlarm\(\)/);
+  assert.match(scheduled, /maintenance\.ensureAlarm\(\)/);
+  assert.match(scheduled, /Promise\.allSettled/);
+});
+
+test("polling usa aliases indexados e mede rowsRead reais", () => {
+  const primary = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
+  const resolution = methodSource("  resolveListingCards(", "  async processPending(");
+  const lookup = methodSource("  findIdentityRows(", "  chooseIdentityKeeper(");
+  const tracking = methodSource("  trackSqlCursor(", "  loadStorageUsage(");
+  const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
+
+  assert.match(resolution, /this\.findIdentityRows\(card\)/);
+  assert.doesNotMatch(resolution, /SELECT[\s\S]*FROM offers[\s\S]*\.toArray\(\)/);
+  assert.match(lookup, /offer_identity_aliases AS a/);
+  assert.match(tracking, /cursor\.rowsRead/);
+  assert.match(tracking, /cursor\.rowsWritten/);
+  assert.match(maintenance, /storage_read_budget_guard/);
+  assert.match(primary, /budget\.recommendedPollIntervalSeconds/);
+  assert.match(primary, /!budget\.primaryAllowed/);
 });
 
 test("coletor Discord legado falha fechado sem configuração explícita", () => {

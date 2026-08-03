@@ -8,6 +8,9 @@
     "binding": "WORKER_VERSION"
   },
   "workers_dev": true,
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1
@@ -39,6 +42,7 @@
     "RECENT_RESEND_BLOCK_HOURS": "168",
     "REUSED_ID_COOLDOWN_HOURS": "168",
     "OFFER_LAST_SEEN_TOUCH_MINUTES": "15",
+    "DURABLE_OBJECT_ROWS_READ_DAILY_LIMIT": "5000000",
     "SOLD_OUT_LOOKBACK_DAYS": "3",
     "SOLD_OUT_MIN_MISSES": "2",
     "SOLD_OUT_MIN_ABSENCE_MINUTES": "15",

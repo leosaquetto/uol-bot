@@ -186,6 +186,12 @@ cada 15 minutos, salvo mudança real. Ciclos `no_change` entram no histórico
 `runs` somente como amostra a cada 15 minutos; eventos, falhas e recuperações
 continuam imediatos. Cada handler periódico rearma seu alarme uma vez.
 
+As leituras SQLite reais são medidas por `rowsRead` e acumuladas por dia UTC.
+A manutenção para antes de invadir a reserva do polling principal. Se o custo
+observado crescer, o polling desacelera automaticamente; sem orçamento seguro,
+ele rearma para depois do reset diário. Um cron externo verifica os dois alarmes
+a cada 5 minutos, inclusive após uma falha de cota.
+
 O diagnóstico calcula o orçamento em `usageEstimate.durableObjectRowsWrittenPerDay`.
 Com 48 cards ativos na API e 48 no HTML, a projeção conservadora é 57.920
 linhas/dia, já incluindo reserva de 20.000 para entregas e incidentes: margem de

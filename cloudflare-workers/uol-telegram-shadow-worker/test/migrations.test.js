@@ -9,13 +9,13 @@ function migrationBlocks() {
   const end = source.indexOf("\n  metadataValue(", start);
   assert.ok(start >= 0 && end > start, "método migrate não encontrado");
   const body = source.slice(start, end);
-  return [...body.matchAll(/this\.ctx\.storage\.sql\.exec\(`([\s\S]*?)`\);/g)]
+  return [...body.matchAll(/this\.sqlExec\(`([\s\S]*?)`\);/g)]
     .map((match) => match[1]);
 }
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 14);
+  assert.equal(blocks.length, 15);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 14);
+  assert.equal(Number(version), 15);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -41,6 +41,11 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   ]) {
     assert.equal(columns.has(column), true, `coluna ausente: ${column}`);
   }
+  const aliasColumns = new Set(
+    database.prepare("PRAGMA table_info(offer_identity_aliases)").all()
+      .map((column) => column.name),
+  );
+  assert.deepEqual(aliasColumns, new Set(["alias", "offer_id", "first_seen_at"]));
   database.close();
 });
 
@@ -88,7 +93,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    14,
+    15,
   );
   database.close();
 });
