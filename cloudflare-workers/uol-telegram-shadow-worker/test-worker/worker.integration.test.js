@@ -31,6 +31,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "runs",
         "incidents",
         "pending_discussion_forwards",
+        "discord_availability_sync",
       ]));
       for (const column of [
         "delivery_generation",
@@ -51,15 +52,6 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "discord_image_cache_attempts",
         "discord_image_cache_next_attempt_at",
         "discord_image_cache_error",
-        "discord_image_cache_sent_at",
-        "discord_sold_out_synced_at",
-        "discord_sold_out_attempts",
-        "discord_sold_out_error",
-        "discord_sold_out_next_attempt_at",
-        "discord_restock_synced_at",
-        "discord_restock_attempts",
-        "discord_restock_error",
-        "discord_restock_next_attempt_at",
       ]) {
         expect(offersSchema).toContain(column);
       }

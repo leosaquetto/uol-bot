@@ -43,15 +43,6 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "discord_image_cache_attempts",
     "discord_image_cache_next_attempt_at",
     "discord_image_cache_error",
-    "discord_image_cache_sent_at",
-    "discord_sold_out_synced_at",
-    "discord_sold_out_attempts",
-    "discord_sold_out_error",
-    "discord_sold_out_next_attempt_at",
-    "discord_restock_synced_at",
-    "discord_restock_attempts",
-    "discord_restock_error",
-    "discord_restock_next_attempt_at",
   ]) {
     assert.equal(columns.has(column), true, `coluna ausente: ${column}`);
   }
@@ -267,9 +258,15 @@ test("v18 inicia o feed comum sem despejar ofertas históricas", () => {
 
   database.exec(blocks[17]);
   const row = database.prepare(
-    "SELECT discord_image_cache_sent_at FROM offers WHERE id = ?",
+    "SELECT discord_image_cache_attempts FROM offers WHERE id = ?",
   ).get("oferta-comum-antiga");
-  assert.equal(row.discord_image_cache_sent_at, "2026-08-03T18:00:00.000Z");
+  assert.equal(Number(row.discord_image_cache_attempts), 10);
+  assert.equal(
+    database.prepare(
+      "SELECT COUNT(*) AS count FROM sqlite_schema WHERE type = 'table' AND name = ?",
+    ).get("discord_availability_sync").count,
+    1,
+  );
   assert.equal(
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
