@@ -7,6 +7,25 @@ import {
 
 const DISCORD_TIMEOUT_MS = 10_000;
 
+function boundedDiscordText(value, maxLength) {
+  const text = cleanText(value);
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
+function discordOfferFields(offer, link) {
+  const fields = [];
+  const addField = (name, value, maxLength, inline = false) => {
+    const text = boundedDiscordText(value, maxLength);
+    if (text) fields.push({ name, value: text, inline });
+  };
+  addField("Validade", offer?.validity, 500);
+  addField("Parceiro", offer?.partnerName, 250, true);
+  addField("Categoria", offer?.category, 250, true);
+  addField("URL da oferta", link, 1_000);
+  return fields;
+}
+
 export function discordConfiguration(env) {
   return {
     configured: Boolean(String(env.DISCORD_WEBHOOK_URL || "").trim()),
@@ -17,33 +36,34 @@ export function discordConfiguration(env) {
 }
 
 export function buildDiscordPayload(offer, { soldOutAt = "" } = {}) {
-  const title = cleanText(offer?.title || offer?.previewTitle || "Novo benefício do Clube UOL");
+  const title = boundedDiscordText(
+    offer?.title || offer?.previewTitle || "Novo benefício do Clube UOL",
+    240,
+  );
   const link = String(offer?.link || "").trim();
   const imageUrl = String(offer?.imageUrl || offer?.cardImageUrl || "").trim();
   const soldOut = Boolean(String(soldOutAt || "").trim());
   const ticket = isTicketCampaign(offer);
   const decoratedTitle = soldOut ? `[ESGOTADO] ${title}` : title;
+  const statusDescription = soldOut
+    ? "❌ Esta oferta não está mais disponível no Clube UOL."
+    : ticket
+      ? "🎟️ Novo benefício na categoria de ingressos do Clube UOL."
+      : "✨ Novo benefício disponível no Clube UOL.";
+  const summary = boundedDiscordText(offer?.description, 1_200);
   const embed = {
     title: decoratedTitle,
     url: link,
     color: soldOut ? 0xd83c3e : 0xf5a623,
-    description: soldOut
-      ? "❌ Esta oferta não está mais disponível no Clube UOL."
-      : ticket
-        ? "🎟️ Novo benefício na categoria de ingressos do Clube UOL."
-        : "✨ Novo benefício disponível no Clube UOL.",
-    fields: [{
-      name: "Abrir oferta",
-      value: `[Acessar agora no Clube UOL](${link})`,
-      inline: false,
-    }],
+    description: summary ? `${statusDescription}\n\n${summary}` : statusDescription,
+    fields: discordOfferFields(offer, link),
     footer: { text: "Clube UOL • monitor independente" },
     timestamp: soldOut ? String(soldOutAt) : new Date().toISOString(),
   };
   if (imageUrl) embed.image = { url: imageUrl };
   return {
     username: "Clube UOL",
-    content: `${soldOut ? "❌" : "🚨"} **${decoratedTitle}**`,
+    content: `${soldOut ? "❌" : "🚨"} **${decoratedTitle}**${link ? `\n${link}` : ""}`,
     embeds: [embed],
     allowed_mentions: { parse: [] },
   };

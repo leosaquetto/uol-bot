@@ -15,6 +15,10 @@ const offer = {
   title: "2 INGRESSOS: João Rock",
   link: "https://clube.uol.com.br/campanhasdeingresso/pAC-2-joao-rock",
   cardImageUrl: "https://example.com/thumb.jpg",
+  validity: "Válido até 31/08/2026",
+  partnerName: "Mooca Plaza Shopping",
+  category: "Ingressos",
+  description: "Dois ingressos gratuitos para assinantes do Clube UOL.",
 };
 
 test("mantém o formato aprovado do Discord com thumbnail", () => {
@@ -23,7 +27,14 @@ test("mantém o formato aprovado do Discord com thumbnail", () => {
   assert.equal(payload.embeds[0].title, offer.title);
   assert.equal(payload.embeds[0].url, offer.link);
   assert.equal(payload.embeds[0].image.url, offer.cardImageUrl);
-  assert.equal(payload.content, `🚨 **${offer.title}**`);
+  assert.equal(payload.content, `🚨 **${offer.title}**\n${offer.link}`);
+  assert.match(payload.embeds[0].description, /Dois ingressos gratuitos/);
+  assert.deepEqual(payload.embeds[0].fields, [
+    { name: "Validade", value: offer.validity, inline: false },
+    { name: "Parceiro", value: offer.partnerName, inline: true },
+    { name: "Categoria", value: offer.category, inline: true },
+    { name: "URL da oferta", value: offer.link, inline: false },
+  ]);
   assert.equal(payload.username, "Clube UOL");
 });
 
@@ -73,8 +84,12 @@ test("segundo canal recebe a oferta comum completa como Clube UOL", async () => 
     assert.match(url, /webhooks\/cache\/token\?wait=true$/);
     const payload = JSON.parse(init.body);
     assert.equal(payload.username, "Clube UOL");
-    assert.equal(payload.content, `🚨 **${normalOffer.title}**`);
+    assert.equal(payload.content, `🚨 **${normalOffer.title}**\n${normalOffer.link}`);
     assert.match(payload.embeds[0].description, /Novo benefício/);
+    assert.equal(
+      payload.embeds[0].fields.find((field) => field.name === "URL da oferta").value,
+      normalOffer.link,
+    );
     assert.equal(payload.embeds[0].image.url, normalOffer.cardImageUrl);
     return new Response(JSON.stringify({
       id: "cache-1",

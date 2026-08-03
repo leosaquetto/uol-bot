@@ -74,6 +74,8 @@ preservado e nenhuma segunda publicação é criada.
 O webhook `DISCORD_IMAGE_CACHE_WEBHOOK_URL` publica ofertas comuns em um segundo
 canal como `Clube UOL`. O ID e o proxy de cada mensagem ficam persistidos para
 alimentar as fotos do Telegram e permitir edição de esgotamento/reabertura.
+O embed também exibe a URL pura e reaproveita os dados públicos já coletados da
+API: validade, parceiro, categoria e resumo, quando disponíveis.
 
 As legendas utilizam HTML escapado, link canônico, validade, localização quando
 disponível e as hashtags relevantes. Campanhas de ingresso não são silenciosas.

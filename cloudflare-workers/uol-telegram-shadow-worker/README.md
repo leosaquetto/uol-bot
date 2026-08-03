@@ -26,6 +26,7 @@ agenda coleta. Estado de produção exige verificação própria.
    preview ou confirmação do HTML;
 6. em rajadas, o alarme crítico despacha os canais principais com concorrência
    limitada; novidade antecipa o outro Durable Object, que envia Discord,
+   publica URL pura, validade, parceiro, categoria e resumo quando disponíveis,
    recupera a thumbnail e só então encaminha ao canal 2, sem segurar a próxima
    consulta da API;
 7. as duas páginas HTML são reconciliadas a cada 60 segundos, ou imediatamente
