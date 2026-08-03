@@ -81,7 +81,7 @@ Expected: FAIL because deferral/edit API is absent.
 
 - [ ] **Step 3: Implement minimal Telegram behavior**
 
-Reuse caption and image ordering. `editMessageMedia` sends `InputMediaPhoto` with `caption`, `parse_mode: "HTML"`; URL/`file_id` uses JSON and upload uses multipart `attach://photo`. Timeout text uses `link_preview_options: { is_disabled: true }` and strategy `text_timeout`.
+Reuse caption and image ordering. `editMessageMedia` sends `InputMediaPhoto` with `caption`, `parse_mode: "HTML"`; URL/`file_id` uses JSON and upload uses multipart `attach://photo`. Clamp every image request timeout to `offer.imageDeadlineAt - Date.now()` so network work cannot cross the absolute deadline. Timeout text uses `link_preview_options: { is_disabled: true }` and strategy `text_timeout`.
 
 - [ ] **Step 4: Run GREEN**
 
@@ -114,7 +114,7 @@ Expected: FAIL on schema 13 and missing deadline behavior.
 
 - [ ] **Step 3: Implement migration and queue gate**
 
-For main deliveries, try full photo strategies immediately. Before deadline pass `deferTextFallback: true`; on `{ deferred: true }`, clear in-flight state and schedule next attempt without counting a delivery failure. At/after deadline permit `sendMessage` and persist `text_timeout`.
+For main deliveries, try full photo strategies immediately. Before deadline pass `deferTextFallback: true` plus `imageDeadlineAt`; on `{ deferred: true }`, recheck the clock, send timeout text in the same execution if the deadline expired, otherwise clear in-flight state and schedule the next attempt without recording a delivery failure. At/after deadline skip image work, permit `sendMessage`, and persist `text_timeout`.
 
 - [ ] **Step 4: Run GREEN**
 
