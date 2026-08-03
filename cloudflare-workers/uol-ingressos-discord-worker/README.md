@@ -9,8 +9,8 @@ O histórico técnico, as decisões e as validações estão registrados em
 
 ## Segurança do piloto
 
-- Um alarme de Durable Object roda a cada 1 minuto sem consumir um dos cinco
-  Cron Triggers já usados pelo Backstage.
+- Quando explicitamente reativado, um alarme de Durable Object roda a cada 1
+  minuto sem consumir Cron Triggers.
 - `DELIVERY_MODE` está em `dry-run`: o fan-out ativo foi consolidado no Worker
   do Telegram e este Worker não publica mais mensagens.
 - `COLLECTOR_ENABLED=false` remove o alarme: não há polling duplicado do UOL.
@@ -40,17 +40,13 @@ O namespace `UOL_TICKETS_STATE` já está criado e associado no
 
 ## Rotas
 
-- `GET /health`: estado sanitizado, agenda o primeiro alarme e não expõe
-  secrets ou ofertas privadas.
-- `POST /run`: execução manual autenticada com `Authorization: Bearer
-  <ADMIN_TOKEN>`.
-- `POST /run?send=1`: execução manual com envio, destinada apenas ao teste
-  controlado após configurar o webhook.
-- `POST /test`: envia uma mensagem de teste ao webhook, sem alterar o estado
-  das ofertas.
+- `GET /health`: estado sanitizado; não rearma alarme nem expõe secrets/ofertas.
+- `POST /run` e `POST /test`: retornam HTTP 410 enquanto
+  `COLLECTOR_ENABLED=false`. Só voltam a executar após reativação deliberada;
+  então exigem `Authorization: Bearer <ADMIN_TOKEN>`.
 
 ## Validação realizada
 
 O baseline, a coleta automática, o consumo de CPU e o webhook foram validados
-antes da promoção para `live`. A rota `/test` permanece disponível para
-diagnóstico autenticado.
+historicamente antes da promoção para `live`. O Worker está aposentado como
+consumidor e serve apenas como código de rollback frio.

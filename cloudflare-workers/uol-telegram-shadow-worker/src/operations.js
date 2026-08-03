@@ -62,6 +62,7 @@ export function buildIncidentSignals({
   secondsSinceFullSourceSuccess = 0,
   sourceDetails = "",
   ticketIssues = [],
+  deliveryIssues = [],
   now = new Date(),
 } = {}) {
   const signals = [];
@@ -73,8 +74,8 @@ export function buildIncidentSignals({
       key: "ticket-api",
       severity: authorizationFailure ? "critical" : "warning",
       summary: authorizationFailure
-        ? "A API de ingressos rejeitou a autorização"
-        : "A API de ingressos falhou em ciclos consecutivos",
+        ? "A API de ofertas rejeitou a autorização"
+        : "A API de ofertas falhou em ciclos consecutivos",
       details: `${apiFailureStreak} ciclo(s): ${normalizedApiError}`,
     });
   }
@@ -89,7 +90,7 @@ export function buildIncidentSignals({
     signals.push({
       key: "ticket-api-expiry",
       severity: "warning",
-      summary: "A credencial técnica da API de ingressos vence em breve",
+      summary: "A credencial técnica da API de ofertas vence em breve",
       details: `${days} dia(s), em ${new Date(apiExpiry).toISOString()}; ` +
         "as duas fontes HTML públicas continuarão ativas",
     });
@@ -143,6 +144,26 @@ export function buildIncidentSignals({
       severity: "warning",
       summary: `Ingresso entregue sem ${missing}`,
       details: cleanText(issue.title || issue.id).slice(0, 180),
+    });
+  }
+  for (const issue of deliveryIssues) {
+    const target = cleanText(issue.target || "entrega");
+    const state = cleanText(issue.state || "falha");
+    signals.push({
+      key: `delivery-queue:${issue.id}:${target}`,
+      severity: state === "blocked_configuration" ? "warning" : "critical",
+      summary: state === "dead_letter"
+        ? "Uma oferta esgotou as tentativas de entrega"
+        : state === "unknown"
+          ? "Uma entrega ficou com resultado externo incerto"
+          : state === "main_delivery_slow"
+            ? "Uma oferta elegível não chegou ao canal principal no prazo"
+            : "Uma entrega está bloqueada por configuração",
+      details: cleanText([
+        issue.title || issue.id,
+        `destino: ${target}`,
+        issue.error || "",
+      ].filter(Boolean).join("; ")).slice(0, 240),
     });
   }
   return signals;

@@ -3,16 +3,27 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.13.0 <23"
+  },
   "scripts": {
-    "test": "node --test test/*.test.js",
-    "check": "node --test test/*.test.js && wrangler types --check --include-runtime=false && wrangler deploy --dry-run",
+    "test": "node --test --test-concurrency=2 test/*.test.js",
+    "test:worker": "vitest run --config vitest.config.js",
+    "check": "npm run check:ci",
+    "check:fast": "npm test",
+    "check:ci": "npm run check:fast && npm run test:worker && npm run check:types && npm run check:startup && npm run check:bundle",
+    "check:types": "wrangler types --check --include-runtime=false",
+    "check:bundle": "wrangler deploy --dry-run",
     "check:startup": "wrangler check startup",
+    "predeploy": "npm run check:fast && npm run check:types",
+    "postdeploy:check": "node scripts/verify-production.mjs",
     "deploy": "wrangler deploy",
     "tail": "wrangler tail"
   },
   "devDependencies": {
-    "@cloudflare/puppeteer": "^1.1.0",
-    "@cloudflare/workers-types": "5.20260730.1",
-    "wrangler": "4.115.0"
+    "@cloudflare/vitest-pool-workers": "^0.20.1",
+    "@cloudflare/workers-types": "^5.20260801.1",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.118.0"
   }
 }

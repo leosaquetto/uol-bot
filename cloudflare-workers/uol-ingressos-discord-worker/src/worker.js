@@ -290,8 +290,8 @@ function maxStateOffers(env) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_MAX_STATE_OFFERS;
 }
 
-function collectorEnabled(env) {
-  return String(env.COLLECTOR_ENABLED || "true").trim().toLowerCase() === "true";
+export function collectorEnabled(env) {
+  return String(env.COLLECTOR_ENABLED || "false").trim().toLowerCase() === "true";
 }
 
 export async function runCollector(env, options = {}) {
@@ -493,12 +493,16 @@ export class TicketAlarm {
   async fetch(request) {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/health") {
-      const alarmScheduledAt = await this.ensureAlarm();
+      const alarm = await this.ctx.storage.getAlarm();
+      const alarmScheduledAt = alarm == null ? "" : new Date(alarm).toISOString();
       const lastRun = await this.ctx.storage.get("lastRun");
       return jsonResponse(await healthPayload(this.env, { alarmScheduledAt, lastRun }));
     }
 
     if (request.method === "POST" && url.pathname === "/run") {
+      if (!collectorEnabled(this.env)) {
+        return jsonResponse({ ok: false, error: "collector_retired" }, 410);
+      }
       if (!isAuthorized(request, this.env)) {
         return jsonResponse({ ok: false, error: "unauthorized" }, 401);
       }
@@ -510,6 +514,9 @@ export class TicketAlarm {
     }
 
     if (request.method === "POST" && url.pathname === "/test") {
+      if (!collectorEnabled(this.env)) {
+        return jsonResponse({ ok: false, error: "collector_retired" }, 410);
+      }
       if (!isAuthorized(request, this.env)) {
         return jsonResponse({ ok: false, error: "unauthorized" }, 401);
       }

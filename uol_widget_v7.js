@@ -1,21 +1,16 @@
 // ------------------------------
-// uol widget - github ultra leve v8
+// uol widget - API pública do Worker v8
 // pega as 4 ofertas mais recentes/atuais de verdade
 // mantém o layout atual
 // compatível com scriptable
 // ------------------------------
 
-const SNAPSHOTS_API_URL = "https://api.github.com/repos/leosaquetto/uol-bot/contents/snapshots?ref=main"
-const LATEST_OFFERS_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/latest_offers.json"
+const OFFERS_API_URL = "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/offers?limit=4"
 const UOL_LOGO_URL = "https://i.imgur.com/UdIgTfI.png"
 
 const fm = FileManager.local()
 const cachePath = fm.joinPath(fm.documentsDirectory(), "uol_widget_cache_v8.json")
 const CACHE_TIME = 2 * 60 * 1000 // 2 min
-
-const MAX_SNAPSHOT_META_FILES = 10
-const MAX_SNAPSHOT_HTML_FILES = 8
-const MAX_DETAIL_JSON_FILES = 12
 
 function saveCache(data) {
   try {
@@ -45,15 +40,6 @@ function parseDateSafe(value) {
   } catch (e) {
     return 0
   }
-}
-
-function extractSnapshotTsFromName(name) {
-  if (!name) return 0
-  const m = String(name).match(/snapshot_(\d{8}_\d{6})/i)
-  if (!m) return 0
-  const raw = m[1]
-  const iso = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}T${raw.slice(9, 11)}:${raw.slice(11, 13)}:${raw.slice(13, 15)}Z`
-  return parseDateSafe(iso)
 }
 
 function absolutizeUrl(url) {
@@ -102,206 +88,8 @@ function dedupeOffers(list) {
 async function fetchJson(url, timeout = 6) {
   const req = new Request(url)
   req.timeoutInterval = timeout
-  req.headers = { "Cache-Control": "no-cache", "Accept": "application/vnd.github+json" }
+  req.headers = { "Accept": "application/json" }
   return await req.loadJSON()
-}
-
-async function fetchText(url, timeout = 6) {
-  const req = new Request(url)
-  req.timeoutInterval = timeout
-  req.headers = { "Cache-Control": "no-cache" }
-  return await req.loadString()
-}
-
-async function listSnapshotFiles() {
-  try {
-    const items = await fetchJson(SNAPSHOTS_API_URL, 8)
-    if (!Array.isArray(items)) return { metaFiles: [], htmlFiles: [], detailFiles: [] }
-
-    const metaFiles = items
-      .filter(x => x && x.name && /^snapshot_.*\.json$/i.test(x.name))
-      .sort((a, b) => String(b.name).localeCompare(String(a.name)))
-      .slice(0, MAX_SNAPSHOT_META_FILES)
-
-    const htmlFiles = items
-      .filter(x => x && x.name && /^snapshot_.*\.html$/i.test(x.name))
-      .sort((a, b) => String(b.name).localeCompare(String(a.name)))
-      .slice(0, MAX_SNAPSHOT_HTML_FILES)
-
-    const detailFiles = items
-      .filter(x => x && x.name && /^detail_.*\.json$/i.test(x.name))
-      .sort((a, b) => String(b.name).localeCompare(String(a.name)))
-      .slice(0, MAX_DETAIL_JSON_FILES)
-
-    return { metaFiles, htmlFiles, detailFiles }
-  } catch (e) {
-    console.log("erro listando snapshots: " + e)
-    return { metaFiles: [], htmlFiles: [], detailFiles: [] }
-  }
-}
-
-function extractOfferCards(html, snapshotTs = 0, limit = 12) {
-  const cards = []
-  const cardRegex = /<div class="col-12 col-sm-4 col-md-3 mb-3 beneficio"[\s\S]*?<!-- Fim div beneficio -->/gi
-  const matches = html.match(cardRegex) || []
-
-  for (let idx = 0; idx < matches.length; idx++) {
-    if (cards.length >= limit) break
-    const block = matches[idx]
-    const hrefMatch = block.match(/<a href="([^"]+)"/i)
-    const titleMatch = block.match(/<p class="titulo mb-0">([\s\S]*?)<\/p>/i)
-    const partnerMatch = block.match(/<img[^>]+data-src="([^"]*\/parceiros\/[^\"]+)"[^>]*alt="([^"]*)"[^>]*title="([^"]*)"/i)
-    const benefitImgMatch = block.match(/<div class="col-12 thumb text-center lazy" data-src="([^"]*\/beneficios\/[^\"]+)"/i)
-
-    const link = hrefMatch ? absolutizeUrl(hrefMatch[1]) : ""
-    const title = titleMatch ? cleanText(titleMatch[1]) : ""
-    const partnerImg = partnerMatch ? absolutizeUrl(partnerMatch[1]) : ""
-    const partnerAlt = partnerMatch ? cleanText(partnerMatch[2]) : ""
-    const partnerTitle = partnerMatch ? cleanText(partnerMatch[3]) : ""
-    const benefitImg = benefitImgMatch ? absolutizeUrl(benefitImgMatch[1]) : ""
-
-    if (!link || !title) continue
-
-    cards.push({
-      title,
-      mainImg: benefitImg,
-      logoImg: partnerImg,
-      partnerName: partnerTitle || partnerAlt || "",
-      link,
-      ts: snapshotTs,
-      order: idx,
-    })
-  }
-
-  return cards
-}
-
-async function fetchOffersFromLatestMeta(fileList) {
-  const metaFiles = Array.isArray(fileList?.metaFiles) ? fileList.metaFiles : []
-  for (const file of metaFiles) {
-    try {
-      if (!file.download_url) continue
-      const json = await fetchJson(file.download_url, 8)
-      const offers = Array.isArray(json?.offers) ? json.offers : []
-      if (!offers.length) continue
-
-      const ts = parseDateSafe(json?.created_at) || extractSnapshotTsFromName(file.name)
-      const normalized = offers
-        .map((o, idx) => {
-          const link = absolutizeUrl(String(o.link || o.original_link || "").trim())
-          const title = cleanText(String(o.title || o.preview_title || "").trim())
-          if (!link || !title) return null
-          return {
-            title,
-            mainImg: absolutizeUrl(String(o.img_url || o.card_img_url || "").trim()),
-            logoImg: absolutizeUrl(String(o.partner_img_url || "").trim()),
-            partnerName: cleanText(String(o.partner_name || "").trim()),
-            link,
-            ts,
-            order: idx,
-          }
-        })
-        .filter(Boolean)
-
-      const deduped = dedupeOffers(normalized)
-      if (deduped.length) {
-        return deduped.slice(0, 4)
-      }
-    } catch (e) {
-      console.log("erro lendo snapshot meta: " + e)
-    }
-  }
-  return []
-}
-
-async function fetchOffersFromLatestFile() {
-  try {
-    const json = await fetchJson(LATEST_OFFERS_URL, 8)
-    const offers = Array.isArray(json?.offers) ? json.offers : []
-    if (!offers.length) return []
-
-    const normalized = offers
-      .map((o, idx) => {
-        const link = absolutizeUrl(String(o.link || o.original_link || "").trim())
-        const title = cleanText(String(o.title || o.preview_title || "").trim())
-        if (!link || !title) return null
-        return {
-          title,
-          mainImg: absolutizeUrl(String(o.img_url || o.card_img_url || "").trim()),
-          logoImg: absolutizeUrl(String(o.partner_img_url || "").trim()),
-          partnerName: cleanText(String(o.partner_name || "").trim()),
-          link,
-          ts: parseDateSafe(o.scraped_at) || Date.now(),
-          order: idx,
-        }
-      })
-      .filter(Boolean)
-
-    return dedupeOffers(normalized).slice(0, 4)
-  } catch (e) {
-    console.log("erro lendo latest_offers: " + e)
-    return []
-  }
-}
-
-async function fetchOffersFromSnapshotsHtml(fileList) {
-  const htmlFiles = Array.isArray(fileList?.htmlFiles) ? fileList.htmlFiles : []
-  if (!htmlFiles.length) return []
-
-  const mergedCards = []
-
-  for (const file of htmlFiles) {
-    try {
-      if (!file.download_url) continue
-      const html = await fetchText(file.download_url, 8)
-      const snapshotTs = extractSnapshotTsFromName(file.name)
-      const cards = extractOfferCards(html, snapshotTs, 12)
-      mergedCards.push(...cards)
-    } catch (e) {
-      console.log("erro lendo snapshot html: " + e)
-    }
-  }
-
-  const unique = dedupeOffers(mergedCards)
-  unique.sort((a, b) => {
-    if ((b.ts || 0) !== (a.ts || 0)) return (b.ts || 0) - (a.ts || 0)
-    return (a.order || 0) - (b.order || 0)
-  })
-
-  return unique.slice(0, 4)
-}
-
-async function buildDetailMap(fileList) {
-  const detailFiles = Array.isArray(fileList?.detailFiles) ? fileList.detailFiles : []
-  const detailMap = {}
-
-  for (const file of detailFiles) {
-    try {
-      if (!file.download_url) continue
-      const json = await fetchJson(file.download_url, 8)
-      const testedAt = parseDateSafe(json?.tested_at)
-      const offers = Array.isArray(json?.offers) ? json.offers : []
-
-      for (const o of offers) {
-        const link = absolutizeUrl(String(o.link || "").trim())
-        if (!link) continue
-
-        const current = detailMap[link]
-        const candidate = {
-          title: String(o.detail_title || o.card_title || "").trim(),
-          mainImg: String(o.detail_img_url || o.card_img_url || "").trim(),
-          logoImg: String(o.partner_img_url || "").trim(),
-          ts: testedAt,
-        }
-
-        if (!current || candidate.ts >= current.ts) detailMap[link] = candidate
-      }
-    } catch (e) {
-      console.log("erro lendo detail file: " + e)
-    }
-  }
-
-  return detailMap
 }
 
 async function fetchData() {
@@ -312,33 +100,18 @@ async function fetchData() {
   }
 
   try {
-    const fileList = await listSnapshotFiles()
-
-    let cards = await fetchOffersFromLatestFile()
-    if (!cards.length) cards = await fetchOffersFromLatestMeta(fileList)
-    if (!cards.length) cards = await fetchOffersFromSnapshotsHtml(fileList)
-
-    if (!cards.length) return cache && Array.isArray(cache.data) ? cache.data : []
-
-    const detailMap = await buildDetailMap(fileList)
-
-    const merged = cards.map(card => {
-      const detail = detailMap[card.link] || null
-      return {
-        title: detail?.title ? detail.title : card.title,
-        mainImg: detail?.mainImg ? detail.mainImg : card.mainImg,
-        logoImg: detail?.logoImg ? detail.logoImg : card.logoImg,
-        link: card.link,
-        ts: detail?.ts ? detail.ts : card.ts,
-        order: card.order || 0,
-      }
-    })
-
-    const finalOffers = dedupeOffers(merged)
-      .sort((a, b) => {
-        if ((b.ts || 0) !== (a.ts || 0)) return (b.ts || 0) - (a.ts || 0)
-        return (a.order || 0) - (b.order || 0)
-      })
+    const payload = await fetchJson(OFFERS_API_URL, 6)
+    const finalOffers = dedupeOffers((Array.isArray(payload?.offers) ? payload.offers : [])
+      .map((offer, order) => ({
+        title: String(offer?.title || "").trim(),
+        mainImg: String(offer?.imageUrl || "").trim(),
+        logoImg: String(offer?.partnerImageUrl || "").trim(),
+        link: absolutizeUrl(String(offer?.link || "").trim()),
+        ts: parseDateSafe(offer?.sentAt || offer?.observedAt),
+        order,
+      }))
+      .filter(offer => offer.title && offer.link))
+      .sort((a, b) => (b.ts || 0) - (a.ts || 0))
       .slice(0, 4)
 
     if (finalOffers.length > 0) {

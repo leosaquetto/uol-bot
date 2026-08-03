@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   buildDiscordPayload,
   cleanText,
+  collectorEnabled,
   dedupeOffers,
   isTicketCampaignLink,
   normalizeOfferId,
@@ -12,6 +13,12 @@ import {
   reconcileStateOffers,
   runCollector,
 } from "../src/worker.js";
+
+test("coletor de rollback exige ativação explícita", () => {
+  assert.equal(collectorEnabled({}), false);
+  assert.equal(collectorEnabled({ COLLECTOR_ENABLED: "false" }), false);
+  assert.equal(collectorEnabled({ COLLECTOR_ENABLED: "true" }), true);
+});
 
 function memoryKv(initial = null) {
   let value = initial;

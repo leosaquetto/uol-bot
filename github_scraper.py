@@ -11,9 +11,9 @@ from zoneinfo import ZoneInfo
 
 import certifi
 import requests
-import urllib3
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError, RequestException, SSLError
+from legacy_safety import redact_sensitive_text, sanitize_audit_value
 from status_runtime_utils import merge_component_status_file
 
 BASE_URL = "https://clube.uol.com.br"
@@ -53,8 +53,6 @@ USER_AGENT = (
     "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
 )
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 BR_TZ = ZoneInfo("America/Sao_Paulo")
 
 
@@ -63,7 +61,7 @@ def now_br() -> datetime:
 
 
 def log(msg: str) -> None:
-    print(f"[{now_br().strftime('%H:%M:%S')}] {msg}", flush=True)
+    print(f"[{now_br().strftime('%H:%M:%S')}] {redact_sensitive_text(msg)}", flush=True)
 
 
 def now_br_datetime() -> str:
@@ -156,6 +154,7 @@ def append_pipeline_audit(stage: str, trace_id: str, extra: Optional[Dict[str, A
     payload = {"timestamp_utc": utc_now_iso(), "stage": str(stage or "").strip(), "trace_id": trace}
     if isinstance(extra, dict):
         payload.update(extra)
+    payload = sanitize_audit_value(payload)
     try:
         with open(PIPELINE_AUDIT_FILE, "a", encoding="utf-8") as f:
             f.write(json.dumps(payload, ensure_ascii=False) + "\n")
@@ -605,13 +604,13 @@ def build_headers(referer: Optional[str] = None) -> Dict[str, str]:
     }
 
 
-def fetch_once(session: requests.Session, url: str, referer: Optional[str], verify_value) -> requests.Response:
+def fetch_once(session: requests.Session, url: str, referer: Optional[str]) -> requests.Response:
     headers = build_headers(referer)
     response = session.get(
         url,
         headers=headers,
         timeout=REQUEST_TIMEOUT,
-        verify=verify_value,
+        verify=certifi.where(),
         allow_redirects=True,
     )
     return response
@@ -619,22 +618,12 @@ def fetch_once(session: requests.Session, url: str, referer: Optional[str], veri
 
 def fetch_with_fallback(session: requests.Session, url: str, referer: Optional[str] = None) -> Optional[str]:
     try:
-        r = fetch_once(session, url, referer, certifi.where())
+        r = fetch_once(session, url, referer)
         r.raise_for_status()
         return r.text
     except SSLError as e:
-        log(f"ssl falhou com verificação padrão, tentando fallback sem verify: {e}")
-        try:
-            r = fetch_once(session, url, referer, False)
-            r.raise_for_status()
-            return r.text
-        except HTTPError as http_e:
-            status_code = getattr(http_e.response, "status_code", None)
-            log(f"fallback sem verify retornou http {status_code} para {url}")
-            return None
-        except RequestException as req_e:
-            log(f"fallback sem verify falhou para {url}: {req_e}")
-            return None
+        log(f"falha TLS com validação obrigatória ao buscar {url}: {e}")
+        return None
     except HTTPError as e:
         status_code = getattr(e.response, "status_code", None)
         log(f"http {status_code} ao buscar {url}")
@@ -936,6 +925,7 @@ def status_scraper_start() -> None:
 
 
 def status_scraper_finish(summary: str, status_value: str, offers_seen: int, new_offers: int, pending_count: int, last_error: str = "") -> None:
+    last_error = redact_sensitive_text(last_error)
     prev = load_json(STATUS_RUNTIME_FILE, {}).get("scraper", {})
     if not isinstance(prev, dict):
         prev = {}

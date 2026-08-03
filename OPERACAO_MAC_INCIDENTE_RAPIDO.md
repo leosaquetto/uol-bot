@@ -1,17 +1,26 @@
 # Operação rápida de incidente — Mac/Fallback
 
+> Recuperação fria legada. Não rode em paralelo com o Worker ativo. O relatório
+> representa a última decisão/probe persistida; não substitui uma checagem de
+> rede em tempo real.
+
 ## 1) Mac saudável vs stale
 Use o status consolidado:
 
 ```bash
-python3 guard_daily_check.py
+python3 guard_daily_check.py; rc=$?
 cat run/uol_ios_fallback_report.json
+test "$rc" -eq 0
 ```
 
 Leitura rápida no `run/uol_ios_fallback_report.json`:
 - **Saudável**: `mac_online=true` e `pipeline_fresh=true`.
 - **Stale**: `mac_online=true` e `pipeline_fresh=false`.
 - **Crítico (Mac offline)**: `mac_online=false`.
+- **Dados insuficientes**: valor `null`; o status será `ALERTA`.
+
+O comando retorna `0` somente para `status=OK` e `1` para `status=ALERTA`. O
+report é gravado atomicamente nos dois casos.
 
 ## 2) Logs de decisão / audit / ledger
 Arquivos:
@@ -39,20 +48,25 @@ Foco:
 1. Revalidar idade do lock:
 
 ```bash
-python3 guard_daily_check.py --lock-timeout-sec 1800
+python3 guard_daily_check.py --lock-timeout-sec 1800; rc=$?
 cat run/uol_ios_fallback_report.json
+test "$rc" -eq 0
 ```
 
-2. Só remover se `lock_stale=true`:
+2. Só quarentenar se `lock_stale=true`:
 
 ```bash
-rm -f run/uol_ios_fallback_lock.json
+mv run/uol_ios_fallback_lock.json "run/uol_ios_fallback_lock.stale.$(date -u +%Y%m%dT%H%M%SZ).json"
 ```
+
+O `mv` é recuperável; não apague o lock durante a investigação.
 
 3. Rodar nova validação após remoção:
 
 ```bash
-python3 guard_daily_check.py
+python3 guard_daily_check.py; rc=$?
+cat run/uol_ios_fallback_report.json
+test "$rc" -eq 0
 ```
 
 ## 4) Pausar fallback temporariamente (sem afetar ciclo do Mac)
@@ -84,5 +98,7 @@ Checklist objetivo:
 Comando final:
 
 ```bash
-python3 guard_daily_check.py && cat run/uol_ios_fallback_report.json
+python3 guard_daily_check.py; rc=$?
+cat run/uol_ios_fallback_report.json
+test "$rc" -eq 0
 ```

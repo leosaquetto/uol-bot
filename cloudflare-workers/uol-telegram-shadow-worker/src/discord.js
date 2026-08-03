@@ -1,4 +1,9 @@
 import { cleanText } from "./core.js";
+import {
+  createAmbiguousResponseTransportError,
+  createHttpTransportError,
+  createNetworkTransportError,
+} from "./transport-error.js";
 
 const DISCORD_TIMEOUT_MS = 10_000;
 
@@ -34,25 +39,84 @@ export function buildDiscordPayload(offer) {
   };
 }
 
+function discordRetryAfterSeconds(response, payload) {
+  return Number(
+    payload?.retry_after ||
+    response.headers.get("Retry-After") ||
+    response.headers.get("X-RateLimit-Reset-After") ||
+    0,
+  );
+}
+
+function discordError(operation, response, payload) {
+  return createHttpTransportError({
+    transport: "discord",
+    operation,
+    status: response.status,
+    httpStatus: response.status,
+    retryAfterSeconds: discordRetryAfterSeconds(response, payload),
+    description: cleanText(payload?.message || "").slice(0, 160),
+  });
+}
+
+async function discordRequest(url, init, operation, ambiguous, fetchImpl) {
+  try {
+    return await fetchImpl(url, init);
+  } catch (error) {
+    throw createNetworkTransportError({
+      transport: "discord",
+      operation,
+      error,
+      signal: init?.signal,
+      ambiguous,
+    });
+  }
+}
+
 export async function sendDiscordOffer(env, offer, fetchImpl = fetch) {
   const webhookUrl = String(env.DISCORD_WEBHOOK_URL || "").trim();
   if (!webhookUrl) throw new Error("discord_webhook_missing");
   const url = new URL(webhookUrl);
   url.searchParams.set("wait", "true");
-  const response = await fetchImpl(url.href, {
+  const response = await discordRequest(url.href, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(buildDiscordPayload(offer)),
     signal: AbortSignal.timeout(DISCORD_TIMEOUT_MS),
-  });
-  if (!response.ok) {
-    throw new Error(`discord_http_${response.status}`);
-  }
+  }, "sendWebhook", true, fetchImpl);
   const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw discordError("sendWebhook", response, payload);
+  if (!String(payload?.id || "")) {
+    throw createAmbiguousResponseTransportError({
+      transport: "discord",
+      operation: "sendWebhook",
+      httpStatus: response.status,
+    });
+  }
   return {
     messageId: String(payload?.id || ""),
     imageProxyUrl: String(payload?.embeds?.[0]?.image?.proxy_url || ""),
   };
+}
+
+export async function sendDiscordOperationsAlert(env, text, fetchImpl = fetch) {
+  const webhookUrl = String(env.DISCORD_OPS_WEBHOOK_URL || "").trim();
+  if (!webhookUrl) throw new Error("discord_operations_webhook_missing");
+  const response = await discordRequest(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: "Clube UOL • Operações",
+      content: cleanText(text).slice(0, 1_900),
+      allowed_mentions: { parse: [] },
+    }),
+    signal: AbortSignal.timeout(DISCORD_TIMEOUT_MS),
+  }, "operations_alert", true, fetchImpl);
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw discordError("operations_alert", response, payload);
+  }
+  return { ok: true };
 }
 
 export async function getDiscordMessageImageProxy(env, messageId, fetchImpl = fetch) {
@@ -62,11 +126,11 @@ export async function getDiscordMessageImageProxy(env, messageId, fetchImpl = fe
   const url = new URL(webhookUrl);
   url.pathname = `${url.pathname.replace(/\/+$/, "")}/messages/${encodeURIComponent(messageId)}`;
   url.search = "";
-  const response = await fetchImpl(url.href, {
+  const response = await discordRequest(url.href, {
     headers: { Accept: "application/json" },
     signal: AbortSignal.timeout(DISCORD_TIMEOUT_MS),
-  });
-  if (!response.ok) throw new Error(`discord_message_http_${response.status}`);
-  const payload = await response.json();
+  }, "getMessage", false, fetchImpl);
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw discordError("getMessage", response, payload);
   return String(payload?.embeds?.[0]?.image?.proxy_url || "");
 }

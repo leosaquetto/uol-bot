@@ -20,6 +20,7 @@ const statusRuntimeUtils = importModule("status_runtime_utils")
 
 const LOCK_TIMEOUT_MS = 8 * 60 * 1000
 const LOCK_FILE = "uol_scriptable_parte1.lock.json"
+const FALLBACK_AUDIT_FILE = "uol_ios_fallback_audit.jsonl"
 
 function getLockFilePath() {
   const fm = FileManager.iCloud()
@@ -62,6 +63,22 @@ function releaseRunLock() {
 
 
 function log(msg) { console.log(`[${new Date().toLocaleTimeString()}] ${msg}`) }
+
+async function appendFallbackAudit(event, payload = {}) {
+  try {
+    const fm = FileManager.iCloud()
+    const path = fm.joinPath(fm.documentsDirectory(), FALLBACK_AUDIT_FILE)
+    if (fm.fileExists(path)) {
+      try { await fm.downloadFileFromiCloud(path) } catch (e) {}
+    }
+    const previous = fm.fileExists(path) ? String(fm.readString(path) || "") : ""
+    const line = JSON.stringify({ event, at_utc: new Date().toISOString(), ...payload })
+    fm.writeString(path, `${previous}${previous ? "\n" : ""}${line}`)
+  } catch (e) {
+    log("⚠️ não foi possível registrar a execução no audit local")
+  }
+}
+
 function pad(n) { return String(n).padStart(2, "0") }
 function brDate(d = new Date()) { return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}` }
 function brTime(d = new Date()) { return `${pad(d.getHours())}:${pad(d.getMinutes())}` }
@@ -348,16 +365,17 @@ async function updateScriptableStatusRuntime({ statusValue, summary, offersSeen,
 const startedAtGlobal = new Date()
 
 async function main() {
+  if (!GITHUB_TOKEN) return "erro | token ausente"
   const lock = await acquireRunLock()
   if (!lock.ok) return `abortado_parte1 | ${lock.message}`
 
-  if (!GITHUB_TOKEN) return "erro | token ausente"
   const snapshotId = buildSnapshotId()
   const htmlPath = `snapshots/snapshot_${snapshotId}.html`
   const metaPath = `snapshots/snapshot_${snapshotId}.json`
   const stagePath = `snapshots/stage1_${snapshotId}.json`
 
   try {
+    await appendFallbackAudit("fallback_executed", { run_fallback: true, runner: "scriptable_three_part" })
     const seenCache = await loadSeenCache()
     const [pendingResp, latestResp, historyResp] = await Promise.all([
       withRetries("get pending", () => githubGetJson("pending_offers.json")),

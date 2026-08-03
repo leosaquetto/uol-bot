@@ -20,16 +20,3 @@ export function authorizationExpiresAt(value) {
     ? new Date(expiresAt).toISOString()
     : "";
 }
-
-export function authorizationDiagnostics(value) {
-  const raw = rawAuthorizationToken(value);
-  const jwt = raw.split(".").length === 3;
-  const payload = jwt ? jwtPayload(raw) : null;
-  return {
-    present: Boolean(raw),
-    format: jwt ? payload ? "jwt" : "jwt_invalid" : raw ? "opaque" : "missing",
-    lengthBucket: raw ? Math.ceil(raw.length / 100) * 100 : 0,
-    expiresAt: authorizationExpiresAt(raw),
-    claimNames: payload ? Object.keys(payload).sort().slice(0, 24) : [],
-  };
-}

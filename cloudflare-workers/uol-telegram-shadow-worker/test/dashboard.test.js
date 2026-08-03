@@ -16,6 +16,13 @@ test("renderiza painel operacional sem permitir HTML vindo das ofertas", () => {
       applicationAuthorizationExpiresAt: "2026-10-23T04:04:28.000Z",
     },
     publicTicketListing: { lastOffersSeen: 1 },
+    usageEstimate: {
+      durableObjectRowsWrittenPerDay: {
+        projected: 57_920,
+        headroom: 42_080,
+        withinFreeTier: true,
+      },
+    },
     recent: [{
       title: "<script>alert(1)</script>",
       status: "delivered",
@@ -27,6 +34,10 @@ test("renderiza painel operacional sem permitir HTML vindo das ofertas", () => {
   assert.match(html, /1\.2 s/);
   assert.match(html, /dispensado/);
   assert.match(html, /2026-10-23/);
+  assert.match(html, /Gravações DO\/dia/);
+  assert.match(html, /57920/);
+  assert.match(html, /Margem gratuita/);
+  assert.match(html, /42080/);
   assert.doesNotMatch(html, /<script>alert/);
   assert.match(html, /&lt;script&gt;alert/);
 });

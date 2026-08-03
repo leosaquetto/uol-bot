@@ -14,6 +14,7 @@ const MAX_RETRIES = 3
 
 const LOCK_TIMEOUT_MS = 8 * 60 * 1000
 const LOCK_FILE = "uol_scriptable_ingressos_single.lock.json"
+const FALLBACK_AUDIT_FILE = "uol_ios_fallback_audit.jsonl"
 
 const IOS_LEDGER_FILE = "uol_ingressos_sent_ledger.json"
 const IOS_LEDGER_TTL_HOURS = 72
@@ -21,6 +22,21 @@ const IOS_LEDGER_SOURCE = "ios_fallback_single"
 
 function log(msg) { console.log(`[${new Date().toLocaleTimeString()}] ${msg}`) }
 function normalizeLink(url) { return String(url || "").trim() }
+
+async function appendFallbackAudit(event, payload = {}) {
+  try {
+    const fm = FileManager.iCloud()
+    const path = fm.joinPath(fm.documentsDirectory(), FALLBACK_AUDIT_FILE)
+    if (fm.fileExists(path)) {
+      try { await fm.downloadFileFromiCloud(path) } catch (e) {}
+    }
+    const previous = fm.fileExists(path) ? String(fm.readString(path) || "") : ""
+    const line = JSON.stringify({ event, at_utc: new Date().toISOString(), ...payload })
+    fm.writeString(path, `${previous}${previous ? "\n" : ""}${line}`)
+  } catch (e) {
+    log("⚠️ não foi possível registrar a execução no audit local")
+  }
+}
 
 function getGithubToken() {
   try {
@@ -239,11 +255,12 @@ function cleanupLedgerKeys(keysObj, nowMs) {
 }
 
 async function main() {
+  if (!GITHUB_TOKEN) return "erro | token ausente"
   const lock = await acquireRunLock()
   if (!lock.ok) return `abortado | ${lock.message}`
-  if (!GITHUB_TOKEN) return "erro | token ausente"
 
   try {
+    await appendFallbackAudit("fallback_executed", { run_fallback: true, runner: "scriptable_single_ingressos" })
     const htmlResp = await withRetries("fetch vitrine", () => fetchText(LIST_URL).then(html => ({ ok: true, html })))
     if (!htmlResp.ok || !htmlResp.html) throw new Error(htmlResp.error || "html indisponível")
 

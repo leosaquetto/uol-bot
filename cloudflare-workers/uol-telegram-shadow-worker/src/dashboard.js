@@ -22,6 +22,7 @@ export function renderDashboard(data) {
   const source = data.sourceComparison || {};
   const image = data.imageDelivery || {};
   const usage = data.usageEstimate || {};
+  const rowBudget = usage.durableObjectRowsWrittenPerDay || {};
   const auth = data.authentication || {};
   const publicTickets = data.publicTicketListing || {};
   const incidents = (ops.incidents || []).map((incident) => `
@@ -50,7 +51,7 @@ export function renderDashboard(data) {
 ${metric("Modo", data.mode || "—", data.mode === "live" ? "good" : "")}
 ${metric("Último scan", data.lastScanAt || "—")}
 ${metric("Incidentes ativos", ops.activeIncidents ?? 0, ops.activeIncidents ? "bad" : "good")}
-${metric("API ingressos", data.ticketApi?.lastOffersSeen ?? "—", data.ticketApi?.lastError ? "bad" : "good")}
+${metric("API ofertas", data.ticketApi?.lastOffersSeen ?? "—", data.ticketApi?.lastError ? "bad" : "good")}
 ${metric("HTML ingressos", publicTickets.lastOffersSeen ?? "—", publicTickets.lastError ? "bad" : "good")}
 ${metric("Telegram p50", duration(latency.telegram?.p50Ms))}
 ${metric("Discord p50", duration(latency.discord?.p50Ms))}
@@ -61,6 +62,8 @@ ${metric("Login pessoal", auth.personalAuthorizationRequired ? "necessário" : "
 ${metric("API expira", String(data.ticketApi?.applicationAuthorizationExpiresAt || "—").slice(0, 10))}
 ${metric("Scans estimados/dia", usage.alarmInvocationsPerDay ?? "—")}
 ${metric("Scans estimados/30d", usage.alarmInvocationsPer30Days ?? "—")}
+${metric("Gravações DO/dia", rowBudget.projected ?? "—", rowBudget.withinFreeTier === false ? "bad" : "good")}
+${metric("Margem gratuita", rowBudget.headroom ?? "—", rowBudget.headroom < 0 ? "bad" : "good")}
 </div>
 <section class="panel"><h2>Fontes</h2><p>Comparações pareadas: ${escapeHtml(source.paired ?? 0)} · diferença p50: ${escapeHtml(duration(source.deltaP50Ms))} · p95: ${escapeHtml(duration(source.deltaP95Ms))}</p></section>
 <section class="panel"><h2>Últimas disputas API × HTML</h2><div class="scroll"><table><thead><tr><th>Oferta</th><th>Vencedora</th><th>Diferença</th><th>Primeira observação</th></tr></thead><tbody>${sourceRows}</tbody></table></div></section>

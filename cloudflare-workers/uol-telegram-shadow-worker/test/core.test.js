@@ -10,13 +10,79 @@ import {
   dedupeCards,
   evaluateDetailQuality,
   extractValidity,
+  estimateDailyRowWrites,
   normalizeOfferId,
+  observationFreshnessMinutes,
   offerIdentityKeys,
   offerSourceKey,
+  parseRuntimeSnapshot,
   parseValidityWindow,
+  shouldTouchObservation,
+  shouldPersistRunSummary,
   slugTailVariants,
   shouldSendToCanal2,
 } from "../src/core.js";
+
+test("snapshot de runtime aceita objeto e falha fechado para JSON inválido", () => {
+  assert.deepEqual(parseRuntimeSnapshot('{"lastOffersSeen":12}'), { lastOffersSeen: 12 });
+  assert.deepEqual(parseRuntimeSnapshot("[1,2]"), {});
+  assert.deepEqual(parseRuntimeSnapshot("invalido"), {});
+});
+
+test("observação só toca armazenamento após janela configurada", () => {
+  const observedAt = "2026-08-03T12:15:00.000Z";
+  assert.equal(shouldTouchObservation("", observedAt, 15), true);
+  assert.equal(
+    shouldTouchObservation("2026-08-03T12:05:01.000Z", observedAt, 15),
+    false,
+  );
+  assert.equal(
+    shouldTouchObservation("2026-08-03T12:00:00.000Z", observedAt, 15),
+    true,
+  );
+});
+
+test("saúde mantém observação válida durante a janela de toque", () => {
+  assert.equal(observationFreshnessMinutes(15), 20);
+  assert.equal(observationFreshnessMinutes(1), 6);
+});
+
+test("cadência rápida mantém orçamento estável abaixo do plano gratuito", () => {
+  const budget = estimateDailyRowWrites({
+    pollIntervalSeconds: 15,
+    maintenanceIntervalSeconds: 60,
+    htmlIntervalSeconds: 60,
+    observationTouchMinutes: 15,
+    offerTouchMinutes: 15,
+    apiCards: 48,
+    listingCards: 48,
+  });
+
+  assert.equal(budget.limit, 100_000);
+  assert.equal(budget.withinFreeTier, true);
+  assert.ok(budget.projected < 75_000);
+  assert.ok(budget.headroom > 25_000);
+});
+
+test("histórico grava eventos e só amostra ciclos sem mudança", () => {
+  const now = "2026-08-03T12:15:00.000Z";
+  assert.equal(shouldPersistRunSummary({ outcome: "telegram_delivered" }, null, now), true);
+  assert.equal(shouldPersistRunSummary(
+    { outcome: "no_change" },
+    { outcome: "failed", finishedAt: "2026-08-03T12:14:30.000Z" },
+    now,
+  ), true);
+  assert.equal(shouldPersistRunSummary(
+    { outcome: "no_change" },
+    { outcome: "no_change", finishedAt: "2026-08-03T12:05:01.000Z" },
+    now,
+  ), false);
+  assert.equal(shouldPersistRunSummary(
+    { outcome: "no_change" },
+    { outcome: "no_change", finishedAt: "2026-08-03T12:00:00.000Z" },
+    now,
+  ), true);
+});
 
 const showOffer = {
   link: "https://clube.uol.com.br/campanhasdeingresso/pA4-2-ingressos-show-sp",
@@ -119,6 +185,47 @@ test("extrai e interpreta a janela de validade", () => {
   assert.match(validity, /29\/07\/2026/);
   assert.equal(window.start?.toISOString(), "2026-07-29T14:12:00.000Z");
   assert.equal(window.end?.toISOString(), "2026-08-13T02:59:00.000Z");
+});
+
+test("interpreta uma única data após até como fim da validade", () => {
+  const window = parseValidityWindow("Benefício válido até 01/08/2026.");
+  assert.equal(window.start, null);
+  assert.equal(window.end?.toISOString(), "2026-08-02T02:59:59.999Z");
+
+  const timedWindow = parseValidityWindow("Benefício válido até 01/08/2026 12:30.");
+  assert.equal(timedWindow.start, null);
+  assert.equal(timedWindow.end?.toISOString(), "2026-08-01T15:30:00.000Z");
+});
+
+test("não inventa início quando o texto contém apenas limites finais", () => {
+  const window = parseValidityWindow(
+    "Válido até 01/08/2026 para o primeiro lote e até 03/08/2026 para o segundo.",
+  );
+  assert.equal(window.start, null);
+  assert.equal(window.end?.toISOString(), "2026-08-04T02:59:59.999Z");
+});
+
+test("usa início e fim do dia de São Paulo quando o intervalo não informa hora", () => {
+  const window = parseValidityWindow("Benefício válido de 01/08/2026 até 03/08/2026.");
+  assert.equal(window.start?.toISOString(), "2026-08-01T03:00:00.000Z");
+  assert.equal(window.end?.toISOString(), "2026-08-04T02:59:59.999Z");
+});
+
+test("descarta uma validade até já encerrada em vez de tratá-la como início recente", () => {
+  const decision = decideShadowDelivery({
+    ...showOffer,
+    validity: "Válido até 01/08/2026 23:59.",
+  }, {
+    now: new Date("2026-08-02T12:00:00Z"),
+  });
+  assert.equal(decision.eligible, false);
+  assert.equal(decision.discardReason, "validade_expirada");
+});
+
+test("rejeita datas de validade inexistentes", () => {
+  const window = parseValidityWindow("Benefício válido de 31/02/2026 até 32/03/2026.");
+  assert.equal(window.start, null);
+  assert.equal(window.end, null);
 });
 
 test("descarta oferta cuja validade terminou", () => {

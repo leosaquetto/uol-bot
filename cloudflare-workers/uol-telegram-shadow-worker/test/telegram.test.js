@@ -3,17 +3,15 @@ import assert from "node:assert/strict";
 
 import {
   editSoldOutMessage,
-  sendSoldOutNotice,
   editMainOfferMessage,
   forwardToCanal2,
-  editDiscussionComment,
   sendMainOffer,
   sendOperationsAlert,
   sendDiscussionComment,
-  sendTransportTest,
   telegramConfiguration,
   registerTelegramWebhook,
   getTelegramWebhookInfo,
+  telegramCall,
 } from "../src/telegram.js";
 
 const env = {
@@ -60,11 +58,99 @@ test("configuração live exige token e os dois canais", () => {
     tokenConfigured: true,
     mainConfigured: true,
     canal2Configured: true,
+    mainReady: true,
+    canal2Ready: true,
     operationsConfigured: true,
     operationsUsesMainFallback: true,
     liveReady: true,
   });
-  assert.equal(telegramConfiguration({ ...env, CANAL2_ID: "" }).liveReady, false);
+  assert.deepEqual(
+    telegramConfiguration({ ...env, CANAL2_ID: "" }),
+    {
+      tokenConfigured: true,
+      mainConfigured: true,
+      canal2Configured: false,
+      mainReady: true,
+      canal2Ready: false,
+      operationsConfigured: true,
+      operationsUsesMainFallback: true,
+      liveReady: false,
+    },
+  );
+});
+
+test("preserva status e retry_after da API do Telegram", async () => {
+  await assert.rejects(
+    telegramCall(env, "sendMessage", { chat_id: env.TELEGRAM_CHAT_ID }, async () =>
+      new Response(JSON.stringify({
+        ok: false,
+        error_code: 429,
+        description: "Too Many Requests",
+        parameters: { retry_after: 17 },
+      }), {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      })),
+    (error) => {
+      assert.equal(error.transport, "telegram");
+      assert.equal(error.operation, "sendMessage");
+      assert.equal(error.status, 429);
+      assert.equal(error.httpStatus, 429);
+      assert.equal(error.retryAfterSeconds, 17);
+      assert.equal(error.retry_after, 17);
+      assert.equal(error.retryable, true);
+      assert.equal(error.ambiguous, false);
+      return true;
+    },
+  );
+});
+
+test("classifica timeout de envio como ambíguo e não tenta fallback duplicado", async () => {
+  let calls = 0;
+  await assert.rejects(
+    sendMainOffer(env, offer, async () => {
+      calls += 1;
+      throw new DOMException("The operation timed out", "TimeoutError");
+    }),
+    (error) => {
+      assert.equal(error.code, "telegram_sendPhoto_timeout_ambiguous");
+      assert.equal(error.category, "timeout");
+      assert.equal(error.ambiguous, true);
+      assert.equal(error.retryable, true);
+      return true;
+    },
+  );
+  assert.equal(calls, 1);
+});
+
+test("timeout em consulta Telegram não é classificado como entrega ambígua", async () => {
+  await assert.rejects(
+    telegramCall(env, "getWebhookInfo", {}, async () => {
+      throw new DOMException("The operation timed out", "TimeoutError");
+    }),
+    (error) => {
+      assert.equal(error.code, "telegram_getWebhookInfo_timeout");
+      assert.equal(error.ambiguous, false);
+      return true;
+    },
+  );
+});
+
+test("não faz fallback quando uma resposta Telegram de sucesso é ilegível", async () => {
+  let calls = 0;
+  await assert.rejects(
+    sendMainOffer(env, offer, async () => {
+      calls += 1;
+      return new Response("not-json", { status: 200 });
+    }),
+    (error) => {
+      assert.equal(error.code, "telegram_sendPhoto_response_ambiguous");
+      assert.equal(error.httpStatus, 200);
+      assert.equal(error.ambiguous, true);
+      return true;
+    },
+  );
+  assert.equal(calls, 1);
 });
 
 test("envia foto ao canal principal sem expor token no payload", async () => {
@@ -81,6 +167,27 @@ test("envia foto ao canal principal sem expor token no payload", async () => {
   assert.equal(payload.chat_id, env.TELEGRAM_CHAT_ID);
   assert.equal(payload.disable_notification, false);
   assert.equal(JSON.stringify(payload).includes(env.TELEGRAM_TOKEN), false);
+});
+
+test("fast path da API publica texto em uma única chamada sem tentar imagem", async () => {
+  const calls = [];
+  let payload = {};
+  const result = await sendMainOffer(env, {
+    ...offer,
+    telegramTextFirst: true,
+  }, async (url, init) => {
+    calls.push(url);
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 48 });
+  });
+
+  assert.equal(calls.length, 1);
+  assert.match(calls[0], /sendMessage$/);
+  assert.equal(result.messageId, 48);
+  assert.equal(result.messageKind, "text");
+  assert.equal(result.imageStrategy, "text_fast");
+  assert.equal(payload.chat_id, env.TELEGRAM_CHAT_ID);
+  assert.equal(payload.link_preview_options.url, offer.link);
 });
 
 test("usa a imagem oficial do parceiro quando o detalhe não fornece thumbnail", async () => {
@@ -253,30 +360,10 @@ test("edita foto esgotada no canal correto", async () => {
   assert.match(payload.caption, /\[ESGOTADO\]/);
 });
 
-test("avisa esgotamento respondendo ao encaminhamento do canal 2", async () => {
-  let payload = {};
-  const result = await sendSoldOutNotice(env, {
-    chatId: env.CANAL2_ID,
-    replyToMessageId: 99,
-    offer,
-  }, async (url, init) => {
-    assert.match(url, /sendMessage$/);
-    payload = JSON.parse(init.body);
-    return jsonResponse({ message_id: 100 });
-  });
-  assert.equal(result.messageId, 100);
-  assert.equal(payload.chat_id, env.CANAL2_ID);
-  assert.equal(payload.reply_parameters.message_id, 99);
-  assert.equal(payload.reply_parameters.allow_sending_without_reply, true);
-  assert.equal(payload.disable_notification, false);
-  assert.match(payload.text, /^🚫 \[ESGOTADO\]/);
-  assert.equal(payload.link_preview_options.is_disabled, true);
-});
-
 test("completa a legenda urgente depois do enriquecimento", async () => {
   let method = "";
   let payload = {};
-  await editMainOfferMessage({ ...env, GRUPO_COMENTARIO_ID: "-1003802235343" }, {
+  await editMainOfferMessage({ ...env, GRUPO_COMENTARIO_ID: "-1000000000001" }, {
     messageId: 41,
     messageKind: "photo",
     offer: {
@@ -293,30 +380,10 @@ test("completa a legenda urgente depois do enriquecimento", async () => {
   assert.match(payload.caption, /detalhes completos nos comentários/);
 });
 
-test("teste de transporte confirma principal e canal 2", async () => {
-  const methods = [];
-  let mainPayload = {};
-  const result = await sendTransportTest(env, async (url, init) => {
-    const method = url.split("/").pop();
-    methods.push(method);
-    if (method === "sendMessage") mainPayload = JSON.parse(init.body);
-    return jsonResponse({
-      message_id: method === "sendMessage" ? 501 : 502,
-    });
-  });
-  assert.deepEqual(methods, ["sendMessage", "copyMessage"]);
-  assert.deepEqual(result, {
-    mainMessageId: 501,
-    canal2MessageId: 502,
-  });
-  assert.equal(mainPayload.link_preview_options.prefer_small_media, true);
-  assert.equal(mainPayload.link_preview_options.show_above_text, true);
-});
-
 test("envia detalhe como resposta à discussão automática", async () => {
   let payload = {};
   const result = await sendDiscussionComment(
-    { ...env, GRUPO_COMENTARIO_ID: "-1003802235343" },
+    { ...env, GRUPO_COMENTARIO_ID: "-1000000000001" },
     "📋 <b>Oferta</b>",
     778,
     async (_url, init) => {
@@ -325,27 +392,9 @@ test("envia detalhe como resposta à discussão automática", async () => {
     },
   );
   assert.equal(result.messageId, 779);
-  assert.equal(payload.chat_id, "-1003802235343");
+  assert.equal(payload.chat_id, "-1000000000001");
   assert.equal(payload.reply_parameters.message_id, 778);
   assert.equal(payload.disable_notification, false);
-});
-
-test("atualiza comentário existente quando o detalhe é recuperado", async () => {
-  let payload = {};
-  const result = await editDiscussionComment(
-    { ...env, GRUPO_COMENTARIO_ID: "-1003802235343" },
-    "📋 <b>Oferta completa</b>",
-    779,
-    async (url, init) => {
-      assert.match(url, /editMessageText$/);
-      payload = JSON.parse(init.body);
-      return jsonResponse({ message_id: 779 });
-    },
-  );
-  assert.equal(result.messageId, 779);
-  assert.equal(payload.chat_id, "-1003802235343");
-  assert.equal(payload.message_id, 779);
-  assert.equal(payload.link_preview_options.is_disabled, true);
 });
 
 test("registra webhook preservando atualizações pendentes", async () => {

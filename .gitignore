@@ -12,6 +12,13 @@ env/
 .DS_Store
 .idea/
 .vscode/
+.env
+.env.*
+!.env.example
+!.env.*.example
 
 # Logs
 *.log
+
+# Runtime artifacts from the archived Mac/iOS recovery tools
+/run/

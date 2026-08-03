@@ -1,11 +1,15 @@
 # Registro da migração do Telegram para Cloudflare
 
+> Este arquivo combina recibos históricos de produção com o desenho da próxima
+> versão. A seção de 03/08/2026 descreve mudanças locais e não deve ser lida como
+> prova de deploy; somente Version ID novo + `postdeploy:check` provam ativação.
+
 ## Objetivo
 
 Eliminar a dependência do Mac ligado e reduzir a latência entre a publicação de
 uma oferta no Clube UOL e a notificação no Telegram.
 
-## Arquitetura implantada
+## Arquitetura do Worker
 
 O Worker `uol-telegram-shadow-pilot` preserva o nome do piloto para reutilizar o
 mesmo Durable Object e o baseline já validado. A execução é serializada por uma
@@ -19,8 +23,11 @@ O estado SQLite contém:
 - decisão do canal principal e do canal 2;
 - IDs, horários, tentativas e erros de cada entrega;
 - sincronização de esgotamento por canal;
-- últimas 240 execuções (aproximadamente uma hora na cadência atual);
-- baseline e início do modo live.
+- até 240 eventos, falhas, recuperações e amostras saudáveis de execução;
+- baseline e início do modo live;
+- outbox por destino com geração de modo, próxima tentativa, in-flight,
+  resultado incerto, dead letter e quarentena;
+- estado anterior ao esgotamento e sincronização de reabertura.
 
 Antes de inserir um card, o Worker compara as identidades canônicas do endereço.
 Além do slug completo, é usada a combinação estável
@@ -34,8 +41,10 @@ como `seleo/selecao`, `ps/pos`, `at/ate` e `grtis/gratis`. A deduplicação
 também conserva as chaves de conteúdo estrita/solta e o bloqueio recente por
 título + validade durante sete dias.
 
-O alarme é reprogramado ao final de toda execução. Uma listagem vazia ou
-suspeitamente pequena falha de forma segura e não produz esgotamentos.
+Dois alarmes independentes evitam que trabalho secundário atrase a descoberta.
+O primeiro consulta somente a API e envia o canal principal. O segundo executa
+HTML, webhook, canais secundários, comentários, esgotamento e reabertura. HTML
+vazio ou suspeitamente pequeno falha de forma segura e não produz esgotamentos.
 
 O modo operacional também é persistido no Durable Object e pode ser alterado
 imediatamente pela rota autenticada `POST /mode`. Isso evita depender da
@@ -44,15 +53,19 @@ reciclagem de uma instância aquecida após um deploy e permite contenção
 
 ## Entrega ao Telegram
 
-O Worker utiliza a Bot API diretamente:
+O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
 
-1. tenta `sendPhoto` usando a imagem pública da oferta;
-2. usa `sendMessage` imediatamente caso o Telegram rejeite a imagem;
+1. valida e grava a decisão no SQLite;
+2. usa um único `sendMessage` com link/preview, sem download/upload de imagem;
 3. persiste a confirmação do canal principal;
-4. para ingressos elegíveis, usa `copyMessage` para o canal 2, criando uma
+4. despacha todos os principais da rajada com concorrência limitada;
+5. para ingressos elegíveis, usa `copyMessage` para o canal 2, criando uma
    mensagem independente e editável;
-5. uma falha no canal 2 não apaga o sucesso do canal principal;
-6. novas tentativas processam somente o destino ainda pendente.
+6. processa Discord depois dos destinos Telegram;
+7. uma falha secundária não apaga o sucesso do canal principal;
+8. novas tentativas processam somente o destino ainda pendente.
+
+O canal principal usa texto + preview. Imagem não participa da entrega crítica.
 
 As legendas utilizam HTML escapado, link canônico, validade, localização quando
 disponível e as hashtags relevantes. Campanhas de ingresso não são silenciosas.
@@ -89,7 +102,8 @@ Na promoção:
 ## Segurança
 
 - tokens e IDs de chat são secrets do Worker;
-- valores não são expostos em `/health`, logs ou repositório;
+- valores não são expostos nas rotas públicas de liveness/readiness, logs ou
+  repositório;
 - a cópia inicial dos secrets foi feita por um workflow temporário;
 - o workflow e a credencial temporária de Cloudflare foram removidos após o
   sucesso;
@@ -164,6 +178,8 @@ O Discord não participa desse rollback.
 
 ## Consolidação de baixa latência de 31/07/2026
 
+Registro histórico, substituído pela arquitetura API-first de 03/08/2026.
+
 O coletor passou a ser a fonte única para Telegram e Discord:
 
 - alarme reduzido de 30 para 15 segundos;
@@ -184,16 +200,17 @@ O histórico completo do Telegram foi recuperado por webhook:
 5. a descrição completa é formatada e enviada como resposta nessa discussão;
 6. cada chunk confirmado é persistido para que retries não o repitam.
 
-O registro do webhook usa `drop_pending_updates=true`, portanto mensagens
-anteriores à ativação não geram comentários retroativos. Para um rollback ao
-consumer legado baseado em `getUpdates`, o webhook deve ser removido primeiro.
+Na ativação histórica de 31/07 o registro usou `drop_pending_updates=true`. A
+versão atual preserva pendências com `false`, pois o consumidor é idempotente e
+usa o mesmo fluxo para reconciliar uma publicação principal de resultado
+incerto. Para rollback a `getUpdates`, o webhook deve ser removido primeiro.
 
 ### Estado da ativação
 
 - Worker central: `uol-telegram-shadow-pilot`
 - Version ID final de baixa latência: `df550012-fe56-4c07-aab4-ea8f81b733af`
 - intervalo: 15 segundos
-- grupo vinculado: `-1003802235343`
+- grupo vinculado: `<GRUPO_COMENTARIO_ID>`
 - Discord consolidado: configurado
 - webhook Telegram: registrado
 - ofertas novas durante a migração: zero
@@ -263,7 +280,8 @@ O Telegram agora guarda o maior `file_id` devolvido por `sendPhoto`. Uma imagem
 já conhecida deixa de depender novamente do servidor do Clube, do Discord ou de
 upload. Falhas de `file_id`, URL remota, proxy do Discord e upload alimentam
 circuitos separados; três falhas abrem a estratégia por dez minutos. O estado e
-o cache aparecem no painel e em `/health` sem expor identificadores sensíveis.
+o cache aparecem no painel e em `/dashboard.json` sem expor identificadores
+sensíveis.
 
 O painel autenticado em `/dashboard` é renderizado no servidor, não executa
 JavaScript e atualiza a cada 30 segundos. Ele mostra ofertas recentes, fonte
@@ -276,41 +294,72 @@ O alarme também ganhou autorreparo: um agendamento ausente ou atrasado por mais
 de dois intervalos é rearmado para o próximo ciclo. Isso recuperou em produção
 um alarme antigo que estava vencido, e os scans voltaram à cadência de 15–17 s.
 
-### Descoberta de autenticação e eliminação do login pessoal
+### Descoberta temporária de autenticação e eliminação do login pessoal
 
-A rota administrativa `POST /auth-discovery` testa combinações de cabeçalhos e
-devolve somente status HTTP, contagem de ofertas, formato do token, expiração e
-nomes dos claims. Nenhum token ou valor de claim sai do Worker. O ensaio real
-confirmou que `Authorization` técnico sozinho retorna HTTP 200, enquanto token
-pessoal sozinho e requisição sem credencial retornam HTTP 401. Portanto,
-`X-Authorization`, login UOL e senha não participam da leitura das ofertas.
+Uma rota administrativa temporária `POST /auth-discovery` testou combinações de
+cabeçalhos e devolveu somente status HTTP, contagem de ofertas, formato do token,
+expiração e nomes dos claims. Nenhum token ou valor de claim saiu do Worker. O
+ensaio real confirmou que `Authorization` técnico sozinho retorna HTTP 200,
+enquanto token pessoal sozinho e requisição sem credencial retornam HTTP 401.
+Portanto, `X-Authorization`, login UOL e senha não participam da leitura das
+ofertas. A rota foi removida depois da descoberta para reduzir a superfície
+administrativa permanente.
 
-O fluxo automático de senha pelo Browser Rendering foi retirado. O navegador
-remoto permanece apenas como último fallback de enriquecimento de uma oferta
-genuinamente nova, jamais em cada scan. A credencial técnica atual expira em
+O fluxo automático de senha e todo Browser Rendering foram retirados. Nenhum
+navegador remoto participa de descoberta, enriquecimento ou envio. A credencial técnica atual expira em
 23/10/2026 e gera alerta operacional 14 dias antes; ainda assim, sua expiração
 não interrompe a coleta porque o Worker passou a consultar em paralelo duas
 fontes totalmente públicas: a listagem geral e a categoria dedicada
 `/?categoria=ingressosexclusivos&order=new`.
 
-Essa categoria pública funciona como fonte permanente e sem credencial; a API
-fica como acelerador e como fonte estruturada adicional. Assim, descobrir o
-mecanismo privado de emissão do token técnico deixou de ser requisito de
-continuidade. A sonda continua disponível para detectar automaticamente se o
-contrato público de autenticação mudar.
+Essa categoria pública funciona como fonte permanente e sem credencial. Na
+versão histórica, a API era tratada como acelerador e fonte estruturada
+adicional. A revisão local de 02/08 a promove a fonte primária de publicação; o
+HTML continua como fallback degradado e autoridade de disponibilidade, sem ser
+confirmação anterior ao envio. A sonda administrativa temporária não permanece
+exposta.
+
+## Revisão local API-first de 03/08/2026 (publicação pendente)
+
+- a API completa roda sozinha em todos os alarmes de 15 segundos;
+- uma novidade é validada, deduplicada e enviada antes de qualquer HTML;
+- a entrega principal usa texto + preview em uma única chamada mutável;
+- HTML geral e exclusivo reconciliam a cada 60 segundos, ou imediatamente se a
+  API falhar/voltar vazia;
+- polling API e manutenção possuem Durable Objects e alarmes independentes;
+- polling permanece em 15 segundos; manutenção passa a 60 segundos;
+- telemetria frequente usa snapshots JSON e observações respeitam janela de
+  toque de 15 minutos;
+- ciclos `no_change` são amostrados no histórico a cada 15 minutos; eventos,
+  falhas e recuperações continuam imediatos;
+- cada handler periódico rearma o alarme uma vez e a concorrência de entrega é 6;
+- o orçamento conservador com 48 cards por fonte é 57.920 gravações/dia,
+  incluindo reserva de 20.000, abaixo do limite gratuito de 100.000;
+- o alarme crítico não chama HTML, webhook, Discord, comentários ou esgotamento;
+- rajadas priorizam todos os Telegram principais com concorrência limitada;
+- principal, canal 2 e Discord guardam estados `unknown` independentes;
+- o forward automático do Telegram reconcilia o ID de um principal ambíguo;
+- sem forward em 30 segundos, o principal é tentado novamente automaticamente;
+- `POST /resolve-delivery` permite confirmar `sent`/`not_sent` antes de retry;
+- dead letters não criam head-of-line blocking e dependências impossíveis não
+  ficam em backoff eterno;
+- reabertura restaura `partial_delivery` quando havia secundários pendentes;
+- schema local: v13;
+- não há Version ID nem recibo de produção nesta seção porque não houve commit,
+  push ou deploy nesta revisão.
 
 ### Retenção adicional
 
 - observações de fonte: 30 dias;
 - cache de `file_id`: 90 dias sem uso e no máximo 500 entradas;
 - ofertas terminais: 30 dias e no máximo 300, preservando visíveis e pendentes;
-- execuções: últimas 240.
+- execuções: até 240 eventos e amostras.
 
-### Verificação final
+### Último recibo de produção anterior a esta revisão
 
 - esquema remoto preservado: v9;
 - Version ID: `de37c8e7-3bba-499b-82b7-d336edc9f624`;
-- testes: 56 aprovados;
+- testes históricos: 56 aprovados;
 - pacote: tipos atualizados e deploy dry-run aprovado;
 - painel HTML/JSON autenticado: HTTP 200; sem autenticação: HTTP 401;
 - sonda: `Authorization` técnico sozinho HTTP 200; token pessoal sozinho e
@@ -318,6 +367,6 @@ contrato público de autenticação mudar.
 - ciclo real: 48 ofertas na listagem geral, 1 na categoria pública exclusiva e
   1 na API; `no_change`, zero envios, zero erro de API e zero incidente ativo;
 - autenticação: senha pessoal fora do fluxo; expiração técnica exposta apenas
-  como data sanitizada em `/health`;
-- cache `file_id`: ativo, aguardando a próxima oferta genuinamente nova para a
-  primeira entrada real; payload e persistência cobertos por teste unitário.
+  como data sanitizada em `/dashboard.json`;
+- esta seção não comprova a revisão local de 03/08; um novo Version ID e um
+  ciclo real serão exigidos depois de eventual deploy autorizado.

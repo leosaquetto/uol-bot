@@ -1,33 +1,46 @@
 # UOL Telegram Cloudflare Worker
 
 Monitor remoto do Clube UOL que substitui a coleta do Mac e o envio automático
-do GitHub Actions. O Worker consulta a listagem a cada 15 segundos, enriquece apenas
-ofertas inéditas e faz o fan-out para Telegram e Discord a partir do mesmo estado.
+do GitHub Actions. O Worker consulta a API completa a cada 15 segundos, persiste
+a decisão antes de qualquer chamada externa. Polling principal e manutenção
+usam alarmes independentes, mas o mesmo outbox canônico.
 
-O Worker antigo do Discord permanece temporariamente implantado em `dry-run`
-como rollback, mas não publica mensagens.
+Este documento descreve o contrato do código neste checkout. Ele só passa a
+descrever produção depois de publicação deliberada e `postdeploy:check`; teste
+local verde, commit ou push isoladamente não são recibo de ativação.
+
+O Worker antigo do Discord permanece no repositório como rollback. O coletor
+falha fechado: ausente ou diferente de `COLLECTOR_ENABLED=true`, não publica nem
+agenda coleta. Estado de produção exige verificação própria.
 
 ## Fluxo
 
-1. um Durable Object Alarm executa a cada 15 segundos;
-2. três fontes são obtidas em paralelo e sem cache: a categoria pública
-   `/?categoria=ingressosexclusivos&order=new`, a listagem geral `/?order=new`
-   e a API de ingressos;
+1. um Durable Object Alarm inicia o ciclo a cada 15 segundos;
+2. a API completa é consultada sozinha e sem cache; HTML e manutenção do webhook
+   não competem com essa chamada;
 3. o baseline impede o envio das ofertas existentes durante a implantação;
-4. aliases de endereço são reconciliados antes de decidir se o card é inédito;
-5. ingressos genuinamente inéditos disparam Telegram e Discord em paralelo com
-   a thumbnail, antes de abrir a página de detalhe;
-6. título, validade, descrição e imagem vêm da API ou das páginas públicas; uma
-   oferta comum nova também consulta a API geral sob demanda e Browser Rendering
-   só entra quando o detalhe público de uma novidade continua incompleto;
-7. a publicação curta é enriquecida por edição e a oferta é validada;
-8. benefícios comuns continuam sendo enviados depois do enriquecimento;
+4. aliases, validade e deduplicação são decididos e persistidos no SQLite antes
+   de qualquer envio;
+5. novidades da API entram imediatamente no outbox durável e o canal principal
+   recebe texto + link/preview em uma única chamada ao Telegram, sem abrir página,
+   baixar imagem ou aguardar HTML;
+6. em rajadas, o alarme crítico despacha os canais principais com concorrência
+   limitada; outro Durable Object agenda canal 2, Discord e manutenção sem
+   segurar a próxima consulta da API;
+7. as duas páginas HTML são reconciliadas a cada 60 segundos, ou imediatamente
+   se a API falhar/voltar vazia; elas são fallback de descoberta e autoridade de
+   esgotamento/reabertura, nunca confirmação prévia para publicar;
+8. se a API falhar, HTML registra título + link imediatamente no outbox; o
+   próximo polling principal envia esse fallback em texto, sem abrir detalhes;
 9. campanhas elegíveis de ingressos são copiadas com `copyMessage` ao canal 2;
-10. o webhook do Telegram associa a cópia automática no grupo vinculado e
+10. o webhook do Telegram associa a cópia automática no grupo vinculado,
+    reconcilia automaticamente um envio principal de resultado incerto e
     publica a descrição completa como comentário;
-11. cada resultado e tentativa é persistido separadamente;
-12. ofertas recentes ausentes são confirmadas como esgotadas e as mensagens
-    correspondentes são editadas.
+11. cada destino possui tentativa, backoff, in-flight, resultado incerto e
+    confirmação independentes;
+12. ofertas recentes ausentes no HTML saudável são confirmadas como esgotadas;
+    se reaparecerem no HTML, as mensagens voltam ao estado disponível sem perder
+    entregas secundárias que já estavam pendentes.
 
 ## Regras
 
@@ -36,19 +49,12 @@ como rollback, mas não publica mensagens.
   stand-up, partidas, campeonatos, futebol e jogos.
 - **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
   15 minutos, limitada às ofertas decididas nos últimos três dias. A publicação
-  principal e as novas cópias do canal exclusivo são editadas. Encaminhamentos
-  históricos recebem como fallback uma resposta `[ESGOTADO]`.
-- **Enriquecimento:** apenas ofertas novas ou reparo de detalhe recente ainda
-  ativo; no máximo quatro novidades e um reparo por rodada.
-- **Imagem:** reutiliza primeiro o `file_id` devolvido pelo Telegram; depois
-  tenta URL pública, proxy já cacheado pelo Discord e upload binário antes de
-  recorrer a texto. O cache guarda no máximo 500 imagens e expira usos inativos
-  após 90 dias.
-- **Circuit breaker de imagem:** cada estratégia abre separadamente após três
-  falhas, descansa por dez minutos, faz uma tentativa em `half-open` e fecha
-  assim que volta a funcionar.
-- **Detalhes estruturados:** validade e endereço são extraídos dos blocos
-  próprios da página; abreviações como `Av.` não interrompem o endereço.
+  principal e as cópias do canal exclusivo são editadas idempotentemente. Falha
+  de edição entra em backoff; não cria aviso substituto sujeito a duplicata.
+- **Enriquecimento:** a API já entrega título, validade, descrição, imagem e
+  link. Nada abre HTML de detalhe ou Browser Rendering antes/depois do envio.
+- **Imagem:** o canal principal sempre usa texto + preview numa única chamada
+  mutável. Discord mantém thumbnail no embed; canal 2 copia a mensagem pronta.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
   respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
   repetidos em um retry parcial.
@@ -67,14 +73,21 @@ como rollback, mas não publica mensagens.
   descartados conforme a janela de 36 horas.
 - **Retenção:** limpeza automática diária; ofertas terminais e ausentes há mais
   de 30 dias são removidas, mantendo no máximo 300 registros terminais. Cards
-  ainda visíveis e entregas pendentes nunca entram nessa limpeza. As últimas
-  240 execuções ficam disponíveis por aproximadamente uma hora.
-- **Retries:** principal, canal 2 e edições de esgotamento possuem contadores,
-  erros e confirmações independentes.
-- **Operação:** falha de autorização da API aceleradora alerta imediatamente;
+  ainda visíveis e entregas pendentes nunca entram nessa limpeza. Eventos,
+  falhas, recuperações e amostras saudáveis a cada 15 minutos formam um histórico
+  de até 240 execuções.
+- **Retries/outbox:** principal, canal 2, Discord e comentários possuem estado
+  independente, backoff exponencial com jitter, respeito a `retry_after`,
+  in-flight persistido, dead letter e reprocessamento administrativo. Timeout ou
+  resposta aceita sem recibo fica `unknown`. No principal, o forward automático
+  tem 30 segundos para confirmar o envio; sem confirmação, o Worker tenta de
+  novo. A prioridade é não perder oferta, aceitando uma duplicata rara. Os
+  destinos secundários continuam exigindo reconciliação ou resolução explícita.
+- **Operação:** falha de autorização da API primária alerta imediatamente;
   erros comuns exigem três ciclos, e sua credencial técnica gera aviso 14 dias
   antes de expirar. Também são monitorados três scans quebrados, webhook
-  pendente/incorreto e ingresso novo sem foto ou comentário após três minutos.
+  pendente/incorreto e ingresso novo sem comentário após três minutos. Texto
+  urgente marcado como `text_fast` é entrega válida, não falha de imagem.
   Incidentes são deduplicados por chave, têm cooldown de seis horas e ficam no
   SQLite com resolução registrada.
 - **Fontes:** mede por oferta se API ou HTML descobriu primeiro e a diferença em
@@ -82,45 +95,59 @@ como rollback, mas não publica mensagens.
   listagem geral. Alerta somente por listagem vazia/queda repetida, ausência de
   ciclos combinados saudáveis ou divergência total persistente; não alerta
   apenas porque ofertas esgotadas continuam aparecendo na API.
-- **Autenticação:** uma sonda autenticada confirmou que a API aceita somente o
+- **Autenticação:** uma sonda histórica confirmou que a API aceita somente o
   `Authorization` técnico e rejeita requisições sem ele; `X-Authorization`,
-  login UOL, senha e token pessoal não são necessários. A API é um acelerador:
-  se a credencial técnica vencer, as duas fontes HTML públicas continuam
-  descobrindo e enriquecendo ofertas sem depender de renovação ou conta.
-- **Latência:** `/health` mede descoberta até Discord, Telegram, canal 2 e
-  comentário para ofertas observadas após a ativação das métricas, com último
-  valor, p50, p95 e máximo numa janela de 24 horas.
+  login UOL, senha e token pessoal não são necessários. A API é a fonte primária
+  de publicação; se a credencial técnica falhar, as duas páginas HTML públicas
+  entram no mesmo ciclo como fallback degradado e o incidente é alertado.
+- **Latência:** o diagnóstico autenticado mede descoberta até Discord, Telegram,
+  canal 2 e comentário para ofertas observadas após a ativação das métricas, com
+  último valor, p50, p95 e máximo numa janela de 24 horas.
 
 ## Recursos
 
 - Worker: `uol-telegram-shadow-pilot` (nome histórico preservado para manter o
   Durable Object e o baseline)
-- Durable Object: `UolTelegramShadow`
-- Agendamento: Durable Object Alarm
+- Durable Objects: `UolTelegramShadow` (SQLite/outbox/polling) e
+  `UolTelegramMaintenance` (relógio independente)
+- Agendamento: polling em 15 segundos; manutenção em 60 segundos, antecipável
+  quando a API falha
 - Estado: SQLite interno do Durable Object
 - Modo padrão: `DELIVERY_MODE=live`; o modo operacional persistido é controlado
   por `POST /mode`
-- Secrets: `ADMIN_TOKEN`, `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`, `CANAL2_ID`,
-  `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL`, `UOL_API_AUTHORIZATION` e,
-  opcionalmente, `OPS_TELEGRAM_CHAT_ID`. Não há automação ativa de senha ou
-  login pessoal. Sem o chat operacional, alertas usam o canal principal.
+- Versão: o binding `WORKER_VERSION` expõe ID, tag e timestamp da versão
+  publicada no diagnóstico operacional.
+- Secrets obrigatórios: `ADMIN_TOKEN`, `UOL_API_AUTHORIZATION`, `TELEGRAM_TOKEN`,
+  `TELEGRAM_CHAT_ID`, `CANAL2_ID`, `GRUPO_COMENTARIO_ID`,
+  `OPS_TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET` e `DISCORD_WEBHOOK_URL`.
+  `DISCORD_OPS_WEBHOOK_URL` é opcional e cria um segundo transporte para alertas.
+  Não há automação ativa de senha ou login pessoal.
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
 ## Rotas
 
-- `GET /health`: estado sanitizado, configuração booleana, contagens, últimas
-  execuções, latências e incidentes operacionais.
+- `GET /livez`: liveness público, cacheável e sem consultar o Durable Object.
+- `GET /health` e `GET /readyz`: readiness público mínimo; retornam `200` quando
+  modo, scan, alarme, configuração, fila e incidentes estão saudáveis, ou `503`
+  com os checks sanitizados quando o Worker não está pronto.
 - `GET /dashboard`: painel HTML operacional; aceita Bearer ou HTTP Basic com
   usuário `admin` e senha igual ao `ADMIN_TOKEN`.
-- `GET /dashboard.json`: os mesmos dados estruturados e autenticados.
-- `POST /auth-discovery`: sonda administrativa que compara as combinações de
-  autenticação sem devolver os tokens nem os valores de seus claims.
-- `POST /run`: coleta manual autenticada.
-- `POST /test`: teste autenticado do principal e do canal 2, sem registrar uma
-  oferta.
+- `GET /dashboard.json`: diagnóstico completo e autenticado, com versão,
+  configuração booleana, contagens, execuções, latências e incidentes.
+- `GET /offers`: últimas ofertas principais enviadas; JSON público sanitizado,
+  cache de 30 segundos, ETag e limite máximo de 12.
+- `POST /run`: polling manual autenticado; também garante os dois alarmes.
+- `POST /maintenance`: manutenção manual autenticada, incluindo reconciliação HTML.
+- `GET /maintenance-status`: próximo alarme de manutenção, autenticada.
 - `POST /mode`: altera imediatamente o modo persistido para `live` ou `shadow`,
   autenticada; corpo JSON `{"mode":"shadow"}`.
+- `POST /requeue-delivery`: reprocessa `offer`, `main`, `canal2`, `discord` ou
+  `comment` em dead letter/quarentena. Requeue manual de `unknown` exige
+  `/resolve-delivery`; o principal já possui retry automático após 30 segundos.
+- `POST /resolve-delivery`: registra a confirmação humana de um resultado
+  `unknown` como `sent` (com o ID externo) ou `not_sent` (retry seguro), sem
+  duplicar silenciosamente.
 - `GET /decisions`: decisões recentes, autenticada.
 - `GET /inventory`: inventário observado, autenticada.
 - `GET /identity-diagnostics`: aliases ativos, autenticada.
@@ -146,26 +173,68 @@ do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 
 ## Orçamento no tier gratuito
 
-Em estado estável, o alarme de 15 segundos representa 5.760 invocações por dia,
-172.800 em 30 dias. Cada ciclo saudável faz três leituras externas em paralelo
-(API de ingressos, HTML geral e HTML exclusivo de ingressos). A API geral só é
-consultada quando surge uma oferta comum nova. Browser Rendering não é usado em
-cada scan: entra somente para recuperar o detalhe público de uma novidade que
-API e HTTP não completaram.
-As ofertas conhecidas só são atualizadas se algum campo realmente mudar. Sem
-oferta nova, o SQLite escreve aproximadamente 17.280 linhas por dia: alarme,
-registro da execução e descarte do registro mais antigo. Enriquecimento,
-Telegram, comentários e Discord só acrescentam operações quando existe novidade.
-A limpeza das ofertas roda apenas uma vez por dia e acrescenta escritas somente
-quando efetivamente encontra registros antigos.
+O polling mantém 5.760 consultas da API por dia. A manutenção roda 1.440 vezes e
+faz duas leituras HTML por reconciliação. Browser Rendering não faz parte do
+Worker.
+
+Telemetria de API, HTML, fontes, webhook e manutenção usa snapshots JSON, em vez
+de uma linha por campo. Observações e cards conhecidos só tocam `last_seen_at` a
+cada 15 minutos, salvo mudança real. Ciclos `no_change` entram no histórico
+`runs` somente como amostra a cada 15 minutos; eventos, falhas e recuperações
+continuam imediatos. Cada handler periódico rearma seu alarme uma vez.
+
+O diagnóstico calcula o orçamento em `usageEstimate.durableObjectRowsWrittenPerDay`.
+Com 48 cards ativos na API e 48 no HTML, a projeção conservadora é 57.920
+linhas/dia, já incluindo reserva de 20.000 para entregas e incidentes: margem de
+42.080 contra o limite gratuito de 100.000. O valor real varia com cards ativos,
+novidades e falhas; `withinFreeTier=false` exige redução de carga antes de deploy.
+
+## Desenvolvimento e CI
+
+O projeto usa Node.js 22.23.2. O caminho local padrão permanece curto para não
+sobrecarregar o Mac:
+
+- `npm test` ou `npm run check:fast`: testes puros em Node, sem `workerd`;
+  a concorrência fica limitada a dois arquivos para não saturar Macs mais lentos;
+- `npm run test:worker`: integração real com rotas, SQLite Durable Object e
+  alarmes, sem rede externa, produção ou secrets. O Workerd atual exige macOS
+  13.5 ou superior; em versões anteriores, essa etapa roda no CI Linux;
+- `npm run check:ci`: suíte completa, tipos, startup e bundle dry-run. Esse é o
+  comando executado no Ubuntu pelo workflow `UOL Worker CI`;
+- `npm run deploy`: executa automaticamente o `predeploy` leve (`check:fast` e
+  tipos) e, somente depois, cria o bundle e publica conscientemente, sem fazer
+  dois dry-runs consecutivos no Mac;
+- `npm run postdeploy:check`: cruza `/livez` e `/readyz`, verificando versão,
+  scan recente, alarme, modo, configuração, fila e incidentes críticos. Para
+  exigir versão, use `EXPECTED_VERSION_ID` do deploy recém-publicado. Para modo,
+  use também `EXPECTED_DELIVERY_MODE=live` ou `shadow`.
+
+O workflow de CI não possui permissão de escrita, não lê secrets e nunca faz
+deploy. Os testes Cloudflare usam `wrangler.test.jsonc`, isolado da configuração
+de produção e com valores explicitamente fictícios. Um job Python 3.11 separado
+instala `requirements.txt`, testa e compila o fallback legado. Outro job executa
+testes e bundle dry-run do Worker Discord de rollback. Nenhum deles faz parte do
+`check:fast` local do Worker principal.
+
+O workflow independente `UOL Worker Ready Monitor` consulta somente o readiness
+público a cada cinco minutos. Se `/readyz` não responder com HTTP 200 e
+`ok: true`, ele falha e abre um único issue de incidente; novas falhas não criam
+duplicados, e a primeira verificação saudável fecha o issue automaticamente.
+Esse dead-man externo não depende do Mac, do Telegram ou de secrets e recebe
+somente a permissão de issues necessária para registrar e encerrar o incidente.
+O agendamento fica inerte até a variável de repositório
+`UOL_READY_MONITOR_ENABLED=true`; ela deve ser habilitada somente depois do
+primeiro deploy que disponibilizar `/readyz`. `workflow_dispatch` continua
+permitido antes disso para uma prova manual controlada.
 
 ## Comandos
 
 ```bash
-npm install
+npm ci
 npm test
-npx wrangler types --include-runtime=false
-npm run check
+npm run test:worker
+npm run check:ci
 npx wrangler secret list
 npm run deploy
+EXPECTED_VERSION_ID=<VERSION_ID_NOVO> EXPECTED_DELIVERY_MODE=live npm run postdeploy:check
 ```

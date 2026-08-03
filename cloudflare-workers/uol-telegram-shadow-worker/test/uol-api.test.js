@@ -3,11 +3,10 @@ import assert from "node:assert/strict";
 
 import {
   fetchOffersFromApi,
-  fetchTicketOffersFromApi,
   mapTicketApiItem,
   mapTicketApiPayload,
   mergeOfferCards,
-  probeCouponAuthentication,
+  prepareImmediateApiOffer,
   ticketApiConfiguration,
 } from "../src/uol-api.js";
 
@@ -58,6 +57,18 @@ test("API ganha do HTML ao consolidar a mesma oferta", () => {
   assert.equal(merged[0].cardImageUrl, htmlCard.cardImageUrl);
 });
 
+test("payload da API fica pronto para decisão sem qualquer espera por HTML", () => {
+  const card = mapTicketApiItem({
+    ...apiItem,
+    descricao: "Lote relâmpago.",
+  });
+  const immediate = prepareImmediateApiOffer(card);
+  assert.equal(immediate.detailOk, true);
+  assert.equal(immediate.detailElapsedMs, 0);
+  assert.equal(immediate.validity, card.apiDetail.validity);
+  assert.equal(immediate.description, "Lote relâmpago.");
+});
+
 test("mescla duas listagens já normalizadas sem descartar os demais cards", () => {
   const ticket = {
     id: "pa1-ingresso",
@@ -79,25 +90,9 @@ test("mescla duas listagens já normalizadas sem descartar os demais cards", () 
   );
 });
 
-test("consulta ingressos somente com a credencial técnica", async () => {
-  let request;
-  const cards = await fetchTicketOffersFromApi({
-    UOL_API_AUTHORIZATION: "api-token",
-    UOL_OAUTH_AUTHORIZATION: "personal-token-ignored",
-  }, async (url, init) => {
-    request = { url: new URL(url), init };
-    return new Response(JSON.stringify({ beneficios: [apiItem] }), {
-      headers: { "content-type": "application/json" },
-    });
-  });
-  assert.equal(cards.length, 1);
-  assert.equal(request.url.searchParams.get("category_id"), "162");
-  assert.equal(request.init.headers.Authorization, "Bearer api-token");
-  assert.equal(request.init.headers["X-Authorization"], undefined);
-});
-
-test("consulta a API geral sob demanda e preserva a categoria da URL", async () => {
+test("consulta a API completa com credencial técnica e preserva a categoria da URL", async () => {
   let requestedUrl;
+  let requestedHeaders;
   const commonItem = {
     ...apiItem,
     titulo: "36% OFF na caixa de trufas",
@@ -106,13 +101,16 @@ test("consulta a API geral sob demanda e preserva a categoria da URL", async () 
   const cards = await fetchOffersFromApi({
     UOL_API_AUTHORIZATION: "api-token",
     UOL_OAUTH_AUTHORIZATION: "personal-token",
-  }, async (url) => {
+  }, async (url, init) => {
     requestedUrl = new URL(url);
+    requestedHeaders = init.headers;
     return new Response(JSON.stringify({ beneficios: [commonItem] }), {
       headers: { "content-type": "application/json" },
     });
   });
   assert.equal(requestedUrl.searchParams.has("category_id"), false);
+  assert.equal(requestedHeaders.Authorization, "Bearer api-token");
+  assert.equal(requestedHeaders["X-Authorization"], undefined);
   assert.equal(cards[0].category, "cacaushow");
   assert.match(cards[0].apiDetail.description, /resgate um par/);
 });
@@ -121,28 +119,4 @@ test("status de configuração nunca expõe tokens", () => {
   assert.deepEqual(ticketApiConfiguration({
     UOL_API_AUTHORIZATION: "segredo-1",
   }), { configured: true, personalAuthorizationRequired: false });
-});
-
-test("diagnóstico testa combinações sem devolver credenciais", async () => {
-  const seenHeaders = [];
-  const result = await probeCouponAuthentication({
-    UOL_API_AUTHORIZATION: "application-secret",
-    UOL_OAUTH_AUTHORIZATION: "personal-secret",
-  }, async (_url, init) => {
-    seenHeaders.push(init.headers);
-    const accepted = Boolean(init.headers.Authorization) && !init.headers["X-Authorization"];
-    return new Response(JSON.stringify(accepted
-      ? { beneficios: [apiItem] }
-      : { error: "unauthorized" }), {
-      status: accepted ? 200 : 401,
-      headers: { "content-type": "application/json" },
-    });
-  });
-  assert.deepEqual(result.map((item) => item.name), [
-    "both", "application_only", "personal_only", "none",
-  ]);
-  assert.equal(result.find((item) => item.name === "application_only").offers, 1);
-  assert.equal(JSON.stringify(result).includes("application-secret"), false);
-  assert.equal(seenHeaders[1].Authorization, "Bearer application-secret");
-  assert.equal(seenHeaders[1]["X-Authorization"], undefined);
 });

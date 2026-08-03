@@ -91,3 +91,23 @@ test("avisa antes de a credencial técnica vencer sem tratar o HTML como indispo
     now,
   }), []);
 });
+
+test("abre incidentes distintos para dead letter, entrega incerta e configuração", () => {
+  const signals = buildIncidentSignals({
+    deliveryIssues: [
+      { id: "p1", title: "Oferta 1", target: "main", state: "dead_letter" },
+      { id: "p2", title: "Oferta 2", target: "discord", state: "unknown" },
+      { id: "p3", title: "Oferta 3", target: "canal2", state: "blocked_configuration" },
+    ],
+  });
+  assert.deepEqual(signals.map((signal) => signal.severity), [
+    "critical",
+    "critical",
+    "warning",
+  ]);
+  assert.deepEqual(signals.map((signal) => signal.key), [
+    "delivery-queue:p1:main",
+    "delivery-queue:p2:discord",
+    "delivery-queue:p3:canal2",
+  ]);
+});

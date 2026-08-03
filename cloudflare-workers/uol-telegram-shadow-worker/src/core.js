@@ -1,4 +1,76 @@
 const BASE_URL = "https://clube.uol.com.br";
+const DAY_SECONDS = 86_400;
+const FREE_TIER_ROW_WRITES_PER_DAY = 100_000;
+
+export function parseRuntimeSnapshot(value) {
+  try {
+    const parsed = JSON.parse(String(value || "{}"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function shouldTouchObservation(lastSeenAt, observedAt, intervalMinutes = 15) {
+  const previous = Date.parse(String(lastSeenAt || ""));
+  const current = Date.parse(String(observedAt || ""));
+  if (!Number.isFinite(previous) || !Number.isFinite(current)) return true;
+  const intervalMs = Math.max(1, Number(intervalMinutes) || 15) * 60_000;
+  return current - previous >= intervalMs;
+}
+
+export function observationFreshnessMinutes(touchMinutes = 15, graceMinutes = 5) {
+  return Math.max(1, Number(touchMinutes) || 15) +
+    Math.max(1, Number(graceMinutes) || 5);
+}
+
+export function shouldPersistRunSummary(run, lastPersistedRun, now, intervalMinutes = 15) {
+  if (run?.error || String(run?.outcome || "") !== "no_change") return true;
+  if (!lastPersistedRun) return true;
+  if (
+    lastPersistedRun.error ||
+    String(lastPersistedRun.outcome || "") !== "no_change"
+  ) return true;
+  return shouldTouchObservation(
+    lastPersistedRun.finishedAt || lastPersistedRun.finished_at,
+    now,
+    intervalMinutes,
+  );
+}
+
+export function estimateDailyRowWrites({
+  pollIntervalSeconds = 15,
+  maintenanceIntervalSeconds = 60,
+  htmlIntervalSeconds = 60,
+  observationTouchMinutes = 15,
+  offerTouchMinutes = 15,
+  apiCards = 0,
+  listingCards = 0,
+  safetyReserve = 20_000,
+} = {}) {
+  const cycles = (seconds) => Math.ceil(DAY_SECONDS / Math.max(1, Number(seconds) || 1));
+  const touches = (minutes) => Math.ceil(1_440 / Math.max(1, Number(minutes) || 1));
+  const activeCards = Math.max(0, Number(apiCards) || 0) +
+    Math.max(0, Number(listingCards) || 0);
+  const components = {
+    polling: cycles(pollIntervalSeconds) * 2,
+    sampledRuns: cycles(15 * 60) * 2,
+    maintenance: cycles(maintenanceIntervalSeconds) * 3,
+    html: cycles(htmlIntervalSeconds) * 2,
+    periodicChecks: cycles(300) * 2,
+    sourceObservations: activeCards * touches(observationTouchMinutes),
+    offerTouches: activeCards * touches(offerTouchMinutes),
+    safetyReserve: Math.max(0, Number(safetyReserve) || 0),
+  };
+  const projected = Object.values(components).reduce((total, value) => total + value, 0);
+  return {
+    limit: FREE_TIER_ROW_WRITES_PER_DAY,
+    projected,
+    headroom: FREE_TIER_ROW_WRITES_PER_DAY - projected,
+    withinFreeTier: projected < FREE_TIER_ROW_WRITES_PER_DAY,
+    components,
+  };
+}
 
 export function cleanText(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -233,30 +305,142 @@ export function extractValidity(text) {
   return "";
 }
 
-function brDateTimeToUtc(value) {
+const SAO_PAULO_DATE_TIME_FORMATTER = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/Sao_Paulo",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hourCycle: "h23",
+});
+
+function saoPauloPartsAt(timestamp) {
+  const result = {};
+  for (const part of SAO_PAULO_DATE_TIME_FORMATTER.formatToParts(new Date(timestamp))) {
+    if (part.type !== "literal") result[part.type] = Number(part.value);
+  }
+  return result;
+}
+
+function saoPauloDateTimeToUtc(parts) {
+  const desiredAsUtc = Date.UTC(
+    parts.year,
+    parts.month - 1,
+    parts.day,
+    parts.hour,
+    parts.minute,
+    parts.second,
+  );
+  let candidate = desiredAsUtc;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const represented = saoPauloPartsAt(candidate);
+    const representedAsUtc = Date.UTC(
+      represented.year,
+      represented.month - 1,
+      represented.day,
+      represented.hour,
+      represented.minute,
+      represented.second,
+    );
+    const adjustment = desiredAsUtc - representedAsUtc;
+    candidate += adjustment;
+    if (!adjustment) break;
+  }
+
+  const represented = saoPauloPartsAt(candidate);
+  if (
+    represented.year !== parts.year ||
+    represented.month !== parts.month ||
+    represented.day !== parts.day ||
+    represented.hour !== parts.hour ||
+    represented.minute !== parts.minute ||
+    represented.second !== parts.second
+  ) {
+    return null;
+  }
+  return new Date(candidate + parts.millisecond);
+}
+
+function brDateTimeToUtc(value, { endOfDay = false } = {}) {
   const match = String(value || "").match(
     /(\d{2})\/(\d{2})\/(\d{4})(?:\s+(?:às\s+)?(\d{2}):(\d{2}))?/i,
   );
   if (!match) return null;
-  const [, day, month, year, hour = "00", minute = "00"] = match;
-  const timestamp = Date.UTC(
-    Number(year),
-    Number(month) - 1,
-    Number(day),
-    Number(hour) + 3,
-    Number(minute),
-  );
-  const parsed = new Date(timestamp);
-  return Number.isNaN(parsed.getTime()) ? null : parsed;
+  const [, rawDay, rawMonth, rawYear, rawHour, rawMinute] = match;
+  const year = Number(rawYear);
+  const month = Number(rawMonth);
+  const day = Number(rawDay);
+  const hasTime = rawHour !== undefined && rawMinute !== undefined;
+  const hour = hasTime ? Number(rawHour) : endOfDay ? 23 : 0;
+  const minute = hasTime ? Number(rawMinute) : endOfDay ? 59 : 0;
+  const second = !hasTime && endOfDay ? 59 : 0;
+  const millisecond = !hasTime && endOfDay ? 999 : 0;
+  const daysInMonth = month >= 1 && month <= 12
+    ? new Date(Date.UTC(year, month, 0)).getUTCDate()
+    : 0;
+  if (
+    year < 1000 ||
+    day < 1 ||
+    day > daysInMonth ||
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return null;
+  }
+  return saoPauloDateTimeToUtc({
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second,
+    millisecond,
+  });
+}
+
+function validityDateRole(context) {
+  const normalized = String(context || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+  if (/\bate\b[^0-9]*$/i.test(normalized)) return "end";
+  if (/\b(?:de|desde)\b[^0-9]*$/i.test(normalized)) return "start";
+  return "";
 }
 
 export function parseValidityWindow(validity) {
-  const matches = [...String(validity || "").matchAll(
+  const text = String(validity || "");
+  const matches = [...text.matchAll(
     /(\d{2}\/\d{2}\/\d{4}(?:\s+(?:às\s+)?\d{2}:\d{2})?)/gi,
   )];
+  if (!matches.length) return { start: null, end: null };
+
+  const dates = matches.map((match, index) => {
+    const previousEnd = index ? matches[index - 1].index + matches[index - 1][0].length : 0;
+    return {
+      value: match[1],
+      role: validityDateRole(text.slice(previousEnd, match.index)),
+    };
+  });
+  let startDate = dates.find((date) => date.role === "start") || null;
+  let endDate = dates.findLast((date) => date.role === "end") || null;
+
+  if (dates.length === 1) {
+    if (!endDate) startDate = dates[0];
+  } else if (!startDate && !endDate) {
+    [startDate] = dates;
+    endDate = dates.at(-1);
+  } else {
+    startDate ||= dates.find((date) => date !== endDate && date.role !== "end") || null;
+    endDate ||= dates.findLast((date) => date !== startDate && date.role !== "start") || null;
+  }
+
   return {
-    start: matches[0]?.[1] ? brDateTimeToUtc(matches[0][1]) : null,
-    end: matches[1]?.[1] ? brDateTimeToUtc(matches[1][1]) : null,
+    start: startDate ? brDateTimeToUtc(startDate.value) : null,
+    end: endDate ? brDateTimeToUtc(endDate.value, { endOfDay: true }) : null,
   };
 }
 
@@ -290,9 +474,15 @@ export async function buildDedupeKeys(offer) {
   const title = normalizeText(offer?.title || offer?.previewTitle);
   const validity = normalizeText(offer?.validity);
   const description = descriptionAnchor(offer?.description);
+  const sourcePartner = offerSourceKey(offer?.link).split("|", 1)[0] ||
+    normalizeText(offer?.partnerName);
   return {
-    dedupeKey: await sha256Hex(`${title}|${validity}|${description}`),
-    looseDedupeKey: await sha256Hex(`${title}|${description.slice(0, 280)}`),
+    dedupeKey: await sha256Hex(`${sourcePartner}|${title}|${validity}|${description}`),
+    looseDedupeKey: await sha256Hex(
+      `${sourcePartner}|${title}|${description.slice(0, 280)}`,
+    ),
+    legacyDedupeKey: await sha256Hex(`${title}|${validity}|${description}`),
+    legacyLooseDedupeKey: await sha256Hex(`${title}|${description.slice(0, 280)}`),
     titleValidityKey: title && validity ? await sha256Hex(`${title}|${validity}`) : "",
   };
 }

@@ -1,0 +1,43 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "uol-telegram-shadow-worker-test",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-07-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "version_metadata": {
+    "binding": "WORKER_VERSION"
+  },
+  "vars": {
+    "DELIVERY_MODE": "shadow",
+    "ALARM_INTERVAL_SECONDS": "10",
+    "MAINTENANCE_INTERVAL_SECONDS": "10",
+    "DELIVERY_IN_FLIGHT_STALE_SECONDS": "30",
+    "MAIN_AMBIGUOUS_RETRY_SECONDS": "30",
+    "ADMIN_TOKEN": "vitest-admin-token-not-a-secret",
+    "TELEGRAM_WEBHOOK_SECRET": "vitest-webhook-token-not-a-secret",
+    "TELEGRAM_CHAT_ID": "-100111",
+    "GRUPO_COMENTARIO_ID": "-100222"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "UOL_TELEGRAM_SHADOW",
+        "class_name": "UolTelegramShadow"
+      },
+      {
+        "name": "UOL_TELEGRAM_MAINTENANCE",
+        "class_name": "UolTelegramMaintenance"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["UolTelegramShadow"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["UolTelegramMaintenance"]
+    }
+  ]
+}

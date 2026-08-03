@@ -1,0 +1,142 @@
+name: UOL Worker CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cloudflare-workers/uol-telegram-shadow-worker/**"
+      - "bot_leouol.py"
+      - "github_scraper.py"
+      - "guard_daily_check.py"
+      - "legacy_safety.py"
+      - "legacy_safety.js"
+      - "mac_uol_scraper.js"
+      - "uol_widget_v7.js"
+      - "scriptable_uol_fallback_ingressos_single.js"
+      - "scriptable_uol_parte1.js"
+      - "cloudflare-workers/uol-ingressos-discord-worker/**"
+      - "status_runtime_utils.py"
+      - "requirements.txt"
+      - "tests/**"
+      - ".github/workflows/uol-worker-ci.yml"
+  pull_request:
+    paths:
+      - "cloudflare-workers/uol-telegram-shadow-worker/**"
+      - "bot_leouol.py"
+      - "github_scraper.py"
+      - "guard_daily_check.py"
+      - "legacy_safety.py"
+      - "legacy_safety.js"
+      - "mac_uol_scraper.js"
+      - "uol_widget_v7.js"
+      - "scriptable_uol_fallback_ingressos_single.js"
+      - "scriptable_uol_parte1.js"
+      - "cloudflare-workers/uol-ingressos-discord-worker/**"
+      - "status_runtime_utils.py"
+      - "requirements.txt"
+      - "tests/**"
+      - ".github/workflows/uol-worker-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uol-worker-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Testes e bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: cloudflare-workers/uol-telegram-shadow-worker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: cloudflare-workers/uol-telegram-shadow-worker/.node-version
+          cache: npm
+          cache-dependency-path: cloudflare-workers/uol-telegram-shadow-worker/package-lock.json
+
+      - name: Instalar dependências reproduzíveis
+        run: npm ci
+
+      - name: Validar Worker sem deploy e sem secrets
+        run: npm run check:ci
+
+  discord-rollback:
+    name: Validar rollback Discord
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: cloudflare-workers/uol-ingressos-discord-worker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: cloudflare-workers/uol-telegram-shadow-worker/.node-version
+          cache: npm
+          cache-dependency-path: cloudflare-workers/uol-ingressos-discord-worker/package-lock.json
+
+      - name: Instalar dependências reproduzíveis
+        run: npm ci
+
+      - name: Testar e gerar bundle sem deploy
+        run: npm run check
+
+  legacy-python:
+    name: Testes do fallback Python
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: cloudflare-workers/uol-telegram-shadow-worker/.node-version
+
+      - name: Instalar dependências reproduzíveis
+        run: python -m pip install -r requirements.txt
+
+      - name: Testar fallback legado
+        run: python -m unittest discover -s tests -p 'test_*.py'
+
+      - name: Compilar scripts principais
+        run: >-
+          python -m py_compile
+          bot_leouol.py
+          github_scraper.py
+          guard_daily_check.py
+          legacy_safety.py
+          status_runtime_utils.py
+
+      - name: Testar segurança do legado JavaScript
+        run: node --test tests/legacy_safety.test.js
+
+      - name: Validar sintaxe dos scripts JavaScript frios
+        run: >-
+          node --check legacy_safety.js &&
+          node --check mac_uol_scraper.js &&
+          node --check uol_widget_v7.js &&
+          node --check scriptable_uol_fallback_ingressos_single.js &&
+          node --check scriptable_uol_parte1.js &&
+          node --check cloudflare-workers/uol-ingressos-discord-worker/src/worker.js

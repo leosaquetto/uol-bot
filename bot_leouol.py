@@ -17,6 +17,7 @@ from urllib.parse import unquote, urlparse
 from zoneinfo import ZoneInfo
 
 import requests
+from legacy_safety import redact_sensitive_text, sanitize_audit_value
 from status_runtime_utils import load_status_runtime_file, merge_component_status_file
 
 BR_TZ = ZoneInfo("America/Sao_Paulo")
@@ -160,7 +161,7 @@ def now_br() -> datetime:
 
 def log(msg: str) -> None:
     timestamp = now_br().strftime("%H:%M:%S")
-    print(f"[{timestamp}] {msg}", flush=True)
+    print(f"[{timestamp}] {redact_sensitive_text(msg)}", flush=True)
 
 
 def now_br_date() -> str:
@@ -202,6 +203,7 @@ def append_pipeline_audit(stage: str, trace_id: str, extra: Optional[Dict] = Non
     payload = {"timestamp_utc": utc_now_iso(), "stage": str(stage or "").strip(), "trace_id": trace}
     if isinstance(extra, dict):
         payload.update(extra)
+    payload = sanitize_audit_value(payload)
     try:
         with Path(PIPELINE_AUDIT_FILE).open("a", encoding="utf-8") as f:
             f.write(json.dumps(payload, ensure_ascii=False) + "\n")
@@ -864,6 +866,7 @@ def status_consumer_finish(
     status_value: str,
     last_error: str = "",
 ) -> None:
+    last_error = redact_sensitive_text(last_error)
     status = load_status_runtime()
     last_success_at = status["consumer"].get("last_success_at", "")
     if (
@@ -2001,9 +2004,9 @@ def send_offer_main(offer: Dict) -> Tuple[bool, Optional[int], str, Optional[Dic
             data = resp.json()
             result = data.get("result", {}) or {}
             return True, result.get("message_id"), "fallback sendMessage ok", result
-        return False, None, f"sendMessage falhou: {resp.text}", None
+        return False, None, redact_sensitive_text(f"sendMessage falhou: {resp.text}"), None
     except Exception as e:
-        return False, None, f"sendMessage exception: {e}", None
+        return False, None, redact_sensitive_text(f"sendMessage exception: {e}"), None
 
 
 def extract_discussion_message_id(channel_result: Optional[Dict], channel_message_id: Optional[int]) -> Optional[int]:
@@ -2121,12 +2124,12 @@ def send_offer_comment(offer: Dict, channel_message_id: int, channel_result: Opt
                 )
             events.append("descrição completa enviada")
             return True, " | ".join(events)
-        error_msg = f"descrição completa falhou: {resp.text}"
+        error_msg = redact_sensitive_text(f"descrição completa falhou: {resp.text}")
         offer["comment_status"] = "failed"
         offer["comment_error"] = error_msg
         return False, error_msg
     except Exception as e:
-        error_msg = f"descrição completa exception: {e}"
+        error_msg = redact_sensitive_text(f"descrição completa exception: {e}")
         offer["comment_status"] = "failed"
         offer["comment_error"] = error_msg
         return False, error_msg
@@ -2250,14 +2253,14 @@ def forward_offer_to_canal2(offer: Dict, channel_message_id: int, latest_sent: L
             },
         )
         if not resp.ok:
-            return False, f"forwardMessage falhou: {resp.text}"
+            return False, redact_sensitive_text(f"forwardMessage falhou: {resp.text}")
         result = resp.json().get("result", {}) or {}
         offer["canal2_message_id"] = result.get("message_id")
         offer["canal2_forward_status"] = "sent"
         offer["canal2_forwarded_at"] = utc_now_iso()
         return True, "encaminhada para CANAL2"
     except Exception as e:
-        return False, f"forwardMessage exception: {e}"
+        return False, redact_sensitive_text(f"forwardMessage exception: {e}")
 
 
 
@@ -2598,7 +2601,7 @@ def consume_pending() -> int:
             try:
                 ok_main, channel_message_id, detail_main, channel_result = send_offer_main(offer)
             except Exception as e:
-                ok_main, channel_message_id, detail_main, channel_result = False, None, f"send_offer_main exception: {e}", None
+                ok_main, channel_message_id, detail_main, channel_result = False, None, redact_sensitive_text(f"send_offer_main exception: {e}"), None
 
             if not ok_main or not channel_message_id:
                 append_pipeline_audit("bot.send_main_fail", trace_id, {"detail": detail_main})
@@ -2620,7 +2623,7 @@ def consume_pending() -> int:
             try:
                 ok_comment, detail_comment = send_offer_comment(offer, channel_message_id, channel_result=channel_result)
             except Exception as e:
-                ok_comment, detail_comment = False, f"send_offer_comment exception: {e}"
+                ok_comment, detail_comment = False, redact_sensitive_text(f"send_offer_comment exception: {e}")
 
             if not ok_comment:
                 append_pipeline_audit("bot.send_comment_fail", trace_id, {"detail": detail_comment})
@@ -2665,7 +2668,7 @@ def consume_pending() -> int:
 
     except Exception as e:
         failed += 1
-        last_error = f"loop principal exception: {e}"
+        last_error = redact_sensitive_text(f"loop principal exception: {e}")
         log(f"❌ erro inesperado no consume_pending: {e}")
 
     save_history(history)

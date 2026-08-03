@@ -3,8 +3,14 @@ import {
   buildDiscussionCommentChunks,
   cleanText,
 } from "./core.js";
+import {
+  createAmbiguousResponseTransportError,
+  createHttpTransportError,
+  createNetworkTransportError,
+  shouldDeferTransportFallback,
+} from "./transport-error.js";
 
-const TELEGRAM_TIMEOUT_MS = 15_000;
+const TELEGRAM_TIMEOUT_MS = 8_000;
 const IMAGE_FETCH_TIMEOUT_MS = 6_000;
 const MAX_UPLOAD_IMAGE_BYTES = 8 * 1024 * 1024;
 
@@ -44,9 +50,34 @@ function telegramConfig(env) {
   };
 }
 
-function telegramError(method, status, payload) {
+function telegramError(method, httpStatus, payload) {
   const description = cleanText(payload?.description || "").slice(0, 160);
-  return new Error(`telegram_${method}_${status}${description ? `:${description}` : ""}`);
+  return createHttpTransportError({
+    transport: "telegram",
+    operation: method,
+    status: Number(payload?.error_code || httpStatus || 0),
+    httpStatus,
+    retryAfterSeconds: Number(payload?.parameters?.retry_after || 0),
+    description,
+  });
+}
+
+function telegramMethodCanMutate(method) {
+  return !/^get/i.test(String(method || ""));
+}
+
+async function telegramRequest(url, init, method, fetchImpl) {
+  try {
+    return await fetchImpl(url, init);
+  } catch (error) {
+    throw createNetworkTransportError({
+      transport: "telegram",
+      operation: method,
+      error,
+      signal: init?.signal,
+      ambiguous: telegramMethodCanMutate(method),
+    });
+  }
 }
 
 function offerLinkPreview(offer) {
@@ -72,13 +103,21 @@ function telegramPhotoIdentity(result) {
 export function telegramConfiguration(env) {
   const config = telegramConfig(env);
   const opsChatId = String(env.OPS_TELEGRAM_CHAT_ID || config.mainChatId).trim();
+  const tokenConfigured = Boolean(config.token);
+  const mainConfigured = Boolean(config.mainChatId);
+  const canal2Configured = Boolean(config.canal2Id);
+  const mainReady = tokenConfigured && mainConfigured;
+  const canal2Ready = tokenConfigured && canal2Configured;
   return {
-    tokenConfigured: Boolean(config.token),
-    mainConfigured: Boolean(config.mainChatId),
-    canal2Configured: Boolean(config.canal2Id),
+    tokenConfigured,
+    mainConfigured,
+    canal2Configured,
+    mainReady,
+    canal2Ready,
     operationsConfigured: Boolean(opsChatId),
     operationsUsesMainFallback: Boolean(opsChatId && !String(env.OPS_TELEGRAM_CHAT_ID || "").trim()),
-    liveReady: Boolean(config.token && config.mainChatId && config.canal2Id),
+    // Compatibility field: callers that require both destinations keep the old contract.
+    liveReady: mainReady && canal2Ready,
   };
 }
 
@@ -99,17 +138,24 @@ export async function telegramCall(env, method, payload, fetchImpl = fetch) {
   const { token } = telegramConfig(env);
   if (!token) throw new Error("telegram_token_missing");
 
-  const response = await fetchImpl(`https://api.telegram.org/bot${token}/${method}`, {
+  const response = await telegramRequest(`https://api.telegram.org/bot${token}/${method}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
     signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
-  });
+  }, method, fetchImpl);
   let data = {};
   try {
     data = await response.json();
   } catch {
     // O status HTTP ainda identifica a falha sem registrar o corpo bruto.
+  }
+  if (response.ok && data?.ok !== true && data?.ok !== false) {
+    throw createAmbiguousResponseTransportError({
+      transport: "telegram",
+      operation: method,
+      httpStatus: response.status,
+    });
   }
   if (!response.ok || data?.ok !== true) {
     throw telegramError(method, response.status, data);
@@ -144,16 +190,23 @@ async function uploadTelegramPhoto(env, { chatId, imageUrl, caption, disableNoti
     new Blob([bytes], { type: imageFormat.contentType }),
     `oferta.${imageFormat.extension}`,
   );
-  const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendPhoto`, {
+  const response = await telegramRequest(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
     body: form,
     signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
-  });
+  }, "sendPhoto", fetchImpl);
   let data = {};
   try {
     data = await response.json();
   } catch {
     // O status HTTP ainda identifica a falha sem registrar o corpo bruto.
+  }
+  if (response.ok && data?.ok !== true && data?.ok !== false) {
+    throw createAmbiguousResponseTransportError({
+      transport: "telegram",
+      operation: "sendPhoto",
+      httpStatus: response.status,
+    });
   }
   if (!response.ok || data?.ok !== true) {
     throw telegramError("sendPhoto", response.status, data);
@@ -168,6 +221,25 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
   });
   const disableNotification = false;
+  // Ofertas descobertas pela API entram por este caminho para que imagem,
+  // download e upload nunca atrasem a publicação. O preview do próprio link
+  // ainda pode exibir mídia, mas há somente uma chamada mutável ao Telegram.
+  if (offer?.telegramTextFirst === true) {
+    const result = await telegramCall(env, "sendMessage", {
+      chat_id: mainChatId,
+      text: caption,
+      parse_mode: "HTML",
+      disable_notification: disableNotification,
+      link_preview_options: offerLinkPreview(offer),
+    }, fetchImpl);
+    return {
+      messageId: Number(result?.message_id || 0),
+      messageKind: "text",
+      imageError: "",
+      imageStrategy: "text_fast",
+      imageAttempts: [],
+    };
+  }
   // Some ordinary benefits expose only the partner artwork in the listing and
   // the detail page may transiently reject Worker-origin requests. A verified
   // partner image is preferable to silently degrading the alert to text.
@@ -204,6 +276,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         ...telegramPhotoIdentity(result),
       };
     } catch (error) {
+      if (shouldDeferTransportFallback(error)) throw error;
       imageAttempts.push({
         strategy: "file_id",
         ok: false,
@@ -232,6 +305,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           ...telegramPhotoIdentity(result),
         };
       } catch (error) {
+        if (shouldDeferTransportFallback(error)) throw error;
         imageError = cleanText(error?.message || error).slice(0, 160);
         imageAttempts.push({ strategy: remoteStrategy, ok: false, error: imageError });
       }
@@ -253,6 +327,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           ...telegramPhotoIdentity(result),
         };
       } catch (error) {
+        if (shouldDeferTransportFallback(error)) throw error;
         const uploadError = cleanText(error?.message || error).slice(0, 160);
         imageAttempts.push({ strategy: "upload", ok: false, error: uploadError });
         imageError = [imageError, uploadError].filter(Boolean).join("|").slice(0, 240);
@@ -315,25 +390,12 @@ export async function sendDiscussionComment(env, text, discussionMessageId, fetc
   return { messageId: Number(result?.message_id || 0) };
 }
 
-export async function editDiscussionComment(env, text, messageId, fetchImpl = fetch) {
-  const groupChatId = String(env.GRUPO_COMENTARIO_ID || "").trim();
-  if (!groupChatId) throw new Error("telegram_discussion_group_missing");
-  await telegramCall(env, "editMessageText", {
-    chat_id: groupChatId,
-    message_id: Number(messageId),
-    text,
-    parse_mode: "HTML",
-    link_preview_options: { is_disabled: true },
-  }, fetchImpl);
-  return { messageId: Number(messageId) };
-}
-
 export async function registerTelegramWebhook(env, fetchImpl = fetch) {
   const token = String(env.TELEGRAM_TOKEN || "").trim();
   const baseUrl = String(env.PUBLIC_BASE_URL || "").replace(/\/+$/, "");
   const secret = String(env.TELEGRAM_WEBHOOK_SECRET || "").trim();
   if (!token || !baseUrl || !secret) throw new Error("telegram_webhook_configuration_incomplete");
-  const response = await fetchImpl(`https://api.telegram.org/bot${token}/setWebhook`, {
+  const response = await telegramRequest(`https://api.telegram.org/bot${token}/setWebhook`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -343,8 +405,15 @@ export async function registerTelegramWebhook(env, fetchImpl = fetch) {
       drop_pending_updates: false,
     }),
     signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
-  });
+  }, "setWebhook", fetchImpl);
   const data = await response.json().catch(() => ({}));
+  if (response.ok && data?.ok !== true && data?.ok !== false) {
+    throw createAmbiguousResponseTransportError({
+      transport: "telegram",
+      operation: "setWebhook",
+      httpStatus: response.status,
+    });
+  }
   if (!response.ok || data?.ok !== true) {
     throw telegramError("setWebhook", response.status, data);
   }
@@ -377,13 +446,17 @@ export async function forwardToCanal2(env, mainMessageId, fetchImpl = fetch) {
   };
 }
 
-export async function editMainOfferMessage(env, { messageId, messageKind, offer }, fetchImpl = fetch) {
+export async function editMainOfferMessage(
+  env,
+  { chatId = "", messageId, messageKind, offer },
+  fetchImpl = fetch,
+) {
   const { mainChatId } = telegramConfig(env);
   const caption = buildTelegramCaption(offer, {
-    commentsEnabled: Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
+    commentsEnabled: !chatId && Boolean(String(env.GRUPO_COMENTARIO_ID || "").trim()),
   });
   const common = {
-    chat_id: mainChatId,
+    chat_id: String(chatId || mainChatId),
     message_id: Number(messageId),
     parse_mode: "HTML",
   };
@@ -428,47 +501,4 @@ export async function editSoldOutMessage(
       link_preview_options: offerLinkPreview(offer),
     }, fetchImpl);
   }
-}
-
-export async function sendSoldOutNotice(
-  env,
-  { chatId, replyToMessageId, offer },
-  fetchImpl = fetch,
-) {
-  const title = cleanText(offer?.title || offer?.previewTitle || "Oferta").slice(0, 500);
-  const link = String(offer?.link || "").trim();
-  const result = await telegramCall(env, "sendMessage", {
-    chat_id: String(chatId || "").trim(),
-    text: [`🚫 [ESGOTADO] ${title}`, link].filter(Boolean).join("\n\n"),
-    disable_notification: false,
-    link_preview_options: { is_disabled: true },
-    reply_parameters: {
-      message_id: Number(replyToMessageId),
-      allow_sending_without_reply: true,
-    },
-  }, fetchImpl);
-  return { messageId: Number(result?.message_id || 0) };
-}
-
-export async function sendTransportTest(env, fetchImpl = fetch) {
-  const { mainChatId } = telegramConfig(env);
-  if (!mainChatId) throw new Error("telegram_main_chat_missing");
-  const result = await telegramCall(env, "sendMessage", {
-    chat_id: mainChatId,
-    text: "✅ Teste técnico da thumbnail do monitor Cloudflare. Nenhuma oferta foi registrada por esta mensagem.\n\n🔗 https://clube.uol.com.br/",
-    disable_notification: false,
-    link_preview_options: {
-      is_disabled: false,
-      url: "https://clube.uol.com.br/",
-      prefer_small_media: true,
-      show_above_text: true,
-    },
-  }, fetchImpl);
-  const mainMessageId = Number(result?.message_id || 0);
-  if (!mainMessageId) throw new Error("telegram_test_main_message_id_missing");
-  const canal2 = await forwardToCanal2(env, mainMessageId, fetchImpl);
-  return {
-    mainMessageId,
-    canal2MessageId: canal2.messageId,
-  };
 }

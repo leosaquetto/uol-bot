@@ -5,11 +5,11 @@
  *
  * Fluxo esperado no iOS:
  * 1) Executa este script via SSH.
- * 2) Se stdout contiver "MAC_OK", encerra o atalho (Mac assume o trabalho).
+ * 2) Só encerra se stdout contiver "MAC_OK workflow_trigger=ok".
  * 3) Se der erro/timeout/sem MAC_OK, continua para o fluxo Scriptable no iOS.
  *
  * Observação de arquitetura: sem concorrência entre vias.
- * - MAC_OK => iOS para
+ * - MAC_OK workflow_trigger=ok => iOS para
  * - MAC_FAIL/erro/timeout => iOS segue fluxo dividido
  */
 
@@ -17,6 +17,11 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const {
+  macCompletionSignal,
+  redactSensitiveText,
+  sanitizeAuditValue,
+} = require('./legacy_safety');
 
 const TARGET_URL = process.env.UOL_TARGET_URL || 'https://clube.uol.com.br/?order=new';
 const EDGE_PROFILE_DIR = process.env.EDGE_PROFILE_DIR || '/Users/leosaquetto/Documents/GrabNumberAutomator/edge-profile';
@@ -59,8 +64,9 @@ const GITHUB_TARGET_PATH = process.env.GITHUB_TARGET_PATH || 'snapshots/mac-uol-
 const GITHUB_LATEST_OFFERS_PATH = process.env.GITHUB_LATEST_OFFERS_PATH || 'latest_offers.json';
 const GITHUB_SOLD_OUT_UPDATES_PATH = process.env.GITHUB_SOLD_OUT_UPDATES_PATH || 'sold_out_updates.json';
 const GITHUB_WORKFLOW_FILENAME = process.env.GITHUB_WORKFLOW_FILENAME || 'bot_leouol.yml';
-// O PUT do snapshot já gera um evento push que inicia bot_leouol.yml.
-// Um workflow_dispatch adicional duplica cada coleta e aumenta a fila.
+// O workflow legado está arquivado. O dispatch fica desligado por padrão e a
+// execução deve terminar em MAC_FAIL até que um operador restaure e valide o
+// workflow conscientemente. Upload de snapshot, sozinho, não prova entrega.
 const TRIGGER_GITHUB_WORKFLOW = String(process.env.TRIGGER_GITHUB_WORKFLOW || '0').trim() !== '0';
 const REQUIRE_GITHUB_UPLOAD = String(process.env.REQUIRE_GITHUB_UPLOAD || '1') === '1';
 const PIPELINE_AUDIT_FILE = process.env.PIPELINE_AUDIT_FILE || 'pipeline_audit.jsonl';
@@ -125,17 +131,17 @@ function appendPipelineAudit(stage, traceId, extra = {}) {
   const trace = cleanText(traceId || '');
   if (!trace) return;
 
-  const payload = {
+  const payload = sanitizeAuditValue({
     timestamp_utc: new Date().toISOString(),
     stage: cleanText(stage || ''),
     trace_id: trace,
     ...((extra && typeof extra === 'object') ? extra : {}),
-  };
+  });
 
   try {
     fs.appendFileSync(PIPELINE_AUDIT_FILE, `${JSON.stringify(payload)}\n`, 'utf8');
   } catch (err) {
-    console.error(`MAC_AUDIT_FAIL ${cleanText(err && err.message ? err.message : String(err))}`);
+    console.error(`MAC_AUDIT_FAIL ${redactSensitiveText(cleanText(err && err.message ? err.message : String(err)))}`);
   }
 }
 
@@ -213,7 +219,7 @@ async function githubGetContent(targetPath) {
 
   if (resp.status === 404) return { exists: false, sha: null, data: null };
   if (!resp.ok) {
-    throw new Error(`github get ${targetPath} ${resp.status} ${await resp.text()}`);
+    throw new Error(redactSensitiveText(`github get ${targetPath} ${resp.status} ${await resp.text()}`));
   }
 
   const json = await resp.json();
@@ -254,7 +260,7 @@ async function githubPutFile(targetPath, jsonText) {
   });
 
   if (!resp.ok) {
-    throw new Error(`github put ${targetPath} ${resp.status} ${await resp.text()}`);
+    throw new Error(redactSensitiveText(`github put ${targetPath} ${resp.status} ${await resp.text()}`));
   }
 }
 
@@ -306,7 +312,7 @@ async function triggerGithubWorkflow(workflowFilename, inputs = null) {
     },
     body: JSON.stringify(body)
   });
-  const responseBody = await resp.text();
+  const responseBody = redactSensitiveText(await resp.text()).slice(0, 1000);
   const dispatchResult = {
     workflow: workflowFilename,
     http_status: resp.status,
@@ -317,9 +323,9 @@ async function triggerGithubWorkflow(workflowFilename, inputs = null) {
     return {
       status: 'failed',
       workflow: workflowFilename,
-      error: resp.status === 404
+      error: redactSensitiveText(resp.status === 404
         ? `workflow não encontrado: ${workflowFilename}`
-        : `workflow dispatch ${workflowFilename} ${resp.status} ${responseBody}`,
+        : `workflow dispatch ${workflowFilename} ${resp.status} ${responseBody}`),
       dispatch: dispatchResult,
     };
   }
@@ -613,7 +619,7 @@ async function fetchOfferDetailData(page, offer) {
       detail_img_source: 'error',
       html_length: 0,
       elapsed_ms: Date.now() - startedAt,
-      error: cleanText(err && err.message ? err.message : String(err)),
+      error: redactSensitiveText(cleanText(err && err.message ? err.message : String(err))),
     };
   }
 }
@@ -697,7 +703,7 @@ async function enrichOffers(context, cards) {
     const payload = {
       ok: true,
       source: 'mac-playwright',
-      target_url: TARGET_URL,
+      target_url: redactSensitiveText(TARGET_URL),
       max_cards_per_round: MAX_CARDS,
       detail_page_timeout_ms: DETAIL_PAGE_TIMEOUT_MS,
       collected_cards_count: cards.length,
@@ -772,15 +778,19 @@ async function enrichOffers(context, cards) {
         status: workflowTrigger.status || 'skipped',
       });
     }
-    console.log(`MAC_WORKFLOW_DISPATCH ${JSON.stringify(workflowTrigger.dispatch)}`);
-    if (workflowTrigger.status !== 'ok') {
-      console.error(`MAC_WORKFLOW_TRIGGER_FAIL ${cleanText(workflowTrigger.error || 'dispatch não confirmado')}`);
+    console.log(`MAC_WORKFLOW_DISPATCH ${JSON.stringify(sanitizeAuditValue(workflowTrigger.dispatch))}`);
+    const completion = macCompletionSignal(workflowTrigger.status);
+    const summary = redactSensitiveText(`cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} workflow_trigger=${workflowTrigger.status} workflow_name=${workflowTrigger.workflow || 'none'} repo_path=${GITHUB_TARGET_PATH}`);
+    if (!completion.ok) {
+      console.error(`${completion.marker} reason=workflow_dispatch_not_confirmed ${redactSensitiveText(cleanText(workflowTrigger.error || 'dispatch não confirmado'))} ${summary}`);
+      process.exitCode = completion.exitCode;
+      return;
     }
 
-    console.log(`MAC_OK cards=${cards.length} enriched=${offers.length} detail_ok=${enrichment.detailOkCount} detail_fail=${detailFailCount} duration_ms=${runDurationMs} out=${outFile} github=${githubUpload} sold_out=${soldOutUpload} sold_out_added=${soldOutAdded} workflow_trigger=${workflowTrigger.status} workflow_name=${workflowTrigger.workflow || 'none'} repo_path=${GITHUB_TARGET_PATH}`);
-    process.exitCode = 0;
+    console.log(`${completion.marker} ${summary}`);
+    process.exitCode = completion.exitCode;
   } catch (err) {
-    console.error(`MAC_FAIL ${cleanText(err && err.message ? err.message : String(err))}`);
+    console.error(`MAC_FAIL ${redactSensitiveText(cleanText(err && err.message ? err.message : String(err)))}`);
     process.exitCode = 2;
   } finally {
     if (browser) {
