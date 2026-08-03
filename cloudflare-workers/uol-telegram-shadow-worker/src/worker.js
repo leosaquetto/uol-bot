@@ -3297,7 +3297,10 @@ export class UolTelegramShadow extends DurableObject {
     }
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const rows = this.sqlExec(
-      `SELECT o.*,
+      `SELECT o.id, o.link, o.preview_title, o.title, o.category,
+              o.card_image_url, o.partner_image_url, o.image_url,
+              o.discord_image_proxy_url, o.discord_message_id,
+              o.discord_image_cache_message_id, o.status, o.sold_out_at, o.restocked_at,
               COALESCE(d.sold_out_synced_at, '') AS discord_sold_out_synced_at,
               COALESCE(d.sold_out_attempts, 0) AS discord_sold_out_attempts,
               COALESCE(d.sold_out_error, '') AS discord_sold_out_error,

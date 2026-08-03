@@ -58,6 +58,20 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("consulta o ciclo Discord sem exceder o limite de colunas SQLite", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("discord-availability-empty");
+    await runInDurableObject(stub, async (instance) => {
+      expect(await instance.processDiscordAvailabilitySync(
+        new Date("2026-08-03T20:00:00.000Z"),
+      )).toEqual({
+        soldOutEdited: 0,
+        restockEdited: 0,
+        messageMissing: 0,
+        failed: 0,
+      });
+    });
+  });
+
   it("envia Discord, principal e canal 2 no ciclo rápido sem aguardar manutenção", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-fast-path");
     const deliveryCalls = [];
