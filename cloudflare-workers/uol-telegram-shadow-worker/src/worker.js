@@ -382,6 +382,8 @@ function rowToPublicDecision(row) {
     restockedAt: row.restocked_at || "",
     mainSent: Boolean(row.main_sent_at),
     canal2Sent: Boolean(row.canal2_sent_at),
+    discordSent: Boolean(row.discord_sent_at),
+    discordMessageId: String(row.discord_message_id || ""),
     mainMessageId: Number(row.main_message_id || 0),
     mainMessageKind: row.main_message_kind || "",
     telegramImageStrategy: row.telegram_image_strategy || "",
@@ -1419,7 +1421,11 @@ export class UolTelegramShadow extends DurableObject {
                       NULLIF(card_image_url, ''), partner_image_url) <> ''
          AND (main_image_upgrade_next_attempt_at = ''
               OR main_image_upgrade_next_attempt_at <= ?)
-       ORDER BY first_seen_at ASC
+       ORDER BY CASE
+         WHEN discord_image_proxy_url <> '' THEN 0
+         WHEN discord_message_id <> '' THEN 1
+         ELSE 2
+       END, first_seen_at DESC
        LIMIT ?`,
       maxAttempts,
       now.toISOString(),
@@ -4618,7 +4624,8 @@ export class UolTelegramShadow extends DurableObject {
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
               main_message_id, main_message_kind, telegram_image_strategy,
               main_image_upgrade_attempts, main_image_upgrade_error,
-              discord_image_proxy_url, canal2_message_id,
+              discord_message_id, discord_sent_at, discord_image_proxy_url,
+              canal2_message_id,
               main_delivery_error, canal2_delivery_error,
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
@@ -5000,7 +5007,8 @@ export class UolTelegramShadow extends DurableObject {
               discard_reason, sold_out_at, main_sent_at, canal2_sent_at,
               main_message_id, main_message_kind, telegram_image_strategy,
               main_image_upgrade_attempts, main_image_upgrade_error,
-              discord_image_proxy_url, canal2_message_id,
+              discord_message_id, discord_sent_at, discord_image_proxy_url,
+              canal2_message_id,
               main_delivery_error, canal2_delivery_error,
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,

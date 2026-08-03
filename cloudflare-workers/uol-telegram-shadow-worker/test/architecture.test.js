@@ -69,6 +69,9 @@ test("lote tardio filtra imagem e backoff antes do limite", () => {
     const filterIndex = upgrade.indexOf(filter);
     assert.ok(filterIndex > 0 && filterIndex < limitIndex, `filtro tardio fora do SQL: ${filter}`);
   }
+  assert.match(upgrade, /WHEN discord_image_proxy_url <> '' THEN 0/);
+  assert.match(upgrade, /WHEN discord_message_id <> '' THEN 1/);
+  assert.match(upgrade, /first_seen_at DESC/);
   assert.match(upgrade, /discordImageProxyForOffer\(row, originalOffer\)/);
   assert.match(upgrade, /telegramImageRemoteStrategy:\s*"discord_proxy"/);
 });
