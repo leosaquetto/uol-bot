@@ -21,17 +21,17 @@ agenda coleta. Estado de produção exige verificação própria.
 3. o baseline impede o envio das ofertas existentes durante a implantação;
 4. aliases, validade e deduplicação são decididos e persistidos no SQLite antes
    de qualquer envio;
-5. novidades da API entram imediatamente no outbox durável e o canal principal
-   recebe texto + link/preview em uma única chamada ao Telegram, sem abrir página,
-   baixar imagem ou aguardar HTML;
+5. novidades da API entram imediatamente no outbox durável; o canal principal
+   tenta foto da própria API e aguarda no máximo 60 segundos, sem depender de
+   preview ou confirmação do HTML;
 6. em rajadas, o alarme crítico despacha os canais principais com concorrência
    limitada; outro Durable Object agenda canal 2, Discord e manutenção sem
    segurar a próxima consulta da API;
 7. as duas páginas HTML são reconciliadas a cada 60 segundos, ou imediatamente
    se a API falhar/voltar vazia; elas são fallback de descoberta e autoridade de
    esgotamento/reabertura, nunca confirmação prévia para publicar;
-8. se a API falhar, HTML registra título + link imediatamente no outbox; o
-   próximo polling principal envia esse fallback em texto, sem abrir detalhes;
+8. se nenhuma foto funcionar em 60 segundos, o canal principal recebe texto sem
+   preview; uma foto obtida depois converte a mesma mensagem em foto + legenda;
 9. campanhas elegíveis de ingressos são copiadas com `copyMessage` ao canal 2;
 10. o webhook do Telegram associa a cópia automática no grupo vinculado,
     reconcilia automaticamente um envio principal de resultado incerto e
@@ -53,8 +53,10 @@ agenda coleta. Estado de produção exige verificação própria.
   de edição entra em backoff; não cria aviso substituto sujeito a duplicata.
 - **Enriquecimento:** a API já entrega título, validade, descrição, imagem e
   link. Nada abre HTML de detalhe ou Browser Rendering antes/depois do envio.
-- **Imagem:** o canal principal sempre usa texto + preview numa única chamada
-  mutável. Discord mantém thumbnail no embed; canal 2 copia a mensagem pronta.
+- **Imagem:** o canal principal tenta `file_id`, URL e upload até o prazo absoluto
+  de 60 segundos. Depois envia texto sem preview. Foto tardia usa
+  `editMessageMedia` e conserva o mesmo `message_id`, com foto + legenda.
+  Discord mantém seu fluxo rápido com thumbnail; canal 2 copia a mensagem pronta.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
   respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
   repetidos em um retry parcial.
@@ -87,7 +89,7 @@ agenda coleta. Estado de produção exige verificação própria.
   erros comuns exigem três ciclos, e sua credencial técnica gera aviso 14 dias
   antes de expirar. Também são monitorados três scans quebrados, webhook
   pendente/incorreto e ingresso novo sem comentário após três minutos. Texto
-  urgente marcado como `text_fast` é entrega válida, não falha de imagem.
+  marcado como `text_timeout` entra na fila de atualização tardia de imagem.
   Incidentes são deduplicados por chave, têm cooldown de seis horas e ficam no
   SQLite com resolução registrada.
 - **Fontes:** mede por oferta se API ou HTML descobriu primeiro e a diferença em

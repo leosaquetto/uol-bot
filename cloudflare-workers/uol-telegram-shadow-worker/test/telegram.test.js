@@ -452,6 +452,19 @@ test("completa a legenda urgente depois do enriquecimento", async () => {
   assert.match(payload.caption, /detalhes completos nos comentários/);
 });
 
+test("edição de texto vencido continua sem preview", async () => {
+  let payload = {};
+  await editMainOfferMessage(env, {
+    messageId: 42,
+    messageKind: "text",
+    offer,
+  }, async (_url, init) => {
+    payload = JSON.parse(init.body);
+    return jsonResponse({ message_id: 42 });
+  });
+  assert.deepEqual(payload.link_preview_options, { is_disabled: true });
+});
+
 test("envia detalhe como resposta à discussão automática", async () => {
   let payload = {};
   const result = await sendDiscussionComment(

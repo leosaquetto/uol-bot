@@ -91,17 +91,6 @@ async function telegramRequest(url, init, method, fetchImpl) {
   }
 }
 
-function offerLinkPreview(offer) {
-  const url = String(offer?.link || "").trim();
-  if (!url) return { is_disabled: true };
-  return {
-    is_disabled: false,
-    url,
-    prefer_small_media: true,
-    show_above_text: true,
-  };
-}
-
 function telegramPhotoIdentity(result) {
   const photos = Array.isArray(result?.photo) ? result.photo : [];
   const largest = photos.at(-1) || {};
@@ -604,7 +593,7 @@ export async function editMainOfferMessage(
     await telegramCall(env, "editMessageText", {
       ...common,
       text: caption,
-      link_preview_options: offerLinkPreview(offer),
+      link_preview_options: { is_disabled: true },
     }, fetchImpl);
   }
   return { ok: true };
@@ -636,7 +625,7 @@ export async function editSoldOutMessage(
     await telegramCall(env, "editMessageText", {
       ...common,
       text: caption,
-      link_preview_options: offerLinkPreview(offer),
+      link_preview_options: { is_disabled: true },
     }, fetchImpl);
   }
 }

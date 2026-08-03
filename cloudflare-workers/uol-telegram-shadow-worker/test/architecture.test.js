@@ -67,6 +67,7 @@ test("telemetria frequente usa snapshots e observações limitadas", () => {
 test("configuração gratuita preserva polling rápido e limita manutenção e conexões", () => {
   assert.match(workerConfig, /"ALARM_INTERVAL_SECONDS":\s*"15"/);
   assert.match(workerConfig, /"MAINTENANCE_INTERVAL_SECONDS":\s*"60"/);
+  assert.match(workerConfig, /"MAIN_IMAGE_WAIT_SECONDS":\s*"60"/);
   assert.match(workerConfig, /"DELIVERY_CONCURRENCY":\s*"6"/);
 });
 

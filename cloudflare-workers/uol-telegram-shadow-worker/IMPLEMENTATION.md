@@ -56,8 +56,9 @@ reciclagem de uma instância aquecida após um deploy e permite contenção
 O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
 
 1. valida e grava a decisão no SQLite;
-2. usa um único `sendMessage` com link/preview, sem download/upload de imagem;
-3. persiste a confirmação do canal principal;
+2. tenta `file_id`, URL e upload da foto sem ultrapassar 60 segundos desde a
+   primeira detecção;
+3. envia texto sem preview somente quando o prazo expira e persiste a confirmação;
 4. despacha todos os principais da rajada com concorrência limitada;
 5. para ingressos elegíveis, usa `copyMessage` para o canal 2, criando uma
    mensagem independente e editável;
@@ -65,7 +66,9 @@ O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
 7. uma falha secundária não apaga o sucesso do canal principal;
 8. novas tentativas processam somente o destino ainda pendente.
 
-O canal principal usa texto + preview. Imagem não participa da entrega crítica.
+Se a foto aparecer depois do texto, `editMessageMedia` substitui o conteúdo da
+mesma mensagem por `InputMediaPhoto` com a legenda completa. O `message_id` é
+preservado e nenhuma segunda publicação é criada.
 
 As legendas utilizam HTML escapado, link canônico, validade, localização quando
 disponível e as hashtags relevantes. Campanhas de ingresso não são silenciosas.
@@ -323,7 +326,9 @@ exposta.
 
 - a API completa roda sozinha em todos os alarmes de 15 segundos;
 - uma novidade é validada, deduplicada e enviada antes de qualquer HTML;
-- a entrega principal usa texto + preview em uma única chamada mutável;
+- a entrega principal tenta foto imediatamente e espera no máximo 60 segundos;
+- após o prazo envia texto sem preview; foto tardia edita a mesma mensagem para
+  foto + legenda via `editMessageMedia`;
 - HTML geral e exclusivo reconciliam a cada 60 segundos, ou imediatamente se a
   API falhar/voltar vazia;
 - polling API e manutenção possuem Durable Objects e alarmes independentes;
@@ -344,7 +349,7 @@ exposta.
 - dead letters não criam head-of-line blocking e dependências impossíveis não
   ficam em backoff eterno;
 - reabertura restaura `partial_delivery` quando havia secundários pendentes;
-- schema local: v13;
+- schema local: v14;
 - não há Version ID nem recibo de produção nesta seção porque não houve commit,
   push ou deploy nesta revisão.
 
