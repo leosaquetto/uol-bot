@@ -201,6 +201,22 @@ test("adia texto enquanto prazo de imagem ainda está aberto", async () => {
   assert.equal(result.imageStrategy, "pending_image");
 });
 
+test("não inicia mutação de foto dentro da janela de reconciliação", async () => {
+  const calls = [];
+  const result = await sendMainOffer(env, {
+    ...offer,
+    deferTextFallback: true,
+    imageDeadlineAt: new Date(Date.now() + 30_000).toISOString(),
+    imageMutationDeadlineAt: new Date(Date.now() - 1_000).toISOString(),
+  }, async (url) => {
+    calls.push(url);
+    return jsonResponse({ message_id: 53 });
+  });
+
+  assert.deepEqual(calls, []);
+  assert.equal(result.deferred, true);
+});
+
 test("usa a imagem oficial do parceiro quando o detalhe não fornece thumbnail", async () => {
   let payload = {};
   const partnerImageUrl = "https://example.com/hot-park.jpg";

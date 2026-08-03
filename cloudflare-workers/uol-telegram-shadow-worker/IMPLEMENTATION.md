@@ -58,6 +58,7 @@ O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
 1. valida e grava a decisão no SQLite;
 2. tenta `file_id`, URL e upload da foto sem ultrapassar 60 segundos desde a
    primeira detecção;
+   mutações param 38 segundos antes para reservar timeout e reconciliação;
 3. envia texto sem preview somente quando o prazo expira e persiste a confirmação;
 4. despacha todos os principais da rajada com concorrência limitada;
 5. para ingressos elegíveis, usa `copyMessage` para o canal 2, criando uma

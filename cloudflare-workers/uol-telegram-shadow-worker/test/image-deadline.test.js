@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  deferredMainDeliveryState,
   imageDeadline,
   lateImageUpgradeDue,
   mainImageDeliveryOffer,
@@ -50,18 +51,20 @@ test("monta tentativa com foto antes do prazo e libera texto ao expirar", () => 
     firstSeenAt: "2026-08-03T12:00:00.000Z",
   };
   assert.deepEqual(
-    mainImageDeliveryOffer(offer, new Date("2026-08-03T12:00:45.000Z"), 60),
+    mainImageDeliveryOffer(offer, new Date("2026-08-03T12:00:45.000Z"), 60, 38),
     {
       ...offer,
       imageDeadlineAt: "2026-08-03T12:01:00.000Z",
+      imageMutationDeadlineAt: "2026-08-03T12:00:22.000Z",
       deferTextFallback: true,
     },
   );
   assert.deepEqual(
-    mainImageDeliveryOffer(offer, new Date("2026-08-03T12:01:00.000Z"), 60),
+    mainImageDeliveryOffer(offer, new Date("2026-08-03T12:01:00.000Z"), 60, 38),
     {
       ...offer,
       imageDeadlineAt: "2026-08-03T12:01:00.000Z",
+      imageMutationDeadlineAt: "2026-08-03T12:00:22.000Z",
       deferTextFallback: false,
     },
   );
@@ -85,4 +88,18 @@ test("só atualiza texto vencido quando foto existe e retry está liberado", () 
     main_image_upgrade_next_attempt_at: "2026-08-03T12:00:20.000Z",
   }, now, 10), false);
   assert.equal(lateImageUpgradeDue({ ...due, telegram_image_strategy: "remote_url" }, now, 10), false);
+});
+
+test("adiamento de foto preserva tentativas de entrega", () => {
+  assert.deepEqual(
+    deferredMainDeliveryState(
+      3,
+      "2026-08-03T12:01:00.000Z",
+      new Date("2026-08-03T12:00:45.000Z"),
+    ),
+    {
+      attempts: 3,
+      nextAttemptAt: "2026-08-03T12:00:46.000Z",
+    },
+  );
 });

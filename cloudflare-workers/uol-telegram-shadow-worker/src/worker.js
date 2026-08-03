@@ -37,6 +37,7 @@ import {
   sendMainOffer,
   sendDiscussionComment,
   sendOperationsAlert,
+  TELEGRAM_MUTATION_TIMEOUT_SECONDS,
   telegramConfiguration,
   registerTelegramWebhook,
   getTelegramWebhookInfo,
@@ -61,6 +62,7 @@ import {
 } from "./delivery-state.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
 import {
+  deferredMainDeliveryState,
   lateImageUpgradeDue,
   mainImageDeliveryOffer,
 } from "./image-deadline.js";
@@ -1023,9 +1025,14 @@ export class UolTelegramShadow extends DurableObject {
          AND main_message_kind = 'text'
          AND main_message_id > 0
          AND main_image_upgrade_attempts < ?
+         AND COALESCE(NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),
+                      NULLIF(card_image_url, ''), partner_image_url) <> ''
+         AND (main_image_upgrade_next_attempt_at = ''
+              OR main_image_upgrade_next_attempt_at <= ?)
        ORDER BY first_seen_at ASC
        LIMIT ?`,
       maxAttempts,
+      now.toISOString(),
       Math.max(1, Math.min(16, Number(limit || 4))),
     ).toArray().filter((row) => lateImageUpgradeDue(row, now, maxAttempts));
     let upgraded = 0;
@@ -2271,19 +2278,24 @@ export class UolTelegramShadow extends DurableObject {
             entry.telegramState.offer,
             new Date(),
             envNumber(this.env, "MAIN_IMAGE_WAIT_SECONDS", 60, 1, 300),
+            envNumber(this.env, "MAIN_AMBIGUOUS_RETRY_SECONDS", 30, 15, 300) +
+              TELEGRAM_MUTATION_TIMEOUT_SECONDS,
           )
         : { ...entry.telegramState.offer, deferTextFallback: false };
       try {
         const result = await sendMainOffer(this.env, mainOffer);
         if (result.deferred) {
-          const deadlineMs = Date.parse(mainOffer.imageDeadlineAt || "");
-          const nextAttemptMs = Number.isFinite(deadlineMs)
-            ? Math.min(deadlineMs, Date.now() + 1_000)
-            : Date.now() + 1_000;
+          const deferred = deferredMainDeliveryState(
+            target.attempts,
+            mainOffer.imageDeadlineAt,
+            new Date(),
+          );
           this.ctx.storage.sql.exec(
-            `UPDATE offers SET main_delivery_error = '', main_delivery_in_flight_at = '',
+            `UPDATE offers SET main_delivery_attempts = ?,
+               main_delivery_error = '', main_delivery_in_flight_at = '',
                main_delivery_next_attempt_at = ? WHERE id = ?`,
-            new Date(nextAttemptMs).toISOString(),
+            deferred.attempts,
+            deferred.nextAttemptAt,
             entry.row.id,
           );
           return;
@@ -3088,7 +3100,6 @@ export class UolTelegramShadow extends DurableObject {
       apiFastElapsedMs: 0,
       htmlReconciled: false,
       mainAmbiguousReleased: 0,
-      mainImagesUpgraded: 0,
       apiError: "",
       error: "",
     };
@@ -3194,9 +3205,6 @@ export class UolTelegramShadow extends DurableObject {
         run.deliveryFailed = delivered.failed;
         run.outcome = run.mainSent > 0 ? "telegram_delivered" : "api_degraded";
       }
-      const imageUpgrades = await this.upgradeTimedOutMainImages(new Date());
-      run.mainImagesUpgraded = imageUpgrades.upgraded;
-      run.deliveryFailed += imageUpgrades.failed;
       if (apiCards.length) {
         try {
           this.recordSourceCards("api", apiCards, apiLastSuccessAt);

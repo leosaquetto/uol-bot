@@ -26,6 +26,7 @@ test("polling crítico usa somente API e envio principal com prazo de imagem", (
   assert.doesNotMatch(scan, /ensureTelegramWebhook\(/);
   assert.doesNotMatch(scan, /processDiscussionComments\(/);
   assert.doesNotMatch(scan, /processSoldOutSync\(/);
+  assert.doesNotMatch(scan, /upgradeTimedOutMainImages\(/);
   assert.ok(
     scan.indexOf('recordSourceCards("api"') > scan.indexOf("processDeliveryQueue("),
     "telemetria de fonte deve rodar após a tentativa principal",
@@ -37,7 +38,25 @@ test("HTML e destinos secundários ficam isolados na manutenção", () => {
   const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
   assert.match(maintenance, /fetchListing\(/);
   assert.match(maintenance, /targetNames:\s*\["canal2",\s*"discord"\]/);
+  assert.match(maintenance, /upgradeTimedOutMainImages\(/);
   assert.doesNotMatch(maintenance, /targetNames:\s*\["main"\]/);
+});
+
+test("lote tardio filtra imagem e backoff antes do limite", () => {
+  const upgrade = methodSource(
+    "  async upgradeTimedOutMainImages(",
+    "  getImageDeliveryHealth(",
+  );
+  const limitIndex = upgrade.indexOf("LIMIT ?");
+  assert.ok(limitIndex > 0);
+  for (const filter of [
+    "COALESCE(NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),",
+    "main_image_upgrade_next_attempt_at = ''",
+    "main_image_upgrade_next_attempt_at <= ?",
+  ]) {
+    const filterIndex = upgrade.indexOf(filter);
+    assert.ok(filterIndex > 0 && filterIndex < limitIndex, `filtro tardio fora do SQL: ${filter}`);
+  }
 });
 
 test("telemetria frequente usa snapshots e observações limitadas", () => {

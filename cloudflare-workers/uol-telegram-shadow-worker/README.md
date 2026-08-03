@@ -54,7 +54,8 @@ agenda coleta. Estado de produção exige verificação própria.
 - **Enriquecimento:** a API já entrega título, validade, descrição, imagem e
   link. Nada abre HTML de detalhe ou Browser Rendering antes/depois do envio.
 - **Imagem:** o canal principal tenta `file_id`, URL e upload até o prazo absoluto
-  de 60 segundos. Depois envia texto sem preview. Foto tardia usa
+  de 60 segundos. Novas mutações param 38 segundos antes para reservar timeout
+  e reconciliação de resultado incerto. Depois envia texto sem preview. Foto tardia usa
   `editMessageMedia` e conserva o mesmo `message_id`, com foto + legenda.
   Discord mantém seu fluxo rápido com thumbnail; canal 2 copia a mensagem pronta.
 - **Discussão:** a publicação principal continua compacta e o texto completo é

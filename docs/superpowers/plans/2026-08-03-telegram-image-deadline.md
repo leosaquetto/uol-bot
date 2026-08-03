@@ -14,7 +14,9 @@
 - Nenhum preview de link.
 - Discord sem alterações.
 - Nenhuma dependência, fila ou custo adicional.
-- Resultado ambíguo nunca cria segunda postagem.
+- Mutações param 38 segundos antes do prazo para reservar 8 segundos de timeout
+  e 30 segundos de reconciliação; sem confirmação, o fallback pode gerar a
+  duplicata rara já aceita pelo contrato operacional.
 
 ---
 
@@ -81,7 +83,7 @@ Expected: FAIL because deferral/edit API is absent.
 
 - [ ] **Step 3: Implement minimal Telegram behavior**
 
-Reuse caption and image ordering. `editMessageMedia` sends `InputMediaPhoto` with `caption`, `parse_mode: "HTML"`; URL/`file_id` uses JSON and upload uses multipart `attach://photo`. Clamp every image request timeout to `offer.imageDeadlineAt - Date.now()` so network work cannot cross the absolute deadline. Timeout text uses `link_preview_options: { is_disabled: true }` and strategy `text_timeout`.
+Reuse caption and image ordering. `editMessageMedia` sends `InputMediaPhoto` with `caption`, `parse_mode: "HTML"`; URL/`file_id` uses JSON and upload uses multipart `attach://photo`. Clamp every image request timeout to the mutation deadline, 38 seconds before the text deadline. Timeout text uses `link_preview_options: { is_disabled: true }` and strategy `text_timeout`.
 
 - [ ] **Step 4: Run GREEN**
 

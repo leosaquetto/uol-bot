@@ -21,12 +21,16 @@ Discord permanece sem alterações.
 - Texto enviado por prazo recebe estratégia `text_timeout`.
 - Tentativas tardias guardam contador, próximo horário e erro sanitizado.
 - Sucesso tardio muda `main_message_kind` para `photo` e registra estratégia/cache da imagem.
-- Resultados ambíguos não geram nova postagem. A reconciliação continua sobre o mesmo `message_id`.
+- Mutações de foto param 38 segundos antes do prazo: 8 segundos de timeout e
+  30 segundos para o webhook reconciliar resultado ambíguo.
+- Sem confirmação após essa janela, o contrato operacional existente prioriza
+  não perder a oferta e aceita duplicata rara no fallback textual.
 
 ## Falhas
 
 - Falha de foto antes do prazo mantém oferta pendente.
 - Após 60 segundos, falha de foto nunca impede o texto.
+- Resultado ambíguo usa primeiro a janela de reconciliação do webhook.
 - Falha de `editMessageMedia` mantém o texto e agenda nova tentativa com backoff e limite.
 - Nenhum preview de link participa do fluxo.
 

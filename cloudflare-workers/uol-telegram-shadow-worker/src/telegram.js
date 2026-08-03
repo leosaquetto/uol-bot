@@ -10,7 +10,8 @@ import {
   shouldDeferTransportFallback,
 } from "./transport-error.js";
 
-const TELEGRAM_TIMEOUT_MS = 8_000;
+export const TELEGRAM_MUTATION_TIMEOUT_SECONDS = 8;
+const TELEGRAM_TIMEOUT_MS = TELEGRAM_MUTATION_TIMEOUT_SECONDS * 1_000;
 const IMAGE_FETCH_TIMEOUT_MS = 6_000;
 const MAX_UPLOAD_IMAGE_BYTES = 8 * 1024 * 1024;
 
@@ -290,6 +291,9 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   });
   const disableNotification = false;
   const imageDeadlineAt = String(offer?.imageDeadlineAt || "").trim();
+  const imageMutationDeadlineAt = String(
+    offer?.imageMutationDeadlineAt || imageDeadlineAt,
+  ).trim();
   // Some ordinary benefits expose only the partner artwork in the listing and
   // the detail page may transiently reject Worker-origin requests. A verified
   // partner image is preferable to silently degrading the alert to text.
@@ -308,7 +312,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     : "remote_url";
   const imageAttempts = [];
 
-  if (cachedPhotoFileId && strategyEnabled.file_id && deadlineOpen(imageDeadlineAt)) {
+  if (cachedPhotoFileId && strategyEnabled.file_id && deadlineOpen(imageMutationDeadlineAt)) {
     try {
       const result = await telegramCall(env, "sendPhoto", {
         chat_id: mainChatId,
@@ -316,7 +320,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         caption,
         parse_mode: "HTML",
         disable_notification: disableNotification,
-      }, fetchImpl, deadlineTimeoutMs(imageDeadlineAt, TELEGRAM_TIMEOUT_MS));
+      }, fetchImpl, deadlineTimeoutMs(imageMutationDeadlineAt, TELEGRAM_TIMEOUT_MS));
       imageAttempts.push({ strategy: "file_id", ok: true, error: "" });
       return {
         messageId: Number(result?.message_id || 0),
@@ -336,8 +340,8 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   }
 
   let imageError = "";
-  if (imageUrl && deadlineOpen(imageDeadlineAt)) {
-    if (strategyEnabled[remoteStrategy] && deadlineOpen(imageDeadlineAt)) {
+  if (imageUrl && deadlineOpen(imageMutationDeadlineAt)) {
+    if (strategyEnabled[remoteStrategy] && deadlineOpen(imageMutationDeadlineAt)) {
       try {
         const result = await telegramCall(env, "sendPhoto", {
           chat_id: mainChatId,
@@ -345,7 +349,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           caption,
           parse_mode: "HTML",
           disable_notification: disableNotification,
-        }, fetchImpl, deadlineTimeoutMs(imageDeadlineAt, TELEGRAM_TIMEOUT_MS));
+        }, fetchImpl, deadlineTimeoutMs(imageMutationDeadlineAt, TELEGRAM_TIMEOUT_MS));
         imageAttempts.push({ strategy: remoteStrategy, ok: true, error: "" });
         return {
           messageId: Number(result?.message_id || 0),
@@ -360,14 +364,14 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         imageAttempts.push({ strategy: remoteStrategy, ok: false, error: imageError });
       }
     }
-    if (strategyEnabled.upload && deadlineOpen(imageDeadlineAt)) {
+    if (strategyEnabled.upload && deadlineOpen(imageMutationDeadlineAt)) {
       try {
         const result = await uploadTelegramPhoto(env, {
           chatId: mainChatId,
           imageUrl,
           caption,
           disableNotification,
-          imageDeadlineAt,
+          imageDeadlineAt: imageMutationDeadlineAt,
         }, fetchImpl);
         imageAttempts.push({ strategy: "upload", ok: true, error: "" });
         return {
