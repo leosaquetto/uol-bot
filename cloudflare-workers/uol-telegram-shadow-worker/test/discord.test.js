@@ -38,6 +38,23 @@ test("mantém o formato aprovado do Discord com thumbnail", () => {
   assert.equal(payload.username, "Clube UOL");
 });
 
+test("separa a descrição do ingresso em blocos semânticos", () => {
+  const payload = buildDiscordPayload({
+    ...offer,
+    description: "Assinante UOL, resgate seu par. Data: 08 de Agosto de 2026, às 18h Local: Teatro Bradesco - SP. Importante: sujeito a estoque. REGRAS DE RESGATE: Promoção válida por tempo limitado. Atenção, Assinante UOL! A venda é proibida.",
+  });
+  const description = payload.embeds[0].description;
+
+  assert.match(description, /Clube UOL\.\n\nAssinante UOL/);
+  assert.match(description, /par\.\n\nData:/);
+  assert.match(description, /2026, às 18h\n\nLocal:/);
+  assert.match(description, /SP\.\n\nImportante:/);
+  assert.match(description, /estoque\.\n\nREGRAS DE RESGATE:/);
+  assert.match(description, /limitado\.\n\nAtenção, Assinante UOL!/);
+  assert.equal(payload.embeds[0].image.url, offer.cardImageUrl);
+  assert.equal(payload.embeds[0].fields.at(-1).value, offer.link);
+});
+
 test("envia pelo webhook consolidado e confirma o ID", async () => {
   const env = { DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/123/token" };
   assert.equal(discordConfiguration(env).configured, true);

@@ -7,8 +7,40 @@ import {
 
 const DISCORD_TIMEOUT_MS = 10_000;
 
+const DISCORD_SECTION_LABELS = [
+  "Atenção, Assinante UOL",
+  "REGRAS DE RESGATE",
+  "Data do Show",
+  "Importante",
+  "Local",
+  "Data",
+];
+
+const DISCORD_SECTION_PATTERN = DISCORD_SECTION_LABELS
+  .sort((a, b) => b.length - a.length)
+  .map((label) => label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+  .join("|");
+
 function boundedDiscordText(value, maxLength) {
   const text = cleanText(value);
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
+function formatDiscordDescription(value) {
+  const text = cleanText(value);
+  if (!text) return "";
+  return text
+    .replace(
+      new RegExp(`\\s+(${DISCORD_SECTION_PATTERN})(?=\\s*[!:])`, "gi"),
+      "\n\n$1",
+    )
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function boundedDiscordDescription(value, maxLength) {
+  const text = formatDiscordDescription(value);
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength - 1).trimEnd()}…`;
 }
@@ -50,7 +82,9 @@ export function buildDiscordPayload(offer, { soldOutAt = "" } = {}) {
     : ticket
       ? "🎟️ Novo benefício na categoria de ingressos do Clube UOL."
       : "✨ Novo benefício disponível no Clube UOL.";
-  const summary = boundedDiscordText(offer?.description, 1_200);
+  const summary = ticket
+    ? boundedDiscordDescription(offer?.description, 1_200)
+    : boundedDiscordText(offer?.description, 1_200);
   const embed = {
     title: decoratedTitle,
     url: link,
