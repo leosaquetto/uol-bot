@@ -3828,7 +3828,8 @@ export class UolTelegramShadow extends DurableObject {
     if (!budget.allowed) return empty;
     const maxAttempts = envNumber(this.env, "TICKET_SOLD_OUT_PROBE_MAX_ATTEMPTS", 2, 2, 2);
     const rows = this.sqlExec(
-      `SELECT o.*, s.next_at AS ticket_probe_next_at,
+      `SELECT o.id, o.link, o.status, o.sold_out_at,
+              s.next_at AS ticket_probe_next_at,
               s.last_at AS ticket_probe_last_at,
               s.last_result AS ticket_probe_last_result,
               s.gone_count AS ticket_probe_gone_count,
