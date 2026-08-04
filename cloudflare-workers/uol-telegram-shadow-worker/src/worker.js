@@ -2156,7 +2156,8 @@ export class UolTelegramShadow extends DurableObject {
              canal2_sold_out_synced_at = '' AND canal2_sold_out_attempts >= ?)
          )) OR
          (comment_sent_at = '' AND discussion_message_id > 0 AND
-           comment_delivery_attempts >= ?)
+           comment_delivery_attempts >= ? AND
+           comment_delivery_error <> 'historical_unknown_closed')
        ORDER BY first_seen_at ASC
        LIMIT 20`,
       maxAttempts,
@@ -2166,7 +2167,8 @@ export class UolTelegramShadow extends DurableObject {
       maxAttempts,
     ).toArray().map((row) => {
       if (!row.comment_sent_at && Number(row.discussion_message_id || 0) > 0 &&
-          Number(row.comment_delivery_attempts || 0) >= maxAttempts) {
+          Number(row.comment_delivery_attempts || 0) >= maxAttempts &&
+          row.comment_delivery_error !== "historical_unknown_closed") {
         return {
           id: row.id,
           title: row.title,
@@ -5516,8 +5518,11 @@ export class UolTelegramShadow extends DurableObject {
     if (!["main", "canal2", "discord", "comment"].includes(normalizedTarget)) {
       throw new Error("delivery_resolution_target_invalid");
     }
-    if (!["sent", "not_sent"].includes(normalizedOutcome)) {
+    if (!["sent", "not_sent", "closed"].includes(normalizedOutcome)) {
       throw new Error("delivery_resolution_outcome_invalid");
+    }
+    if (normalizedOutcome === "closed" && normalizedTarget !== "comment") {
+      throw new Error("delivery_resolution_closed_comment_only");
     }
     const row = this.sqlExec(
       "SELECT * FROM offers WHERE id = ? LIMIT 1",
@@ -5534,7 +5539,27 @@ export class UolTelegramShadow extends DurableObject {
     const resolvedAt = new Date().toISOString();
 
     if (normalizedTarget === "comment") {
-      if (normalizedOutcome === "sent") {
+      if (normalizedOutcome === "closed") {
+        const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+        this.sqlExec(
+          `UPDATE offers SET comment_delivery_attempts = ?,
+             comment_delivery_error = 'historical_unknown_closed',
+             comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = '',
+             comment_delivery_unknown_at = '' WHERE id = ?`,
+          maxAttempts,
+          row.id,
+        );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "comment",
+          operation: "comment",
+          state: "closed",
+          attempt: maxAttempts,
+          generation: row.delivery_generation,
+          occurredAt: resolvedAt,
+          error: "historical_unknown_closed",
+        });
+      } else if (normalizedOutcome === "sent") {
         const suppliedIds = (Array.isArray(payload?.messageIds) ? payload.messageIds : [])
           .map(Number).filter((value) => Number.isInteger(value) && value > 0);
         if (!suppliedIds.length) throw new Error("delivery_resolution_message_ids_required");
@@ -5774,7 +5799,10 @@ export class UolTelegramShadow extends DurableObject {
         SUM(CASE WHEN status = 'restocked_pending_sync' THEN 1 ELSE 0 END) AS restock_pending,
         SUM(CASE WHEN status IN ('shadow_sold_out', 'sold_out') THEN 1 ELSE 0 END) AS sold_out,
         SUM(CASE WHEN main_delivery_error <> '' OR canal2_delivery_error <> ''
-                  OR discord_delivery_error <> '' OR comment_delivery_error <> '' THEN 1 ELSE 0 END)
+                  OR discord_delivery_error <> '' OR (
+                    comment_delivery_error <> '' AND
+                    comment_delivery_error <> 'historical_unknown_closed'
+                  ) THEN 1 ELSE 0 END)
           AS delivery_errors
        FROM offers`,
     ).one();
@@ -6107,7 +6135,8 @@ export class UolTelegramShadow extends DurableObject {
            ) THEN 1 ELSE 0 END) AS sold_out_dead_letter,
          SUM(CASE WHEN
            comment_sent_at = '' AND discussion_message_id > 0 AND
-           comment_delivery_attempts >= ?
+           comment_delivery_attempts >= ? AND
+           comment_delivery_error <> 'historical_unknown_closed'
            THEN 1 ELSE 0 END) AS comment_dead_letter
        FROM offers`,
       maxAttempts,

@@ -158,6 +158,11 @@ Na promoção:
   `uol-telegram-cloudflare-worker-admin-token`;
 - logs contêm somente eventos, contagens e erros sanitizados.
 
+Um `unknown` histórico de comentário pode ser encerrado administrativamente
+com `closed`: o registro fica fora da fila, não é reenviado e não altera a
+entrega principal, o Canal 2 ou o Discord. Esse resultado não é aceito para
+destinos de oferta.
+
 ## Validação
 
 - testes unitários de coleta, deduplicação, validade e filtros;

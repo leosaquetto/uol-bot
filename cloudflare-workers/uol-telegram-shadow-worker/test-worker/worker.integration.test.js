@@ -241,6 +241,63 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("encerra unknown histórico de comentário sem reencaminhar a oferta", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("historical-comment-unknown");
+
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.setMetadata("delivery_mode_override", "live");
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, first_seen_at, last_seen_at, status,
+           discussion_message_id, comment_delivery_attempts,
+           comment_delivery_unknown_at, delivery_generation
+         ) VALUES (?, ?, ?, ?, ?, 'sold_out', ?, 1, ?, 1)`,
+        "historical-comment-unknown-1",
+        "https://clube.uol.com.br/beneficios/historical-comment-unknown-1",
+        "Oferta histórica",
+        "2026-08-04T18:00:00.000Z",
+        "2026-08-04T18:00:00.000Z",
+        6172,
+        "2026-08-04T18:37:30.293Z",
+      );
+
+      const resolved = instance.resolveDeliveryUnknown(
+        "historical-comment-unknown-1",
+        "comment",
+        "closed",
+      );
+      expect(resolved).toMatchObject({
+        ok: true,
+        target: "comment",
+        outcome: "closed",
+      });
+      const row = state.storage.sql.exec(
+        `SELECT status, comment_delivery_attempts, comment_delivery_error,
+                comment_delivery_unknown_at, comment_delivery_in_flight_at,
+                comment_delivery_next_attempt_at
+         FROM offers WHERE id = ?`,
+        "historical-comment-unknown-1",
+      ).one();
+      expect(row).toMatchObject({
+        status: "sold_out",
+        comment_delivery_attempts: 10,
+        comment_delivery_error: "historical_unknown_closed",
+        comment_delivery_unknown_at: "",
+        comment_delivery_in_flight_at: "",
+        comment_delivery_next_attempt_at: "",
+      });
+      expect(await instance.processDiscussionComments(2)).toEqual({ sent: 0, failed: 0 });
+      expect(instance.deliveryQueueIssues().some(
+        (issue) => issue.id === "historical-comment-unknown-1",
+      )).toBe(false);
+      expect(Number(state.storage.sql.exec(
+        `SELECT COUNT(*) AS count FROM delivery_events
+         WHERE offer_id = ? AND operation = 'comment' AND state = 'closed'`,
+        "historical-comment-unknown-1",
+      ).one().count)).toBe(1);
+    });
+  });
+
   it("reproduz duas sondas rápidas de ingresso pelo método de produção", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("ticket-probe-replay");
     await runInDurableObject(stub, async (instance, state) => {
