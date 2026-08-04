@@ -55,6 +55,30 @@ test("separa a descrição do ingresso em blocos semânticos", () => {
   assert.equal(payload.embeds[0].fields.at(-1).value, offer.link);
 });
 
+test("trunca o embed com reticências ASCII dentro do limite combinado", () => {
+  const payload = buildDiscordPayload({
+    ...offer,
+    title: "T".repeat(500),
+    description: "D".repeat(5_000),
+    validity: "V".repeat(2_000),
+    partnerName: "P".repeat(500),
+    category: "C".repeat(500),
+  });
+  const embed = payload.embeds[0];
+  const textLength = [
+    embed.title,
+    embed.description,
+    embed.footer?.text,
+    ...(embed.fields || []).flatMap((field) => [field.name, field.value]),
+  ].join("").length;
+
+  assert.equal(embed.title.length, 240);
+  assert.equal(embed.title.endsWith("..."), true);
+  assert.equal(embed.description.endsWith("..."), true);
+  assert.ok(embed.description.length <= 1_200 + 80);
+  assert.ok(textLength < 6_000);
+});
+
 test("envia pelo webhook consolidado e confirma o ID", async () => {
   const env = { DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/123/token" };
   assert.equal(discordConfiguration(env).configured, true);

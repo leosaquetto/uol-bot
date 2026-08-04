@@ -6,6 +6,15 @@ import {
 } from "./transport-error.js";
 
 const DISCORD_TIMEOUT_MS = 10_000;
+const DISCORD_TRUNCATION_SUFFIX = "...";
+const DISCORD_EMBED_LIMITS = Object.freeze({
+  title: 240,
+  description: 1_200,
+  validity: 500,
+  partner: 250,
+  category: 250,
+  url: 1_000,
+});
 
 const DISCORD_SECTION_LABELS = [
   "Atenção, Assinante UOL",
@@ -24,7 +33,8 @@ const DISCORD_SECTION_PATTERN = DISCORD_SECTION_LABELS
 function boundedDiscordText(value, maxLength) {
   const text = cleanText(value);
   if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+  const prefixLength = Math.max(0, maxLength - DISCORD_TRUNCATION_SUFFIX.length);
+  return `${text.slice(0, prefixLength).trimEnd()}${DISCORD_TRUNCATION_SUFFIX}`;
 }
 
 function formatDiscordDescription(value) {
@@ -42,7 +52,8 @@ function formatDiscordDescription(value) {
 function boundedDiscordDescription(value, maxLength) {
   const text = formatDiscordDescription(value);
   if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+  const prefixLength = Math.max(0, maxLength - DISCORD_TRUNCATION_SUFFIX.length);
+  return `${text.slice(0, prefixLength).trimEnd()}${DISCORD_TRUNCATION_SUFFIX}`;
 }
 
 function discordOfferFields(offer, link) {
@@ -51,10 +62,10 @@ function discordOfferFields(offer, link) {
     const text = boundedDiscordText(value, maxLength);
     if (text) fields.push({ name, value: text, inline });
   };
-  addField("Validade", offer?.validity, 500);
-  addField("Parceiro", offer?.partnerName, 250, true);
-  addField("Categoria", offer?.category, 250, true);
-  addField("URL da oferta", link, 1_000);
+  addField("Validade", offer?.validity, DISCORD_EMBED_LIMITS.validity);
+  addField("Parceiro", offer?.partnerName, DISCORD_EMBED_LIMITS.partner, true);
+  addField("Categoria", offer?.category, DISCORD_EMBED_LIMITS.category, true);
+  addField("URL da oferta", link, DISCORD_EMBED_LIMITS.url);
   return fields;
 }
 
@@ -70,7 +81,7 @@ export function discordConfiguration(env) {
 export function buildDiscordPayload(offer, { soldOutAt = "" } = {}) {
   const title = boundedDiscordText(
     offer?.title || offer?.previewTitle || "Novo benefício do Clube UOL",
-    240,
+    DISCORD_EMBED_LIMITS.title,
   );
   const link = String(offer?.link || "").trim();
   const imageUrl = String(offer?.imageUrl || offer?.cardImageUrl || "").trim();
@@ -83,8 +94,8 @@ export function buildDiscordPayload(offer, { soldOutAt = "" } = {}) {
       ? "🎟️ Novo benefício na categoria de ingressos do Clube UOL."
       : "✨ Novo benefício disponível no Clube UOL.";
   const summary = ticket
-    ? boundedDiscordDescription(offer?.description, 1_200)
-    : boundedDiscordText(offer?.description, 1_200);
+    ? boundedDiscordDescription(offer?.description, DISCORD_EMBED_LIMITS.description)
+    : boundedDiscordText(offer?.description, DISCORD_EMBED_LIMITS.description);
   const embed = {
     title: decoratedTitle,
     url: link,
