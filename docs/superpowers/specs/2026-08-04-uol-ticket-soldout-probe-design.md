@@ -12,6 +12,11 @@ O escopo fica limitado a ofertas cuja identidade é uma campanha de ingresso
 (`/campanhasdeingresso/`). Ofertas de outras categorias continuam usando a
 confirmação de ausência da manutenção.
 
+Quando o esgotamento for confirmado, Telegram e Discord devem mostrar o
+horário no fuso de São Paulo e, logo abaixo, a duração entre a primeira
+observação/publicação da oferta e o horário de esgotamento. Se algum timestamp
+for inválido, a duração é omitida sem bloquear a edição.
+
 ## Contexto atual
 
 - O alarme primário consulta a API a cada aproximadamente 15 segundos e envia
@@ -67,6 +72,17 @@ idempotente e executa a sincronização das mensagens existentes:
 - edição do Canal 2 quando houver mensagem;
 - edição do card correspondente no Discord quando houver mensagem.
 
+O status visível nos dois canais terá o mesmo conteúdo lógico:
+
+```text
+❌ Oferta esgotada às 15:33.
+⏱️ Ficou no ar por 6 min.
+```
+
+O horário usa `America/Sao_Paulo`; a duração usa `first_seen_at` como início e
+`sold_out_at` como fim, com formato legível em minutos/horas. O Discord também
+mantém seu timestamp nativo para ordenação/visualização.
+
 O estado é gravado antes/depois de cada destino para que uma repetição não
 duplique envio. Falhas ambíguas continuam em estado desconhecido e não geram
 uma nova mensagem automaticamente.
@@ -101,6 +117,8 @@ Serão adicionados testes para:
 - exigência de duas confirmações e reset após resposta inconclusiva;
 - exclusão de ofertas comuns da fila;
 - idempotência da transição para `sold_out` e das edições dos três destinos;
+- horário e duração iguais no Telegram e no Discord, incluindo timestamps
+  inválidos sem falha;
 - limite diário da lane crítica e fallback quando a reserva estiver ativa;
 - migração/índice e bundle/types do Worker.
 
