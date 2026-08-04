@@ -1,4 +1,9 @@
-import { cleanText, isTicketCampaign } from "./core.js";
+import {
+  cleanText,
+  formatOfferDuration,
+  formatOfferTime,
+  isTicketCampaign,
+} from "./core.js";
 import {
   createAmbiguousResponseTransportError,
   createHttpTransportError,
@@ -78,7 +83,10 @@ export function discordConfiguration(env) {
   };
 }
 
-export function buildDiscordPayload(offer, { soldOutAt = "" } = {}) {
+export function buildDiscordPayload(
+  offer,
+  { soldOutAt = "", publishedAt = "" } = {},
+) {
   const title = boundedDiscordText(
     offer?.title || offer?.previewTitle || "Novo benefício do Clube UOL",
     DISCORD_EMBED_LIMITS.title,
@@ -88,8 +96,18 @@ export function buildDiscordPayload(offer, { soldOutAt = "" } = {}) {
   const soldOut = Boolean(String(soldOutAt || "").trim());
   const ticket = isTicketCampaign(offer);
   const decoratedTitle = soldOut ? `[ESGOTADO] ${title}` : title;
+  const soldOutTime = soldOut ? formatOfferTime(soldOutAt) : "";
+  const soldOutDuration = soldOut
+    ? formatOfferDuration(
+      publishedAt || offer?.firstSeenAt || offer?.first_seen_at,
+      soldOutAt,
+    )
+    : "";
   const statusDescription = soldOut
-    ? "❌ Esta oferta não está mais disponível no Clube UOL."
+    ? [
+      `❌ Oferta esgotada às ${soldOutTime}.`,
+      soldOutDuration ? `⏱️ Ficou no ar por ${soldOutDuration}.` : "",
+    ].filter(Boolean).join("\n")
     : ticket
       ? "🎟️ Novo benefício na categoria de ingressos do Clube UOL."
       : "✨ Novo benefício disponível no Clube UOL.";
@@ -208,7 +226,7 @@ export async function cacheDiscordOfferImage(env, offer, fetchImpl = fetch) {
 
 export async function editDiscordOffer(
   env,
-  { messageId, offer, soldOutAt = "", webhookUrl = "" },
+  { messageId, offer, soldOutAt = "", publishedAt = "", webhookUrl = "" },
   fetchImpl = fetch,
 ) {
   const resolvedWebhookUrl = String(webhookUrl || env.DISCORD_WEBHOOK_URL || "").trim();
@@ -217,7 +235,10 @@ export async function editDiscordOffer(
   const url = new URL(resolvedWebhookUrl);
   url.pathname = `${url.pathname.replace(/\/+$/, "")}/messages/${encodeURIComponent(messageId)}`;
   url.search = "";
-  const { username: _username, ...payload } = buildDiscordPayload(offer, { soldOutAt });
+  const { username: _username, ...payload } = buildDiscordPayload(offer, {
+    soldOutAt,
+    publishedAt,
+  });
   const response = await discordRequest(url.href, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

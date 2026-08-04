@@ -656,7 +656,7 @@ export function extractLocationSummary(description) {
   return candidate.slice(0, 157).replace(/\s+\S*$/, "") + "…";
 }
 
-function formatSoldOutTime(value) {
+export function formatOfferTime(value) {
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return cleanText(value);
   return new Intl.DateTimeFormat("pt-BR", {
@@ -665,6 +665,22 @@ function formatSoldOutTime(value) {
     minute: "2-digit",
     hour12: false,
   }).format(date);
+}
+
+export function formatOfferDuration(startValue, endValue) {
+  const start = startValue instanceof Date ? startValue : new Date(startValue);
+  const end = endValue instanceof Date ? endValue : new Date(endValue);
+  const elapsedMs = end.getTime() - start.getTime();
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || elapsedMs < 0) return "";
+  const minutes = Math.floor(elapsedMs / 60_000);
+  if (minutes < 1) return "menos de 1 min";
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  if (hours < 24) return `${hours}h${remainingMinutes ? ` ${remainingMinutes}min` : ""}`;
+  const days = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+  return `${days}d${remainingHours ? ` ${remainingHours}h` : ""}`;
 }
 
 export function buildTelegramCaption(offer, options = {}) {
@@ -684,7 +700,14 @@ export function buildTelegramCaption(offer, options = {}) {
   if (tags.length) lines.push(escapeHtml(tags.join(" ")));
   if (location) lines.push(`📍 ${escapeHtml(location)}`);
   if (validity) lines.push(`📅 ${escapeHtml(validity.endsWith(".") ? validity : `${validity}.`)}`);
-  if (soldOutAt) lines.push(`❌ Oferta esgotada às ${escapeHtml(formatSoldOutTime(soldOutAt))}.`);
+  if (soldOutAt) {
+    lines.push(`❌ Oferta esgotada às ${escapeHtml(formatOfferTime(soldOutAt))}.`);
+    const duration = formatOfferDuration(
+      options.publishedAt || offer?.firstSeenAt || offer?.first_seen_at,
+      soldOutAt,
+    );
+    if (duration) lines.push(`⏱️ Ficou no ar por ${escapeHtml(duration)}.`);
+  }
   if (link) lines.push(`🔗 ${escapeHtml(link)}`);
   if (options.commentsEnabled && !soldOutAt) {
     lines.push("💬 Veja os detalhes completos nos comentários.");

@@ -11,6 +11,7 @@ import {
   evaluateDetailQuality,
   extractValidity,
   estimateDailyRowWrites,
+  formatOfferDuration,
   normalizeOfferId,
   observationFreshnessMinutes,
   offerIdentityKeys,
@@ -337,12 +338,30 @@ test("preserva endereço com abreviação pontuada", () => {
 
 test("gera edição de esgotamento sem perder o link", () => {
   const caption = buildTelegramCaption(showOffer, {
+    publishedAt: "2026-07-30T12:28:00Z",
     soldOutAt: "2026-07-30T12:34:00Z",
   });
   assert.match(caption, /\[ESGOTADO\]/);
   assert.match(caption, /<s>/);
   assert.match(caption, /Oferta esgotada às 09:34/);
+  assert.match(caption, /Ficou no ar por 6 min/);
   assert.match(caption, /https:\/\/clube\.uol\.com\.br/);
+});
+
+test("formata duração curta, longa e inválida sem bloquear a edição", () => {
+  assert.equal(
+    formatOfferDuration("2026-07-30T12:00:00Z", "2026-07-30T12:00:20Z"),
+    "menos de 1 min",
+  );
+  assert.equal(
+    formatOfferDuration("2026-07-30T12:00:00Z", "2026-07-30T13:12:00Z"),
+    "1h 12min",
+  );
+  assert.equal(
+    formatOfferDuration("2026-07-30T12:00:00Z", "2026-08-01T14:00:00Z"),
+    "2d 2h",
+  );
+  assert.equal(formatOfferDuration("invalido", "2026-07-30T12:00:00Z"), "");
 });
 
 test("formata e divide o histórico completo para a discussão", () => {

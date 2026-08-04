@@ -3418,6 +3418,7 @@ export class UolTelegramShadow extends DurableObject {
       `SELECT o.id, o.link, o.preview_title, o.title, o.category,
               o.partner_name, o.validity, o.description,
               o.card_image_url, o.partner_image_url, o.image_url,
+              o.first_seen_at,
               o.discord_image_proxy_url, o.discord_message_id,
               o.discord_image_cache_message_id, o.status, o.sold_out_at, o.restocked_at,
               COALESCE(d.sold_out_synced_at, '') AS discord_sold_out_synced_at,

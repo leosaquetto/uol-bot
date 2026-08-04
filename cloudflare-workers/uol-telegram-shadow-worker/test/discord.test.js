@@ -151,6 +151,7 @@ test("edita a mensagem do webhook para informar esgotamento", async () => {
     messageId: "discord-1",
     offer,
     soldOutAt: "2026-08-03T20:00:00.000Z",
+    publishedAt: "2026-08-03T19:54:00.000Z",
   }, async (url, init) => {
     assert.equal(url, "https://discord.com/api/webhooks/123/token/messages/discord-1");
     assert.equal(init.method, "PATCH");
@@ -162,7 +163,8 @@ test("edita a mensagem do webhook para informar esgotamento", async () => {
   assert.equal(result.messageId, "discord-1");
   assert.equal(payload.username, undefined);
   assert.match(payload.content, /\[ESGOTADO\]/);
-  assert.match(payload.embeds[0].description, /não está mais disponível/);
+  assert.match(payload.embeds[0].description, /Oferta esgotada às 17:00/);
+  assert.match(payload.embeds[0].description, /Ficou no ar por 6 min/);
   assert.deepEqual(payload.allowed_mentions, { parse: [] });
 });
 
