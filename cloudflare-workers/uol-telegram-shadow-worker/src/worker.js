@@ -76,6 +76,11 @@ import {
   lateImageUpgradeDue,
   mainImageDeliveryOffer,
 } from "./image-deadline.js";
+import {
+  nextTicketProbeState,
+  probeTicketOfferUrl,
+  ticketProbeBudget,
+} from "./ticket-soldout-probe.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
@@ -1073,7 +1078,7 @@ export class UolTelegramShadow extends DurableObject {
           AND sold_out_at = ''
           AND main_sent_at <> ''
           AND link LIKE '%/campanhasdeingresso/%'
-          AND first_seen_at >= datetime('now', '-1 day')
+          AND first_seen_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-1 day')
           AND ticket_probe_next_at = '';
         CREATE INDEX IF NOT EXISTS offers_ticket_probe_idx
           ON offers(status, ticket_probe_next_at, ticket_probe_attempts, first_seen_at);
@@ -3175,7 +3180,7 @@ export class UolTelegramShadow extends DurableObject {
     return matched;
   }
 
-  async processSoldOutSync(now) {
+  async processSoldOutSync(now, { onlyIds = [] } = {}) {
     if (this.currentDeliveryMode() !== "live") {
       return { mainEdited: 0, canal2Edited: 0, failed: 0 };
     }
@@ -3186,6 +3191,10 @@ export class UolTelegramShadow extends DurableObject {
       discordConfiguration(this.env),
     );
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const selectedIds = [...new Set(onlyIds)].filter(Boolean).slice(0, 16);
+    const onlyIdsClause = selectedIds.length
+      ? `AND id IN (${selectedIds.map(() => "?").join(", ")})`
+      : "";
     const rows = this.sqlExec(
       `SELECT *
        FROM offers
@@ -3207,12 +3216,14 @@ export class UolTelegramShadow extends DurableObject {
              )
            )
          )
+         ${onlyIdsClause}
        ORDER BY sold_out_at ASC
        LIMIT 4`,
       maxAttempts,
       now.toISOString(),
       maxAttempts,
       now.toISOString(),
+      ...selectedIds,
     ).toArray();
     let mainEdited = 0;
     let canal2Edited = 0;
@@ -3409,11 +3420,15 @@ export class UolTelegramShadow extends DurableObject {
     return { mainMarkedSynced, canal2Requeued };
   }
 
-  async processDiscordAvailabilitySync(now = new Date(), limit = 4) {
+  async processDiscordAvailabilitySync(now = new Date(), limit = 4, { onlyIds = [] } = {}) {
     if (this.currentDeliveryMode() !== "live") {
       return { soldOutEdited: 0, restockEdited: 0, messageMissing: 0, failed: 0 };
     }
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const selectedIds = [...new Set(onlyIds)].filter(Boolean).slice(0, 16);
+    const onlyIdsClause = selectedIds.length
+      ? `AND o.id IN (${selectedIds.map(() => "?").join(", ")})`
+      : "";
     const rows = this.sqlExec(
       `SELECT o.id, o.link, o.preview_title, o.title, o.category,
               o.partner_name, o.validity, o.description,
@@ -3444,12 +3459,14 @@ export class UolTelegramShadow extends DurableObject {
          AND (COALESCE(d.restock_next_attempt_at, '') = ''
               OR d.restock_next_attempt_at <= ?)
        )
+       ${onlyIdsClause}
        ORDER BY CASE WHEN status = 'sold_out' THEN sold_out_at ELSE restocked_at END ASC
        LIMIT ?`,
       maxAttempts,
       now.toISOString(),
       maxAttempts,
       now.toISOString(),
+      ...selectedIds,
       Math.max(1, Math.min(16, Number(limit || 4))),
     ).toArray();
     let soldOutEdited = 0;
@@ -3776,6 +3793,142 @@ export class UolTelegramShadow extends DurableObject {
     return { mainEdited, canal2Edited, mainReposted, canal2Reposted, failed };
   }
 
+  async processTicketAvailabilityProbes(now = new Date()) {
+    const empty = {
+      probed: 0,
+      confirmed: 0,
+      fallback: 0,
+      soldOutMainEdited: 0,
+      soldOutCanal2Edited: 0,
+      soldOutDiscordEdited: 0,
+      messageMissing: 0,
+      failed: 0,
+    };
+    if (this.currentDeliveryMode() !== "live") return empty;
+    const budget = ticketProbeBudget({
+      used: this.storageUsage.ticketProbeCount,
+      dailyLimit: envNumber(this.env, "TICKET_SOLD_OUT_PROBE_DAILY_LIMIT", 256, 0, 10_000),
+      perScanLimit: envNumber(this.env, "TICKET_SOLD_OUT_PROBES_PER_SCAN", 1, 0, 4),
+    });
+    if (!budget.allowed) return empty;
+    const maxAttempts = envNumber(this.env, "TICKET_SOLD_OUT_PROBE_MAX_ATTEMPTS", 2, 2, 2);
+    const rows = this.sqlExec(
+      `SELECT * FROM offers
+       WHERE status IN ('delivered', 'partial_delivery')
+         AND sold_out_at = ''
+         AND link LIKE '%/campanhasdeingresso/%'
+         AND ticket_probe_next_at <> ''
+         AND ticket_probe_next_at <= ?
+         AND ticket_probe_attempts < ?
+       ORDER BY ticket_probe_next_at ASC, first_seen_at ASC
+       LIMIT ?`,
+      now.toISOString(),
+      maxAttempts,
+      budget.batchSize,
+    ).toArray();
+    const result = { ...empty };
+
+    for (const row of rows) {
+      const probe = await probeTicketOfferUrl(row.link);
+      this.storageUsage.ticketProbeCount = Number(this.storageUsage.ticketProbeCount || 0) + 1;
+      result.probed += 1;
+
+      let observed = probe;
+      if (probe.result === "gone" && probe.reason === "home_redirect") {
+        const cutoff = new Date(now.getTime() - 30_000).toISOString();
+        const otherHomeRedirect = Number(this.sqlExec(
+          `SELECT COUNT(*) AS count FROM offers
+           WHERE id <> ? AND link LIKE '%/campanhasdeingresso/%'
+             AND ticket_probe_last_result = 'gone:home_redirect'
+             AND ticket_probe_last_at >= ?`,
+          row.id,
+          cutoff,
+        ).one()?.count || 0);
+        if (otherHomeRedirect > 0) {
+          observed = { result: "indeterminate", reason: "global_home_redirect" };
+        }
+      }
+
+      const attempts = Number(row.ticket_probe_attempts || 0) + 1;
+      const state = nextTicketProbeState({
+        result: observed.result,
+        goneCount: row.ticket_probe_gone_count,
+        attempts: row.ticket_probe_attempts,
+        now,
+        confirmGoneCount: 2,
+        maxAttempts,
+        confirmDelaySeconds: 5,
+      });
+      const lastResult = `${observed.result}:${observed.reason}`.slice(0, 120);
+
+      if (state.action !== "confirm") {
+        this.sqlExec(
+          `UPDATE offers SET ticket_probe_next_at = ?, ticket_probe_last_at = ?,
+             ticket_probe_last_result = ?, ticket_probe_gone_count = ?,
+             ticket_probe_attempts = ?
+           WHERE id = ? AND status IN ('delivered', 'partial_delivery')
+             AND sold_out_at = ''`,
+          state.nextAt,
+          now.toISOString(),
+          lastResult,
+          state.goneCount,
+          attempts,
+          row.id,
+        );
+        if (state.action === "fallback") result.fallback += 1;
+        continue;
+      }
+
+      const soldOutAt = now.toISOString();
+      const updated = this.sqlExec(
+        `UPDATE offers SET sold_out_at = ?, status_before_sold_out = status,
+           status = 'sold_out', missing_since = ?, absence_count = 2,
+           restocked_at = '', main_restock_synced_at = '', canal2_restock_synced_at = '',
+           main_restock_attempts = 0, canal2_restock_attempts = 0,
+           main_restock_error = '', canal2_restock_error = '',
+           main_restock_next_attempt_at = '', canal2_restock_next_attempt_at = '',
+           main_sold_out_synced_at = '', canal2_sold_out_synced_at = '',
+           main_sold_out_attempts = 0, canal2_sold_out_attempts = 0,
+           main_sold_out_error = '', canal2_sold_out_error = '',
+           main_sold_out_next_attempt_at = '', canal2_sold_out_next_attempt_at = '',
+           ticket_probe_next_at = '', ticket_probe_last_at = ?,
+           ticket_probe_last_result = ?, ticket_probe_gone_count = ?,
+           ticket_probe_attempts = ?
+         WHERE id = ? AND status IN ('delivered', 'partial_delivery')
+           AND sold_out_at = ''`,
+        soldOutAt,
+        soldOutAt,
+        soldOutAt,
+        lastResult,
+        state.goneCount,
+        attempts,
+        row.id,
+      );
+      if (Number(updated?.rowsWritten || 0) < 1) continue;
+      this.sqlExec(
+        `INSERT INTO discord_availability_sync(offer_id)
+         VALUES (?)
+         ON CONFLICT(offer_id) DO UPDATE SET
+           sold_out_synced_at = '', sold_out_attempts = 0,
+           sold_out_error = '', sold_out_next_attempt_at = ''`,
+        row.id,
+      );
+      result.confirmed += 1;
+      const telegram = await this.processSoldOutSync(now, { onlyIds: [row.id] });
+      result.soldOutMainEdited += telegram.mainEdited;
+      result.soldOutCanal2Edited += telegram.canal2Edited;
+      result.messageMissing += telegram.messageMissing || 0;
+      result.failed += telegram.failed;
+      const discord = await this.processDiscordAvailabilitySync(now, 1, {
+        onlyIds: [row.id],
+      });
+      result.soldOutDiscordEdited += discord.soldOutEdited;
+      result.messageMissing += discord.messageMissing || 0;
+      result.failed += discord.failed;
+    }
+    return result;
+  }
+
   evaluateSoldOut(activeIds, now, category = "all") {
     const lookbackDays = envNumber(this.env, "SOLD_OUT_LOOKBACK_DAYS", 3, 1, 30);
     const minMisses = envNumber(this.env, "SOLD_OUT_MIN_MISSES", 2, 1, 20);
@@ -4004,6 +4157,12 @@ export class UolTelegramShadow extends DurableObject {
       restockCanal2Edited: 0,
       discordSent: 0,
       commentsSent: 0,
+      ticketProbes: 0,
+      ticketProbeConfirmed: 0,
+      ticketProbeFallback: 0,
+      ticketProbeMainEdited: 0,
+      ticketProbeCanal2Edited: 0,
+      ticketProbeDiscordEdited: 0,
       apiOffersSeen: 0,
       apiElapsedMs: 0,
       apiFastProcessed: 0,
@@ -4129,6 +4288,18 @@ export class UolTelegramShadow extends DurableObject {
         run.deliveryFailed += delivered.failed;
         run.outcome = run.mainSent > 0 ? "telegram_delivered" : "api_degraded";
       }
+      const ticketProbes = await this.processTicketAvailabilityProbes(new Date());
+      run.ticketProbes = ticketProbes.probed;
+      run.ticketProbeConfirmed = ticketProbes.confirmed;
+      run.ticketProbeFallback = ticketProbes.fallback;
+      run.ticketProbeMainEdited = ticketProbes.soldOutMainEdited;
+      run.ticketProbeCanal2Edited = ticketProbes.soldOutCanal2Edited;
+      run.ticketProbeDiscordEdited = ticketProbes.soldOutDiscordEdited;
+      run.soldOutMainEdited += ticketProbes.soldOutMainEdited;
+      run.soldOutCanal2Edited += ticketProbes.soldOutCanal2Edited;
+      run.soldOutDiscordEdited += ticketProbes.soldOutDiscordEdited;
+      run.deliveryFailed += ticketProbes.failed;
+      if (ticketProbes.confirmed > 0) run.outcome = "ticket_sold_out_confirmed";
       if (apiCards.length) {
         try {
           this.recordSourceCards("api", apiCards, apiLastSuccessAt);
@@ -4195,6 +4366,8 @@ export class UolTelegramShadow extends DurableObject {
       apiFastProcessed: run.apiFastProcessed,
       apiFastMainSent: run.apiFastMainSent,
       apiFastElapsedMs: run.apiFastElapsedMs,
+      ticketProbes: run.ticketProbes,
+      ticketProbeConfirmed: run.ticketProbeConfirmed,
       mainAmbiguousReleased: run.mainAmbiguousReleased,
       deliveryFailed: run.deliveryFailed,
       apiError: run.apiError,

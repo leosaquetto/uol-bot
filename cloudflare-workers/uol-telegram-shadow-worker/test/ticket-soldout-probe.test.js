@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   classifyTicketProbeResponse,
   nextTicketProbeState,
+  probeTicketOfferUrl,
   ticketProbeBudget,
 } from "../src/ticket-soldout-probe.js";
 
@@ -125,4 +126,36 @@ test("limita a fila crítica diária sem ultrapassar o orçamento", () => {
     ticketProbeBudget({ used: 256, dailyLimit: 256, perScanLimit: 1 }),
     { remaining: 0, allowed: false, batchSize: 0 },
   );
+});
+
+test("consulta URL sem cache e classifica redirect para a home", async () => {
+  let request;
+  const result = await probeTicketOfferUrl(
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-show",
+    async (url, init) => {
+      request = { url, init };
+      return {
+        status: 200,
+        url: "https://clube.uol.com.br/",
+        text: async () => "<html>home</html>",
+      };
+    },
+  );
+  assert.deepEqual(result, { result: "gone", reason: "home_redirect" });
+  assert.equal(request.url, "https://clube.uol.com.br/campanhasdeingresso/pbx-show");
+  assert.equal(request.init.redirect, "follow");
+  assert.equal(request.init.headers["Cache-Control"], "no-cache");
+});
+
+test("não marca como esgotado um timeout ou página vazia", async () => {
+  const timeout = await probeTicketOfferUrl(
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-timeout",
+    async () => { throw new Error("timeout"); },
+  );
+  assert.deepEqual(timeout, { result: "indeterminate", reason: "network_or_timeout" });
+  const empty = await probeTicketOfferUrl(
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-empty",
+    async () => new Response("", { status: 200 }),
+  );
+  assert.deepEqual(empty, { result: "indeterminate", reason: "empty_body" });
 });

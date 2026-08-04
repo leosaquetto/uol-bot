@@ -56,6 +56,21 @@ test("HTML, retries secundários e ciclo de disponibilidade ficam na manutençã
   assert.doesNotMatch(maintenance, /targetNames:\s*\["main"\]/);
 });
 
+test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", () => {
+  const scan = methodSource("  async scan(", "  async runMaintenanceTick(");
+  const probes = methodSource("  async processTicketAvailabilityProbes(", "  evaluateSoldOut(");
+  assert.match(scan, /processTicketAvailabilityProbes\(/);
+  assert.match(probes, /link LIKE '%\/campanhasdeingresso\/%'/);
+  assert.match(probes, /TICKET_SOLD_OUT_PROBE_DAILY_LIMIT/);
+  assert.match(probes, /TICKET_SOLD_OUT_PROBES_PER_SCAN/);
+  assert.match(probes, /probeTicketOfferUrl\(row\.link\)/);
+  assert.match(probes, /processSoldOutSync\(now, \{ onlyIds: \[row\.id\] \}/);
+  assert.match(probes, /processDiscordAvailabilitySync\(now, 1, \{[\s\S]*onlyIds: \[row\.id\]/);
+  assert.match(probes, /global_home_redirect/);
+  assert.match(probes, /ticket_probe_attempts < \?/);
+  assert.doesNotMatch(probes, /link NOT LIKE '%\/campanhasdeingresso\/%'/);
+});
+
 test("lote tardio filtra imagem e backoff antes do limite", () => {
   const upgrade = methodSource(
     "  async upgradeTimedOutMainImages(",

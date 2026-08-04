@@ -43,6 +43,10 @@
     "SOLD_OUT_LOOKBACK_DAYS": "3",
     "SOLD_OUT_MIN_MISSES": "2",
     "SOLD_OUT_MIN_ABSENCE_MINUTES": "15",
+    "TICKET_SOLD_OUT_PROBE_DELAY_SECONDS": "60",
+    "TICKET_SOLD_OUT_PROBE_DAILY_LIMIT": "256",
+    "TICKET_SOLD_OUT_PROBES_PER_SCAN": "1",
+    "TICKET_SOLD_OUT_PROBE_MAX_ATTEMPTS": "2",
     "PUBLIC_BASE_URL": "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev"
   },
   "secrets": {
