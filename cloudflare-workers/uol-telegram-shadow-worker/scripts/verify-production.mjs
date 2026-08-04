@@ -1,3 +1,5 @@
+import { classifyHeadlessHealth } from "../src/headless-health.js";
+
 const DEFAULT_BASE_URL = "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev";
 
 function positiveInteger(value, fallback) {
@@ -71,6 +73,12 @@ function readinessFailure(checks = {}) {
 
 function validateHealth({ livenessStatus, readinessStatus, liveness, readiness }) {
   const now = Date.now();
+  const headless = classifyHeadlessHealth({
+    liveness: { status: livenessStatus, body: liveness },
+    readiness: { status: readinessStatus, body: readiness },
+    now,
+    maxScanAgeMs,
+  });
   if (livenessStatus !== 200 || liveness?.ok !== true) throw new Error("liveness_not_ok");
   if (liveness.worker !== "uol-telegram-shadow-pilot") {
     throw new Error("liveness_worker_identity_mismatch");
@@ -79,7 +87,9 @@ function validateHealth({ livenessStatus, readinessStatus, liveness, readiness }
     readiness?.ok === false && readiness?.mode === "shadow" &&
     readinessFailure(readiness?.checks) === "unknown";
   if (!intentionalShadow && (readinessStatus !== 200 || readiness?.ok !== true)) {
-    throw new Error(`not_ready:${readinessFailure(readiness?.checks)}`);
+    throw new Error(
+      `not_ready:${headless.state}:${headless.reasons.join(",") || readinessFailure(readiness?.checks)}`,
+    );
   }
   if (readiness.worker !== "uol-telegram-shadow-pilot") {
     throw new Error("readiness_worker_identity_mismatch");
@@ -112,6 +122,8 @@ function validateHealth({ livenessStatus, readinessStatus, liveness, readiness }
     mode: readiness.mode,
     lastScanAt: readiness.lastScanAt,
     checks: readiness.checks,
+    headlessState: headless.state,
+    headlessReasons: headless.reasons,
   };
 }
 

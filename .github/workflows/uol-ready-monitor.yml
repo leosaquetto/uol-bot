@@ -20,85 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - name: Consultar /readyz e manter incidente deduplicado
-        uses: actions/github-script@v8
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Executar monitor headless sem falha ruidosa
+        working-directory: cloudflare-workers/uol-telegram-shadow-worker
         env:
           READY_URL: https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/readyz
-        with:
-          script: |
-            const marker = "<!-- uol-worker-ready-monitor -->";
-            const issueTitle = "[UOL Worker] Readiness indisponível";
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            let httpStatus = 0;
-            let payload = null;
-            let probeError = "";
-
-            try {
-              const response = await fetch(process.env.READY_URL, {
-                headers: { Accept: "application/json" },
-                signal: AbortSignal.timeout(20_000),
-              });
-              httpStatus = response.status;
-              const text = await response.text();
-              try {
-                payload = JSON.parse(text);
-              } catch {
-                probeError = "resposta não é JSON válido";
-              }
-            } catch (error) {
-              probeError = String(error?.message || error).slice(0, 300);
-            }
-
-            const ready = httpStatus === 200 && payload?.ok === true &&
-              payload?.worker === "uol-telegram-shadow-pilot";
-            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: "open",
-              per_page: 100,
-            });
-            const incident = openIssues.find((issue) =>
-              !issue.pull_request && String(issue.body || "").includes(marker)
-            );
-
-            if (ready) {
-              if (incident) {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: incident.number,
-                  body: `Readiness recuperado em ${new Date().toISOString()}. [Execução de confirmação](${runUrl}).`,
-                });
-                await github.rest.issues.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: incident.number,
-                  state: "closed",
-                  state_reason: "completed",
-                });
-              }
-              core.info(`Worker pronto: HTTP ${httpStatus}, versão ${payload.versionId || "sem ID"}.`);
-              return;
-            }
-
-            const safeSnapshot = {
-              httpStatus,
-              error: probeError || undefined,
-              worker: payload?.worker,
-              versionId: payload?.versionId,
-              mode: payload?.mode,
-              lastScanAt: payload?.lastScanAt,
-              checkedAt: payload?.checkedAt,
-              checks: payload?.checks,
-            };
-            if (!incident) {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: issueTitle,
-                body: `${marker}\nO monitor externo encontrou o Worker fora de readiness.\n\n\`\`\`json\n${JSON.stringify(safeSnapshot, null, 2)}\n\`\`\`\n\n[Execução que detectou o incidente](${runUrl})`,
-              });
-            } else {
-              core.info(`Incidente já registrado no issue #${incident.number}; nenhum duplicado foi criado.`);
-            }
-            core.setFailed(`Readiness falhou: HTTP ${httpStatus || "sem resposta"}, ok=${String(payload?.ok)}`);
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_API_URL: ${{ github.api_url }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node scripts/monitor-ready.mjs
