@@ -51,6 +51,34 @@ imediatamente pela rota autenticada `POST /mode`. Isso evita depender da
 reciclagem de uma instância aquecida após um deploy e permite contenção
 `live -> shadow` sem aguardar uma nova publicação.
 
+## Operação headless e confiabilidade interna
+
+Não existe dependência operacional de dashboard: a descoberta, a decisão, o
+envio e as edições continuam acontecendo nos alarmes do Worker, com Telegram e
+Discord como únicas superfícies de resultado. `livez`, `readyz`,
+`/dashboard.json`, `/decisions` e `/inventory` são interfaces autenticadas ou
+sanitizadas para prova, não uma etapa do fluxo.
+
+A proteção adicionada ao caminho invisível é composta por quatro camadas:
+
+- um watchdog externo consulta liveness/readiness e registra apenas mudança de
+  estado, sem criar notificações repetidas de CI;
+- o sidecar `delivery_events` (schema v20) guarda tentativa, sucesso, falha,
+  `unknown`, edição, recuperação e mensagem ausente com chave idempotente e
+  retenção limitada, sem alterar a tabela `offers`;
+- a fila calcula idade/p95 e cede comentários, imagens e reconciliações antes de
+  consumir a reserva de leituras do tier gratuito, mantendo a oferta nova e o
+  principal prioritários;
+- o canário valida `beneficios`, URL pública e título antes do mapeamento. Uma
+  resposta não parseável preserva o inventário anterior, aciona fallback HTML e
+  abre incidente crítico sanitizado; uma resposta vazia, porém corretamente
+  estruturada, é válida.
+
+Os testes de replay usam somente transportes locais determinísticos e cobrem
+entrega API-first nos três destinos, foto tardia na mesma mensagem, duas sondas
+rápidas de ingresso, duração no Discord, reabertura, timeout ambíguo, mensagem
+apagada e rajada de 24 ofertas.
+
 ## Entrega ao Telegram
 
 O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
@@ -86,8 +114,10 @@ Uma oferta entregue passa a ser candidata a esgotamento somente quando:
 
 - foi decidida nos últimos três dias;
 - desapareceu de uma listagem saudável;
-- acumulou pelo menos duas ausências;
-- permaneceu ausente por no mínimo 15 minutos.
+- para ingressos, a URL pública falhou em duas sondas consecutivas, separadas
+  por cinco segundos;
+- para as demais ofertas, acumulou pelo menos duas ausências e permaneceu
+  ausente por no mínimo 15 minutos.
 
 Depois da confirmação, o Worker usa `editMessageCaption` para fotos ou
 `editMessageText` para mensagens sem imagem e `Edit Webhook Message` no Discord.
@@ -296,12 +326,12 @@ circuitos separados; três falhas abrem a estratégia por dez minutos. O estado 
 o cache aparecem no painel e em `/dashboard.json` sem expor identificadores
 sensíveis.
 
-O painel autenticado em `/dashboard` é renderizado no servidor, não executa
-JavaScript e atualiza a cada 30 segundos. Ele mostra ofertas recentes, fonte
+O painel autenticado legado em `/dashboard` é renderizado no servidor, não
+executa JavaScript e atualiza a cada 30 segundos. Ele mostra ofertas recentes, fonte
 vencedora, latências de Discord/Telegram/comentário, circuitos de imagem,
 incidentes, saúde de autenticação e consumo estimado. `/dashboard.json` oferece
-o mesmo snapshot para diagnóstico automatizado. Ambas as rotas retornam 401 sem
-Bearer ou HTTP Basic válido.
+o mesmo snapshot para diagnóstico automatizado. Nenhuma dessas rotas é necessária
+para o fluxo de ofertas; ambas retornam 401 sem Bearer ou HTTP Basic válido.
 
 O alarme também ganhou autorreparo: um agendamento ausente ou atrasado por mais
 de dois intervalos é rearmado para o próximo ciclo. Isso recuperou em produção
@@ -362,7 +392,13 @@ exposta.
 - dead letters não criam head-of-line blocking e dependências impossíveis não
   ficam em backoff eterno;
 - reabertura restaura `partial_delivery` quando havia secundários pendentes;
-- schema local: v17;
+- schema local: v20 (`delivery_events` como sidecar de auditoria);
+- watchdog headless: classificador puro + workflow externo silencioso com issue
+  deduplicado por transição;
+- SLO de entrega: backlog crítico com prioridade e backpressure secundário antes
+  da reserva diária de leituras;
+- canário de contrato: campos e contagens sanitizados em `runtime:api_contract`;
+- replay determinístico: 6 cenários puros e rajada de 24 ofertas;
 - não há Version ID nem recibo de produção nesta seção porque não houve commit,
   push ou deploy nesta revisão.
 

@@ -220,6 +220,11 @@ describe("UOL Worker no runtime Cloudflare", () => {
         scanFresh: false,
         deliveryConfigured: false,
       },
+      queueSlo: {
+        pending: 0,
+        criticalPending: 0,
+        secondaryPending: 0,
+      },
     });
 
     const healthResponse = await exports.default.fetch("https://worker.test/health");

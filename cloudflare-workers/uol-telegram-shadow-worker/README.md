@@ -9,6 +9,10 @@ Este documento descreve o contrato do código neste checkout. Ele só passa a
 descrever produção depois de publicação deliberada e `postdeploy:check`; teste
 local verde, commit ou push isoladamente não são recibo de ativação.
 
+A operação é totalmente headless: não depende de dashboard nem de ação manual
+para descobrir, enviar ou editar ofertas. As rotas autenticadas de diagnóstico
+e o snapshot do Worker são opcionais, usados apenas para prova e recuperação.
+
 O Worker antigo do Discord permanece no repositório como rollback. O coletor
 falha fechado: ausente ou diferente de `COLLECTOR_ENABLED=true`, não publica nem
 agenda coleta. Estado de produção exige verificação própria.
@@ -44,16 +48,21 @@ agenda coleta. Estado de produção exige verificação própria.
     se reaparecerem no HTML, as mensagens voltam ao estado disponível sem perder
     entregas secundárias que já estavam pendentes; mensagem apagada encerra a
     edição de esgotamento e gera nova publicação somente quando a oferta volta.
+13. um watchdog externo consulta apenas `livez`/`readyz`, enquanto o próprio
+    Worker mantém ledger de eventos, SLO de fila, backpressure de cota e canário
+    do contrato da API; tudo isso permanece invisível nos canais de ofertas.
 
 ## Regras
 
 - **Canal principal:** toda oferta nova elegível.
 - **Canal 2:** toda campanha em `/campanhasdeingresso/`, incluindo teatro,
   stand-up e esporte.
-- **Esgotamento:** ausência em pelo menos duas verificações e por pelo menos
-  15 minutos, limitada às ofertas decididas nos últimos três dias. A publicação
-  principal e as cópias do canal exclusivo são editadas idempotentemente. Falha
-  de edição entra em backoff; não cria aviso substituto sujeito a duplicata.
+- **Esgotamento:** ingressos usam duas sondas rápidas da URL da própria oferta,
+  com cinco segundos entre confirmações; as demais ofertas continuam exigindo
+  ausência em pelo menos duas verificações HTML e 15 minutos. Tudo é limitado às
+  ofertas decididas nos últimos três dias. A publicação principal, as cópias do
+  canal exclusivo e o Discord são editados idempotentemente. Falha de edição
+  entra em backoff; não cria aviso substituto sujeito a duplicata.
 - **Enriquecimento:** a API já entrega título, validade, descrição, imagem e
   link. Nada abre HTML de detalhe ou Browser Rendering antes/depois do envio.
 - **Imagem:** o canal principal tenta `file_id`, URL e upload até o prazo absoluto
@@ -94,6 +103,15 @@ agenda coleta. Estado de produção exige verificação própria.
   tem 30 segundos para confirmar o envio; sem confirmação, o Worker tenta de
   novo. A prioridade é não perder oferta, aceitando uma duplicata rara. Os
   destinos secundários continuam exigindo reconciliação ou resolução explícita.
+- **Ledger e proteção:** cada tentativa, sucesso, falha, resultado incerto,
+  edição, recuperação e mensagem ausente entra no sidecar `delivery_events`, sem
+  adicionar colunas à tabela de ofertas. O ledger é idempotente e limitado por
+  oferta; `/decisions` e `/inventory` expõem apenas a linha do tempo sanitizada
+  quando autenticados.
+- **SLO e cota:** a fila mede idade e p95; novas entregas e o principal mantêm
+  prioridade, enquanto comentários, imagens e manutenção secundária cedem antes
+  da reserva de leituras do tier gratuito. Um alerta só abre após três violações
+  consecutivas, sem bloquear o caminho crítico.
 - **Operação:** falha de autorização da API primária alerta imediatamente;
   erros comuns exigem três ciclos, e sua credencial técnica gera aviso 14 dias
   antes de expirar. Também são monitorados três scans quebrados, webhook
@@ -144,8 +162,9 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 - `GET /health` e `GET /readyz`: readiness público mínimo; retornam `200` quando
   modo, scan, alarme, configuração, fila e incidentes estão saudáveis, ou `503`
   com os checks sanitizados quando o Worker não está pronto.
-- `GET /dashboard`: painel HTML operacional; aceita Bearer ou HTTP Basic com
-  usuário `admin` e senha igual ao `ADMIN_TOKEN`.
+- `GET /dashboard`: painel HTML operacional legado; aceita Bearer ou HTTP Basic
+  com usuário `admin` e senha igual ao `ADMIN_TOKEN`. É diagnóstico opcional; o
+  envio headless não depende dele.
 - `GET /dashboard.json`: diagnóstico completo e autenticado, com versão,
   configuração booleana, contagens, execuções, latências e incidentes.
 - `GET /offers`: últimas ofertas principais enviadas; JSON público sanitizado,
@@ -215,6 +234,9 @@ sobrecarregar o Mac:
 
 - `npm test` ou `npm run check:fast`: testes puros em Node, sem `workerd`;
   a concorrência fica limitada a dois arquivos para não saturar Macs mais lentos;
+- `node --test test/replay.test.js`: replay determinístico de entrega, imagem
+  tardia, esgotamento/reabertura, timeout ambíguo, mensagem apagada e rajada de
+  24 ofertas, sem tocar Telegram, Discord ou dados reais;
 - `npm run test:worker`: integração real com rotas, SQLite Durable Object e
   alarmes, sem rede externa, produção ou secrets. O Workerd atual exige macOS
   13.5 ou superior; em versões anteriores, essa etapa roda no CI Linux;
@@ -235,10 +257,10 @@ instala `requirements.txt`, testa e compila o fallback legado. Outro job executa
 testes e bundle dry-run do Worker Discord de rollback. Nenhum deles faz parte do
 `check:fast` local do Worker principal.
 
-O workflow independente `UOL Worker Ready Monitor` consulta somente o readiness
-público a cada cinco minutos. Se `/readyz` não responder com HTTP 200 e
-`ok: true`, ele falha e abre um único issue de incidente; novas falhas não criam
-duplicados, e a primeira verificação saudável fecha o issue automaticamente.
+O workflow independente `UOL Worker Ready Monitor` consulta liveness e readiness
+públicos a cada cinco minutos. Uma mudança para outage abre um único issue de
+incidente; degradação histórica fica registrada sem transformar o job em falha
+recorrente, e a primeira verificação saudável fecha o issue.
 Esse dead-man externo não depende do Mac, do Telegram ou de secrets e recebe
 somente a permissão de issues necessária para registrar e encerrar o incidente.
 O agendamento fica inerte até a variável de repositório
