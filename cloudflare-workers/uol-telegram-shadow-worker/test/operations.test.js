@@ -48,6 +48,16 @@ test("só abre incidente de API genérico após três falhas", () => {
   assert.equal(signal.severity, "warning");
 });
 
+test("trata quebra de contrato da API como incidente crítico específico", () => {
+  const signals = buildIncidentSignals({
+    apiError: "uol_api_contract_invalid:no_parseable_offers:total=3:valid=0",
+    apiFailureStreak: 1,
+  });
+  assert.deepEqual(signals.map((signal) => signal.key), ["ticket-api-contract"]);
+  assert.equal(signals[0].severity, "critical");
+  assert.match(signals[0].summary, /contrato/);
+});
+
 test("falha de autorização é crítica imediatamente e sinais são deduplicáveis", () => {
   const signals = buildIncidentSignals({
     apiError: "uol_api_http_401",

@@ -4700,6 +4700,7 @@ export class UolTelegramShadow extends DurableObject {
       previousApi.fastLastMainSent ?? this.metadataValue("api_fast_last_main_sent") ?? 0,
     );
     let runFailureStreak = Number(previousApi.runFailureStreak || 0);
+    let apiContract = null;
     let apiCards = [];
     const run = {
       startedAt: startedAt.toISOString(),
@@ -4749,6 +4750,9 @@ export class UolTelegramShadow extends DurableObject {
       }
       const apiResult = await settled(timedCards(() => this.fetchAllApi()));
       run.apiElapsedMs = apiResult.status === "fulfilled" ? apiResult.value.elapsedMs : 0;
+      apiContract = apiResult.status === "fulfilled"
+        ? apiResult.value.cards?.contract || null
+        : apiResult.reason?.contract || null;
       apiCards = apiResult.status === "fulfilled"
         ? apiResult.value.cards.map((card) => ({
             ...card,
@@ -4898,6 +4902,12 @@ export class UolTelegramShadow extends DurableObject {
           fastLastMainSent,
           runFailureStreak,
         });
+        if (apiContract) {
+          this.setRuntimeSnapshot("api_contract", {
+            ...apiContract,
+            lastCheckedAt: run.finishedAt,
+          });
+        }
         const lastPersistedRun = this.sqlExec(
           "SELECT outcome, error, finished_at FROM runs ORDER BY id DESC LIMIT 1",
         ).toArray()[0] || null;
@@ -5728,6 +5738,7 @@ export class UolTelegramShadow extends DurableObject {
     const sourceComparison = this.getSourceComparison();
     const imageDelivery = this.getImageDeliveryHealth();
     const api = this.runtimeSnapshot("api");
+    const apiContract = this.runtimeSnapshot("api_contract");
     const html = this.runtimeSnapshot("html");
     const webhook = this.runtimeSnapshot("webhook");
     const maintenance = this.runtimeSnapshot("maintenance");
@@ -5781,6 +5792,15 @@ export class UolTelegramShadow extends DurableObject {
         ),
         lastError: api.lastError ?? this.metadataValue("api_last_error"),
         lastSuccessAt: api.lastSuccessAt || this.metadataValue("api_last_success_at"),
+        contract: {
+          ok: apiContract.ok ?? null,
+          reason: apiContract.reason || "",
+          total: Number(apiContract.total || 0),
+          valid: Number(apiContract.valid || 0),
+          invalid: Number(apiContract.invalid || 0),
+          fields: Array.isArray(apiContract.fields) ? apiContract.fields : [],
+          lastCheckedAt: apiContract.lastCheckedAt || "",
+        },
         fastPath: {
           lastCompletedAt: api.fastLastCompletedAt ||
             this.metadataValue("api_fast_last_completed_at"),

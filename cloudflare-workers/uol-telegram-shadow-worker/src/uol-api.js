@@ -4,6 +4,7 @@ import {
   normalizeCard,
   offerIdentityKeys,
 } from "./core.js";
+import { validateTicketApiPayload } from "./uol-contract.js";
 
 const API_URL = "https://gateway.produtos.uol.com.br/clubeuol/v2/coupons";
 const BASE_URL = "https://clube.uol.com.br";
@@ -195,5 +196,34 @@ export async function fetchOffersFromApi(
   if (contentLength > MAX_API_BYTES) throw new Error("uol_api_json_excede_limite");
   const text = await response.text();
   if (text.length > MAX_API_BYTES) throw new Error("uol_api_json_excede_limite");
-  return mapTicketApiPayload(JSON.parse(text));
+  let payload;
+  try {
+    payload = JSON.parse(text);
+  } catch {
+    const error = new Error("uol_api_json_invalido");
+    error.contract = {
+      ok: false,
+      reason: "json_invalid",
+      total: 0,
+      valid: 0,
+      invalid: 0,
+      fields: [],
+    };
+    throw error;
+  }
+  const contract = validateTicketApiPayload(payload);
+  if (!contract.ok) {
+    const error = new Error(
+      `uol_api_contract_invalid:${contract.reason}:total=${contract.total}:valid=${contract.valid}`,
+    );
+    error.contract = contract;
+    throw error;
+  }
+  const cards = mapTicketApiPayload(payload);
+  Object.defineProperty(cards, "contract", {
+    value: contract,
+    enumerable: false,
+    configurable: false,
+  });
+  return cards;
 }

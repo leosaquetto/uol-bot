@@ -69,9 +69,18 @@ export function buildIncidentSignals({
 } = {}) {
   const signals = [];
   const normalizedApiError = cleanText(apiError).slice(0, 180);
+  const apiContractFailure = /uol_api_(?:contract_invalid|json_invalido)/i
+    .test(normalizedApiError);
   const authorizationFailure = /(?:401|403|unauthor|forbidden|token|authorization)/i
     .test(normalizedApiError);
-  if (normalizedApiError && (authorizationFailure || apiFailureStreak >= 3)) {
+  if (apiContractFailure) {
+    signals.push({
+      key: "ticket-api-contract",
+      severity: "critical",
+      summary: "A API de ofertas mudou de contrato ou retornou dados inválidos",
+      details: `${apiFailureStreak} ciclo(s): ${normalizedApiError}`,
+    });
+  } else if (normalizedApiError && (authorizationFailure || apiFailureStreak >= 3)) {
     signals.push({
       key: "ticket-api",
       severity: authorizationFailure ? "critical" : "warning",

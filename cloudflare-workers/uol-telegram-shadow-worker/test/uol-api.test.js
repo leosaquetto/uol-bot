@@ -115,6 +115,53 @@ test("consulta a API completa com credencial técnica e preserva a categoria da 
   assert.match(cards[0].apiDetail.description, /resgate um par/);
 });
 
+test("rejeita contrato inválido da API antes de apagar o estado válido", async () => {
+  await assert.rejects(
+    fetchOffersFromApi({ UOL_API_AUTHORIZATION: "api-token" }, async () => new Response(
+      JSON.stringify({ beneficios: [{ titulo: "Oferta sem URL pública" }] }),
+      { headers: { "content-type": "application/json" } },
+    )),
+    (error) => {
+      assert.equal(error.message, "uol_api_contract_invalid:no_parseable_offers:total=1:valid=0");
+      assert.deepEqual(error.contract, {
+        ok: false,
+        reason: "no_parseable_offers",
+        total: 1,
+        valid: 0,
+        invalid: 1,
+        fields: ["titulo"],
+      });
+      return true;
+    },
+  );
+});
+
+test("aceita resposta mista e preserva telemetria de contrato fora da lista", async () => {
+  const cards = await fetchOffersFromApi({ UOL_API_AUTHORIZATION: "api-token" }, async () => new Response(
+    JSON.stringify({ beneficios: [apiItem, { titulo: "Oferta sem URL" }] }),
+    { headers: { "content-type": "application/json" } },
+  ));
+  assert.equal(cards.length, 1);
+  assert.deepEqual(cards.contract, {
+    ok: true,
+    reason: "ok",
+    total: 2,
+    valid: 1,
+    invalid: 1,
+    fields: [
+      "descricao",
+      "fim",
+      "id",
+      "imagem",
+      "inicio",
+      "parceiro",
+      "titulo",
+      "url",
+    ],
+  });
+  assert.deepEqual(Object.keys(cards), ["0"]);
+});
+
 test("status de configuração nunca expõe tokens", () => {
   assert.deepEqual(ticketApiConfiguration({
     UOL_API_AUTHORIZATION: "segredo-1",
