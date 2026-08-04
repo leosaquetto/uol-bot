@@ -59,21 +59,21 @@ git commit -m "fix(uol): bound Discord embed text safely"
 
 **Files:**
 - Create: `cloudflare-workers/uol-telegram-shadow-worker/src/discord-detail.js`
-- Create: `cloudflare-workers/uol-telegram-shadow-worker/test-worker/discord-detail.integration.test.js`
+- Create: `cloudflare-workers/uol-telegram-shadow-worker/test/discord-detail.test.js`
 
 **Interfaces:**
-- Produces: `fetchDiscordOfferDetail(offer, fetchImpl = fetch) -> Promise<{title, validity, description} | null>`.
+- Produces: `fetchDiscordOfferDetail(offer, fetchImpl = fetch) -> Promise<{title, validity, description} | null>` and `mergeDiscordOfferDetail(offer, detail)`.
 - Consumes: link público, `cleanText`, `extractValidity` e `offerIdentityKeys`.
 
 - [ ] **Step 1: Write the failing test**
 
-Cobrir no pool Workers que uma resposta HTML simulada extrai título/descrição/validade, que resposta não HTML e detalhe vazio retornam `null`, e que redirect para outra oferta retorna `null`. O teste deve verificar que o marcador de cache-bust e headers `Accept: text/html` são enviados.
+Cobrir em Node o normalizador com título/descrição/validade, os guards de resposta não HTML/detalhe vazio/redirect, o merge sem alterar imagem/categoria e os headers/marcador de cache-bust via fetch injetado. A extração real usa `HTMLRewriter` no Worker e será coberta por `check:types`/dry-run do bundle; o pool Workers não roda neste macOS 12.6.
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `npm run test:worker -- --run test-worker/discord-detail.integration.test.js`
+Run: `node --test test/discord-detail.test.js`
 
-Expected: FAIL because `discord-detail.js` and its exported fetch/parser do not exist.
+Expected: FAIL because `discord-detail.js` and its exported parser/merge do not exist.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -81,14 +81,14 @@ Implementar fetch com timeout de 8s, `Cache-Control: no-cache`, `cf.cacheTtl = 0
 
 - [ ] **Step 4: Run focused tests**
 
-Run: `npm run test:worker -- --run test-worker/discord-detail.integration.test.js`.
+Run: `node --test test/discord-detail.test.js`.
 
 Expected: PASS com HTML, fallback de resposta e redirect.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add cloudflare-workers/uol-telegram-shadow-worker/src/discord-detail.js cloudflare-workers/uol-telegram-shadow-worker/test-worker/discord-detail.integration.test.js
+git add cloudflare-workers/uol-telegram-shadow-worker/src/discord-detail.js cloudflare-workers/uol-telegram-shadow-worker/test/discord-detail.test.js
 git commit -m "feat(uol): parse public detail for Discord cards"
 ```
 
@@ -96,21 +96,21 @@ git commit -m "feat(uol): parse public detail for Discord cards"
 
 **Files:**
 - Modify: `cloudflare-workers/uol-telegram-shadow-worker/src/worker.js`
-- Modify: `cloudflare-workers/uol-telegram-shadow-worker/test-worker/worker.integration.test.js`
+- Modify: `cloudflare-workers/uol-telegram-shadow-worker/test/discord-detail.test.js`
 
 **Interfaces:**
 - Consumes: `fetchDiscordOfferDetail` e `rowToOffer`.
 - Produces: cards comuns de cache/edição com título, validade e descrição best-effort; o caminho `scan()` não chama o parser.
 
-- [ ] **Step 1: Write the failing integration test**
+- [ ] **Step 1: Write the failing merge test**
 
-Adicionar teste que chama `primePendingDiscordImageCache` com uma linha comum sem descrição, intercepta o fetch público e o webhook, e exige que o payload do cache contenha o texto detalhado. Adicionar no teste do caminho rápido um contador que permanece zero para o parser. Adicionar caso de edição comum com detalhe ausente e fallback sem falhar quando o fetch retorna 500.
+Adicionar casos para `mergeDiscordOfferDetail` que comprovem que o enriquecimento preserva link, thumbnail e metadados do card e só substitui título/validade/descrição quando o parser retorna conteúdo útil. O caminho rápido continua coberto pelo teste existente de `scan()` e pela leitura estática do método de manutenção; o pool Workers permanece indisponível no host.
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `npm run test:worker -- --run test-worker/worker.integration.test.js`
+Run: `node --test test/discord-detail.test.js`
 
-Expected: FAIL because the maintenance path currently sends `rowToOffer(row)` sem detalhe e não há chamada ao parser.
+Expected: FAIL because the merge helper and Worker hook do not exist.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -118,14 +118,14 @@ Importar o parser no Worker, criar método best-effort que só busca quando a of
 
 - [ ] **Step 4: Run focused and fast tests**
 
-Run: `npm run test:worker -- --run test-worker/worker.integration.test.js` e `npm run check:fast`.
+Run: `node --test test/discord-detail.test.js` e `npm run check:fast`.
 
 Expected: PASS; o teste do caminho rápido continua sem fetch de detalhe e os testes existentes de sold-out/restock permanecem verdes.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add cloudflare-workers/uol-telegram-shadow-worker/src/worker.js cloudflare-workers/uol-telegram-shadow-worker/test-worker/worker.integration.test.js
+git add cloudflare-workers/uol-telegram-shadow-worker/src/worker.js cloudflare-workers/uol-telegram-shadow-worker/test/discord-detail.test.js
 git commit -m "feat(uol): enrich common Discord cards during maintenance"
 ```
 
