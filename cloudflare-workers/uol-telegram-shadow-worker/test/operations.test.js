@@ -111,3 +111,17 @@ test("abre incidentes distintos para dead letter, entrega incerta e configuraç�
     "delivery-queue:p3:canal2",
   ]);
 });
+
+test("só alerta fila fora do SLA depois de três ciclos", () => {
+  assert.deepEqual(buildIncidentSignals({
+    queueSlo: { criticalPending: 1, secondaryPending: 2, oldestAgeMs: 46_000 },
+    queueSloBreachStreak: 2,
+  }), []);
+  const [signal] = buildIncidentSignals({
+    queueSlo: { criticalPending: 1, secondaryPending: 2, oldestAgeMs: 46_000 },
+    queueSloBreachStreak: 3,
+  });
+  assert.equal(signal.key, "delivery-slo");
+  assert.equal(signal.severity, "critical");
+  assert.match(signal.details, /principal pendente: 1/);
+});

@@ -63,6 +63,8 @@ export function buildIncidentSignals({
   sourceDetails = "",
   ticketIssues = [],
   deliveryIssues = [],
+  queueSlo = {},
+  queueSloBreachStreak = 0,
   now = new Date(),
 } = {}) {
   const signals = [];
@@ -132,8 +134,29 @@ export function buildIncidentSignals({
         `quedas: ${listingDropStreak}`,
         `divergências: ${sourceDivergenceStreak}`,
         `sem ciclo conjunto: ${Math.round(secondsSinceFullSourceSuccess)}s`,
-        sourceDetails,
-      ].filter(Boolean).join("; ")).slice(0, 240),
+      sourceDetails,
+    ].filter(Boolean).join("; ")).slice(0, 240),
+    });
+  }
+  const queueOldestAgeMs = Number(queueSlo.oldestAgeMs || 0);
+  const queueCriticalPending = Number(queueSlo.criticalPending || 0);
+  const queueSecondaryPending = Number(queueSlo.secondaryPending || 0);
+  const queueBreach = (
+    queueCriticalPending > 0 && queueOldestAgeMs >= 45_000
+  ) || (
+    queueSecondaryPending > 0 && queueOldestAgeMs >= 10 * 60_000
+  );
+  if (queueBreach && Number(queueSloBreachStreak || 0) >= 3) {
+    signals.push({
+      key: "delivery-slo",
+      severity: queueCriticalPending > 0 ? "critical" : "warning",
+      summary: "A fila de entrega ultrapassou o SLA",
+      details: cleanText([
+        `principal pendente: ${queueCriticalPending}`,
+        `secundária pendente: ${queueSecondaryPending}`,
+        `mais antiga: ${Math.round(queueOldestAgeMs / 1_000)}s`,
+        `ciclos: ${Number(queueSloBreachStreak || 0)}`,
+      ].join("; ")).slice(0, 240),
     });
   }
   for (const issue of ticketIssues) {

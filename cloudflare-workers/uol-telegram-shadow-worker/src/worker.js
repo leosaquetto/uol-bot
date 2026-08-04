@@ -76,6 +76,7 @@ import {
 import { isTelegramMessageMissingError } from "./transport-error.js";
 import { classifyKnownMaintenanceRepair } from "./maintenance-repair.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
+import { chooseDeliveryBudget, summarizeQueueSlo } from "./queue-policy.js";
 import {
   deferredMainDeliveryState,
   lateImageUpgradeDue,
@@ -2159,6 +2160,20 @@ export class UolTelegramShadow extends DurableObject {
       parseRuntimeSnapshot(this.metadataValue("source_last_comparison"));
     const sourceDetails = `API ${current.apiTickets || 0}, HTML ${current.listingTickets || 0}, ` +
       `cobertura ${current.apiCoveragePercent ?? 0}%`;
+    const queueSlo = this.deliveryQueueSlo(now);
+    const queueBreach = (
+      queueSlo.criticalPending > 0 && queueSlo.oldestAgeMs >= 45_000
+    ) || (
+      queueSlo.secondaryPending > 0 && queueSlo.oldestAgeMs >= 10 * 60_000
+    );
+    const previousQueueBreachStreak = Number(
+      this.metadataValue("delivery_slo_breach_streak") || 0,
+    );
+    const queueSloBreachStreak = queueBreach ? previousQueueBreachStreak + 1 : 0;
+    this.setMetadataIfChanged(
+      "delivery_slo_breach_streak",
+      queueSloBreachStreak,
+    );
     const webhookChecked = Boolean(
       webhook.checkedAt || this.metadataValue("telegram_webhook_checked_at"),
     );
@@ -2188,6 +2203,8 @@ export class UolTelegramShadow extends DurableObject {
       sourceDetails,
       ticketIssues: this.recentTicketDeliveryIssues(now),
       deliveryIssues: this.deliveryQueueIssues(now),
+      queueSlo,
+      queueSloBreachStreak,
       now,
     });
     const activeKeys = new Set(signals.map((signal) => signal.key));
@@ -2817,6 +2834,20 @@ export class UolTelegramShadow extends DurableObject {
     return rows.length;
   }
 
+  deliveryQueueSlo(now = new Date()) {
+    const rows = this.sqlExec(
+      `SELECT status, first_seen_at, decision_at, main_sent_at
+       FROM offers
+       WHERE status IN (
+         'delivery_pending', 'partial_delivery', 'delivery_unknown',
+         'delivery_dead_letter', 'delivery_blocked_configuration'
+       )
+       ORDER BY first_seen_at ASC
+       LIMIT 128`,
+    ).toArray();
+    return summarizeQueueSlo(rows, now);
+  }
+
   async processDeliveryQueue(
     now,
     { priorityIds = [], waitForMainImage = true, targetNames = [] } = {},
@@ -2830,11 +2861,29 @@ export class UolTelegramShadow extends DurableObject {
     const generation = this.currentDeliveryGeneration();
     const priorityList = [...new Set(priorityIds)].slice(0, 100);
     const priority = new Set(priorityList);
-    const allowedTargets = [...new Set(targetNames)].filter(
+    const requestedTargets = [...new Set(targetNames)].filter(
       (target) => ["main", "canal2", "discord"].includes(target),
     );
+    const queueSlo = this.deliveryQueueSlo(now);
+    const budget = chooseDeliveryBudget({
+      storageReadBudget: this.storageUsageSnapshot(now),
+      queueSlo,
+      configuredBatch: envNumber(this.env, "DELIVERY_BATCH_SIZE", 4, 1, 8),
+      configuredConcurrency: envNumber(this.env, "DELIVERY_CONCURRENCY", 6, 1, 6),
+    });
+    if (budget.deferSecondary && requestedTargets.length && !requestedTargets.includes("main")) {
+      return {
+        mainSent: 0,
+        canal2Sent: 0,
+        discordSent: 0,
+        failed: 0,
+        deferred: true,
+        deferredReason: budget.reason,
+      };
+    }
+    const allowedTargets = budget.deferSecondary ? ["main"] : requestedTargets;
     const batchSize = Math.max(
-      envNumber(this.env, "DELIVERY_BATCH_SIZE", 4, 1, 8),
+      budget.batchSize,
       Math.min(100, priority.size),
     );
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
@@ -2992,7 +3041,7 @@ export class UolTelegramShadow extends DurableObject {
       Number(priority.has(right.row.id)) - Number(priority.has(left.row.id)) ||
       String(left.row.first_seen_at).localeCompare(String(right.row.first_seen_at))
     ));
-    const concurrency = envNumber(this.env, "DELIVERY_CONCURRENCY", 6, 1, 6);
+    const concurrency = budget.concurrency;
     const selected = actionable.slice(0, batchSize).map(({ row, classification }) => {
       const offer = rowToOffer(row);
       const imageProxyUrl = String(row.discord_image_proxy_url || "").trim();
@@ -5960,6 +6009,7 @@ export class UolTelegramShadow extends DurableObject {
     const storageReadBudget = this.storageUsageSnapshot(new Date(now));
     const storageReadBudgetHealthy = storageReadBudget.withinFreeTier &&
       storageReadBudget.maintenanceAllowed;
+    const queueSlo = this.deliveryQueueSlo(new Date(now));
     const ok = Boolean(
       modeLive && alarmFresh && scanFresh && maintenanceFresh && deliveryConfigured &&
       criticalIncidents === 0 && deadLetters === 0 && unknown === 0 &&
@@ -5983,6 +6033,7 @@ export class UolTelegramShadow extends DurableObject {
         maintenanceDeadLetters,
         storageReadBudgetHealthy,
       },
+      queueSlo,
       storageReadBudget,
       lastScanAt: Number.isFinite(lastScanAt) ? new Date(lastScanAt).toISOString() : "",
       checkedAt: new Date(now).toISOString(),
