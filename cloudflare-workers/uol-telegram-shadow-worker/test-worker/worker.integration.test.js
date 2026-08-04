@@ -250,7 +250,6 @@ describe("UOL Worker no runtime Cloudflare", () => {
       ok: true,
       worker: "uol-telegram-shadow-pilot",
       mode: "shadow",
-      alarmScheduledAt: "",
       counts: { tracked: 0 },
     });
 
