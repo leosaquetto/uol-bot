@@ -5395,6 +5395,10 @@ export class UolTelegramShadow extends DurableObject {
       3_600,
     );
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    // A public health check is also a safe recovery point after a deploy or a
+    // transient alarm failure. It only writes when the primary alarm is
+    // missing/overdue; normal checks remain read-only.
+    await this.ensureAlarm();
     const alarm = await this.ctx.storage.getAlarm();
     const alarmFresh = Number.isFinite(alarm) && alarm >= now - intervalSeconds * 2_000;
     const lastRun = this.sqlExec(
