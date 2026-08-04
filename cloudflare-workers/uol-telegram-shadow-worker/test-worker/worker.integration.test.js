@@ -216,7 +216,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
       worker: "uol-telegram-shadow-pilot",
       mode: "shadow",
       checks: {
-        alarmFresh: false,
+        alarmFresh: true,
         scanFresh: false,
         deliveryConfigured: false,
       },
