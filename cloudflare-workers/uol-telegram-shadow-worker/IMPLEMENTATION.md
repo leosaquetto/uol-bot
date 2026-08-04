@@ -65,11 +65,14 @@ A proteção adicionada ao caminho invisível é composta por quatro camadas:
   estado, sem criar notificações repetidas de CI;
 - o sidecar `delivery_events` (schema v20) guarda tentativa, sucesso, falha,
   `unknown`, edição, recuperação e mensagem ausente com chave idempotente e
-  retenção limitada, sem alterar a tabela `offers`;
+  retenção limitada, sem alterar a tabela `offers`. Cada manutenção lê no
+  máximo 32 eventos recentes, recalcula o agregado a partir das colunas
+  autoritativas e não repete resultados ambíguos;
 - a fila calcula idade/p95 e cede comentários, imagens e reconciliações antes de
   consumir a reserva de leituras do tier gratuito, mantendo a oferta nova e o
   principal prioritários;
-- o canário valida `beneficios`, URL pública e título antes do mapeamento. Uma
+- o canário valida `beneficios`, URL pública e título antes do mapeamento e
+  publica um sinal crítico sanitizado via `contractHealthSignal`. Uma
   resposta não parseável preserva o inventário anterior, aciona fallback HTML e
   abre incidente crítico sanitizado; uma resposta vazia, porém corretamente
   estruturada, é válida.

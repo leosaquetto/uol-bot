@@ -1,4 +1,5 @@
 import { cleanText } from "./core.js";
+import { contractHealthSignal } from "./uol-contract.js";
 
 function elapsedMs(from, to) {
   const start = Date.parse(String(from || ""));
@@ -51,6 +52,7 @@ export function buildLatencyMetrics(rows, now = new Date()) {
 export function buildIncidentSignals({
   apiError = "",
   apiFailureStreak = 0,
+  apiContract = null,
   apiAuthorizationExpiresAt = "",
   webhookUrlMatches = true,
   webhookPendingUpdates = 0,
@@ -73,12 +75,20 @@ export function buildIncidentSignals({
     .test(normalizedApiError);
   const authorizationFailure = /(?:401|403|unauthor|forbidden|token|authorization)/i
     .test(normalizedApiError);
-  if (apiContractFailure) {
+  const contractSignal = contractHealthSignal(apiContract) || (apiContractFailure
+    ? contractHealthSignal({
+      ok: false,
+      reason: normalizedApiError.match(/uol_api_contract_invalid:([^:]+)/i)?.[1] ||
+        (normalizedApiError.includes("json_invalido") ? "json_invalid" : "invalid"),
+      total: normalizedApiError.match(/total=(\d+)/i)?.[1] || 0,
+      valid: normalizedApiError.match(/valid=(\d+)/i)?.[1] || 0,
+      invalid: normalizedApiError.match(/invalid=(\d+)/i)?.[1] || 0,
+    })
+    : null);
+  if (contractSignal) {
     signals.push({
-      key: "ticket-api-contract",
-      severity: "critical",
-      summary: "A API de ofertas mudou de contrato ou retornou dados inválidos",
-      details: `${apiFailureStreak} ciclo(s): ${normalizedApiError}`,
+      ...contractSignal,
+      details: `${apiFailureStreak} ciclo(s): ${normalizedApiError || contractSignal.details}`,
     });
   } else if (normalizedApiError && (authorizationFailure || apiFailureStreak >= 3)) {
     signals.push({

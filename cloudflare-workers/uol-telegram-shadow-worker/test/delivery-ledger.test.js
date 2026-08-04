@@ -3,6 +3,7 @@ import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
 import {
   deliveryEventKey,
+  boundedReconciliationCandidates,
   recordDeliveryEvent,
   summarizeDeliveryTimeline,
   trimDeliveryEvents,
@@ -126,4 +127,17 @@ test("mantém eventos recentes por oferta e resume timeline sanitizada", () => {
     },
   ]);
   database.close();
+});
+
+test("seleciona no máximo 32 ofertas únicas para reconciliação, na ordem do último evento", () => {
+  const rows = Array.from({ length: 40 }, (_, index) => ({
+    event_id: 100 - index,
+    offer_id: `oferta-${index % 35}`,
+    status: index % 2 ? "partial_delivery" : "delivery_unknown",
+  }));
+  const candidates = boundedReconciliationCandidates(rows, 32);
+  assert.equal(candidates.length, 32);
+  assert.equal(candidates[0].event_id, 100);
+  assert.equal(new Set(candidates.map((row) => row.offer_id)).size, 32);
+  assert.equal(candidates.at(-1).offer_id, "oferta-31");
 });

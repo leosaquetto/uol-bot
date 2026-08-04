@@ -63,7 +63,7 @@ test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", (
   assert.match(probes, /link LIKE '%\/campanhasdeingresso\/%'/);
   assert.match(probes, /TICKET_SOLD_OUT_PROBE_DAILY_LIMIT/);
   assert.match(probes, /TICKET_SOLD_OUT_PROBES_PER_SCAN/);
-  assert.match(probes, /probeTicketOfferUrl\(row\.link\)/);
+  assert.match(probes, /probeTicketOfferUrl\(row\.link(?:,\s*fetchImpl)?\)/);
   assert.match(probes, /processSoldOutSync\(now, \{ onlyIds: \[row\.id\] \}/);
   assert.match(probes, /processDiscordAvailabilitySync\(now, 1, \{[\s\S]*onlyIds: \[row\.id\]/);
   assert.match(probes, /global_home_redirect/);

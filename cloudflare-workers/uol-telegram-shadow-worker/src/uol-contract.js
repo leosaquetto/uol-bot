@@ -3,6 +3,21 @@ const PUBLIC_BASE = `https://${PUBLIC_HOST}`;
 const FIELD_SAMPLE_LIMIT = 12;
 const FIELD_LIMIT = 32;
 
+export function contractHealthSignal(result = {}) {
+  if (result?.ok !== false) return null;
+  return {
+    key: "ticket-api-contract",
+    severity: "critical",
+    summary: "A API de ofertas mudou de contrato ou retornou dados inválidos",
+    details: [
+      `motivo: ${String(result.reason || "invalid")}`,
+      `total: ${Number(result.total || 0)}`,
+      `válidas: ${Number(result.valid || 0)}`,
+      `inválidas: ${Number(result.invalid || 0)}`,
+    ].join("; "),
+  };
+}
+
 function publicOfferUrl(value) {
   if (!String(value || "").trim()) return false;
   try {

@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { validateTicketApiPayload } from "../src/uol-contract.js";
+import {
+  contractHealthSignal,
+  validateTicketApiPayload,
+} from "../src/uol-contract.js";
 
 test("aceita payload de benefícios com oferta pública válida", () => {
   const result = validateTicketApiPayload({
@@ -65,4 +68,21 @@ test("considera lista vazia um contrato válido", () => {
     invalid: 0,
     fields: [],
   });
+});
+
+test("converte falha de contrato em sinal crítico sanitizado", () => {
+  assert.deepEqual(contractHealthSignal({
+    ok: false,
+    reason: "no_parseable_offers",
+    total: 4,
+    valid: 0,
+    invalid: 4,
+    fields: ["titulo", "url"],
+  }), {
+    key: "ticket-api-contract",
+    severity: "critical",
+    summary: "A API de ofertas mudou de contrato ou retornou dados inválidos",
+    details: "motivo: no_parseable_offers; total: 4; válidas: 0; inválidas: 4",
+  });
+  assert.equal(contractHealthSignal({ ok: true }), null);
 });

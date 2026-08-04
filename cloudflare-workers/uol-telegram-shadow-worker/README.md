@@ -106,8 +106,9 @@ agenda coleta. Estado de produção exige verificação própria.
 - **Ledger e proteção:** cada tentativa, sucesso, falha, resultado incerto,
   edição, recuperação e mensagem ausente entra no sidecar `delivery_events`, sem
   adicionar colunas à tabela de ofertas. O ledger é idempotente e limitado por
-  oferta; `/decisions` e `/inventory` expõem apenas a linha do tempo sanitizada
-  quando autenticados.
+  oferta; cada manutenção reconcilia no máximo 32 eventos recentes usando o
+  estado autoritativo, sem repetir um resultado ambíguo. `/decisions` e
+  `/inventory` expõem apenas a linha do tempo sanitizada quando autenticados.
 - **SLO e cota:** a fila mede idade e p95; novas entregas e o principal mantêm
   prioridade, enquanto comentários, imagens e manutenção secundária cedem antes
   da reserva de leituras do tier gratuito. Um alerta só abre após três violações

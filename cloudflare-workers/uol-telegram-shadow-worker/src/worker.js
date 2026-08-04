@@ -69,6 +69,7 @@ import {
   isAmbiguousDeliveryError,
 } from "./delivery-state.js";
 import {
+  boundedReconciliationCandidates,
   recordDeliveryEvent as writeDeliveryEvent,
   summarizeDeliveryTimeline,
   trimDeliveryEvents,
@@ -1240,6 +1241,105 @@ export class UolTelegramShadow extends DurableObject {
     }
   }
 
+  reconcileDeliveryLedger(now = new Date(), limit = 32) {
+    const boundedLimit = Math.min(32, Math.max(1, Number(limit) || 32));
+    const result = {
+      candidates: 0,
+      reconciled: 0,
+      maintenance: 0,
+      resolved: 0,
+      unknown: 0,
+    };
+    try {
+      const rows = this.sqlExec(
+        `SELECT e.id AS event_id, e.offer_id, e.state AS event_state,
+                e.occurred_at, o.status, o.delivery_generation,
+                o.would_send_canal2, o.main_message_id, o.canal2_message_id,
+                o.main_sold_out_synced_at, o.canal2_sold_out_synced_at,
+                o.main_restock_synced_at, o.canal2_restock_synced_at
+         FROM delivery_events AS e
+         JOIN offers AS o ON o.id = e.offer_id
+         WHERE e.operation <> 'reconciliation'
+           AND o.status IN (
+             'delivery_pending', 'partial_delivery', 'delivery_unknown',
+             'delivery_dead_letter', 'delivery_blocked_configuration',
+             'sold_out', 'restocked_pending_sync'
+           )
+         ORDER BY e.occurred_at DESC, e.id DESC
+         LIMIT ?`,
+        boundedLimit,
+      ).toArray();
+      const candidates = boundedReconciliationCandidates(rows, boundedLimit);
+      result.candidates = candidates.length;
+      const deliveryStatuses = new Set([
+        "delivery_pending",
+        "partial_delivery",
+        "delivery_unknown",
+        "delivery_dead_letter",
+        "delivery_blocked_configuration",
+      ]);
+      for (const candidate of candidates) {
+        if (deliveryStatuses.has(String(candidate.status || ""))) {
+          const refreshed = this.refreshDeliveryStatus(candidate.offer_id, now);
+          const state = String(refreshed?.classification?.state || "pending");
+          const ledgerState = state === "complete"
+            ? "resolved"
+            : state === "unknown"
+              ? "unknown"
+              : state === "dead_letter"
+                ? "dead_letter"
+                : state === "blocked_configuration"
+                  ? "blocked_configuration"
+                  : "pending";
+          this.recordDeliveryLedgerEvent({
+            dedupeKey: `ledger-reconcile|${candidate.offer_id}|${candidate.event_id}|${ledgerState}`,
+            offerId: candidate.offer_id,
+            target: "aggregate",
+            operation: "reconciliation",
+            state: ledgerState,
+            attempt: Number(candidate.event_id || 0),
+            generation: Number(candidate.delivery_generation || 1),
+            occurredAt: now.toISOString(),
+          });
+          result.reconciled += 1;
+          if (ledgerState === "resolved") result.resolved += 1;
+          if (ledgerState === "unknown") result.unknown += 1;
+          continue;
+        }
+
+        const soldOut = candidate.status === "sold_out";
+        const maintenancePending = soldOut
+          ? !candidate.main_sold_out_synced_at || Boolean(
+            candidate.would_send_canal2 && candidate.canal2_message_id > 0 &&
+            !candidate.canal2_sold_out_synced_at,
+          )
+          : !candidate.main_restock_synced_at || Boolean(
+            candidate.would_send_canal2 && candidate.canal2_message_id > 0 &&
+            !candidate.canal2_restock_synced_at,
+          );
+        this.recordDeliveryLedgerEvent({
+          dedupeKey: `ledger-reconcile|${candidate.offer_id}|${candidate.event_id}|` +
+            `${maintenancePending ? "maintenance_pending" : "maintenance_synced"}`,
+          offerId: candidate.offer_id,
+          target: "aggregate",
+          operation: "reconciliation",
+          state: maintenancePending ? "maintenance_pending" : "maintenance_synced",
+          attempt: Number(candidate.event_id || 0),
+          generation: Number(candidate.delivery_generation || 1),
+          occurredAt: now.toISOString(),
+        });
+        result.maintenance += 1;
+      }
+    } catch (error) {
+      // Ledger is auxiliary. A missing/invalid sidecar must never block the
+      // critical delivery and sold-out maintenance paths.
+      logEvent("warn", "uol_delivery_ledger_reconcile_failed", {
+        error: sanitizeError(error),
+      });
+    }
+    return result;
+  }
+
   runtimeSnapshot(name) {
     if (this.runtimeSnapshotCache.has(name)) return this.runtimeSnapshotCache.get(name);
     const snapshot = parseRuntimeSnapshot(this.metadataValue(`runtime:${name}`));
@@ -2145,6 +2245,7 @@ export class UolTelegramShadow extends DurableObject {
 
   async processOperationalHealth(now = new Date()) {
     const api = this.runtimeSnapshot("api");
+    const apiContract = this.runtimeSnapshot("api_contract");
     const sourceHealth = this.runtimeSnapshot("source_health");
     const webhook = this.runtimeSnapshot("webhook");
     const apiFailureStreak = Number(
@@ -2180,6 +2281,7 @@ export class UolTelegramShadow extends DurableObject {
     const signals = buildIncidentSignals({
       apiError: api.lastError ?? this.metadataValue("api_last_error"),
       apiFailureStreak,
+      apiContract,
       apiAuthorizationExpiresAt: authorizationExpiresAt(this.env.UOL_API_AUTHORIZATION),
       webhookUrlMatches: !webhookChecked ||
         (webhook.urlMatches ?? this.metadataValue("telegram_webhook_url_matches") === "true"),
@@ -4330,7 +4432,7 @@ export class UolTelegramShadow extends DurableObject {
     return { mainEdited, canal2Edited, mainReposted, canal2Reposted, failed };
   }
 
-  async processTicketAvailabilityProbes(now = new Date()) {
+  async processTicketAvailabilityProbes(now = new Date(), { fetchImpl = fetch } = {}) {
     const empty = {
       probed: 0,
       confirmed: 0,
@@ -4373,7 +4475,7 @@ export class UolTelegramShadow extends DurableObject {
     const result = { ...empty };
 
     for (const row of rows) {
-      const probe = await probeTicketOfferUrl(row.link);
+      const probe = await probeTicketOfferUrl(row.link, fetchImpl);
       this.storageUsage.ticketProbeCount = Number(this.storageUsage.ticketProbeCount || 0) + 1;
       result.probed += 1;
 
@@ -5006,6 +5108,7 @@ export class UolTelegramShadow extends DurableObject {
       restockCanal2Reposted: 0,
       restockDiscordEdited: 0,
       soldOutMessageMissing: 0,
+      deliveryReconciled: 0,
       maintenanceRepairs: 0,
       deliveryFailed: 0,
       mainImagesUpgraded: 0,
@@ -5017,6 +5120,9 @@ export class UolTelegramShadow extends DurableObject {
 
     try {
       const now = new Date();
+      const ledgerReconciliation = this.reconcileDeliveryLedger(now, 32);
+      result.deliveryReconciled = ledgerReconciliation.reconciled +
+        ledgerReconciliation.maintenance;
       const initializedAt = this.metadataValue("initialized_at");
       const api = this.runtimeSnapshot("api");
       const html = this.runtimeSnapshot("html");
@@ -5230,7 +5336,7 @@ export class UolTelegramShadow extends DurableObject {
         result.soldOutDiscordEdited || result.restockDiscordEdited ||
         result.restockMainEdited || result.restockCanal2Edited ||
         result.restockMainReposted || result.restockCanal2Reposted ||
-        result.soldOutMessageMissing || result.maintenanceRepairs
+        result.soldOutMessageMissing || result.deliveryReconciled || result.maintenanceRepairs
       ) {
         result.outcome = "maintenance_applied";
       }

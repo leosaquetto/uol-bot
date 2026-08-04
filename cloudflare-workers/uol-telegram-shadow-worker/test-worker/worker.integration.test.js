@@ -74,6 +74,51 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("reconcilia no máximo 32 ofertas pelo ledger sem repetir entrega ambígua", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("bounded-ledger-reconciliation");
+    await runInDurableObject(stub, async (instance, state) => {
+      for (let index = 0; index < 40; index += 1) {
+        const id = `ledger-reconcile-${String(index).padStart(2, "0")}`;
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, first_seen_at, last_seen_at, status,
+             delivery_generation
+           ) VALUES (?, ?, ?, ?, ?, 'partial_delivery', 1)`,
+          id,
+          `https://clube.uol.com.br/beneficios/${id}`,
+          "Oferta de reconciliação",
+          "2026-08-04T12:00:00.000Z",
+          "2026-08-04T12:00:00.000Z",
+        );
+        state.storage.sql.exec(
+          `INSERT INTO delivery_events(
+             dedupe_key, offer_id, target, operation, state, attempt, generation,
+             occurred_at
+           ) VALUES (?, ?, 'main', 'send', 'unknown', 1, 1, ?)`,
+          `replay-${id}`,
+          id,
+          `2026-08-04T12:${String(index).padStart(2, "0")}:00.000Z`,
+        );
+      }
+      const refreshed = [];
+      instance.refreshDeliveryStatus = (id) => {
+        refreshed.push(id);
+        return { classification: { state: "unknown" } };
+      };
+      const result = instance.reconcileDeliveryLedger(
+        new Date("2026-08-04T13:00:00.000Z"),
+        32,
+      );
+      expect(result).toMatchObject({ candidates: 32, reconciled: 32, unknown: 32 });
+      expect(refreshed).toHaveLength(32);
+      const reconciliationEvents = state.storage.sql.exec(
+        `SELECT COUNT(*) AS count FROM delivery_events
+         WHERE operation = 'reconciliation'`,
+      ).one();
+      expect(Number(reconciliationEvents.count)).toBe(32);
+    });
+  });
+
   it("envia Discord, principal e canal 2 no ciclo rápido sem aguardar manutenção", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-fast-path");
     const deliveryCalls = [];
@@ -193,6 +238,61 @@ describe("UOL Worker no runtime Cloudflare", () => {
         main_delivery_unknown_at: "",
         delivery_unknown_target: "",
       });
+    });
+  });
+
+  it("reproduz duas sondas rápidas de ingresso pelo método de produção", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ticket-probe-replay");
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.setMetadata("delivery_mode_override", "live");
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, first_seen_at, last_seen_at, status,
+           main_sent_at, main_message_id
+         ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, 101)`,
+        "ticket-replay-1",
+        "https://clube.uol.com.br/campanhasdeingresso/pReplay-ticket",
+        "2 INGRESSOS: Replay",
+        "2026-08-04T15:00:00.000Z",
+        "2026-08-04T15:00:00.000Z",
+        "2026-08-04T15:00:00.000Z",
+      );
+      state.storage.sql.exec(
+        `INSERT INTO ticket_probe_state(offer_id, next_at)
+         VALUES (?, ?)`,
+        "ticket-replay-1",
+        "2026-08-04T15:00:00.000Z",
+      );
+      instance.processSoldOutSync = async () => ({
+        mainEdited: 1,
+        canal2Edited: 0,
+        messageMissing: 0,
+        failed: 0,
+      });
+      instance.processDiscordAvailabilitySync = async () => ({
+        soldOutEdited: 1,
+        restockEdited: 0,
+        messageMissing: 0,
+        failed: 0,
+      });
+      const fetchImpl = async () => new Response("", {
+        status: 404,
+        headers: { "content-type": "text/html" },
+      });
+      const first = await instance.processTicketAvailabilityProbes(
+        new Date("2026-08-04T15:00:00.000Z"),
+        { fetchImpl },
+      );
+      expect(first).toMatchObject({ probed: 1, confirmed: 0 });
+      const second = await instance.processTicketAvailabilityProbes(
+        new Date("2026-08-04T15:00:05.000Z"),
+        { fetchImpl },
+      );
+      expect(second).toMatchObject({ probed: 1, confirmed: 1, soldOutMainEdited: 1 });
+      expect(state.storage.sql.exec(
+        "SELECT status, sold_out_at FROM offers WHERE id = ?",
+        "ticket-replay-1",
+      ).one().status).toBe("sold_out");
     });
   });
 

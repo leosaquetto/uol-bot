@@ -58,6 +58,22 @@ test("trata quebra de contrato da API como incidente crítico específico", () =
   assert.match(signals[0].summary, /contrato/);
 });
 
+test("usa o snapshot persistido do canário sem depender do texto do erro", () => {
+  const [signal] = buildIncidentSignals({
+    apiContract: {
+      ok: false,
+      reason: "beneficios_missing",
+      total: 0,
+      valid: 0,
+      invalid: 0,
+      fields: [],
+    },
+    apiFailureStreak: 1,
+  });
+  assert.equal(signal.key, "ticket-api-contract");
+  assert.match(signal.details, /beneficios_missing/);
+});
+
 test("falha de autorização é crítica imediatamente e sinais são deduplicáveis", () => {
   const signals = buildIncidentSignals({
     apiError: "uol_api_http_401",
