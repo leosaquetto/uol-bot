@@ -69,6 +69,7 @@ import {
   isAmbiguousDeliveryError,
 } from "./delivery-state.js";
 import { isTelegramMessageMissingError } from "./transport-error.js";
+import { classifyKnownMaintenanceRepair } from "./maintenance-repair.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
 import {
   deferredMainDeliveryState,
@@ -3303,6 +3304,64 @@ export class UolTelegramShadow extends DurableObject {
     return { mainEdited, canal2Edited, messageMissing, failed };
   }
 
+  repairKnownMaintenanceDeadLetters(now, maxAttempts) {
+    const rows = this.sqlExec(
+      `SELECT id, status,
+              main_sold_out_synced_at, main_sold_out_attempts, main_sold_out_error,
+              canal2_sold_out_synced_at, canal2_sold_out_attempts, canal2_sold_out_error
+       FROM offers
+       WHERE status = 'sold_out'
+         AND (
+           main_sold_out_attempts >= ? OR canal2_sold_out_attempts >= ?
+         )
+       ORDER BY sold_out_at ASC
+       LIMIT 32`,
+      maxAttempts,
+      maxAttempts,
+    ).toArray();
+    let mainMarkedSynced = 0;
+    let canal2Requeued = 0;
+    const repairedAt = now.toISOString();
+    for (const row of rows) {
+      const repair = classifyKnownMaintenanceRepair(row, maxAttempts);
+      if (repair.main === "mark_synced") {
+        this.sqlExec(
+          `UPDATE offers SET main_sold_out_synced_at = ?,
+             main_sold_out_error = '', main_sold_out_next_attempt_at = ''
+           WHERE id = ? AND status = 'sold_out'
+             AND main_sold_out_synced_at = ''
+             AND main_sold_out_attempts >= ?
+             AND lower(main_sold_out_error) LIKE '%message is not modified%'`,
+          repairedAt,
+          row.id,
+          maxAttempts,
+        );
+        mainMarkedSynced += 1;
+      }
+      if (repair.canal2 === "retry") {
+        this.sqlExec(
+          `UPDATE offers SET canal2_sold_out_attempts = 0,
+             canal2_sold_out_error = '', canal2_sold_out_next_attempt_at = ''
+           WHERE id = ? AND status = 'sold_out'
+             AND canal2_sold_out_synced_at = ''
+             AND canal2_sold_out_attempts >= ?
+             AND lower(canal2_sold_out_error)
+               LIKE '%there is no caption in the message to edit%'`,
+          row.id,
+          maxAttempts,
+        );
+        canal2Requeued += 1;
+      }
+    }
+    if (mainMarkedSynced || canal2Requeued) {
+      logEvent("warn", "uol_telegram_maintenance_repairs_applied", {
+        mainMarkedSynced,
+        canal2Requeued,
+      });
+    }
+    return { mainMarkedSynced, canal2Requeued };
+  }
+
   async processDiscordAvailabilitySync(now = new Date(), limit = 4) {
     if (this.currentDeliveryMode() !== "live") {
       return { soldOutEdited: 0, restockEdited: 0, messageMissing: 0, failed: 0 };
@@ -4145,6 +4204,7 @@ export class UolTelegramShadow extends DurableObject {
       restockCanal2Reposted: 0,
       restockDiscordEdited: 0,
       soldOutMessageMissing: 0,
+      maintenanceRepairs: 0,
       deliveryFailed: 0,
       mainImagesUpgraded: 0,
       imageCachesPrimed: 0,
@@ -4331,6 +4391,12 @@ export class UolTelegramShadow extends DurableObject {
       result.restockMainReposted = restock.mainReposted;
       result.restockCanal2Reposted = restock.canal2Reposted;
       result.deliveryFailed += restock.failed;
+      const maintenanceRepairs = this.repairKnownMaintenanceDeadLetters(
+        new Date(),
+        envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50),
+      );
+      result.maintenanceRepairs = maintenanceRepairs.mainMarkedSynced +
+        maintenanceRepairs.canal2Requeued;
       const soldOut = await this.processSoldOutSync(new Date());
       result.soldOutMainEdited = soldOut.mainEdited;
       result.soldOutCanal2Edited = soldOut.canal2Edited;
@@ -4362,7 +4428,7 @@ export class UolTelegramShadow extends DurableObject {
         result.soldOutDiscordEdited || result.restockDiscordEdited ||
         result.restockMainEdited || result.restockCanal2Edited ||
         result.restockMainReposted || result.restockCanal2Reposted ||
-        result.soldOutMessageMissing
+        result.soldOutMessageMissing || result.maintenanceRepairs
       ) {
         result.outcome = "maintenance_applied";
       }

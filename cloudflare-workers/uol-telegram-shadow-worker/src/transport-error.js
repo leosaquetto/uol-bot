@@ -72,6 +72,26 @@ export function isTelegramMessageMissingError(error) {
     description.includes("message to edit not found");
 }
 
+export function isTelegramMessageCaptionMissingError(error) {
+  const status = Number(error?.status || error?.httpStatus || 0);
+  const transport = String(error?.transport || "").trim().toLowerCase();
+  const operation = String(error?.operation || "").trim();
+  const description = String(error?.description || error?.message || "").toLowerCase();
+  return transport === "telegram" && status === 400 &&
+    operation === "editMessageCaption" &&
+    description.includes("there is no caption in the message to edit");
+}
+
+export function isTelegramMessageNotModifiedError(error) {
+  const status = Number(error?.status || error?.httpStatus || 0);
+  const transport = String(error?.transport || "").trim().toLowerCase();
+  const operation = String(error?.operation || "").trim();
+  const description = String(error?.description || error?.message || "").toLowerCase();
+  return transport === "telegram" && status === 400 &&
+    ["editMessageText", "editMessageCaption", "editMessageMedia"].includes(operation) &&
+    description.includes("message is not modified");
+}
+
 export function createHttpTransportError({
   transport,
   operation,

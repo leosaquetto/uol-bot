@@ -7,6 +7,8 @@ import {
   createAmbiguousResponseTransportError,
   createHttpTransportError,
   createNetworkTransportError,
+  isTelegramMessageCaptionMissingError,
+  isTelegramMessageNotModifiedError,
   shouldDeferTransportFallback,
 } from "./transport-error.js";
 
@@ -595,13 +597,35 @@ export async function editMainOfferMessage(
     parse_mode: "HTML",
   };
   if (messageKind === "photo") {
-    await telegramCall(env, "editMessageCaption", { ...common, caption }, fetchImpl);
+    try {
+      await telegramCall(env, "editMessageCaption", { ...common, caption }, fetchImpl);
+    } catch (error) {
+      if (isTelegramMessageNotModifiedError(error)) return { ok: true, noOp: true };
+      if (!isTelegramMessageCaptionMissingError(error)) throw error;
+      try {
+        await telegramCall(env, "editMessageText", {
+          ...common,
+          text: caption,
+          link_preview_options: { is_disabled: true },
+        }, fetchImpl);
+      } catch (fallbackError) {
+        if (isTelegramMessageNotModifiedError(fallbackError)) {
+          return { ok: true, noOp: true };
+        }
+        throw fallbackError;
+      }
+    }
   } else {
-    await telegramCall(env, "editMessageText", {
-      ...common,
-      text: caption,
-      link_preview_options: { is_disabled: true },
-    }, fetchImpl);
+    try {
+      await telegramCall(env, "editMessageText", {
+        ...common,
+        text: caption,
+        link_preview_options: { is_disabled: true },
+      }, fetchImpl);
+    } catch (error) {
+      if (isTelegramMessageNotModifiedError(error)) return { ok: true, noOp: true };
+      throw error;
+    }
   }
   return { ok: true };
 }
@@ -624,15 +648,38 @@ export async function editSoldOutMessage(
     parse_mode: "HTML",
   };
   if (messageKind === "photo") {
-    await telegramCall(env, "editMessageCaption", {
-      ...common,
-      caption,
-    }, fetchImpl);
+    try {
+      await telegramCall(env, "editMessageCaption", {
+        ...common,
+        caption,
+      }, fetchImpl);
+    } catch (error) {
+      if (isTelegramMessageNotModifiedError(error)) return { ok: true, noOp: true };
+      if (!isTelegramMessageCaptionMissingError(error)) throw error;
+      try {
+        await telegramCall(env, "editMessageText", {
+          ...common,
+          text: caption,
+          link_preview_options: { is_disabled: true },
+        }, fetchImpl);
+      } catch (fallbackError) {
+        if (isTelegramMessageNotModifiedError(fallbackError)) {
+          return { ok: true, noOp: true };
+        }
+        throw fallbackError;
+      }
+    }
   } else {
-    await telegramCall(env, "editMessageText", {
-      ...common,
-      text: caption,
-      link_preview_options: { is_disabled: true },
-    }, fetchImpl);
+    try {
+      await telegramCall(env, "editMessageText", {
+        ...common,
+        text: caption,
+        link_preview_options: { is_disabled: true },
+      }, fetchImpl);
+    } catch (error) {
+      if (isTelegramMessageNotModifiedError(error)) return { ok: true, noOp: true };
+      throw error;
+    }
   }
+  return { ok: true };
 }

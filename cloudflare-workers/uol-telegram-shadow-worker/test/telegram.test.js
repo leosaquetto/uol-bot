@@ -469,6 +469,50 @@ test("edita foto esgotada no canal correto", async () => {
   assert.match(payload.caption, /\[ESGOTADO\]/);
 });
 
+test("faz fallback para texto quando a cópia do canal 2 não tem legenda", async () => {
+  const methods = [];
+  await editSoldOutMessage(env, {
+    chatId: env.CANAL2_ID,
+    messageId: 99,
+    messageKind: "photo",
+    offer,
+    soldOutAt: "2026-07-30T12:34:00Z",
+  }, async (url) => {
+    const method = url.split("/").pop();
+    methods.push(method);
+    if (method === "editMessageCaption") {
+      return new Response(JSON.stringify({
+        ok: false,
+        error_code: 400,
+        description: "Bad Request: there is no caption in the message to edit",
+      }), { status: 400, headers: { "Content-Type": "application/json" } });
+    }
+    return jsonResponse({ message_id: 99 });
+  });
+  assert.deepEqual(methods, ["editMessageCaption", "editMessageText"]);
+});
+
+test("trata edição Telegram sem alteração como sincronizada", async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    return new Response(JSON.stringify({
+      ok: false,
+      error_code: 400,
+      description: "Bad Request: message is not modified",
+    }), { status: 400, headers: { "Content-Type": "application/json" } });
+  };
+  const result = await editSoldOutMessage(env, {
+    chatId: env.TELEGRAM_CHAT_ID,
+    messageId: 99,
+    messageKind: "text",
+    offer,
+    soldOutAt: "2026-07-30T12:34:00Z",
+  }, fetchImpl);
+  assert.equal(calls, 1);
+  assert.deepEqual(result, { ok: true, noOp: true });
+});
+
 test("completa a legenda urgente depois do enriquecimento", async () => {
   let method = "";
   let payload = {};
