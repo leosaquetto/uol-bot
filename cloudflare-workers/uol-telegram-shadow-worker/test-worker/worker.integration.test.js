@@ -24,7 +24,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           .one().sql,
       );
 
-      expect(version).toBeGreaterThanOrEqual(19);
+      expect(version).toBeGreaterThanOrEqual(20);
       expect(tables).toEqual(expect.arrayContaining([
         "metadata",
         "offers",
@@ -33,6 +33,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "pending_discussion_forwards",
         "discord_availability_sync",
         "ticket_probe_state",
+        "delivery_events",
       ]));
       for (const column of [
         "delivery_generation",

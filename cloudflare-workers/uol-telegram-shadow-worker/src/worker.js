@@ -68,6 +68,11 @@ import {
   deliveryRetryAt,
   isAmbiguousDeliveryError,
 } from "./delivery-state.js";
+import {
+  recordDeliveryEvent as writeDeliveryEvent,
+  summarizeDeliveryTimeline,
+  trimDeliveryEvents,
+} from "./delivery-ledger.js";
 import { isTelegramMessageMissingError } from "./transport-error.js";
 import { classifyKnownMaintenanceRepair } from "./maintenance-repair.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
@@ -1102,6 +1107,91 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (19);
       `);
     }
+    if (currentVersion < 20) {
+      this.sqlExec(`
+        CREATE TABLE IF NOT EXISTS delivery_events (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          dedupe_key TEXT NOT NULL UNIQUE,
+          offer_id TEXT NOT NULL,
+          target TEXT NOT NULL,
+          operation TEXT NOT NULL,
+          state TEXT NOT NULL,
+          attempt INTEGER NOT NULL DEFAULT 0,
+          generation INTEGER NOT NULL DEFAULT 1,
+          occurred_at TEXT NOT NULL,
+          external_id TEXT NOT NULL DEFAULT '',
+          error TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS delivery_events_offer_idx
+          ON delivery_events(offer_id, occurred_at DESC, id DESC);
+        CREATE INDEX IF NOT EXISTS delivery_events_state_idx
+          ON delivery_events(state, occurred_at DESC, id DESC);
+        INSERT OR IGNORE INTO delivery_events(
+          dedupe_key, offer_id, target, operation, state, attempt, generation,
+          occurred_at, external_id, error
+        )
+        SELECT id || '|main|snapshot|' || main_delivery_attempts || '|' ||
+               delivery_generation || '|' ||
+               CASE WHEN main_sent_at <> '' THEN 'sent'
+                    WHEN main_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               id, 'main', 'snapshot',
+               CASE WHEN main_sent_at <> '' THEN 'sent'
+                    WHEN main_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               main_delivery_attempts, delivery_generation,
+               COALESCE(NULLIF(main_sent_at, ''), NULLIF(main_delivery_unknown_at, ''), first_seen_at),
+               CAST(main_message_id AS TEXT), main_delivery_error
+        FROM offers
+        WHERE main_sent_at <> '' OR main_delivery_unknown_at <> '' OR main_delivery_error <> ''
+        UNION ALL
+        SELECT id || '|canal2|snapshot|' || canal2_delivery_attempts || '|' ||
+               delivery_generation || '|' ||
+               CASE WHEN canal2_sent_at <> '' THEN 'sent'
+                    WHEN canal2_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               id, 'canal2', 'snapshot',
+               CASE WHEN canal2_sent_at <> '' THEN 'sent'
+                    WHEN canal2_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               canal2_delivery_attempts, delivery_generation,
+               COALESCE(NULLIF(canal2_sent_at, ''), NULLIF(canal2_delivery_unknown_at, ''), first_seen_at),
+               CAST(canal2_message_id AS TEXT), canal2_delivery_error
+        FROM offers
+        WHERE canal2_sent_at <> '' OR canal2_delivery_unknown_at <> '' OR canal2_delivery_error <> ''
+        UNION ALL
+        SELECT id || '|discord|snapshot|' || discord_delivery_attempts || '|' ||
+               delivery_generation || '|' ||
+               CASE WHEN discord_sent_at <> '' THEN 'sent'
+                    WHEN discord_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               id, 'discord', 'snapshot',
+               CASE WHEN discord_sent_at <> '' THEN 'sent'
+                    WHEN discord_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               discord_delivery_attempts, delivery_generation,
+               COALESCE(NULLIF(discord_sent_at, ''), NULLIF(discord_delivery_unknown_at, ''), first_seen_at),
+               discord_message_id, discord_delivery_error
+        FROM offers
+        WHERE discord_sent_at <> '' OR discord_delivery_unknown_at <> '' OR discord_delivery_error <> ''
+        UNION ALL
+        SELECT id || '|comment|snapshot|' || comment_delivery_attempts || '|' ||
+               delivery_generation || '|' ||
+               CASE WHEN comment_sent_at <> '' THEN 'sent'
+                    WHEN comment_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               id, 'comment', 'snapshot',
+               CASE WHEN comment_sent_at <> '' THEN 'sent'
+                    WHEN comment_delivery_unknown_at <> '' THEN 'unknown'
+                    ELSE 'failed' END,
+               comment_delivery_attempts, delivery_generation,
+               COALESCE(NULLIF(comment_sent_at, ''), NULLIF(comment_delivery_unknown_at, ''), first_seen_at),
+               CAST(discussion_message_id AS TEXT), comment_delivery_error
+        FROM offers
+        WHERE comment_sent_at <> '' OR comment_delivery_unknown_at <> '' OR comment_delivery_error <> '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (20);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -1129,6 +1219,24 @@ export class UolTelegramShadow extends DurableObject {
     if (this.metadataValue(key) === normalized) return false;
     this.setMetadata(key, normalized);
     return true;
+  }
+
+  recordDeliveryLedgerEvent(event) {
+    try {
+      const recorded = writeDeliveryEvent(this.sqlExec.bind(this), event);
+      if (recorded) {
+        trimDeliveryEvents(this.sqlExec.bind(this), event.offerId, 240);
+      }
+      return recorded;
+    } catch (error) {
+      // O ledger is observabilidade auxiliar: uma falha nele nunca pode
+      // interromper a entrega já confirmada ou transformar um resultado em
+      // retry duplicado.
+      logEvent("warn", "uol_delivery_ledger_write_failed", {
+        error: sanitizeError(error),
+      });
+      return false;
+    }
   }
 
   runtimeSnapshot(name) {
@@ -2610,7 +2718,9 @@ export class UolTelegramShadow extends DurableObject {
     ].filter(Boolean).filter(
       (target, index, values) => values.indexOf(target) === index,
     );
+    let reconciledStatus = row.status;
     if (unknownTargets.length) {
+      reconciledStatus = "delivery_unknown";
       this.sqlExec(
         `UPDATE offers SET status = 'delivery_unknown',
            delivery_unknown_at = CASE
@@ -2621,6 +2731,7 @@ export class UolTelegramShadow extends DurableObject {
         row.id,
       );
     } else if (classification.state === "complete") {
+      reconciledStatus = "delivered";
       this.sqlExec(
         `UPDATE offers SET status = 'delivered', delivery_dead_letter_at = '',
            delivery_dead_letter_reason = '', delivery_unknown_at = '',
@@ -2628,6 +2739,7 @@ export class UolTelegramShadow extends DurableObject {
         row.id,
       );
     } else if (classification.state === "dead_letter") {
+      reconciledStatus = "delivery_dead_letter";
       this.sqlExec(
         `UPDATE offers SET status = 'delivery_dead_letter',
            delivery_dead_letter_at = CASE
@@ -2637,19 +2749,32 @@ export class UolTelegramShadow extends DurableObject {
         row.id,
       );
     } else if (classification.state === "blocked_configuration") {
+      reconciledStatus = "delivery_blocked_configuration";
       this.sqlExec(
         `UPDATE offers SET status = 'delivery_blocked_configuration',
            delivery_dead_letter_reason = 'delivery_configuration_incomplete' WHERE id = ?`,
         row.id,
       );
     } else {
+      reconciledStatus = row.main_sent_at ? "partial_delivery" : "delivery_pending";
       this.sqlExec(
         `UPDATE offers SET status = ?, delivery_dead_letter_at = '',
            delivery_dead_letter_reason = '', delivery_unknown_at = '',
            delivery_unknown_target = '' WHERE id = ?`,
-        row.main_sent_at ? "partial_delivery" : "delivery_pending",
+        reconciledStatus,
         row.id,
       );
+    }
+    if (reconciledStatus !== row.status) {
+      this.recordDeliveryLedgerEvent({
+        offerId: row.id,
+        target: "aggregate",
+        operation: "reconciliation",
+        state: reconciledStatus,
+        attempt: 0,
+        generation: row.delivery_generation,
+        occurredAt: now.toISOString(),
+      });
     }
     return { row, classification, unknownTargets };
   }
@@ -2796,6 +2921,15 @@ export class UolTelegramShadow extends DurableObject {
         attemptedAt,
         rowId,
       );
+      this.recordDeliveryLedgerEvent({
+        offerId: rowId,
+        target,
+        operation: "delivery",
+        state: "attempt_started",
+        attempt: attempts,
+        generation,
+        occurredAt: attemptedAt,
+      });
     };
 
     const recordFailure = (rowId, target, attempts, error) => {
@@ -2809,19 +2943,31 @@ export class UolTelegramShadow extends DurableObject {
       }[target];
       const message = sanitizeError(error);
       if (isAmbiguousDeliveryError(error)) {
+        const unknownAt = new Date().toISOString();
         this.sqlExec(
           `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '',
              ${columns[2]} = '', ${columns[3]} = ?,
              status = 'delivery_unknown', delivery_unknown_at = ?,
              delivery_unknown_target = ? WHERE id = ?`,
           `ambiguous:${message}`.slice(0, 240),
-          new Date().toISOString(),
-          new Date().toISOString(),
+          unknownAt,
+          unknownAt,
           target,
           rowId,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: rowId,
+          target,
+          operation: "delivery",
+          state: "unknown",
+          attempt: attempts,
+          generation,
+          occurredAt: unknownAt,
+          error: `ambiguous:${message}`,
+        });
         return "unknown";
       }
+      const failedAt = new Date().toISOString();
       this.sqlExec(
         `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '', ${columns[2]} = ?
          WHERE id = ?`,
@@ -2829,6 +2975,16 @@ export class UolTelegramShadow extends DurableObject {
         deliveryRetryAt(error, attempts),
         rowId,
       );
+      this.recordDeliveryLedgerEvent({
+        offerId: rowId,
+        target,
+        operation: "delivery",
+        state: "failed",
+        attempt: attempts,
+        generation,
+        occurredAt: failedAt,
+        error: message,
+      });
       return "retry";
     };
 
@@ -2891,6 +3047,15 @@ export class UolTelegramShadow extends DurableObject {
             deferred.nextAttemptAt,
             entry.row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: entry.row.id,
+            target: "main",
+            operation: "image",
+            state: "deferred",
+            attempt: attempts,
+            generation,
+            occurredAt: new Date().toISOString(),
+          });
           return;
         }
         if (!result.messageId) {
@@ -2914,6 +3079,16 @@ export class UolTelegramShadow extends DurableObject {
             : "",
           entry.row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: entry.row.id,
+          target: "main",
+          operation: "delivery",
+          state: "sent",
+          attempt: attempts,
+          generation,
+          occurredAt: sentAt,
+          externalId: String(result.messageId),
+        });
         this.scheduleTicketProbe(
           entry.row.id,
           ticketProbeNextAt(this.env, sentAt),
@@ -2963,6 +3138,16 @@ export class UolTelegramShadow extends DurableObject {
           new Date().toISOString(),
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "canal2",
+          operation: "delivery",
+          state: "sent",
+          attempt: attempts,
+          generation,
+          occurredAt: new Date().toISOString(),
+          externalId: String(result.messageId),
+        });
         canal2Sent += 1;
       } catch (error) {
         recordFailure(row.id, "canal2", attempts, error);
@@ -3005,6 +3190,16 @@ export class UolTelegramShadow extends DurableObject {
           result.imageProxyUrl || "",
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "discord",
+          operation: "delivery",
+          state: "sent",
+          attempt: attempts,
+          generation,
+          occurredAt: new Date().toISOString(),
+          externalId: String(result.messageId),
+        });
         discordSent += 1;
       } catch (error) {
         recordFailure(row.id, "discord", attempts, error);
@@ -3108,6 +3303,15 @@ export class UolTelegramShadow extends DurableObject {
             new Date().toISOString(),
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "comment",
+            operation: "comment",
+            state: "attempt_started",
+            attempt: attempts,
+            generation,
+            occurredAt: new Date().toISOString(),
+          });
           const result = await sendDiscussionComment(
             this.env,
             chunks[index],
@@ -3127,6 +3331,16 @@ export class UolTelegramShadow extends DurableObject {
             sentCount,
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "comment",
+            operation: "comment",
+            state: "chunk_sent",
+            attempt: attempts,
+            generation,
+            occurredAt: new Date().toISOString(),
+            externalId: String(result.messageId),
+          });
         }
         if (interrupted) continue;
         this.sqlExec(
@@ -3136,19 +3350,41 @@ export class UolTelegramShadow extends DurableObject {
           new Date().toISOString(),
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "comment",
+          operation: "comment",
+          state: "sent",
+          attempt: attempts,
+          generation,
+          occurredAt: new Date().toISOString(),
+          externalId: String(messageIds.at(-1) || ""),
+        });
         sent += 1;
       } catch (error) {
         const message = sanitizeError(error);
         if (isAmbiguousDeliveryError(error)) {
+          const unknownAt = new Date().toISOString();
           this.sqlExec(
             `UPDATE offers SET comment_delivery_error = ?,
                comment_delivery_in_flight_at = '', comment_delivery_unknown_at = ?
              WHERE id = ?`,
             `ambiguous:${message}`.slice(0, 240),
-            new Date().toISOString(),
+            unknownAt,
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "comment",
+            operation: "comment",
+            state: "unknown",
+            attempt: attempts,
+            generation,
+            occurredAt: unknownAt,
+            error: `ambiguous:${message}`,
+          });
         } else {
+          const failedAt = new Date().toISOString();
           this.sqlExec(
             `UPDATE offers SET comment_delivery_error = ?,
                comment_delivery_in_flight_at = '', comment_delivery_next_attempt_at = ?
@@ -3157,6 +3393,16 @@ export class UolTelegramShadow extends DurableObject {
             deliveryRetryAt(error, attempts),
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "comment",
+            operation: "comment",
+            state: "failed",
+            attempt: attempts,
+            generation,
+            occurredAt: failedAt,
+            error: message,
+          });
         }
         failed += 1;
       }
@@ -3261,6 +3507,15 @@ export class UolTelegramShadow extends DurableObject {
           attempts,
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "main",
+          operation: "sold_out",
+          state: "attempt_started",
+          attempt: attempts,
+          generation: row.delivery_generation,
+          occurredAt: now.toISOString(),
+        });
         try {
           await editSoldOutMessage(this.env, {
             chatId: String(this.env.TELEGRAM_CHAT_ID || ""),
@@ -3277,6 +3532,16 @@ export class UolTelegramShadow extends DurableObject {
             now.toISOString(),
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "main",
+            operation: "sold_out",
+            state: "synced",
+            attempt: attempts,
+            generation: row.delivery_generation,
+            occurredAt: now.toISOString(),
+            externalId: String(row.main_message_id),
+          });
           mainEdited += 1;
         } catch (error) {
           if (isTelegramMessageMissingError(error)) {
@@ -3292,11 +3557,22 @@ export class UolTelegramShadow extends DurableObject {
               offerId: row.id,
               target: "main",
             });
+            this.recordDeliveryLedgerEvent({
+              offerId: row.id,
+              target: "main",
+              operation: "sold_out",
+              state: "resolved_missing",
+              attempt: attempts,
+              generation: row.delivery_generation,
+              occurredAt: now.toISOString(),
+              externalId: String(row.main_message_id),
+            });
             this.resolveIncidentWithoutAlert(
               `delivery-queue:${row.id}:main_sold_out`,
               now,
             );
           } else {
+            const retryState = isAmbiguousDeliveryError(error) ? "unknown" : "failed";
             this.sqlExec(
               `UPDATE offers SET main_sold_out_error = ?,
                  main_sold_out_next_attempt_at = ? WHERE id = ?`,
@@ -3304,6 +3580,17 @@ export class UolTelegramShadow extends DurableObject {
               deliveryRetryAt(error, attempts, now),
               row.id,
             );
+            this.recordDeliveryLedgerEvent({
+              offerId: row.id,
+              target: "main",
+              operation: "sold_out",
+              state: retryState,
+              attempt: attempts,
+              generation: row.delivery_generation,
+              occurredAt: now.toISOString(),
+              externalId: String(row.main_message_id),
+              error: sanitizeError(error),
+            });
             failed += 1;
           }
         }
@@ -3324,6 +3611,15 @@ export class UolTelegramShadow extends DurableObject {
           attempts,
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "canal2",
+          operation: "sold_out",
+          state: "attempt_started",
+          attempt: attempts,
+          generation: row.delivery_generation,
+          occurredAt: now.toISOString(),
+        });
         try {
           await editSoldOutMessage(this.env, {
             chatId: String(this.env.CANAL2_ID || ""),
@@ -3340,6 +3636,16 @@ export class UolTelegramShadow extends DurableObject {
             now.toISOString(),
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "canal2",
+            operation: "sold_out",
+            state: "synced",
+            attempt: attempts,
+            generation: row.delivery_generation,
+            occurredAt: now.toISOString(),
+            externalId: String(row.canal2_message_id),
+          });
           canal2Edited += 1;
         } catch (error) {
           if (isTelegramMessageMissingError(error)) {
@@ -3355,6 +3661,16 @@ export class UolTelegramShadow extends DurableObject {
               offerId: row.id,
               target: "canal2",
             });
+            this.recordDeliveryLedgerEvent({
+              offerId: row.id,
+              target: "canal2",
+              operation: "sold_out",
+              state: "resolved_missing",
+              attempt: attempts,
+              generation: row.delivery_generation,
+              occurredAt: now.toISOString(),
+              externalId: String(row.canal2_message_id),
+            });
             this.resolveIncidentWithoutAlert(
               `delivery-queue:${row.id}:canal2_sold_out`,
               now,
@@ -3369,6 +3685,17 @@ export class UolTelegramShadow extends DurableObject {
               deliveryRetryAt(error, attempts, now),
               row.id,
             );
+            this.recordDeliveryLedgerEvent({
+              offerId: row.id,
+              target: "canal2",
+              operation: "sold_out",
+              state: isAmbiguousDeliveryError(error) ? "unknown" : "failed",
+              attempt: attempts,
+              generation: row.delivery_generation,
+              occurredAt: now.toISOString(),
+              externalId: String(row.canal2_message_id),
+              error: sanitizeError(error),
+            });
             failed += 1;
           }
         }
@@ -3449,6 +3776,7 @@ export class UolTelegramShadow extends DurableObject {
               o.partner_name, o.validity, o.description,
               o.card_image_url, o.partner_image_url, o.image_url,
               o.first_seen_at,
+              o.delivery_generation,
               o.discord_image_proxy_url, o.discord_message_id,
               o.discord_image_cache_message_id, o.status, o.sold_out_at, o.restocked_at,
               COALESCE(d.sold_out_synced_at, '') AS discord_sold_out_synced_at,
@@ -3515,6 +3843,16 @@ export class UolTelegramShadow extends DurableObject {
         row.id,
         attempts,
       );
+      this.recordDeliveryLedgerEvent({
+        offerId: row.id,
+        target: "discord",
+        operation: prefix,
+        state: "attempt_started",
+        attempt: attempts,
+        generation: row.delivery_generation,
+        occurredAt: now.toISOString(),
+        externalId: messageId,
+      });
       try {
         await editDiscordOffer(this.env, {
           messageId,
@@ -3528,6 +3866,16 @@ export class UolTelegramShadow extends DurableObject {
           now.toISOString(),
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "discord",
+          operation: prefix,
+          state: "synced",
+          attempt: attempts,
+          generation: row.delivery_generation,
+          occurredAt: now.toISOString(),
+          externalId: messageId,
+        });
         if (soldOut) soldOutEdited += 1;
         else restockEdited += 1;
       } catch (error) {
@@ -3539,6 +3887,16 @@ export class UolTelegramShadow extends DurableObject {
             now.toISOString(),
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "discord",
+            operation: prefix,
+            state: "resolved_missing",
+            attempt: attempts,
+            generation: row.delivery_generation,
+            occurredAt: now.toISOString(),
+            externalId: messageId,
+          });
           messageMissing += 1;
           continue;
         }
@@ -3549,6 +3907,17 @@ export class UolTelegramShadow extends DurableObject {
           deliveryRetryAt(error, attempts, now),
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "discord",
+          operation: prefix,
+          state: isAmbiguousDeliveryError(error) ? "unknown" : "failed",
+          attempt: attempts,
+          generation: row.delivery_generation,
+          occurredAt: now.toISOString(),
+          externalId: messageId,
+          error: sanitizeError(error),
+        });
         failed += 1;
       }
     }
@@ -3621,6 +3990,16 @@ export class UolTelegramShadow extends DurableObject {
           attempts,
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "main",
+          operation: "restock",
+          state: "attempt_started",
+          attempt: attempts,
+          generation: row.delivery_generation,
+          occurredAt: now.toISOString(),
+          externalId: String(row.main_message_id),
+        });
         try {
           await editMainOfferMessage(this.env, {
             messageId: row.main_message_id,
@@ -3635,6 +4014,16 @@ export class UolTelegramShadow extends DurableObject {
             now.toISOString(),
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "main",
+            operation: "restock",
+            state: "synced",
+            attempt: attempts,
+            generation: row.delivery_generation,
+            occurredAt: now.toISOString(),
+            externalId: String(row.main_message_id),
+          });
           mainEdited += 1;
         } catch (editError) {
           if (isTelegramMessageMissingError(editError)) {
@@ -3668,6 +4057,16 @@ export class UolTelegramShadow extends DurableObject {
                 replacedAt,
                 row.id,
               );
+              this.recordDeliveryLedgerEvent({
+                offerId: row.id,
+                target: "main",
+                operation: "restock",
+                state: "reposted",
+                attempt: attempts,
+                generation: row.delivery_generation,
+                occurredAt: replacedAt,
+                externalId: String(mainMessageId),
+              });
               mainSynced = true;
               mainReposted += 1;
               logEvent("warn", "uol_telegram_restock_reposted", {
@@ -3686,6 +4085,17 @@ export class UolTelegramShadow extends DurableObject {
                 ambiguous ? "" : deliveryRetryAt(replacementError, attempts, now),
                 row.id,
               );
+              this.recordDeliveryLedgerEvent({
+                offerId: row.id,
+                target: "main",
+                operation: "restock",
+                state: ambiguous ? "unknown" : "failed",
+                attempt: attempts,
+                generation: row.delivery_generation,
+                occurredAt: now.toISOString(),
+                externalId: String(mainMessageId),
+                error: sanitizeError(replacementError),
+              });
               mainReplacementFailed = true;
               failed += 1;
             }
@@ -3697,6 +4107,17 @@ export class UolTelegramShadow extends DurableObject {
               deliveryRetryAt(editError, attempts, now),
               row.id,
             );
+            this.recordDeliveryLedgerEvent({
+              offerId: row.id,
+              target: "main",
+              operation: "restock",
+              state: isAmbiguousDeliveryError(editError) ? "unknown" : "failed",
+              attempt: attempts,
+              generation: row.delivery_generation,
+              occurredAt: now.toISOString(),
+              externalId: String(row.main_message_id),
+              error: sanitizeError(editError),
+            });
             failed += 1;
           }
         }
@@ -3718,6 +4139,16 @@ export class UolTelegramShadow extends DurableObject {
           attempts,
           row.id,
         );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "canal2",
+          operation: "restock",
+          state: "attempt_started",
+          attempt: attempts,
+          generation: row.delivery_generation,
+          occurredAt: now.toISOString(),
+          externalId: String(row.canal2_message_id),
+        });
         try {
           await editMainOfferMessage(this.env, {
             chatId: String(this.env.CANAL2_ID || ""),
@@ -3733,6 +4164,16 @@ export class UolTelegramShadow extends DurableObject {
             now.toISOString(),
             row.id,
           );
+          this.recordDeliveryLedgerEvent({
+            offerId: row.id,
+            target: "canal2",
+            operation: "restock",
+            state: "synced",
+            attempt: attempts,
+            generation: row.delivery_generation,
+            occurredAt: now.toISOString(),
+            externalId: String(row.canal2_message_id),
+          });
           canal2Edited += 1;
         } catch (editError) {
           if (isTelegramMessageMissingError(editError)) {
@@ -3754,6 +4195,16 @@ export class UolTelegramShadow extends DurableObject {
                 replacedAt,
                 row.id,
               );
+              this.recordDeliveryLedgerEvent({
+                offerId: row.id,
+                target: "canal2",
+                operation: "restock",
+                state: "reposted",
+                attempt: attempts,
+                generation: row.delivery_generation,
+                occurredAt: replacedAt,
+                externalId: String(replacement.messageId),
+              });
               canal2Synced = true;
               canal2Reposted += 1;
               logEvent("warn", "uol_telegram_restock_reposted", {
@@ -3772,6 +4223,17 @@ export class UolTelegramShadow extends DurableObject {
                 ambiguous ? "" : deliveryRetryAt(replacementError, attempts, now),
                 row.id,
               );
+              this.recordDeliveryLedgerEvent({
+                offerId: row.id,
+                target: "canal2",
+                operation: "restock",
+                state: ambiguous ? "unknown" : "failed",
+                attempt: attempts,
+                generation: row.delivery_generation,
+                occurredAt: new Date().toISOString(),
+                externalId: String(row.canal2_message_id),
+                error: sanitizeError(replacementError),
+              });
               failed += 1;
             }
           } else {
@@ -3782,6 +4244,17 @@ export class UolTelegramShadow extends DurableObject {
               deliveryRetryAt(editError, attempts, now),
               row.id,
             );
+            this.recordDeliveryLedgerEvent({
+              offerId: row.id,
+              target: "canal2",
+              operation: "restock",
+              state: isAmbiguousDeliveryError(editError) ? "unknown" : "failed",
+              attempt: attempts,
+              generation: row.delivery_generation,
+              occurredAt: now.toISOString(),
+              externalId: String(row.canal2_message_id),
+              error: sanitizeError(editError),
+            });
             failed += 1;
           }
         }
@@ -4107,6 +4580,18 @@ export class UolTelegramShadow extends DurableObject {
     );
     this.sqlExec(
       `DELETE FROM offer_identity_aliases
+       WHERE offer_id NOT IN (SELECT id FROM offers)`,
+    );
+    this.sqlExec(
+      `DELETE FROM delivery_events
+       WHERE offer_id NOT IN (SELECT id FROM offers)`,
+    );
+    this.sqlExec(
+      `DELETE FROM ticket_probe_state
+       WHERE offer_id NOT IN (SELECT id FROM offers)`,
+    );
+    this.sqlExec(
+      `DELETE FROM discord_availability_sync
        WHERE offer_id NOT IN (SELECT id FROM offers)`,
     );
     this.setMetadata("offers_cleanup_day", cleanupDay);
@@ -5536,6 +6021,20 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  deliveryTimelineForOffer(offerId, limit = 20) {
+    const rows = this.sqlExec(
+      `SELECT target, operation, state, attempt, generation,
+              occurred_at, external_id, error, id
+       FROM delivery_events
+       WHERE offer_id = ?
+       ORDER BY occurred_at DESC, id DESC
+       LIMIT ?`,
+      String(offerId || ""),
+      Math.min(20, Math.max(1, Number(limit || 20))),
+    ).toArray();
+    return summarizeDeliveryTimeline(rows, limit);
+  }
+
   async getDecisions(limit = 30) {
     const boundedLimit = Math.min(100, Math.max(1, Number(limit || 30)));
     return this.sqlExec(
@@ -5564,7 +6063,10 @@ export class UolTelegramShadow extends DurableObject {
        ORDER BY first_seen_at DESC
        LIMIT ?`,
       boundedLimit,
-    ).toArray().map(rowToPublicDecision);
+    ).toArray().map((row) => ({
+      ...rowToPublicDecision(row),
+      deliveryTimeline: this.deliveryTimelineForOffer(row.id),
+    }));
   }
 
   async getInventory(limit = 48) {
@@ -5591,7 +6093,10 @@ export class UolTelegramShadow extends DurableObject {
        ORDER BY first_seen_at DESC, id ASC
        LIMIT ?`,
       boundedLimit,
-    ).toArray().map(rowToPublicDecision);
+    ).toArray().map((row) => ({
+      ...rowToPublicDecision(row),
+      deliveryTimeline: this.deliveryTimelineForOffer(row.id),
+    }));
   }
 
   getIdentityDiagnostics() {

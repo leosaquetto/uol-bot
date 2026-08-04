@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 19);
+  assert.equal(blocks.length, 20);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 19);
+  assert.equal(Number(version), 20);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -50,6 +50,12 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     .map((column) => column.name));
   assert.deepEqual(probeColumns, new Set([
     "offer_id", "next_at", "last_at", "last_result", "gone_count", "attempts",
+  ]));
+  const ledgerColumns = new Set(database.prepare("PRAGMA table_info(delivery_events)").all()
+    .map((column) => column.name));
+  assert.deepEqual(ledgerColumns, new Set([
+    "id", "dedupe_key", "offer_id", "target", "operation", "state", "attempt",
+    "generation", "occurred_at", "external_id", "error",
   ]));
   const aliasColumns = new Set(
     database.prepare("PRAGMA table_info(offer_identity_aliases)").all()
@@ -103,7 +109,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    19,
+    20,
   );
   database.close();
 });
@@ -149,6 +155,58 @@ test("v19 agenda somente ingressos recentes entregues para probe", () => {
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
     19,
+  );
+  database.close();
+});
+
+test("v20 cria ledger sem alterar a tabela offers e faz backfill mínimo", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 19)) database.exec(sql);
+  database.prepare(
+    `INSERT INTO offers(
+       id, link, preview_title, first_seen_at, last_seen_at, status,
+       delivery_generation, main_sent_at, main_message_id,
+       canal2_sent_at, canal2_message_id
+     ) VALUES (?, ?, ?, ?, ?, 'delivered', 3, ?, 101, ?, 202)`,
+  ).run(
+    "ledger-backfill",
+    "https://clube.uol.com.br/beneficios/ledger-backfill",
+    "Oferta ledger",
+    "2026-08-04T19:00:00.000Z",
+    "2026-08-04T19:00:00.000Z",
+    "2026-08-04T19:00:01.000Z",
+    "2026-08-04T19:00:02.000Z",
+  );
+
+  database.exec(blocks[19]);
+  const events = database.prepare(
+    `SELECT target, operation, state, generation, external_id
+     FROM delivery_events WHERE offer_id = ? ORDER BY target`,
+  ).all("ledger-backfill").map((row) => ({ ...row }));
+  assert.deepEqual(events, [
+    {
+      target: "canal2",
+      operation: "snapshot",
+      state: "sent",
+      generation: 3,
+      external_id: "202",
+    },
+    {
+      target: "main",
+      operation: "snapshot",
+      state: "sent",
+      generation: 3,
+      external_id: "101",
+    },
+  ]);
+  const offersColumns = database.prepare("PRAGMA table_info(offers)").all();
+  assert.equal(offersColumns.some((column) => column.name === "delivery_event"), false);
+  assert.equal(
+    Number(database.prepare(
+      "SELECT MAX(id) AS version FROM _sql_schema_migrations",
+    ).get().version),
+    20,
   );
   database.close();
 });
