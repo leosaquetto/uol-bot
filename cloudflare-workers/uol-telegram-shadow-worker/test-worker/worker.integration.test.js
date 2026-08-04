@@ -255,7 +255,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
 
     const globalStub = env.UOL_TELEGRAM_SHADOW.getByName("clube-uol-global-monitor");
     await runInDurableObject(globalStub, async (_instance, state) => {
-      expect(await state.storage.getAlarm()).toBeNull();
+      expect(await state.storage.getAlarm()).not.toBeNull();
     });
 
     const unauthorized = await exports.default.fetch("https://worker.test/inventory");
