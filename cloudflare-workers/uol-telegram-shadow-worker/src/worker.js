@@ -56,6 +56,10 @@ import {
   sourceSnapshotSignature,
   summarizeSourceComparison,
 } from "./source-health.js";
+import {
+  fetchDiscordOfferDetail,
+  mergeDiscordOfferDetail,
+} from "./discord-detail.js";
 import { renderDashboard } from "./dashboard.js";
 import { nextImageCircuitState } from "./image-strategy.js";
 import {
@@ -1391,7 +1395,14 @@ export class UolTelegramShadow extends DurableObject {
     return proxyUrl;
   }
 
-  async primePendingDiscordImageCache(now = new Date(), limit = 4) {
+  async enrichDiscordOfferForCard(offer) {
+    if (isTicketCampaign(offer)) return offer;
+    if (cleanText(offer?.description) || cleanText(offer?.validity)) return offer;
+    const detail = await fetchDiscordOfferDetail(offer);
+    return mergeDiscordOfferDetail(offer, detail);
+  }
+
+  async primePendingDiscordImageCache(now = new Date(), limit = 2) {
     if (!discordConfiguration(this.env).imageCacheConfigured) {
       return { primed: 0, failed: 0 };
     }
@@ -1415,7 +1426,8 @@ export class UolTelegramShadow extends DurableObject {
     for (const row of rows) {
       const attempts = Number(row.discord_image_cache_attempts || 0) + 1;
       try {
-        const cached = await cacheDiscordOfferImage(this.env, rowToOffer(row));
+        const offer = await this.enrichDiscordOfferForCard(rowToOffer(row));
+        const cached = await cacheDiscordOfferImage(this.env, offer);
         this.sqlExec(
           `UPDATE offers SET discord_image_cache_attempts = ?,
              discord_image_cache_message_id = ?,
@@ -3298,6 +3310,7 @@ export class UolTelegramShadow extends DurableObject {
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const rows = this.sqlExec(
       `SELECT o.id, o.link, o.preview_title, o.title, o.category,
+              o.partner_name, o.validity, o.description,
               o.card_image_url, o.partner_image_url, o.image_url,
               o.discord_image_proxy_url, o.discord_message_id,
               o.discord_image_cache_message_id, o.status, o.sold_out_at, o.restocked_at,
@@ -3338,10 +3351,8 @@ export class UolTelegramShadow extends DurableObject {
     let failed = 0;
 
     for (const row of rows) {
-      const originalOffer = rowToOffer(row);
-      const proxyUrl = String(row.discord_image_proxy_url || "").trim();
-      const offer = proxyUrl ? { ...originalOffer, imageUrl: proxyUrl } : originalOffer;
-      const ticket = isTicketCampaign(offer);
+      const baseOffer = rowToOffer(row);
+      const ticket = isTicketCampaign(baseOffer);
       const messageId = String(
         ticket ? row.discord_message_id : row.discord_image_cache_message_id,
       ).trim();
@@ -3351,6 +3362,9 @@ export class UolTelegramShadow extends DurableObject {
           : this.env.DISCORD_IMAGE_CACHE_WEBHOOK_URL,
       ).trim();
       if (!messageId || !webhookUrl) continue;
+      const originalOffer = await this.enrichDiscordOfferForCard(baseOffer);
+      const proxyUrl = String(row.discord_image_proxy_url || "").trim();
+      const offer = proxyUrl ? { ...originalOffer, imageUrl: proxyUrl } : originalOffer;
       const soldOut = row.status === "sold_out";
       const prefix = soldOut ? "sold_out" : "restock";
       const attempts = Number(row[`discord_${prefix}_attempts`] || 0) + 1;
