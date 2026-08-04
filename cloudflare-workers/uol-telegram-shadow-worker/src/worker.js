@@ -489,6 +489,21 @@ export class UolTelegramShadow extends DurableObject {
     return this.trackSqlCursor(cursor);
   }
 
+  scheduleTicketProbe(offerId, nextAt, { preserveExisting = true } = {}) {
+    const nextExpression = preserveExisting
+      ? `CASE WHEN ticket_probe_state.next_at = ''
+           THEN excluded.next_at ELSE ticket_probe_state.next_at END`
+      : "excluded.next_at";
+    this.sqlExec(
+      `INSERT INTO ticket_probe_state(offer_id, next_at)
+       SELECT id, ? FROM offers
+       WHERE id = ? AND link LIKE '%/campanhasdeingresso/%'
+       ON CONFLICT(offer_id) DO UPDATE SET next_at = ${nextExpression}`,
+      nextAt,
+      offerId,
+    );
+  }
+
   trackSqlCursor(cursor) {
     let accountedRead = 0;
     let accountedWritten = 0;
@@ -1066,22 +1081,24 @@ export class UolTelegramShadow extends DurableObject {
     }
     if (currentVersion < 19) {
       this.sqlExec(`
-        ALTER TABLE offers ADD COLUMN ticket_probe_next_at TEXT NOT NULL DEFAULT '';
-        ALTER TABLE offers ADD COLUMN ticket_probe_last_at TEXT NOT NULL DEFAULT '';
-        ALTER TABLE offers ADD COLUMN ticket_probe_last_result TEXT NOT NULL DEFAULT '';
-        ALTER TABLE offers ADD COLUMN ticket_probe_gone_count INTEGER NOT NULL DEFAULT 0;
-        ALTER TABLE offers ADD COLUMN ticket_probe_attempts INTEGER NOT NULL DEFAULT 0;
-        UPDATE offers SET ticket_probe_next_at = strftime(
-          '%Y-%m-%dT%H:%M:%fZ', 'now', '+60 seconds'
-        )
+        CREATE TABLE IF NOT EXISTS ticket_probe_state (
+          offer_id TEXT PRIMARY KEY,
+          next_at TEXT NOT NULL DEFAULT '',
+          last_at TEXT NOT NULL DEFAULT '',
+          last_result TEXT NOT NULL DEFAULT '',
+          gone_count INTEGER NOT NULL DEFAULT 0,
+          attempts INTEGER NOT NULL DEFAULT 0
+        );
+        INSERT OR IGNORE INTO ticket_probe_state(offer_id, next_at)
+        SELECT id, strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '+60 seconds')
+        FROM offers
         WHERE status IN ('delivered', 'partial_delivery')
           AND sold_out_at = ''
           AND main_sent_at <> ''
           AND link LIKE '%/campanhasdeingresso/%'
-          AND first_seen_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-1 day')
-          AND ticket_probe_next_at = '';
-        CREATE INDEX IF NOT EXISTS offers_ticket_probe_idx
-          ON offers(status, ticket_probe_next_at, ticket_probe_attempts, first_seen_at);
+          AND first_seen_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-1 day');
+        CREATE INDEX IF NOT EXISTS ticket_probe_due_idx
+          ON ticket_probe_state(next_at, attempts, offer_id);
         INSERT INTO _sql_schema_migrations (id) VALUES (19);
       `);
     }
@@ -2885,12 +2902,7 @@ export class UolTelegramShadow extends DurableObject {
           `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
              main_delivery_error = '', main_delivery_in_flight_at = '',
              main_delivery_next_attempt_at = '', main_delivery_unknown_at = '',
-             main_image_upgrade_next_attempt_at = ?,
-             ticket_probe_next_at = CASE
-               WHEN link LIKE '%/campanhasdeingresso/%' AND ticket_probe_next_at = ''
-                 THEN ?
-               ELSE ticket_probe_next_at
-             END
+             main_image_upgrade_next_attempt_at = ?
            WHERE id = ?`,
           result.messageId,
           result.messageKind,
@@ -2900,8 +2912,11 @@ export class UolTelegramShadow extends DurableObject {
                 Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600) * 1_000,
               ).toISOString()
             : "",
-          ticketProbeNextAt(this.env, sentAt),
           entry.row.id,
+        );
+        this.scheduleTicketProbe(
+          entry.row.id,
+          ticketProbeNextAt(this.env, sentAt),
         );
         mainSent += 1;
       } catch (error) {
@@ -3778,15 +3793,15 @@ export class UolTelegramShadow extends DurableObject {
           : "delivered";
         this.sqlExec(
           `UPDATE offers SET status = ?, status_before_sold_out = '',
-             missing_since = '', absence_count = 0,
-             ticket_probe_next_at = CASE
-               WHEN link LIKE '%/campanhasdeingresso/%' THEN ?
-               ELSE ticket_probe_next_at
-             END
+             missing_since = '', absence_count = 0
            WHERE id = ?`,
           resumeStatus,
-          ticketProbeNextAt(this.env, now),
           row.id,
+        );
+        this.scheduleTicketProbe(
+          row.id,
+          ticketProbeNextAt(this.env, now),
+          { preserveExisting: false },
         );
       }
     }
@@ -3813,14 +3828,20 @@ export class UolTelegramShadow extends DurableObject {
     if (!budget.allowed) return empty;
     const maxAttempts = envNumber(this.env, "TICKET_SOLD_OUT_PROBE_MAX_ATTEMPTS", 2, 2, 2);
     const rows = this.sqlExec(
-      `SELECT * FROM offers
-       WHERE status IN ('delivered', 'partial_delivery')
-         AND sold_out_at = ''
-         AND link LIKE '%/campanhasdeingresso/%'
-         AND ticket_probe_next_at <> ''
-         AND ticket_probe_next_at <= ?
-         AND ticket_probe_attempts < ?
-       ORDER BY ticket_probe_next_at ASC, first_seen_at ASC
+      `SELECT o.*, s.next_at AS ticket_probe_next_at,
+              s.last_at AS ticket_probe_last_at,
+              s.last_result AS ticket_probe_last_result,
+              s.gone_count AS ticket_probe_gone_count,
+              s.attempts AS ticket_probe_attempts
+       FROM offers AS o
+       JOIN ticket_probe_state AS s ON s.offer_id = o.id
+       WHERE o.status IN ('delivered', 'partial_delivery')
+         AND o.sold_out_at = ''
+         AND o.link LIKE '%/campanhasdeingresso/%'
+         AND s.next_at <> ''
+         AND s.next_at <= ?
+         AND s.attempts < ?
+       ORDER BY s.next_at ASC, o.first_seen_at ASC
        LIMIT ?`,
       now.toISOString(),
       maxAttempts,
@@ -3837,10 +3858,12 @@ export class UolTelegramShadow extends DurableObject {
       if (probe.result === "gone" && probe.reason === "home_redirect") {
         const cutoff = new Date(now.getTime() - 30_000).toISOString();
         const otherHomeRedirect = Number(this.sqlExec(
-          `SELECT COUNT(*) AS count FROM offers
-           WHERE id <> ? AND link LIKE '%/campanhasdeingresso/%'
-             AND ticket_probe_last_result = 'gone:home_redirect'
-             AND ticket_probe_last_at >= ?`,
+          `SELECT COUNT(*) AS count
+           FROM ticket_probe_state AS s
+           JOIN offers AS o ON o.id = s.offer_id
+           WHERE s.offer_id <> ? AND o.link LIKE '%/campanhasdeingresso/%'
+             AND s.last_result = 'gone:home_redirect'
+             AND s.last_at >= ?`,
           row.id,
           cutoff,
         ).one()?.count || 0);
@@ -3863,11 +3886,15 @@ export class UolTelegramShadow extends DurableObject {
 
       if (state.action !== "confirm") {
         this.sqlExec(
-          `UPDATE offers SET ticket_probe_next_at = ?, ticket_probe_last_at = ?,
-             ticket_probe_last_result = ?, ticket_probe_gone_count = ?,
-             ticket_probe_attempts = ?
-           WHERE id = ? AND status IN ('delivered', 'partial_delivery')
-             AND sold_out_at = ''`,
+          `UPDATE ticket_probe_state SET next_at = ?, last_at = ?,
+             last_result = ?, gone_count = ?, attempts = ?
+           WHERE offer_id = ?
+             AND EXISTS (
+               SELECT 1 FROM offers
+               WHERE offers.id = ticket_probe_state.offer_id
+                 AND offers.status IN ('delivered', 'partial_delivery')
+                 AND offers.sold_out_at = ''
+             )`,
           state.nextAt,
           now.toISOString(),
           lastResult,
@@ -3890,21 +3917,24 @@ export class UolTelegramShadow extends DurableObject {
            main_sold_out_synced_at = '', canal2_sold_out_synced_at = '',
            main_sold_out_attempts = 0, canal2_sold_out_attempts = 0,
            main_sold_out_error = '', canal2_sold_out_error = '',
-           main_sold_out_next_attempt_at = '', canal2_sold_out_next_attempt_at = '',
-           ticket_probe_next_at = '', ticket_probe_last_at = ?,
-           ticket_probe_last_result = ?, ticket_probe_gone_count = ?,
-           ticket_probe_attempts = ?
+           main_sold_out_next_attempt_at = '', canal2_sold_out_next_attempt_at = ''
          WHERE id = ? AND status IN ('delivered', 'partial_delivery')
            AND sold_out_at = ''`,
         soldOutAt,
         soldOutAt,
+        soldOutAt,
+        row.id,
+      );
+      if (Number(updated?.rowsWritten || 0) < 1) continue;
+      this.sqlExec(
+        `UPDATE ticket_probe_state SET next_at = '', last_at = ?,
+           last_result = ?, gone_count = ?, attempts = ? WHERE offer_id = ?`,
         soldOutAt,
         lastResult,
         state.goneCount,
         attempts,
         row.id,
       );
-      if (Number(updated?.rowsWritten || 0) < 1) continue;
       this.sqlExec(
         `INSERT INTO discord_availability_sync(offer_id)
          VALUES (?)
@@ -5128,9 +5158,13 @@ export class UolTelegramShadow extends DurableObject {
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
               canal2_sold_out_attempts, canal2_sold_out_error,
-              ticket_probe_next_at, ticket_probe_last_at, ticket_probe_last_result,
-              ticket_probe_gone_count, ticket_probe_attempts
-       FROM offers
+              COALESCE(tp.next_at, '') AS ticket_probe_next_at,
+              COALESCE(tp.last_at, '') AS ticket_probe_last_at,
+              COALESCE(tp.last_result, '') AS ticket_probe_last_result,
+              COALESCE(tp.gone_count, 0) AS ticket_probe_gone_count,
+              COALESCE(tp.attempts, 0) AS ticket_probe_attempts
+       FROM offers AS o
+       LEFT JOIN ticket_probe_state AS tp ON tp.offer_id = o.id
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
        LIMIT 8`,
@@ -5514,9 +5548,13 @@ export class UolTelegramShadow extends DurableObject {
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
               canal2_sold_out_attempts, canal2_sold_out_error,
-              ticket_probe_next_at, ticket_probe_last_at, ticket_probe_last_result,
-              ticket_probe_gone_count, ticket_probe_attempts
-       FROM offers
+              COALESCE(tp.next_at, '') AS ticket_probe_next_at,
+              COALESCE(tp.last_at, '') AS ticket_probe_last_at,
+              COALESCE(tp.last_result, '') AS ticket_probe_last_result,
+              COALESCE(tp.gone_count, 0) AS ticket_probe_gone_count,
+              COALESCE(tp.attempts, 0) AS ticket_probe_attempts
+       FROM offers AS o
+       LEFT JOIN ticket_probe_state AS tp ON tp.offer_id = o.id
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
        LIMIT ?`,
@@ -5537,8 +5575,14 @@ export class UolTelegramShadow extends DurableObject {
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
-              canal2_sold_out_attempts, canal2_sold_out_error
-       FROM offers
+              canal2_sold_out_attempts, canal2_sold_out_error,
+              COALESCE(tp.next_at, '') AS ticket_probe_next_at,
+              COALESCE(tp.last_at, '') AS ticket_probe_last_at,
+              COALESCE(tp.last_result, '') AS ticket_probe_last_result,
+              COALESCE(tp.gone_count, 0) AS ticket_probe_gone_count,
+              COALESCE(tp.attempts, 0) AS ticket_probe_attempts
+       FROM offers AS o
+       LEFT JOIN ticket_probe_state AS tp ON tp.offer_id = o.id
        ORDER BY first_seen_at DESC, id ASC
        LIMIT ?`,
       boundedLimit,

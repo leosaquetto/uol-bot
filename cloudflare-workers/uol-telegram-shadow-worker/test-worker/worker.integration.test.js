@@ -32,6 +32,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "incidents",
         "pending_discussion_forwards",
         "discord_availability_sync",
+        "ticket_probe_state",
       ]));
       for (const column of [
         "delivery_generation",
@@ -52,11 +53,6 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "discord_image_cache_attempts",
         "discord_image_cache_next_attempt_at",
         "discord_image_cache_error",
-        "ticket_probe_next_at",
-        "ticket_probe_last_at",
-        "ticket_probe_last_result",
-        "ticket_probe_gone_count",
-        "ticket_probe_attempts",
       ]) {
         expect(offersSchema).toContain(column);
       }

@@ -43,14 +43,14 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "discord_image_cache_attempts",
     "discord_image_cache_next_attempt_at",
     "discord_image_cache_error",
-    "ticket_probe_next_at",
-    "ticket_probe_last_at",
-    "ticket_probe_last_result",
-    "ticket_probe_gone_count",
-    "ticket_probe_attempts",
   ]) {
     assert.equal(columns.has(column), true, `coluna ausente: ${column}`);
   }
+  const probeColumns = new Set(database.prepare("PRAGMA table_info(ticket_probe_state)").all()
+    .map((column) => column.name));
+  assert.deepEqual(probeColumns, new Set([
+    "offer_id", "next_at", "last_at", "last_result", "gone_count", "attempts",
+  ]));
   const aliasColumns = new Set(
     database.prepare("PRAGMA table_info(offer_identity_aliases)").all()
       .map((column) => column.name),
@@ -137,13 +137,13 @@ test("v19 agenda somente ingressos recentes entregues para probe", () => {
   );
   database.exec(blocks[18]);
   const ticket = database.prepare(
-    "SELECT ticket_probe_next_at FROM offers WHERE id = ?",
+    "SELECT next_at FROM ticket_probe_state WHERE offer_id = ?",
   ).get("ticket-recent");
   const common = database.prepare(
-    "SELECT ticket_probe_next_at FROM offers WHERE id = ?",
+    "SELECT next_at FROM ticket_probe_state WHERE offer_id = ?",
   ).get("common-recent");
-  assert.notEqual(ticket.ticket_probe_next_at, "");
-  assert.equal(common.ticket_probe_next_at, "");
+  assert.notEqual(ticket.next_at, "");
+  assert.equal(common, undefined);
   assert.equal(
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",

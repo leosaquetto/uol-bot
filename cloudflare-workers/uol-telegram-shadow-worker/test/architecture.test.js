@@ -67,7 +67,7 @@ test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", (
   assert.match(probes, /processSoldOutSync\(now, \{ onlyIds: \[row\.id\] \}/);
   assert.match(probes, /processDiscordAvailabilitySync\(now, 1, \{[\s\S]*onlyIds: \[row\.id\]/);
   assert.match(probes, /global_home_redirect/);
-  assert.match(probes, /ticket_probe_attempts < \?/);
+  assert.match(probes, /s\.attempts < \?/);
   assert.doesNotMatch(probes, /link NOT LIKE '%\/campanhasdeingresso\/%'/);
 });
 

@@ -4,7 +4,7 @@
 
 **Goal:** Confirm rapid unavailability only for ticket campaigns and synchronize sold-out edits without allowing the critical lane to consume the API polling reserve.
 
-**Architecture:** Newly delivered ticket offers receive a bounded URL-probe state in `offers`. The primary 15-second alarm processes at most one due ticket probe per cycle, requires two consecutive deterministic “gone” results, and invokes the existing idempotent Telegram/Discord sold-out synchronizers for that offer. The existing HTML absence detector remains the fallback for all offers and for indeterminate probes; a daily probe counter prevents the new lane from expanding free-tier usage.
+**Architecture:** Newly delivered ticket offers receive a bounded URL-probe state in the auxiliary `ticket_probe_state` table. The primary 15-second alarm processes at most one due ticket probe per cycle, requires two consecutive deterministic “gone” results, and invokes the existing idempotent Telegram/Discord sold-out synchronizers for that offer. The existing HTML absence detector remains the fallback for all offers and for indeterminate probes; a daily probe counter prevents the new lane from expanding free-tier usage.
 
 **Tech Stack:** Cloudflare Durable Object SQLite, Cloudflare Worker `fetch`, Telegram Bot API, Discord webhook, Node `node:test`, Wrangler types/bundle checks.
 
@@ -122,19 +122,18 @@ git commit -m "feat(uol): classify ticket availability probes"
 - Modify: `cloudflare-workers/uol-telegram-shadow-worker/test/migrations.test.js`
 
 **Interfaces:**
-- Adds migration v19 columns: `ticket_probe_next_at`,
-  `ticket_probe_last_at`, `ticket_probe_last_result`,
-  `ticket_probe_gone_count`, and `ticket_probe_attempts`.
-- Adds index `offers_ticket_probe_idx` on
-  `(status, ticket_probe_next_at, ticket_probe_attempts, first_seen_at)`.
+- Adds migration v19 table `ticket_probe_state` with `offer_id`, `next_at`,
+  `last_at`, `last_result`, `gone_count`, and `attempts`.
+- Adds index `ticket_probe_due_idx` on `(next_at, attempts, offer_id)`.
 - Adds `ticketProbeCount` to the persisted daily storage usage snapshot.
 
 - [ ] **Step 1: Extend migration tests before schema changes**
 
-Change the migration count/version assertions from 18 to 19 and add all five
-probe columns to the required-column list. Add a v19 upgrade fixture containing
-one recent delivered ticket and one common offer; assert that the ticket gets a
-probe due time and the common offer remains unscheduled.
+Change the migration count/version assertions from 18 to 19 and add the
+`ticket_probe_state` table/columns to the required schema list. Add a v19
+upgrade fixture containing one recent delivered ticket and one common offer;
+assert that the ticket gets a probe due time and the common offer remains
+unscheduled.
 
 - [ ] **Step 2: Run migration tests and verify the expected failure**
 
@@ -146,19 +145,19 @@ Expected: FAIL on the old migration count/columns.
 
 - [ ] **Step 3: Add migration v19**
 
-Add the columns with empty/zero defaults and the probe index. Schedule only
-recent delivered ticket rows (last 24 hours) with `ticket_probe_next_at` empty
-to `strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '+60 seconds')`; do not schedule common
-offers or rows already sold out. This bounded backfill covers offers delivered
-just before deployment without replaying the historical inventory.
+Create the auxiliary table and probe index. Schedule only recent delivered
+ticket rows (last 24 hours) to `strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '+60 seconds')`;
+do not add columns to `offers`, schedule common offers, or schedule rows already
+sold out. This bounded backfill covers offers delivered just before deployment
+without replaying the historical inventory.
 
 - [ ] **Step 4: Schedule probes after successful delivery**
 
-In the successful main-message update inside `processDeliveryQueue`, set
-`ticket_probe_next_at` to `sentAt + 60 seconds` only when the link is a ticket
+In the successful main-message update inside `processDeliveryQueue`, insert
+`sentAt + 60 seconds` into the auxiliary state only when the link is a ticket
 campaign and the probe queue is empty. Preserve the existing value on retries.
 When a restocked ticket returns to `delivered`, schedule the same one-time
-probe if the queue is empty. Do not schedule any probe for a common offer.
+probe in the auxiliary state. Do not schedule any probe for a common offer.
 
 - [ ] **Step 5: Expose sanitized probe state for verification**
 
@@ -294,12 +293,14 @@ Use `ticketProbeBudget` with environment values
 `TICKET_SOLD_OUT_PROBES_PER_SCAN` (default 1). Query only:
 
 ```sql
-WHERE status IN ('delivered', 'partial_delivery')
-  AND link LIKE '%/campanhasdeingresso/%'
-  AND sold_out_at = ''
-  AND ticket_probe_next_at <> ''
-  AND ticket_probe_next_at <= ?
-ORDER BY ticket_probe_next_at ASC, first_seen_at ASC
+FROM offers AS o
+JOIN ticket_probe_state AS s ON s.offer_id = o.id
+WHERE o.status IN ('delivered', 'partial_delivery')
+  AND o.link LIKE '%/campanhasdeingresso/%'
+  AND o.sold_out_at = ''
+  AND s.next_at <> ''
+  AND s.next_at <= ?
+ORDER BY s.next_at ASC, o.first_seen_at ASC
 LIMIT ?
 ```
 
