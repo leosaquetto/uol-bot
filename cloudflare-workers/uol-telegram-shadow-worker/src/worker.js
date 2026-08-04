@@ -95,6 +95,19 @@ function envNumber(env, name, fallback, min = 1, max = Number.MAX_SAFE_INTEGER) 
   return Math.min(max, Math.max(min, parsed));
 }
 
+function ticketProbeNextAt(env, now = new Date()) {
+  const base = now instanceof Date ? now : new Date(now);
+  const safeBase = Number.isNaN(base.getTime()) ? new Date() : base;
+  const delaySeconds = envNumber(
+    env,
+    "TICKET_SOLD_OUT_PROBE_DELAY_SECONDS",
+    60,
+    30,
+    300,
+  );
+  return new Date(safeBase.getTime() + delaySeconds * 1_000).toISOString();
+}
+
 function sanitizeError(error) {
   return cleanText(error?.message || error).slice(0, 240);
 }
@@ -415,6 +428,11 @@ function rowToPublicDecision(row) {
     soldOutMainError: row.main_sold_out_error || "",
     soldOutCanal2Attempts: Number(row.canal2_sold_out_attempts || 0),
     soldOutCanal2Error: row.canal2_sold_out_error || "",
+    ticketProbeNextAt: row.ticket_probe_next_at || "",
+    ticketProbeLastAt: row.ticket_probe_last_at || "",
+    ticketProbeLastResult: row.ticket_probe_last_result || "",
+    ticketProbeGoneCount: Number(row.ticket_probe_gone_count || 0),
+    ticketProbeAttempts: Number(row.ticket_probe_attempts || 0),
   };
 }
 
@@ -451,6 +469,7 @@ export class UolTelegramShadow extends DurableObject {
       primaryEstimatedRowsRead: 0,
       maintenanceMaxRowsRead: 0,
       maintenanceSkipped: 0,
+      ticketProbeCount: 0,
       lastPersistedAt: "",
     };
     ctx.blockConcurrencyWhile(async () => {
@@ -568,6 +587,7 @@ export class UolTelegramShadow extends DurableObject {
       primaryEstimatedRowsRead: 0,
       maintenanceMaxRowsRead: 0,
       maintenanceSkipped: 0,
+      ticketProbeCount: 0,
       lastPersistedAt: "",
     };
   }
@@ -1037,6 +1057,27 @@ export class UolTelegramShadow extends DurableObject {
           ON offers(discord_image_cache_message_id, discord_image_cache_next_attempt_at,
                     discord_image_cache_attempts, first_seen_at);
         INSERT INTO _sql_schema_migrations (id) VALUES (18);
+      `);
+    }
+    if (currentVersion < 19) {
+      this.sqlExec(`
+        ALTER TABLE offers ADD COLUMN ticket_probe_next_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN ticket_probe_last_at TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN ticket_probe_last_result TEXT NOT NULL DEFAULT '';
+        ALTER TABLE offers ADD COLUMN ticket_probe_gone_count INTEGER NOT NULL DEFAULT 0;
+        ALTER TABLE offers ADD COLUMN ticket_probe_attempts INTEGER NOT NULL DEFAULT 0;
+        UPDATE offers SET ticket_probe_next_at = strftime(
+          '%Y-%m-%dT%H:%M:%fZ', 'now', '+60 seconds'
+        )
+        WHERE status IN ('delivered', 'partial_delivery')
+          AND sold_out_at = ''
+          AND main_sent_at <> ''
+          AND link LIKE '%/campanhasdeingresso/%'
+          AND first_seen_at >= datetime('now', '-1 day')
+          AND ticket_probe_next_at = '';
+        CREATE INDEX IF NOT EXISTS offers_ticket_probe_idx
+          ON offers(status, ticket_probe_next_at, ticket_probe_attempts, first_seen_at);
+        INSERT INTO _sql_schema_migrations (id) VALUES (19);
       `);
     }
   }
@@ -2839,7 +2880,12 @@ export class UolTelegramShadow extends DurableObject {
           `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
              main_delivery_error = '', main_delivery_in_flight_at = '',
              main_delivery_next_attempt_at = '', main_delivery_unknown_at = '',
-             main_image_upgrade_next_attempt_at = ?
+             main_image_upgrade_next_attempt_at = ?,
+             ticket_probe_next_at = CASE
+               WHEN link LIKE '%/campanhasdeingresso/%' AND ticket_probe_next_at = ''
+                 THEN ?
+               ELSE ticket_probe_next_at
+             END
            WHERE id = ?`,
           result.messageId,
           result.messageKind,
@@ -2849,6 +2895,7 @@ export class UolTelegramShadow extends DurableObject {
                 Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600) * 1_000,
               ).toISOString()
             : "",
+          ticketProbeNextAt(this.env, sentAt),
           entry.row.id,
         );
         mainSent += 1;
@@ -3713,8 +3760,14 @@ export class UolTelegramShadow extends DurableObject {
           : "delivered";
         this.sqlExec(
           `UPDATE offers SET status = ?, status_before_sold_out = '',
-             missing_since = '', absence_count = 0 WHERE id = ?`,
+             missing_since = '', absence_count = 0,
+             ticket_probe_next_at = CASE
+               WHEN link LIKE '%/campanhasdeingresso/%' THEN ?
+               ELSE ticket_probe_next_at
+             END
+           WHERE id = ?`,
           resumeStatus,
+          ticketProbeNextAt(this.env, now),
           row.id,
         );
       }
@@ -4900,7 +4953,9 @@ export class UolTelegramShadow extends DurableObject {
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
-              canal2_sold_out_attempts, canal2_sold_out_error
+              canal2_sold_out_attempts, canal2_sold_out_error,
+              ticket_probe_next_at, ticket_probe_last_at, ticket_probe_last_result,
+              ticket_probe_gone_count, ticket_probe_attempts
        FROM offers
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC
@@ -5284,7 +5339,9 @@ export class UolTelegramShadow extends DurableObject {
               comment_sent_at, comment_chunks_sent, comment_delivery_error,
               main_sold_out_synced_at, canal2_sold_out_synced_at,
               main_sold_out_attempts, main_sold_out_error,
-              canal2_sold_out_attempts, canal2_sold_out_error
+              canal2_sold_out_attempts, canal2_sold_out_error,
+              ticket_probe_next_at, ticket_probe_last_at, ticket_probe_last_result,
+              ticket_probe_gone_count, ticket_probe_attempts
        FROM offers
        WHERE status <> 'baseline'
        ORDER BY first_seen_at DESC

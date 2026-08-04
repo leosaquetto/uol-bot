@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 18);
+  assert.equal(blocks.length, 19);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 18);
+  assert.equal(Number(version), 19);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -43,6 +43,11 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "discord_image_cache_attempts",
     "discord_image_cache_next_attempt_at",
     "discord_image_cache_error",
+    "ticket_probe_next_at",
+    "ticket_probe_last_at",
+    "ticket_probe_last_result",
+    "ticket_probe_gone_count",
+    "ticket_probe_attempts",
   ]) {
     assert.equal(columns.has(column), true, `coluna ausente: ${column}`);
   }
@@ -98,7 +103,52 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    18,
+    19,
+  );
+  database.close();
+});
+
+test("v19 agenda somente ingressos recentes entregues para probe", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 18)) database.exec(sql);
+  const recent = new Date(Date.now() - 60 * 60_000).toISOString();
+  const insert = database.prepare(
+    `INSERT INTO offers(
+       id, link, preview_title, first_seen_at, last_seen_at, status,
+       main_sent_at, sold_out_at
+     ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, '')`,
+  );
+  insert.run(
+    "ticket-recent",
+    "https://clube.uol.com.br/campanhasdeingresso/ticket-recent",
+    "Ingresso recente",
+    recent,
+    recent,
+    recent,
+  );
+  insert.run(
+    "common-recent",
+    "https://clube.uol.com.br/beneficios/common-recent",
+    "Oferta comum recente",
+    recent,
+    recent,
+    recent,
+  );
+  database.exec(blocks[18]);
+  const ticket = database.prepare(
+    "SELECT ticket_probe_next_at FROM offers WHERE id = ?",
+  ).get("ticket-recent");
+  const common = database.prepare(
+    "SELECT ticket_probe_next_at FROM offers WHERE id = ?",
+  ).get("common-recent");
+  assert.notEqual(ticket.ticket_probe_next_at, "");
+  assert.equal(common.ticket_probe_next_at, "");
+  assert.equal(
+    Number(database.prepare(
+      "SELECT MAX(id) AS version FROM _sql_schema_migrations",
+    ).get().version),
+    19,
   );
   database.close();
 });
