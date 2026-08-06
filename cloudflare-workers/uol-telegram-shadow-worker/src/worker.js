@@ -4,6 +4,7 @@ import {
   buildDedupeKeys,
   buildDiscussionCommentChunks,
   cleanText,
+  buildApiHealthSnapshot,
   buildApiSnapshotFingerprint,
   decideShadowDelivery,
   dedupeCards,
@@ -4842,6 +4843,27 @@ export class UolTelegramShadow extends DurableObject {
     const cutoff = new Date(
       now.getTime() - observationFreshnessMinutes(touchMinutes) * 60_000,
     ).toISOString();
+    const api = this.runtimeSnapshot("api");
+    const apiOffers = Number(
+      api.lastOffersSeen ?? this.metadataValue("api_last_offers_seen") ?? 0,
+    );
+    const apiError = cleanText(api.lastError ?? this.metadataValue("api_last_error"));
+    const apiSuccessAt = api.lastSuccessAt || this.metadataValue("api_last_success_at");
+    const healthCards = Array.isArray(api.healthCards) ? api.healthCards : [];
+    const apiSuccessMs = Date.parse(apiSuccessAt);
+    const cutoffMs = Date.parse(cutoff);
+    if (
+      apiOffers > 0 && !apiError && healthCards.length &&
+      Number.isFinite(apiSuccessMs) && Number.isFinite(cutoffMs) && apiSuccessMs >= cutoffMs
+    ) {
+      return healthCards.map((card) => ({
+        ...card,
+        category: card.category || "campanhasdeingresso",
+        cardImageUrl: "",
+        partnerImageUrl: "",
+        partnerName: "",
+      }));
+    }
     return this.sqlExec(
       `SELECT offer_key AS id, link, title AS preview_title
        FROM source_observations
@@ -4887,6 +4909,9 @@ export class UolTelegramShadow extends DurableObject {
     let runFailureStreak = Number(previousApi.runFailureStreak || 0);
     let apiContract = null;
     let apiCards = [];
+    let apiHealthCards = Array.isArray(previousApi.healthCards)
+      ? previousApi.healthCards
+      : [];
     let apiSnapshotFingerprint = "";
     let apiSnapshotChanged = false;
     const run = {
@@ -4956,6 +4981,7 @@ export class UolTelegramShadow extends DurableObject {
       if (apiCards.length) {
         apiLastSuccessAt = apiResult.value.completedAt;
         apiFailureStreak = 0;
+        apiHealthCards = buildApiHealthSnapshot(apiCards);
         apiSnapshotFingerprint = await buildApiSnapshotFingerprint(apiCards);
         const previousFingerprint = this.metadataValue("runtime:api_snapshot_fingerprint");
         apiSnapshotChanged = !/^[a-f0-9]{64}$/.test(previousFingerprint) ||
@@ -5144,6 +5170,7 @@ export class UolTelegramShadow extends DurableObject {
           fastLastMainSent,
           apiSnapshotChanged,
           apiSnapshotFingerprint,
+          healthCards: apiHealthCards,
           runFailureStreak,
         });
         if (apiContract) {

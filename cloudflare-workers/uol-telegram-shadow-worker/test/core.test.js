@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   buildApiSnapshotFingerprint,
+  buildApiHealthSnapshot,
   buildDedupeKeys,
   buildDiscussionCommentChunks,
   buildTelegramCaption,
@@ -63,6 +64,38 @@ test("fingerprint da API é estável, ordenado e ignora observação", async () 
     ]),
   );
   assert.equal(typeof await buildApiSnapshotFingerprint([]), "string");
+});
+
+test("snapshot de saúde da API preserva cards válidos fora das observações SQL", () => {
+  assert.deepEqual(buildApiHealthSnapshot([
+    {
+      id: "b",
+      link: " https://clube.uol.com.br/campanhasdeingresso/pb ",
+      previewTitle: "  Ingresso B  ",
+      category: "campanhasdeingresso",
+      observedAt: "2026-08-06T02:00:00.000Z",
+    },
+    {
+      id: "a",
+      link: "https://clube.uol.com.br/campanhasdeingresso/pa",
+      apiDetail: { previewTitle: "Ingresso A" },
+      category: "campanhasdeingresso",
+    },
+    { id: "sem-link" },
+  ]), [
+    {
+      id: "a",
+      link: "https://clube.uol.com.br/campanhasdeingresso/pa",
+      previewTitle: "Ingresso A",
+      category: "campanhasdeingresso",
+    },
+    {
+      id: "b",
+      link: "https://clube.uol.com.br/campanhasdeingresso/pb",
+      previewTitle: "Ingresso B",
+      category: "campanhasdeingresso",
+    },
+  ]);
 });
 
 test("snapshot de runtime aceita objeto e falha fechado para JSON inválido", () => {

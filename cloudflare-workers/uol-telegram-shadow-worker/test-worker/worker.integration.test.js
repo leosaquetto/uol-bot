@@ -237,6 +237,38 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(deliveryCalls.length).toBeGreaterThanOrEqual(2);
   });
 
+  it("mantém a fotografia da API fresca para saúde sem reler observações SQL", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-health-snapshot");
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.runtimeSnapshot = (name) => name === "api"
+        ? {
+            lastOffersSeen: 1,
+            lastError: "",
+            lastSuccessAt: "2026-08-06T02:00:00.000Z",
+            healthCards: [{
+              id: "ingresso-fresco",
+              link: "https://clube.uol.com.br/campanhasdeingresso/p-fresco",
+              previewTitle: "Ingresso fresco",
+              category: "campanhasdeingresso",
+            }],
+          }
+        : {};
+      instance.sqlExec = () => {
+        throw new Error("source_observations_should_not_be_read");
+      };
+
+      expect(instance.recentApiCardsForHealth(new Date("2026-08-06T02:00:30.000Z"))).toEqual([
+        {
+          id: "ingresso-fresco",
+          link: "https://clube.uol.com.br/campanhasdeingresso/p-fresco",
+          previewTitle: "Ingresso fresco",
+          category: "campanhasdeingresso",
+        },
+      ]);
+    });
+  });
+
   it("mantém secundários da oferta nova elegíveis sob reserva de quota", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("priority-delivery-quota");
 

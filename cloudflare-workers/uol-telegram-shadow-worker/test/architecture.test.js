@@ -22,6 +22,7 @@ test("polling crítico usa API e entrega ingressos nos três destinos no mesmo c
   assert.match(scan, /this\.fetchAllApi\(\)/);
   assert.match(scan, /buildApiSnapshotFingerprint\(/);
   assert.match(scan, /apiSnapshotChanged/);
+  assert.match(scan, /buildApiHealthSnapshot\(/);
   assert.ok(
     scan.indexOf("buildApiSnapshotFingerprint(") < scan.indexOf("resolveListingCards("),
     "fingerprint deve ser calculada antes da reconciliação completa",
@@ -200,6 +201,8 @@ test("quota mantém contadores por etapa no snapshot persistido", () => {
   assert.match(workerSource, /durableObjectRowsReadToday: storageReadBudget/);
   assert.match(workerSource, /storageReadBudget,\n      lastScanAt/);
   assert.match(workerSource, /runtime:storage_usage/);
+  assert.match(workerSource, /healthCards/);
+  assert.match(workerSource, /recentApiCardsForHealth[\s\S]*healthCards/);
 });
 
 test("mensagem Telegram ausente encerra sold-out e republica restock", () => {

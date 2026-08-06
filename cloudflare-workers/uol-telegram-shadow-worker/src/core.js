@@ -572,6 +572,21 @@ export async function buildApiSnapshotFingerprint(cards = []) {
   return sha256Hex(JSON.stringify(normalized));
 }
 
+export function buildApiHealthSnapshot(cards = []) {
+  return Array.from(cards || [])
+    .map((card) => ({
+      id: cleanText(card?.id ?? card?.apiDetail?.id),
+      link: String(card?.link ?? card?.apiDetail?.link ?? "").trim(),
+      previewTitle: cleanText(
+        card?.previewTitle ?? card?.title ?? card?.apiDetail?.previewTitle ??
+          card?.apiDetail?.title,
+      ),
+      category: cleanText(card?.category ?? card?.apiDetail?.category),
+    }))
+    .filter((card) => card.id && card.link)
+    .sort((left, right) => left.id.localeCompare(right.id) || left.link.localeCompare(right.link));
+}
+
 export async function buildDedupeKeys(offer) {
   const title = normalizeText(offer?.title || offer?.previewTitle);
   const validity = normalizeText(offer?.validity);

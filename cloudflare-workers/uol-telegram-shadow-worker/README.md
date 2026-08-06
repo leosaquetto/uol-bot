@@ -235,6 +235,11 @@ etapa (`primary`, `delivery`, `tickets`, `maintenanceLedger`, `html`,
 `comments`, `images` e `guard`). Eles servem para diagnóstico interno e não
 incluem texto de ofertas, URLs privadas, tokens ou qualquer outro segredo.
 
+A saúde de origem também usa a fotografia curta da API persistida no snapshot
+de runtime. Assim, ciclos sem mudança continuam frescos para a reconciliação
+API/HTML sem regravar `source_observations` a cada polling; uma falha ou um
+snapshot antigo ainda cai para o caminho de degradação existente.
+
 Quando a reserva de leitura está ativa, o alarme de manutenção usa backoff
 progressivo, limitado a 15 minutos e ao próximo reset UTC. A manutenção HTML
 comum passa a uma cadência mais espaçada depois de um bloqueio, mas falha,
