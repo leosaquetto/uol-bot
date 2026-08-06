@@ -488,6 +488,7 @@ export class UolTelegramShadow extends DurableObject {
     this.maintenanceInFlight = false;
     this.metadataCache = new Map();
     this.runtimeSnapshotCache = new Map();
+    this.storageStage = "";
     this.storageUsageReady = false;
     this.storageUsage = {
       day: new Date().toISOString().slice(0, 10),
@@ -641,8 +642,13 @@ export class UolTelegramShadow extends DurableObject {
 
   recordStorageUsage(rowsRead = 0, rowsWritten = 0) {
     this.rollStorageUsageDay();
-    this.storageUsage.rowsRead += Number(rowsRead || 0);
-    this.storageUsage.rowsWritten += Number(rowsWritten || 0);
+    const normalizedRowsRead = Math.max(0, Number(rowsRead || 0));
+    const normalizedRowsWritten = Math.max(0, Number(rowsWritten || 0));
+    this.storageUsage.rowsRead += normalizedRowsRead;
+    this.storageUsage.rowsWritten += normalizedRowsWritten;
+    if (this.storageStage) {
+      this.recordStorageStage(this.storageStage, normalizedRowsRead, normalizedRowsWritten);
+    }
   }
 
   recordStorageStage(stage, rowsRead = 0, rowsWritten = 0) {
@@ -657,6 +663,16 @@ export class UolTelegramShadow extends DurableObject {
       Math.max(0, Number(rowsRead || 0));
     this.storageUsage.stageWrites[key] = Number(this.storageUsage.stageWrites[key] || 0) +
       Math.max(0, Number(rowsWritten || 0));
+  }
+
+  async withStorageStage(stage, action) {
+    const previous = this.storageStage;
+    this.storageStage = STORAGE_STAGE_NAMES.includes(stage) ? stage : previous;
+    try {
+      return await action();
+    } finally {
+      this.storageStage = previous;
+    }
   }
 
   storageUsageSnapshot(now = new Date()) {
@@ -691,7 +707,6 @@ export class UolTelegramShadow extends DurableObject {
       Number(this.storageUsage.rowsRead || 0) - Number(startedRowsRead || 0),
     );
     if (kind === "primary") {
-      this.recordStorageStage("primary", cycleRowsRead, 0);
       this.storageUsage.primaryMaxRowsRead = Math.max(
         Number(this.storageUsage.primaryMaxRowsRead || 0),
         cycleRowsRead,
@@ -701,7 +716,6 @@ export class UolTelegramShadow extends DurableObject {
         cycleRowsRead,
       );
     } else if (kind === "maintenance") {
-      this.recordStorageStage("maintenanceLedger", cycleRowsRead, 0);
       this.storageUsage.maintenanceMaxRowsRead = Math.max(
         Number(this.storageUsage.maintenanceMaxRowsRead || 0),
         cycleRowsRead,
@@ -4852,6 +4866,7 @@ export class UolTelegramShadow extends DurableObject {
     }
     const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.scanInFlight = true;
+    this.storageStage = "primary";
     const startedAt = new Date();
     const previousApi = this.runtimeSnapshot("api");
     let apiLastSuccessAt = previousApi.lastSuccessAt || this.metadataValue("api_last_success_at");
@@ -4986,18 +5001,24 @@ export class UolTelegramShadow extends DurableObject {
             )
           : [[]];
         for (const priorityIds of deliveryBatches) {
-          const discordDelivered = await this.processDeliveryQueue(new Date(), {
-            priorityIds,
-            targetNames: ["discord"],
-          });
+          const discordDelivered = await this.withStorageStage(
+            "delivery",
+            () => this.processDeliveryQueue(new Date(), {
+              priorityIds,
+              targetNames: ["discord"],
+            }),
+          );
           run.discordSent += discordDelivered.discordSent;
           run.deliveryFailed += discordDelivered.failed;
-          const delivered = await this.processDeliveryQueue(new Date(), {
-            priorityIds,
-            rows: discordDelivered.selectedRows,
-            waitForMainImage: true,
-            targetNames: ["main", "canal2"],
-          });
+          const delivered = await this.withStorageStage(
+            "delivery",
+            () => this.processDeliveryQueue(new Date(), {
+              priorityIds,
+              rows: discordDelivered.selectedRows,
+              waitForMainImage: true,
+              targetNames: ["main", "canal2"],
+            }),
+          );
           run.mainSent += delivered.mainSent;
           run.canal2Sent += delivered.canal2Sent;
           run.deliveryFailed += delivered.failed;
@@ -5017,16 +5038,22 @@ export class UolTelegramShadow extends DurableObject {
         // A API continua sendo consultada em 15s, mas uma fotografia idêntica
         // não precisa reler/enriquecer toda a listagem. Entregas pendentes,
         // probes de ingressos e recuperações continuam independentes.
-        const discordDelivered = await this.processDeliveryQueue(new Date(), {
-          targetNames: ["discord"],
-        });
+        const discordDelivered = await this.withStorageStage(
+          "delivery",
+          () => this.processDeliveryQueue(new Date(), {
+            targetNames: ["discord"],
+          }),
+        );
         run.discordSent = discordDelivered.discordSent;
         run.deliveryFailed += discordDelivered.failed;
-        const delivered = await this.processDeliveryQueue(new Date(), {
-          rows: discordDelivered.selectedRows,
-          waitForMainImage: true,
-          targetNames: ["main", "canal2"],
-        });
+        const delivered = await this.withStorageStage(
+          "delivery",
+          () => this.processDeliveryQueue(new Date(), {
+            rows: discordDelivered.selectedRows,
+            waitForMainImage: true,
+            targetNames: ["main", "canal2"],
+          }),
+        );
         run.mainSent = delivered.mainSent;
         run.canal2Sent = delivered.canal2Sent;
         run.deliveryFailed += delivered.failed;
@@ -5042,22 +5069,31 @@ export class UolTelegramShadow extends DurableObject {
         run.enriched += catchUp.enriched;
         run.wouldSendMain += catchUp.wouldSendMain;
         run.wouldSendCanal2 += catchUp.wouldSendCanal2;
-        const discordDelivered = await this.processDeliveryQueue(new Date(), {
-          targetNames: ["discord"],
-        });
+        const discordDelivered = await this.withStorageStage(
+          "delivery",
+          () => this.processDeliveryQueue(new Date(), {
+            targetNames: ["discord"],
+          }),
+        );
         run.discordSent = discordDelivered.discordSent;
         run.deliveryFailed += discordDelivered.failed;
-        const delivered = await this.processDeliveryQueue(new Date(), {
-          rows: discordDelivered.selectedRows,
-          waitForMainImage: true,
-          targetNames: ["main", "canal2"],
-        });
+        const delivered = await this.withStorageStage(
+          "delivery",
+          () => this.processDeliveryQueue(new Date(), {
+            rows: discordDelivered.selectedRows,
+            waitForMainImage: true,
+            targetNames: ["main", "canal2"],
+          }),
+        );
         run.mainSent = delivered.mainSent;
         run.canal2Sent = delivered.canal2Sent;
         run.deliveryFailed += delivered.failed;
         run.outcome = run.mainSent > 0 ? "telegram_delivered" : "api_degraded";
       }
-      const ticketProbes = await this.processTicketAvailabilityProbes(new Date());
+      const ticketProbes = await this.withStorageStage(
+        "tickets",
+        () => this.processTicketAvailabilityProbes(new Date()),
+      );
       run.ticketProbes = ticketProbes.probed;
       run.ticketProbeConfirmed = ticketProbes.confirmed;
       run.ticketProbeFallback = ticketProbes.fallback;
@@ -5138,6 +5174,7 @@ export class UolTelegramShadow extends DurableObject {
           error: sanitizeError(error),
         });
       }
+      this.storageStage = "";
     }
 
     logEvent(run.error ? "error" : "info", "uol_telegram_api_poll", {
@@ -5165,9 +5202,11 @@ export class UolTelegramShadow extends DurableObject {
     }
     const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.maintenanceInFlight = true;
+    this.storageStage = "maintenanceLedger";
     const startedAt = new Date();
     const budget = this.storageUsageSnapshot(startedAt);
     if (!budget.maintenanceAllowed) {
+      this.storageStage = "guard";
       this.storageUsage.maintenanceSkipped += 1;
       const result = {
         ok: false,
@@ -5199,6 +5238,7 @@ export class UolTelegramShadow extends DurableObject {
           error: sanitizeError(error),
         });
       }
+      this.storageStage = "";
       logEvent("error", "uol_telegram_maintenance", result);
       return result;
     }
@@ -5232,7 +5272,10 @@ export class UolTelegramShadow extends DurableObject {
 
     try {
       const now = new Date();
-      const ledgerReconciliation = this.reconcileDeliveryLedger(now, 32);
+      const ledgerReconciliation = await this.withStorageStage(
+        "maintenanceLedger",
+        () => this.reconcileDeliveryLedger(now, 32),
+      );
       result.deliveryReconciled = ledgerReconciliation.reconciled +
         ledgerReconciliation.maintenance;
       const initializedAt = this.metadataValue("initialized_at");
@@ -5266,9 +5309,12 @@ export class UolTelegramShadow extends DurableObject {
       if (htmlDue) {
         result.htmlReconciled = true;
         const [listingResult, ticketListingResult] = await Promise.all([
-          settled(timedCards(() => fetchListing())),
+          settled(timedCards(() => this.withStorageStage("html", () => fetchListing()))),
           settled(timedCards(
-            () => fetchListing(fetch, TICKET_LIST_URL, "_uol_ticket_listing_ts"),
+            () => this.withStorageStage(
+              "html",
+              () => fetchListing(fetch, TICKET_LIST_URL, "_uol_ticket_listing_ts"),
+            ),
           )),
         ]);
         const htmlCompletedAt = new Date().toISOString();
@@ -5385,31 +5431,49 @@ export class UolTelegramShadow extends DurableObject {
         }
       }
 
-      const discordDelivery = await this.processDeliveryQueue(new Date(), {
-        targetNames: ["discord"],
-      });
+      const discordDelivery = await this.withStorageStage(
+        "delivery",
+        () => this.processDeliveryQueue(new Date(), {
+          targetNames: ["discord"],
+        }),
+      );
       result.discordSent = discordDelivery.discordSent;
       result.deliveryFailed += discordDelivery.failed;
 
-      const imageCaches = await this.primePendingDiscordImageCache(new Date());
+      const imageCaches = await this.withStorageStage(
+        "images",
+        () => this.primePendingDiscordImageCache(new Date()),
+      );
       result.imageCachesPrimed = imageCaches.primed;
       result.deliveryFailed += imageCaches.failed;
 
-      const imageUpgrades = await this.upgradeTimedOutMainImages(new Date());
+      const imageUpgrades = await this.withStorageStage(
+        "images",
+        () => this.upgradeTimedOutMainImages(new Date()),
+      );
       result.mainImagesUpgraded = imageUpgrades.upgraded;
       result.deliveryFailed += imageUpgrades.failed;
 
-      const canal2Delivery = await this.processDeliveryQueue(new Date(), {
-        targetNames: ["canal2"],
-      });
+      const canal2Delivery = await this.withStorageStage(
+        "delivery",
+        () => this.processDeliveryQueue(new Date(), {
+          targetNames: ["canal2"],
+        }),
+      );
       result.canal2Sent = canal2Delivery.canal2Sent;
       result.deliveryFailed += canal2Delivery.failed;
 
       this.reconcileDiscussionForwards();
-      const comments = await this.processDiscussionComments(2);
+      const comments = await this.withStorageStage(
+        "comments",
+        () => this.processDiscussionComments(2),
+      );
       result.commentsSent = comments.sent;
       result.deliveryFailed += comments.failed;
-      const restock = await this.processRestockSync(new Date());
+      const restock = await this.withStorageStage(
+        "maintenanceLedger",
+        () => this.processRestockSync(new Date()),
+      );
       result.restockMainEdited = restock.mainEdited;
       result.restockCanal2Edited = restock.canal2Edited;
       result.restockMainReposted = restock.mainReposted;
@@ -5421,12 +5485,18 @@ export class UolTelegramShadow extends DurableObject {
       );
       result.maintenanceRepairs = maintenanceRepairs.mainMarkedSynced +
         maintenanceRepairs.canal2Requeued;
-      const soldOut = await this.processSoldOutSync(new Date());
+      const soldOut = await this.withStorageStage(
+        "maintenanceLedger",
+        () => this.processSoldOutSync(new Date()),
+      );
       result.soldOutMainEdited = soldOut.mainEdited;
       result.soldOutCanal2Edited = soldOut.canal2Edited;
       result.soldOutMessageMissing = soldOut.messageMissing;
       result.deliveryFailed += soldOut.failed;
-      const discordAvailability = await this.processDiscordAvailabilitySync(new Date());
+      const discordAvailability = await this.withStorageStage(
+        "maintenanceLedger",
+        () => this.processDiscordAvailabilitySync(new Date()),
+      );
       result.soldOutDiscordEdited = discordAvailability.soldOutEdited;
       result.restockDiscordEdited = discordAvailability.restockEdited;
       result.soldOutMessageMissing += discordAvailability.messageMissing;
@@ -5486,6 +5556,7 @@ export class UolTelegramShadow extends DurableObject {
           error: sanitizeError(error),
         });
       }
+      this.storageStage = "";
     }
     logEvent(result.error ? "error" : "info", "uol_telegram_maintenance", result);
     return result;

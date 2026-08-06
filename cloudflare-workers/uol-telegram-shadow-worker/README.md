@@ -223,6 +223,28 @@ observado crescer, o polling desacelera automaticamente; sem orçamento seguro,
 ele rearma para depois do reset diário. Os dois alarmes se rearmam antes de
 qualquer leitura pesada, então uma falha de cota não interrompe a retomada.
 
+O polling também grava uma assinatura da fotografia válida da API. Quando a
+assinatura não muda, a consulta à API continua em 15 segundos, mas a
+reconciliação completa, as observações e o enriquecimento repetido são pulados;
+entregas pendentes e probes críticos continuam ativos. Ofertas novas recebem
+uma reserva de entrega própria e não ficam atrás de comentários, HTML ou
+imagens antigas quando a manutenção entra em backoff.
+
+`usageEstimate.durableObjectRowsReadToday` inclui contadores sanitizados por
+etapa (`primary`, `delivery`, `tickets`, `maintenanceLedger`, `html`,
+`comments`, `images` e `guard`). Eles servem para diagnóstico interno e não
+incluem texto de ofertas, URLs privadas, tokens ou qualquer outro segredo.
+
+Quando a reserva de leitura está ativa, o alarme de manutenção usa backoff
+progressivo, limitado a 15 minutos e ao próximo reset UTC. A manutenção HTML
+comum passa a uma cadência mais espaçada depois de um bloqueio, mas falha,
+resposta vazia ou inválida da API desperta a reconciliação imediatamente. Os
+probes de ingressos e as edições de esgotado não são reduzidos.
+
+Imagens já confirmadas, proxies válidos, edições sem alteração e tentativas
+esgotadas ficam fora das filas de enriquecimento. A primeira entrega e o
+upgrade tardio da mesma mensagem permanecem inalterados.
+
 O diagnóstico calcula o orçamento em `usageEstimate.durableObjectRowsWrittenPerDay`.
 Com 48 cards ativos na API e 48 no HTML, a projeção conservadora é 57.920
 linhas/dia, já incluindo reserva de 20.000 para entregas e incidentes: margem de

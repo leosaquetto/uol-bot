@@ -193,6 +193,12 @@ test("quota mantém contadores por etapa no snapshot persistido", () => {
   assert.match(workerSource, /stageReads/);
   assert.match(workerSource, /stageWrites/);
   assert.match(workerSource, /recordStorageStage\(/);
+  assert.match(workerSource, /withStorageStage\(\s*"delivery"/);
+  assert.match(workerSource, /withStorageStage\(\s*"tickets"/);
+  assert.match(workerSource, /withStorageStage\(\s*"images"/);
+  assert.match(workerSource, /withStorageStage\(\s*"comments"/);
+  assert.match(workerSource, /durableObjectRowsReadToday: storageReadBudget/);
+  assert.match(workerSource, /storageReadBudget,\n      lastScanAt/);
   assert.match(workerSource, /runtime:storage_usage/);
 });
 
