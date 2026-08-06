@@ -172,6 +172,13 @@ test("polling usa aliases indexados e mede rowsRead reais", () => {
   assert.match(primary, /!budget\.primaryAllowed/);
 });
 
+test("quota mantém contadores por etapa no snapshot persistido", () => {
+  assert.match(workerSource, /stageReads/);
+  assert.match(workerSource, /stageWrites/);
+  assert.match(workerSource, /recordStorageStage\(/);
+  assert.match(workerSource, /runtime:storage_usage/);
+});
+
 test("mensagem Telegram ausente encerra sold-out e republica restock", () => {
   const soldOut = methodSource("  async processSoldOutSync(", "  async processRestockSync(");
   const restock = methodSource("  async processRestockSync(", "  evaluateSoldOut(");

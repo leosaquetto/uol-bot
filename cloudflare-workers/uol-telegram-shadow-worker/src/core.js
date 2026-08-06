@@ -516,6 +516,41 @@ export async function sha256Hex(value) {
     .join("");
 }
 
+const API_SNAPSHOT_FIELDS = [
+  "id",
+  "link",
+  "previewTitle",
+  "title",
+  "category",
+  "cardImageUrl",
+  "partnerImageUrl",
+  "partnerName",
+  "imageUrl",
+  "validity",
+  "description",
+];
+
+function snapshotFieldValue(card, field) {
+  const value = card?.[field];
+  if (["cardImageUrl", "partnerImageUrl", "imageUrl", "link"].includes(field)) {
+    return String(value || "").trim();
+  }
+  return cleanText(value);
+}
+
+export async function buildApiSnapshotFingerprint(cards = []) {
+  const normalized = Array.from(cards || [])
+    .map((card) => Object.fromEntries(
+      API_SNAPSHOT_FIELDS.map((field) => [field, snapshotFieldValue(card, field)]),
+    ))
+    .filter((card) => card.id || card.link)
+    .sort((left, right) => {
+      const byId = left.id.localeCompare(right.id);
+      return byId || left.link.localeCompare(right.link);
+    });
+  return sha256Hex(JSON.stringify(normalized));
+}
+
 export async function buildDedupeKeys(offer) {
   const title = normalizeText(offer?.title || offer?.previewTitle);
   const validity = normalizeText(offer?.validity);

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  buildApiSnapshotFingerprint,
   buildDedupeKeys,
   buildDiscussionCommentChunks,
   buildTelegramCaption,
@@ -25,6 +26,43 @@ import {
   slugTailVariants,
   shouldSendToCanal2,
 } from "../src/core.js";
+
+test("fingerprint da API é estável, ordenado e ignora observação", async () => {
+  const cards = [
+    {
+      id: "b",
+      link: "https://clube.uol.com.br/b/pb",
+      title: "Oferta B",
+      previewTitle: "Oferta B",
+      description: "Detalhe B",
+      observedAt: "2026-08-05T12:00:00.000Z",
+    },
+    {
+      id: "a",
+      link: "https://clube.uol.com.br/a/pa",
+      title: "Oferta A",
+      previewTitle: "Oferta A",
+      description: "Detalhe A",
+      observedAt: "2026-08-05T12:00:01.000Z",
+    },
+  ];
+  const reordered = [
+    { ...cards[1], observedAt: "2026-08-05T13:00:00.000Z" },
+    { ...cards[0], observedAt: "2026-08-05T13:00:01.000Z" },
+  ];
+  assert.equal(
+    await buildApiSnapshotFingerprint(cards),
+    await buildApiSnapshotFingerprint(reordered),
+  );
+  assert.notEqual(
+    await buildApiSnapshotFingerprint(cards),
+    await buildApiSnapshotFingerprint([
+      { ...cards[0], description: "Detalhe A alterado" },
+      cards[1],
+    ]),
+  );
+  assert.equal(typeof await buildApiSnapshotFingerprint([]), "string");
+});
 
 test("snapshot de runtime aceita objeto e falha fechado para JSON inválido", () => {
   assert.deepEqual(parseRuntimeSnapshot('{"lastOffersSeen":12}'), { lastOffersSeen: 12 });

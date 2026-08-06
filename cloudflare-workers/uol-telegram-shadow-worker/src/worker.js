@@ -4,6 +4,7 @@ import {
   buildDedupeKeys,
   buildDiscussionCommentChunks,
   cleanText,
+  buildApiSnapshotFingerprint,
   decideShadowDelivery,
   dedupeCards,
   estimateDailyRowWrites,
@@ -100,6 +101,20 @@ const MAINTENANCE_INSTANCE_NAME = "clube-uol-maintenance";
 const MAX_HTML_BYTES = 2_000_000;
 const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
 const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
+const STORAGE_STAGE_NAMES = [
+  "primary",
+  "delivery",
+  "tickets",
+  "maintenanceLedger",
+  "html",
+  "comments",
+  "images",
+  "guard",
+];
+
+function emptyStorageStages() {
+  return Object.fromEntries(STORAGE_STAGE_NAMES.map((stage) => [stage, 0]));
+}
 
 function envNumber(env, name, fallback, min = 1, max = Number.MAX_SAFE_INTEGER) {
   const parsed = Number.parseInt(String(env[name] || ""), 10);
@@ -477,6 +492,8 @@ export class UolTelegramShadow extends DurableObject {
       day: new Date().toISOString().slice(0, 10),
       rowsRead: 0,
       rowsWritten: 0,
+      stageReads: emptyStorageStages(),
+      stageWrites: emptyStorageStages(),
       primaryMaxRowsRead: 0,
       primaryEstimatedRowsRead: 0,
       maintenanceMaxRowsRead: 0,
@@ -610,6 +627,8 @@ export class UolTelegramShadow extends DurableObject {
       day,
       rowsRead: 0,
       rowsWritten: 0,
+      stageReads: emptyStorageStages(),
+      stageWrites: emptyStorageStages(),
       primaryMaxRowsRead: 0,
       primaryEstimatedRowsRead: 0,
       maintenanceMaxRowsRead: 0,
@@ -623,6 +642,20 @@ export class UolTelegramShadow extends DurableObject {
     this.rollStorageUsageDay();
     this.storageUsage.rowsRead += Number(rowsRead || 0);
     this.storageUsage.rowsWritten += Number(rowsWritten || 0);
+  }
+
+  recordStorageStage(stage, rowsRead = 0, rowsWritten = 0) {
+    const key = STORAGE_STAGE_NAMES.includes(stage) ? stage : "primary";
+    if (!this.storageUsage.stageReads || typeof this.storageUsage.stageReads !== "object") {
+      this.storageUsage.stageReads = emptyStorageStages();
+    }
+    if (!this.storageUsage.stageWrites || typeof this.storageUsage.stageWrites !== "object") {
+      this.storageUsage.stageWrites = emptyStorageStages();
+    }
+    this.storageUsage.stageReads[key] = Number(this.storageUsage.stageReads[key] || 0) +
+      Math.max(0, Number(rowsRead || 0));
+    this.storageUsage.stageWrites[key] = Number(this.storageUsage.stageWrites[key] || 0) +
+      Math.max(0, Number(rowsWritten || 0));
   }
 
   storageUsageSnapshot(now = new Date()) {
@@ -657,6 +690,7 @@ export class UolTelegramShadow extends DurableObject {
       Number(this.storageUsage.rowsRead || 0) - Number(startedRowsRead || 0),
     );
     if (kind === "primary") {
+      this.recordStorageStage("primary", cycleRowsRead, 0);
       this.storageUsage.primaryMaxRowsRead = Math.max(
         Number(this.storageUsage.primaryMaxRowsRead || 0),
         cycleRowsRead,
@@ -666,6 +700,7 @@ export class UolTelegramShadow extends DurableObject {
         cycleRowsRead,
       );
     } else if (kind === "maintenance") {
+      this.recordStorageStage("maintenanceLedger", cycleRowsRead, 0);
       this.storageUsage.maintenanceMaxRowsRead = Math.max(
         Number(this.storageUsage.maintenanceMaxRowsRead || 0),
         cycleRowsRead,
