@@ -139,6 +139,27 @@ export function rollingReadEstimate(previous, observed) {
   return Math.ceil(current * (1 - weight) + sample * weight);
 }
 
+export function maintenanceRetryAt({
+  now = new Date(),
+  resetAt = "",
+  skipped = 0,
+  baseMs = 60_000,
+  maxMs = 15 * 60_000,
+} = {}) {
+  const instant = now instanceof Date ? now : new Date(now);
+  const safeNow = Number.isNaN(instant.getTime()) ? new Date() : instant;
+  const exponent = Math.min(4, Math.max(0, Number(skipped || 0)));
+  const delayMs = Math.min(
+    Math.max(1_000, Number(maxMs) || 15 * 60_000),
+    Math.max(1_000, Number(baseMs) || 60_000) * (2 ** exponent),
+  );
+  const minimumNext = safeNow.getTime() + 1_000;
+  const resetMs = Date.parse(String(resetAt || ""));
+  const safeReset = Number.isFinite(resetMs) ? resetMs - 30_000 : Number.POSITIVE_INFINITY;
+  const target = Math.min(safeNow.getTime() + delayMs, safeReset);
+  return new Date(Math.max(minimumNext, target)).toISOString();
+}
+
 export function cleanText(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }

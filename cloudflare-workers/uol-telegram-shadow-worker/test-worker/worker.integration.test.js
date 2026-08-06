@@ -274,6 +274,28 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("devolve backoff quando a manutenção encontra a reserva de quota", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("maintenance-quota-backoff");
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.storageUsageSnapshot = () => ({
+        rowsRead: 4_900_000,
+        limit: 5_000_000,
+        criticalReserve: 1_000_000,
+        resetAt: "2026-08-06T00:00:00.000Z",
+        maintenanceAllowed: false,
+      });
+      instance.completeStorageUsageCycle = () => 0;
+      const result = await instance.runMaintenanceTick("test");
+      expect(result).toMatchObject({
+        ok: false,
+        outcome: "storage_read_budget_guard",
+        retryReason: "storage_read_budget_guard",
+      });
+      expect(Date.parse(result.retryAt)).toBeGreaterThan(0);
+    });
+  });
+
   it("expõe dead letter da manutenção no monitor operacional", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("maintenance-dead-letter");
 

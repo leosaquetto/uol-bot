@@ -13,6 +13,7 @@ import {
   extractValidity,
   estimateDailyRowWrites,
   formatOfferDuration,
+  maintenanceRetryAt,
   normalizeOfferId,
   observationFreshnessMinutes,
   offerIdentityKeys,
@@ -164,6 +165,34 @@ test("estimativa móvel reage a custo sustentado sem eternizar pico isolado", ()
   assert.equal(rollingReadEstimate(1_750, 100), 1_585);
   assert.equal(rollingReadEstimate(0, 88), 88);
   assert.equal(rollingReadEstimate(0, 3_400), 512);
+});
+
+test("backoff da manutenção cresce, limita e respeita o reset UTC", () => {
+  const now = new Date("2026-08-05T12:00:00.000Z");
+  assert.equal(
+    maintenanceRetryAt({
+      now,
+      resetAt: "2026-08-06T00:00:00.000Z",
+      skipped: 0,
+    }),
+    "2026-08-05T12:01:00.000Z",
+  );
+  assert.equal(
+    maintenanceRetryAt({
+      now,
+      resetAt: "2026-08-06T00:00:00.000Z",
+      skipped: 8,
+    }),
+    "2026-08-05T12:15:00.000Z",
+  );
+  assert.equal(
+    maintenanceRetryAt({
+      now: new Date("2026-08-05T23:59:45.000Z"),
+      resetAt: "2026-08-06T00:00:00.000Z",
+      skipped: 0,
+    }),
+    "2026-08-05T23:59:46.000Z",
+  );
 });
 
 test("histórico grava eventos e só amostra ciclos sem mudança", () => {

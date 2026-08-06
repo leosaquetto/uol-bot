@@ -99,6 +99,16 @@ test("lote tardio filtra imagem e backoff antes do limite", () => {
   assert.match(upgrade, /telegramImageRemoteStrategy:\s*"discord_proxy"/);
 });
 
+test("cache de imagem não repete oferta que já tem proxy ou tentativa terminal", () => {
+  const prime = methodSource(
+    "  async primePendingDiscordImageCache(",
+    "  async upgradeTimedOutMainImages(",
+  );
+  assert.match(prime, /discord_image_cache_attempts < \?/);
+  assert.match(prime, /discord_image_proxy_url = ''/);
+  assert.match(prime, /discord_image_cache_next_attempt_at = ''/);
+});
+
 test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
   const delivery = methodSource("  async processDeliveryQueue(", "  async processDiscussionComments(");
   const primaryAlarm = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
@@ -107,7 +117,7 @@ test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
   assert.match(delivery, /discord_image_proxy_url = COALESCE\(NULLIF\(\?, ''\)/);
   assert.match(delivery, /if \(result\.deferred\) \{[\s\S]*recordImageDelivery/);
   assert.match(primaryAlarm, /result\.newOffers \|\| result\.mainSent/);
-  assert.match(primaryAlarm, /ensureMaintenanceAlarm\(maintenanceUrgent\)/);
+  assert.match(primaryAlarm, /maintenanceUrgent && maintenanceBudget\.maintenanceAllowed/);
 });
 
 test("telemetria frequente usa snapshots e observações limitadas", () => {
@@ -149,7 +159,7 @@ test("cada alarme periódico rearma uma vez por execução", () => {
   const maintenanceAlarm = maintenanceClass.slice(maintenanceAlarmStart, maintenanceAlarmEnd);
 
   assert.equal((primary.match(/setAlarm\(/g) || []).length, 1);
-  assert.equal((maintenanceAlarm.match(/setAlarm\(/g) || []).length, 1);
+  assert.ok((maintenanceAlarm.match(/setAlarm\(/g) || []).length >= 1);
   assert.ok(
     primary.indexOf("setAlarm(") < primary.indexOf('this.scan("alarm")'),
     "alarme crítico deve existir antes de qualquer leitura do scan",
@@ -158,6 +168,7 @@ test("cada alarme periódico rearma uma vez por execução", () => {
     maintenanceAlarm.indexOf("setAlarm(") < maintenanceAlarm.indexOf("runMaintenanceTick"),
     "alarme de manutenção deve existir antes do RPC pesado",
   );
+  assert.match(maintenanceAlarm, /result\?\.retryAt/);
 });
 
 test("polling usa aliases indexados e mede rowsRead reais", () => {

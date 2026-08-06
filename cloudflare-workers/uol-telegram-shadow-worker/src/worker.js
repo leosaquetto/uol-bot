@@ -10,6 +10,7 @@ import {
   estimateDailyRowWrites,
   evaluateDetailQuality,
   isTicketCampaign,
+  maintenanceRetryAt,
   observationFreshnessMinutes,
   offerIdentityKeys,
   offerSourceKey,
@@ -1720,6 +1721,7 @@ export class UolTelegramShadow extends DurableObject {
        WHERE would_send_main = 1
          AND link NOT LIKE '%/campanhasdeingresso/%'
          AND discord_image_cache_message_id = ''
+         AND discord_image_proxy_url = ''
          AND status NOT IN ('baseline', 'discarded', 'shadow_sold_out', 'sold_out')
          AND discord_image_cache_attempts < ?
          AND (discord_image_cache_next_attempt_at = ''
@@ -5174,6 +5176,12 @@ export class UolTelegramShadow extends DurableObject {
         rowsRead: budget.rowsRead,
         limit: budget.limit,
         criticalReserve: budget.criticalReserve,
+        retryAt: maintenanceRetryAt({
+          now: startedAt,
+          resetAt: budget.resetAt,
+          skipped: this.storageUsage.maintenanceSkipped,
+        }),
+        retryReason: "storage_read_budget_guard",
       };
       this.maintenanceInFlight = false;
       try {
@@ -5236,19 +5244,23 @@ export class UolTelegramShadow extends DurableObject {
       );
       const lastHtmlStartedAt = html.lastStartedAt ||
         this.metadataValue("html_reconciliation_last_started_at");
+      const configuredHtmlIntervalSeconds = envNumber(
+        this.env,
+        "HTML_RECONCILIATION_INTERVAL_SECONDS",
+        60,
+        30,
+        3_600,
+      );
+      const htmlIntervalSeconds = this.storageUsage.maintenanceSkipped > 0
+        ? Math.max(300, configuredHtmlIntervalSeconds)
+        : configuredHtmlIntervalSeconds;
       const htmlDue = htmlReconciliationDue({
         source,
         apiStatus: apiError || apiOffers <= 0 ? "rejected" : "fulfilled",
         apiOffers,
         initialized: Boolean(initializedAt),
         lastStartedAt: lastHtmlStartedAt,
-        intervalSeconds: envNumber(
-          this.env,
-          "HTML_RECONCILIATION_INTERVAL_SECONDS",
-          60,
-          30,
-          3_600,
-        ),
+        intervalSeconds: htmlIntervalSeconds,
       });
 
       if (htmlDue) {
@@ -5515,9 +5527,12 @@ export class UolTelegramShadow extends DurableObject {
       const maintenanceUrgent = Boolean(
         result.apiError || result.error || result.newOffers || result.mainSent,
       );
+      const maintenanceBudget = this.storageUsageSnapshot();
       if (maintenanceUrgent || maintenanceBootstrapDue) {
         try {
-          await this.ensureMaintenanceAlarm(maintenanceUrgent);
+          await this.ensureMaintenanceAlarm(
+            maintenanceUrgent && maintenanceBudget.maintenanceAllowed,
+          );
           this.setMetadata("maintenance_alarm_last_ensured_at", new Date().toISOString());
         } catch (error) {
           logEvent("error", "uol_telegram_maintenance_bootstrap_failed", {
@@ -6494,7 +6509,11 @@ export class UolTelegramMaintenance extends DurableObject {
     await this.ctx.storage.setAlarm(Math.max(Date.now() + 1_000, nextAlarm));
     try {
       const stub = this.env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
-      await stub.runMaintenanceTick("alarm");
+      const result = await stub.runMaintenanceTick("alarm");
+      const retryAt = Date.parse(String(result?.retryAt || ""));
+      if (Number.isFinite(retryAt) && retryAt > Date.now() + 1_000) {
+        await this.ctx.storage.setAlarm(retryAt);
+      }
     } catch (error) {
       logEvent("error", "uol_telegram_maintenance_alarm_failed", {
         error: sanitizeError(error),
