@@ -4840,6 +4840,8 @@ export class UolTelegramShadow extends DurableObject {
     let runFailureStreak = Number(previousApi.runFailureStreak || 0);
     let apiContract = null;
     let apiCards = [];
+    let apiSnapshotFingerprint = "";
+    let apiSnapshotChanged = false;
     const run = {
       startedAt: startedAt.toISOString(),
       finishedAt: "",
@@ -4907,6 +4909,10 @@ export class UolTelegramShadow extends DurableObject {
       if (apiCards.length) {
         apiLastSuccessAt = apiResult.value.completedAt;
         apiFailureStreak = 0;
+        apiSnapshotFingerprint = await buildApiSnapshotFingerprint(apiCards);
+        const previousFingerprint = this.metadataValue("runtime:api_snapshot_fingerprint");
+        apiSnapshotChanged = !/^[a-f0-9]{64}$/.test(previousFingerprint) ||
+          previousFingerprint !== apiSnapshotFingerprint;
       } else {
         apiFailureStreak += 1;
       }
@@ -4917,7 +4923,7 @@ export class UolTelegramShadow extends DurableObject {
         await this.backfillTitleValidityKeys();
         this.setMetadata("initialized_at", startedAt.toISOString());
         run.outcome = "baseline_created";
-      } else if (initializedAt && apiCards.length) {
+      } else if (initializedAt && apiCards.length && apiSnapshotChanged) {
         const fastStartedAt = Date.now();
         const fastNow = new Date();
         const resolution = this.resolveListingCards(
@@ -4974,6 +4980,27 @@ export class UolTelegramShadow extends DurableObject {
         else if (run.newOffers > 0) {
           run.outcome = mode === "live" ? "live_decisions_recorded" : "shadow_decisions_recorded";
         } else run.outcome = "no_change";
+      } else if (initializedAt && apiCards.length) {
+        // A API continua sendo consultada em 15s, mas uma fotografia idêntica
+        // não precisa reler/enriquecer toda a listagem. Entregas pendentes,
+        // probes de ingressos e recuperações continuam independentes.
+        const discordDelivered = await this.processDeliveryQueue(new Date(), {
+          targetNames: ["discord"],
+        });
+        run.discordSent = discordDelivered.discordSent;
+        run.deliveryFailed += discordDelivered.failed;
+        const delivered = await this.processDeliveryQueue(new Date(), {
+          waitForMainImage: true,
+          targetNames: ["main", "canal2"],
+        });
+        run.mainSent = delivered.mainSent;
+        run.canal2Sent = delivered.canal2Sent;
+        run.deliveryFailed += delivered.failed;
+        run.outcome = run.mainSent > 0
+          ? "telegram_delivered"
+          : run.deliveryFailed > 0
+            ? "telegram_delivery_partial"
+            : "no_change";
       } else {
         // Even with the discovery API degraded, retry already-persisted main
         // deliveries. HTML fallback is awakened independently below.
@@ -5007,7 +5034,7 @@ export class UolTelegramShadow extends DurableObject {
       run.soldOutDiscordEdited += ticketProbes.soldOutDiscordEdited;
       run.deliveryFailed += ticketProbes.failed;
       if (ticketProbes.confirmed > 0) run.outcome = "ticket_sold_out_confirmed";
-      if (apiCards.length) {
+      if (apiCards.length && apiSnapshotChanged) {
         try {
           this.recordSourceCards("api", apiCards, apiLastSuccessAt);
         } catch (error) {
@@ -5016,6 +5043,12 @@ export class UolTelegramShadow extends DurableObject {
             error: sanitizeError(error),
           });
         }
+      }
+      if (apiSnapshotFingerprint && apiResult.status === "fulfilled") {
+        this.setMetadataIfChanged(
+          "runtime:api_snapshot_fingerprint",
+          apiSnapshotFingerprint,
+        );
       }
     } catch (error) {
       run.error = sanitizeError(error);
@@ -5038,6 +5071,8 @@ export class UolTelegramShadow extends DurableObject {
           fastLastElapsedMs,
           fastLastNewOffers,
           fastLastMainSent,
+          apiSnapshotChanged,
+          apiSnapshotFingerprint,
           runFailureStreak,
         });
         if (apiContract) {

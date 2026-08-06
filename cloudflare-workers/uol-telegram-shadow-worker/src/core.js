@@ -531,7 +531,7 @@ const API_SNAPSHOT_FIELDS = [
 ];
 
 function snapshotFieldValue(card, field) {
-  const value = card?.[field];
+  const value = card?.[field] ?? card?.apiDetail?.[field];
   if (["cardImageUrl", "partnerImageUrl", "imageUrl", "link"].includes(field)) {
     return String(value || "").trim();
   }

@@ -20,6 +20,12 @@ function methodSource(start, end) {
 test("polling crítico usa API e entrega ingressos nos três destinos no mesmo ciclo", () => {
   const scan = methodSource("  async scan(", "  async runMaintenanceTick(");
   assert.match(scan, /this\.fetchAllApi\(\)/);
+  assert.match(scan, /buildApiSnapshotFingerprint\(/);
+  assert.match(scan, /apiSnapshotChanged/);
+  assert.ok(
+    scan.indexOf("buildApiSnapshotFingerprint(") < scan.indexOf("resolveListingCards("),
+    "fingerprint deve ser calculada antes da reconciliação completa",
+  );
   assert.match(scan, /waitForMainImage:\s*true/);
   assert.match(scan, /targetNames:\s*\["discord"\]/);
   assert.match(scan, /targetNames:\s*\["main", "canal2"\]/);

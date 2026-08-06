@@ -174,6 +174,69 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("pula reconciliação completa quando a assinatura da API não muda", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-unchanged-fingerprint");
+    let resolveCalls = 0;
+    let sourceCalls = 0;
+    let pendingCalls = 0;
+    let probeCalls = 0;
+    const deliveryCalls = [];
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.setMetadata("initialized_at", "2026-08-03T12:00:00.000Z");
+      instance.fetchAllApi = async () => [{
+        id: "oferta-estavel-1",
+        link: "https://clube.uol.com.br/beneficios/oferta-estavel-1",
+        previewTitle: "Oferta estável",
+        title: "Oferta estável",
+        description: "Descrição estável da oferta.",
+      }];
+      instance.resolveListingCards = () => {
+        resolveCalls += 1;
+        return {
+          cards: [],
+          inserted: 0,
+          insertedIds: [],
+        };
+      };
+      instance.recordSourceCards = () => {
+        sourceCalls += 1;
+      };
+      instance.processPending = async () => {
+        pendingCalls += 1;
+        return { enriched: 0, wouldSendMain: 0, wouldSendCanal2: 0 };
+      };
+      instance.processDeliveryQueue = async (_now, options) => {
+        deliveryCalls.push(options);
+        return { mainSent: 0, canal2Sent: 0, discordSent: 0, failed: 0 };
+      };
+      instance.processTicketAvailabilityProbes = async () => {
+        probeCalls += 1;
+        return {
+          probed: 0,
+          confirmed: 0,
+          fallback: 0,
+          soldOutMainEdited: 0,
+          soldOutCanal2Edited: 0,
+          soldOutDiscordEdited: 0,
+          failed: 0,
+        };
+      };
+
+      const first = await instance.scan("test");
+      const second = await instance.scan("test");
+
+      expect(first).toMatchObject({ ok: true, outcome: "no_change" });
+      expect(second).toMatchObject({ ok: true, outcome: "no_change" });
+    });
+
+    expect(resolveCalls).toBe(1);
+    expect(sourceCalls).toBe(1);
+    expect(pendingCalls).toBe(1);
+    expect(probeCalls).toBe(2);
+    expect(deliveryCalls.length).toBeGreaterThanOrEqual(2);
+  });
+
   it("expõe dead letter da manutenção no monitor operacional", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("maintenance-dead-letter");
 
