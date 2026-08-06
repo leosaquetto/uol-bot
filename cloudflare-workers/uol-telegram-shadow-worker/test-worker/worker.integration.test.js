@@ -237,6 +237,43 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(deliveryCalls.length).toBeGreaterThanOrEqual(2);
   });
 
+  it("mantém secundários da oferta nova elegíveis sob reserva de quota", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("priority-delivery-quota");
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.setMetadata("delivery_mode_override", "live");
+      instance.storageUsageSnapshot = () => ({
+        maintenanceAllowed: false,
+        primaryAllowed: true,
+      });
+      instance.deliveryQueueSlo = () => ({
+        pending: 0,
+        criticalPending: 0,
+        secondaryPending: 0,
+        oldestAgeMs: 0,
+        p95AgeMs: 0,
+      });
+
+      const oldSecondary = await instance.processDeliveryQueue(
+        new Date("2026-08-05T12:00:00.000Z"),
+        { targetNames: ["discord"] },
+      );
+      expect(oldSecondary).toMatchObject({
+        deferred: true,
+        deferredReason: "quota_reserve",
+      });
+
+      const freshSecondary = await instance.processDeliveryQueue(
+        new Date("2026-08-05T12:00:00.000Z"),
+        {
+          priorityIds: ["oferta-nova-1"],
+          targetNames: ["discord"],
+        },
+      );
+      expect(freshSecondary.deferred).not.toBe(true);
+    });
+  });
+
   it("expõe dead letter da manutenção no monitor operacional", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("maintenance-dead-letter");
 

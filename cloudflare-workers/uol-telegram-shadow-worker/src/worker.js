@@ -2989,7 +2989,12 @@ export class UolTelegramShadow extends DurableObject {
 
   async processDeliveryQueue(
     now,
-    { priorityIds = [], waitForMainImage = true, targetNames = [] } = {},
+    {
+      priorityIds = [],
+      rows = null,
+      waitForMainImage = true,
+      targetNames = [],
+    } = {},
   ) {
     if (this.currentDeliveryMode() !== "live") {
       return { mainSent: 0, canal2Sent: 0, discordSent: 0, failed: 0 };
@@ -3009,8 +3014,16 @@ export class UolTelegramShadow extends DurableObject {
       queueSlo,
       configuredBatch: envNumber(this.env, "DELIVERY_BATCH_SIZE", 4, 1, 8),
       configuredConcurrency: envNumber(this.env, "DELIVERY_CONCURRENCY", 6, 1, 6),
+      priorityCount: priority.size,
     });
-    if (budget.deferSecondary && requestedTargets.length && !requestedTargets.includes("main")) {
+    const prioritySecondaryOnly = budget.deferSecondary &&
+      budget.allowPrioritySecondary && priority.size > 0;
+    if (
+      budget.deferSecondary &&
+      requestedTargets.length &&
+      !requestedTargets.includes("main") &&
+      !prioritySecondaryOnly
+    ) {
       return {
         mainSent: 0,
         canal2Sent: 0,
@@ -3020,7 +3033,6 @@ export class UolTelegramShadow extends DurableObject {
         deferredReason: budget.reason,
       };
     }
-    const allowedTargets = budget.deferSecondary ? ["main"] : requestedTargets;
     const batchSize = Math.max(
       budget.batchSize,
       Math.min(100, priority.size),
@@ -3037,7 +3049,7 @@ export class UolTelegramShadow extends DurableObject {
       ? `CASE WHEN id IN (${priorityList.map(() => "?").join(", ")}) THEN 0 ELSE 1 END,`
       : "";
     const candidateLimit = Math.min(256, Math.max(batchSize * 8, priorityList.length + 32));
-    const candidates = this.sqlExec(
+    const candidates = rows || this.sqlExec(
       `SELECT * FROM offers
        WHERE status IN (
          'delivery_pending', 'partial_delivery', 'delivery_blocked_configuration',
@@ -3053,11 +3065,19 @@ export class UolTelegramShadow extends DurableObject {
     const actionable = [];
 
     for (const row of candidates) {
+      const rowIsPriority = priority.has(row.id);
+      const priorityMayUseSecondary = rowIsPriority && (
+        !budget.deferSecondary || budget.allowPrioritySecondary
+      );
+      const rowTargets = budget.deferSecondary && !priorityMayUseSecondary
+        ? requestedTargets.includes("main") ? ["main"] : []
+        : requestedTargets;
+      if (!rowTargets.length) continue;
       const classification = classifyDeliveryRow(row, configuration, {
         ticket: isTicketCampaign(rowToOffer(row)),
         maxAttempts,
         inFlightStaleSeconds,
-        targetNames: allowedTargets,
+        targetNames: rowTargets,
         now,
       });
       for (const target of classification.staleUnknownTargets || []) {
@@ -3078,7 +3098,7 @@ export class UolTelegramShadow extends DurableObject {
         );
       }
       if (classification.state === "actionable") {
-        actionable.push({ row, classification });
+        actionable.push({ row, classification, targetNames: rowTargets });
       } else {
         // Aggregate status is always computed against every required target,
         // even when this invocation owns only the critical or maintenance set.
@@ -3181,12 +3201,13 @@ export class UolTelegramShadow extends DurableObject {
       String(left.row.first_seen_at).localeCompare(String(right.row.first_seen_at))
     ));
     const concurrency = budget.concurrency;
-    const selected = actionable.slice(0, batchSize).map(({ row, classification }) => {
+    const selected = actionable.slice(0, batchSize).map(({ row, classification, targetNames }) => {
       const offer = rowToOffer(row);
       const imageProxyUrl = String(row.discord_image_proxy_url || "").trim();
       return {
         row,
         classification,
+        targetNames,
         offer,
         telegramState: this.telegramOfferWithImageState(
           offer,
@@ -3202,6 +3223,7 @@ export class UolTelegramShadow extends DurableObject {
 
     // Primeiro despacha todos os destinos principais com concorrência pequena.
     // Assim uma rajada não deixa a oferta N esperando Discord/Canal 2 da N-1.
+    const allowedTargets = requestedTargets;
     if (!allowedTargets.length || allowedTargets.includes("main")) {
       await runBounded(selected, concurrency, async (entry) => {
       if (!stillCurrent()) return;
@@ -3294,6 +3316,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!allowedTargets.length || allowedTargets.includes("canal2")) {
       await runBounded(selected, concurrency, async (entry) => {
       if (!stillCurrent()) return;
+      if (!entry.targetNames.includes("canal2")) return;
       const row = this.sqlExec(
         "SELECT * FROM offers WHERE id = ? LIMIT 1",
         entry.row.id,
@@ -3347,6 +3370,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!allowedTargets.length || allowedTargets.includes("discord")) {
       await runBounded(selected, concurrency, async (entry) => {
       if (!stillCurrent()) return;
+      if (!entry.targetNames.includes("discord")) return;
       const row = this.sqlExec(
         "SELECT * FROM offers WHERE id = ? LIMIT 1",
         entry.row.id,
@@ -3401,7 +3425,13 @@ export class UolTelegramShadow extends DurableObject {
       this.refreshDeliveryStatus(entry.row.id, new Date());
     }
 
-    return { mainSent, canal2Sent, discordSent, failed };
+    return {
+      mainSent,
+      canal2Sent,
+      discordSent,
+      failed,
+      selectedRows: candidates,
+    };
   }
 
   async processDiscussionComments(limit = 4) {
@@ -4962,6 +4992,7 @@ export class UolTelegramShadow extends DurableObject {
           run.deliveryFailed += discordDelivered.failed;
           const delivered = await this.processDeliveryQueue(new Date(), {
             priorityIds,
+            rows: discordDelivered.selectedRows,
             waitForMainImage: true,
             targetNames: ["main", "canal2"],
           });
@@ -4990,6 +5021,7 @@ export class UolTelegramShadow extends DurableObject {
         run.discordSent = discordDelivered.discordSent;
         run.deliveryFailed += discordDelivered.failed;
         const delivered = await this.processDeliveryQueue(new Date(), {
+          rows: discordDelivered.selectedRows,
           waitForMainImage: true,
           targetNames: ["main", "canal2"],
         });
@@ -5014,6 +5046,7 @@ export class UolTelegramShadow extends DurableObject {
         run.discordSent = discordDelivered.discordSent;
         run.deliveryFailed += discordDelivered.failed;
         const delivered = await this.processDeliveryQueue(new Date(), {
+          rows: discordDelivered.selectedRows,
           waitForMainImage: true,
           targetNames: ["main", "canal2"],
         });
