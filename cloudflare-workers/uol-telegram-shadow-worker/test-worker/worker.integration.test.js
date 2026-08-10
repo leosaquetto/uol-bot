@@ -379,6 +379,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
           link: "https://clube.uol.com.br/campanhasdeingresso/p-fresco",
           previewTitle: "Ingresso fresco",
           category: "campanhasdeingresso",
+          cardImageUrl: "",
+          partnerImageUrl: "",
+          partnerName: "",
         },
       ]);
     });

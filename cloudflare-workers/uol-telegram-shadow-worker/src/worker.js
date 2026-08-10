@@ -2315,7 +2315,6 @@ export class UolTelegramShadow extends DurableObject {
   async processOperationalHealth(now = new Date()) {
     const api = this.runtimeSnapshot("api");
     const apiContract = this.runtimeSnapshot("api_contract");
-    const ticketListing = this.runtimeSnapshot("ticket_listing");
     const sourceHealth = this.runtimeSnapshot("source_health");
     const webhook = this.runtimeSnapshot("webhook");
     const apiFailureStreak = Number(
@@ -6142,6 +6141,7 @@ export class UolTelegramShadow extends DurableObject {
     const imageDelivery = this.getImageDeliveryHealth();
     const api = this.runtimeSnapshot("api");
     const apiContract = this.runtimeSnapshot("api_contract");
+    const ticketListing = this.runtimeSnapshot("ticket_listing");
     const html = this.runtimeSnapshot("html");
     const webhook = this.runtimeSnapshot("webhook");
     const maintenance = this.runtimeSnapshot("maintenance");
