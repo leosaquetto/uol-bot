@@ -145,6 +145,7 @@ export function maintenanceRetryAt({
   skipped = 0,
   baseMs = 60_000,
   maxMs = 15 * 60_000,
+  deferUntilReset = false,
 } = {}) {
   const instant = now instanceof Date ? now : new Date(now);
   const safeNow = Number.isNaN(instant.getTime()) ? new Date() : instant;
@@ -155,8 +156,10 @@ export function maintenanceRetryAt({
   );
   const minimumNext = safeNow.getTime() + 1_000;
   const resetMs = Date.parse(String(resetAt || ""));
-  const safeReset = Number.isFinite(resetMs) ? resetMs - 30_000 : Number.POSITIVE_INFINITY;
-  const target = Math.min(safeNow.getTime() + delayMs, safeReset);
+  const safeReset = Number.isFinite(resetMs) ? resetMs + 1_000 : Number.POSITIVE_INFINITY;
+  const target = deferUntilReset && Number.isFinite(safeReset)
+    ? safeReset
+    : Math.min(safeNow.getTime() + delayMs, safeReset);
   return new Date(Math.max(minimumNext, target)).toISOString();
 }
 

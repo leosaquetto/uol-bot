@@ -1,9 +1,10 @@
 # UOL Telegram Cloudflare Worker
 
 Monitor remoto do Clube UOL que substitui a coleta do Mac e o envio automático
-do GitHub Actions. O Worker consulta a API completa a cada 15 segundos, persiste
-a decisão antes de qualquer chamada externa. Polling principal e manutenção
-usam alarmes independentes, mas o mesmo outbox canônico.
+do GitHub Actions. O Worker consulta a API completa e a listagem pública de
+ingressos a cada 15 segundos, persistindo a decisão antes de qualquer chamada
+externa. Polling principal e manutenção usam alarmes independentes, mas o mesmo
+outbox canônico.
 
 Este documento descreve o contrato do código neste checkout. Ele só passa a
 descrever produção depois de publicação deliberada e `postdeploy:check`; teste
@@ -20,22 +21,22 @@ agenda coleta. Estado de produção exige verificação própria.
 ## Fluxo
 
 1. um Durable Object Alarm inicia o ciclo a cada 15 segundos;
-2. a API completa é consultada sozinha e sem cache; HTML e manutenção do webhook
-   não competem com essa chamada;
+2. a API completa e a listagem pública exclusiva de ingressos são consultadas
+   em paralelo, sem cache; HTML geral e manutenção do webhook não competem com
+   essas fontes críticas;
 3. o baseline impede o envio das ofertas existentes durante a implantação;
 4. aliases, validade e deduplicação são decididos e persistidos no SQLite antes
    de qualquer envio;
-5. novidades da API entram imediatamente no outbox durável; o canal principal
-   tenta foto da própria API e aguarda no máximo 60 segundos, sem depender de
-   preview ou confirmação do HTML;
-6. em rajadas, o alarme crítico despacha os canais principais com concorrência
-   limitada; novidade antecipa o outro Durable Object, que envia Discord,
-   publica URL pura, validade, parceiro, categoria e resumo quando disponíveis,
-   recupera a thumbnail e só então encaminha ao canal 2, sem segurar a próxima
-   consulta da API;
-7. as duas páginas HTML são reconciliadas a cada 60 segundos, ou imediatamente
-   se a API falhar/voltar vazia; elas são fallback de descoberta e autoridade de
-   esgotamento/reabertura, nunca confirmação prévia para publicar;
+5. novidades de qualquer fonte crítica entram imediatamente no outbox durável;
+   o canal principal tenta a melhor foto disponível e aguarda no máximo 60
+   segundos, sem depender de preview ou confirmação do HTML geral;
+6. em rajadas, o alarme crítico conclui primeiro Telegram principal e canal 2
+   com concorrência limitada; depois agenda Discord em tarefa protegida, com URL
+   pura, validade, parceiro, categoria e resumo quando disponíveis, sem segurar
+   a próxima descoberta;
+7. o HTML geral é reconciliado na manutenção, ou antecipado se as fontes
+   críticas falharem; junto da listagem de ingressos, ele permanece autoridade
+   de esgotamento/reabertura, nunca confirmação prévia para publicar;
 8. se nenhuma foto funcionar em 60 segundos, o canal principal recebe texto sem
    preview; uma foto obtida depois converte a mesma mensagem em foto + legenda;
 9. campanhas elegíveis de ingressos são copiadas com `copyMessage` ao canal 2;
@@ -106,8 +107,8 @@ agenda coleta. Estado de produção exige verificação própria.
 - **Ledger e proteção:** cada tentativa, sucesso, falha, resultado incerto,
   edição, recuperação e mensagem ausente entra no sidecar `delivery_events`, sem
   adicionar colunas à tabela de ofertas. O ledger é idempotente e limitado por
-  oferta; cada manutenção reconcilia no máximo 32 eventos recentes usando o
-  estado autoritativo, sem repetir um resultado ambíguo. `/decisions` e
+  oferta; o estado autoritativo permanece no outbox, sem varredura periódica do
+  histórico. `/decisions` e
   `/inventory` expõem apenas a linha do tempo sanitizada quando autenticados.
 - **SLO e cota:** a fila mede idade e p95; novas entregas e o principal mantêm
   prioridade, enquanto comentários, imagens e manutenção secundária cedem antes
@@ -149,10 +150,11 @@ agenda coleta. Estado de produção exige verificação própria.
   publicada no diagnóstico operacional.
 - Secrets obrigatórios: `ADMIN_TOKEN`, `UOL_API_AUTHORIZATION`, `TELEGRAM_TOKEN`,
   `TELEGRAM_CHAT_ID`, `CANAL2_ID`, `GRUPO_COMENTARIO_ID`,
-  `OPS_TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET` e `DISCORD_WEBHOOK_URL`.
+  `OPS_TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL` e
+  `DISCORD_IMAGE_CACHE_WEBHOOK_URL`.
   `DISCORD_OPS_WEBHOOK_URL` é opcional e cria um segundo transporte para alertas.
-  `DISCORD_IMAGE_CACHE_WEBHOOK_URL` é opcional e aponta para o segundo canal que
-  recebe as ofertas comuns e também fornece suas thumbnails ao Telegram.
+  O webhook de cache aponta para o segundo canal que recebe as ofertas comuns e
+  também fornece suas thumbnails ao Telegram.
   Não há automação ativa de senha ou login pessoal.
 
 Nenhum valor de secret é armazenado no GitHub ou neste diretório.
@@ -161,8 +163,9 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
 
 - `GET /livez`: liveness público, cacheável e sem consultar o Durable Object.
 - `GET /health` e `GET /readyz`: readiness público mínimo; retornam `200` quando
-  modo, scan, alarme, configuração, fila e incidentes estão saudáveis, ou `503`
-  com os checks sanitizados quando o Worker não está pronto.
+  descoberta e entrega críticas estão prontas, inclusive durante adiamento
+  deliberado da manutenção por cota. Esse adiamento aparece como degradação
+  sanitizada; falha crítica retorna `503`.
 - `GET /dashboard`: painel HTML operacional legado; aceita Bearer ou HTTP Basic
   com usuário `admin` e senha igual ao `ADMIN_TOKEN`. É diagnóstico opcional; o
   envio headless não depende dele.
@@ -207,9 +210,9 @@ do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 
 ## Orçamento no tier gratuito
 
-O polling mantém 5.760 consultas da API por dia. A manutenção roda 1.440 vezes e
-faz duas leituras HTML por reconciliação. Browser Rendering não faz parte do
-Worker.
+O polling mantém 5.760 consultas da API e 5.760 consultas da listagem pública de
+ingressos por dia. A manutenção roda 1.440 vezes e consulta o HTML geral.
+Browser Rendering não faz parte do Worker.
 
 Telemetria de API, HTML, fontes, webhook e manutenção usa snapshots JSON, em vez
 de uma linha por campo. Observações e cards conhecidos só tocam `last_seen_at` a
@@ -223,9 +226,9 @@ observado crescer, o polling desacelera automaticamente; sem orçamento seguro,
 ele rearma para depois do reset diário. Os dois alarmes se rearmam antes de
 qualquer leitura pesada, então uma falha de cota não interrompe a retomada.
 
-O polling também grava uma assinatura da fotografia válida da API. Quando a
-assinatura não muda, a consulta à API continua em 15 segundos, mas a
-reconciliação completa, as observações e o enriquecimento repetido são pulados;
+O polling também grava uma assinatura da fotografia combinada das fontes
+críticas. Quando a assinatura não muda, as consultas continuam em 15 segundos,
+mas a reconciliação completa, as observações e o enriquecimento repetido são pulados;
 entregas pendentes e probes críticos continuam ativos. Ofertas novas recebem
 uma reserva de entrega própria e não ficam atrás de comentários, HTML ou
 imagens antigas quando a manutenção entra em backoff.
@@ -240,11 +243,12 @@ de runtime. Assim, ciclos sem mudança continuam frescos para a reconciliação
 API/HTML sem regravar `source_observations` a cada polling; uma falha ou um
 snapshot antigo ainda cai para o caminho de degradação existente.
 
-Quando a reserva de leitura está ativa, o alarme de manutenção usa backoff
-progressivo, limitado a 15 minutos e ao próximo reset UTC. A manutenção HTML
-comum passa a uma cadência mais espaçada depois de um bloqueio, mas falha,
-resposta vazia ou inválida da API desperta a reconciliação imediatamente. Os
-probes de ingressos e as edições de esgotado não são reduzidos.
+Quando a reserva de leitura está ativa, o alarme de manutenção registra o
+adiamento e rearma para a próxima janela segura, limitada pelo reset UTC. Isso é
+degradação secundária, não indisponibilidade, enquanto descoberta, entrega e
+alarme críticos continuam saudáveis. Falha ou resposta inválida das fontes
+críticas desperta a reconciliação geral assim que houver orçamento. Os probes
+de ingressos e as edições de esgotado não são reduzidos.
 
 Imagens já confirmadas, proxies válidos, edições sem alteração e tentativas
 esgotadas ficam fora das filas de enriquecimento. A primeira entrega e o
@@ -271,9 +275,9 @@ sobrecarregar o Mac:
   13.5 ou superior; em versões anteriores, essa etapa roda no CI Linux;
 - `npm run check:ci`: suíte completa, tipos, startup e bundle dry-run. Esse é o
   comando executado no Ubuntu pelo workflow `UOL Worker CI`;
-- `npm run deploy`: executa automaticamente o `predeploy` leve (`check:fast` e
-  tipos) e, somente depois, cria o bundle e publica conscientemente, sem fazer
-  dois dry-runs consecutivos no Mac;
+- `npm run deploy`: o `predeploy` falha fechado fora da branch `main`, com
+  worktree sujo ou quando `HEAD` difere do `origin/main` atualizado; depois roda
+  `check:fast` e tipos antes de publicar. Não existe bypass por variável;
 - `npm run postdeploy:check`: cruza `/livez` e `/readyz`, verificando versão,
   scan recente, alarme, modo, configuração, fila e incidentes críticos. Para
   exigir versão, use `EXPECTED_VERSION_ID` do deploy recém-publicado. Para modo,
@@ -292,10 +296,8 @@ incidente; degradação histórica fica registrada sem transformar o job em falh
 recorrente, e a primeira verificação saudável fecha o issue.
 Esse dead-man externo não depende do Mac, do Telegram ou de secrets e recebe
 somente a permissão de issues necessária para registrar e encerrar o incidente.
-O agendamento fica inerte até a variável de repositório
-`UOL_READY_MONITOR_ENABLED=true`; ela deve ser habilitada somente depois do
-primeiro deploy que disponibilizar `/readyz`. `workflow_dispatch` continua
-permitido antes disso para uma prova manual controlada.
+O agendamento é ativo por padrão e não depende de variável de repositório.
+`workflow_dispatch` continua disponível para uma prova manual controlada.
 
 ## Comandos
 

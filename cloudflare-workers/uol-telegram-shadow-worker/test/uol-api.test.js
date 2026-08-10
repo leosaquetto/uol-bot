@@ -144,7 +144,7 @@ test("aceita resposta mista e preserva telemetria de contrato fora da lista", as
   assert.equal(cards.length, 1);
   assert.deepEqual(cards.contract, {
     ok: true,
-    reason: "ok",
+    reason: "partial_parseable_offers",
     total: 2,
     valid: 1,
     invalid: 1,
@@ -158,6 +158,7 @@ test("aceita resposta mista e preserva telemetria de contrato fora da lista", as
       "titulo",
       "url",
     ],
+    degraded: true,
   });
   assert.deepEqual(Object.keys(cards), ["0"]);
 });

@@ -224,7 +224,16 @@ test("backoff da manutenção cresce, limita e respeita o reset UTC", () => {
       resetAt: "2026-08-06T00:00:00.000Z",
       skipped: 0,
     }),
-    "2026-08-05T23:59:46.000Z",
+    "2026-08-06T00:00:01.000Z",
+  );
+  assert.equal(
+    maintenanceRetryAt({
+      now,
+      resetAt: "2026-08-06T00:00:00.000Z",
+      skipped: 0,
+      deferUntilReset: true,
+    }),
+    "2026-08-06T00:00:01.000Z",
   );
 });
 

@@ -19,6 +19,7 @@ on:
       - "requirements.txt"
       - "tests/**"
       - ".github/workflows/uol-worker-ci.yml"
+      - ".github/workflows/uol-ready-monitor.yml"
   pull_request:
     paths:
       - "cloudflare-workers/uol-telegram-shadow-worker/**"
@@ -36,6 +37,7 @@ on:
       - "requirements.txt"
       - "tests/**"
       - ".github/workflows/uol-worker-ci.yml"
+      - ".github/workflows/uol-ready-monitor.yml"
   workflow_dispatch:
 
 permissions:

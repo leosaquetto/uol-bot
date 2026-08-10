@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 import {
   buildDedupeKeys,
@@ -72,7 +73,6 @@ import {
   isAmbiguousDeliveryError,
 } from "./delivery-state.js";
 import {
-  boundedReconciliationCandidates,
   recordDeliveryEvent as writeDeliveryEvent,
   summarizeDeliveryTimeline,
   trimDeliveryEvents,
@@ -103,6 +103,7 @@ const MAINTENANCE_INSTANCE_NAME = "clube-uol-maintenance";
 const MAX_HTML_BYTES = 2_000_000;
 const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
 const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
+const READINESS_CACHE_TTL_MS = 15_000;
 const STORAGE_STAGE_NAMES = [
   "primary",
   "delivery",
@@ -117,6 +118,26 @@ const STORAGE_STAGE_NAMES = [
 function emptyStorageStages() {
   return Object.fromEntries(STORAGE_STAGE_NAMES.map((stage) => [stage, 0]));
 }
+
+function readinessChecksOk(mode, checks = {}) {
+  return Boolean(
+    mode === "live" && checks.alarmFresh && checks.scanFresh &&
+    checks.maintenanceFresh && checks.deliveryConfigured &&
+    Number(checks.criticalIncidents || 0) === 0 &&
+    Number(checks.deadLetters || 0) === 0 &&
+    Number(checks.unknown || 0) === 0 &&
+    Number(checks.blockedConfiguration || 0) === 0 &&
+    Number(checks.maintenanceDeadLetters || 0) === 0 &&
+    checks.storageReadBudgetHealthy,
+  );
+}
+
+const PUBLIC_READINESS_CACHE_TTL_MS = 15_000;
+let publicReadinessCache = {
+  versionId: "",
+  expiresAt: 0,
+  payload: null,
+};
 
 function envNumber(env, name, fallback, min = 1, max = Number.MAX_SAFE_INTEGER) {
   const parsed = Number.parseInt(String(env[name] || ""), 10);
@@ -239,7 +260,7 @@ function freshUrl(value, marker) {
   return url.href;
 }
 
-async function fetchHtml(url, marker, fetchImpl = fetch) {
+async function fetchHtml(url, marker, fetchImpl = fetch, timeoutMs = 20_000) {
   const response = await fetchImpl(freshUrl(url, marker), {
     headers: {
       "User-Agent": USER_AGENT,
@@ -251,7 +272,7 @@ async function fetchHtml(url, marker, fetchImpl = fetch) {
       cacheTtl: 0,
       cacheEverything: false,
     },
-    signal: AbortSignal.timeout(20_000),
+    signal: AbortSignal.timeout(Math.min(20_000, Math.max(1_000, Number(timeoutMs) || 20_000))),
   });
 
   if (!response.ok) throw new Error(`uol_http_${response.status}`);
@@ -319,8 +340,13 @@ async function parseListing(response) {
   return dedupeCards(cards);
 }
 
-async function fetchListing(fetchImpl = fetch, url = LIST_URL, marker = "_uol_shadow_ts") {
-  const response = await fetchHtml(url, marker, fetchImpl);
+async function fetchListing(
+  fetchImpl = fetch,
+  url = LIST_URL,
+  marker = "_uol_shadow_ts",
+  timeoutMs = 20_000,
+) {
+  const response = await fetchHtml(url, marker, fetchImpl, timeoutMs);
   return parseListing(response);
 }
 
@@ -489,7 +515,8 @@ export class UolTelegramShadow extends DurableObject {
     this.maintenanceInFlight = false;
     this.metadataCache = new Map();
     this.runtimeSnapshotCache = new Map();
-    this.storageStage = "";
+    this.readinessCache = null;
+    this.storageContext = new AsyncLocalStorage();
     this.storageUsageReady = false;
     this.storageUsage = {
       day: new Date().toISOString().slice(0, 10),
@@ -513,7 +540,7 @@ export class UolTelegramShadow extends DurableObject {
   sqlExec(query, ...bindings) {
     const cursor = this.ctx.storage.sql.exec(query, ...bindings);
     if (!this.storageUsageReady) return cursor;
-    return this.trackSqlCursor(cursor);
+    return this.trackSqlCursor(cursor, this.storageContext.getStore());
   }
 
   scheduleTicketProbe(offerId, nextAt, { preserveExisting = true } = {}) {
@@ -531,7 +558,7 @@ export class UolTelegramShadow extends DurableObject {
     );
   }
 
-  trackSqlCursor(cursor) {
+  trackSqlCursor(cursor, storageContext = this.storageContext.getStore()) {
     let accountedRead = 0;
     let accountedWritten = 0;
     const sync = () => {
@@ -540,6 +567,7 @@ export class UolTelegramShadow extends DurableObject {
       this.recordStorageUsage(
         Math.max(0, rowsRead - accountedRead),
         Math.max(0, rowsWritten - accountedWritten),
+        storageContext,
       );
       accountedRead = rowsRead;
       accountedWritten = rowsWritten;
@@ -641,14 +669,22 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
-  recordStorageUsage(rowsRead = 0, rowsWritten = 0) {
+  recordStorageUsage(
+    rowsRead = 0,
+    rowsWritten = 0,
+    storageContext = this.storageContext.getStore(),
+  ) {
     this.rollStorageUsageDay();
     const normalizedRowsRead = Math.max(0, Number(rowsRead || 0));
     const normalizedRowsWritten = Math.max(0, Number(rowsWritten || 0));
     this.storageUsage.rowsRead += normalizedRowsRead;
     this.storageUsage.rowsWritten += normalizedRowsWritten;
-    if (this.storageStage) {
-      this.recordStorageStage(this.storageStage, normalizedRowsRead, normalizedRowsWritten);
+    if (storageContext?.stage) {
+      this.recordStorageStage(storageContext.stage, normalizedRowsRead, normalizedRowsWritten);
+    }
+    if (storageContext?.cycle) {
+      storageContext.cycle.rowsRead += normalizedRowsRead;
+      storageContext.cycle.rowsWritten += normalizedRowsWritten;
     }
   }
 
@@ -667,13 +703,84 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async withStorageStage(stage, action) {
-    const previous = this.storageStage;
-    this.storageStage = STORAGE_STAGE_NAMES.includes(stage) ? stage : previous;
-    try {
-      return await action();
-    } finally {
-      this.storageStage = previous;
-    }
+    const current = this.storageContext.getStore() || {};
+    const nextStage = STORAGE_STAGE_NAMES.includes(stage) ? stage : current.stage;
+    return this.storageContext.run({ ...current, stage: nextStage }, action);
+  }
+
+  async withStorageCycle(kind, action) {
+    const current = this.storageContext.getStore();
+    if (current?.cycle) return action();
+    const stage = kind === "maintenance" ? "maintenanceLedger" : "primary";
+    return this.storageContext.run({
+      stage,
+      cycle: { kind, rowsRead: 0, rowsWritten: 0 },
+    }, action);
+  }
+
+  withDetachedStorageCycle(kind, stage, action) {
+    const context = {
+      stage: STORAGE_STAGE_NAMES.includes(stage) ? stage : "primary",
+      cycle: { kind, rowsRead: 0, rowsWritten: 0 },
+    };
+    return this.storageContext.run(context, async () => {
+      const startedRowsRead = Number(this.storageUsage.rowsRead || 0);
+      try {
+        return await action();
+      } finally {
+        try {
+          this.completeStorageUsageCycle(kind, startedRowsRead);
+        } catch (error) {
+          logEvent("error", "uol_storage_usage_persist_failed", {
+            cycle: kind,
+            error: sanitizeError(error),
+          });
+        }
+      }
+    });
+  }
+
+  scheduleDiscordDelivery({ priorityIds = [], rows = [], source = "scan" } = {}) {
+    if (Array.isArray(rows) && rows.length === 0) return Promise.resolve({
+      mainSent: 0,
+      canal2Sent: 0,
+      discordSent: 0,
+      failed: 0,
+      selectedRows: [],
+    });
+    const task = this.withDetachedStorageCycle(
+      "delivery",
+      "delivery",
+      () => this.processDeliveryQueue(new Date(), {
+        priorityIds,
+        rows,
+        targetNames: ["discord"],
+      }),
+    ).then((result) => {
+      logEvent(result.failed ? "warn" : "info", "uol_telegram_discord_delivery", {
+        source,
+        discordSent: Number(result.discordSent || 0),
+        failed: Number(result.failed || 0),
+        deferred: result.deferred === true,
+        deferredReason: String(result.deferredReason || ""),
+      });
+      return result;
+    }).catch((error) => {
+      logEvent("error", "uol_telegram_discord_delivery_failed", {
+        source,
+        error: sanitizeError(error),
+      });
+      return {
+        mainSent: 0,
+        canal2Sent: 0,
+        discordSent: 0,
+        failed: 1,
+        selectedRows: [],
+        error: sanitizeError(error),
+      };
+    });
+    this.ctx.waitUntil(task);
+    return task;
   }
 
   storageUsageSnapshot(now = new Date()) {
@@ -703,10 +810,13 @@ export class UolTelegramShadow extends DurableObject {
     this.rollStorageUsageDay();
     // Reserva conservadora para getAlarm/setAlarm e para o próprio snapshot.
     this.recordStorageUsage(2, 1);
-    const cycleRowsRead = Math.max(
-      0,
-      Number(this.storageUsage.rowsRead || 0) - Number(startedRowsRead || 0),
-    );
+    const context = this.storageContext.getStore();
+    const cycleRowsRead = context?.cycle?.kind === kind
+      ? Math.max(0, Number(context.cycle.rowsRead || 0))
+      : Math.max(
+          0,
+          Number(this.storageUsage.rowsRead || 0) - Number(startedRowsRead || 0),
+        );
     if (kind === "primary") {
       this.storageUsage.primaryMaxRowsRead = Math.max(
         Number(this.storageUsage.primaryMaxRowsRead || 0),
@@ -1292,105 +1402,6 @@ export class UolTelegramShadow extends DurableObject {
     }
   }
 
-  reconcileDeliveryLedger(now = new Date(), limit = 32) {
-    const boundedLimit = Math.min(32, Math.max(1, Number(limit) || 32));
-    const result = {
-      candidates: 0,
-      reconciled: 0,
-      maintenance: 0,
-      resolved: 0,
-      unknown: 0,
-    };
-    try {
-      const rows = this.sqlExec(
-        `SELECT e.id AS event_id, e.offer_id, e.state AS event_state,
-                e.occurred_at, o.status, o.delivery_generation,
-                o.would_send_canal2, o.main_message_id, o.canal2_message_id,
-                o.main_sold_out_synced_at, o.canal2_sold_out_synced_at,
-                o.main_restock_synced_at, o.canal2_restock_synced_at
-         FROM delivery_events AS e
-         JOIN offers AS o ON o.id = e.offer_id
-         WHERE e.operation <> 'reconciliation'
-           AND o.status IN (
-             'delivery_pending', 'partial_delivery', 'delivery_unknown',
-             'delivery_dead_letter', 'delivery_blocked_configuration',
-             'sold_out', 'restocked_pending_sync'
-           )
-         ORDER BY e.occurred_at DESC, e.id DESC
-         LIMIT ?`,
-        boundedLimit,
-      ).toArray();
-      const candidates = boundedReconciliationCandidates(rows, boundedLimit);
-      result.candidates = candidates.length;
-      const deliveryStatuses = new Set([
-        "delivery_pending",
-        "partial_delivery",
-        "delivery_unknown",
-        "delivery_dead_letter",
-        "delivery_blocked_configuration",
-      ]);
-      for (const candidate of candidates) {
-        if (deliveryStatuses.has(String(candidate.status || ""))) {
-          const refreshed = this.refreshDeliveryStatus(candidate.offer_id, now);
-          const state = String(refreshed?.classification?.state || "pending");
-          const ledgerState = state === "complete"
-            ? "resolved"
-            : state === "unknown"
-              ? "unknown"
-              : state === "dead_letter"
-                ? "dead_letter"
-                : state === "blocked_configuration"
-                  ? "blocked_configuration"
-                  : "pending";
-          this.recordDeliveryLedgerEvent({
-            dedupeKey: `ledger-reconcile|${candidate.offer_id}|${candidate.event_id}|${ledgerState}`,
-            offerId: candidate.offer_id,
-            target: "aggregate",
-            operation: "reconciliation",
-            state: ledgerState,
-            attempt: Number(candidate.event_id || 0),
-            generation: Number(candidate.delivery_generation || 1),
-            occurredAt: now.toISOString(),
-          });
-          result.reconciled += 1;
-          if (ledgerState === "resolved") result.resolved += 1;
-          if (ledgerState === "unknown") result.unknown += 1;
-          continue;
-        }
-
-        const soldOut = candidate.status === "sold_out";
-        const maintenancePending = soldOut
-          ? !candidate.main_sold_out_synced_at || Boolean(
-            candidate.would_send_canal2 && candidate.canal2_message_id > 0 &&
-            !candidate.canal2_sold_out_synced_at,
-          )
-          : !candidate.main_restock_synced_at || Boolean(
-            candidate.would_send_canal2 && candidate.canal2_message_id > 0 &&
-            !candidate.canal2_restock_synced_at,
-          );
-        this.recordDeliveryLedgerEvent({
-          dedupeKey: `ledger-reconcile|${candidate.offer_id}|${candidate.event_id}|` +
-            `${maintenancePending ? "maintenance_pending" : "maintenance_synced"}`,
-          offerId: candidate.offer_id,
-          target: "aggregate",
-          operation: "reconciliation",
-          state: maintenancePending ? "maintenance_pending" : "maintenance_synced",
-          attempt: Number(candidate.event_id || 0),
-          generation: Number(candidate.delivery_generation || 1),
-          occurredAt: now.toISOString(),
-        });
-        result.maintenance += 1;
-      }
-    } catch (error) {
-      // Ledger is auxiliary. A missing/invalid sidecar must never block the
-      // critical delivery and sold-out maintenance paths.
-      logEvent("warn", "uol_delivery_ledger_reconcile_failed", {
-        error: sanitizeError(error),
-      });
-    }
-    return result;
-  }
-
   runtimeSnapshot(name) {
     if (this.runtimeSnapshotCache.has(name)) return this.runtimeSnapshotCache.get(name);
     const snapshot = parseRuntimeSnapshot(this.metadataValue(`runtime:${name}`));
@@ -1929,6 +1940,10 @@ export class UolTelegramShadow extends DurableObject {
     return fetchOffersFromApi(this.env, fetch);
   }
 
+  async fetchTicketListing(fetchImpl = fetch) {
+    return fetchListing(fetchImpl, TICKET_LIST_URL, "_uol_ticket_critical_ts", 10_000);
+  }
+
   currentDeliveryMode() {
     const override = this.metadataValue("delivery_mode_override");
     if (override === "live" || override === "shadow") return override;
@@ -2300,6 +2315,7 @@ export class UolTelegramShadow extends DurableObject {
   async processOperationalHealth(now = new Date()) {
     const api = this.runtimeSnapshot("api");
     const apiContract = this.runtimeSnapshot("api_contract");
+    const ticketListing = this.runtimeSnapshot("ticket_listing");
     const sourceHealth = this.runtimeSnapshot("source_health");
     const webhook = this.runtimeSnapshot("webhook");
     const apiFailureStreak = Number(
@@ -3447,7 +3463,7 @@ export class UolTelegramShadow extends DurableObject {
       canal2Sent,
       discordSent,
       failed,
-      selectedRows: candidates,
+      selectedRows: selected.map((entry) => entry.row),
     };
   }
 
@@ -4883,14 +4899,18 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async scan(source = "alarm") {
+    return this.withStorageCycle("primary", () => this.scanWithStorageCycle(source));
+  }
+
+  async scanWithStorageCycle(source = "alarm") {
     if (this.scanInFlight) {
       return { ok: false, outcome: "scan_in_progress", source };
     }
     const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.scanInFlight = true;
-    this.storageStage = "primary";
     const startedAt = new Date();
     const previousApi = this.runtimeSnapshot("api");
+    const previousTicketListing = this.runtimeSnapshot("ticket_listing");
     let apiLastSuccessAt = previousApi.lastSuccessAt || this.metadataValue("api_last_success_at");
     let apiFailureStreak = Number(
       previousApi.failureStreak ?? this.metadataValue("api_failure_streak") ?? 0,
@@ -4909,11 +4929,15 @@ export class UolTelegramShadow extends DurableObject {
     let runFailureStreak = Number(previousApi.runFailureStreak || 0);
     let apiContract = null;
     let apiCards = [];
+    let ticketListingCards = [];
+    let discoveryCards = [];
     let apiHealthCards = Array.isArray(previousApi.healthCards)
       ? previousApi.healthCards
       : [];
-    let apiSnapshotFingerprint = "";
-    let apiSnapshotChanged = false;
+    let discoverySnapshotFingerprint = "";
+    let discoverySnapshotChanged = false;
+    let ticketListingLastSuccessAt = previousTicketListing.lastSuccessAt || "";
+    let ticketListingFailureStreak = Number(previousTicketListing.failureStreak || 0);
     const run = {
       startedAt: startedAt.toISOString(),
       finishedAt: "",
@@ -4943,12 +4967,15 @@ export class UolTelegramShadow extends DurableObject {
       ticketProbeDiscordEdited: 0,
       apiOffersSeen: 0,
       apiElapsedMs: 0,
+      ticketListingOffersSeen: 0,
+      ticketListingElapsedMs: 0,
       apiFastProcessed: 0,
       apiFastMainSent: 0,
       apiFastElapsedMs: 0,
       htmlReconciled: false,
       mainAmbiguousReleased: 0,
       apiError: "",
+      ticketListingError: "",
       error: "",
     };
 
@@ -4960,8 +4987,14 @@ export class UolTelegramShadow extends DurableObject {
       if (mode === "live") {
         run.mainAmbiguousReleased = this.releaseExpiredMainUnknowns(startedAt);
       }
-      const apiResult = await settled(timedCards(() => this.fetchAllApi()));
+      const [apiResult, ticketListingResult] = await Promise.all([
+        settled(timedCards(() => this.fetchAllApi())),
+        settled(timedCards(() => this.fetchTicketListing())),
+      ]);
       run.apiElapsedMs = apiResult.status === "fulfilled" ? apiResult.value.elapsedMs : 0;
+      run.ticketListingElapsedMs = ticketListingResult.status === "fulfilled"
+        ? ticketListingResult.value.elapsedMs
+        : 0;
       apiContract = apiResult.status === "fulfilled"
         ? apiResult.value.cards?.contract || null
         : apiResult.reason?.contract || null;
@@ -4971,36 +5004,59 @@ export class UolTelegramShadow extends DurableObject {
             observedAt: apiResult.value.completedAt,
           }))
         : [];
+      ticketListingCards = ticketListingResult.status === "fulfilled"
+        ? ticketListingResult.value.cards.map((card) => ({
+            ...card,
+            observedAt: ticketListingResult.value.completedAt,
+          }))
+        : [];
+      discoveryCards = mergeOfferCards(apiCards, ticketListingCards);
       run.apiOffersSeen = apiCards.length;
-      run.offersSeen = apiCards.length;
+      run.ticketListingOffersSeen = ticketListingCards.length;
+      run.offersSeen = discoveryCards.length;
       if (apiResult.status === "rejected") {
         run.apiError = sanitizeError(apiResult.reason);
       } else if (!apiCards.length) {
         run.apiError = "uol_api_sem_ofertas";
+      } else if (apiContract?.degraded) {
+        run.apiError = `uol_api_contract_degraded:${apiContract.reason}:` +
+          `total=${apiContract.total}:valid=${apiContract.valid}`;
+      }
+      if (ticketListingResult.status === "rejected") {
+        run.ticketListingError = sanitizeError(ticketListingResult.reason);
+        ticketListingFailureStreak += 1;
+      } else if (!ticketListingCards.length) {
+        run.ticketListingError = "uol_ticket_listing_sem_ofertas";
+        ticketListingFailureStreak += 1;
+      } else {
+        ticketListingLastSuccessAt = ticketListingResult.value.completedAt;
+        ticketListingFailureStreak = 0;
       }
       if (apiCards.length) {
         apiLastSuccessAt = apiResult.value.completedAt;
-        apiFailureStreak = 0;
+        apiFailureStreak = apiContract?.degraded ? apiFailureStreak + 1 : 0;
         apiHealthCards = buildApiHealthSnapshot(apiCards);
-        apiSnapshotFingerprint = await buildApiSnapshotFingerprint(apiCards);
-        const previousFingerprint = this.metadataValue("runtime:api_snapshot_fingerprint");
-        apiSnapshotChanged = !/^[a-f0-9]{64}$/.test(previousFingerprint) ||
-          previousFingerprint !== apiSnapshotFingerprint;
       } else {
         apiFailureStreak += 1;
       }
+      if (discoveryCards.length) {
+        discoverySnapshotFingerprint = await buildApiSnapshotFingerprint(discoveryCards);
+        const previousFingerprint = this.metadataValue("runtime:critical_snapshot_fingerprint");
+        discoverySnapshotChanged = !/^[a-f0-9]{64}$/.test(previousFingerprint) ||
+          previousFingerprint !== discoverySnapshotFingerprint;
+      }
 
       const initializedAt = this.metadataValue("initialized_at");
-      if (!initializedAt && apiCards.length) {
-        this.resolveListingCards(apiCards, startedAt.toISOString(), "baseline");
+      if (!initializedAt && discoveryCards.length) {
+        this.resolveListingCards(discoveryCards, startedAt.toISOString(), "baseline");
         await this.backfillTitleValidityKeys();
         this.setMetadata("initialized_at", startedAt.toISOString());
         run.outcome = "baseline_created";
-      } else if (initializedAt && apiCards.length && apiSnapshotChanged) {
+      } else if (initializedAt && discoveryCards.length && discoverySnapshotChanged) {
         const fastStartedAt = Date.now();
         const fastNow = new Date();
         const resolution = this.resolveListingCards(
-          apiCards,
+          discoveryCards,
           fastNow.toISOString(),
           "pending_enrichment",
         );
@@ -5027,20 +5083,10 @@ export class UolTelegramShadow extends DurableObject {
             )
           : [[]];
         for (const priorityIds of deliveryBatches) {
-          const discordDelivered = await this.withStorageStage(
-            "delivery",
-            () => this.processDeliveryQueue(new Date(), {
-              priorityIds,
-              targetNames: ["discord"],
-            }),
-          );
-          run.discordSent += discordDelivered.discordSent;
-          run.deliveryFailed += discordDelivered.failed;
           const delivered = await this.withStorageStage(
             "delivery",
             () => this.processDeliveryQueue(new Date(), {
               priorityIds,
-              rows: discordDelivered.selectedRows,
               waitForMainImage: true,
               targetNames: ["main", "canal2"],
             }),
@@ -5048,6 +5094,11 @@ export class UolTelegramShadow extends DurableObject {
           run.mainSent += delivered.mainSent;
           run.canal2Sent += delivered.canal2Sent;
           run.deliveryFailed += delivered.failed;
+          this.scheduleDiscordDelivery({
+            priorityIds,
+            rows: delivered.selectedRows,
+            source,
+          });
         }
         run.apiFastMainSent = run.mainSent;
         run.apiFastElapsedMs = Date.now() - fastStartedAt;
@@ -5060,22 +5111,13 @@ export class UolTelegramShadow extends DurableObject {
         else if (run.newOffers > 0) {
           run.outcome = mode === "live" ? "live_decisions_recorded" : "shadow_decisions_recorded";
         } else run.outcome = "no_change";
-      } else if (initializedAt && apiCards.length) {
-        // A API continua sendo consultada em 15s, mas uma fotografia idêntica
-        // não precisa reler/enriquecer toda a listagem. Entregas pendentes,
+      } else if (initializedAt && discoveryCards.length) {
+        // As fontes críticas continuam em 15s, mas uma fotografia idêntica não
+        // precisa reler/enriquecer toda a listagem. Entregas pendentes,
         // probes de ingressos e recuperações continuam independentes.
-        const discordDelivered = await this.withStorageStage(
-          "delivery",
-          () => this.processDeliveryQueue(new Date(), {
-            targetNames: ["discord"],
-          }),
-        );
-        run.discordSent = discordDelivered.discordSent;
-        run.deliveryFailed += discordDelivered.failed;
         const delivered = await this.withStorageStage(
           "delivery",
           () => this.processDeliveryQueue(new Date(), {
-            rows: discordDelivered.selectedRows,
             waitForMainImage: true,
             targetNames: ["main", "canal2"],
           }),
@@ -5083,30 +5125,22 @@ export class UolTelegramShadow extends DurableObject {
         run.mainSent = delivered.mainSent;
         run.canal2Sent = delivered.canal2Sent;
         run.deliveryFailed += delivered.failed;
+        this.scheduleDiscordDelivery({ rows: delivered.selectedRows, source });
         run.outcome = run.mainSent > 0
           ? "telegram_delivered"
           : run.deliveryFailed > 0
             ? "telegram_delivery_partial"
             : "no_change";
       } else {
-        // Even with the discovery API degraded, retry already-persisted main
-        // deliveries. HTML fallback is awakened independently below.
+        // Even with both critical discovery sources degraded, retry already-
+        // persisted main deliveries. General HTML fallback remains independent.
         const catchUp = await this.processPending(new Map(), new Date());
         run.enriched += catchUp.enriched;
         run.wouldSendMain += catchUp.wouldSendMain;
         run.wouldSendCanal2 += catchUp.wouldSendCanal2;
-        const discordDelivered = await this.withStorageStage(
-          "delivery",
-          () => this.processDeliveryQueue(new Date(), {
-            targetNames: ["discord"],
-          }),
-        );
-        run.discordSent = discordDelivered.discordSent;
-        run.deliveryFailed += discordDelivered.failed;
         const delivered = await this.withStorageStage(
           "delivery",
           () => this.processDeliveryQueue(new Date(), {
-            rows: discordDelivered.selectedRows,
             waitForMainImage: true,
             targetNames: ["main", "canal2"],
           }),
@@ -5114,6 +5148,7 @@ export class UolTelegramShadow extends DurableObject {
         run.mainSent = delivered.mainSent;
         run.canal2Sent = delivered.canal2Sent;
         run.deliveryFailed += delivered.failed;
+        this.scheduleDiscordDelivery({ rows: delivered.selectedRows, source });
         run.outcome = run.mainSent > 0 ? "telegram_delivered" : "api_degraded";
       }
       const ticketProbes = await this.withStorageStage(
@@ -5131,7 +5166,7 @@ export class UolTelegramShadow extends DurableObject {
       run.soldOutDiscordEdited += ticketProbes.soldOutDiscordEdited;
       run.deliveryFailed += ticketProbes.failed;
       if (ticketProbes.confirmed > 0) run.outcome = "ticket_sold_out_confirmed";
-      if (apiCards.length && apiSnapshotChanged) {
+      if (apiCards.length && discoverySnapshotChanged) {
         try {
           this.recordSourceCards("api", apiCards, apiLastSuccessAt);
         } catch (error) {
@@ -5141,10 +5176,10 @@ export class UolTelegramShadow extends DurableObject {
           });
         }
       }
-      if (apiSnapshotFingerprint && apiResult.status === "fulfilled") {
+      if (discoverySnapshotFingerprint) {
         this.setMetadataIfChanged(
-          "runtime:api_snapshot_fingerprint",
-          apiSnapshotFingerprint,
+          "runtime:critical_snapshot_fingerprint",
+          discoverySnapshotFingerprint,
         );
       }
     } catch (error) {
@@ -5168,10 +5203,19 @@ export class UolTelegramShadow extends DurableObject {
           fastLastElapsedMs,
           fastLastNewOffers,
           fastLastMainSent,
-          apiSnapshotChanged,
-          apiSnapshotFingerprint,
+          discoverySnapshotChanged,
+          discoverySnapshotFingerprint,
           healthCards: apiHealthCards,
           runFailureStreak,
+        });
+        this.setRuntimeSnapshot("ticket_listing", {
+          lastStartedAt: startedAt.toISOString(),
+          lastCompletedAt: run.finishedAt,
+          lastOffersSeen: run.ticketListingOffersSeen,
+          lastElapsedMs: run.ticketListingElapsedMs,
+          lastError: run.ticketListingError,
+          lastSuccessAt: ticketListingLastSuccessAt,
+          failureStreak: ticketListingFailureStreak,
         });
         if (apiContract) {
           this.setRuntimeSnapshot("api_contract", {
@@ -5201,7 +5245,6 @@ export class UolTelegramShadow extends DurableObject {
           error: sanitizeError(error),
         });
       }
-      this.storageStage = "";
     }
 
     logEvent(run.error ? "error" : "info", "uol_telegram_api_poll", {
@@ -5209,6 +5252,8 @@ export class UolTelegramShadow extends DurableObject {
       outcome: run.outcome,
       apiOffersSeen: run.apiOffersSeen,
       apiElapsedMs: run.apiElapsedMs,
+      ticketListingOffersSeen: run.ticketListingOffersSeen,
+      ticketListingElapsedMs: run.ticketListingElapsedMs,
       newOffers: run.newOffers,
       apiFastProcessed: run.apiFastProcessed,
       apiFastMainSent: run.apiFastMainSent,
@@ -5218,23 +5263,33 @@ export class UolTelegramShadow extends DurableObject {
       mainAmbiguousReleased: run.mainAmbiguousReleased,
       deliveryFailed: run.deliveryFailed,
       apiError: run.apiError,
+      ticketListingError: run.ticketListingError,
       error: run.error,
     });
     return { ok: !run.error, ...run };
   }
 
   async runMaintenanceTick(source = "alarm") {
+    return this.withStorageCycle(
+      "maintenance",
+      () => this.runMaintenanceTickWithStorageCycle(source),
+    );
+  }
+
+  async runMaintenanceTickWithStorageCycle(source = "alarm") {
     if (this.maintenanceInFlight) {
       return { ok: false, outcome: "maintenance_in_progress" };
     }
     const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.maintenanceInFlight = true;
-    this.storageStage = "maintenanceLedger";
     const startedAt = new Date();
     const budget = this.storageUsageSnapshot(startedAt);
     if (!budget.maintenanceAllowed) {
-      this.storageStage = "guard";
+      const storageContext = this.storageContext.getStore();
+      if (storageContext) storageContext.stage = "guard";
       this.storageUsage.maintenanceSkipped += 1;
+      const hardReserveActive = Number(budget.rowsRead || 0) >=
+        Number(budget.limit || 0) - DURABLE_OBJECT_CRITICAL_READ_RESERVE;
       const result = {
         ok: false,
         outcome: "storage_read_budget_guard",
@@ -5246,6 +5301,7 @@ export class UolTelegramShadow extends DurableObject {
           now: startedAt,
           resetAt: budget.resetAt,
           skipped: this.storageUsage.maintenanceSkipped,
+          deferUntilReset: hardReserveActive,
         }),
         retryReason: "storage_read_budget_guard",
       };
@@ -5255,8 +5311,11 @@ export class UolTelegramShadow extends DurableObject {
           lastStartedAt: startedAt.toISOString(),
           lastCompletedAt: new Date().toISOString(),
           lastElapsedMs: Date.now() - startedAt.getTime(),
-          lastError: result.error,
+          lastError: "",
           lastOutcome: result.outcome,
+          retryAt: result.retryAt,
+          deferred: true,
+          deferredReason: result.retryReason,
         });
         this.completeStorageUsageCycle("maintenance", storageReadStartedAt);
       } catch (error) {
@@ -5265,8 +5324,7 @@ export class UolTelegramShadow extends DurableObject {
           error: sanitizeError(error),
         });
       }
-      this.storageStage = "";
-      logEvent("error", "uol_telegram_maintenance", result);
+      logEvent("warn", "uol_telegram_maintenance", result);
       return result;
     }
     const result = {
@@ -5287,7 +5345,6 @@ export class UolTelegramShadow extends DurableObject {
       restockCanal2Reposted: 0,
       restockDiscordEdited: 0,
       soldOutMessageMissing: 0,
-      deliveryReconciled: 0,
       maintenanceRepairs: 0,
       deliveryFailed: 0,
       mainImagesUpgraded: 0,
@@ -5299,12 +5356,6 @@ export class UolTelegramShadow extends DurableObject {
 
     try {
       const now = new Date();
-      const ledgerReconciliation = await this.withStorageStage(
-        "maintenanceLedger",
-        () => this.reconcileDeliveryLedger(now, 32),
-      );
-      result.deliveryReconciled = ledgerReconciliation.reconciled +
-        ledgerReconciliation.maintenance;
       const initializedAt = this.metadataValue("initialized_at");
       const api = this.runtimeSnapshot("api");
       const html = this.runtimeSnapshot("html");
@@ -5549,7 +5600,7 @@ export class UolTelegramShadow extends DurableObject {
         result.soldOutDiscordEdited || result.restockDiscordEdited ||
         result.restockMainEdited || result.restockCanal2Edited ||
         result.restockMainReposted || result.restockCanal2Reposted ||
-        result.soldOutMessageMissing || result.deliveryReconciled || result.maintenanceRepairs
+        result.soldOutMessageMissing || result.maintenanceRepairs
       ) {
         result.outcome = "maintenance_applied";
       }
@@ -5566,6 +5617,10 @@ export class UolTelegramShadow extends DurableObject {
           lastCompletedAt: completedAt.toISOString(),
           lastElapsedMs: completedAt.getTime() - startedAt.getTime(),
           lastError: result.error,
+          lastOutcome: result.outcome,
+          retryAt: "",
+          deferred: false,
+          deferredReason: "",
         });
       } catch (error) {
         logEvent("warn", "uol_maintenance_telemetry_failed", {
@@ -5583,7 +5638,6 @@ export class UolTelegramShadow extends DurableObject {
           error: sanitizeError(error),
         });
       }
-      this.storageStage = "";
     }
     logEvent(result.error ? "error" : "info", "uol_telegram_maintenance", result);
     return result;
@@ -6143,6 +6197,7 @@ export class UolTelegramShadow extends DurableObject {
         lastSuccessAt: api.lastSuccessAt || this.metadataValue("api_last_success_at"),
         contract: {
           ok: apiContract.ok ?? null,
+          degraded: apiContract.degraded === true,
           reason: apiContract.reason || "",
           total: Number(apiContract.total || 0),
           valid: Number(apiContract.valid || 0),
@@ -6166,18 +6221,24 @@ export class UolTelegramShadow extends DurableObject {
       },
       publicTicketListing: {
         url: "/?categoria=ingressosexclusivos&order=new",
+        publicationRole: "critical-fallback",
+        pollingIntervalSeconds: alarmIntervalSeconds,
         reconciliationIntervalSeconds: htmlIntervalSeconds,
         lastReconciliationAt: html.lastCompletedAt ||
           this.metadataValue("html_reconciliation_last_completed_at"),
         lastOffersSeen: Number(
-          html.ticketLastOffersSeen ?? this.metadataValue("ticket_listing_last_offers_seen") ?? 0,
+          ticketListing.lastOffersSeen ?? html.ticketLastOffersSeen ??
+            this.metadataValue("ticket_listing_last_offers_seen") ?? 0,
         ),
         lastElapsedMs: Number(
-          html.ticketLastElapsedMs ?? this.metadataValue("ticket_listing_last_elapsed_ms") ?? 0,
+          ticketListing.lastElapsedMs ?? html.ticketLastElapsedMs ??
+            this.metadataValue("ticket_listing_last_elapsed_ms") ?? 0,
         ),
-        lastSuccessAt: html.ticketLastSuccessAt ||
+        lastSuccessAt: ticketListing.lastSuccessAt || html.ticketLastSuccessAt ||
           this.metadataValue("ticket_listing_last_success_at"),
-        lastError: html.ticketLastError ?? this.metadataValue("ticket_listing_last_error"),
+        lastError: ticketListing.lastError ?? html.ticketLastError ??
+          this.metadataValue("ticket_listing_last_error"),
+        failureStreak: Number(ticketListing.failureStreak || 0),
       },
       publicMainListing: {
         url: "/?order=new",
@@ -6298,25 +6359,38 @@ export class UolTelegramShadow extends DurableObject {
       10,
       3_600,
     );
-    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     // A public health check is also a safe recovery point after a deploy or a
     // transient alarm failure. It only writes when the primary alarm is
     // missing/overdue; normal checks remain read-only.
-    await this.ensureAlarm();
-    const alarm = await this.ctx.storage.getAlarm();
+    const alarmScheduledAt = await this.ensureAlarm();
+    const alarm = Date.parse(alarmScheduledAt);
     const alarmFresh = Number.isFinite(alarm) && alarm >= now - intervalSeconds * 2_000;
-    const lastRun = this.sqlExec(
-      "SELECT finished_at FROM runs ORDER BY id DESC LIMIT 1",
-    ).toArray()[0];
-    const lastScanAt = Date.parse(
-      this.runtimeValue("api", "lastCompletedAt") || lastRun?.finished_at || "",
-    );
+    if (
+      this.readinessCache &&
+      now - Number(this.readinessCache.cachedAt || 0) < READINESS_CACHE_TTL_MS
+    ) {
+      const mode = this.currentDeliveryMode();
+      const checks = { ...this.readinessCache.value.checks, alarmFresh };
+      return {
+        ...this.readinessCache.value,
+        ok: readinessChecksOk(mode, checks),
+        mode,
+        checks,
+        checkedAt: new Date(now).toISOString(),
+      };
+    }
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const sourceSuccessTimes = [
+      Date.parse(this.runtimeValue("api", "lastSuccessAt", "api_last_success_at")),
+      Date.parse(this.runtimeValue("ticket_listing", "lastSuccessAt")),
+    ].filter(Number.isFinite);
+    const lastScanAt = sourceSuccessTimes.length ? Math.max(...sourceSuccessTimes) : Number.NaN;
     const scanFresh = Number.isFinite(lastScanAt) &&
       now - lastScanAt <= Math.max(120_000, intervalSeconds * 6_000);
     const lastMaintenanceAt = Date.parse(
       this.runtimeValue("maintenance", "lastCompletedAt", "maintenance_last_completed_at") || "",
     );
-    const maintenanceFresh = Number.isFinite(lastMaintenanceAt) &&
+    const maintenanceRecentlyCompleted = Number.isFinite(lastMaintenanceAt) &&
       now - lastMaintenanceAt <= Math.max(120_000, maintenanceIntervalSeconds * 6_000);
     const incidents = this.sqlExec(
       `SELECT
@@ -6367,7 +6441,8 @@ export class UolTelegramShadow extends DurableObject {
       telegram,
       discordConfiguration(this.env),
     );
-    const modeLive = this.currentDeliveryMode() === "live";
+    const mode = this.currentDeliveryMode();
+    const modeLive = mode === "live";
     const deliveryConfigured = configuration.main.ready &&
       configuration.canal2.ready && configuration.discord.ready;
     const criticalIncidents = Number(incidents.critical || 0);
@@ -6377,37 +6452,41 @@ export class UolTelegramShadow extends DurableObject {
     const maintenanceDeadLetters = Number(queue.restock_dead_letter || 0) +
       Number(queue.sold_out_dead_letter || 0) + Number(queue.comment_dead_letter || 0);
     const storageReadBudget = this.storageUsageSnapshot(new Date(now));
-    const storageReadBudgetHealthy = storageReadBudget.withinFreeTier &&
-      storageReadBudget.maintenanceAllowed;
-    const queueSlo = this.deliveryQueueSlo(new Date(now));
-    const ok = Boolean(
-      modeLive && alarmFresh && scanFresh && maintenanceFresh && deliveryConfigured &&
-      criticalIncidents === 0 && deadLetters === 0 && unknown === 0 &&
-      blockedConfiguration === 0 && maintenanceDeadLetters === 0 &&
-      storageReadBudgetHealthy
+    const maintenanceRetryAtTimestamp = Date.parse(
+      this.runtimeValue("maintenance", "retryAt") || "",
     );
-    return {
-      ok,
+    const maintenanceDeferred = storageReadBudget.maintenanceAllowed === false &&
+      Number.isFinite(maintenanceRetryAtTimestamp) && maintenanceRetryAtTimestamp > now;
+    const maintenanceFresh = maintenanceRecentlyCompleted || maintenanceDeferred;
+    const storageReadBudgetHealthy = storageReadBudget.withinFreeTier &&
+      storageReadBudget.primaryAllowed;
+    const queueSlo = this.deliveryQueueSlo(new Date(now));
+    const checks = {
+      alarmFresh,
+      scanFresh,
+      maintenanceFresh,
+      maintenanceDeferred,
+      deliveryConfigured,
+      criticalIncidents,
+      deadLetters,
+      unknown,
+      blockedConfiguration,
+      maintenanceDeadLetters,
+      storageReadBudgetHealthy,
+    };
+    const result = {
+      ok: readinessChecksOk(mode, checks),
       worker: "uol-telegram-shadow-pilot",
       versionId: String(this.env.WORKER_VERSION?.id || ""),
-      mode: this.currentDeliveryMode(),
-      checks: {
-        alarmFresh,
-        scanFresh,
-        maintenanceFresh,
-        deliveryConfigured,
-        criticalIncidents,
-        deadLetters,
-        unknown,
-        blockedConfiguration,
-        maintenanceDeadLetters,
-        storageReadBudgetHealthy,
-      },
+      mode,
+      checks,
       queueSlo,
       storageReadBudget,
       lastScanAt: Number.isFinite(lastScanAt) ? new Date(lastScanAt).toISOString() : "",
       checkedAt: new Date(now).toISOString(),
     };
+    this.readinessCache = { cachedAt: now, value: result };
+    return result;
   }
 
   getPublicOffers(limit = 4) {
@@ -6690,7 +6769,21 @@ export default {
         request.method === "GET" &&
         (url.pathname === "/health" || url.pathname === "/readyz")
       ) {
-        const readiness = await stub.getReadiness();
+        await stub.ensureAlarm();
+        const versionId = String(env.WORKER_VERSION?.id || "");
+        const now = Date.now();
+        let readiness = publicReadinessCache.versionId === versionId &&
+          publicReadinessCache.expiresAt > now
+          ? publicReadinessCache.payload
+          : null;
+        if (!readiness) {
+          readiness = await stub.getReadiness();
+          publicReadinessCache = {
+            versionId,
+            expiresAt: now + PUBLIC_READINESS_CACHE_TTL_MS,
+            payload: readiness,
+          };
+        }
         return jsonResponse(readiness, readiness.ok ? 200 : 503);
       }
       if (request.method === "GET" && url.pathname === "/dashboard") {

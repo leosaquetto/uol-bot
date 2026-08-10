@@ -52,7 +52,8 @@ test("permite resposta mista e registra somente metadados dos campos", () => {
     ],
   });
   assert.equal(result.ok, true);
-  assert.equal(result.reason, "ok");
+  assert.equal(result.reason, "partial_parseable_offers");
+  assert.equal(result.degraded, true);
   assert.equal(result.total, 2);
   assert.equal(result.valid, 1);
   assert.equal(result.invalid, 1);
@@ -85,4 +86,20 @@ test("converte falha de contrato em sinal crítico sanitizado", () => {
     details: "motivo: no_parseable_offers; total: 4; válidas: 0; inválidas: 4",
   });
   assert.equal(contractHealthSignal({ ok: true }), null);
+});
+
+test("converte contrato parcialmente parseável em sinal degradado", () => {
+  assert.deepEqual(contractHealthSignal({
+    ok: true,
+    degraded: true,
+    reason: "partial_parseable_offers",
+    total: 2,
+    valid: 1,
+    invalid: 1,
+  }), {
+    key: "ticket-api-contract",
+    severity: "warning",
+    summary: "A API de ofertas mudou de contrato ou retornou dados inválidos",
+    details: "motivo: partial_parseable_offers; total: 2; válidas: 1; inválidas: 1",
+  });
 });

@@ -4,10 +4,10 @@ const FIELD_SAMPLE_LIMIT = 12;
 const FIELD_LIMIT = 32;
 
 export function contractHealthSignal(result = {}) {
-  if (result?.ok !== false) return null;
+  if (result?.ok !== false && result?.degraded !== true) return null;
   return {
     key: "ticket-api-contract",
-    severity: "critical",
+    severity: result?.ok === false ? "critical" : "warning",
     summary: "A API de ofertas mudou de contrato ou retornou dados inválidos",
     details: [
       `motivo: ${String(result.reason || "invalid")}`,
@@ -70,11 +70,18 @@ export function validateTicketApiPayload(payload) {
   const valid = items.filter(validOffer).length;
   const result = {
     ok: valid > 0 || items.length === 0,
-    reason: items.length === 0 ? "empty" : valid > 0 ? "ok" : "no_parseable_offers",
+    reason: items.length === 0
+      ? "empty"
+      : valid === items.length
+        ? "ok"
+        : valid > 0
+          ? "partial_parseable_offers"
+          : "no_parseable_offers",
     total: items.length,
     valid,
     invalid: items.length - valid,
     fields: safeFields(items),
   };
+  if (valid > 0 && valid < items.length) result.degraded = true;
   return result;
 }

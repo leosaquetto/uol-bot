@@ -88,20 +88,6 @@ export function trimDeliveryEvents(execute, offerId, limit = 240) {
   );
 }
 
-export function boundedReconciliationCandidates(rows = [], limit = 32) {
-  const boundedLimit = Math.min(32, Math.max(1, positiveInteger(limit, 32)));
-  const seen = new Set();
-  const candidates = [];
-  for (const row of rows || []) {
-    const offerId = String(row?.offer_id || row?.offerId || "").trim();
-    if (!offerId || seen.has(offerId)) continue;
-    seen.add(offerId);
-    candidates.push(row);
-    if (candidates.length >= boundedLimit) break;
-  }
-  return candidates;
-}
-
 export function summarizeDeliveryTimeline(rows = [], limit = 20) {
   return [...rows]
     .sort((left, right) => (

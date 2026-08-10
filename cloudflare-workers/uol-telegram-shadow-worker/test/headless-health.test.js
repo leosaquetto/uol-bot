@@ -17,6 +17,7 @@ function healthyReadiness(overrides = {}) {
         alarmFresh: true,
         scanFresh: true,
         maintenanceFresh: true,
+        maintenanceDeferred: false,
         deliveryConfigured: true,
         criticalIncidents: 0,
         deadLetters: 0,
@@ -52,6 +53,24 @@ test("classifica Worker vivo e pronto como healthy", () => {
   assert.equal(result.state, "healthy");
   assert.equal(result.hardFailure, false);
   assert.deepEqual(result.reasons, []);
+});
+
+test("classifica manutenção adiada pela reserva como degraded, não outage", () => {
+  const readiness = healthyReadiness({
+    checks: {
+      ...healthyReadiness().body.checks,
+      maintenanceDeferred: true,
+    },
+  });
+  const result = classifyHeadlessHealth({
+    liveness: healthyLiveness(),
+    readiness,
+    now,
+  });
+
+  assert.equal(result.state, "degraded");
+  assert.equal(result.hardFailure, false);
+  assert.deepEqual(result.reasons, ["maintenance_deferred"]);
 });
 
 test("classifica incidentes históricos com scan fresco como degraded", () => {

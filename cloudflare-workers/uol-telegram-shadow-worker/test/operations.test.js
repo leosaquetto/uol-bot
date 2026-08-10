@@ -74,6 +74,23 @@ test("usa o snapshot persistido do canário sem depender do texto do erro", () =
   assert.match(signal.details, /beneficios_missing/);
 });
 
+test("sinaliza contrato parcial sem descartar as ofertas válidas", () => {
+  const [signal] = buildIncidentSignals({
+    apiContract: {
+      ok: true,
+      degraded: true,
+      reason: "partial_parseable_offers",
+      total: 2,
+      valid: 1,
+      invalid: 1,
+    },
+    apiFailureStreak: 1,
+  });
+  assert.equal(signal.key, "ticket-api-contract");
+  assert.equal(signal.severity, "warning");
+  assert.match(signal.details, /partial_parseable_offers/);
+});
+
 test("falha de autorização é crítica imediatamente e sinais são deduplicáveis", () => {
   const signals = buildIncidentSignals({
     apiError: "uol_api_http_401",

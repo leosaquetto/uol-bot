@@ -17,19 +17,33 @@ function methodSource(start, end) {
   return workerSource.slice(startIndex, endIndex);
 }
 
-test("polling crítico usa API e entrega ingressos nos três destinos no mesmo ciclo", () => {
+test("polling crítico usa API e agenda três destinos sem bloquear a próxima coleta", () => {
   const scan = methodSource("  async scan(", "  async runMaintenanceTick(");
   assert.match(scan, /this\.fetchAllApi\(\)/);
+  assert.match(scan, /this\.fetchTicketListing\(\)/);
+  assert.match(scan, /Promise\.all\(/);
+  assert.match(scan, /mergeOfferCards\(apiCards, ticketListingCards\)/);
   assert.match(scan, /buildApiSnapshotFingerprint\(/);
-  assert.match(scan, /apiSnapshotChanged/);
+  assert.match(scan, /discoverySnapshotChanged/);
   assert.match(scan, /buildApiHealthSnapshot\(/);
   assert.ok(
     scan.indexOf("buildApiSnapshotFingerprint(") < scan.indexOf("resolveListingCards("),
     "fingerprint deve ser calculada antes da reconciliação completa",
   );
   assert.match(scan, /waitForMainImage:\s*true/);
-  assert.match(scan, /targetNames:\s*\["discord"\]/);
   assert.match(scan, /targetNames:\s*\["main", "canal2"\]/);
+  const mainTargets = [...scan.matchAll(/targetNames:\s*\["main", "canal2"\]/g)];
+  const discordSchedules = [...scan.matchAll(/this\.scheduleDiscordDelivery\(/g)];
+  assert.equal(mainTargets.length, 3);
+  assert.equal(discordSchedules.length, 3);
+  for (let index = 0; index < mainTargets.length; index += 1) {
+    assert.ok(
+      mainTargets[index].index < discordSchedules[index].index,
+      "principal/canal2 deve preceder Discord em todo ramo crítico",
+    );
+  }
+  assert.equal((scan.match(/rows:\s*delivered\.selectedRows/g) || []).length, 3);
+  assert.doesNotMatch(scan, /await this\.scheduleDiscordDelivery/);
   assert.doesNotMatch(scan, /fetchListing\(/);
   assert.doesNotMatch(scan, /ensureTelegramWebhook\(/);
   assert.doesNotMatch(scan, /processDiscussionComments\(/);
@@ -40,6 +54,12 @@ test("polling crítico usa API e entrega ingressos nos três destinos no mesmo c
     "telemetria de fonte deve rodar após a tentativa principal",
   );
   assert.match(scan, /uol_source_observation_failed/);
+});
+
+test("HTML crítico de ingressos compartilha o teto de 10s da API", () => {
+  const criticalTicket = methodSource("  async fetchTicketListing(", "  currentDeliveryMode(");
+  assert.match(criticalTicket, /TICKET_LIST_URL/);
+  assert.match(criticalTicket, /10_000/);
 });
 
 test("HTML, retries secundários e ciclo de disponibilidade ficam na manutenção", () => {
@@ -184,10 +204,33 @@ test("polling usa aliases indexados e mede rowsRead reais", () => {
   assert.match(lookup, /offer_identity_aliases AS a/);
   assert.match(tracking, /cursor\.rowsRead/);
   assert.match(tracking, /cursor\.rowsWritten/);
+  assert.match(workerSource, /AsyncLocalStorage/);
+  assert.match(workerSource, /trackSqlCursor\(cursor, this\.storageContext\.getStore\(\)\)/);
+  assert.match(tracking, /recordStorageUsage\([\s\S]*storageContext/);
   assert.match(maintenance, /storage_read_budget_guard/);
+  assert.doesNotMatch(maintenance, /reconcileDeliveryLedger/);
   assert.match(workerSource, /primaryEstimatedRowsRead/);
   assert.match(primary, /budget\.recommendedPollIntervalSeconds/);
   assert.match(primary, /!budget\.primaryAllowed/);
+});
+
+test("handoff ao Discord contém somente o lote realmente selecionado", () => {
+  const delivery = methodSource("  async processDeliveryQueue(", "  async processDiscussionComments(");
+
+  assert.match(delivery, /selectedRows:\s*selected\.map\(\(entry\) => entry\.row\)/);
+  assert.doesNotMatch(delivery, /selectedRows:\s*candidates/);
+});
+
+test("readiness rearma antes do cache e não repete consultas pesadas por 15s", () => {
+  const readiness = methodSource("  async getReadiness(", "  getPublicOffers(");
+
+  assert.ok(
+    readiness.indexOf("this.ensureAlarm()") < readiness.indexOf("this.readinessCache"),
+    "o cache nunca pode impedir a recuperação do alarme",
+  );
+  assert.doesNotMatch(readiness, /this\.ctx\.storage\.getAlarm\(\)/);
+  assert.doesNotMatch(readiness, /SELECT finished_at FROM runs/);
+  assert.match(readiness, /READINESS_CACHE_TTL_MS/);
 });
 
 test("quota mantém contadores por etapa no snapshot persistido", () => {
