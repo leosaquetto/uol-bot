@@ -1,6 +1,6 @@
 import { env, exports } from "cloudflare:workers";
 import { runDurableObjectAlarm, runInDurableObject } from "cloudflare:test";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 const ADMIN_AUTHORIZATION = "Bearer vitest-admin-token-not-a-secret";
 
@@ -422,6 +422,131 @@ describe("UOL Worker no runtime Cloudflare", () => {
       );
       expect(freshSecondary.deferred).not.toBe(true);
     });
+  });
+
+  it("encaminha ao Canal 2 quando o principal sai da espera de imagem sob reserva", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("canal2-after-main-image-wait");
+    const newOfferId = "ticket-new-image-wait";
+    const oldOfferId = "ticket-old-secondary";
+    const telegramCalls = [];
+
+    vi.stubGlobal("fetch", async (input, init = {}) => {
+      const method = new URL(String(input)).pathname.split("/").at(-1);
+      if (!String(input).startsWith("https://api.telegram.org/") ||
+          !["sendMessage", "copyMessage"].includes(method)) {
+        throw new Error(`unexpected_fetch:${method}`);
+      }
+      const payload = JSON.parse(String(init.body || "{}"));
+      telegramCalls.push({ method, chatId: String(payload.chat_id || "") });
+      return Response.json({
+        ok: true,
+        result: { message_id: method === "sendMessage" ? 801 : 802 },
+      });
+    });
+
+    try {
+      await runInDurableObject(stub, async (instance, state) => {
+        instance.env = {
+          ...instance.env,
+          DELIVERY_MODE: "live",
+          TELEGRAM_TOKEN: "vitest-telegram-token-not-a-secret",
+          TELEGRAM_CHAT_ID: "-100111",
+          CANAL2_ID: "-100333",
+          CANAL2_DELIVERY_ENABLED: "true",
+          DISCORD_DELIVERY_ENABLED: "false",
+          MAIN_IMAGE_WAIT_SECONDS: "60",
+        };
+        instance.setMetadata("delivery_mode_override", "live");
+        instance.storageUsageSnapshot = () => ({
+          maintenanceAllowed: false,
+          primaryAllowed: true,
+        });
+        const now = new Date();
+        const nowIso = now.toISOString();
+        const oldIso = new Date(now.getTime() - 60 * 60_000).toISOString();
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, category, first_seen_at, last_seen_at,
+             status, decision_at, would_send_main, would_send_canal2,
+             delivery_mode, delivery_generation
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?,
+                     'delivery_pending', ?, 1, 1, 'live', 1)`,
+          newOfferId,
+          "https://clube.uol.com.br/campanhasdeingresso/pNew-image-wait",
+          "2 INGRESSOS: nova oferta",
+          "2 INGRESSOS: nova oferta",
+          nowIso,
+          nowIso,
+          nowIso,
+        );
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, category, first_seen_at, last_seen_at,
+             status, decision_at, would_send_main, would_send_canal2,
+             delivery_mode, delivery_generation, main_sent_at, main_message_id
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?,
+                     'partial_delivery', ?, 1, 1, 'live', 1, ?, 700)`,
+          oldOfferId,
+          "https://clube.uol.com.br/campanhasdeingresso/pOld-secondary",
+          "2 INGRESSOS: oferta antiga",
+          "2 INGRESSOS: oferta antiga",
+          oldIso,
+          oldIso,
+          oldIso,
+          oldIso,
+        );
+
+        const deferred = await instance.processDeliveryQueue(new Date(), {
+          priorityIds: [newOfferId],
+          waitForMainImage: true,
+          targetNames: ["main", "canal2"],
+        });
+        expect(deferred).toMatchObject({ mainSent: 0, canal2Sent: 0, failed: 0 });
+        expect(telegramCalls).toEqual([]);
+
+        state.storage.sql.exec(
+          `UPDATE offers SET first_seen_at = ?, main_delivery_next_attempt_at = ''
+           WHERE id = ?`,
+          new Date(Date.now() - 61_000).toISOString(),
+          newOfferId,
+        );
+        const delivered = await instance.processDeliveryQueue(new Date(), {
+          waitForMainImage: true,
+          targetNames: ["main", "canal2"],
+        });
+        expect(delivered).toMatchObject({ mainSent: 1, canal2Sent: 1, failed: 0 });
+        expect(telegramCalls).toEqual([
+          { method: "sendMessage", chatId: "-100111" },
+          { method: "copyMessage", chatId: "-100333" },
+        ]);
+
+        const rows = state.storage.sql.exec(
+          `SELECT id, main_sent_at, canal2_sent_at, canal2_delivery_attempts
+           FROM offers WHERE id IN (?, ?) ORDER BY id`,
+          newOfferId,
+          oldOfferId,
+        ).toArray();
+        expect(rows.find((row) => row.id === newOfferId)).toMatchObject({
+          main_sent_at: expect.any(String),
+          canal2_sent_at: expect.any(String),
+          canal2_delivery_attempts: 1,
+        });
+        expect(rows.find((row) => row.id === oldOfferId)).toMatchObject({
+          main_sent_at: oldIso,
+          canal2_sent_at: "",
+          canal2_delivery_attempts: 0,
+        });
+
+        const repeat = await instance.processDeliveryQueue(new Date(), {
+          waitForMainImage: true,
+          targetNames: ["main", "canal2"],
+        });
+        expect(repeat).toMatchObject({ mainSent: 0, canal2Sent: 0, failed: 0 });
+        expect(telegramCalls).toHaveLength(2);
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("isola estágio e custo de ciclos concorrentes com AsyncLocalStorage", async () => {
