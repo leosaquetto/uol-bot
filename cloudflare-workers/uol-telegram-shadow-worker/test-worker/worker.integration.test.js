@@ -434,7 +434,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
       const suppliedOldSecondary = await instance.processDeliveryQueue(
         new Date("2026-08-05T12:00:00.000Z"),
         {
-          rows: [{ id: "oferta-antiga-1", decision_at: "2026-08-05T11:00:00.000Z" }],
+          rows: [{ id: "oferta-antiga-1", decision_at: "2026-08-05T10:00:00.000Z" }],
           targetNames: ["discord"],
         },
       );
@@ -609,6 +609,12 @@ describe("UOL Worker no runtime Cloudflare", () => {
           targetNames: ["main", "canal2"],
         });
         expect(repeat).toMatchObject({ mainSent: 0, canal2Sent: 0, failed: 0 });
+        const repeatedDiscord = await instance.scheduleDiscordDelivery({
+          rows: repeat.selectedRows,
+          recoveryRows: repeat.recentSecondaryRows,
+          source: "test-recovery-repeat",
+        });
+        expect(repeatedDiscord).toMatchObject({ discordSent: 0, failed: 0 });
         expect(telegramCalls).toHaveLength(6);
       });
     } finally {

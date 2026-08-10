@@ -3501,11 +3501,20 @@ export class UolTelegramShadow extends DurableObject {
     const selectedIds = new Set(selected.map((entry) => entry.row.id));
     const recentSecondaryRows = budget.reason === "quota_reserve" &&
       requestedTargets.includes("main")
-      ? candidates.filter((row) => (
-          !selectedIds.has(row.id) &&
-          !String(row.discord_sent_at || "").trim() &&
-          isRecentDeliveryDecision(row, now)
-        )).slice(0, batchSize)
+      ? candidates.filter((row) => {
+          if (selectedIds.has(row.id) || !isRecentDeliveryDecision(row, now)) return false;
+          const offer = rowToOffer(row);
+          if (!isTicketCampaign(offer)) return false;
+          const discordState = classifyDeliveryRow(row, configuration, {
+            ticket: true,
+            maxAttempts,
+            inFlightStaleSeconds,
+            targetNames: ["discord"],
+            now,
+          });
+          return discordState.state === "actionable" &&
+            discordState.actionable.some((target) => target.target === "discord");
+        }).slice(0, batchSize)
       : [];
 
     return {
