@@ -6,9 +6,9 @@ import { runReplayScenario } from "./replay-fixtures.js";
 test("replay API-first entrega ingresso nos três destinos sem duplicata", () => {
   const result = runReplayScenario("api-to-all");
   assert.deepEqual(result.calls.map((call) => `${call.target}:${call.operation}`), [
-    "discord:send",
     "main:send",
     "canal2:copy",
+    "discord:send",
   ]);
   assert.equal(result.finalOffers[0].status, "delivered");
   assert.equal(result.events.filter((event) => event.state === "sent").length, 3);

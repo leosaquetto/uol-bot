@@ -141,6 +141,13 @@ test("backoff respeita retry_after e jitter limitado", () => {
   assert.equal(classifyDeliveryRow(row({
     main_delivery_next_attempt_at: retryAt,
   }), ready, { now }).state, "backoff");
+  assert.equal(
+    deliveryRetryAt({ retryAfterSeconds: 7_200 }, 20, now, 0),
+    "2026-08-02T14:00:00.000Z",
+  );
+  const extreme = deliveryRetryAt({ retryAfterSeconds: Number.MAX_VALUE }, 20, now, 1);
+  assert.equal(Number.isFinite(Date.parse(extreme)), true);
+  assert.equal(Date.parse(extreme) >= now.getTime(), true);
 });
 
 test("classifica timeout como ambíguo e flags explicitamente", () => {

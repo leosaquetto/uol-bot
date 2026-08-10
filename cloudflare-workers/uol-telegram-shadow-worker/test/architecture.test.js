@@ -17,12 +17,33 @@ function methodSource(start, end) {
   return workerSource.slice(startIndex, endIndex);
 }
 
-test("polling crítico usa API e entrega ingressos nos três destinos no mesmo ciclo", () => {
+test("polling crítico usa API e agenda três destinos sem bloquear a próxima coleta", () => {
   const scan = methodSource("  async scan(", "  async runMaintenanceTick(");
   assert.match(scan, /this\.fetchAllApi\(\)/);
+  assert.match(scan, /this\.fetchTicketListing\(\)/);
+  assert.match(scan, /Promise\.all\(/);
+  assert.match(scan, /mergeOfferCards\(apiCards, ticketListingCards\)/);
+  assert.match(scan, /buildApiSnapshotFingerprint\(/);
+  assert.match(scan, /discoverySnapshotChanged/);
+  assert.match(scan, /buildApiHealthSnapshot\(/);
+  assert.ok(
+    scan.indexOf("buildApiSnapshotFingerprint(") < scan.indexOf("resolveListingCards("),
+    "fingerprint deve ser calculada antes da reconciliação completa",
+  );
   assert.match(scan, /waitForMainImage:\s*true/);
-  assert.match(scan, /targetNames:\s*\["discord"\]/);
   assert.match(scan, /targetNames:\s*\["main", "canal2"\]/);
+  const mainTargets = [...scan.matchAll(/targetNames:\s*\["main", "canal2"\]/g)];
+  const discordSchedules = [...scan.matchAll(/this\.scheduleDiscordDelivery\(/g)];
+  assert.equal(mainTargets.length, 3);
+  assert.equal(discordSchedules.length, 3);
+  for (let index = 0; index < mainTargets.length; index += 1) {
+    assert.ok(
+      mainTargets[index].index < discordSchedules[index].index,
+      "principal/canal2 deve preceder Discord em todo ramo crítico",
+    );
+  }
+  assert.equal((scan.match(/rows:\s*delivered\.selectedRows/g) || []).length, 3);
+  assert.doesNotMatch(scan, /await this\.scheduleDiscordDelivery/);
   assert.doesNotMatch(scan, /fetchListing\(/);
   assert.doesNotMatch(scan, /ensureTelegramWebhook\(/);
   assert.doesNotMatch(scan, /processDiscussionComments\(/);
@@ -33,6 +54,12 @@ test("polling crítico usa API e entrega ingressos nos três destinos no mesmo c
     "telemetria de fonte deve rodar após a tentativa principal",
   );
   assert.match(scan, /uol_source_observation_failed/);
+});
+
+test("HTML crítico de ingressos compartilha o teto de 10s da API", () => {
+  const criticalTicket = methodSource("  async fetchTicketListing(", "  currentDeliveryMode(");
+  assert.match(criticalTicket, /TICKET_LIST_URL/);
+  assert.match(criticalTicket, /10_000/);
 });
 
 test("HTML, retries secundários e ciclo de disponibilidade ficam na manutenção", () => {
@@ -93,6 +120,16 @@ test("lote tardio filtra imagem e backoff antes do limite", () => {
   assert.match(upgrade, /telegramImageRemoteStrategy:\s*"discord_proxy"/);
 });
 
+test("cache de imagem não repete oferta que já tem proxy ou tentativa terminal", () => {
+  const prime = methodSource(
+    "  async primePendingDiscordImageCache(",
+    "  async upgradeTimedOutMainImages(",
+  );
+  assert.match(prime, /discord_image_cache_attempts < \?/);
+  assert.match(prime, /discord_image_proxy_url = ''/);
+  assert.match(prime, /discord_image_cache_next_attempt_at = ''/);
+});
+
 test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
   const delivery = methodSource("  async processDeliveryQueue(", "  async processDiscussionComments(");
   const primaryAlarm = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
@@ -101,7 +138,7 @@ test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
   assert.match(delivery, /discord_image_proxy_url = COALESCE\(NULLIF\(\?, ''\)/);
   assert.match(delivery, /if \(result\.deferred\) \{[\s\S]*recordImageDelivery/);
   assert.match(primaryAlarm, /result\.newOffers \|\| result\.mainSent/);
-  assert.match(primaryAlarm, /ensureMaintenanceAlarm\(maintenanceUrgent\)/);
+  assert.match(primaryAlarm, /maintenanceUrgent && maintenanceBudget\.maintenanceAllowed/);
 });
 
 test("telemetria frequente usa snapshots e observações limitadas", () => {
@@ -143,7 +180,7 @@ test("cada alarme periódico rearma uma vez por execução", () => {
   const maintenanceAlarm = maintenanceClass.slice(maintenanceAlarmStart, maintenanceAlarmEnd);
 
   assert.equal((primary.match(/setAlarm\(/g) || []).length, 1);
-  assert.equal((maintenanceAlarm.match(/setAlarm\(/g) || []).length, 1);
+  assert.ok((maintenanceAlarm.match(/setAlarm\(/g) || []).length >= 1);
   assert.ok(
     primary.indexOf("setAlarm(") < primary.indexOf('this.scan("alarm")'),
     "alarme crítico deve existir antes de qualquer leitura do scan",
@@ -152,6 +189,7 @@ test("cada alarme periódico rearma uma vez por execução", () => {
     maintenanceAlarm.indexOf("setAlarm(") < maintenanceAlarm.indexOf("runMaintenanceTick"),
     "alarme de manutenção deve existir antes do RPC pesado",
   );
+  assert.match(maintenanceAlarm, /result\?\.retryAt/);
 });
 
 test("polling usa aliases indexados e mede rowsRead reais", () => {
@@ -166,10 +204,48 @@ test("polling usa aliases indexados e mede rowsRead reais", () => {
   assert.match(lookup, /offer_identity_aliases AS a/);
   assert.match(tracking, /cursor\.rowsRead/);
   assert.match(tracking, /cursor\.rowsWritten/);
+  assert.match(workerSource, /AsyncLocalStorage/);
+  assert.match(workerSource, /trackSqlCursor\(cursor, this\.storageContext\.getStore\(\)\)/);
+  assert.match(tracking, /recordStorageUsage\([\s\S]*storageContext/);
   assert.match(maintenance, /storage_read_budget_guard/);
+  assert.doesNotMatch(maintenance, /reconcileDeliveryLedger/);
   assert.match(workerSource, /primaryEstimatedRowsRead/);
   assert.match(primary, /budget\.recommendedPollIntervalSeconds/);
   assert.match(primary, /!budget\.primaryAllowed/);
+});
+
+test("handoff ao Discord contém somente o lote realmente selecionado", () => {
+  const delivery = methodSource("  async processDeliveryQueue(", "  async processDiscussionComments(");
+
+  assert.match(delivery, /selectedRows:\s*selected\.map\(\(entry\) => entry\.row\)/);
+  assert.doesNotMatch(delivery, /selectedRows:\s*candidates/);
+});
+
+test("readiness rearma antes do cache e não repete consultas pesadas por 15s", () => {
+  const readiness = methodSource("  async getReadiness(", "  getPublicOffers(");
+
+  assert.ok(
+    readiness.indexOf("this.ensureAlarm()") < readiness.indexOf("this.readinessCache"),
+    "o cache nunca pode impedir a recuperação do alarme",
+  );
+  assert.doesNotMatch(readiness, /this\.ctx\.storage\.getAlarm\(\)/);
+  assert.doesNotMatch(readiness, /SELECT finished_at FROM runs/);
+  assert.match(readiness, /READINESS_CACHE_TTL_MS/);
+});
+
+test("quota mantém contadores por etapa no snapshot persistido", () => {
+  assert.match(workerSource, /stageReads/);
+  assert.match(workerSource, /stageWrites/);
+  assert.match(workerSource, /recordStorageStage\(/);
+  assert.match(workerSource, /withStorageStage\(\s*"delivery"/);
+  assert.match(workerSource, /withStorageStage\(\s*"tickets"/);
+  assert.match(workerSource, /withStorageStage\(\s*"images"/);
+  assert.match(workerSource, /withStorageStage\(\s*"comments"/);
+  assert.match(workerSource, /durableObjectRowsReadToday: storageReadBudget/);
+  assert.match(workerSource, /storageReadBudget,\n      lastScanAt/);
+  assert.match(workerSource, /runtime:storage_usage/);
+  assert.match(workerSource, /healthCards/);
+  assert.match(workerSource, /recentApiCardsForHealth[\s\S]*healthCards/);
 });
 
 test("mensagem Telegram ausente encerra sold-out e republica restock", () => {

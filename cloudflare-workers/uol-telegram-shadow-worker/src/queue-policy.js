@@ -40,6 +40,7 @@ export function chooseDeliveryBudget({
   queueSlo = {},
   configuredBatch = 4,
   configuredConcurrency = 6,
+  priorityCount = 0,
 } = {}) {
   const boundedBatch = Math.min(8, Math.max(1, Number.parseInt(String(configuredBatch), 10) || 4));
   const boundedConcurrency = Math.min(
@@ -55,6 +56,7 @@ export function chooseDeliveryBudget({
       batchSize: boundedBatch,
       concurrency: boundedConcurrency,
       deferSecondary: true,
+      allowPrioritySecondary: Number(priorityCount || 0) > 0,
       reason: "quota_reserve",
     };
   }
@@ -63,6 +65,7 @@ export function chooseDeliveryBudget({
       batchSize: Math.min(4, boundedBatch),
       concurrency: boundedConcurrency,
       deferSecondary: true,
+      allowPrioritySecondary: false,
       reason: "critical_backlog",
     };
   }
@@ -70,7 +73,7 @@ export function chooseDeliveryBudget({
     batchSize: boundedBatch,
     concurrency: boundedConcurrency,
     deferSecondary: false,
+    allowPrioritySecondary: false,
     reason: "healthy",
   };
 }
-

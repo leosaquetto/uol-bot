@@ -39,6 +39,7 @@ test("mantém lote e concorrência quando a fila está saudável", () => {
     batchSize: 4,
     concurrency: 6,
     deferSecondary: false,
+    allowPrioritySecondary: false,
     reason: "healthy",
   });
 });
@@ -54,6 +55,7 @@ test("cede secundários sob backlog crítico antigo sem reduzir caminho principa
   assert.equal(result.batchSize, 4);
   assert.equal(result.concurrency, 6);
   assert.equal(result.deferSecondary, true);
+  assert.equal(result.allowPrioritySecondary, false);
   assert.equal(result.reason, "critical_backlog");
 });
 
@@ -66,6 +68,7 @@ test("cede secundários quando a reserva de leituras está ativa", () => {
   });
 
   assert.equal(result.deferSecondary, true);
+  assert.equal(result.allowPrioritySecondary, false);
   assert.equal(result.reason, "quota_reserve");
   assert.equal(result.batchSize, 4);
   assert.equal(result.concurrency, 6);
@@ -82,4 +85,20 @@ test("não aumenta limites configurados por causa de fila antiga", () => {
   assert.equal(result.batchSize, 4);
   assert.equal(result.concurrency, 6);
   assert.equal(result.deferSecondary, true);
+  assert.equal(result.allowPrioritySecondary, false);
+});
+
+test("reserva secundários apenas para IDs novos da API", () => {
+  const result = chooseDeliveryBudget({
+    storageReadBudget: { maintenanceAllowed: false, primaryAllowed: true },
+    queueSlo: { pending: 1, criticalPending: 1, secondaryPending: 0, oldestAgeMs: 0 },
+    configuredBatch: 4,
+    configuredConcurrency: 6,
+    priorityCount: 2,
+  });
+
+  assert.equal(result.deferSecondary, true);
+  assert.equal(result.allowPrioritySecondary, true);
+  assert.equal(result.batchSize, 4);
+  assert.equal(result.concurrency, 6);
 });

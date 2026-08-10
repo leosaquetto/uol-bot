@@ -59,7 +59,8 @@
       "GRUPO_COMENTARIO_ID",
       "OPS_TELEGRAM_CHAT_ID",
       "TELEGRAM_WEBHOOK_SECRET",
-      "DISCORD_WEBHOOK_URL"
+      "DISCORD_WEBHOOK_URL",
+      "DISCORD_IMAGE_CACHE_WEBHOOK_URL"
     ]
   },
   "durable_objects": {

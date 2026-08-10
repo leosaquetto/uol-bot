@@ -16,7 +16,7 @@ concurrency:
 jobs:
   readiness:
     name: Verificar readiness
-    if: github.event_name == 'workflow_dispatch' || vars.UOL_READY_MONITOR_ENABLED == 'true'
+    if: github.event_name == 'workflow_dispatch' || vars.UOL_READY_MONITOR_ENABLED != 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:

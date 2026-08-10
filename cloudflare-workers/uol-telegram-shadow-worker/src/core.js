@@ -139,6 +139,30 @@ export function rollingReadEstimate(previous, observed) {
   return Math.ceil(current * (1 - weight) + sample * weight);
 }
 
+export function maintenanceRetryAt({
+  now = new Date(),
+  resetAt = "",
+  skipped = 0,
+  baseMs = 60_000,
+  maxMs = 15 * 60_000,
+  deferUntilReset = false,
+} = {}) {
+  const instant = now instanceof Date ? now : new Date(now);
+  const safeNow = Number.isNaN(instant.getTime()) ? new Date() : instant;
+  const exponent = Math.min(4, Math.max(0, Number(skipped || 0)));
+  const delayMs = Math.min(
+    Math.max(1_000, Number(maxMs) || 15 * 60_000),
+    Math.max(1_000, Number(baseMs) || 60_000) * (2 ** exponent),
+  );
+  const minimumNext = safeNow.getTime() + 1_000;
+  const resetMs = Date.parse(String(resetAt || ""));
+  const safeReset = Number.isFinite(resetMs) ? resetMs + 1_000 : Number.POSITIVE_INFINITY;
+  const target = deferUntilReset && Number.isFinite(safeReset)
+    ? safeReset
+    : Math.min(safeNow.getTime() + delayMs, safeReset);
+  return new Date(Math.max(minimumNext, target)).toISOString();
+}
+
 export function cleanText(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
@@ -514,6 +538,56 @@ export async function sha256Hex(value) {
   return [...new Uint8Array(digest)]
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
+}
+
+const API_SNAPSHOT_FIELDS = [
+  "id",
+  "link",
+  "previewTitle",
+  "title",
+  "category",
+  "cardImageUrl",
+  "partnerImageUrl",
+  "partnerName",
+  "imageUrl",
+  "validity",
+  "description",
+];
+
+function snapshotFieldValue(card, field) {
+  const value = card?.[field] ?? card?.apiDetail?.[field];
+  if (["cardImageUrl", "partnerImageUrl", "imageUrl", "link"].includes(field)) {
+    return String(value || "").trim();
+  }
+  return cleanText(value);
+}
+
+export async function buildApiSnapshotFingerprint(cards = []) {
+  const normalized = Array.from(cards || [])
+    .map((card) => Object.fromEntries(
+      API_SNAPSHOT_FIELDS.map((field) => [field, snapshotFieldValue(card, field)]),
+    ))
+    .filter((card) => card.id || card.link)
+    .sort((left, right) => {
+      const byId = left.id.localeCompare(right.id);
+      return byId || left.link.localeCompare(right.link);
+    });
+  return sha256Hex(JSON.stringify(normalized));
+}
+
+export function buildApiHealthSnapshot(cards = []) {
+  return Array.from(cards || [])
+    .map((card) => ({
+      id: cleanText(card?.id ?? card?.apiDetail?.id),
+      link: String(card?.link ?? card?.apiDetail?.link ?? "").trim(),
+      previewTitle: cleanText(
+        card?.previewTitle ?? card?.title ?? card?.apiDetail?.previewTitle ??
+          card?.apiDetail?.title,
+      ),
+      category: cleanText(card?.category ?? card?.apiDetail?.category),
+    }))
+    .filter((card) => card.id && card.link)
+    .sort((left, right) => left.id.localeCompare(right.id) || left.link.localeCompare(right.link));
 }
 
 export async function buildDedupeKeys(offer) {

@@ -1,5 +1,6 @@
 const DEFAULT_RETRY_SECONDS = 15;
 const MAX_RETRY_SECONDS = 30 * 60;
+const MAX_DATE_MILLISECONDS = 8_640_000_000_000_000;
 
 export function envFlag(value, fallback = false) {
   const normalized = String(value ?? "").trim().toLowerCase();
@@ -24,6 +25,7 @@ export function isAmbiguousDeliveryError(error) {
 }
 
 export function deliveryRetryAt(error, attempts, now = new Date(), randomValue = Math.random()) {
+  const instant = now instanceof Date && Number.isFinite(now.getTime()) ? now : new Date();
   const retryAfter = Number(error?.retryAfterSeconds || 0);
   const exponential = Math.min(
     MAX_RETRY_SECONDS,
@@ -31,7 +33,7 @@ export function deliveryRetryAt(error, attempts, now = new Date(), randomValue =
   );
   const hasRetryAfter = Number.isFinite(retryAfter) && retryAfter > 0;
   const baseSeconds = hasRetryAfter
-    ? Math.min(MAX_RETRY_SECONDS, retryAfter)
+    ? retryAfter
     : exponential;
   const boundedRandom = Math.min(1, Math.max(0, Number(randomValue) || 0));
   // retry_after is a floor declared by the provider. Applying downward jitter
@@ -39,7 +41,11 @@ export function deliveryRetryAt(error, attempts, now = new Date(), randomValue =
   const jitter = hasRetryAfter
     ? 1 + boundedRandom * 0.15
     : 0.85 + boundedRandom * 0.3;
-  return new Date(now.getTime() + Math.ceil(baseSeconds * jitter) * 1_000).toISOString();
+  const target = Math.min(
+    MAX_DATE_MILLISECONDS,
+    instant.getTime() + Math.ceil(baseSeconds * jitter) * 1_000,
+  );
+  return new Date(target).toISOString();
 }
 
 export function deliveryConfiguration(env, telegram, discord) {

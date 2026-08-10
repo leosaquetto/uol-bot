@@ -146,18 +146,16 @@ function replayApiToAll(recorder) {
     ticket: true,
     now: new Date(now),
   });
-  const targets = classification.actionable.map((item) => item.target)
-    .sort((left, right) => ["discord", "main", "canal2"].indexOf(left) -
-      ["discord", "main", "canal2"].indexOf(right));
-  for (const target of targets.filter((item) => item !== "canal2")) {
-    targetCall(row, target, target === "canal2" ? "copy" : "send", now, recorder);
+  if (classification.actionable.some((item) => item.target === "main")) {
+    targetCall(row, "main", "send", now, recorder);
   }
   const afterMain = classifyDeliveryRow(row, DELIVERY_CONFIGURATION, {
     ticket: true,
     now: new Date(now),
   });
-  for (const target of afterMain.actionable.map((item) => item.target).filter((item) => item === "canal2")) {
-    targetCall(row, target, "copy", now, recorder);
+  for (const target of ["canal2", "discord"]) {
+    if (!afterMain.actionable.some((item) => item.target === target)) continue;
+    targetCall(row, target, target === "canal2" ? "copy" : "send", now, recorder);
   }
   row.status = classifyDeliveryRow(row, DELIVERY_CONFIGURATION, {
     ticket: true,

@@ -74,52 +74,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
-  it("reconcilia no máximo 32 ofertas pelo ledger sem repetir entrega ambígua", async () => {
-    const stub = env.UOL_TELEGRAM_SHADOW.getByName("bounded-ledger-reconciliation");
-    await runInDurableObject(stub, async (instance, state) => {
-      for (let index = 0; index < 40; index += 1) {
-        const id = `ledger-reconcile-${String(index).padStart(2, "0")}`;
-        state.storage.sql.exec(
-          `INSERT INTO offers(
-             id, link, preview_title, first_seen_at, last_seen_at, status,
-             delivery_generation
-           ) VALUES (?, ?, ?, ?, ?, 'partial_delivery', 1)`,
-          id,
-          `https://clube.uol.com.br/beneficios/${id}`,
-          "Oferta de reconciliação",
-          "2026-08-04T12:00:00.000Z",
-          "2026-08-04T12:00:00.000Z",
-        );
-        state.storage.sql.exec(
-          `INSERT INTO delivery_events(
-             dedupe_key, offer_id, target, operation, state, attempt, generation,
-             occurred_at
-           ) VALUES (?, ?, 'main', 'send', 'unknown', 1, 1, ?)`,
-          `replay-${id}`,
-          id,
-          `2026-08-04T12:${String(index).padStart(2, "0")}:00.000Z`,
-        );
-      }
-      const refreshed = [];
-      instance.refreshDeliveryStatus = (id) => {
-        refreshed.push(id);
-        return { classification: { state: "unknown" } };
-      };
-      const result = instance.reconcileDeliveryLedger(
-        new Date("2026-08-04T13:00:00.000Z"),
-        32,
-      );
-      expect(result).toMatchObject({ candidates: 32, reconciled: 32, unknown: 32 });
-      expect(refreshed).toHaveLength(32);
-      const reconciliationEvents = state.storage.sql.exec(
-        `SELECT COUNT(*) AS count FROM delivery_events
-         WHERE operation = 'reconciliation'`,
-      ).one();
-      expect(Number(reconciliationEvents.count)).toBe(32);
-    });
-  });
-
-  it("envia Discord, principal e canal 2 no ciclo rápido sem aguardar manutenção", async () => {
+  it("agenda Discord depois do principal sem bloquear o fim do scan crítico", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-fast-path");
     const deliveryCalls = [];
 
@@ -131,6 +86,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         previewTitle: "Oferta relâmpago",
         apiDetail: { title: "Oferta relâmpago" },
       }];
+      instance.fetchTicketListing = async () => [];
       instance.recordSourceCards = () => {};
       instance.resolveListingCards = () => ({
         cards: [],
@@ -144,9 +100,17 @@ describe("UOL Worker no runtime Cloudflare", () => {
       });
       instance.processDeliveryQueue = async (_now, options) => {
         deliveryCalls.push(options);
-        return options.targetNames.includes("discord")
-          ? { mainSent: 0, canal2Sent: 0, discordSent: 1, failed: 0 }
-          : { mainSent: 1, canal2Sent: 1, discordSent: 0, failed: 0 };
+        return {
+          mainSent: 1,
+          canal2Sent: 1,
+          discordSent: 0,
+          failed: 0,
+          selectedRows: [{ id: "oferta-relampago-1" }],
+        };
+      };
+      instance.scheduleDiscordDelivery = (options) => {
+        deliveryCalls.push({ ...options, targetNames: ["discord"] });
+        return new Promise(() => {});
       };
       instance.runMaintenanceTick = async () => {
         throw new Error("maintenance_must_not_run_in_api_scan");
@@ -165,12 +129,352 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(deliveryCalls).toHaveLength(2);
     expect(deliveryCalls[0]).toMatchObject({
       priorityIds: ["oferta-relampago-1"],
-      targetNames: ["discord"],
+      waitForMainImage: true,
+      targetNames: ["main", "canal2"],
     });
     expect(deliveryCalls[1]).toMatchObject({
       priorityIds: ["oferta-relampago-1"],
-      waitForMainImage: true,
-      targetNames: ["main", "canal2"],
+      rows: [{ id: "oferta-relampago-1" }],
+      targetNames: ["discord"],
+    });
+  });
+
+  it("persiste ingressos do HTML crítico mesmo quando a API os omite", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ticket-critical-fallback");
+    const missingIds = [
+      "pcb-2-ingressos-16-08-teatro-vanucci-rj",
+      "pca-2-ingressos-15-08-teatro-vanucci-rj",
+      "pc9-2-ingressos-14-08-teatro-vanucci-rj",
+      "pc1-2-ingressos-13-08-cultura-artistica-sp",
+    ];
+    const ticketHtml = `<!doctype html><html><body>
+      <div class="beneficio" data-categoria="campanhasdeingresso">
+        <a href="/campanhasdeingresso/pCB-2-ingressos-16-08-teatro-vanucci-rj">
+          <p class="titulo">2 INGRESSOS: 16/08 Teatro Vanucci RJ</p>
+        </a>
+      </div>
+      <div class="beneficio" data-categoria="campanhasdeingresso">
+        <a href="/campanhasdeingresso/pCA-2-ingressos-15-08-teatro-vanucci-rj">
+          <p class="titulo">2 INGRESSOS: 15/08 Teatro Vanucci RJ</p>
+        </a>
+      </div>
+      <div class="beneficio" data-categoria="campanhasdeingresso">
+        <a href="/campanhasdeingresso/pC9-2-ingressos-14-08-teatro-vanucci-rj">
+          <p class="titulo">2 INGRESSOS: 14/08 Teatro Vanucci RJ</p>
+        </a>
+      </div>
+      <div class="beneficio" data-categoria="campanhasdeingresso">
+        <a href="/campanhasdeingresso/pC1-2-ingressos-13-08-cultura-artistica-sp">
+          <p class="titulo">2 INGRESSOS: 13/08 Cultura Artística SP</p>
+        </a>
+      </div>
+    </body></html>`;
+    const deliveryCalls = [];
+    let mainDeliveryCount = 0;
+
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.setMetadata("initialized_at", "2026-08-10T12:00:00.000Z");
+      instance.fetchAllApi = async () => [];
+      const fetchTicketListing = instance.fetchTicketListing.bind(instance);
+      instance.fetchTicketListing = () => fetchTicketListing(async (url) => {
+        expect(String(url)).toContain("categoria=ingressosexclusivos");
+        return new Response(ticketHtml, {
+          headers: { "content-type": "text/html; charset=UTF-8" },
+        });
+      });
+      instance.processDeliveryQueue = async (_now, options) => {
+        deliveryCalls.push(options);
+        if (options.targetNames.includes("discord")) {
+          const rows = options.rows || [];
+          for (const row of rows) {
+            state.storage.sql.exec(
+              "UPDATE offers SET discord_sent_at = ? WHERE id = ?",
+              "2026-08-10T21:00:01.000Z",
+              row.id,
+            );
+          }
+          return {
+            mainSent: 0,
+            canal2Sent: 0,
+            discordSent: rows.length,
+            failed: 0,
+            selectedRows: rows,
+          };
+        }
+        const rows = state.storage.sql.exec(
+          `SELECT id FROM offers
+           WHERE id IN (${missingIds.map(() => "?").join(", ")})
+             AND main_sent_at = ''`,
+          ...missingIds,
+        ).toArray();
+        for (const row of rows) {
+          state.storage.sql.exec(
+            `UPDATE offers SET main_sent_at = ?, canal2_sent_at = ?, status = 'delivered'
+             WHERE id = ?`,
+            "2026-08-10T21:00:00.000Z",
+            "2026-08-10T21:00:00.000Z",
+            row.id,
+          );
+        }
+        mainDeliveryCount += rows.length;
+        return {
+          mainSent: rows.length,
+          canal2Sent: rows.length,
+          discordSent: 0,
+          failed: 0,
+          selectedRows: rows,
+        };
+      };
+      instance.scheduleDiscordDelivery = (options) => {
+        if (!options.rows.length) return Promise.resolve({ discordSent: 0, failed: 0 });
+        return instance.processDeliveryQueue(new Date(), {
+          ...options,
+          targetNames: ["discord"],
+        });
+      };
+      instance.processTicketAvailabilityProbes = async () => ({
+        probed: 0,
+        confirmed: 0,
+        fallback: 0,
+        soldOutMainEdited: 0,
+        soldOutCanal2Edited: 0,
+        soldOutDiscordEdited: 0,
+        failed: 0,
+      });
+
+      const first = await instance.scan("test");
+      expect(first).toMatchObject({
+        ok: true,
+        outcome: "telegram_delivered",
+        apiOffersSeen: 0,
+        ticketListingOffersSeen: 4,
+        newOffers: 4,
+        mainSent: 4,
+        discordSent: 0,
+      });
+      const second = await instance.scan("test-repeat");
+      expect(second).toMatchObject({
+        ok: true,
+        outcome: "no_change",
+        newOffers: 0,
+        mainSent: 0,
+        discordSent: 0,
+      });
+
+      const persisted = state.storage.sql.exec(
+        `SELECT COUNT(*) AS tracked,
+                SUM(CASE WHEN main_sent_at <> '' THEN 1 ELSE 0 END) AS sent,
+                SUM(CASE WHEN discord_sent_at <> '' THEN 1 ELSE 0 END) AS discord_sent
+         FROM offers WHERE id IN (${missingIds.map(() => "?").join(", ")})`,
+        ...missingIds,
+      ).one();
+      expect(Number(persisted.tracked)).toBe(4);
+      expect(Number(persisted.sent)).toBe(4);
+      expect(Number(persisted.discord_sent)).toBe(4);
+    });
+
+    expect(mainDeliveryCount).toBe(4);
+    expect(deliveryCalls.map((call) => call.targetNames)).toEqual([
+      ["main", "canal2"],
+      ["discord"],
+      ["main", "canal2"],
+    ]);
+    expect(deliveryCalls[1].rows.map((row) => row.id).sort()).toEqual([...missingIds].sort());
+  });
+
+  it("pula reconciliação completa quando a assinatura da API não muda", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-unchanged-fingerprint");
+    let resolveCalls = 0;
+    let sourceCalls = 0;
+    let pendingCalls = 0;
+    let probeCalls = 0;
+    const deliveryCalls = [];
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.setMetadata("initialized_at", "2026-08-03T12:00:00.000Z");
+      instance.fetchAllApi = async () => [{
+        id: "oferta-estavel-1",
+        link: "https://clube.uol.com.br/beneficios/oferta-estavel-1",
+        previewTitle: "Oferta estável",
+        title: "Oferta estável",
+        description: "Descrição estável da oferta.",
+      }];
+      instance.fetchTicketListing = async () => [];
+      instance.resolveListingCards = () => {
+        resolveCalls += 1;
+        return {
+          cards: [],
+          inserted: 0,
+          insertedIds: [],
+        };
+      };
+      instance.recordSourceCards = () => {
+        sourceCalls += 1;
+      };
+      instance.processPending = async () => {
+        pendingCalls += 1;
+        return { enriched: 0, wouldSendMain: 0, wouldSendCanal2: 0 };
+      };
+      instance.processDeliveryQueue = async (_now, options) => {
+        deliveryCalls.push(options);
+        return {
+          mainSent: 0,
+          canal2Sent: 0,
+          discordSent: 0,
+          failed: 0,
+          selectedRows: [],
+        };
+      };
+      instance.processTicketAvailabilityProbes = async () => {
+        probeCalls += 1;
+        return {
+          probed: 0,
+          confirmed: 0,
+          fallback: 0,
+          soldOutMainEdited: 0,
+          soldOutCanal2Edited: 0,
+          soldOutDiscordEdited: 0,
+          failed: 0,
+        };
+      };
+
+      const first = await instance.scan("test");
+      const second = await instance.scan("test");
+
+      expect(first).toMatchObject({ ok: true, outcome: "no_change" });
+      expect(second).toMatchObject({ ok: true, outcome: "no_change" });
+    });
+
+    expect(resolveCalls).toBe(1);
+    expect(sourceCalls).toBe(1);
+    expect(pendingCalls).toBe(1);
+    expect(probeCalls).toBe(2);
+    expect(deliveryCalls.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("mantém a fotografia da API fresca para saúde sem reler observações SQL", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-health-snapshot");
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.runtimeSnapshot = (name) => name === "api"
+        ? {
+            lastOffersSeen: 1,
+            lastError: "",
+            lastSuccessAt: "2026-08-06T02:00:00.000Z",
+            healthCards: [{
+              id: "ingresso-fresco",
+              link: "https://clube.uol.com.br/campanhasdeingresso/p-fresco",
+              previewTitle: "Ingresso fresco",
+              category: "campanhasdeingresso",
+            }],
+          }
+        : {};
+      instance.sqlExec = () => {
+        throw new Error("source_observations_should_not_be_read");
+      };
+
+      expect(instance.recentApiCardsForHealth(new Date("2026-08-06T02:00:30.000Z"))).toEqual([
+        {
+          id: "ingresso-fresco",
+          link: "https://clube.uol.com.br/campanhasdeingresso/p-fresco",
+          previewTitle: "Ingresso fresco",
+          category: "campanhasdeingresso",
+          cardImageUrl: "",
+          partnerImageUrl: "",
+          partnerName: "",
+        },
+      ]);
+    });
+  });
+
+  it("mantém secundários da oferta nova elegíveis sob reserva de quota", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("priority-delivery-quota");
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.setMetadata("delivery_mode_override", "live");
+      instance.storageUsageSnapshot = () => ({
+        maintenanceAllowed: false,
+        primaryAllowed: true,
+      });
+      instance.deliveryQueueSlo = () => ({
+        pending: 0,
+        criticalPending: 0,
+        secondaryPending: 0,
+        oldestAgeMs: 0,
+        p95AgeMs: 0,
+      });
+
+      const oldSecondary = await instance.processDeliveryQueue(
+        new Date("2026-08-05T12:00:00.000Z"),
+        { targetNames: ["discord"] },
+      );
+      expect(oldSecondary).toMatchObject({
+        deferred: true,
+        deferredReason: "quota_reserve",
+      });
+
+      const freshSecondary = await instance.processDeliveryQueue(
+        new Date("2026-08-05T12:00:00.000Z"),
+        {
+          priorityIds: ["oferta-nova-1"],
+          targetNames: ["discord"],
+        },
+      );
+      expect(freshSecondary.deferred).not.toBe(true);
+    });
+  });
+
+  it("isola estágio e custo de ciclos concorrentes com AsyncLocalStorage", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("storage-context-isolation");
+
+    await runInDurableObject(stub, async (instance) => {
+      const [primaryRows, maintenanceRows] = await Promise.all([
+        instance.withStorageCycle("primary", async () => {
+          await instance.withStorageStage("delivery", async () => {
+            instance.recordStorageUsage(3, 0);
+            await Promise.resolve();
+            instance.recordStorageUsage(2, 0);
+          });
+          return instance.completeStorageUsageCycle("primary", 0);
+        }),
+        instance.withStorageCycle("maintenance", async () => {
+          await instance.withStorageStage("html", async () => {
+            instance.recordStorageUsage(7, 0);
+            await Promise.resolve();
+            instance.recordStorageUsage(1, 0);
+          });
+          return instance.completeStorageUsageCycle("maintenance", 0);
+        }),
+      ]);
+
+      expect(primaryRows).toBe(7);
+      expect(maintenanceRows).toBe(10);
+      expect(instance.storageUsage.stageReads.delivery).toBe(5);
+      expect(instance.storageUsage.stageReads.html).toBe(8);
+      expect(instance.storageUsage.primaryMaxRowsRead).toBe(7);
+      expect(instance.storageUsage.maintenanceMaxRowsRead).toBe(10);
+    });
+  });
+
+  it("devolve backoff quando a manutenção encontra a reserva de quota", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("maintenance-quota-backoff");
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.storageUsageSnapshot = () => ({
+        rowsRead: 4_900_000,
+        limit: 5_000_000,
+        criticalReserve: 1_000_000,
+        resetAt: "2026-08-06T00:00:00.000Z",
+        maintenanceAllowed: false,
+      });
+      instance.completeStorageUsageCycle = () => 0;
+      const result = await instance.runMaintenanceTick("test");
+      expect(result).toMatchObject({
+        ok: false,
+        outcome: "storage_read_budget_guard",
+        retryReason: "storage_read_budget_guard",
+      });
+      expect(Date.parse(result.retryAt)).toBeGreaterThan(0);
     });
   });
 
@@ -426,6 +730,60 @@ describe("UOL Worker no runtime Cloudflare", () => {
 
     const missing = await exports.default.fetch("https://worker.test/unknown");
     expect(missing.status).toBe(404);
+  });
+
+  it("cacheia o diagnóstico de readiness por 15s sem deixar de rearmar o polling", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("readiness-cache-rearm");
+
+    await runInDurableObject(stub, async (instance, state) => {
+      await state.storage.setAlarm(Date.now() + 60_000);
+      await instance.getReadiness();
+      const rowsReadAfterFirst = instance.storageUsage.rowsRead;
+      instance.deliveryQueueSlo = () => {
+        throw new Error("readiness_cache_miss");
+      };
+
+      await expect(instance.getReadiness()).resolves.toMatchObject({
+        worker: "uol-telegram-shadow-pilot",
+      });
+      expect(instance.storageUsage.rowsRead).toBe(rowsReadAfterFirst);
+
+      await state.storage.deleteAlarm();
+      await expect(instance.getReadiness()).resolves.toMatchObject({
+        checks: { alarmFresh: true },
+      });
+      expect(await state.storage.getAlarm()).not.toBeNull();
+    });
+  });
+
+  it("não considera tentativa recente como descoberta fresca quando ambas as fontes falham", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("readiness-source-success");
+
+    await runInDurableObject(stub, async (instance, state) => {
+      const now = new Date();
+      const staleSuccess = new Date(now.getTime() - 10 * 60_000).toISOString();
+      const recentAttempt = now.toISOString();
+      instance.setRuntimeSnapshot("api", {
+        lastCompletedAt: recentAttempt,
+        lastSuccessAt: staleSuccess,
+        lastError: "uol_api_http_503",
+      });
+      instance.setRuntimeSnapshot("ticket_listing", {
+        lastCompletedAt: recentAttempt,
+        lastSuccessAt: staleSuccess,
+        lastError: "uol_http_503",
+      });
+      instance.setRuntimeSnapshot("maintenance", {
+        lastCompletedAt: recentAttempt,
+        lastError: "",
+      });
+      await state.storage.setAlarm(now.getTime() + 60_000);
+
+      await expect(instance.getReadiness()).resolves.toMatchObject({
+        checks: { scanFresh: false },
+        lastScanAt: staleSuccess,
+      });
+    });
   });
 
   it("expõe ofertas públicas com limite normalizado e ETag", async () => {

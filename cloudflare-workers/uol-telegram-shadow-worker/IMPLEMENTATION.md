@@ -42,9 +42,11 @@ também conserva as chaves de conteúdo estrita/solta e o bloqueio recente por
 título + validade durante sete dias.
 
 Dois alarmes independentes evitam que trabalho secundário atrase a descoberta.
-O primeiro consulta somente a API e envia o canal principal. O segundo executa
-HTML, webhook, canais secundários, comentários, esgotamento e reabertura. HTML
-vazio ou suspeitamente pequeno falha de forma segura e não produz esgotamentos.
+O primeiro consulta em paralelo a API e a listagem pública exclusiva de
+ingressos a cada 15 segundos, prioriza Telegram principal e canal 2 e só depois
+despacha Discord. O segundo executa HTML geral, webhook, comentários,
+esgotamento e reabertura. HTML vazio ou suspeitamente pequeno falha de forma
+segura e não produz esgotamentos.
 
 O modo operacional também é persistido no Durable Object e pode ser alterado
 imediatamente pela rota autenticada `POST /mode`. Isso evita depender da
@@ -65,9 +67,8 @@ A proteção adicionada ao caminho invisível é composta por quatro camadas:
   estado, sem criar notificações repetidas de CI;
 - o sidecar `delivery_events` (schema v20) guarda tentativa, sucesso, falha,
   `unknown`, edição, recuperação e mensagem ausente com chave idempotente e
-  retenção limitada, sem alterar a tabela `offers`. Cada manutenção lê no
-  máximo 32 eventos recentes, recalcula o agregado a partir das colunas
-  autoritativas e não repete resultados ambíguos;
+  retenção limitada, sem alterar a tabela `offers`. O outbox continua
+  autoritativo e não depende de varredura periódica do histórico;
 - a fila calcula idade/p95 e cede comentários, imagens e reconciliações antes de
   consumir a reserva de leituras do tier gratuito, mantendo a oferta nova e o
   principal prioritários;
@@ -84,7 +85,8 @@ apagada e rajada de 24 ofertas.
 
 ## Entrega ao Telegram
 
-O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
+O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pelas
+fontes críticas:
 
 1. valida e grava a decisão no SQLite;
 2. tenta `file_id`, URL e upload da foto sem ultrapassar 60 segundos desde a
@@ -92,9 +94,10 @@ O Worker utiliza a Bot API diretamente. No fluxo urgente descoberto pela API:
    mutações param 38 segundos antes para reservar timeout e reconciliação;
 3. envia texto sem preview somente quando o prazo expira e persiste a confirmação;
 4. despacha todos os principais da rajada com concorrência limitada;
-5. para ingressos, publica primeiro no Discord e reutiliza seu proxy de thumbnail;
-6. envia o principal e usa `copyMessage` para o canal 2 no mesmo ciclo rápido,
+5. envia o principal e usa `copyMessage` para o canal 2 no mesmo ciclo rápido,
    criando uma mensagem independente e editável;
+6. só depois agenda Discord em tarefa protegida, sem bloquear Telegram nem a
+   próxima coleta;
 7. uma falha secundária não apaga o sucesso do canal principal;
 8. novas tentativas processam somente o destino ainda pendente.
 
@@ -372,13 +375,15 @@ exposta.
 
 ## Revisão local API-first de 03/08/2026 (publicação pendente)
 
-- a API completa roda sozinha em todos os alarmes de 15 segundos;
-- uma novidade é validada, deduplicada e enviada antes de qualquer HTML;
+- a API completa e a listagem pública exclusiva de ingressos rodam em paralelo
+  em todos os alarmes críticos de 15 segundos;
+- uma novidade é validada, deduplicada e enviada antes do HTML geral e da
+  manutenção;
 - a entrega principal tenta foto imediatamente e espera no máximo 60 segundos;
 - após o prazo envia texto sem preview; foto tardia edita a mesma mensagem para
   foto + legenda via `editMessageMedia`;
-- HTML geral e exclusivo reconciliam a cada 60 segundos, ou imediatamente se a
-  API falhar/voltar vazia;
+- HTML geral reconcilia na manutenção e é antecipado quando as fontes críticas
+  falham ou voltam vazias;
 - polling API e manutenção possuem Durable Objects e alarmes independentes;
 - polling permanece em 15 segundos; manutenção passa a 60 segundos;
 - telemetria frequente usa snapshots JSON e observações respeitam janela de
@@ -391,7 +396,7 @@ exposta.
 - os dois alarmes se rearmam antes da leitura pesada e retomam após o reset;
 - o orçamento conservador com 48 cards por fonte é 57.920 gravações/dia,
   incluindo reserva de 20.000, abaixo do limite gratuito de 100.000;
-- o alarme crítico não chama HTML, webhook, Discord, comentários ou esgotamento;
+- o alarme crítico não chama HTML geral, webhook, comentários ou esgotamento;
 - rajadas priorizam todos os Telegram principais com concorrência limitada;
 - principal, canal 2 e Discord guardam estados `unknown` independentes;
 - o forward automático do Telegram reconcilia o ID de um principal ambíguo;

@@ -71,6 +71,7 @@ export function classifyHeadlessHealth({
     if (checks.alarmFresh !== true) addReason(reasons, "alarm_stale");
     if (checks.scanFresh !== true) addReason(reasons, "scan_stale");
     if (checks.maintenanceFresh !== true) addReason(reasons, "maintenance_stale");
+    else if (checks.maintenanceDeferred === true) addReason(reasons, "maintenance_deferred");
     if (checks.deliveryConfigured !== true) addReason(reasons, "delivery_unconfigured");
     if (checks.storageReadBudgetHealthy === false) addReason(reasons, "quota_reserve");
 
@@ -92,6 +93,7 @@ export function classifyHeadlessHealth({
       alarmFresh: ready.checks.alarmFresh === true,
       scanFresh: ready.checks.scanFresh === true,
       maintenanceFresh: ready.checks.maintenanceFresh === true,
+      maintenanceDeferred: ready.checks.maintenanceDeferred === true,
       deliveryConfigured: ready.checks.deliveryConfigured === true,
       criticalIncidents: Number(ready.checks.criticalIncidents || 0),
       deadLetters: Number(ready.checks.deadLetters || 0),
