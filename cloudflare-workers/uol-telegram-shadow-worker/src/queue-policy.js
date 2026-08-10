@@ -6,7 +6,7 @@ const PENDING_STATUSES = new Set([
   "delivery_blocked_configuration",
 ]);
 const CRITICAL_BACKLOG_AGE_MS = 45_000;
-export const RECENT_DELIVERY_PRIORITY_MS = 30 * 60_000;
+export const RECENT_DELIVERY_PRIORITY_MS = 60 * 60_000;
 
 function timestamp(value) {
   const parsed = Date.parse(String(value || ""));

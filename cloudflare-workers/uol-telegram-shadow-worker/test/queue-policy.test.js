@@ -107,12 +107,12 @@ test("reserva secundários apenas para IDs novos da API", () => {
   assert.equal(result.concurrency, 6);
 });
 
-test("mantém prioridade secundária somente para decisões dos últimos 30 minutos", () => {
+test("mantém prioridade secundária somente para decisões da última hora", () => {
   assert.equal(isRecentDeliveryDecision({
-    decision_at: "2026-08-04T19:30:00.000Z",
+    decision_at: "2026-08-04T19:00:00.000Z",
   }, now), true);
   assert.equal(isRecentDeliveryDecision({
-    decision_at: "2026-08-04T19:29:59.999Z",
+    decision_at: "2026-08-04T18:59:59.999Z",
   }, now), false);
   assert.equal(isRecentDeliveryDecision({
     decision_at: "2026-08-04T20:00:00.001Z",

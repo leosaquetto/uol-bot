@@ -745,8 +745,18 @@ export class UolTelegramShadow extends DurableObject {
     });
   }
 
-  scheduleDiscordDelivery({ priorityIds = [], rows = [], source = "scan" } = {}) {
-    if (Array.isArray(rows) && rows.length === 0) return Promise.resolve({
+  scheduleDiscordDelivery({
+    priorityIds = [],
+    rows = [],
+    recoveryRows = [],
+    source = "scan",
+  } = {}) {
+    const suppliedRows = [...(Array.isArray(rows) ? rows : []),
+      ...(Array.isArray(recoveryRows) ? recoveryRows : [])].filter(
+      (row, index, candidates) => row?.id &&
+        candidates.findIndex((candidate) => candidate?.id === row.id) === index,
+    );
+    if (suppliedRows.length === 0) return Promise.resolve({
       mainSent: 0,
       canal2Sent: 0,
       discordSent: 0,
@@ -758,7 +768,7 @@ export class UolTelegramShadow extends DurableObject {
       "delivery",
       () => this.processDeliveryQueue(new Date(), {
         priorityIds,
-        rows,
+        rows: suppliedRows,
         targetNames: ["discord"],
       }),
     ).then((result) => {
@@ -3057,7 +3067,8 @@ export class UolTelegramShadow extends DurableObject {
       (row) => isRecentDeliveryDecision(row, now),
     );
     const prioritySecondaryOnly = budget.reason === "quota_reserve" && (
-      (budget.allowPrioritySecondary && priority.size > 0) || hasRecentSuppliedRows
+      (budget.allowPrioritySecondary && priority.size > 0) ||
+      hasRecentSuppliedRows
     );
     if (
       budget.deferSecondary &&
@@ -3487,12 +3498,23 @@ export class UolTelegramShadow extends DurableObject {
       this.refreshDeliveryStatus(entry.row.id, new Date());
     }
 
+    const selectedIds = new Set(selected.map((entry) => entry.row.id));
+    const recentSecondaryRows = budget.reason === "quota_reserve" &&
+      requestedTargets.includes("main")
+      ? candidates.filter((row) => (
+          !selectedIds.has(row.id) &&
+          !String(row.discord_sent_at || "").trim() &&
+          isRecentDeliveryDecision(row, now)
+        )).slice(0, batchSize)
+      : [];
+
     return {
       mainSent,
       canal2Sent,
       discordSent,
       failed,
       selectedRows: selected.map((entry) => entry.row),
+      recentSecondaryRows,
     };
   }
 
@@ -5126,6 +5148,7 @@ export class UolTelegramShadow extends DurableObject {
           this.scheduleDiscordDelivery({
             priorityIds,
             rows: delivered.selectedRows,
+            recoveryRows: delivered.recentSecondaryRows,
             source,
           });
         }
@@ -5154,7 +5177,11 @@ export class UolTelegramShadow extends DurableObject {
         run.mainSent = delivered.mainSent;
         run.canal2Sent = delivered.canal2Sent;
         run.deliveryFailed += delivered.failed;
-        this.scheduleDiscordDelivery({ rows: delivered.selectedRows, source });
+        this.scheduleDiscordDelivery({
+          rows: delivered.selectedRows,
+          recoveryRows: delivered.recentSecondaryRows,
+          source,
+        });
         run.outcome = run.mainSent > 0
           ? "telegram_delivered"
           : run.deliveryFailed > 0
@@ -5177,7 +5204,11 @@ export class UolTelegramShadow extends DurableObject {
         run.mainSent = delivered.mainSent;
         run.canal2Sent = delivered.canal2Sent;
         run.deliveryFailed += delivered.failed;
-        this.scheduleDiscordDelivery({ rows: delivered.selectedRows, source });
+        this.scheduleDiscordDelivery({
+          rows: delivered.selectedRows,
+          recoveryRows: delivered.recentSecondaryRows,
+          source,
+        });
         run.outcome = run.mainSent > 0 ? "telegram_delivered" : "api_degraded";
       }
       const ticketProbes = await this.withStorageStage(

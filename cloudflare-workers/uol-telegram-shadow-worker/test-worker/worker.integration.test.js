@@ -452,6 +452,10 @@ describe("UOL Worker no runtime Cloudflare", () => {
     const telegramCalls = [];
 
     vi.stubGlobal("fetch", async (input, init = {}) => {
+      if (String(input).startsWith("https://discord.test/webhook")) {
+        telegramCalls.push({ method: "discord", chatId: "" });
+        return Response.json({ id: "discord-message-1", embeds: [] });
+      }
       const method = new URL(String(input)).pathname.split("/").at(-1);
       if (!String(input).startsWith("https://api.telegram.org/") ||
           !["sendMessage", "copyMessage"].includes(method)) {
@@ -474,7 +478,8 @@ describe("UOL Worker no runtime Cloudflare", () => {
           TELEGRAM_CHAT_ID: "-100111",
           CANAL2_ID: "-100333",
           CANAL2_DELIVERY_ENABLED: "true",
-          DISCORD_DELIVERY_ENABLED: "false",
+          DISCORD_DELIVERY_ENABLED: "true",
+          DISCORD_WEBHOOK_URL: "https://discord.test/webhook",
           MAIN_IMAGE_WAIT_SECONDS: "60",
         };
         instance.setMetadata("delivery_mode_override", "live");
@@ -484,7 +489,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         });
         const now = new Date();
         const nowIso = now.toISOString();
-        const oldIso = new Date(now.getTime() - 60 * 60_000).toISOString();
+        const oldIso = new Date(now.getTime() - 2 * 60 * 60_000).toISOString();
         state.storage.sql.exec(
           `INSERT INTO offers(
              id, link, preview_title, title, category, first_seen_at, last_seen_at,
@@ -577,12 +582,34 @@ describe("UOL Worker no runtime Cloudflare", () => {
         });
 
         state.storage.sql.exec("DELETE FROM offers WHERE id LIKE 'ticket-bulk-old-%'");
+        const secondaryHandoff = await instance.processDeliveryQueue(new Date(), {
+          waitForMainImage: true,
+          targetNames: ["main", "canal2"],
+        });
+        expect(secondaryHandoff).toMatchObject({
+          mainSent: 0,
+          canal2Sent: 0,
+          failed: 0,
+        });
+        expect(secondaryHandoff.selectedRows).toEqual([]);
+        expect(secondaryHandoff.recentSecondaryRows.map((row) => row.id)).toEqual([
+          newOfferId,
+        ]);
+
+        const discordRecovery = await instance.scheduleDiscordDelivery({
+          rows: secondaryHandoff.selectedRows,
+          recoveryRows: secondaryHandoff.recentSecondaryRows,
+          source: "test-recovery",
+        });
+        expect(discordRecovery).toMatchObject({ discordSent: 1, failed: 0 });
+        expect(telegramCalls.at(-1)).toEqual({ method: "discord", chatId: "" });
+
         const repeat = await instance.processDeliveryQueue(new Date(), {
           waitForMainImage: true,
           targetNames: ["main", "canal2"],
         });
         expect(repeat).toMatchObject({ mainSent: 0, canal2Sent: 0, failed: 0 });
-        expect(telegramCalls).toHaveLength(5);
+        expect(telegramCalls).toHaveLength(6);
       });
     } finally {
       vi.unstubAllGlobals();
