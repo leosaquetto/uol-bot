@@ -3240,6 +3240,7 @@ export class UolTelegramShadow extends DurableObject {
         row,
         classification,
         targetNames,
+        mainSentThisRun: false,
         offer,
         telegramState: this.telegramOfferWithImageState(
           offer,
@@ -3321,6 +3322,7 @@ export class UolTelegramShadow extends DurableObject {
             : "",
           entry.row.id,
         );
+        entry.mainSentThisRun = true;
         this.recordDeliveryLedgerEvent({
           offerId: entry.row.id,
           target: "main",
@@ -3348,7 +3350,9 @@ export class UolTelegramShadow extends DurableObject {
     if (!allowedTargets.length || allowedTargets.includes("canal2")) {
       await runBounded(selected, concurrency, async (entry) => {
       if (!stillCurrent()) return;
-      if (!entry.targetNames.includes("canal2")) return;
+      const mainJustReleasedCanal2 = budget.reason === "quota_reserve" &&
+        entry.mainSentThisRun;
+      if (!entry.targetNames.includes("canal2") && !mainJustReleasedCanal2) return;
       const row = this.sqlExec(
         "SELECT * FROM offers WHERE id = ? LIMIT 1",
         entry.row.id,
