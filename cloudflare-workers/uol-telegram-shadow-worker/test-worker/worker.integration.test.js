@@ -421,6 +421,27 @@ describe("UOL Worker no runtime Cloudflare", () => {
         },
       );
       expect(freshSecondary.deferred).not.toBe(true);
+
+      const suppliedRecentSecondary = await instance.processDeliveryQueue(
+        new Date("2026-08-05T12:00:00.000Z"),
+        {
+          rows: [{ id: "oferta-recente-1", decision_at: "2026-08-05T11:59:00.000Z" }],
+          targetNames: ["discord"],
+        },
+      );
+      expect(suppliedRecentSecondary.deferred).not.toBe(true);
+
+      const suppliedOldSecondary = await instance.processDeliveryQueue(
+        new Date("2026-08-05T12:00:00.000Z"),
+        {
+          rows: [{ id: "oferta-antiga-1", decision_at: "2026-08-05T11:00:00.000Z" }],
+          targetNames: ["discord"],
+        },
+      );
+      expect(suppliedOldSecondary).toMatchObject({
+        deferred: true,
+        deferredReason: "quota_reserve",
+      });
     });
   });
 
@@ -504,6 +525,24 @@ describe("UOL Worker no runtime Cloudflare", () => {
         expect(deferred).toMatchObject({ mainSent: 0, canal2Sent: 0, failed: 0 });
         expect(telegramCalls).toEqual([]);
 
+        for (let index = 0; index < 40; index += 1) {
+          const id = `ticket-bulk-old-${String(index).padStart(2, "0")}`;
+          state.storage.sql.exec(
+            `INSERT INTO offers(
+               id, link, preview_title, title, category, first_seen_at, last_seen_at,
+               status, decision_at, would_send_main, would_send_canal2,
+               delivery_mode, delivery_generation
+             ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?,
+                       'delivery_pending', ?, 1, 1, 'live', 1)`,
+            id,
+            `https://clube.uol.com.br/campanhasdeingresso/${id}`,
+            `2 INGRESSOS: backlog ${index}`,
+            `2 INGRESSOS: backlog ${index}`,
+            oldIso,
+            oldIso,
+            oldIso,
+          );
+        }
         state.storage.sql.exec(
           `UPDATE offers SET first_seen_at = ?, main_delivery_next_attempt_at = ''
            WHERE id = ?`,
@@ -514,9 +553,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
           waitForMainImage: true,
           targetNames: ["main", "canal2"],
         });
-        expect(delivered).toMatchObject({ mainSent: 1, canal2Sent: 1, failed: 0 });
-        expect(telegramCalls).toEqual([
-          { method: "sendMessage", chatId: "-100111" },
+        expect(delivered).toMatchObject({ mainSent: 4, canal2Sent: 1, failed: 0 });
+        expect(telegramCalls.filter((call) => call.method === "sendMessage")).toHaveLength(4);
+        expect(telegramCalls.filter((call) => call.method === "copyMessage")).toEqual([
           { method: "copyMessage", chatId: "-100333" },
         ]);
 
@@ -537,12 +576,13 @@ describe("UOL Worker no runtime Cloudflare", () => {
           canal2_delivery_attempts: 0,
         });
 
+        state.storage.sql.exec("DELETE FROM offers WHERE id LIKE 'ticket-bulk-old-%'");
         const repeat = await instance.processDeliveryQueue(new Date(), {
           waitForMainImage: true,
           targetNames: ["main", "canal2"],
         });
         expect(repeat).toMatchObject({ mainSent: 0, canal2Sent: 0, failed: 0 });
-        expect(telegramCalls).toHaveLength(2);
+        expect(telegramCalls).toHaveLength(5);
       });
     } finally {
       vi.unstubAllGlobals();

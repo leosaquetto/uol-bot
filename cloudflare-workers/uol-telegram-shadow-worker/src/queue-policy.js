@@ -6,10 +6,19 @@ const PENDING_STATUSES = new Set([
   "delivery_blocked_configuration",
 ]);
 const CRITICAL_BACKLOG_AGE_MS = 45_000;
+export const RECENT_DELIVERY_PRIORITY_MS = 30 * 60_000;
 
 function timestamp(value) {
   const parsed = Date.parse(String(value || ""));
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function isRecentDeliveryDecision(row, now = new Date()) {
+  const decisionAt = timestamp(row?.decision_at || row?.decisionAt);
+  const nowMs = now instanceof Date ? now.getTime() : Number(now);
+  if (decisionAt === null || !Number.isFinite(nowMs)) return false;
+  const ageMs = nowMs - decisionAt;
+  return ageMs >= 0 && ageMs <= RECENT_DELIVERY_PRIORITY_MS;
 }
 
 function percentile(values, ratio) {

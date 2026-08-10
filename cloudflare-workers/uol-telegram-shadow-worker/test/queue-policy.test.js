@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { chooseDeliveryBudget, summarizeQueueSlo } from "../src/queue-policy.js";
+import {
+  chooseDeliveryBudget,
+  isRecentDeliveryDecision,
+  summarizeQueueSlo,
+} from "../src/queue-policy.js";
 
 const now = new Date("2026-08-04T20:00:00.000Z");
 
@@ -101,4 +105,18 @@ test("reserva secundários apenas para IDs novos da API", () => {
   assert.equal(result.allowPrioritySecondary, true);
   assert.equal(result.batchSize, 4);
   assert.equal(result.concurrency, 6);
+});
+
+test("mantém prioridade secundária somente para decisões dos últimos 30 minutos", () => {
+  assert.equal(isRecentDeliveryDecision({
+    decision_at: "2026-08-04T19:30:00.000Z",
+  }, now), true);
+  assert.equal(isRecentDeliveryDecision({
+    decision_at: "2026-08-04T19:29:59.999Z",
+  }, now), false);
+  assert.equal(isRecentDeliveryDecision({
+    decision_at: "2026-08-04T20:00:00.001Z",
+  }, now), false);
+  assert.equal(isRecentDeliveryDecision({ decision_at: "inválido" }, now), false);
+  assert.equal(isRecentDeliveryDecision({}, now), false);
 });

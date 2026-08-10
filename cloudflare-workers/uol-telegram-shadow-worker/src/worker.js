@@ -80,7 +80,12 @@ import {
 import { isTelegramMessageMissingError } from "./transport-error.js";
 import { classifyKnownMaintenanceRepair } from "./maintenance-repair.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
-import { chooseDeliveryBudget, summarizeQueueSlo } from "./queue-policy.js";
+import {
+  chooseDeliveryBudget,
+  isRecentDeliveryDecision,
+  RECENT_DELIVERY_PRIORITY_MS,
+  summarizeQueueSlo,
+} from "./queue-policy.js";
 import {
   deferredMainDeliveryState,
   lateImageUpgradeDue,
@@ -3048,8 +3053,12 @@ export class UolTelegramShadow extends DurableObject {
       configuredConcurrency: envNumber(this.env, "DELIVERY_CONCURRENCY", 6, 1, 6),
       priorityCount: priority.size,
     });
-    const prioritySecondaryOnly = budget.deferSecondary &&
-      budget.allowPrioritySecondary && priority.size > 0;
+    const hasRecentSuppliedRows = Array.isArray(rows) && rows.some(
+      (row) => isRecentDeliveryDecision(row, now),
+    );
+    const prioritySecondaryOnly = budget.reason === "quota_reserve" && (
+      (budget.allowPrioritySecondary && priority.size > 0) || hasRecentSuppliedRows
+    );
     if (
       budget.deferSecondary &&
       requestedTargets.length &&
@@ -3080,6 +3089,15 @@ export class UolTelegramShadow extends DurableObject {
     const priorityOrder = priorityList.length
       ? `CASE WHEN id IN (${priorityList.map(() => "?").join(", ")}) THEN 0 ELSE 1 END,`
       : "";
+    const recentPriorityOrder = budget.reason === "quota_reserve"
+      ? "CASE WHEN decision_at >= ? AND decision_at <= ? THEN 0 ELSE 1 END,"
+      : "";
+    const recentPriorityArguments = budget.reason === "quota_reserve"
+      ? [
+          new Date(now.getTime() - RECENT_DELIVERY_PRIORITY_MS).toISOString(),
+          now.toISOString(),
+        ]
+      : [];
     const candidateLimit = Math.min(256, Math.max(batchSize * 8, priorityList.length + 32));
     const candidates = rows || this.sqlExec(
       `SELECT * FROM offers
@@ -3088,18 +3106,24 @@ export class UolTelegramShadow extends DurableObject {
          'delivery_dead_letter', 'delivery_unknown'
        )
          AND delivery_generation = ?
-       ORDER BY ${priorityOrder} first_seen_at ASC
+       ORDER BY ${priorityOrder} ${recentPriorityOrder} first_seen_at ASC
        LIMIT ?`,
       generation,
       ...priorityList,
+      ...recentPriorityArguments,
       candidateLimit,
     ).toArray();
     const actionable = [];
 
     for (const row of candidates) {
       const rowIsPriority = priority.has(row.id);
-      const priorityMayUseSecondary = rowIsPriority && (
-        !budget.deferSecondary || budget.allowPrioritySecondary
+      const rowIsRecentPriority = budget.reason === "quota_reserve" &&
+        isRecentDeliveryDecision(row, now);
+      const priorityMayUseSecondary = !budget.deferSecondary || (
+        budget.reason === "quota_reserve" && (
+          (rowIsPriority && budget.allowPrioritySecondary) ||
+          rowIsRecentPriority
+        )
       );
       const rowTargets = budget.deferSecondary && !priorityMayUseSecondary
         ? requestedTargets.includes("main") ? ["main"] : []
@@ -3130,7 +3154,12 @@ export class UolTelegramShadow extends DurableObject {
         );
       }
       if (classification.state === "actionable") {
-        actionable.push({ row, classification, targetNames: rowTargets });
+        actionable.push({
+          row,
+          classification,
+          recentPriority: rowIsRecentPriority,
+          targetNames: rowTargets,
+        });
       } else {
         // Aggregate status is always computed against every required target,
         // even when this invocation owns only the critical or maintenance set.
@@ -3230,6 +3259,7 @@ export class UolTelegramShadow extends DurableObject {
 
     actionable.sort((left, right) => (
       Number(priority.has(right.row.id)) - Number(priority.has(left.row.id)) ||
+      Number(right.recentPriority) - Number(left.recentPriority) ||
       String(left.row.first_seen_at).localeCompare(String(right.row.first_seen_at))
     ));
     const concurrency = budget.concurrency;
@@ -3240,7 +3270,6 @@ export class UolTelegramShadow extends DurableObject {
         row,
         classification,
         targetNames,
-        mainSentThisRun: false,
         offer,
         telegramState: this.telegramOfferWithImageState(
           offer,
@@ -3322,7 +3351,6 @@ export class UolTelegramShadow extends DurableObject {
             : "",
           entry.row.id,
         );
-        entry.mainSentThisRun = true;
         this.recordDeliveryLedgerEvent({
           offerId: entry.row.id,
           target: "main",
@@ -3350,9 +3378,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!allowedTargets.length || allowedTargets.includes("canal2")) {
       await runBounded(selected, concurrency, async (entry) => {
       if (!stillCurrent()) return;
-      const mainJustReleasedCanal2 = budget.reason === "quota_reserve" &&
-        entry.mainSentThisRun;
-      if (!entry.targetNames.includes("canal2") && !mainJustReleasedCanal2) return;
+      if (!entry.targetNames.includes("canal2")) return;
       const row = this.sqlExec(
         "SELECT * FROM offers WHERE id = ? LIMIT 1",
         entry.row.id,
