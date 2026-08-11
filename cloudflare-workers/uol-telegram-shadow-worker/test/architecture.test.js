@@ -81,6 +81,37 @@ test("HTML, retries secundários e ciclo de disponibilidade ficam na manutençã
     "Canal 2 deve encaminhar depois do upgrade de imagem",
   );
   assert.doesNotMatch(maintenance, /targetNames:\s*\["main"\]/);
+  assert.match(maintenance, /runtime:html_snapshot_fingerprint/);
+  assert.match(maintenance, /runtime:html_snapshot_reconciled_at/);
+  assert.match(maintenance, /shouldReconcileHtmlSnapshot\(/);
+  assert.ok(
+    maintenance.indexOf("buildApiSnapshotFingerprint(") <
+      maintenance.indexOf("resolveListingCards("),
+    "fingerprint HTML deve anteceder a reconciliação do ledger",
+  );
+  assert.ok(
+    maintenance.indexOf("this.updateSourceHealth(") <
+      maintenance.indexOf('this.setRuntimeSnapshot("html"'),
+    "contagem HTML bem-sucedida só pode mudar após validar a fonte",
+  );
+});
+
+test("disponibilidade Discord parte da fila indexada, sem OR scan em offers", () => {
+  const availability = methodSource(
+    "  async processDiscordAvailabilitySync(",
+    "  async processRestockSync(",
+  );
+  assert.match(availability, /FROM discord_availability_sync AS d/);
+  assert.match(availability, /JOIN offers AS o ON o\.id = d\.offer_id/);
+  assert.match(availability, /sold_out_synced_at = ''/);
+  assert.match(availability, /restock_synced_at = ''/);
+  assert.match(availability, /INDEXED BY discord_avail_sold_due_v21/);
+  assert.match(availability, /INDEXED BY discord_avail_restock_due_v21/);
+  assert.match(availability, /ORDER BY o\.sold_out_at ASC/);
+  assert.match(availability, /ORDER BY o\.restocked_at ASC/);
+  assert.doesNotMatch(availability, /ORDER BY d\.sold_out_next_attempt_at/);
+  assert.doesNotMatch(availability, /LEFT JOIN discord_availability_sync/);
+  assert.doesNotMatch(availability, /\) OR \(/);
 });
 
 test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", () => {
@@ -95,7 +126,9 @@ test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", (
   assert.match(probes, /processDiscordAvailabilitySync\(now, 1, \{[\s\S]*onlyIds: \[row\.id\]/);
   assert.match(probes, /global_home_redirect/);
   assert.match(probes, /s\.attempts < \?/);
+  assert.match(probes, /INDEXED BY ticket_probe_due_v21/);
   assert.doesNotMatch(probes, /link NOT LIKE '%\/campanhasdeingresso\/%'/);
+  assert.match(workerSource, /normalizeTicketProbeAt\(nextAt\)/);
 });
 
 test("lote tardio filtra imagem e backoff antes do limite", () => {
@@ -242,7 +275,8 @@ test("quota mantém contadores por etapa no snapshot persistido", () => {
   assert.match(workerSource, /withStorageStage\(\s*"images"/);
   assert.match(workerSource, /withStorageStage\(\s*"comments"/);
   assert.match(workerSource, /durableObjectRowsReadToday: storageReadBudget/);
-  assert.match(workerSource, /storageReadBudget,\n      lastScanAt/);
+  assert.match(workerSource, /storageReadBudget,\n      storageWriteBudget,\n      lastScanAt/);
+  assert.match(workerSource, /storageWriteBudgetHealthy/);
   assert.match(workerSource, /runtime:storage_usage/);
   assert.match(workerSource, /healthCards/);
   assert.match(workerSource, /recentApiCardsForHealth[\s\S]*healthCards/);

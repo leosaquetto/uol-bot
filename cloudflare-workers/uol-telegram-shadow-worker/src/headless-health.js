@@ -74,6 +74,7 @@ export function classifyHeadlessHealth({
     else if (checks.maintenanceDeferred === true) addReason(reasons, "maintenance_deferred");
     if (checks.deliveryConfigured !== true) addReason(reasons, "delivery_unconfigured");
     if (checks.storageReadBudgetHealthy === false) addReason(reasons, "quota_reserve");
+    if (checks.storageWriteBudgetHealthy === false) addReason(reasons, "write_quota_risk");
 
     const lastScanAt = finiteTimestamp(ready.lastScanAt);
     if (lastScanAt === null || safeNowMs - lastScanAt > boundedMaxScanAgeMs) {
@@ -101,6 +102,7 @@ export function classifyHeadlessHealth({
       blockedConfiguration: Number(ready.checks.blockedConfiguration || 0),
       maintenanceDeadLetters: Number(ready.checks.maintenanceDeadLetters || 0),
       storageReadBudgetHealthy: ready.checks.storageReadBudgetHealthy === true,
+      storageWriteBudgetHealthy: ready.checks.storageWriteBudgetHealthy === true,
     }
     : {};
 

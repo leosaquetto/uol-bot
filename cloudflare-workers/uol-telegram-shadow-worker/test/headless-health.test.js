@@ -25,6 +25,7 @@ function healthyReadiness(overrides = {}) {
         blockedConfiguration: 0,
         maintenanceDeadLetters: 0,
         storageReadBudgetHealthy: true,
+        storageWriteBudgetHealthy: true,
       },
       ...overrides,
     },
@@ -71,6 +72,26 @@ test("classifica manutenção adiada pela reserva como degraded, não outage", (
   assert.equal(result.state, "degraded");
   assert.equal(result.hardFailure, false);
   assert.deepEqual(result.reasons, ["maintenance_deferred"]);
+});
+
+test("classifica projeção de escrita fora do free tier como degraded", () => {
+  const readiness = healthyReadiness({
+    status: 503,
+    ok: false,
+    checks: {
+      ...healthyReadiness().body.checks,
+      storageWriteBudgetHealthy: false,
+    },
+  });
+  const result = classifyHeadlessHealth({
+    liveness: healthyLiveness(),
+    readiness,
+    now,
+  });
+
+  assert.equal(result.state, "degraded");
+  assert.equal(result.hardFailure, false);
+  assert.deepEqual(result.reasons, ["write_quota_risk"]);
 });
 
 test("classifica incidentes históricos com scan fresco como degraded", () => {
