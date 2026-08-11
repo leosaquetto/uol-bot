@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 20);
+  assert.equal(blocks.length, 21);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 20);
+  assert.equal(Number(version), 21);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -62,6 +62,22 @@ test("migrações SQLite criam do zero o schema corrente", () => {
       .map((column) => column.name),
   );
   assert.deepEqual(aliasColumns, new Set(["alias", "offer_id", "first_seen_at"]));
+  const indexes = new Map(database.prepare(
+    "SELECT name, sql FROM sqlite_schema WHERE type = 'index' AND sql IS NOT NULL",
+  ).all().map((index) => [index.name, String(index.sql)]));
+  for (const name of [
+    "offers_comment_inflight_v21",
+    "offers_comment_due_v21",
+    "ticket_probe_due_v21",
+    "discord_avail_sold_due_v21",
+    "discord_avail_restock_due_v21",
+  ]) {
+    assert.equal(indexes.has(name), true, `índice ausente: ${name}`);
+  }
+  assert.match(indexes.get("offers_comment_due_v21"), /WHERE discussion_message_id > 0/);
+  assert.match(indexes.get("ticket_probe_due_v21"), /WHERE next_at > ''/);
+  assert.match(indexes.get("discord_avail_sold_due_v21"), /WHERE sold_out_synced_at = ''/);
+  assert.match(indexes.get("discord_avail_restock_due_v21"), /WHERE restock_synced_at = ''/);
   database.close();
 });
 
@@ -109,7 +125,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    20,
+    21,
   );
   database.close();
 });
@@ -208,6 +224,85 @@ test("v20 cria ledger sem alterar a tabela offers e faz backfill mínimo", () =>
     ).get().version),
     20,
   );
+  database.close();
+});
+
+test("v21 cria índices parciais e faz backfill da disponibilidade Discord", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 20)) database.exec(sql);
+  const insert = database.prepare(
+    `INSERT INTO offers(
+       id, link, preview_title, first_seen_at, last_seen_at, status, restocked_at
+     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+  );
+  insert.run(
+    "sold-out-v21",
+    "https://clube.uol.com.br/beneficios/sold-out-v21",
+    "Esgotada",
+    "2026-08-10T12:00:00.000Z",
+    "2026-08-10T12:00:00.000Z",
+    "sold_out",
+    "",
+  );
+  insert.run(
+    "restock-v21",
+    "https://clube.uol.com.br/beneficios/restock-v21",
+    "Reposta",
+    "2026-08-10T12:00:00.000Z",
+    "2026-08-10T12:00:00.000Z",
+    "delivered",
+    "2026-08-10T13:00:00.000Z",
+  );
+  database.prepare(
+    `INSERT INTO ticket_probe_state(offer_id, next_at)
+     VALUES ('sold-out-v21', '9999')`,
+  ).run();
+  database.exec(blocks[20]);
+
+  assert.deepEqual(
+    database.prepare(
+      "SELECT offer_id FROM discord_availability_sync ORDER BY offer_id",
+    ).all().map((row) => row.offer_id),
+    ["restock-v21", "sold-out-v21"],
+  );
+  assert.equal(Number(database.prepare(
+    "SELECT MAX(id) AS version FROM _sql_schema_migrations",
+  ).get().version), 21);
+  const repairedProbeAt = database.prepare(
+    "SELECT next_at FROM ticket_probe_state WHERE offer_id = 'sold-out-v21'",
+  ).get().next_at;
+  assert.notEqual(repairedProbeAt, "9999");
+  assert.equal(Number.isFinite(Date.parse(repairedProbeAt)), true);
+  const commentPlan = database.prepare(
+    `EXPLAIN QUERY PLAN SELECT id FROM offers
+     WHERE discussion_message_id > 0 AND comment_sent_at = ''
+       AND comment_delivery_in_flight_at = '' AND comment_delivery_unknown_at = ''
+       AND delivery_generation = ?
+       AND status NOT IN (
+         'discarded', 'delivery_quarantined', 'shadow_candidate',
+         'baseline', 'shadow_sold_out'
+       )
+       AND comment_delivery_next_attempt_at <= ?
+     LIMIT 2`,
+  ).all(1, "2026-08-10T14:00:00.000Z").map((row) => row.detail).join(" ");
+  const ticketPlan = database.prepare(
+    `EXPLAIN QUERY PLAN SELECT o.id
+     FROM ticket_probe_state AS s INDEXED BY ticket_probe_due_v21
+     JOIN offers AS o ON o.id = s.offer_id
+     WHERE s.next_at > '' AND s.next_at <= ? AND s.attempts < ?
+     LIMIT 1`,
+  ).all("2026-08-10T14:00:00.000Z", 2).map((row) => row.detail).join(" ");
+  const discordPlan = database.prepare(
+    `EXPLAIN QUERY PLAN SELECT o.id
+     FROM discord_availability_sync AS d INDEXED BY discord_avail_sold_due_v21
+     JOIN offers AS o ON o.id = d.offer_id
+     WHERE d.sold_out_synced_at = '' AND d.sold_out_next_attempt_at <= ?
+     LIMIT 4`,
+  ).all("2026-08-10T14:00:00.000Z").map((row) => row.detail).join(" ");
+  assert.match(commentPlan, /offers_comment_due_v21/);
+  assert.match(ticketPlan, /ticket_probe_due_v21/);
+  assert.match(discordPlan, /discord_avail_sold_due_v21/);
   database.close();
 });
 

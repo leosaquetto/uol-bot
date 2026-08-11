@@ -1,4 +1,4 @@
-import { classifyHeadlessHealth } from "../src/headless-health.js";
+import { validateProductionHealth } from "../src/production-verification.js";
 
 const DEFAULT_BASE_URL = "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev";
 
@@ -64,73 +64,15 @@ async function readHealth() {
   };
 }
 
-function readinessFailure(checks = {}) {
-  const failed = Object.entries(checks)
-    .filter(([, value]) => value === false || (typeof value === "number" && value > 0))
-    .map(([name]) => name);
-  return failed.length > 0 ? failed.join(",") : "unknown";
-}
-
-function validateHealth({ livenessStatus, readinessStatus, liveness, readiness }) {
-  const now = Date.now();
-  const headless = classifyHeadlessHealth({
-    liveness: { status: livenessStatus, body: liveness },
-    readiness: { status: readinessStatus, body: readiness },
-    now,
-    maxScanAgeMs,
-  });
-  if (livenessStatus !== 200 || liveness?.ok !== true) throw new Error("liveness_not_ok");
-  if (liveness.worker !== "uol-telegram-shadow-pilot") {
-    throw new Error("liveness_worker_identity_mismatch");
-  }
-  const intentionalShadow = expectedMode === "shadow" && readinessStatus === 503 &&
-    readiness?.ok === false && readiness?.mode === "shadow" &&
-    readinessFailure(readiness?.checks) === "unknown";
-  if (!intentionalShadow && (readinessStatus !== 200 || readiness?.ok !== true)) {
-    throw new Error(
-      `not_ready:${headless.state}:${headless.reasons.join(",") || readinessFailure(readiness?.checks)}`,
-    );
-  }
-  if (readiness.worker !== "uol-telegram-shadow-pilot") {
-    throw new Error("readiness_worker_identity_mismatch");
-  }
-  if (readiness.mode !== "live" && readiness.mode !== "shadow") {
-    throw new Error("delivery_mode_invalid");
-  }
-  if (expectedMode && readiness.mode !== expectedMode) {
-    throw new Error(`delivery_mode_${readiness.mode}_expected_${expectedMode}`);
-  }
-  if (!liveness.versionId || !readiness.versionId) {
-    throw new Error("version_metadata_missing");
-  }
-  if (String(liveness.versionId || "") !== String(readiness.versionId || "")) {
-    throw new Error("version_metadata_mismatch");
-  }
-  if (String(readiness.versionId) !== expectedVersionId) {
-    throw new Error("deployed_version_id_mismatch");
-  }
-
-  const lastScanAt = Date.parse(readiness.lastScanAt || "");
-  if (!Number.isFinite(lastScanAt) || now - lastScanAt > maxScanAgeMs) {
-    throw new Error("scan_missing_or_stale");
-  }
-
-  return {
-    ok: true,
-    worker: readiness.worker,
-    versionId: readiness.versionId,
-    mode: readiness.mode,
-    lastScanAt: readiness.lastScanAt,
-    checks: readiness.checks,
-    headlessState: headless.state,
-    headlessReasons: headless.reasons,
-  };
-}
-
 let lastError;
 for (let attempt = 1; attempt <= attempts; attempt += 1) {
   try {
-    const summary = validateHealth(await readHealth());
+    const summary = validateProductionHealth(await readHealth(), {
+      expectedVersionId,
+      expectedMode,
+      maxScanAgeMs,
+      now: Date.now(),
+    });
     console.log(JSON.stringify(summary));
     process.exit(0);
   } catch (error) {

@@ -575,6 +575,51 @@ export async function buildApiSnapshotFingerprint(cards = []) {
   return sha256Hex(JSON.stringify(normalized));
 }
 
+export function normalizeTicketProbeAt(value, fallback = new Date()) {
+  const normalized = String(value || "").trim();
+  const parsed = Date.parse(normalized);
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(normalized) &&
+      Number.isFinite(parsed)) {
+    return new Date(parsed).toISOString();
+  }
+  const fallbackDate = fallback instanceof Date ? fallback : new Date(fallback);
+  const fallbackAt = fallbackDate.getTime();
+  return new Date(Number.isFinite(fallbackAt) ? fallbackAt : Date.now()).toISOString();
+}
+
+export function shouldReconcileHtmlSnapshot({
+  fingerprint,
+  previousFingerprint,
+  lastReconciledAt,
+  now = new Date(),
+  refreshIntervalSeconds = 900,
+  complete = false,
+  initialized = false,
+} = {}) {
+  if (!complete) return { reconcile: true, reason: "incomplete" };
+  if (!initialized) return { reconcile: true, reason: "uninitialized" };
+  if (!previousFingerprint) return { reconcile: true, reason: "missing_fingerprint" };
+  if (!/^[a-f0-9]{64}$/.test(previousFingerprint)) {
+    return { reconcile: true, reason: "invalid_fingerprint" };
+  }
+  if (fingerprint !== previousFingerprint) {
+    return { reconcile: true, reason: "changed" };
+  }
+  const reconciledAt = Date.parse(lastReconciledAt || "");
+  if (!Number.isFinite(reconciledAt)) {
+    return { reconcile: true, reason: "missing_reconciled_at" };
+  }
+  const nowAt = now instanceof Date ? now.getTime() : Date.parse(now || "");
+  if (Number.isFinite(nowAt) && reconciledAt > nowAt) {
+    return { reconcile: true, reason: "invalid_reconciled_at" };
+  }
+  const refreshMs = Math.max(1, Number(refreshIntervalSeconds || 900)) * 1_000;
+  if (!Number.isFinite(nowAt) || nowAt - reconciledAt >= refreshMs) {
+    return { reconcile: true, reason: "periodic_refresh" };
+  }
+  return { reconcile: false, reason: "unchanged_fresh" };
+}
+
 export function buildApiHealthSnapshot(cards = []) {
   return Array.from(cards || [])
     .map((card) => ({

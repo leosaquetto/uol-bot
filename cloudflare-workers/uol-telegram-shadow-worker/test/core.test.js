@@ -15,6 +15,7 @@ import {
   estimateDailyRowWrites,
   formatOfferDuration,
   maintenanceRetryAt,
+  normalizeTicketProbeAt,
   normalizeOfferId,
   observationFreshnessMinutes,
   offerIdentityKeys,
@@ -24,6 +25,7 @@ import {
   rollingReadEstimate,
   shouldTouchObservation,
   shouldPersistRunSummary,
+  shouldReconcileHtmlSnapshot,
   storageReadBudget,
   slugTailVariants,
   shouldSendToCanal2,
@@ -64,6 +66,79 @@ test("fingerprint da API é estável, ordenado e ignora observação", async () 
     ]),
   );
   assert.equal(typeof await buildApiSnapshotFingerprint([]), "string");
+});
+
+test("fingerprint completa invalida qualquer campo relevante da listagem HTML", async () => {
+  const card = {
+    id: "oferta-1",
+    link: "https://clube.uol.com.br/beneficios/oferta-1",
+    previewTitle: "Oferta 1",
+    title: "Oferta completa",
+    category: "gastronomia",
+    cardImageUrl: "https://img.example/card.jpg",
+    partnerImageUrl: "https://img.example/partner.jpg",
+    partnerName: "Parceiro",
+    imageUrl: "https://img.example/detail.jpg",
+    validity: "31/08/2026",
+    description: "Descrição",
+  };
+  const original = await buildApiSnapshotFingerprint([card]);
+  for (const field of [
+    "link", "previewTitle", "title", "category", "cardImageUrl",
+    "partnerImageUrl", "partnerName", "imageUrl", "validity", "description",
+  ]) {
+    assert.notEqual(
+      await buildApiSnapshotFingerprint([{ ...card, [field]: `${card[field]} alterado` }]),
+      original,
+      `campo não invalidou fingerprint: ${field}`,
+    );
+  }
+});
+
+test("reconciliação HTML só pula fotografia completa, idêntica e ainda fresca", () => {
+  const base = {
+    fingerprint: "a".repeat(64),
+    previousFingerprint: "a".repeat(64),
+    lastReconciledAt: "2026-08-10T20:00:00.000Z",
+    now: new Date("2026-08-10T20:14:59.000Z"),
+    refreshIntervalSeconds: 900,
+    complete: true,
+    initialized: true,
+  };
+  assert.deepEqual(shouldReconcileHtmlSnapshot(base), {
+    reconcile: false,
+    reason: "unchanged_fresh",
+  });
+  for (const override of [
+    { complete: false, reason: "incomplete" },
+    { initialized: false, reason: "uninitialized" },
+    { previousFingerprint: "", reason: "missing_fingerprint" },
+    { previousFingerprint: "invalid", reason: "invalid_fingerprint" },
+    { previousFingerprint: "b".repeat(64), reason: "changed" },
+    { lastReconciledAt: "", reason: "missing_reconciled_at" },
+    {
+      lastReconciledAt: "2026-08-10T20:15:00.000Z",
+      reason: "invalid_reconciled_at",
+    },
+    { now: new Date("2026-08-10T20:15:00.000Z"), reason: "periodic_refresh" },
+  ]) {
+    const { reason, ...values } = override;
+    assert.deepEqual(shouldReconcileHtmlSnapshot({ ...base, ...values }), {
+      reconcile: true,
+      reason,
+    });
+  }
+});
+
+test("timestamp de probe inválido falha seguro para execução imediata", () => {
+  const fallback = new Date("2026-08-10T20:00:00.000Z");
+  assert.equal(
+    normalizeTicketProbeAt("2026-08-10T20:01:02.345Z", fallback),
+    "2026-08-10T20:01:02.345Z",
+  );
+  assert.equal(normalizeTicketProbeAt("invalid", fallback), fallback.toISOString());
+  assert.equal(normalizeTicketProbeAt("9999", fallback), fallback.toISOString());
+  assert.equal(normalizeTicketProbeAt("", fallback), fallback.toISOString());
 });
 
 test("snapshot de saúde da API preserva cards válidos fora das observações SQL", () => {

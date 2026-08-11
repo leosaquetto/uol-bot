@@ -24,7 +24,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           .one().sql,
       );
 
-      expect(version).toBeGreaterThanOrEqual(20);
+      expect(version).toBeGreaterThanOrEqual(21);
       expect(tables).toEqual(expect.arrayContaining([
         "metadata",
         "offers",
@@ -72,6 +72,167 @@ describe("UOL Worker no runtime Cloudflare", () => {
         failed: 0,
       });
     });
+  });
+
+  it("limita custo acionável e não deixa retry Discord antigo faminto", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("free-tier-actionable-maintenance");
+    const discordEdits = [];
+    vi.stubGlobal("fetch", async (input) => {
+      const url = String(input);
+      if (url.startsWith("https://api.telegram.org/")) {
+        return Response.json({ ok: true, result: { message_id: 7_001 } });
+      }
+      if (url.startsWith("https://discord.test/webhook/messages/")) {
+        const messageId = decodeURIComponent(new URL(url).pathname.split("/").at(-1));
+        discordEdits.push(messageId);
+        return Response.json({ id: messageId });
+      }
+      throw new Error(`unexpected_fetch:${url}`);
+    });
+
+    try {
+      await runInDurableObject(stub, async (instance, state) => {
+        instance.env = {
+          ...instance.env,
+          DELIVERY_MODE: "live",
+          TELEGRAM_TOKEN: "vitest-telegram-token-not-a-secret",
+          GRUPO_COMENTARIO_ID: "-100222",
+          DISCORD_DELIVERY_ENABLED: "true",
+          DISCORD_WEBHOOK_URL: "https://discord.test/webhook",
+        };
+        instance.setMetadata("delivery_mode_override", "live");
+        const insertTerminal = `INSERT INTO offers(
+          id, link, preview_title, first_seen_at, last_seen_at, status
+        ) VALUES (?, ?, ?, ?, ?, 'delivered')`;
+        for (let index = 0; index < 300; index += 1) {
+          const id = `action-terminal-${String(index).padStart(3, "0")}`;
+          const seenAt = `2026-08-01T12:${String(index % 60).padStart(2, "0")}:00.000Z`;
+          state.storage.sql.exec(
+            insertTerminal,
+            id,
+            `https://clube.uol.com.br/beneficios/${id}`,
+            `Oferta terminal ${index}`,
+            seenAt,
+            seenAt,
+          );
+          state.storage.sql.exec(
+            "INSERT INTO ticket_probe_state(offer_id, next_at) VALUES (?, '')",
+            id,
+          );
+          state.storage.sql.exec(
+            `INSERT INTO discord_availability_sync(
+               offer_id, sold_out_synced_at, restock_synced_at
+             ) VALUES (?, ?, ?)`,
+            id,
+            seenAt,
+            seenAt,
+          );
+        }
+
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, description,
+             first_seen_at, last_seen_at, status, discussion_message_id,
+             delivery_generation
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, 'delivered', 9001, 1)`,
+          "due-comment",
+          "https://clube.uol.com.br/beneficios/due-comment",
+          "Comentário devido",
+          "Comentário devido",
+          "Descrição completa para a discussão.",
+          "2026-08-10T10:00:00.000Z",
+          "2026-08-10T10:00:00.000Z",
+        );
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, category,
+             first_seen_at, last_seen_at, status, main_sent_at
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, 'delivered', ?)`,
+          "due-ticket",
+          "https://clube.uol.com.br/campanhasdeingresso/due-ticket",
+          "Ingresso devido",
+          "Ingresso devido",
+          "2026-08-10T10:00:00.000Z",
+          "2026-08-10T10:00:00.000Z",
+          "2026-08-10T10:00:01.000Z",
+        );
+        state.storage.sql.exec(
+          `INSERT INTO ticket_probe_state(offer_id, next_at)
+           VALUES ('due-ticket', '2026-08-10T10:01:00.000Z')`,
+        );
+
+        const discordCandidates = [
+          {
+            id: "discord-retry-old",
+            soldOutAt: "2026-08-01T10:00:00.000Z",
+            nextAt: "2026-08-10T11:59:00.000Z",
+          },
+          ...Array.from({ length: 5 }, (_, index) => ({
+            id: `discord-new-${index}`,
+            soldOutAt: `2026-08-10T12:0${index}:00.000Z`,
+            nextAt: "",
+          })),
+        ];
+        for (const candidate of discordCandidates) {
+          state.storage.sql.exec(
+            `INSERT INTO offers(
+               id, link, preview_title, title, category,
+               first_seen_at, last_seen_at, status, sold_out_at,
+               discord_message_id, delivery_generation
+             ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, 'sold_out', ?, ?, 1)`,
+            candidate.id,
+            `https://clube.uol.com.br/campanhasdeingresso/${candidate.id}`,
+            candidate.id,
+            candidate.id,
+            candidate.soldOutAt,
+            candidate.soldOutAt,
+            candidate.soldOutAt,
+            candidate.id,
+          );
+          state.storage.sql.exec(
+            `INSERT INTO discord_availability_sync(
+               offer_id, sold_out_attempts, sold_out_next_attempt_at,
+               restock_synced_at
+             ) VALUES (?, 1, ?, ?)`,
+            candidate.id,
+            candidate.nextAt,
+            candidate.soldOutAt,
+          );
+        }
+
+        instance.currentDeliveryMode();
+        instance.currentDeliveryGeneration();
+        let before = Number(instance.storageUsage.rowsRead || 0);
+        await expect(instance.processDiscussionComments(2)).resolves.toMatchObject({
+          sent: 1,
+          failed: 0,
+        });
+        const commentReads = Number(instance.storageUsage.rowsRead || 0) - before;
+
+        before = Number(instance.storageUsage.rowsRead || 0);
+        await expect(instance.processTicketAvailabilityProbes(
+          new Date("2026-08-10T12:00:00.000Z"),
+          {
+            fetchImpl: async () => new Response("Detalhes da oferta", { status: 200 }),
+          },
+        )).resolves.toMatchObject({ probed: 1, failed: 0 });
+        const ticketReads = Number(instance.storageUsage.rowsRead || 0) - before;
+
+        before = Number(instance.storageUsage.rowsRead || 0);
+        await expect(instance.processDiscordAvailabilitySync(
+          new Date("2026-08-10T12:00:00.000Z"),
+          4,
+        )).resolves.toMatchObject({ soldOutEdited: 4, failed: 0 });
+        const discordReads = Number(instance.storageUsage.rowsRead || 0) - before;
+
+        expect(discordEdits).toContain("discord-retry-old");
+        expect(commentReads).toBeLessThanOrEqual(128);
+        expect(ticketReads).toBeLessThanOrEqual(128);
+        expect(discordReads).toBeLessThanOrEqual(128);
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("agenda Discord depois do principal sem bloquear o fim do scan crítico", async () => {
@@ -350,6 +511,212 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(pendingCalls).toBe(1);
     expect(probeCalls).toBe(2);
     expect(deliveryCalls.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("mantém teto real de leitura no scan primário sem mudança", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("primary-no-change-read-ceiling");
+
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.setMetadata("initialized_at", "2026-08-10T12:00:00.000Z");
+      const terminalInsert = `INSERT INTO offers(
+        id, link, preview_title, first_seen_at, last_seen_at, status
+      ) VALUES (?, ?, ?, ?, ?, 'delivered')`;
+      for (let index = 0; index < 300; index += 1) {
+        const id = `primary-terminal-${String(index).padStart(3, "0")}`;
+        state.storage.sql.exec(
+          terminalInsert,
+          id,
+          `https://clube.uol.com.br/beneficios/${id}`,
+          `Oferta terminal ${index}`,
+          "2026-08-01T12:00:00.000Z",
+          "2026-08-01T12:00:00.000Z",
+        );
+      }
+      instance.fetchAllApi = async () => [{
+        id: "primary-stable-1",
+        link: "https://clube.uol.com.br/beneficios/primary-stable-1",
+        previewTitle: "Oferta primária estável",
+        title: "Oferta primária estável",
+        description: "Descrição completa e estável.",
+        validity: "31/08/2026",
+      }];
+      instance.fetchTicketListing = async () => [{
+        id: "primary-ticket-stable-1",
+        link: "https://clube.uol.com.br/campanhasdeingresso/primary-ticket-stable-1",
+        previewTitle: "Ingresso primário estável",
+        title: "Ingresso primário estável",
+        category: "campanhasdeingresso",
+        description: "Descrição completa e estável.",
+      }];
+      instance.processPending = async () => ({
+        enriched: 0,
+        wouldSendMain: 0,
+        wouldSendCanal2: 0,
+      });
+
+      const first = await instance.scan("cost-baseline");
+      const second = await instance.scan("cost-no-change");
+      expect(first).toMatchObject({ ok: true, newOffers: 2 });
+      expect(second).toMatchObject({ ok: true, outcome: "no_change" });
+      expect(second.storageRowsRead).toBeLessThanOrEqual(256);
+
+      instance.fetchAllApi = async () => {
+        throw new Error("uol_api_http_503");
+      };
+      const failed = await instance.scan("cost-failed-source");
+      expect(failed).toMatchObject({ ok: true, apiOffersSeen: 0 });
+      expect(instance.runtimeSnapshot("api")).toMatchObject({
+        lastOffersSeen: 0,
+        lastSuccessfulOffersSeen: 1,
+      });
+      expect(instance.storageUsage).toMatchObject({
+        primaryLastSuccessfulVersionId: String(instance.env.WORKER_VERSION?.id || ""),
+        primaryLastSuccessfulRowsRead: expect.any(Number),
+        primaryLastSuccessful: false,
+      });
+    });
+  });
+
+  it("pula ledger HTML idêntico, mas força refresh periódico e mudança real", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("html-unchanged-fingerprint");
+    let title = "Oferta HTML estável";
+    let resolveCalls = 0;
+    let sourceCalls = 0;
+    let healthCalls = 0;
+    let sharpDrop = false;
+    const html = () => `<!doctype html><html><body>
+      <div class="beneficio" data-categoria="gastronomia">
+        <a href="/beneficios/oferta-html-estavel">
+          <p class="titulo">${title}</p>
+        </a>
+      </div>
+    </body></html>`;
+    vi.stubGlobal("fetch", async () => new Response(html(), {
+      headers: { "content-type": "text/html; charset=UTF-8" },
+    }));
+
+    try {
+      await runInDurableObject(stub, async (instance) => {
+        instance.setMetadata("initialized_at", "2026-08-10T12:00:00.000Z");
+        instance.storageUsageSnapshot = () => ({ maintenanceAllowed: true });
+        instance.updateSourceHealth = () => {
+          healthCalls += 1;
+          return {
+            mainListingHealthy: true,
+            ticketListingHealthy: true,
+            mainSharpDrop: sharpDrop,
+            ticketSharpDrop: sharpDrop,
+          };
+        };
+        instance.recordSourceCards = () => {
+          sourceCalls += 1;
+        };
+        instance.resolveListingCards = (cards) => {
+          resolveCalls += 1;
+          return { cards, inserted: 0, insertedIds: [] };
+        };
+        instance.processPending = async () => ({
+          enriched: 0,
+          wouldSendMain: 0,
+          wouldSendCanal2: 0,
+        });
+        instance.evaluateSoldOut = () => 0;
+        instance.processDeliveryQueue = async () => ({
+          mainSent: 0,
+          canal2Sent: 0,
+          discordSent: 0,
+          failed: 0,
+          selectedRows: [],
+        });
+        instance.primePendingDiscordImageCache = async () => ({ primed: 0, failed: 0 });
+        instance.upgradeTimedOutMainImages = async () => ({ upgraded: 0, failed: 0 });
+        instance.reconcileDiscussionForwards = () => 0;
+        instance.processDiscussionComments = async () => ({ sent: 0, failed: 0 });
+        instance.processRestockSync = async () => ({
+          mainEdited: 0,
+          canal2Edited: 0,
+          mainReposted: 0,
+          canal2Reposted: 0,
+          failed: 0,
+        });
+        instance.repairKnownMaintenanceDeadLetters = () => ({
+          mainMarkedSynced: 0,
+          canal2Requeued: 0,
+        });
+        instance.processSoldOutSync = async () => ({
+          mainEdited: 0,
+          canal2Edited: 0,
+          messageMissing: 0,
+          failed: 0,
+        });
+        instance.processDiscordAvailabilitySync = async () => ({
+          soldOutEdited: 0,
+          restockEdited: 0,
+          messageMissing: 0,
+          failed: 0,
+        });
+        instance.pruneOffers = () => {};
+        instance.ensureTelegramWebhook = async () => {};
+        instance.processOperationalHealth = async () => {};
+
+        const first = await instance.runMaintenanceTick("manual");
+        const second = await instance.runMaintenanceTick("manual");
+        expect(first).toMatchObject({
+          ok: true,
+          htmlLedgerReconciled: true,
+          htmlLedgerReason: "missing_fingerprint",
+        });
+        expect(second).toMatchObject({
+          ok: true,
+          htmlLedgerReconciled: false,
+          htmlLedgerReason: "unchanged_fresh",
+        });
+        expect(second.storageRowsRead).toBeLessThanOrEqual(128);
+        expect(resolveCalls).toBe(1);
+
+        instance.setMetadata(
+          "runtime:html_snapshot_reconciled_at",
+          "2026-08-10T00:00:00.000Z",
+        );
+        const periodic = await instance.runMaintenanceTick("manual");
+        expect(periodic).toMatchObject({
+          htmlLedgerReconciled: true,
+          htmlLedgerReason: "periodic_refresh",
+        });
+
+        title = "Oferta HTML alterada";
+        const changed = await instance.runMaintenanceTick("manual");
+        expect(changed).toMatchObject({
+          htmlLedgerReconciled: true,
+          htmlLedgerReason: "changed",
+        });
+
+        instance.setRuntimeSnapshot("html", {
+          ...instance.runtimeSnapshot("html"),
+          mainLastSuccessfulOffersSeen: 230,
+          ticketLastSuccessfulOffersSeen: 40,
+        });
+        sharpDrop = true;
+        title = "Oferta HTML truncada";
+        const guarded = await instance.runMaintenanceTick("manual");
+        expect(guarded).toMatchObject({
+          htmlLedgerReconciled: true,
+          htmlLedgerReason: "incomplete",
+        });
+        expect(instance.runtimeSnapshot("html")).toMatchObject({
+          mainLastOffersSeen: 1,
+          mainLastSuccessfulOffersSeen: 230,
+          ticketLastOffersSeen: 1,
+          ticketLastSuccessfulOffersSeen: 40,
+        });
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    expect(resolveCalls).toBe(4);
+    expect(sourceCalls).toBe(8);
+    expect(healthCalls).toBe(5);
   });
 
   it("mantém a fotografia da API fresca para saúde sem reler observações SQL", async () => {
@@ -935,7 +1302,28 @@ describe("UOL Worker no runtime Cloudflare", () => {
 
     await runInDurableObject(stub, async (instance, state) => {
       await state.storage.setAlarm(Date.now() + 60_000);
-      await instance.getReadiness();
+      instance.setRuntimeSnapshot("api", {
+        lastOffersSeen: 0,
+        lastSuccessfulOffersSeen: 100,
+      });
+      instance.setRuntimeSnapshot("html", {
+        mainLastOffersSeen: 0,
+        mainLastSuccessfulOffersSeen: 40,
+        ticketLastOffersSeen: 0,
+        ticketLastSuccessfulOffersSeen: 30,
+      });
+      const readiness = await instance.getReadiness();
+      expect(readiness).toMatchObject({
+        checks: { storageWriteBudgetHealthy: true },
+        storageWriteBudget: {
+          limit: 100_000,
+          withinFreeTier: true,
+          components: {
+            sourceObservations: 170 * 96,
+            offerTouches: 170 * 96,
+          },
+        },
+      });
       const rowsReadAfterFirst = instance.storageUsage.rowsRead;
       instance.deliveryQueueSlo = () => {
         throw new Error("readiness_cache_miss");

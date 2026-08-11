@@ -13,6 +13,7 @@ import {
   evaluateDetailQuality,
   isTicketCampaign,
   maintenanceRetryAt,
+  normalizeTicketProbeAt,
   observationFreshnessMinutes,
   offerIdentityKeys,
   offerSourceKey,
@@ -20,6 +21,7 @@ import {
   rollingReadEstimate,
   storageReadBudget,
   shouldPersistRunSummary,
+  shouldReconcileHtmlSnapshot,
   shouldTouchObservation,
 } from "./core.js";
 import {
@@ -133,7 +135,7 @@ function readinessChecksOk(mode, checks = {}) {
     Number(checks.unknown || 0) === 0 &&
     Number(checks.blockedConfiguration || 0) === 0 &&
     Number(checks.maintenanceDeadLetters || 0) === 0 &&
-    checks.storageReadBudgetHealthy,
+    checks.storageReadBudgetHealthy && checks.storageWriteBudgetHealthy,
   );
 }
 
@@ -531,6 +533,13 @@ export class UolTelegramShadow extends DurableObject {
       stageWrites: emptyStorageStages(),
       primaryMaxRowsRead: 0,
       primaryEstimatedRowsRead: 0,
+      primaryLastCompletedAt: "",
+      primaryLastVersionId: "",
+      primaryLastRowsRead: 0,
+      primaryLastSuccessful: false,
+      primaryLastSuccessfulAt: "",
+      primaryLastSuccessfulVersionId: "",
+      primaryLastSuccessfulRowsRead: 0,
       maintenanceMaxRowsRead: 0,
       maintenanceSkipped: 0,
       ticketProbeCount: 0,
@@ -558,7 +567,7 @@ export class UolTelegramShadow extends DurableObject {
        SELECT id, ? FROM offers
        WHERE id = ? AND link LIKE '%/campanhasdeingresso/%'
        ON CONFLICT(offer_id) DO UPDATE SET next_at = ${nextExpression}`,
-      nextAt,
+      normalizeTicketProbeAt(nextAt),
       offerId,
     );
   }
@@ -667,6 +676,13 @@ export class UolTelegramShadow extends DurableObject {
       stageWrites: emptyStorageStages(),
       primaryMaxRowsRead: 0,
       primaryEstimatedRowsRead: 0,
+      primaryLastCompletedAt: "",
+      primaryLastVersionId: "",
+      primaryLastRowsRead: 0,
+      primaryLastSuccessful: false,
+      primaryLastSuccessfulAt: "",
+      primaryLastSuccessfulVersionId: "",
+      primaryLastSuccessfulRowsRead: 0,
       maintenanceMaxRowsRead: 0,
       maintenanceSkipped: 0,
       ticketProbeCount: 0,
@@ -821,7 +837,7 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
-  completeStorageUsageCycle(kind, startedRowsRead) {
+  completeStorageUsageCycle(kind, startedRowsRead, details = {}) {
     this.rollStorageUsageDay();
     // Reserva conservadora para getAlarm/setAlarm e para o próprio snapshot.
     this.recordStorageUsage(2, 1);
@@ -841,6 +857,19 @@ export class UolTelegramShadow extends DurableObject {
         this.storageUsage.primaryEstimatedRowsRead,
         cycleRowsRead,
       );
+      const completedAt = normalizeTicketProbeAt(details.completedAt, new Date());
+      const versionId = String(
+        details.versionId || this.env.WORKER_VERSION?.id || "",
+      ).trim();
+      this.storageUsage.primaryLastCompletedAt = completedAt;
+      this.storageUsage.primaryLastVersionId = versionId;
+      this.storageUsage.primaryLastRowsRead = cycleRowsRead;
+      this.storageUsage.primaryLastSuccessful = details.successful === true;
+      if (details.successful === true) {
+        this.storageUsage.primaryLastSuccessfulAt = completedAt;
+        this.storageUsage.primaryLastSuccessfulVersionId = versionId;
+        this.storageUsage.primaryLastSuccessfulRowsRead = cycleRowsRead;
+      }
     } else if (kind === "maintenance") {
       this.storageUsage.maintenanceMaxRowsRead = Math.max(
         Number(this.storageUsage.maintenanceMaxRowsRead || 0),
@@ -1368,6 +1397,48 @@ export class UolTelegramShadow extends DurableObject {
         FROM offers
         WHERE comment_sent_at <> '' OR comment_delivery_unknown_at <> '' OR comment_delivery_error <> '';
         INSERT INTO _sql_schema_migrations (id) VALUES (20);
+      `);
+    }
+    if (currentVersion < 21) {
+      this.sqlExec(`
+        CREATE INDEX IF NOT EXISTS offers_comment_inflight_v21
+          ON offers(delivery_generation, comment_delivery_in_flight_at)
+          WHERE comment_delivery_in_flight_at <> ''
+            AND comment_sent_at = ''
+            AND comment_delivery_unknown_at = '';
+        CREATE INDEX IF NOT EXISTS offers_comment_due_v21
+          ON offers(delivery_generation, comment_delivery_next_attempt_at, first_seen_at)
+          WHERE discussion_message_id > 0
+            AND comment_sent_at = ''
+            AND comment_delivery_in_flight_at = ''
+            AND comment_delivery_unknown_at = ''
+            AND status NOT IN (
+              'discarded', 'delivery_quarantined', 'shadow_candidate',
+              'baseline', 'shadow_sold_out'
+            );
+        DROP INDEX IF EXISTS ticket_probe_due_idx;
+        UPDATE ticket_probe_state
+          SET next_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+          WHERE next_at > '' AND (
+            next_at NOT GLOB '????-??-??T??:??:??*Z' OR
+            length(next_at) NOT BETWEEN 20 AND 24 OR
+            julianday(next_at) IS NULL
+          );
+        CREATE INDEX IF NOT EXISTS ticket_probe_due_v21
+          ON ticket_probe_state(next_at, attempts, offer_id)
+          WHERE next_at > '';
+        INSERT OR IGNORE INTO discord_availability_sync(offer_id)
+          SELECT id FROM offers
+          WHERE status = 'sold_out' OR restocked_at <> '';
+        CREATE INDEX IF NOT EXISTS discord_avail_sold_due_v21
+          ON discord_availability_sync(
+            sold_out_next_attempt_at, sold_out_attempts, offer_id
+          ) WHERE sold_out_synced_at = '';
+        CREATE INDEX IF NOT EXISTS discord_avail_restock_due_v21
+          ON discord_availability_sync(
+            restock_next_attempt_at, restock_attempts, offer_id
+          ) WHERE restock_synced_at = '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (21);
       `);
     }
   }
@@ -3553,7 +3624,6 @@ export class UolTelegramShadow extends DurableObject {
       `SELECT * FROM offers
        WHERE discussion_message_id > 0
          AND comment_sent_at = ''
-         AND status <> 'discarded'
          AND comment_delivery_attempts < ?
          AND comment_delivery_in_flight_at = ''
          AND comment_delivery_unknown_at = ''
@@ -4082,47 +4152,65 @@ export class UolTelegramShadow extends DurableObject {
     const onlyIdsClause = selectedIds.length
       ? `AND o.id IN (${selectedIds.map(() => "?").join(", ")})`
       : "";
-    const rows = this.sqlExec(
-      `SELECT o.id, o.link, o.preview_title, o.title, o.category,
+    const batchLimit = Math.max(1, Math.min(16, Number(limit || 4)));
+    const projection = `o.id, o.link, o.preview_title, o.title, o.category,
               o.partner_name, o.validity, o.description,
               o.card_image_url, o.partner_image_url, o.image_url,
-              o.first_seen_at,
-              o.delivery_generation,
+              o.first_seen_at, o.delivery_generation,
               o.discord_image_proxy_url, o.discord_message_id,
               o.discord_image_cache_message_id, o.status, o.sold_out_at, o.restocked_at,
-              COALESCE(d.sold_out_synced_at, '') AS discord_sold_out_synced_at,
-              COALESCE(d.sold_out_attempts, 0) AS discord_sold_out_attempts,
-              COALESCE(d.sold_out_error, '') AS discord_sold_out_error,
-              COALESCE(d.sold_out_next_attempt_at, '') AS discord_sold_out_next_attempt_at,
-              COALESCE(d.restock_synced_at, '') AS discord_restock_synced_at,
-              COALESCE(d.restock_attempts, 0) AS discord_restock_attempts,
-              COALESCE(d.restock_error, '') AS discord_restock_error,
-              COALESCE(d.restock_next_attempt_at, '') AS discord_restock_next_attempt_at
-       FROM offers AS o
-       LEFT JOIN discord_availability_sync AS d ON d.offer_id = o.id
-       WHERE (
-         status = 'sold_out' AND COALESCE(d.sold_out_synced_at, '') = ''
-         AND (discord_message_id <> '' OR discord_image_cache_message_id <> '')
-         AND COALESCE(d.sold_out_attempts, 0) < ?
-         AND (COALESCE(d.sold_out_next_attempt_at, '') = ''
-              OR d.sold_out_next_attempt_at <= ?)
-       ) OR (
-         restocked_at <> '' AND COALESCE(d.restock_synced_at, '') = ''
-         AND (discord_message_id <> '' OR discord_image_cache_message_id <> '')
-         AND COALESCE(d.restock_attempts, 0) < ?
-         AND (COALESCE(d.restock_next_attempt_at, '') = ''
-              OR d.restock_next_attempt_at <= ?)
-       )
-       ${onlyIdsClause}
-       ORDER BY CASE WHEN status = 'sold_out' THEN sold_out_at ELSE restocked_at END ASC
+              d.sold_out_synced_at AS discord_sold_out_synced_at,
+              d.sold_out_attempts AS discord_sold_out_attempts,
+              d.sold_out_error AS discord_sold_out_error,
+              d.sold_out_next_attempt_at AS discord_sold_out_next_attempt_at,
+              d.restock_synced_at AS discord_restock_synced_at,
+              d.restock_attempts AS discord_restock_attempts,
+              d.restock_error AS discord_restock_error,
+              d.restock_next_attempt_at AS discord_restock_next_attempt_at`;
+    const soldOutRows = this.sqlExec(
+      `SELECT ${projection}
+       FROM discord_availability_sync AS d INDEXED BY discord_avail_sold_due_v21
+       JOIN offers AS o ON o.id = d.offer_id
+       WHERE d.sold_out_synced_at = ''
+         AND d.sold_out_attempts < ?
+         AND d.sold_out_next_attempt_at <= ?
+         AND o.status = 'sold_out'
+         AND (o.discord_message_id <> '' OR o.discord_image_cache_message_id <> '')
+         ${onlyIdsClause}
+       ORDER BY o.sold_out_at ASC
        LIMIT ?`,
       maxAttempts,
       now.toISOString(),
+      ...selectedIds,
+      batchLimit,
+    ).toArray();
+    const restockRows = this.sqlExec(
+      `SELECT ${projection}
+       FROM discord_availability_sync AS d INDEXED BY discord_avail_restock_due_v21
+       JOIN offers AS o ON o.id = d.offer_id
+       WHERE d.restock_synced_at = ''
+         AND d.restock_attempts < ?
+         AND d.restock_next_attempt_at <= ?
+         AND o.restocked_at <> ''
+         AND o.status <> 'sold_out'
+         AND (o.discord_message_id <> '' OR o.discord_image_cache_message_id <> '')
+         ${onlyIdsClause}
+       ORDER BY o.restocked_at ASC
+       LIMIT ?`,
       maxAttempts,
       now.toISOString(),
       ...selectedIds,
-      Math.max(1, Math.min(16, Number(limit || 4))),
+      batchLimit,
     ).toArray();
+    const rowsById = new Map();
+    for (const row of [...soldOutRows, ...restockRows].sort((left, right) => {
+      const leftAt = left.status === "sold_out" ? left.sold_out_at : left.restocked_at;
+      const rightAt = right.status === "sold_out" ? right.sold_out_at : right.restocked_at;
+      return String(leftAt || "").localeCompare(String(rightAt || ""));
+    })) {
+      if (!rowsById.has(row.id)) rowsById.set(row.id, row);
+    }
+    const rows = [...rowsById.values()].slice(0, batchLimit);
     let soldOutEdited = 0;
     let restockEdited = 0;
     let messageMissing = 0;
@@ -4618,12 +4706,12 @@ export class UolTelegramShadow extends DurableObject {
               s.last_result AS ticket_probe_last_result,
               s.gone_count AS ticket_probe_gone_count,
               s.attempts AS ticket_probe_attempts
-       FROM offers AS o
-       JOIN ticket_probe_state AS s ON s.offer_id = o.id
+       FROM ticket_probe_state AS s INDEXED BY ticket_probe_due_v21
+       JOIN offers AS o ON o.id = s.offer_id
        WHERE o.status IN ('delivered', 'partial_delivery')
          AND o.sold_out_at = ''
          AND o.link LIKE '%/campanhasdeingresso/%'
-         AND s.next_at <> ''
+         AND s.next_at > ''
          AND s.next_at <= ?
          AND s.attempts < ?
        ORDER BY s.next_at ASC, o.first_seen_at ASC
@@ -5264,6 +5352,15 @@ export class UolTelegramShadow extends DurableObject {
           lastOutcome: run.outcome,
           lastRunError: run.error,
           lastOffersSeen: run.apiOffersSeen,
+          lastSuccessfulOffersSeen: apiCards.length && !apiContract?.degraded
+            ? run.apiOffersSeen
+            : Math.max(
+                run.apiOffersSeen,
+                Number(
+                  previousApi.lastSuccessfulOffersSeen ?? previousApi.lastOffersSeen ??
+                    this.metadataValue("api_last_offers_seen") ?? 0,
+                ),
+              ),
           lastElapsedMs: run.apiElapsedMs,
           lastError: run.apiError,
           lastSuccessAt: apiLastSuccessAt,
@@ -5281,6 +5378,12 @@ export class UolTelegramShadow extends DurableObject {
           lastStartedAt: startedAt.toISOString(),
           lastCompletedAt: run.finishedAt,
           lastOffersSeen: run.ticketListingOffersSeen,
+          lastSuccessfulOffersSeen: ticketListingCards.length
+            ? run.ticketListingOffersSeen
+            : Number(
+                previousTicketListing.lastSuccessfulOffersSeen ??
+                  previousTicketListing.lastOffersSeen ?? 0,
+              ),
           lastElapsedMs: run.ticketListingElapsedMs,
           lastError: run.ticketListingError,
           lastSuccessAt: ticketListingLastSuccessAt,
@@ -5307,6 +5410,12 @@ export class UolTelegramShadow extends DurableObject {
         run.storageRowsRead = this.completeStorageUsageCycle(
           "primary",
           storageReadStartedAt,
+          {
+            completedAt: run.finishedAt,
+            versionId: this.env.WORKER_VERSION?.id,
+            successful: !run.error && !run.apiError && !run.ticketListingError &&
+              apiCards.length > 0 && ticketListingCards.length > 0,
+          },
         );
       } catch (error) {
         logEvent("error", "uol_storage_usage_persist_failed", {
@@ -5400,6 +5509,8 @@ export class UolTelegramShadow extends DurableObject {
       ok: true,
       outcome: "no_change",
       htmlReconciled: false,
+      htmlLedgerReconciled: false,
+      htmlLedgerReason: "not_due",
       newOffers: 0,
       canal2Sent: 0,
       discordSent: 0,
@@ -5472,24 +5583,30 @@ export class UolTelegramShadow extends DurableObject {
           ? ticketListingResult.value.cards
           : [];
         const listingCards = mergeOfferCards(ticketListingCards, mainListingCards);
-        completeListingSnapshot = listingResult.status === "fulfilled" &&
+        const listingSnapshotFetched = listingResult.status === "fulfilled" &&
           ticketListingResult.status === "fulfilled";
         activeOfferIds = new Set(listingCards.map((card) => card.id));
-
-        if (listingResult.status === "fulfilled") {
-          this.recordSourceCards("listing", mainListingCards, listingResult.value.completedAt);
-        }
-        if (ticketListingResult.status === "fulfilled") {
-          this.recordSourceCards(
-            "listing",
-            ticketListingCards,
-            ticketListingResult.value.completedAt,
-          );
-        }
+        const recentApiCards = this.recentApiCardsForHealth(now);
+        const sourceHealth = this.updateSourceHealth({
+          listingResult,
+          ticketListingResult,
+          apiResult: { status: recentApiCards.length ? "fulfilled" : "rejected" },
+          mainListingCards,
+          ticketListingCards,
+          apiCards: recentApiCards,
+          now,
+        });
         this.setRuntimeSnapshot("html", {
           lastStartedAt: now.toISOString(),
           lastCompletedAt: htmlCompletedAt,
           mainLastOffersSeen: mainListingCards.length,
+          mainLastSuccessfulOffersSeen: sourceHealth.mainListingHealthy &&
+              !sourceHealth.mainSharpDrop
+            ? mainListingCards.length
+            : Number(
+                html.mainLastSuccessfulOffersSeen ?? html.mainLastOffersSeen ??
+                  this.metadataValue("main_listing_last_offers_seen") ?? 0,
+              ),
           mainLastError: listingResult.status === "rejected"
             ? sanitizeError(listingResult.reason)
             : "",
@@ -5500,6 +5617,13 @@ export class UolTelegramShadow extends DurableObject {
             ? listingResult.value.elapsedMs
             : Number(html.mainLastElapsedMs ?? this.metadataValue("main_listing_last_elapsed_ms") ?? 0),
           ticketLastOffersSeen: ticketListingCards.length,
+          ticketLastSuccessfulOffersSeen: sourceHealth.ticketListingHealthy &&
+              !sourceHealth.ticketSharpDrop && ticketListingCards.length > 0
+            ? ticketListingCards.length
+            : Number(
+                html.ticketLastSuccessfulOffersSeen ?? html.ticketLastOffersSeen ??
+                  this.metadataValue("ticket_listing_last_offers_seen") ?? 0,
+              ),
           ticketLastError: ticketListingResult.status === "rejected"
             ? sanitizeError(ticketListingResult.reason)
             : "",
@@ -5513,18 +5637,41 @@ export class UolTelegramShadow extends DurableObject {
             ),
         });
 
-        const recentApiCards = this.recentApiCardsForHealth(now);
-        const sourceHealth = this.updateSourceHealth({
-          listingResult,
-          ticketListingResult,
-          apiResult: { status: recentApiCards.length ? "fulfilled" : "rejected" },
-          mainListingCards,
-          ticketListingCards,
-          apiCards: recentApiCards,
+        const listingSnapshotComplete = listingSnapshotFetched && listingCards.length > 0 &&
+          sourceHealth.mainListingHealthy && sourceHealth.ticketListingHealthy &&
+          !sourceHealth.mainSharpDrop && !sourceHealth.ticketSharpDrop;
+        const htmlSnapshotFingerprint = listingSnapshotComplete
+          ? await buildApiSnapshotFingerprint(listingCards)
+          : "";
+        const htmlSnapshotDecision = shouldReconcileHtmlSnapshot({
+          fingerprint: htmlSnapshotFingerprint,
+          previousFingerprint: this.metadataValue("runtime:html_snapshot_fingerprint"),
+          lastReconciledAt: this.metadataValue("runtime:html_snapshot_reconciled_at"),
           now,
+          refreshIntervalSeconds: envNumber(
+            this.env,
+            "HTML_SNAPSHOT_REFRESH_INTERVAL_SECONDS",
+            900,
+            300,
+            3_600,
+          ),
+          complete: listingSnapshotComplete,
+          initialized: Boolean(initializedAt),
         });
+        result.htmlLedgerReason = htmlSnapshotDecision.reason;
 
-        if (listingCards.length) {
+        if (listingCards.length && htmlSnapshotDecision.reconcile) {
+          result.htmlLedgerReconciled = true;
+          if (listingResult.status === "fulfilled") {
+            this.recordSourceCards("listing", mainListingCards, listingResult.value.completedAt);
+          }
+          if (ticketListingResult.status === "fulfilled") {
+            this.recordSourceCards(
+              "listing",
+              ticketListingCards,
+              ticketListingResult.value.completedAt,
+            );
+          }
           if (!initializedAt) {
             this.resolveListingCards(listingCards, now.toISOString(), "baseline");
             this.setMetadata("initialized_at", now.toISOString());
@@ -5574,6 +5721,17 @@ export class UolTelegramShadow extends DurableObject {
               );
               result.soldOutDetected += this.evaluateSoldOut(ticketResolvedIds, now, "ticket");
             }
+          }
+          if (listingSnapshotComplete) {
+            this.setMetadataIfChanged(
+              "runtime:html_snapshot_fingerprint",
+              htmlSnapshotFingerprint,
+            );
+            this.setMetadataIfChanged(
+              "runtime:html_snapshot_reconciled_at",
+              now.toISOString(),
+            );
+            completeListingSnapshot = true;
           }
         }
       }
@@ -6233,9 +6391,17 @@ export class UolTelegramShadow extends DurableObject {
         1,
         1_440,
       ),
-      apiCards: Number(api.lastOffersSeen || 0),
-      listingCards: Number(html.mainLastOffersSeen || 0) +
+      apiCards: Math.max(
+        Number(api.lastOffersSeen || 0),
+        Number(api.lastSuccessfulOffersSeen || 0),
+      ),
+      listingCards: Math.max(
+        Number(html.mainLastOffersSeen || 0),
+        Number(html.mainLastSuccessfulOffersSeen || 0),
+      ) + Math.max(
         Number(html.ticketLastOffersSeen || 0),
+        Number(html.ticketLastSuccessfulOffersSeen || 0),
+      ),
     });
     const storageReadBudget = this.storageUsageSnapshot();
 
@@ -6429,6 +6595,13 @@ export class UolTelegramShadow extends DurableObject {
       10,
       3_600,
     );
+    const htmlIntervalSeconds = envNumber(
+      this.env,
+      "HTML_RECONCILIATION_INTERVAL_SECONDS",
+      60,
+      30,
+      3_600,
+    );
     // A public health check is also a safe recovery point after a deploy or a
     // transient alarm failure. It only writes when the primary alarm is
     // missing/overdue; normal checks remain read-only.
@@ -6522,6 +6695,33 @@ export class UolTelegramShadow extends DurableObject {
     const maintenanceDeadLetters = Number(queue.restock_dead_letter || 0) +
       Number(queue.sold_out_dead_letter || 0) + Number(queue.comment_dead_letter || 0);
     const storageReadBudget = this.storageUsageSnapshot(new Date(now));
+    const apiSnapshot = this.runtimeSnapshot("api");
+    const htmlSnapshot = this.runtimeSnapshot("html");
+    const observationTouchMinutes = envNumber(
+      this.env,
+      "OFFER_LAST_SEEN_TOUCH_MINUTES",
+      15,
+      1,
+      1_440,
+    );
+    const storageWriteBudget = estimateDailyRowWrites({
+      pollIntervalSeconds: intervalSeconds,
+      maintenanceIntervalSeconds,
+      htmlIntervalSeconds,
+      observationTouchMinutes,
+      offerTouchMinutes: observationTouchMinutes,
+      apiCards: Math.max(
+        Number(apiSnapshot.lastOffersSeen || 0),
+        Number(apiSnapshot.lastSuccessfulOffersSeen || 0),
+      ),
+      listingCards: Math.max(
+        Number(htmlSnapshot.mainLastOffersSeen || 0),
+        Number(htmlSnapshot.mainLastSuccessfulOffersSeen || 0),
+      ) + Math.max(
+        Number(htmlSnapshot.ticketLastOffersSeen || 0),
+        Number(htmlSnapshot.ticketLastSuccessfulOffersSeen || 0),
+      ),
+    });
     const maintenanceRetryAtTimestamp = Date.parse(
       this.runtimeValue("maintenance", "retryAt") || "",
     );
@@ -6530,6 +6730,8 @@ export class UolTelegramShadow extends DurableObject {
     const maintenanceFresh = maintenanceRecentlyCompleted || maintenanceDeferred;
     const storageReadBudgetHealthy = storageReadBudget.withinFreeTier &&
       storageReadBudget.primaryAllowed;
+    const storageWriteBudgetHealthy = storageWriteBudget.withinFreeTier &&
+      Number(storageReadBudget.rowsWritten || 0) < storageWriteBudget.limit;
     const queueSlo = this.deliveryQueueSlo(new Date(now));
     const checks = {
       alarmFresh,
@@ -6543,6 +6745,7 @@ export class UolTelegramShadow extends DurableObject {
       blockedConfiguration,
       maintenanceDeadLetters,
       storageReadBudgetHealthy,
+      storageWriteBudgetHealthy,
     };
     const result = {
       ok: readinessChecksOk(mode, checks),
@@ -6552,6 +6755,7 @@ export class UolTelegramShadow extends DurableObject {
       checks,
       queueSlo,
       storageReadBudget,
+      storageWriteBudget,
       lastScanAt: Number.isFinite(lastScanAt) ? new Date(lastScanAt).toISOString() : "",
       checkedAt: new Date(now).toISOString(),
     };
