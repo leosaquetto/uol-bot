@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -14,6 +15,15 @@ import {
 
 const SHA = "15a5cb88be02d431167cd2d970f22f67bdf2068b";
 const VERSION_ID = "60a1673a-c37a-4d9f-92a9-987c849c0a5b";
+
+test("deploy delega integralmente para o release", () => {
+  const packageJson = JSON.parse(
+    readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+  );
+
+  assert.equal(packageJson.scripts.deploy, "npm run release --");
+  assert.equal(Object.hasOwn(packageJson.scripts, "predeploy"), false);
+});
 
 test("gera tag e mensagem determinísticas do commit", () => {
   assert.equal(releaseTagForSha(SHA), "git-15a5cb88be02");

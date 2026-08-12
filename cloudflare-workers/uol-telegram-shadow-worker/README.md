@@ -287,8 +287,9 @@ sobrecarregar o Mac:
   manual e executa o pós-deploy em modo `live`;
 - `npm run release -- --dry-run`: valida source guard, tag e mensagem sem
   consultar CI, Cloudflare ou produção e sem publicar;
-- `npm run deploy`: comando legado compatível; mantém o `predeploy` curto, mas
-  não substitui o gate completo nem o pós-deploy automático de `release`;
+- `npm run deploy`: alias compatível de `npm run release`; usa exatamente o
+  mesmo gate completo, deploy estrito e pós-deploy automático, sem caminho
+  alternativo mais fraco;
 - `npm run postdeploy:check`: cruza `/livez` e `/readyz`, verificando versão,
   scan recente, alarme, modo, configuração, fila e incidentes críticos. Para
   exigir versão, use `EXPECTED_VERSION_ID` do deploy recém-publicado. Para modo,

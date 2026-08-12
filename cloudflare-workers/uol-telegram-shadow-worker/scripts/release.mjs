@@ -226,7 +226,7 @@ function help() {
 Publica produção apenas depois de:
   1. validar main, worktree limpo e HEAD idêntico a origin/main;
   2. confirmar UOL Worker CI verde para o SHA exato via gh;
-     se gh estiver indisponível, executar check:ci local sob Node 22;
+     se gh não estiver instalado, executar check:ci local sob Node 22;
   3. executar wrangler deploy --strict com tag git-<sha> e mensagem do commit;
   4. obter a Version ID automaticamente e executar postdeploy em modo live.
 
