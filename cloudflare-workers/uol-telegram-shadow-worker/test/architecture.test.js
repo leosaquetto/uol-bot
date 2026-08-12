@@ -122,6 +122,8 @@ test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", (
   assert.match(probes, /TICKET_SOLD_OUT_PROBE_DAILY_LIMIT/);
   assert.match(probes, /TICKET_SOLD_OUT_PROBES_PER_SCAN/);
   assert.match(probes, /probeTicketOfferUrl\(row\.link(?:,\s*fetchImpl)?\)/);
+  assert.match(probes, /o\.missing_since <> ''/);
+  assert.match(probes, /s\.last_result = 'listing_absence_pending'/);
   assert.match(probes, /processSoldOutSync\(now, \{ onlyIds: \[row\.id\] \}/);
   assert.match(probes, /processDiscordAvailabilitySync\(now, 1, \{[\s\S]*onlyIds: \[row\.id\]/);
   assert.match(probes, /global_home_redirect/);
@@ -129,6 +131,8 @@ test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", (
   assert.match(probes, /INDEXED BY ticket_probe_due_v21/);
   assert.doesNotMatch(probes, /link NOT LIKE '%\/campanhasdeingresso\/%'/);
   assert.match(workerSource, /normalizeTicketProbeAt\(nextAt\)/);
+  assert.match(workerSource, /scheduleTicketAbsenceProbe\(/);
+  assert.match(workerSource, /clearTicketAbsenceProbe\(/);
 });
 
 test("lote tardio filtra imagem e backoff antes do limite", () => {

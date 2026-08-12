@@ -146,19 +146,23 @@ describe("UOL Worker no runtime Cloudflare", () => {
         state.storage.sql.exec(
           `INSERT INTO offers(
              id, link, preview_title, title, category,
-             first_seen_at, last_seen_at, status, main_sent_at
-           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, 'delivered', ?)`,
+             first_seen_at, last_seen_at, status, missing_since,
+             absence_count, main_sent_at
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, 'delivered', ?, 2, ?)`,
           "due-ticket",
           "https://clube.uol.com.br/campanhasdeingresso/due-ticket",
           "Ingresso devido",
           "Ingresso devido",
           "2026-08-10T10:00:00.000Z",
           "2026-08-10T10:00:00.000Z",
+          "2026-08-10T09:44:00.000Z",
           "2026-08-10T10:00:01.000Z",
         );
         state.storage.sql.exec(
-          `INSERT INTO ticket_probe_state(offer_id, next_at)
-           VALUES ('due-ticket', '2026-08-10T10:01:00.000Z')`,
+          `INSERT INTO ticket_probe_state(offer_id, next_at, last_result)
+           VALUES (
+             'due-ticket', '2026-08-10T10:01:00.000Z', 'listing_absence_pending'
+           )`,
         );
 
         const discordCandidates = [
@@ -1174,18 +1178,20 @@ describe("UOL Worker no runtime Cloudflare", () => {
       state.storage.sql.exec(
         `INSERT INTO offers(
            id, link, preview_title, first_seen_at, last_seen_at, status,
-           main_sent_at, main_message_id
-         ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, 101)`,
+           decision_at, missing_since, absence_count, main_sent_at, main_message_id
+         ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, ?, 2, ?, 101)`,
         "ticket-replay-1",
         "https://clube.uol.com.br/campanhasdeingresso/pReplay-ticket",
         "2 INGRESSOS: Replay",
         "2026-08-04T15:00:00.000Z",
         "2026-08-04T15:00:00.000Z",
         "2026-08-04T15:00:00.000Z",
+        "2026-08-04T14:44:00.000Z",
+        "2026-08-04T15:00:00.000Z",
       );
       state.storage.sql.exec(
-        `INSERT INTO ticket_probe_state(offer_id, next_at)
-         VALUES (?, ?)`,
+        `INSERT INTO ticket_probe_state(offer_id, next_at, last_result)
+         VALUES (?, ?, 'listing_absence_pending')`,
         "ticket-replay-1",
         "2026-08-04T15:00:00.000Z",
       );
@@ -1219,6 +1225,138 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "SELECT status, sold_out_at FROM offers WHERE id = ?",
         "ticket-replay-1",
       ).one().status).toBe("sold_out");
+    });
+  });
+
+  it("não transforma ausência da listagem em esgotamento de ingresso", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ticket-listing-absence");
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.setMetadata("delivery_mode_override", "live");
+      const now = new Date("2026-08-12T16:00:00.000Z");
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, first_seen_at, last_seen_at, status,
+           decision_at, missing_since, absence_count, main_sent_at, main_message_id
+         ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, ?, 1, ?, 201)`,
+        "ticket-listing-missing",
+        "https://clube.uol.com.br/campanhasdeingresso/pListing-missing",
+        "2 INGRESSOS: Ausente da listagem",
+        "2026-08-12T15:40:00.000Z",
+        "2026-08-12T15:40:00.000Z",
+        "2026-08-12T15:40:00.000Z",
+        "2026-08-12T15:44:00.000Z",
+        "2026-08-12T15:40:01.000Z",
+      );
+      state.storage.sql.exec(
+        `INSERT INTO ticket_probe_state(
+           offer_id, next_at, last_at, last_result, gone_count, attempts
+         ) VALUES (?, '', ?, 'available:offer_page', 0, 1)`,
+        "ticket-listing-missing",
+        "2026-08-12T15:41:00.000Z",
+      );
+
+      expect(instance.evaluateSoldOut(
+        new Set(),
+        now,
+        "ticket",
+      )).toBe(0);
+      expect(state.storage.sql.exec(
+        `SELECT status, sold_out_at, missing_since, absence_count
+         FROM offers WHERE id = ?`,
+        "ticket-listing-missing",
+      ).one()).toMatchObject({
+        status: "delivered",
+        sold_out_at: "",
+        missing_since: "2026-08-12T15:44:00.000Z",
+        absence_count: 2,
+      });
+      expect(state.storage.sql.exec(
+        `SELECT next_at, last_result, gone_count, attempts
+         FROM ticket_probe_state WHERE offer_id = ?`,
+        "ticket-listing-missing",
+      ).one()).toMatchObject({
+        next_at: "2026-08-12T16:01:00.000Z",
+        last_result: "listing_absence_pending",
+        gone_count: 0,
+        attempts: 0,
+      });
+
+      const available = await instance.processTicketAvailabilityProbes(
+        new Date("2026-08-12T16:01:00.000Z"),
+        {
+          fetchImpl: async () => new Response("Detalhes da oferta", { status: 200 }),
+        },
+      );
+      expect(available).toMatchObject({ probed: 1, confirmed: 0, fallback: 1 });
+      expect(state.storage.sql.exec(
+        "SELECT status, sold_out_at FROM offers WHERE id = ?",
+        "ticket-listing-missing",
+      ).one()).toMatchObject({ status: "delivered", sold_out_at: "" });
+
+      expect(instance.evaluateSoldOut(
+        new Set(),
+        new Date("2026-08-12T16:02:00.000Z"),
+        "ticket",
+      )).toBe(0);
+      expect(state.storage.sql.exec(
+        `SELECT next_at, last_result, gone_count, attempts
+         FROM ticket_probe_state WHERE offer_id = ?`,
+        "ticket-listing-missing",
+      ).one()).toMatchObject({
+        next_at: "2026-08-12T16:03:00.000Z",
+        last_result: "listing_absence_pending",
+        gone_count: 0,
+        attempts: 0,
+      });
+
+      expect(instance.evaluateSoldOut(
+        new Set(["ticket-listing-missing"]),
+        new Date("2026-08-12T16:02:15.000Z"),
+        "ticket",
+      )).toBe(0);
+      expect(state.storage.sql.exec(
+        `SELECT next_at, last_result, gone_count, attempts
+         FROM ticket_probe_state WHERE offer_id = ?`,
+        "ticket-listing-missing",
+      ).one()).toMatchObject({
+        next_at: "",
+        last_result: "available:listing",
+        gone_count: 0,
+        attempts: 0,
+      });
+    });
+  });
+
+  it("mantém duas ausências e quinze minutos para benefício comum", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("main-listing-absence");
+    await runInDurableObject(stub, async (instance, state) => {
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, first_seen_at, last_seen_at, status,
+           decision_at, missing_since, absence_count, main_sent_at
+         ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, ?, 1, ?)`,
+        "main-listing-missing",
+        "https://clube.uol.com.br/parceiro/pMain-listing-missing",
+        "Benefício comum ausente",
+        "2026-08-12T15:40:00.000Z",
+        "2026-08-12T15:40:00.000Z",
+        "2026-08-12T15:40:00.000Z",
+        "2026-08-12T15:44:00.000Z",
+        "2026-08-12T15:40:01.000Z",
+      );
+
+      expect(instance.evaluateSoldOut(
+        new Set(),
+        new Date("2026-08-12T16:00:00.000Z"),
+        "main",
+      )).toBe(1);
+      expect(state.storage.sql.exec(
+        "SELECT status, sold_out_at FROM offers WHERE id = ?",
+        "main-listing-missing",
+      ).one()).toMatchObject({
+        status: "sold_out",
+        sold_out_at: "2026-08-12T16:00:00.000Z",
+      });
     });
   });
 

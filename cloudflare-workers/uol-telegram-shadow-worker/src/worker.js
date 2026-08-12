@@ -557,17 +557,35 @@ export class UolTelegramShadow extends DurableObject {
     return this.trackSqlCursor(cursor, this.storageContext.getStore());
   }
 
-  scheduleTicketProbe(offerId, nextAt, { preserveExisting = true } = {}) {
-    const nextExpression = preserveExisting
-      ? `CASE WHEN ticket_probe_state.next_at = ''
-           THEN excluded.next_at ELSE ticket_probe_state.next_at END`
-      : "excluded.next_at";
+  scheduleTicketAbsenceProbe(offerId, nextAt) {
     this.sqlExec(
-      `INSERT INTO ticket_probe_state(offer_id, next_at)
-       SELECT id, ? FROM offers
+      `INSERT INTO ticket_probe_state(
+         offer_id, next_at, last_result, gone_count, attempts
+       )
+       SELECT id, ?, 'listing_absence_pending', 0, 0 FROM offers
        WHERE id = ? AND link LIKE '%/campanhasdeingresso/%'
-       ON CONFLICT(offer_id) DO UPDATE SET next_at = ${nextExpression}`,
+       ON CONFLICT(offer_id) DO UPDATE SET
+         next_at = CASE WHEN ticket_probe_state.next_at = ''
+           THEN excluded.next_at ELSE ticket_probe_state.next_at END,
+         last_result = CASE WHEN ticket_probe_state.next_at = ''
+           THEN excluded.last_result ELSE ticket_probe_state.last_result END,
+         gone_count = CASE WHEN ticket_probe_state.next_at = ''
+           THEN 0 ELSE ticket_probe_state.gone_count END,
+         attempts = CASE WHEN ticket_probe_state.next_at = ''
+           THEN 0 ELSE ticket_probe_state.attempts END`,
       normalizeTicketProbeAt(nextAt),
+      offerId,
+    );
+  }
+
+  clearTicketAbsenceProbe(offerId) {
+    this.sqlExec(
+      `UPDATE ticket_probe_state SET next_at = '',
+         last_result = 'available:listing', gone_count = 0, attempts = 0
+       WHERE offer_id = ? AND (
+         next_at <> '' OR last_result = 'listing_absence_pending' OR
+         gone_count <> 0 OR attempts <> 0
+       )`,
       offerId,
     );
   }
@@ -3443,10 +3461,6 @@ export class UolTelegramShadow extends DurableObject {
           occurredAt: sentAt,
           externalId: String(result.messageId),
         });
-        this.scheduleTicketProbe(
-          entry.row.id,
-          ticketProbeNextAt(this.env, sentAt),
-        );
         mainSent += 1;
       } catch (error) {
         recordFailure(entry.row.id, "main", attempts, error);
@@ -4670,11 +4684,6 @@ export class UolTelegramShadow extends DurableObject {
           resumeStatus,
           row.id,
         );
-        this.scheduleTicketProbe(
-          row.id,
-          ticketProbeNextAt(this.env, now),
-          { preserveExisting: false },
-        );
       }
     }
     return { mainEdited, canal2Edited, mainReposted, canal2Reposted, failed };
@@ -4710,10 +4719,12 @@ export class UolTelegramShadow extends DurableObject {
        JOIN offers AS o ON o.id = s.offer_id
        WHERE o.status IN ('delivered', 'partial_delivery')
          AND o.sold_out_at = ''
+         AND o.missing_since <> ''
          AND o.link LIKE '%/campanhasdeingresso/%'
          AND s.next_at > ''
          AND s.next_at <= ?
          AND s.attempts < ?
+         AND (s.last_result = 'listing_absence_pending' OR s.gone_count > 0)
        ORDER BY s.next_at ASC, o.first_seen_at ASC
        LIMIT ?`,
       now.toISOString(),
@@ -4848,7 +4859,7 @@ export class UolTelegramShadow extends DurableObject {
         ? "AND link NOT LIKE '%/campanhasdeingresso/%'"
         : "";
     const candidates = this.sqlExec(
-      `SELECT id, status, missing_since, absence_count
+      `SELECT id, link, status, missing_since, absence_count
        FROM offers
        WHERE status IN ('shadow_candidate', 'delivered', 'partial_delivery')
          AND sold_out_at = ''
@@ -4859,7 +4870,9 @@ export class UolTelegramShadow extends DurableObject {
     let soldOutDetected = 0;
 
     for (const candidate of candidates) {
+      const ticketCandidate = isTicketCampaign(candidate);
       if (activeIds.has(candidate.id)) {
+        if (ticketCandidate) this.clearTicketAbsenceProbe(candidate.id);
         if (candidate.missing_since || Number(candidate.absence_count || 0) > 0) {
           this.sqlExec(
             "UPDATE offers SET missing_since = '', absence_count = 0 WHERE id = ?",
@@ -4892,6 +4905,15 @@ export class UolTelegramShadow extends DurableObject {
         );
       }
       if (nextCount >= minMisses && absentMinutes >= minAbsenceMinutes) {
+        if (ticketCandidate) {
+          // A listagem só abre a confirmação. Para ingressos, apenas duas
+          // respostas diretas "gone" podem editar os canais como esgotados.
+          this.scheduleTicketAbsenceProbe(
+            candidate.id,
+            ticketProbeNextAt(this.env, now),
+          );
+          continue;
+        }
         const soldOutStatus = candidate.status === "shadow_candidate"
           ? "shadow_sold_out"
           : "sold_out";
