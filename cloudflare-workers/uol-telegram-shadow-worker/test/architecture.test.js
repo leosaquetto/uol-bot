@@ -121,12 +121,12 @@ test("probe crítico fica restrito a ingressos e sincroniza os mesmos canais", (
   assert.match(probes, /link LIKE '%\/campanhasdeingresso\/%'/);
   assert.match(probes, /TICKET_SOLD_OUT_PROBE_DAILY_LIMIT/);
   assert.match(probes, /TICKET_SOLD_OUT_PROBES_PER_SCAN/);
-  assert.match(probes, /probeTicketOfferUrl\(row\.link(?:,\s*fetchImpl)?\)/);
+  assert.match(probes, /probeTicketOfferWithControl\(/);
+  assert.match(probes, /control\?\.link/);
   assert.match(probes, /o\.missing_since <> ''/);
   assert.match(probes, /s\.last_result = 'listing_absence_pending'/);
   assert.match(probes, /processSoldOutSync\(now, \{ onlyIds: \[row\.id\] \}/);
   assert.match(probes, /processDiscordAvailabilitySync\(now, 1, \{[\s\S]*onlyIds: \[row\.id\]/);
-  assert.match(probes, /global_home_redirect/);
   assert.match(probes, /s\.attempts < \?/);
   assert.match(probes, /INDEXED BY ticket_probe_due_v21/);
   assert.doesNotMatch(probes, /link NOT LIKE '%\/campanhasdeingresso\/%'/);
@@ -183,14 +183,14 @@ test("telemetria frequente usa snapshots e observações limitadas", () => {
   const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
   const observations = methodSource("  recordSourceCards(", "  updateSourceHealth(");
 
-  assert.match(scan, /setRuntimeSnapshot\("api"/);
+  assert.match(scan, /setCriticalSourceSnapshot\(/);
   assert.doesNotMatch(scan, /setMetadata\("api_/);
   assert.match(scan, /shouldPersistRunSummary\(/);
   assert.match(maintenance, /setRuntimeSnapshot\("html"/);
   assert.match(maintenance, /setRuntimeSnapshot\("maintenance"/);
   assert.match(observations, /shouldTouchObservation\(/);
   assert.ok(
-    scan.indexOf("this.scanInFlight = false") < scan.indexOf('setRuntimeSnapshot("api"'),
+    scan.indexOf("this.scanInFlight = false") < scan.indexOf("setCriticalSourceSnapshot("),
     "falha de telemetria não pode manter o polling travado",
   );
   assert.ok(

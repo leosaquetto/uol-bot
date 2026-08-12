@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 21);
+  assert.equal(blocks.length, 22);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 21);
+  assert.equal(Number(version), 22);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -71,6 +71,11 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "ticket_probe_due_v21",
     "discord_avail_sold_due_v21",
     "discord_avail_restock_due_v21",
+    "offers_soldout_main_due_v22",
+    "offers_soldout_canal2_due_v22",
+    "offers_restock_main_due_v22",
+    "offers_restock_canal2_due_v22",
+    "offers_restock_finalize_v22",
   ]) {
     assert.equal(indexes.has(name), true, `índice ausente: ${name}`);
   }
@@ -78,6 +83,11 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   assert.match(indexes.get("ticket_probe_due_v21"), /WHERE next_at > ''/);
   assert.match(indexes.get("discord_avail_sold_due_v21"), /WHERE sold_out_synced_at = ''/);
   assert.match(indexes.get("discord_avail_restock_due_v21"), /WHERE restock_synced_at = ''/);
+  assert.match(indexes.get("offers_soldout_main_due_v22"), /status = 'sold_out'/);
+  assert.match(indexes.get("offers_soldout_canal2_due_v22"), /would_send_canal2 = 1/);
+  assert.match(indexes.get("offers_restock_main_due_v22"), /main_restock_synced_at = ''/);
+  assert.match(indexes.get("offers_restock_canal2_due_v22"), /canal2_restock_synced_at = ''/);
+  assert.match(indexes.get("offers_restock_finalize_v22"), /main_restock_synced_at <> ''/);
   database.close();
 });
 
@@ -125,7 +135,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    21,
+    22,
   );
   database.close();
 });

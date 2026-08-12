@@ -95,9 +95,10 @@ import {
 } from "./image-deadline.js";
 import {
   nextTicketProbeState,
-  probeTicketOfferUrl,
+  probeTicketOfferWithControl,
   ticketProbeBudget,
 } from "./ticket-soldout-probe.js";
+import { readinessChecksOk } from "./health-contract.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
@@ -124,19 +125,6 @@ const STORAGE_STAGE_NAMES = [
 
 function emptyStorageStages() {
   return Object.fromEntries(STORAGE_STAGE_NAMES.map((stage) => [stage, 0]));
-}
-
-function readinessChecksOk(mode, checks = {}) {
-  return Boolean(
-    mode === "live" && checks.alarmFresh && checks.scanFresh &&
-    checks.maintenanceFresh && checks.deliveryConfigured &&
-    Number(checks.criticalIncidents || 0) === 0 &&
-    Number(checks.deadLetters || 0) === 0 &&
-    Number(checks.unknown || 0) === 0 &&
-    Number(checks.blockedConfiguration || 0) === 0 &&
-    Number(checks.maintenanceDeadLetters || 0) === 0 &&
-    checks.storageReadBudgetHealthy && checks.storageWriteBudgetHealthy,
-  );
 }
 
 const PUBLIC_READINESS_CACHE_TTL_MS = 15_000;
@@ -375,6 +363,18 @@ async function settled(promise) {
   } catch (reason) {
     return { status: "rejected", reason };
   }
+}
+
+function compactTicketListingCards(cards) {
+  return (cards || []).filter(isTicketCampaign).map((card) => ({
+    id: String(card.id || ""),
+    link: String(card.link || ""),
+    previewTitle: String(card.previewTitle || ""),
+    category: String(card.category || "campanhasdeingresso"),
+    cardImageUrl: String(card.cardImageUrl || ""),
+    partnerImageUrl: String(card.partnerImageUrl || ""),
+    partnerName: String(card.partnerName || ""),
+  }));
 }
 
 async function runBounded(items, limit, handler) {
@@ -1459,6 +1459,46 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (21);
       `);
     }
+    if (currentVersion < 22) {
+      this.sqlExec(`
+        CREATE INDEX IF NOT EXISTS offers_soldout_main_due_v22
+          ON offers(
+            sold_out_at, main_sold_out_attempts,
+            main_sold_out_next_attempt_at, id
+          ) WHERE status = 'sold_out'
+            AND main_message_id > 0
+            AND main_sold_out_synced_at = '';
+        CREATE INDEX IF NOT EXISTS offers_soldout_canal2_due_v22
+          ON offers(
+            sold_out_at, canal2_sold_out_attempts,
+            canal2_sold_out_next_attempt_at, id
+          ) WHERE status = 'sold_out'
+            AND main_message_id > 0
+            AND would_send_canal2 = 1
+            AND canal2_message_id > 0
+            AND canal2_sold_out_synced_at = '';
+        CREATE INDEX IF NOT EXISTS offers_restock_main_due_v22
+          ON offers(
+            restocked_at, main_restock_attempts,
+            main_restock_next_attempt_at, id
+          ) WHERE status = 'restocked_pending_sync'
+            AND main_message_id > 0
+            AND main_restock_synced_at = '';
+        CREATE INDEX IF NOT EXISTS offers_restock_canal2_due_v22
+          ON offers(
+            restocked_at, canal2_restock_attempts,
+            canal2_restock_next_attempt_at, id
+          ) WHERE status = 'restocked_pending_sync'
+            AND would_send_canal2 = 1
+            AND canal2_message_id > 0
+            AND canal2_restock_synced_at = '';
+        CREATE INDEX IF NOT EXISTS offers_restock_finalize_v22
+          ON offers(restocked_at, id)
+          WHERE status = 'restocked_pending_sync'
+            AND main_restock_synced_at <> '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (22);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -1508,6 +1548,15 @@ export class UolTelegramShadow extends DurableObject {
 
   runtimeSnapshot(name) {
     if (this.runtimeSnapshotCache.has(name)) return this.runtimeSnapshotCache.get(name);
+    if (name === "api" || name === "ticket_listing") {
+      const critical = parseRuntimeSnapshot(this.metadataValue("runtime:critical_sources"));
+      const nested = name === "api" ? critical.api : critical.ticketListing;
+      if (nested && typeof nested === "object") {
+        this.runtimeSnapshotCache.set("critical_sources", critical);
+        this.runtimeSnapshotCache.set(name, nested);
+        return nested;
+      }
+    }
     const snapshot = parseRuntimeSnapshot(this.metadataValue(`runtime:${name}`));
     this.runtimeSnapshotCache.set(name, snapshot);
     return snapshot;
@@ -1515,8 +1564,55 @@ export class UolTelegramShadow extends DurableObject {
 
   setRuntimeSnapshot(name, snapshot) {
     const normalized = snapshot && typeof snapshot === "object" ? snapshot : {};
-    this.runtimeSnapshotCache.set(name, normalized);
     this.setMetadata(`runtime:${name}`, JSON.stringify(normalized));
+    this.runtimeSnapshotCache.set(name, normalized);
+  }
+
+  setCriticalSourceSnapshot({ api = {}, ticketListing = {} } = {}) {
+    const normalized = {
+      api: api && typeof api === "object" ? api : {},
+      ticketListing: ticketListing && typeof ticketListing === "object"
+        ? ticketListing
+        : {},
+    };
+    this.setMetadata("runtime:critical_sources", JSON.stringify(normalized));
+    this.runtimeSnapshotCache.set("critical_sources", normalized);
+    this.runtimeSnapshotCache.set("api", normalized.api);
+    this.runtimeSnapshotCache.set("ticket_listing", normalized.ticketListing);
+  }
+
+  freshTicketListingCards(now = new Date(), maxAgeSeconds = 45) {
+    const snapshot = this.runtimeSnapshot("ticket_listing");
+    const successAt = Date.parse(String(snapshot.lastSuccessAt || ""));
+    const nowMs = now instanceof Date ? now.getTime() : Date.parse(String(now || ""));
+    const ageMs = nowMs - successAt;
+    if (
+      snapshot.lastError || !Array.isArray(snapshot.cards) || !snapshot.cards.length ||
+      !Number.isFinite(successAt) || !Number.isFinite(nowMs) || ageMs < 0 ||
+      ageMs > Math.max(1, Number(maxAgeSeconds) || 45) * 1_000
+    ) return [];
+    return compactTicketListingCards(snapshot.cards);
+  }
+
+  async ticketListingForMaintenance(now = new Date(), fetchImpl = fetch) {
+    const cards = this.freshTicketListingCards(now, 45);
+    if (cards.length) {
+      const snapshot = this.runtimeSnapshot("ticket_listing");
+      const completedAt = String(snapshot.lastSuccessAt || now.toISOString());
+      return {
+        status: "fulfilled",
+        value: {
+          cards,
+          startedAt: completedAt,
+          completedAt,
+          elapsedMs: Number(snapshot.lastElapsedMs || 0),
+          reused: true,
+        },
+      };
+    }
+    return settled(timedCards(
+      () => fetchListing(fetchImpl, TICKET_LIST_URL, "_uol_ticket_listing_ts"),
+    ));
   }
 
   runtimeValue(name, key, legacyKey = "") {
@@ -2708,7 +2804,12 @@ export class UolTelegramShadow extends DurableObject {
     return rows.length;
   }
 
-  resolveListingCards(cards, nowIso, newStatus, { restockIdentityKeys = null } = {}) {
+  resolveListingCards(
+    cards,
+    nowIso,
+    newStatus,
+    { availabilityIdentityKeys = null, restockIdentityKeys = null } = {},
+  ) {
     const lastSeenTouchMinutes = envNumber(
       this.env,
       "OFFER_LAST_SEEN_TOUCH_MINUTES",
@@ -2730,18 +2831,25 @@ export class UolTelegramShadow extends DurableObject {
 
       if (existing) {
         if (resolvedIds.has(existing.id)) continue;
+        const authoritativePresence = availabilityIdentityKeys &&
+          offerIdentityKeys(card.link).some((key) => availabilityIdentityKeys.has(key));
+        const availabilitySet = authoritativePresence
+          ? ", missing_since = '', absence_count = 0"
+          : "";
+        const availabilityWhere = authoritativePresence
+          ? " OR missing_since <> '' OR absence_count <> 0"
+          : "";
         this.sqlExec(
           `UPDATE offers SET
              link = ?, preview_title = ?, category = ?, card_image_url = ?,
              partner_image_url = ?, partner_name = ?,
-             last_seen_at = CASE WHEN last_seen_at < ? THEN ? ELSE last_seen_at END,
-             missing_since = '', absence_count = 0
+             last_seen_at = CASE WHEN last_seen_at < ? THEN ? ELSE last_seen_at END
+             ${availabilitySet}
            WHERE id = ?
              AND (
                link <> ? OR preview_title <> ? OR category <> ? OR
                card_image_url <> ? OR partner_image_url <> ? OR partner_name <> ? OR
-               last_seen_at < ? OR
-               missing_since <> '' OR absence_count <> 0
+               last_seen_at < ?${availabilityWhere}
              )`,
           card.link,
           card.previewTitle,
@@ -2761,6 +2869,9 @@ export class UolTelegramShadow extends DurableObject {
           lastSeenTouchCutoff,
         );
         this.recordIdentityAliases(existing.id, card.id, card.link, nowIso);
+        if (authoritativePresence && isTicketCampaign(card)) {
+          this.clearTicketAbsenceProbe(existing.id);
+        }
         if (
           restockIdentityKeys &&
           offerIdentityKeys(card.link).some((key) => restockIdentityKeys.has(key)) &&
@@ -3851,36 +3962,92 @@ export class UolTelegramShadow extends DurableObject {
     const onlyIdsClause = selectedIds.length
       ? `AND id IN (${selectedIds.map(() => "?").join(", ")})`
       : "";
-    const rows = this.sqlExec(
-      `SELECT *
-       FROM offers
-       WHERE status = 'sold_out'
-         AND main_message_id > 0
-         AND (
-           (
-             main_sold_out_synced_at = '' AND main_sold_out_attempts < ? AND
-             (main_sold_out_next_attempt_at = '' OR main_sold_out_next_attempt_at <= ?)
-           )
-           OR (
-             would_send_canal2 = 1
-             AND canal2_message_id > 0
-             AND canal2_sold_out_synced_at = ''
-             AND canal2_sold_out_attempts < ?
-             AND (
-               canal2_sold_out_next_attempt_at = '' OR
-               canal2_sold_out_next_attempt_at <= ?
+    let selectedRowIds;
+    if (selectedIds.length) {
+      selectedRowIds = this.sqlExec(
+        `SELECT id
+         FROM offers
+         WHERE status = 'sold_out'
+           AND main_message_id > 0
+           AND (
+             (
+               main_sold_out_synced_at = '' AND main_sold_out_attempts < ? AND
+               (main_sold_out_next_attempt_at = '' OR main_sold_out_next_attempt_at <= ?)
+             )
+             OR (
+               would_send_canal2 = 1
+               AND canal2_message_id > 0
+               AND canal2_sold_out_synced_at = ''
+               AND canal2_sold_out_attempts < ?
+               AND (
+                 canal2_sold_out_next_attempt_at = '' OR
+                 canal2_sold_out_next_attempt_at <= ?
+               )
              )
            )
-         )
-         ${onlyIdsClause}
-       ORDER BY sold_out_at ASC
-       LIMIT 4`,
-      maxAttempts,
-      now.toISOString(),
-      maxAttempts,
-      now.toISOString(),
-      ...selectedIds,
-    ).toArray();
+           ${onlyIdsClause}
+         ORDER BY sold_out_at ASC
+         LIMIT 4`,
+        maxAttempts,
+        now.toISOString(),
+        maxAttempts,
+        now.toISOString(),
+        ...selectedIds,
+      ).toArray().map((row) => row.id);
+    } else {
+      const mainRows = this.sqlExec(
+        `SELECT id, sold_out_at
+         FROM offers INDEXED BY offers_soldout_main_due_v22
+         WHERE status = 'sold_out'
+           AND main_message_id > 0
+           AND main_sold_out_synced_at = ''
+           AND main_sold_out_attempts < ?
+           AND (
+             main_sold_out_next_attempt_at = '' OR
+             main_sold_out_next_attempt_at <= ?
+           )
+         ORDER BY sold_out_at ASC
+         LIMIT 4`,
+        maxAttempts,
+        now.toISOString(),
+      ).toArray();
+      const canal2Rows = this.sqlExec(
+        `SELECT id, sold_out_at
+         FROM offers INDEXED BY offers_soldout_canal2_due_v22
+         WHERE status = 'sold_out'
+           AND main_message_id > 0
+           AND would_send_canal2 = 1
+           AND canal2_message_id > 0
+           AND canal2_sold_out_synced_at = ''
+           AND canal2_sold_out_attempts < ?
+           AND (
+             canal2_sold_out_next_attempt_at = '' OR
+             canal2_sold_out_next_attempt_at <= ?
+           )
+         ORDER BY sold_out_at ASC
+         LIMIT 4`,
+        maxAttempts,
+        now.toISOString(),
+      ).toArray();
+      selectedRowIds = [];
+      const selectedRowIdSet = new Set();
+      for (const row of [...mainRows, ...canal2Rows].sort((left, right) =>
+        String(left.sold_out_at || "").localeCompare(String(right.sold_out_at || ""))
+      )) {
+        if (selectedRowIdSet.has(row.id)) continue;
+        selectedRowIdSet.add(row.id);
+        selectedRowIds.push(row.id);
+        if (selectedRowIds.length === 4) break;
+      }
+    }
+    const selectedRowsById = selectedRowIds.length
+      ? new Map(this.sqlExec(
+        `SELECT * FROM offers
+         WHERE id IN (${selectedRowIds.map(() => "?").join(", ")})`,
+        ...selectedRowIds,
+      ).toArray().map((row) => [row.id, row]))
+      : new Map();
+    const rows = selectedRowIds.map((id) => selectedRowsById.get(id)).filter(Boolean);
     let mainEdited = 0;
     let canal2Edited = 0;
     let messageMissing = 0;
@@ -4348,38 +4515,72 @@ export class UolTelegramShadow extends DurableObject {
       discordConfiguration(this.env),
     );
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-    const rows = this.sqlExec(
-      `SELECT * FROM offers
+    const mainRows = this.sqlExec(
+      `SELECT id, restocked_at FROM offers
+       INDEXED BY offers_restock_main_due_v22
        WHERE status = 'restocked_pending_sync'
+         AND main_message_id > 0
+         AND main_restock_synced_at = ''
+         AND main_restock_attempts < ?
          AND (
-           (
-             main_restock_synced_at = '' AND main_message_id > 0 AND
-             main_restock_attempts < ? AND
-             (main_restock_next_attempt_at = '' OR main_restock_next_attempt_at <= ?)
-           )
-           OR (
-             would_send_canal2 = 1 AND canal2_message_id > 0 AND
-             canal2_restock_synced_at = '' AND canal2_restock_attempts < ? AND
-             (
-               canal2_restock_next_attempt_at = '' OR
-               canal2_restock_next_attempt_at <= ?
-             )
-           )
-           OR (
-             main_restock_synced_at <> '' AND (
-               ? = 0 OR would_send_canal2 = 0 OR canal2_message_id <= 0 OR
-               canal2_restock_synced_at <> ''
-             )
-           )
+           main_restock_next_attempt_at = '' OR
+           main_restock_next_attempt_at <= ?
          )
        ORDER BY restocked_at ASC
        LIMIT 4`,
       maxAttempts,
       now.toISOString(),
+    ).toArray();
+    const canal2Rows = this.sqlExec(
+      `SELECT id, restocked_at FROM offers
+       INDEXED BY offers_restock_canal2_due_v22
+       WHERE status = 'restocked_pending_sync'
+         AND would_send_canal2 = 1
+         AND canal2_message_id > 0
+         AND canal2_restock_synced_at = ''
+         AND canal2_restock_attempts < ?
+         AND (
+           canal2_restock_next_attempt_at = '' OR
+           canal2_restock_next_attempt_at <= ?
+         )
+       ORDER BY restocked_at ASC
+       LIMIT 4`,
       maxAttempts,
       now.toISOString(),
-      configuration.canal2.enabled ? 1 : 0,
     ).toArray();
+    const finalizeCanal2Clause = configuration.canal2.enabled
+      ? `AND (
+           would_send_canal2 = 0 OR canal2_message_id <= 0 OR
+           canal2_restock_synced_at <> ''
+         )`
+      : "";
+    const finalizeRows = this.sqlExec(
+      `SELECT id, restocked_at FROM offers
+       INDEXED BY offers_restock_finalize_v22
+       WHERE status = 'restocked_pending_sync'
+         AND main_restock_synced_at <> ''
+         ${finalizeCanal2Clause}
+       ORDER BY restocked_at ASC
+       LIMIT 4`,
+    ).toArray();
+    const selectedRowIds = [];
+    const selectedRowIdSet = new Set();
+    for (const row of [...mainRows, ...canal2Rows, ...finalizeRows].sort((left, right) =>
+      String(left.restocked_at || "").localeCompare(String(right.restocked_at || ""))
+    )) {
+      if (selectedRowIdSet.has(row.id)) continue;
+      selectedRowIdSet.add(row.id);
+      selectedRowIds.push(row.id);
+      if (selectedRowIds.length === 4) break;
+    }
+    const selectedRowsById = selectedRowIds.length
+      ? new Map(this.sqlExec(
+        `SELECT * FROM offers
+         WHERE id IN (${selectedRowIds.map(() => "?").join(", ")})`,
+        ...selectedRowIds,
+      ).toArray().map((row) => [row.id, row]))
+      : new Map();
+    const rows = selectedRowIds.map((id) => selectedRowsById.get(id)).filter(Boolean);
     let mainEdited = 0;
     let canal2Edited = 0;
     let mainReposted = 0;
@@ -4689,9 +4890,13 @@ export class UolTelegramShadow extends DurableObject {
     return { mainEdited, canal2Edited, mainReposted, canal2Reposted, failed };
   }
 
-  async processTicketAvailabilityProbes(now = new Date(), { fetchImpl = fetch } = {}) {
+  async processTicketAvailabilityProbes(
+    now = new Date(),
+    { fetchImpl = fetch, controlCards = null } = {},
+  ) {
     const empty = {
       probed: 0,
+      controlProbed: 0,
       confirmed: 0,
       fallback: 0,
       soldOutMainEdited: 0,
@@ -4701,9 +4906,16 @@ export class UolTelegramShadow extends DurableObject {
       failed: 0,
     };
     if (this.currentDeliveryMode() !== "live") return empty;
+    const dailyLimit = envNumber(
+      this.env,
+      "TICKET_SOLD_OUT_PROBE_DAILY_LIMIT",
+      256,
+      0,
+      10_000,
+    );
     const budget = ticketProbeBudget({
       used: this.storageUsage.ticketProbeCount,
-      dailyLimit: envNumber(this.env, "TICKET_SOLD_OUT_PROBE_DAILY_LIMIT", 256, 0, 10_000),
+      dailyLimit,
       perScanLimit: envNumber(this.env, "TICKET_SOLD_OUT_PROBES_PER_SCAN", 1, 0, 4),
     });
     if (!budget.allowed) return empty;
@@ -4732,33 +4944,30 @@ export class UolTelegramShadow extends DurableObject {
       budget.batchSize,
     ).toArray();
     const result = { ...empty };
+    const activeControlCards = Array.isArray(controlCards)
+      ? compactTicketListingCards(controlCards)
+      : this.freshTicketListingCards(now, 45);
 
     for (const row of rows) {
-      const probe = await probeTicketOfferUrl(row.link, fetchImpl);
-      this.storageUsage.ticketProbeCount = Number(this.storageUsage.ticketProbeCount || 0) + 1;
+      if (Number(this.storageUsage.ticketProbeCount || 0) >= dailyLimit) break;
+      const rowIdentityKeys = new Set(offerIdentityKeys(row.link));
+      const control = activeControlCards.find((card) =>
+        offerIdentityKeys(card.link).every((key) => !rowIdentityKeys.has(key))
+      );
+      const usedBefore = Number(this.storageUsage.ticketProbeCount || 0);
+      const controlUrl = usedBefore + 2 <= dailyLimit ? control?.link || "" : "";
+      const probe = await probeTicketOfferWithControl(
+        row.link,
+        controlUrl,
+        fetchImpl,
+      );
+      this.storageUsage.ticketProbeCount = usedBefore + Number(probe.requests || 1);
       result.probed += 1;
-
-      let observed = probe;
-      if (probe.result === "gone" && probe.reason === "home_redirect") {
-        const cutoff = new Date(now.getTime() - 30_000).toISOString();
-        const otherHomeRedirect = Number(this.sqlExec(
-          `SELECT COUNT(*) AS count
-           FROM ticket_probe_state AS s
-           JOIN offers AS o ON o.id = s.offer_id
-           WHERE s.offer_id <> ? AND o.link LIKE '%/campanhasdeingresso/%'
-             AND s.last_result = 'gone:home_redirect'
-             AND s.last_at >= ?`,
-          row.id,
-          cutoff,
-        ).one()?.count || 0);
-        if (otherHomeRedirect > 0) {
-          observed = { result: "indeterminate", reason: "global_home_redirect" };
-        }
-      }
+      if (probe.controlProbed) result.controlProbed += 1;
 
       const attempts = Number(row.ticket_probe_attempts || 0) + 1;
       const state = nextTicketProbeState({
-        result: observed.result,
+        result: probe.result,
         goneCount: row.ticket_probe_gone_count,
         attempts: row.ticket_probe_attempts,
         now,
@@ -4766,7 +4975,7 @@ export class UolTelegramShadow extends DurableObject {
         maxAttempts,
         confirmDelaySeconds: 5,
       });
-      const lastResult = `${observed.result}:${observed.reason}`.slice(0, 120);
+      const lastResult = `${probe.result}:${probe.reason}`.slice(0, 120);
 
       if (state.action !== "confirm") {
         this.sqlExec(
@@ -5100,6 +5309,7 @@ export class UolTelegramShadow extends DurableObject {
     let apiContract = null;
     let apiCards = [];
     let ticketListingCards = [];
+    let ticketListingIdentityKeys = new Set();
     let discoveryCards = [];
     let apiHealthCards = Array.isArray(previousApi.healthCards)
       ? previousApi.healthCards
@@ -5180,6 +5390,9 @@ export class UolTelegramShadow extends DurableObject {
             observedAt: ticketListingResult.value.completedAt,
           }))
         : [];
+      ticketListingIdentityKeys = new Set(
+        ticketListingCards.flatMap((card) => offerIdentityKeys(card.link)),
+      );
       discoveryCards = mergeOfferCards(apiCards, ticketListingCards);
       run.apiOffersSeen = apiCards.length;
       run.ticketListingOffersSeen = ticketListingCards.length;
@@ -5218,7 +5431,9 @@ export class UolTelegramShadow extends DurableObject {
 
       const initializedAt = this.metadataValue("initialized_at");
       if (!initializedAt && discoveryCards.length) {
-        this.resolveListingCards(discoveryCards, startedAt.toISOString(), "baseline");
+        this.resolveListingCards(discoveryCards, startedAt.toISOString(), "baseline", {
+          availabilityIdentityKeys: ticketListingIdentityKeys,
+        });
         await this.backfillTitleValidityKeys();
         this.setMetadata("initialized_at", startedAt.toISOString());
         run.outcome = "baseline_created";
@@ -5229,6 +5444,10 @@ export class UolTelegramShadow extends DurableObject {
           discoveryCards,
           fastNow.toISOString(),
           "pending_enrichment",
+          {
+            availabilityIdentityKeys: ticketListingIdentityKeys,
+            restockIdentityKeys: ticketListingIdentityKeys,
+          },
         );
         const cardsById = new Map(resolution.cards.map((card) => [card.id, card]));
         for (let offset = 0; offset < resolution.insertedIds.length; offset += 100) {
@@ -5332,7 +5551,9 @@ export class UolTelegramShadow extends DurableObject {
       }
       const ticketProbes = await this.withStorageStage(
         "tickets",
-        () => this.processTicketAvailabilityProbes(new Date()),
+        () => this.processTicketAvailabilityProbes(new Date(), {
+          controlCards: ticketListingCards,
+        }),
       );
       run.ticketProbes = ticketProbes.probed;
       run.ticketProbeConfirmed = ticketProbes.confirmed;
@@ -5369,7 +5590,7 @@ export class UolTelegramShadow extends DurableObject {
       runFailureStreak = run.error || run.outcome === "failed" ? runFailureStreak + 1 : 0;
       this.scanInFlight = false;
       try {
-        this.setRuntimeSnapshot("api", {
+        const apiSnapshot = {
           lastCompletedAt: run.finishedAt,
           lastOutcome: run.outcome,
           lastRunError: run.error,
@@ -5395,8 +5616,8 @@ export class UolTelegramShadow extends DurableObject {
           discoverySnapshotFingerprint,
           healthCards: apiHealthCards,
           runFailureStreak,
-        });
-        this.setRuntimeSnapshot("ticket_listing", {
+        };
+        const ticketListingSnapshot = {
           lastStartedAt: startedAt.toISOString(),
           lastCompletedAt: run.finishedAt,
           lastOffersSeen: run.ticketListingOffersSeen,
@@ -5410,6 +5631,13 @@ export class UolTelegramShadow extends DurableObject {
           lastError: run.ticketListingError,
           lastSuccessAt: ticketListingLastSuccessAt,
           failureStreak: ticketListingFailureStreak,
+          cards: ticketListingCards.length
+            ? compactTicketListingCards(ticketListingCards)
+            : [],
+        };
+        this.setCriticalSourceSnapshot({
+          api: apiSnapshot,
+          ticketListing: ticketListingSnapshot,
         });
         if (apiContract) {
           this.setRuntimeSnapshot("api_contract", {
@@ -5551,6 +5779,7 @@ export class UolTelegramShadow extends DurableObject {
       deliveryFailed: 0,
       mainImagesUpgraded: 0,
       imageCachesPrimed: 0,
+      ticketListingReused: false,
       error: "",
     };
     let activeOfferIds = new Set();
@@ -5590,13 +5819,9 @@ export class UolTelegramShadow extends DurableObject {
         result.htmlReconciled = true;
         const [listingResult, ticketListingResult] = await Promise.all([
           settled(timedCards(() => this.withStorageStage("html", () => fetchListing()))),
-          settled(timedCards(
-            () => this.withStorageStage(
-              "html",
-              () => fetchListing(fetch, TICKET_LIST_URL, "_uol_ticket_listing_ts"),
-            ),
-          )),
+          this.ticketListingForMaintenance(now),
         ]);
+        result.ticketListingReused = Boolean(ticketListingResult.value?.reused);
         const htmlCompletedAt = new Date().toISOString();
         const mainListingCards = listingResult.status === "fulfilled"
           ? listingResult.value.cards
@@ -5695,17 +5920,31 @@ export class UolTelegramShadow extends DurableObject {
             );
           }
           if (!initializedAt) {
-            this.resolveListingCards(listingCards, now.toISOString(), "baseline");
+            const listingIdentityKeys = new Set(
+              [
+                ...mainListingCards.filter((card) => !isTicketCampaign(card)),
+                ...ticketListingCards,
+              ].flatMap((card) => offerIdentityKeys(card.link)),
+            );
+            this.resolveListingCards(listingCards, now.toISOString(), "baseline", {
+              availabilityIdentityKeys: listingIdentityKeys,
+            });
             this.setMetadata("initialized_at", now.toISOString());
           } else {
             const listingIdentityKeys = new Set(
-              listingCards.flatMap((card) => offerIdentityKeys(card.link)),
+              [
+                ...mainListingCards.filter((card) => !isTicketCampaign(card)),
+                ...ticketListingCards,
+              ].flatMap((card) => offerIdentityKeys(card.link)),
             );
             const resolution = this.resolveListingCards(
               listingCards,
               now.toISOString(),
               "pending_enrichment",
-              { restockIdentityKeys: listingIdentityKeys },
+              {
+                availabilityIdentityKeys: listingIdentityKeys,
+                restockIdentityKeys: listingIdentityKeys,
+              },
             );
             result.newOffers = resolution.inserted;
             const cardsById = new Map(resolution.cards.map((card) => [card.id, card]));

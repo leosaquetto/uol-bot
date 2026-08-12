@@ -1,20 +1,12 @@
 import { classifyHeadlessHealth } from "./headless-health.js";
+import { DEFAULT_MAX_SCAN_AGE_MS } from "./health-contract.js";
 
-const WORKER_NAME = "uol-telegram-shadow-pilot";
-const DEFAULT_MAX_SCAN_AGE_MS = 180_000;
 const MAX_RECOMMENDED_POLL_INTERVAL_SECONDS = 15;
 const MAX_PRIMARY_ESTIMATED_ROWS_READ = 512;
 const MAX_PRIMARY_SINGLE_CYCLE_ROWS_READ = 4_096;
 const PRIMARY_ESTIMATE_SAFETY_FACTOR = 1.5;
 const MAX_PROJECTED_ROWS_WRITTEN = 80_000;
 const MIN_WRITE_HEADROOM = 20_000;
-
-function readinessFailure(checks = {}) {
-  const failed = Object.entries(checks)
-    .filter(([, value]) => value === false || (typeof value === "number" && value > 0))
-    .map(([name]) => name);
-  return failed.length > 0 ? failed.join(",") : "unknown";
-}
 
 function finiteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
@@ -50,44 +42,57 @@ export function validateProductionHealth({
     readiness: { status: readinessStatus, body: readiness },
     now: nowMs,
     maxScanAgeMs: normalizedMaxScanAgeMs,
+    expectedMode: normalizedExpectedMode || "live",
   });
-  if (livenessStatus !== 200 || liveness?.ok !== true) throw new Error("liveness_not_ok");
-  if (liveness.worker !== WORKER_NAME) {
+  const reasons = new Set(headless.reasons);
+  if (reasons.has("liveness_http") || reasons.has("liveness_body")) {
+    throw new Error("liveness_not_ok");
+  }
+  if (reasons.has("liveness_worker")) {
     throw new Error("liveness_worker_identity_mismatch");
   }
-  const intentionalShadow = normalizedExpectedMode === "shadow" && readinessStatus === 503 &&
-    readiness?.ok === false && readiness?.mode === "shadow" &&
-    readinessFailure(readiness?.checks) === "unknown";
-  if (!intentionalShadow && (readinessStatus !== 200 || readiness?.ok !== true)) {
-    throw new Error(
-      `not_ready:${headless.state}:${headless.reasons.join(",") || readinessFailure(readiness?.checks)}`,
-    );
-  }
-  if (readiness.worker !== WORKER_NAME) {
+  if (reasons.has("readiness_worker")) {
     throw new Error("readiness_worker_identity_mismatch");
   }
-  if (readiness.mode !== "live" && readiness.mode !== "shadow") {
-    throw new Error("delivery_mode_invalid");
-  }
-  if (normalizedExpectedMode && readiness.mode !== normalizedExpectedMode) {
-    throw new Error(`delivery_mode_${readiness.mode}_expected_${normalizedExpectedMode}`);
-  }
-  if (!liveness.versionId || !readiness.versionId) {
+  if (reasons.has("liveness_version_missing") || reasons.has("readiness_version_missing")) {
     throw new Error("version_metadata_missing");
   }
-  if (String(liveness.versionId || "") !== String(readiness.versionId || "")) {
+  if (reasons.has("version_mismatch")) {
     throw new Error("version_metadata_mismatch");
   }
-  if (String(readiness.versionId) !== normalizedExpectedVersionId) {
+  if (reasons.has("mode_invalid")) {
+    throw new Error("delivery_mode_invalid");
+  }
+  if (reasons.has("mode_not_live") || reasons.has("mode_not_expected")) {
+    throw new Error(
+      `delivery_mode_${headless.snapshot.mode || "missing"}_expected_${normalizedExpectedMode || "live"}`,
+    );
+  }
+  if (headless.hardFailure) {
+    if (reasons.has("scan_stale")) throw new Error("scan_missing_or_stale");
+    if (
+      reasons.has("alarm_stale") || reasons.has("maintenance_stale") ||
+      reasons.has("delivery_unconfigured")
+    ) {
+      throw new Error(`headless_outage:${headless.reasons.join(",") || "unknown"}`);
+    }
+    throw new Error(`not_ready:${headless.state}:${headless.reasons.join(",") || "unknown"}`);
+  }
+  if (headless.snapshot.versionId !== normalizedExpectedVersionId) {
     throw new Error("deployed_version_id_mismatch");
   }
 
-  const lastScanAt = Date.parse(readiness.lastScanAt || "");
-  if (!Number.isFinite(lastScanAt) || nowMs - lastScanAt > normalizedMaxScanAgeMs) {
-    throw new Error("scan_missing_or_stale");
-  }
-  if (!intentionalShadow && headless.hardFailure) {
-    throw new Error(`headless_outage:${headless.reasons.join(",") || "unknown"}`);
+  const allowedDegradedReasons = new Set([
+    "intentional_shadow",
+    "maintenance_deferred",
+    "quota_reserve",
+    "write_quota_risk",
+  ]);
+  const rejectedDegradedReasons = headless.reasons.filter(
+    (reason) => !allowedDegradedReasons.has(reason),
+  );
+  if (rejectedDegradedReasons.length > 0) {
+    throw new Error(`not_ready:degraded:${rejectedDegradedReasons.join(",")}`);
   }
 
   const criticalPending = readiness.queueSlo?.criticalPending;
@@ -182,11 +187,11 @@ export function validateProductionHealth({
 
   return {
     ok: true,
-    worker: readiness.worker,
-    versionId: readiness.versionId,
-    mode: readiness.mode,
-    lastScanAt: readiness.lastScanAt,
-    checks: readiness.checks,
+    worker: headless.snapshot.worker,
+    versionId: headless.snapshot.versionId,
+    mode: headless.snapshot.mode,
+    lastScanAt: headless.snapshot.lastScanAt,
+    checks: headless.snapshot.checks,
     headlessState: headless.state,
     headlessReasons: headless.reasons,
     projectedRowsWritten: writeBudget.projected,

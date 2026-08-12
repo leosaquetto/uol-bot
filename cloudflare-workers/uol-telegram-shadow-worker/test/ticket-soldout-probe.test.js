@@ -5,6 +5,7 @@ import {
   classifyTicketProbeResponse,
   nextTicketProbeState,
   probeTicketOfferUrl,
+  probeTicketOfferWithControl,
   ticketProbeBudget,
 } from "../src/ticket-soldout-probe.js";
 
@@ -158,4 +159,72 @@ test("não marca como esgotado um timeout ou página vazia", async () => {
     async () => new Response("", { status: 200 }),
   );
   assert.deepEqual(empty, { result: "indeterminate", reason: "empty_body" });
+});
+
+test("redirect para home exige um GET de controle ainda listado", async () => {
+  const calls = [];
+  const result = await probeTicketOfferWithControl(
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-candidato",
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-controle-ativo",
+    async (url) => {
+      calls.push(String(url));
+      return {
+        status: 200,
+        url: "https://clube.uol.com.br/",
+        text: async () => "<html>home</html>",
+      };
+    },
+  );
+  assert.deepEqual(result, {
+    result: "indeterminate",
+    reason: "global_home_redirect",
+    requests: 2,
+    controlProbed: true,
+  });
+  assert.deepEqual(calls, [
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-candidato",
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-controle-ativo",
+  ]);
+});
+
+test("confirma redirect isolado somente quando o controle permanece disponível", async () => {
+  const result = await probeTicketOfferWithControl(
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-candidato",
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-controle-ativo",
+    async (url) => String(url).includes("controle-ativo")
+      ? {
+          status: 200,
+          url: String(url),
+          text: async () => "Detalhes da oferta controle",
+        }
+      : {
+          status: 200,
+          url: "https://clube.uol.com.br/",
+          text: async () => "<html>home</html>",
+        },
+  );
+  assert.deepEqual(result, {
+    result: "gone",
+    reason: "home_redirect",
+    requests: 2,
+    controlProbed: true,
+  });
+});
+
+test("falha fechado quando não há controle diferente e ativo", async () => {
+  const result = await probeTicketOfferWithControl(
+    "https://clube.uol.com.br/campanhasdeingresso/pbx-candidato",
+    "",
+    async () => ({
+      status: 200,
+      url: "https://clube.uol.com.br/",
+      text: async () => "<html>home</html>",
+    }),
+  );
+  assert.deepEqual(result, {
+    result: "indeterminate",
+    reason: "home_redirect_control_unavailable",
+    requests: 1,
+    controlProbed: false,
+  });
 });

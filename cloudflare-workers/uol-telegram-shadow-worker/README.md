@@ -211,7 +211,10 @@ do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 ## Orçamento no tier gratuito
 
 O polling mantém 5.760 consultas da API e 5.760 consultas da listagem pública de
-ingressos por dia. A manutenção roda 1.440 vezes e consulta o HTML geral.
+ingressos por dia. API e ingressos são persistidos juntos em um snapshot
+atômico por ciclo. A manutenção roda 1.440 vezes, consulta o HTML geral e
+reutiliza a listagem de ingressos capturada há no máximo 45 segundos; só repete
+essa consulta quando o snapshot está ausente, antigo ou degradado.
 Browser Rendering não faz parte do Worker.
 
 Telemetria de API, HTML, fontes, webhook e manutenção usa snapshots JSON, em vez
@@ -275,9 +278,17 @@ sobrecarregar o Mac:
   13.5 ou superior; em versões anteriores, essa etapa roda no CI Linux;
 - `npm run check:ci`: suíte completa, tipos, startup e bundle dry-run. Esse é o
   comando executado no Ubuntu pelo workflow `UOL Worker CI`;
-- `npm run deploy`: o `predeploy` falha fechado fora da branch `main`, com
-  worktree sujo ou quando `HEAD` difere do `origin/main` atualizado; depois roda
-  `check:fast` e tipos antes de publicar. Não existe bypass por variável;
+- `npm run release`: caminho recomendado e fail-closed. Exige branch `main`,
+  worktree limpo e `HEAD` idêntico ao `origin/main`; confirma via `gh` o workflow
+  completo verde do SHA exato, incluindo o job `Testes e bundle`. Só quando o
+  GitHub CLI não está instalado executa `check:ci` localmente sob Node 22;
+  run ausente, pendente ou vermelho bloqueia. O deploy usa `wrangler --strict`,
+  recebe tag `git-<sha>` e mensagem do commit, captura a Version ID sem etapa
+  manual e executa o pós-deploy em modo `live`;
+- `npm run release -- --dry-run`: valida source guard, tag e mensagem sem
+  consultar CI, Cloudflare ou produção e sem publicar;
+- `npm run deploy`: comando legado compatível; mantém o `predeploy` curto, mas
+  não substitui o gate completo nem o pós-deploy automático de `release`;
 - `npm run postdeploy:check`: cruza `/livez` e `/readyz`, verificando versão,
   scan recente, alarme, modo, configuração, fila e incidentes críticos. Para
   exigir versão, use `EXPECTED_VERSION_ID` do deploy recém-publicado. Para modo,
@@ -307,6 +318,5 @@ npm test
 npm run test:worker
 npm run check:ci
 npx wrangler secret list
-npm run deploy
-EXPECTED_VERSION_ID=<VERSION_ID_NOVO> EXPECTED_DELIVERY_MODE=live npm run postdeploy:check
+npm run release
 ```

@@ -210,6 +210,7 @@ test("cadência rápida mantém orçamento estável abaixo do plano gratuito", (
 
   assert.equal(budget.limit, 100_000);
   assert.equal(budget.withinFreeTier, true);
+  assert.equal(budget.components.polling, 5_760);
   assert.ok(budget.projected < 75_000);
   assert.ok(budget.headroom > 25_000);
 });

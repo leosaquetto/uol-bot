@@ -105,6 +105,26 @@ test("rejeita identidade, readiness, versão e scan inválidos", () => {
       mutate: (snapshot) => { snapshot.readiness.worker = "other-worker"; },
     },
     {
+      error: "liveness_worker_identity_mismatch",
+      mutate: (snapshot) => { snapshot.liveness.worker = ""; },
+    },
+    {
+      error: "readiness_worker_identity_mismatch",
+      mutate: (snapshot) => { snapshot.readiness.worker = ""; },
+    },
+    {
+      error: "version_metadata_missing",
+      mutate: (snapshot) => { snapshot.liveness.versionId = ""; },
+    },
+    {
+      error: "version_metadata_missing",
+      mutate: (snapshot) => { snapshot.readiness.versionId = ""; },
+    },
+    {
+      error: "version_metadata_mismatch",
+      mutate: (snapshot) => { snapshot.liveness.versionId = "version-old"; },
+    },
+    {
       error: "not_ready:",
       mutate: (snapshot) => {
         snapshot.readinessStatus = 503;
@@ -213,9 +233,23 @@ test("rejeita outage e orçamento de leitura incoerente mesmo com HTTP 200", () 
   assert.throws(() => validate(outage), /headless_outage:alarm_stale/);
 
   const unsafe = healthySnapshot();
+  unsafe.readinessStatus = 503;
+  unsafe.readiness.ok = false;
+  unsafe.readiness.checks.storageReadBudgetHealthy = false;
   unsafe.readiness.storageReadBudget.primaryAllowed = false;
   unsafe.readiness.storageReadBudget.withinFreeTier = false;
   assert.throws(() => validate(unsafe), /storage_read_budget_not_healthy/);
+});
+
+test("falha fechado para readiness 503 sem motivo degradado reconhecido", () => {
+  const snapshot = healthySnapshot();
+  snapshot.readinessStatus = 503;
+  snapshot.readiness.ok = false;
+
+  assert.throws(
+    () => validate(snapshot),
+    /not_ready:outage:readiness_protocol/,
+  );
 });
 
 test("exige projeção e uso real de escritas com margem do free tier", () => {

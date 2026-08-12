@@ -151,3 +151,47 @@ export async function probeTicketOfferUrl(
     return { result: "indeterminate", reason: "network_or_timeout" };
   }
 }
+
+export async function probeTicketOfferWithControl(
+  url,
+  controlUrl,
+  fetchImpl = fetch,
+  timeoutMs = 5_000,
+) {
+  const candidate = await probeTicketOfferUrl(url, fetchImpl, timeoutMs);
+  if (candidate.result !== "gone" || candidate.reason !== "home_redirect") {
+    return { ...candidate, requests: 1, controlProbed: false };
+  }
+
+  const normalizedControlUrl = String(controlUrl || "").trim();
+  if (
+    !isTicketPath(normalizedControlUrl) ||
+    normalizedControlUrl === String(url || "").trim()
+  ) {
+    return {
+      result: "indeterminate",
+      reason: "home_redirect_control_unavailable",
+      requests: 1,
+      controlProbed: false,
+    };
+  }
+
+  const control = await probeTicketOfferUrl(normalizedControlUrl, fetchImpl, timeoutMs);
+  if (control.result === "available") {
+    return { ...candidate, requests: 2, controlProbed: true };
+  }
+  if (control.result === "gone" && control.reason === "home_redirect") {
+    return {
+      result: "indeterminate",
+      reason: "global_home_redirect",
+      requests: 2,
+      controlProbed: true,
+    };
+  }
+  return {
+    result: "indeterminate",
+    reason: `home_redirect_control_${control.reason}`.slice(0, 120),
+    requests: 2,
+    controlProbed: true,
+  };
+}

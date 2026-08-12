@@ -1360,6 +1360,304 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("persiste snapshots antes do cache e grava API+listagem atomicamente", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("critical-snapshot-ordering");
+    await runInDurableObject(stub, async (instance, state) => {
+      const originalSetMetadata = instance.setMetadata.bind(instance);
+      const persistedKeys = [];
+      instance.setMetadata = (key, value) => {
+        if (key === "runtime:ordering") {
+          expect(instance.runtimeSnapshotCache.has("ordering")).toBe(false);
+        }
+        persistedKeys.push(key);
+        return originalSetMetadata(key, value);
+      };
+
+      instance.runtimeSnapshotCache.delete("ordering");
+      instance.setRuntimeSnapshot("ordering", { ok: true });
+      expect(JSON.parse(state.storage.sql.exec(
+        "SELECT value FROM metadata WHERE key = 'runtime:ordering'",
+      ).one().value)).toEqual({ ok: true });
+
+      persistedKeys.length = 0;
+      instance.setCriticalSourceSnapshot({
+        api: { lastOffersSeen: 2 },
+        ticketListing: {
+          lastOffersSeen: 1,
+          lastSuccessAt: "2026-08-12T16:00:00.000Z",
+          cards: [{
+            id: "ticket-atomic",
+            link: "https://clube.uol.com.br/campanhasdeingresso/ticket-atomic",
+            previewTitle: "Ingresso atômico",
+          }],
+        },
+      });
+      expect(persistedKeys).toEqual(["runtime:critical_sources"]);
+
+      instance.runtimeSnapshotCache.clear();
+      expect(instance.runtimeSnapshot("api")).toMatchObject({ lastOffersSeen: 2 });
+      expect(instance.runtimeSnapshot("ticket_listing")).toMatchObject({
+        lastOffersSeen: 1,
+        cards: [expect.objectContaining({ id: "ticket-atomic" })],
+      });
+    });
+  });
+
+  it("reutiliza listagem crítica fresca e refaz GET quando expirada ou degradada", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("critical-ticket-reuse");
+    await runInDurableObject(stub, async (instance) => {
+      const observedAt = "2026-08-12T16:00:00.000Z";
+      const card = {
+        id: "ticket-reuse",
+        link: "https://clube.uol.com.br/campanhasdeingresso/ticket-reuse",
+        previewTitle: "Ingresso reutilizável",
+        category: "campanhasdeingresso",
+      };
+      instance.setCriticalSourceSnapshot({
+        api: {},
+        ticketListing: {
+          lastSuccessAt: observedAt,
+          lastError: "",
+          lastElapsedMs: 17,
+          cards: [card],
+        },
+      });
+      let fetches = 0;
+      const fetchImpl = async () => {
+        fetches += 1;
+        return new Response(`<!doctype html><div class="beneficio"
+          data-categoria="campanhasdeingresso"><a href="${card.link}">
+          <p class="titulo">${card.previewTitle}</p></a></div>`, {
+          headers: { "content-type": "text/html; charset=UTF-8" },
+        });
+      };
+
+      const fresh = await instance.ticketListingForMaintenance(
+        new Date("2026-08-12T16:00:45.000Z"),
+        fetchImpl,
+      );
+      expect(fresh).toMatchObject({
+        status: "fulfilled",
+        value: { reused: true, elapsedMs: 17 },
+      });
+      expect(fetches).toBe(0);
+
+      const expired = await instance.ticketListingForMaintenance(
+        new Date("2026-08-12T16:00:45.001Z"),
+        fetchImpl,
+      );
+      expect(expired).toMatchObject({ status: "fulfilled" });
+      expect(expired.value.reused).toBeUndefined();
+      expect(fetches).toBe(1);
+
+      instance.setCriticalSourceSnapshot({
+        api: {},
+        ticketListing: {
+          lastSuccessAt: observedAt,
+          lastError: "uol_http_503",
+          cards: [card],
+        },
+      });
+      await instance.ticketListingForMaintenance(
+        new Date("2026-08-12T16:00:01.000Z"),
+        fetchImpl,
+      );
+      expect(fetches).toBe(2);
+    });
+  });
+
+  it("API descobre sem limpar ausência ou restaurar oferta fora da listagem", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-not-availability-authority");
+    await runInDurableObject(stub, async (instance, state) => {
+      const firstSeenAt = "2026-08-12T15:00:00.000Z";
+      const apiCards = [
+        {
+          id: "ticket-api-missing",
+          link: "https://clube.uol.com.br/campanhasdeingresso/ticket-api-missing",
+          previewTitle: "Ingresso ausente só na listagem",
+          category: "campanhasdeingresso",
+          cardImageUrl: "",
+          partnerImageUrl: "",
+          partnerName: "",
+        },
+        {
+          id: "ticket-api-sold-out",
+          link: "https://clube.uol.com.br/campanhasdeingresso/ticket-api-sold-out",
+          previewTitle: "Ingresso esgotado ainda na API",
+          category: "campanhasdeingresso",
+          cardImageUrl: "",
+          partnerImageUrl: "",
+          partnerName: "",
+        },
+      ];
+      const missingId = "api-not-authority-missing";
+      const soldOutId = "api-not-authority-sold-out";
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, first_seen_at, last_seen_at, status,
+           decision_at, missing_since, absence_count
+         ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, ?, 1)`,
+        missingId,
+        apiCards[0].link,
+        apiCards[0].previewTitle,
+        firstSeenAt,
+        firstSeenAt,
+        firstSeenAt,
+        "2026-08-12T15:44:00.000Z",
+      );
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, first_seen_at, last_seen_at, status,
+           decision_at, sold_out_at, missing_since, absence_count
+         ) VALUES (?, ?, ?, ?, ?, 'sold_out', ?, ?, ?, 2)`,
+        soldOutId,
+        apiCards[1].link,
+        apiCards[1].previewTitle,
+        firstSeenAt,
+        firstSeenAt,
+        firstSeenAt,
+        "2026-08-12T15:45:00.000Z",
+        "2026-08-12T15:44:00.000Z",
+      );
+      instance.recordIdentityAliases(missingId, apiCards[0].id, apiCards[0].link, firstSeenAt);
+      instance.recordIdentityAliases(soldOutId, apiCards[1].id, apiCards[1].link, firstSeenAt);
+      state.storage.sql.exec(
+        `UPDATE offers SET status = 'delivered', decision_at = ?,
+           missing_since = ?, absence_count = 1 WHERE id = ?`,
+        firstSeenAt,
+        "2026-08-12T15:44:00.000Z",
+        missingId,
+      );
+      state.storage.sql.exec(
+        `UPDATE offers SET status = 'sold_out', decision_at = ?, sold_out_at = ?,
+           missing_since = ?, absence_count = 2 WHERE id = ?`,
+        firstSeenAt,
+        "2026-08-12T15:45:00.000Z",
+        "2026-08-12T15:44:00.000Z",
+        soldOutId,
+      );
+      instance.setMetadata("initialized_at", firstSeenAt);
+      instance.fetchAllApi = async () => apiCards;
+      instance.fetchTicketListing = async () => [];
+      instance.processPending = async () => ({
+        enriched: 0,
+        wouldSendMain: 0,
+        wouldSendCanal2: 0,
+      });
+      instance.processDeliveryQueue = async () => ({
+        mainSent: 0,
+        canal2Sent: 0,
+        discordSent: 0,
+        failed: 0,
+        selectedRows: [],
+      });
+      instance.scheduleDiscordDelivery = () => {};
+      instance.processTicketAvailabilityProbes = async () => ({
+        probed: 0,
+        controlProbed: 0,
+        confirmed: 0,
+        fallback: 0,
+        soldOutMainEdited: 0,
+        soldOutCanal2Edited: 0,
+        soldOutDiscordEdited: 0,
+        failed: 0,
+      });
+      instance.recordSourceCards = () => {};
+
+      await expect(instance.scan("api-race")).resolves.toMatchObject({
+        ok: true,
+        apiOffersSeen: 2,
+        ticketListingOffersSeen: 0,
+      });
+      expect(state.storage.sql.exec(
+        `SELECT status, missing_since, absence_count FROM offers
+         WHERE id = ?`,
+        missingId,
+      ).one()).toMatchObject({
+        status: "delivered",
+        missing_since: "2026-08-12T15:44:00.000Z",
+        absence_count: 1,
+      });
+      expect(state.storage.sql.exec(
+        `SELECT status, sold_out_at, missing_since, absence_count FROM offers
+         WHERE id = ?`,
+        soldOutId,
+      ).one()).toMatchObject({
+        status: "sold_out",
+        sold_out_at: "2026-08-12T15:45:00.000Z",
+        missing_since: "2026-08-12T15:44:00.000Z",
+        absence_count: 2,
+      });
+    });
+  });
+
+  it("trata redirect simultâneo do candidato e controle como indeterminado", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ticket-global-home-redirect");
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.setMetadata("delivery_mode_override", "live");
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, first_seen_at, last_seen_at, status,
+           decision_at, missing_since, absence_count, main_sent_at, main_message_id
+         ) VALUES (?, ?, ?, ?, ?, 'delivered', ?, ?, 2, ?, 301)`,
+        "ticket-home-candidate",
+        "https://clube.uol.com.br/campanhasdeingresso/ticket-home-candidate",
+        "Ingresso candidato",
+        "2026-08-12T15:00:00.000Z",
+        "2026-08-12T15:00:00.000Z",
+        "2026-08-12T15:00:00.000Z",
+        "2026-08-12T15:44:00.000Z",
+        "2026-08-12T15:00:01.000Z",
+      );
+      state.storage.sql.exec(
+        `INSERT INTO ticket_probe_state(offer_id, next_at, last_result)
+         VALUES (?, ?, 'listing_absence_pending')`,
+        "ticket-home-candidate",
+        "2026-08-12T16:00:00.000Z",
+      );
+      const calls = [];
+      const result = await instance.processTicketAvailabilityProbes(
+        new Date("2026-08-12T16:00:00.000Z"),
+        {
+          controlCards: [{
+            id: "ticket-home-control",
+            link: "https://clube.uol.com.br/campanhasdeingresso/ticket-home-control",
+            previewTitle: "Ingresso controle ativo",
+            category: "campanhasdeingresso",
+          }],
+          fetchImpl: async (url) => {
+            calls.push(String(url));
+            return {
+              status: 200,
+              url: "https://clube.uol.com.br/",
+              text: async () => "<html>home</html>",
+            };
+          },
+        },
+      );
+      expect(result).toMatchObject({
+        probed: 1,
+        controlProbed: 1,
+        confirmed: 0,
+        fallback: 1,
+      });
+      expect(calls).toEqual([
+        "https://clube.uol.com.br/campanhasdeingresso/ticket-home-candidate",
+        "https://clube.uol.com.br/campanhasdeingresso/ticket-home-control",
+      ]);
+      expect(state.storage.sql.exec(
+        "SELECT status, sold_out_at FROM offers WHERE id = 'ticket-home-candidate'",
+      ).one()).toMatchObject({ status: "delivered", sold_out_at: "" });
+      expect(state.storage.sql.exec(
+        `SELECT next_at, last_result FROM ticket_probe_state
+         WHERE offer_id = 'ticket-home-candidate'`,
+      ).one()).toMatchObject({
+        next_at: "",
+        last_result: "indeterminate:global_home_redirect",
+      });
+    });
+  });
+
   it("separa liveness, readiness e diagnóstico detalhado", async () => {
     const livenessResponse = await exports.default.fetch("https://worker.test/livez");
     expect(livenessResponse.status).toBe(200);

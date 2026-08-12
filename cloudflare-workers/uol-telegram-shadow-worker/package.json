@@ -19,6 +19,7 @@
     "check:startup": "wrangler check startup",
     "predeploy": "npm run check:deploy-source && npm run check:fast && npm run check:types",
     "postdeploy:check": "node scripts/verify-production.mjs",
+    "release": "node scripts/release.mjs",
     "deploy": "wrangler deploy",
     "tail": "wrangler tail"
   },

@@ -54,7 +54,8 @@ export function estimateDailyRowWrites({
   const activeCards = Math.max(0, Number(apiCards) || 0) +
     Math.max(0, Number(listingCards) || 0);
   const components = {
-    polling: cycles(pollIntervalSeconds) * 2,
+    // API and ticket-listing health now share one atomic runtime snapshot.
+    polling: cycles(pollIntervalSeconds),
     sampledRuns: cycles(15 * 60) * 2,
     maintenance: cycles(maintenanceIntervalSeconds) * 3,
     html: cycles(htmlIntervalSeconds) * 2,
