@@ -338,6 +338,7 @@ const showOffer = {
   previewTitle: "2 INGRESSOS: Show em São Paulo",
   category: "Ingressos Exclusivos",
   description: "Assinante UOL, resgate um par de ingressos para o show.",
+  firstSeenAt: "2026-07-30T12:28:00Z",
 };
 
 test("normaliza a identidade a partir do slug público", () => {
@@ -521,14 +522,13 @@ test("preserva endereço com abreviação pontuada", () => {
 });
 
 test("gera edição de esgotamento sem perder o link", () => {
-  const caption = buildTelegramCaption(showOffer, {
-    publishedAt: "2026-07-30T12:28:00Z",
-    soldOutAt: "2026-07-30T12:34:00Z",
-  });
+  const caption = buildTelegramCaption(showOffer, { soldOutAt: "2026-07-30T12:34:00Z" });
   assert.match(caption, /\[ESGOTADO\]/);
   assert.match(caption, /<s>/);
-  assert.match(caption, /Oferta esgotada às 09:34/);
-  assert.match(caption, /Ficou no ar por 6 min/);
+  assert.match(
+    caption,
+    /📸 Oferta capturada às 09:28\.\n\n❌ Oferta esgotada às 09:34\.\n\n⏱️ Ficou no ar por 6 min\./,
+  );
   assert.match(caption, /https:\/\/clube\.uol\.com\.br/);
 });
 

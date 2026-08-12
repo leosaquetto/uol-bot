@@ -96,6 +96,9 @@ export function buildDiscordPayload(
   const soldOut = Boolean(String(soldOutAt || "").trim());
   const ticket = isTicketCampaign(offer);
   const decoratedTitle = soldOut ? `[ESGOTADO] ${title}` : title;
+  const capturedTime = soldOut
+    ? formatOfferTime(offer?.firstSeenAt || offer?.first_seen_at || "")
+    : "";
   const soldOutTime = soldOut ? formatOfferTime(soldOutAt) : "";
   const soldOutDuration = soldOut
     ? formatOfferDuration(
@@ -105,6 +108,7 @@ export function buildDiscordPayload(
     : "";
   const statusDescription = soldOut
     ? [
+      `📸 Oferta capturada às ${capturedTime}.`,
       `❌ Oferta esgotada às ${soldOutTime}.`,
       soldOutDuration ? `⏱️ Ficou no ar por ${soldOutDuration}.` : "",
     ].filter(Boolean).join("\n")

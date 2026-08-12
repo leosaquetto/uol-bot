@@ -19,6 +19,7 @@ const offer = {
   partnerName: "Mooca Plaza Shopping",
   category: "Ingressos",
   description: "Dois ingressos gratuitos para assinantes do Clube UOL.",
+  first_seen_at: "2026-08-03T19:54:00.000Z",
 };
 
 test("mantém o formato aprovado do Discord com thumbnail", () => {
@@ -151,7 +152,6 @@ test("edita a mensagem do webhook para informar esgotamento", async () => {
     messageId: "discord-1",
     offer,
     soldOutAt: "2026-08-03T20:00:00.000Z",
-    publishedAt: "2026-08-03T19:54:00.000Z",
   }, async (url, init) => {
     assert.equal(url, "https://discord.com/api/webhooks/123/token/messages/discord-1");
     assert.equal(init.method, "PATCH");
@@ -163,8 +163,10 @@ test("edita a mensagem do webhook para informar esgotamento", async () => {
   assert.equal(result.messageId, "discord-1");
   assert.equal(payload.username, undefined);
   assert.match(payload.content, /\[ESGOTADO\]/);
-  assert.match(payload.embeds[0].description, /Oferta esgotada às 17:00/);
-  assert.match(payload.embeds[0].description, /Ficou no ar por 6 min/);
+  assert.match(
+    payload.embeds[0].description,
+    /📸 Oferta capturada às 16:54\.\n❌ Oferta esgotada às 17:00\.\n⏱️ Ficou no ar por 6 min\./,
+  );
   assert.deepEqual(payload.allowed_mentions, { parse: [] });
 });
 
