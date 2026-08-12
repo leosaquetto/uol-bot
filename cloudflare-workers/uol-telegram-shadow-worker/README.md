@@ -293,7 +293,9 @@ sobrecarregar o Mac:
 - `npm run postdeploy:check`: cruza `/livez` e `/readyz`, verificando versão,
   scan recente, alarme, modo, configuração, fila e incidentes críticos. Para
   exigir versão, use `EXPECTED_VERSION_ID` do deploy recém-publicado. Para modo,
-  use também `EXPECTED_DELIVERY_MODE=live` ou `shadow`.
+  use também `EXPECTED_DELIVERY_MODE=live` ou `shadow`. A janela padrão de até
+  60 segundos tolera somente a propagação da versão entre Worker e Durable Object;
+  o gate continua falhando fechado se eles não convergirem.
 
 O workflow de CI não possui permissão de escrita, não lê secrets e nunca faz
 deploy. Os testes Cloudflare usam `wrangler.test.jsonc`, isolado da configuração

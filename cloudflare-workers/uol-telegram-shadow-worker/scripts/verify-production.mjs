@@ -17,7 +17,7 @@ Variáveis opcionais:
   UOL_WORKER_URL              URL base do Worker
   EXPECTED_DELIVERY_MODE      live ou shadow
   UOL_MAX_SCAN_AGE_SECONDS    idade máxima do último scan (padrão: 180)
-  UOL_VERIFY_ATTEMPTS         tentativas de liveness/readiness (padrão: 6)
+  UOL_VERIFY_ATTEMPTS         tentativas de liveness/readiness (padrão: 12)
   UOL_VERIFY_INTERVAL_MS      intervalo entre tentativas (padrão: 5000)`);
 }
 
@@ -30,7 +30,7 @@ const baseUrl = String(process.env.UOL_WORKER_URL || DEFAULT_BASE_URL).replace(/
 const expectedMode = String(process.env.EXPECTED_DELIVERY_MODE || "").trim().toLowerCase();
 const expectedVersionId = String(process.env.EXPECTED_VERSION_ID || "").trim();
 const maxScanAgeMs = positiveInteger(process.env.UOL_MAX_SCAN_AGE_SECONDS, 180) * 1_000;
-const attempts = positiveInteger(process.env.UOL_VERIFY_ATTEMPTS, 6);
+const attempts = positiveInteger(process.env.UOL_VERIFY_ATTEMPTS, 12);
 const intervalMs = positiveInteger(process.env.UOL_VERIFY_INTERVAL_MS, 5_000);
 
 if (expectedMode && expectedMode !== "live" && expectedMode !== "shadow") {
