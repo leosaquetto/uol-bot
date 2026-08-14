@@ -33,6 +33,10 @@ import {
   sendDiscordOperationsAlert,
 } from "./discord.js";
 import {
+  beeperGatewayConfiguration,
+  sendBeeperOffer,
+} from "./beeper.js";
+import {
   fetchOffersFromApi,
   mergeOfferCards,
   prepareImmediateApiOffer,
@@ -1497,6 +1501,23 @@ export class UolTelegramShadow extends DurableObject {
           WHERE status = 'restocked_pending_sync'
             AND main_restock_synced_at <> '';
         INSERT INTO _sql_schema_migrations (id) VALUES (22);
+      `);
+    }
+    if (currentVersion < 23) {
+      this.sqlExec(`
+        CREATE TABLE IF NOT EXISTS beeper_delivery_queue (
+          offer_id TEXT PRIMARY KEY,
+          attempts INTEGER NOT NULL DEFAULT 0,
+          next_attempt_at TEXT NOT NULL DEFAULT '',
+          in_flight_at TEXT NOT NULL DEFAULT '',
+          sent_at TEXT NOT NULL DEFAULT '',
+          last_error TEXT NOT NULL DEFAULT '',
+          pending_message_id TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS beeper_delivery_due_v23
+          ON beeper_delivery_queue(next_attempt_at, attempts, offer_id)
+          WHERE sent_at = '' AND in_flight_at = '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (23);
       `);
     }
   }
@@ -3671,6 +3692,7 @@ export class UolTelegramShadow extends DurableObject {
           result.imageProxyUrl || "",
           row.id,
         );
+        this.enqueueBeeperOffer(row.id);
         this.recordDeliveryLedgerEvent({
           offerId: row.id,
           target: "discord",
@@ -3721,6 +3743,102 @@ export class UolTelegramShadow extends DurableObject {
       selectedRows: selected.map((entry) => entry.row),
       recentSecondaryRows,
     };
+  }
+
+  ensureBeeperDeliveryActivation(now = new Date()) {
+    const configuration = beeperGatewayConfiguration(this.env);
+    if (!configuration.enabled) return { enabled: false, queued: 0 };
+    let activatedAt = this.metadataValue("beeper_delivery_activated_at");
+    if (!activatedAt) {
+      activatedAt = now.toISOString();
+      this.setMetadata("beeper_delivery_activated_at", activatedAt);
+    }
+    const before = Number(this.sqlExec(
+      "SELECT COUNT(*) AS count FROM beeper_delivery_queue",
+    ).one().count || 0);
+    this.sqlExec(
+      `INSERT OR IGNORE INTO beeper_delivery_queue(offer_id)
+       SELECT id FROM offers
+       WHERE first_seen_at >= ?
+         AND discord_sent_at <> ''
+         AND link LIKE '%/campanhasdeingresso/%'`,
+      activatedAt,
+    );
+    const after = Number(this.sqlExec(
+      "SELECT COUNT(*) AS count FROM beeper_delivery_queue",
+    ).one().count || 0);
+    return { enabled: true, queued: Math.max(0, after - before) };
+  }
+
+  enqueueBeeperOffer(offerId) {
+    if (!beeperGatewayConfiguration(this.env).enabled) return false;
+    this.sqlExec(
+      "INSERT OR IGNORE INTO beeper_delivery_queue(offer_id) VALUES (?)",
+      offerId,
+    );
+    return true;
+  }
+
+  async processBeeperDeliveryQueue(now = new Date(), limit = 4) {
+    const activation = this.ensureBeeperDeliveryActivation(now);
+    const configuration = beeperGatewayConfiguration(this.env);
+    if (!configuration.enabled) return { sent: 0, failed: 0, queued: 0, blocked: false };
+    if (!configuration.configured) {
+      return { sent: 0, failed: 0, queued: activation.queued, blocked: true };
+    }
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const rows = this.sqlExec(
+      `SELECT o.*, q.attempts AS beeper_attempts
+       FROM beeper_delivery_queue AS q INDEXED BY beeper_delivery_due_v23
+       JOIN offers AS o ON o.id = q.offer_id
+       WHERE q.sent_at = '' AND q.in_flight_at = ''
+         AND q.attempts < ?
+         AND (q.next_attempt_at = '' OR q.next_attempt_at <= ?)
+       ORDER BY q.next_attempt_at ASC, o.first_seen_at ASC
+       LIMIT ?`,
+      maxAttempts,
+      now.toISOString(),
+      Math.max(1, Math.min(16, Number(limit || 4))),
+    ).toArray();
+    let sent = 0;
+    let failed = 0;
+    for (const row of rows) {
+      const attempts = Number(row.beeper_attempts || 0) + 1;
+      const attemptedAt = new Date().toISOString();
+      this.sqlExec(
+        `UPDATE beeper_delivery_queue SET attempts = ?, in_flight_at = ?,
+           next_attempt_at = '', last_error = '' WHERE offer_id = ?`,
+        attempts,
+        attemptedAt,
+        row.id,
+      );
+      try {
+        const result = await sendBeeperOffer(this.env, rowToOffer(row), {
+          idempotencyKey: `uol:${row.id}:v1`,
+        });
+        this.sqlExec(
+          `UPDATE beeper_delivery_queue SET sent_at = ?, in_flight_at = '',
+             next_attempt_at = '', last_error = '', pending_message_id = ?
+           WHERE offer_id = ?`,
+          new Date().toISOString(),
+          result.pendingMessageId,
+          row.id,
+        );
+        sent += 1;
+      } catch (error) {
+        const deliveryUnknown = Boolean(error?.ambiguous) && Number(error?.status || 0) === 409;
+        this.sqlExec(
+          `UPDATE beeper_delivery_queue SET attempts = ?, in_flight_at = '',
+             next_attempt_at = ?, last_error = ? WHERE offer_id = ?`,
+          deliveryUnknown ? maxAttempts : attempts,
+          deliveryUnknown ? "" : deliveryRetryAt(error, attempts, now),
+          `${deliveryUnknown ? "ambiguous:" : ""}${sanitizeError(error)}`.slice(0, 240),
+          row.id,
+        );
+        failed += 1;
+      }
+    }
+    return { sent, failed, queued: activation.queued, blocked: false };
   }
 
   async processDiscussionComments(limit = 4) {
@@ -5777,6 +5895,8 @@ export class UolTelegramShadow extends DurableObject {
       soldOutMessageMissing: 0,
       maintenanceRepairs: 0,
       deliveryFailed: 0,
+      beeperSent: 0,
+      beeperQueued: 0,
       mainImagesUpgraded: 0,
       imageCachesPrimed: 0,
       ticketListingReused: false,
@@ -5997,6 +6117,7 @@ export class UolTelegramShadow extends DurableObject {
         }
       }
 
+      this.ensureBeeperDeliveryActivation(new Date());
       const discordDelivery = await this.withStorageStage(
         "delivery",
         () => this.processDeliveryQueue(new Date(), {
@@ -6005,6 +6126,14 @@ export class UolTelegramShadow extends DurableObject {
       );
       result.discordSent = discordDelivery.discordSent;
       result.deliveryFailed += discordDelivery.failed;
+
+      const beeperDelivery = await this.withStorageStage(
+        "delivery",
+        () => this.processBeeperDeliveryQueue(new Date()),
+      );
+      result.beeperSent = beeperDelivery.sent;
+      result.beeperQueued = beeperDelivery.queued;
+      result.deliveryFailed += beeperDelivery.failed;
 
       const imageCaches = await this.withStorageStage(
         "images",
@@ -6083,7 +6212,8 @@ export class UolTelegramShadow extends DurableObject {
       }
       if (
         result.newOffers || result.canal2Sent || result.imageCachesPrimed ||
-        result.discordSent || result.commentsSent || result.soldOutDetected ||
+        result.discordSent || result.beeperSent || result.beeperQueued ||
+        result.commentsSent || result.soldOutDetected ||
         result.soldOutMainEdited || result.soldOutCanal2Edited ||
         result.soldOutDiscordEdited || result.restockDiscordEdited ||
         result.restockMainEdited || result.restockCanal2Edited ||

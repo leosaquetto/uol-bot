@@ -1,0 +1,17 @@
+{
+  "name": "beeper-preview-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "cbor-x": "^1.6.0",
+    "ws": "^8.18.0"
+  }
+}

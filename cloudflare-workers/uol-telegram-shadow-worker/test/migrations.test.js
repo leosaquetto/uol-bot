@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 22);
+  assert.equal(blocks.length, 23);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 22);
+  assert.equal(Number(version), 23);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -57,6 +57,14 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "id", "dedupe_key", "offer_id", "target", "operation", "state", "attempt",
     "generation", "occurred_at", "external_id", "error",
   ]));
+  const beeperColumns = new Set(
+    database.prepare("PRAGMA table_info(beeper_delivery_queue)").all()
+      .map((column) => column.name),
+  );
+  assert.deepEqual(beeperColumns, new Set([
+    "offer_id", "attempts", "next_attempt_at", "in_flight_at", "sent_at",
+    "last_error", "pending_message_id",
+  ]));
   const aliasColumns = new Set(
     database.prepare("PRAGMA table_info(offer_identity_aliases)").all()
       .map((column) => column.name),
@@ -76,6 +84,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "offers_restock_main_due_v22",
     "offers_restock_canal2_due_v22",
     "offers_restock_finalize_v22",
+    "beeper_delivery_due_v23",
   ]) {
     assert.equal(indexes.has(name), true, `índice ausente: ${name}`);
   }
@@ -135,7 +144,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    22,
+    23,
   );
   database.close();
 });
