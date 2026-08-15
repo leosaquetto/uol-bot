@@ -513,6 +513,7 @@ function rowToOffer(row) {
     partnerImageUrl: row.partner_image_url,
     partnerName: row.partner_name,
     imageUrl: row.image_url,
+    discordImageProxyUrl: row.discord_image_proxy_url,
     validity: row.validity,
     description: row.description,
     firstSeenAt: row.first_seen_at,

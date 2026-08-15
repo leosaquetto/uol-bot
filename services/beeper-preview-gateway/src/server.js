@@ -6,18 +6,19 @@ import { startHeadlessRenderer } from "./headless-renderer.js";
 
 const port = Number(process.env.PORT || 8787);
 const host = String(process.env.HOST || "127.0.0.1");
+const headlessTransport = startHeadlessRenderer({
+  baseUrl: process.env.BEEPER_API_URL || "http://127.0.0.1:23373",
+  transportNonce: process.env.BEEPER_TRANSPORT_NONCE,
+  accountId: process.env.BEEPER_ACCOUNT_ID,
+});
 const handler = createGateway({
   token: process.env.GATEWAY_TOKEN,
   chatId: process.env.BEEPER_CHAT_ID,
   beeperAccessToken: process.env.BEEPER_ACCESS_TOKEN,
   beeperApiUrl: process.env.BEEPER_API_URL,
   databasePath: process.env.DATA_PATH || "/var/lib/beeper-preview-gateway/deliveries.sqlite",
-});
-
-startHeadlessRenderer({
-  baseUrl: process.env.BEEPER_API_URL || "http://127.0.0.1:23373",
-  transportNonce: process.env.BEEPER_TRANSPORT_NONCE,
-  accountId: process.env.BEEPER_ACCOUNT_ID,
+  sendMessageImpl: (message) => headlessTransport.sendMessage(message),
+  isTransportReady: () => headlessTransport.isReady(),
 });
 
 createServer(async (request, response) => {

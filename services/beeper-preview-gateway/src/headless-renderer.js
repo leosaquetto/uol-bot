@@ -4,6 +4,7 @@ import { Encoder } from "cbor-x";
 import WebSocket from "ws";
 
 const RECONNECT_DELAY_MS = 2_000;
+const REQUEST_TIMEOUT_MS = 20_000;
 
 function websocketUrl(baseUrl, transportNonce) {
   const url = new URL(baseUrl);
@@ -41,6 +42,43 @@ export function buildInitRequest({ accountId, bridgeId, bridgeType, bridgeProvid
   };
 }
 
+export function buildSendMessageRequest({
+  accountId,
+  bridgeId,
+  chatId,
+  text,
+  preview,
+  pendingMessageId,
+}) {
+  return {
+    reqID: randomUUID(),
+    routeName: "platform",
+    routeData: {
+      platformName: `bridge-${bridgeId}`,
+      accountID: accountId,
+      methodName: "sendMessage",
+      args: [chatId, {
+        text,
+        links: preview ? [{
+          link: preview.link,
+          title: preview.title,
+          summary: preview.summary,
+          type: preview.type || "website",
+          img: preview.img,
+          imgSize: preview.imgSize,
+          imgType: preview.imgType,
+        }] : [],
+      }, { pendingMessageID: pendingMessageId }],
+    },
+  };
+}
+
+function transportError(message, ambiguous = false) {
+  const error = new Error(message);
+  error.ambiguous = ambiguous;
+  return error;
+}
+
 export function startHeadlessRenderer({
   baseUrl,
   transportNonce,
@@ -50,30 +88,75 @@ export function startHeadlessRenderer({
   bridgeProvider = "local",
   WebSocketImpl = WebSocket,
   reconnectDelayMs = RECONNECT_DELAY_MS,
+  requestTimeoutMs = REQUEST_TIMEOUT_MS,
   logger = console,
 }) {
-  if (!transportNonce || !accountId) return { stop() {} };
+  if (!transportNonce || !accountId) {
+    return {
+      isReady: () => false,
+      async sendMessage() {
+        throw transportError("Beeper headless transport is not configured");
+      },
+      stop() {},
+    };
+  }
   const url = websocketUrl(baseUrl, transportNonce);
+  const pending = new Map();
   let socket;
+  let codec;
   let reconnectTimer;
   let stopped = false;
+  let ready = false;
+
+  const rejectPending = (message) => {
+    for (const { reject, timer, ambiguous } of pending.values()) {
+      clearTimeout(timer);
+      reject(transportError(message, ambiguous));
+    }
+    pending.clear();
+  };
+
+  const sendRequest = (request, ambiguous = false) => new Promise((resolve, reject) => {
+    if (!socket || socket.readyState !== WebSocketImpl.OPEN) {
+      reject(transportError("Beeper headless transport is not connected"));
+      return;
+    }
+    const timer = setTimeout(() => {
+      pending.delete(request.reqID);
+      reject(transportError("Beeper headless transport timed out", ambiguous));
+    }, requestTimeoutMs);
+    pending.set(request.reqID, { resolve, reject, timer, ambiguous });
+    socket.send(codec.encode(request));
+  });
 
   const connect = () => {
     if (stopped) return;
-    const codec = new Encoder({ useRecords: true, bundleStrings: true });
-    const request = buildInitRequest({ accountId, bridgeId, bridgeType, bridgeProvider });
+    ready = false;
+    codec = new Encoder({ useRecords: true, bundleStrings: true });
     socket = new WebSocketImpl(url);
-    socket.on("open", () => socket.send(codec.encode(request)));
+    socket.on("open", async () => {
+      try {
+        const request = buildInitRequest({ accountId, bridgeId, bridgeType, bridgeProvider });
+        await sendRequest(request);
+        ready = true;
+        logger.log("Beeper headless account initialized");
+      } catch {
+        logger.error("Beeper headless account initialization failed");
+        socket.close();
+      }
+    });
     socket.on("message", (raw) => {
       try {
         const message = codec.decode(raw);
-        if (message?.type !== "response" || message?.reqID !== request.reqID) return;
-        if (message?.data?.error) {
-          logger.error("Beeper headless account initialization failed");
-          socket.close();
-          return;
-        }
-        logger.log("Beeper headless account initialized");
+        if (message?.type !== "response") return;
+        const waiter = pending.get(message.reqID);
+        if (!waiter) return;
+        pending.delete(message.reqID);
+        clearTimeout(waiter.timer);
+        const result = message?.data?.result ?? message?.data;
+        const error = message?.data?.error || (result?.errorName ? result : null);
+        if (error) waiter.reject(transportError(error.errorMessage || "Beeper transport rejected request"));
+        else waiter.resolve(result);
       } catch {
         logger.error("Beeper headless transport decode failed");
         socket.close();
@@ -81,15 +164,36 @@ export function startHeadlessRenderer({
     });
     socket.on("error", () => socket.close());
     socket.on("close", () => {
+      ready = false;
+      rejectPending("Beeper headless transport disconnected");
       if (!stopped) reconnectTimer = setTimeout(connect, reconnectDelayMs);
     });
   };
 
   connect();
   return {
+    isReady() {
+      return ready && socket?.readyState === WebSocketImpl.OPEN;
+    },
+    async sendMessage({ chatId, text, preview }) {
+      if (!ready) throw transportError("Beeper headless transport is not ready");
+      const pendingMessageId = `~txn:network:${randomUUID().replaceAll("-", "").toUpperCase()}`;
+      const request = buildSendMessageRequest({
+        accountId,
+        bridgeId,
+        chatId,
+        text,
+        preview,
+        pendingMessageId,
+      });
+      await sendRequest(request, true);
+      return { accepted: true, pendingMessageID: pendingMessageId };
+    },
     stop() {
       stopped = true;
+      ready = false;
       clearTimeout(reconnectTimer);
+      rejectPending("Beeper headless transport stopped");
       socket?.close();
     },
   };

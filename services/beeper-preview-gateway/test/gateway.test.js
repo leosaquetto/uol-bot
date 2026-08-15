@@ -11,7 +11,7 @@ const beeperAccessToken = "beeper-test-token";
 const chatId = "!personal:local-whatsapp.localhost";
 const link = "https://clube.uol.com.br/campanhasdeingresso/teste";
 
-function gateway(fetchImpl) {
+function gateway(fetchImpl, overrides = {}) {
   const directory = mkdtempSync(join(tmpdir(), "beeper-gateway-test-"));
   return createGateway({
     token,
@@ -20,6 +20,7 @@ function gateway(fetchImpl) {
     databasePath: join(directory, "deliveries.sqlite"),
     fetchImpl,
     now: () => new Date("2026-08-14T20:00:00.000Z"),
+    ...overrides,
   });
 }
 
@@ -51,6 +52,45 @@ test("envia pelo endpoint oficial do Beeper sem desabilitar preview", async () =
   assert.equal(response.status, 202);
   assert.equal(calls, 1);
   assert.equal((await response.json()).pendingMessageID, "pending-1");
+});
+
+test("envia card nativo pelo transporte interno com imagem", async () => {
+  let sent;
+  const handler = gateway(async (url) => {
+    assert.equal(url, "https://media.discordapp.net/offer.jpg");
+    return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), {
+      status: 200,
+      headers: { "Content-Type": "image/jpeg" },
+    });
+  }, {
+    sendMessageImpl: async (message) => {
+      sent = message;
+      return { pendingMessageID: "pending-preview-1" };
+    },
+  });
+  const previewRequest = new Request("http://gateway.test/v1/send-offer", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": "uol:offer-preview:v1",
+    },
+    body: JSON.stringify({
+      link,
+      text: `Oferta\n${link}`,
+      preview: {
+        title: "Oferta Clube UOL",
+        summary: "Resumo da oferta",
+        imageUrl: "https://media.discordapp.net/offer.jpg",
+      },
+    }),
+  });
+  const response = await handler(previewRequest);
+  assert.equal(response.status, 202);
+  assert.equal((await response.json()).pendingMessageID, "pending-preview-1");
+  assert.equal(sent.preview.title, "Oferta Clube UOL");
+  assert.equal(sent.preview.imgType, "image/jpeg");
+  assert.match(sent.preview.img, /^file:\/\//);
 });
 
 test("só fica pronto quando o chat configurado está acessível", async () => {

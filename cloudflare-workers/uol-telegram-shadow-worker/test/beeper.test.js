@@ -11,6 +11,8 @@ const offer = {
   id: "offer-1",
   title: "Ingresso Clube UOL",
   link: "https://clube.uol.com.br/campanhasdeingresso/offer-1",
+  description: "Dois ingressos para o show.",
+  discordImageProxyUrl: "https://media.discordapp.net/proxy.jpg",
 };
 
 test("Beeper fica opt-in e exige URL e token", () => {
@@ -45,6 +47,11 @@ test("envia ao gateway autenticado e idempotente", async () => {
     const body = JSON.parse(init.body);
     assert.equal(body.link, offer.link);
     assert.match(body.text, /Ingresso Clube UOL/);
+    assert.deepEqual(body.preview, {
+      title: offer.title,
+      summary: offer.description,
+      imageUrl: offer.discordImageProxyUrl,
+    });
     return new Response(JSON.stringify({ pendingMessageID: "pending-1" }), {
       status: 202,
       headers: { "Content-Type": "application/json" },

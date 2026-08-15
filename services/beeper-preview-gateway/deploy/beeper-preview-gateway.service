@@ -1,6 +1,6 @@
 [Unit]
 Description=Beeper preview gateway
-After=network-online.target beeper-server.service
+After=network-online.target
 Wants=network-online.target
 
 [Service]
@@ -12,6 +12,7 @@ EnvironmentFile=/etc/beeper-preview-gateway.env
 ExecStart=/usr/local/bin/node src/server.js
 Restart=always
 RestartSec=3
+UMask=0077
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict

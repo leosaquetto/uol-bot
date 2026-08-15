@@ -1,9 +1,11 @@
-import { createHash, timingSafeEqual } from "node:crypto";
-import { mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
+import { chmodSync, mkdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
 
 const MAX_BODY_BYTES = 64 * 1024;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const DEFAULT_BEEPER_URL = "http://127.0.0.1:23373";
 const DELIVERY_TIMEOUT_MS = 20_000;
 
@@ -31,6 +33,64 @@ function allowedOfferUrl(value) {
   } catch {
     return false;
   }
+}
+
+function allowedImageUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    const host = url.hostname.toLowerCase();
+    return url.protocol === "https:" && [
+      "media.discordapp.net",
+      "cdn.discordapp.com",
+    ].some((allowed) => host === allowed || host.endsWith(`.${allowed}`)) ||
+      url.protocol === "https:" && [
+        ".uol.com.br",
+        ".imguol.com",
+        ".imguol.com.br",
+      ].some((suffix) => host.endsWith(suffix));
+  } catch {
+    return false;
+  }
+}
+
+function normalizePreview(payload, link) {
+  const preview = payload?.preview && typeof payload.preview === "object"
+    ? payload.preview
+    : {};
+  const title = String(preview.title || payload?.title || "").trim().slice(0, 500);
+  const summary = String(preview.summary || "").trim().slice(0, 2_000);
+  const imageUrl = String(preview.imageUrl || "").trim();
+  if (imageUrl && !allowedImageUrl(imageUrl)) return null;
+  return { link, title: title || "Clube UOL", summary, type: "website", imageUrl };
+}
+
+function imageExtension(contentType) {
+  if (contentType === "image/png") return "png";
+  if (contentType === "image/webp") return "webp";
+  if (contentType === "image/gif") return "gif";
+  return "jpg";
+}
+
+async function downloadPreviewImage(fetchImpl, imageUrl, directory) {
+  if (!imageUrl) return null;
+  const response = await fetchImpl(imageUrl, {
+    headers: { Accept: "image/*" },
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) throw new Error("preview_image_download_failed");
+  const contentType = String(response.headers.get("Content-Type") || "")
+    .split(";", 1)[0].trim().toLowerCase();
+  if (!contentType.startsWith("image/")) throw new Error("preview_image_invalid_type");
+  const declaredSize = Number(response.headers.get("Content-Length") || 0);
+  if (declaredSize > MAX_IMAGE_BYTES) throw new Error("preview_image_too_large");
+  const bytes = Buffer.from(await response.arrayBuffer());
+  if (!bytes.length || bytes.length > MAX_IMAGE_BYTES) throw new Error("preview_image_invalid_size");
+  mkdirSync(directory, { recursive: true, mode: 0o755 });
+  chmodSync(directory, 0o755);
+  const path = join(directory, `${randomUUID()}.${imageExtension(contentType)}`);
+  writeFileSync(path, bytes, { mode: 0o644 });
+  chmodSync(path, 0o644);
+  return { path, img: pathToFileURL(path).href, imgType: contentType };
 }
 
 async function readJsonBody(request) {
@@ -111,6 +171,8 @@ export function createGateway({
   beeperApiUrl = DEFAULT_BEEPER_URL,
   databasePath,
   fetchImpl = fetch,
+  sendMessageImpl,
+  isTransportReady = () => true,
   now = () => new Date(),
 }) {
   if (!String(token || "").trim()) throw new Error("GATEWAY_TOKEN is required");
@@ -119,6 +181,7 @@ export function createGateway({
   if (!String(databasePath || "").trim()) throw new Error("DATA_PATH is required");
   const database = openDatabase(databasePath);
   const baseUrl = String(beeperApiUrl).replace(/\/+$/, "");
+  const previewDirectory = join(dirname(databasePath), "previews");
 
   return async function handler(request) {
     const url = new URL(request.url);
@@ -126,6 +189,9 @@ export function createGateway({
       return json(200, { ok: true });
     }
     if (request.method === "GET" && url.pathname === "/readyz") {
+      if (!isTransportReady()) {
+        return json(503, { ok: false, code: "beeper_transport_not_ready" });
+      }
       try {
         const response = await fetchImpl(
           `${baseUrl}/v1/chats/${encodeURIComponent(chatId)}`,
@@ -160,11 +226,12 @@ export function createGateway({
     }
     const link = String(payload?.link || "").trim();
     const text = String(payload?.text || "").trim();
-    if (!allowedOfferUrl(link) || !text || text.length > 8_000 || !text.includes(link)) {
+    const preview = normalizePreview(payload, link);
+    if (!allowedOfferUrl(link) || !text || text.length > 8_000 || !text.includes(link) || !preview) {
       return json(400, { code: "invalid_offer" });
     }
 
-    const normalized = { link, text };
+    const normalized = { link, text, preview };
     const reserved = reserveDelivery(
       database,
       idempotencyKey,
@@ -176,29 +243,65 @@ export function createGateway({
     if (reserved.kind === "pending") return json(409, { code: "delivery_pending" });
     if (reserved.kind === "replay") return json(200, { ...reserved.response, replayed: true });
 
-    let response;
-    try {
-      response = await fetchImpl(
-        `${baseUrl}/v1/chats/${encodeURIComponent(chatId)}/messages`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${beeperAccessToken}`,
-            "Content-Type": "application/json",
+    let result;
+    if (sendMessageImpl) {
+      let image;
+      try {
+        image = await downloadPreviewImage(fetchImpl, preview.imageUrl, previewDirectory)
+          .catch(() => null);
+        result = await sendMessageImpl({
+          chatId,
+          text,
+          preview: {
+            ...preview,
+            imageUrl: undefined,
+            img: image?.img,
+            imgType: image?.imgType,
           },
-          body: JSON.stringify({ text }),
-          signal: AbortSignal.timeout(DELIVERY_TIMEOUT_MS),
-        },
-      );
-    } catch {
-      updateDelivery(database, idempotencyKey, "unknown", {}, now().toISOString());
-      return json(503, { code: "delivery_unknown" });
-    }
-
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      updateDelivery(database, idempotencyKey, "failed", {}, now().toISOString());
-      return json(502, { code: "beeper_rejected", status: response.status });
+        });
+      } catch (error) {
+        const ambiguous = Boolean(error?.ambiguous);
+        updateDelivery(
+          database,
+          idempotencyKey,
+          ambiguous ? "unknown" : "failed",
+          {},
+          now().toISOString(),
+        );
+        return json(ambiguous ? 503 : 502, {
+          code: ambiguous ? "delivery_unknown" : "beeper_rejected",
+        });
+      } finally {
+        if (image?.path) {
+          try {
+            unlinkSync(image.path);
+          } catch {}
+        }
+      }
+    } else {
+      let response;
+      try {
+        response = await fetchImpl(
+          `${baseUrl}/v1/chats/${encodeURIComponent(chatId)}/messages`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${beeperAccessToken}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ text }),
+            signal: AbortSignal.timeout(DELIVERY_TIMEOUT_MS),
+          },
+        );
+      } catch {
+        updateDelivery(database, idempotencyKey, "unknown", {}, now().toISOString());
+        return json(503, { code: "delivery_unknown" });
+      }
+      result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        updateDelivery(database, idempotencyKey, "failed", {}, now().toISOString());
+        return json(502, { code: "beeper_rejected", status: response.status });
+      }
     }
     const accepted = {
       accepted: true,

@@ -43,6 +43,11 @@ export async function sendBeeperOffer(
   if (!configuration.configured) throw new Error("beeper_gateway_missing");
   const link = String(offer?.link || "").trim();
   const title = cleanText(offer?.title || offer?.previewTitle || "");
+  const summary = cleanText(offer?.description || "").slice(0, 2_000);
+  const imageUrl = String(
+    offer?.discordImageProxyUrl || offer?.imageUrl || offer?.cardImageUrl ||
+      offer?.partnerImageUrl || "",
+  ).trim();
   const key = String(idempotencyKey || "").trim();
   if (!key) throw new Error("beeper_idempotency_key_missing");
 
@@ -59,6 +64,7 @@ export async function sendBeeperOffer(
         link,
         text: buildBeeperOfferText(offer),
         title,
+        preview: { title, summary, imageUrl },
       }),
       signal: AbortSignal.timeout(BEEPER_GATEWAY_TIMEOUT_MS),
     });
