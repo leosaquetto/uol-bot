@@ -138,7 +138,7 @@ git commit -m "feat: monitor the Oracle Beeper gateway"
 - Consumes: approved canary draft and group chat ID `!o8sUOrMhcN9T0FkGFkKykcoqlm8:ba_4Q1u4OVNSpRHOQ0x-5cCkpRVB1o.local-whatsapp.localhost`.
 - Produces: one verified group message with `links.img`, then live delivery keyed to `whatsapp-group`.
 
-- [ ] **Step 1: Stop and request explicit approval for the complete canary draft**
+- [x] **Step 1: Stop and request explicit approval for the complete canary draft**
 
 ```text
 🧪 TESTE — pode ignorar
