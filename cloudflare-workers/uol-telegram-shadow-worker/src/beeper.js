@@ -13,14 +13,30 @@ function enabled(value) {
   );
 }
 
+export function beeperDestinationKey(env) {
+  const value = String(env?.BEEPER_DESTINATION_KEY || "").trim().toLowerCase();
+  if (!/^[a-z0-9][a-z0-9._-]{2,63}$/.test(value)) {
+    throw new Error("beeper_destination_key_invalid");
+  }
+  return value;
+}
+
+export function beeperDeliveryIdempotencyKey(offerId, destinationKey) {
+  return `uol:${String(offerId || "").trim()}:${String(destinationKey || "").trim()}:v1`;
+}
+
 export function beeperGatewayConfiguration(env) {
   const active = enabled(env.BEEPER_DELIVERY_ENABLED);
   const url = String(env.BEEPER_GATEWAY_URL || "").trim();
   const token = String(env.BEEPER_GATEWAY_TOKEN || "").trim();
+  let destinationKey = "";
+  try {
+    destinationKey = beeperDestinationKey(env);
+  } catch {}
   return {
     enabled: active,
-    configured: Boolean(url && token),
-    ready: !active || Boolean(url && token),
+    configured: Boolean(url && token && destinationKey),
+    ready: !active || Boolean(url && token && destinationKey),
     url,
   };
 }

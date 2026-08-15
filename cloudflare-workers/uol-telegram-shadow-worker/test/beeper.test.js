@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  beeperDeliveryIdempotencyKey,
+  beeperDestinationKey,
   beeperGatewayConfiguration,
   buildBeeperOfferText,
   sendBeeperOffer,
@@ -14,6 +16,18 @@ const offer = {
   description: "Dois ingressos para o show.",
   discordImageProxyUrl: "https://media.discordapp.net/proxy.jpg",
 };
+
+test("separa a idempotência por destino Beeper", () => {
+  assert.equal(
+    beeperDestinationKey({ BEEPER_DESTINATION_KEY: " WhatsApp-Personal " }),
+    "whatsapp-personal",
+  );
+  assert.equal(
+    beeperDeliveryIdempotencyKey("offer-1", "whatsapp-group"),
+    "uol:offer-1:whatsapp-group:v1",
+  );
+  assert.throws(() => beeperDestinationKey({}), /beeper_destination_key_invalid/);
+});
 
 test("Beeper fica opt-in e exige URL e token", () => {
   assert.deepEqual(beeperGatewayConfiguration({}), {
@@ -35,6 +49,7 @@ test("monta texto curto com URL para o preview nativo", () => {
 test("envia ao gateway autenticado e idempotente", async () => {
   const env = {
     BEEPER_DELIVERY_ENABLED: "true",
+    BEEPER_DESTINATION_KEY: "whatsapp-personal",
     BEEPER_GATEWAY_URL: "https://beeper.example/v1/send-offer",
     BEEPER_GATEWAY_TOKEN: "secret",
   };
@@ -63,6 +78,7 @@ test("envia ao gateway autenticado e idempotente", async () => {
 test("preserva entrega interna ambígua sem duplicar", async () => {
   await assert.rejects(
     sendBeeperOffer({
+      BEEPER_DESTINATION_KEY: "whatsapp-personal",
       BEEPER_GATEWAY_URL: "https://beeper.example/v1/send-offer",
       BEEPER_GATEWAY_TOKEN: "secret",
     }, offer, { idempotencyKey: "uol:offer-1:v1" }, async () =>

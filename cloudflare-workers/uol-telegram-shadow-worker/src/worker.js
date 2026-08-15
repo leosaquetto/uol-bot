@@ -33,6 +33,8 @@ import {
   sendDiscordOperationsAlert,
 } from "./discord.js";
 import {
+  beeperDeliveryIdempotencyKey,
+  beeperDestinationKey,
   beeperGatewayConfiguration,
   sendBeeperOffer,
 } from "./beeper.js";
@@ -3815,7 +3817,10 @@ export class UolTelegramShadow extends DurableObject {
       );
       try {
         const result = await sendBeeperOffer(this.env, rowToOffer(row), {
-          idempotencyKey: `uol:${row.id}:v1`,
+          idempotencyKey: beeperDeliveryIdempotencyKey(
+            row.id,
+            beeperDestinationKey(this.env),
+          ),
         });
         this.sqlExec(
           `UPDATE beeper_delivery_queue SET sent_at = ?, in_flight_at = '',
