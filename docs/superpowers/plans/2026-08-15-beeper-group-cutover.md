@@ -148,27 +148,27 @@ https://clube.uol.com.br/festaclubedos30/psP-pague-apenas-r-80-taxa-no-ingresso
 
 Expected: no message is sent until the user explicitly approves this exact draft.
 
-- [ ] **Step 2: After approval, pause only Beeper delivery and deploy**
+- [x] **Step 2: After approval, pause only Beeper delivery and deploy**
 
 Set `BEEPER_DELIVERY_ENABLED` to `false`, keep Telegram and Discord live, run CI/release, and verify `/readyz` reports the expected deliberate configuration state.
 
-- [ ] **Step 3: Confirm no pending Beeper queue or ambiguous gateway delivery**
+- [x] **Step 3: Confirm no pending Beeper queue or ambiguous gateway delivery**
 
 Read the Worker operational snapshot and Oracle delivery ledger. Expected: zero unknown deliveries and no actionable old Beeper row.
 
-- [ ] **Step 4: Change Oracle target and send the approved canary**
+- [x] **Step 4: Change Oracle target and send the approved canary**
 
 Atomically replace only `BEEPER_CHAT_ID`, restart `beeper-preview-gateway`, verify `/readyz=200`, then send the exact approved draft with the known Clube UOL preview image.
 
-- [ ] **Step 5: Verify group delivery before resuming**
+- [x] **Step 5: Verify group delivery before resuming**
 
 Read the group message through Beeper and require `isSender=true`, the exact text, and a non-empty `links[0].img`.
 
-- [ ] **Step 6: Resume with the group destination alias**
+- [x] **Step 6: Resume with the group destination alias**
 
 Set `BEEPER_DESTINATION_KEY` to `whatsapp-group`, restore `BEEPER_DELIVERY_ENABLED=true`, deploy, and confirm Worker readiness plus Oracle readiness.
 
-- [ ] **Step 7: Commit final configuration**
+- [x] **Step 7: Commit final configuration**
 
 ```bash
 git add cloudflare-workers/uol-telegram-shadow-worker/wrangler.jsonc
