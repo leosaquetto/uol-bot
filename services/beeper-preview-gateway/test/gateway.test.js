@@ -57,7 +57,7 @@ test("envia pelo endpoint oficial do Beeper sem desabilitar preview", async () =
 test("envia card nativo pelo transporte interno com imagem", async () => {
   let sent;
   const handler = gateway(async (url) => {
-    assert.equal(url, "https://media.discordapp.net/offer.jpg");
+    assert.equal(url, "https://ddrxgn8ucibei.cloudfront.net/offer.jpg");
     return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), {
       status: 200,
       headers: { "Content-Type": "image/jpeg" },
@@ -81,7 +81,7 @@ test("envia card nativo pelo transporte interno com imagem", async () => {
       preview: {
         title: "Oferta Clube UOL",
         summary: "Resumo da oferta",
-        imageUrl: "https://media.discordapp.net/offer.jpg",
+        imageUrl: "https://ddrxgn8ucibei.cloudfront.net/offer.jpg",
       },
     }),
   });

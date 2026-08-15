@@ -42,6 +42,7 @@ function allowedImageUrl(value) {
     return url.protocol === "https:" && [
       "media.discordapp.net",
       "cdn.discordapp.com",
+      "ddrxgn8ucibei.cloudfront.net",
     ].some((allowed) => host === allowed || host.endsWith(`.${allowed}`)) ||
       url.protocol === "https:" && [
         ".uol.com.br",
