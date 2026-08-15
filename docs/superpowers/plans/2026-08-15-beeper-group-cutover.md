@@ -30,19 +30,19 @@
 - Consumes: `env.BEEPER_DESTINATION_KEY`.
 - Produces: `beeperDestinationKey(env): string` and keys shaped as `uol:<offer-id>:<destination>:v1`.
 
-- [ ] **Step 1: Write a failing test**
+- [x] **Step 1: Write a failing test**
 
 ```js
 assert.equal(beeperDestinationKey({ BEEPER_DESTINATION_KEY: "whatsapp-personal" }), "whatsapp-personal");
 assert.equal(beeperDeliveryIdempotencyKey("offer-1", "whatsapp-group"), "uol:offer-1:whatsapp-group:v1");
 ```
 
-- [ ] **Step 2: Run the focused test and confirm failure**
+- [x] **Step 2: Run the focused test and confirm failure**
 
 Run: `node --test cloudflare-workers/uol-telegram-shadow-worker/test/beeper.test.js`
 Expected: FAIL because the destination helpers do not exist.
 
-- [ ] **Step 3: Implement normalization and use it in the queue**
+- [x] **Step 3: Implement normalization and use it in the queue**
 
 ```js
 export function beeperDestinationKey(env) {
@@ -56,7 +56,7 @@ export function beeperDeliveryIdempotencyKey(offerId, destinationKey) {
 }
 ```
 
-- [ ] **Step 4: Run focused and full Worker tests**
+- [x] **Step 4: Run focused and full Worker tests**
 
 Run: `node --test cloudflare-workers/uol-telegram-shadow-worker/test/beeper.test.js`
 Expected: PASS.
@@ -64,7 +64,7 @@ Expected: PASS.
 Run: `npm test` from `cloudflare-workers/uol-telegram-shadow-worker`.
 Expected: 223 or more tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add cloudflare-workers/uol-telegram-shadow-worker/src/beeper.js cloudflare-workers/uol-telegram-shadow-worker/src/worker.js cloudflare-workers/uol-telegram-shadow-worker/test/beeper.test.js cloudflare-workers/uol-telegram-shadow-worker/wrangler.jsonc
@@ -84,7 +84,7 @@ git commit -m "fix: scope Beeper delivery keys by destination"
 - Consumes: `{status, body}` from the public Oracle `/readyz` endpoint.
 - Produces: `mergeBeeperGatewayHealth(workerResult, gatewayResponse)` with a sanitized gateway snapshot.
 
-- [ ] **Step 1: Write failing healthy and outage tests**
+- [x] **Step 1: Write failing healthy and outage tests**
 
 ```js
 assert.equal(mergeBeeperGatewayHealth(workerHealthy, { status: 200, body: { ok: true } }).state, "healthy");
@@ -94,12 +94,12 @@ assert.deepEqual(
 );
 ```
 
-- [ ] **Step 2: Run the focused test and confirm failure**
+- [x] **Step 2: Run the focused test and confirm failure**
 
 Run: `node --test cloudflare-workers/uol-telegram-shadow-worker/test/beeper-gateway-health.test.js`
 Expected: FAIL because the classifier does not exist.
 
-- [ ] **Step 3: Implement the pure classifier and monitor fetch**
+- [x] **Step 3: Implement the pure classifier and monitor fetch**
 
 ```js
 const healthy = gateway?.status === 200 && gateway?.body?.ok === true;
@@ -113,7 +113,7 @@ return healthy ? result : {
 
 Set `BEEPER_READY_URL=https://163-176-194-58.sslip.io/readyz` in the existing five-minute workflow. Only persist `{status, ok}` in the incident snapshot.
 
-- [ ] **Step 4: Run focused and full Worker tests**
+- [x] **Step 4: Run focused and full Worker tests**
 
 Run: `node --test cloudflare-workers/uol-telegram-shadow-worker/test/beeper-gateway-health.test.js`
 Expected: PASS.
@@ -121,7 +121,7 @@ Expected: PASS.
 Run: `npm test` from `cloudflare-workers/uol-telegram-shadow-worker`.
 Expected: all tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add .github/workflows/uol-ready-monitor.yml cloudflare-workers/uol-telegram-shadow-worker/src/beeper-gateway-health.js cloudflare-workers/uol-telegram-shadow-worker/test/beeper-gateway-health.test.js cloudflare-workers/uol-telegram-shadow-worker/scripts/monitor-ready.mjs cloudflare-workers/uol-telegram-shadow-worker/README.md

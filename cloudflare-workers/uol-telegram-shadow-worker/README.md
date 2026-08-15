@@ -305,7 +305,8 @@ testes e bundle dry-run do Worker Discord de rollback. Nenhum deles faz parte do
 `check:fast` local do Worker principal.
 
 O workflow independente `UOL Worker Ready Monitor` consulta liveness e readiness
-públicos a cada cinco minutos. Uma mudança para outage abre um único issue de
+públicos do Worker e o `/readyz` do gateway Beeper na Oracle a cada cinco minutos.
+Uma mudança para outage abre um único issue de
 incidente; degradação histórica fica registrada sem transformar o job em falha
 recorrente, e a primeira verificação saudável fecha o issue.
 Esse dead-man externo não depende do Mac, do Telegram ou de secrets e recebe

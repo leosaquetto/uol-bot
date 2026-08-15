@@ -1,9 +1,13 @@
 import { classifyHeadlessHealth } from "../src/headless-health.js";
+import { mergeBeeperGatewayHealth } from "../src/beeper-gateway-health.js";
 
 const marker = "<!-- uol-worker-headless-monitor -->";
 const issueTitle = "[UOL Worker] Monitor headless";
 const readyUrl = String(
   process.env.READY_URL || "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/readyz",
+).replace(/\/+$/, "");
+const beeperReadyUrl = String(
+  process.env.BEEPER_READY_URL || "https://163-176-194-58.sslip.io/readyz",
 ).replace(/\/+$/, "");
 const apiUrl = String(process.env.GITHUB_API_URL || "https://api.github.com").replace(/\/+$/, "");
 const token = String(process.env.GITHUB_TOKEN || "").trim();
@@ -63,7 +67,7 @@ async function findIncident() {
 
 function issueBody(result) {
   return `${marker}\nstate: ${result.state}\n\n` +
-    "O monitor externo detectou uma alteração no Worker headless.\n\n" +
+    "O monitor externo detectou uma alteração no Worker ou no gateway Beeper.\n\n" +
     `Snapshot sanitizado:\n\`\`\`json\n${JSON.stringify(result.snapshot, null, 2)}\n\`\`\`\n` +
     (runUrl ? `\n[Execução](${runUrl})\n` : "");
 }
@@ -103,11 +107,15 @@ async function updateIncident(result, existing) {
   }
 }
 
-const [liveness, readiness] = await Promise.all([
+const [liveness, readiness, beeperReadiness] = await Promise.all([
   readEndpoint(`${readyUrl.replace(/\/readyz$/, "")}/livez?verify=${Date.now()}`),
   readEndpoint(`${readyUrl}?verify=${Date.now()}`),
+  readEndpoint(`${beeperReadyUrl}?verify=${Date.now()}`),
 ]);
-const result = classifyHeadlessHealth({ liveness, readiness });
+const result = mergeBeeperGatewayHealth(
+  classifyHeadlessHealth({ liveness, readiness }),
+  beeperReadiness,
+);
 
 try {
   await updateIncident(result, await findIncident());

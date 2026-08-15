@@ -27,6 +27,7 @@ jobs:
         working-directory: cloudflare-workers/uol-telegram-shadow-worker
         env:
           READY_URL: https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/readyz
+          BEEPER_READY_URL: https://163-176-194-58.sslip.io/readyz
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_API_URL: ${{ github.api_url }}
