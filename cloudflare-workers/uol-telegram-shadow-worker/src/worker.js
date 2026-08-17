@@ -120,7 +120,7 @@ const MAX_HTML_BYTES = 2_000_000;
 const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
 const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
 const READINESS_CACHE_TTL_MS = 15_000;
-const BEEPER_RECOVERY_METADATA_KEY = "beeper_delivery_offer_ids_applied_v2";
+const BEEPER_RECOVERY_METADATA_KEY = "beeper_delivery_offer_ids_applied_v3";
 const STORAGE_STAGE_NAMES = [
   "primary",
   "delivery",
@@ -3864,7 +3864,6 @@ export class UolTelegramShadow extends DurableObject {
       `INSERT OR IGNORE INTO beeper_delivery_queue(offer_id)
        SELECT id FROM offers
         WHERE id IN (${placeholders})
-          AND discord_sent_at <> ''
           AND (
             lower(link) LIKE '%/campanhasdeingresso/%' OR
             lower(category) LIKE '%campanhasdeingresso%'

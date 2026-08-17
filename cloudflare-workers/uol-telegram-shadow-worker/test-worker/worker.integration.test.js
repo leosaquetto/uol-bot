@@ -112,6 +112,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
           );
         }
         state.storage.sql.exec(
+          "UPDATE offers SET discord_sent_at = '' WHERE id = 'ticket-new'",
+        );
+        state.storage.sql.exec(
           insertOffer,
           "ordinary",
           "https://clube.uol.com.br/beneficio/ordinary",
