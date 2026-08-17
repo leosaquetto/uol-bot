@@ -175,7 +175,12 @@ test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
   assert.match(delivery, /discord_image_proxy_url = COALESCE\(NULLIF\(\?, ''\)/);
   assert.match(delivery, /if \(result\.deferred\) \{[\s\S]*recordImageDelivery/);
   assert.match(primaryAlarm, /result\.newOffers \|\| result\.mainSent/);
-  assert.match(primaryAlarm, /maintenanceUrgent && maintenanceBudget\.maintenanceAllowed/);
+  assert.match(primaryAlarm, /beeper_delivery_offer_ids_applied/);
+  assert.match(primaryAlarm, /beeperRecovery\.filterActive/);
+  assert.match(
+    primaryAlarm,
+    /\(maintenanceUrgent \|\| beeperRecoveryUrgent\) &&[\s\S]*maintenanceBudget\.maintenanceAllowed/,
+  );
 });
 
 test("telemetria frequente usa snapshots e observações limitadas", () => {

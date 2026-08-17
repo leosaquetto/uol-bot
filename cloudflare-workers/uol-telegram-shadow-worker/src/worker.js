@@ -6585,11 +6585,18 @@ export class UolTelegramShadow extends DurableObject {
       const maintenanceUrgent = Boolean(
         result.apiError || result.error || result.newOffers || result.mainSent,
       );
+      const beeperRecovery = beeperGatewayConfiguration(this.env);
+      const beeperRecoveryFingerprint = beeperRecovery.offerIds.join(",");
+      const beeperRecoveryUrgent = beeperRecovery.enabled &&
+        beeperRecovery.configured && beeperRecovery.filterActive &&
+        this.metadataValue("beeper_delivery_offer_ids_applied") !==
+          beeperRecoveryFingerprint;
       const maintenanceBudget = this.storageUsageSnapshot();
-      if (maintenanceUrgent || maintenanceBootstrapDue) {
+      if (maintenanceUrgent || beeperRecoveryUrgent || maintenanceBootstrapDue) {
         try {
           await this.ensureMaintenanceAlarm(
-            maintenanceUrgent && maintenanceBudget.maintenanceAllowed,
+            (maintenanceUrgent || beeperRecoveryUrgent) &&
+              maintenanceBudget.maintenanceAllowed,
           );
           this.setMetadata("maintenance_alarm_last_ensured_at", new Date().toISOString());
         } catch (error) {
