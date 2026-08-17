@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 23);
+  assert.equal(blocks.length, 24);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 23);
+  assert.equal(Number(version), 24);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -85,6 +85,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "offers_restock_canal2_due_v22",
     "offers_restock_finalize_v22",
     "beeper_delivery_due_v23",
+    "beeper_delivery_inflight_v24",
   ]) {
     assert.equal(indexes.has(name), true, `índice ausente: ${name}`);
   }
@@ -144,7 +145,62 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    23,
+    24,
+  );
+  database.close();
+});
+
+test("v24 remove somente pendências Beeper que não são ingressos", () => {
+  const blocks = migrationBlocks();
+  const database = new DatabaseSync(":memory:");
+  for (const sql of blocks.slice(0, 23)) database.exec(sql);
+  const insertOffer = database.prepare(
+    `INSERT INTO offers(
+       id, link, preview_title, category, first_seen_at, last_seen_at, status
+     ) VALUES (?, ?, ?, ?, ?, ?, 'delivered')`,
+  );
+  const seenAt = "2026-08-17T18:14:48.754Z";
+  insertOffer.run(
+    "ticket-link",
+    "https://clube.uol.com.br/campanhasdeingresso/ticket-link",
+    "Ingresso por link",
+    "",
+    seenAt,
+    seenAt,
+  );
+  insertOffer.run(
+    "ticket-category",
+    "https://clube.uol.com.br/beneficio/ticket-category",
+    "Ingresso por categoria",
+    "campanhasdeingresso",
+    seenAt,
+    seenAt,
+  );
+  insertOffer.run(
+    "ordinary",
+    "https://clube.uol.com.br/beneficio/ordinary",
+    "Oferta comum",
+    "gastronomia",
+    seenAt,
+    seenAt,
+  );
+  for (const id of ["ticket-link", "ticket-category", "ordinary"]) {
+    database.prepare(
+      "INSERT INTO beeper_delivery_queue(offer_id) VALUES (?)",
+    ).run(id);
+  }
+  database.exec(blocks[23]);
+  assert.deepEqual(
+    database.prepare(
+      "SELECT offer_id FROM beeper_delivery_queue ORDER BY offer_id",
+    ).all().map((row) => row.offer_id),
+    ["ticket-category", "ticket-link"],
+  );
+  assert.equal(
+    Number(database.prepare(
+      "SELECT MAX(id) AS version FROM _sql_schema_migrations",
+    ).get().version),
+    24,
   );
   database.close();
 });

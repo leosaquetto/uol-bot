@@ -33,9 +33,11 @@ import {
   sendDiscordOperationsAlert,
 } from "./discord.js";
 import {
+  beeperDeliveryErrorCode,
   beeperDeliveryIdempotencyKey,
   beeperDestinationKey,
   beeperGatewayConfiguration,
+  probeBeeperGateway,
   sendBeeperOffer,
 } from "./beeper.js";
 import {
@@ -1521,6 +1523,24 @@ export class UolTelegramShadow extends DurableObject {
           ON beeper_delivery_queue(next_attempt_at, attempts, offer_id)
           WHERE sent_at = '' AND in_flight_at = '';
         INSERT INTO _sql_schema_migrations (id) VALUES (23);
+      `);
+    }
+    if (currentVersion < 24) {
+      this.sqlExec(`
+        DELETE FROM beeper_delivery_queue
+         WHERE sent_at = ''
+           AND NOT EXISTS (
+             SELECT 1 FROM offers
+              WHERE offers.id = beeper_delivery_queue.offer_id
+                AND (
+                  lower(offers.link) LIKE '%/campanhasdeingresso/%' OR
+                  lower(offers.category) LIKE '%campanhasdeingresso%'
+                )
+           );
+        CREATE INDEX IF NOT EXISTS beeper_delivery_inflight_v24
+          ON beeper_delivery_queue(in_flight_at, offer_id)
+          WHERE sent_at = '' AND in_flight_at <> '';
+        INSERT INTO _sql_schema_migrations (id) VALUES (24);
       `);
     }
   }
@@ -3695,7 +3715,6 @@ export class UolTelegramShadow extends DurableObject {
           result.imageProxyUrl || "",
           row.id,
         );
-        this.enqueueBeeperOffer(row.id);
         this.recordDeliveryLedgerEvent({
           offerId: row.id,
           target: "discord",
@@ -3706,6 +3725,17 @@ export class UolTelegramShadow extends DurableObject {
           occurredAt: new Date().toISOString(),
           externalId: String(result.messageId),
         });
+        try {
+          this.enqueueBeeperOffer(row);
+        } catch (error) {
+          try {
+            this.setMetadata("beeper_delivery_backfill_completed_at", "");
+          } catch {}
+          logEvent("warn", "uol_beeper_enqueue_failed", {
+            offerId: row.id,
+            error: sanitizeError(error),
+          });
+        }
         discordSent += 1;
       } catch (error) {
         recordFailure(row.id, "discord", attempts, error);
@@ -3750,59 +3780,247 @@ export class UolTelegramShadow extends DurableObject {
 
   ensureBeeperDeliveryActivation(now = new Date()) {
     const configuration = beeperGatewayConfiguration(this.env);
-    if (!configuration.enabled) return { enabled: false, queued: 0 };
+    const stateKey = "beeper_delivery_enabled_state";
+    const previousState = this.metadataValue(stateKey);
+    if (!configuration.enabled) {
+      if (previousState !== "disabled") this.setMetadata(stateKey, "disabled");
+      return { enabled: false, queued: 0 };
+    }
+    if (previousState === "disabled") {
+      this.setMetadata("beeper_delivery_activated_at", now.toISOString());
+      this.setMetadata("beeper_delivery_backfill_completed_at", now.toISOString());
+      this.setMetadata(stateKey, "enabled");
+      return { enabled: true, queued: 0 };
+    }
+    if (previousState !== "enabled") this.setMetadata(stateKey, "enabled");
     let activatedAt = this.metadataValue("beeper_delivery_activated_at");
     if (!activatedAt) {
       activatedAt = now.toISOString();
       this.setMetadata("beeper_delivery_activated_at", activatedAt);
     }
-    const before = Number(this.sqlExec(
-      "SELECT COUNT(*) AS count FROM beeper_delivery_queue",
-    ).one().count || 0);
-    this.sqlExec(
+    if (this.metadataValue("beeper_delivery_backfill_completed_at")) {
+      return { enabled: true, queued: 0 };
+    }
+    const inserted = this.sqlExec(
       `INSERT OR IGNORE INTO beeper_delivery_queue(offer_id)
        SELECT id FROM offers
        WHERE first_seen_at >= ?
          AND discord_sent_at <> ''
-         AND link LIKE '%/campanhasdeingresso/%'`,
+         AND (
+           lower(link) LIKE '%/campanhasdeingresso/%' OR
+           lower(category) LIKE '%campanhasdeingresso%'
+         )`,
       activatedAt,
     );
-    const after = Number(this.sqlExec(
-      "SELECT COUNT(*) AS count FROM beeper_delivery_queue",
-    ).one().count || 0);
-    return { enabled: true, queued: Math.max(0, after - before) };
+    this.setMetadata("beeper_delivery_backfill_completed_at", now.toISOString());
+    return { enabled: true, queued: Number(inserted.rowsWritten || 0) };
   }
 
-  enqueueBeeperOffer(offerId) {
-    if (!beeperGatewayConfiguration(this.env).enabled) return false;
-    this.sqlExec(
+  enqueueBeeperOffer(row) {
+    if (
+      !beeperGatewayConfiguration(this.env).enabled ||
+      !row?.id || !isTicketCampaign(rowToOffer(row))
+    ) return false;
+    const inserted = this.sqlExec(
       "INSERT OR IGNORE INTO beeper_delivery_queue(offer_id) VALUES (?)",
-      offerId,
+      row.id,
     );
-    return true;
+    return Number(inserted.rowsWritten || 0) > 0;
+  }
+
+  updateBeeperRuntimeSnapshot(patch = {}) {
+    const previous = this.runtimeSnapshot("beeper");
+    const next = { ...previous, ...patch };
+    const stable = (snapshot) => JSON.stringify({
+      enabled: snapshot.enabled === true,
+      configured: snapshot.configured === true,
+      gatewayOk: snapshot.gatewayOk === true,
+      gatewayStatus: Number(snapshot.gatewayStatus || 0),
+      gatewayCode: String(snapshot.gatewayCode || ""),
+      filterActive: snapshot.filterActive === true,
+      pending: Number(snapshot.pending || 0),
+      exhausted: Number(snapshot.exhausted || 0),
+      unknown: Number(snapshot.unknown || 0),
+      lastErrorCode: String(snapshot.lastErrorCode || ""),
+    });
+    const changed = stable(previous) !== stable(next);
+    if (changed) this.setRuntimeSnapshot("beeper", next);
+    else this.runtimeSnapshotCache.set("beeper", next);
+    return { changed, snapshot: next };
+  }
+
+  applyBeeperDeliveryRecoveryFilter(configuration) {
+    const ids = configuration.offerIds || [];
+    const fingerprint = ids.join(",");
+    const key = "beeper_delivery_offer_ids_applied";
+    const previous = this.metadataValue(key);
+    if (!fingerprint) {
+      if (previous) this.setMetadata(key, "");
+      return { applied: false, reset: 0 };
+    }
+    if (previous === fingerprint) return { applied: false, reset: 0 };
+    let reset = 0;
+    for (const offerId of ids) {
+      const cursor = this.sqlExec(
+        `UPDATE beeper_delivery_queue
+            SET attempts = 0, next_attempt_at = '', in_flight_at = '', last_error = ''
+          WHERE offer_id = ? AND sent_at = ''`,
+        offerId,
+      );
+      reset += Number(cursor.rowsWritten || 0);
+    }
+    this.setMetadata(key, fingerprint);
+    return { applied: true, reset };
+  }
+
+  beeperQueueDiagnostics(maxAttempts) {
+    const rows = this.sqlExec(
+      `SELECT q.offer_id, q.attempts, q.next_attempt_at, q.in_flight_at,
+              q.last_error,
+              CASE WHEN (
+                lower(COALESCE(o.link, '')) LIKE '%/campanhasdeingresso/%' OR
+                lower(COALESCE(o.category, '')) LIKE '%campanhasdeingresso%'
+              )
+                THEN 1 ELSE 0 END AS ticket
+         FROM beeper_delivery_queue AS q
+         LEFT JOIN offers AS o ON o.id = q.offer_id
+        WHERE q.sent_at = ''
+        ORDER BY q.offer_id ASC
+        LIMIT 512`,
+    ).toArray();
+    return {
+      pending: rows.length,
+      exhausted: rows.filter((row) => Number(row.attempts || 0) >= maxAttempts).length,
+      unknown: rows.filter((row) => String(row.last_error || "").startsWith("ambiguous:"))
+        .length,
+      inFlight: rows.filter((row) => Boolean(row.in_flight_at)).length,
+      nonTicket: rows.filter((row) => Number(row.ticket || 0) !== 1).length,
+      truncated: rows.length >= 512,
+      pendingIds: rows.map((row) => String(row.offer_id || "")),
+      exhaustedIds: rows.filter((row) => Number(row.attempts || 0) >= maxAttempts)
+        .map((row) => String(row.offer_id || "")),
+    };
   }
 
   async processBeeperDeliveryQueue(now = new Date(), limit = 4) {
     const activation = this.ensureBeeperDeliveryActivation(now);
     const configuration = beeperGatewayConfiguration(this.env);
-    if (!configuration.enabled) return { sent: 0, failed: 0, queued: 0, blocked: false };
+    if (!configuration.enabled) {
+      this.updateBeeperRuntimeSnapshot({
+        enabled: false,
+        configured: true,
+        gatewayOk: true,
+        gatewayStatus: 0,
+        gatewayCode: "disabled",
+        filterActive: false,
+        checkedAt: now.toISOString(),
+      });
+      return { sent: 0, failed: 0, queued: 0, blocked: false };
+    }
     if (!configuration.configured) {
+      this.updateBeeperRuntimeSnapshot({
+        enabled: true,
+        configured: false,
+        gatewayOk: false,
+        gatewayStatus: 0,
+        gatewayCode: "unconfigured",
+        filterActive: configuration.filterActive,
+        checkedAt: now.toISOString(),
+      });
       return { sent: 0, failed: 0, queued: activation.queued, blocked: true };
     }
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const recovery = this.applyBeeperDeliveryRecoveryFilter(configuration);
+    let recoveryDiagnostics = null;
+    if (recovery.applied) {
+      recoveryDiagnostics = this.beeperQueueDiagnostics(maxAttempts);
+      logEvent("info", "uol_beeper_recovery_filter_applied", {
+        offerIds: configuration.offerIds,
+        reset: recovery.reset,
+        pendingIds: recoveryDiagnostics.pendingIds,
+        exhaustedIds: recoveryDiagnostics.exhaustedIds,
+        nonTicket: recoveryDiagnostics.nonTicket,
+        truncated: recoveryDiagnostics.truncated,
+      });
+    }
+
+    const staleSeconds = envNumber(
+      this.env,
+      "DELIVERY_IN_FLIGHT_STALE_SECONDS",
+      30,
+      15,
+      3_600,
+    );
+    const staleCutoff = new Date(now.getTime() - staleSeconds * 1_000).toISOString();
+    const recovered = this.sqlExec(
+      `UPDATE beeper_delivery_queue
+          SET in_flight_at = '', next_attempt_at = '',
+              last_error = CASE WHEN last_error = ''
+                THEN 'beeper_in_flight_recovered' ELSE last_error END
+        WHERE sent_at = '' AND in_flight_at <> '' AND in_flight_at <= ?`,
+      staleCutoff,
+    );
+    if (Number(recovered.rowsWritten || 0) > 0) {
+      logEvent("warn", "uol_beeper_in_flight_recovered", {
+        count: Number(recovered.rowsWritten || 0),
+      });
+    }
+
+    const filterClause = configuration.filterActive
+      ? `AND q.offer_id IN (${configuration.offerIds.map(() => "?").join(", ")})`
+      : "";
+    const queueIndexHint = configuration.filterActive
+      ? ""
+      : " INDEXED BY beeper_delivery_due_v23";
     const rows = this.sqlExec(
       `SELECT o.*, q.attempts AS beeper_attempts
-       FROM beeper_delivery_queue AS q INDEXED BY beeper_delivery_due_v23
+       FROM beeper_delivery_queue AS q${queueIndexHint}
        JOIN offers AS o ON o.id = q.offer_id
        WHERE q.sent_at = '' AND q.in_flight_at = ''
          AND q.attempts < ?
          AND (q.next_attempt_at = '' OR q.next_attempt_at <= ?)
+         AND (
+           lower(o.link) LIKE '%/campanhasdeingresso/%' OR
+           lower(o.category) LIKE '%campanhasdeingresso%'
+         )
+         ${filterClause}
        ORDER BY q.next_attempt_at ASC, o.first_seen_at ASC
        LIMIT ?`,
       maxAttempts,
       now.toISOString(),
+      ...configuration.offerIds,
       Math.max(1, Math.min(16, Number(limit || 4))),
     ).toArray();
+    const previousGateway = this.runtimeSnapshot("beeper");
+    if (rows.length || previousGateway.gatewayOk === false) {
+      const gateway = await probeBeeperGateway(this.env);
+      const gatewayState = this.updateBeeperRuntimeSnapshot({
+        enabled: true,
+        configured: true,
+        gatewayOk: gateway.ok,
+        gatewayStatus: gateway.status,
+        gatewayCode: gateway.code,
+        filterActive: configuration.filterActive,
+        pending: Math.max(Number(previousGateway.pending || 0), rows.length),
+        checkedAt: gateway.checkedAt,
+      });
+      if (gatewayState.changed) {
+        logEvent(gateway.ok ? "info" : "warn", "uol_beeper_gateway_state", {
+          ok: gateway.ok,
+          status: gateway.status,
+          code: gateway.code,
+        });
+      }
+      if (!gateway.ok) {
+        return { sent: 0, failed: 0, queued: activation.queued, blocked: true };
+      }
+    } else {
+      this.updateBeeperRuntimeSnapshot({
+        enabled: true,
+        configured: true,
+        filterActive: configuration.filterActive,
+      });
+    }
     let sent = 0;
     let failed = 0;
     for (const row of rows) {
@@ -3815,6 +4033,19 @@ export class UolTelegramShadow extends DurableObject {
         attemptedAt,
         row.id,
       );
+      logEvent("info", "uol_beeper_delivery_attempt", {
+        offerId: row.id,
+        attempt: attempts,
+      });
+      this.recordDeliveryLedgerEvent({
+        offerId: row.id,
+        target: "beeper",
+        operation: "delivery",
+        state: "attempt_started",
+        attempt: attempts,
+        generation: Number(row.delivery_generation || 0),
+        occurredAt: attemptedAt,
+      });
       try {
         const result = await sendBeeperOffer(this.env, rowToOffer(row), {
           idempotencyKey: beeperDeliveryIdempotencyKey(
@@ -3830,19 +4061,65 @@ export class UolTelegramShadow extends DurableObject {
           result.pendingMessageId,
           row.id,
         );
+        logEvent("info", "uol_beeper_delivery_accepted", {
+          offerId: row.id,
+          attempt: attempts,
+          replayed: result.replayed,
+        });
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "beeper",
+          operation: "delivery",
+          state: "accepted",
+          attempt: attempts,
+          generation: Number(row.delivery_generation || 0),
+          occurredAt: new Date().toISOString(),
+          externalId: result.pendingMessageId,
+        });
         sent += 1;
       } catch (error) {
-        const deliveryUnknown = Boolean(error?.ambiguous) && Number(error?.status || 0) === 409;
+        const deliveryUnknown = Boolean(error?.ambiguous);
+        const terminalFailure = deliveryUnknown || error?.retryable === false;
+        const errorCode = beeperDeliveryErrorCode(error);
         this.sqlExec(
           `UPDATE beeper_delivery_queue SET attempts = ?, in_flight_at = '',
              next_attempt_at = ?, last_error = ? WHERE offer_id = ?`,
-          deliveryUnknown ? maxAttempts : attempts,
-          deliveryUnknown ? "" : deliveryRetryAt(error, attempts, now),
-          `${deliveryUnknown ? "ambiguous:" : ""}${sanitizeError(error)}`.slice(0, 240),
+          terminalFailure ? maxAttempts : attempts,
+          terminalFailure ? "" : deliveryRetryAt(error, attempts, now),
+          `${deliveryUnknown ? "ambiguous:" : terminalFailure ? "terminal:" : ""}${errorCode}`
+            .slice(0, 240),
           row.id,
         );
+        logEvent("warn", "uol_beeper_delivery_failed", {
+          offerId: row.id,
+          attempt: attempts,
+          code: errorCode,
+          ambiguous: deliveryUnknown,
+          exhausted: terminalFailure || attempts >= maxAttempts,
+        });
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "beeper",
+          operation: "delivery",
+          state: deliveryUnknown ? "unknown" : "failed",
+          attempt: attempts,
+          generation: Number(row.delivery_generation || 0),
+          occurredAt: new Date().toISOString(),
+          error: errorCode,
+        });
         failed += 1;
       }
+    }
+    if (recoveryDiagnostics || sent || failed) {
+      const diagnostics = sent || failed
+        ? this.beeperQueueDiagnostics(maxAttempts)
+        : recoveryDiagnostics;
+      this.updateBeeperRuntimeSnapshot({
+        pending: diagnostics.pending,
+        exhausted: diagnostics.exhausted,
+        unknown: diagnostics.unknown,
+        lastErrorCode: failed ? "beeper_delivery_failed" : "",
+      });
     }
     return { sent, failed, queued: activation.queued, blocked: false };
   }
@@ -5347,6 +5624,10 @@ export class UolTelegramShadow extends DurableObject {
       `DELETE FROM discord_availability_sync
        WHERE offer_id NOT IN (SELECT id FROM offers)`,
     );
+    this.sqlExec(
+      `DELETE FROM beeper_delivery_queue
+       WHERE offer_id NOT IN (SELECT id FROM offers)`,
+    );
     this.setMetadata("offers_cleanup_day", cleanupDay);
   }
 
@@ -5903,6 +6184,7 @@ export class UolTelegramShadow extends DurableObject {
       deliveryFailed: 0,
       beeperSent: 0,
       beeperQueued: 0,
+      beeperBlocked: false,
       mainImagesUpgraded: 0,
       imageCachesPrimed: 0,
       ticketListingReused: false,
@@ -6123,7 +6405,6 @@ export class UolTelegramShadow extends DurableObject {
         }
       }
 
-      this.ensureBeeperDeliveryActivation(new Date());
       const discordDelivery = await this.withStorageStage(
         "delivery",
         () => this.processDeliveryQueue(new Date(), {
@@ -6139,6 +6420,7 @@ export class UolTelegramShadow extends DurableObject {
       );
       result.beeperSent = beeperDelivery.sent;
       result.beeperQueued = beeperDelivery.queued;
+      result.beeperBlocked = beeperDelivery.blocked;
       result.deliveryFailed += beeperDelivery.failed;
 
       const imageCaches = await this.withStorageStage(
@@ -6770,6 +7052,11 @@ export class UolTelegramShadow extends DurableObject {
     const html = this.runtimeSnapshot("html");
     const webhook = this.runtimeSnapshot("webhook");
     const maintenance = this.runtimeSnapshot("maintenance");
+    const beeperRuntime = this.runtimeSnapshot("beeper");
+    const beeperConfiguration = beeperGatewayConfiguration(this.env);
+    const beeperQueue = this.beeperQueueDiagnostics(
+      envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50),
+    );
     const usageBudget = estimateDailyRowWrites({
       pollIntervalSeconds: alarmIntervalSeconds,
       maintenanceIntervalSeconds,
@@ -6813,6 +7100,27 @@ export class UolTelegramShadow extends DurableObject {
       mode: this.currentDeliveryMode(),
       telegram: telegramConfiguration(this.env),
       discord: discordConfiguration(this.env),
+      beeper: {
+        enabled: beeperConfiguration.enabled,
+        configured: beeperConfiguration.configured,
+        destinationKey: beeperConfiguration.destinationKey,
+        filterActive: beeperConfiguration.filterActive,
+        gatewayOk: typeof beeperRuntime.gatewayOk === "boolean"
+          ? beeperRuntime.gatewayOk
+          : null,
+        gatewayStatus: Number(beeperRuntime.gatewayStatus || 0),
+        gatewayCode: String(beeperRuntime.gatewayCode || ""),
+        checkedAt: String(beeperRuntime.checkedAt || ""),
+        deliveryConfirmation: "accepted_by_beeper_transport",
+        queue: {
+          pending: beeperQueue.pending,
+          exhausted: beeperQueue.exhausted,
+          unknown: beeperQueue.unknown,
+          inFlight: beeperQueue.inFlight,
+          nonTicket: beeperQueue.nonTicket,
+          truncated: beeperQueue.truncated,
+        },
+      },
       ticketApi: {
         ...ticketApiConfiguration(this.env),
         publicationRole: "primary",
@@ -6975,6 +7283,9 @@ export class UolTelegramShadow extends DurableObject {
         restockPending: Number(counts.restock_pending || 0),
         deliveryErrors: Number(counts.delivery_errors || 0),
         soldOut: Number(counts.sold_out || 0),
+        beeperPending: beeperQueue.pending,
+        beeperExhausted: beeperQueue.exhausted,
+        beeperUnknown: beeperQueue.unknown,
       },
       lastRun,
       recentRuns,
@@ -7076,6 +7387,8 @@ export class UolTelegramShadow extends DurableObject {
       maxAttempts,
     ).one();
     const telegram = telegramConfiguration(this.env);
+    const beeperConfiguration = beeperGatewayConfiguration(this.env);
+    const beeperRuntime = this.runtimeSnapshot("beeper");
     const configuration = deliveryConfiguration(
       this.env,
       telegram,
@@ -7083,12 +7396,18 @@ export class UolTelegramShadow extends DurableObject {
     );
     const mode = this.currentDeliveryMode();
     const modeLive = mode === "live";
+    const beeperReady = !beeperConfiguration.enabled || (
+      beeperConfiguration.configured && beeperRuntime.gatewayOk !== false
+    );
     const deliveryConfigured = configuration.main.ready &&
-      configuration.canal2.ready && configuration.discord.ready;
+      configuration.canal2.ready && configuration.discord.ready && beeperReady;
     const criticalIncidents = Number(incidents.critical || 0);
-    const deadLetters = Number(queue.dead_letter || 0);
-    const unknown = Number(queue.unknown || 0) + Number(queue.comment_unknown || 0);
-    const blockedConfiguration = Number(queue.blocked_configuration || 0);
+    const deadLetters = Number(queue.dead_letter || 0) +
+      Number(beeperRuntime.exhausted || 0);
+    const unknown = Number(queue.unknown || 0) + Number(queue.comment_unknown || 0) +
+      Number(beeperRuntime.unknown || 0);
+    const blockedConfiguration = Number(queue.blocked_configuration || 0) +
+      Number(beeperConfiguration.enabled && !beeperConfiguration.configured);
     const maintenanceDeadLetters = Number(queue.restock_dead_letter || 0) +
       Number(queue.sold_out_dead_letter || 0) + Number(queue.comment_dead_letter || 0);
     const storageReadBudget = this.storageUsageSnapshot(new Date(now));
@@ -7150,6 +7469,20 @@ export class UolTelegramShadow extends DurableObject {
       versionId: String(this.env.WORKER_VERSION?.id || ""),
       mode,
       checks,
+      beeper: {
+        enabled: beeperConfiguration.enabled,
+        configured: beeperConfiguration.configured,
+        gatewayOk: typeof beeperRuntime.gatewayOk === "boolean"
+          ? beeperRuntime.gatewayOk
+          : null,
+        gatewayStatus: Number(beeperRuntime.gatewayStatus || 0),
+        gatewayCode: String(beeperRuntime.gatewayCode || ""),
+        checkedAt: String(beeperRuntime.checkedAt || ""),
+        filterActive: beeperConfiguration.filterActive,
+        pending: Number(beeperRuntime.pending || 0),
+        exhausted: Number(beeperRuntime.exhausted || 0),
+        unknown: Number(beeperRuntime.unknown || 0),
+      },
       queueSlo,
       storageReadBudget,
       storageWriteBudget,

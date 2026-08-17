@@ -15,7 +15,11 @@ it("migra v22 e executa seletores indexados e onlyIds no Workerd", async () => {
   await runInDurableObject(stub, async (instance, state) => {
     expect(Number(state.storage.sql.exec(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
-    ).one().version)).toBe(23);
+    ).one().version)).toBe(24);
+    expect(state.storage.sql.exec(
+      `SELECT name FROM sqlite_schema
+       WHERE type = 'index' AND name = 'beeper_delivery_inflight_v24'`,
+    ).one().name).toBe("beeper_delivery_inflight_v24");
     expect(state.storage.sql.exec(
       `SELECT name FROM sqlite_schema
        WHERE type = 'index' AND name LIKE '%_v22' ORDER BY name`,

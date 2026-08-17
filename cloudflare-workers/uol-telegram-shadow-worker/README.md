@@ -104,6 +104,11 @@ agenda coleta. Estado de produção exige verificação própria.
   tem 30 segundos para confirmar o envio; sem confirmação, o Worker tenta de
   novo. A prioridade é não perder oferta, aceitando uma duplicata rara. Os
   destinos secundários continuam exigindo reconciliação ou resolução explícita.
+  A fila Beeper aceita somente campanhas de ingresso, confirma URL/token/rota
+  no endpoint autenticado do gateway antes do lote e registra como sucesso a
+  aceitação pelo transporte local; a entrega final é conferida no WhatsApp.
+  `BEEPER_DELIVERY_OFFER_IDS` é uma allowlist temporária de recuperação e deve
+  ficar ausente na operação normal.
 - **Ledger e proteção:** cada tentativa, sucesso, falha, resultado incerto,
   edição, recuperação e mensagem ausente entra no sidecar `delivery_events`, sem
   adicionar colunas à tabela de ofertas. O ledger é idempotente e limitado por
@@ -151,7 +156,8 @@ agenda coleta. Estado de produção exige verificação própria.
 - Secrets obrigatórios: `ADMIN_TOKEN`, `UOL_API_AUTHORIZATION`, `TELEGRAM_TOKEN`,
   `TELEGRAM_CHAT_ID`, `CANAL2_ID`, `GRUPO_COMENTARIO_ID`,
   `OPS_TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL` e
-  `DISCORD_IMAGE_CACHE_WEBHOOK_URL`.
+  `DISCORD_IMAGE_CACHE_WEBHOOK_URL`, `BEEPER_GATEWAY_URL` e
+  `BEEPER_GATEWAY_TOKEN`.
   `DISCORD_OPS_WEBHOOK_URL` é opcional e cria um segundo transporte para alertas.
   O webhook de cache aponta para o segundo canal que recebe as ofertas comuns e
   também fornece suas thumbnails ao Telegram.

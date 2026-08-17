@@ -25,6 +25,8 @@ export function renderDashboard(data) {
   const rowBudget = usage.durableObjectRowsWrittenPerDay || {};
   const auth = data.authentication || {};
   const publicTickets = data.publicTicketListing || {};
+  const beeper = data.beeper || {};
+  const beeperQueue = beeper.queue || {};
   const incidents = (ops.incidents || []).map((incident) => `
     <tr><td>${escapeHtml(incident.severity)}</td><td>${escapeHtml(incident.summary)}</td><td>${escapeHtml(incident.status)}</td><td>${escapeHtml(incident.last_detected_at)}</td></tr>`).join("") ||
     '<tr><td colspan="4">Nenhum incidente registrado.</td></tr>';
@@ -62,6 +64,9 @@ ${metric("Telegram com foto", image.photoSent ?? 0, "good")}
 ${metric("Telegram em texto", image.textSent ?? 0)}
 ${metric("Fotos pendentes", image.pendingUpgrade ?? 0, image.pendingUpgrade ? "bad" : "good")}
 ${metric("Proxies Discord", image.discordProxyCached ?? 0)}
+${metric("WhatsApp gateway", beeper.gatewayOk === true ? "pronto" : beeper.gatewayOk === false ? "falha" : "aguardando", beeper.gatewayOk === false ? "bad" : "good")}
+${metric("WhatsApp pendentes", beeperQueue.pending ?? 0, beeperQueue.pending ? "bad" : "good")}
+${metric("WhatsApp esgotadas", beeperQueue.exhausted ?? 0, beeperQueue.exhausted ? "bad" : "good")}
 ${metric("Login pessoal", auth.personalAuthorizationRequired ? "necessário" : "dispensado", auth.personalAuthorizationRequired ? "bad" : "good")}
 ${metric("API expira", String(data.ticketApi?.applicationAuthorizationExpiresAt || "—").slice(0, 10))}
 ${metric("Scans estimados/dia", usage.alarmInvocationsPerDay ?? "—")}

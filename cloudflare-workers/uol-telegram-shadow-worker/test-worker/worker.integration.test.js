@@ -60,6 +60,124 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("reprocessa somente ingressos permitidos e recupera tentativa Beeper uma vez", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("beeper-approved-recovery");
+    const delivered = [];
+    vi.stubGlobal("fetch", async (input, init = {}) => {
+      const url = String(input);
+      if (url === "https://beeper.test/v1/readyz") {
+        expect(init.method).toBe("GET");
+        expect(init.headers.Authorization).toBe("Bearer vitest-beeper-token");
+        return Response.json({ ok: true });
+      }
+      if (url === "https://beeper.test/v1/send-offer") {
+        const payload = JSON.parse(init.body);
+        delivered.push(payload.link.split("/").at(-1));
+        return Response.json({ pendingMessageID: `pending-${delivered.length}` }, {
+          status: 202,
+        });
+      }
+      throw new Error(`unexpected_fetch:${url}`);
+    });
+
+    try {
+      await runInDurableObject(stub, async (instance, state) => {
+        instance.env = {
+          ...instance.env,
+          BEEPER_DELIVERY_ENABLED: "true",
+          BEEPER_DESTINATION_KEY: "whatsapp-group",
+          BEEPER_DELIVERY_OFFER_IDS: "ticket-a,ticket-b,ticket-missing",
+          BEEPER_GATEWAY_URL: "https://beeper.test/v1/send-offer",
+          BEEPER_GATEWAY_TOKEN: "vitest-beeper-token",
+          DELIVERY_MAX_ATTEMPTS: "10",
+          DELIVERY_IN_FLIGHT_STALE_SECONDS: "30",
+        };
+        const seenAt = "2026-08-17T18:14:48.754Z";
+        const insertOffer = `INSERT INTO offers(
+          id, link, preview_title, title, category, image_url,
+          first_seen_at, last_seen_at, status, discord_sent_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'delivered', ?)`;
+        for (const id of ["ticket-a", "ticket-b", "ticket-outside"]) {
+          state.storage.sql.exec(
+            insertOffer,
+            id,
+            `https://clube.uol.com.br/campanhasdeingresso/${id}`,
+            id,
+            id,
+            "campanhasdeingresso",
+            "https://ddrxgn8ucibei.cloudfront.net/beneficios/test.jpg",
+            seenAt,
+            seenAt,
+            seenAt,
+          );
+        }
+        state.storage.sql.exec(
+          insertOffer,
+          "ordinary",
+          "https://clube.uol.com.br/beneficio/ordinary",
+          "Oferta comum",
+          "Oferta comum",
+          "gastronomia",
+          "",
+          seenAt,
+          seenAt,
+          seenAt,
+        );
+        state.storage.sql.exec(
+          `INSERT INTO beeper_delivery_queue(
+             offer_id, attempts, next_attempt_at, in_flight_at
+           ) VALUES (?, ?, '', ?)`,
+          "ticket-a",
+          10,
+          "",
+        );
+        state.storage.sql.exec(
+          `INSERT INTO beeper_delivery_queue(
+             offer_id, attempts, next_attempt_at, in_flight_at
+           ) VALUES (?, ?, '', ?)`,
+          "ticket-b",
+          2,
+          "2026-08-17T18:00:00.000Z",
+        );
+        state.storage.sql.exec(
+          "INSERT INTO beeper_delivery_queue(offer_id) VALUES (?)",
+          "ticket-outside",
+        );
+        const ordinary = state.storage.sql.exec(
+          "SELECT * FROM offers WHERE id = 'ordinary'",
+        ).one();
+        expect(instance.enqueueBeeperOffer(ordinary)).toBe(false);
+
+        const result = await instance.processBeeperDeliveryQueue(
+          new Date("2026-08-17T19:00:00.000Z"),
+        );
+        expect(result).toMatchObject({ sent: 2, failed: 0, blocked: false });
+        expect(delivered.sort()).toEqual(["ticket-a", "ticket-b"]);
+        expect(state.storage.sql.exec(
+          "SELECT sent_at FROM beeper_delivery_queue WHERE offer_id = 'ticket-outside'",
+        ).one().sent_at).toBe("");
+        expect(state.storage.sql.exec(
+          `SELECT target, state FROM delivery_events
+            WHERE target = 'beeper'
+            ORDER BY offer_id, state`,
+        ).toArray()).toEqual([
+          { target: "beeper", state: "accepted" },
+          { target: "beeper", state: "attempt_started" },
+          { target: "beeper", state: "accepted" },
+          { target: "beeper", state: "attempt_started" },
+        ]);
+
+        const replay = await instance.processBeeperDeliveryQueue(
+          new Date("2026-08-17T19:01:00.000Z"),
+        );
+        expect(replay.sent).toBe(0);
+        expect(delivered).toHaveLength(2);
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("consulta o ciclo Discord sem exceder o limite de colunas SQLite", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("discord-availability-empty");
     await runInDurableObject(stub, async (instance) => {

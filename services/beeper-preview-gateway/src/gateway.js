@@ -9,6 +9,34 @@ const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const DEFAULT_BEEPER_URL = "http://127.0.0.1:23373";
 const DELIVERY_TIMEOUT_MS = 20_000;
 
+function auditLog(logger, level, event, fields = {}) {
+  const write = logger?.[level] || logger?.log;
+  if (typeof write !== "function") return;
+  write.call(logger, JSON.stringify({ event, ...fields }));
+}
+
+function keyDigest(value) {
+  return value
+    ? createHash("sha256").update(String(value)).digest("hex").slice(0, 12)
+    : undefined;
+}
+
+function safeRoute(path) {
+  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer"].includes(path)
+    ? path
+    : "other";
+}
+
+function safePreviewError(error) {
+  const code = String(error?.message || "");
+  return [
+    "preview_image_download_failed",
+    "preview_image_invalid_type",
+    "preview_image_too_large",
+    "preview_image_invalid_size",
+  ].includes(code) ? code : "preview_image_unavailable";
+}
+
 function json(status, body, headers = {}) {
   return new Response(JSON.stringify(body), {
     status,
@@ -17,9 +45,8 @@ function json(status, body, headers = {}) {
 }
 
 function secureEqual(left, right) {
-  const leftBuffer = Buffer.from(String(left || ""));
-  const rightBuffer = Buffer.from(String(right || ""));
-  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
+  const digest = (value) => createHash("sha256").update(String(value || "")).digest();
+  return timingSafeEqual(digest(left), digest(right));
 }
 
 function requestHash(payload) {
@@ -61,8 +88,17 @@ function normalizePreview(payload, link) {
   const title = String(preview.title || payload?.title || "").trim().slice(0, 500);
   const summary = String(preview.summary || "").trim().slice(0, 2_000);
   const imageUrl = String(preview.imageUrl || "").trim();
-  if (imageUrl && !allowedImageUrl(imageUrl)) return null;
-  return { link, title: title || "Clube UOL", summary, type: "website", imageUrl };
+  const imageAllowed = !imageUrl || allowedImageUrl(imageUrl);
+  return {
+    preview: {
+      link,
+      title: title || "Clube UOL",
+      summary,
+      type: "website",
+      imageUrl: imageAllowed ? imageUrl : "",
+    },
+    imageOmitted: !imageAllowed,
+  };
 }
 
 function imageExtension(contentType) {
@@ -76,6 +112,7 @@ async function downloadPreviewImage(fetchImpl, imageUrl, directory) {
   if (!imageUrl) return null;
   const response = await fetchImpl(imageUrl, {
     headers: { Accept: "image/*" },
+    redirect: "error",
     signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) throw new Error("preview_image_download_failed");
@@ -121,10 +158,28 @@ function openDatabase(path) {
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
+    UPDATE deliveries SET status = 'accepted'
+      WHERE status = 'sent';
     UPDATE deliveries SET status = 'unknown'
       WHERE status = 'pending';
   `);
   return database;
+}
+
+function ledgerSnapshot(database) {
+  database.prepare("SELECT 1 AS ok").get();
+  const row = database.prepare(`
+    SELECT
+      COUNT(*) AS total,
+      SUM(CASE WHEN status = 'accepted' THEN 1 ELSE 0 END) AS accepted,
+      SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed,
+      SUM(CASE WHEN status = 'unknown' THEN 1 ELSE 0 END) AS unknown,
+      SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending
+    FROM deliveries
+  `).get();
+  return Object.fromEntries(
+    Object.entries(row).map(([key, value]) => [key, Number(value || 0)]),
+  );
 }
 
 function reserveDelivery(database, key, hash, now) {
@@ -134,17 +189,23 @@ function reserveDelivery(database, key, hash, now) {
       "SELECT * FROM deliveries WHERE idempotency_key = ?",
     ).get(key);
     if (existing) {
-      database.exec("COMMIT");
-      if (existing.request_hash !== hash) return { kind: "conflict" };
-      if (existing.status === "sent") {
-        return { kind: "replay", response: JSON.parse(existing.response_json || "{}") };
+      let result;
+      if (existing.request_hash !== hash) {
+        result = { kind: "conflict" };
+      } else if (["accepted", "sent"].includes(existing.status)) {
+        result = { kind: "replay", response: JSON.parse(existing.response_json || "{}") };
+      } else if (existing.status === "unknown") {
+        result = { kind: "unknown" };
+      } else if (existing.status === "pending") {
+        result = { kind: "pending" };
+      } else {
+        database.prepare(
+          "UPDATE deliveries SET status = 'pending', updated_at = ? WHERE idempotency_key = ?",
+        ).run(now, key);
+        result = { kind: "reserved" };
       }
-      if (existing.status === "unknown") return { kind: "unknown" };
-      if (existing.status === "pending") return { kind: "pending" };
-      database.prepare(
-        "UPDATE deliveries SET status = 'pending', updated_at = ? WHERE idempotency_key = ?",
-      ).run(now, key);
-      return { kind: "reserved" };
+      database.exec("COMMIT");
+      return result;
     }
     database.prepare(
       `INSERT INTO deliveries(idempotency_key, request_hash, status, created_at, updated_at)
@@ -153,7 +214,9 @@ function reserveDelivery(database, key, hash, now) {
     database.exec("COMMIT");
     return { kind: "reserved" };
   } catch (error) {
-    database.exec("ROLLBACK");
+    try {
+      database.exec("ROLLBACK");
+    } catch {}
     throw error;
   }
 }
@@ -175,6 +238,7 @@ export function createGateway({
   sendMessageImpl,
   isTransportReady = () => true,
   now = () => new Date(),
+  logger = console,
 }) {
   if (!String(token || "").trim()) throw new Error("GATEWAY_TOKEN is required");
   if (!String(chatId || "").trim()) throw new Error("BEEPER_CHAT_ID is required");
@@ -184,52 +248,141 @@ export function createGateway({
   const baseUrl = String(beeperApiUrl).replace(/\/+$/, "");
   const previewDirectory = join(dirname(databasePath), "previews");
 
-  return async function handler(request) {
-    const url = new URL(request.url);
-    if (request.method === "GET" && url.pathname === "/livez") {
-      return json(200, { ok: true });
+  async function readiness(includeLedger = false) {
+    let ledger;
+    try {
+      ledger = ledgerSnapshot(database);
+    } catch {
+      return {
+        status: 503,
+        body: {
+          ok: false,
+          code: "delivery_ledger_not_ready",
+          components: { transport: false, beeperApi: false, ledger: false },
+        },
+      };
     }
-    if (request.method === "GET" && url.pathname === "/readyz") {
-      if (!isTransportReady()) {
-        return json(503, { ok: false, code: "beeper_transport_not_ready" });
-      }
-      try {
-        const response = await fetchImpl(
-          `${baseUrl}/v1/chats/${encodeURIComponent(chatId)}`,
-          {
+    if (!isTransportReady()) {
+      return {
+        status: 503,
+        body: {
+          ok: false,
+          code: "beeper_transport_not_ready",
+          components: { transport: false, beeperApi: false, ledger: true },
+          ...(includeLedger ? { ledger } : {}),
+        },
+      };
+    }
+    try {
+      const response = await fetchImpl(
+        `${baseUrl}/v1/chats/${encodeURIComponent(chatId)}`,
+        {
           headers: { Authorization: `Bearer ${beeperAccessToken}` },
           signal: AbortSignal.timeout(3_000),
+        },
+      );
+      if (!response.ok) {
+        return {
+          status: 503,
+          body: {
+            ok: false,
+            code: "beeper_not_ready",
+            components: { transport: true, beeperApi: false, ledger: true },
+            ...(includeLedger ? { ledger } : {}),
           },
-        );
-        return response.ok
-          ? json(200, { ok: true })
-          : json(503, { ok: false, code: "beeper_not_ready" });
-      } catch {
-        return json(503, { ok: false, code: "beeper_not_ready" });
+        };
       }
+      return {
+        status: 200,
+        body: {
+          ok: true,
+          components: { transport: true, beeperApi: true, ledger: true },
+          deliveryConfirmation: "accepted_by_beeper_transport",
+          ...(includeLedger ? { ledger } : {}),
+        },
+      };
+    } catch {
+      return {
+        status: 503,
+        body: {
+          ok: false,
+          code: "beeper_not_ready",
+          components: { transport: true, beeperApi: false, ledger: true },
+          ...(includeLedger ? { ledger } : {}),
+        },
+      };
+    }
+  }
+
+  return async function handler(request) {
+    const url = new URL(request.url);
+    const requestId = randomUUID();
+    const startedAt = Date.now();
+    let idempotencyDigest;
+    let authenticated = false;
+    const respond = (status, body, details = {}) => {
+      const shouldLog = authenticated &&
+        ["/v1/readyz", "/v1/send-offer"].includes(url.pathname);
+      if (shouldLog) {
+        auditLog(logger, status >= 400 ? "warn" : "info", "beeper_gateway_request", {
+          requestId,
+          method: request.method,
+          path: safeRoute(url.pathname),
+          status,
+          code: String(body?.code || (status < 400 ? "ok" : "request_failed")),
+          durationMs: Math.max(0, Date.now() - startedAt),
+          ...(idempotencyDigest ? { idempotencyDigest } : {}),
+          ...details,
+        });
+      }
+      return json(status, body, { "X-Request-ID": requestId });
+    };
+    if (request.method === "GET" && url.pathname === "/livez") {
+      return respond(200, { ok: true });
+    }
+    if (request.method === "GET" && url.pathname === "/readyz") {
+      const result = await readiness();
+      return respond(result.status, result.body);
+    }
+    if (request.method === "GET" && url.pathname === "/v1/readyz") {
+      const suppliedToken = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") || "";
+      if (!secureEqual(suppliedToken, token)) return respond(401, { code: "unauthorized" });
+      authenticated = true;
+      const result = await readiness(true);
+      return respond(result.status, result.body);
     }
     if (request.method !== "POST" || url.pathname !== "/v1/send-offer") {
-      return json(404, { code: "not_found" });
+      return respond(404, { code: "not_found" });
     }
 
     const suppliedToken = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") || "";
-    if (!secureEqual(suppliedToken, token)) return json(401, { code: "unauthorized" });
+    if (!secureEqual(suppliedToken, token)) return respond(401, { code: "unauthorized" });
+    authenticated = true;
     const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim();
+    idempotencyDigest = keyDigest(idempotencyKey);
     if (!/^[A-Za-z0-9:._-]{8,200}$/.test(idempotencyKey)) {
-      return json(400, { code: "invalid_idempotency_key" });
+      return respond(400, { code: "invalid_idempotency_key" });
     }
 
     let payload;
     try {
       payload = await readJsonBody(request);
     } catch (error) {
-      return json(Number(error.status || 400), { code: error.message });
+      return respond(Number(error.status || 400), { code: error.message });
     }
     const link = String(payload?.link || "").trim();
     const text = String(payload?.text || "").trim();
-    const preview = normalizePreview(payload, link);
-    if (!allowedOfferUrl(link) || !text || text.length > 8_000 || !text.includes(link) || !preview) {
-      return json(400, { code: "invalid_offer" });
+    const normalizedPreview = normalizePreview(payload, link);
+    const preview = normalizedPreview.preview;
+    if (!allowedOfferUrl(link) || !text || text.length > 8_000 || !text.includes(link)) {
+      return respond(400, { code: "invalid_offer" });
+    }
+    if (normalizedPreview.imageOmitted) {
+      auditLog(logger, "warn", "beeper_gateway_preview_image_skipped", {
+        requestId,
+        idempotencyDigest,
+        code: "preview_image_url_not_allowed",
+      });
     }
 
     const normalized = { link, text, preview };
@@ -239,17 +392,26 @@ export function createGateway({
       requestHash(normalized),
       now().toISOString(),
     );
-    if (reserved.kind === "conflict") return json(409, { code: "idempotency_conflict" });
-    if (reserved.kind === "unknown") return json(409, { code: "delivery_unknown" });
-    if (reserved.kind === "pending") return json(409, { code: "delivery_pending" });
-    if (reserved.kind === "replay") return json(200, { ...reserved.response, replayed: true });
+    if (reserved.kind === "conflict") return respond(409, { code: "idempotency_conflict" });
+    if (reserved.kind === "unknown") return respond(409, { code: "delivery_unknown" });
+    if (reserved.kind === "pending") return respond(409, { code: "delivery_pending" });
+    if (reserved.kind === "replay") {
+      return respond(200, { ...reserved.response, replayed: true }, { replayed: true });
+    }
 
     let result;
     if (sendMessageImpl) {
       let image;
       try {
-        image = await downloadPreviewImage(fetchImpl, preview.imageUrl, previewDirectory)
-          .catch(() => null);
+        try {
+          image = await downloadPreviewImage(fetchImpl, preview.imageUrl, previewDirectory);
+        } catch (error) {
+          auditLog(logger, "warn", "beeper_gateway_preview_image_skipped", {
+            requestId,
+            idempotencyDigest,
+            code: safePreviewError(error),
+          });
+        }
         result = await sendMessageImpl({
           chatId,
           text,
@@ -269,7 +431,7 @@ export function createGateway({
           {},
           now().toISOString(),
         );
-        return json(ambiguous ? 503 : 502, {
+        return respond(ambiguous ? 503 : 502, {
           code: ambiguous ? "delivery_unknown" : "beeper_rejected",
         });
       } finally {
@@ -296,19 +458,25 @@ export function createGateway({
         );
       } catch {
         updateDelivery(database, idempotencyKey, "unknown", {}, now().toISOString());
-        return json(503, { code: "delivery_unknown" });
+        return respond(503, { code: "delivery_unknown" });
       }
       result = await response.json().catch(() => ({}));
       if (!response.ok) {
         updateDelivery(database, idempotencyKey, "failed", {}, now().toISOString());
-        return json(502, { code: "beeper_rejected", status: response.status });
+        return respond(502, { code: "beeper_rejected", status: response.status });
       }
+    }
+    const pendingMessageID = String(result?.pendingMessageID || "");
+    if (!pendingMessageID) {
+      updateDelivery(database, idempotencyKey, "unknown", {}, now().toISOString());
+      return respond(503, { code: "delivery_unknown" });
     }
     const accepted = {
       accepted: true,
-      pendingMessageID: String(result?.pendingMessageID || ""),
+      pendingMessageID,
+      deliveryState: "accepted_by_beeper_transport",
     };
-    updateDelivery(database, idempotencyKey, "sent", accepted, now().toISOString());
-    return json(202, accepted);
+    updateDelivery(database, idempotencyKey, "accepted", accepted, now().toISOString());
+    return respond(202, accepted, { deliveryState: accepted.deliveryState });
   };
 }

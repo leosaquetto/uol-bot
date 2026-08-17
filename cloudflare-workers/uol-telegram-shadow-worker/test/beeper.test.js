@@ -2,10 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  beeperDeliveryOfferIds,
   beeperDeliveryIdempotencyKey,
   beeperDestinationKey,
   beeperGatewayConfiguration,
+  beeperGatewayReadinessUrl,
   buildBeeperOfferText,
+  probeBeeperGateway,
   sendBeeperOffer,
 } from "../src/beeper.js";
 
@@ -14,6 +17,7 @@ const offer = {
   title: "Ingresso Clube UOL",
   link: "https://clube.uol.com.br/campanhasdeingresso/offer-1",
   description: "Dois ingressos para o show.",
+  imageUrl: "https://ddrxgn8ucibei.cloudfront.net/beneficios/offer.jpg",
   discordImageProxyUrl: "https://media.discordapp.net/proxy.jpg",
 };
 
@@ -35,8 +39,48 @@ test("Beeper fica opt-in e exige URL e token", () => {
     configured: false,
     ready: true,
     url: "",
+    destinationKey: "",
+    offerIds: [],
+    filterActive: false,
   });
   assert.equal(beeperGatewayConfiguration({ BEEPER_DELIVERY_ENABLED: "true" }).ready, false);
+});
+
+test("valida filtro de recuperação e deriva probe autenticado sem envio", async () => {
+  const env = {
+    BEEPER_DELIVERY_ENABLED: "true",
+    BEEPER_DESTINATION_KEY: "whatsapp-group",
+    BEEPER_DELIVERY_OFFER_IDS: "offer-b,offer-a,offer-a",
+    BEEPER_GATEWAY_URL: "https://beeper.example/v1/send-offer",
+    BEEPER_GATEWAY_TOKEN: "secret",
+  };
+  assert.deepEqual(beeperDeliveryOfferIds(env), ["offer-a", "offer-b"]);
+  assert.equal(beeperGatewayReadinessUrl(env), "https://beeper.example/v1/readyz");
+  assert.throws(
+    () => beeperGatewayReadinessUrl({
+      BEEPER_GATEWAY_URL: "https://beeper.example/wrong-path",
+    }),
+    /beeper_gateway_url_invalid/,
+  );
+  assert.throws(
+    () => beeperGatewayReadinessUrl({
+      BEEPER_GATEWAY_URL: "https://beeper.example/v1/send-offer?token=bad",
+    }),
+    /beeper_gateway_url_invalid/,
+  );
+  assert.throws(
+    () => beeperDeliveryOfferIds({ BEEPER_DELIVERY_OFFER_IDS: "offer ok" }),
+    /beeper_delivery_offer_ids_invalid/,
+  );
+  const result = await probeBeeperGateway(env, async (url, init) => {
+    assert.equal(url, "https://beeper.example/v1/readyz");
+    assert.equal(init.method, "GET");
+    assert.equal(init.headers.Authorization, "Bearer secret");
+    return Response.json({ ok: true });
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.status, 200);
+  assert.equal(result.code, "ready");
 });
 
 test("monta texto curto com URL para o preview nativo", () => {
@@ -65,7 +109,7 @@ test("envia ao gateway autenticado e idempotente", async () => {
     assert.deepEqual(body.preview, {
       title: offer.title,
       summary: offer.description,
-      imageUrl: offer.discordImageProxyUrl,
+      imageUrl: offer.imageUrl,
     });
     return new Response(JSON.stringify({ pendingMessageID: "pending-1" }), {
       status: 202,
@@ -86,6 +130,36 @@ test("preserva entrega interna ambígua sem duplicar", async () => {
         status: 409,
         headers: { "Content-Type": "application/json" },
       })),
+    (error) => error.transport === "beeper" && error.ambiguous === true,
+  );
+});
+
+test("mantém delivery_pending retryável e conflito definitivo terminal", async () => {
+  const baseEnv = {
+    BEEPER_DESTINATION_KEY: "whatsapp-group",
+    BEEPER_GATEWAY_URL: "https://beeper.example/v1/send-offer",
+    BEEPER_GATEWAY_TOKEN: "secret",
+  };
+  await assert.rejects(
+    sendBeeperOffer(baseEnv, offer, { idempotencyKey: "uol:offer-1:v1" }, async () =>
+      Response.json({ code: "delivery_pending" }, { status: 409 })),
+    (error) => error.retryable === true && error.ambiguous === false,
+  );
+  await assert.rejects(
+    sendBeeperOffer(baseEnv, offer, { idempotencyKey: "uol:offer-1:v1" }, async () =>
+      Response.json({ code: "idempotency_conflict" }, { status: 409 })),
+    (error) => error.retryable === false && error.ambiguous === false,
+  );
+});
+
+test("resposta aceita sem pendingMessageID permanece ambígua", async () => {
+  await assert.rejects(
+    sendBeeperOffer({
+      BEEPER_DESTINATION_KEY: "whatsapp-group",
+      BEEPER_GATEWAY_URL: "https://beeper.example/v1/send-offer",
+      BEEPER_GATEWAY_TOKEN: "secret",
+    }, offer, { idempotencyKey: "uol:offer-1:v1" }, async () =>
+      Response.json({ accepted: true }, { status: 202 })),
     (error) => error.transport === "beeper" && error.ambiguous === true,
   );
 });

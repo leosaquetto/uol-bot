@@ -6,6 +6,12 @@ import WebSocket from "ws";
 const RECONNECT_DELAY_MS = 2_000;
 const REQUEST_TIMEOUT_MS = 20_000;
 
+function transportLog(logger, level, event, fields = {}) {
+  const write = logger?.[level] || logger?.log;
+  if (typeof write !== "function") return;
+  write.call(logger, JSON.stringify({ event, ...fields }));
+}
+
 function websocketUrl(baseUrl, transportNonce) {
   const url = new URL(baseUrl);
   url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
@@ -126,7 +132,20 @@ export function startHeadlessRenderer({
       reject(transportError("Beeper headless transport timed out", ambiguous));
     }, requestTimeoutMs);
     pending.set(request.reqID, { resolve, reject, timer, ambiguous });
-    socket.send(codec.encode(request));
+    try {
+      socket.send(codec.encode(request), (error) => {
+        if (!error) return;
+        const waiter = pending.get(request.reqID);
+        if (!waiter) return;
+        pending.delete(request.reqID);
+        clearTimeout(waiter.timer);
+        waiter.reject(transportError("Beeper headless transport write failed", ambiguous));
+      });
+    } catch {
+      pending.delete(request.reqID);
+      clearTimeout(timer);
+      reject(transportError("Beeper headless transport write failed", ambiguous));
+    }
   });
 
   const connect = () => {
@@ -139,9 +158,11 @@ export function startHeadlessRenderer({
         const request = buildInitRequest({ accountId, bridgeId, bridgeType, bridgeProvider });
         await sendRequest(request);
         ready = true;
-        logger.log("Beeper headless account initialized");
-      } catch {
-        logger.error("Beeper headless account initialization failed");
+        transportLog(logger, "info", "beeper_transport_initialized");
+      } catch (error) {
+        transportLog(logger, "error", "beeper_transport_initialization_failed", {
+          errorType: String(error?.name || "Error"),
+        });
         socket.close();
       }
     });
@@ -157,8 +178,10 @@ export function startHeadlessRenderer({
         const error = message?.data?.error || (result?.errorName ? result : null);
         if (error) waiter.reject(transportError(error.errorMessage || "Beeper transport rejected request"));
         else waiter.resolve(result);
-      } catch {
-        logger.error("Beeper headless transport decode failed");
+      } catch (error) {
+        transportLog(logger, "error", "beeper_transport_decode_failed", {
+          errorType: String(error?.name || "Error"),
+        });
         socket.close();
       }
     });
@@ -166,6 +189,7 @@ export function startHeadlessRenderer({
     socket.on("close", () => {
       ready = false;
       rejectPending("Beeper headless transport disconnected");
+      transportLog(logger, "warn", "beeper_transport_disconnected", { reconnecting: !stopped });
       if (!stopped) reconnectTimer = setTimeout(connect, reconnectDelayMs);
     });
   };
@@ -187,6 +211,9 @@ export function startHeadlessRenderer({
         pendingMessageId,
       });
       await sendRequest(request, true);
+      transportLog(logger, "info", "beeper_transport_message_accepted", {
+        confirmation: "accepted_by_beeper_transport",
+      });
       return { accepted: true, pendingMessageID: pendingMessageId };
     },
     stop() {
