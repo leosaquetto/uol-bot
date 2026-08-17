@@ -15,7 +15,7 @@ function migrationBlocks() {
 
 test("migrações SQLite criam do zero o schema corrente", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 24);
+  assert.equal(blocks.length, 25);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks) {
     assert.equal(sql.includes("${"), false, "migração não pode depender de interpolação dinâmica");
@@ -24,7 +24,7 @@ test("migrações SQLite criam do zero o schema corrente", () => {
   const version = database.prepare(
     "SELECT MAX(id) AS version FROM _sql_schema_migrations",
   ).get().version;
-  assert.equal(Number(version), 24);
+  assert.equal(Number(version), 25);
   const columns = new Set(database.prepare("PRAGMA table_info(offers)").all()
     .map((column) => column.name));
   for (const column of [
@@ -86,8 +86,18 @@ test("migrações SQLite criam do zero o schema corrente", () => {
     "offers_restock_finalize_v22",
     "beeper_delivery_due_v23",
     "beeper_delivery_inflight_v24",
+    "offers_discord_image_cache_due_v25",
+    "offers_main_image_upgrade_due_v25",
+    "beeper_delivery_pending_v25",
   ]) {
     assert.equal(indexes.has(name), true, `índice ausente: ${name}`);
+  }
+  for (const name of [
+    "offers_main_image_upgrade_idx",
+    "offers_discord_image_cache_idx",
+    "offers_discord_feed_idx",
+  ]) {
+    assert.equal(indexes.has(name), false, `índice substituído ainda presente: ${name}`);
   }
   assert.match(indexes.get("offers_comment_due_v21"), /WHERE discussion_message_id > 0/);
   assert.match(indexes.get("ticket_probe_due_v21"), /WHERE next_at > ''/);
@@ -145,7 +155,7 @@ test("upgrade v9 preserva recibos, comentários e estado operacional", () => {
     Number(database.prepare(
       "SELECT MAX(id) AS version FROM _sql_schema_migrations",
     ).get().version),
-    24,
+    25,
   );
   database.close();
 });

@@ -183,6 +183,104 @@ describe("UOL Worker no runtime Cloudflare", () => {
     }
   });
 
+  it("entrega Beeper sob reserva, publica pending vivo e não sonda fila vazia", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("beeper-critical-under-reserve");
+    const gatewayCalls = [];
+    vi.stubGlobal("fetch", async (input) => {
+      const url = String(input);
+      gatewayCalls.push(url);
+      if (url === "https://beeper.test/v1/readyz") {
+        return Response.json({ ok: true });
+      }
+      if (url === "https://beeper.test/v1/send-offer") {
+        return Response.json({ pendingMessageID: "pending-critical-1" }, { status: 202 });
+      }
+      throw new Error(`unexpected_fetch:${url}`);
+    });
+
+    try {
+      await runInDurableObject(stub, async (instance, state) => {
+        instance.env = {
+          ...instance.env,
+          BEEPER_DELIVERY_ENABLED: "true",
+          BEEPER_DESTINATION_KEY: "whatsapp-group",
+          BEEPER_GATEWAY_URL: "https://beeper.test/v1/send-offer",
+          BEEPER_GATEWAY_TOKEN: "vitest-beeper-token",
+          DELIVERY_MAX_ATTEMPTS: "10",
+        };
+        const seenAt = "2026-08-17T20:58:00.000Z";
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, category, image_url,
+             first_seen_at, last_seen_at, status, discord_sent_at
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, ?, 'delivered', ?)`,
+          "ticket-critical",
+          "https://clube.uol.com.br/campanhasdeingresso/ticket-critical",
+          "2 INGRESSOS: oferta crítica",
+          "2 INGRESSOS: oferta crítica",
+          "https://ddrxgn8ucibei.cloudfront.net/beneficios/test.jpg",
+          seenAt,
+          seenAt,
+          seenAt,
+        );
+        const row = state.storage.sql.exec(
+          "SELECT * FROM offers WHERE id = 'ticket-critical'",
+        ).one();
+        expect(instance.enqueueBeeperOffer(row)).toBe(true);
+        expect(instance.runtimeSnapshot("beeper")).toMatchObject({ pending: 1 });
+
+        instance.updateBeeperRuntimeSnapshot({ pending: 0 });
+        instance.readinessCache = null;
+        await expect(instance.getReadiness()).resolves.toMatchObject({
+          beeper: { pending: 1 },
+        });
+
+        instance.storageUsageSnapshot = () => ({
+          rowsRead: 4_900_000,
+          limit: 5_000_000,
+          criticalReserve: 1_000_000,
+          resetAt: "2026-08-18T00:00:00.000Z",
+          maintenanceAllowed: false,
+          primaryAllowed: true,
+        });
+        instance.completeStorageUsageCycle = () => 0;
+        await expect(instance.runMaintenanceTick("test")).resolves.toMatchObject({
+          outcome: "storage_read_budget_guard",
+        });
+
+        await expect(instance.processCriticalBeeperDeliveryQueue(
+          new Date("2026-08-17T21:00:00.000Z"),
+        )).resolves.toMatchObject({ sent: 1, failed: 0, blocked: false });
+        expect(gatewayCalls).toEqual([
+          "https://beeper.test/v1/readyz",
+          "https://beeper.test/v1/send-offer",
+        ]);
+
+        gatewayCalls.length = 0;
+        instance.updateBeeperRuntimeSnapshot({ gatewayOk: false });
+        await expect(instance.processCriticalBeeperDeliveryQueue(
+          new Date("2026-08-17T21:01:00.000Z"),
+        )).resolves.toMatchObject({ sent: 0, skipped: true });
+        expect(gatewayCalls).toEqual([]);
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("limita saúde operacional e reparos ao intervalo de cinco minutos", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-health-cadence");
+    await runInDurableObject(stub, (instance) => {
+      instance.setMetadata("ops_health_checked_at", "2026-08-17T20:00:00.000Z");
+      expect(instance.operationalHealthDue(
+        new Date("2026-08-17T20:04:59.999Z"),
+      )).toBe(false);
+      expect(instance.operationalHealthDue(
+        new Date("2026-08-17T20:05:00.000Z"),
+      )).toBe(true);
+    });
+  });
+
   it("consulta o ciclo Discord sem exceder o limite de colunas SQLite", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("discord-availability-empty");
     await runInDurableObject(stub, async (instance) => {

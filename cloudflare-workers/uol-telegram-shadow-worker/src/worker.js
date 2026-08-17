@@ -121,6 +121,7 @@ const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
 const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
 const READINESS_CACHE_TTL_MS = 15_000;
 const BEEPER_RECOVERY_METADATA_KEY = "beeper_delivery_offer_ids_applied_v3";
+const OPS_HEALTH_INTERVAL_SECONDS = 5 * 60;
 const STORAGE_STAGE_NAMES = [
   "primary",
   "delivery",
@@ -530,6 +531,7 @@ export class UolTelegramShadow extends DurableObject {
     super(ctx, env);
     this.scanInFlight = false;
     this.maintenanceInFlight = false;
+    this.beeperDeliveryInFlight = false;
     this.metadataCache = new Map();
     this.runtimeSnapshotCache = new Map();
     this.readinessCache = null;
@@ -810,11 +812,19 @@ export class UolTelegramShadow extends DurableObject {
     const task = this.withDetachedStorageCycle(
       "delivery",
       "delivery",
-      () => this.processDeliveryQueue(new Date(), {
-        priorityIds,
-        rows: suppliedRows,
-        targetNames: ["discord"],
-      }),
+      async () => {
+        const result = await this.processDeliveryQueue(new Date(), {
+          priorityIds,
+          rows: suppliedRows,
+          targetNames: ["discord"],
+        });
+        if (Number(result.discordSent || 0) > 0) {
+          const beeper = await this.processCriticalBeeperDeliveryQueue(new Date());
+          result.beeperSent = Number(beeper.sent || 0);
+          result.beeperFailed = Number(beeper.failed || 0);
+        }
+        return result;
+      },
     ).then((result) => {
       logEvent(result.failed ? "warn" : "info", "uol_telegram_discord_delivery", {
         source,
@@ -837,6 +847,34 @@ export class UolTelegramShadow extends DurableObject {
         selectedRows: [],
         error: sanitizeError(error),
       };
+    });
+    this.ctx.waitUntil(task);
+    return task;
+  }
+
+  scheduleCriticalBeeperDelivery(source = "alarm") {
+    const now = new Date();
+    const configuration = beeperGatewayConfiguration(this.env);
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    if (!this.beeperCriticalDeliveryDue(now, configuration, maxAttempts)) {
+      return Promise.resolve({
+        sent: 0,
+        failed: 0,
+        queued: 0,
+        blocked: false,
+        skipped: true,
+      });
+    }
+    const task = this.withDetachedStorageCycle(
+      "delivery",
+      "delivery",
+      () => this.processCriticalBeeperDeliveryQueue(now),
+    ).catch((error) => {
+      logEvent("error", "uol_beeper_critical_delivery_failed", {
+        source,
+        error: sanitizeError(error),
+      });
+      return { sent: 0, failed: 1, queued: 0, blocked: false };
     });
     this.ctx.waitUntil(task);
     return task;
@@ -1544,6 +1582,43 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (24);
       `);
     }
+    if (currentVersion < 25) {
+      this.sqlExec(`
+        CREATE INDEX IF NOT EXISTS offers_discord_image_cache_due_v25
+          ON offers(
+            discord_image_cache_next_attempt_at,
+            discord_image_cache_attempts,
+            first_seen_at DESC,
+            id
+          ) WHERE would_send_main = 1
+            AND link NOT LIKE '%/campanhasdeingresso/%'
+            AND discord_image_cache_message_id = ''
+            AND discord_image_proxy_url = ''
+            AND status NOT IN (
+              'baseline', 'discarded', 'shadow_sold_out', 'sold_out'
+            );
+        CREATE INDEX IF NOT EXISTS offers_main_image_upgrade_due_v25
+          ON offers(
+            main_image_upgrade_next_attempt_at,
+            main_image_upgrade_attempts,
+            first_seen_at DESC,
+            id
+          ) WHERE telegram_image_strategy = 'text_timeout'
+            AND main_message_kind = 'text'
+            AND main_message_id > 0
+            AND COALESCE(
+              NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),
+              NULLIF(card_image_url, ''), partner_image_url
+            ) <> '';
+        CREATE INDEX IF NOT EXISTS beeper_delivery_pending_v25
+          ON beeper_delivery_queue(offer_id)
+          WHERE sent_at = '';
+        DROP INDEX IF EXISTS offers_main_image_upgrade_idx;
+        DROP INDEX IF EXISTS offers_discord_image_cache_idx;
+        DROP INDEX IF EXISTS offers_discord_feed_idx;
+        INSERT INTO _sql_schema_migrations (id) VALUES (25);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -1988,15 +2063,14 @@ export class UolTelegramShadow extends DurableObject {
     }
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const rows = this.sqlExec(
-      `SELECT * FROM offers
+      `SELECT * FROM offers INDEXED BY offers_discord_image_cache_due_v25
        WHERE would_send_main = 1
          AND link NOT LIKE '%/campanhasdeingresso/%'
          AND discord_image_cache_message_id = ''
          AND discord_image_proxy_url = ''
          AND status NOT IN ('baseline', 'discarded', 'shadow_sold_out', 'sold_out')
          AND discord_image_cache_attempts < ?
-         AND (discord_image_cache_next_attempt_at = ''
-              OR discord_image_cache_next_attempt_at <= ?)
+         AND discord_image_cache_next_attempt_at <= ?
        ORDER BY first_seen_at DESC LIMIT ?`,
       maxAttempts,
       now.toISOString(),
@@ -2041,15 +2115,14 @@ export class UolTelegramShadow extends DurableObject {
     if (this.currentDeliveryMode() !== "live") return { upgraded: 0, failed: 0 };
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
     const rows = this.sqlExec(
-      `SELECT * FROM offers
+      `SELECT * FROM offers INDEXED BY offers_main_image_upgrade_due_v25
        WHERE telegram_image_strategy = 'text_timeout'
          AND main_message_kind = 'text'
          AND main_message_id > 0
          AND main_image_upgrade_attempts < ?
          AND COALESCE(NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),
                       NULLIF(card_image_url, ''), partner_image_url) <> ''
-         AND (main_image_upgrade_next_attempt_at = ''
-              OR main_image_upgrade_next_attempt_at <= ?)
+         AND main_image_upgrade_next_attempt_at <= ?
        ORDER BY CASE
          WHEN discord_image_proxy_url <> '' THEN 0
          WHEN discord_message_id <> '' THEN 1
@@ -2555,6 +2628,19 @@ export class UolTelegramShadow extends DurableObject {
       now.toISOString(),
       key,
     );
+  }
+
+  operationalHealthDue(now = new Date()) {
+    const intervalSeconds = envNumber(
+      this.env,
+      "OPS_HEALTH_INTERVAL_SECONDS",
+      OPS_HEALTH_INTERVAL_SECONDS,
+      60,
+      3_600,
+    );
+    const lastCheckedAt = Date.parse(this.metadataValue("ops_health_checked_at") || "");
+    return !Number.isFinite(lastCheckedAt) ||
+      now.getTime() - lastCheckedAt >= intervalSeconds * 1_000;
   }
 
   async processOperationalHealth(now = new Date()) {
@@ -3818,15 +3904,24 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   enqueueBeeperOffer(row) {
-    if (
-      !beeperGatewayConfiguration(this.env).enabled ||
-      !row?.id || !isTicketCampaign(rowToOffer(row))
-    ) return false;
+    const configuration = beeperGatewayConfiguration(this.env);
+    if (!configuration.enabled || !row?.id || !isTicketCampaign(rowToOffer(row))) {
+      return false;
+    }
     const inserted = this.sqlExec(
       "INSERT OR IGNORE INTO beeper_delivery_queue(offer_id) VALUES (?)",
       row.id,
     );
-    return Number(inserted.rowsWritten || 0) > 0;
+    const queued = Number(inserted.rowsWritten || 0) > 0;
+    if (queued) {
+      const previous = this.runtimeSnapshot("beeper");
+      this.updateBeeperRuntimeSnapshot({
+        enabled: true,
+        configured: configuration.configured,
+        pending: Number(previous.pending || 0) + 1,
+      });
+    }
+    return queued;
   }
 
   updateBeeperRuntimeSnapshot(patch = {}) {
@@ -3845,7 +3940,10 @@ export class UolTelegramShadow extends DurableObject {
       lastErrorCode: String(snapshot.lastErrorCode || ""),
     });
     const changed = stable(previous) !== stable(next);
-    if (changed) this.setRuntimeSnapshot("beeper", next);
+    if (changed) {
+      this.setRuntimeSnapshot("beeper", next);
+      this.readinessCache = null;
+    }
     else this.runtimeSnapshotCache.set("beeper", next);
     return { changed, snapshot: next };
   }
@@ -3897,7 +3995,7 @@ export class UolTelegramShadow extends DurableObject {
                 lower(COALESCE(o.category, '')) LIKE '%campanhasdeingresso%'
               )
                 THEN 1 ELSE 0 END AS ticket
-         FROM beeper_delivery_queue AS q
+         FROM beeper_delivery_queue AS q INDEXED BY beeper_delivery_pending_v25
          LEFT JOIN offers AS o ON o.id = q.offer_id
         WHERE q.sent_at = ''
         ORDER BY q.offer_id ASC
@@ -3915,6 +4013,68 @@ export class UolTelegramShadow extends DurableObject {
       exhaustedIds: rows.filter((row) => Number(row.attempts || 0) >= maxAttempts)
         .map((row) => String(row.offer_id || "")),
     };
+  }
+
+  beeperQueueHasDueWork(now = new Date(), maxAttempts = 10) {
+    const due = this.sqlExec(
+      `SELECT offer_id
+         FROM beeper_delivery_queue INDEXED BY beeper_delivery_due_v23
+        WHERE sent_at = '' AND in_flight_at = ''
+          AND next_attempt_at <= ? AND attempts < ?
+        ORDER BY next_attempt_at ASC
+        LIMIT 1`,
+      now.toISOString(),
+      maxAttempts,
+    ).toArray()[0];
+    if (due?.offer_id) return true;
+    const staleSeconds = envNumber(
+      this.env,
+      "DELIVERY_IN_FLIGHT_STALE_SECONDS",
+      30,
+      15,
+      3_600,
+    );
+    const staleCutoff = new Date(now.getTime() - staleSeconds * 1_000).toISOString();
+    return Boolean(this.sqlExec(
+      `SELECT offer_id
+         FROM beeper_delivery_queue INDEXED BY beeper_delivery_inflight_v24
+        WHERE sent_at = '' AND in_flight_at <> '' AND in_flight_at <= ?
+        ORDER BY in_flight_at ASC, offer_id ASC
+        LIMIT 1`,
+      staleCutoff,
+    ).toArray()[0]?.offer_id);
+  }
+
+  beeperCriticalDeliveryDue(
+    now = new Date(),
+    configuration = beeperGatewayConfiguration(this.env),
+    maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50),
+  ) {
+    if (!configuration.enabled) return false;
+    const recoveryFingerprint = configuration.offerIds.join(",");
+    const recoveryPending = configuration.configured && configuration.filterActive &&
+      this.metadataValue(BEEPER_RECOVERY_METADATA_KEY) !== recoveryFingerprint;
+    return recoveryPending || this.beeperQueueHasDueWork(now, maxAttempts);
+  }
+
+  async processCriticalBeeperDeliveryQueue(now = new Date(), limit = 4) {
+    const configuration = beeperGatewayConfiguration(this.env);
+    if (!configuration.enabled) {
+      return { sent: 0, failed: 0, queued: 0, blocked: false, skipped: true };
+    }
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    if (!this.beeperCriticalDeliveryDue(now, configuration, maxAttempts)) {
+      return { sent: 0, failed: 0, queued: 0, blocked: false, skipped: true };
+    }
+    if (this.beeperDeliveryInFlight) {
+      return { sent: 0, failed: 0, queued: 0, blocked: false, inProgress: true };
+    }
+    this.beeperDeliveryInFlight = true;
+    try {
+      return await this.processBeeperDeliveryQueue(now, limit);
+    } finally {
+      this.beeperDeliveryInFlight = false;
+    }
   }
 
   async processBeeperDeliveryQueue(now = new Date(), limit = 4) {
@@ -3994,7 +4154,7 @@ export class UolTelegramShadow extends DurableObject {
        JOIN offers AS o ON o.id = q.offer_id
        WHERE q.sent_at = '' AND q.in_flight_at = ''
          AND q.attempts < ?
-         AND (q.next_attempt_at = '' OR q.next_attempt_at <= ?)
+         AND q.next_attempt_at <= ?
          AND (
            lower(o.link) LIKE '%/campanhasdeingresso/%' OR
            lower(o.category) LIKE '%campanhasdeingresso%'
@@ -4008,7 +4168,7 @@ export class UolTelegramShadow extends DurableObject {
       Math.max(1, Math.min(16, Number(limit || 4))),
     ).toArray();
     const previousGateway = this.runtimeSnapshot("beeper");
-    if (rows.length || previousGateway.gatewayOk === false) {
+    if (rows.length) {
       const gateway = await probeBeeperGateway(this.env);
       const gatewayState = this.updateBeeperRuntimeSnapshot({
         enabled: true,
@@ -6211,6 +6371,7 @@ export class UolTelegramShadow extends DurableObject {
 
     try {
       const now = new Date();
+      const operationalHealthDue = this.operationalHealthDue(now);
       const initializedAt = this.metadataValue("initialized_at");
       const api = this.runtimeSnapshot("api");
       const html = this.runtimeSnapshot("html");
@@ -6430,15 +6591,6 @@ export class UolTelegramShadow extends DurableObject {
       result.discordSent = discordDelivery.discordSent;
       result.deliveryFailed += discordDelivery.failed;
 
-      const beeperDelivery = await this.withStorageStage(
-        "delivery",
-        () => this.processBeeperDeliveryQueue(new Date()),
-      );
-      result.beeperSent = beeperDelivery.sent;
-      result.beeperQueued = beeperDelivery.queued;
-      result.beeperBlocked = beeperDelivery.blocked;
-      result.deliveryFailed += beeperDelivery.failed;
-
       const imageCaches = await this.withStorageStage(
         "images",
         () => this.primePendingDiscordImageCache(new Date()),
@@ -6478,12 +6630,14 @@ export class UolTelegramShadow extends DurableObject {
       result.restockMainReposted = restock.mainReposted;
       result.restockCanal2Reposted = restock.canal2Reposted;
       result.deliveryFailed += restock.failed;
-      const maintenanceRepairs = this.repairKnownMaintenanceDeadLetters(
-        new Date(),
-        envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50),
-      );
-      result.maintenanceRepairs = maintenanceRepairs.mainMarkedSynced +
-        maintenanceRepairs.canal2Requeued;
+      if (operationalHealthDue) {
+        const maintenanceRepairs = this.repairKnownMaintenanceDeadLetters(
+          new Date(),
+          envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50),
+        );
+        result.maintenanceRepairs = maintenanceRepairs.mainMarkedSynced +
+          maintenanceRepairs.canal2Requeued;
+      }
       const soldOut = await this.withStorageStage(
         "maintenanceLedger",
         () => this.processSoldOutSync(new Date()),
@@ -6508,11 +6662,13 @@ export class UolTelegramShadow extends DurableObject {
       } catch (error) {
         this.setMetadataIfChanged("telegram_webhook_check_error", sanitizeError(error));
       }
-      try {
-        await this.processOperationalHealth(new Date());
-        this.setMetadataIfChanged("ops_health_error", "");
-      } catch (error) {
-        this.setMetadataIfChanged("ops_health_error", sanitizeError(error));
+      if (operationalHealthDue) {
+        try {
+          await this.processOperationalHealth(new Date());
+          this.setMetadataIfChanged("ops_health_error", "");
+        } catch (error) {
+          this.setMetadataIfChanged("ops_health_error", sanitizeError(error));
+        }
       }
       if (
         result.newOffers || result.canal2Sent || result.imageCachesPrimed ||
@@ -6592,6 +6748,9 @@ export class UolTelegramShadow extends DurableObject {
         error: sanitizeError(error),
       });
     }
+    // WhatsApp é uma entrega crítica, mas permanece fora do tempo de resposta
+    // do polling. O waitUntil mantém a tentativa viva sem atrasar a coleta.
+    this.scheduleCriticalBeeperDelivery("alarm");
     if (result) {
       const lastMaintenanceBootstrap = Date.parse(
         this.metadataValue("maintenance_alarm_last_ensured_at") || "",
@@ -7412,6 +7571,7 @@ export class UolTelegramShadow extends DurableObject {
     const telegram = telegramConfiguration(this.env);
     const beeperConfiguration = beeperGatewayConfiguration(this.env);
     const beeperRuntime = this.runtimeSnapshot("beeper");
+    const beeperQueue = this.beeperQueueDiagnostics(maxAttempts);
     const configuration = deliveryConfiguration(
       this.env,
       telegram,
@@ -7426,9 +7586,9 @@ export class UolTelegramShadow extends DurableObject {
       configuration.canal2.ready && configuration.discord.ready && beeperReady;
     const criticalIncidents = Number(incidents.critical || 0);
     const deadLetters = Number(queue.dead_letter || 0) +
-      Number(beeperRuntime.exhausted || 0);
+      beeperQueue.exhausted;
     const unknown = Number(queue.unknown || 0) + Number(queue.comment_unknown || 0) +
-      Number(beeperRuntime.unknown || 0);
+      beeperQueue.unknown;
     const blockedConfiguration = Number(queue.blocked_configuration || 0) +
       Number(beeperConfiguration.enabled && !beeperConfiguration.configured);
     const maintenanceDeadLetters = Number(queue.restock_dead_letter || 0) +
@@ -7502,9 +7662,9 @@ export class UolTelegramShadow extends DurableObject {
         gatewayCode: String(beeperRuntime.gatewayCode || ""),
         checkedAt: String(beeperRuntime.checkedAt || ""),
         filterActive: beeperConfiguration.filterActive,
-        pending: Number(beeperRuntime.pending || 0),
-        exhausted: Number(beeperRuntime.exhausted || 0),
-        unknown: Number(beeperRuntime.unknown || 0),
+        pending: beeperQueue.pending,
+        exhausted: beeperQueue.exhausted,
+        unknown: beeperQueue.unknown,
       },
       queueSlo,
       storageReadBudget,

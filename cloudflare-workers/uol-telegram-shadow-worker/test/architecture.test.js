@@ -144,7 +144,6 @@ test("lote tardio filtra imagem e backoff antes do limite", () => {
   assert.ok(limitIndex > 0);
   for (const filter of [
     "COALESCE(NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),",
-    "main_image_upgrade_next_attempt_at = ''",
     "main_image_upgrade_next_attempt_at <= ?",
   ]) {
     const filterIndex = upgrade.indexOf(filter);
@@ -155,6 +154,7 @@ test("lote tardio filtra imagem e backoff antes do limite", () => {
   assert.match(upgrade, /first_seen_at DESC/);
   assert.match(upgrade, /discordImageProxyForOffer\(row, originalOffer\)/);
   assert.match(upgrade, /telegramImageRemoteStrategy:\s*"discord_proxy"/);
+  assert.match(upgrade, /INDEXED BY offers_main_image_upgrade_due_v25/);
 });
 
 test("cache de imagem não repete oferta que já tem proxy ou tentativa terminal", () => {
@@ -164,7 +164,8 @@ test("cache de imagem não repete oferta que já tem proxy ou tentativa terminal
   );
   assert.match(prime, /discord_image_cache_attempts < \?/);
   assert.match(prime, /discord_image_proxy_url = ''/);
-  assert.match(prime, /discord_image_cache_next_attempt_at = ''/);
+  assert.match(prime, /discord_image_cache_next_attempt_at <= \?/);
+  assert.match(prime, /INDEXED BY offers_discord_image_cache_due_v25/);
 });
 
 test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
@@ -180,6 +181,53 @@ test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
   assert.match(
     primaryAlarm,
     /\(maintenanceUrgent \|\| beeperRecoveryUrgent\) &&[\s\S]*maintenanceBudget\.maintenanceAllowed/,
+  );
+});
+
+test("WhatsApp crítico independe da manutenção e não sonda gateway sem fila vencida", () => {
+  const primaryAlarm = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
+  const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
+  const criticalBeeper = methodSource(
+    "  beeperQueueHasDueWork(",
+    "  async processDiscussionComments(",
+  );
+  const beeperDiagnostics = methodSource(
+    "  beeperQueueDiagnostics(",
+    "  beeperQueueHasDueWork(",
+  );
+  const discordSchedule = methodSource("  scheduleDiscordDelivery(", "  storageUsageSnapshot(");
+  const beeperSchedule = methodSource(
+    "  scheduleCriticalBeeperDelivery(",
+    "  storageUsageSnapshot(",
+  );
+
+  assert.match(primaryAlarm, /scheduleCriticalBeeperDelivery\("alarm"\)/);
+  assert.doesNotMatch(primaryAlarm, /await this\.scheduleCriticalBeeperDelivery/);
+  assert.doesNotMatch(maintenance, /processBeeperDeliveryQueue\(/);
+  assert.doesNotMatch(maintenance, /processCriticalBeeperDeliveryQueue\(/);
+  assert.match(discordSchedule, /discordSent[\s\S]*processCriticalBeeperDeliveryQueue\(/);
+  assert.match(beeperSchedule, /withDetachedStorageCycle\(/);
+  assert.match(beeperSchedule, /this\.ctx\.waitUntil\(task\)/);
+  assert.match(criticalBeeper, /INDEXED BY beeper_delivery_due_v23/);
+  assert.match(criticalBeeper, /INDEXED BY beeper_delivery_inflight_v24/);
+  assert.match(beeperDiagnostics, /INDEXED BY beeper_delivery_pending_v25/);
+  assert.match(criticalBeeper, /if \(rows\.length\)/);
+  assert.doesNotMatch(criticalBeeper, /rows\.length \|\| previousGateway\.gatewayOk/);
+});
+
+test("saúde operacional e reparos pesados compartilham gate de cinco minutos", () => {
+  const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
+  const healthGate = methodSource("  operationalHealthDue(", "  async processOperationalHealth(");
+
+  assert.match(healthGate, /OPS_HEALTH_INTERVAL_SECONDS/);
+  assert.match(healthGate, /ops_health_checked_at/);
+  assert.match(
+    maintenance,
+    /if \(operationalHealthDue\) \{[\s\S]*repairKnownMaintenanceDeadLetters\(/,
+  );
+  assert.match(
+    maintenance,
+    /if \(operationalHealthDue\) \{[\s\S]*processOperationalHealth\(/,
   );
 });
 

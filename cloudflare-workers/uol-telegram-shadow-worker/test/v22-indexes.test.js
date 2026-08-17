@@ -161,7 +161,7 @@ function splitRestockIds(database, canal2Enabled) {
 
 test("v22 cria cinco índices parciais e todos os seletores evitam sort temporário", () => {
   const blocks = migrationBlocks();
-  assert.equal(blocks.length, 24);
+  assert.equal(blocks.length, 25);
   const database = new DatabaseSync(":memory:");
   for (const sql of blocks.slice(0, 21)) database.exec(sql);
   assert.equal(Number(database.prepare(
