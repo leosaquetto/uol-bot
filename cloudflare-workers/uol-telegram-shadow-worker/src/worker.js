@@ -120,6 +120,7 @@ const MAX_HTML_BYTES = 2_000_000;
 const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
 const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
 const READINESS_CACHE_TTL_MS = 15_000;
+const BEEPER_RECOVERY_METADATA_KEY = "beeper_delivery_offer_ids_applied_v2";
 const STORAGE_STAGE_NAMES = [
   "primary",
   "delivery",
@@ -3852,13 +3853,24 @@ export class UolTelegramShadow extends DurableObject {
   applyBeeperDeliveryRecoveryFilter(configuration) {
     const ids = configuration.offerIds || [];
     const fingerprint = ids.join(",");
-    const key = "beeper_delivery_offer_ids_applied";
-    const previous = this.metadataValue(key);
+    const previous = this.metadataValue(BEEPER_RECOVERY_METADATA_KEY);
     if (!fingerprint) {
-      if (previous) this.setMetadata(key, "");
-      return { applied: false, reset: 0 };
+      if (previous) this.setMetadata(BEEPER_RECOVERY_METADATA_KEY, "");
+      return { applied: false, queued: 0, reset: 0 };
     }
-    if (previous === fingerprint) return { applied: false, reset: 0 };
+    if (previous === fingerprint) return { applied: false, queued: 0, reset: 0 };
+    const placeholders = ids.map(() => "?").join(", ");
+    const inserted = this.sqlExec(
+      `INSERT OR IGNORE INTO beeper_delivery_queue(offer_id)
+       SELECT id FROM offers
+        WHERE id IN (${placeholders})
+          AND discord_sent_at <> ''
+          AND (
+            lower(link) LIKE '%/campanhasdeingresso/%' OR
+            lower(category) LIKE '%campanhasdeingresso%'
+          )`,
+      ...ids,
+    );
     let reset = 0;
     for (const offerId of ids) {
       const cursor = this.sqlExec(
@@ -3869,8 +3881,12 @@ export class UolTelegramShadow extends DurableObject {
       );
       reset += Number(cursor.rowsWritten || 0);
     }
-    this.setMetadata(key, fingerprint);
-    return { applied: true, reset };
+    this.setMetadata(BEEPER_RECOVERY_METADATA_KEY, fingerprint);
+    return {
+      applied: true,
+      queued: Number(inserted.rowsWritten || 0),
+      reset,
+    };
   }
 
   beeperQueueDiagnostics(maxAttempts) {
@@ -3936,6 +3952,7 @@ export class UolTelegramShadow extends DurableObject {
       recoveryDiagnostics = this.beeperQueueDiagnostics(maxAttempts);
       logEvent("info", "uol_beeper_recovery_filter_applied", {
         offerIds: configuration.offerIds,
+        queued: recovery.queued,
         reset: recovery.reset,
         pendingIds: recoveryDiagnostics.pendingIds,
         exhaustedIds: recoveryDiagnostics.exhaustedIds,
@@ -6589,7 +6606,7 @@ export class UolTelegramShadow extends DurableObject {
       const beeperRecoveryFingerprint = beeperRecovery.offerIds.join(",");
       const beeperRecoveryUrgent = beeperRecovery.enabled &&
         beeperRecovery.configured && beeperRecovery.filterActive &&
-        this.metadataValue("beeper_delivery_offer_ids_applied") !==
+        this.metadataValue(BEEPER_RECOVERY_METADATA_KEY) !==
           beeperRecoveryFingerprint;
       const maintenanceBudget = this.storageUsageSnapshot();
       if (maintenanceUrgent || beeperRecoveryUrgent || maintenanceBootstrapDue) {

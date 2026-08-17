@@ -86,7 +86,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           ...instance.env,
           BEEPER_DELIVERY_ENABLED: "true",
           BEEPER_DESTINATION_KEY: "whatsapp-group",
-          BEEPER_DELIVERY_OFFER_IDS: "ticket-a,ticket-b,ticket-missing",
+          BEEPER_DELIVERY_OFFER_IDS: "ticket-a,ticket-b,ticket-new,ticket-missing",
           BEEPER_GATEWAY_URL: "https://beeper.test/v1/send-offer",
           BEEPER_GATEWAY_TOKEN: "vitest-beeper-token",
           DELIVERY_MAX_ATTEMPTS: "10",
@@ -97,7 +97,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           id, link, preview_title, title, category, image_url,
           first_seen_at, last_seen_at, status, discord_sent_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'delivered', ?)`;
-        for (const id of ["ticket-a", "ticket-b", "ticket-outside"]) {
+        for (const id of ["ticket-a", "ticket-b", "ticket-new", "ticket-outside"]) {
           state.storage.sql.exec(
             insertOffer,
             id,
@@ -151,8 +151,8 @@ describe("UOL Worker no runtime Cloudflare", () => {
         const result = await instance.processBeeperDeliveryQueue(
           new Date("2026-08-17T19:00:00.000Z"),
         );
-        expect(result).toMatchObject({ sent: 2, failed: 0, blocked: false });
-        expect(delivered.sort()).toEqual(["ticket-a", "ticket-b"]);
+        expect(result).toMatchObject({ sent: 3, failed: 0, blocked: false });
+        expect(delivered.sort()).toEqual(["ticket-a", "ticket-b", "ticket-new"]);
         expect(state.storage.sql.exec(
           "SELECT sent_at FROM beeper_delivery_queue WHERE offer_id = 'ticket-outside'",
         ).one().sent_at).toBe("");
@@ -165,13 +165,15 @@ describe("UOL Worker no runtime Cloudflare", () => {
           { target: "beeper", state: "attempt_started" },
           { target: "beeper", state: "accepted" },
           { target: "beeper", state: "attempt_started" },
+          { target: "beeper", state: "accepted" },
+          { target: "beeper", state: "attempt_started" },
         ]);
 
         const replay = await instance.processBeeperDeliveryQueue(
           new Date("2026-08-17T19:01:00.000Z"),
         );
         expect(replay.sent).toBe(0);
-        expect(delivered).toHaveLength(2);
+        expect(delivered).toHaveLength(3);
       });
     } finally {
       vi.unstubAllGlobals();
