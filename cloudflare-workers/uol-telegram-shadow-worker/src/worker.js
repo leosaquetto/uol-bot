@@ -3326,7 +3326,7 @@ export class UolTelegramShadow extends DurableObject {
     const rows = this.sqlExec(
       `SELECT id FROM offers
        WHERE main_sent_at = ''
-         AND main_delivery_unknown_at <> ''
+         AND main_delivery_unknown_at > ''
          AND main_delivery_unknown_at <= ?
          AND main_delivery_attempts < ?
        ORDER BY main_delivery_unknown_at ASC
