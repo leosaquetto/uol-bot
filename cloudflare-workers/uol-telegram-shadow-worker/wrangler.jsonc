@@ -28,7 +28,6 @@
     "DISCORD_DELIVERY_ENABLED": "true",
     "BEEPER_DELIVERY_ENABLED": "true",
     "BEEPER_DESTINATION_KEY": "whatsapp-group",
-    "BEEPER_DELIVERY_OFFER_IDS": "pdw-2-ingressos-22-08-teatro-das-artes-sp,pdu-2-ingressos-21-08-teatro-inatel-mg,pdv-2-ingressos-20-08-theatro-capitolio-mg",
     "OPS_TICKET_GRACE_MINUTES": "3",
     "OPS_ALERT_COOLDOWN_MINUTES": "360",
     "OPS_ALERT_RETRY_SECONDS": "60",
