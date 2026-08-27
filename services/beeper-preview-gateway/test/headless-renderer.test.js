@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
+import { EventEmitter } from "node:events";
 import test from "node:test";
 
 import {
   buildInitRequest,
   buildSendMessageRequest,
+  startHeadlessRenderer,
 } from "../src/headless-renderer.js";
 
 test("inicializa a conta local no transporte headless do Beeper", () => {
@@ -48,4 +50,61 @@ test("injeta o preview no envio interno do Beeper", () => {
   assert.equal(request.routeData.args[1].links[0].title, "Oferta Clube UOL");
   assert.equal(request.routeData.args[1].links[0].imgType, "image/jpeg");
   assert.equal(request.routeData.args[2].pendingMessageID, "~txn:network:TEST");
+});
+
+test("renova a sessão da conta antes de cada envio", async () => {
+  const methods = [];
+  const codec = {
+    decode: (raw) => JSON.parse(Buffer.from(raw).toString("utf8")),
+    encode: (value) => Buffer.from(JSON.stringify(value)),
+  };
+  class FakeWebSocket extends EventEmitter {
+    static OPEN = 1;
+
+    constructor() {
+      super();
+      this.readyState = 0;
+      queueMicrotask(() => {
+        this.readyState = FakeWebSocket.OPEN;
+        this.emit("open");
+      });
+    }
+
+    send(raw, callback) {
+      const request = codec.decode(raw);
+      methods.push(request.routeData.methodName);
+      callback?.();
+      queueMicrotask(() => this.emit("message", codec.encode({
+        type: "response",
+        reqID: request.reqID,
+        data: { result: {} },
+      })));
+    }
+
+    close() {
+      if (this.readyState !== FakeWebSocket.OPEN) return;
+      this.readyState = 3;
+      this.emit("close");
+    }
+  }
+
+  const transport = startHeadlessRenderer({
+    baseUrl: "http://127.0.0.1:23374",
+    transportNonce: "test-nonce",
+    accountId: "local-whatsapp_ba_example",
+    WebSocketImpl: FakeWebSocket,
+    codecFactory: () => codec,
+    logger: {},
+  });
+  for (let attempt = 0; attempt < 20 && !transport.isReady(); attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 1));
+  }
+  assert.equal(transport.isReady(), true);
+
+  await transport.sendMessage({
+    chatId: "!group:local-whatsapp.localhost",
+    text: "Oferta\nhttps://clube.uol.com.br/oferta",
+  });
+  assert.deepEqual(methods, ["init", "init", "sendMessage"]);
+  transport.stop();
 });

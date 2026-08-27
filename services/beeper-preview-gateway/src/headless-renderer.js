@@ -93,6 +93,7 @@ export function startHeadlessRenderer({
   bridgeType = "whatsapp",
   bridgeProvider = "local",
   WebSocketImpl = WebSocket,
+  codecFactory = () => new Encoder({ useRecords: true, bundleStrings: true }),
   reconnectDelayMs = RECONNECT_DELAY_MS,
   requestTimeoutMs = REQUEST_TIMEOUT_MS,
   logger = console,
@@ -111,6 +112,7 @@ export function startHeadlessRenderer({
   let socket;
   let codec;
   let reconnectTimer;
+  let refreshInFlight;
   let stopped = false;
   let ready = false;
 
@@ -148,15 +150,24 @@ export function startHeadlessRenderer({
     }
   });
 
+  const refreshAccountSession = () => {
+    if (refreshInFlight) return refreshInFlight;
+    const request = buildInitRequest({ accountId, bridgeId, bridgeType, bridgeProvider });
+    refreshInFlight = sendRequest(request)
+      .finally(() => {
+        refreshInFlight = undefined;
+      });
+    return refreshInFlight;
+  };
+
   const connect = () => {
     if (stopped) return;
     ready = false;
-    codec = new Encoder({ useRecords: true, bundleStrings: true });
+    codec = codecFactory();
     socket = new WebSocketImpl(url);
     socket.on("open", async () => {
       try {
-        const request = buildInitRequest({ accountId, bridgeId, bridgeType, bridgeProvider });
-        await sendRequest(request);
+        await refreshAccountSession();
         ready = true;
         transportLog(logger, "info", "beeper_transport_initialized");
       } catch (error) {
@@ -201,6 +212,17 @@ export function startHeadlessRenderer({
     },
     async sendMessage({ chatId, text, preview }) {
       if (!ready) throw transportError("Beeper headless transport is not ready");
+      try {
+        await refreshAccountSession();
+        transportLog(logger, "info", "beeper_transport_account_refreshed");
+      } catch (error) {
+        ready = false;
+        transportLog(logger, "error", "beeper_transport_account_refresh_failed", {
+          errorType: String(error?.name || "Error"),
+        });
+        socket?.close();
+        throw error;
+      }
       const pendingMessageId = `~txn:network:${randomUUID().replaceAll("-", "").toUpperCase()}`;
       const request = buildSendMessageRequest({
         accountId,
