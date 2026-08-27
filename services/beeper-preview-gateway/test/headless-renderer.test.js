@@ -4,7 +4,6 @@ import test from "node:test";
 
 import {
   buildInitRequest,
-  buildSendMessageRequest,
   startHeadlessRenderer,
 } from "../src/headless-renderer.js";
 
@@ -29,30 +28,7 @@ test("inicializa a conta local no transporte headless do Beeper", () => {
   });
 });
 
-test("injeta o preview no envio interno do Beeper", () => {
-  const request = buildSendMessageRequest({
-    accountId: "local-whatsapp_ba_example",
-    bridgeId: "local-whatsapp",
-    chatId: "!personal:local-whatsapp.localhost",
-    text: "Oferta\nhttps://clube.uol.com.br/oferta",
-    pendingMessageId: "~txn:network:TEST",
-    preview: {
-      link: "https://clube.uol.com.br/oferta",
-      title: "Oferta Clube UOL",
-      summary: "Resumo",
-      type: "website",
-      img: "file:///var/lib/beeper-preview-gateway/previews/test.jpg",
-      imgType: "image/jpeg",
-    },
-  });
-  assert.equal(request.routeData.methodName, "sendMessage");
-  assert.equal(request.routeData.args[0], "!personal:local-whatsapp.localhost");
-  assert.equal(request.routeData.args[1].links[0].title, "Oferta Clube UOL");
-  assert.equal(request.routeData.args[1].links[0].imgType, "image/jpeg");
-  assert.equal(request.routeData.args[2].pendingMessageID, "~txn:network:TEST");
-});
-
-test("renova a sessão da conta antes de cada envio", async () => {
+test("inicializa a conta uma vez sem fabricar confirmação de envio", async () => {
   const methods = [];
   const codec = {
     decode: (raw) => JSON.parse(Buffer.from(raw).toString("utf8")),
@@ -101,10 +77,7 @@ test("renova a sessão da conta antes de cada envio", async () => {
   }
   assert.equal(transport.isReady(), true);
 
-  await transport.sendMessage({
-    chatId: "!group:local-whatsapp.localhost",
-    text: "Oferta\nhttps://clube.uol.com.br/oferta",
-  });
-  assert.deepEqual(methods, ["init", "init", "sendMessage"]);
+  assert.deepEqual(methods, ["init"]);
+  assert.equal("sendMessage" in transport, false);
   transport.stop();
 });

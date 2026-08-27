@@ -16,10 +16,10 @@ const headlessTransport = startHeadlessRenderer({
 const handler = createGateway({
   token: process.env.GATEWAY_TOKEN,
   chatId: process.env.BEEPER_CHAT_ID,
+  accountId: process.env.BEEPER_ACCOUNT_ID,
   beeperAccessToken: process.env.BEEPER_ACCESS_TOKEN,
   beeperApiUrl: process.env.BEEPER_API_URL,
   databasePath: process.env.DATA_PATH || "/var/lib/beeper-preview-gateway/deliveries.sqlite",
-  sendMessageImpl: (message) => headlessTransport.sendMessage(message),
   isTransportReady: () => headlessTransport.isReady(),
   logger,
 });

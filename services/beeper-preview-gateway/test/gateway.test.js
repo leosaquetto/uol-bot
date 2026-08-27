@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -9,6 +10,7 @@ import { createGateway } from "../src/gateway.js";
 
 const token = "test-token";
 const beeperAccessToken = "beeper-test-token";
+const accountId = "local-whatsapp_ba_example";
 const chatId = "!personal:local-whatsapp.localhost";
 const link = "https://clube.uol.com.br/campanhasdeingresso/teste";
 const silentLogger = {
@@ -23,6 +25,7 @@ function gateway(fetchImpl, overrides = {}) {
   return createGateway({
     token,
     chatId,
+    accountId,
     beeperAccessToken,
     databasePath: join(directory, "deliveries.sqlite"),
     fetchImpl,
@@ -62,20 +65,11 @@ test("envia pelo endpoint oficial do Beeper sem desabilitar preview", async () =
   assert.equal((await response.json()).pendingMessageID, "pending-1");
 });
 
-test("envia card nativo pelo transporte interno com imagem", async () => {
+test("usa somente o endpoint oficial mesmo quando recebe metadados de preview", async () => {
   let sent;
   const handler = gateway(async (url, init) => {
-    assert.equal(url, "https://ddrxgn8ucibei.cloudfront.net/offer.jpg");
-    assert.equal(init.redirect, "error");
-    return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), {
-      status: 200,
-      headers: { "Content-Type": "image/jpeg" },
-    });
-  }, {
-    sendMessageImpl: async (message) => {
-      sent = message;
-      return { pendingMessageID: "pending-preview-1" };
-    },
+    sent = { url, init };
+    return Response.json({ pendingMessageID: "pending-preview-1" });
   });
   const previewRequest = new Request("http://gateway.test/v1/send-offer", {
     method: "POST",
@@ -97,67 +91,54 @@ test("envia card nativo pelo transporte interno com imagem", async () => {
   const response = await handler(previewRequest);
   assert.equal(response.status, 202);
   assert.equal((await response.json()).pendingMessageID, "pending-preview-1");
-  assert.equal(sent.preview.title, "Oferta Clube UOL");
-  assert.equal(sent.preview.imgType, "image/jpeg");
-  assert.match(sent.preview.img, /^file:\/\//);
+  assert.match(sent.url, /\/v1\/chats\/.*\/messages$/);
+  assert.deepEqual(JSON.parse(sent.init.body), { text: `Oferta\n${link}` });
 });
 
-test("omite proxy de imagem não permitido sem bloquear a oferta", async () => {
-  let sent;
-  let imageFetches = 0;
-  const handler = gateway(async () => {
-    imageFetches += 1;
-    return new Response("unexpected", { status: 500 });
-  }, {
-    sendMessageImpl: async (message) => {
-      sent = message;
-      return { pendingMessageID: "pending-without-image" };
-    },
-  });
-  const response = await handler(new Request("http://gateway.test/v1/send-offer", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      "Idempotency-Key": "uol:offer-discord-proxy:v1",
-    },
-    body: JSON.stringify({
-      link,
-      text: `Oferta\n${link}`,
-      preview: {
-        title: "Oferta Clube UOL",
-        summary: "Resumo",
-        imageUrl: "https://images-ext-1.discordapp.net/external/example/offer.jpg",
-      },
-    }),
-  }));
-  assert.equal(response.status, 202);
-  assert.equal(imageFetches, 0);
-  assert.equal(sent.preview.img, undefined);
-  assert.equal(sent.preview.imgType, undefined);
-});
-
-test("só fica pronto quando o chat configurado está acessível", async () => {
+test("só fica pronto com conta conectada e chat compatível", async () => {
   const seen = [];
   const handler = gateway(async (url, init) => {
     seen.push({ url, authorization: init.headers.Authorization });
-    return new Response("{}", { status: 200 });
+    if (url.endsWith("/v1/accounts")) {
+      return Response.json([{
+        accountID: accountId,
+        network: "WhatsApp",
+        status: "connected",
+      }]);
+    }
+    return Response.json({
+      id: chatId,
+      accountID: accountId,
+      network: "WhatsApp",
+      isReadOnly: false,
+    });
   });
   const response = await handler(new Request("http://gateway.test/readyz"));
   assert.equal(response.status, 200);
-  assert.match(seen[0].url, /\/v1\/chats\/.*personal/);
-  assert.equal(seen[0].authorization, `Bearer ${beeperAccessToken}`);
+  assert.equal(seen.length, 2);
+  assert.ok(seen.some(({ url }) => url.endsWith("/v1/accounts")));
+  assert.ok(seen.some(({ url }) => /\/v1\/chats\/.*personal/.test(url)));
+  assert.ok(seen.every(({ authorization }) => authorization === `Bearer ${beeperAccessToken}`));
 
   const unavailable = gateway(async () => new Response("{}", { status: 500 }));
   assert.equal(
     (await unavailable(new Request("http://gateway.test/readyz"))).status,
     503,
   );
+
+  const disconnected = gateway(async (url) => url.endsWith("/v1/accounts")
+    ? Response.json([{ accountID: accountId, network: "WhatsApp", status: "disconnected" }])
+    : Response.json({ id: chatId, accountID: accountId, network: "WhatsApp" }));
+  const disconnectedResponse = await disconnected(new Request("http://gateway.test/readyz"));
+  assert.equal(disconnectedResponse.status, 503);
+  assert.equal((await disconnectedResponse.json()).code, "beeper_destination_not_ready");
 });
 
 test("valida autenticação sem enviar e expõe saúde sanitizada do ledger", async () => {
   const records = [];
-  const handler = gateway(async () => new Response("{}", { status: 200 }), {
+  const handler = gateway(async (url) => url.endsWith("/v1/accounts")
+    ? Response.json([{ accountID: accountId, network: "WhatsApp", status: "connected" }])
+    : Response.json({ id: chatId, accountID: accountId, network: "WhatsApp" }), {
     logger: {
       info: (record) => records.push(record),
       warn: (record) => records.push(record),
@@ -174,7 +155,7 @@ test("valida autenticação sem enviar e expõe saúde sanitizada do ledger", as
   assert.deepEqual(await authorized.json(), {
     ok: true,
     components: { transport: true, beeperApi: true, ledger: true },
-    deliveryConfirmation: "accepted_by_beeper_transport",
+    deliveryConfirmation: "accepted_by_beeper_api",
     ledger: { total: 0, accepted: 0, failed: 0, unknown: 0, pending: 0 },
   });
   assert.equal(records.length, 1);
@@ -204,19 +185,65 @@ test("repete resposta sem reenviar a mesma oferta", async () => {
   assert.deepEqual(await replay.json(), {
     accepted: true,
     pendingMessageID: "pending-1",
-    deliveryState: "accepted_by_beeper_transport",
+    deliveryState: "accepted_by_beeper_api",
     replayed: true,
   });
   assert.equal(calls, 1);
 });
 
+test("preserva idempotência do ledger criado pela versão anterior", async () => {
+  let calls = 0;
+  const directory = mkdtempSync(join(tmpdir(), "beeper-gateway-upgrade-test-"));
+  const databasePath = join(directory, "deliveries.sqlite");
+  const database = new DatabaseSync(databasePath);
+  database.exec(`
+    CREATE TABLE deliveries (
+      idempotency_key TEXT PRIMARY KEY,
+      request_hash TEXT NOT NULL,
+      status TEXT NOT NULL,
+      response_json TEXT NOT NULL DEFAULT '',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+  const text = `Oferta\n${link}`;
+  const legacyHash = createHash("sha256").update(JSON.stringify({
+    link,
+    text,
+    preview: {
+      link,
+      title: "Clube UOL",
+      summary: "",
+      type: "website",
+      imageUrl: "",
+    },
+  })).digest("hex");
+  database.prepare(`
+    INSERT INTO deliveries
+      (idempotency_key, request_hash, status, response_json, created_at, updated_at)
+    VALUES (?, ?, 'failed', '', ?, ?)
+  `).run(
+    "uol:offer-pre-upgrade:v1",
+    legacyHash,
+    "2026-08-14T19:00:00.000Z",
+    "2026-08-14T19:00:00.000Z",
+  );
+  database.close();
+
+  const handler = gateway(async () => {
+    calls += 1;
+    return Response.json({ pendingMessageID: "pending-after-upgrade" });
+  }, { databasePath });
+  const response = await handler(request("uol:offer-pre-upgrade:v1", text));
+  assert.equal(response.status, 202);
+  assert.equal(calls, 1);
+});
+
 test("fecha resposta sem comprovante local como entrega ambígua", async () => {
   let calls = 0;
-  const handler = gateway(async () => new Response("{}", { status: 202 }), {
-    sendMessageImpl: async () => {
-      calls += 1;
-      return { accepted: true };
-    },
+  const handler = gateway(async () => {
+    calls += 1;
+    return new Response("{}", { status: 202 });
   });
   const first = await handler(request("uol:offer-no-receipt:v1"));
   assert.equal(first.status, 503);
@@ -228,16 +255,28 @@ test("fecha resposta sem comprovante local como entrega ambígua", async () => {
 
 test("libera nova tentativa apenas depois de rejeição inequívoca", async () => {
   let calls = 0;
-  const handler = gateway(async () => new Response("{}", { status: 202 }), {
-    sendMessageImpl: async () => {
-      calls += 1;
-      if (calls === 1) throw new Error("rejected before transport acceptance");
-      return { pendingMessageID: "pending-after-retry" };
-    },
+  const handler = gateway(async () => {
+    calls += 1;
+    if (calls === 1) return Response.json({ code: "not_logged_in" }, { status: 502 });
+    return Response.json({ pendingMessageID: "pending-after-retry" });
   });
   assert.equal((await handler(request("uol:offer-safe-retry:v1"))).status, 502);
   assert.equal((await handler(request("uol:offer-safe-retry:v1"))).status, 202);
   assert.equal(calls, 2);
+});
+
+test("fecha erro HTTP ambíguo sem permitir possível duplicação", async () => {
+  let calls = 0;
+  const handler = gateway(async () => {
+    calls += 1;
+    return Response.json({ code: "upstream_failure" }, { status: 502 });
+  });
+  const first = await handler(request("uol:offer-upstream-failure:v1"));
+  assert.equal(first.status, 503);
+  assert.equal((await first.json()).code, "delivery_unknown");
+  const retry = await handler(request("uol:offer-upstream-failure:v1"));
+  assert.equal(retry.status, 409);
+  assert.equal(calls, 1);
 });
 
 test("não reutiliza chave idempotente com outro conteúdo", async () => {
@@ -285,7 +324,7 @@ test("registra só decisões autenticadas sem token, conteúdo, link ou destino"
   const joined = records.join("\n");
   assert.match(joined, /"event":"beeper_gateway_request"/);
   assert.match(joined, /"code":"ok"/);
-  assert.match(joined, /"deliveryState":"accepted_by_beeper_transport"/);
+  assert.match(joined, /"deliveryState":"accepted_by_beeper_api"/);
   assert.doesNotMatch(joined, /super-secret-token|segredo|clube\.uol\.com|personal|private-offer/);
 });
 

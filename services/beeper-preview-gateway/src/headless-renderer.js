@@ -48,37 +48,6 @@ export function buildInitRequest({ accountId, bridgeId, bridgeType, bridgeProvid
   };
 }
 
-export function buildSendMessageRequest({
-  accountId,
-  bridgeId,
-  chatId,
-  text,
-  preview,
-  pendingMessageId,
-}) {
-  return {
-    reqID: randomUUID(),
-    routeName: "platform",
-    routeData: {
-      platformName: `bridge-${bridgeId}`,
-      accountID: accountId,
-      methodName: "sendMessage",
-      args: [chatId, {
-        text,
-        links: preview ? [{
-          link: preview.link,
-          title: preview.title,
-          summary: preview.summary,
-          type: preview.type || "website",
-          img: preview.img,
-          imgSize: preview.imgSize,
-          imgType: preview.imgType,
-        }] : [],
-      }, { pendingMessageID: pendingMessageId }],
-    },
-  };
-}
-
 function transportError(message, ambiguous = false) {
   const error = new Error(message);
   error.ambiguous = ambiguous;
@@ -101,9 +70,6 @@ export function startHeadlessRenderer({
   if (!transportNonce || !accountId) {
     return {
       isReady: () => false,
-      async sendMessage() {
-        throw transportError("Beeper headless transport is not configured");
-      },
       stop() {},
     };
   }
@@ -209,34 +175,6 @@ export function startHeadlessRenderer({
   return {
     isReady() {
       return ready && socket?.readyState === WebSocketImpl.OPEN;
-    },
-    async sendMessage({ chatId, text, preview }) {
-      if (!ready) throw transportError("Beeper headless transport is not ready");
-      try {
-        await refreshAccountSession();
-        transportLog(logger, "info", "beeper_transport_account_refreshed");
-      } catch (error) {
-        ready = false;
-        transportLog(logger, "error", "beeper_transport_account_refresh_failed", {
-          errorType: String(error?.name || "Error"),
-        });
-        socket?.close();
-        throw error;
-      }
-      const pendingMessageId = `~txn:network:${randomUUID().replaceAll("-", "").toUpperCase()}`;
-      const request = buildSendMessageRequest({
-        accountId,
-        bridgeId,
-        chatId,
-        text,
-        preview,
-        pendingMessageId,
-      });
-      await sendRequest(request, true);
-      transportLog(logger, "info", "beeper_transport_message_accepted", {
-        confirmation: "accepted_by_beeper_transport",
-      });
-      return { accepted: true, pendingMessageID: pendingMessageId };
     },
     stop() {
       stopped = true;

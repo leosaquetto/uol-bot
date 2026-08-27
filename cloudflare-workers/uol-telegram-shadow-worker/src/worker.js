@@ -7293,7 +7293,7 @@ export class UolTelegramShadow extends DurableObject {
         gatewayStatus: Number(beeperRuntime.gatewayStatus || 0),
         gatewayCode: String(beeperRuntime.gatewayCode || ""),
         checkedAt: String(beeperRuntime.checkedAt || ""),
-        deliveryConfirmation: "accepted_by_beeper_transport",
+        deliveryConfirmation: "accepted_by_beeper_api",
         queue: {
           pending: beeperQueue.pending,
           exhausted: beeperQueue.exhausted,

@@ -76,11 +76,22 @@ test("valida filtro de recuperação e deriva probe autenticado sem envio", asyn
     assert.equal(url, "https://beeper.example/v1/readyz");
     assert.equal(init.method, "GET");
     assert.equal(init.headers.Authorization, "Bearer secret");
-    return Response.json({ ok: true });
+    return Response.json({
+      ok: true,
+      deliveryConfirmation: "accepted_by_beeper_api",
+    });
   });
   assert.equal(result.ok, true);
   assert.equal(result.status, 200);
   assert.equal(result.code, "ready");
+
+  const staleGateway = await probeBeeperGateway(env, async () => Response.json({
+    ok: true,
+    deliveryConfirmation: "accepted_by_beeper_transport",
+  }));
+  assert.equal(staleGateway.ok, false);
+  assert.equal(staleGateway.status, 200);
+  assert.equal(staleGateway.code, "delivery_contract_mismatch");
 });
 
 test("monta texto curto com URL para o preview nativo", () => {
@@ -111,7 +122,10 @@ test("envia ao gateway autenticado e idempotente", async () => {
       summary: offer.description,
       imageUrl: offer.imageUrl,
     });
-    return new Response(JSON.stringify({ pendingMessageID: "pending-1" }), {
+    return new Response(JSON.stringify({
+      pendingMessageID: "pending-1",
+      deliveryState: "accepted_by_beeper_api",
+    }), {
       status: 202,
       headers: { "Content-Type": "application/json" },
     });
@@ -160,6 +174,21 @@ test("resposta aceita sem pendingMessageID permanece ambígua", async () => {
       BEEPER_GATEWAY_TOKEN: "secret",
     }, offer, { idempotencyKey: "uol:offer-1:v1" }, async () =>
       Response.json({ accepted: true }, { status: 202 })),
+    (error) => error.transport === "beeper" && error.ambiguous === true,
+  );
+});
+
+test("rejeita confirmação sintética do transporte privado", async () => {
+  await assert.rejects(
+    sendBeeperOffer({
+      BEEPER_DESTINATION_KEY: "whatsapp-group",
+      BEEPER_GATEWAY_URL: "https://beeper.example/v1/send-offer",
+      BEEPER_GATEWAY_TOKEN: "secret",
+    }, offer, { idempotencyKey: "uol:offer-1:v1" }, async () =>
+      Response.json({
+        pendingMessageID: "synthetic-pending",
+        deliveryState: "accepted_by_beeper_transport",
+      }, { status: 202 })),
     (error) => error.transport === "beeper" && error.ambiguous === true,
   );
 });

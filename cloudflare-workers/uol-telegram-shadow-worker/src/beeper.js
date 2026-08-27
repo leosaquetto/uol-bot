@@ -161,12 +161,17 @@ export async function probeBeeperGateway(env, fetchImpl = fetch) {
       signal: AbortSignal.timeout(BEEPER_GATEWAY_HEALTH_TIMEOUT_MS),
     });
     const payload = await readBoundedJson(response);
-    const ok = response.status === 200 && payload?.ok === true;
+    const contractReady = payload?.deliveryConfirmation === "accepted_by_beeper_api";
+    const ok = response.status === 200 && payload?.ok === true && contractReady;
     return {
       checkedAt,
       ok,
       status: response.status,
-      code: ok ? "ready" : `http_${response.status}`,
+      code: ok
+        ? "ready"
+        : response.status === 200 && payload?.ok === true
+          ? "delivery_contract_mismatch"
+          : `http_${response.status}`,
     };
   } catch (error) {
     const transportError = createNetworkTransportError({
@@ -284,7 +289,8 @@ export async function sendBeeperOffer(
   const pendingMessageId = String(
     payload?.pendingMessageID || payload?.pendingMessageId || "",
   ).trim();
-  if (!pendingMessageId) {
+  const deliveryState = String(payload?.deliveryState || "").trim();
+  if (!pendingMessageId || deliveryState !== "accepted_by_beeper_api") {
     throw createAmbiguousResponseTransportError({
       transport: "beeper",
       operation: "send",
