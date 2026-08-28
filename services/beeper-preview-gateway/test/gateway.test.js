@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtempSync } from "node:fs";
+import { existsSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -29,6 +29,8 @@ function gateway(fetchImpl, overrides = {}) {
     beeperAccessToken,
     databasePath: join(directory, "deliveries.sqlite"),
     fetchImpl,
+    sendMessageImpl: async () => ({ pendingMessageID: "pending-default" }),
+    confirmDeliveryImpl: async () => ({ state: "delivered" }),
     now: () => new Date("2026-08-14T20:00:00.000Z"),
     logger: silentLogger,
     ...overrides,
@@ -47,29 +49,54 @@ function request(key = "uol:offer-1:v1", text = `Oferta\n${link}`) {
   });
 }
 
-test("envia pelo endpoint oficial do Beeper sem desabilitar preview", async () => {
-  let calls = 0;
-  const handler = gateway(async (url, init) => {
-    calls += 1;
-    assert.match(url, /\/v1\/chats\/.*\/messages$/);
-    assert.equal(init.headers.Authorization, `Bearer ${beeperAccessToken}`);
-    assert.deepEqual(JSON.parse(init.body), { text: `Oferta\n${link}` });
-    return new Response(JSON.stringify({ pendingMessageID: "pending-1" }), {
-      status: 202,
-      headers: { "Content-Type": "application/json" },
-    });
+test("envia pelo transporte antigo e só aceita depois da confirmação do bridge", async () => {
+  let sent;
+  let confirmed;
+  const handler = gateway(async () => {
+    throw new Error("unexpected fetch");
+  }, {
+    sendMessageImpl: async (message) => {
+      sent = message;
+      return { pendingMessageID: "pending-1" };
+    },
+    confirmDeliveryImpl: async (delivery) => {
+      confirmed = delivery;
+      return { state: "delivered" };
+    },
   });
   const response = await handler(request());
   assert.equal(response.status, 202);
-  assert.equal(calls, 1);
-  assert.equal((await response.json()).pendingMessageID, "pending-1");
+  assert.equal(sent.preview.link, link);
+  assert.deepEqual(confirmed, { pendingMessageID: "pending-1", requirePreview: false });
+  assert.deepEqual(await response.json(), {
+    accepted: true,
+    pendingMessageID: "pending-1",
+    deliveryState: "confirmed_by_whatsapp_bridge",
+  });
 });
 
-test("usa somente o endpoint oficial mesmo quando recebe metadados de preview", async () => {
+test("restaura o card antigo com a imagem local em links", async () => {
   let sent;
+  let temporaryPath;
   const handler = gateway(async (url, init) => {
-    sent = { url, init };
-    return Response.json({ pendingMessageID: "pending-preview-1" });
+    assert.equal(url, "https://ddrxgn8ucibei.cloudfront.net/offer.jpg");
+    assert.equal(init.redirect, "error");
+    return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), {
+      status: 200,
+      headers: { "Content-Type": "image/jpeg" },
+    });
+  }, {
+    sendMessageImpl: async (message) => {
+      sent = message;
+      temporaryPath = new URL(message.preview.img).pathname;
+      assert.equal(existsSync(temporaryPath), true);
+      return { pendingMessageID: "pending-preview-1" };
+    },
+    confirmDeliveryImpl: async ({ requirePreview }) => {
+      assert.equal(requirePreview, true);
+      assert.equal(existsSync(temporaryPath), true);
+      return { state: "delivered" };
+    },
   });
   const previewRequest = new Request("http://gateway.test/v1/send-offer", {
     method: "POST",
@@ -91,8 +118,11 @@ test("usa somente o endpoint oficial mesmo quando recebe metadados de preview", 
   const response = await handler(previewRequest);
   assert.equal(response.status, 202);
   assert.equal((await response.json()).pendingMessageID, "pending-preview-1");
-  assert.match(sent.url, /\/v1\/chats\/.*\/messages$/);
-  assert.deepEqual(JSON.parse(sent.init.body), { text: `Oferta\n${link}` });
+  assert.equal(sent.preview.title, "Oferta Clube UOL");
+  assert.equal(sent.preview.summary, "Resumo da oferta");
+  assert.equal(sent.preview.imgType, "image/jpeg");
+  assert.match(sent.preview.img, /^file:\/\//);
+  assert.equal(existsSync(temporaryPath), false);
 });
 
 test("só fica pronto com conta conectada e chat compatível", async () => {
@@ -155,7 +185,7 @@ test("valida autenticação sem enviar e expõe saúde sanitizada do ledger", as
   assert.deepEqual(await authorized.json(), {
     ok: true,
     components: { transport: true, beeperApi: true, ledger: true },
-    deliveryConfirmation: "accepted_by_beeper_api",
+    deliveryConfirmation: "confirmed_by_whatsapp_bridge",
     ledger: { total: 0, accepted: 0, failed: 0, unknown: 0, pending: 0 },
   });
   assert.equal(records.length, 1);
@@ -166,13 +196,13 @@ test("repete resposta sem reenviar a mesma oferta", async () => {
   let calls = 0;
   const directory = mkdtempSync(join(tmpdir(), "beeper-gateway-ledger-test-"));
   const databasePath = join(directory, "deliveries.sqlite");
-  const handler = gateway(async () => {
-    calls += 1;
-    return new Response(JSON.stringify({ pendingMessageID: "pending-1" }), {
-      status: 202,
-      headers: { "Content-Type": "application/json" },
-    });
-  }, { databasePath });
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    databasePath,
+    sendMessageImpl: async () => {
+      calls += 1;
+      return { pendingMessageID: "pending-1" };
+    },
+  });
   assert.equal((await handler(request())).status, 202);
   const database = new DatabaseSync(databasePath);
   assert.equal(
@@ -185,7 +215,7 @@ test("repete resposta sem reenviar a mesma oferta", async () => {
   assert.deepEqual(await replay.json(), {
     accepted: true,
     pendingMessageID: "pending-1",
-    deliveryState: "accepted_by_beeper_api",
+    deliveryState: "confirmed_by_whatsapp_bridge",
     replayed: true,
   });
   assert.equal(calls, 1);
@@ -230,10 +260,13 @@ test("preserva idempotência do ledger criado pela versão anterior", async () =
   );
   database.close();
 
-  const handler = gateway(async () => {
-    calls += 1;
-    return Response.json({ pendingMessageID: "pending-after-upgrade" });
-  }, { databasePath });
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    databasePath,
+    sendMessageImpl: async () => {
+      calls += 1;
+      return { pendingMessageID: "pending-after-upgrade" };
+    },
+  });
   const response = await handler(request("uol:offer-pre-upgrade:v1", text));
   assert.equal(response.status, 202);
   assert.equal(calls, 1);
@@ -241,9 +274,11 @@ test("preserva idempotência do ledger criado pela versão anterior", async () =
 
 test("fecha resposta sem comprovante local como entrega ambígua", async () => {
   let calls = 0;
-  const handler = gateway(async () => {
-    calls += 1;
-    return new Response("{}", { status: 202 });
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    sendMessageImpl: async () => {
+      calls += 1;
+      return {};
+    },
   });
   const first = await handler(request("uol:offer-no-receipt:v1"));
   assert.equal(first.status, 503);
@@ -253,23 +288,28 @@ test("fecha resposta sem comprovante local como entrega ambígua", async () => {
   assert.equal(calls, 1);
 });
 
-test("libera nova tentativa apenas depois de rejeição inequívoca", async () => {
+test("libera nova tentativa apenas depois de rejeição inequívoca do bridge", async () => {
   let calls = 0;
-  const handler = gateway(async () => {
-    calls += 1;
-    if (calls === 1) return Response.json({ code: "not_logged_in" }, { status: 502 });
-    return Response.json({ pendingMessageID: "pending-after-retry" });
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    sendMessageImpl: async () => ({ pendingMessageID: `pending-${calls + 1}` }),
+    confirmDeliveryImpl: async () => {
+      calls += 1;
+      return { state: calls === 1 ? "rejected" : "delivered" };
+    },
   });
   assert.equal((await handler(request("uol:offer-safe-retry:v1"))).status, 502);
   assert.equal((await handler(request("uol:offer-safe-retry:v1"))).status, 202);
   assert.equal(calls, 2);
 });
 
-test("fecha erro HTTP ambíguo sem permitir possível duplicação", async () => {
+test("fecha confirmação ambígua sem permitir possível duplicação", async () => {
   let calls = 0;
-  const handler = gateway(async () => {
-    calls += 1;
-    return Response.json({ code: "upstream_failure" }, { status: 502 });
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    sendMessageImpl: async () => {
+      calls += 1;
+      return { pendingMessageID: "pending-ambiguous" };
+    },
+    confirmDeliveryImpl: async () => ({ state: "unknown" }),
   });
   const first = await handler(request("uol:offer-upstream-failure:v1"));
   assert.equal(first.status, 503);
@@ -279,14 +319,59 @@ test("fecha erro HTTP ambíguo sem permitir possível duplicação", async () =>
   assert.equal(calls, 1);
 });
 
+test("fecha exceção de confirmação sem permitir possível duplicação", async () => {
+  let calls = 0;
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    sendMessageImpl: async () => {
+      calls += 1;
+      return { pendingMessageID: "pending-confirmation-error" };
+    },
+    confirmDeliveryImpl: async () => {
+      throw new Error("index unavailable");
+    },
+  });
+  const first = await handler(request("uol:offer-confirmation-error:v1"));
+  assert.equal(first.status, 503);
+  assert.equal((await first.json()).code, "delivery_unknown");
+  const retry = await handler(request("uol:offer-confirmation-error:v1"));
+  assert.equal(retry.status, 409);
+  assert.equal(calls, 1);
+});
+
+test("não envia oferta com imagem solicitada fora da allowlist", async () => {
+  let calls = 0;
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    sendMessageImpl: async () => {
+      calls += 1;
+      return { pendingMessageID: "should-not-send" };
+    },
+  });
+  const invalidPreview = new Request("http://gateway.test/v1/send-offer", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": "uol:offer-preview-invalid:v1",
+    },
+    body: JSON.stringify({
+      link,
+      text: `Oferta\n${link}`,
+      preview: { imageUrl: "https://example.com/offer.jpg" },
+    }),
+  });
+  const response = await handler(invalidPreview);
+  assert.equal(response.status, 400);
+  assert.equal((await response.json()).code, "preview_image_url_not_allowed");
+  assert.equal(calls, 0);
+});
+
 test("não reutiliza chave idempotente com outro conteúdo", async () => {
   let calls = 0;
-  const handler = gateway(async () => {
-    calls += 1;
-    return new Response(JSON.stringify({ pendingMessageID: "pending-1" }), {
-      status: 202,
-      headers: { "Content-Type": "application/json" },
-    });
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    sendMessageImpl: async () => {
+      calls += 1;
+      return { pendingMessageID: "pending-1" };
+    },
   });
   assert.equal((await handler(request("uol:offer-conflict:v1"))).status, 202);
   const conflict = await handler(request(
@@ -305,12 +390,10 @@ test("registra só decisões autenticadas sem token, conteúdo, link ou destino"
     warn: (record) => records.push(record),
     error: (record) => records.push(record),
   };
-  const handler = gateway(async () => new Response(JSON.stringify({
-    pendingMessageID: "pending-audit",
-  }), {
-    status: 202,
-    headers: { "Content-Type": "application/json" },
-  }), { logger });
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    logger,
+    sendMessageImpl: async () => ({ pendingMessageID: "pending-audit" }),
+  });
   const unauthorized = request("uol:private-offer:v1", `segredo\n${link}`);
   unauthorized.headers.set("Authorization", "Bearer super-secret-token");
   assert.equal((await handler(unauthorized)).status, 401);
@@ -324,13 +407,17 @@ test("registra só decisões autenticadas sem token, conteúdo, link ou destino"
   const joined = records.join("\n");
   assert.match(joined, /"event":"beeper_gateway_request"/);
   assert.match(joined, /"code":"ok"/);
-  assert.match(joined, /"deliveryState":"accepted_by_beeper_api"/);
+  assert.match(joined, /"deliveryState":"confirmed_by_whatsapp_bridge"/);
   assert.doesNotMatch(joined, /super-secret-token|segredo|clube\.uol\.com|personal|private-offer/);
 });
 
 test("fecha falhas ambíguas para impedir duplicação", async () => {
-  const handler = gateway(async () => {
-    throw new Error("connection reset");
+  const handler = gateway(async () => new Response("unexpected", { status: 500 }), {
+    sendMessageImpl: async () => {
+      const error = new Error("connection reset");
+      error.ambiguous = true;
+      throw error;
+    },
   });
   assert.equal((await handler(request())).status, 503);
   const retry = await handler(request());

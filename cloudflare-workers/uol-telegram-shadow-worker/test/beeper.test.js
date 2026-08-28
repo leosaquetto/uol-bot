@@ -78,7 +78,7 @@ test("valida filtro de recuperação e deriva probe autenticado sem envio", asyn
     assert.equal(init.headers.Authorization, "Bearer secret");
     return Response.json({
       ok: true,
-      deliveryConfirmation: "accepted_by_beeper_api",
+      deliveryConfirmation: "confirmed_by_whatsapp_bridge",
     });
   });
   assert.equal(result.ok, true);
@@ -124,7 +124,7 @@ test("envia ao gateway autenticado e idempotente", async () => {
     });
     return new Response(JSON.stringify({
       pendingMessageID: "pending-1",
-      deliveryState: "accepted_by_beeper_api",
+      deliveryState: "confirmed_by_whatsapp_bridge",
     }), {
       status: 202,
       headers: { "Content-Type": "application/json" },

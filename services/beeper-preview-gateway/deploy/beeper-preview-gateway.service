@@ -7,6 +7,7 @@ Wants=network-online.target
 Type=simple
 User=beeper
 Group=beeper
+SupplementaryGroups=ubuntu
 WorkingDirectory=/opt/beeper-preview-gateway
 EnvironmentFile=/etc/beeper-preview-gateway.env
 ExecStart=/usr/local/bin/node src/server.js
@@ -16,7 +17,7 @@ UMask=0077
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ProtectHome=true
+ProtectHome=read-only
 ReadWritePaths=/var/lib/beeper-preview-gateway
 
 [Install]

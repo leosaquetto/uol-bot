@@ -6,7 +6,7 @@ import {
   createNetworkTransportError,
 } from "./transport-error.js";
 
-const BEEPER_GATEWAY_TIMEOUT_MS = 15_000;
+const BEEPER_GATEWAY_TIMEOUT_MS = 45_000;
 const BEEPER_GATEWAY_HEALTH_TIMEOUT_MS = 5_000;
 const BEEPER_GATEWAY_MAX_RESPONSE_BYTES = 32 * 1024;
 const BEEPER_DELIVERY_FILTER_MAX_IDS = 32;
@@ -161,7 +161,7 @@ export async function probeBeeperGateway(env, fetchImpl = fetch) {
       signal: AbortSignal.timeout(BEEPER_GATEWAY_HEALTH_TIMEOUT_MS),
     });
     const payload = await readBoundedJson(response);
-    const contractReady = payload?.deliveryConfirmation === "accepted_by_beeper_api";
+    const contractReady = payload?.deliveryConfirmation === "confirmed_by_whatsapp_bridge";
     const ok = response.status === 200 && payload?.ok === true && contractReady;
     return {
       checkedAt,
@@ -290,7 +290,7 @@ export async function sendBeeperOffer(
     payload?.pendingMessageID || payload?.pendingMessageId || "",
   ).trim();
   const deliveryState = String(payload?.deliveryState || "").trim();
-  if (!pendingMessageId || deliveryState !== "accepted_by_beeper_api") {
+  if (!pendingMessageId || deliveryState !== "confirmed_by_whatsapp_bridge") {
     throw createAmbiguousResponseTransportError({
       transport: "beeper",
       operation: "send",

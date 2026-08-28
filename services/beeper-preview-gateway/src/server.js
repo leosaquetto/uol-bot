@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import { Readable } from "node:stream";
 
+import { createDeliveryConfirmation } from "./delivery-confirmation.js";
 import { createGateway } from "./gateway.js";
 import { startHeadlessRenderer } from "./headless-renderer.js";
 
@@ -13,6 +14,10 @@ const headlessTransport = startHeadlessRenderer({
   accountId: process.env.BEEPER_ACCOUNT_ID,
   logger,
 });
+const deliveryConfirmation = createDeliveryConfirmation({
+  databasePath: process.env.BEEPER_INDEX_DB_PATH,
+  chatId: process.env.BEEPER_CHAT_ID,
+});
 const handler = createGateway({
   token: process.env.GATEWAY_TOKEN,
   chatId: process.env.BEEPER_CHAT_ID,
@@ -20,7 +25,10 @@ const handler = createGateway({
   beeperAccessToken: process.env.BEEPER_ACCESS_TOKEN,
   beeperApiUrl: process.env.BEEPER_API_URL,
   databasePath: process.env.DATA_PATH || "/var/lib/beeper-preview-gateway/deliveries.sqlite",
+  sendMessageImpl: (message) => headlessTransport.sendMessage(message),
+  confirmDeliveryImpl: (delivery) => deliveryConfirmation.waitForDelivery(delivery),
   isTransportReady: () => headlessTransport.isReady(),
+  isDeliveryConfirmationReady: () => deliveryConfirmation.isReady(),
   logger,
 });
 

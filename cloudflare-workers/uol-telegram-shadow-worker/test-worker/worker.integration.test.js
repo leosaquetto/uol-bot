@@ -70,7 +70,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         expect(init.headers.Authorization).toBe("Bearer vitest-beeper-token");
         return Response.json({
           ok: true,
-          deliveryConfirmation: "accepted_by_beeper_api",
+          deliveryConfirmation: "confirmed_by_whatsapp_bridge",
         });
       }
       if (url === "https://beeper.test/v1/send-offer") {
@@ -78,7 +78,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         delivered.push(payload.link.split("/").at(-1));
         return Response.json({
           pendingMessageID: `pending-${delivered.length}`,
-          deliveryState: "accepted_by_beeper_api",
+          deliveryState: "confirmed_by_whatsapp_bridge",
         }, {
           status: 202,
         });
@@ -198,13 +198,13 @@ describe("UOL Worker no runtime Cloudflare", () => {
       if (url === "https://beeper.test/v1/readyz") {
         return Response.json({
           ok: true,
-          deliveryConfirmation: "accepted_by_beeper_api",
+          deliveryConfirmation: "confirmed_by_whatsapp_bridge",
         });
       }
       if (url === "https://beeper.test/v1/send-offer") {
         return Response.json({
           pendingMessageID: "pending-critical-1",
-          deliveryState: "accepted_by_beeper_api",
+          deliveryState: "confirmed_by_whatsapp_bridge",
         }, { status: 202 });
       }
       throw new Error(`unexpected_fetch:${url}`);
