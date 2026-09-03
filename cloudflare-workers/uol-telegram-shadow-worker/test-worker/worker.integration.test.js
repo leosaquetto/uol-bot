@@ -1747,6 +1747,70 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("resolve unknown do WhatsApp com evidência independente sem reenviar", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("beeper-unknown-resolution");
+
+    await runInDurableObject(stub, async (instance, state) => {
+      const seenAt = "2026-08-28T12:00:00.000Z";
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, category, first_seen_at, last_seen_at,
+           status, delivery_generation
+         ) VALUES (?, ?, ?, 'campanhasdeingresso', ?, ?, 'delivered', 1)`,
+        "ticket-beeper-confirmado",
+        "https://clube.uol.com.br/campanhasdeingresso/ticket-beeper-confirmado",
+        "Ingresso confirmado no bridge",
+        seenAt,
+        seenAt,
+      );
+      state.storage.sql.exec(
+        `INSERT INTO beeper_delivery_queue(
+           offer_id, attempts, sent_at, last_error
+         ) VALUES (?, 10, '', 'ambiguous:delivery_unknown')`,
+        "ticket-beeper-confirmado",
+      );
+
+      expect(() => instance.resolveDeliveryUnknown(
+        "ticket-beeper-confirmado",
+        "beeper",
+        "sent",
+      )).toThrow("delivery_resolution_evidence_required");
+      expect(instance.resolveDeliveryUnknown(
+        "ticket-beeper-confirmado",
+        "beeper",
+        "sent",
+        { evidenceReference: "oracle-index:proof-1234" },
+      )).toMatchObject({ ok: true, target: "beeper", outcome: "sent" });
+
+      const queue = state.storage.sql.exec(
+        `SELECT attempts, sent_at, last_error
+           FROM beeper_delivery_queue WHERE offer_id = ?`,
+        "ticket-beeper-confirmado",
+      ).one();
+      expect(queue).toMatchObject({ attempts: 10, last_error: "" });
+      expect(queue.sent_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(state.storage.sql.exec(
+        `SELECT state, external_id FROM delivery_events
+          WHERE offer_id = ? AND target = 'beeper' ORDER BY id DESC LIMIT 1`,
+        "ticket-beeper-confirmado",
+      ).one()).toEqual({
+        state: "resolved_sent",
+        external_id: "oracle-index:proof-1234",
+      });
+      expect(instance.beeperQueueDiagnostics(10)).toMatchObject({
+        pending: 0,
+        exhausted: 0,
+        unknown: 0,
+      });
+      expect(() => instance.resolveDeliveryUnknown(
+        "ticket-beeper-confirmado",
+        "beeper",
+        "sent",
+        { evidenceReference: "oracle-index:proof-1234" },
+      )).toThrow("delivery_target_not_unknown");
+    });
+  });
+
   it("encerra unknown histórico de comentário sem reencaminhar a oferta", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("historical-comment-unknown");
 

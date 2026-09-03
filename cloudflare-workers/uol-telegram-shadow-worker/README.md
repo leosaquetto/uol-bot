@@ -189,8 +189,9 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
   `/resolve-delivery`; o principal já possui retry automático após 30 segundos.
 - `POST /resolve-delivery`: registra a confirmação humana de um resultado
   `unknown` como `sent` (com o ID externo) ou `not_sent` (retry seguro), sem
-  duplicar silenciosamente. O resultado `closed` existe somente para encerrar
-  um `unknown` histórico de comentário sem reenviar a oferta.
+  duplicar silenciosamente. Para `beeper`, `sent` exige uma referência de
+  evidência independente em `evidenceReference`. O resultado `closed` existe
+  somente para encerrar um `unknown` histórico de comentário sem reenviar a oferta.
 - `GET /decisions`: decisões recentes, autenticada.
 - `GET /inventory`: inventário observado, autenticada.
 - `GET /identity-diagnostics`: aliases ativos, autenticada.

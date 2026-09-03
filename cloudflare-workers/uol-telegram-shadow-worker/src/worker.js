@@ -7029,7 +7029,7 @@ export class UolTelegramShadow extends DurableObject {
   resolveDeliveryUnknown(id, target, outcome, payload = {}) {
     const normalizedTarget = String(target || "").trim().toLowerCase();
     const normalizedOutcome = String(outcome || "").trim().toLowerCase();
-    if (!["main", "canal2", "discord", "comment"].includes(normalizedTarget)) {
+    if (!["main", "canal2", "discord", "comment", "beeper"].includes(normalizedTarget)) {
       throw new Error("delivery_resolution_target_invalid");
     }
     if (!["sent", "not_sent", "closed"].includes(normalizedOutcome)) {
@@ -7043,6 +7043,77 @@ export class UolTelegramShadow extends DurableObject {
       String(id || "").trim(),
     ).toArray()[0];
     if (!row) throw new Error("delivery_offer_not_found");
+    const resolvedAt = new Date().toISOString();
+
+    if (normalizedTarget === "beeper") {
+      const queue = this.sqlExec(
+        `SELECT attempts, sent_at, last_error
+           FROM beeper_delivery_queue WHERE offer_id = ? LIMIT 1`,
+        row.id,
+      ).toArray()[0];
+      if (
+        !queue || queue.sent_at ||
+        !String(queue.last_error || "").startsWith("ambiguous:")
+      ) {
+        throw new Error("delivery_target_not_unknown");
+      }
+      const evidenceReference = String(payload?.evidenceReference || "").trim();
+      if (
+        normalizedOutcome === "sent" &&
+        !/^[a-z0-9][a-z0-9:._-]{7,159}$/iu.test(evidenceReference)
+      ) {
+        throw new Error("delivery_resolution_evidence_required");
+      }
+      if (normalizedOutcome === "sent") {
+        this.sqlExec(
+          `UPDATE beeper_delivery_queue SET sent_at = ?, in_flight_at = '',
+             next_attempt_at = '', last_error = ''
+           WHERE offer_id = ? AND sent_at = '' AND last_error LIKE 'ambiguous:%'`,
+          resolvedAt,
+          row.id,
+        );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "beeper",
+          operation: "delivery",
+          state: "resolved_sent",
+          attempt: Number(queue.attempts || 0),
+          generation: Number(row.delivery_generation || 0),
+          occurredAt: resolvedAt,
+          externalId: evidenceReference,
+        });
+      } else {
+        this.sqlExec(
+          `UPDATE beeper_delivery_queue SET attempts = 0, in_flight_at = '',
+             next_attempt_at = '', last_error = ''
+           WHERE offer_id = ? AND sent_at = '' AND last_error LIKE 'ambiguous:%'`,
+          row.id,
+        );
+        this.recordDeliveryLedgerEvent({
+          offerId: row.id,
+          target: "beeper",
+          operation: "delivery",
+          state: "resolved_not_sent",
+          attempt: Number(queue.attempts || 0),
+          generation: Number(row.delivery_generation || 0),
+          occurredAt: resolvedAt,
+        });
+      }
+      const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+      const diagnostics = this.beeperQueueDiagnostics(maxAttempts);
+      this.updateBeeperRuntimeSnapshot({
+        pending: diagnostics.pending,
+        exhausted: diagnostics.exhausted,
+        unknown: diagnostics.unknown,
+        lastErrorCode: "",
+      });
+      return {
+        ok: true,
+        id: row.id,
+        target: normalizedTarget,
+        outcome: normalizedOutcome,
+      };
+    }
     const legacyUnknownTargets = String(row.delivery_unknown_target || "")
       .split(",").map((value) => value.trim()).filter(Boolean);
     const unknownAt = normalizedTarget === "comment"
@@ -7050,8 +7121,6 @@ export class UolTelegramShadow extends DurableObject {
       : row[`${normalizedTarget}_delivery_unknown_at`] ||
         (legacyUnknownTargets.includes(normalizedTarget) ? row.delivery_unknown_at : "");
     if (!unknownAt) throw new Error("delivery_target_not_unknown");
-    const resolvedAt = new Date().toISOString();
-
     if (normalizedTarget === "comment") {
       if (normalizedOutcome === "closed") {
         const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
@@ -8196,6 +8265,7 @@ export default {
               messageId: body?.messageId,
               messageKind: body?.messageKind,
               messageIds: body?.messageIds,
+              evidenceReference: body?.evidenceReference,
             },
           );
         });
