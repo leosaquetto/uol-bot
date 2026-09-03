@@ -5981,33 +5981,35 @@ export class UolTelegramShadow extends DurableObject {
     const retentionDays = envNumber(this.env, "OFFER_RETENTION_DAYS", 30, 7, 365);
     const maxOffers = envNumber(this.env, "MAX_STATE_OFFERS", 300, 50, 2_000);
     const cutoff = new Date(now.getTime() - retentionDays * 86_400_000).toISOString();
-    const active = [...activeIds];
-    const activeClause = active.length
-      ? `AND id NOT IN (${active.map(() => "?").join(", ")})`
-      : "";
+    const active = new Set([...activeIds].filter(Boolean));
+    const terminalRows = this.sqlExec(
+      `SELECT id, first_seen_at
+       FROM offers
+       WHERE status IN ('baseline', 'discarded', 'delivered', 'shadow_sold_out', 'sold_out')
+       ORDER BY first_seen_at DESC, id ASC`,
+    ).toArray();
+    const removable = terminalRows.filter((row) => !active.has(row.id));
+    const cutoffMs = Date.parse(cutoff);
+    const expired = removable.filter((row) => Date.parse(row.first_seen_at) < cutoffMs);
+    const expiredIds = new Set(expired.map((row) => row.id));
+    const retained = removable.filter((row) => !expiredIds.has(row.id));
+    const overflow = retained.slice(Math.max(0, maxOffers));
+    const idsToDelete = [...new Set([
+      ...expired.map((row) => row.id),
+      ...overflow.map((row) => row.id),
+    ])];
 
     // Retain every currently visible card and every unfinished delivery. Old
     // terminal rows are only dedupe/history state and can be safely removed.
-    this.sqlExec(
-      `DELETE FROM offers
-       WHERE first_seen_at < ?
-         AND status IN ('baseline', 'discarded', 'delivered', 'shadow_sold_out', 'sold_out')
-         ${activeClause}`,
-      cutoff,
-      ...active,
-    );
-    this.sqlExec(
-      `DELETE FROM offers
-       WHERE id IN (
-         SELECT id FROM offers
-          WHERE status IN ('baseline', 'discarded', 'delivered', 'shadow_sold_out', 'sold_out')
-            ${activeClause}
-          ORDER BY first_seen_at DESC
-          LIMIT -1 OFFSET ?
-       )`,
-      ...active,
-      maxOffers,
-    );
+    // Delete in bounded chunks because public listings can exceed SQLite's
+    // parameter limit; an oversized NOT IN clause used to abort maintenance.
+    for (let offset = 0; offset < idsToDelete.length; offset += IDENTITY_QUERY_CHUNK_SIZE) {
+      const chunk = idsToDelete.slice(offset, offset + IDENTITY_QUERY_CHUNK_SIZE);
+      this.sqlExec(
+        `DELETE FROM offers WHERE id IN (${chunk.map(() => "?").join(", ")})`,
+        ...chunk,
+      );
+    }
     this.sqlExec(
       `DELETE FROM source_observations
        WHERE api_last_seen_at < ? AND listing_last_seen_at < ?`,
