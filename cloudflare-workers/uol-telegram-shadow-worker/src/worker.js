@@ -126,7 +126,10 @@ const BEEPER_RESPONSE_REPLAY_METADATA_KEY = "beeper_response_replay_policy";
 const BEEPER_RESPONSE_REPLAY_POLICY = "v1";
 const IDENTITY_POLICY_METADATA_KEY = "offer_identity_policy";
 const IDENTITY_POLICY_VERSION = "v2";
-const IDENTITY_QUERY_CHUNK_SIZE = 700;
+// Durable Objects SQLite supports at most 100 bound parameters per query.
+// Leave a small margin for fixed bindings in priority statements.
+const SQLITE_BOUND_PARAMETER_CHUNK = 96;
+const IDENTITY_QUERY_CHUNK_SIZE = SQLITE_BOUND_PARAMETER_CHUNK;
 const OPS_HEALTH_INTERVAL_SECONDS = 5 * 60;
 const STORAGE_STAGE_NAMES = [
   "primary",
@@ -3275,7 +3278,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async processPending(cardsById, now, { priorityIds = [] } = {}) {
-    const priority = [...new Set(priorityIds)].slice(0, 100);
+    const priority = [...new Set(priorityIds)].slice(0, SQLITE_BOUND_PARAMETER_CHUNK);
     const batchSize = priority.length ||
       envNumber(this.env, "DETAIL_BATCH_SIZE", 4, 1, 8);
     const priorityOrder = priority.length
@@ -3587,7 +3590,7 @@ export class UolTelegramShadow extends DurableObject {
     const discord = discordConfiguration(this.env);
     const configuration = deliveryConfiguration(this.env, telegram, discord);
     const generation = this.currentDeliveryGeneration();
-    const priorityList = [...new Set(priorityIds)].slice(0, 100);
+    const priorityList = [...new Set(priorityIds)].slice(0, SQLITE_BOUND_PARAMETER_CHUNK);
     const priority = new Set(priorityList);
     const requestedTargets = [...new Set(targetNames)].filter(
       (target) => ["main", "canal2", "discord"].includes(target),
@@ -6003,8 +6006,8 @@ export class UolTelegramShadow extends DurableObject {
     // terminal rows are only dedupe/history state and can be safely removed.
     // Delete in bounded chunks because public listings can exceed SQLite's
     // parameter limit; an oversized NOT IN clause used to abort maintenance.
-    for (let offset = 0; offset < idsToDelete.length; offset += IDENTITY_QUERY_CHUNK_SIZE) {
-      const chunk = idsToDelete.slice(offset, offset + IDENTITY_QUERY_CHUNK_SIZE);
+    for (let offset = 0; offset < idsToDelete.length; offset += SQLITE_BOUND_PARAMETER_CHUNK) {
+      const chunk = idsToDelete.slice(offset, offset + SQLITE_BOUND_PARAMETER_CHUNK);
       this.sqlExec(
         `DELETE FROM offers WHERE id IN (${chunk.map(() => "?").join(", ")})`,
         ...chunk,
@@ -6274,9 +6277,9 @@ export class UolTelegramShadow extends DurableObject {
           },
         );
         const cardsById = new Map(resolution.cards.map((card) => [card.id, card]));
-        for (let offset = 0; offset < resolution.insertedIds.length; offset += 100) {
+        for (let offset = 0; offset < resolution.insertedIds.length; offset += SQLITE_BOUND_PARAMETER_CHUNK) {
           const processed = await this.processPending(cardsById, fastNow, {
-            priorityIds: resolution.insertedIds.slice(offset, offset + 100),
+            priorityIds: resolution.insertedIds.slice(offset, offset + SQLITE_BOUND_PARAMETER_CHUNK),
           });
           run.enriched += processed.enriched;
           run.wouldSendMain += processed.wouldSendMain;
@@ -6780,9 +6783,9 @@ export class UolTelegramShadow extends DurableObject {
             );
             result.newOffers = resolution.inserted;
             const cardsById = new Map(resolution.cards.map((card) => [card.id, card]));
-            for (let offset = 0; offset < resolution.insertedIds.length; offset += 100) {
+            for (let offset = 0; offset < resolution.insertedIds.length; offset += SQLITE_BOUND_PARAMETER_CHUNK) {
               await this.processPending(cardsById, now, {
-                priorityIds: resolution.insertedIds.slice(offset, offset + 100),
+                priorityIds: resolution.insertedIds.slice(offset, offset + SQLITE_BOUND_PARAMETER_CHUNK),
               });
             }
             await this.processPending(cardsById, now);
