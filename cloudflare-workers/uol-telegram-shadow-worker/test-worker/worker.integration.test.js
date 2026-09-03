@@ -1658,6 +1658,30 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("não carrega o pico de leitura da versão anterior para o deploy atual", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("storage-version-boundary");
+
+    await runInDurableObject(stub, async (instance) => {
+      instance.env = {
+        ...instance.env,
+        WORKER_VERSION: { id: "version-current" },
+      };
+      instance.storageUsage.primaryLastVersionId = "version-previous";
+      instance.storageUsage.primaryMaxRowsRead = 24_675;
+      instance.storageUsage.primaryEstimatedRowsRead = 4_096;
+      await instance.withStorageCycle("primary", async () => {
+        instance.recordStorageUsage(18, 0);
+        instance.completeStorageUsageCycle("primary", 0);
+      });
+
+      expect(instance.storageUsage).toMatchObject({
+        primaryLastVersionId: "version-current",
+        primaryMaxRowsRead: 20,
+        primaryEstimatedRowsRead: 20,
+      });
+    });
+  });
+
   it("devolve backoff quando a manutenção encontra a reserva de quota", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("maintenance-quota-backoff");
 

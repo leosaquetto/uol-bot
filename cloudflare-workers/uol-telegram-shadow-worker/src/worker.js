@@ -920,18 +920,18 @@ export class UolTelegramShadow extends DurableObject {
           Number(this.storageUsage.rowsRead || 0) - Number(startedRowsRead || 0),
         );
     if (kind === "primary") {
-      this.storageUsage.primaryMaxRowsRead = Math.max(
-        Number(this.storageUsage.primaryMaxRowsRead || 0),
-        cycleRowsRead,
-      );
-      this.storageUsage.primaryEstimatedRowsRead = rollingReadEstimate(
-        this.storageUsage.primaryEstimatedRowsRead,
-        cycleRowsRead,
-      );
       const completedAt = normalizeTicketProbeAt(details.completedAt, new Date());
       const versionId = String(
         details.versionId || this.env.WORKER_VERSION?.id || "",
       ).trim();
+      const previousVersionId = String(this.storageUsage.primaryLastVersionId || "").trim();
+      const versionChanged = previousVersionId && versionId && previousVersionId !== versionId;
+      this.storageUsage.primaryMaxRowsRead = versionChanged
+        ? cycleRowsRead
+        : Math.max(Number(this.storageUsage.primaryMaxRowsRead || 0), cycleRowsRead);
+      this.storageUsage.primaryEstimatedRowsRead = versionChanged
+        ? Math.min(512, Math.ceil(cycleRowsRead))
+        : rollingReadEstimate(this.storageUsage.primaryEstimatedRowsRead, cycleRowsRead);
       this.storageUsage.primaryLastCompletedAt = completedAt;
       this.storageUsage.primaryLastVersionId = versionId;
       this.storageUsage.primaryLastRowsRead = cycleRowsRead;
@@ -3246,9 +3246,13 @@ export class UolTelegramShadow extends DurableObject {
         now.getTime() -
           envNumber(this.env, "RECENT_RESEND_BLOCK_HOURS", 168, 1, 720) * 3_600_000,
       ).toISOString();
+      const sourceKey = offerSourceKey(offer.link);
+      const [sourcePartner, sourceCode] = sourceKey.split("|");
+      const sourceClause = sourceKey ? "AND LOWER(link) LIKE ?" : "";
       const duplicateCandidates = this.sqlExec(
         `SELECT id, link FROM offers
          WHERE id <> ?
+           ${sourceClause}
            AND (
              (dedupe_key <> '' AND dedupe_key IN (?, ?))
              OR (loose_dedupe_key <> '' AND loose_dedupe_key IN (?, ?))
@@ -3264,8 +3268,11 @@ export class UolTelegramShadow extends DurableObject {
                  'delivery_unknown', 'delivery_quarantined'
                )
              )
-           )`,
+           )
+         ORDER BY first_seen_at DESC, id ASC
+         LIMIT 32`,
         offer.id,
+        ...(sourceKey ? [`%/${sourcePartner}/${sourceCode}-%`] : []),
         keys.dedupeKey,
         keys.legacyDedupeKey,
         keys.looseDedupeKey,
@@ -3274,7 +3281,6 @@ export class UolTelegramShadow extends DurableObject {
         resendThreshold,
         resendThreshold,
       ).toArray();
-      const sourceKey = offerSourceKey(offer.link);
       const duplicate = duplicateCandidates.find((candidate) => {
         if (!sourceKey) return true;
         return offerSourceKey(candidate.link) === sourceKey;
