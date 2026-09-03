@@ -7051,9 +7051,12 @@ export class UolTelegramShadow extends DurableObject {
            FROM beeper_delivery_queue WHERE offer_id = ? LIMIT 1`,
         row.id,
       ).toArray()[0];
+      const lastError = String(queue?.last_error || "");
+      const evidenceResolvable = lastError.startsWith("ambiguous:") ||
+        lastError === "terminal:idempotency_conflict";
       if (
-        !queue || queue.sent_at ||
-        !String(queue.last_error || "").startsWith("ambiguous:")
+        !queue || queue.sent_at || !evidenceResolvable ||
+        (normalizedOutcome === "not_sent" && !lastError.startsWith("ambiguous:"))
       ) {
         throw new Error("delivery_target_not_unknown");
       }
@@ -7068,7 +7071,10 @@ export class UolTelegramShadow extends DurableObject {
         this.sqlExec(
           `UPDATE beeper_delivery_queue SET sent_at = ?, in_flight_at = '',
              next_attempt_at = '', last_error = ''
-           WHERE offer_id = ? AND sent_at = '' AND last_error LIKE 'ambiguous:%'`,
+           WHERE offer_id = ? AND sent_at = '' AND (
+             last_error LIKE 'ambiguous:%' OR
+             last_error = 'terminal:idempotency_conflict'
+           )`,
           resolvedAt,
           row.id,
         );

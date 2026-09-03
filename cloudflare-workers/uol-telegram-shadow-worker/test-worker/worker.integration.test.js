@@ -1764,9 +1764,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
         seenAt,
       );
       state.storage.sql.exec(
-        `INSERT INTO beeper_delivery_queue(
+         `INSERT INTO beeper_delivery_queue(
            offer_id, attempts, sent_at, last_error
-         ) VALUES (?, 10, '', 'ambiguous:delivery_unknown')`,
+         ) VALUES (?, 10, '', 'terminal:idempotency_conflict')`,
         "ticket-beeper-confirmado",
       );
 
@@ -1775,6 +1775,11 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "beeper",
         "sent",
       )).toThrow("delivery_resolution_evidence_required");
+      expect(() => instance.resolveDeliveryUnknown(
+        "ticket-beeper-confirmado",
+        "beeper",
+        "not_sent",
+      )).toThrow("delivery_target_not_unknown");
       expect(instance.resolveDeliveryUnknown(
         "ticket-beeper-confirmado",
         "beeper",
