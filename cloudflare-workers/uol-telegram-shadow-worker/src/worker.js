@@ -2854,26 +2854,34 @@ export class UolTelegramShadow extends DurableObject {
   findIdentityRows(card) {
     const aliases = this.identityAliases(card.id, card.link);
     if (!aliases.length) return [];
-    return this.sqlExec(
-      `SELECT
-         o.id, o.link, o.status, o.status_before_sold_out, o.main_sent_at,
-         o.canal2_sent_at, o.first_seen_at, o.last_seen_at, o.discard_reason,
-         MIN(CASE
-           WHEN a.alias LIKE 'id:%' THEN 0
-           WHEN a.alias LIKE 'slug:%' THEN 1
-           ELSE 2
-         END) AS alias_priority
-       FROM offer_identity_aliases AS a
-       JOIN offers AS o ON o.id = a.offer_id
-       WHERE a.alias IN (${aliases.map(() => "?").join(", ")})
-       GROUP BY o.id
-       ORDER BY alias_priority ASC, o.first_seen_at DESC
-       LIMIT 32`,
-      ...aliases,
-    ).toArray().filter((row) => offerIdentityCompatible({
-      id: row.id,
-      link: row.link,
-    }, card));
+    const queryRows = (candidateAliases) => {
+      if (!candidateAliases.length) return [];
+      return this.sqlExec(
+        `SELECT
+           o.id, o.link, o.status, o.status_before_sold_out, o.main_sent_at,
+           o.canal2_sent_at, o.first_seen_at, o.last_seen_at, o.discard_reason,
+           MIN(CASE
+             WHEN a.alias LIKE 'id:%' THEN 0
+             WHEN a.alias LIKE 'slug:%' THEN 1
+             ELSE 2
+           END) AS alias_priority
+         FROM offer_identity_aliases AS a
+         JOIN offers AS o ON o.id = a.offer_id
+         WHERE a.alias IN (${candidateAliases.map(() => "?").join(", ")})
+         GROUP BY o.id
+         ORDER BY alias_priority ASC, o.first_seen_at DESC
+         LIMIT 32`,
+        ...candidateAliases,
+      ).toArray().filter((row) => offerIdentityCompatible({
+        id: row.id,
+        link: row.link,
+      }, card));
+    };
+    const exactAliases = aliases.filter((alias) => !alias.startsWith("source:"));
+    const exactRows = queryRows(exactAliases);
+    return exactRows.length
+      ? exactRows
+      : queryRows(aliases.filter((alias) => alias.startsWith("source:")));
   }
 
   chooseIdentityKeeper(rows) {
