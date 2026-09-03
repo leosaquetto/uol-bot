@@ -285,11 +285,11 @@ test("cada alarme periódico rearma uma vez por execução", () => {
 test("polling usa aliases indexados e mede rowsRead reais", () => {
   const primary = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
   const resolution = methodSource("  resolveListingCards(", "  async processPending(");
-  const lookup = methodSource("  findIdentityRows(", "  chooseIdentityKeeper(");
+  const lookup = methodSource("  queryIdentityRows(", "  identityRowsForCardRows(");
   const tracking = methodSource("  trackSqlCursor(", "  loadStorageUsage(");
   const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
 
-  assert.match(resolution, /this\.findIdentityRows\(card\)/);
+  assert.match(resolution, /this\.findIdentityRowsForCards\(cards\)/);
   assert.doesNotMatch(resolution, /SELECT[\s\S]*FROM offers[\s\S]*\.toArray\(\)/);
   assert.match(lookup, /offer_identity_aliases AS a/);
   assert.match(tracking, /cursor\.rowsRead/);

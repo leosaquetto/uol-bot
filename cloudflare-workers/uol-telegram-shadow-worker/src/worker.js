@@ -126,6 +126,7 @@ const BEEPER_RESPONSE_REPLAY_METADATA_KEY = "beeper_response_replay_policy";
 const BEEPER_RESPONSE_REPLAY_POLICY = "v1";
 const IDENTITY_POLICY_METADATA_KEY = "offer_identity_policy";
 const IDENTITY_POLICY_VERSION = "v2";
+const IDENTITY_QUERY_CHUNK_SIZE = 800;
 const OPS_HEALTH_INTERVAL_SECONDS = 5 * 60;
 const STORAGE_STAGE_NAMES = [
   "primary",
@@ -2851,37 +2852,112 @@ export class UolTelegramShadow extends DurableObject {
     );
   }
 
-  findIdentityRows(card) {
-    const aliases = this.identityAliases(card.id, card.link);
+  queryIdentityRows(candidateAliases) {
+    const aliases = [...new Set(candidateAliases || [])].filter(Boolean);
     if (!aliases.length) return [];
-    const queryRows = (candidateAliases) => {
-      if (!candidateAliases.length) return [];
-      return this.sqlExec(
+    const rows = [];
+    for (let offset = 0; offset < aliases.length; offset += IDENTITY_QUERY_CHUNK_SIZE) {
+      const chunk = aliases.slice(offset, offset + IDENTITY_QUERY_CHUNK_SIZE);
+      rows.push(...this.sqlExec(
         `SELECT
            o.id, o.link, o.status, o.status_before_sold_out, o.main_sent_at,
            o.canal2_sent_at, o.first_seen_at, o.last_seen_at, o.discard_reason,
-           MIN(CASE
+           a.alias AS matched_alias,
+           CASE
              WHEN a.alias LIKE 'id:%' THEN 0
              WHEN a.alias LIKE 'slug:%' THEN 1
              ELSE 2
-           END) AS alias_priority
+           END AS alias_priority
          FROM offer_identity_aliases AS a
          JOIN offers AS o ON o.id = a.offer_id
-         WHERE a.alias IN (${candidateAliases.map(() => "?").join(", ")})
-         GROUP BY o.id
-         ORDER BY alias_priority ASC, o.first_seen_at DESC
-         LIMIT 32`,
-        ...candidateAliases,
-      ).toArray().filter((row) => offerIdentityCompatible({
-        id: row.id,
-        link: row.link,
-      }, card));
-    };
+         WHERE a.alias IN (${chunk.map(() => "?").join(", ")})
+         ORDER BY alias_priority ASC, o.first_seen_at DESC, o.id ASC
+         LIMIT 4096`,
+        ...chunk,
+      ).toArray());
+    }
+    return rows;
+  }
+
+  identityRowsForCardRows(rows, card, aliases) {
+    const allowed = new Set(aliases || []);
+    const byId = new Map();
+    for (const row of rows || []) {
+      if (!allowed.has(row.matched_alias)) continue;
+      if (!offerIdentityCompatible({ id: row.id, link: row.link }, card)) continue;
+      const previous = byId.get(row.id);
+      if (!previous ||
+          Number(row.alias_priority || 0) < Number(previous.alias_priority || 0) ||
+          (Number(row.alias_priority || 0) === Number(previous.alias_priority || 0) &&
+            String(row.first_seen_at).localeCompare(String(previous.first_seen_at)) > 0)) {
+        byId.set(row.id, row);
+      }
+    }
+    return [...byId.values()].sort((left, right) => (
+      Number(left.alias_priority || 0) - Number(right.alias_priority || 0) ||
+      String(right.first_seen_at).localeCompare(String(left.first_seen_at)) ||
+      String(left.id).localeCompare(String(right.id))
+    )).slice(0, 32);
+  }
+
+  findIdentityRows(card) {
+    const aliases = this.identityAliases(card.id, card.link);
+    if (!aliases.length) return [];
     const exactAliases = aliases.filter((alias) => !alias.startsWith("source:"));
-    const exactRows = queryRows(exactAliases);
+    const exactRows = this.identityRowsForCardRows(
+      this.queryIdentityRows(exactAliases),
+      card,
+      exactAliases,
+    );
     return exactRows.length
       ? exactRows
-      : queryRows(aliases.filter((alias) => alias.startsWith("source:")));
+      : this.identityRowsForCardRows(
+          this.queryIdentityRows(aliases.filter((alias) => alias.startsWith("source:"))),
+          card,
+          aliases.filter((alias) => alias.startsWith("source:")),
+        );
+  }
+
+  identityLookupKey(card) {
+    return `${String(card?.id || "")}\u0000${String(card?.link || "")}`;
+  }
+
+  findIdentityRowsForCards(cards) {
+    const descriptors = (cards || []).map((card) => {
+      const aliases = this.identityAliases(card.id, card.link);
+      return {
+        card,
+        aliases,
+        exactAliases: aliases.filter((alias) => !alias.startsWith("source:")),
+        sourceAliases: aliases.filter((alias) => alias.startsWith("source:")),
+      };
+    });
+    const exactRows = this.queryIdentityRows(
+      descriptors.flatMap((descriptor) => descriptor.exactAliases),
+    );
+    const result = new Map();
+    const missingSource = [];
+    for (const descriptor of descriptors) {
+      const rows = this.identityRowsForCardRows(
+        exactRows,
+        descriptor.card,
+        descriptor.exactAliases,
+      );
+      if (rows.length) result.set(this.identityLookupKey(descriptor.card), rows);
+      else missingSource.push(descriptor);
+    }
+    if (missingSource.length) {
+      const sourceRows = this.queryIdentityRows(
+        missingSource.flatMap((descriptor) => descriptor.sourceAliases),
+      );
+      for (const descriptor of missingSource) {
+        result.set(
+          this.identityLookupKey(descriptor.card),
+          this.identityRowsForCardRows(sourceRows, descriptor.card, descriptor.sourceAliases),
+        );
+      }
+    }
+    return result;
   }
 
   chooseIdentityKeeper(rows) {
@@ -3027,13 +3103,14 @@ export class UolTelegramShadow extends DurableObject {
     const lastSeenTouchCutoff = new Date(
       Date.parse(nowIso) - lastSeenTouchMinutes * 60_000,
     ).toISOString();
+    for (const card of cards) this.repairConflictingOfferLinks(card, nowIso);
+    const identityRowsByCard = this.findIdentityRowsForCards(cards);
     const resolved = [];
     const resolvedIds = new Set();
     let inserted = 0;
     const insertedIds = [];
     for (const card of cards) {
-      this.repairConflictingOfferLinks(card, nowIso);
-      const identityRows = this.findIdentityRows(card);
+      const identityRows = identityRowsByCard.get(this.identityLookupKey(card)) || [];
       const activeRows = identityRows.filter((row) => row.status !== "discarded");
       const existing = activeRows.length ? this.chooseIdentityKeeper(activeRows) : null;
 
