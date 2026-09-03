@@ -126,7 +126,7 @@ const BEEPER_RESPONSE_REPLAY_METADATA_KEY = "beeper_response_replay_policy";
 const BEEPER_RESPONSE_REPLAY_POLICY = "v1";
 const IDENTITY_POLICY_METADATA_KEY = "offer_identity_policy";
 const IDENTITY_POLICY_VERSION = "v2";
-const IDENTITY_QUERY_CHUNK_SIZE = 800;
+const IDENTITY_QUERY_CHUNK_SIZE = 700;
 const OPS_HEALTH_INTERVAL_SECONDS = 5 * 60;
 const STORAGE_STAGE_NAMES = [
   "primary",
