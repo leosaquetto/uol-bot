@@ -189,6 +189,166 @@ describe("UOL Worker no runtime Cloudflare", () => {
     }
   });
 
+  it("retenta resposta ambígua do WhatsApp com a mesma chave idempotente", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("beeper-ambiguous-idempotent-retry");
+    const idempotencyKeys = [];
+    let sendCalls = 0;
+    vi.stubGlobal("fetch", async (input, init = {}) => {
+      const url = String(input);
+      if (url === "https://beeper.test/v1/readyz") {
+        return Response.json({
+          ok: true,
+          deliveryConfirmation: "confirmed_by_whatsapp_bridge",
+        });
+      }
+      if (url === "https://beeper.test/v1/send-offer") {
+        sendCalls += 1;
+        idempotencyKeys.push(init.headers["Idempotency-Key"]);
+        if (sendCalls === 1) {
+          return new Response("{", {
+            status: 202,
+            headers: { "content-type": "application/json" },
+          });
+        }
+        return Response.json({
+          pendingMessageID: "pending-replayed",
+          deliveryState: "confirmed_by_whatsapp_bridge",
+          replayed: true,
+        }, { status: 202 });
+      }
+      throw new Error(`unexpected_fetch:${url}`);
+    });
+
+    try {
+      await runInDurableObject(stub, async (instance, state) => {
+        instance.env = {
+          ...instance.env,
+          BEEPER_DELIVERY_ENABLED: "true",
+          BEEPER_DESTINATION_KEY: "whatsapp-group",
+          BEEPER_DELIVERY_OFFER_IDS: "",
+          BEEPER_GATEWAY_URL: "https://beeper.test/v1/send-offer",
+          BEEPER_GATEWAY_TOKEN: "vitest-beeper-token",
+          DELIVERY_MAX_ATTEMPTS: "10",
+        };
+        const seenAt = "2026-08-28T12:00:00.000Z";
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, category,
+             first_seen_at, last_seen_at, status, discord_sent_at
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, 'delivered', ?)`,
+          "ticket-ambiguous",
+          "https://clube.uol.com.br/campanhasdeingresso/ticket-ambiguous",
+          "2 INGRESSOS: oferta ambígua",
+          "2 INGRESSOS: oferta ambígua",
+          seenAt,
+          seenAt,
+          seenAt,
+        );
+        state.storage.sql.exec(
+          `INSERT INTO beeper_delivery_queue(
+             offer_id, attempts, next_attempt_at, last_error
+           ) VALUES (?, 10, '', 'ambiguous:beeper_send_response_ambiguous')`,
+          "ticket-ambiguous",
+        );
+
+        const first = await instance.processCriticalBeeperDeliveryQueue(
+          new Date("2026-09-03T14:00:00.000Z"),
+        );
+        expect(first).toMatchObject({ sent: 0, failed: 1, blocked: false });
+        expect(state.storage.sql.exec(
+          `SELECT attempts, next_attempt_at, sent_at, last_error
+             FROM beeper_delivery_queue WHERE offer_id = ?`,
+          "ticket-ambiguous",
+        ).one()).toMatchObject({
+          attempts: 1,
+          next_attempt_at: expect.stringMatching(/^2026-09-03T14:00:/),
+          sent_at: "",
+          last_error: "ambiguous:beeper_send_response_ambiguous",
+        });
+
+        const second = await instance.processCriticalBeeperDeliveryQueue(
+          new Date("2026-09-03T14:01:00.000Z"),
+        );
+        expect(second).toMatchObject({ sent: 1, failed: 0, blocked: false });
+        expect(idempotencyKeys).toHaveLength(2);
+        expect(new Set(idempotencyKeys).size).toBe(1);
+        expect(state.storage.sql.exec(
+          `SELECT attempts, sent_at, last_error
+             FROM beeper_delivery_queue WHERE offer_id = ?`,
+          "ticket-ambiguous",
+        ).one()).toMatchObject({
+          attempts: 2,
+          sent_at: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
+          last_error: "",
+        });
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("não retenta entrega WhatsApp declarada unknown pelo gateway", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("beeper-gateway-unknown-terminal");
+    let sendCalls = 0;
+    vi.stubGlobal("fetch", async (input) => {
+      const url = String(input);
+      if (url === "https://beeper.test/v1/send-offer") sendCalls += 1;
+      throw new Error(`unexpected_fetch:${url}`);
+    });
+
+    try {
+      await runInDurableObject(stub, async (instance, state) => {
+        instance.env = {
+          ...instance.env,
+          BEEPER_DELIVERY_ENABLED: "true",
+          BEEPER_DESTINATION_KEY: "whatsapp-group",
+          BEEPER_DELIVERY_OFFER_IDS: "",
+          BEEPER_GATEWAY_URL: "https://beeper.test/v1/send-offer",
+          BEEPER_GATEWAY_TOKEN: "vitest-beeper-token",
+          DELIVERY_MAX_ATTEMPTS: "10",
+        };
+        const seenAt = "2026-08-28T12:00:00.000Z";
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, category,
+             first_seen_at, last_seen_at, status, discord_sent_at
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, 'delivered', ?)`,
+          "ticket-gateway-unknown",
+          "https://clube.uol.com.br/campanhasdeingresso/ticket-gateway-unknown",
+          "2 INGRESSOS: entrega unknown",
+          "2 INGRESSOS: entrega unknown",
+          seenAt,
+          seenAt,
+          seenAt,
+        );
+        state.storage.sql.exec(
+          `INSERT INTO beeper_delivery_queue(
+             offer_id, attempts, next_attempt_at, last_error
+           ) VALUES (?, 10, '', 'ambiguous:delivery_unknown')`,
+          "ticket-gateway-unknown",
+        );
+
+        const result = await instance.processCriticalBeeperDeliveryQueue(
+          new Date("2026-09-03T14:00:00.000Z"),
+        );
+        expect(result).toMatchObject({ sent: 0, failed: 0, blocked: false });
+        expect(sendCalls).toBe(0);
+        expect(state.storage.sql.exec(
+          `SELECT attempts, next_attempt_at, sent_at, last_error
+             FROM beeper_delivery_queue WHERE offer_id = ?`,
+          "ticket-gateway-unknown",
+        ).one()).toEqual({
+          attempts: 10,
+          next_attempt_at: "",
+          sent_at: "",
+          last_error: "ambiguous:delivery_unknown",
+        });
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("entrega Beeper sob reserva, publica pending vivo e não sonda fila vazia", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("beeper-critical-under-reserve");
     const gatewayCalls = [];
@@ -680,6 +840,238 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(deliveryCalls[1].rows.map((row) => row.id).sort()).toEqual([...missingIds].sort());
   });
 
+  it("recupera ingressos distintos suprimidos por alias e conteúdo", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ticket-reused-code-content-recovery");
+    const observedAt = "2026-09-03T14:40:15.488Z";
+    const oldId = "piz-2-ingressos-03-09-cultura-artistica-sp";
+    const reusedCode = {
+      id: "piz-2-ingressos-06-09-masp-sp",
+      link: "https://clube.uol.com.br/campanhasdeingresso/pIZ-2-ingressos-06-09-masp-sp",
+      previewTitle: "2 INGRESSOS: 06/09 MASP - SP",
+      category: "campanhasdeingresso",
+      cardImageUrl: "",
+      partnerImageUrl: "",
+      partnerName: "Campanhas de ingressos",
+      apiDetail: {
+        title: "2 INGRESSOS: 06/09 MASP - SP",
+        validity: "Benefício válido até 06/09/2026 23:59.",
+        description: "Resgate de um par de ingressos para o evento.",
+        imageUrl: "",
+      },
+    };
+    const siblingCards = ["pIK", "pIL"].map((code) => ({
+      id: `${code.toLowerCase()}-2-ingressos-05-09-ecovilla-ri-happy-rj`,
+      link: `https://clube.uol.com.br/campanhasdeingresso/${code}-2-ingressos-05-09-ecovilla-ri-happy-rj`,
+      previewTitle: "2 INGRESSOS: 05/09 EcoVilla Ri Happy RJ",
+      category: "campanhasdeingresso",
+      cardImageUrl: "",
+      partnerImageUrl: "",
+      partnerName: "Campanhas de ingressos",
+      apiDetail: {
+        title: "2 INGRESSOS: 05/09 EcoVilla Ri Happy RJ",
+        validity: "Benefício válido até 05/09/2026 23:59.",
+        description: "Resgate de um par de ingressos para o evento.",
+        imageUrl: "",
+      },
+    }));
+
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.env = { ...instance.env, DELIVERY_MODE: "live" };
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, title, category, first_seen_at, last_seen_at,
+           status, decision_at, would_send_main, would_send_canal2, main_sent_at
+         ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, 'delivered', ?, 1, 1, ?)`,
+        oldId,
+        reusedCode.link,
+        "2 INGRESSOS: 03/09 Cultura Artística SP",
+        "2 INGRESSOS: 03/09 Cultura Artística SP",
+        "2026-09-01T15:10:29.024Z",
+        observedAt,
+        "2026-09-01T15:10:29.284Z",
+        "2026-09-01T15:10:44.795Z",
+      );
+      for (const alias of [
+        `id:${reusedCode.id}`,
+        `slug:${reusedCode.id}`,
+        "source:campanhasdeingresso|piz",
+      ]) {
+        state.storage.sql.exec(
+          `INSERT INTO offer_identity_aliases(alias, offer_id, first_seen_at)
+           VALUES (?, ?, ?)`,
+          alias,
+          oldId,
+          observedAt,
+        );
+      }
+
+      instance.insertCard(siblingCards[0], observedAt, "discarded");
+      state.storage.sql.exec(
+        `UPDATE offers SET discard_reason = 'duplicada_conteudo',
+           decision_at = ? WHERE id = ?`,
+        observedAt,
+        siblingCards[0].id,
+      );
+
+      const cards = [reusedCode, ...siblingCards];
+      const resolution = instance.resolveListingCards(
+        cards,
+        observedAt,
+        "pending_enrichment",
+      );
+      expect(resolution.inserted).toBe(3);
+      expect(resolution.insertedIds.sort()).toEqual(cards.map((card) => card.id).sort());
+
+      const processed = await instance.processPending(
+        new Map(cards.map((card) => [card.id, card])),
+        new Date(observedAt),
+        { priorityIds: resolution.insertedIds },
+      );
+      expect(processed).toMatchObject({
+        enriched: 3,
+        wouldSendMain: 3,
+        wouldSendCanal2: 3,
+      });
+
+      const recovered = state.storage.sql.exec(
+        `SELECT id, status, discard_reason, would_send_main, would_send_canal2
+           FROM offers
+          WHERE id IN (?, ?, ?)
+          ORDER BY id`,
+        reusedCode.id,
+        siblingCards[0].id,
+        siblingCards[1].id,
+      ).toArray();
+      expect(recovered).toHaveLength(3);
+      expect(recovered.every((row) => row.status === "delivery_pending")).toBe(true);
+      expect(recovered.every((row) => row.discard_reason === "")).toBe(true);
+      expect(recovered.every((row) => Number(row.would_send_main) === 1)).toBe(true);
+      expect(recovered.every((row) => Number(row.would_send_canal2) === 1)).toBe(true);
+    });
+  });
+
+  it("separa oferta comum quando o parceiro reutiliza o código curto", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("common-reused-code-recovery");
+    const observedAt = "2026-09-03T14:40:15.488Z";
+    const oldId = "pim-ganhe-01-kookaburra-wings";
+    const current = {
+      id: "pim-ganhe-01-chopp-brahma-340ml",
+      link: "https://clube.uol.com.br/outbacksteakhouse/pIM-ganhe-01-chopp-brahma-340ml",
+      previewTitle: "Ganhe 01 Chopp Brahma (340ml)",
+      category: "outbacksteakhouse",
+      cardImageUrl: "",
+      partnerImageUrl: "",
+      partnerName: "Outback Steakhouse",
+    };
+
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.env = { ...instance.env, DELIVERY_MODE: "live" };
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+           id, link, preview_title, title, category, first_seen_at, last_seen_at,
+           status, decision_at, would_send_main, main_sent_at
+         ) VALUES (?, ?, ?, ?, 'outbacksteakhouse', ?, ?, 'delivered', ?, 1, ?)`,
+        oldId,
+        current.link,
+        "Ganhe 01 Kookaburra Wings®",
+        "Ganhe 01 Kookaburra Wings®",
+        "2026-08-28T12:00:00.000Z",
+        observedAt,
+        "2026-08-28T12:00:00.000Z",
+        "2026-08-28T12:00:01.000Z",
+      );
+      for (const alias of [
+        `slug:${current.id}`,
+        "source:outbacksteakhouse|pim",
+      ]) {
+        state.storage.sql.exec(
+          `INSERT INTO offer_identity_aliases(alias, offer_id, first_seen_at)
+           VALUES (?, ?, ?)`,
+          alias,
+          oldId,
+          observedAt,
+        );
+      }
+
+      const resolution = instance.resolveListingCards(
+        [current],
+        observedAt,
+        "pending_enrichment",
+      );
+      expect(resolution).toMatchObject({ inserted: 1, insertedIds: [current.id] });
+      await expect(instance.processPending(
+        new Map([[current.id, current]]),
+        new Date(observedAt),
+        { priorityIds: resolution.insertedIds },
+      )).resolves.toMatchObject({
+        enriched: 1,
+        wouldSendMain: 1,
+        wouldSendCanal2: 0,
+      });
+
+      expect(state.storage.sql.exec(
+        "SELECT id, link, title, status FROM offers WHERE id IN (?, ?) ORDER BY id",
+        oldId,
+        current.id,
+      ).toArray()).toEqual([
+        {
+          id: current.id,
+          link: current.link,
+          title: current.previewTitle,
+          status: "delivery_pending",
+        },
+        {
+          id: oldId,
+          link: `https://clube.uol.com.br/outbacksteakhouse/${oldId}`,
+          title: "Ganhe 01 Kookaburra Wings®",
+          status: "delivered",
+        },
+      ]);
+    });
+  });
+
+  it("gera só um ciclo quando um ID terminal continua visível", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("terminal-reuse-single-cycle");
+    const card = {
+      id: "pgm-beneficio-recorrente",
+      link: "https://clube.uol.com.br/parceiro/pGM-beneficio-recorrente",
+      previewTitle: "Benefício recorrente",
+      category: "parceiro",
+      cardImageUrl: "",
+      partnerImageUrl: "",
+      partnerName: "Parceiro",
+    };
+
+    await runInDurableObject(stub, async (instance, state) => {
+      instance.insertCard(card, "2026-08-01T12:00:00.000Z", "discarded");
+      const first = instance.resolveListingCards(
+        [card],
+        "2026-09-03T14:40:00.000Z",
+        "pending_enrichment",
+      );
+      expect(first.inserted).toBe(1);
+      expect(first.insertedIds[0]).toMatch(/^pgm-beneficio-recorrente--\d{12}$/);
+      state.storage.sql.exec(
+        "UPDATE offers SET status = 'discarded' WHERE id = ?",
+        first.insertedIds[0],
+      );
+
+      const second = instance.resolveListingCards(
+        [card],
+        "2026-09-03T14:41:00.000Z",
+        "pending_enrichment",
+      );
+      expect(second).toMatchObject({ inserted: 0, insertedIds: [] });
+      expect(state.storage.sql.exec(
+        "SELECT COUNT(*) AS count FROM offers WHERE id LIKE 'pgm-beneficio-recorrente--%'",
+      ).one().count).toBe(1);
+      expect(state.storage.sql.exec(
+        "SELECT last_seen_at FROM offers WHERE id = ?",
+        card.id,
+      ).one().last_seen_at).toBe("2026-09-03T14:41:00.000Z");
+    });
+  });
+
   it("pula reconciliação completa quando a assinatura da API não muda", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-unchanged-fingerprint");
     let resolveCalls = 0;
@@ -911,6 +1303,14 @@ describe("UOL Worker no runtime Cloudflare", () => {
         expect(second.storageRowsRead).toBeLessThanOrEqual(128);
         expect(resolveCalls).toBe(1);
 
+        instance.setMetadata("offer_identity_policy", "v1");
+        const policyRecovery = await instance.runMaintenanceTick("manual");
+        expect(policyRecovery).toMatchObject({
+          htmlLedgerReconciled: true,
+          htmlLedgerReason: "missing_fingerprint",
+        });
+        expect(instance.metadataValue("offer_identity_policy")).toBe("v2");
+
         instance.setMetadata(
           "runtime:html_snapshot_reconciled_at",
           "2026-08-10T00:00:00.000Z",
@@ -951,9 +1351,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
       vi.unstubAllGlobals();
     }
 
-    expect(resolveCalls).toBe(4);
-    expect(sourceCalls).toBe(8);
-    expect(healthCalls).toBe(5);
+    expect(resolveCalls).toBe(5);
+    expect(sourceCalls).toBe(10);
+    expect(healthCalls).toBe(6);
   });
 
   it("mantém a fotografia da API fresca para saúde sem reler observações SQL", async () => {
@@ -2141,9 +2541,9 @@ describe("UOL Worker no runtime Cloudflare", () => {
            id, link, preview_title, first_seen_at, last_seen_at, status,
            decision_at, would_send_main, delivery_mode, delivery_generation,
            delivery_unknown_at, delivery_unknown_target, main_delivery_unknown_at
-         ) VALUES (?, ?, ?, ?, ?, 'delivery_unknown', ?, 1, 'live', 1, ?, 'main', ?)`,
+        ) VALUES (?, ?, ?, ?, ?, 'delivery_unknown', ?, 1, 'live', 1, ?, 'main', ?)`,
         "parceiro-p123-oferta-relampago",
-        "https://clube.uol.com.br/beneficios/parceiro/p123-oferta-relampago",
+        "https://clube.uol.com.br/parceiro/p123-40-off-no-cardpio",
         "Oferta relâmpago",
         "2026-08-02T12:00:00.000Z",
         "2026-08-02T12:00:00.000Z",
@@ -2157,8 +2557,8 @@ describe("UOL Worker no runtime Cloudflare", () => {
           is_automatic_forward: true,
           message_id: 901,
           chat: { id: -100222 },
-          text: "Oferta https://clube.uol.com.br/beneficios/parceiro/p123-oferta-relampago",
-          entities: [{ type: "url", offset: 7, length: 78 }],
+          text: "Oferta https://clube.uol.com.br/parceiro/p123-40-off-no-cardapio",
+          entities: [{ type: "url", offset: 7, length: 57 }],
           forward_origin: {
             type: "channel",
             chat: { id: -100111 },

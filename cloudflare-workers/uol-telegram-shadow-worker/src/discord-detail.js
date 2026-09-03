@@ -1,4 +1,4 @@
-import { cleanText, extractValidity, offerIdentityKeys } from "./core.js";
+import { cleanText, extractValidity, offerIdentityCompatible } from "./core.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const DETAIL_TIMEOUT_MS = 8_000;
@@ -23,9 +23,7 @@ function appendBounded(current, value, maxLength) {
 
 function responseStayedOnOffer(requestedUrl, responseUrl) {
   if (!responseUrl) return true;
-  const requestedKeys = new Set(offerIdentityKeys(requestedUrl));
-  const finalKeys = offerIdentityKeys(responseUrl);
-  return finalKeys.some((key) => requestedKeys.has(key));
+  return offerIdentityCompatible(requestedUrl, responseUrl);
 }
 
 function limitedBody(response, maxBytes) {

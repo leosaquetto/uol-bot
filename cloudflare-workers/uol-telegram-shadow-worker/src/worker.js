@@ -15,6 +15,7 @@ import {
   maintenanceRetryAt,
   normalizeTicketProbeAt,
   observationFreshnessMinutes,
+  offerIdentityCompatible,
   offerIdentityKeys,
   offerSourceKey,
   parseRuntimeSnapshot,
@@ -121,6 +122,10 @@ const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
 const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
 const READINESS_CACHE_TTL_MS = 15_000;
 const BEEPER_RECOVERY_METADATA_KEY = "beeper_delivery_offer_ids_applied_v3";
+const BEEPER_RESPONSE_REPLAY_METADATA_KEY = "beeper_response_replay_policy";
+const BEEPER_RESPONSE_REPLAY_POLICY = "v1";
+const IDENTITY_POLICY_METADATA_KEY = "offer_identity_policy";
+const IDENTITY_POLICY_VERSION = "v2";
 const OPS_HEALTH_INTERVAL_SECONDS = 5 * 60;
 const STORAGE_STAGE_NAMES = [
   "primary",
@@ -2827,9 +2832,11 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   identityAliases(id, link) {
+    const sourceKey = offerSourceKey(link);
     return [...new Set([
       String(id || "").trim() ? `id:${String(id).trim()}` : "",
       ...offerIdentityKeys(link),
+      sourceKey ? `source:${sourceKey}` : "",
     ].filter(Boolean))];
   }
 
@@ -2848,15 +2855,25 @@ export class UolTelegramShadow extends DurableObject {
     const aliases = this.identityAliases(card.id, card.link);
     if (!aliases.length) return [];
     return this.sqlExec(
-      `SELECT DISTINCT
+      `SELECT
          o.id, o.link, o.status, o.status_before_sold_out, o.main_sent_at,
-         o.canal2_sent_at, o.first_seen_at, o.last_seen_at
+         o.canal2_sent_at, o.first_seen_at, o.last_seen_at, o.discard_reason,
+         MIN(CASE
+           WHEN a.alias LIKE 'id:%' THEN 0
+           WHEN a.alias LIKE 'slug:%' THEN 1
+           ELSE 2
+         END) AS alias_priority
        FROM offer_identity_aliases AS a
        JOIN offers AS o ON o.id = a.offer_id
        WHERE a.alias IN (${aliases.map(() => "?").join(", ")})
+       GROUP BY o.id
+       ORDER BY alias_priority ASC, o.first_seen_at DESC
        LIMIT 32`,
       ...aliases,
-    ).toArray();
+    ).toArray().filter((row) => offerIdentityCompatible({
+      id: row.id,
+      link: row.link,
+    }, card));
   }
 
   chooseIdentityKeeper(rows) {
@@ -2888,26 +2905,77 @@ export class UolTelegramShadow extends DurableObject {
 
     let reconciled = 0;
     for (const group of groups.values()) {
-      if (group.length < 2) continue;
-      const keeper = this.chooseIdentityKeeper(group);
-      for (const duplicate of group) {
-        if (duplicate.id === keeper.id) continue;
-        this.sqlExec(
-          `UPDATE offers SET
-             status = 'discarded',
-             decision_at = CASE WHEN decision_at = '' THEN datetime('now') ELSE decision_at END,
-             would_send_main = 0,
-             would_send_canal2 = 0,
-             discard_reason = 'duplicada_identidade',
-             missing_since = '',
-             absence_count = 0
-           WHERE id = ?`,
-          duplicate.id,
+      let remaining = [...group];
+      while (remaining.length) {
+        const anchor = remaining.shift();
+        const direct = [
+          anchor,
+          ...remaining.filter((candidate) => offerIdentityCompatible(anchor, candidate)),
+        ];
+        const keeper = this.chooseIdentityKeeper(direct);
+        const component = direct.filter(
+          (candidate) => offerIdentityCompatible(keeper, candidate),
         );
-        reconciled += 1;
+        const componentIds = new Set(component.map((candidate) => candidate.id));
+        remaining = remaining.filter((candidate) => !componentIds.has(candidate.id));
+        if (component.length < 2) continue;
+        for (const duplicate of component) {
+          if (duplicate.id === keeper.id) continue;
+          this.sqlExec(
+            `UPDATE offers SET
+               status = 'discarded',
+               decision_at = CASE WHEN decision_at = '' THEN datetime('now') ELSE decision_at END,
+               would_send_main = 0,
+               would_send_canal2 = 0,
+               discard_reason = 'duplicada_identidade',
+               missing_since = '',
+               absence_count = 0
+             WHERE id = ?`,
+            duplicate.id,
+          );
+          reconciled += 1;
+        }
       }
     }
     return reconciled;
+  }
+
+  repairConflictingOfferLinks(card, nowIso) {
+    let repaired = 0;
+    let currentUrl;
+    try {
+      currentUrl = new URL(card.link);
+    } catch {
+      return repaired;
+    }
+    const conflicts = this.sqlExec(
+      `SELECT id, link FROM offers
+       WHERE link = ? AND id <> ?
+       ORDER BY first_seen_at ASC
+       LIMIT 16`,
+      card.link,
+      card.id,
+    ).toArray();
+    for (const row of conflicts) {
+      if (offerIdentityCompatible({ id: row.id, link: row.link }, card)) continue;
+      const restoredId = String(row.id || "").replace(/--\d{12,14}$/u, "");
+      if (!restoredId) continue;
+      const restoredUrl = new URL(currentUrl.href);
+      const segments = restoredUrl.pathname.split("/").filter(Boolean);
+      segments[segments.length - 1] = restoredId;
+      restoredUrl.pathname = `/${segments.join("/")}`;
+      const cursor = this.sqlExec(
+        "UPDATE offers SET link = ? WHERE id = ? AND link = ?",
+        restoredUrl.href,
+        row.id,
+        card.link,
+      );
+      if (Number(cursor.rowsWritten || 0) > 0) {
+        this.recordIdentityAliases(row.id, row.id, restoredUrl.href, nowIso);
+        repaired += 1;
+      }
+    }
+    return repaired;
   }
 
   async backfillTitleValidityKeys() {
@@ -2956,6 +3024,7 @@ export class UolTelegramShadow extends DurableObject {
     let inserted = 0;
     const insertedIds = [];
     for (const card of cards) {
+      this.repairConflictingOfferLinks(card, nowIso);
       const identityRows = this.findIdentityRows(card);
       const activeRows = identityRows.filter((row) => row.status !== "discarded");
       const existing = activeRows.length ? this.chooseIdentityKeeper(activeRows) : null;
@@ -3045,6 +3114,42 @@ export class UolTelegramShadow extends DurableObject {
       // fonte mais lenta ainda o mantém no payload.
       const terminal = identityRows.find((row) => row.id === card.id);
       if (terminal) {
+        // Older versions discarded distinct public URLs when their visible
+        // content matched another benefit. The exact page being visible again
+        // is authoritative evidence that it is independently redeemable.
+        if (
+          terminal.status === "discarded" &&
+          terminal.discard_reason === "duplicada_conteudo"
+        ) {
+          this.sqlExec(
+            `UPDATE offers SET
+               link = ?, preview_title = ?, title = ?, category = ?,
+               card_image_url = ?, partner_image_url = ?, partner_name = ?,
+               last_seen_at = ?, status = ?, decision_at = '',
+               would_send_main = 0, would_send_canal2 = 0, discard_reason = '',
+               dedupe_key = '', loose_dedupe_key = '', title_validity_key = '',
+               detail_quality = '', detail_attempts = 0, detail_error = '',
+               delivery_mode = '', delivery_quarantine_reason = ''
+             WHERE id = ? AND status = 'discarded'
+               AND discard_reason = 'duplicada_conteudo'`,
+            card.link,
+            card.previewTitle,
+            card.previewTitle,
+            card.category,
+            card.cardImageUrl,
+            card.partnerImageUrl,
+            card.partnerName,
+            nowIso,
+            newStatus,
+            card.id,
+          );
+          this.recordIdentityAliases(card.id, card.id, card.link, nowIso);
+          resolved.push(card);
+          resolvedIds.add(card.id);
+          inserted += 1;
+          insertedIds.push(card.id);
+          continue;
+        }
         const lastSeenAt = Date.parse(terminal?.last_seen_at || "");
         const reuseCooldownHours = envNumber(
           this.env,
@@ -3055,6 +3160,12 @@ export class UolTelegramShadow extends DurableObject {
         );
         const reusable = terminal?.status === "discarded" && Number.isFinite(lastSeenAt) &&
           Date.parse(nowIso) - lastSeenAt >= reuseCooldownHours * 3_600_000;
+        this.sqlExec(
+          "UPDATE offers SET last_seen_at = ? WHERE id = ? AND last_seen_at < ?",
+          nowIso,
+          terminal.id,
+          nowIso,
+        );
         if (reusable) {
           const cycle = nowIso.replace(/\D/g, "").slice(0, 12);
           const reusedCard = { ...card, id: `${card.id}--${cycle}` };
@@ -3135,8 +3246,8 @@ export class UolTelegramShadow extends DurableObject {
         now.getTime() -
           envNumber(this.env, "RECENT_RESEND_BLOCK_HOURS", 168, 1, 720) * 3_600_000,
       ).toISOString();
-      const duplicate = this.sqlExec(
-        `SELECT id FROM offers
+      const duplicateCandidates = this.sqlExec(
+        `SELECT id, link FROM offers
          WHERE id <> ?
            AND (
              (dedupe_key <> '' AND dedupe_key IN (?, ?))
@@ -3153,8 +3264,7 @@ export class UolTelegramShadow extends DurableObject {
                  'delivery_unknown', 'delivery_quarantined'
                )
              )
-           )
-         LIMIT 1`,
+           )`,
         offer.id,
         keys.dedupeKey,
         keys.legacyDedupeKey,
@@ -3163,7 +3273,12 @@ export class UolTelegramShadow extends DurableObject {
         keys.titleValidityKey,
         resendThreshold,
         resendThreshold,
-      ).toArray()[0];
+      ).toArray();
+      const sourceKey = offerSourceKey(offer.link);
+      const duplicate = duplicateCandidates.find((candidate) => {
+        if (!sourceKey) return true;
+        return offerSourceKey(candidate.link) === sourceKey;
+      });
 
       const decision = duplicate
         ? {
@@ -3986,6 +4101,25 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  applyBeeperResponseReplayPolicy() {
+    if (this.metadataValue(BEEPER_RESPONSE_REPLAY_METADATA_KEY) ===
+        BEEPER_RESPONSE_REPLAY_POLICY) {
+      return { applied: false, reset: 0 };
+    }
+    const cursor = this.sqlExec(
+      `UPDATE beeper_delivery_queue
+          SET attempts = 0, next_attempt_at = '', in_flight_at = ''
+        WHERE sent_at = ''
+          AND last_error = 'ambiguous:beeper_send_response_ambiguous'`,
+    );
+    const reset = Number(cursor.rowsWritten || 0);
+    this.setMetadata(
+      BEEPER_RESPONSE_REPLAY_METADATA_KEY,
+      BEEPER_RESPONSE_REPLAY_POLICY,
+    );
+    return { applied: true, reset };
+  }
+
   beeperQueueDiagnostics(maxAttempts) {
     const rows = this.sqlExec(
       `SELECT q.offer_id, q.attempts, q.next_attempt_at, q.in_flight_at,
@@ -4051,10 +4185,14 @@ export class UolTelegramShadow extends DurableObject {
     maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50),
   ) {
     if (!configuration.enabled) return false;
+    const responseReplayPending = configuration.configured &&
+      this.metadataValue(BEEPER_RESPONSE_REPLAY_METADATA_KEY) !==
+        BEEPER_RESPONSE_REPLAY_POLICY;
     const recoveryFingerprint = configuration.offerIds.join(",");
     const recoveryPending = configuration.configured && configuration.filterActive &&
       this.metadataValue(BEEPER_RECOVERY_METADATA_KEY) !== recoveryFingerprint;
-    return recoveryPending || this.beeperQueueHasDueWork(now, maxAttempts);
+    return responseReplayPending || recoveryPending ||
+      this.beeperQueueHasDueWork(now, maxAttempts);
   }
 
   async processCriticalBeeperDeliveryQueue(now = new Date(), limit = 4) {
@@ -4105,6 +4243,12 @@ export class UolTelegramShadow extends DurableObject {
       return { sent: 0, failed: 0, queued: activation.queued, blocked: true };
     }
     const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const responseReplay = this.applyBeeperResponseReplayPolicy();
+    if (responseReplay.reset > 0) {
+      logEvent("warn", "uol_beeper_response_replay_recovered", {
+        reset: responseReplay.reset,
+      });
+    }
     const recovery = this.applyBeeperDeliveryRecoveryFilter(configuration);
     let recoveryDiagnostics = null;
     if (recovery.applied) {
@@ -4255,8 +4399,14 @@ export class UolTelegramShadow extends DurableObject {
         sent += 1;
       } catch (error) {
         const deliveryUnknown = Boolean(error?.ambiguous);
-        const terminalFailure = deliveryUnknown || error?.retryable === false;
         const errorCode = beeperDeliveryErrorCode(error);
+        // A malformed successful response is safe to replay with the same key:
+        // the gateway has already persisted its receipt. A gateway-declared
+        // delivery_unknown is terminal because it deliberately locks that key.
+        const replayableResponse = deliveryUnknown &&
+          errorCode === "beeper_send_response_ambiguous";
+        const terminalFailure = (deliveryUnknown && !replayableResponse) ||
+          error?.retryable === false;
         this.sqlExec(
           `UPDATE beeper_delivery_queue SET attempts = ?, in_flight_at = '',
              next_attempt_at = ?, last_error = ? WHERE offer_id = ?`,
@@ -6373,6 +6523,8 @@ export class UolTelegramShadow extends DurableObject {
       const now = new Date();
       const operationalHealthDue = this.operationalHealthDue(now);
       const initializedAt = this.metadataValue("initialized_at");
+      const identityPolicyPending = Boolean(initializedAt) &&
+        this.metadataValue(IDENTITY_POLICY_METADATA_KEY) !== IDENTITY_POLICY_VERSION;
       const api = this.runtimeSnapshot("api");
       const html = this.runtimeSnapshot("html");
       const apiError = api.lastError ?? this.metadataValue("api_last_error");
@@ -6391,7 +6543,7 @@ export class UolTelegramShadow extends DurableObject {
       const htmlIntervalSeconds = this.storageUsage.maintenanceSkipped > 0
         ? Math.max(300, configuredHtmlIntervalSeconds)
         : configuredHtmlIntervalSeconds;
-      const htmlDue = htmlReconciliationDue({
+      const htmlDue = identityPolicyPending || htmlReconciliationDue({
         source,
         apiStatus: apiError || apiOffers <= 0 ? "rejected" : "fulfilled",
         apiOffers,
@@ -6477,7 +6629,9 @@ export class UolTelegramShadow extends DurableObject {
           : "";
         const htmlSnapshotDecision = shouldReconcileHtmlSnapshot({
           fingerprint: htmlSnapshotFingerprint,
-          previousFingerprint: this.metadataValue("runtime:html_snapshot_fingerprint"),
+          previousFingerprint: identityPolicyPending
+            ? ""
+            : this.metadataValue("runtime:html_snapshot_fingerprint"),
           lastReconciledAt: this.metadataValue("runtime:html_snapshot_reconciled_at"),
           now,
           refreshIntervalSeconds: envNumber(
@@ -6576,6 +6730,10 @@ export class UolTelegramShadow extends DurableObject {
             this.setMetadataIfChanged(
               "runtime:html_snapshot_reconciled_at",
               now.toISOString(),
+            );
+            this.setMetadataIfChanged(
+              IDENTITY_POLICY_METADATA_KEY,
+              IDENTITY_POLICY_VERSION,
             );
             completeListingSnapshot = true;
           }
@@ -6784,10 +6942,8 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   reconcileUnknownMainFromForward(message, origin) {
-    const identityKeys = new Set(
-      telegramOfferUrls(message).flatMap((url) => offerIdentityKeys(url)),
-    );
-    if (!identityKeys.size) return "";
+    const forwardedUrls = telegramOfferUrls(message);
+    if (!forwardedUrls.length) return "";
     const rows = this.sqlExec(
       `SELECT id, link FROM offers
        WHERE main_sent_at = ''
@@ -6800,8 +6956,8 @@ export class UolTelegramShadow extends DurableObject {
          )
        ORDER BY first_seen_at DESC LIMIT 32`,
     ).toArray();
-    const row = rows.find((candidate) => offerIdentityKeys(candidate.link)
-      .some((key) => identityKeys.has(key)));
+    const row = rows.find((candidate) => forwardedUrls
+      .some((url) => offerIdentityCompatible(candidate.link, url)));
     if (!row) return "";
     const originTimestamp = Number(origin?.date || 0) * 1_000;
     const sentAt = Number.isFinite(originTimestamp) && originTimestamp > 0

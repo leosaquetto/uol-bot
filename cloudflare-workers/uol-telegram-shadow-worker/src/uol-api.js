@@ -2,7 +2,8 @@ import {
   cleanText,
   evaluateDetailQuality,
   normalizeCard,
-  offerIdentityKeys,
+  normalizeText,
+  offerIdentityCompatible,
 } from "./core.js";
 import { validateTicketApiPayload } from "./uol-contract.js";
 
@@ -106,14 +107,11 @@ export function mapTicketApiItem(item, fallbackCategory = "campanhasdeingresso")
 
 export function mapTicketApiPayload(payload, fallbackCategory = "campanhasdeingresso") {
   const cards = [];
-  const seen = new Set();
   for (const item of payload?.beneficios || []) {
     const card = mapTicketApiItem(item, fallbackCategory);
     if (!card) continue;
-    const keys = offerIdentityKeys(card.link);
-    if (keys.some((key) => seen.has(key))) continue;
+    if (cards.some((existing) => offerIdentityCompatible(existing, card))) continue;
     cards.push(card);
-    for (const key of keys) seen.add(key);
   }
   return cards;
 }
@@ -135,23 +133,26 @@ export function prepareImmediateApiOffer(card) {
 
 export function mergeOfferCards(primary, secondary) {
   const merged = [];
-  const indexesByIdentity = new Map();
   for (const card of primary || []) {
-    const keys = offerIdentityKeys(card.link);
-    if (!keys.length || keys.some((key) => indexesByIdentity.has(key))) continue;
+    if (!card?.link || merged.some((existing) => offerIdentityCompatible(existing, card))) {
+      continue;
+    }
     merged.push(card);
-    const index = merged.length - 1;
-    for (const key of keys) indexesByIdentity.set(key, index);
   }
   for (const card of secondary || []) {
-    const keys = offerIdentityKeys(card.link);
-    if (!keys.length) continue;
-    const existingIndex = keys.map((key) => indexesByIdentity.get(key))
-      .find((index) => Number.isInteger(index));
-    if (Number.isInteger(existingIndex)) {
+    if (!card?.link) continue;
+    const existingIndex = merged.findIndex((existing) =>
+      offerIdentityCompatible(existing, card)
+    );
+    if (existingIndex >= 0) {
       const existing = merged[existingIndex];
+      const apiTitle = normalizeText(existing.apiDetail?.title || existing.previewTitle);
+      const listingTitle = normalizeText(card.previewTitle);
+      const titlesAgree = !apiTitle || !listingTitle || apiTitle === listingTitle;
       merged[existingIndex] = {
         ...existing,
+        ...card,
+        apiDetail: titlesAgree ? existing.apiDetail : undefined,
         // A imagem exposta na listagem pública é acessível ao Telegram. A
         // variante devolvida pela API da UOL pode exigir contexto e retornar 403.
         cardImageUrl: card.cardImageUrl || existing.cardImageUrl,
@@ -161,8 +162,6 @@ export function mergeOfferCards(primary, secondary) {
       continue;
     }
     merged.push(card);
-    const index = merged.length - 1;
-    for (const key of keys) indexesByIdentity.set(key, index);
   }
   return merged;
 }

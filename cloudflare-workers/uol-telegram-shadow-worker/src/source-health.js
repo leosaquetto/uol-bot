@@ -1,18 +1,12 @@
-import { cleanText, isTicketCampaign, offerIdentityKeys } from "./core.js";
-
-function identities(cards) {
-  return new Set((cards || []).flatMap((card) => offerIdentityKeys(card.link)));
-}
+import { cleanText, isTicketCampaign, offerIdentityCompatible } from "./core.js";
 
 export function compareOfferSources(apiCards = [], listingCards = []) {
   const apiTickets = apiCards.filter(isTicketCampaign);
   const listingTickets = listingCards.filter(isTicketCampaign);
-  const apiKeys = identities(apiTickets);
-  const listingKeys = identities(listingTickets);
   const apiOffersMissingFromListing = apiTickets.filter((card) =>
-    !offerIdentityKeys(card.link).some((key) => listingKeys.has(key)));
+    !listingTickets.some((listingCard) => offerIdentityCompatible(card, listingCard)));
   const listingOffersMissingFromApi = listingTickets.filter((card) =>
-    !offerIdentityKeys(card.link).some((key) => apiKeys.has(key)));
+    !apiTickets.some((apiCard) => offerIdentityCompatible(card, apiCard)));
   const matchedApi = apiTickets.length - apiOffersMissingFromListing.length;
   return {
     apiTickets: apiTickets.length,

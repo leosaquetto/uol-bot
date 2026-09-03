@@ -18,6 +18,7 @@ import {
   normalizeTicketProbeAt,
   normalizeOfferId,
   observationFreshnessMinutes,
+  offerIdentityCompatible,
   offerIdentityKeys,
   offerSourceKey,
   parseRuntimeSnapshot,
@@ -363,9 +364,7 @@ test("mantém identidade estável quando o texto acentuado do slug muda", () => 
   assert.equal(normalizeOfferId(malformed), normalizeOfferId(corrected));
   assert.equal(offerSourceKey(malformed), "evino|p70");
   assert.equal(offerSourceKey(malformed), offerSourceKey(corrected));
-  assert.ok(
-    offerIdentityKeys(malformed).some((key) => offerIdentityKeys(corrected).includes(key)),
-  );
+  assert.equal(offerIdentityCompatible(malformed, corrected), true);
 });
 
 test("identidade parceiro mais código cobre letras perdidas fora das correções conhecidas", () => {
@@ -373,6 +372,68 @@ test("identidade parceiro mais código cobre letras perdidas fora das correçõe
   const corrected = "https://clube.uol.com.br/dominos/p7T-40-off-no-cardapio-de-pizzas-delivery";
   assert.notEqual(normalizeOfferId(malformed), normalizeOfferId(corrected));
   assert.equal(offerSourceKey(malformed), offerSourceKey(corrected));
+  assert.equal(offerIdentityCompatible(malformed, corrected), true);
+});
+
+test("não une ofertas diferentes quando a UOL recicla o código curto", () => {
+  const previous =
+    "https://clube.uol.com.br/campanhasdeingresso/pIZ-2-ingressos-03-09-cultura-artistica-sp";
+  const current =
+    "https://clube.uol.com.br/campanhasdeingresso/pIZ-2-ingressos-06-09-masp-sp";
+  const previousCommon =
+    "https://clube.uol.com.br/outbacksteakhouse/pIM-ganhe-01-kookaburra-wings";
+  const currentCommon =
+    "https://clube.uol.com.br/outbacksteakhouse/pIM-ganhe-01-chopp-brahma-340ml";
+
+  assert.equal(offerSourceKey(previous), offerSourceKey(current));
+  assert.equal(offerIdentityCompatible(previous, current), false);
+  assert.equal(offerSourceKey(previousCommon), offerSourceKey(currentCommon));
+  assert.equal(offerIdentityCompatible(previousCommon, currentCommon), false);
+  assert.equal(dedupeCards([
+    { link: previous, title: "2 INGRESSOS: 03/09 Cultura Artística SP" },
+    { link: current, title: "2 INGRESSOS: 06/09 MASP - SP" },
+    { link: previousCommon, title: "Ganhe 01 Kookaburra Wings" },
+    { link: currentCommon, title: "Ganhe 01 Chopp Brahma" },
+  ]).length, 4);
+});
+
+test("não trata alteração numérica embutida como simples correção de slug", () => {
+  const previous =
+    "https://clube.uol.com.br/outbacksteakhouse/pIM-ganhe-01-chopp-brahma-340ml";
+  const current =
+    "https://clube.uol.com.br/outbacksteakhouse/pIM-ganhe-01-chopp-brahma-350ml";
+  assert.equal(offerIdentityCompatible(previous, current), false);
+});
+
+test("não trata substituição textual curta como correção de slug", () => {
+  assert.equal(
+    offerIdentityCompatible(
+      "https://clube.uol.com.br/x/pAA-ganhe-cafe",
+      "https://clube.uol.com.br/x/pAA-ganhe-caju",
+    ),
+    false,
+  );
+});
+
+test("mantém slug exato como identidade mesmo quando o parceiro muda", () => {
+  assert.equal(
+    offerIdentityCompatible(
+      "https://clube.uol.com.br/parceiro-antigo/pAA-mesma-oferta",
+      "https://clube.uol.com.br/parceiro-novo/pAA-mesma-oferta",
+    ),
+    true,
+  );
+});
+
+test("sufixo de ciclo preserva a identidade enquanto a oferta segue visível", () => {
+  const current = "https://clube.uol.com.br/parceiro/pA1-oferta-atual";
+  assert.equal(
+    offerIdentityCompatible(
+      { id: "pa1-oferta-atual--202609031440", link: current },
+      { id: "pa1-oferta-atual", link: current },
+    ),
+    true,
+  );
 });
 
 test("deduplica cards repetidos da listagem", () => {

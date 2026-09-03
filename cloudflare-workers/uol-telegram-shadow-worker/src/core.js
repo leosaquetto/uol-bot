@@ -297,10 +297,64 @@ export function offerSourceKey(value) {
 }
 
 export function offerIdentityKeys(value) {
-  const keys = slugTailVariants(value).map((variant) => `slug:${variant}`);
-  const sourceKey = offerSourceKey(value);
-  if (sourceKey) keys.push(`source:${sourceKey}`);
-  return [...new Set(keys)];
+  return slugTailVariants(value).map((variant) => `slug:${variant}`);
+}
+
+function identityValue(value) {
+  if (value && typeof value === "object") return value.id || value.link || "";
+  return value;
+}
+
+function identitySourceValue(value) {
+  if (value && typeof value === "object") return value.link || "";
+  return value;
+}
+
+function identitySlugVariants(value) {
+  const tail = rawOfferTail(identityValue(value)).replace(/--\d{12,14}$/u, "");
+  return slugTailVariants(tail);
+}
+
+function numericSlugTokens(value) {
+  return String(value || "").split("-").slice(1).join("-").match(/\d+/gu) || [];
+}
+
+function insertionVariantWithin(left, right, maximum) {
+  const shorter = left.length <= right.length ? left : right;
+  const longer = left.length <= right.length ? right : left;
+  const difference = longer.length - shorter.length;
+  if (difference < 1 || difference > maximum) return false;
+  let shorterIndex = 0;
+  for (const character of longer) {
+    if (character === shorter[shorterIndex]) shorterIndex += 1;
+  }
+  return shorterIndex === shorter.length;
+}
+
+// The partner+short-code key is only an indexed lookup hint. UOL reuses those
+// codes for unrelated benefits, so two different slugs need a tightly bounded
+// typo check before they may share a durable identity.
+export function offerIdentityCompatible(left, right) {
+  const leftVariants = identitySlugVariants(left);
+  const rightVariants = identitySlugVariants(right);
+  if (!leftVariants.length || !rightVariants.length) return false;
+
+  const leftSource = offerSourceKey(identitySourceValue(left));
+  const rightSource = offerSourceKey(identitySourceValue(right));
+  const exact = leftVariants.some((variant) => rightVariants.includes(variant));
+  if (exact) return true;
+  if (!leftSource || leftSource !== rightSource) return false;
+
+  for (const leftVariant of leftVariants) {
+    for (const rightVariant of rightVariants) {
+      if (
+        JSON.stringify(numericSlugTokens(leftVariant)) !==
+        JSON.stringify(numericSlugTokens(rightVariant))
+      ) continue;
+      if (insertionVariantWithin(leftVariant, rightVariant, 2)) return true;
+    }
+  }
+  return false;
 }
 
 export function normalizePublicLink(value) {
@@ -334,14 +388,11 @@ export function normalizeCard(raw) {
 
 export function dedupeCards(rawCards) {
   const cards = [];
-  const seenKeys = new Set();
   for (const raw of rawCards || []) {
     const card = normalizeCard(raw);
     if (!card) continue;
-    const identityKeys = offerIdentityKeys(card.link);
-    if (identityKeys.some((key) => seenKeys.has(key))) continue;
+    if (cards.some((existing) => offerIdentityCompatible(existing, card))) continue;
     cards.push(card);
-    for (const key of identityKeys) seenKeys.add(key);
   }
   return cards;
 }

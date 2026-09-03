@@ -42,11 +42,10 @@ test("deduplica a resposta e preserva o detalhe rico da API", () => {
   assert.match(cards[0].apiDetail.description, /resgate um par/);
 });
 
-test("API ganha do HTML ao consolidar a mesma oferta", () => {
+test("preserva detalhe da API quando o título público confirma a oferta", () => {
   const apiCard = mapTicketApiItem(apiItem);
   const htmlCard = {
     ...apiCard,
-    previewTitle: "Título do HTML",
     cardImageUrl: "https://public.example.com/beneficios/oferta.png",
     apiDetail: undefined,
   };
@@ -55,6 +54,35 @@ test("API ganha do HTML ao consolidar a mesma oferta", () => {
   assert.ok(merged[0].apiDetail);
   assert.equal(merged[0].previewTitle, apiCard.previewTitle);
   assert.equal(merged[0].cardImageUrl, htmlCard.cardImageUrl);
+});
+
+test("HTML vence quando a API mistura título antigo com URL reutilizada", () => {
+  const link =
+    "https://clube.uol.com.br/outbacksteakhouse/pIM-ganhe-01-chopp-brahma-340ml";
+  const apiCard = {
+    id: "pim-ganhe-01-chopp-brahma-340ml",
+    link,
+    previewTitle: "Ganhe 01 Kookaburra Wings®",
+    category: "outbacksteakhouse",
+    cardImageUrl: "https://private.example/old.jpg",
+    apiDetail: {
+      title: "Ganhe 01 Kookaburra Wings®",
+      validity: "Benefício válido até 30/09/2026 23:59.",
+      description: "Detalhe antigo da oferta de Kookaburra Wings.",
+    },
+  };
+  const htmlCard = {
+    ...apiCard,
+    previewTitle: "Ganhe 01 Chopp Brahma (340ml)",
+    cardImageUrl: "https://public.example/chopp.jpg",
+    apiDetail: undefined,
+  };
+
+  const [merged] = mergeOfferCards([apiCard], [htmlCard]);
+  assert.equal(merged.previewTitle, htmlCard.previewTitle);
+  assert.equal(merged.cardImageUrl, htmlCard.cardImageUrl);
+  assert.equal(merged.apiDetail, undefined);
+  assert.equal(prepareImmediateApiOffer(merged), null);
 });
 
 test("payload da API fica pronto para decisão sem qualquer espera por HTML", () => {
