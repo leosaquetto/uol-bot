@@ -206,6 +206,8 @@ test("WhatsApp crítico independe da manutenção e não sonda gateway sem fila 
   assert.doesNotMatch(maintenance, /processBeeperDeliveryQueue\(/);
   assert.doesNotMatch(maintenance, /processCriticalBeeperDeliveryQueue\(/);
   assert.match(discordSchedule, /discordSent[\s\S]*processCriticalBeeperDeliveryQueue\(/);
+  assert.match(discordSchedule, /discordSent[\s\S]*upgradeTimedOutMainImages\(/);
+  assert.match(discordSchedule, /withStorageStage\(\s*"images"/);
   assert.match(beeperSchedule, /withDetachedStorageCycle\(/);
   assert.match(beeperSchedule, /this\.ctx\.waitUntil\(task\)/);
   assert.match(criticalBeeper, /INDEXED BY beeper_delivery_due_v23/);

@@ -697,6 +697,101 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
+  it("edita a mensagem Telegram com o proxy Discord após o envio secundário", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("discord-image-upgrade-handoff");
+    const telegramMethods = [];
+    vi.stubGlobal("fetch", async (input, init = {}) => {
+      const url = String(input);
+      if (url === "https://discord.test/webhook?wait=true") {
+        return Response.json({
+          id: "discord-image-1",
+          embeds: [{ image: { proxy_url: "https://cdn.discord.test/ticket.jpg" } }],
+        });
+      }
+      if (url.startsWith("https://api.telegram.org/")) {
+        const method = new URL(url).pathname.split("/").at(-1);
+        telegramMethods.push(method);
+        if (method === "editMessageMedia") {
+          return Response.json({
+            ok: true,
+            result: {
+              message_id: 901,
+              photo: [{ file_id: "telegram-photo-1", file_unique_id: "telegram-photo-unique-1" }],
+            },
+          });
+        }
+      }
+      throw new Error(`unexpected_fetch:${url}`);
+    });
+
+    try {
+      await runInDurableObject(stub, async (instance, state) => {
+        instance.env = {
+          ...instance.env,
+          DELIVERY_MODE: "live",
+          TELEGRAM_TOKEN: "vitest-telegram-token-not-a-secret",
+          TELEGRAM_CHAT_ID: "-100111",
+          CANAL2_DELIVERY_ENABLED: "false",
+          DISCORD_DELIVERY_ENABLED: "true",
+          DISCORD_WEBHOOK_URL: "https://discord.test/webhook",
+          BEEPER_DELIVERY_ENABLED: "false",
+        };
+        instance.setMetadata("delivery_mode_override", "live");
+        const seenAt = "2026-09-04T15:00:00.000Z";
+        state.storage.sql.exec(
+          `INSERT INTO offers(
+             id, link, preview_title, title, category, image_url,
+             first_seen_at, last_seen_at, status, decision_at,
+             would_send_main, would_send_canal2, delivery_mode, delivery_generation,
+             main_sent_at, main_message_id, main_message_kind, telegram_image_strategy,
+             main_image_upgrade_next_attempt_at
+           ) VALUES (?, ?, ?, ?, 'campanhasdeingresso', ?, ?, ?, 'partial_delivery', ?,
+                     1, 0, 'live', 1, ?, 901, 'text', 'text_timeout', ?)` ,
+          "ticket-discord-image-upgrade",
+          "https://clube.uol.com.br/campanhasdeingresso/ticket-discord-image-upgrade",
+          "2 INGRESSOS: oferta com imagem",
+          "2 INGRESSOS: oferta com imagem",
+          "https://ddrxgn8ucibei.cloudfront.net/beneficios/ticket.jpg",
+          seenAt,
+          seenAt,
+          seenAt,
+          seenAt,
+          "2099-01-01T00:00:00.000Z",
+        );
+        const row = state.storage.sql.exec(
+          "SELECT * FROM offers WHERE id = 'ticket-discord-image-upgrade'",
+        ).one();
+
+        const result = await instance.scheduleDiscordDelivery({
+          rows: [row],
+          source: "test-image-upgrade",
+        });
+
+        expect(result).toMatchObject({
+          discordSent: 1,
+          failed: 0,
+          mainImagesUpgraded: 1,
+          imageUpgradeFailed: 0,
+        });
+        expect(telegramMethods).toEqual(["editMessageMedia"]);
+        expect(state.storage.sql.exec(
+          `SELECT main_message_kind, telegram_image_strategy,
+                  main_image_upgrade_attempts, main_image_upgrade_next_attempt_at,
+                  discord_image_proxy_url
+           FROM offers WHERE id = 'ticket-discord-image-upgrade'`,
+        ).one()).toMatchObject({
+          main_message_kind: "photo",
+          telegram_image_strategy: "discord_proxy_edit",
+          main_image_upgrade_attempts: 1,
+          main_image_upgrade_next_attempt_at: "",
+          discord_image_proxy_url: "https://cdn.discord.test/ticket.jpg",
+        });
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("persiste ingressos do HTML crítico mesmo quando a API os omite", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("ticket-critical-fallback");
     const missingIds = [

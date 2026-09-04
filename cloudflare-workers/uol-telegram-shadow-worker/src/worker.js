@@ -540,6 +540,7 @@ export class UolTelegramShadow extends DurableObject {
     super(ctx, env);
     this.scanInFlight = false;
     this.maintenanceInFlight = false;
+    this.mainImageUpgradeInFlight = false;
     this.beeperDeliveryInFlight = false;
     this.metadataCache = new Map();
     this.runtimeSnapshotCache = new Map();
@@ -828,6 +829,17 @@ export class UolTelegramShadow extends DurableObject {
           targetNames: ["discord"],
         });
         if (Number(result.discordSent || 0) > 0) {
+          const imageUpgrades = await this.withStorageStage(
+            "images",
+            () => this.upgradeTimedOutMainImages(
+              new Date(),
+              Math.max(4, Math.min(16, suppliedRows.length)),
+            ),
+          );
+          result.mainImagesUpgraded = Number(imageUpgrades.upgraded || 0);
+          result.imageUpgradeFailed = Number(imageUpgrades.failed || 0);
+        }
+        if (Number(result.discordSent || 0) > 0) {
           const beeper = await this.processCriticalBeeperDeliveryQueue(new Date());
           result.beeperSent = Number(beeper.sent || 0);
           result.beeperFailed = Number(beeper.failed || 0);
@@ -838,6 +850,8 @@ export class UolTelegramShadow extends DurableObject {
       logEvent(result.failed ? "warn" : "info", "uol_telegram_discord_delivery", {
         source,
         discordSent: Number(result.discordSent || 0),
+        mainImagesUpgraded: Number(result.mainImagesUpgraded || 0),
+        imageUpgradeFailed: Number(result.imageUpgradeFailed || 0),
         failed: Number(result.failed || 0),
         deferred: result.deferred === true,
         deferredReason: String(result.deferredReason || ""),
@@ -2121,108 +2135,116 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async upgradeTimedOutMainImages(now = new Date(), limit = 4) {
-    if (this.currentDeliveryMode() !== "live") return { upgraded: 0, failed: 0 };
-    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-    const rows = this.sqlExec(
-      `SELECT * FROM offers INDEXED BY offers_main_image_upgrade_due_v25
-       WHERE telegram_image_strategy = 'text_timeout'
-         AND main_message_kind = 'text'
-         AND main_message_id > 0
-         AND main_image_upgrade_attempts < ?
-         AND COALESCE(NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),
-                      NULLIF(card_image_url, ''), partner_image_url) <> ''
-         AND main_image_upgrade_next_attempt_at <= ?
-       ORDER BY CASE
-         WHEN discord_image_proxy_url <> '' THEN 0
-         WHEN discord_message_id <> '' THEN 1
-         ELSE 2
-       END, first_seen_at DESC
-       LIMIT ?`,
-      maxAttempts,
-      now.toISOString(),
-      Math.max(1, Math.min(16, Number(limit || 4))),
-    ).toArray().filter((row) => lateImageUpgradeDue(row, now, maxAttempts));
-    let upgraded = 0;
-    let failed = 0;
+    if (this.mainImageUpgradeInFlight) {
+      return { upgraded: 0, failed: 0, skipped: true };
+    }
+    this.mainImageUpgradeInFlight = true;
+    try {
+      if (this.currentDeliveryMode() !== "live") return { upgraded: 0, failed: 0 };
+      const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+      const rows = this.sqlExec(
+        `SELECT * FROM offers INDEXED BY offers_main_image_upgrade_due_v25
+         WHERE telegram_image_strategy = 'text_timeout'
+           AND main_message_kind = 'text'
+           AND main_message_id > 0
+           AND main_image_upgrade_attempts < ?
+           AND COALESCE(NULLIF(telegram_photo_file_id, ''), NULLIF(image_url, ''),
+                        NULLIF(card_image_url, ''), partner_image_url) <> ''
+           AND main_image_upgrade_next_attempt_at <= ?
+         ORDER BY CASE
+           WHEN discord_image_proxy_url <> '' THEN 0
+           WHEN discord_message_id <> '' THEN 1
+           ELSE 2
+         END, first_seen_at DESC
+         LIMIT ?`,
+        maxAttempts,
+        now.toISOString(),
+        Math.max(1, Math.min(16, Number(limit || 4))),
+      ).toArray().filter((row) => lateImageUpgradeDue(row, now, maxAttempts));
+      let upgraded = 0;
+      let failed = 0;
 
-    for (const row of rows) {
-      const attempts = Number(row.main_image_upgrade_attempts || 0) + 1;
-      const originalOffer = rowToOffer(row);
-      const telegramState = this.telegramOfferWithImageState(originalOffer);
-      let deliveryOffer = telegramState.offer;
-      let usedDiscordProxy = false;
-      try {
-        const proxyUrl = await this.discordImageProxyForOffer(row, originalOffer);
-        if (proxyUrl) {
-          deliveryOffer = {
-            ...telegramState.offer,
-            imageUrl: proxyUrl,
-            telegramImageRemoteStrategy: "discord_proxy",
-          };
-          usedDiscordProxy = true;
-        }
-      } catch (error) {
-        logEvent("warn", "uol_discord_image_proxy_unavailable", {
-          offerId: row.id,
-          error: sanitizeError(error),
-        });
-      }
-      try {
-        let result;
+      for (const row of rows) {
+        const attempts = Number(row.main_image_upgrade_attempts || 0) + 1;
+        const originalOffer = rowToOffer(row);
+        const telegramState = this.telegramOfferWithImageState(originalOffer);
+        let deliveryOffer = telegramState.offer;
+        let usedDiscordProxy = false;
         try {
-          result = await editMainOfferMedia(this.env, {
-            messageId: Number(row.main_message_id),
-            offer: deliveryOffer,
-            telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
-          });
-        } catch (proxyError) {
-          if (!usedDiscordProxy) throw proxyError;
-          this.sqlExec(
-            "UPDATE offers SET discord_image_proxy_url = '' WHERE id = ?",
-            row.id,
-          );
-          result = await editMainOfferMedia(this.env, {
-            messageId: Number(row.main_message_id),
-            offer: telegramState.offer,
-            telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
+          const proxyUrl = await this.discordImageProxyForOffer(row, originalOffer);
+          if (proxyUrl) {
+            deliveryOffer = {
+              ...telegramState.offer,
+              imageUrl: proxyUrl,
+              telegramImageRemoteStrategy: "discord_proxy",
+            };
+            usedDiscordProxy = true;
+          }
+        } catch (error) {
+          logEvent("warn", "uol_discord_image_proxy_unavailable", {
+            offerId: row.id,
+            error: sanitizeError(error),
           });
         }
-        this.recordImageDelivery(row.id, telegramState.imageKey, result, now);
-        this.sqlExec(
-          `UPDATE offers SET main_message_kind = 'photo',
-             main_image_upgrade_attempts = ?, main_image_upgrade_next_attempt_at = '',
-             main_image_upgrade_error = '' WHERE id = ?`,
-          attempts,
-          row.id,
-        );
-        upgraded += 1;
-      } catch (error) {
-        const message = sanitizeError(error);
-        if (message.toLowerCase().includes("message is not modified")) {
+        try {
+          let result;
+          try {
+            result = await editMainOfferMedia(this.env, {
+              messageId: Number(row.main_message_id),
+              offer: deliveryOffer,
+              telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
+            });
+          } catch (proxyError) {
+            if (!usedDiscordProxy) throw proxyError;
+            this.sqlExec(
+              "UPDATE offers SET discord_image_proxy_url = '' WHERE id = ?",
+              row.id,
+            );
+            result = await editMainOfferMedia(this.env, {
+              messageId: Number(row.main_message_id),
+              offer: telegramState.offer,
+              telegramPhotoFileId: telegramState.offer.telegramPhotoFileId,
+            });
+          }
+          this.recordImageDelivery(row.id, telegramState.imageKey, result, now);
           this.sqlExec(
             `UPDATE offers SET main_message_kind = 'photo',
-               telegram_image_strategy = 'edit_confirmed_not_modified',
                main_image_upgrade_attempts = ?, main_image_upgrade_next_attempt_at = '',
                main_image_upgrade_error = '' WHERE id = ?`,
             attempts,
             row.id,
           );
           upgraded += 1;
-          continue;
+        } catch (error) {
+          const message = sanitizeError(error);
+          if (message.toLowerCase().includes("message is not modified")) {
+            this.sqlExec(
+              `UPDATE offers SET main_message_kind = 'photo',
+                 telegram_image_strategy = 'edit_confirmed_not_modified',
+                 main_image_upgrade_attempts = ?, main_image_upgrade_next_attempt_at = '',
+                 main_image_upgrade_error = '' WHERE id = ?`,
+              attempts,
+              row.id,
+            );
+            upgraded += 1;
+            continue;
+          }
+          this.sqlExec(
+            `UPDATE offers SET main_image_upgrade_attempts = ?,
+               main_image_upgrade_next_attempt_at = ?, main_image_upgrade_error = ?
+             WHERE id = ?`,
+            attempts,
+            deliveryRetryAt(error, attempts, now),
+            `${isAmbiguousDeliveryError(error) ? "ambiguous:" : ""}${message}`.slice(0, 240),
+            row.id,
+          );
+          failed += 1;
         }
-        this.sqlExec(
-          `UPDATE offers SET main_image_upgrade_attempts = ?,
-             main_image_upgrade_next_attempt_at = ?, main_image_upgrade_error = ?
-           WHERE id = ?`,
-          attempts,
-          deliveryRetryAt(error, attempts, now),
-          `${isAmbiguousDeliveryError(error) ? "ambiguous:" : ""}${message}`.slice(0, 240),
-          row.id,
-        );
-        failed += 1;
       }
+      return { upgraded, failed };
+    } finally {
+      this.mainImageUpgradeInFlight = false;
     }
-    return { upgraded, failed };
   }
 
   getImageDeliveryHealth() {
@@ -4003,6 +4025,9 @@ export class UolTelegramShadow extends DurableObject {
         this.sqlExec(
           `UPDATE offers SET discord_message_id = ?, discord_sent_at = ?,
              discord_image_proxy_url = COALESCE(NULLIF(?, ''), discord_image_proxy_url),
+             main_image_upgrade_next_attempt_at = CASE
+               WHEN main_message_kind = 'text' AND telegram_image_strategy = 'text_timeout'
+               THEN '' ELSE main_image_upgrade_next_attempt_at END,
              discord_delivery_error = '', discord_delivery_in_flight_at = '',
              discord_delivery_next_attempt_at = '', discord_delivery_unknown_at = ''
            WHERE id = ?`,
@@ -7113,6 +7138,13 @@ export class UolTelegramShadow extends DurableObject {
 
   async runNow() {
     const result = await this.scan("manual");
+    const imageUpgrades = await this.withDetachedStorageCycle(
+      "delivery",
+      "images",
+      () => this.upgradeTimedOutMainImages(new Date(), 16),
+    );
+    result.mainImagesUpgraded = Number(imageUpgrades.upgraded || 0);
+    result.deliveryFailed += Number(imageUpgrades.failed || 0);
     const alarmScheduledAt = await this.ensureAlarm();
     const maintenanceAlarmScheduledAt = await this.ensureMaintenanceAlarm(true);
     return {
