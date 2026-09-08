@@ -28,20 +28,25 @@ export class Monitor extends DurableObject {
     await this.ctx.storage.put({ current, checkedAt: at, error: null, eventScope: EVENT_SCOPE });
     const pending = await this.ctx.storage.get('pending');
     if (await this.ctx.storage.get('enabled') && !pending && changes.length) {
-      await this.ctx.storage.put('pending', { key: `buyticket:${crypto.randomUUID()}`, text: format(current, changes, at), state: 'queued' });
+      await this.ctx.storage.put('pending', { key: `buyticket:${crypto.randomUUID()}`, items: [...new Set(changes.map(d => d.i))].map(i => ({ key: `buyticket:${crypto.randomUUID()}`, link: eventUrl(EVENTS[i]), text: format(current, changes, at, i) })), state: 'queued' });
     }
     await this.deliver();
   }
   async deliver() {
     const pending = await this.ctx.storage.get('pending');
     if (!pending || pending.state !== 'queued' || !await this.ctx.storage.get('enabled')) return;
+    const item = pending.items?.[0] || pending;
     // Persist uncertainty before dispatch. Never retry an ambiguous send automatically.
     await this.ctx.storage.put('pending', { ...pending, state: 'unknown' });
-    const response = await fetch(this.env.BEEPER_GATEWAY_URL, { method: 'POST', headers: { Authorization: `Bearer ${this.env.BEEPER_GATEWAY_TOKEN}`, 'Content-Type': 'application/json', 'Idempotency-Key': pending.key }, body: JSON.stringify({ link: eventUrl(EVENTS[0]), text: pending.text, title: 'Rock in Rio 2026' }), signal: AbortSignal.timeout(55_000) });
+    const response = await fetch(this.env.BEEPER_GATEWAY_URL, { method: 'POST', headers: { Authorization: `Bearer ${this.env.BEEPER_GATEWAY_TOKEN}`, 'Content-Type': 'application/json', 'Idempotency-Key': item.key }, body: JSON.stringify({ link: item.link || eventUrl(EVENTS[0]), text: item.text, title: 'Rock in Rio 2026' }), signal: AbortSignal.timeout(55_000) });
     const result = await response.json();
     if (response.ok && result.deliveryState === 'confirmed_by_whatsapp_bridge') {
       await this.ctx.storage.put('lastDeliveredAt', new Date().toISOString());
-      await this.ctx.storage.delete('pending');
+      const remaining = pending.items?.slice(1) || [];
+      if (remaining.length) {
+        await this.ctx.storage.put('pending', { ...pending, items: remaining, state: 'queued' });
+        await this.deliver();
+      } else await this.ctx.storage.delete('pending');
     }
   }
   async alarm() {
@@ -55,7 +60,7 @@ export class Monitor extends DurableObject {
       if (await this.ctx.storage.get('enabled')) return Response.json({ error: 'already_enabled' }, { status: 409 });
       const current = await this.collect();
       const at = new Date().toISOString();
-      await this.ctx.storage.put({ current, checkedAt: at, eventScope: EVENT_SCOPE, enabled: true, pending: { key: `buyticket:${crypto.randomUUID()}`, text: format(current, [], at), state: 'queued' } });
+      await this.ctx.storage.put({ current, checkedAt: at, eventScope: EVENT_SCOPE, enabled: true, pending: { key: `buyticket:${crypto.randomUUID()}`, items: EVENTS.map((e, i) => ({ key: `buyticket:${crypto.randomUUID()}`, link: eventUrl(e), text: format(current, [], at, i) })), state: 'queued' } });
       await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
       await this.deliver();
       return Response.json({ started: true, pending: (await this.ctx.storage.get('pending'))?.state || null });
@@ -65,7 +70,7 @@ export class Monitor extends DurableObject {
       await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
     } else if (request.method !== 'GET' || !['/status', '/preview'].includes(path)) return new Response('Not found', { status: 404 });
     const state = Object.fromEntries(await this.ctx.storage.list());
-    if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? format(state.current, [], state.checkedAt) : 'Not initialized');
+    if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? EVENTS.map((e, i) => format(state.current, [], state.checkedAt, i)).join('\n\n──────── MENSAGEM SEPARADA ────────\n\n') : 'Not initialized');
     return Response.json({ enabled: state.enabled === true, days: EVENTS.map(e => e.day), baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, lastDeliveredAt: state.lastDeliveredAt || null });
   }
 }

@@ -44,3 +44,14 @@ test('only daily global minimum triggers, including categories outside reference
   assert.ok(!text.includes('Estudante') && !text.includes('PCD'));
   assert.deepEqual(drops([next], [structuredClone(next)]), []);
 });
+test('day messages contain only their own prices, highlights and link', () => {
+  const current = [matrix(20000), matrix(30000)];
+  const changes = drops([matrix(40000), matrix(40000)], current);
+  for (const i of [0, 1]) {
+    const text = format(current, changes, '2026-09-08T00:00:00Z', i);
+    assert.equal((text.match(/🎟️ 3/g) || []).length, 6);
+    assert.equal((text.match(/Ver ingressos:/g) || []).length, 1);
+    assert.ok(text.includes(i === 0 ? 'DEMI LOVATO' : 'HALSEY'));
+    assert.ok(!text.includes(i === 0 ? 'HALSEY' : 'DEMI LOVATO'));
+  }
+});

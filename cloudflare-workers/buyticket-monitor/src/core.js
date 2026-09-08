@@ -46,10 +46,12 @@ export function drops(previous, current) {
   });
 }
 const money = n => `R$ ${(n / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-export function format(current, changes, at) {
+export function format(current, changes, at, dayIndex = null) {
   const lines = [changes.length ? '📉 *BAIXOU! • ROCK IN RIO 2026*' : '🎟️ *ROCK IN RIO 2026 • PREÇOS ATUAIS*'];
+  changes = changes.filter(d => dayIndex === null || d.i === dayIndex);
   for (const d of changes) lines.push('', `💚 *${EVENTS[d.i].label} • ${d.key.replace('||', ' • ')}*`, `Menor do dia: de ${money(d.before)} para *${money(d.after)}*`, `Queda no menor do dia: *${money(d.before - d.after)}*`);
   current.forEach((m, i) => {
+    if (dayIndex !== null && i !== dayIndex) return;
     lines.push('', `🗓️ *${EVENTS[i].label}*`);
     const displayKeys = [...new Set([...keys, ...changes.filter(d => d.i === i).map(d => d.key)])];
     for (const sector of [...new Set(displayKeys.map(k => k.split('||')[0]))]) {

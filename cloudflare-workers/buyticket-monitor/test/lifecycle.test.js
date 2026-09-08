@@ -41,3 +41,26 @@ test('date change silently replaces baseline and retires old pending delivery', 
   assert.deepEqual(status.days, ['12/09/2026', '13/09/2026']);
   assert.equal(status.baselineReady, true);
 });
+test('two day messages dispatch sequentially with distinct keys and matching links', async () => {
+  const data = new Map([['enabled', true], ['pending', { state: 'queued', items: [
+    { key: 'buyticket:day12', link: 'https://example.test/12', text: 'day12' },
+    { key: 'buyticket:day13', link: 'https://example.test/13', text: 'day13' },
+  ] }]]);
+  const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v), delete: async k => data.delete(k) };
+  const m = new Monitor({ storage }, {});
+  const oldFetch = globalThis.fetch;
+  const sent = [];
+  globalThis.fetch = async (_, init) => {
+    assert.equal(data.get('pending').state, 'unknown');
+    sent.push({ key: init.headers['Idempotency-Key'], ...JSON.parse(init.body) });
+    return Response.json({ deliveryState: 'confirmed_by_whatsapp_bridge' });
+  };
+  try {
+    await m.deliver();
+    assert.deepEqual(sent.map(x => [x.key, x.link, x.text]), [
+      ['buyticket:day12', 'https://example.test/12', 'day12'],
+      ['buyticket:day13', 'https://example.test/13', 'day13'],
+    ]);
+    assert.equal(data.get('pending'), undefined);
+  } finally { globalThis.fetch = oldFetch; }
+});
