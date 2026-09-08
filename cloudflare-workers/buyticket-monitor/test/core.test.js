@@ -1,11 +1,30 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parse, drops, format, keys } from '../src/core.js';
+import { parse, drops, format, keys, purchaseCandidates, finalPriceAllowed, formatPixMessage } from '../src/core.js';
 const matrix = p => Object.fromEntries(keys.map(k => [k, { preco_min: p, disponivel: 3, id_ref: 'ref' }]));
 test('Flight extraction validates prices and rejects missing data', () => {
   assert.deepEqual(parse('a:' + JSON.stringify(['$', { matriz_preco: matrix(33000) }])), matrix(33000));
   assert.throws(() => parse('a:{}'));
   assert.throws(() => parse('a:' + JSON.stringify({ matriz_preco: matrix(-1) })));
+});
+test('purchase scans every category and enforces the final per-ticket bounds', () => {
+  const current = matrix(90000);
+  current['VIP||Meia Professor'] = { preco_min: 26000, disponivel: 1, id_ref: 'candidate' };
+  current['Gramado||Promocional'] = { preco_min: 9900, disponivel: 1, id_ref: 'too-cheap' };
+  assert.deepEqual(purchaseCandidates(current, 1), [{
+    dayIndex: 1, key: 'VIP||Meia Professor', sector: 'VIP', category: 'Meia Professor', idRef: 'candidate', listedPrice: 26000,
+  }]);
+  assert.equal(finalPriceAllowed(1, 10000), true);
+  assert.equal(finalPriceAllowed(1, 25000), true);
+  assert.equal(finalPriceAllowed(1, 9999), false);
+  assert.equal(finalPriceAllowed(1, 25001), false);
+});
+test('PIX message contains one ticket, coupon-adjusted total and the event link', () => {
+  const text = formatPixMessage({ dayIndex: 1, sector: 'Gramado', category: 'Meia Estudante', finalPrice: 24000, pixCode: '000201TESTE' }, '2026-09-08T12:00:00Z');
+  assert.match(text, /🎟️ 1 ingresso/);
+  assert.match(text, /Valor final com cupom: \*R\$ 240,00\*/);
+  assert.match(text, /000201TESTE/);
+  assert.match(text, /buyticketbrasil\.com\/evento\/rockinrio2026/);
 });
 test('baseline, increases, sold out and restock are not price drops', () => {
   assert.deepEqual(drops(null, [matrix(33000)]), []);

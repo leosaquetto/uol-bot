@@ -1,5 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
-import { EVENTS, eventUrl, parse, drops, format } from './core.js';
+import { EVENTS, eventUrl, parse, drops, format, purchaseCandidates, formatPixMessage } from './core.js';
+import { runCheckout } from './checkout.js';
 const EVENT_SCOPE = 'daily-min-v1:' + EVENTS.map(e => e.local).join(':');
 const INTERVAL = 300_000;
 export class Monitor extends DurableObject {
@@ -31,6 +32,8 @@ export class Monitor extends DurableObject {
       await this.ctx.storage.put('pending', { key: `buyticket:${crypto.randomUUID()}`, items: [...new Set(changes.map(d => d.i))].map(i => ({ key: `buyticket:${crypto.randomUUID()}`, link: eventUrl(EVENTS[i]), text: format(current, changes, at, i) })), state: 'queued' });
     }
     await this.deliver();
+    await this.maybePurchase(current);
+    await this.deliverPix();
   }
   async deliver() {
     const pending = await this.ctx.storage.get('pending');
@@ -49,6 +52,86 @@ export class Monitor extends DurableObject {
       } else await this.ctx.storage.delete('pending');
     }
   }
+  async maybePurchase(current) {
+    // Checkout remains gated until the complete billing and PIX contract is verified.
+    if (this.env.PIX_CHECKOUT_VALIDATED !== 'true') return;
+    if (!await this.ctx.storage.get('purchasesEnabled')) return;
+    const state = await this.ctx.storage.get('purchases') || { days: {} };
+    for (let dayIndex = 0; dayIndex < EVENTS.length; dayIndex++) {
+      const day = state.days[dayIndex] || { attempts: {} };
+      if (['pix_created', 'delivered', 'unknown'].includes(day.status)) continue;
+      for (const candidate of purchaseCandidates(current[dayIndex], dayIndex)) {
+        const prior = day.attempts[candidate.idRef];
+        if (prior && prior.listedPrice === candidate.listedPrice &&
+            ['outside_range', 'listing_mismatch'].includes(prior.status)) continue;
+        const attempt = { status: 'checking', listedPrice: candidate.listedPrice, checkedAt: new Date().toISOString() };
+        day.attempts[candidate.idRef] = attempt;
+        state.days[dayIndex] = day;
+        await this.ctx.storage.put('purchases', state);
+        let result;
+        try {
+          result = await runCheckout(this.env, candidate, {
+            beforeCommit: async ({ finalPrice }) => {
+              day.status = 'unknown';
+              day.idRef = candidate.idRef;
+              day.finalPrice = finalPrice;
+              day.updatedAt = new Date().toISOString();
+              await this.ctx.storage.put('purchases', state);
+            },
+          });
+        } catch {
+          day.status = 'unknown';
+          day.updatedAt = new Date().toISOString();
+          await this.ctx.storage.put('purchases', state);
+          return;
+        }
+        attempt.status = result.status;
+        attempt.finalPrice = result.finalPrice;
+        attempt.checkedAt = new Date().toISOString();
+        if (result.status === 'pix_created') {
+          const deliveryKey = `buyticket:pix:${dayIndex}:${crypto.randomUUID()}`;
+          day.status = 'pix_created';
+          day.idRef = candidate.idRef;
+          day.finalPrice = result.finalPrice;
+          day.updatedAt = attempt.checkedAt;
+          await this.ctx.storage.put({
+            purchases: state,
+            pixPending: {
+              state: 'queued',
+              key: deliveryKey,
+              link: eventUrl(EVENTS[dayIndex]),
+              text: formatPixMessage({ ...candidate, ...result }, attempt.checkedAt),
+              dayIndex,
+            },
+          });
+          return;
+        }
+        day.status = 'idle';
+        await this.ctx.storage.put('purchases', state);
+      }
+    }
+  }
+  async deliverPix() {
+    const pending = await this.ctx.storage.get('pixPending');
+    if (!pending || pending.state !== 'queued') return;
+    await this.ctx.storage.put('pixPending', { ...pending, state: 'unknown' });
+    const response = await fetch(this.env.BEEPER_GATEWAY_URL, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${this.env.BEEPER_GATEWAY_TOKEN}`, 'Content-Type': 'application/json', 'Idempotency-Key': pending.key },
+      body: JSON.stringify({ link: pending.link, text: pending.text, title: 'Rock in Rio 2026 • PIX' }),
+      signal: AbortSignal.timeout(55_000),
+    });
+    const result = await response.json();
+    if (response.ok && result.deliveryState === 'confirmed_by_whatsapp_bridge') {
+      const state = await this.ctx.storage.get('purchases') || { days: {} };
+      const day = state.days[pending.dayIndex] || {};
+      day.status = 'delivered';
+      day.deliveredAt = new Date().toISOString();
+      state.days[pending.dayIndex] = day;
+      await this.ctx.storage.put({ purchases: state, lastPixDeliveredAt: day.deliveredAt });
+      await this.ctx.storage.delete('pixPending');
+    }
+  }
   async alarm() {
     if (Date.now() >= Date.parse('2026-09-14T03:00:00Z')) return;
     await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
@@ -65,13 +148,32 @@ export class Monitor extends DurableObject {
       await this.deliver();
       return Response.json({ started: true, pending: (await this.ctx.storage.get('pending'))?.state || null });
     }
+    if (request.method === 'POST' && path === '/purchases/start') {
+      if (this.env.PIX_CHECKOUT_VALIDATED !== 'true') return Response.json({ error: 'checkout_not_validated' }, { status: 409 });
+      await this.ctx.storage.put('purchasesEnabled', true);
+      return Response.json({ purchasesEnabled: true });
+    }
+    if (request.method === 'POST' && path === '/purchases/stop') {
+      await this.ctx.storage.put('purchasesEnabled', false);
+      return Response.json({ purchasesEnabled: false });
+    }
+    if (request.method === 'POST' && path === '/purchases/dry-run') {
+      const body = await request.json().catch(() => ({}));
+      const dayIndex = Number(body.dayIndex);
+      if (![0, 1].includes(dayIndex) || typeof body.idRef !== 'string' || !body.idRef) return Response.json({ error: 'invalid_request' }, { status: 400 });
+      const current = await this.collect();
+      const candidate = purchaseCandidates(current[dayIndex], dayIndex, 100_000).find(item => item.idRef === body.idRef);
+      if (!candidate) return Response.json({ error: 'listing_not_found' }, { status: 404 });
+      const result = await runCheckout(this.env, candidate, { dryRun: true });
+      return Response.json({ status: result.status, stage: result.stage || null, couponSignal: result.couponSignal || null, listedTotal: result.listedTotal || null, finalPrice: result.finalPrice || null, formReady: result.formReady === true, noOrderCreated: true });
+    }
     if (request.method === 'POST' && path === '/initialize') {
       if (!await this.ctx.storage.get('checkedAt') || await this.ctx.storage.get('eventScope') !== EVENT_SCOPE) await this.tick();
       await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
     } else if (request.method !== 'GET' || !['/status', '/preview'].includes(path)) return new Response('Not found', { status: 404 });
     const state = Object.fromEntries(await this.ctx.storage.list());
     if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? EVENTS.map((e, i) => format(state.current, [], state.checkedAt, i)).join('\n\n──────── MENSAGEM SEPARADA ────────\n\n') : 'Not initialized');
-    return Response.json({ enabled: state.enabled === true, days: EVENTS.map(e => e.day), baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, lastDeliveredAt: state.lastDeliveredAt || null });
+    return Response.json({ enabled: state.enabled === true, purchasesEnabled: state.purchasesEnabled === true, days: EVENTS.map(e => e.day), baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, pixPending: state.pixPending?.state || null, purchaseDays: Object.fromEntries(Object.entries(state.purchases?.days || {}).map(([day, value]) => [day, { status: value.status || 'idle', finalPrice: value.finalPrice || null, updatedAt: value.updatedAt || null, deliveredAt: value.deliveredAt || null }])), lastDeliveredAt: state.lastDeliveredAt || null, lastPixDeliveredAt: state.lastPixDeliveredAt || null });
   }
 }
 export default {

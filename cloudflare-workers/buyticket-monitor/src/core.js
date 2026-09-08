@@ -2,6 +2,11 @@ export const EVENTS = [
   { day: '12/09/2026', label: '12/09 SÁB - DEMI LOVATO', date: '1789261200000', local: '1765323797528x513509114247905300' },
   { day: '13/09/2026', label: '13/09 DOM - HALSEY', date: '1789347600000', local: '1765323829346x381107157350744060' },
 ];
+export const PURCHASE_RULES = [
+  { min: 20_000, max: 35_000 },
+  { min: 10_000, max: 25_000 },
+];
+export const COUPON_ALLOWANCE = 1_000;
 export const keys = ['Gramado', 'Comfort Zone'].flatMap(s => ['Inteira', 'Meia Estudante', 'Meia PCD'].map(c => `${s}||${c}`));
 export const eventUrl = e => `https://buyticketbrasil.com/evento/rockinrio2026?data=${e.date}&evento_local=${e.local}&cidade=Rio+de+Janeiro`;
 export function parse(text) {
@@ -46,6 +51,39 @@ export function drops(previous, current) {
   });
 }
 const money = n => `R$ ${(n / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+export function purchaseCandidates(matrix, dayIndex, couponAllowance = COUPON_ALLOWANCE) {
+  const rule = PURCHASE_RULES[dayIndex];
+  if (!rule) return [];
+  return Object.entries(matrix || {}).flatMap(([key, value]) => {
+    if (!value || value.disponivel < 1 || !Number.isSafeInteger(value.preco_min) ||
+        value.preco_min < rule.min || value.preco_min > rule.max + couponAllowance ||
+        typeof value.id_ref !== 'string' || !value.id_ref) return [];
+    const [sector, category] = key.split('||');
+    return [{ dayIndex, key, sector, category, idRef: value.id_ref, listedPrice: value.preco_min }];
+  }).sort((a, b) => a.listedPrice - b.listedPrice || a.key.localeCompare(b.key));
+}
+export function finalPriceAllowed(dayIndex, cents) {
+  const rule = PURCHASE_RULES[dayIndex];
+  return Boolean(rule && Number.isSafeInteger(cents) && cents >= rule.min && cents <= rule.max);
+}
+export function formatPixMessage(result, at) {
+  const event = EVENTS[result.dayIndex];
+  return [
+    '⚡ *PIX GERADO • ROCK IN RIO 2026*',
+    '',
+    `🗓️ *${event.label}*`,
+    `🎟️ 1 ingresso • ${result.sector} • ${result.category}`,
+    `💰 Valor final com cupom: *${money(result.finalPrice)}*`,
+    '⏳ Confira e pague em até 10 minutos.',
+    '',
+    '*Código PIX copia e cola:*',
+    `\`\`\`${result.pixCode}\`\`\``,
+    '',
+    `🔗 ${eventUrl(event)}`,
+    '',
+    new Date(at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+  ].join('\n');
+}
 export function format(current, changes, at, dayIndex = null) {
   const lines = [changes.length ? '📉 *BAIXOU! • ROCK IN RIO 2026*' : '🎟️ *ROCK IN RIO 2026 • PREÇOS ATUAIS*'];
   changes = changes.filter(d => dayIndex === null || d.i === dayIndex);

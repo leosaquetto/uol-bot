@@ -4,13 +4,15 @@ import { readFile } from 'node:fs/promises';
 const core = new URL('../src/core.js', import.meta.url).href;
 const source = (await readFile(new URL('../src/worker.js', import.meta.url), 'utf8'))
   .replace("import { DurableObject } from 'cloudflare:workers';", 'class DurableObject { constructor(ctx, env) { this.ctx = ctx; this.env = env; } }')
-  .replace("'./core.js'", JSON.stringify(core));
+  .replace("'./core.js'", JSON.stringify(core))
+  .replace("import { runCheckout } from './checkout.js';", "const runCheckout = (...args) => globalThis.__runCheckout(...args);");
 const { Monitor } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 const { keys } = await import(core);
+globalThis.__runCheckout = async () => ({ status: 'checkout_failed' });
 test('silent initialization and ticks never dispatch; start sends once; unknown delivery blocks repeats', async () => {
   const data = new Map();
   const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k), list: async () => data, setAlarm: async () => {} };
-  const m = new Monitor({ storage }, {});
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
   m.collect = async () => [0,1].map(() => Object.fromEntries(keys.map(k => [k, { preco_min: 33000, disponivel: 3, id_ref: 'ref' }])));
   let sends = 0;
   const oldFetch = globalThis.fetch;
@@ -31,7 +33,7 @@ test('silent initialization and ticks never dispatch; start sends once; unknown 
 test('date change silently replaces baseline and retires old pending delivery', async () => {
   const data = new Map([['enabled', true], ['current', [{}, {}]], ['pending', { state: 'queued', text: 'old date' }]]);
   const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k), list: async () => data, setAlarm: async () => {} };
-  const m = new Monitor({ storage }, {});
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
   m.collect = async () => [0,1].map(() => Object.fromEntries(keys.map(k => [k, { preco_min: 100, disponivel: 1, id_ref: 'new' }])));
   await m.fetch(new Request('https://monitor/initialize', { method: 'POST' }));
   assert.equal(data.get('enabled'), true);
@@ -47,7 +49,7 @@ test('two day messages dispatch sequentially with distinct keys and matching lin
     { key: 'buyticket:day13', link: 'https://example.test/13', text: 'day13' },
   ] }]]);
   const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v), delete: async k => data.delete(k) };
-  const m = new Monitor({ storage }, {});
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
   const oldFetch = globalThis.fetch;
   const sent = [];
   globalThis.fetch = async (_, init) => {
@@ -63,4 +65,62 @@ test('two day messages dispatch sequentially with distinct keys and matching lin
     ]);
     assert.equal(data.get('pending'), undefined);
   } finally { globalThis.fetch = oldFetch; }
+});
+test('purchase lane ignores non-candidates and creates one queued PIX for any qualifying category', async () => {
+  const data = new Map([['purchasesEnabled', true]]);
+  const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  let runs = 0;
+  globalThis.__runCheckout = async (_env, candidate, options) => {
+    runs++;
+    assert.equal(candidate.category, 'Meia Professor');
+    await options.beforeCommit({ finalPrice: 24000 });
+    assert.equal(data.get('purchases').days[1].status, 'unknown');
+    return { status: 'pix_created', finalPrice: 24000, pixCode: '000201' + 'A'.repeat(70) };
+  };
+  const current = [matrixFor(90000), matrixFor(90000)];
+  await m.maybePurchase(current);
+  assert.equal(runs, 0);
+  current[1]['VIP||Meia Professor'] = { preco_min: 25000, disponivel: 1, id_ref: 'candidate' };
+  await m.maybePurchase(current);
+  assert.equal(runs, 1);
+  assert.equal(data.get('purchases').days[1].status, 'pix_created');
+  assert.equal(data.get('pixPending').state, 'queued');
+  assert.match(data.get('pixPending').text, /🎟️ 1 ingresso/);
+  await m.maybePurchase(current);
+  assert.equal(runs, 1);
+});
+
+test('ambiguous checkout remains terminal and is never repeated', async () => {
+  const data = new Map([['purchasesEnabled', true]]);
+  const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  let runs = 0;
+  globalThis.__runCheckout = async (_env, _candidate, options) => {
+    runs++;
+    await options.beforeCommit({ finalPrice: 24000 });
+    throw new Error('purchase_outcome_unknown');
+  };
+  const current = [matrixFor(90000), matrixFor(90000)];
+  current[1]['VIP||Meia Professor'] = { preco_min: 25000, disponivel: 1, id_ref: 'candidate' };
+  await m.maybePurchase(current);
+  await m.maybePurchase(current);
+  assert.equal(runs, 1);
+  assert.equal(data.get('purchases').days[1].status, 'unknown');
+});
+
+function matrixFor(price) {
+  return Object.fromEntries(keys.map(key => [key, { preco_min: price, disponivel: 1, id_ref: `${key}:${price}` }]));
+}
+
+test('unvalidated checkout cannot be armed or run even with persisted enablement', async () => {
+  const data = new Map([['purchasesEnabled', true]]);
+  const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v) };
+  const m = new Monitor({ storage }, {});
+  globalThis.__runCheckout = async () => { throw new Error('must not launch'); };
+  await m.maybePurchase([matrixFor(25000), matrixFor(20000)]);
+  const response = await m.fetch(new Request('https://monitor/purchases/start', { method: 'POST' }));
+  assert.equal(response.status, 409);
+  await m.fetch(new Request('https://monitor/purchases/stop', { method: 'POST' }));
+  assert.equal(data.get('purchasesEnabled'), false);
 });
