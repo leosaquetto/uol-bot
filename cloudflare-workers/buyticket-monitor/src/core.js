@@ -56,7 +56,7 @@ export function format(current, changes, at) {
       lines.push('', `${sector === 'Gramado' ? '🌿' : '✨'} *${sector}*`);
       for (const key of displayKeys.filter(k => k.startsWith(sector + '||'))) {
         const v = m[key], drop = changes.find(d => d.i === i && d.key === key);
-        const row = `${key.split('||')[1]}: ${v.disponivel ? `${money(v.preco_min)} · 🎟️ ${v.disponivel}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''}` : 'sem oferta · 🎟️ 0'}`;
+        const row = `${key.split('||')[1]}: ${v.disponivel ? `${money(v.preco_min)}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''} · 🎟️ ${v.disponivel}` : 'sem oferta · 🎟️ 0'}`;
         lines.push(drop ? `🔥 *${row}*` : `• ${row}`);
       }
     }
