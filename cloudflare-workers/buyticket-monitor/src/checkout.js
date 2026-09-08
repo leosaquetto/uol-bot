@@ -22,8 +22,12 @@ async function ensureLogin(page, env) {
   let name = await readAccountName(page).catch(() => null);
   if (name) return name;
   await page.goto(`${BASE}/entrar`, { waitUntil: 'domcontentloaded', timeout: NAVIGATION_TIMEOUT });
-  await page.getByRole('textbox', { name: 'Seu email' }).fill(env.BUYTICKET_USERNAME);
-  await page.getByRole('textbox', { name: 'Sua senha' }).fill(env.BUYTICKET_PASSWORD);
+  const email = page.getByPlaceholder('Seu email', { exact: true });
+  const password = page.getByPlaceholder('Sua senha', { exact: true });
+  await email.waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
+  await password.waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
+  await email.fill(env.BUYTICKET_USERNAME);
+  await password.fill(env.BUYTICKET_PASSWORD);
   await page.getByText('Entrar na conta', { exact: true }).click();
   await page.waitForURL(url => !url.pathname.startsWith('/entrar'), { timeout: NAVIGATION_TIMEOUT });
   name = await readAccountName(page).catch(() => null);
@@ -89,7 +93,18 @@ async function findPixCodeInPage(page) {
 }
 
 export async function runCheckout(env, candidate, { dryRun = false, beforeCommit = async () => {} } = {}) {
-  const browser = await launch(env.BROWSER);
+  let browser;
+  try {
+    browser = await launch(env.BROWSER);
+  } catch (error) {
+    const message = String(error?.message || '').toLowerCase();
+    return {
+      status: message.includes('429') || message.includes('rate limit') ? 'browser_rate_limited' : 'browser_unavailable',
+      stage: 'browser_started',
+      finalActionClicked: false,
+      noOrderCreated: true,
+    };
+  }
   let committed = false;
   let stage = 'browser_started';
   const done = result => ({ ...result, stage });
@@ -190,9 +205,15 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     await fillMasked(page, 'CPF/CNPJ', env.BUYTICKET_CPF);
     stage = 'billing_postal_code';
     await fillMasked(page, 'CEP (Código postal)', env.BUYTICKET_CEP);
-    await page.waitForFunction(() => ['Estado (UF)', 'Bairro', 'Município'].every(placeholder =>
+    const addressReady = () => page.waitForFunction(() => ['Estado (UF)', 'Bairro', 'Município'].every(placeholder =>
       [...document.querySelectorAll('input')].some(input => input.placeholder === placeholder && input.value.trim())),
-      undefined, { timeout: 8_000 });
+      undefined, { timeout: 4_000 }).then(() => true).catch(() => false);
+    let autoAddress = await addressReady();
+    if (!autoAddress) {
+      await page.getByPlaceholder('CEP (Código postal)', { exact: true }).press('Tab').catch(() => {});
+      autoAddress = await addressReady();
+    }
+    if (!autoAddress) throw new Error('billing_address_autofill_timeout');
     stage = 'billing_address';
     await fillByNames(page, [/endere[cç]o|logradouro/i], env.BUYTICKET_ADDRESS);
     stage = 'billing_number';

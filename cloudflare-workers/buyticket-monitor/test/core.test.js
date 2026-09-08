@@ -15,9 +15,22 @@ test('purchase scans every category and enforces the final per-ticket bounds', (
     dayIndex: 1, key: 'VIP||Meia Professor', sector: 'VIP', category: 'Meia Professor', idRef: 'candidate', listedPrice: 26000,
   }]);
   assert.equal(finalPriceAllowed(1, 10000), true);
-  assert.equal(finalPriceAllowed(1, 25000), true);
+  assert.equal(finalPriceAllowed(1, 27000), true);
   assert.equal(finalPriceAllowed(1, 9999), false);
-  assert.equal(finalPriceAllowed(1, 25001), false);
+  assert.equal(finalPriceAllowed(1, 27001), false);
+});
+test('day 13 purchase lane accepts any category within the R$270 final cap', () => {
+  const current = matrix(90000);
+  current['Gramado||Meia Estudante'] = { preco_min: 27000, disponivel: 2, id_ref: 'student' };
+  current['Gramado||Inteira'] = { preco_min: 20000, disponivel: 2, id_ref: 'whole' };
+  current['Comfort Zone||Meia Estudante'] = { preco_min: 24000, disponivel: 2, id_ref: 'comfort' };
+  assert.deepEqual(purchaseCandidates(current, 1), [
+    { dayIndex: 1, key: 'Gramado||Inteira', sector: 'Gramado', category: 'Inteira', idRef: 'whole', listedPrice: 20000 },
+    { dayIndex: 1, key: 'Comfort Zone||Meia Estudante', sector: 'Comfort Zone', category: 'Meia Estudante', idRef: 'comfort', listedPrice: 24000 },
+    { dayIndex: 1, key: 'Gramado||Meia Estudante', sector: 'Gramado', category: 'Meia Estudante', idRef: 'student', listedPrice: 27000 },
+  ]);
+  assert.equal(finalPriceAllowed(1, 27000), true);
+  assert.equal(finalPriceAllowed(1, 27001), false);
 });
 test('PIX message contains one ticket, coupon-adjusted total and the event link', () => {
   const text = formatPixMessage({ dayIndex: 1, sector: 'Gramado', category: 'Meia Estudante', finalPrice: 24000, pixCode: '000201TESTE' }, '2026-09-08T12:00:00Z');

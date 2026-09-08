@@ -2,8 +2,13 @@ import { DurableObject } from 'cloudflare:workers';
 import { EVENTS, eventUrl, parse, drops, format, purchaseCandidates, formatPixMessage } from './core.js';
 import { runCheckout } from './checkout.js';
 const EVENT_SCOPE = 'daily-min-v1:' + EVENTS.map(e => e.local).join(':');
-const INTERVAL = 300_000;
+const PASSIVE_INTERVAL = 300_000;
+const PURCHASE_INTERVAL = 15_000;
 export class Monitor extends DurableObject {
+  async scheduleNextAlarm() {
+    const interval = await this.ctx.storage.get('purchasesEnabled') ? PURCHASE_INTERVAL : PASSIVE_INTERVAL;
+    await this.ctx.storage.setAlarm(Date.now() + interval);
+  }
   async collect() {
     const matrices = [];
     for (const event of EVENTS) {
@@ -57,6 +62,7 @@ export class Monitor extends DurableObject {
     if (this.env.PIX_CHECKOUT_VALIDATED !== 'true') return;
     if (!await this.ctx.storage.get('purchasesEnabled')) return;
     const state = await this.ctx.storage.get('purchases') || { days: {} };
+    const now = Date.now();
     for (let dayIndex = 0; dayIndex < EVENTS.length; dayIndex++) {
       const day = state.days[dayIndex] || { attempts: {} };
       if (['pix_created', 'delivered', 'unknown'].includes(day.status)) continue;
@@ -64,6 +70,8 @@ export class Monitor extends DurableObject {
         const prior = day.attempts[candidate.idRef];
         if (prior && prior.listedPrice === candidate.listedPrice &&
             ['outside_range', 'listing_mismatch'].includes(prior.status)) continue;
+        if (prior && prior.listedPrice === candidate.listedPrice && prior.retryAfter &&
+            Date.parse(prior.retryAfter) > now) continue;
         const attempt = { status: 'checking', listedPrice: candidate.listedPrice, checkedAt: new Date().toISOString() };
         day.attempts[candidate.idRef] = attempt;
         state.days[dayIndex] = day;
@@ -88,6 +96,13 @@ export class Monitor extends DurableObject {
         attempt.status = result.status;
         attempt.finalPrice = result.finalPrice;
         attempt.checkedAt = new Date().toISOString();
+        if (['browser_rate_limited', 'browser_unavailable'].includes(result.status)) {
+          attempt.retryAfter = new Date(Date.now() + 15 * 60_000).toISOString();
+        } else if (result.status === 'checkout_failed') {
+          attempt.retryAfter = new Date(Date.now() + 5 * 60_000).toISOString();
+        } else {
+          delete attempt.retryAfter;
+        }
         if (result.status === 'pix_created') {
           const deliveryKey = `buyticket:pix:${dayIndex}:${crypto.randomUUID()}`;
           day.status = 'pix_created';
@@ -134,7 +149,7 @@ export class Monitor extends DurableObject {
   }
   async alarm() {
     if (Date.now() >= Date.parse('2026-09-14T03:00:00Z')) return;
-    await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
+    await this.scheduleNextAlarm();
     try { await this.tick(); } catch { await this.ctx.storage.put('error', 'check_or_delivery_failed'); }
   }
   async fetch(request) {
@@ -144,17 +159,19 @@ export class Monitor extends DurableObject {
       const current = await this.collect();
       const at = new Date().toISOString();
       await this.ctx.storage.put({ current, checkedAt: at, eventScope: EVENT_SCOPE, enabled: true, pending: { key: `buyticket:${crypto.randomUUID()}`, items: EVENTS.map((e, i) => ({ key: `buyticket:${crypto.randomUUID()}`, link: eventUrl(e), text: format(current, [], at, i) })), state: 'queued' } });
-      await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
+      await this.scheduleNextAlarm();
       await this.deliver();
       return Response.json({ started: true, pending: (await this.ctx.storage.get('pending'))?.state || null });
     }
     if (request.method === 'POST' && path === '/purchases/start') {
       if (this.env.PIX_CHECKOUT_VALIDATED !== 'true') return Response.json({ error: 'checkout_not_validated' }, { status: 409 });
       await this.ctx.storage.put('purchasesEnabled', true);
+      await this.scheduleNextAlarm();
       return Response.json({ purchasesEnabled: true });
     }
     if (request.method === 'POST' && path === '/purchases/stop') {
       await this.ctx.storage.put('purchasesEnabled', false);
+      await this.scheduleNextAlarm();
       return Response.json({ purchasesEnabled: false });
     }
     if (request.method === 'POST' && path === '/purchases/dry-run') {
@@ -169,7 +186,7 @@ export class Monitor extends DurableObject {
     }
     if (request.method === 'POST' && path === '/initialize') {
       if (!await this.ctx.storage.get('checkedAt') || await this.ctx.storage.get('eventScope') !== EVENT_SCOPE) await this.tick();
-      await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
+      await this.scheduleNextAlarm();
     } else if (request.method !== 'GET' || !['/status', '/preview'].includes(path)) return new Response('Not found', { status: 404 });
     const state = Object.fromEntries(await this.ctx.storage.list());
     if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? EVENTS.map((e, i) => format(state.current, [], state.checkedAt, i)).join('\n\n──────── MENSAGEM SEPARADA ────────\n\n') : 'Not initialized');

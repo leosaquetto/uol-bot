@@ -4,7 +4,7 @@ export const EVENTS = [
 ];
 export const PURCHASE_RULES = [
   { min: 20_000, max: 35_000 },
-  { min: 10_000, max: 25_000 },
+  { min: 10_000, max: 27_000 },
 ];
 export const COUPON_ALLOWANCE = 1_000;
 export const keys = ['Gramado', 'Comfort Zone'].flatMap(s => ['Inteira', 'Meia Estudante', 'Meia PCD'].map(c => `${s}||${c}`));

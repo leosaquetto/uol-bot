@@ -109,13 +109,27 @@ test('ambiguous checkout remains terminal and is never repeated', async () => {
   assert.equal(data.get('purchases').days[1].status, 'unknown');
 });
 
+test('browser rate limits are persisted with a cooldown instead of relaunching every tick', async () => {
+  const data = new Map([['purchasesEnabled', true]]);
+  const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  let runs = 0;
+  globalThis.__runCheckout = async () => { runs++; return { status: 'browser_rate_limited' }; };
+  const current = [matrixFor(90000), matrixFor(90000)];
+  current[1]['Gramado||Meia Estudante'] = { preco_min: 27000, disponivel: 1, id_ref: 'rate-limited' };
+  await m.maybePurchase(current);
+  await m.maybePurchase(current);
+  assert.equal(runs, 1);
+  assert.match(data.get('purchases').days[1].attempts['rate-limited'].retryAfter, /^20/);
+});
+
 function matrixFor(price) {
   return Object.fromEntries(keys.map(key => [key, { preco_min: price, disponivel: 1, id_ref: `${key}:${price}` }]));
 }
 
 test('unvalidated checkout cannot be armed or run even with persisted enablement', async () => {
   const data = new Map([['purchasesEnabled', true]]);
-  const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v) };
+  const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v), setAlarm: async () => {} };
   const m = new Monitor({ storage }, {});
   globalThis.__runCheckout = async () => { throw new Error('must not launch'); };
   await m.maybePurchase([matrixFor(25000), matrixFor(20000)]);
@@ -123,4 +137,25 @@ test('unvalidated checkout cannot be armed or run even with persisted enablement
   assert.equal(response.status, 409);
   await m.fetch(new Request('https://monitor/purchases/stop', { method: 'POST' }));
   assert.equal(data.get('purchasesEnabled'), false);
+});
+
+test('arming purchases changes the next alarm to the 15-second purchase cadence', async () => {
+  const data = new Map([['enabled', true], ['checkedAt', new Date().toISOString()], ['eventScope', 'daily-min-v1:1765323797528x513509114247905300:1765323829346x381107157350744060']]);
+  const alarms = [];
+  const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k), list: async () => data, setAlarm: async value => alarms.push(value) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  await m.fetch(new Request('https://monitor/purchases/start', { method: 'POST' }));
+  assert.equal(data.get('purchasesEnabled'), true);
+  assert.ok(alarms.at(-1) - Date.now() <= 15_000 && alarms.at(-1) - Date.now() > 0);
+});
+
+test('alarm reschedules and runs with purchases enabled', async () => {
+  const data = new Map([['purchasesEnabled', true]]);
+  const alarms = [];
+  const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v), delete: async k => data.delete(k), setAlarm: async value => alarms.push(value) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  m.tick = async () => { data.set('ticked', true); };
+  await m.alarm();
+  assert.equal(data.get('ticked'), true);
+  assert.ok(alarms.at(-1) - Date.now() <= 15_000 && alarms.at(-1) - Date.now() > 0);
 });
