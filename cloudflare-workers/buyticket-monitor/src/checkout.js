@@ -1,6 +1,6 @@
 import { launch } from '@cloudflare/playwright';
 import { EVENTS, finalPriceAllowed } from './core.js';
-import { parseBrl, extractPixTotal, extractPixCode } from './checkout-logic.js';
+import { parseFinalReview, extractPixTotal, extractPixCode } from './checkout-logic.js';
 
 export { parseBrl, extractPixTotal, extractPixCode } from './checkout-logic.js';
 
@@ -51,6 +51,16 @@ async function fillByNames(page, names, value) {
   throw new Error('checkout_field_missing');
 }
 
+async function fillMasked(page, placeholder, value) {
+  const digits = value.replace(/\D/g, '');
+  const field = page.getByPlaceholder(placeholder, { exact: true });
+  await field.fill('');
+  await field.pressSequentially(digits);
+  await field.press('Tab');
+  const actual = await field.inputValue();
+  if (actual.replace(/\D/g, '') !== digits) throw new Error('billing_value_not_accepted');
+}
+
 async function clickFirstButton(page, label) {
   const clicked = await page.evaluate(text => {
     const button = [...document.querySelectorAll('button')].find(item => {
@@ -99,6 +109,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     if (!text.includes(candidate.sector) || !text.includes(candidate.category)) {
       return done({ status: 'listing_mismatch' });
     }
+    if (!/\(1x ingresso\)/i.test(text)) return done({ status: 'quantity_mismatch' });
     stage = 'checkout';
     await page.getByRole('button', { name: /Comprar agora por/ }).click();
     await page.getByRole('textbox', { name: 'Código do Cupom' }).waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
@@ -174,25 +185,29 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     stage = 'billing_name';
     await fillByNames(page, [/nome completo/i, /^nome$/i], buyerName);
     stage = 'billing_phone';
-    await fillByNames(page, [/telefone|celular/i], env.BUYTICKET_PHONE);
+    await fillMasked(page, 'Telefone celular', env.BUYTICKET_PHONE);
     stage = 'billing_tax_id';
-    await fillByNames(page, [/CPF|CNPJ/i], env.BUYTICKET_CPF);
+    await fillMasked(page, 'CPF/CNPJ', env.BUYTICKET_CPF);
     stage = 'billing_postal_code';
-    await fillByNames(page, [/CEP/i], env.BUYTICKET_CEP);
-    await page.waitForTimeout(800);
+    await fillMasked(page, 'CEP (Código postal)', env.BUYTICKET_CEP);
+    await page.waitForFunction(() => ['Estado (UF)', 'Bairro', 'Município'].every(placeholder =>
+      [...document.querySelectorAll('input')].some(input => input.placeholder === placeholder && input.value.trim())),
+      undefined, { timeout: 8_000 });
     stage = 'billing_address';
     await fillByNames(page, [/endere[cç]o|logradouro/i], env.BUYTICKET_ADDRESS);
     stage = 'billing_number';
     await fillByNames(page, [/^N° do endereço$/i], env.BUYTICKET_ADDRESS_NUMBER);
-
-    stage = 'billing';
+    stage = 'billing_continue';
+    await clickFirstButton(page, 'Continuar');
+    stage = 'final_review';
+    await page.getByText('Resumo da compra', { exact: true }).waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
     const finalButton = page.getByRole('button', { name: 'Comprar agora', exact: true });
     await finalButton.waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
-    const confirmedTotal = extractPixTotal(await pageText(page));
-    if (confirmedTotal !== finalPrice) {
+    const review = parseFinalReview(await pageText(page));
+    if (!review || review.total !== finalPrice) {
       return done({ status: 'price_changed' });
     }
-    if (dryRun) return done({ status: withinBounds ? 'ready' : 'outside_range', finalPrice, formReady: true });
+    if (dryRun) return done({ status: withinBounds ? 'ready' : 'outside_range', finalPrice, formReady: true, review, finalActionClicked: false });
     if (!withinBounds) return done({ status: 'outside_range', finalPrice });
 
     let responsePixCode = null;
@@ -213,7 +228,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     return done({ status: 'pix_created', finalPrice, pixCode });
   } catch (error) {
     if (committed) throw Object.assign(new Error('purchase_outcome_unknown'), { cause: error });
-    const known = ['login_failed', 'checkout_field_missing'];
+    const known = ['login_failed', 'checkout_field_missing', 'billing_value_not_accepted'];
     return done({ status: known.includes(error?.message) ? error.message : 'checkout_failed' });
   } finally {
     await browser.close().catch(() => {});

@@ -165,7 +165,7 @@ export class Monitor extends DurableObject {
       const candidate = purchaseCandidates(current[dayIndex], dayIndex, 100_000).find(item => item.idRef === body.idRef);
       if (!candidate) return Response.json({ error: 'listing_not_found' }, { status: 404 });
       const result = await runCheckout(this.env, candidate, { dryRun: true });
-      return Response.json({ status: result.status, stage: result.stage || null, couponSignal: result.couponSignal || null, listedTotal: result.listedTotal || null, finalPrice: result.finalPrice || null, formReady: result.formReady === true, noOrderCreated: true });
+      return Response.json({ status: result.status, stage: result.stage || null, couponSignal: result.couponSignal || null, listedTotal: result.listedTotal || null, finalPrice: result.finalPrice || null, formReady: result.formReady === true, review: result.review || null, finalActionClicked: false, noOrderCreated: true });
     }
     if (request.method === 'POST' && path === '/initialize') {
       if (!await this.ctx.storage.get('checkedAt') || await this.ctx.storage.get('eventScope') !== EVENT_SCOPE) await this.tick();

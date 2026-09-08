@@ -1,8 +1,21 @@
 export function parseBrl(value) {
   const match = String(value || '').match(/R\$\s*([\d.]+,\d{2})/i);
   if (!match) return null;
-  const cents = Number(match[1].replaceAll('.', '').replace(',', '.')) * 100;
+  const cents = Number(match[1].replaceAll('.', '').replace(',', ''));
   return Number.isSafeInteger(cents) ? cents : null;
+}
+
+export function parseFinalReview(text) {
+  const section = String(text || '').split('Resumo da compra')[1];
+  if (!section || !/M[eé]todo de pagamento\s*(?:Editar\s*)?Pix\b/i.test(section)) return null;
+  const amount = pattern => parseBrl(section.match(pattern)?.[1]);
+  const ticket = amount(/Ingresso\s*(R\$\s*[\d.]+,\d{2})/i);
+  const fee = amount(/Taxa de servi[cç]o\s*\([^)]*\)\s*(R\$\s*[\d.]+,\d{2})/i);
+  const discount = amount(/Cupom de desconto\s*-\s*(R\$\s*[\d.]+,\d{2})/i);
+  const total = amount(/Valor total\s*(R\$\s*[\d.]+,\d{2})/i);
+  if (![ticket, fee, discount, total].every(Number.isSafeInteger) || discount <= 0 ||
+      total <= 0 || ticket + fee - discount !== total) return null;
+  return { ticket, fee, discount, total, payment: 'PIX' };
 }
 
 export function extractPixTotal(text) {
