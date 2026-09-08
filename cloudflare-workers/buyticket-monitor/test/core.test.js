@@ -27,3 +27,20 @@ test('extracts matrix after multiline Flight text records', () => {
   const body = 'a:T100,description\n[ml] text "quotes"\n0:{"matriz_preco":' + JSON.stringify(matrix(33000)) + '}\n';
   assert.deepEqual(parse(body), matrix(33000));
 });
+test('only daily global minimum triggers, including categories outside reference rows', () => {
+  const old = matrix(80000);
+  old['Gramado||Inteira'].preco_min = 50000;
+  const next = structuredClone(old);
+  next['Comfort Zone||Inteira'].preco_min = 60000;
+  assert.deepEqual(drops([old], [next]), []);
+  next['VIP||Meia Professor'] = { preco_min: 40000, disponivel: 1, id_ref: 'new' };
+  const parsed = parse('0:' + JSON.stringify({ matriz_preco: next }));
+  const changes = drops([old], [parsed]);
+  assert.deepEqual(changes, [{ i: 0, key: 'VIP||Meia Professor', before: 50000, after: 40000 }]);
+  const text = format([parsed], changes, '2026-09-08T00:00:00Z');
+  assert.ok(text.includes('🔥 *Meia Professor: R$ 400,00 · 🎟️ 1 🔻 R$ 100,00*'));
+  assert.ok(text.includes('Meia 🧑🏻‍🦽‍➡️'));
+  assert.ok(text.includes('Meia 👨🏻‍🎓'));
+  assert.ok(!text.includes('Estudante') && !text.includes('PCD'));
+  assert.deepEqual(drops([next], [structuredClone(next)]), []);
+});

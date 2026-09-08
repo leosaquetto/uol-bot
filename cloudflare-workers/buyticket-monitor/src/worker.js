@@ -1,6 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
 import { EVENTS, eventUrl, parse, drops, format } from './core.js';
-const EVENT_SCOPE = EVENTS.map(e => e.local).join(':');
+const EVENT_SCOPE = 'daily-min-v1:' + EVENTS.map(e => e.local).join(':');
 const INTERVAL = 300_000;
 export class Monitor extends DurableObject {
   async collect() {

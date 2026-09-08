@@ -33,30 +33,35 @@ export function parse(text) {
   for (const v of Object.values(matrix)) {
     if (!Number.isSafeInteger(v.preco_min) || v.preco_min < 0 || !Number.isSafeInteger(v.disponivel) || v.disponivel < 0 || (v.disponivel > 0 && (v.preco_min <= 0 || typeof v.id_ref !== 'string'))) throw new Error('price_invalid');
   }
-  return Object.fromEntries(keys.map(k => [k, matrix[k] || { preco_min: 0, disponivel: 0 }]));
+  return { ...Object.fromEntries(keys.map(k => [k, { preco_min: 0, disponivel: 0 }])), ...matrix };
 }
 export function drops(previous, current) {
   if (!previous) return [];
-  return current.flatMap((m, i) => keys.flatMap(key => {
-    const a = previous[i]?.[key], b = m[key];
-    return a?.disponivel > 0 && b.disponivel > 0 && b.preco_min < a.preco_min ? [{ i, key, before: a.preco_min, after: b.preco_min }] : [];
-  }));
+  const minimum = m => Math.min(...Object.values(m || {}).filter(v => v.disponivel > 0 && v.preco_min > 0).map(v => v.preco_min));
+  return current.flatMap((m, i) => {
+    const before = minimum(previous[i]), after = minimum(m);
+    if (!Number.isFinite(before) || !Number.isFinite(after) || after >= before) return [];
+    return Object.entries(m).filter(([, v]) => v.disponivel > 0 && v.preco_min === after)
+      .map(([key]) => ({ i, key, before, after }));
+  });
 }
 const money = n => `R$ ${(n / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 export function format(current, changes, at) {
   const lines = [changes.length ? '📉 *BAIXOU! • ROCK IN RIO 2026*' : '🎟️ *ROCK IN RIO 2026 • PREÇOS ATUAIS*'];
-  for (const d of changes) lines.push('', `💚 *${EVENTS[d.i].day} • ${d.key.replace('||', ' • ')}*`, `De ${money(d.before)} por *${money(d.after)}*`, `Economia: *${money(d.before - d.after)}*`);
+  for (const d of changes) lines.push('', `💚 *${EVENTS[d.i].day} • ${d.key.replace('||', ' • ')}*`, `Menor do dia: de ${money(d.before)} para *${money(d.after)}*`, `Queda no menor do dia: *${money(d.before - d.after)}*`);
   current.forEach((m, i) => {
     lines.push('', `🗓️ *${EVENTS[i].day}*`);
-    for (const sector of ['Gramado', 'Comfort Zone']) {
+    const displayKeys = [...new Set([...keys, ...changes.filter(d => d.i === i).map(d => d.key)])];
+    for (const sector of [...new Set(displayKeys.map(k => k.split('||')[0]))]) {
       lines.push('', `${sector === 'Gramado' ? '🌿' : '✨'} *${sector}*`);
-      for (const key of keys.filter(k => k.startsWith(sector + '||'))) {
+      for (const key of displayKeys.filter(k => k.startsWith(sector + '||'))) {
         const v = m[key], drop = changes.find(d => d.i === i && d.key === key);
-        lines.push(`• ${key.split('||')[1]}: ${v.disponivel ? `*${money(v.preco_min)}* · 🎟️ ${v.disponivel}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''}` : 'sem oferta · 🎟️ 0'}`);
+        const row = `${key.split('||')[1]}: ${v.disponivel ? `${money(v.preco_min)} · 🎟️ ${v.disponivel}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''}` : 'sem oferta · 🎟️ 0'}`;
+        lines.push(drop ? `🔥 *${row}*` : `• ${row}`);
       }
     }
     lines.push('', `🔗 Ver ingressos: ${eventUrl(EVENTS[i])}`);
   });
   lines.push('', `🕒 ${new Date(at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })} • Brasília`, 'Menor valor anunciado por categoria. Quantidades não indicam estoque todo nesse preço. Valores sujeitos a alteração.');
-  return lines.join('\n');
+  return lines.join('\n').replaceAll('PCD', '🧑🏻‍🦽‍➡️').replaceAll('Estudante', '👨🏻‍🎓');
 }
