@@ -32,6 +32,14 @@ test('day 13 purchase lane accepts any category within the R$270 final cap', () 
   assert.equal(finalPriceAllowed(1, 27000), true);
   assert.equal(finalPriceAllowed(1, 27001), false);
 });
+test('purchase lane excludes Meia Idoso on both event days', () => {
+  for (const [dayIndex, price] of [[0, 25000], [1, 20000]]) {
+    const current = {};
+    current['Gramado||Meia Idoso'] = { preco_min: price, disponivel: 2, id_ref: `elderly-${dayIndex}` };
+    current['Gramado||Inteira'] = { preco_min: price, disponivel: 1, id_ref: `whole-${dayIndex}` };
+    assert.deepEqual(purchaseCandidates(current, dayIndex).map(candidate => candidate.category), ['Inteira']);
+  }
+});
 test('PIX message contains one ticket, coupon-adjusted total and the event link', () => {
   const text = formatPixMessage({ dayIndex: 1, sector: 'Gramado', category: 'Meia Estudante', finalPrice: 24000, pixCode: '000201TESTE' }, '2026-09-08T12:00:00Z');
   assert.match(text, /🎟️ 1 ingresso/);

@@ -59,6 +59,7 @@ export function purchaseCandidates(matrix, dayIndex, couponAllowance = COUPON_AL
         value.preco_min < rule.min || value.preco_min > rule.max + couponAllowance ||
         typeof value.id_ref !== 'string' || !value.id_ref) return [];
     const [sector, category] = key.split('||');
+    if (category?.toLocaleLowerCase('pt-BR').includes('idoso')) return [];
     return [{ dayIndex, key, sector, category, idRef: value.id_ref, listedPrice: value.preco_min }];
   }).sort((a, b) => a.listedPrice - b.listedPrice || a.key.localeCompare(b.key));
 }

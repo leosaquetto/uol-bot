@@ -2,7 +2,7 @@
 
 Separate SQLite Durable Object, no Cron Trigger. It normally checks every five minutes; while automatic purchase is armed it checks every 15 seconds. It watches September 12 and 13, stores the last valid snapshot, and never turns an invalid request into sold-out rows. It sends a separate message for each affected day only when the minimum across all available categories of a day falls versus the previous valid snapshot. Quantities refer to the category, not necessarily stock at the minimum price.
 
-The optional purchase lane launches Browser Run only for a plausible candidate, follows the verified `/r?event=...&c_anuncio=...` redirect, applies the coupon, and treats the coupon-adjusted PIX total as authoritative. It creates one PIX at a time and sends the copy-and-paste code to the same WhatsApp group; payment remains manual. Bounds are inclusive: R$ 200–350 for September 12 and R$ 100–270 for September 13, across categories. Ambiguous purchase or delivery outcomes are terminal and never retried automatically.
+The optional purchase lane launches Browser Run only for a plausible candidate, follows the verified `/r?event=...&c_anuncio=...` redirect, applies the coupon, and treats the coupon-adjusted PIX total as authoritative. It creates one PIX at a time and sends the copy-and-paste code to the same WhatsApp group; payment remains manual. Bounds are inclusive: R$ 200–350 for September 12 and R$ 100–270 for September 13, across categories except Meia Idoso. Ambiguous purchase or delivery outcomes are terminal and never retried automatically.
 
 Deployment starts silent. All routes require ADMIN_TOKEN. POST /initialize collects the baseline and schedules silent monitoring. GET /status reports enabled, freshness and pending state. GET /preview returns the complete message without sending. **POST /start sends the first snapshot in two sequential messages and enables future drop alerts; only call after the user's explicit first-send authorization.** Repeated starts return 409. Alarms stop September 14, 2026 at 03:00 UTC.
 
@@ -22,9 +22,9 @@ The complete billing and PIX path was validated interactively with one September
 
 The live flow verifies authenticated login, listing identity, one-ticket quantity, coupon application, billing, final arithmetic and PIX selection before the final purchase action. A dry-run request never clicks the final action and always reports `noOrderCreated: true`. Browser Run rate-limit failures are returned as `browser_rate_limited` and receive a 15-minute cooldown instead of launching repeatedly.
 
-Latest deployment: `1a0e0ce2-294a-412f-8b8a-144e54d1d6c1`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
+Latest deployment: `21840eaf-677d-4702-99c1-e76e41abd3a1`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
 
-Local validation: 19 tests passed, covering parsing, thresholds, category selection, existing alerts, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
+Local validation: 22 tests passed, covering parsing, thresholds, category selection, the Meia Idoso exclusion, existing alerts, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
 
 ### Complete interactive simulation — 2026-09-08
 
