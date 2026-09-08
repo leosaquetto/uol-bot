@@ -20,8 +20,8 @@ test('message includes all twelve rows, quantities, exact discount and event lin
   const text = format(current, drops([matrix(33000), matrix(33000)], current), '2026-09-08T00:00:00Z');
   assert.equal((text.match(/🎟️ 3/g) || []).length, 12);
   assert.match(text, /R\$ 40,00/);
-  assert.match(text, /13\/09\/2026/);
-  assert.match(text, /12\/09\/2026/);
+  assert.match(text, /13\/09 DOM - HALSEY/);
+  assert.match(text, /12\/09 SÁB - DEMI LOVATO/);
 });
 test('extracts matrix after multiline Flight text records', () => {
   const body = 'a:T100,description\n[ml] text "quotes"\n0:{"matriz_preco":' + JSON.stringify(matrix(33000)) + '}\n';
@@ -38,7 +38,7 @@ test('only daily global minimum triggers, including categories outside reference
   const changes = drops([old], [parsed]);
   assert.deepEqual(changes, [{ i: 0, key: 'VIP||Meia Professor', before: 50000, after: 40000 }]);
   const text = format([parsed], changes, '2026-09-08T00:00:00Z');
-  assert.ok(text.includes('🔥 *Meia Professor: R$ 400,00 🔻 R$ 100,00 · 🎟️ 1*'));
+  assert.ok(text.includes('🔥 *Meia Professor: R$ 400,00 🔻 R$ 100,00 (🎟️ 1)*'));
   assert.ok(text.includes('Meia 🧑🏻‍🦽‍➡️'));
   assert.ok(text.includes('Meia 👨🏻‍🎓'));
   assert.ok(!text.includes('Estudante') && !text.includes('PCD'));

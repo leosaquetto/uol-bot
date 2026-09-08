@@ -1,6 +1,6 @@
 export const EVENTS = [
-  { day: '12/09/2026', date: '1789261200000', local: '1765323797528x513509114247905300' },
-  { day: '13/09/2026', date: '1789347600000', local: '1765323829346x381107157350744060' },
+  { day: '12/09/2026', label: '12/09 SÁB - DEMI LOVATO', date: '1789261200000', local: '1765323797528x513509114247905300' },
+  { day: '13/09/2026', label: '13/09 DOM - HALSEY', date: '1789347600000', local: '1765323829346x381107157350744060' },
 ];
 export const keys = ['Gramado', 'Comfort Zone'].flatMap(s => ['Inteira', 'Meia Estudante', 'Meia PCD'].map(c => `${s}||${c}`));
 export const eventUrl = e => `https://buyticketbrasil.com/evento/rockinrio2026?data=${e.date}&evento_local=${e.local}&cidade=Rio+de+Janeiro`;
@@ -48,20 +48,20 @@ export function drops(previous, current) {
 const money = n => `R$ ${(n / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 export function format(current, changes, at) {
   const lines = [changes.length ? '📉 *BAIXOU! • ROCK IN RIO 2026*' : '🎟️ *ROCK IN RIO 2026 • PREÇOS ATUAIS*'];
-  for (const d of changes) lines.push('', `💚 *${EVENTS[d.i].day} • ${d.key.replace('||', ' • ')}*`, `Menor do dia: de ${money(d.before)} para *${money(d.after)}*`, `Queda no menor do dia: *${money(d.before - d.after)}*`);
+  for (const d of changes) lines.push('', `💚 *${EVENTS[d.i].label} • ${d.key.replace('||', ' • ')}*`, `Menor do dia: de ${money(d.before)} para *${money(d.after)}*`, `Queda no menor do dia: *${money(d.before - d.after)}*`);
   current.forEach((m, i) => {
-    lines.push('', `🗓️ *${EVENTS[i].day}*`);
+    lines.push('', `🗓️ *${EVENTS[i].label}*`);
     const displayKeys = [...new Set([...keys, ...changes.filter(d => d.i === i).map(d => d.key)])];
     for (const sector of [...new Set(displayKeys.map(k => k.split('||')[0]))]) {
       lines.push('', `${sector === 'Gramado' ? '🌿' : '✨'} *${sector}*`);
       for (const key of displayKeys.filter(k => k.startsWith(sector + '||'))) {
         const v = m[key], drop = changes.find(d => d.i === i && d.key === key);
-        const row = `${key.split('||')[1]}: ${v.disponivel ? `${money(v.preco_min)}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''} · 🎟️ ${v.disponivel}` : 'sem oferta · 🎟️ 0'}`;
+        const row = `${key.split('||')[1]}: ${v.disponivel ? `${money(v.preco_min)}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''} (🎟️ ${v.disponivel})` : 'sem oferta (🎟️ 0)'}`;
         lines.push(drop ? `🔥 *${row}*` : `• ${row}`);
       }
     }
     lines.push('', `🔗 Ver ingressos: ${eventUrl(EVENTS[i])}`);
   });
-  lines.push('', `🕒 ${new Date(at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })} • Brasília`, 'Menor valor anunciado por categoria. Quantidades não indicam estoque todo nesse preço. Valores sujeitos a alteração.');
+  lines.push('', new Date(at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }));
   return lines.join('\n').replaceAll('PCD', '🧑🏻‍🦽‍➡️').replaceAll('Estudante', '👨🏻‍🎓');
 }
