@@ -1680,6 +1680,13 @@ export class UolTelegramShadow extends DurableObject {
         INSERT INTO _sql_schema_migrations (id) VALUES (25);
       `);
     }
+    if (currentVersion < 26) {
+      this.sqlExec(`
+        CREATE INDEX IF NOT EXISTS offers_link_first_seen_v26
+          ON offers(link, first_seen_at, id);
+        INSERT INTO _sql_schema_migrations (id) VALUES (26);
+      `);
+    }
   }
 
   metadataValue(key) {
@@ -2328,6 +2335,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   scheduleMainSourceRecovery() {
+    if (!this.storageUsageSnapshot().maintenanceAllowed) return;
     if (this.mainRecoveryInFlight) return this.mainRecoveryInFlight;
     const task = this.storageContext.run(undefined, () => this.withStorageCycle("recovery", async () => {
       const result = await this.fetchMainListingShared();

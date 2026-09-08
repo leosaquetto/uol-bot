@@ -5,6 +5,28 @@ import { describe, expect, it, vi } from "vitest";
 const ADMIN_AUTHORIZATION = "Bearer vitest-admin-token-not-a-secret";
 
 describe("UOL Worker no runtime Cloudflare", () => {
+  it("busca conflitos por URL com índice e poucas leituras", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("url-conflict-index");
+    await runInDurableObject(stub, (instance, state) => {
+      for (let i = 0; i < 350; i++) state.storage.sql.exec(
+        "INSERT INTO offers(id, link, preview_title, first_seen_at, last_seen_at, status) VALUES (?, ?, '', '', '', 'delivered')",
+        `offer-${i}`, `https://clube.uol.com.br/beneficios/offer-${i}`,
+      );
+      const query = "SELECT id, link FROM offers WHERE link = ? AND id <> ? ORDER BY first_seen_at ASC LIMIT 16";
+      const args = ["https://clube.uol.com.br/beneficios/offer-349", "other"];
+      const indexed = state.storage.sql.exec(query, ...args);
+      expect(indexed.toArray()).toHaveLength(1);
+      expect(indexed.rowsRead).toBeLessThanOrEqual(3);
+      const plan = state.storage.sql.exec("EXPLAIN QUERY PLAN " + query, ...args).toArray();
+      expect(JSON.stringify(plan)).toContain("offers_link_first_seen_v26");
+      state.storage.sql.exec("DROP INDEX offers_link_first_seen_v26");
+      const unindexed = state.storage.sql.exec(query, ...args);
+      unindexed.toArray();
+      expect(unindexed.rowsRead).toBeGreaterThanOrEqual(350);
+      instance.migrate();
+    });
+  });
+
   it("falhas repetidas da API não antecipam manutenção global", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-error-no-maintenance-storm");
     await runInDurableObject(stub, async (instance) => {
