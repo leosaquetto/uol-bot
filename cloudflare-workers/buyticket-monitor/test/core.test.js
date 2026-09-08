@@ -18,7 +18,7 @@ test('baseline, increases, sold out and restock are not price drops', () => {
 test('message includes all twelve rows, quantities, exact discount and event links', () => {
   const current = [matrix(29000), matrix(33000)];
   const text = format(current, drops([matrix(33000), matrix(33000)], current), '2026-09-08T00:00:00Z');
-  assert.equal((text.match(/3 disponíveis na categoria/g) || []).length, 12);
+  assert.equal((text.match(/🎟️ 3/g) || []).length, 12);
   assert.match(text, /R\$ 40,00/);
   assert.match(text, /13\/09\/2026/);
   assert.match(text, /12\/09\/2026/);

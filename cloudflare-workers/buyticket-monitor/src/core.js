@@ -52,7 +52,7 @@ export function format(current, changes, at) {
       lines.push('', `${sector === 'Gramado' ? '🌿' : '✨'} *${sector}*`);
       for (const key of keys.filter(k => k.startsWith(sector + '||'))) {
         const v = m[key], drop = changes.find(d => d.i === i && d.key === key);
-        lines.push(`• ${key.split('||')[1]}: ${v.disponivel ? `*${money(v.preco_min)}*${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''}\n  🎟️ ${v.disponivel} disponíveis na categoria` : 'sem oferta • 0 disponíveis'}`);
+        lines.push(`• ${key.split('||')[1]}: ${v.disponivel ? `*${money(v.preco_min)}* · 🎟️ ${v.disponivel}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''}` : 'sem oferta · 🎟️ 0'}`);
       }
     }
     lines.push('', `🔗 Ver ingressos: ${eventUrl(EVENTS[i])}`);
