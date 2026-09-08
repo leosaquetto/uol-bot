@@ -4,6 +4,7 @@ import { runCheckout } from './checkout.js';
 const EVENT_SCOPE = 'daily-min-v1:' + EVENTS.map(e => e.local).join(':');
 const PASSIVE_INTERVAL = 300_000;
 const PURCHASE_INTERVAL = 15_000;
+const DELIVERY_RECONCILE_INTERVAL = 300_000;
 export class Monitor extends DurableObject {
   async scheduleNextAlarm() {
     const interval = await this.ctx.storage.get('purchasesEnabled') ? PURCHASE_INTERVAL : PASSIVE_INTERVAL;
@@ -42,10 +43,12 @@ export class Monitor extends DurableObject {
   }
   async deliver() {
     const pending = await this.ctx.storage.get('pending');
-    if (!pending || pending.state !== 'queued' || !await this.ctx.storage.get('enabled')) return;
+    if (!pending || !['queued', 'unknown'].includes(pending.state) || !await this.ctx.storage.get('enabled')) return;
+    if (pending.state === 'unknown' && pending.lastAttemptAt &&
+        Date.parse(pending.lastAttemptAt) + DELIVERY_RECONCILE_INTERVAL > Date.now()) return;
     const item = pending.items?.[0] || pending;
-    // Persist uncertainty before dispatch. Never retry an ambiguous send automatically.
-    await this.ctx.storage.put('pending', { ...pending, state: 'unknown' });
+    // Reusing the same key lets the gateway return its durable receipt without sending twice.
+    await this.ctx.storage.put('pending', { ...pending, state: 'unknown', lastAttemptAt: new Date().toISOString() });
     const response = await fetch(this.env.BEEPER_GATEWAY_URL, { method: 'POST', headers: { Authorization: `Bearer ${this.env.BEEPER_GATEWAY_TOKEN}`, 'Content-Type': 'application/json', 'Idempotency-Key': item.key }, body: JSON.stringify({ link: item.link || eventUrl(EVENTS[0]), text: item.text, title: 'Rock in Rio 2026' }), signal: AbortSignal.timeout(55_000) });
     const result = await response.json();
     if (response.ok && result.deliveryState === 'confirmed_by_whatsapp_bridge') {

@@ -9,7 +9,7 @@ const source = (await readFile(new URL('../src/worker.js', import.meta.url), 'ut
 const { Monitor } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 const { keys } = await import(core);
 globalThis.__runCheckout = async () => ({ status: 'checkout_failed' });
-test('silent initialization and ticks never dispatch; start sends once; unknown delivery blocks repeats', async () => {
+test('silent initialization and ticks never dispatch; start sends once; unknown delivery waits before reconciliation', async () => {
   const data = new Map();
   const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k), list: async () => data, setAlarm: async () => {} };
   const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
@@ -28,6 +28,26 @@ test('silent initialization and ticks never dispatch; start sends once; unknown 
     await m.tick();
     assert.equal(sends, 1);
     assert.equal((await m.fetch(new Request('https://monitor/start', { method: 'POST' }))).status, 409);
+  } finally { globalThis.fetch = oldFetch; }
+});
+test('unknown delivery reconciles through the gateway receipt without creating a new alert', async () => {
+  const data = new Map([['enabled', true], ['pending', {
+    state: 'unknown', key: 'buyticket:existing', link: 'https://example.test/13', text: 'day13',
+  }]]);
+  const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v), delete: async k => data.delete(k) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  const oldFetch = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async (_, init) => {
+    calls++;
+    assert.equal(init.headers['Idempotency-Key'], 'buyticket:existing');
+    return Response.json({ deliveryState: 'confirmed_by_whatsapp_bridge', replayed: true });
+  };
+  try {
+    await m.deliver();
+    assert.equal(calls, 1);
+    assert.equal(data.get('pending'), undefined);
+    assert.ok(data.get('lastDeliveredAt'));
   } finally { globalThis.fetch = oldFetch; }
 });
 test('date change silently replaces baseline and retires old pending delivery', async () => {
