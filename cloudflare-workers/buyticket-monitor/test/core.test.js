@@ -20,7 +20,7 @@ test('message includes all twelve rows, quantities, exact discount and event lin
   const text = format(current, drops([matrix(33000), matrix(33000)], current), '2026-09-08T00:00:00Z');
   assert.equal((text.match(/3 disponíveis na categoria/g) || []).length, 12);
   assert.match(text, /R\$ 40,00/);
-  assert.match(text, /11\/09\/2026/);
+  assert.match(text, /13\/09\/2026/);
   assert.match(text, /12\/09\/2026/);
 });
 test('extracts matrix after multiline Flight text records', () => {

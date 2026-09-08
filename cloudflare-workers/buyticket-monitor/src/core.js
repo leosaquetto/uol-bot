@@ -1,6 +1,6 @@
 export const EVENTS = [
-  { day: '11/09/2026', date: '1789174800000', local: '1765323734393x441784445622288400' },
   { day: '12/09/2026', date: '1789261200000', local: '1765323797528x513509114247905300' },
+  { day: '13/09/2026', date: '1789347600000', local: '1765323829346x381107157350744060' },
 ];
 export const keys = ['Gramado', 'Comfort Zone'].flatMap(s => ['Inteira', 'Meia Estudante', 'Meia PCD'].map(c => `${s}||${c}`));
 export const eventUrl = e => `https://buyticketbrasil.com/evento/rockinrio2026?data=${e.date}&evento_local=${e.local}&cidade=Rio+de+Janeiro`;

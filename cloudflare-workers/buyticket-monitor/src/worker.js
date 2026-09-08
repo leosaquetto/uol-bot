@@ -1,5 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
 import { EVENTS, eventUrl, parse, drops, format } from './core.js';
+const EVENT_SCOPE = EVENTS.map(e => e.local).join(':');
 const INTERVAL = 300_000;
 export class Monitor extends DurableObject {
   async collect() {
@@ -17,8 +18,14 @@ export class Monitor extends DurableObject {
     const at = new Date().toISOString();
     const current = await this.collect();
     const previous = await this.ctx.storage.get('current');
-    const changes = drops(previous, current);
-    await this.ctx.storage.put({ current, checkedAt: at, error: null });
+    const scopeChanged = await this.ctx.storage.get('eventScope') !== EVENT_SCOPE;
+    const changes = scopeChanged ? [] : drops(previous, current);
+    if (scopeChanged) {
+      const oldPending = await this.ctx.storage.get('pending');
+      if (oldPending) await this.ctx.storage.put('retiredPending', oldPending);
+      await this.ctx.storage.delete('pending');
+    }
+    await this.ctx.storage.put({ current, checkedAt: at, error: null, eventScope: EVENT_SCOPE });
     const pending = await this.ctx.storage.get('pending');
     if (await this.ctx.storage.get('enabled') && !pending && changes.length) {
       await this.ctx.storage.put('pending', { key: `buyticket:${crypto.randomUUID()}`, text: format(current, changes, at), state: 'queued' });
@@ -38,7 +45,7 @@ export class Monitor extends DurableObject {
     }
   }
   async alarm() {
-    if (Date.now() >= Date.parse('2026-09-13T03:00:00Z')) return;
+    if (Date.now() >= Date.parse('2026-09-14T03:00:00Z')) return;
     await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
     try { await this.tick(); } catch { await this.ctx.storage.put('error', 'check_or_delivery_failed'); }
   }
@@ -48,18 +55,18 @@ export class Monitor extends DurableObject {
       if (await this.ctx.storage.get('enabled')) return Response.json({ error: 'already_enabled' }, { status: 409 });
       const current = await this.collect();
       const at = new Date().toISOString();
-      await this.ctx.storage.put({ current, checkedAt: at, enabled: true, pending: { key: `buyticket:${crypto.randomUUID()}`, text: format(current, [], at), state: 'queued' } });
+      await this.ctx.storage.put({ current, checkedAt: at, eventScope: EVENT_SCOPE, enabled: true, pending: { key: `buyticket:${crypto.randomUUID()}`, text: format(current, [], at), state: 'queued' } });
       await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
       await this.deliver();
       return Response.json({ started: true, pending: (await this.ctx.storage.get('pending'))?.state || null });
     }
     if (request.method === 'POST' && path === '/initialize') {
-      if (!await this.ctx.storage.get('checkedAt')) await this.tick();
+      if (!await this.ctx.storage.get('checkedAt') || await this.ctx.storage.get('eventScope') !== EVENT_SCOPE) await this.tick();
       await this.ctx.storage.setAlarm(Date.now() + INTERVAL);
     } else if (request.method !== 'GET' || !['/status', '/preview'].includes(path)) return new Response('Not found', { status: 404 });
     const state = Object.fromEntries(await this.ctx.storage.list());
-    if (path === '/preview') return new Response(state.current ? format(state.current, [], state.checkedAt) : 'Not initialized');
-    return Response.json({ enabled: state.enabled === true, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, lastDeliveredAt: state.lastDeliveredAt || null });
+    if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? format(state.current, [], state.checkedAt) : 'Not initialized');
+    return Response.json({ enabled: state.enabled === true, days: EVENTS.map(e => e.day), baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, lastDeliveredAt: state.lastDeliveredAt || null });
   }
 }
 export default {
