@@ -39,7 +39,7 @@ test('only daily global minimum triggers, including categories outside reference
   assert.deepEqual(changes, [{ i: 0, key: 'VIP||Meia Professor', before: 50000, after: 40000 }]);
   const text = format([parsed], changes, '2026-09-08T00:00:00Z');
   assert.ok(text.includes('🔥 *Meia Professor: R$ 400,00 🔻 R$ 100,00 (🎟️ 1)*'));
-  assert.ok(text.includes('Meia 🧑🏻‍🦽‍➡️'));
+  assert.ok(text.includes('Meia ♿️'));
   assert.ok(text.includes('Meia 👨🏻‍🎓'));
   assert.ok(!text.includes('Estudante') && !text.includes('PCD'));
   assert.deepEqual(drops([next], [structuredClone(next)]), []);

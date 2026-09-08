@@ -65,5 +65,5 @@ export function format(current, changes, at, dayIndex = null) {
     lines.push('', `🔗 Ver ingressos: ${eventUrl(EVENTS[i])}`);
   });
   lines.push('', new Date(at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }));
-  return lines.join('\n').replaceAll('PCD', '🧑🏻‍🦽‍➡️').replaceAll('Estudante', '👨🏻‍🎓');
+  return lines.join('\n').replaceAll('PCD', '♿️').replaceAll('Estudante', '👨🏻‍🎓');
 }
