@@ -21,7 +21,7 @@ function keyDigest(value) {
 }
 
 function safeRoute(path) {
-  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer"].includes(path)
+  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket"].includes(path)
     ? path
     : "other";
 }
@@ -376,7 +376,7 @@ export function createGateway({
     let authenticated = false;
     const respond = (status, body, details = {}) => {
       const shouldLog = authenticated &&
-        ["/v1/readyz", "/v1/send-offer"].includes(url.pathname);
+        ["/v1/readyz", "/v1/send-offer", "/v1/send-buyticket"].includes(url.pathname);
       if (shouldLog) {
         auditLog(logger, status >= 400 ? "warn" : "info", "beeper_gateway_request", {
           requestId,
@@ -405,7 +405,7 @@ export function createGateway({
       const result = await readiness(true);
       return respond(result.status, result.body);
     }
-    if (request.method !== "POST" || url.pathname !== "/v1/send-offer") {
+    if (request.method !== "POST" || !["/v1/send-offer", "/v1/send-buyticket"].includes(url.pathname)) {
       return respond(404, { code: "not_found" });
     }
 
@@ -428,7 +428,18 @@ export function createGateway({
     const text = String(payload?.text || "").trim();
     const normalizedPreview = normalizePreview(payload, link);
     const preview = normalizedPreview.preview;
-    if (!allowedOfferUrl(link) || !text || text.length > 8_000 || !text.includes(link)) {
+    const buyticket = url.pathname === "/v1/send-buyticket";
+    let allowed = allowedOfferUrl(link);
+    if (buyticket) {
+      try {
+        const target = new URL(link);
+        allowed = target.origin === "https://buyticketbrasil.com" &&
+          target.pathname === "/evento/rockinrio2026" && !target.username && !target.password &&
+          idempotencyKey.startsWith("buyticket:") && !payload?.preview?.imageUrl;
+        preview.title = "Rock in Rio 2026 • BuyTicket";
+      } catch { allowed = false; }
+    }
+    if (!allowed || !text || text.length > 8_000 || !text.includes(link)) {
       return respond(400, { code: "invalid_offer" });
     }
     if (normalizedPreview.imageOmitted) {

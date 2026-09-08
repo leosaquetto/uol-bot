@@ -444,3 +444,16 @@ test("rejeita destino e autenticação fora do contrato", async () => {
   });
   assert.equal((await handler(invalid)).status, 400);
 });
+
+test('BuyTicket uses a separate restricted route and bridge confirmation', async () => {
+  let sends = 0;
+  const handler = gateway(async () => {}, { sendMessageImpl: async () => { sends++; return { pendingMessageID: 'buyticket-pending' }; } });
+  const link = 'https://buyticketbrasil.com/evento/rockinrio2026?data=1789174800000';
+  const make = (route, target, key) => new Request(`http://gateway.test${route}`, { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: JSON.stringify({ link: target, text: `Preços ${target}` }) });
+  assert.equal((await handler(make('/v1/send-offer', link, 'buyticket:test1'))).status, 400);
+  assert.equal((await handler(make('/v1/send-buyticket', 'https://example.com', 'buyticket:test2'))).status, 400);
+  assert.equal((await handler(make('/v1/send-buyticket', link, 'uol:test3'))).status, 400);
+  assert.equal((await handler(make('/v1/send-buyticket', link, 'buyticket:test4'))).status, 202);
+  assert.equal((await handler(make('/v1/send-buyticket', link, 'buyticket:test4'))).status, 200);
+  assert.equal(sends, 1);
+});

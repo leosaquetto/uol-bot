@@ -1,0 +1,8 @@
+{
+  "name": "buyticket-rir-monitor",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-07",
+  "durable_objects": { "bindings": [{ "name": "MONITOR", "class_name": "Monitor" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Monitor"] }],
+  "observability": { "enabled": true }
+}

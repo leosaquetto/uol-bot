@@ -22,3 +22,6 @@ env/
 
 # Runtime artifacts from the archived Mac/iOS recovery tools
 /run/
+
+# Wrangler local state
+.wrangler/
