@@ -143,6 +143,54 @@ test("consulta a API completa com credencial técnica e preserva a categoria da 
   assert.match(cards[0].apiDetail.description, /resgate um par/);
 });
 
+test("falhas HTTP preservam o status sem consumir ou expor o corpo upstream", async () => {
+  for (const status of [401, 403, 404]) {
+    let bodyRead = false;
+    await assert.rejects(
+      fetchOffersFromApi({ UOL_API_AUTHORIZATION: "api-token" }, async () => ({
+        ok: false,
+        status,
+        async text() {
+          bodyRead = true;
+          return "private upstream diagnostic";
+        },
+      })),
+      { message: `uol_api_http_${status}` },
+    );
+    assert.equal(bodyRead, false);
+  }
+});
+
+test("timeout rejeita a coleta em vez de produzir um snapshot vazio", async () => {
+  const timeout = new DOMException("The operation timed out", "TimeoutError");
+  await assert.rejects(
+    fetchOffersFromApi({ UOL_API_AUTHORIZATION: "api-token" }, async () => {
+      throw timeout;
+    }),
+    (error) => error === timeout,
+  );
+});
+
+test("página HTML e JSON malformado não se tornam ofertas vazias", async () => {
+  await assert.rejects(
+    fetchOffersFromApi({ UOL_API_AUTHORIZATION: "api-token" }, async () =>
+      new Response("<html>Service unavailable</html>", {
+        headers: { "content-type": "text/html" },
+      })),
+    { message: "uol_api_content_type_invalido" },
+  );
+  await assert.rejects(
+    fetchOffersFromApi({ UOL_API_AUTHORIZATION: "api-token" }, async () =>
+      new Response("{incomplete", { headers: { "content-type": "application/json" } })),
+    (error) => {
+      assert.equal(error.message, "uol_api_json_invalido");
+      assert.equal(error.contract.ok, false);
+      assert.equal(error.contract.reason, "json_invalid");
+      return true;
+    },
+  );
+});
+
 test("rejeita contrato inválido da API antes de apagar o estado válido", async () => {
   await assert.rejects(
     fetchOffersFromApi({ UOL_API_AUTHORIZATION: "api-token" }, async () => new Response(
