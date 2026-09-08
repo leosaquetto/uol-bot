@@ -90,6 +90,7 @@ import {
 } from "./delivery-ledger.js";
 import { isTelegramMessageMissingError } from "./transport-error.js";
 import { classifyKnownMaintenanceRepair } from "./maintenance-repair.js";
+import { currentBeeperGatewayHealth } from "./beeper-gateway-health.js";
 import { htmlReconciliationDue } from "./scan-policy.js";
 import {
   chooseDeliveryBudget,
@@ -576,7 +577,23 @@ export class UolTelegramShadow extends DurableObject {
   sqlExec(query, ...bindings) {
     const cursor = this.ctx.storage.sql.exec(query, ...bindings);
     if (!this.storageUsageReady) return cursor;
-    return this.trackSqlCursor(cursor, this.storageContext.getStore());
+    const context = this.storageContext.getStore();
+    if (context?.cycle?.queries) {
+      // SQL templates only: bind values and literal contents never enter logs.
+      const template = query.replace(/'([^']|'')*'/g, "?").replace(/\b\d+\b/g, "?")
+        .replace(/\s+/g, " ").trim();
+      let key = 2166136261;
+      for (const char of template) key = Math.imul(key ^ char.charCodeAt(0), 16777619);
+      const id = (key >>> 0).toString(16);
+      const queries = context.cycle.queries;
+      const entry = queries.get(id) || { id, stage: context.stage, calls: 0, rowsRead: 0, rowsWritten: 0 };
+      if (queries.size < 128 || queries.has(id)) {
+        entry.calls += 1;
+        queries.set(id, entry);
+        return this.trackSqlCursor(cursor, { ...context, queryMetrics: entry });
+      }
+    }
+    return this.trackSqlCursor(cursor, context);
   }
 
   scheduleTicketAbsenceProbe(offerId, nextAt) {
@@ -738,6 +755,10 @@ export class UolTelegramShadow extends DurableObject {
     this.rollStorageUsageDay();
     const normalizedRowsRead = Math.max(0, Number(rowsRead || 0));
     const normalizedRowsWritten = Math.max(0, Number(rowsWritten || 0));
+    if (storageContext?.queryMetrics) {
+      storageContext.queryMetrics.rowsRead += normalizedRowsRead;
+      storageContext.queryMetrics.rowsWritten += normalizedRowsWritten;
+    }
     this.storageUsage.rowsRead += normalizedRowsRead;
     this.storageUsage.rowsWritten += normalizedRowsWritten;
     if (storageContext?.stage) {
@@ -773,10 +794,26 @@ export class UolTelegramShadow extends DurableObject {
     const current = this.storageContext.getStore();
     if (current?.cycle) return action();
     const stage = kind === "maintenance" ? "maintenanceLedger" : "primary";
-    return this.storageContext.run({
-      stage,
-      cycle: { kind, rowsRead: 0, rowsWritten: 0 },
-    }, action);
+    const cycle = { kind, rowsRead: 0, rowsWritten: 0, queries: new Map() };
+    const started = Date.now();
+    return this.storageContext.run({ stage, cycle }, async () => {
+      try { return await action(); }
+      finally {
+        const summary = {
+          kind, elapsedMs: Date.now() - started,
+          rowsRead: cycle.rowsRead, rowsWritten: cycle.rowsWritten,
+          queries: [...cycle.queries.values()].sort((a, b) => b.rowsRead - a.rowsRead).slice(0, 12),
+          completedAt: new Date().toISOString(),
+        };
+        if (!this.cycleDiagnostics) this.cycleDiagnostics = {};
+        this.cycleDiagnostics[kind] = summary;
+        if (!this.lastCycleLog) this.lastCycleLog = {};
+        if (Date.now() - (this.lastCycleLog[kind] || 0) >= 60_000) {
+          logEvent("info", "uol_storage_cycle", summary);
+          this.lastCycleLog[kind] = Date.now();
+        }
+      }
+    });
   }
 
   withDetachedStorageCycle(kind, stage, action) {
@@ -4158,6 +4195,24 @@ export class UolTelegramShadow extends DurableObject {
     return queued;
   }
 
+  async refreshBeeperGatewayHealth(now = new Date()) {
+    const configuration = beeperGatewayConfiguration(this.env);
+    if (!configuration.enabled || !configuration.configured) return;
+    const previous = this.runtimeSnapshot("beeper");
+    const checked = Date.parse(previous.checkedAt || "");
+    if (Number.isFinite(checked) && now.getTime() - checked < 5 * 60_000) return;
+    if (this.beeperHealthInFlight) return this.beeperHealthInFlight;
+    this.beeperHealthInFlight = (async () => {
+      const gateway = await probeBeeperGateway(this.env);
+      this.updateBeeperRuntimeSnapshot({
+        gatewayOk: gateway.ok, gatewayStatus: gateway.status,
+        gatewayCode: gateway.code, checkedAt: gateway.checkedAt,
+      });
+    })();
+    try { await this.beeperHealthInFlight; }
+    finally { this.beeperHealthInFlight = null; }
+  }
+
   updateBeeperRuntimeSnapshot(patch = {}) {
     const previous = this.runtimeSnapshot("beeper");
     const next = { ...previous, ...patch };
@@ -4173,9 +4228,14 @@ export class UolTelegramShadow extends DurableObject {
       unknown: Number(snapshot.unknown || 0),
       lastErrorCode: String(snapshot.lastErrorCode || ""),
     });
-    const changed = stable(previous) !== stable(next);
+    const checked = Date.parse(next.checkedAt || "");
+    const persisted = Date.parse(this.metadataValue("beeper_health_persisted_at") || "");
+    const checkpoint = Number.isFinite(checked) &&
+      (!Number.isFinite(persisted) || checked - persisted >= 5 * 60_000);
+    const changed = stable(previous) !== stable(next) || checkpoint;
     if (changed) {
       this.setRuntimeSnapshot("beeper", next);
+      if (checkpoint) this.setMetadata("beeper_health_persisted_at", next.checkedAt);
       this.readinessCache = null;
     }
     else this.runtimeSnapshotCache.set("beeper", next);
@@ -6643,6 +6703,7 @@ export class UolTelegramShadow extends DurableObject {
     try {
       const now = new Date();
       const operationalHealthDue = this.operationalHealthDue(now);
+      if (operationalHealthDue) await this.refreshBeeperGatewayHealth(now);
       const initializedAt = this.metadataValue("initialized_at");
       const identityPolicyPending = Boolean(initializedAt) &&
         this.metadataValue(IDENTITY_POLICY_METADATA_KEY) !== IDENTITY_POLICY_VERSION;
@@ -7639,6 +7700,7 @@ export class UolTelegramShadow extends DurableObject {
         timestamp: String(this.env.WORKER_VERSION?.timestamp || ""),
       },
       mode: this.currentDeliveryMode(),
+      cycleDiagnostics: this.cycleDiagnostics || {},
       telegram: telegramConfiguration(this.env),
       discord: discordConfiguration(this.env),
       beeper: {
@@ -7646,12 +7708,7 @@ export class UolTelegramShadow extends DurableObject {
         configured: beeperConfiguration.configured,
         destinationKey: beeperConfiguration.destinationKey,
         filterActive: beeperConfiguration.filterActive,
-        gatewayOk: typeof beeperRuntime.gatewayOk === "boolean"
-          ? beeperRuntime.gatewayOk
-          : null,
-        gatewayStatus: Number(beeperRuntime.gatewayStatus || 0),
-        gatewayCode: String(beeperRuntime.gatewayCode || ""),
-        checkedAt: String(beeperRuntime.checkedAt || ""),
+        ...currentBeeperGatewayHealth(beeperRuntime),
         deliveryConfirmation: "confirmed_by_whatsapp_bridge",
         queue: {
           pending: beeperQueue.pending,
@@ -8014,12 +8071,7 @@ export class UolTelegramShadow extends DurableObject {
       beeper: {
         enabled: beeperConfiguration.enabled,
         configured: beeperConfiguration.configured,
-        gatewayOk: typeof beeperRuntime.gatewayOk === "boolean"
-          ? beeperRuntime.gatewayOk
-          : null,
-        gatewayStatus: Number(beeperRuntime.gatewayStatus || 0),
-        gatewayCode: String(beeperRuntime.gatewayCode || ""),
-        checkedAt: String(beeperRuntime.checkedAt || ""),
+        ...currentBeeperGatewayHealth(beeperRuntime),
         filterActive: beeperConfiguration.filterActive,
         pending: beeperQueue.pending,
         exhausted: beeperQueue.exhausted,

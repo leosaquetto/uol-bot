@@ -297,7 +297,7 @@ test("polling usa aliases indexados e mede rowsRead reais", () => {
   assert.match(tracking, /cursor\.rowsRead/);
   assert.match(tracking, /cursor\.rowsWritten/);
   assert.match(workerSource, /AsyncLocalStorage/);
-  assert.match(workerSource, /trackSqlCursor\(cursor, this\.storageContext\.getStore\(\)\)/);
+  assert.match(workerSource, /trackSqlCursor\(cursor, context\)/);
   assert.match(tracking, /recordStorageUsage\([\s\S]*storageContext/);
   assert.match(maintenance, /storage_read_budget_guard/);
   assert.doesNotMatch(maintenance, /reconcileDeliveryLedger/);

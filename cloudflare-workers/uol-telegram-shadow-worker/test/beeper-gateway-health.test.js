@@ -40,3 +40,13 @@ test("não duplica motivo quando Worker e gateway estão indisponíveis", () => 
   }, { status: 0, body: null });
   assert.deepEqual(result.reasons, ["beeper_gateway_unavailable"]);
 });
+
+import { currentBeeperGatewayHealth } from "../src/beeper-gateway-health.js";
+test("readiness antiga ou futura não comprova disponibilidade", () => {
+  const now = Date.parse("2026-09-08T05:00:00Z");
+  for (const checkedAt of ["", "2026-09-05T05:00:00Z", "2026-09-08T06:00:00Z"]) {
+    assert.equal(currentBeeperGatewayHealth({gatewayOk: true, checkedAt}, now).gatewayOk, null);
+  }
+  assert.equal(currentBeeperGatewayHealth({gatewayOk: true, checkedAt: "2026-09-08T04:59:00Z"}, now).gatewayOk, true);
+  assert.equal(currentBeeperGatewayHealth({gatewayOk: false, checkedAt: "2026-09-08T04:59:00Z"}, now).gatewayOk, false);
+});

@@ -14,3 +14,15 @@ export function mergeBeeperGatewayHealth(result, gateway) {
     snapshot,
   };
 }
+
+// A cached readiness result is evidence only while recent; it is not a receipt.
+export function currentBeeperGatewayHealth(snapshot = {}, nowMs = Date.now()) {
+  const checked = Date.parse(snapshot.checkedAt || "");
+  const fresh = Number.isFinite(checked) && checked <= nowMs && nowMs - checked <= 10 * 60_000;
+  return {
+    gatewayOk: fresh && typeof snapshot.gatewayOk === "boolean" ? snapshot.gatewayOk : null,
+    gatewayStatus: fresh ? Number(snapshot.gatewayStatus || 0) : 0,
+    gatewayCode: fresh ? String(snapshot.gatewayCode || "") : "stale",
+    checkedAt: String(snapshot.checkedAt || ""),
+  };
+}

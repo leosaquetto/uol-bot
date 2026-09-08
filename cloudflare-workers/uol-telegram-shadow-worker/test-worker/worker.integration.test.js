@@ -5,6 +5,23 @@ import { describe, expect, it, vi } from "vitest";
 const ADMIN_AUTHORIZATION = "Bearer vitest-admin-token-not-a-secret";
 
 describe("UOL Worker no runtime Cloudflare", () => {
+  it("mede cursores sem duplicar contagem e sem expor bindings", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("query-cycle-metrics");
+    await runInDurableObject(stub, async (instance) => {
+      await instance.withStorageCycle("maintenance", async () => {
+        const cursor = instance.sqlExec("SELECT value FROM metadata WHERE key = ?", "private-binding");
+        cursor.toArray();
+        const read = cursor.rowsRead;
+        expect(cursor.rowsRead).toBe(read);
+      });
+      const diagnostics = instance.cycleDiagnostics.maintenance;
+      expect(diagnostics.queries).toHaveLength(1);
+      expect(diagnostics.queries[0].calls).toBe(1);
+      expect(diagnostics.queries[0].rowsRead).toBe(diagnostics.rowsRead);
+      expect(JSON.stringify(diagnostics)).not.toContain("private-binding");
+    });
+  });
+
   it("inicializa o schema SQLite completo em uma instância nova", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("schema-current");
 
