@@ -17,9 +17,9 @@ test("ciclo saudável recente consulta somente a API", () => {
   assert.equal(htmlReconciliationDue(base), false);
 });
 
-test("HTML entra por cadência, falha/vazio da API ou execução manual", () => {
+test("HTML respeita cadência mesmo com falha/vazio da API; manual força execução", () => {
   assert.equal(htmlReconciliationDue({ ...base, nowMs: Date.parse("2026-08-02T12:01:00Z") }), true);
-  assert.equal(htmlReconciliationDue({ ...base, apiStatus: "rejected" }), true);
-  assert.equal(htmlReconciliationDue({ ...base, apiOffers: 0 }), true);
+  assert.equal(htmlReconciliationDue({ ...base, apiStatus: "rejected" }), false);
+  assert.equal(htmlReconciliationDue({ ...base, apiOffers: 0 }), false);
   assert.equal(htmlReconciliationDue({ ...base, source: "manual" }), true);
 });

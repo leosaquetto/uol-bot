@@ -793,7 +793,7 @@ export class UolTelegramShadow extends DurableObject {
   async withStorageCycle(kind, action) {
     const current = this.storageContext.getStore();
     if (current?.cycle) return action();
-    const stage = kind === "maintenance" ? "maintenanceLedger" : "primary";
+    const stage = kind === "maintenance" ? "maintenanceLedger" : kind === "recovery" ? "html" : "primary";
     const cycle = { kind, rowsRead: 0, rowsWritten: 0, queries: new Map() };
     const started = Date.now();
     return this.storageContext.run({ stage, cycle }, async () => {
@@ -805,6 +805,7 @@ export class UolTelegramShadow extends DurableObject {
           queries: [...cycle.queries.values()].sort((a, b) => b.rowsRead - a.rowsRead).slice(0, 12),
           completedAt: new Date().toISOString(),
         };
+        if (kind === "recovery") this.completeStorageUsageCycle(kind, 0);
         if (!this.cycleDiagnostics) this.cycleDiagnostics = {};
         this.cycleDiagnostics[kind] = summary;
         if (!this.lastCycleLog) this.lastCycleLog = {};
@@ -2324,6 +2325,52 @@ export class UolTelegramShadow extends DurableObject {
 
   async fetchAllApi() {
     return fetchOffersFromApi(this.env, fetch);
+  }
+
+  scheduleMainSourceRecovery() {
+    if (this.mainRecoveryInFlight) return this.mainRecoveryInFlight;
+    const task = this.storageContext.run(undefined, () => this.withStorageCycle("recovery", async () => {
+      const result = await this.fetchMainListingShared();
+      if (!result.cards.length) return;
+      const fingerprint = await buildApiSnapshotFingerprint(result.cards);
+      if (fingerprint === this.metadataValue("runtime:recovery_snapshot_fingerprint")) return;
+      const initialized = Boolean(this.metadataValue("initialized_at"));
+      const resolution = this.resolveListingCards(result.cards, result.completedAt,
+        initialized ? "pending_enrichment" : "baseline");
+      if (!initialized) this.setMetadata("initialized_at", result.completedAt);
+      if (initialized) {
+        const cards = new Map(resolution.cards.map((card) => [card.id, card]));
+        for (let offset = 0; offset < resolution.insertedIds.length; offset += SQLITE_BOUND_PARAMETER_CHUNK) {
+          await this.processPending(cards, new Date(), {
+            priorityIds: resolution.insertedIds.slice(offset, offset + SQLITE_BOUND_PARAMETER_CHUNK),
+          });
+        }
+        const delivered = await this.withStorageStage("delivery", () => this.processDeliveryQueue(new Date(), {
+          priorityIds: resolution.insertedIds, waitForMainImage: true, targetNames: ["main", "canal2"],
+        }));
+        this.scheduleDiscordDelivery({ rows: delivered.selectedRows, recoveryRows: delivered.recentSecondaryRows, source: "source-recovery" });
+        this.scheduleCriticalBeeperDelivery("source-recovery");
+      }
+      this.setMetadata("runtime:recovery_snapshot_fingerprint", fingerprint);
+      // Recovery records presence only; complete periodic snapshots own absence.
+    })).catch((error) => {
+      logEvent("warn", "uol_source_recovery_failed", { error: sanitizeError(error) });
+    }).finally(() => { this.mainRecoveryInFlight = null; });
+    this.mainRecoveryInFlight = task;
+    this.ctx.waitUntil(task);
+    return task;
+  }
+
+  async fetchMainListingShared({ maxAgeMs = 0 } = {}) {
+    if (this.mainListingInFlight) return this.mainListingInFlight;
+    const cached = this.mainListingResult;
+    if (maxAgeMs > 0 && cached && Date.now() - Date.parse(cached.completedAt) <= maxAgeMs) return cached;
+    this.mainListingInFlight = timedCards(() => fetchListing(fetch, LIST_URL, "_uol_main_shared_ts", 10_000));
+    try {
+      const result = await this.mainListingInFlight;
+      this.mainListingResult = result;
+      return result;
+    } finally { this.mainListingInFlight = null; }
   }
 
   async fetchTicketListing(fetchImpl = fetch) {
@@ -6317,6 +6364,7 @@ export class UolTelegramShadow extends DurableObject {
         run.apiError = `uol_api_contract_degraded:${apiContract.reason}:` +
           `total=${apiContract.total}:valid=${apiContract.valid}`;
       }
+      if (run.apiError) this.scheduleMainSourceRecovery();
       if (ticketListingResult.status === "rejected") {
         run.ticketListingError = sanitizeError(ticketListingResult.reason);
         ticketListingFailureStreak += 1;
@@ -6604,6 +6652,9 @@ export class UolTelegramShadow extends DurableObject {
       deliveryFailed: run.deliveryFailed,
       apiError: run.apiError,
       ticketListingError: run.ticketListingError,
+      fallbackOffersSeen: run.fallbackOffersSeen || 0,
+      fallbackElapsedMs: run.fallbackElapsedMs || 0,
+      fallbackError: run.fallbackError || "",
       error: run.error,
     });
     return { ok: !run.error, ...run };
@@ -6619,6 +6670,12 @@ export class UolTelegramShadow extends DurableObject {
   async runMaintenanceTickWithStorageCycle(source = "alarm") {
     if (this.maintenanceInFlight) {
       return { ok: false, outcome: "maintenance_in_progress" };
+    }
+    const intervalMs = envNumber(this.env, "MAINTENANCE_INTERVAL_SECONDS", 60, 10, 3_600) * 1_000;
+    const lastPeriodic = Date.parse(this.metadataValue("maintenance_periodic_started_at") || "");
+    if (source === "alarm" && Number.isFinite(lastPeriodic) && Date.now() - lastPeriodic < intervalMs) {
+      // Critical queues are independently processed by every primary scan.
+      return { ok: true, outcome: "maintenance_coalesced", retryAt: new Date(lastPeriodic + intervalMs).toISOString() };
     }
     const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.maintenanceInFlight = true;
@@ -6667,8 +6724,10 @@ export class UolTelegramShadow extends DurableObject {
       logEvent("warn", "uol_telegram_maintenance", result);
       return result;
     }
+    this.setMetadata("maintenance_periodic_started_at", startedAt.toISOString());
     const result = {
       ok: true,
+      reason: source === "alarm" ? "periodic" : "manual",
       outcome: "no_change",
       htmlReconciled: false,
       htmlLedgerReconciled: false,
@@ -6737,7 +6796,7 @@ export class UolTelegramShadow extends DurableObject {
       if (htmlDue) {
         result.htmlReconciled = true;
         const [listingResult, ticketListingResult] = await Promise.all([
-          settled(timedCards(() => this.withStorageStage("html", () => fetchListing()))),
+          settled(this.withStorageStage("html", () => this.fetchMainListingShared({ maxAgeMs: source === "alarm" ? 15_000 : 0 }))),
           this.ticketListingForMaintenance(now),
         ]);
         result.ticketListingReused = Boolean(ticketListingResult.value?.reused);
@@ -7098,7 +7157,7 @@ export class UolTelegramShadow extends DurableObject {
       const maintenanceBootstrapDue = !Number.isFinite(lastMaintenanceBootstrap) ||
         Date.now() - lastMaintenanceBootstrap >= 5 * 60_000;
       const maintenanceUrgent = Boolean(
-        result.apiError || result.error || result.newOffers || result.mainSent,
+        result.newOffers || result.mainSent,
       );
       const beeperRecovery = beeperGatewayConfiguration(this.env);
       const beeperRecoveryFingerprint = beeperRecovery.offerIds.join(",");

@@ -7,7 +7,7 @@ export function htmlReconciliationDue({
   intervalSeconds = 60,
   nowMs = Date.now(),
 } = {}) {
-  if (source !== "alarm" || apiStatus !== "fulfilled" || apiOffers <= 0 || !initialized) {
+  if (source !== "alarm" || !initialized) {
     return true;
   }
   const previous = Date.parse(String(lastStartedAt || ""));

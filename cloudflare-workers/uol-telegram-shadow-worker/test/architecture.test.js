@@ -64,7 +64,7 @@ test("HTML crítico de ingressos compartilha o teto de 10s da API", () => {
 
 test("HTML, retries secundários e ciclo de disponibilidade ficam na manutenção", () => {
   const maintenance = methodSource("  async runMaintenanceTick(", "  async alarm(");
-  assert.match(maintenance, /fetchListing\(/);
+  assert.match(maintenance, /fetchMainListingShared\(/);
   assert.match(maintenance, /targetNames:\s*\["discord"\]/);
   assert.match(maintenance, /targetNames:\s*\["canal2"\]/);
   assert.match(maintenance, /primePendingDiscordImageCache\(/);

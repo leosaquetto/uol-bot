@@ -5,6 +5,55 @@ import { describe, expect, it, vi } from "vitest";
 const ADMIN_AUTHORIZATION = "Bearer vitest-admin-token-not-a-secret";
 
 describe("UOL Worker no runtime Cloudflare", () => {
+  it("falhas repetidas da API não antecipam manutenção global", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-error-no-maintenance-storm");
+    await runInDurableObject(stub, async (instance) => {
+      const calls = [];
+      instance.scan = async () => ({ ok: true, apiError: "uol_api_http_404" });
+      instance.scheduleCriticalBeeperDelivery = () => {};
+      instance.ensureMaintenanceAlarm = async (urgent) => { calls.push(urgent); };
+      await instance.alarm();
+      await instance.alarm();
+      expect(calls).toEqual([false]);
+    });
+  });
+
+  it("coalesce manutenção concorrente mantendo fila persistente e prazo", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("maintenance-cadence-coalesced");
+    await runInDurableObject(stub, async (instance) => {
+      instance.setMetadata("maintenance_periodic_started_at", new Date().toISOString());
+      const result = await instance.runMaintenanceTick("alarm");
+      expect(result.outcome).toBe("maintenance_coalesced");
+      expect(Date.parse(result.retryAt)).toBeGreaterThan(Date.now());
+      instance.maintenanceInFlight = true;
+      expect((await instance.runMaintenanceTick("alarm")).outcome).toBe("maintenance_in_progress");
+      instance.maintenanceInFlight = false;
+    });
+  });
+
+  it("recupera HTML sem bloquear ingressos e não repete snapshot igual", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("api-404-fallback-fast");
+    await runInDurableObject(stub, async (instance) => {
+      instance.setMetadata("initialized_at", new Date().toISOString());
+      const card = { id: "fallback-new", link: "https://clube.uol.com.br/beneficios/fallback-new", previewTitle: "Oferta nova" };
+      let release;
+      instance.fetchMainListingShared = () => new Promise(resolve => { release = () => resolve({ cards: [card], completedAt: new Date().toISOString(), elapsedMs: 1 }); });
+      let resolutions = 0;
+      instance.resolveListingCards = cards => { resolutions++; return { cards, inserted: 1, insertedIds: [card.id] }; };
+      instance.processPending = async () => ({ enriched: 0 });
+      instance.processDeliveryQueue = async () => ({ selectedRows: [] });
+      instance.scheduleDiscordDelivery = () => {};
+      instance.scheduleCriticalBeeperDelivery = () => {};
+      const task = instance.scheduleMainSourceRecovery();
+      expect(instance.scheduleMainSourceRecovery()).toBe(task);
+      expect(resolutions).toBe(0);
+      release(); await task;
+      const second = instance.scheduleMainSourceRecovery();
+      release(); await second;
+      expect(resolutions).toBe(1);
+    });
+  });
+
   it("mede cursores sem duplicar contagem e sem expor bindings", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("query-cycle-metrics");
     await runInDurableObject(stub, async (instance) => {
@@ -845,6 +894,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     await runInDurableObject(stub, async (instance, state) => {
       instance.setMetadata("initialized_at", "2026-08-10T12:00:00.000Z");
       instance.fetchAllApi = async () => [];
+      instance.fetchMainListingShared = async () => ({ cards: [], completedAt: new Date().toISOString(), elapsedMs: 0 });
       const fetchTicketListing = instance.fetchTicketListing.bind(instance);
       instance.fetchTicketListing = () => fetchTicketListing(async (url) => {
         expect(String(url)).toContain("categoria=ingressosexclusivos");
@@ -1304,6 +1354,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
       instance.fetchAllApi = async () => {
         throw new Error("uol_api_http_503");
       };
+      instance.fetchMainListingShared = async () => { throw new Error("simulated_html_unavailable"); };
       const failed = await instance.scan("cost-failed-source");
       expect(failed).toMatchObject({ ok: true, apiOffersSeen: 0 });
       expect(instance.runtimeSnapshot("api")).toMatchObject({
