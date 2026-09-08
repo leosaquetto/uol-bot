@@ -5,6 +5,15 @@ const EVENT_SCOPE = 'daily-min-v1:' + EVENTS.map(e => e.local).join(':');
 const PASSIVE_INTERVAL = 300_000;
 const PURCHASE_INTERVAL = 15_000;
 const DELIVERY_RECONCILE_INTERVAL = 300_000;
+const alertFingerprint = ({ i, key, after }) => `${i}|${key}|${after}`;
+function observedMinimumFingerprints(current) {
+  return current.flatMap((matrix, i) => {
+    const available = Object.entries(matrix || {}).filter(([, value]) => value.disponivel > 0 && value.preco_min > 0);
+    const minimum = Math.min(...available.map(([, value]) => value.preco_min));
+    return available.filter(([, value]) => value.preco_min === minimum)
+      .map(([key]) => alertFingerprint({ i, key, after: minimum }));
+  });
+}
 export class Monitor extends DurableObject {
   async scheduleNextAlarm() {
     const interval = await this.ctx.storage.get('purchasesEnabled') ? PURCHASE_INTERVAL : PASSIVE_INTERVAL;
@@ -26,13 +35,26 @@ export class Monitor extends DurableObject {
     const current = await this.collect();
     const previous = await this.ctx.storage.get('current');
     const scopeChanged = await this.ctx.storage.get('eventScope') !== EVENT_SCOPE;
-    const changes = scopeChanged ? [] : drops(previous, current);
+    const storedFingerprints = scopeChanged ? null : await this.ctx.storage.get('seenAlertMinima');
+    const seenAlertMinima = storedFingerprints || {};
+    const changes = scopeChanged || !storedFingerprints ? [] :
+      drops(previous, current).filter(change => !seenAlertMinima[alertFingerprint(change)]);
+    let fingerprintsChanged = scopeChanged || !storedFingerprints;
+    for (const fingerprint of observedMinimumFingerprints(current)) {
+      if (!seenAlertMinima[fingerprint]) {
+        seenAlertMinima[fingerprint] = true;
+        fingerprintsChanged = true;
+      }
+    }
     if (scopeChanged) {
       const oldPending = await this.ctx.storage.get('pending');
       if (oldPending) await this.ctx.storage.put('retiredPending', oldPending);
       await this.ctx.storage.delete('pending');
     }
-    await this.ctx.storage.put({ current, checkedAt: at, error: null, eventScope: EVENT_SCOPE });
+    await this.ctx.storage.put({
+      current, checkedAt: at, error: null, eventScope: EVENT_SCOPE,
+      ...(fingerprintsChanged ? { seenAlertMinima } : {}),
+    });
     const pending = await this.ctx.storage.get('pending');
     if (await this.ctx.storage.get('enabled') && !pending && changes.length) {
       await this.ctx.storage.put('pending', { key: `buyticket:${crypto.randomUUID()}`, items: [...new Set(changes.map(d => d.i))].map(i => ({ key: `buyticket:${crypto.randomUUID()}`, link: eventUrl(EVENTS[i]), text: format(current, changes, at, i) })), state: 'queued' });

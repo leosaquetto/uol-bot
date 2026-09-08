@@ -1,6 +1,6 @@
 # Rock in Rio BuyTicket monitor
 
-Separate SQLite Durable Object, no Cron Trigger. It normally checks every five minutes; while automatic purchase is armed it checks every 15 seconds. It watches September 12 and 13, stores the last valid snapshot, and never turns an invalid request into sold-out rows. It sends a separate message for each affected day only when the minimum across all available categories of a day falls versus the previous valid snapshot. Quantities refer to the category, not necessarily stock at the minimum price.
+Separate SQLite Durable Object, no Cron Trigger. It normally checks every five minutes; while automatic purchase is armed it checks every 15 seconds. It watches September 12 and 13, stores the last valid snapshot, and never turns an invalid request into sold-out rows. It sends a separate message for each affected day only when the minimum across all available categories of a day falls to a value not previously observed for that day and category. A rebound followed by the same price therefore does not repeat an alert. Quantities refer to the category, not necessarily stock at the minimum price.
 
 The optional purchase lane launches Browser Run only for a plausible candidate, follows the verified `/r?event=...&c_anuncio=...` redirect, applies the coupon, and treats the coupon-adjusted PIX total as authoritative. It creates one PIX at a time and sends the copy-and-paste code to the same WhatsApp group; payment remains manual. Bounds are inclusive: R$ 200–350 for September 12 and R$ 100–270 for September 13, across categories except Meia Idoso. Ambiguous purchase or delivery outcomes are terminal and never retried automatically.
 
@@ -22,9 +22,9 @@ The complete billing and PIX path was validated interactively with one September
 
 The live flow verifies authenticated login, listing identity, one-ticket quantity, coupon application, billing, final arithmetic and PIX selection before the final purchase action. A dry-run request never clicks the final action and always reports `noOrderCreated: true`. Browser Run rate-limit failures are returned as `browser_rate_limited` and receive a 15-minute cooldown instead of launching repeatedly.
 
-Latest deployment: `70784f67-7d9a-4173-9e45-964e5551b85e`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
+Latest deployment: `ba0c1142-3036-47a5-a55d-9fb38f85b56f`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
 
-Local validation: 23 tests passed, covering parsing, thresholds, category selection, the Meia Idoso exclusion, alert receipt reconciliation, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
+Local validation: 24 tests passed, covering parsing, thresholds, category selection, the Meia Idoso exclusion, repeated-minimum suppression, alert receipt reconciliation, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
 
 ### Complete interactive simulation — 2026-09-08
 

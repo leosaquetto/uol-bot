@@ -50,6 +50,29 @@ test('unknown delivery reconciles through the gateway receipt without creating a
     assert.ok(data.get('lastDeliveredAt'));
   } finally { globalThis.fetch = oldFetch; }
 });
+test('a previously observed daily minimum is not alerted again after a price rebound', async () => {
+  const scope = 'daily-min-v1:1765323797528x513509114247905300:1765323829346x381107157350744060';
+  const initial = [matrixFor(90000), matrixFor(39600)];
+  const data = new Map([['enabled', true], ['current', initial], ['eventScope', scope]]);
+  const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  const sequence = [initial, [matrixFor(90000), matrixFor(38500)], initial, [matrixFor(90000), matrixFor(38500)]];
+  m.collect = async () => sequence.shift();
+  const oldFetch = globalThis.fetch;
+  let sends = 0;
+  globalThis.fetch = async () => {
+    sends++;
+    return Response.json({ deliveryState: 'confirmed_by_whatsapp_bridge' });
+  };
+  try {
+    await m.tick(); // Seeds the existing minimum during migration without sending.
+    await m.tick(); // First observation of R$385 sends.
+    await m.tick(); // Rebound to R$396 does not send.
+    await m.tick(); // R$385 was already observed, so it does not repeat.
+    assert.equal(sends, 1);
+    assert.equal(data.get('pending'), undefined);
+  } finally { globalThis.fetch = oldFetch; }
+});
 test('date change silently replaces baseline and retires old pending delivery', async () => {
   const data = new Map([['enabled', true], ['current', [{}, {}]], ['pending', { state: 'queued', text: 'old date' }]]);
   const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k), list: async () => data, setAlarm: async () => {} };
