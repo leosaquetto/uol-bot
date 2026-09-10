@@ -129,6 +129,39 @@ test('two day messages dispatch sequentially with distinct keys and matching lin
     assert.equal(data.get('pending'), undefined);
   } finally { globalThis.fetch = oldFetch; }
 });
+test('manual snapshot sends both current days once through the confirmed bridge', async () => {
+  const checkedAt = new Date().toISOString();
+  const data = new Map([
+    ['enabled', true],
+    ['eventScope', 'daily-min-v1:1765323797528x513509114247905300:1765323829346x381107157350744060'],
+    ['checkedAt', checkedAt],
+    ['current', [matrixFor(73700), matrixFor(38500)]],
+  ]);
+  const storage = {
+    get: async k => data.get(k),
+    put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); },
+    delete: async k => data.delete(k),
+    list: async () => data,
+  };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  const oldFetch = globalThis.fetch;
+  const sent = [];
+  globalThis.fetch = async (_, init) => {
+    sent.push({ key: init.headers['Idempotency-Key'], ...JSON.parse(init.body) });
+    return Response.json({ deliveryState: 'confirmed_by_whatsapp_bridge' });
+  };
+  try {
+    const response = await m.fetch(new Request('https://monitor/snapshot/send', { method: 'POST' }));
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).deliveryState, 'confirmed_by_whatsapp_bridge');
+    assert.equal(sent.length, 2);
+    assert.match(sent[0].text, /12\/09 SÁB - DEMI LOVATO/);
+    assert.match(sent[1].text, /13\/09 DOM - HALSEY/);
+    assert.equal(data.get('pending'), undefined);
+    assert.equal(data.get('lastSnapshotBroadcastAt'), checkedAt);
+    assert.equal((await m.fetch(new Request('https://monitor/snapshot/send', { method: 'POST' }))).status, 409);
+  } finally { globalThis.fetch = oldFetch; }
+});
 test('purchase lane ignores non-candidates and creates one queued PIX for any qualifying category', async () => {
   const data = new Map([['purchasesEnabled', true]]);
   const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k) };

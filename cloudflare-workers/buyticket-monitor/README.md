@@ -6,6 +6,8 @@ The optional purchase lane launches Browser Run only for a plausible candidate, 
 
 Deployment starts silent. All routes require ADMIN_TOKEN. POST /initialize collects the baseline and schedules silent monitoring. GET /status reports enabled, freshness and pending state. GET /preview returns the complete message without sending. **POST /start sends the first snapshot in two sequential messages and enables future drop alerts; only call after the user's explicit first-send authorization.** Repeated starts return 409. Alarms stop September 14, 2026 at 03:00 UTC.
 
+POST `/snapshot/send` sends the current fresh snapshot as two separate messages through the same durable WhatsApp delivery path. It requires explicit authorization, refuses stale state or an existing pending delivery, and records the snapshot timestamp before sending so an HTTP retry cannot duplicate the bulletin.
+
 Secrets: ADMIN_TOKEN, PIX_CHECKOUT_VALIDATED, BEEPER_GATEWAY_URL (dedicated /v1/send-buyticket route), BEEPER_GATEWAY_TOKEN, BUYTICKET_USERNAME, BUYTICKET_PASSWORD, BUYTICKET_COUPON, BUYTICKET_QUENTRO_EMAIL, BUYTICKET_PHONE, BUYTICKET_CPF, BUYTICKET_CEP, BUYTICKET_ADDRESS and BUYTICKET_ADDRESS_NUMBER. Never print values. The existing gateway fixes the recipient group and confirms bridge delivery. Unknown delivery is reconciled after five minutes with the same idempotency key: a durable accepted receipt clears it without another send, while a genuinely unknown receipt remains blocked. A source/delivery failure appears in status.
 
 POST `/purchases/dry-run` validates login, listing identity, coupon and final PIX price without creating an order. POST `/purchases/start` arms automatic PIX generation after the dry run passes. Both require ADMIN_TOKEN. GET `/status` exposes only sanitized purchase state.
@@ -24,7 +26,7 @@ The live flow verifies authenticated login, listing identity, one-ticket quantit
 
 Latest deployment: `3b655746-5775-4528-a7c1-5285ab59176e`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
 
-Local validation: 25 tests passed, covering parsing, thresholds, category selection, concurrent event fetches, the Meia Idoso exclusion, repeated-minimum suppression, alert receipt reconciliation, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
+Local validation: 26 tests passed, covering parsing, thresholds, category selection, concurrent event fetches, the Meia Idoso exclusion, repeated-minimum suppression, alert and manual-snapshot receipt reconciliation, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
 
 ### Complete interactive simulation — 2026-09-08
 

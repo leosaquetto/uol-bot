@@ -177,6 +177,37 @@ export class Monitor extends DurableObject {
   }
   async fetch(request) {
     const path = new URL(request.url).pathname;
+    if (request.method === 'POST' && path === '/snapshot/send') {
+      const state = Object.fromEntries(await this.ctx.storage.list());
+      const checkedAt = Date.parse(state.checkedAt || '');
+      if (!state.enabled || state.eventScope !== EVENT_SCOPE || !state.current ||
+          !Number.isFinite(checkedAt) || Date.now() - checkedAt > 120_000) {
+        return Response.json({ error: 'snapshot_not_ready' }, { status: 409 });
+      }
+      if (state.pending) return Response.json({ error: 'delivery_pending' }, { status: 409 });
+      if (state.lastSnapshotBroadcastAt === state.checkedAt) {
+        return Response.json({ error: 'snapshot_already_sent' }, { status: 409 });
+      }
+      await this.ctx.storage.put({
+        lastSnapshotBroadcastAt: state.checkedAt,
+        pending: {
+          key: `buyticket:snapshot:${state.checkedAt}`,
+          items: EVENTS.map((event, i) => ({
+            key: `buyticket:snapshot:${state.checkedAt}:${i}`,
+            link: eventUrl(event),
+            text: format(state.current, [], state.checkedAt, i),
+          })),
+          state: 'queued',
+        },
+      });
+      await this.deliver();
+      const pending = await this.ctx.storage.get('pending');
+      return Response.json({
+        broadcast: true,
+        deliveryState: pending?.state || 'confirmed_by_whatsapp_bridge',
+        snapshotAt: state.checkedAt,
+      });
+    }
     if (request.method === 'POST' && path === '/start') {
       if (await this.ctx.storage.get('enabled')) return Response.json({ error: 'already_enabled' }, { status: 409 });
       const current = await this.collect();
@@ -213,7 +244,7 @@ export class Monitor extends DurableObject {
     } else if (request.method !== 'GET' || !['/status', '/preview'].includes(path)) return new Response('Not found', { status: 404 });
     const state = Object.fromEntries(await this.ctx.storage.list());
     if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? EVENTS.map((e, i) => format(state.current, [], state.checkedAt, i)).join('\n\n──────── MENSAGEM SEPARADA ────────\n\n') : 'Not initialized');
-    return Response.json({ enabled: state.enabled === true, purchasesEnabled: state.purchasesEnabled === true, days: EVENTS.map(e => e.day), baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, pixPending: state.pixPending?.state || null, purchaseDays: Object.fromEntries(Object.entries(state.purchases?.days || {}).map(([day, value]) => [day, { status: value.status || 'idle', finalPrice: value.finalPrice || null, updatedAt: value.updatedAt || null, deliveredAt: value.deliveredAt || null }])), lastDeliveredAt: state.lastDeliveredAt || null, lastPixDeliveredAt: state.lastPixDeliveredAt || null });
+    return Response.json({ enabled: state.enabled === true, purchasesEnabled: state.purchasesEnabled === true, days: EVENTS.map(e => e.day), baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, pixPending: state.pixPending?.state || null, purchaseDays: Object.fromEntries(Object.entries(state.purchases?.days || {}).map(([day, value]) => [day, { status: value.status || 'idle', finalPrice: value.finalPrice || null, updatedAt: value.updatedAt || null, deliveredAt: value.deliveredAt || null }])), lastDeliveredAt: state.lastDeliveredAt || null, lastPixDeliveredAt: state.lastPixDeliveredAt || null, lastSnapshotBroadcastAt: state.lastSnapshotBroadcastAt || null });
   }
 }
 export default {
