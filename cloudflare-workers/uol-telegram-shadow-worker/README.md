@@ -320,6 +320,10 @@ somente a permissão de issues necessária para registrar e encerrar o incidente
 O agendamento é ativo por padrão e não depende de variável de repositório.
 `workflow_dispatch` continua disponível para uma prova manual controlada.
 
+Publicação verificada em 10/09/2026: versão
+`90adf006-38b7-4f02-a269-9c6ffa1a1631`, modo `live`, coleta em 30 segundos,
+fila crítica zerada e verificador pós-publicação aprovado.
+
 ## Comandos
 
 ```bash
