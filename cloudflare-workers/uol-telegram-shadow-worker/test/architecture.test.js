@@ -175,13 +175,8 @@ test("proxy Discord alimenta o envio Telegram com fallback tardio", () => {
   assert.match(delivery, /telegramImageRemoteStrategy:\s*"discord_proxy"/);
   assert.match(delivery, /discord_image_proxy_url = COALESCE\(NULLIF\(\?, ''\)/);
   assert.match(delivery, /if \(result\.deferred\) \{[\s\S]*recordImageDelivery/);
-  assert.match(primaryAlarm, /result\.newOffers \|\| result\.mainSent/);
-  assert.match(primaryAlarm, /BEEPER_RECOVERY_METADATA_KEY/);
-  assert.match(primaryAlarm, /beeperRecovery\.filterActive/);
-  assert.match(
-    primaryAlarm,
-    /\(maintenanceUrgent \|\| beeperRecoveryUrgent\) &&[\s\S]*maintenanceBudget\.maintenanceAllowed/,
-  );
+  assert.match(primaryAlarm, /scheduleCriticalBeeperDelivery/);
+  assert.match(primaryAlarm, /runMaintenanceTick\("alarm"\)/);
 });
 
 test("WhatsApp crítico independe da manutenção e não sonda gateway sem fila vencida", () => {
@@ -258,13 +253,13 @@ test("telemetria frequente usa snapshots e observações limitadas", () => {
 });
 
 test("configuração gratuita preserva polling rápido e limita manutenção e conexões", () => {
-  assert.match(workerConfig, /"ALARM_INTERVAL_SECONDS":\s*"15"/);
+  assert.match(workerConfig, /"ALARM_INTERVAL_SECONDS":\s*"30"/);
   assert.match(workerConfig, /"MAINTENANCE_INTERVAL_SECONDS":\s*"60"/);
   assert.match(workerConfig, /"MAIN_IMAGE_WAIT_SECONDS":\s*"60"/);
   assert.match(workerConfig, /"DELIVERY_CONCURRENCY":\s*"6"/);
 });
 
-test("cada alarme periódico rearma uma vez por execução", () => {
+test("o alarme principal rearma antes do scan e o coordenador antigo se aposenta", () => {
   const primary = methodSource("  async alarm() {", "  reconcileUnknownMainFromForward(");
   const maintenanceClass = workerSource.slice(workerSource.indexOf("export class UolTelegramMaintenance"));
   const maintenanceAlarmStart = maintenanceClass.indexOf("  async alarm() {");
@@ -272,16 +267,14 @@ test("cada alarme periódico rearma uma vez por execução", () => {
   const maintenanceAlarm = maintenanceClass.slice(maintenanceAlarmStart, maintenanceAlarmEnd);
 
   assert.equal((primary.match(/setAlarm\(/g) || []).length, 1);
-  assert.ok((maintenanceAlarm.match(/setAlarm\(/g) || []).length >= 1);
+  assert.equal((maintenanceAlarm.match(/setAlarm\(/g) || []).length, 0);
   assert.ok(
     primary.indexOf("setAlarm(") < primary.indexOf('this.scan("alarm")'),
     "alarme crítico deve existir antes de qualquer leitura do scan",
   );
-  assert.ok(
-    maintenanceAlarm.indexOf("setAlarm(") < maintenanceAlarm.indexOf("runMaintenanceTick"),
-    "alarme de manutenção deve existir antes do RPC pesado",
-  );
-  assert.match(maintenanceAlarm, /result\?\.retryAt/);
+  assert.match(primary, /runMaintenanceTick\("alarm"\)/);
+  assert.match(maintenanceAlarm, /deleteAlarm\(\)/);
+  assert.doesNotMatch(maintenanceAlarm, /runMaintenanceTick/);
 });
 
 test("polling usa aliases indexados e mede rowsRead reais", () => {

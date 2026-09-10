@@ -2,9 +2,9 @@
 
 Monitor remoto do Clube UOL que substitui a coleta do Mac e o envio automático
 do GitHub Actions. O Worker consulta a API completa e a listagem pública de
-ingressos a cada 15 segundos, persistindo a decisão antes de qualquer chamada
-externa. Polling principal e manutenção usam alarmes independentes, mas o mesmo
-outbox canônico.
+ingressos a cada 30 segundos, persistindo a decisão antes de qualquer chamada
+externa. O mesmo alarme preserva o polling de 30 segundos e agrega a manutenção
+a cada 60 segundos, evitando cobrar simultaneamente um coordenador separado.
 
 Este documento descreve o contrato do código neste checkout. Ele só passa a
 descrever produção depois de publicação deliberada e `postdeploy:check`; teste
@@ -20,7 +20,7 @@ agenda coleta. Estado de produção exige verificação própria.
 
 ## Fluxo
 
-1. um Durable Object Alarm inicia o ciclo a cada 15 segundos;
+1. um Durable Object Alarm inicia o ciclo a cada 30 segundos;
 2. a API completa e a listagem pública exclusiva de ingressos são consultadas
    em paralelo, sem cache; HTML geral e manutenção do webhook não competem com
    essas fontes críticas;
@@ -144,10 +144,9 @@ agenda coleta. Estado de produção exige verificação própria.
 
 - Worker: `uol-telegram-shadow-pilot` (nome histórico preservado para manter o
   Durable Object e o baseline)
-- Durable Objects: `UolTelegramShadow` (SQLite/outbox/polling) e
-  `UolTelegramMaintenance` (relógio independente)
-- Agendamento: polling em 15 segundos; manutenção em 60 segundos, antecipável
-  quando a API falha
+- Durable Objects: `UolTelegramShadow` (SQLite/outbox/polling/manutenção) e
+  `UolTelegramMaintenance` preservado apenas para aposentar alarmes antigos
+- Agendamento: polling em 30 segundos; manutenção global agregada em 60 segundos
 - Estado: SQLite interno do Durable Object
 - Modo padrão: `DELIVERY_MODE=live`; o modo operacional persistido é controlado
   por `POST /mode`
@@ -228,16 +227,16 @@ Telemetria de API, HTML, fontes, webhook e manutenção usa snapshots JSON, em v
 de uma linha por campo. Observações e cards conhecidos só tocam `last_seen_at` a
 cada 15 minutos, salvo mudança real. Ciclos `no_change` entram no histórico
 `runs` somente como amostra a cada 15 minutos; eventos, falhas e recuperações
-continuam imediatos. Cada handler periódico rearma seu alarme uma vez.
+continuam imediatos. O handler periódico rearma o alarme antes das leituras.
 
 As leituras SQLite reais são medidas por `rowsRead` e acumuladas por dia UTC.
 A manutenção para antes de invadir a reserva do polling principal. Se o custo
 observado crescer, o polling desacelera automaticamente; sem orçamento seguro,
-ele rearma para depois do reset diário. Os dois alarmes se rearmam antes de
+ele rearma para depois do reset diário. O alarme principal é rearmado antes de
 qualquer leitura pesada, então uma falha de cota não interrompe a retomada.
 
 O polling também grava uma assinatura da fotografia combinada das fontes
-críticas. Quando a assinatura não muda, as consultas continuam em 15 segundos,
+críticas. Quando a assinatura não muda, as consultas continuam em 30 segundos,
 mas a reconciliação completa, as observações e o enriquecimento repetido são pulados;
 entregas pendentes e probes críticos continuam ativos. Ofertas novas recebem
 uma reserva de entrega própria e não ficam atrás de comentários, HTML ou

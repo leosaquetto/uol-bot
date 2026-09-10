@@ -161,10 +161,10 @@ test("exige fila crítica zerada", () => {
   assert.throws(() => validate(missing), /critical_queue_missing/);
 });
 
-test("exige recomendação de polling positiva e de no máximo 15 segundos", () => {
+test("exige recomendação de polling positiva e de no máximo 30 segundos", () => {
   const slow = healthySnapshot();
-  slow.readiness.storageReadBudget.recommendedPollIntervalSeconds = 16;
-  assert.throws(() => validate(slow), /recommended_poll_interval_too_slow:16/);
+  slow.readiness.storageReadBudget.recommendedPollIntervalSeconds = 31;
+  assert.throws(() => validate(slow), /recommended_poll_interval_too_slow:31/);
 
   const missing = healthySnapshot();
   delete missing.readiness.storageReadBudget.recommendedPollIntervalSeconds;

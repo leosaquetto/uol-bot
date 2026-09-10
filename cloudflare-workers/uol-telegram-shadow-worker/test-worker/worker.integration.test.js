@@ -33,10 +33,13 @@ describe("UOL Worker no runtime Cloudflare", () => {
       const calls = [];
       instance.scan = async () => ({ ok: true, apiError: "uol_api_http_404" });
       instance.scheduleCriticalBeeperDelivery = () => {};
-      instance.ensureMaintenanceAlarm = async (urgent) => { calls.push(urgent); };
+      instance.runMaintenanceTick = async (source) => {
+        calls.push(source);
+        return { ok: true, outcome: "maintenance_coalesced" };
+      };
       await instance.alarm();
       await instance.alarm();
-      expect(calls).toEqual([false]);
+      expect(calls).toEqual(["alarm", "alarm"]);
     });
   });
 
@@ -2780,7 +2783,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
-  it("rearma polling antes de tocar o coordenador de manutenção", async () => {
+  it("rearma polling antes de executar a manutenção coalescida", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("alarm-priority-order");
     const order = [];
 
@@ -2789,11 +2792,11 @@ describe("UOL Worker no runtime Cloudflare", () => {
         order.push("scan");
         return { ok: true };
       };
-      instance.ensureMaintenanceAlarm = async () => {
+      instance.runMaintenanceTick = async () => {
         const alarm = await state.storage.getAlarm();
         expect(alarm).not.toBeNull();
         order.push("maintenance_after_rearm");
-        return new Date(alarm).toISOString();
+        return { ok: true, outcome: "maintenance_coalesced" };
       };
       await state.storage.setAlarm(Date.now() + 1_000);
     });
@@ -2801,13 +2804,12 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(order).toEqual(["scan", "maintenance_after_rearm"]);
   });
 
-  it("agenda o Durable Object independente de manutenção", async () => {
+  it("aposenta o antigo Durable Object coordenador de manutenção", async () => {
     const stub = env.UOL_TELEGRAM_MAINTENANCE.getByName("maintenance-scheduler");
-    const scheduledAt = await stub.ensureAlarm();
-    expect(Date.parse(scheduledAt)).toBeGreaterThan(Date.now());
-    await expect(stub.getStatus()).resolves.toMatchObject({
-      ok: true,
-      intervalSeconds: 10,
+    await stub.ensureAlarm();
+    expect(await runDurableObjectAlarm(stub)).toBe(true);
+    await runInDurableObject(stub, async (_instance, state) => {
+      expect(await state.storage.getAlarm()).toBeNull();
     });
   });
 

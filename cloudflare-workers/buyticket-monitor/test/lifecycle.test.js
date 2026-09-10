@@ -9,6 +9,26 @@ const source = (await readFile(new URL('../src/worker.js', import.meta.url), 'ut
 const { Monitor } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 const { keys } = await import(core);
 globalThis.__runCheckout = async () => ({ status: 'checkout_failed' });
+test('collect fetches both event days concurrently', async () => {
+  const data = new Map();
+  const storage = { get: async k => data.get(k), put: async (k,v) => data.set(k,v) };
+  const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  const oldFetch = globalThis.fetch;
+  let active = 0;
+  let peak = 0;
+  globalThis.fetch = async () => {
+    active++;
+    peak = Math.max(peak, active);
+    await new Promise(resolve => setTimeout(resolve, 10));
+    active--;
+    return new Response('a:' + JSON.stringify({ matriz_preco: matrixFor(33000) }));
+  };
+  try {
+    const matrices = await m.collect();
+    assert.equal(matrices.length, 2);
+    assert.equal(peak, 2);
+  } finally { globalThis.fetch = oldFetch; }
+});
 test('silent initialization and ticks never dispatch; start sends once; unknown delivery waits before reconciliation', async () => {
   const data = new Map();
   const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k), list: async () => data, setAlarm: async () => {} };
@@ -182,14 +202,14 @@ test('unvalidated checkout cannot be armed or run even with persisted enablement
   assert.equal(data.get('purchasesEnabled'), false);
 });
 
-test('arming purchases changes the next alarm to the 15-second purchase cadence', async () => {
+test('arming purchases changes the next alarm to the 30-second purchase cadence', async () => {
   const data = new Map([['enabled', true], ['checkedAt', new Date().toISOString()], ['eventScope', 'daily-min-v1:1765323797528x513509114247905300:1765323829346x381107157350744060']]);
   const alarms = [];
   const storage = { get: async k => data.get(k), put: async (k,v) => { if (typeof k === 'object') Object.entries(k).forEach(([a,b]) => data.set(a,b)); else data.set(k,v); }, delete: async k => data.delete(k), list: async () => data, setAlarm: async value => alarms.push(value) };
   const m = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
   await m.fetch(new Request('https://monitor/purchases/start', { method: 'POST' }));
   assert.equal(data.get('purchasesEnabled'), true);
-  assert.ok(alarms.at(-1) - Date.now() <= 15_000 && alarms.at(-1) - Date.now() > 0);
+  assert.ok(alarms.at(-1) - Date.now() <= 30_000 && alarms.at(-1) - Date.now() > 29_000);
 });
 
 test('alarm reschedules and runs with purchases enabled', async () => {
@@ -200,5 +220,5 @@ test('alarm reschedules and runs with purchases enabled', async () => {
   m.tick = async () => { data.set('ticked', true); };
   await m.alarm();
   assert.equal(data.get('ticked'), true);
-  assert.ok(alarms.at(-1) - Date.now() <= 15_000 && alarms.at(-1) - Date.now() > 0);
+  assert.ok(alarms.at(-1) - Date.now() <= 30_000 && alarms.at(-1) - Date.now() > 29_000);
 });

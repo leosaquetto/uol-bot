@@ -117,7 +117,6 @@ const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
   "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36";
 const INSTANCE_NAME = "clube-uol-global-monitor";
-const MAINTENANCE_INSTANCE_NAME = "clube-uol-maintenance";
 const MAX_HTML_BYTES = 2_000_000;
 const DURABLE_OBJECT_FREE_ROWS_READ_LIMIT = 5_000_000;
 const DURABLE_OBJECT_CRITICAL_READ_RESERVE = 1_000_000;
@@ -950,7 +949,7 @@ export class UolTelegramShadow extends DurableObject {
       1_000_000,
       100_000_000_000,
     );
-    const intervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600);
+    const intervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 30, 10, 3_600);
     return {
       ...this.storageUsage,
       ...storageReadBudget({
@@ -2435,7 +2434,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async ensureAlarm() {
-    const interval = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600) * 1_000;
+    const interval = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 30, 10, 3_600) * 1_000;
     const now = Date.now();
     let alarm = await this.ctx.storage.getAlarm();
     if (alarm == null || alarm < now - interval * 2) {
@@ -2449,10 +2448,12 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async ensureMaintenanceAlarm(urgent = false) {
-    const namespace = this.env.UOL_TELEGRAM_MAINTENANCE;
-    if (!namespace) return "";
-    const stub = namespace.getByName(MAINTENANCE_INSTANCE_NAME);
-    return urgent ? stub.requestImmediate() : stub.ensureAlarm();
+    const interval = envNumber(this.env, "MAINTENANCE_INTERVAL_SECONDS", 60, 10, 3_600) * 1_000;
+    const lastPeriodic = Date.parse(this.metadataValue("maintenance_periodic_started_at") || "");
+    const target = urgent || !Number.isFinite(lastPeriodic)
+      ? Date.now()
+      : Math.max(Date.now(), lastPeriodic + interval);
+    return new Date(target).toISOString();
   }
 
   async ensureTelegramWebhook() {
@@ -4011,7 +4012,7 @@ export class UolTelegramShadow extends DurableObject {
           sentAt,
           result.imageStrategy === "text_timeout"
             ? new Date(
-                Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600) * 1_000,
+                Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 30, 10, 3_600) * 1_000,
               ).toISOString()
             : "",
           entry.row.id,
@@ -6470,7 +6471,7 @@ export class UolTelegramShadow extends DurableObject {
           run.outcome = mode === "live" ? "live_decisions_recorded" : "shadow_decisions_recorded";
         } else run.outcome = "no_change";
       } else if (initializedAt && discoveryCards.length) {
-        // As fontes críticas continuam em 15s, mas uma fotografia idêntica não
+        // As fontes críticas continuam em 30s, mas uma fotografia idêntica não
         // precisa reler/enriquecer toda a listagem. Entregas pendentes,
         // probes de ingressos e recuperações continuam independentes.
         const delivered = await this.withStorageStage(
@@ -7130,9 +7131,22 @@ export class UolTelegramShadow extends DurableObject {
 
   async alarm() {
     const budget = this.storageUsageSnapshot();
+    const configuredIntervalSeconds = envNumber(
+      this.env,
+      "ALARM_INTERVAL_SECONDS",
+      30,
+      10,
+      3_600,
+    );
+    const recommendedIntervalSeconds = Number(budget.recommendedPollIntervalSeconds);
+    const pollIntervalSeconds = Number.isFinite(recommendedIntervalSeconds) &&
+      recommendedIntervalSeconds > 0
+      ? recommendedIntervalSeconds
+      : configuredIntervalSeconds;
+    const resetAt = Date.parse(String(budget.resetAt || ""));
     const cadenceTarget = budget.primaryAllowed
-      ? Date.now() + budget.recommendedPollIntervalSeconds * 1_000
-      : Date.parse(budget.resetAt) + 1_000;
+      ? Date.now() + pollIntervalSeconds * 1_000
+      : (Number.isFinite(resetAt) ? resetAt + 1_000 : Date.now() + configuredIntervalSeconds * 1_000);
     let result = null;
 
     // Rearmar antes de qualquer leitura SQL. Mesmo se a leitura seguinte
@@ -7158,35 +7172,14 @@ export class UolTelegramShadow extends DurableObject {
     // WhatsApp é uma entrega crítica, mas permanece fora do tempo de resposta
     // do polling. O waitUntil mantém a tentativa viva sem atrasar a coleta.
     this.scheduleCriticalBeeperDelivery("alarm");
-    if (result) {
-      const lastMaintenanceBootstrap = Date.parse(
-        this.metadataValue("maintenance_alarm_last_ensured_at") || "",
-      );
-      const maintenanceBootstrapDue = !Number.isFinite(lastMaintenanceBootstrap) ||
-        Date.now() - lastMaintenanceBootstrap >= 5 * 60_000;
-      const maintenanceUrgent = Boolean(
-        result.newOffers || result.mainSent,
-      );
-      const beeperRecovery = beeperGatewayConfiguration(this.env);
-      const beeperRecoveryFingerprint = beeperRecovery.offerIds.join(",");
-      const beeperRecoveryUrgent = beeperRecovery.enabled &&
-        beeperRecovery.configured && beeperRecovery.filterActive &&
-        this.metadataValue(BEEPER_RECOVERY_METADATA_KEY) !==
-          beeperRecoveryFingerprint;
-      const maintenanceBudget = this.storageUsageSnapshot();
-      if (maintenanceUrgent || beeperRecoveryUrgent || maintenanceBootstrapDue) {
-        try {
-          await this.ensureMaintenanceAlarm(
-            (maintenanceUrgent || beeperRecoveryUrgent) &&
-              maintenanceBudget.maintenanceAllowed,
-          );
-          this.setMetadata("maintenance_alarm_last_ensured_at", new Date().toISOString());
-        } catch (error) {
-          logEvent("error", "uol_telegram_maintenance_bootstrap_failed", {
-            error: sanitizeError(error),
-          });
-        }
-      }
+    try {
+      // The former coordinator waited for this RPC and doubled billed DO wall time.
+      // The method coalesces these checks to the configured 60-second cadence.
+      await this.runMaintenanceTick("alarm");
+    } catch (error) {
+      logEvent("error", "uol_telegram_maintenance_failed", {
+        error: sanitizeError(error),
+      });
     }
   }
 
@@ -7274,11 +7267,13 @@ export class UolTelegramShadow extends DurableObject {
     result.mainImagesUpgraded = Number(imageUpgrades.upgraded || 0);
     result.deliveryFailed += Number(imageUpgrades.failed || 0);
     const alarmScheduledAt = await this.ensureAlarm();
-    const maintenanceAlarmScheduledAt = await this.ensureMaintenanceAlarm(true);
+    const maintenanceResult = await this.runMaintenanceTick("manual");
+    const maintenanceAlarmScheduledAt = await this.ensureMaintenanceAlarm(false);
     return {
       ...result,
       alarmScheduledAt,
       maintenanceAlarmScheduledAt,
+      maintenanceOutcome: maintenanceResult.outcome,
     };
   }
 
@@ -7606,7 +7601,7 @@ export class UolTelegramShadow extends DurableObject {
   async getHealth() {
     const alarm = await this.ctx.storage.getAlarm();
     const alarmScheduledAt = alarm == null ? "" : new Date(alarm).toISOString();
-    const alarmIntervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600);
+    const alarmIntervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 30, 10, 3_600);
     const maintenanceIntervalSeconds = envNumber(
       this.env,
       "MAINTENANCE_INTERVAL_SECONDS",
@@ -7960,7 +7955,7 @@ export class UolTelegramShadow extends DurableObject {
 
   async getReadiness() {
     const now = Date.now();
-    const intervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 15, 10, 3_600);
+    const intervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 30, 10, 3_600);
     const maintenanceIntervalSeconds = envNumber(
       this.env,
       "MAINTENANCE_INTERVAL_SECONDS",
@@ -8343,24 +8338,8 @@ export class UolTelegramMaintenance extends DurableObject {
   }
 
   async alarm() {
-    const cadenceTarget = Date.now() + this.maintenanceIntervalMs();
-    const requestedAlarm = await this.ctx.storage.getAlarm();
-    const nextAlarm = requestedAlarm == null
-      ? cadenceTarget
-      : Math.min(cadenceTarget, requestedAlarm);
-    await this.ctx.storage.setAlarm(Math.max(Date.now() + 1_000, nextAlarm));
-    try {
-      const stub = this.env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
-      const result = await stub.runMaintenanceTick("alarm");
-      const retryAt = Date.parse(String(result?.retryAt || ""));
-      if (Number.isFinite(retryAt) && retryAt > Date.now() + 1_000) {
-        await this.ctx.storage.setAlarm(retryAt);
-      }
-    } catch (error) {
-      logEvent("error", "uol_telegram_maintenance_alarm_failed", {
-        error: sanitizeError(error),
-      });
-    }
+    await this.ctx.storage.deleteAlarm();
+    logEvent("info", "uol_telegram_maintenance_coordinator_retired", {});
   }
 }
 
@@ -8482,9 +8461,12 @@ export default {
         if (!(await isAuthorized(request, env))) {
           return jsonResponse({ ok: false, error: "unauthorized" }, 401);
         }
-        const maintenance = env.UOL_TELEGRAM_MAINTENANCE
-          .getByName(MAINTENANCE_INSTANCE_NAME);
-        return jsonResponse(await maintenance.getStatus());
+        return jsonResponse({
+          ok: true,
+          alarmScheduledAt: await stub.ensureMaintenanceAlarm(false),
+          intervalSeconds: envNumber(env, "MAINTENANCE_INTERVAL_SECONDS", 60, 10, 3_600),
+          scheduler: "primary_alarm",
+        });
       }
       if (request.method === "POST" && url.pathname === "/mode") {
         if (!(await isAuthorized(request, env))) {

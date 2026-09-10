@@ -3,7 +3,7 @@ import { EVENTS, eventUrl, parse, drops, format, purchaseCandidates, formatPixMe
 import { runCheckout } from './checkout.js';
 const EVENT_SCOPE = 'daily-min-v1:' + EVENTS.map(e => e.local).join(':');
 const PASSIVE_INTERVAL = 300_000;
-const PURCHASE_INTERVAL = 15_000;
+const PURCHASE_INTERVAL = 30_000;
 const DELIVERY_RECONCILE_INTERVAL = 300_000;
 const alertFingerprint = ({ i, key, after }) => `${i}|${key}|${after}`;
 function observedMinimumFingerprints(current) {
@@ -20,15 +20,13 @@ export class Monitor extends DurableObject {
     await this.ctx.storage.setAlarm(Date.now() + interval);
   }
   async collect() {
-    const matrices = [];
-    for (const event of EVENTS) {
+    return Promise.all(EVENTS.map(async (event) => {
       const response = await fetch(eventUrl(event), { headers: { RSC: '1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' }, redirect: 'manual', signal: AbortSignal.timeout(20_000) });
       if (!response.ok) throw new Error('source_http_error');
       const body = await response.text();
       if (body.length > 500_000) throw new Error('source_too_large');
-      matrices.push(parse(body));
-    }
-    return matrices;
+      return parse(body);
+    }));
   }
   async tick() {
     const at = new Date().toISOString();

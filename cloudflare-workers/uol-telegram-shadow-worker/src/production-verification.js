@@ -1,7 +1,7 @@
 import { classifyHeadlessHealth } from "./headless-health.js";
 import { DEFAULT_MAX_SCAN_AGE_MS } from "./health-contract.js";
 
-const MAX_RECOMMENDED_POLL_INTERVAL_SECONDS = 15;
+const MAX_RECOMMENDED_POLL_INTERVAL_SECONDS = 30;
 const MAX_PRIMARY_ESTIMATED_ROWS_READ = 512;
 const MAX_PRIMARY_SINGLE_CYCLE_ROWS_READ = 4_096;
 const PRIMARY_ESTIMATE_SAFETY_FACTOR = 1.5;
