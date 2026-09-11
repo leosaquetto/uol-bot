@@ -3,8 +3,8 @@ export const EVENTS = [
   { day: '13/09/2026', label: '13/09 DOM - HALSEY', date: '1789347600000', local: '1765323829346x381107157350744060' },
 ];
 export const PURCHASE_RULES = [
-  { min: 20_000, max: 35_000 },
-  { min: 10_000, max: 27_000 },
+  { max: 35_000 },
+  { max: 27_000 },
 ];
 export const COUPON_ALLOWANCE = 1_000;
 export const keys = ['Gramado', 'Comfort Zone'].flatMap(s => ['Inteira', 'Meia Estudante', 'Meia PCD'].map(c => `${s}||${c}`));
@@ -56,7 +56,7 @@ export function purchaseCandidates(matrix, dayIndex, couponAllowance = COUPON_AL
   if (!rule) return [];
   return Object.entries(matrix || {}).flatMap(([key, value]) => {
     if (!value || value.disponivel < 1 || !Number.isSafeInteger(value.preco_min) ||
-        value.preco_min < rule.min || value.preco_min > rule.max + couponAllowance ||
+        value.preco_min <= 0 || value.preco_min > rule.max + couponAllowance ||
         typeof value.id_ref !== 'string' || !value.id_ref) return [];
     const [sector, category] = key.split('||');
     if (category?.toLocaleLowerCase('pt-BR').includes('idoso')) return [];
@@ -65,7 +65,7 @@ export function purchaseCandidates(matrix, dayIndex, couponAllowance = COUPON_AL
 }
 export function finalPriceAllowed(dayIndex, cents) {
   const rule = PURCHASE_RULES[dayIndex];
-  return Boolean(rule && Number.isSafeInteger(cents) && cents >= rule.min && cents <= rule.max);
+  return Boolean(rule && Number.isSafeInteger(cents) && cents > 0 && cents <= rule.max);
 }
 export function formatPixMessage(result, at) {
   const event = EVENTS[result.dayIndex];

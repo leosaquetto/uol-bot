@@ -7,16 +7,20 @@ test('Flight extraction validates prices and rejects missing data', () => {
   assert.throws(() => parse('a:{}'));
   assert.throws(() => parse('a:' + JSON.stringify({ matriz_preco: matrix(-1) })));
 });
-test('purchase scans every category and enforces the final per-ticket bounds', () => {
+test('purchase scans every category and enforces only the final per-ticket cap', () => {
   const current = matrix(90000);
   current['VIP||Meia Professor'] = { preco_min: 26000, disponivel: 1, id_ref: 'candidate' };
-  current['Gramado||Promocional'] = { preco_min: 9900, disponivel: 1, id_ref: 'too-cheap' };
-  assert.deepEqual(purchaseCandidates(current, 1), [{
-    dayIndex: 1, key: 'VIP||Meia Professor', sector: 'VIP', category: 'Meia Professor', idRef: 'candidate', listedPrice: 26000,
-  }]);
+  current['Gramado||Promocional'] = { preco_min: 9900, disponivel: 1, id_ref: 'cheap' };
+  assert.deepEqual(purchaseCandidates(current, 1), [
+    { dayIndex: 1, key: 'Gramado||Promocional', sector: 'Gramado', category: 'Promocional', idRef: 'cheap', listedPrice: 9900 },
+    { dayIndex: 1, key: 'VIP||Meia Professor', sector: 'VIP', category: 'Meia Professor', idRef: 'candidate', listedPrice: 26000 },
+  ]);
+  assert.equal(finalPriceAllowed(0, 16500), true);
+  assert.equal(finalPriceAllowed(0, 1), true);
   assert.equal(finalPriceAllowed(1, 10000), true);
   assert.equal(finalPriceAllowed(1, 27000), true);
-  assert.equal(finalPriceAllowed(1, 9999), false);
+  assert.equal(finalPriceAllowed(1, 1), true);
+  assert.equal(finalPriceAllowed(1, 0), false);
   assert.equal(finalPriceAllowed(1, 27001), false);
 });
 test('day 13 purchase lane accepts any category within the R$270 final cap', () => {
