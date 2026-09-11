@@ -24,7 +24,7 @@ The complete billing and PIX path was validated interactively with one September
 
 The live flow verifies authenticated login, listing identity, one-ticket quantity, coupon application, billing, final arithmetic and PIX selection before the final purchase action. A dry-run request never clicks the final action and always reports `noOrderCreated: true`. Browser Run rate-limit failures are returned as `browser_rate_limited` and receive a 15-minute cooldown instead of launching repeatedly.
 
-Latest deployment: `b1e4a6ee-b93d-437d-a7fb-80f5df829ae5`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
+Latest deployment: `d45a3080-c6bc-4b48-b24f-a6aa3d361643`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
 
 Local validation: 26 tests passed, covering parsing, thresholds, category selection, concurrent event fetches, the Meia Idoso exclusion, repeated-minimum suppression, alert and manual-snapshot receipt reconciliation, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
 
