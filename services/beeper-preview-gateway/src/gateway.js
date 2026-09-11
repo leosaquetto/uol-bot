@@ -238,6 +238,7 @@ function updateDelivery(database, key, status, response, now) {
 export function createGateway({
   token,
   chatId,
+  buyticketChatId = chatId,
   accountId,
   beeperAccessToken,
   beeperApiUrl = DEFAULT_BEEPER_URL,
@@ -252,6 +253,7 @@ export function createGateway({
 }) {
   if (!String(token || "").trim()) throw new Error("GATEWAY_TOKEN is required");
   if (!String(chatId || "").trim()) throw new Error("BEEPER_CHAT_ID is required");
+  if (!String(buyticketChatId || "").trim()) throw new Error("BEEPER_BUYTICKET_CHAT_ID is required");
   if (!String(accountId || "").trim()) throw new Error("BEEPER_ACCOUNT_ID is required");
   if (!String(beeperAccessToken || "").trim()) throw new Error("BEEPER_ACCESS_TOKEN is required");
   if (!String(databasePath || "").trim()) throw new Error("DATA_PATH is required");
@@ -301,17 +303,18 @@ export function createGateway({
     }
     try {
       const headers = { Authorization: `Bearer ${beeperAccessToken}` };
-      const [accountsResponse, chatResponse] = await Promise.all([
+      const destinationChatIds = [...new Set([chatId, buyticketChatId])];
+      const [accountsResponse, ...chatResponses] = await Promise.all([
         fetchImpl(`${baseUrl}/v1/accounts`, {
           headers,
           signal: AbortSignal.timeout(3_000),
         }),
-        fetchImpl(`${baseUrl}/v1/chats/${encodeURIComponent(chatId)}`, {
+        ...destinationChatIds.map(destinationChatId => fetchImpl(`${baseUrl}/v1/chats/${encodeURIComponent(destinationChatId)}`, {
           headers,
           signal: AbortSignal.timeout(3_000),
-        }),
+        })),
       ]);
-      if (!accountsResponse.ok || !chatResponse.ok) {
+      if (!accountsResponse.ok || chatResponses.some(response => !response.ok)) {
         return {
           status: 503,
           body: {
@@ -322,20 +325,18 @@ export function createGateway({
           },
         };
       }
-      const [accounts, chat] = await Promise.all([
+      const [accounts, ...chats] = await Promise.all([
         accountsResponse.json(),
-        chatResponse.json(),
+        ...chatResponses.map(response => response.json()),
       ]);
       const accountReady = Array.isArray(accounts) && accounts.some((account) =>
         account?.accountID === accountId &&
         account?.network === "WhatsApp" &&
         account?.status === "connected"
       );
-      const chatReady = chat?.id === chatId &&
-        chat?.accountID === accountId &&
-        chat?.network === "WhatsApp" &&
-        chat?.isReadOnly !== true;
-      if (!accountReady || !chatReady) {
+      const chatsReady = chats.every((chat, index) => chat?.id === destinationChatIds[index] &&
+        chat?.accountID === accountId && chat?.network === "WhatsApp" && chat?.isReadOnly !== true);
+      if (!accountReady || !chatsReady) {
         return {
           status: 503,
           body: {
@@ -429,14 +430,15 @@ export function createGateway({
     const normalizedPreview = normalizePreview(payload, link);
     const preview = normalizedPreview.preview;
     const buyticket = url.pathname === "/v1/send-buyticket";
+    const destinationChatId = buyticket ? buyticketChatId : chatId;
     let allowed = allowedOfferUrl(link);
     if (buyticket) {
       try {
         const target = new URL(link);
         allowed = target.origin === "https://buyticketbrasil.com" &&
-          target.pathname === "/evento/rockinrio2026" && !target.username && !target.password &&
+          target.pathname === "/evento/demilovato%E2%80%93itsnotthatdeeptour-2026" && !target.username && !target.password &&
           idempotencyKey.startsWith("buyticket:") && !payload?.preview?.imageUrl;
-        preview.title = "Rock in Rio 2026 • BuyTicket";
+        preview.title = "Demi Lovato • BuyTicket";
       } catch { allowed = false; }
     }
     if (!allowed || !text || text.length > 8_000 || !text.includes(link)) {
@@ -485,7 +487,7 @@ export function createGateway({
         return respond(502, { code: "preview_image_unavailable" });
       }
       result = await sendMessageImpl({
-        chatId,
+        chatId: destinationChatId,
         text,
         preview: {
           ...preview,
@@ -503,6 +505,7 @@ export function createGateway({
       const confirmation = await confirmDeliveryImpl({
         pendingMessageID,
         requirePreview: Boolean(image?.img),
+        chatId: destinationChatId,
       });
       if (confirmation?.state === "rejected") {
         updateDelivery(database, idempotencyKey, "failed", {}, now().toISOString());

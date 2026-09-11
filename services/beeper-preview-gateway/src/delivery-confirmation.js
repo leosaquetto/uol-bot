@@ -60,12 +60,12 @@ export function createDeliveryConfirmation({
         return false;
       }
     },
-    async waitForDelivery({ pendingMessageID, requirePreview = false }) {
+    async waitForDelivery({ pendingMessageID, requirePreview = false, chatId: destinationChatId = chatId }) {
       const deadline = now() + timeoutMs;
       while (now() < deadline) {
         let outcome;
         try {
-          const row = findDelivery.get(chatId, pendingMessageID, pendingMessageID);
+          const row = findDelivery.get(destinationChatId, pendingMessageID, pendingMessageID);
           outcome = inspectDeliveryRow(row, pendingMessageID, requirePreview);
         } catch {
           return { state: "unknown", code: "confirmation_unavailable" };

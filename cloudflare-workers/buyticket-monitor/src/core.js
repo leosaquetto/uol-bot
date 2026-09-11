@@ -1,14 +1,10 @@
 export const EVENTS = [
-  { day: '12/09/2026', label: '12/09 SÁB - DEMI LOVATO', date: '1789261200000', local: '1765323797528x513509114247905300' },
-  { day: '13/09/2026', label: '13/09 DOM - HALSEY', date: '1789347600000', local: '1765323829346x381107157350744060' },
+  { day: '16/09/2026', label: '16/09 QUA - DEMI LOVATO', date: '1789527599000', local: '1779910250255x792501787503624200' },
+  { day: '17/09/2026', label: '17/09 QUI - DEMI LOVATO', date: '1789613999000', local: '1779910250255x792501787503624200' },
 ];
-export const PURCHASE_RULES = [
-  { max: 35_000 },
-  { max: 27_000 },
-];
-export const COUPON_ALLOWANCE = 1_000;
+export const ALERT_PRICE_LIMIT = 29_900;
 export const keys = ['Gramado', 'Comfort Zone'].flatMap(s => ['Inteira', 'Meia Estudante', 'Meia PCD'].map(c => `${s}||${c}`));
-export const eventUrl = e => `https://buyticketbrasil.com/evento/rockinrio2026?data=${e.date}&evento_local=${e.local}&cidade=Rio+de+Janeiro`;
+export const eventUrl = e => `https://buyticketbrasil.com/evento/demilovato%E2%80%93itsnotthatdeeptour-2026?data=${e.date}&evento_local=${e.local}&cidade=S%C3%A3o+Paulo`;
 export function parse(text) {
   // Flight text records can span lines. Extract only balanced JSON matrix objects.
   const found = [];
@@ -38,67 +34,28 @@ export function parse(text) {
   for (const v of Object.values(matrix)) {
     if (!Number.isSafeInteger(v.preco_min) || v.preco_min < 0 || !Number.isSafeInteger(v.disponivel) || v.disponivel < 0 || (v.disponivel > 0 && (v.preco_min <= 0 || typeof v.id_ref !== 'string'))) throw new Error('price_invalid');
   }
-  return { ...Object.fromEntries(keys.map(k => [k, { preco_min: 0, disponivel: 0 }])), ...matrix };
+  return matrix;
 }
-export function drops(previous, current) {
-  if (!previous) return [];
-  const minimum = m => Math.min(...Object.values(m || {}).filter(v => v.disponivel > 0 && v.preco_min > 0).map(v => v.preco_min));
-  return current.flatMap((m, i) => {
-    const before = minimum(previous[i]), after = minimum(m);
-    if (!Number.isFinite(before) || !Number.isFinite(after) || after >= before) return [];
-    return Object.entries(m).filter(([, v]) => v.disponivel > 0 && v.preco_min === after)
-      .map(([key]) => ({ i, key, before, after }));
-  });
+export function qualifyingOffers(current) {
+  return current.flatMap((matrix, i) => Object.entries(matrix || {}).flatMap(([key, value]) =>
+    value?.disponivel > 0 && value.preco_min > 0 && value.preco_min < ALERT_PRICE_LIMIT && value.id_ref
+      ? [{ i, key, price: value.preco_min, available: value.disponivel, idRef: value.id_ref }]
+      : []));
 }
 const money = n => `R$ ${(n / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-export function purchaseCandidates(matrix, dayIndex, couponAllowance = COUPON_ALLOWANCE) {
-  const rule = PURCHASE_RULES[dayIndex];
-  if (!rule) return [];
-  return Object.entries(matrix || {}).flatMap(([key, value]) => {
-    if (!value || value.disponivel < 1 || !Number.isSafeInteger(value.preco_min) ||
-        value.preco_min <= 0 || value.preco_min > rule.max + couponAllowance ||
-        typeof value.id_ref !== 'string' || !value.id_ref) return [];
-    const [sector, category] = key.split('||');
-    if (category?.toLocaleLowerCase('pt-BR').includes('idoso')) return [];
-    return [{ dayIndex, key, sector, category, idRef: value.id_ref, listedPrice: value.preco_min }];
-  }).sort((a, b) => a.listedPrice - b.listedPrice || a.key.localeCompare(b.key));
-}
-export function finalPriceAllowed(dayIndex, cents) {
-  const rule = PURCHASE_RULES[dayIndex];
-  return Boolean(rule && Number.isSafeInteger(cents) && cents > 0 && cents <= rule.max);
-}
-export function formatPixMessage(result, at) {
-  const event = EVENTS[result.dayIndex];
-  return [
-    '⚡ *PIX GERADO • ROCK IN RIO 2026*',
-    '',
-    `🗓️ *${event.label}*`,
-    `🎟️ 1 ingresso • ${result.sector} • ${result.category}`,
-    `💰 Valor final com cupom: *${money(result.finalPrice)}*`,
-    '⏳ Confira e pague em até 10 minutos.',
-    '',
-    '*Código PIX copia e cola:*',
-    `\`\`\`${result.pixCode}\`\`\``,
-    '',
-    `🔗 ${eventUrl(event)}`,
-    '',
-    new Date(at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
-  ].join('\n');
-}
-export function format(current, changes, at, dayIndex = null) {
-  const lines = [changes.length ? '📉 *BAIXOU! • ROCK IN RIO 2026*' : '🎟️ *ROCK IN RIO 2026 • PREÇOS ATUAIS*'];
-  changes = changes.filter(d => dayIndex === null || d.i === dayIndex);
-  for (const d of changes) lines.push('', `💚 *${EVENTS[d.i].label} • ${d.key.replace('||', ' • ')}*`, `Menor do dia: de ${money(d.before)} para *${money(d.after)}*`, `Queda no menor do dia: *${money(d.before - d.after)}*`);
+export function format(current, offers, at, dayIndex = null) {
+  const lines = [offers.length ? '🎟️ *OFERTA • DEMI LOVATO*' : '🎟️ *DEMI LOVATO • PREÇOS ATUAIS*'];
+  offers = offers.filter(offer => dayIndex === null || offer.i === dayIndex);
   current.forEach((m, i) => {
     if (dayIndex !== null && i !== dayIndex) return;
     lines.push('', `🗓️ *${EVENTS[i].label}*`);
-    const displayKeys = [...new Set([...keys, ...changes.filter(d => d.i === i).map(d => d.key)])];
+    const displayKeys = Object.keys(m);
     for (const sector of [...new Set(displayKeys.map(k => k.split('||')[0]))]) {
       lines.push('', `${sector === 'Gramado' ? '🌿' : '✨'} *${sector}*`);
       for (const key of displayKeys.filter(k => k.startsWith(sector + '||'))) {
-        const v = m[key], drop = changes.find(d => d.i === i && d.key === key);
-        const row = `${key.split('||')[1]}: ${v.disponivel ? `${money(v.preco_min)}${drop ? ` 🔻 ${money(drop.before - drop.after)}` : ''} (🎟️ ${v.disponivel})` : 'sem oferta (🎟️ 0)'}`;
-        lines.push(drop ? `🔥 *${row}*` : `• ${row}`);
+        const v = m[key], offer = offers.find(item => item.i === i && item.key === key && item.idRef === v?.id_ref);
+        const row = `${key.split('||')[1]}: ${v?.disponivel ? `${money(v.preco_min)} (🎟️ ${v.disponivel})` : 'sem oferta (🎟️ 0)'}`;
+        lines.push(offer ? `🔥 *${row}*` : `• ${row}`);
       }
     }
     lines.push('', `🔗 Ver ingressos: ${eventUrl(EVENTS[i])}`);

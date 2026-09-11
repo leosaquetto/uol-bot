@@ -67,7 +67,7 @@ test("envia pelo transporte antigo e só aceita depois da confirmação do bridg
   const response = await handler(request());
   assert.equal(response.status, 202);
   assert.equal(sent.preview.link, link);
-  assert.deepEqual(confirmed, { pendingMessageID: "pending-1", requirePreview: false });
+  assert.deepEqual(confirmed, { pendingMessageID: "pending-1", requirePreview: false, chatId });
   assert.deepEqual(await response.json(), {
     accepted: true,
     pendingMessageID: "pending-1",
@@ -447,13 +447,18 @@ test("rejeita destino e autenticação fora do contrato", async () => {
 
 test('BuyTicket uses a separate restricted route and bridge confirmation', async () => {
   let sends = 0;
-  const handler = gateway(async () => {}, { sendMessageImpl: async () => { sends++; return { pendingMessageID: 'buyticket-pending' }; } });
-  const link = 'https://buyticketbrasil.com/evento/rockinrio2026?data=1789174800000';
+  const buyticketChatId = '!demi:local-whatsapp.localhost';
+  let destination;
+  const handler = gateway(async () => {}, { buyticketChatId, sendMessageImpl: async message => { sends++; destination = message.chatId; return { pendingMessageID: 'buyticket-pending' }; } });
+  const link = 'https://buyticketbrasil.com/evento/demilovato%E2%80%93itsnotthatdeeptour-2026?data=1789527599000';
+  const oldLink = 'https://buyticketbrasil.com/evento/rockinrio2026?data=1789174800000';
   const make = (route, target, key) => new Request(`http://gateway.test${route}`, { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: JSON.stringify({ link: target, text: `Preços ${target}` }) });
   assert.equal((await handler(make('/v1/send-offer', link, 'buyticket:test1'))).status, 400);
   assert.equal((await handler(make('/v1/send-buyticket', 'https://example.com', 'buyticket:test2'))).status, 400);
   assert.equal((await handler(make('/v1/send-buyticket', link, 'uol:test3'))).status, 400);
+  assert.equal((await handler(make('/v1/send-buyticket', oldLink, 'buyticket:old4'))).status, 400);
   assert.equal((await handler(make('/v1/send-buyticket', link, 'buyticket:test4'))).status, 202);
   assert.equal((await handler(make('/v1/send-buyticket', link, 'buyticket:test4'))).status, 200);
   assert.equal(sends, 1);
+  assert.equal(destination, buyticketChatId);
 });

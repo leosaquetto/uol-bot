@@ -21,6 +21,7 @@ const deliveryConfirmation = createDeliveryConfirmation({
 const handler = createGateway({
   token: process.env.GATEWAY_TOKEN,
   chatId: process.env.BEEPER_CHAT_ID,
+  buyticketChatId: process.env.BEEPER_BUYTICKET_CHAT_ID,
   accountId: process.env.BEEPER_ACCOUNT_ID,
   beeperAccessToken: process.env.BEEPER_ACCESS_TOKEN,
   beeperApiUrl: process.env.BEEPER_API_URL,

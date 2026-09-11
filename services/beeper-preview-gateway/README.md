@@ -10,6 +10,7 @@ Required environment:
 
 - `GATEWAY_TOKEN`
 - `BEEPER_CHAT_ID`
+- `BEEPER_BUYTICKET_CHAT_ID` (destino exclusivo dos alertas BuyTicket)
 - `BEEPER_ACCESS_TOKEN`
 - `BEEPER_API_URL` (defaults to `http://127.0.0.1:23373`)
 - `BEEPER_TRANSPORT_NONCE` and `BEEPER_ACCOUNT_ID` (enable the headless account bootstrap)

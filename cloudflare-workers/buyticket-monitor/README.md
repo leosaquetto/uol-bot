@@ -1,35 +1,15 @@
-# Rock in Rio BuyTicket monitor
+# Demi Lovato BuyTicket monitor
 
-Separate SQLite Durable Object, no Cron Trigger. It normally checks every five minutes; while automatic purchase is armed it checks every 30 seconds. It fetches September 12 and 13 concurrently to minimize billed Durable Object wall time, stores the last valid snapshot, and never turns an invalid request into sold-out rows. It sends a separate message for each affected day only when the minimum across all available categories of a day falls to a value not previously observed for that day and category. A rebound followed by the same price therefore does not repeat an alert. Quantities refer to the category, not necessarily stock at the minimum price.
+SQLite Durable Object without a Cron Trigger. It checks the September 16 and 17, 2026 BuyTicket pages concurrently every 30 seconds using their public RSC price matrices.
 
-The optional purchase lane launches Browser Run only for a plausible candidate, follows the verified `/r?event=...&c_anuncio=...` redirect, applies the coupon, and treats the coupon-adjusted PIX total as authoritative. It creates one PIX at a time and sends the copy-and-paste code to the same WhatsApp group; payment remains manual. There is no minimum price: the final caps are R$350 for September 12 and R$270 for September 13, across categories except Meia Idoso. Ambiguous purchase or delivery outcomes are terminal and never retried automatically.
+The monitor is notification-only. Automatic checkout and PIX generation are retired and `/purchases/start` returns `410 purchases_retired`. It sends one WhatsApp alert per affected show when a previously unseen listing reference appears with an available price strictly below R$299. Existing qualifying listings seed the baseline silently, so deployment does not broadcast old inventory. Each listing reference is persisted after its first observation to prevent duplicate alerts.
 
-Deployment starts silent. All routes require ADMIN_TOKEN. POST /initialize collects the baseline and schedules silent monitoring. GET /status reports enabled, freshness and pending state. GET /preview returns the complete message without sending. **POST /start sends the first snapshot in two sequential messages and enables future drop alerts; only call after the user's explicit first-send authorization.** Repeated starts return 409. Alarms stop September 14, 2026 at 03:00 UTC.
+All routes require `ADMIN_TOKEN`. `POST /initialize` replaces a changed scope silently and schedules monitoring. `POST /start` activates a new object without sending a snapshot. `GET /status` reports the two dates, R$299 threshold, freshness and pending delivery state. `GET /preview` is read-only. `POST /retire-rock-in-rio` disables the previous Rock in Rio Durable Object and deletes its alarm. Alarms stop September 18, 2026 at 03:00 UTC.
 
-POST `/snapshot/send` sends the current fresh snapshot as two separate messages through the same durable WhatsApp delivery path. It requires explicit authorization, refuses stale state or an existing pending delivery, and records the snapshot timestamp before sending so an HTTP retry cannot duplicate the bulletin.
+Delivery uses the authenticated `/v1/send-buyticket` gateway route. The gateway pins BuyTicket alerts to `BEEPER_BUYTICKET_CHAT_ID`, independently from the Clube UOL destination, and requires final WhatsApp bridge confirmation. Unknown outcomes reconcile with the same idempotency key and cannot create duplicate sends.
 
-Secrets: ADMIN_TOKEN, PIX_CHECKOUT_VALIDATED, BEEPER_GATEWAY_URL (dedicated /v1/send-buyticket route), BEEPER_GATEWAY_TOKEN, BUYTICKET_USERNAME, BUYTICKET_PASSWORD, BUYTICKET_COUPON, BUYTICKET_QUENTRO_EMAIL, BUYTICKET_PHONE, BUYTICKET_CPF, BUYTICKET_CEP, BUYTICKET_ADDRESS and BUYTICKET_ADDRESS_NUMBER. Never print values. The existing gateway fixes the recipient group and confirms bridge delivery. Unknown delivery is reconciled after five minutes with the same idempotency key: a durable accepted receipt clears it without another send, while a genuinely unknown receipt remains blocked. A source/delivery failure appears in status.
+Secrets: `ADMIN_TOKEN`, `BEEPER_GATEWAY_URL` and `BEEPER_GATEWAY_TOKEN`. Never print their values. The local administrator token remains outside the repository at `~/.config/buyticket-monitor/admin-token`.
 
-POST `/purchases/dry-run` validates login, listing identity, coupon and final PIX price without creating an order. POST `/purchases/start` arms automatic PIX generation after the dry run passes. Both require ADMIN_TOKEN. GET `/status` exposes only sanitized purchase state.
+Validation: `node --test test/*.test.js`, gateway tests, `git diff --check`, Wrangler authentication and deployment dry-run.
 
-Validation: node --test test/*.test.js; Wrangler dry-run; authenticated production dry run with an out-of-range listing; production status. The dry run must report `noOrderCreated: true`.
-
-Published endpoint: https://buyticket-rir-monitor.leosaquetto.workers.dev (authenticated). Local administrator token is stored privately in ~/.config/buyticket-monitor/admin-token; excluded from the repository. Gateway deployment preserves a pre-BuyTicket source backup on the server.
-
-Event scope changes replace the baseline silently and retire any previous-scope pending delivery without replay. Monitoring remains enabled.
-
-## PIX automation status — 2026-09-08
-
-The complete billing and PIX path was validated interactively with one September 13 purchase, and the resulting PIX was paid manually. `PIX_CHECKOUT_VALIDATED=true` is now configured, and `/purchases/start` is armed for both event days. The Worker creates one PIX at a time and sends it to the existing WhatsApp group; it never pays automatically.
-
-The live flow verifies authenticated login, listing identity, one-ticket quantity, coupon application, billing, final arithmetic and PIX selection before the final purchase action. A dry-run request never clicks the final action and always reports `noOrderCreated: true`. Browser Run rate-limit failures are returned as `browser_rate_limited` and receive a 15-minute cooldown instead of launching repeatedly.
-
-Latest deployment: `d45a3080-c6bc-4b48-b24f-a6aa3d361643`. `POST /purchases/stop` disables the lane without changing price alerts; `POST /purchases/start` arms it again after the validation gate is present.
-
-Local validation: 26 tests passed, covering parsing, thresholds, category selection, concurrent event fetches, the Meia Idoso exclusion, repeated-minimum suppression, alert and manual-snapshot receipt reconciliation, ambiguous purchase blocking, browser rate-limit cooldown and the activation gate. Wrangler deployment succeeded. The latest live dry-run was blocked by Cloudflare Browser Run's temporary 429 quota and did not create an order.
-
-### Complete interactive simulation — 2026-09-08
-
-The signed-in in-app browser reached the actual final review and then generated a PIX for one September 13 ticket: R$244,48 total after the R$10 coupon, with payment completed manually. Billing requires its own `Continuar` step before final review. Masked phone/CPF/CEP inputs need typing and blur; filling alone did not reliably update their state. All mandatory fields were verified as populated.
-
-The adapter includes that billing transition, placeholder-based login, masked-input verification, the observed `N° do endereço` selector, address-autofill retry and a final-review parser that reconciles ticket + fees - coupon against the authoritative total and checks PIX. The purchase candidate rules have no floor: up to R$350 final for September 12 and up to R$270 final for September 13, across categories except Meia Idoso.
+Published endpoint: https://buyticket-rir-monitor.leosaquetto.workers.dev (authenticated).
