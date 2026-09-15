@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ALERT_PRICE_LIMIT, EVENTS, eventUrl, format, keys, parse, qualifyingOffers } from '../src/core.js';
+import { ALERT_PRICE_LIMIT, PURCHASE_LISTING_LIMIT, EVENTS, eventUrl, finalPriceAllowed, format, formatPixMessage, keys, parse, purchaseCandidates, qualifyingOffers } from '../src/core.js';
 
 const matrix = price => Object.fromEntries(keys.map(key => [key, { preco_min: price, disponivel: 3, id_ref: `${key}:${price}` }]));
 
@@ -30,15 +30,33 @@ test('formats one compact highlighted alert with quantity and event link', () =>
   const offers = qualifyingOffers(current);
   const text = format(current, offers, '2026-09-11T15:00:00Z', 1);
   assert.match(text, /OFERTA • DEMI LOVATO/);
-  assert.match(text, /17\/09 QUI - DEMI LOVATO/);
+  assert.match(text, /16\/09 QUA - DEMI LOVATO/);
   assert.match(text, /🔥 \*Meia 👨🏻‍🎓: R\$ 250,00 \(🎟️ 2\)\*/);
   assert.match(text, /demilovato%E2%80%93itsnotthatdeeptour-2026/);
-  assert.doesNotMatch(text, /16\/09/);
+  assert.doesNotMatch(text, /15\/09/);
 });
 
 test('uses the two requested São Paulo event URLs', () => {
-  assert.deepEqual(EVENTS.map(event => event.day), ['16/09/2026', '17/09/2026']);
+  assert.deepEqual(EVENTS.map(event => event.day), ['15/09/2026', '16/09/2026']);
   assert.match(eventUrl(EVENTS[0]), /data=1789527599000/);
   assert.match(eventUrl(EVENTS[1]), /data=1789613999000/);
   assert.ok(EVENTS.every(event => eventUrl(event).includes('cidade=S%C3%A3o+Paulo')));
+});
+
+test('buys any category strictly below R$100 and accepts any positive final total', () => {
+  const source = {
+    'Pista||Meia Idoso': { preco_min: PURCHASE_LISTING_LIMIT - 1, disponivel: 1, id_ref: 'idoso' },
+    'Pista||Inteira': { preco_min: PURCHASE_LISTING_LIMIT, disponivel: 1, id_ref: 'boundary' },
+  };
+  assert.deepEqual(purchaseCandidates(source, 0), [{
+    dayIndex: 0,
+    key: 'Pista||Meia Idoso',
+    sector: 'Pista',
+    category: 'Meia Idoso',
+    idRef: 'idoso',
+    listedPrice: 9999,
+  }]);
+  assert.equal(finalPriceAllowed(25000), true);
+  assert.equal(finalPriceAllowed(0), false);
+  assert.match(formatPixMessage({ dayIndex: 0, sector: 'Pista', category: 'Meia Idoso', listedPrice: 5500, finalPrice: 12500, pixCode: '000201' + 'A'.repeat(70) }, '2026-09-15T15:00:00Z'), /Valor anunciado: \*R\$ 55,00\*[\s\S]*Valor final com cupom: \*R\$ 125,00\*/);
 });

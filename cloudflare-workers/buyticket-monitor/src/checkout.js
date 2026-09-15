@@ -1,5 +1,5 @@
 import { launch } from '@cloudflare/playwright';
-import { EVENTS, finalPriceAllowed } from './core.js';
+import { EVENTS, EVENT_SLUG, finalPriceAllowed } from './core.js';
 import { parseFinalReview, extractPixTotal, extractPixCode } from './checkout-logic.js';
 
 export { parseBrl, extractPixTotal, extractPixCode } from './checkout-logic.js';
@@ -92,6 +92,13 @@ async function findPixCodeInPage(page) {
   return code || extractPixCode(await pageText(page));
 }
 
+function eventDateVisible(text, day) {
+  if (text.includes(day)) return true;
+  const [date, month] = day.split('/').map(Number);
+  const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  return new RegExp(`\\b${date}\\b[\\s\\S]{0,60}\\b${months[month - 1]}\\b`, 'i').test(text);
+}
+
 export async function runCheckout(env, candidate, { dryRun = false, beforeCommit = async () => {} } = {}) {
   let browser;
   try {
@@ -115,7 +122,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     page.setDefaultTimeout(8_000);
     stage = 'login';
     const buyerName = await ensureLogin(page, env);
-    const direct = `${BASE}/r?event=rockinrio2026&c_anuncio=${encodeURIComponent(candidate.idRef)}`;
+    const direct = `${BASE}/r?event=${encodeURIComponent(EVENT_SLUG)}&c_anuncio=${encodeURIComponent(candidate.idRef)}`;
     stage = 'listing';
     await page.goto(direct, { waitUntil: 'domcontentloaded', timeout: NAVIGATION_TIMEOUT });
     const expectedDate = EVENTS[candidate.dayIndex].day;
@@ -136,7 +143,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
       return radio && !radio.disabled && /PIX[\s\S]{0,180}?R\$\s*[\d.]+,\d{2}/i.test(document.body?.innerText || '');
     }, undefined, { timeout: 5_000 }).catch(() => {});
     text = await pageText(page);
-    if (!text.includes(expectedDate)) return done({ status: 'listing_mismatch' });
+    if (!eventDateVisible(text, expectedDate)) return done({ status: 'listing_mismatch' });
     const listedTotal = extractPixTotal(text);
     if (!Number.isSafeInteger(listedTotal)) return done({ status: 'price_unavailable' });
     stage = 'coupon_fill';
@@ -173,8 +180,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
         /cupom[^\n]{0,80}(aplic|sucesso)|desconto/i.test(text) ? 'reported_applied' : 'no_feedback';
       return done({ status: 'coupon_not_applied', finalPrice, listedTotal, couponSignal });
     }
-    const withinBounds = finalPriceAllowed(candidate.dayIndex, finalPrice);
-    if (!withinBounds && !dryRun) return done({ status: 'outside_range', finalPrice });
+    const withinBounds = finalPriceAllowed(finalPrice);
     if (!await pix.isEnabled().catch(() => false)) return done({ status: 'pix_unavailable', finalPrice });
 
     stage = 'payment_select';
@@ -229,7 +235,6 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
       return done({ status: 'price_changed' });
     }
     if (dryRun) return done({ status: withinBounds ? 'ready' : 'outside_range', finalPrice, formReady: true, review, finalActionClicked: false });
-    if (!withinBounds) return done({ status: 'outside_range', finalPrice });
 
     let responsePixCode = null;
     page.on('response', response => {

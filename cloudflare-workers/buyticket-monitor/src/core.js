@@ -1,8 +1,10 @@
 export const EVENTS = [
-  { day: '16/09/2026', label: '16/09 QUA - DEMI LOVATO', date: '1789527599000', local: '1779910250255x792501787503624200' },
-  { day: '17/09/2026', label: '17/09 QUI - DEMI LOVATO', date: '1789613999000', local: '1779910250255x792501787503624200' },
+  { day: '15/09/2026', label: '15/09 TER - DEMI LOVATO', date: '1789527599000', local: '1779910250255x792501787503624200' },
+  { day: '16/09/2026', label: '16/09 QUA - DEMI LOVATO', date: '1789613999000', local: '1779910250255x792501787503624200' },
 ];
+export const EVENT_SLUG = 'demilovato–itsnotthatdeeptour-2026';
 export const ALERT_PRICE_LIMIT = 29_900;
+export const PURCHASE_LISTING_LIMIT = 10_000;
 export const keys = ['Gramado', 'Comfort Zone'].flatMap(s => ['Inteira', 'Meia Estudante', 'Meia PCD'].map(c => `${s}||${c}`));
 export const eventUrl = e => `https://buyticketbrasil.com/evento/demilovato%E2%80%93itsnotthatdeeptour-2026?data=${e.date}&evento_local=${e.local}&cidade=S%C3%A3o+Paulo`;
 export function parse(text) {
@@ -42,7 +44,38 @@ export function qualifyingOffers(current) {
       ? [{ i, key, price: value.preco_min, available: value.disponivel, idRef: value.id_ref }]
       : []));
 }
+export function purchaseCandidates(matrix, dayIndex, listingLimit = PURCHASE_LISTING_LIMIT) {
+  return Object.entries(matrix || {}).flatMap(([key, value]) => {
+    if (!value || value.disponivel < 1 || !Number.isSafeInteger(value.preco_min) ||
+        value.preco_min <= 0 || value.preco_min >= listingLimit ||
+        typeof value.id_ref !== 'string' || !value.id_ref) return [];
+    const [sector, category] = key.split('||');
+    return [{ dayIndex, key, sector, category, idRef: value.id_ref, listedPrice: value.preco_min }];
+  }).sort((a, b) => a.listedPrice - b.listedPrice || a.key.localeCompare(b.key));
+}
+export function finalPriceAllowed(cents) {
+  return Number.isSafeInteger(cents) && cents > 0;
+}
 const money = n => `R$ ${(n / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+export function formatPixMessage(result, at) {
+  const event = EVENTS[result.dayIndex];
+  return [
+    '⚡ *PIX GERADO • DEMI LOVATO*',
+    '',
+    `🗓️ *${event.label}*`,
+    `🎟️ 1 ingresso • ${result.sector} • ${result.category}`,
+    `🏷️ Valor anunciado: *${money(result.listedPrice)}*`,
+    `💰 Valor final com cupom: *${money(result.finalPrice)}*`,
+    '⏳ Confira e pague em até 10 minutos.',
+    '',
+    '*Código PIX copia e cola:*',
+    `\`\`\`${result.pixCode}\`\`\``,
+    '',
+    `🔗 ${eventUrl(event)}`,
+    '',
+    new Date(at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+  ].join('\n');
+}
 export function format(current, offers, at, dayIndex = null) {
   const lines = [offers.length ? '🎟️ *OFERTA • DEMI LOVATO*' : '🎟️ *DEMI LOVATO • PREÇOS ATUAIS*'];
   offers = offers.filter(offer => dayIndex === null || offer.i === dayIndex);
@@ -50,7 +83,7 @@ export function format(current, offers, at, dayIndex = null) {
     if (dayIndex !== null && i !== dayIndex) return;
     lines.push('', `🗓️ *${EVENTS[i].label}*`);
     const displayKeys = Object.keys(m);
-    for (const sector of [...new Set(displayKeys.map(k => k.split('||')[0]))]) {
+    for (const sector of new Set(displayKeys.map(k => k.split('||')[0]))) {
       lines.push('', `${sector === 'Gramado' ? '🌿' : '✨'} *${sector}*`);
       for (const key of displayKeys.filter(k => k.startsWith(sector + '||'))) {
         const v = m[key], offer = offers.find(item => item.i === i && item.key === key && item.idRef === v?.id_ref);

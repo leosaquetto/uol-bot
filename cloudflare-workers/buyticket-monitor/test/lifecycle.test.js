@@ -3,12 +3,14 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const core = new URL('../src/core.js', import.meta.url).href;
+const checkout = 'data:text/javascript,export async function runCheckout(){throw new Error("checkout_not_stubbed")}' ;
 const source = (await readFile(new URL('../src/worker.js', import.meta.url), 'utf8'))
   .replace("import { DurableObject } from 'cloudflare:workers';", 'class DurableObject { constructor(ctx, env) { this.ctx = ctx; this.env = env; } }')
-  .replace("'./core.js'", JSON.stringify(core));
+  .replace("'./core.js'", JSON.stringify(core))
+  .replace("'./checkout.js'", JSON.stringify(checkout));
 const { Monitor } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 const { keys } = await import(core);
-const scope = 'demi-under-299-v2:1789527599000:1779910250255x792501787503624200:1789613999000:1779910250255x792501787503624200';
+const scope = 'demi-under-299-pix-under-100-v3:1789527599000:1779910250255x792501787503624200:1789613999000:1779910250255x792501787503624200';
 const matrix = (price, suffix = '') => Object.fromEntries(keys.map(key => [key, { preco_min: price, disponivel: 1, id_ref: `${key}:${price}:${suffix}` }]));
 const storageFor = (entries = []) => {
   const data = new Map(entries);
@@ -109,10 +111,32 @@ test('retire disables the old object and deletes its alarm', async () => {
   assert.equal(data.has('alarm'), false);
 });
 
-test('automatic purchase cannot be armed', async () => {
+test('automatic purchase can be armed only after checkout validation', async () => {
   const { storage } = storageFor();
-  const monitor = new Monitor({ storage }, {});
+  const monitor = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
   const response = await monitor.fetch(new Request('https://monitor/purchases/start', { method: 'POST' }));
-  assert.equal(response.status, 410);
-  assert.deepEqual(await response.json(), { error: 'purchases_retired' });
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { purchasesEnabled: true, listingPriceLimit: 10000 });
+});
+
+test('creates one PIX for a sub-R$100 Meia Idoso and queues it for delivery', async () => {
+  const { data, storage } = storageFor([['purchasesEnabled', true]]);
+  const monitor = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
+  const current = [matrix(50000), matrix(50000)];
+  current[0]['Pista||Meia Idoso'] = { preco_min: 5500, disponivel: 1, id_ref: 'cheap' };
+  let calls = 0;
+  globalThis.__runCheckout = async (_env, candidate, options) => {
+    calls++;
+    assert.equal(candidate.category, 'Meia Idoso');
+    await options.beforeCommit({ finalPrice: 12500 });
+    return { status: 'pix_created', finalPrice: 12500, pixCode: '000201' + 'A'.repeat(70) };
+  };
+  try { await monitor.maybePurchase(current); await monitor.maybePurchase(current); }
+  finally { delete globalThis.__runCheckout; }
+  assert.equal(calls, 1);
+  assert.equal(data.get('purchases').days[0].status, 'pix_created');
+  assert.equal(data.get('pixPending').state, 'queued');
+  assert.match(data.get('pixPending').text, /15\/09 TER - DEMI LOVATO/);
+  assert.match(data.get('pixPending').text, /Valor anunciado: \*R\$ 55,00\*/);
+  assert.match(data.get('pixPending').text, /Valor final com cupom: \*R\$ 125,00\*/);
 });
