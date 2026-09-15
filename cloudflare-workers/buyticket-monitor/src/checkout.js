@@ -187,8 +187,15 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     if (!await pix.isEnabled().catch(() => false)) return done({ status: 'pix_unavailable', finalPrice });
 
     stage = 'payment_select';
-    await pix.check();
-    const pixSelected = await pix.isChecked();
+    const pixSelected = await page.evaluate(() => {
+      const input = [...document.querySelectorAll('input[type="radio"]')].find(item => {
+        const container = item.closest('label') || item.parentElement;
+        return /\bPIX\b/i.test(container?.textContent || '');
+      });
+      if (!input || input.disabled) return false;
+      input.click();
+      return input.checked;
+    });
     if (!pixSelected) return done({ status: 'pix_unavailable', finalPrice });
     stage = 'payment_continue';
     await clickFirstButton(page, 'Continuar');
