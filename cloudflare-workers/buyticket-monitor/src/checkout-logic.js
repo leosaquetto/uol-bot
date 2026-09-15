@@ -40,3 +40,7 @@ export function extractPixCode(value) {
   }
   return null;
 }
+
+export function isPixUnavailable(text) {
+  return /(?:m[eé]todo de pagamento\s+)?PIX\s+foi\s+desabilitado|PIX\s+indispon[ií]vel/i.test(String(text || ''));
+}

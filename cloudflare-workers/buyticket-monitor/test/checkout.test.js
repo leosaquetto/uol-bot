@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseBrl, extractPixTotal, extractPixCode, parseFinalReview } from '../src/checkout-logic.js';
+import { parseBrl, extractPixTotal, extractPixCode, isPixUnavailable, parseFinalReview } from '../src/checkout-logic.js';
 
 test('parses Brazilian currency and the PIX price after coupon', () => {
   assert.equal(parseBrl('R$ 1.234,56'), 123456);
@@ -31,4 +31,10 @@ test('final review validates fees and coupon with total before payment method', 
   assert.equal(parseFinalReview(review.replace('Pix', 'Cartão de crédito')), null);
   assert.equal(parseFinalReview(review.replace('Cupom de desconto - R$ 10,00', '')), null);
   assert.equal(parseBrl('R$ 0,29'), 29);
+});
+
+test('detects when BuyTicket disables PIX for the event', () => {
+  assert.equal(isPixUnavailable('O método de pagamento PIX foi desabilitado para esse evento.'), true);
+  assert.equal(isPixUnavailable('PIX indisponível'), true);
+  assert.equal(isPixUnavailable('PIX\nOpção mais econômica\nR$ 90,00'), false);
 });

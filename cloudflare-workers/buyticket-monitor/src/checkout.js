@@ -1,8 +1,8 @@
 import { launch } from '@cloudflare/playwright';
 import { EVENTS, EVENT_SLUG, finalPriceAllowed } from './core.js';
-import { parseFinalReview, extractPixTotal, extractPixCode } from './checkout-logic.js';
+import { parseFinalReview, extractPixTotal, extractPixCode, isPixUnavailable } from './checkout-logic.js';
 
-export { parseBrl, extractPixTotal, extractPixCode } from './checkout-logic.js';
+export { parseBrl, extractPixTotal, extractPixCode, isPixUnavailable } from './checkout-logic.js';
 
 const BASE = 'https://buyticketbrasil.com';
 const NAVIGATION_TIMEOUT = 12_000;
@@ -144,6 +144,9 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     }, undefined, { timeout: 5_000 }).catch(() => {});
     text = await pageText(page);
     if (!eventDateVisible(text, expectedDate)) return done({ status: 'listing_mismatch' });
+    if (isPixUnavailable(text) || !await pix.isEnabled().catch(() => false)) {
+      return done({ status: 'pix_unavailable' });
+    }
     const listedTotal = extractPixTotal(text);
     if (!Number.isSafeInteger(listedTotal)) return done({ status: 'price_unavailable' });
     stage = 'coupon_fill';
@@ -184,18 +187,8 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     if (!await pix.isEnabled().catch(() => false)) return done({ status: 'pix_unavailable', finalPrice });
 
     stage = 'payment_select';
-    const pixSelected = await page.evaluate(() => {
-      const radios = [...document.querySelectorAll('input[type="radio"]')];
-      const input = radios.find(item => item.closest('label, div')?.textContent?.includes('PIX')) || radios[0];
-      if (!input || input.disabled) return false;
-      input.click();
-      if (!input.checked) {
-        input.checked = true;
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-        input.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-      return input.checked;
-    });
+    await pix.click();
+    const pixSelected = await pix.isChecked();
     if (!pixSelected) return done({ status: 'pix_unavailable', finalPrice });
     stage = 'payment_continue';
     await clickFirstButton(page, 'Continuar');

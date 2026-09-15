@@ -125,7 +125,7 @@ export class Monitor extends DurableObject {
         attempt.checkedAt = new Date().toISOString();
         if (['browser_rate_limited', 'browser_unavailable'].includes(result.status)) {
           attempt.retryAfter = new Date(Date.now() + 15 * 60_000).toISOString();
-        } else if (['checkout_failed', 'login_failed'].includes(result.status)) {
+        } else if (['checkout_failed', 'login_failed', 'pix_unavailable'].includes(result.status)) {
           attempt.retryAfter = new Date(Date.now() + 5 * 60_000).toISOString();
         } else delete attempt.retryAfter;
         if (result.status === 'pix_created') {
@@ -249,7 +249,7 @@ export class Monitor extends DurableObject {
     } else if (request.method !== 'GET' || !['/status', '/preview'].includes(path)) return new Response('Not found', { status: 404 });
     const state = Object.fromEntries(await this.ctx.storage.list());
     if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? EVENTS.map((e, i) => format(state.current, [], state.checkedAt, i)).join('\n\n──────── MENSAGEM SEPARADA ────────\n\n') : 'Not initialized');
-    return Response.json({ enabled: state.enabled === true, purchasesEnabled: state.purchasesEnabled === true, days: EVENTS.map(e => e.day), priceLimit: 29900, purchaseListingPriceLimit: PURCHASE_LISTING_LIMIT, baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, pixPending: state.pixPending?.state || null, purchaseDays: Object.fromEntries(Object.entries(state.purchases?.days || {}).map(([day, value]) => [day, { status: value.status || 'idle', listedPrice: value.attempts ? Math.min(...Object.values(value.attempts).map(attempt => attempt.listedPrice).filter(Number.isFinite)) : null, finalPrice: value.finalPrice || null, updatedAt: value.updatedAt || null, deliveredAt: value.deliveredAt || null }])), lastDeliveredAt: state.lastDeliveredAt || null, lastPixDeliveredAt: state.lastPixDeliveredAt || null, lastUnknownDeliveryAt: state.lastUnknownDeliveryAt || null, lastSnapshotBroadcastAt: state.lastSnapshotBroadcastAt || null });
+    return Response.json({ enabled: state.enabled === true, purchasesEnabled: state.purchasesEnabled === true, days: EVENTS.map(e => e.day), priceLimit: 29900, purchaseListingPriceLimit: PURCHASE_LISTING_LIMIT, baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, pixPending: state.pixPending?.state || null, purchaseDays: Object.fromEntries(Object.entries(state.purchases?.days || {}).map(([day, value]) => { const attempts = Object.values(value.attempts || {}); const lastAttempt = attempts.sort((a, b) => String(b.checkedAt).localeCompare(String(a.checkedAt)))[0]; return [day, { status: value.status || 'idle', lastAttemptStatus: lastAttempt?.status || null, listedPrice: lastAttempt?.listedPrice || null, finalPrice: value.finalPrice || null, updatedAt: value.updatedAt || null, deliveredAt: value.deliveredAt || null }]; })), lastDeliveredAt: state.lastDeliveredAt || null, lastPixDeliveredAt: state.lastPixDeliveredAt || null, lastUnknownDeliveryAt: state.lastUnknownDeliveryAt || null, lastSnapshotBroadcastAt: state.lastSnapshotBroadcastAt || null });
   }
 }
 export default {
