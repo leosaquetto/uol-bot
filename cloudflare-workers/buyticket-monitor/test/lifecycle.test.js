@@ -8,7 +8,7 @@ const source = (await readFile(new URL('../src/worker.js', import.meta.url), 'ut
   .replace("'./core.js'", JSON.stringify(core));
 const { Monitor } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 const { keys } = await import(core);
-const scope = 'demi-under-299-v1:1789527599000:1779910250255x792501787503624200:1789613999000:1779910250255x792501787503624200';
+const scope = 'demi-under-299-v2:1789527599000:1779910250255x792501787503624200:1789613999000:1779910250255x792501787503624200';
 const matrix = (price, suffix = '') => Object.fromEntries(keys.map(key => [key, { preco_min: price, disponivel: 1, id_ref: `${key}:${price}:${suffix}` }]));
 const storageFor = (entries = []) => {
   const data = new Map(entries);
@@ -69,6 +69,34 @@ test('sends a newly observed sub-R$299 listing once', async () => {
   assert.match(sent[0].text, /R\$ 250,00/);
   assert.match(sent[0].link, /data=1789613999000/);
   assert.equal(data.get('pending'), undefined);
+});
+
+test('retires an ambiguous delivery and still sends a later offer', async () => {
+  const initial = [matrix(50000), matrix(50000)];
+  const { data, storage } = storageFor([['enabled', true], ['eventScope', scope], ['current', initial], ['seenOffers', {}]]);
+  const monitor = new Monitor({ storage }, {});
+  const first = structuredClone(initial);
+  first[0]['Pista||Inteira'] = { preco_min: 9900, disponivel: 1, id_ref: 'first' };
+  const second = structuredClone(first);
+  second[1]['Pista||Meia Estudante'] = { preco_min: 5500, disponivel: 1, id_ref: 'second' };
+  const snapshots = [first, second];
+  monitor.collect = async () => snapshots.shift();
+  const oldFetch = globalThis.fetch;
+  const sent = [];
+  globalThis.fetch = async (_, init) => {
+    sent.push(JSON.parse(init.body));
+    return sent.length === 1
+      ? Response.json({ code: 'delivery_unknown' }, { status: 503 })
+      : Response.json({ deliveryState: 'confirmed_by_whatsapp_bridge' });
+  };
+  try { await monitor.tick(); await monitor.tick(); }
+  finally { globalThis.fetch = oldFetch; }
+  assert.equal(sent.length, 2);
+  assert.match(sent[0].text, /R\$ 99,00/);
+  assert.match(sent[1].text, /R\$ 55,00/);
+  assert.equal(data.get('pending'), undefined);
+  assert.equal(data.get('retiredPending').state, 'unknown');
+  assert.ok(data.get('lastUnknownDeliveryAt'));
 });
 
 test('retire disables the old object and deletes its alarm', async () => {

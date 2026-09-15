@@ -1,6 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
 import { EVENTS, eventUrl, parse, qualifyingOffers, format } from './core.js';
-const EVENT_SCOPE = 'demi-under-299-v1:' + EVENTS.map(e => `${e.date}:${e.local}`).join(':');
+const EVENT_SCOPE = 'demi-under-299-v2:' + EVENTS.map(e => `${e.date}:${e.local}`).join(':');
 const MONITOR_INTERVAL = 30_000;
 const DELIVERY_RECONCILE_INTERVAL = 300_000;
 const alertFingerprint = ({ i, idRef }) => `${i}|${idRef}`;
@@ -26,27 +26,40 @@ export class Monitor extends DurableObject {
     const observed = qualifyingOffers(current);
     const changes = scopeChanged || !storedFingerprints ? [] : observed.filter(offer => !seenOffers[alertFingerprint(offer)]);
     let fingerprintsChanged = scopeChanged || !storedFingerprints;
-    for (const offer of observed) {
-      const fingerprint = alertFingerprint(offer);
-      if (!seenOffers[fingerprint]) {
-        seenOffers[fingerprint] = true;
-        fingerprintsChanged = true;
-      }
+    if (scopeChanged || !storedFingerprints) {
+      for (const offer of observed) seenOffers[alertFingerprint(offer)] = true;
     }
+    let pending = await this.ctx.storage.get('pending');
     if (scopeChanged) {
-      const oldPending = await this.ctx.storage.get('pending');
-      if (oldPending) await this.ctx.storage.put('retiredPending', oldPending);
+      if (pending) await this.ctx.storage.put('retiredPending', pending);
       await this.ctx.storage.delete('pending');
+      pending = null;
+    } else if (pending?.state === 'unknown') {
+      // The gateway treats an ambiguous idempotency key as terminal. Preserve it
+      // for diagnosis, but do not let it block unrelated future offers.
+      await this.ctx.storage.put({ retiredPending: pending, lastUnknownDeliveryAt: at });
+      await this.ctx.storage.delete('pending');
+      pending = null;
+    }
+    const enabled = await this.ctx.storage.get('enabled');
+    if (enabled && changes.length) {
+      const items = [...new Set(changes.map(d => d.i))].map(i => ({
+        key: `buyticket:${crypto.randomUUID()}`,
+        link: eventUrl(EVENTS[i]),
+        text: format(current, changes, at, i),
+      }));
+      pending = pending
+        ? { ...pending, items: [...(pending.items || [pending]), ...items] }
+        : { key: `buyticket:${crypto.randomUUID()}`, items, state: 'queued' };
+      await this.ctx.storage.put('pending', pending);
+      for (const offer of changes) seenOffers[alertFingerprint(offer)] = true;
+      fingerprintsChanged = true;
     }
     await this.ctx.storage.put({
       current, checkedAt: at, error: null, eventScope: EVENT_SCOPE,
       purchasesEnabled: false,
       ...(fingerprintsChanged ? { seenOffers } : {}),
     });
-    const pending = await this.ctx.storage.get('pending');
-    if (await this.ctx.storage.get('enabled') && !pending && changes.length) {
-      await this.ctx.storage.put('pending', { key: `buyticket:${crypto.randomUUID()}`, items: [...new Set(changes.map(d => d.i))].map(i => ({ key: `buyticket:${crypto.randomUUID()}`, link: eventUrl(EVENTS[i]), text: format(current, changes, at, i) })), state: 'queued' });
-    }
     await this.deliver();
   }
   async deliver() {
@@ -133,7 +146,7 @@ export class Monitor extends DurableObject {
     } else if (request.method !== 'GET' || !['/status', '/preview'].includes(path)) return new Response('Not found', { status: 404 });
     const state = Object.fromEntries(await this.ctx.storage.list());
     if (path === '/preview') return new Response(state.current && state.eventScope === EVENT_SCOPE ? EVENTS.map((e, i) => format(state.current, [], state.checkedAt, i)).join('\n\n──────── MENSAGEM SEPARADA ────────\n\n') : 'Not initialized');
-    return Response.json({ enabled: state.enabled === true, purchasesEnabled: false, days: EVENTS.map(e => e.day), priceLimit: 29900, baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, lastDeliveredAt: state.lastDeliveredAt || null, lastSnapshotBroadcastAt: state.lastSnapshotBroadcastAt || null });
+    return Response.json({ enabled: state.enabled === true, purchasesEnabled: false, days: EVENTS.map(e => e.day), priceLimit: 29900, baselineReady: state.eventScope === EVENT_SCOPE, checkedAt: state.checkedAt, error: state.error, pending: state.pending?.state || null, lastDeliveredAt: state.lastDeliveredAt || null, lastUnknownDeliveryAt: state.lastUnknownDeliveryAt || null, lastSnapshotBroadcastAt: state.lastSnapshotBroadcastAt || null });
   }
 }
 export default {

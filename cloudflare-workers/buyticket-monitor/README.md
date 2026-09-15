@@ -2,7 +2,7 @@
 
 SQLite Durable Object without a Cron Trigger. It checks the September 16 and 17, 2026 BuyTicket pages concurrently every 30 seconds using their public RSC price matrices.
 
-The monitor is notification-only. Automatic checkout and PIX generation are retired and `/purchases/start` returns `410 purchases_retired`. It sends one WhatsApp alert per affected show when a previously unseen listing reference appears with an available price strictly below R$299. Existing qualifying listings seed the baseline silently, so deployment does not broadcast old inventory. Each listing reference is persisted after its first observation to prevent duplicate alerts.
+The monitor is notification-only. Automatic checkout and PIX generation are retired and `/purchases/start` returns `410 purchases_retired`. It sends one WhatsApp alert per affected show when a previously unseen listing reference appears with an available price strictly below R$299. Existing qualifying listings seed the baseline silently, so deployment does not broadcast old inventory. Each listing reference is persisted after it is queued to prevent duplicate alerts. An ambiguous delivery is retained for diagnosis but cannot block or consume later offers.
 
 All routes require `ADMIN_TOKEN`. `POST /initialize` replaces a changed scope silently and schedules monitoring. `POST /start` activates a new object without sending a snapshot. `GET /status` reports the two dates, R$299 threshold, freshness and pending delivery state. `GET /preview` is read-only. `POST /retire-rock-in-rio` disables the previous Rock in Rio Durable Object and deletes its alarm. Alarms stop September 18, 2026 at 03:00 UTC.
 
