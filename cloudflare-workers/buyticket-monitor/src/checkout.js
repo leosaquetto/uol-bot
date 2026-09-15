@@ -227,8 +227,8 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     stage = 'billing_continue';
     await clickFirstButton(page, 'Continuar');
     stage = 'final_review';
-    await page.getByText('Resumo da compra', { exact: true }).waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
-    const finalButton = page.getByRole('button', { name: 'Comprar agora', exact: true });
+    await page.getByText(/Resumo (?:da compra|do pedido)/i).first().waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
+    const finalButton = page.getByRole('button', { name: /^(?:Comprar agora|Finalizar compra)$/i }).first();
     await finalButton.waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
     const review = parseFinalReview(await pageText(page));
     if (!review || review.total !== finalPrice) {

@@ -6,7 +6,7 @@ export function parseBrl(value) {
 }
 
 export function parseFinalReview(text) {
-  const section = String(text || '').split('Resumo da compra')[1];
+  const section = String(text || '').split(/Resumo (?:da compra|do pedido)/i)[1];
   if (!section || !/M[eé]todo de pagamento\s*(?:Editar\s*)?Pix\b/i.test(section)) return null;
   const amount = pattern => parseBrl(section.match(pattern)?.[1]);
   const ticket = amount(/Ingresso\s*(R\$\s*[\d.]+,\d{2})/i);
