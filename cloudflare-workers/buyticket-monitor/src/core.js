@@ -45,10 +45,10 @@ export function qualifyingOffers(current) {
 }
 export function purchaseCandidates(matrix, dayIndex, listingLimit = PURCHASE_LISTING_LIMIT) {
   return Object.entries(matrix || {}).flatMap(([key, value]) => {
+    const [sector, category] = key.split('||');
     if (!value || value.disponivel < 1 || !Number.isSafeInteger(value.preco_min) ||
         value.preco_min <= 0 || value.preco_min >= listingLimit ||
-        typeof value.id_ref !== 'string' || !value.id_ref) return [];
-    const [sector, category] = key.split('||');
+        typeof value.id_ref !== 'string' || !value.id_ref || /\bidos[oa]\b/i.test(category || '')) return [];
     return [{ dayIndex, key, sector, category, idRef: value.id_ref, listedPrice: value.preco_min }];
   }).sort((a, b) => a.listedPrice - b.listedPrice || a.key.localeCompare(b.key));
 }

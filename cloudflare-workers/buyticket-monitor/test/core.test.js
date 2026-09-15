@@ -42,20 +42,21 @@ test('uses only the requested September 16 São Paulo event URL', () => {
   assert.ok(EVENTS.every(event => eventUrl(event).includes('cidade=S%C3%A3o+Paulo')));
 });
 
-test('buys any category strictly below R$100 and accepts any positive final total', () => {
+test('buys non-elderly categories strictly below R$100 and accepts any positive final total', () => {
   const source = {
     'Pista||Meia Idoso': { preco_min: PURCHASE_LISTING_LIMIT - 1, disponivel: 1, id_ref: 'idoso' },
+    'Pista||Meia Estudante': { preco_min: PURCHASE_LISTING_LIMIT - 2, disponivel: 1, id_ref: 'student' },
     'Pista||Inteira': { preco_min: PURCHASE_LISTING_LIMIT, disponivel: 1, id_ref: 'boundary' },
   };
   assert.deepEqual(purchaseCandidates(source, 0), [{
     dayIndex: 0,
-    key: 'Pista||Meia Idoso',
+    key: 'Pista||Meia Estudante',
     sector: 'Pista',
-    category: 'Meia Idoso',
-    idRef: 'idoso',
-    listedPrice: 9999,
+    category: 'Meia Estudante',
+    idRef: 'student',
+    listedPrice: 9998,
   }]);
   assert.equal(finalPriceAllowed(25000), true);
   assert.equal(finalPriceAllowed(0), false);
-  assert.match(formatPixMessage({ dayIndex: 0, sector: 'Pista', category: 'Meia Idoso', listedPrice: 5500, finalPrice: 12500, pixCode: '000201' + 'A'.repeat(70) }, '2026-09-15T15:00:00Z'), /Valor anunciado: \*R\$ 55,00\*[\s\S]*Valor final com cupom: \*R\$ 125,00\*/);
+  assert.match(formatPixMessage({ dayIndex: 0, sector: 'Pista', category: 'Meia Estudante', listedPrice: 5500, finalPrice: 12500, pixCode: '000201' + 'A'.repeat(70) }, '2026-09-15T15:00:00Z'), /Valor anunciado: \*R\$ 55,00\*[\s\S]*Valor final com cupom: \*R\$ 125,00\*/);
 });

@@ -1,7 +1,7 @@
 import { DurableObject } from 'cloudflare:workers';
 import { EVENTS, PURCHASE_LISTING_LIMIT, eventUrl, parse, qualifyingOffers, format, purchaseCandidates, formatPixMessage } from './core.js';
 import { runCheckout } from './checkout.js';
-const EVENT_SCOPE = 'demi-16-only-under-299-pix-under-100-v4:' + EVENTS.map(e => `${e.date}:${e.local}`).join(':');
+const EVENT_SCOPE = 'demi-16-no-elderly-under-299-pix-under-100-v5:' + EVENTS.map(e => `${e.date}:${e.local}`).join(':');
 const MONITOR_INTERVAL = 30_000;
 const DELIVERY_RECONCILE_INTERVAL = 300_000;
 const alertFingerprint = ({ i, idRef }) => `${i}|${idRef}`;

@@ -10,7 +10,7 @@ const source = (await readFile(new URL('../src/worker.js', import.meta.url), 'ut
   .replace("'./checkout.js'", JSON.stringify(checkout));
 const { Monitor } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 const { keys } = await import(core);
-const scope = 'demi-16-only-under-299-pix-under-100-v4:1789613999000:1779910250255x792501787503624200';
+const scope = 'demi-16-no-elderly-under-299-pix-under-100-v5:1789613999000:1779910250255x792501787503624200';
 const matrix = (price, suffix = '') => Object.fromEntries(keys.map(key => [key, { preco_min: price, disponivel: 1, id_ref: `${key}:${price}:${suffix}` }]));
 const storageFor = (entries = []) => {
   const data = new Map(entries);
@@ -119,15 +119,16 @@ test('automatic purchase can be armed only after checkout validation', async () 
   assert.deepEqual(await response.json(), { purchasesEnabled: true, listingPriceLimit: 10000 });
 });
 
-test('creates one PIX for a sub-R$100 Meia Idoso and queues it for delivery', async () => {
+test('skips Meia Idoso and creates one PIX for another sub-R$100 category', async () => {
   const { data, storage } = storageFor([['purchasesEnabled', true]]);
   const monitor = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
   const current = [matrix(50000)];
-  current[0]['Pista||Meia Idoso'] = { preco_min: 5500, disponivel: 1, id_ref: 'cheap' };
+  current[0]['Pista||Meia Idoso'] = { preco_min: 5000, disponivel: 1, id_ref: 'elderly' };
+  current[0]['Pista||Meia Estudante'] = { preco_min: 5500, disponivel: 1, id_ref: 'cheap' };
   let calls = 0;
   globalThis.__runCheckout = async (_env, candidate, options) => {
     calls++;
-    assert.equal(candidate.category, 'Meia Idoso');
+    assert.equal(candidate.category, 'Meia Estudante');
     await options.beforeCommit({ finalPrice: 12500 });
     return { status: 'pix_created', finalPrice: 12500, pixCode: '000201' + 'A'.repeat(70) };
   };
