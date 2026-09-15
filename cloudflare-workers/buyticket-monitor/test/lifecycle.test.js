@@ -10,7 +10,7 @@ const source = (await readFile(new URL('../src/worker.js', import.meta.url), 'ut
   .replace("'./checkout.js'", JSON.stringify(checkout));
 const { Monitor } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
 const { keys } = await import(core);
-const scope = 'demi-under-299-pix-under-100-v3:1789527599000:1779910250255x792501787503624200:1789613999000:1779910250255x792501787503624200';
+const scope = 'demi-16-only-under-299-pix-under-100-v4:1789613999000:1779910250255x792501787503624200';
 const matrix = (price, suffix = '') => Object.fromEntries(keys.map(key => [key, { preco_min: price, disponivel: 1, id_ref: `${key}:${price}:${suffix}` }]));
 const storageFor = (entries = []) => {
   const data = new Map(entries);
@@ -24,7 +24,7 @@ const storageFor = (entries = []) => {
   } };
 };
 
-test('collects both requested events concurrently', async () => {
+test('collects only the September 16 event', async () => {
   const { storage } = storageFor();
   const monitor = new Monitor({ storage }, {});
   const oldFetch = globalThis.fetch;
@@ -34,14 +34,14 @@ test('collects both requested events concurrently', async () => {
     await new Promise(resolve => setTimeout(resolve, 10)); active--;
     return new Response(`0:${JSON.stringify({ matriz_preco: matrix(50000) })}`);
   };
-  try { assert.equal((await monitor.collect()).length, 2); assert.equal(peak, 2); }
+  try { assert.equal((await monitor.collect()).length, 1); assert.equal(peak, 1); }
   finally { globalThis.fetch = oldFetch; }
 });
 
 test('new scope seeds qualifying listings silently and disables purchases', async () => {
   const { data, storage } = storageFor([['enabled', true], ['eventScope', 'rock-in-rio-old']]);
   const monitor = new Monitor({ storage }, {});
-  const current = [matrix(50000), matrix(50000)];
+  const current = [matrix(50000)];
   current[0]['Pista||Promocional'] = { preco_min: 25000, disponivel: 1, id_ref: 'existing' };
   monitor.collect = async () => current;
   const oldFetch = globalThis.fetch;
@@ -56,11 +56,11 @@ test('new scope seeds qualifying listings silently and disables purchases', asyn
 });
 
 test('sends a newly observed sub-R$299 listing once', async () => {
-  const initial = [matrix(50000), matrix(50000)];
+  const initial = [matrix(50000)];
   const { data, storage } = storageFor([['enabled', true], ['eventScope', scope], ['current', initial], ['seenOffers', {}]]);
   const monitor = new Monitor({ storage }, {});
   const changed = structuredClone(initial);
-  changed[1]['Pista||Meia Estudante'] = { preco_min: 25000, disponivel: 2, id_ref: 'new' };
+  changed[0]['Pista||Meia Estudante'] = { preco_min: 25000, disponivel: 2, id_ref: 'new' };
   monitor.collect = async () => changed;
   const oldFetch = globalThis.fetch;
   const sent = [];
@@ -74,13 +74,13 @@ test('sends a newly observed sub-R$299 listing once', async () => {
 });
 
 test('retires an ambiguous delivery and still sends a later offer', async () => {
-  const initial = [matrix(50000), matrix(50000)];
+  const initial = [matrix(50000)];
   const { data, storage } = storageFor([['enabled', true], ['eventScope', scope], ['current', initial], ['seenOffers', {}]]);
   const monitor = new Monitor({ storage }, {});
   const first = structuredClone(initial);
   first[0]['Pista||Inteira'] = { preco_min: 9900, disponivel: 1, id_ref: 'first' };
   const second = structuredClone(first);
-  second[1]['Pista||Meia Estudante'] = { preco_min: 5500, disponivel: 1, id_ref: 'second' };
+  second[0]['Pista||Meia Estudante'] = { preco_min: 5500, disponivel: 1, id_ref: 'second' };
   const snapshots = [first, second];
   monitor.collect = async () => snapshots.shift();
   const oldFetch = globalThis.fetch;
@@ -122,7 +122,7 @@ test('automatic purchase can be armed only after checkout validation', async () 
 test('creates one PIX for a sub-R$100 Meia Idoso and queues it for delivery', async () => {
   const { data, storage } = storageFor([['purchasesEnabled', true]]);
   const monitor = new Monitor({ storage }, { PIX_CHECKOUT_VALIDATED: 'true' });
-  const current = [matrix(50000), matrix(50000)];
+  const current = [matrix(50000)];
   current[0]['Pista||Meia Idoso'] = { preco_min: 5500, disponivel: 1, id_ref: 'cheap' };
   let calls = 0;
   globalThis.__runCheckout = async (_env, candidate, options) => {
@@ -136,7 +136,7 @@ test('creates one PIX for a sub-R$100 Meia Idoso and queues it for delivery', as
   assert.equal(calls, 1);
   assert.equal(data.get('purchases').days[0].status, 'pix_created');
   assert.equal(data.get('pixPending').state, 'queued');
-  assert.match(data.get('pixPending').text, /15\/09 TER - DEMI LOVATO/);
+  assert.match(data.get('pixPending').text, /16\/09 QUA - DEMI LOVATO/);
   assert.match(data.get('pixPending').text, /Valor anunciado: \*R\$ 55,00\*/);
   assert.match(data.get('pixPending').text, /Valor final com cupom: \*R\$ 125,00\*/);
 });

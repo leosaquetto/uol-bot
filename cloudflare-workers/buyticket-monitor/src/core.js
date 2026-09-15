@@ -1,5 +1,4 @@
 export const EVENTS = [
-  { day: '15/09/2026', label: '15/09 TER - DEMI LOVATO', date: '1789527599000', local: '1779910250255x792501787503624200' },
   { day: '16/09/2026', label: '16/09 QUA - DEMI LOVATO', date: '1789613999000', local: '1779910250255x792501787503624200' },
 ];
 export const EVENT_SLUG = 'demilovato–itsnotthatdeeptour-2026';

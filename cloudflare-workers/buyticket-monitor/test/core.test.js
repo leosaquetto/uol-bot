@@ -20,15 +20,15 @@ test('qualifies every available listing strictly below R$299', () => {
   const day0 = matrix(ALERT_PRICE_LIMIT);
   day0['VIP||Promocional'] = { preco_min: 29899, disponivel: 1, id_ref: 'under-limit' };
   day0['VIP||Sem estoque'] = { preco_min: 10000, disponivel: 0, id_ref: 'unavailable' };
-  const offers = qualifyingOffers([day0, matrix(50000)]);
+  const offers = qualifyingOffers([day0]);
   assert.deepEqual(offers, [{ i: 0, key: 'VIP||Promocional', price: 29899, available: 1, idRef: 'under-limit' }]);
 });
 
 test('formats one compact highlighted alert with quantity and event link', () => {
-  const current = [matrix(50000), matrix(50000)];
-  current[1]['Pista||Meia Estudante'] = { preco_min: 25000, disponivel: 2, id_ref: 'new-offer' };
+  const current = [matrix(50000)];
+  current[0]['Pista||Meia Estudante'] = { preco_min: 25000, disponivel: 2, id_ref: 'new-offer' };
   const offers = qualifyingOffers(current);
-  const text = format(current, offers, '2026-09-11T15:00:00Z', 1);
+  const text = format(current, offers, '2026-09-11T15:00:00Z', 0);
   assert.match(text, /OFERTA • DEMI LOVATO/);
   assert.match(text, /16\/09 QUA - DEMI LOVATO/);
   assert.match(text, /🔥 \*Meia 👨🏻‍🎓: R\$ 250,00 \(🎟️ 2\)\*/);
@@ -36,10 +36,9 @@ test('formats one compact highlighted alert with quantity and event link', () =>
   assert.doesNotMatch(text, /15\/09/);
 });
 
-test('uses the two requested São Paulo event URLs', () => {
-  assert.deepEqual(EVENTS.map(event => event.day), ['15/09/2026', '16/09/2026']);
-  assert.match(eventUrl(EVENTS[0]), /data=1789527599000/);
-  assert.match(eventUrl(EVENTS[1]), /data=1789613999000/);
+test('uses only the requested September 16 São Paulo event URL', () => {
+  assert.deepEqual(EVENTS.map(event => event.day), ['16/09/2026']);
+  assert.match(eventUrl(EVENTS[0]), /data=1789613999000/);
   assert.ok(EVENTS.every(event => eventUrl(event).includes('cidade=S%C3%A3o+Paulo')));
 });
 

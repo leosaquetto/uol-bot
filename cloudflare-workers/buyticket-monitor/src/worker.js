@@ -1,7 +1,7 @@
 import { DurableObject } from 'cloudflare:workers';
 import { EVENTS, PURCHASE_LISTING_LIMIT, eventUrl, parse, qualifyingOffers, format, purchaseCandidates, formatPixMessage } from './core.js';
 import { runCheckout } from './checkout.js';
-const EVENT_SCOPE = 'demi-under-299-pix-under-100-v3:' + EVENTS.map(e => `${e.date}:${e.local}`).join(':');
+const EVENT_SCOPE = 'demi-16-only-under-299-pix-under-100-v4:' + EVENTS.map(e => `${e.date}:${e.local}`).join(':');
 const MONITOR_INTERVAL = 30_000;
 const DELIVERY_RECONCILE_INTERVAL = 300_000;
 const alertFingerprint = ({ i, idRef }) => `${i}|${idRef}`;
@@ -236,7 +236,7 @@ export class Monitor extends DurableObject {
     if (request.method === 'POST' && path === '/purchases/dry-run') {
       const body = await request.json().catch(() => ({}));
       const dayIndex = Number(body.dayIndex);
-      if (![0, 1].includes(dayIndex) || typeof body.idRef !== 'string' || !body.idRef) return Response.json({ error: 'invalid_request' }, { status: 400 });
+      if (!Number.isInteger(dayIndex) || dayIndex < 0 || dayIndex >= EVENTS.length || typeof body.idRef !== 'string' || !body.idRef) return Response.json({ error: 'invalid_request' }, { status: 400 });
       const current = await this.collect();
       const candidate = purchaseCandidates(current[dayIndex], dayIndex, Number.MAX_SAFE_INTEGER).find(item => item.idRef === body.idRef);
       if (!candidate) return Response.json({ error: 'listing_not_found' }, { status: 404 });
