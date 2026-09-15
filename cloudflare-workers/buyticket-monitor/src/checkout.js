@@ -187,7 +187,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     if (!await pix.isEnabled().catch(() => false)) return done({ status: 'pix_unavailable', finalPrice });
 
     stage = 'payment_select';
-    await page.getByText('PIX', { exact: true }).first().click();
+    await pix.check();
     const pixSelected = await pix.isChecked();
     if (!pixSelected) return done({ status: 'pix_unavailable', finalPrice });
     stage = 'payment_continue';
