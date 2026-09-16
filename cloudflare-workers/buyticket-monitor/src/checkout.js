@@ -101,6 +101,7 @@ function eventDateVisible(text, day) {
 
 export async function runCheckout(env, candidate, { dryRun = false, beforeCommit = async () => {} } = {}) {
   let browser;
+  let page;
   try {
     browser = await launch(env.BROWSER);
   } catch (error) {
@@ -118,7 +119,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
   try {
     stage = 'context';
     const context = await browser.newContext({ locale: 'pt-BR', timezoneId: 'America/Sao_Paulo' });
-    const page = await context.newPage();
+    page = await context.newPage();
     page.setDefaultTimeout(8_000);
     stage = 'login';
     const buyerName = await ensureLogin(page, env);
@@ -255,7 +256,17 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
   } catch (error) {
     if (committed) throw Object.assign(new Error('purchase_outcome_unknown'), { cause: error });
     const known = ['login_failed', 'checkout_field_missing', 'billing_value_not_accepted'];
-    return done({ status: known.includes(error?.message) ? error.message : 'checkout_failed' });
+    const diagnostic = dryRun && page ? await page.evaluate(() => ({
+      title: document.title.slice(0, 120),
+      loginVisible: Boolean(document.querySelector('input[type="password"]')),
+      soldOutVisible: /esgotad|indispon[ií]vel|an[uú]ncio.*(?:removido|encerrado)/i.test(document.body?.innerText || ''),
+      relevantButtons: [...document.querySelectorAll('button')].map(button => button.textContent?.trim())
+        .filter(text => text && /comprar|continuar|finalizar|entrar|tentar/i.test(text)).slice(0, 8),
+    })).catch(() => null) : null;
+    return done({
+      status: known.includes(error?.message) ? error.message : 'checkout_failed',
+      ...(diagnostic ? { diagnostic: { ...diagnostic, errorKind: error?.name || 'Error' } } : {}),
+    });
   } finally {
     await browser.close().catch(() => {});
   }
