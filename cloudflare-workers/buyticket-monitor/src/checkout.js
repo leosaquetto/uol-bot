@@ -66,18 +66,16 @@ async function fillMasked(page, placeholder, value) {
   if (actual.replace(/\D/g, '') !== digits) throw new Error('billing_value_not_accepted');
 }
 
-async function clickFirstButton(page, label) {
-  const clicked = await page.evaluate(text => {
-    const button = [...document.querySelectorAll('button')].find(item => {
-      const rect = item.getBoundingClientRect();
-      const style = getComputedStyle(item);
-      return item.textContent?.trim() === text && !item.disabled && rect.width > 0 && rect.height > 0 &&
-        style.visibility !== 'hidden' && style.display !== 'none';
-    });
-    button?.click();
-    return Boolean(button);
-  }, label);
-  if (!clicked) throw new Error('checkout_button_missing');
+async function clickCurrentButton(page, label) {
+  const buttons = page.getByRole('button', { name: label, exact: true });
+  for (let index = await buttons.count() - 1; index >= 0; index--) {
+    const button = buttons.nth(index);
+    if (await button.isVisible().catch(() => false) && await button.isEnabled().catch(() => false)) {
+      await button.click();
+      return;
+    }
+  }
+  throw new Error('checkout_button_missing');
 }
 
 async function findPixCodeInPage(page) {
@@ -206,11 +204,11 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     });
     if (!pixSelected) return done({ status: 'pix_unavailable', finalPrice });
     stage = 'payment_continue';
-    await clickFirstButton(page, 'Continuar');
+    await clickCurrentButton(page, 'Continuar');
     stage = 'quentro_email';
     await fillByNames(page, [/e-?mail.*Quentro/i, /e-?mail/i], env.BUYTICKET_QUENTRO_EMAIL);
     stage = 'quentro_continue';
-    await clickFirstButton(page, 'Continuar');
+    await clickCurrentButton(page, 'Continuar');
     stage = 'billing_name';
     await fillByNames(page, [/nome completo/i, /^nome$/i], buyerName);
     stage = 'billing_phone';
@@ -233,7 +231,7 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     stage = 'billing_number';
     await fillByNames(page, [/^N° do endereço$/i], env.BUYTICKET_ADDRESS_NUMBER);
     stage = 'billing_continue';
-    await clickFirstButton(page, 'Continuar');
+    await clickCurrentButton(page, 'Continuar');
     stage = 'final_review';
     await page.getByText(/Resumo (?:da compra|do pedido)/i).first().waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
     const finalButton = page.getByRole('button', { name: /^(?:Comprar agora|Finalizar compra)$/i }).first();
