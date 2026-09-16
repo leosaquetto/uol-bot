@@ -67,15 +67,17 @@ async function fillMasked(page, placeholder, value) {
 }
 
 async function clickCurrentButton(page, label) {
-  const buttons = page.getByRole('button', { name: label, exact: true });
-  for (let index = await buttons.count() - 1; index >= 0; index--) {
-    const button = buttons.nth(index);
-    if (await button.isVisible().catch(() => false) && await button.isEnabled().catch(() => false)) {
-      await button.click();
-      return;
-    }
-  }
-  throw new Error('checkout_button_missing');
+  const clicked = await page.evaluate(text => {
+    const button = [...document.querySelectorAll('button')].find(item => {
+      const rect = item.getBoundingClientRect();
+      const style = getComputedStyle(item);
+      return item.textContent?.trim() === text && !item.disabled && rect.width > 0 && rect.height > 0 &&
+        style.visibility !== 'hidden' && style.display !== 'none';
+    });
+    button?.click();
+    return Boolean(button);
+  }, label);
+  if (!clicked) throw new Error('checkout_button_missing');
 }
 
 async function findPixCodeInPage(page) {
