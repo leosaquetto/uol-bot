@@ -267,6 +267,12 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
       soldOutVisible: /esgotad|indispon[ií]vel|an[uú]ncio.*(?:removido|encerrado)/i.test(document.body?.innerText || ''),
       relevantButtons: [...document.querySelectorAll('button')].map(button => button.textContent?.trim())
         .filter(text => text && /comprar|continuar|finalizar|entrar|tentar/i.test(text)).slice(0, 8),
+      fields: [...document.querySelectorAll('input')].map(input => ({
+        type: input.type,
+        name: input.name || null,
+        placeholder: input.placeholder || null,
+        ariaLabel: input.getAttribute('aria-label'),
+      })).filter(field => field.type !== 'hidden').slice(0, 12),
     })).catch(() => null) : null;
     return done({
       status: known.includes(error?.message) ? error.message : 'checkout_failed',
