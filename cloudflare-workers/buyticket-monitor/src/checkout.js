@@ -1,4 +1,4 @@
-import { launch } from '@cloudflare/playwright';
+import { acquire, connect } from '@cloudflare/playwright';
 import { EVENTS, EVENT_SLUG, finalPriceAllowed } from './core.js';
 import { parseFinalReview, extractPixTotal, extractPixCode, isPixUnavailable } from './checkout-logic.js';
 
@@ -6,6 +6,7 @@ export { parseBrl, extractPixTotal, extractPixCode, isPixUnavailable } from './c
 
 const BASE = 'https://buyticketbrasil.com';
 const NAVIGATION_TIMEOUT = 12_000;
+const WAITING_ROOM_TIMEOUT = 270_000;
 
 async function pageText(page) {
   return page.locator('body').innerText({ timeout: 5_000 });
@@ -99,11 +100,16 @@ function eventDateVisible(text, day) {
   return new RegExp(`\\b${date}\\b[\\s\\S]{0,60}\\b${months[month - 1]}\\b`, 'i').test(text);
 }
 
-export async function runCheckout(env, candidate, { dryRun = false, beforeCommit = async () => {} } = {}) {
+export async function runCheckout(env, candidate, { dryRun = false, beforeCommit = async () => {}, sessionId = null, onSession = async () => {} } = {}) {
   let browser;
   let page;
   try {
-    browser = await launch(env.BROWSER);
+    if (sessionId) browser = await connect(env.BROWSER, sessionId).catch(() => null);
+    if (!browser) {
+      const acquired = await acquire(env.BROWSER, { keep_alive: 600_000 });
+      await onSession(acquired.sessionId);
+      browser = await connect(env.BROWSER, acquired.sessionId);
+    }
   } catch (error) {
     const message = String(error?.message || '').toLowerCase();
     return {
@@ -118,8 +124,8 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
   const done = result => ({ ...result, stage });
   try {
     stage = 'context';
-    const context = await browser.newContext({ locale: 'pt-BR', timezoneId: 'America/Sao_Paulo' });
-    page = await context.newPage();
+    const context = browser.contexts()[0] || await browser.newContext({ locale: 'pt-BR', timezoneId: 'America/Sao_Paulo' });
+    page = context.pages()[0] || await context.newPage();
     page.setDefaultTimeout(8_000);
     stage = 'login';
     const buyerName = await ensureLogin(page, env);
@@ -127,7 +133,8 @@ export async function runCheckout(env, candidate, { dryRun = false, beforeCommit
     stage = 'listing';
     await page.goto(direct, { waitUntil: 'domcontentloaded', timeout: NAVIGATION_TIMEOUT });
     const expectedDate = EVENTS[candidate.dayIndex].day;
-    await page.getByRole('button', { name: /Comprar agora por/ }).waitFor({ state: 'visible', timeout: NAVIGATION_TIMEOUT });
+    const waitingRoom = /Todo mundo quer nossos ingressos/i.test(await page.title());
+    await page.getByRole('button', { name: /Comprar agora por/ }).waitFor({ state: 'visible', timeout: waitingRoom ? WAITING_ROOM_TIMEOUT : NAVIGATION_TIMEOUT });
     let text = await pageText(page);
     if (!text.includes(candidate.sector) || !text.includes(candidate.category)) {
       return done({ status: 'listing_mismatch' });

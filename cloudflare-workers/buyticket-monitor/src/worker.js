@@ -93,6 +93,7 @@ export class Monitor extends DurableObject {
     const now = Date.now();
     for (let dayIndex = 0; dayIndex < EVENTS.length; dayIndex++) {
       const day = state.days[dayIndex] || { attempts: {} };
+      if (day.status === 'checking' && Date.parse(day.updatedAt || '') + 7 * 60_000 > now) continue;
       if (['pix_created', 'delivered', 'unknown'].includes(day.status)) continue;
       for (const candidate of purchaseCandidates(current[dayIndex], dayIndex)) {
         const prior = day.attempts[candidate.idRef];
@@ -100,12 +101,16 @@ export class Monitor extends DurableObject {
         if (prior?.listedPrice === candidate.listedPrice && prior.retryAfter && Date.parse(prior.retryAfter) > now) continue;
         const attempt = { status: 'checking', listedPrice: candidate.listedPrice, checkedAt: new Date().toISOString() };
         day.attempts[candidate.idRef] = attempt;
+        day.status = 'checking';
+        day.updatedAt = attempt.checkedAt;
         state.days[dayIndex] = day;
         await this.ctx.storage.put('purchases', state);
         let result;
         try {
           const checkout = globalThis.__runCheckout || runCheckout;
           result = await checkout(this.env, candidate, {
+            sessionId: await this.ctx.storage.get('browserSessionId'),
+            onSession: async id => this.ctx.storage.put('browserSessionId', id),
             beforeCommit: async ({ finalPrice }) => {
               day.status = 'unknown';
               day.idRef = candidate.idRef;
@@ -240,7 +245,11 @@ export class Monitor extends DurableObject {
       const current = await this.collect();
       const candidate = purchaseCandidates(current[dayIndex], dayIndex, Number.MAX_SAFE_INTEGER).find(item => item.idRef === body.idRef);
       if (!candidate) return Response.json({ error: 'listing_not_found' }, { status: 404 });
-      const result = await runCheckout(this.env, candidate, { dryRun: true });
+      const result = await runCheckout(this.env, candidate, {
+        dryRun: true,
+        sessionId: await this.ctx.storage.get('browserSessionId'),
+        onSession: async id => this.ctx.storage.put('browserSessionId', id),
+      });
       return Response.json({ status: result.status, stage: result.stage || null, couponSignal: result.couponSignal || null, listedTotal: result.listedTotal || null, finalPrice: result.finalPrice || null, formReady: result.formReady === true, review: result.review || null, diagnostic: result.diagnostic || null, finalActionClicked: false, noOrderCreated: true });
     }
     if (request.method === 'POST' && path === '/initialize') {
