@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gymrats-smartfit-monitor",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true, "traces": { "enabled": true } },
+  "vars": { "DELIVERY_ENABLED": "false" },
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "kv_namespaces": [{ "binding": "SESSION", "id": "46e0503dc74c41babafb72c51b4087f9" }],
+  "durable_objects": { "bindings": [{ "name": "MONITOR", "class_name": "GymratsMonitor" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["GymratsMonitor"] }]
+}
