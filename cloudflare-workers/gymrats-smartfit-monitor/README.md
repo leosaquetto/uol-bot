@@ -19,6 +19,13 @@ iMessage network, and the requested chat returns 404. Its HTTPS gateway only
 accepts `/v1/send-offer` and `/v1/send-buyticket`, with fixed destinations.
 No Oracle file, service, account, or existing Worker was changed for this monitor.
 
+Follow-up: authenticated Beeper MCP and Desktop API on the Mac now confirm the
+exact iMessage chat. It is a local macOS integration; the Oracle profile cannot
+substitute for it. A dedicated, restricted adapter is prepared in
+`services/gymrats-beeper-relay`, and the local relay passed authenticated lookup
+(HTTP 200) and unauthenticated denial (HTTP 401). Oracle routing and Worker
+activation still await the exception to the original no-Oracle-changes scope.
+
 To enable delivery, first provide an authenticated HTTPS Beeper REST base URL
 whose `GET /v1/chats/{encoded_chat_id}` returns the exact configured iMessage ID.
 Store `BEEPER_API_URL` and `BEEPER_API_TOKEN` with `wrangler secret put`, then set
