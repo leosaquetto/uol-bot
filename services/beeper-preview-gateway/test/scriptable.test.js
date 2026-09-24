@@ -49,10 +49,11 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
     const url = await run(input);
     assert.equal(url, `https://x.com/outro_perfil/status/${ids.outro_perfil}`);
     assert.equal(sends.length, 1);
-    assert.equal(sends[0].body.preview.title, "X • @outro_perfil");
+    assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
     assert.equal(sends[0].body.preview.summary, "Legenda & texto");
     assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
-    assert.ok(sends[0].body.text.includes(url));
+    assert.equal(sends[0].body.text.includes(url), false);
+    assert.match(sends[0].body.text, /^Legenda & texto\n\n`@outro_perfil via X, \d{2}:\d{2}`\n`powered by leo saquetto sync`$/);
     assert.equal(sends[0].key, undefined);
   }
 });
@@ -72,7 +73,7 @@ test("Scriptable preserva HTML de entrada e dispensa chave idempotente", async (
   await run(profileHtml("tvglobo"));
   assert.equal(requests(), 2);
   assert.equal(sends[0].key, undefined);
-  assert.equal(sends[0].body.preview.title, "TV Globo • @tvglobo");
+  assert.equal(sends[0].body.preview.title, "TV Globo (@tvglobo) no X");
 });
 
 test("Scriptable rejeita entrada inválida antes de consultar ou enviar", async () => {
@@ -97,6 +98,7 @@ test("Scriptable para em 429 e não marca entrega ambígua como sucesso", async 
 });
 
 const avatar = "https://pbs.twimg.com/profile_images/123/avatar_200x200.jpg";
+const avatarPequeno = avatar.replace("_200x200", "_x96");
 const profileMeta = `<meta property="og:image" content="${avatar}"><meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/123/banner">`;
 
 test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
@@ -108,7 +110,7 @@ test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
 test("post sem imagem usa avatar do perfil sem consulta adicional", async () => {
   const { run, sends, requests } = setup({}, { profileMeta, post: '<meta property="og:description" content="Post só de texto">' });
   await run("@outro_perfil");
-  assert.equal(sends[0].body.preview.imageUrl, avatar);
+  assert.equal(sends[0].body.preview.imageUrl, avatarPequeno);
   assert.equal(sends[0].body.preview.summary, "Post só de texto");
   assert.equal(requests(), 3);
 });
@@ -116,7 +118,7 @@ test("post sem imagem usa avatar do perfil sem consulta adicional", async () => 
 test("imagem genérica do X ou avatar de outro perfil no post não substitui a foto do perfil consultado", async () => {
   const { run, sends } = setup({}, { profileMeta, post: '<meta property="og:description" content="Texto"><meta property="og:image" content="https://abs.twimg.com/logo.png"><meta name="twitter:image" content="https://pbs.twimg.com/profile_images/999/outra-pessoa.jpg">' });
   await run("@outro_perfil");
-  assert.equal(sends[0].body.preview.imageUrl, avatar);
+  assert.equal(sends[0].body.preview.imageUrl, avatarPequeno);
 });
 
 test("vídeo usa seu próprio frame antes do avatar", async () => {
@@ -129,5 +131,38 @@ test("vídeo usa seu próprio frame antes do avatar", async () => {
 test("sem mídia e sem avatar disponível, não envia imagem aleatória", async () => {
   const { run, sends } = setup({}, { post: '<meta property="og:description" content="Texto">' });
   await assert.rejects(run(), /nenhuma imagem utilizável/);
+  assert.equal(sends.length, 0);
+});
+
+test("texto integral longo vence metadado cortado, conserva parágrafos, emojis e links completos", async () => {
+  const texto = "Texto longo ❤️ ".repeat(700);
+  const completo = texto + "\n\nFinal & íntegro https://example.com/endereco-inteiro";
+  const post = '<meta property="og:description" content="Texto longo…">' +
+    `<article><a href="/outro_perfil/status/${ids.outro_perfil}">data</a>` +
+    `<div dir="auto" class="whitespace-pre-wrap text-body"><span>${texto}</span><br><br><span>Final &amp; íntegro </span><a href="https://example.com/endereco-inteiro">example.com/end…</a></div></article>`;
+  const { run, sends } = setup({}, { profileMeta: profileMeta + '<meta property="og:title" content="Nome Real (@outro_perfil) on X">', post });
+  await run("outro_perfil");
+  const body = sends[0].body;
+  assert.ok(body.text.startsWith(completo + "\n\n`@outro_perfil via X, "));
+  assert.ok(body.text.length > 8000);
+  assert.equal(body.preview.title, "Nome Real (@outro_perfil) no X");
+  assert.equal(Array.from(body.preview.summary).length <= 110, true);
+  assert.match(body.preview.summary, /…$/);
+  assert.equal(body.text.includes(body.link), false);
+});
+
+test("texto é extraído apenas do artigo do post, incluindo divs aninhadas", async () => {
+  const post = '<meta property="og:description" content="Resumo">' +
+    '<article><a href="/outra/status/2102952373022851234">data</a><div data-testid="tweetText">Errado</div></article>' +
+    `<article><a href="/outro_perfil/status/${ids.outro_perfil}">data</a><div data-testid="tweetText"><div>Primeiro</div>Segundo <img alt="😀" src="emoji.png"></div><div>Comentários</div></article>`;
+  const { run, sends } = setup({}, { profileMeta, post });
+  await run("outro_perfil");
+  assert.ok(sends[0].body.text.startsWith("Primeiro\nSegundo 😀\n\n"));
+  assert.equal(sends[0].body.text.includes("Comentários"), false);
+});
+
+test("metadado aparentemente cortado sem texto integral não é enviado como mensagem completa", async () => {
+  const { run, sends } = setup({}, { profileMeta, post: `<meta property="og:description" content="${"a".repeat(299)}…">` });
+  await assert.rejects(run(), /texto integral/);
   assert.equal(sends.length, 0);
 });

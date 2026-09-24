@@ -121,3 +121,26 @@ test("rota geral rejeita URL inválida, credenciais, perfis fora do formato e to
   assert.equal((await handler(request(payload, "uol-token", "/v1/send-x-post"))).status, 401);
   assert.equal(sent.length, 0);
 });
+
+test("rota geral preserva título editável e texto longo sem URL no corpo", async () => {
+  const { handler, sent, request } = setup();
+  const body = { ...payload, text: "Texto integral ❤️\n".repeat(4000).trim(),
+    preview: { ...payload.preview, title: "Nome (@tvglobo) no X", summary: "Resumo curto…" } };
+  assert.ok(Buffer.byteLength(JSON.stringify(body)) > 64 * 1024);
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.equal(sent[0].text, body.text);
+  assert.equal(sent[0].preview.title, body.preview.title);
+  assert.equal(sent[0].preview.link, link);
+  assert.equal(sent[0].preview.summary, "Resumo curto…");
+  assert.equal((await handler(request({ ...payload, text: "Sem link" }))).status, 400);
+  assert.equal((await handler(request({ ...payload, text: "a".repeat(8001) + link }))).status, 400);
+});
+
+test("somente o avatar pequeno informa dimensões 96x96; mídia mantém seu tamanho", async () => {
+  const { handler, sent, request } = setup();
+  const body = { ...payload, preview: { ...payload.preview, imageUrl: "https://pbs.twimg.com/profile_images/123/avatar_x96.jpg" } };
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.deepEqual(sent[0].preview.imgSize, { width: 96, height: 96 });
+  assert.equal((await handler(request(payload, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.equal(sent[1].preview.imgSize, undefined);
+});

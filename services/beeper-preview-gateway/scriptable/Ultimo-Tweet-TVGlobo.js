@@ -2,12 +2,15 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 6. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 7. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
 // Usa cartão com thumbnail, legenda e link. Cada execução envia novamente.
-// Thumbnail: imagem/prévia de vídeo do post; sem mídia, foto do perfil.
+// Thumbnail: mídia grande; sem mídia, usa a variante de 96px do avatar.
+// O WhatsApp decide o layout final do cartão.
+// Texto integral disponível na página; resumo curto só no cartão.
+// O horário da assinatura é o horário local do envio.
 // A configuração inicial é importada do iCloud para o Keychain.
 
 var perfil = "tvglobo";
@@ -76,8 +79,10 @@ if (ultimo === "") {
 
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
 var detalhes = await obterDetalhes(url, fotoPerfil);
-var titulo = perfil === "tvglobo" ? "TV Globo • @tvglobo" : "X • @" + perfil;
-var mensagem = "📺 " + titulo + "\n\n" + detalhes.legenda + "\n\n🔗 Abrir post:\n" + url;
+var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
+var agora = new Date();
+var hora = ("0" + agora.getHours()).slice(-2) + ":" + ("0" + agora.getMinutes()).slice(-2);
+var mensagem = detalhes.legenda + "\n\n`@" + perfil + " via X, " + hora + "`\n`powered by leo saquetto sync`";
 var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
 envio.method = "POST";
 envio.timeoutInterval = 45;
@@ -89,7 +94,7 @@ envio.headers = cabecalhos;
 envio.onRedirect = function () { return null; };
 var preview = {};
 preview.title = titulo;
-preview.summary = detalhes.legenda;
+preview.summary = resumoDoCartao(detalhes.legenda);
 preview.imageUrl = detalhes.imagem;
 var corpo = {};
 corpo.link = url;
@@ -172,6 +177,63 @@ function escolherImagem(meta, tipo) {
   return "";
 }
 
+function nomeDoPerfil(metaPost, metaPagina) {
+  var nomes = [metaPagina["og:title"], metaPagina["twitter:title"], metaPost["og:title"], metaPost["twitter:title"]];
+  var sufixo = new RegExp("^(.*?)\\s*\\(@" + perfil + "\\)(?:\\s+(?:on|no)\\s+(?:X|Twitter))?$", "i");
+  for (var i = 0; i < nomes.length; i++) {
+    var nome = String(nomes[i] || "").match(sufixo);
+    if (nome && nome[1].trim()) return nome[1].trim();
+  }
+  return perfil === "tvglobo" ? "TV Globo" : perfil;
+}
+
+function resumoDoCartao(texto) {
+  // Aproxima três linhas; a quebra final depende do WhatsApp e da tela.
+  var caracteres = Array.from(texto.replace(/\s+/g, " ").trim());
+  return caracteres.length <= 110 ? caracteres.join("") : caracteres.slice(0, 109).join("").trim() + "…";
+}
+
+function textoDoPost(pagina, linkPost) {
+  var limpa = pagina.replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
+  var artigosPost = limpa.match(/<article\b[^>]*>[\s\S]*?<\/article>/gi) || [];
+  var relativo = linkPost.replace("https://x.com", "");
+  for (var i = 0; i < artigosPost.length; i++) {
+    var artigo = artigosPost[i];
+    var enderecos = /<a\b[^>]*\shref\s*=\s*(["'])([^"']+)\1/gi;
+    var endereco;
+    var pertence = false;
+    while ((endereco = enderecos.exec(artigo)) !== null) {
+      if (endereco[2] === relativo || endereco[2] === linkPost) { pertence = true; break; }
+    }
+    if (!pertence) continue;
+    var divs = /<div\b[^>]*>/gi;
+    var div;
+    while ((div = divs.exec(artigo)) !== null) {
+      if (!/data-testid=["']tweetText["']/i.test(div[0]) &&
+          !(/dir=["']auto["']/i.test(div[0]) && /\bwhitespace-pre-wrap\b/.test(div[0]) && /\btext-body\b/.test(div[0]))) continue;
+      var tags = /<\/?div\b[^>]*>/gi;
+      tags.lastIndex = divs.lastIndex;
+      var profundidade = 1;
+      var tag;
+      while ((tag = tags.exec(artigo)) !== null) {
+        profundidade += /^<\//.test(tag[0]) ? -1 : 1;
+        if (profundidade !== 0) continue;
+        var trecho = artigo.slice(divs.lastIndex, tag.index);
+        trecho = trecho.replace(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi, function (original, atributos, conteudo) {
+          var href = atributos.match(/\bhref\s*=\s*(["'])([^"']+)\1/i);
+          // Links externos podem aparecer abreviados na página, mas o href é integral.
+          if (href && /^https?:\/\//i.test(href[2]) && !/^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)(?:\/|$)/i.test(href[2])) return href[2];
+          return conteudo;
+        });
+        trecho = trecho.replace(/<img\b[^>]*\balt\s*=\s*(["'])([^"']*)\1[^>]*>/gi, "$2");
+        trecho = trecho.replace(/<br\s*\/?\s*>|<\/(?:p|div)>/gi, "\n").replace(/<[^>]*>/g, "");
+        return decodificarHtml(trecho).trim();
+      }
+    }
+  }
+  return "";
+}
+
 async function obterDetalhes(linkPost, fotoPerfil) {
   var req = new Request(linkPost);
   req.timeoutInterval = 20;
@@ -181,14 +243,22 @@ async function obterDetalhes(linkPost, fotoPerfil) {
     throw new Error("O X não disponibilizou a legenda e a imagem. HTTP " + req.response.statusCode);
   }
   var meta = lerMetadados(pagina);
-  var legenda = (meta["og:description"] || meta["twitter:description"] || "").trim();
-  var imagem = escolherImagem(meta, "post") || fotoPerfil;
+  var textoIntegral = textoDoPost(pagina, linkPost);
+  var legenda = textoIntegral || (meta["og:description"] || meta["twitter:description"] || "").trim();
+  if (!textoIntegral && legenda.length >= 295 && /(?:…|\.\.\.)$/.test(legenda)) {
+    throw new Error("O X entregou apenas uma prévia cortada. Não foi possível obter o texto integral.");
+  }
+  var imagemPost = escolherImagem(meta, "post");
+  var imagem = imagemPost || fotoPerfil;
+  if (!imagemPost) {
+    imagem = imagem.replace(/_(?:mini|normal|bigger|reasonably_small|200x200|400x400)(\.[a-z]+)(?=[?#]|$)/i, "_x96$1");
+  }
   if (!legenda || !imagem) {
     throw new Error("O X não entregou a legenda ou nenhuma imagem utilizável do post/perfil.");
   }
-  if (legenda.length > 6000) throw new Error("A legenda excede o limite desta mensagem.");
   var detalhes = {};
   detalhes.legenda = legenda;
   detalhes.imagem = imagem;
+  detalhes.meta = meta;
   return detalhes;
 }

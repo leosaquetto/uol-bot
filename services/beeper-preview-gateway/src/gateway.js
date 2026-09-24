@@ -149,11 +149,11 @@ async function downloadPreviewImage(fetchImpl, imageUrl, directory) {
   return { path, img: pathToFileURL(path).href, imgType: contentType };
 }
 
-async function readJsonBody(request) {
+async function readJsonBody(request, maxBytes = MAX_BODY_BYTES) {
   const declared = Number(request.headers.get("Content-Length") || 0);
-  if (declared > MAX_BODY_BYTES) throw Object.assign(new Error("body_too_large"), { status: 413 });
+  if (declared > maxBytes) throw Object.assign(new Error("body_too_large"), { status: 413 });
   const text = await request.text();
-  if (Buffer.byteLength(text) > MAX_BODY_BYTES) {
+  if (Buffer.byteLength(text) > maxBytes) {
     throw Object.assign(new Error("body_too_large"), { status: 413 });
   }
   try {
@@ -425,6 +425,7 @@ export function createGateway({
 
     const tvglobo = url.pathname === "/v1/send-tvglobo";
     const personalPost = tvglobo || url.pathname === "/v1/send-x-post";
+    const generalPost = personalPost && !tvglobo;
     if (personalPost && (!tvgloboToken || !selfChatId || selfChatId === chatId)) {
       return respond(404, { code: "not_found" });
     }
@@ -443,7 +444,7 @@ export function createGateway({
 
     let payload;
     try {
-      payload = await readJsonBody(request);
+      payload = await readJsonBody(request, generalPost ? 1024 * 1024 : MAX_BODY_BYTES);
     } catch (error) {
       return respond(Number(error.status || 400), { code: error.message });
     }
@@ -460,7 +461,12 @@ export function createGateway({
       allowed = Boolean(post && (!tvglobo || (profile === "tvglobo" &&
         idempotencyKey === `tvglobo:${post[2]}:self:v1`)) &&
         payload?.preview?.imageUrl && preview.summary);
-      preview.title = profile === "tvglobo" ? "TV Globo • @tvglobo" : `X • @${profile}`;
+      preview.title = generalPost && String(payload?.preview?.title || "").trim()
+        ? preview.title
+        : profile === "tvglobo" ? "TV Globo • @tvglobo" : `X • @${profile}`;
+      if (generalPost && /^https:\/\/pbs\.twimg\.com\/profile_images\/[^?#]+_x96\.[a-z]+(?:[?#]|$)/i.test(preview.imageUrl)) {
+        preview.imgSize = { width: 96, height: 96 };
+      }
     }
     if (buyticket) {
       try {
@@ -471,7 +477,9 @@ export function createGateway({
         preview.title = "Demi Lovato • BuyTicket";
       } catch { allowed = false; }
     }
-    if (!allowed || !text || text.length > 8_000 || !text.includes(link)) {
+    // Explicit links[] keeps the card clickable even without a URL in its body.
+    // Keep the existing limits and URL requirement on the other routes.
+    if (!allowed || !text || (!generalPost && (text.length > 8_000 || !text.includes(link)))) {
       return respond(400, { code: "invalid_offer" });
     }
     if (normalizedPreview.imageOmitted) {

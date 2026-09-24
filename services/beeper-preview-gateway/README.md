@@ -39,11 +39,24 @@ Each execution checks only that profile and sends its latest post again; it does
 not schedule checks or send every post published since the last execution.
 The script and gateway impose no daily message quota; external network limits
 still apply, and HTTP 429 stops the execution without automatic retry. It
-extracts the latest own post from public profile HTML and its caption/thumbnail
-from the post's Open Graph metadata, then submits the same native preview card.
+extracts the latest own post from public profile HTML and the full text from the
+matching article on the post page. Open Graph is a fallback for short text;
+an apparently truncated description is rejected if the article is unavailable.
+External links are expanded from their HTML href. The body has no custom character
+limit on `/v1/send-x-post` (the HTTP payload ceiling is 1 MiB; network limits still
+apply). Other routes retain their existing limits.
+The native card title is `Name (@username) no X`, with an editable title and a
+summary capped at 110 Unicode code points to approximate three mobile lines.
+WhatsApp determines the final wrapping. The full body ends with inline-code
+`@username via X, HH:mm` (local sending time) and `powered by leo saquetto sync`.
+The post URL remains in the clickable preview without being appended to the body.
 The thumbnail prioritizes the post's photo or video frame. If neither is
 available, it uses the queried profile's avatar from the already downloaded
-profile page. Banners, generic X images, and other accounts' avatars are ignored.
+profile page, using the CDN's 96px variant when its size suffix is recognized.
+The gateway forwards those dimensions for avatars only; media stays unchanged.
+This does not force a compact WhatsApp layout: the bridge always uploads the
+preview image, and the recipient client ultimately chooses its presentation.
+Banners, generic X images, and other accounts' avatars are ignored.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from
 the user's Scriptable iCloud folder into Keychain and removes that bootstrap
 file. Never commit or log the real configuration. If X blocks the page, fails
