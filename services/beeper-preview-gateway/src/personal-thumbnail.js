@@ -4,7 +4,10 @@ import sharp from "sharp";
 const badge = readFileSync(new URL("../assets/pushpushpushsaquetto.svg", import.meta.url));
 
 // Preserve the supplied artwork, aspect ratio and transparency.
-export async function createPersonalThumbnail(bytes, { avatarBytes } = {}) {
+export async function createPersonalThumbnail(bytes, {
+  avatarBytes, badgeRatio = 0.36, avatarRatio = 0.16, insetRatio = 0.015,
+  shadowRatio = 0.9, shadowOpacity = 0.60,
+} = {}) {
   try {
     let base = await sharp(bytes, { limitInputPixels: 40_000_000 })
       .rotate()
@@ -21,27 +24,27 @@ export async function createPersonalThumbnail(bytes, { avatarBytes } = {}) {
         .toBuffer({ resolveWithObject: true });
     }
     const { width, height } = base.info;
-    const size = Math.max(1, Math.round(Math.min(width, height) * 0.36));
+    const size = Math.max(1, Math.round(Math.min(width, height) * badgeRatio));
     const overlay = await sharp(badge, { density: 216 }).resize({ width: size }).png()
       .toBuffer({ resolveWithObject: true });
-    const left = Math.max(0, width - overlay.info.width - Math.round(width * 0.015));
-    const top = Math.min(height - overlay.info.height, Math.round(height * 0.015));
+    const left = Math.max(0, width - overlay.info.width - Math.round(width * insetRatio));
+    const top = Math.min(height - overlay.info.height, Math.round(height * insetRatio));
     const layers = [{ input: overlay.data, top, left }];
     if (avatarBytes) {
       try {
-        const diameter = Math.max(1, Math.round(Math.min(width, height) * 0.16));
-        const avatarLeft = Math.round(width * 0.015);
-        const avatarTop = height - diameter - Math.round(height * 0.015);
+        const diameter = Math.max(1, Math.round(Math.min(width, height) * avatarRatio));
+        const avatarLeft = Math.round(width * insetRatio);
+        const avatarTop = height - diameter - Math.round(height * insetRatio);
         const radius = diameter / 2;
         const mask = Buffer.from(`<svg width="${diameter}" height="${diameter}"><circle cx="${radius}" cy="${radius}" r="${radius}" fill="white"/></svg>`);
         const avatar = await sharp(avatarBytes, { limitInputPixels: 16_000_000 })
           .rotate().resize(diameter, diameter, { fit: "cover" }).ensureAlpha()
           .composite([{ input: mask, blend: "dest-in" }]).png().toBuffer();
         const shadow = Buffer.from(`<svg width="${width}" height="${height}">
-          <defs><radialGradient id="shadow"><stop offset="0" stop-color="black" stop-opacity="0.60"/>
-          <stop offset="0.55" stop-color="black" stop-opacity="0.42"/>
+          <defs><radialGradient id="shadow"><stop offset="0" stop-color="black" stop-opacity="${shadowOpacity}"/>
+          <stop offset="0.55" stop-color="black" stop-opacity="${(shadowOpacity * 0.7).toFixed(2)}"/>
           <stop offset="1" stop-color="black" stop-opacity="0"/></radialGradient></defs>
-          <circle cx="${avatarLeft + radius}" cy="${avatarTop + radius}" r="${diameter * 0.9}" fill="url(#shadow)"/>
+          <circle cx="${avatarLeft + radius}" cy="${avatarTop + radius}" r="${diameter * shadowRatio}" fill="url(#shadow)"/>
         </svg>`);
         layers.push({ input: shadow, top: 0, left: 0 }, { input: avatar, top: avatarTop, left: avatarLeft });
       } catch {

@@ -58,21 +58,25 @@ export function startWhatsApp({ store, onQr = () => {}, logger = console, socket
     state: () => state,
     isReady: () => state === 'connected',
     socket: () => socket,
+    ownDestination: () => ({type:'contact',jid:jidNormalizedUser(socket?.user?.id || ''),verified:state==='connected'}),
     async verifyDestination(destination) {
       if (state !== 'connected') throw new Error('whatsapp_not_ready');
       const me = jidNormalizedUser(socket.user?.id || '');
       if (destination.type === 'group') {
         const group = await socket.groupMetadata(destination.jid);
+        const ownIds=[me,jidNormalizedUser(socket.user?.lid || '')].filter(Boolean);
         const mine = group.participants.find(p => [jidNormalizedUser(p.id),jidNormalizedUser(p.phoneNumber || '')]
-          .some(id => id === me || id === jidNormalizedUser(socket.user?.lid || '')));
+          .some(id => id && ownIds.includes(id)));
         if (!mine || (group.announce && !mine.admin)) throw new Error('destination_not_writable');
-        return true;
+        return {writable:true,type:'group',name:group.subject,
+          community:group.isCommunity===true,communityAnnouncements:group.isCommunityAnnounce===true,
+          announcementOnly:group.announce===true};
       }
       if (destination.type === 'contact') {
-        if (destination.jid === me) return true;
+        if (destination.jid === me) return {writable:true,type:'contact',self:true};
         const results = await socket.onWhatsApp(destination.jid);
         if (!results?.some(r => r.exists && r.jid === destination.jid)) throw new Error('contact_unverified');
-        return true;
+        return {writable:true,type:'contact',self:false};
       }
       // Channel publication stays closed until its real permission + preview pilot.
       throw new Error('channel_pilot_required');

@@ -47,6 +47,11 @@ export function matchRules(config, post) {
   return [...matches];
 }
 
+// Saved destinations can remain unused; only routed identities gate activation.
+export function routedDestinationsVerified(config) {
+  return config.rules.every(rule => rule.destinations.every(key => config.destinations[key]?.verified === true));
+}
+
 export function loadConfig(path, previous) {
   try { return { config: validateConfig(JSON.parse(readFileSync(path, 'utf8'))), error: null }; }
   catch (e) {

@@ -9,7 +9,7 @@ export function openStore(path, { recover = true } = {}) {
   mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
   const db = new DatabaseSync(path);
   chmodSync(path, 0o600);
-  db.exec(`PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000;
+  db.exec(`PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000;
     CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS push_events(
       id TEXT PRIMARY KEY, received_at TEXT NOT NULL, payload TEXT NOT NULL,
@@ -64,9 +64,11 @@ export function openStore(path, { recover = true } = {}) {
     },
     job(id) { return db.prepare('SELECT * FROM jobs WHERE id=?').get(id); },
     jobByKey(key) { return db.prepare('SELECT * FROM jobs WHERE dedup_key=?').get(key); },
-    claim(now = Date.now()) {
+    claim(now = Date.now(), {pilotOnly=false,allowPilot=true} = {}) {
       return transaction(() => {
-        const row = db.prepare("SELECT * FROM jobs WHERE state='queued' AND available_at<=? ORDER BY priority,created_at LIMIT 1").get(now);
+        const row = db.prepare("SELECT * FROM jobs WHERE state='queued' AND available_at<=?"+
+          (pilotOnly?" AND json_extract(payload,'$.pilot')=1":allowPilot?"":" AND COALESCE(json_extract(payload,'$.pilot'),0)!=1")+
+          " ORDER BY priority,created_at LIMIT 1").get(now);
         if (!row) return null;
         const messageId = randomUUID().replaceAll('-', '').toUpperCase();
         db.prepare("UPDATE jobs SET state='dispatching',message_id=?,attempts=attempts+1,updated_at=? WHERE id=?")

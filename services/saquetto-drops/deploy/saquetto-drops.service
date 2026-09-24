@@ -1,6 +1,6 @@
 [Unit]
 Description=Saquetto Drops push pilot and delivery queue
-After=network-online.target saquetto-drops-browser.service
+After=network-online.target
 Wants=network-online.target
 
 [Service]

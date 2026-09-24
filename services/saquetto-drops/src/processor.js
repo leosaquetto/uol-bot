@@ -2,7 +2,7 @@ import { matchRules } from './config.js';
 import { postFromPush } from './push.js';
 import { formatPost, fetchPost } from './x-post.js';
 
-export function createProcessor({ store, getConfig, getContext, readPost = fetchPost }) {
+export function createProcessor({ store, getConfig, getContext, readPost = fetchPost, decodeEvent = value => value }) {
   let busy = false;
   return async () => {
     if (busy) return;
@@ -13,7 +13,9 @@ export function createProcessor({ store, getConfig, getContext, readPost = fetch
       while ((event = store.nextEvent())) {
         store.updateEvent(event.id,'processing');
         const config = getConfig();
-        const push = JSON.parse(event.payload);
+        let push;
+        try {push = decodeEvent(JSON.parse(event.payload));}
+        catch {store.updateEvent(event.id,'pending_review','push_decode_failed');continue;}
         const post = postFromPush(push);
         if (!post) { store.updateEvent(event.id,'pending_review','post_identity_missing'); continue; }
         if (!config.sources.includes(post.author)) { store.updateEvent(event.id,'ignored','unconfigured_author'); continue; }

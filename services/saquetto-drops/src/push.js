@@ -1,5 +1,3 @@
-import { chromium } from 'playwright-core';
-
 export function acceptedPush(event) {
   return event && ['https://x.com', 'https://twitter.com'].includes(event.origin) &&
     ['pushMessaging', 'notifications'].includes(event.service) &&
@@ -23,6 +21,7 @@ export function postFromPush(event) {
 }
 
 export async function observePush({ endpoint, store, onEvent = () => {}, logger = console }) {
+  const { chromium } = await import('playwright-core');
   const browser = await chromium.connectOverCDP(endpoint, { timeout: 10_000 });
   const context = browser.contexts()[0];
   const page = context.pages()[0] || await context.newPage();

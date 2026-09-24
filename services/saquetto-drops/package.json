@@ -13,8 +13,13 @@
   },
   "dependencies": {
     "@whiskeysockets/baileys": "7.0.0-rc14",
+    "acorn": "8.18.0",
+    "http_ece": "1.2.1",
     "linkedom": "0.18.12",
     "playwright-core": "1.63.0",
     "sharp": "0.35.4"
+  },
+  "devDependencies": {
+    "qrcode": "1.5.4"
   }
 }

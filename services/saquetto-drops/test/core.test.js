@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,readFileSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {validateConfig,loadConfig,matchRules} from '../src/config.js';
+import {validateConfig,loadConfig,matchRules,routedDestinationsVerified} from '../src/config.js';
 import {openStore} from '../src/store.js';
 import {sqliteAuth} from '../src/auth.js';
 import {acceptedPush,postFromPush} from '../src/push.js';
@@ -11,6 +11,7 @@ import {canonicalPost,parsePost,formatPost,allowedImage,readLimited} from '../sr
 import {createProcessor} from '../src/processor.js';
 import {createSender} from '../src/sender.js';
 import {acquireLock} from '../src/process-lock.js';
+import {createPilot} from '../src/pilot.js';
 
 const example=JSON.parse(readFileSync(new URL('../config.example.json',import.meta.url),'utf8'));
 const config=()=>{
@@ -40,6 +41,16 @@ test('rules normalize case and accents, combine terms and destinations, exclude 
   assert.deepEqual(matchRules(c,post),['lover-tour']);
   for(const p of [{...post,type:'reply'},{...post,type:'repost'},{...post,author:'unrelated'},{...post,text:'plantao album cancelado'}])assert.deepEqual(matchRules(c,p),[]);
   assert.deepEqual(matchRules(c,{...post,type:'quote'}),['lover-tour']);
+});
+test('saved destinations do not route or block activation until referenced by a rule',()=>{
+  const c=config();c.destinations['future-group']={type:'group',jid:'777@g.us',verified:false};
+  validateConfig(c);
+  assert.equal(routedDestinationsVerified(c),true);
+  assert.deepEqual(matchRules(c,post),['lover-tour']);
+  c.rules[0].destinations.push('future-group');
+  assert.equal(routedDestinationsVerified(c),false);
+  c.destinations['future-group'].verified=true;
+  assert.equal(routedDestinationsVerified(c),true);
 });
 test('push identity is exact, foreign origins and conflicting links fail closed',()=>{
   assert.equal(acceptedPush(event),true);assert.equal(acceptedPush({...event,origin:'https://evil.test'}),false);
@@ -142,4 +153,62 @@ test('destination removed, replaced or unverified during preparation prevents di
       await run();assert.equal(sends,0);assert.equal(f.store.job(job.id).state,'queued');
     } finally {f.close();}
   }
+});
+
+test('explicit pilot sends only a stored notified post to fixed destinations while automation stays paused',async()=>{
+  const f=fixture();const c=config();let sends=0,enabled=true;
+  const whatsapp={isReady:()=>true,ownDestination:()=>({type:'contact',jid:'123@s.whatsapp.net',verified:true}),verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+  const pilot=createPilot({store:f.store,getConfig:()=>c,whatsapp,enabled:()=>enabled,decodeEvent:e=>e,readPost:async()=>post});
+  try{
+    const {id:eventId}=f.store.recordPush(event);
+    const automatic=f.store.enqueue({key:'auto',destination:'12345@g.us',payload:{destinationAlias:'lover-tour',text:'automatic'},priority:-1});
+    await assert.rejects(pilot.enqueue({alias:'arbitrary',eventId}),/not_allowed/);
+    await assert.rejects(pilot.enqueue({alias:'self',eventId:'0'.repeat(64)}),/not_found/);
+    const job=await pilot.enqueue({alias:'self',eventId});
+    assert.equal((await pilot.enqueue({alias:'self',eventId})).id,job.id);
+    const run=createSender({store:f.store,getConfig:()=>c,whatsapp,canSend:()=>false,canPilot:()=>enabled,prepare:async()=>({text:'pilot'})});
+    await run();assert.equal(sends,1);assert.equal(f.store.job(job.id).state,'unknown');assert.equal(f.store.job(automatic.id).state,'queued');
+    f.store.setSetting('last_dispatch_at','0');await run();assert.equal(sends,1);
+    await assert.rejects(pilot.enqueue({alias:'self',eventId,revision:'bad/revision'}),/invalid_revision/);
+    const revision=await pilot.enqueue({alias:'self',eventId,revision:'visual-v2'});
+    assert.notEqual(revision.id,job.id);
+    assert.equal((await pilot.enqueue({alias:'self',eventId,revision:'visual-v2'})).id,revision.id);
+    assert.equal(f.store.job(job.id).state,'unknown');
+    enabled=false;await assert.rejects(pilot.enqueue({alias:'lover-tour',eventId}),/disabled/);
+  }finally{f.close();}
+});
+
+test('self-only pilot blocks group enqueue and dispatch of an existing group pilot job',async()=>{
+  const f=fixture();const c=config();let sends=0;
+  const enabled=alias=>!alias||alias==='self';
+  const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+  const pilot=createPilot({store:f.store,getConfig:()=>c,whatsapp,enabled,decodeEvent:e=>e,readPost:async()=>post});
+  try {
+    const {id:eventId}=f.store.recordPush(event);
+    await assert.rejects(pilot.enqueue({alias:'lover-tour',eventId}),/pilot_disabled/);
+    const job=f.store.enqueue({key:'group-pilot',destination:'12345@g.us',payload:{destinationAlias:'lover-tour',pilot:true,text:'blocked'}});
+    const run=createSender({store:f.store,getConfig:()=>c,whatsapp,canSend:()=>false,canPilot:enabled});
+    await run();assert.equal(sends,0);assert.equal(f.store.job(job.id).state,'failed');
+    assert.equal(f.store.job(job.id).code,'pilot_destination_not_allowed');
+  } finally {f.close();}
+});
+
+test('pilot cannot target groups or other contacts even with permissive gates and matching rules',async()=>{
+  const f=fixture();const c=config();let sends=0;
+  const whatsapp={isReady:()=>true,ownDestination:()=>({type:'contact',jid:'123@s.whatsapp.net',verified:true}),
+    verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+  const makePilot=readPost=>createPilot({store:f.store,getConfig:()=>c,whatsapp,enabled:()=>true,decodeEvent:e=>e,readPost});
+  try {
+    const eventId=f.store.recordPush(event).id;
+    let reads=0;const pilot=makePilot(async()=>{reads++;return post;});
+    for(const alias of ['lover-tour','another-contact']){
+      await assert.rejects(pilot.enqueue({alias,eventId}),/pilot_destination_not_allowed/);
+    }
+    assert.equal(reads,0);
+    const job=f.store.enqueue({key:'legacy-group-pilot',destination:'12345@g.us',payload:{destinationAlias:'lover-tour',pilot:true,text:'blocked'}});
+    const run=createSender({store:f.store,getConfig:()=>c,whatsapp,canSend:()=>false,canPilot:()=>true,
+      prepare:async()=>{throw new Error('must_not_prepare_group_test');}});
+    await run();assert.equal(sends,0);assert.equal(f.store.job(job.id).state,'failed');
+    assert.equal(f.store.job(job.id).code,'pilot_destination_not_allowed');
+  } finally {f.close();}
 });

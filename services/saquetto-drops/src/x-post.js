@@ -1,4 +1,5 @@
 import { parseHTML } from 'linkedom';
+import { structuredPost } from './x-records.js';
 
 export function canonicalPost(value) {
   const m = String(value || '').match(/^https:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/([a-zA-Z0-9_]{1,15})\/status\/(\d{10,25})(?:\?[^#]*)?$/);
@@ -19,6 +20,8 @@ export function allowedImage(value, avatar = false) {
 export function parsePost(html, target) {
   const identity = canonicalPost(target);
   const { document } = parseHTML(html);
+  const record=structuredPost(document,identity);
+  if(record)return {...record,imageUrl:allowedImage(record.imageUrl),avatarUrl:allowedImage(record.avatarUrl,true)};
   for (const e of document.querySelectorAll('script,style')) e.remove();
   const articles = [...document.querySelectorAll('article')];
   const firstIdentity = article => {
