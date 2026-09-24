@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 8. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 9. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
@@ -11,7 +11,7 @@
 // O WhatsApp decide o layout final do cartão.
 // Texto integral disponível na página; resumo curto só no cartão.
 // Link antes do powered: o WhatsApp iOS oculta o cartão sem a URL no corpo.
-// O horário da assinatura é o horário local do envio.
+// Padrão: título em negrito, texto em monoespaçado, link e crédito.
 // A configuração inicial é importada do iCloud para o Keychain.
 
 var perfil = "tvglobo";
@@ -81,9 +81,12 @@ if (ultimo === "") {
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
 var detalhes = await obterDetalhes(url, fotoPerfil);
 var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
-var agora = new Date();
-var hora = ("0" + agora.getHours()).slice(-2) + ":" + ("0" + agora.getMinutes()).slice(-2);
-var mensagem = detalhes.legenda + "\n\n`@" + perfil + " via X, " + hora + "`\n" + url + "\n`powered by @leosaquetto`";
+// O Beeper recebe Markdown: ** vira negrito no WhatsApp.
+// Cada linha recebe seu próprio código para preservar parágrafos.
+var legendaFormatada = detalhes.legenda.split("\n").map(function (linha) {
+  return linha ? "`" + linha + "`" : "";
+}).join("\n");
+var mensagem = "ㅤ\n**" + titulo + "**\n" + legendaFormatada + "\n\n🔗 " + url + "\n\n`powered by @leosaquetto`";
 var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
 envio.method = "POST";
 envio.timeoutInterval = 45;

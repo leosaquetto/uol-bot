@@ -52,8 +52,7 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
     assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
     assert.equal(sends[0].body.preview.summary, "Legenda & texto");
     assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
-    assert.match(sends[0].body.text.split(url)[0], /^Legenda & texto\n\n`@outro_perfil via X, \d{2}:\d{2}`\n$/);
-    assert.ok(sends[0].body.text.endsWith(url + "\n`powered by @leosaquetto`"));
+    assert.equal(sends[0].body.text, "ㅤ\n**outro_perfil (@outro_perfil) no X**\n`Legenda & texto`\n\n🔗 " + url + "\n\n`powered by @leosaquetto`");
     assert.equal(sends[0].body.text.split(url).length, 2);
     assert.equal(sends[0].key, undefined);
   }
@@ -144,7 +143,7 @@ test("texto integral longo vence metadado cortado, conserva parágrafos, emojis 
   const { run, sends } = setup({}, { profileMeta: profileMeta + '<meta property="og:title" content="Nome Real (@outro_perfil) on X">', post });
   await run("outro_perfil");
   const body = sends[0].body;
-  assert.ok(body.text.startsWith(completo + "\n\n`@outro_perfil via X, "));
+  assert.ok(body.text.startsWith("ㅤ\n**Nome Real (@outro_perfil) no X**\n" + completo.split("\n").map(line => line ? "`" + line + "`" : "").join("\n") + "\n\n🔗 "));
   assert.ok(body.text.length > 8000);
   assert.equal(body.preview.title, "Nome Real (@outro_perfil) no X");
   assert.equal(Array.from(body.preview.summary).length <= 110, true);
@@ -158,7 +157,7 @@ test("texto é extraído apenas do artigo do post, incluindo divs aninhadas", as
     `<article><a href="/outro_perfil/status/${ids.outro_perfil}">data</a><div data-testid="tweetText"><div>Primeiro</div>Segundo <img alt="😀" src="emoji.png"></div><div>Comentários</div></article>`;
   const { run, sends } = setup({}, { profileMeta, post });
   await run("outro_perfil");
-  assert.ok(sends[0].body.text.startsWith("Primeiro\nSegundo 😀\n\n"));
+  assert.ok(sends[0].body.text.includes("\n`Primeiro`\n`Segundo 😀`\n\n🔗 "));
   assert.equal(sends[0].body.text.includes("Comentários"), false);
 });
 
