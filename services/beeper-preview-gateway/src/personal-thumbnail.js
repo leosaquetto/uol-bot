@@ -16,8 +16,8 @@ export async function createPersonalThumbnail(bytes) {
     const size = Math.max(1, Math.round(Math.min(width, height) * 0.36));
     const overlay = await sharp(badge).resize({ width: size }).png()
       .toBuffer({ resolveWithObject: true });
-    const left = Math.max(0, width - overlay.info.width - Math.round(width * 0.04));
-    const top = Math.min(height - overlay.info.height, Math.round(height * 0.03));
+    const left = Math.max(0, width - overlay.info.width - Math.round(width * 0.015));
+    const top = Math.min(height - overlay.info.height, Math.round(height * 0.015));
     const output = await sharp(base.data)
       .composite([{ input: overlay.data, top, left }])
       .jpeg({ quality: 92, chromaSubsampling: "4:4:4" })

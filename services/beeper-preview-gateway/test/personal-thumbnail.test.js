@@ -15,7 +15,7 @@ test("selo preserva avatar 400x400 e mantém margens no topo e à direita", asyn
   }
   assert.ok(pixel(200, 200)[2] > 120 && pixel(200, 200)[0] < 30, "photo outside badge is retained");
   let dark = 0, white = 0, enlargedArea = 0;
-  for (let y = 12; y < 82; y++) for (let x = 240; x < 384; x++) {
+  for (let y = 6; y < 76; y++) for (let x = 250; x < 394; x++) {
     if (pixel(x, y).every(v => v < 70)) dark++;
     if (pixel(x, y).every(v => v > 230)) white++;
     if (x < 280 && pixel(x, y).every(v => v > 230)) enlargedArea++;

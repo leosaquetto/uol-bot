@@ -67,8 +67,8 @@ avatar is available, the message is sent without a card.
 For `/v1/send-x-post` only, Sharp composites the supplied
 `assets/pushpushpushsaquetto.svg` over the image. The supplied artwork and transparency are
 preserved; badge width is 36% of the shorter side, with its original aspect ratio.
-It sits at the top right: right margin is 4% of image width and top margin is
-3% of image height. Images retain their aspect ratio, are never
+It sits at the top right: right margin is 1.5% of image width and top margin is
+1.5% of image height. Images retain their aspect ratio, are never
 upscaled, and are limited to 1600px on either axis before JPEG export at quality
 92. The original image is not modified. Other routes retain their image bytes.
 Banners and generic X images are ignored. Older clients still receive a missing
