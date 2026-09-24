@@ -52,8 +52,9 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
     assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
     assert.equal(sends[0].body.preview.summary, "Legenda & texto");
     assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
-    assert.equal(sends[0].body.text.includes(url), false);
-    assert.match(sends[0].body.text, /^Legenda & texto\n\n`@outro_perfil via X, \d{2}:\d{2}`\n`powered by leo saquetto sync`$/);
+    assert.match(sends[0].body.text.split(url)[0], /^Legenda & texto\n\n`@outro_perfil via X, \d{2}:\d{2}`\n$/);
+    assert.ok(sends[0].body.text.endsWith(url + "\n`powered by @leosaquetto`"));
+    assert.equal(sends[0].body.text.split(url).length, 2);
     assert.equal(sends[0].key, undefined);
   }
 });
@@ -148,7 +149,7 @@ test("texto integral longo vence metadado cortado, conserva parágrafos, emojis 
   assert.equal(body.preview.title, "Nome Real (@outro_perfil) no X");
   assert.equal(Array.from(body.preview.summary).length <= 110, true);
   assert.match(body.preview.summary, /…$/);
-  assert.equal(body.text.includes(body.link), false);
+  assert.equal(body.text.split(body.link).length, 2);
 });
 
 test("texto é extraído apenas do artigo do post, incluindo divs aninhadas", async () => {

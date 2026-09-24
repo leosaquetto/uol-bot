@@ -122,18 +122,27 @@ test("rota geral rejeita URL inválida, credenciais, perfis fora do formato e to
   assert.equal(sent.length, 0);
 });
 
-test("rota geral preserva título editável e texto longo sem URL no corpo", async () => {
+test("rota geral preserva título e texto longo, acrescentando URL para o WhatsApp exibir o cartão", async () => {
   const { handler, sent, request } = setup();
   const body = { ...payload, text: "Texto integral ❤️\n".repeat(4000).trim(),
     preview: { ...payload.preview, title: "Nome (@tvglobo) no X", summary: "Resumo curto…" } };
   assert.ok(Buffer.byteLength(JSON.stringify(body)) > 64 * 1024);
   assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
-  assert.equal(sent[0].text, body.text);
+  assert.equal(sent[0].text, body.text + "\n\n" + link);
   assert.equal(sent[0].preview.title, body.preview.title);
   assert.equal(sent[0].preview.link, link);
   assert.equal(sent[0].preview.summary, "Resumo curto…");
+  assert.equal((await handler(request({ ...body, text: body.text + "\n\n" + link }, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.equal(sent[1].text, sent[0].text);
   assert.equal((await handler(request({ ...payload, text: "Sem link" }))).status, 400);
   assert.equal((await handler(request({ ...payload, text: "a".repeat(8001) + link }))).status, 400);
+});
+
+test("cliente antigo recebe URL antes da assinatura e powered-by atualizado", async () => {
+  const { handler, sent, request } = setup();
+  const body = { ...payload, text: "Texto\n\n`@tvglobo via X, 00:34`\n`powered by leo saquetto sync`" };
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.equal(sent[0].text, "Texto\n\n`@tvglobo via X, 00:34`\n" + link + "\n`powered by @leosaquetto`");
 });
 
 test("somente o avatar pequeno informa dimensões 96x96; mídia mantém seu tamanho", async () => {

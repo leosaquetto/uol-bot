@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 7. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 8. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
@@ -10,6 +10,7 @@
 // Thumbnail: mídia grande; sem mídia, usa a variante de 96px do avatar.
 // O WhatsApp decide o layout final do cartão.
 // Texto integral disponível na página; resumo curto só no cartão.
+// Link antes do powered: o WhatsApp iOS oculta o cartão sem a URL no corpo.
 // O horário da assinatura é o horário local do envio.
 // A configuração inicial é importada do iCloud para o Keychain.
 
@@ -82,7 +83,7 @@ var detalhes = await obterDetalhes(url, fotoPerfil);
 var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
 var agora = new Date();
 var hora = ("0" + agora.getHours()).slice(-2) + ":" + ("0" + agora.getMinutes()).slice(-2);
-var mensagem = detalhes.legenda + "\n\n`@" + perfil + " via X, " + hora + "`\n`powered by leo saquetto sync`";
+var mensagem = detalhes.legenda + "\n\n`@" + perfil + " via X, " + hora + "`\n" + url + "\n`powered by @leosaquetto`";
 var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
 envio.method = "POST";
 envio.timeoutInterval = 45;

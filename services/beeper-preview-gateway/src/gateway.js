@@ -449,7 +449,7 @@ export function createGateway({
       return respond(Number(error.status || 400), { code: error.message });
     }
     const link = String(payload?.link || "").trim();
-    const text = String(payload?.text || "").trim();
+    let text = String(payload?.text || "").trim();
     const normalizedPreview = normalizePreview(payload, link, personalPost ? allowedTVGloboImageUrl : allowedImageUrl);
     const preview = normalizedPreview.preview;
     const buyticket = url.pathname === "/v1/send-buyticket";
@@ -477,7 +477,6 @@ export function createGateway({
         preview.title = "Demi Lovato • BuyTicket";
       } catch { allowed = false; }
     }
-    // Explicit links[] keeps the card clickable even without a URL in its body.
     // Keep the existing limits and URL requirement on the other routes.
     if (!allowed || !text || (!generalPost && (text.length > 8_000 || !text.includes(link)))) {
       return respond(400, { code: "invalid_offer" });
@@ -489,6 +488,17 @@ export function createGateway({
         code: "preview_image_url_not_allowed",
       });
       return respond(400, { code: "preview_image_url_not_allowed" });
+    }
+    // WhatsApp iOS hides the preview if its URL is absent from the body.
+    // Keep the URL before the final powered-by line, including older clients.
+    if (generalPost) {
+      text = text.replace(/\n`powered by leo saquetto sync`$/, "\n`powered by @leosaquetto`");
+      if (!text.includes(link)) {
+        const footer = text.match(/\n`powered by [^`\n]+`$/);
+        text = footer
+          ? `${text.slice(0, footer.index)}\n${link}${footer[0]}`
+          : `${text}\n\n${link}`;
+      }
     }
 
     const normalized = {

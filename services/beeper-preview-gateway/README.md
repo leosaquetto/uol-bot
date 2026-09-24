@@ -48,8 +48,11 @@ apply). Other routes retain their existing limits.
 The native card title is `Name (@username) no X`, with an editable title and a
 summary capped at 110 Unicode code points to approximate three mobile lines.
 WhatsApp determines the final wrapping. The full body ends with inline-code
-`@username via X, HH:mm` (local sending time) and `powered by leo saquetto sync`.
-The post URL remains in the clickable preview without being appended to the body.
+`@username via X, HH:mm` (local sending time), the post URL, then inline-code
+`powered by @leosaquetto`. A real iPhone test showed that omitting the URL hides the entire card even
+when Beeper and the WhatsApp bridge confirm delivery with preview metadata.
+The gateway inserts a missing URL before the final powered-by line for older
+Scriptable clients as well, and updates the old signature wording.
 The thumbnail prioritizes the post's photo or video frame. If neither is
 available, it uses the queried profile's avatar from the already downloaded
 profile page, using the CDN's 96px variant when its size suffix is recognized.
