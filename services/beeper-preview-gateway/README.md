@@ -49,7 +49,7 @@ The native card title is `Name (@username) no X`, with an editable title and a
 summary capped at 110 Unicode code points to approximate three mobile lines.
 WhatsApp determines the final wrapping. The body follows the user's `embed.txt`
 model: quoted monospace post text, `𝕏 Name (@username) no X, HH:mm`, then a quoted
-monospace `https://x.com/username/status/id` link. The timestamp is the publication time
+monospace `https://x.com/username/status/id?s=46` link. The timestamp is the publication time
 decoded from the post's Snowflake ID, displayed in America/Sao_Paulo. There is no
 top spacer, extra blank line between sections, separate heading, or credit footer.
 Nonempty post lines retain their text and order; empty spacer lines are removed.
@@ -57,7 +57,8 @@ Scriptable supplies
 `format: "whatsapp"`; only the general personal route forwards `formatText: false`
 to Beeper, avoiding extra breaks introduced by Markdown-to-HTML conversion.
 Other clients and routes keep their existing formatting behavior. The preview's
-matched URL is the full HTTPS URL. A device test showed that omitting the scheme
+matched URL is the full HTTPS URL with the requested `?s=46` share suffix.
+Fetching the original X post still uses the canonical URL without that suffix. A device test showed that omitting the scheme
 hides the preview even when its metadata and image are delivered.
 Media posts keep their thumbnail. Without post media the production gateway
 omits the preview entirely; profile avatars are not sent automatically. A compact

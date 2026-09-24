@@ -188,3 +188,16 @@ test("modelo nativo mantém URL HTTPS completa uma vez e associa a mídia à mes
   assert.equal(sent[0].preview.link, displayedLink);
   assert.ok(sent[0].preview.img);
 });
+
+test("rota pessoal geral aceita somente o sufixo compartilhado s=46 e conserva preview igual ao link", async () => {
+  const { handler, sent, request } = setup();
+  const shared = link + "?s=46";
+  const body = { ...payload, format: "whatsapp", link: shared, text: "> ```" + shared + "```" };
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.equal(sent[0].preview.link, shared);
+  assert.equal(sent[0].text, body.text);
+  for (const suffix of ["?s=47", "?s=46&chat=group", "?s=46?s=46"]) {
+    assert.equal((await handler(request({ ...body, link: link + suffix }, "tvglobo-token", "/v1/send-x-post"))).status, 400);
+  }
+  assert.equal((await handler(request(body))).status, 400);
+});

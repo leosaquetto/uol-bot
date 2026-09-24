@@ -79,6 +79,7 @@ if (ultimo === "") {
 
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
 var detalhes = await obterDetalhes(url);
+url += "?s=46";
 var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
 // Sintaxe nativa: evita as quebras extras da conversão Markdown do Beeper.
 // O timestamp está codificado no ID Snowflake do próprio post (não é hora do envio).

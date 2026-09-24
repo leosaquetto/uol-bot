@@ -457,7 +457,8 @@ export function createGateway({
     const destinationChatId = personalPost ? selfChatId : buyticket ? buyticketChatId : chatId;
     let allowed = allowedOfferUrl(link);
     if (personalPost) {
-      const post = link.match(/^https:\/\/x\.com\/([a-z0-9_]{1,15})\/status\/(\d{10,25})$/);
+      const canonicalLink = generalPost ? link.replace(/\?s=46$/, "") : link;
+      const post = canonicalLink.match(/^https:\/\/x\.com\/([a-z0-9_]{1,15})\/status\/(\d{10,25})$/);
       const profile = post?.[1];
       allowed = Boolean(post && (!tvglobo || (profile === "tvglobo" &&
         idempotencyKey === `tvglobo:${post[2]}:self:v1`)) &&

@@ -47,7 +47,7 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
   for (const input of ["@Outro_Perfil", "outro_perfil", " https://x.com/outro_perfil/ ", "https://twitter.com/outro_perfil"]) {
     const { run, sends } = setup();
     const url = await run(input);
-    assert.equal(url, `https://x.com/outro_perfil/status/${ids.outro_perfil}`);
+    assert.equal(url, `https://x.com/outro_perfil/status/${ids.outro_perfil}?s=46`);
     assert.equal(sends.length, 1);
     assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
     assert.equal(sends[0].body.preview.summary, "Legenda & texto");
@@ -174,7 +174,7 @@ test("post sem mídia mantém texto integral e usa URL entre crases, sem espaça
   const { run, sends } = setup({}, { post: '<meta property="og:description" content="Texto com ``` literal">' });
   await run();
   assert.ok(sends[0].body.text.includes("> ```Texto com ``` literal```\n> 𝕏 "));
-  assert.ok(sends[0].body.text.endsWith("> ```https://x.com/tvglobo/status/" + ids.tvglobo + "```"));
+  assert.ok(sends[0].body.text.endsWith("> ```https://x.com/tvglobo/status/" + ids.tvglobo + "?s=46```"));
   assert.equal(sends[0].body.text.includes("push by"), false);
   assert.equal(sends[0].body.text.includes("\n\n"), false);
   assert.equal(sends[0].body.text.startsWith("> ```"), true);
