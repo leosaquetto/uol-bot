@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "sources": ["taylorswift13", "taylorswiftbr", "updateswiftbr"],
+  "destinations": {
+    "lover-tour": { "type": "group", "jid": "REPLACE_WITH_VERIFIED_GROUP_JID@g.us", "verified": false }
+  },
+  "rules": [{
+    "id": "lover-tour-posts",
+    "sources": ["taylorswift13", "taylorswiftbr", "updateswiftbr"],
+    "types": ["post", "quote"],
+    "any": [], "all": [], "none": [],
+    "destinations": ["lover-tour"]
+  }],
+  "operation": { "paused": true, "dryRun": true, "minDelayMs": 5000 }
+}

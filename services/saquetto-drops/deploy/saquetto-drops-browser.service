@@ -1,0 +1,23 @@
+[Unit]
+Description=Saquetto Drops dedicated X push browser
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=saquetto-drops
+Group=saquetto-drops
+Environment=HOME=/var/lib/saquetto-drops
+ExecStart=/usr/bin/google-chrome --headless=new --no-first-run --no-default-browser-check --disable-dev-shm-usage --remote-debugging-address=127.0.0.1 --remote-debugging-port=9225 --user-data-dir=/var/lib/saquetto-drops/browser about:blank
+Restart=on-failure
+RestartSec=10
+UMask=0077
+PrivateTmp=true
+MemoryHigh=300M
+MemoryMax=400M
+# Chromium can log URLs/session metadata. The observer emits sanitized health instead.
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target

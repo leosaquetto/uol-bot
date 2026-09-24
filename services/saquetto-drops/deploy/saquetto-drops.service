@@ -1,0 +1,25 @@
+[Unit]
+Description=Saquetto Drops push pilot and delivery queue
+After=network-online.target saquetto-drops-browser.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=saquetto-drops
+Group=saquetto-drops
+WorkingDirectory=/opt/saquetto-drops
+EnvironmentFile=/etc/saquetto-drops/service.env
+ExecStart=/usr/local/bin/node src/server.js
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/saquetto-drops
+MemoryHigh=180M
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target
