@@ -1,5 +1,18 @@
 # Pilot evidence — 2026-09-24
 
+## Additional live route — EV SANCTUARY
+
+- Added `ev-sanctuary-posts`: `evawebsite`, `evanescence`, `amyleeev`, `gamesofev`,
+  types `post`/`quote`, no text filters, destination `ev-sanctuary`.
+- Evanescence was already followed with post notifications enabled. EvaWebsite,
+  AmyLeeEV and GamesOfEV were followed in the dedicated account; each resulting
+  profile showed `Turn off post notifications`, confirming notifications enabled.
+- Group membership/posting rights were verified without sending. The previous
+  private configuration was backed up, validated and reloaded without restarting.
+  Readback confirmed three routes, live/unpaused, push and WhatsApp connected.
+- No test messages or historical replay; Lover Tour and BASS PERSUADES retained
+  their existing rules. The observation heartbeat now recognizes all three routes.
+
 ## Additional live route — BASS PERSUADES
 
 - At the user's request, added private rule `bass-persuades-posts`: `miley` and

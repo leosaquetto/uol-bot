@@ -38,6 +38,11 @@ membership/permission was verified. No test messages or historical replay were
 used. The original three-account Lover Tour route remains in place. Both routes
 exclude replies and reposts and use the same approved preview and dispatch delay.
 
+Also enabled on 2026-09-24: `evawebsite`, `evanescence`, `amyleeev` and `gamesofev`
+own posts/quotes → `ev-sanctuary`, with the same exclusions and appearance.
+All four accounts have post notifications enabled. The private configuration now
+contains three routes; no test messages were sent when adding either new route.
+
 The integrated receiver runs with WhatsApp paired; its credentials
 survived service restarts without another QR. Eleven requested destinations are
 privately mapped and verified, but only Lover Tour is referenced by a rule.
