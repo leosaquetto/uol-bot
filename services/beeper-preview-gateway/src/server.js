@@ -22,6 +22,8 @@ const handler = createGateway({
   token: process.env.GATEWAY_TOKEN,
   chatId: process.env.BEEPER_CHAT_ID,
   buyticketChatId: process.env.BEEPER_BUYTICKET_CHAT_ID,
+  tvgloboToken: process.env.TVGLOBO_TOKEN,
+  selfChatId: process.env.BEEPER_SELF_CHAT_ID,
   accountId: process.env.BEEPER_ACCOUNT_ID,
   beeperAccessToken: process.env.BEEPER_ACCESS_TOKEN,
   beeperApiUrl: process.env.BEEPER_API_URL,
@@ -56,7 +58,7 @@ createServer(async (request, response) => {
         request.url || "/",
         `http://${request.headers.host || "localhost"}`,
       ).pathname;
-      if (["/livez", "/readyz", "/v1/readyz", "/v1/send-offer"].includes(candidate)) {
+      if (["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(candidate)) {
         path = candidate;
       }
     } catch {}

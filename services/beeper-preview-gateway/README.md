@@ -17,6 +17,25 @@ Required environment:
 - `BEEPER_INDEX_DB_PATH` (read-only Beeper index used for final bridge confirmation)
 - `DATA_PATH` (defaults to `/var/lib/beeper-preview-gateway/deliveries.sqlite`)
 
+Optional Scriptable TV Globo delivery:
+
+- `TVGLOBO_TOKEN`: separate token accepted only by `POST /v1/send-tvglobo`.
+- `BEEPER_SELF_CHAT_ID`: verified personal WhatsApp chat, different from the UOL group.
+
+That route accepts the existing `{link, text, preview: {summary, imageUrl}}`
+payload, but only canonical `https://x.com/tvglobo/status/<id>` links and images
+from the image paths on `pbs.twimg.com`. The idempotency key must be
+`tvglobo:<id>:self:v1`. The destination is fixed on the server; request fields
+cannot redirect delivery. Existing UOL and BuyTicket tokens/routes are unchanged.
+
+`scriptable/Ultimo-Tweet-TVGlobo.js` runs in a Shortcuts background action. It
+extracts the latest own post from public profile HTML and its caption/thumbnail
+from the post's Open Graph metadata, then submits the same native preview card.
+On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from
+the user's Scriptable iCloud folder into Keychain and removes that bootstrap
+file. Never commit or log the real configuration. If X blocks the page, fails
+to include posts, or omits the caption/image, no message is sent.
+
 The service binds to `127.0.0.1:8787`. Caddy provides public HTTPS. The raw
 Beeper API and private transport must remain bound to localhost.
 

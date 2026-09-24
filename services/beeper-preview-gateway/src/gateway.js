@@ -21,7 +21,7 @@ function keyDigest(value) {
 }
 
 function safeRoute(path) {
-  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket"].includes(path)
+  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(path)
     ? path
     : "other";
 }
@@ -80,8 +80,19 @@ function allowedImageUrl(value) {
   }
 }
 
+function allowedTVGloboImageUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "https:" && url.hostname === "pbs.twimg.com" &&
+      !url.username && !url.password && !url.port && !url.hash &&
+      /^\/(media|amplify_video_thumb|ext_tw_video_thumb|profile_images)\//.test(url.pathname);
+  } catch {
+    return false;
+  }
+}
+
 // Preserve the pre-upgrade request hash so existing idempotency keys remain valid.
-function normalizePreviewForHash(payload, link) {
+function normalizePreviewForHash(payload, link, imageAllowed = allowedImageUrl) {
   const preview = payload?.preview && typeof payload.preview === "object"
     ? payload.preview
     : {};
@@ -93,12 +104,12 @@ function normalizePreviewForHash(payload, link) {
     title: title || "Clube UOL",
     summary,
     type: "website",
-    imageUrl: !imageUrl || allowedImageUrl(imageUrl) ? imageUrl : "",
+    imageUrl: !imageUrl || imageAllowed(imageUrl) ? imageUrl : "",
   };
 }
 
-function normalizePreview(payload, link) {
-  const preview = normalizePreviewForHash(payload, link);
+function normalizePreview(payload, link, imageAllowed = allowedImageUrl) {
+  const preview = normalizePreviewForHash(payload, link, imageAllowed);
   const requestedImageUrl = String(payload?.preview?.imageUrl || "").trim();
   return {
     preview,
@@ -239,6 +250,8 @@ export function createGateway({
   token,
   chatId,
   buyticketChatId = chatId,
+  tvgloboToken = "",
+  selfChatId = "",
   accountId,
   beeperAccessToken,
   beeperApiUrl = DEFAULT_BEEPER_URL,
@@ -377,7 +390,7 @@ export function createGateway({
     let authenticated = false;
     const respond = (status, body, details = {}) => {
       const shouldLog = authenticated &&
-        ["/v1/readyz", "/v1/send-offer", "/v1/send-buyticket"].includes(url.pathname);
+        ["/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(url.pathname);
       if (shouldLog) {
         auditLog(logger, status >= 400 ? "warn" : "info", "beeper_gateway_request", {
           requestId,
@@ -406,12 +419,16 @@ export function createGateway({
       const result = await readiness(true);
       return respond(result.status, result.body);
     }
-    if (request.method !== "POST" || !["/v1/send-offer", "/v1/send-buyticket"].includes(url.pathname)) {
+    if (request.method !== "POST" || !["/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(url.pathname)) {
       return respond(404, { code: "not_found" });
     }
 
+    const tvglobo = url.pathname === "/v1/send-tvglobo";
+    if (tvglobo && (!tvgloboToken || !selfChatId || selfChatId === chatId)) {
+      return respond(404, { code: "not_found" });
+    }
     const suppliedToken = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") || "";
-    if (!secureEqual(suppliedToken, token)) return respond(401, { code: "unauthorized" });
+    if (!secureEqual(suppliedToken, tvglobo ? tvgloboToken : token)) return respond(401, { code: "unauthorized" });
     authenticated = true;
     const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim();
     idempotencyDigest = keyDigest(idempotencyKey);
@@ -427,11 +444,17 @@ export function createGateway({
     }
     const link = String(payload?.link || "").trim();
     const text = String(payload?.text || "").trim();
-    const normalizedPreview = normalizePreview(payload, link);
+    const normalizedPreview = normalizePreview(payload, link, tvglobo ? allowedTVGloboImageUrl : allowedImageUrl);
     const preview = normalizedPreview.preview;
     const buyticket = url.pathname === "/v1/send-buyticket";
-    const destinationChatId = buyticket ? buyticketChatId : chatId;
+    const destinationChatId = tvglobo ? selfChatId : buyticket ? buyticketChatId : chatId;
     let allowed = allowedOfferUrl(link);
+    if (tvglobo) {
+      const post = link.match(/^https:\/\/x\.com\/tvglobo\/status\/(\d{10,25})$/);
+      allowed = Boolean(post && idempotencyKey === `tvglobo:${post[1]}:self:v1` &&
+        payload?.preview?.imageUrl && preview.summary);
+      preview.title = "TV Globo • @tvglobo";
+    }
     if (buyticket) {
       try {
         const target = new URL(link);
