@@ -2,16 +2,32 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 4. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 5. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
-// Parâmetro opcional: HTML de https://x.com/tvglobo como texto.
-// Usa cartão com thumbnail, legenda e link. Não duplica o mesmo post.
+// Parâmetro: @usuario, usuario ou https://x.com/usuario.
+// Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
+// Usa cartão com thumbnail, legenda e link. Cada execução envia novamente.
 // A configuração inicial é importada do iCloud para o Keychain.
 
 var perfil = "tvglobo";
+var entrada = args.shortcutParameter;
+var html = null;
+if (entrada !== null && entrada !== undefined && entrada !== "") {
+  if (typeof entrada !== "string") {
+    throw new Error("Informe um único @ como texto no parâmetro do Atalhos.");
+  }
+  entrada = entrada.trim();
+  if (entrada[0] === "<") html = entrada;
+  else if (entrada) {
+    perfil = entrada.replace(/^https:\/\/(?:www\.)?(?:x\.com|twitter\.com)\//i, "");
+    perfil = perfil.replace(/\/$/, "").replace(/^@/, "");
+  }
+}
+perfil = perfil.toLowerCase();
+if (!/^[a-z0-9_]{1,15}$/.test(perfil)) {
+  throw new Error("@ inválido. Informe só o usuário ou o link do perfil, sem link de post.");
+}
 var gatewayToken = await obterToken();
-var html = args.shortcutParameter;
-if (typeof html === "string" && html.trim() === "") html = null;
 
 if (html === null || html === undefined) {
   var request = new Request("https://x.com/" + perfil);
@@ -55,48 +71,42 @@ if (ultimo === "") {
 }
 
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
-var ultimaChave = "tvglobo-beeper-ultimo-enviado-v1";
-if (!Keychain.contains(ultimaChave) || Keychain.get(ultimaChave) !== ultimo) {
-  var detalhes = await obterDetalhes(url);
-  var mensagem = "📺 TV Globo • @tvglobo\n\n" + detalhes.legenda + "\n\n🔗 Abrir post:\n" + url;
-  var envio = new Request("https://163-176-194-58.sslip.io/v1/send-tvglobo");
-  envio.method = "POST";
-  envio.timeoutInterval = 45;
-  var cabecalhos = {};
-  cabecalhos["Authorization"] = "Bearer " + gatewayToken;
-  cabecalhos["Content-Type"] = "application/json";
-  cabecalhos["Idempotency-Key"] = "tvglobo:" + ultimo + ":self:v1";
-  envio.headers = cabecalhos;
-  // Nunca encaminhe a credencial a outro endereço por redirecionamento.
-  envio.onRedirect = function () { return null; };
-  var preview = {};
-  preview.title = "TV Globo • @tvglobo";
-  preview.summary = detalhes.legenda;
-  preview.imageUrl = detalhes.imagem;
-  var corpo = {};
-  corpo.link = url;
-  corpo.text = mensagem;
-  corpo.preview = preview;
-  envio.body = JSON.stringify(corpo);
+var detalhes = await obterDetalhes(url);
+var titulo = perfil === "tvglobo" ? "TV Globo • @tvglobo" : "X • @" + perfil;
+var mensagem = "📺 " + titulo + "\n\n" + detalhes.legenda + "\n\n🔗 Abrir post:\n" + url;
+var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
+envio.method = "POST";
+envio.timeoutInterval = 45;
+var cabecalhos = {};
+cabecalhos["Authorization"] = "Bearer " + gatewayToken;
+cabecalhos["Content-Type"] = "application/json";
+envio.headers = cabecalhos;
+// Nunca encaminhe a credencial a outro endereço por redirecionamento.
+envio.onRedirect = function () { return null; };
+var preview = {};
+preview.title = titulo;
+preview.summary = detalhes.legenda;
+preview.imageUrl = detalhes.imagem;
+var corpo = {};
+corpo.link = url;
+corpo.text = mensagem;
+corpo.preview = preview;
+envio.body = JSON.stringify(corpo);
 
-  var respostaTexto;
-  try {
-    respostaTexto = await envio.loadString();
-  } catch (_) {
-    throw new Error("Sem confirmação do envio. O servidor mantém a proteção contra duplicatas; não altere a chave do post.");
-  }
-  var resultado;
-  try { resultado = JSON.parse(respostaTexto); } catch (_) { resultado = {}; }
-  var status = envio.response.statusCode;
-  if ((status !== 200 && status !== 202) || resultado.deliveryState !== "confirmed_by_whatsapp_bridge") {
-    var codigo = resultado.code || "resposta_invalida";
-    throw new Error("Beeper não confirmou a entrega. HTTP " + status + " / " + codigo);
-  }
-  Keychain.set(ultimaChave, ultimo);
-  console.log(resultado.replayed ? "Este post já estava entregue." : "Post entregue no seu WhatsApp com thumbnail.");
-} else {
-  console.log("Este post já foi enviado ao seu WhatsApp.");
+var respostaTexto;
+try {
+  respostaTexto = await envio.loadString();
+} catch (_) {
+  throw new Error("Envio sem confirmação. Pode ter chegado; confira seu WhatsApp antes de executar novamente.");
 }
+var resultado;
+try { resultado = JSON.parse(respostaTexto); } catch (_) { resultado = {}; }
+var status = envio.response.statusCode;
+if ((status !== 200 && status !== 202) || resultado.deliveryState !== "confirmed_by_whatsapp_bridge") {
+  var codigo = resultado.code || "resposta_invalida";
+  throw new Error("Beeper não confirmou a entrega. HTTP " + status + " / " + codigo);
+}
+console.log("Post entregue no seu WhatsApp com thumbnail.");
 Script.setShortcutOutput(url);
 console.log(url);
 if (config.runsInApp) Pasteboard.copyString(url);

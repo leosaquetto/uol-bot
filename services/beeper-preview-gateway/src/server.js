@@ -58,7 +58,7 @@ createServer(async (request, response) => {
         request.url || "/",
         `http://${request.headers.host || "localhost"}`,
       ).pathname;
-      if (["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(candidate)) {
+      if (["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(candidate)) {
         path = candidate;
       }
     } catch {}

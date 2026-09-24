@@ -17,18 +17,28 @@ Required environment:
 - `BEEPER_INDEX_DB_PATH` (read-only Beeper index used for final bridge confirmation)
 - `DATA_PATH` (defaults to `/var/lib/beeper-preview-gateway/deliveries.sqlite`)
 
-Optional Scriptable TV Globo delivery:
+Optional Scriptable X post delivery:
 
-- `TVGLOBO_TOKEN`: separate token accepted only by `POST /v1/send-tvglobo`.
+- `TVGLOBO_TOKEN`: separate token for `POST /v1/send-x-post` and legacy `POST /v1/send-tvglobo`.
 - `BEEPER_SELF_CHAT_ID`: verified personal WhatsApp chat, different from the UOL group.
 
-That route accepts the existing `{link, text, preview: {summary, imageUrl}}`
-payload, but only canonical `https://x.com/tvglobo/status/<id>` links and images
-from the image paths on `pbs.twimg.com`. The idempotency key must be
-`tvglobo:<id>:self:v1`. The destination is fixed on the server; request fields
+The general route accepts `{link, text, preview: {summary, imageUrl}}`, but only
+canonical `https://x.com/<username>/status/<id>` links (lowercase usernames,
+1–15 letters, digits or underscores) and images from the image paths on
+`pbs.twimg.com`. Each general-route request sends again, even for a previously
+sent post; no `Idempotency-Key` header is required. A fresh receipt is stored in
+the delivery ledger for each request. The legacy route still accepts only TV Globo
+with its original `tvglobo:<id>:self:v1` duplicate protection. The destination is fixed on the server; request fields
 cannot redirect delivery. Existing UOL and BuyTicket tokens/routes are unchanged.
 
 `scriptable/Ultimo-Tweet-TVGlobo.js` runs in a Shortcuts background action. It
+accepts `@username`, `username`, or a profile URL as its text parameter; empty
+input defaults to TV Globo. Raw HTML input preserves the original TV Globo mode.
+In Shortcuts, connect an Ask for Input action to the script's Parameter field.
+Each execution checks only that profile and sends its latest post again; it does
+not schedule checks or send every post published since the last execution.
+The script and gateway impose no daily message quota; external network limits
+still apply, and HTTP 429 stops the execution without automatic retry. It
 extracts the latest own post from public profile HTML and its caption/thumbnail
 from the post's Open Graph metadata, then submits the same native preview card.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from

@@ -21,7 +21,7 @@ function keyDigest(value) {
 }
 
 function safeRoute(path) {
-  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(path)
+  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(path)
     ? path
     : "other";
 }
@@ -390,7 +390,7 @@ export function createGateway({
     let authenticated = false;
     const respond = (status, body, details = {}) => {
       const shouldLog = authenticated &&
-        ["/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(url.pathname);
+        ["/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(url.pathname);
       if (shouldLog) {
         auditLog(logger, status >= 400 ? "warn" : "info", "beeper_gateway_request", {
           requestId,
@@ -419,18 +419,23 @@ export function createGateway({
       const result = await readiness(true);
       return respond(result.status, result.body);
     }
-    if (request.method !== "POST" || !["/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo"].includes(url.pathname)) {
+    if (request.method !== "POST" || !["/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(url.pathname)) {
       return respond(404, { code: "not_found" });
     }
 
     const tvglobo = url.pathname === "/v1/send-tvglobo";
-    if (tvglobo && (!tvgloboToken || !selfChatId || selfChatId === chatId)) {
+    const personalPost = tvglobo || url.pathname === "/v1/send-x-post";
+    if (personalPost && (!tvgloboToken || !selfChatId || selfChatId === chatId)) {
       return respond(404, { code: "not_found" });
     }
     const suppliedToken = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") || "";
-    if (!secureEqual(suppliedToken, tvglobo ? tvgloboToken : token)) return respond(401, { code: "unauthorized" });
+    if (!secureEqual(suppliedToken, personalPost ? tvgloboToken : token)) return respond(401, { code: "unauthorized" });
     authenticated = true;
-    const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim();
+    // The general personal route sends on every request, including the same post.
+    // Keep a unique receipt in the shared ledger without reusing a post's key.
+    const idempotencyKey = personalPost && !tvglobo
+      ? `x:${randomUUID()}:self:v1`
+      : String(request.headers.get("Idempotency-Key") || "").trim();
     idempotencyDigest = keyDigest(idempotencyKey);
     if (!/^[A-Za-z0-9:._-]{8,200}$/.test(idempotencyKey)) {
       return respond(400, { code: "invalid_idempotency_key" });
@@ -444,16 +449,18 @@ export function createGateway({
     }
     const link = String(payload?.link || "").trim();
     const text = String(payload?.text || "").trim();
-    const normalizedPreview = normalizePreview(payload, link, tvglobo ? allowedTVGloboImageUrl : allowedImageUrl);
+    const normalizedPreview = normalizePreview(payload, link, personalPost ? allowedTVGloboImageUrl : allowedImageUrl);
     const preview = normalizedPreview.preview;
     const buyticket = url.pathname === "/v1/send-buyticket";
-    const destinationChatId = tvglobo ? selfChatId : buyticket ? buyticketChatId : chatId;
+    const destinationChatId = personalPost ? selfChatId : buyticket ? buyticketChatId : chatId;
     let allowed = allowedOfferUrl(link);
-    if (tvglobo) {
-      const post = link.match(/^https:\/\/x\.com\/tvglobo\/status\/(\d{10,25})$/);
-      allowed = Boolean(post && idempotencyKey === `tvglobo:${post[1]}:self:v1` &&
+    if (personalPost) {
+      const post = link.match(/^https:\/\/x\.com\/([a-z0-9_]{1,15})\/status\/(\d{10,25})$/);
+      const profile = post?.[1];
+      allowed = Boolean(post && (!tvglobo || (profile === "tvglobo" &&
+        idempotencyKey === `tvglobo:${post[2]}:self:v1`)) &&
         payload?.preview?.imageUrl && preview.summary);
-      preview.title = "TV Globo • @tvglobo";
+      preview.title = profile === "tvglobo" ? "TV Globo • @tvglobo" : `X • @${profile}`;
     }
     if (buyticket) {
       try {

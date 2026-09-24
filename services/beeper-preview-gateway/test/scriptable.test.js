@@ -1,0 +1,97 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+
+const AsyncFunction = Object.getPrototypeOf(async function() {}).constructor;
+const code = readFileSync(new URL("../scriptable/Ultimo-Tweet-TVGlobo.js", import.meta.url), "utf8");
+const execute = new AsyncFunction("args", "Request", "Script", "config", "Pasteboard", "Keychain", "FileManager", "console", code);
+const ids = { tvglobo: "2102952373022851247", outro_perfil: "2102952373022851248" };
+const profileHtml = profile => `<article><a href="/${profile}/status/${ids[profile]}">data</a></article>`;
+
+function setup(initial = {}) {
+  const keys = new Map(Object.entries({ "tvglobo-beeper-token-v1": "test-token", ...initial }));
+  const sends = [];
+  let blocked = false;
+  let ambiguous = false;
+  let requests = 0;
+  class Request {
+    constructor(url) { this.url = url; this.response = { statusCode: 200 }; requests++; }
+    async loadString() {
+      if (this.method === "POST") {
+        assert.equal(this.url, "https://163-176-194-58.sslip.io/v1/send-x-post");
+        assert.equal(this.onRedirect({ url: "https://evil.test" }), null);
+        sends.push({ body: JSON.parse(this.body), key: this.headers["Idempotency-Key"] });
+        if (ambiguous) { this.response.statusCode = 503; return JSON.stringify({ code: "delivery_unknown" }); }
+        return JSON.stringify({ deliveryState: "confirmed_by_whatsapp_bridge" });
+      }
+      if (blocked) { this.response.statusCode = 429; return ""; }
+      if (this.url.includes("/status/")) return '<meta property="og:description" content="Legenda &amp; texto"><meta property="og:image" content="https://pbs.twimg.com/media/test?format=webp&amp;name=large">';
+      const profile = this.url.split("/").at(-1);
+      assert.ok(ids[profile]);
+      return profileHtml(profile);
+    }
+  }
+  async function run(input = null) {
+    let output;
+    await execute({ shortcutParameter: input }, Request,
+      { setShortcutOutput: value => { output = value; }, complete() {} }, { runsInApp: false },
+      { copyString() { throw new Error("unexpected clipboard"); } },
+      { contains: key => keys.has(key), get: key => keys.get(key), set: (key, value) => keys.set(key, value) },
+      { iCloud() { throw new Error("token already exists"); } }, { log() {} });
+    return output;
+  }
+  return { run, sends, keys, block: () => { blocked = true; }, makeAmbiguous: () => { ambiguous = true; }, requests: () => requests };
+}
+
+test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async () => {
+  for (const input of ["@Outro_Perfil", "outro_perfil", " https://x.com/outro_perfil/ ", "https://twitter.com/outro_perfil"]) {
+    const { run, sends } = setup();
+    const url = await run(input);
+    assert.equal(url, `https://x.com/outro_perfil/status/${ids.outro_perfil}`);
+    assert.equal(sends.length, 1);
+    assert.equal(sends[0].body.preview.title, "X • @outro_perfil");
+    assert.equal(sends[0].body.preview.summary, "Legenda & texto");
+    assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
+    assert.ok(sends[0].body.text.includes(url));
+    assert.equal(sends[0].key, undefined);
+  }
+});
+
+test("Scriptable envia a cada execução, mesmo com histórico antigo ou mesmo perfil", async () => {
+  const { run, sends } = setup({ "tvglobo-beeper-ultimo-enviado-v1": ids.tvglobo });
+  await run();
+  assert.equal(sends.length, 1);
+  await run("@outro_perfil");
+  await run("@tvglobo");
+  await run("@outro_perfil");
+  assert.equal(sends.length, 4);
+});
+
+test("Scriptable preserva HTML de entrada e dispensa chave idempotente", async () => {
+  const { run, sends, requests } = setup();
+  await run(profileHtml("tvglobo"));
+  assert.equal(requests(), 2);
+  assert.equal(sends[0].key, undefined);
+  assert.equal(sends[0].body.preview.title, "TV Globo • @tvglobo");
+});
+
+test("Scriptable rejeita entrada inválida antes de consultar ou enviar", async () => {
+  for (const input of ["a,b", "@bad-user", "https://evil.test/perfil", "https://x.com/tvglobo/status/123", "verylongusernameover15", ["tvglobo"]]) {
+    const { run, sends, requests } = setup();
+    await assert.rejects(run(input));
+    assert.equal(sends.length, 0);
+    assert.equal(requests(), 0);
+  }
+});
+
+test("Scriptable para em 429 e não marca entrega ambígua como sucesso", async () => {
+  const first = setup();
+  first.block();
+  await assert.rejects(first.run(), /HTTP 429/);
+  assert.equal(first.sends.length, 0);
+  assert.equal(first.requests(), 1);
+  const second = setup();
+  second.makeAmbiguous();
+  await assert.rejects(second.run("@outro_perfil"), /delivery_unknown/);
+  assert.equal(second.keys.has("x-beeper-ultimo-enviado-v1-outro_perfil"), false);
+});
