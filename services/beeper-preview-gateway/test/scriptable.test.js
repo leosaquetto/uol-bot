@@ -50,7 +50,7 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
     assert.equal(url, `https://x.com/outro_perfil/status/${ids.outro_perfil}?s=46`);
     assert.equal(sends.length, 1);
     assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
-    assert.equal(sends[0].body.preview.summary, "Legenda & texto");
+    assert.equal(sends[0].body.preview.summary, "");
     assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
     assert.equal(sends[0].body.text, "> ```Legenda & texto```\n> 𝕏 ```outro_perfil (@outro_perfil) no X, 23:44```\n> ```" + url + "```");
     assert.equal(sends[0].body.text.split(url).length, 2);
@@ -107,18 +107,18 @@ test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
   assert.match(sends[0].body.preview.imageUrl, /^https:\/\/pbs\.twimg\.com\/media\//);
 });
 
-test("post sem mídia ignora avatar do perfil", async () => {
+test("post sem mídia usa avatar 400x400 do perfil sem consulta adicional", async () => {
   const { run, sends, requests } = setup({}, { profileMeta, post: '<meta property="og:description" content="Post só de texto">' });
   await run("@outro_perfil");
-  assert.equal(sends[0].body.preview.imageUrl, "");
-  assert.equal(sends[0].body.preview.summary, "Post só de texto");
+  assert.equal(sends[0].body.preview.imageUrl, avatar.replace("_200x200", "_400x400"));
+  assert.equal(sends[0].body.preview.summary, "");
   assert.equal(requests(), 3);
 });
 
-test("imagem genérica do X ou avatar de outro perfil no post não vira thumbnail", async () => {
+test("imagem genérica e avatar de outro perfil não substituem o avatar do perfil consultado", async () => {
   const { run, sends } = setup({}, { profileMeta, post: '<meta property="og:description" content="Texto"><meta property="og:image" content="https://abs.twimg.com/logo.png"><meta name="twitter:image" content="https://pbs.twimg.com/profile_images/999/outra-pessoa.jpg">' });
   await run("@outro_perfil");
-  assert.equal(sends[0].body.preview.imageUrl, "");
+  assert.equal(sends[0].body.preview.imageUrl, avatar.replace("_200x200", "_400x400"));
 });
 
 test("vídeo usa seu próprio frame antes do avatar", async () => {
@@ -137,7 +137,6 @@ test("sem mídia e sem avatar disponível, não envia imagem aleatória", async 
 
 test("texto integral longo vence metadado cortado, remove linhas vazias e conserva emojis e links completos", async () => {
   const texto = "Texto longo ❤️ ".repeat(700);
-  const completo = texto + "\n\nFinal & íntegro https://example.com/endereco-inteiro";
   const post = '<meta property="og:description" content="Texto longo…">' +
     `<article><a href="/outro_perfil/status/${ids.outro_perfil}">data</a>` +
     `<div dir="auto" class="whitespace-pre-wrap text-body"><span>${texto}</span><br><br><span>Final &amp; íntegro </span><a href="https://example.com/endereco-inteiro">example.com/end…</a></div></article>`;
@@ -149,8 +148,7 @@ test("texto integral longo vence metadado cortado, remove linhas vazias e conser
   assert.equal(body.text.split("\n").some(line => /^>\s*$/.test(line)), false);
   assert.equal(body.text.includes("\n\n"), false);
   assert.equal(body.preview.title, "Nome Real (@outro_perfil) no X");
-  assert.equal(Array.from(body.preview.summary).length <= 110, true);
-  assert.match(body.preview.summary, /…$/);
+  assert.equal(body.preview.summary, "");
   assert.equal(body.text.split(body.link).length, 2);
 });
 

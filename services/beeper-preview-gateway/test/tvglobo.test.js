@@ -18,6 +18,7 @@ function setup(overrides = {}) {
     token: "uol-token", tvgloboToken: "tvglobo-token", chatId: "group",
     selfChatId: "self", accountId: "account", beeperAccessToken: "beeper-token",
     databasePath: join(mkdtempSync(join(tmpdir(), "tvglobo-test-")), "ledger.sqlite"),
+    transformPersonalThumbnail: async bytes => ({ bytes, imgType: "image/jpeg" }),
     fetchImpl: async () => new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), { headers: { "Content-Type": "image/jpeg" } }),
     sendMessageImpl: async message => { sent.push(message); return { pendingMessageID: "pending-tvglobo" }; },
     confirmDeliveryImpl: async delivery => {
@@ -131,7 +132,7 @@ test("rota geral preserva título e texto longo, acrescentando URL para o WhatsA
   assert.equal(sent[0].text, body.text + "\n\n" + link);
   assert.equal(sent[0].preview.title, body.preview.title);
   assert.equal(sent[0].preview.link, link);
-  assert.equal(sent[0].preview.summary, "Resumo curto…");
+  assert.equal(sent[0].preview.summary, "");
   assert.equal((await handler(request({ ...body, text: body.text + "\n\n" + link }, "tvglobo-token", "/v1/send-x-post"))).status, 202);
   assert.equal(sent[1].text, sent[0].text);
   assert.equal((await handler(request({ ...payload, text: "Sem link" }))).status, 400);
@@ -145,20 +146,24 @@ test("cliente antigo recebe URL antes da assinatura e crédito atualizado para p
   assert.equal(sent[0].text, "Texto\n\n`@tvglobo via X, 00:34`\n" + link + "\n`push by @leosaquetto`");
 });
 
-test("avatar de cliente antigo é removido; mídia continua com imagem", async () => {
-  const { handler, sent, request } = setup();
+test("avatar antigo é promovido a 400x400; mídia conserva suas dimensões", async () => {
+  let downloaded;
+  const { handler, sent, request } = setup({ fetchImpl: async url => { downloaded = url; return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), { headers: { "Content-Type": "image/jpeg" } }); } });
   const body = { ...payload, preview: { ...payload.preview, imageUrl: "https://pbs.twimg.com/profile_images/123/avatar_x96.jpg" } };
   assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
-  assert.equal(sent[0].preview, undefined);
+  assert.match(sent[0].preview.img, /^file:/);
+  assert.deepEqual(sent[0].preview.imgSize, { width: 400, height: 400 });
+  assert.match(downloaded, /avatar_400x400.jpg$/);
+  assert.equal(sent[0].preview.summary, "");
   assert.equal((await handler(request(payload, "tvglobo-token", "/v1/send-x-post"))).status, 202);
   assert.equal(sent[1].preview.imgSize, undefined);
   assert.match(sent[1].preview.img, /^file:/);
 });
 
-test("post sem mídia não baixa imagem nem envia cartão", async () => {
+test("post sem mídia nem avatar não baixa imagem nem envia cartão", async () => {
   let downloads = 0;
   const { handler, sent, request } = setup({ fetchImpl: async () => { downloads++; throw new Error("unexpected download"); } });
-  for (const imageUrl of [undefined, "", "https://pbs.twimg.com/profile_images/123/avatar_400x400.jpg"]) {
+  for (const imageUrl of [undefined, ""]) {
     const body = { ...payload, preview: { ...payload.preview, title: "Nome (@tvglobo) no X", imageUrl } };
     assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
     assert.equal(sent.at(-1).preview, undefined);
@@ -200,4 +205,28 @@ test("rota pessoal geral aceita somente o sufixo compartilhado s=46 e conserva p
     assert.equal((await handler(request({ ...body, link: link + suffix }, "tvglobo-token", "/v1/send-x-post"))).status, 400);
   }
   assert.equal((await handler(request(body))).status, 400);
+});
+
+test("selo e descrição vazia só afetam a rota pessoal geral", async () => {
+  let rendered = 0;
+  const { handler, sent, request } = setup({ transformPersonalThumbnail: async bytes => {
+    rendered++;
+    return { bytes, imgType: "image/jpeg", imgSize: { width: 800, height: 1000 } };
+  } });
+  for (const summary of [undefined, "", "Descrição de cliente antigo"]) {
+    assert.equal((await handler(request({ ...payload, preview: { ...payload.preview, summary } }, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+    assert.equal(sent.at(-1).preview.summary, "");
+    assert.deepEqual(sent.at(-1).preview.imgSize, { width: 800, height: 1000 });
+  }
+  assert.equal(rendered, 3);
+  assert.equal((await handler(request())).status, 202);
+  assert.equal(rendered, 3);
+  assert.equal(sent.at(-1).preview.summary, "Legenda");
+  assert.equal((await handler(request({ ...payload, preview: { ...payload.preview, summary: "" } }, "tvglobo-token", "/v1/send-tvglobo", `tvglobo:${id}:self:v1`))).status, 400);
+});
+
+test("falha ao compor selo não dispara mensagem incompleta", async () => {
+  const { handler, sent, request } = setup({ transformPersonalThumbnail: async () => { throw new Error("preview_image_render_failed"); } });
+  assert.equal((await handler(request(payload, "tvglobo-token", "/v1/send-x-post"))).status, 502);
+  assert.equal(sent.length, 0);
 });

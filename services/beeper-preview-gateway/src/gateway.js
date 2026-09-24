@@ -3,6 +3,7 @@ import { chmodSync, mkdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { pathToFileURL } from "node:url";
+import { createPersonalThumbnail } from "./personal-thumbnail.js";
 
 const MAX_BODY_BYTES = 64 * 1024;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -33,6 +34,7 @@ function safePreviewError(error) {
     "preview_image_invalid_type",
     "preview_image_too_large",
     "preview_image_invalid_size",
+    "preview_image_render_failed",
   ].includes(code) ? code : "preview_image_unavailable";
 }
 
@@ -124,7 +126,7 @@ function imageExtension(contentType) {
   return "jpg";
 }
 
-async function downloadPreviewImage(fetchImpl, imageUrl, directory) {
+async function downloadPreviewImage(fetchImpl, imageUrl, directory, transform) {
   if (!imageUrl) return null;
   const response = await fetchImpl(imageUrl, {
     headers: { Accept: "image/*" },
@@ -132,21 +134,29 @@ async function downloadPreviewImage(fetchImpl, imageUrl, directory) {
     signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) throw new Error("preview_image_download_failed");
-  const contentType = String(response.headers.get("Content-Type") || "")
+  let contentType = String(response.headers.get("Content-Type") || "")
     .split(";", 1)[0].trim().toLowerCase();
   if (!contentType.startsWith("image/")) throw new Error("preview_image_invalid_type");
   const declaredSize = Number(response.headers.get("Content-Length") || 0);
   if (declaredSize > MAX_IMAGE_BYTES) throw new Error("preview_image_too_large");
-  const bytes = Buffer.from(await response.arrayBuffer());
+  let bytes = Buffer.from(await response.arrayBuffer());
   if (!bytes.length || bytes.length > MAX_IMAGE_BYTES) {
     throw new Error("preview_image_invalid_size");
+  }
+  let imgSize;
+  if (transform) {
+    const transformed = await transform(bytes);
+    bytes = transformed.bytes;
+    contentType = transformed.imgType;
+    imgSize = transformed.imgSize;
+    if (!bytes.length || bytes.length > MAX_IMAGE_BYTES) throw new Error("preview_image_invalid_size");
   }
   mkdirSync(directory, { recursive: true, mode: 0o755 });
   chmodSync(directory, 0o755);
   const path = join(directory, `${randomUUID()}.${imageExtension(contentType)}`);
   writeFileSync(path, bytes, { mode: 0o644 });
   chmodSync(path, 0o644);
-  return { path, img: pathToFileURL(path).href, imgType: contentType };
+  return { path, img: pathToFileURL(path).href, imgType: contentType, imgSize };
 }
 
 async function readJsonBody(request, maxBytes = MAX_BODY_BYTES) {
@@ -257,6 +267,7 @@ export function createGateway({
   beeperApiUrl = DEFAULT_BEEPER_URL,
   databasePath,
   fetchImpl = fetch,
+  transformPersonalThumbnail = createPersonalThumbnail,
   sendMessageImpl,
   confirmDeliveryImpl,
   isTransportReady = () => true,
@@ -462,13 +473,15 @@ export function createGateway({
       const profile = post?.[1];
       allowed = Boolean(post && (!tvglobo || (profile === "tvglobo" &&
         idempotencyKey === `tvglobo:${post[2]}:self:v1`)) &&
-        (generalPost || payload?.preview?.imageUrl) && preview.summary);
+        (generalPost || payload?.preview?.imageUrl) && (generalPost || preview.summary));
       preview.title = generalPost && String(payload?.preview?.title || "").trim()
         ? preview.title
         : profile === "tvglobo" ? "TV Globo • @tvglobo" : `X • @${profile}`;
-      // Avatars from older Scriptable versions must not become large thumbnails.
+      // Personal cards show only image and title; the full post is in the body.
+      if (generalPost) preview.summary = "";
       if (generalPost && /^https:\/\/pbs\.twimg\.com\/profile_images\//i.test(preview.imageUrl)) {
-        preview.imageUrl = "";
+        preview.imageUrl = preview.imageUrl.replace(/_(?:mini|normal|bigger|reasonably_small|200x200|400x400|x96)(\.[a-z]+)(?=[?#]|$)/i, "_400x400$1");
+        if (/_400x400\.[a-z]+(?:[?#]|$)/i.test(preview.imageUrl)) preview.imgSize = { width: 400, height: 400 };
       }
     }
     if (buyticket) {
@@ -528,7 +541,8 @@ export function createGateway({
     let dispatched = false;
     try {
       try {
-        image = await downloadPreviewImage(fetchImpl, preview.imageUrl, previewDirectory);
+        image = await downloadPreviewImage(fetchImpl, preview.imageUrl, previewDirectory,
+          generalPost ? transformPersonalThumbnail : undefined);
       } catch (error) {
         updateDelivery(database, idempotencyKey, "failed", {}, now().toISOString());
         auditLog(logger, "warn", "beeper_gateway_preview_image_failed", {
@@ -547,6 +561,7 @@ export function createGateway({
           imageUrl: undefined,
           img: image?.img,
           imgType: image?.imgType,
+          imgSize: image?.imgSize || preview.imgSize,
         },
       });
       dispatched = true;

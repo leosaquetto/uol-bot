@@ -45,8 +45,8 @@ an apparently truncated description is rejected if the article is unavailable.
 External links are expanded from their HTML href. The body has no custom character
 limit on `/v1/send-x-post` (the HTTP payload ceiling is 1 MiB; network limits still
 apply). Other routes retain their existing limits.
-The native card title is `Name (@username) no X`, with an editable title and a
-summary capped at 110 Unicode code points to approximate three mobile lines.
+The native card title is `Name (@username) no X`, with image and title only.
+The personal route clears the preview summary so the post text is not repeated.
 WhatsApp determines the final wrapping. The body follows the user's `embed.txt`
 model: quoted monospace post text, `𝕏 Name (@username) no X, HH:mm`, then a quoted
 monospace `https://x.com/username/status/id?s=46` link. The timestamp is the publication time
@@ -60,12 +60,18 @@ Other clients and routes keep their existing formatting behavior. The preview's
 matched URL is the full HTTPS URL with the requested `?s=46` share suffix.
 Fetching the original X post still uses the canonical URL without that suffix. A device test showed that omitting the scheme
 hides the preview even when its metadata and image are delivered.
-Media posts keep their thumbnail. Without post media the production gateway
-omits the preview entirely; profile avatars are not sent automatically. A compact
-avatar is an isolated experiment, not a guaranteed layout or production fallback.
-No image download occurs for posts without media. Banners and generic X images
-are ignored. Older clients still receive a missing URL before the final credit
-line and the updated signature wording.
+Media posts use their own image or video frame. Otherwise Scriptable uses the
+queried profile's avatar, upgrading known CDN size suffixes to 400x400. The user
+confirmed and accepted the large avatar layout on iPhone. If neither image nor
+avatar is available, the message is sent without a card.
+For `/v1/send-x-post` only, Sharp composites the supplied
+`assets/pushpushpushsaquetto.svg` over the image. The white badge background is
+preserved; badge width is 24% of the shorter side, top margin is zero, and left
+margin is 4% of the image width. Images retain their aspect ratio, are never
+upscaled, and are limited to 1600px on either axis before JPEG export at quality
+92. The original image is not modified. Other routes retain their image bytes.
+Banners and generic X images are ignored. Older clients still receive a missing
+URL before the final credit line and the updated signature wording.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from
 the user's Scriptable iCloud folder into Keychain and removes that bootstrap
 file. Never commit or log the real configuration. If X blocks the page, fails

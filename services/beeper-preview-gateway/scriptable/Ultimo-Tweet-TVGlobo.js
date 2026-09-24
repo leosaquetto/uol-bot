@@ -2,14 +2,14 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 12. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 13. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
 // Usa cartão com thumbnail, legenda e link. Cada execução envia novamente.
-// Thumbnail: mídia do post; sem mídia, sem cartão e link entre crases.
+// Thumbnail: mídia do post; sem mídia, avatar do perfil em 400x400.
 // O WhatsApp decide o layout final do cartão.
-// Texto integral disponível na página; resumo curto só no cartão.
+// Cartão só com imagem e título; texto integral disponível na página fica abaixo.
 // URL completa no corpo: necessária para o WhatsApp iOS mostrar o cartão.
 // Padrão: citação com texto, autor/hora da publicação e link monoespaçados.
 // A configuração inicial é importada do iCloud para o Keychain.
@@ -48,8 +48,9 @@ if (typeof html !== "string") {
   throw new Error("Passe o HTML como texto ou deixe o parâmetro vazio.");
 }
 
-// Reaproveita o nome da página já consultada.
+// Reaproveita nome e avatar da página já consultada.
 var metaPerfil = lerMetadados(html);
+var fotoPerfil = escolherImagem(metaPerfil, true);
 html = html.replace(/<!--[\s\S]*?-->/g, "");
 html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
 html = html.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
@@ -79,6 +80,7 @@ if (ultimo === "") {
 
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
 var detalhes = await obterDetalhes(url);
+if (!detalhes.imagem) detalhes.imagem = fotoPerfil;
 url += "?s=46";
 var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
 // Sintaxe nativa: evita as quebras extras da conversão Markdown do Beeper.
@@ -104,7 +106,7 @@ envio.headers = cabecalhos;
 envio.onRedirect = function () { return null; };
 var preview = {};
 preview.title = titulo;
-preview.summary = resumoDoCartao(detalhes.legenda);
+preview.summary = "";
 preview.imageUrl = detalhes.imagem;
 var corpo = {};
 corpo.link = url;
@@ -176,12 +178,17 @@ function lerMetadados(pagina) {
   return meta;
 }
 
-function escolherImagem(meta) {
+function escolherImagem(meta, avatar) {
   var candidatas = [meta["og:image"], meta["twitter:image"]];
-  var caminho = /^https:\/\/pbs\.twimg\.com\/(?:media|amplify_video_thumb|ext_tw_video_thumb)\//i;
+  var caminho = avatar
+    ? /^https:\/\/pbs\.twimg\.com\/profile_images\//i
+    : /^https:\/\/pbs\.twimg\.com\/(?:media|amplify_video_thumb|ext_tw_video_thumb)\//i;
   for (var i = 0; i < candidatas.length; i++) {
     var imagem = String(candidatas[i] || "").trim();
-    if (caminho.test(imagem)) return imagem.replace("format=webp", "format=jpg");
+    if (caminho.test(imagem)) {
+      if (avatar) imagem = imagem.replace(/_(?:mini|normal|bigger|reasonably_small|200x200|400x400|x96)(\.[a-z]+)(?=[?#]|$)/i, "_400x400$1");
+      return imagem.replace("format=webp", "format=jpg");
+    }
   }
   return "";
 }
@@ -194,12 +201,6 @@ function nomeDoPerfil(metaPost, metaPagina) {
     if (nome && nome[1].trim()) return nome[1].trim();
   }
   return perfil === "tvglobo" ? "TV Globo" : perfil;
-}
-
-function resumoDoCartao(texto) {
-  // Aproxima três linhas; a quebra final depende do WhatsApp e da tela.
-  var caracteres = Array.from(texto.replace(/\s+/g, " ").trim());
-  return caracteres.length <= 110 ? caracteres.join("") : caracteres.slice(0, 109).join("").trim() + "…";
 }
 
 function textoDoPost(pagina, linkPost) {
