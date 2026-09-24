@@ -2,11 +2,12 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 5. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 6. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
 // Usa cartão com thumbnail, legenda e link. Cada execução envia novamente.
+// Thumbnail: imagem/prévia de vídeo do post; sem mídia, foto do perfil.
 // A configuração inicial é importada do iCloud para o Keychain.
 
 var perfil = "tvglobo";
@@ -43,6 +44,9 @@ if (typeof html !== "string") {
   throw new Error("Passe o HTML como texto ou deixe o parâmetro vazio.");
 }
 
+// Reaproveita a página já consultada, sem buscar a foto em outra conta.
+var metaPerfil = lerMetadados(html);
+var fotoPerfil = escolherImagem(metaPerfil, "perfil");
 html = html.replace(/<!--[\s\S]*?-->/g, "");
 html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
 html = html.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
@@ -71,7 +75,7 @@ if (ultimo === "") {
 }
 
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
-var detalhes = await obterDetalhes(url);
+var detalhes = await obterDetalhes(url, fotoPerfil);
 var titulo = perfil === "tvglobo" ? "TV Globo • @tvglobo" : "X • @" + perfil;
 var mensagem = "📺 " + titulo + "\n\n" + detalhes.legenda + "\n\n🔗 Abrir post:\n" + url;
 var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
@@ -140,14 +144,7 @@ function decodificarHtml(texto) {
   });
 }
 
-async function obterDetalhes(linkPost) {
-  var req = new Request(linkPost);
-  req.timeoutInterval = 20;
-  req.headers = { "User-Agent": "Mozilla/5.0" };
-  var pagina = await req.loadString();
-  if (req.response.statusCode !== 200) {
-    throw new Error("O X não disponibilizou a legenda e a imagem. HTTP " + req.response.statusCode);
-  }
+function lerMetadados(pagina) {
   var tags = pagina.match(/<meta\b[^>]*>/gi) || [];
   var meta = {};
   for (var i = 0; i < tags.length; i++) {
@@ -160,14 +157,38 @@ async function obterDetalhes(linkPost) {
     var nome = atributos.property || atributos.name;
     if (nome) meta[nome.toLowerCase()] = atributos.content || "";
   }
+  return meta;
+}
+
+function escolherImagem(meta, tipo) {
+  var candidatas = [meta["og:image"], meta["twitter:image"]];
+  var caminho = tipo === "perfil"
+    ? /^https:\/\/pbs\.twimg\.com\/profile_images\//i
+    : /^https:\/\/pbs\.twimg\.com\/(?:media|amplify_video_thumb|ext_tw_video_thumb)\//i;
+  for (var i = 0; i < candidatas.length; i++) {
+    var imagem = String(candidatas[i] || "").trim();
+    if (caminho.test(imagem)) return imagem.replace("format=webp", "format=jpg");
+  }
+  return "";
+}
+
+async function obterDetalhes(linkPost, fotoPerfil) {
+  var req = new Request(linkPost);
+  req.timeoutInterval = 20;
+  req.headers = { "User-Agent": "Mozilla/5.0" };
+  var pagina = await req.loadString();
+  if (req.response.statusCode !== 200) {
+    throw new Error("O X não disponibilizou a legenda e a imagem. HTTP " + req.response.statusCode);
+  }
+  var meta = lerMetadados(pagina);
   var legenda = (meta["og:description"] || meta["twitter:description"] || "").trim();
-  var imagem = (meta["og:image"] || meta["twitter:image"] || "").trim();
-  if (!legenda || !/^https:\/\/pbs\.twimg\.com\//i.test(imagem)) {
-    throw new Error("O X não entregou uma legenda e thumbnail válidas para o post.");
+  var imagem = escolherImagem(meta, "post") || fotoPerfil;
+  if (!legenda || !imagem) {
+    throw new Error("O X não entregou a legenda ou nenhuma imagem utilizável do post/perfil.");
   }
   if (legenda.length > 6000) throw new Error("A legenda excede o limite desta mensagem.");
   var detalhes = {};
   detalhes.legenda = legenda;
-  detalhes.imagem = imagem.replace("format=webp", "format=jpg");
+  detalhes.imagem = imagem;
   return detalhes;
 }

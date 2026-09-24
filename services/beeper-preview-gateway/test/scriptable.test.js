@@ -8,7 +8,7 @@ const execute = new AsyncFunction("args", "Request", "Script", "config", "Pasteb
 const ids = { tvglobo: "2102952373022851247", outro_perfil: "2102952373022851248" };
 const profileHtml = profile => `<article><a href="/${profile}/status/${ids[profile]}">data</a></article>`;
 
-function setup(initial = {}) {
+function setup(initial = {}, pages = {}) {
   const keys = new Map(Object.entries({ "tvglobo-beeper-token-v1": "test-token", ...initial }));
   const sends = [];
   let blocked = false;
@@ -25,10 +25,10 @@ function setup(initial = {}) {
         return JSON.stringify({ deliveryState: "confirmed_by_whatsapp_bridge" });
       }
       if (blocked) { this.response.statusCode = 429; return ""; }
-      if (this.url.includes("/status/")) return '<meta property="og:description" content="Legenda &amp; texto"><meta property="og:image" content="https://pbs.twimg.com/media/test?format=webp&amp;name=large">';
+      if (this.url.includes("/status/")) return pages.post ?? '<meta property="og:description" content="Legenda &amp; texto"><meta property="og:image" content="https://pbs.twimg.com/media/test?format=webp&amp;name=large">';
       const profile = this.url.split("/").at(-1);
       assert.ok(ids[profile]);
-      return profileHtml(profile);
+      return (pages.profileMeta || "") + profileHtml(profile);
     }
   }
   async function run(input = null) {
@@ -94,4 +94,40 @@ test("Scriptable para em 429 e não marca entrega ambígua como sucesso", async 
   second.makeAmbiguous();
   await assert.rejects(second.run("@outro_perfil"), /delivery_unknown/);
   assert.equal(second.keys.has("x-beeper-ultimo-enviado-v1-outro_perfil"), false);
+});
+
+const avatar = "https://pbs.twimg.com/profile_images/123/avatar_200x200.jpg";
+const profileMeta = `<meta property="og:image" content="${avatar}"><meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/123/banner">`;
+
+test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
+  const { run, sends } = setup({}, { profileMeta });
+  await run("@outro_perfil");
+  assert.match(sends[0].body.preview.imageUrl, /^https:\/\/pbs\.twimg\.com\/media\//);
+});
+
+test("post sem imagem usa avatar do perfil sem consulta adicional", async () => {
+  const { run, sends, requests } = setup({}, { profileMeta, post: '<meta property="og:description" content="Post só de texto">' });
+  await run("@outro_perfil");
+  assert.equal(sends[0].body.preview.imageUrl, avatar);
+  assert.equal(sends[0].body.preview.summary, "Post só de texto");
+  assert.equal(requests(), 3);
+});
+
+test("imagem genérica do X ou avatar de outro perfil no post não substitui a foto do perfil consultado", async () => {
+  const { run, sends } = setup({}, { profileMeta, post: '<meta property="og:description" content="Texto"><meta property="og:image" content="https://abs.twimg.com/logo.png"><meta name="twitter:image" content="https://pbs.twimg.com/profile_images/999/outra-pessoa.jpg">' });
+  await run("@outro_perfil");
+  assert.equal(sends[0].body.preview.imageUrl, avatar);
+});
+
+test("vídeo usa seu próprio frame antes do avatar", async () => {
+  const frame = "https://pbs.twimg.com/amplify_video_thumb/123/img/frame?format=webp&name=large";
+  const { run, sends } = setup({}, { profileMeta, post: `<meta property="og:description" content="Vídeo"><meta property="og:image" content="${avatar}"><meta name="twitter:image" content="${frame}">` });
+  await run("@outro_perfil");
+  assert.equal(sends[0].body.preview.imageUrl, frame.replace("format=webp", "format=jpg"));
+});
+
+test("sem mídia e sem avatar disponível, não envia imagem aleatória", async () => {
+  const { run, sends } = setup({}, { post: '<meta property="og:description" content="Texto">' });
+  await assert.rejects(run(), /nenhuma imagem utilizável/);
+  assert.equal(sends.length, 0);
 });

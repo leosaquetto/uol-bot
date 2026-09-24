@@ -41,6 +41,9 @@ The script and gateway impose no daily message quota; external network limits
 still apply, and HTTP 429 stops the execution without automatic retry. It
 extracts the latest own post from public profile HTML and its caption/thumbnail
 from the post's Open Graph metadata, then submits the same native preview card.
+The thumbnail prioritizes the post's photo or video frame. If neither is
+available, it uses the queried profile's avatar from the already downloaded
+profile page. Banners, generic X images, and other accounts' avatars are ignored.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from
 the user's Scriptable iCloud folder into Keychain and removes that bootstrap
 file. Never commit or log the real configuration. If X blocks the page, fails
