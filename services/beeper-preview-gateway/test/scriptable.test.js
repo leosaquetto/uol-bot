@@ -52,7 +52,7 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
     assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
     assert.equal(sends[0].body.preview.summary, "Legenda & texto");
     assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
-    assert.equal(sends[0].body.text, "ㅤ\n**outro_perfil (@outro_perfil) no X**\n`Legenda & texto`\n\n🔗 " + url + "\n\n`powered by @leosaquetto`");
+    assert.equal(sends[0].body.text, "ㅤ\n**outro_perfil (@outro_perfil) no X**\n```\nLegenda & texto\n```\n\n🔗 " + url + "\n\n`push by @leosaquetto`");
     assert.equal(sends[0].body.text.split(url).length, 2);
     assert.equal(sends[0].key, undefined);
   }
@@ -98,7 +98,6 @@ test("Scriptable para em 429 e não marca entrega ambígua como sucesso", async 
 });
 
 const avatar = "https://pbs.twimg.com/profile_images/123/avatar_200x200.jpg";
-const avatarPequeno = avatar.replace("_200x200", "_x96");
 const profileMeta = `<meta property="og:image" content="${avatar}"><meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/123/banner">`;
 
 test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
@@ -107,18 +106,18 @@ test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
   assert.match(sends[0].body.preview.imageUrl, /^https:\/\/pbs\.twimg\.com\/media\//);
 });
 
-test("post sem imagem usa avatar do perfil sem consulta adicional", async () => {
+test("post sem mídia mantém cartão sem imagem, ignorando avatar do perfil", async () => {
   const { run, sends, requests } = setup({}, { profileMeta, post: '<meta property="og:description" content="Post só de texto">' });
   await run("@outro_perfil");
-  assert.equal(sends[0].body.preview.imageUrl, avatarPequeno);
+  assert.equal(sends[0].body.preview.imageUrl, "");
   assert.equal(sends[0].body.preview.summary, "Post só de texto");
   assert.equal(requests(), 3);
 });
 
-test("imagem genérica do X ou avatar de outro perfil no post não substitui a foto do perfil consultado", async () => {
+test("imagem genérica do X ou avatar de outro perfil no post não vira thumbnail", async () => {
   const { run, sends } = setup({}, { profileMeta, post: '<meta property="og:description" content="Texto"><meta property="og:image" content="https://abs.twimg.com/logo.png"><meta name="twitter:image" content="https://pbs.twimg.com/profile_images/999/outra-pessoa.jpg">' });
   await run("@outro_perfil");
-  assert.equal(sends[0].body.preview.imageUrl, avatarPequeno);
+  assert.equal(sends[0].body.preview.imageUrl, "");
 });
 
 test("vídeo usa seu próprio frame antes do avatar", async () => {
@@ -130,8 +129,9 @@ test("vídeo usa seu próprio frame antes do avatar", async () => {
 
 test("sem mídia e sem avatar disponível, não envia imagem aleatória", async () => {
   const { run, sends } = setup({}, { post: '<meta property="og:description" content="Texto">' });
-  await assert.rejects(run(), /nenhuma imagem utilizável/);
-  assert.equal(sends.length, 0);
+  await run();
+  assert.equal(sends.length, 1);
+  assert.equal(sends[0].body.preview.imageUrl, "");
 });
 
 test("texto integral longo vence metadado cortado, conserva parágrafos, emojis e links completos", async () => {
@@ -143,7 +143,7 @@ test("texto integral longo vence metadado cortado, conserva parágrafos, emojis 
   const { run, sends } = setup({}, { profileMeta: profileMeta + '<meta property="og:title" content="Nome Real (@outro_perfil) on X">', post });
   await run("outro_perfil");
   const body = sends[0].body;
-  assert.ok(body.text.startsWith("ㅤ\n**Nome Real (@outro_perfil) no X**\n" + completo.split("\n").map(line => line ? "`" + line + "`" : "").join("\n") + "\n\n🔗 "));
+  assert.ok(body.text.startsWith("ㅤ\n**Nome Real (@outro_perfil) no X**\n```\n" + completo + "\n```\n\n🔗 "));
   assert.ok(body.text.length > 8000);
   assert.equal(body.preview.title, "Nome Real (@outro_perfil) no X");
   assert.equal(Array.from(body.preview.summary).length <= 110, true);
@@ -157,7 +157,7 @@ test("texto é extraído apenas do artigo do post, incluindo divs aninhadas", as
     `<article><a href="/outro_perfil/status/${ids.outro_perfil}">data</a><div data-testid="tweetText"><div>Primeiro</div>Segundo <img alt="😀" src="emoji.png"></div><div>Comentários</div></article>`;
   const { run, sends } = setup({}, { profileMeta, post });
   await run("outro_perfil");
-  assert.ok(sends[0].body.text.includes("\n`Primeiro`\n`Segundo 😀`\n\n🔗 "));
+  assert.ok(sends[0].body.text.includes("\n```\nPrimeiro\nSegundo 😀\n```\n\n🔗 "));
   assert.equal(sends[0].body.text.includes("Comentários"), false);
 });
 
@@ -165,4 +165,11 @@ test("metadado aparentemente cortado sem texto integral não é enviado como men
   const { run, sends } = setup({}, { profileMeta, post: `<meta property="og:description" content="${"a".repeat(299)}…">` });
   await assert.rejects(run(), /texto integral/);
   assert.equal(sends.length, 0);
+});
+
+test("crases do post não encerram o bloco monoespaçado e somente o crédito usa código inline", async () => {
+  const { run, sends } = setup({}, { post: '<meta property="og:description" content="Texto com ``` literal">' });
+  await run();
+  assert.ok(sends[0].body.text.includes("\n````\nTexto com ``` literal\n````\n\n🔗 "));
+  assert.ok(sends[0].body.text.endsWith("\n\n`push by @leosaquetto`"));
 });

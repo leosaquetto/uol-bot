@@ -48,25 +48,23 @@ apply). Other routes retain their existing limits.
 The native card title is `Name (@username) no X`, with an editable title and a
 summary capped at 110 Unicode code points to approximate three mobile lines.
 WhatsApp determines the final wrapping. The default body starts with a Hangul
-filler spacer line, then the bold title, the full post in inline-code, a blank
+filler spacer line, then the bold title, the full post in a monospace block, a blank
 line, `🔗` and the post URL, another blank line, and inline-code
-`powered by @leosaquetto`. The Beeper payload uses Markdown double asterisks for
-bold and wraps each nonempty post line in inline-code to preserve paragraphs.
+`push by @leosaquetto`. The Beeper payload uses Markdown double asterisks for
+bold and a fenced code block for plain monospace text with paragraphs preserved.
+Only the footer uses inline-code, which WhatsApp displays with a highlighted background.
 No timestamp is appended. A real iPhone test showed that omitting the URL hides the entire card even
 when Beeper and the WhatsApp bridge confirm delivery with preview metadata.
-The gateway inserts a missing URL before the final powered-by line for older
+The gateway inserts a missing URL before the final credit line for older
 Scriptable clients as well, and updates the old signature wording.
 The thumbnail prioritizes the post's photo or video frame. If neither is
-available, it uses the queried profile's avatar from the already downloaded
-profile page, using the CDN's 96px variant when its size suffix is recognized.
-The gateway forwards those dimensions for avatars only; media stays unchanged.
-This does not force a compact WhatsApp layout: the bridge always uploads the
-preview image, and the recipient client ultimately chooses its presentation.
-Banners, generic X images, and other accounts' avatars are ignored.
+available, the card has no image. Profile avatars are never used; the general
+gateway route also discards avatars supplied by older clients. No image download
+is made for text-only cards. Banners and generic X images are ignored.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from
 the user's Scriptable iCloud folder into Keychain and removes that bootstrap
 file. Never commit or log the real configuration. If X blocks the page, fails
-to include posts, or omits the caption/image, no message is sent.
+to include posts, or omits the post text, no message is sent.
 
 The service binds to `127.0.0.1:8787`. Caddy provides public HTTPS. The raw
 Beeper API and private transport must remain bound to localhost.

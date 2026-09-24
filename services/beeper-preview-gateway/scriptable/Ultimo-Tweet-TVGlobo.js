@@ -2,15 +2,15 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 9. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 10. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
 // Usa cartão com thumbnail, legenda e link. Cada execução envia novamente.
-// Thumbnail: mídia grande; sem mídia, usa a variante de 96px do avatar.
+// Thumbnail: mídia do post; sem mídia, cartão sem imagem.
 // O WhatsApp decide o layout final do cartão.
 // Texto integral disponível na página; resumo curto só no cartão.
-// Link antes do powered: o WhatsApp iOS oculta o cartão sem a URL no corpo.
+// Link antes do crédito: o WhatsApp iOS oculta o cartão sem a URL no corpo.
 // Padrão: título em negrito, texto em monoespaçado, link e crédito.
 // A configuração inicial é importada do iCloud para o Keychain.
 
@@ -48,9 +48,8 @@ if (typeof html !== "string") {
   throw new Error("Passe o HTML como texto ou deixe o parâmetro vazio.");
 }
 
-// Reaproveita a página já consultada, sem buscar a foto em outra conta.
+// Reaproveita o nome da página já consultada.
 var metaPerfil = lerMetadados(html);
-var fotoPerfil = escolherImagem(metaPerfil, "perfil");
 html = html.replace(/<!--[\s\S]*?-->/g, "");
 html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
 html = html.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
@@ -79,14 +78,14 @@ if (ultimo === "") {
 }
 
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
-var detalhes = await obterDetalhes(url, fotoPerfil);
+var detalhes = await obterDetalhes(url);
 var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
 // O Beeper recebe Markdown: ** vira negrito no WhatsApp.
-// Cada linha recebe seu próprio código para preservar parágrafos.
-var legendaFormatada = detalhes.legenda.split("\n").map(function (linha) {
-  return linha ? "`" + linha + "`" : "";
-}).join("\n");
-var mensagem = "ㅤ\n**" + titulo + "**\n" + legendaFormatada + "\n\n🔗 " + url + "\n\n`powered by @leosaquetto`";
+// Bloco monoespaçado no texto; código inline destacado só no crédito.
+var cerca = "```";
+while (detalhes.legenda.indexOf(cerca) !== -1) cerca += "`";
+var legendaFormatada = cerca + "\n" + detalhes.legenda + "\n" + cerca;
+var mensagem = "ㅤ\n**" + titulo + "**\n" + legendaFormatada + "\n\n🔗 " + url + "\n\n`push by @leosaquetto`";
 var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
 envio.method = "POST";
 envio.timeoutInterval = 45;
@@ -119,7 +118,7 @@ if ((status !== 200 && status !== 202) || resultado.deliveryState !== "confirmed
   var codigo = resultado.code || "resposta_invalida";
   throw new Error("Beeper não confirmou a entrega. HTTP " + status + " / " + codigo);
 }
-console.log("Post entregue no seu WhatsApp com thumbnail.");
+console.log("Post entregue no seu WhatsApp.");
 Script.setShortcutOutput(url);
 console.log(url);
 if (config.runsInApp) Pasteboard.copyString(url);
@@ -169,11 +168,9 @@ function lerMetadados(pagina) {
   return meta;
 }
 
-function escolherImagem(meta, tipo) {
+function escolherImagem(meta) {
   var candidatas = [meta["og:image"], meta["twitter:image"]];
-  var caminho = tipo === "perfil"
-    ? /^https:\/\/pbs\.twimg\.com\/profile_images\//i
-    : /^https:\/\/pbs\.twimg\.com\/(?:media|amplify_video_thumb|ext_tw_video_thumb)\//i;
+  var caminho = /^https:\/\/pbs\.twimg\.com\/(?:media|amplify_video_thumb|ext_tw_video_thumb)\//i;
   for (var i = 0; i < candidatas.length; i++) {
     var imagem = String(candidatas[i] || "").trim();
     if (caminho.test(imagem)) return imagem.replace("format=webp", "format=jpg");
@@ -238,7 +235,7 @@ function textoDoPost(pagina, linkPost) {
   return "";
 }
 
-async function obterDetalhes(linkPost, fotoPerfil) {
+async function obterDetalhes(linkPost) {
   var req = new Request(linkPost);
   req.timeoutInterval = 20;
   req.headers = { "User-Agent": "Mozilla/5.0" };
@@ -252,14 +249,8 @@ async function obterDetalhes(linkPost, fotoPerfil) {
   if (!textoIntegral && legenda.length >= 295 && /(?:…|\.\.\.)$/.test(legenda)) {
     throw new Error("O X entregou apenas uma prévia cortada. Não foi possível obter o texto integral.");
   }
-  var imagemPost = escolherImagem(meta, "post");
-  var imagem = imagemPost || fotoPerfil;
-  if (!imagemPost) {
-    imagem = imagem.replace(/_(?:mini|normal|bigger|reasonably_small|200x200|400x400)(\.[a-z]+)(?=[?#]|$)/i, "_x96$1");
-  }
-  if (!legenda || !imagem) {
-    throw new Error("O X não entregou a legenda ou nenhuma imagem utilizável do post/perfil.");
-  }
+  var imagem = escolherImagem(meta);
+  if (!legenda) throw new Error("O X não entregou o texto do post.");
   var detalhes = {};
   detalhes.legenda = legenda;
   detalhes.imagem = imagem;

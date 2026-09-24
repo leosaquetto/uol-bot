@@ -22,7 +22,7 @@ function setup(overrides = {}) {
     sendMessageImpl: async message => { sent.push(message); return { pendingMessageID: "pending-tvglobo" }; },
     confirmDeliveryImpl: async delivery => {
       assert.equal(delivery.chatId, "self");
-      assert.equal(delivery.requirePreview, true);
+      assert.equal(delivery.requirePreview, Boolean(sent.at(-1)?.preview.img));
       return { state: "delivered" };
     },
     logger: { info() {}, warn() {} }, ...overrides,
@@ -138,18 +138,34 @@ test("rota geral preserva título e texto longo, acrescentando URL para o WhatsA
   assert.equal((await handler(request({ ...payload, text: "a".repeat(8001) + link }))).status, 400);
 });
 
-test("cliente antigo recebe URL antes da assinatura e powered-by atualizado", async () => {
+test("cliente antigo recebe URL antes da assinatura e crédito atualizado para push", async () => {
   const { handler, sent, request } = setup();
   const body = { ...payload, text: "Texto\n\n`@tvglobo via X, 00:34`\n`powered by leo saquetto sync`" };
   assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
-  assert.equal(sent[0].text, "Texto\n\n`@tvglobo via X, 00:34`\n" + link + "\n`powered by @leosaquetto`");
+  assert.equal(sent[0].text, "Texto\n\n`@tvglobo via X, 00:34`\n" + link + "\n`push by @leosaquetto`");
 });
 
-test("somente o avatar pequeno informa dimensões 96x96; mídia mantém seu tamanho", async () => {
+test("avatar de cliente antigo é removido; mídia continua com imagem", async () => {
   const { handler, sent, request } = setup();
   const body = { ...payload, preview: { ...payload.preview, imageUrl: "https://pbs.twimg.com/profile_images/123/avatar_x96.jpg" } };
   assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
-  assert.deepEqual(sent[0].preview.imgSize, { width: 96, height: 96 });
+  assert.equal(sent[0].preview.img, undefined);
+  assert.equal(sent[0].preview.imgSize, undefined);
   assert.equal((await handler(request(payload, "tvglobo-token", "/v1/send-x-post"))).status, 202);
   assert.equal(sent[1].preview.imgSize, undefined);
+  assert.match(sent[1].preview.img, /^file:/);
+});
+
+test("cartão sem mídia não baixa imagem e conserva título, resumo e link", async () => {
+  let downloads = 0;
+  const { handler, sent, request } = setup({ fetchImpl: async () => { downloads++; throw new Error("unexpected download"); } });
+  for (const imageUrl of [undefined, "", "https://pbs.twimg.com/profile_images/123/avatar_400x400.jpg"]) {
+    const body = { ...payload, preview: { ...payload.preview, title: "Nome (@tvglobo) no X", imageUrl } };
+    assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+    assert.equal(sent.at(-1).preview.img, undefined);
+    assert.equal(sent.at(-1).preview.title, body.preview.title);
+    assert.equal(sent.at(-1).preview.summary, "Legenda");
+    assert.equal(sent.at(-1).preview.link, link);
+  }
+  assert.equal(downloads, 0);
 });

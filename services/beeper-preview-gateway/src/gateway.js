@@ -460,12 +460,13 @@ export function createGateway({
       const profile = post?.[1];
       allowed = Boolean(post && (!tvglobo || (profile === "tvglobo" &&
         idempotencyKey === `tvglobo:${post[2]}:self:v1`)) &&
-        payload?.preview?.imageUrl && preview.summary);
+        (generalPost || payload?.preview?.imageUrl) && preview.summary);
       preview.title = generalPost && String(payload?.preview?.title || "").trim()
         ? preview.title
         : profile === "tvglobo" ? "TV Globo • @tvglobo" : `X • @${profile}`;
-      if (generalPost && /^https:\/\/pbs\.twimg\.com\/profile_images\/[^?#]+_x96\.[a-z]+(?:[?#]|$)/i.test(preview.imageUrl)) {
-        preview.imgSize = { width: 96, height: 96 };
+      // Avatars from older Scriptable versions must not become large thumbnails.
+      if (generalPost && /^https:\/\/pbs\.twimg\.com\/profile_images\//i.test(preview.imageUrl)) {
+        preview.imageUrl = "";
       }
     }
     if (buyticket) {
@@ -490,11 +491,11 @@ export function createGateway({
       return respond(400, { code: "preview_image_url_not_allowed" });
     }
     // WhatsApp iOS hides the preview if its URL is absent from the body.
-    // Keep the URL before the final powered-by line, including older clients.
+    // Keep the URL before the final credit line, including older clients.
     if (generalPost) {
-      text = text.replace(/\n`powered by leo saquetto sync`$/, "\n`powered by @leosaquetto`");
+      text = text.replace(/\n`powered by (?:leo saquetto sync|@leosaquetto)`$/, "\n`push by @leosaquetto`");
       if (!text.includes(link)) {
-        const footer = text.match(/\n`powered by [^`\n]+`$/);
+        const footer = text.match(/\n`(?:powered|push) by [^`\n]+`$/);
         text = footer
           ? `${text.slice(0, footer.index)}\n${link}${footer[0]}`
           : `${text}\n\n${link}`;
