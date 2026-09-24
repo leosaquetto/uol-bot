@@ -52,8 +52,8 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
     assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
     assert.equal(sends[0].body.preview.summary, "Legenda & texto");
     assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
-    assert.equal(sends[0].body.text, "> ```Legenda & texto```\n> 𝕏 ```outro_perfil (@outro_perfil) no X, 23:44```\n> ```" + url.replace("https://", "") + "```");
-    assert.equal(sends[0].body.text.split(url.replace("https://", "")).length, 2);
+    assert.equal(sends[0].body.text, "> ```Legenda & texto```\n> 𝕏 ```outro_perfil (@outro_perfil) no X, 23:44```\n> ```" + url + "```");
+    assert.equal(sends[0].body.text.split(url).length, 2);
     assert.equal(sends[0].key, undefined);
     assert.equal(sends[0].body.format, "whatsapp");
   }
@@ -135,7 +135,7 @@ test("sem mídia e sem avatar disponível, não envia imagem aleatória", async 
   assert.equal(sends[0].body.preview.imageUrl, "");
 });
 
-test("texto integral longo vence metadado cortado, conserva parágrafos, emojis e links completos", async () => {
+test("texto integral longo vence metadado cortado, remove linhas vazias e conserva emojis e links completos", async () => {
   const texto = "Texto longo ❤️ ".repeat(700);
   const completo = texto + "\n\nFinal & íntegro https://example.com/endereco-inteiro";
   const post = '<meta property="og:description" content="Texto longo…">' +
@@ -144,12 +144,14 @@ test("texto integral longo vence metadado cortado, conserva parágrafos, emojis 
   const { run, sends } = setup({}, { profileMeta: profileMeta + '<meta property="og:title" content="Nome Real (@outro_perfil) on X">', post });
   await run("outro_perfil");
   const body = sends[0].body;
-  assert.ok(body.text.startsWith("> ```" + texto + "```\n>\n> ```Final & íntegro https://example.com/endereco-inteiro```\n> 𝕏 ```Nome Real (@outro_perfil) no X, 23:44```"));
+  assert.ok(body.text.startsWith("> ```" + texto + "```\n> ```Final & íntegro https://example.com/endereco-inteiro```\n> 𝕏 ```Nome Real (@outro_perfil) no X, 23:44```"));
   assert.ok(body.text.length > 8000);
+  assert.equal(body.text.split("\n").some(line => /^>\s*$/.test(line)), false);
+  assert.equal(body.text.includes("\n\n"), false);
   assert.equal(body.preview.title, "Nome Real (@outro_perfil) no X");
   assert.equal(Array.from(body.preview.summary).length <= 110, true);
   assert.match(body.preview.summary, /…$/);
-  assert.equal(body.text.split(body.link.replace("https://", "")).length, 2);
+  assert.equal(body.text.split(body.link).length, 2);
 });
 
 test("texto é extraído apenas do artigo do post, incluindo divs aninhadas", async () => {
@@ -172,7 +174,7 @@ test("post sem mídia mantém texto integral e usa URL entre crases, sem espaça
   const { run, sends } = setup({}, { post: '<meta property="og:description" content="Texto com ``` literal">' });
   await run();
   assert.ok(sends[0].body.text.includes("> ```Texto com ``` literal```\n> 𝕏 "));
-  assert.ok(sends[0].body.text.endsWith("> ```x.com/tvglobo/status/" + ids.tvglobo + "```"));
+  assert.ok(sends[0].body.text.endsWith("> ```https://x.com/tvglobo/status/" + ids.tvglobo + "```"));
   assert.equal(sends[0].body.text.includes("push by"), false);
   assert.equal(sends[0].body.text.includes("\n\n"), false);
   assert.equal(sends[0].body.text.startsWith("> ```"), true);

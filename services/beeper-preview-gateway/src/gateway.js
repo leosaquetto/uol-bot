@@ -495,11 +495,7 @@ export function createGateway({
     // Keep the URL before the final credit line, including older clients.
     if (generalPost) {
       text = text.replace(/\n`powered by (?:leo saquetto sync|@leosaquetto)`$/, "\n`push by @leosaquetto`");
-      // Native WhatsApp template displays x.com/... without the scheme.
-      const displayedLink = link.replace(/^https:\/\//, "");
-      const usesDisplayedLink = nativeFormatting && !text.includes(link) && text.includes(displayedLink);
-      if (usesDisplayedLink) preview.link = displayedLink;
-      if (!text.includes(link) && !usesDisplayedLink) {
+      if (!text.includes(link)) {
         const footer = text.match(/\n`(?:powered|push) by [^`\n]+`$/);
         text = footer
           ? `${text.slice(0, footer.index)}\n${link}${footer[0]}`

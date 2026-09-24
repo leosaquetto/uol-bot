@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 11. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 12. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
@@ -10,7 +10,7 @@
 // Thumbnail: mídia do post; sem mídia, sem cartão e link entre crases.
 // O WhatsApp decide o layout final do cartão.
 // Texto integral disponível na página; resumo curto só no cartão.
-// Link antes do crédito: o WhatsApp iOS oculta o cartão sem a URL no corpo.
+// URL completa no corpo: necessária para o WhatsApp iOS mostrar o cartão.
 // Padrão: citação com texto, autor/hora da publicação e link monoespaçados.
 // A configuração inicial é importada do iCloud para o Keychain.
 
@@ -86,10 +86,12 @@ var publicacao = new Date(Math.floor(Number(ultimo) / 4194304) + 1288834974657);
 var hora = publicacao.toLocaleTimeString("pt-BR", {
   hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo"
 });
-var legendaFormatada = detalhes.legenda.split("\n").map(function (linha) {
-  return linha ? "> ```" + linha + "```" : ">";
+var legendaFormatada = detalhes.legenda.split("\n").filter(function (linha) {
+  return linha.trim() !== "";
+}).map(function (linha) {
+  return "> ```" + linha + "```";
 }).join("\n");
-var mensagem = legendaFormatada + "\n> 𝕏 ```" + titulo + ", " + hora + "```\n> ```" + url.replace("https://", "") + "```";
+var mensagem = legendaFormatada + "\n> 𝕏 ```" + titulo + ", " + hora + "```\n> ```" + url + "```";
 var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
 envio.method = "POST";
 envio.timeoutInterval = 45;

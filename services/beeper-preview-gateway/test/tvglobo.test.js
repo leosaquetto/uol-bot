@@ -179,9 +179,9 @@ test("formatação WhatsApp passa intacta apenas na rota pessoal geral", async (
   assert.ok(sent[1].preview.img);
 });
 
-test("modelo nativo mantém link sem protocolo, sem repetir URL, e associa a mídia ao link exibido", async () => {
+test("modelo nativo mantém URL HTTPS completa uma vez e associa a mídia à mesma URL", async () => {
   const { handler, sent, request } = setup();
-  const displayedLink = link.replace("https://", "");
+  const displayedLink = link;
   const body = { ...payload, format: "whatsapp", text: "> ```Texto```\n> 𝕏 ```Nome (@tvglobo) no X, 23:44```\n> ```" + displayedLink + "```" };
   assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
   assert.equal(sent[0].text, body.text);
