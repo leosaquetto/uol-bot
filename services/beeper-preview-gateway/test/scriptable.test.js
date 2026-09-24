@@ -130,6 +130,7 @@ test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
   const { run, sends } = setup({}, { profileMeta });
   await run("@outro_perfil");
   assert.match(sends[0].body.preview.imageUrl, /^https:\/\/pbs\.twimg\.com\/media\//);
+  assert.equal(sends[0].body.preview.avatarUrl, avatar.replace("_200x200", "_400x400"));
 });
 
 test("post sem mídia usa avatar 400x400 do perfil sem consulta adicional", async () => {
@@ -137,6 +138,7 @@ test("post sem mídia usa avatar 400x400 do perfil sem consulta adicional", asyn
   await run("@outro_perfil");
   assert.equal(sends[0].body.preview.imageUrl, avatar.replace("_200x200", "_400x400"));
   assert.equal(sends[0].body.preview.summary, "");
+  assert.equal(sends[0].body.preview.avatarUrl, undefined);
   assert.equal(requests(), 3);
 });
 
@@ -151,6 +153,7 @@ test("vídeo usa seu próprio frame antes do avatar", async () => {
   const { run, sends } = setup({}, { profileMeta, post: `<meta property="og:description" content="Vídeo"><meta property="og:image" content="${avatar}"><meta name="twitter:image" content="${frame}">` });
   await run("@outro_perfil");
   assert.equal(sends[0].body.preview.imageUrl, frame.replace("format=webp", "format=jpg"));
+  assert.equal(sends[0].body.preview.avatarUrl, avatar.replace("_200x200", "_400x400"));
 });
 
 test("sem mídia e sem avatar disponível, não envia imagem aleatória", async () => {
@@ -158,6 +161,7 @@ test("sem mídia e sem avatar disponível, não envia imagem aleatória", async 
   await run();
   assert.equal(sends.length, 1);
   assert.equal(sends[0].body.preview.imageUrl, "");
+  assert.equal(sends[0].body.preview.avatarUrl, undefined);
 });
 
 test("texto integral longo vence metadado cortado, remove linhas vazias e conserva emojis e links completos", async () => {

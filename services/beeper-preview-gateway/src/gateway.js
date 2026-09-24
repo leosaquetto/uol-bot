@@ -126,23 +126,28 @@ function imageExtension(contentType) {
   return "jpg";
 }
 
-async function downloadPreviewImage(fetchImpl, imageUrl, directory, transform) {
-  if (!imageUrl) return null;
+async function downloadImageBytes(fetchImpl, imageUrl, timeoutMs = 10_000) {
   const response = await fetchImpl(imageUrl, {
     headers: { Accept: "image/*" },
     redirect: "error",
-    signal: AbortSignal.timeout(10_000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) throw new Error("preview_image_download_failed");
-  let contentType = String(response.headers.get("Content-Type") || "")
+  const contentType = String(response.headers.get("Content-Type") || "")
     .split(";", 1)[0].trim().toLowerCase();
   if (!contentType.startsWith("image/")) throw new Error("preview_image_invalid_type");
   const declaredSize = Number(response.headers.get("Content-Length") || 0);
   if (declaredSize > MAX_IMAGE_BYTES) throw new Error("preview_image_too_large");
-  let bytes = Buffer.from(await response.arrayBuffer());
+  const bytes = Buffer.from(await response.arrayBuffer());
   if (!bytes.length || bytes.length > MAX_IMAGE_BYTES) {
     throw new Error("preview_image_invalid_size");
   }
+  return { bytes, contentType };
+}
+
+async function downloadPreviewImage(fetchImpl, imageUrl, directory, transform) {
+  if (!imageUrl) return null;
+  let { bytes, contentType } = await downloadImageBytes(fetchImpl, imageUrl);
   let imgSize;
   if (transform) {
     const transformed = await transform(bytes);
@@ -464,6 +469,7 @@ export function createGateway({
     const nativeFormatting = generalPost && payload?.format === "whatsapp";
     const normalizedPreview = normalizePreview(payload, link, personalPost ? allowedTVGloboImageUrl : allowedImageUrl);
     const preview = normalizedPreview.preview;
+    let avatarUrl = "";
     const buyticket = url.pathname === "/v1/send-buyticket";
     const destinationChatId = personalPost ? selfChatId : buyticket ? buyticketChatId : chatId;
     let allowed = allowedOfferUrl(link);
@@ -505,6 +511,14 @@ export function createGateway({
       });
       return respond(400, { code: "preview_image_url_not_allowed" });
     }
+    // A secondary avatar is only meaningful on media cards in the personal route.
+    if (generalPost && /^https:\/\/pbs\.twimg\.com\/(media|amplify_video_thumb|ext_tw_video_thumb)\//.test(preview.imageUrl)) {
+      avatarUrl = String(payload?.preview?.avatarUrl || "").trim();
+      if (avatarUrl && (!allowedTVGloboImageUrl(avatarUrl) || !new URL(avatarUrl).pathname.startsWith("/profile_images/"))) {
+        return respond(400, { code: "preview_avatar_url_not_allowed" });
+      }
+      avatarUrl = avatarUrl.replace(/_(?:mini|normal|bigger|reasonably_small|200x200|400x400|x96)(\.[a-z]+)(?=[?#]|$)/i, "_400x400$1");
+    }
     // WhatsApp iOS hides the preview if its URL is absent from the body.
     // Keep the URL before the final credit line, including older clients.
     if (generalPost) {
@@ -541,8 +555,16 @@ export function createGateway({
     let dispatched = false;
     try {
       try {
+        let avatarBytes;
+        if (avatarUrl) {
+          try {
+            ({ bytes: avatarBytes } = await downloadImageBytes(fetchImpl, avatarUrl, 5_000));
+          } catch (error) {
+            auditLog(logger, "warn", "beeper_gateway_avatar_skipped", { requestId, code: safePreviewError(error) });
+          }
+        }
         image = await downloadPreviewImage(fetchImpl, preview.imageUrl, previewDirectory,
-          generalPost ? transformPersonalThumbnail : undefined);
+          generalPost ? bytes => transformPersonalThumbnail(bytes, { avatarBytes }) : undefined);
       } catch (error) {
         updateDelivery(database, idempotencyKey, "failed", {}, now().toISOString());
         auditLog(logger, "warn", "beeper_gateway_preview_image_failed", {

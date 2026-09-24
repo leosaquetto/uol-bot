@@ -32,7 +32,7 @@ with its original `tvglobo:<id>:self:v1` duplicate protection. The destination i
 cannot redirect delivery. Existing UOL and BuyTicket tokens/routes are unchanged.
 
 `scriptable/Ultimo-Tweet-TVGlobo.js` runs in a Shortcuts background action. It
-is version 13.1: the user-validated async wrapper finalizes in `finally`, clears
+is version 13.2: the user-validated async wrapper finalizes in `finally`, clears
 the Shortcut output on errors and rethrows the original failure. Successful
 runs set the post URL before finalizing. The iOS correction was supplied and
 confirmed by the user; local lifecycle tests do not emulate the Shortcuts host.
@@ -79,6 +79,16 @@ the brand blurry. This does not recover missing detail in the original photo.
 The SVG is rasterized at 216 DPI before sizing, then the composite is exported
 as JPEG at quality 92. The original source is not modified. Other routes retain
 their image bytes.
+When the post has media, Scriptable also supplies `preview.avatarUrl` from the
+queried profile. Only the general personal route accepts that optional secondary
+image, restricted to HTTPS `pbs.twimg.com/profile_images/` with no credentials,
+custom port, fragment or redirects. Known small avatar suffixes are upgraded to
+400x400. The avatar is cropped to a circle measuring 16% of the shorter side,
+placed at bottom left with 1.5% margins from the bottom and left edges. A local
+black radial gradient fades to transparency behind it. Posts whose main image is
+already the profile avatar keep that image without a second avatar or shadow.
+Missing, unavailable or corrupt optional avatars leave the media card intact.
+Older clients without `avatarUrl` continue working without the extra circle.
 Banners and generic X images are ignored. Older clients still receive a missing
 URL before the final credit line and the updated signature wording.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from

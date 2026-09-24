@@ -2,12 +2,13 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 13.1. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 13.2. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
 // Usa cartão com thumbnail, legenda e link. Cada execução envia novamente.
 // Thumbnail: mídia do post; sem mídia, avatar do perfil em 400x400.
+// Posts com mídia recebem também avatar circular com sombra no canto inferior esquerdo.
 // O WhatsApp decide o layout final do cartão.
 // Cartão só com imagem e título; texto integral disponível na página fica abaixo.
 // URL completa no corpo: necessária para o WhatsApp iOS mostrar o cartão.
@@ -84,6 +85,7 @@ var perfil = "tvglobo";
 
     var url = "https://x.com/" + perfil + "/status/" + ultimo;
     var detalhes = await obterDetalhes(url);
+    var temMidia = Boolean(detalhes.imagem);
     if (!detalhes.imagem) detalhes.imagem = fotoPerfil;
     url += "?s=46";
     var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
@@ -112,6 +114,7 @@ var perfil = "tvglobo";
     preview.title = titulo;
     preview.summary = "";
     preview.imageUrl = detalhes.imagem;
+    if (temMidia && fotoPerfil) preview.avatarUrl = fotoPerfil;
     var corpo = {};
     corpo.link = url;
     corpo.text = mensagem;

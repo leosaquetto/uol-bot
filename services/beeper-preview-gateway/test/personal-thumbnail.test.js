@@ -52,3 +52,26 @@ test("frame 138px recebe o mesmo selo nítido de uma base 1080px, sem ampliar o 
 test("imagem inválida falha sem gerar arquivo parcial", async () => {
   await assert.rejects(createPersonalThumbnail(Buffer.from("not an image")), /preview_image_render_failed/);
 });
+
+test("avatar é circular no canto inferior esquerdo e a sombra desaparece gradualmente", async () => {
+  const source = await sharp({ create: { width: 1080, height: 1080, channels: 3, background: "white" } }).png().toBuffer();
+  const avatarBytes = await sharp({ create: { width: 400, height: 250, channels: 3, background: "#00ff00" } }).png().toBuffer();
+  const result = await createPersonalThumbnail(source, { avatarBytes });
+  const { data, info } = await sharp(result.bytes).raw().toBuffer({ resolveWithObject: true });
+  const pixel = (x, y) => [...data.subarray((y * info.width + x) * info.channels, (y * info.width + x) * info.channels + 3)];
+  assert.ok(pixel(103, 978)[1] > 240 && pixel(103, 978)[0] < 15, "avatar center at 1.5% margins");
+  for (const [x, y] of [[20, 895], [8, 978], [103, 1075]]) {
+    const [r, g, b] = pixel(x, y);
+    assert.ok(Math.abs(r - g) < 5 && Math.abs(g - b) < 5, "corners and margins contain no square avatar");
+  }
+  const near = pixel(202, 978)[0], far = pixel(240, 978)[0];
+  assert.ok(near < far && far < 254, "shadow fades out instead of a solid rectangle");
+  assert.ok(pixel(350, 978).every(value => value > 250), "distant background remains untouched");
+});
+
+test("avatar inválido conserva o cartão sem círculo nem sombra", async () => {
+  const source = await sharp({ create: { width: 400, height: 400, channels: 3, background: "white" } }).png().toBuffer();
+  const plain = await createPersonalThumbnail(source);
+  const invalid = await createPersonalThumbnail(source, { avatarBytes: Buffer.from("invalid avatar") });
+  assert.deepEqual(invalid.bytes, plain.bytes);
+});

@@ -35,6 +35,67 @@ function setup(overrides = {}) {
   return { handler, sent, request };
 }
 
+test("mídia pessoal baixa avatar permitido em 400px e o passa ao compositor", async () => {
+  const fetched = [];
+  let receivedAvatar;
+  const { handler, sent, request } = setup({
+    fetchImpl: async (url, options) => {
+      fetched.push(url);
+      assert.equal(options.redirect, "error");
+      return new Response(new Uint8Array([1, 2, 3]), { headers: { "Content-Type": "image/jpeg" } });
+    },
+    transformPersonalThumbnail: async (bytes, { avatarBytes }) => {
+      receivedAvatar = avatarBytes;
+      return { bytes, imgType: "image/jpeg", imgSize: { width: 1080, height: 1080 } };
+    },
+  });
+  const body = { ...payload, preview: { ...payload.preview, avatarUrl: "https://pbs.twimg.com/profile_images/123/avatar_normal.jpg" } };
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.deepEqual([...receivedAvatar], [1, 2, 3]);
+  assert.deepEqual(fetched, ["https://pbs.twimg.com/profile_images/123/avatar_400x400.jpg", payload.preview.imageUrl]);
+  assert.equal(sent[0].preview.avatarUrl, undefined);
+});
+
+test("avatar secundário é ignorado em fallback, ausência de imagem e rota legada", async () => {
+  let downloads = 0, avatarReceived;
+  const { handler, request } = setup({
+    fetchImpl: async () => { downloads++; return new Response(new Uint8Array([1]), { headers: { "Content-Type": "image/jpeg" } }); },
+    transformPersonalThumbnail: async (bytes, { avatarBytes }) => { avatarReceived = avatarBytes; return { bytes, imgType: "image/jpeg" }; },
+  });
+  for (const imageUrl of ["https://pbs.twimg.com/profile_images/123/avatar_400x400.jpg", ""]) {
+    const body = { ...payload, preview: { ...payload.preview, imageUrl, avatarUrl: "https://evil.test/avatar.jpg" } };
+    assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+    assert.equal(avatarReceived, undefined);
+  }
+  assert.equal(downloads, 1);
+  assert.equal((await handler(request({ ...payload, preview: { ...payload.preview, avatarUrl: "https://evil.test/avatar.jpg" } }))).status, 202);
+  assert.equal(downloads, 2);
+});
+
+test("avatar de mídia rejeita origem externa, credenciais, porta, fragmento e caminho de mídia", async () => {
+  let downloads = 0;
+  const { handler, request } = setup({ fetchImpl: async () => { downloads++; throw Error("unexpected download"); } });
+  for (const avatarUrl of [
+    "https://evil.test/avatar.jpg", "http://pbs.twimg.com/profile_images/1/a.jpg",
+    "https://secret@pbs.twimg.com/profile_images/1/a.jpg", "https://pbs.twimg.com:8443/profile_images/1/a.jpg",
+    "https://pbs.twimg.com/profile_images/1/a.jpg#fragment", "https://pbs.twimg.com/media/a.jpg",
+  ]) {
+    const body = { ...payload, preview: { ...payload.preview, avatarUrl } };
+    assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 400);
+  }
+  assert.equal(downloads, 0);
+});
+
+test("falha no download opcional do avatar mantém a mídia e a entrega", async () => {
+  const { handler, sent, request } = setup({
+    fetchImpl: async url => url.includes("profile_images") ? new Response("unavailable", { status: 503 }) : new Response(new Uint8Array([1]), { headers: { "Content-Type": "image/jpeg" } }),
+    transformPersonalThumbnail: async (bytes, { avatarBytes }) => { assert.equal(avatarBytes, undefined); return { bytes, imgType: "image/jpeg" }; },
+  });
+  const body = { ...payload, preview: { ...payload.preview, avatarUrl: "https://pbs.twimg.com/profile_images/1/a.jpg" } };
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.ok(sent[0].preview.img);
+});
+
 test("TV Globo envia cartão ao chat fixo e não duplica o mesmo post", async () => {
   const { handler, sent, request } = setup();
   assert.equal((await handler(request({ ...payload, chatId: "group" }))).status, 202);
