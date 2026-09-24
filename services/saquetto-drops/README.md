@@ -31,6 +31,13 @@ tests stay restricted to self. The first eligible automatic push/send is pending
 A thread heartbeat checks existing state hourly for the first 72 hours; it never
 polls X or generates test messages. Observation ends on 2026-09-27 at 21:16:13 UTC.
 
+An additional route was enabled on 2026-09-24 at the user's request:
+`miley` and `tudomiley` own posts/quotes → `bass-persuades`. Both accounts have
+post notifications enabled on the dedicated X account; the destination's live
+membership/permission was verified. No test messages or historical replay were
+used. The original three-account Lover Tour route remains in place. Both routes
+exclude replies and reposts and use the same approved preview and dispatch delay.
+
 The integrated receiver runs with WhatsApp paired; its credentials
 survived service restarts without another QR. Eleven requested destinations are
 privately mapped and verified, but only Lover Tour is referenced by a rule.

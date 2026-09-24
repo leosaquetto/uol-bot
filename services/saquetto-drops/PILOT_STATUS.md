@@ -1,5 +1,19 @@
 # Pilot evidence — 2026-09-24
 
+## Additional live route — BASS PERSUADES
+
+- At the user's request, added private rule `bass-persuades-posts`: `miley` and
+  `tudomiley`, types `post`/`quote`, no text filters, destination `bass-persuades`.
+- Miley already had post notifications enabled. The dedicated X account followed
+  TudoMiley; its resulting UI showed `Following @TudoMiley` and
+  `Turn off post notifications`, confirming notifications enabled.
+- BASS PERSUADES membership/posting rights were verified without sending. The
+  previous private configuration was backed up and validated, then reloaded
+  without restarting the service or changing the Lover Tour rule.
+- Readback: two configured rules, live/unpaused, push and WhatsApp connected.
+  No test messages or historical event replay. The existing observation heartbeat
+  was updated to recognize both approved routes.
+
 ## Activated initial flow — 21:16:13 UTC / 18:16:13 São Paulo
 
 - The user requested starting operation now. The initial flow is live and unpaused:
