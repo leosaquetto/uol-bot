@@ -3,7 +3,7 @@ import sharp from "sharp";
 
 const badge = readFileSync(new URL("../assets/pushpushpushsaquetto.svg", import.meta.url));
 
-// Preserve the supplied artwork, including its white background.
+// Preserve the supplied artwork, aspect ratio and transparency.
 export async function createPersonalThumbnail(bytes) {
   try {
     const base = await sharp(bytes, { limitInputPixels: 40_000_000 })
@@ -14,10 +14,12 @@ export async function createPersonalThumbnail(bytes) {
       .toBuffer({ resolveWithObject: true });
     const { width, height } = base.info;
     const size = Math.max(1, Math.round(Math.min(width, height) * 0.24));
-    const left = Math.min(width - size, Math.round(width * 0.04));
-    const overlay = await sharp(badge).resize(size, size).png().toBuffer();
+    const overlay = await sharp(badge).resize({ width: size }).png()
+      .toBuffer({ resolveWithObject: true });
+    const left = Math.max(0, width - overlay.info.width - Math.round(width * 0.04));
+    const top = Math.min(height - overlay.info.height, Math.round(height * 0.04));
     const output = await sharp(base.data)
-      .composite([{ input: overlay, top: 0, left }])
+      .composite([{ input: overlay.data, top, left }])
       .jpeg({ quality: 92, chromaSubsampling: "4:4:4" })
       .toBuffer();
     return { bytes: output, imgType: "image/jpeg", imgSize: { width, height } };

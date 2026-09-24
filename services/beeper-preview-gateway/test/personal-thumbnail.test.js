@@ -3,21 +3,24 @@ import test from "node:test";
 import sharp from "sharp";
 import { createPersonalThumbnail } from "../src/personal-thumbnail.js";
 
-test("selo preserva avatar 400x400 e toca o topo com margem à esquerda", async () => {
+test("selo preserva avatar 400x400 e mantém margens no topo e à direita", async () => {
   const source = await sharp({ create: { width: 400, height: 400, channels: 3, background: "#0050a0" } }).png().toBuffer();
   const result = await createPersonalThumbnail(source);
   assert.deepEqual(result.imgSize, { width: 400, height: 400 });
   assert.equal(result.imgType, "image/jpeg");
   const { data, info } = await sharp(result.bytes).raw().toBuffer({ resolveWithObject: true });
   const pixel = (x, y) => [...data.subarray((y * info.width + x) * info.channels, (y * info.width + x) * info.channels + 3)];
-  assert.ok(pixel(20, 2).every(v => v > 240), "white badge starts at top");
-  assert.ok(pixel(3, 2)[2] > 120 && pixel(3, 2)[0] < 30, "left margin retains original image");
+  for (const [x, y] of [[335, 3], [397, 40], [20, 30], [335, 75]]) {
+    assert.ok(pixel(x, y)[2] > 120 && pixel(x, y)[0] < 30, "margins and area outside rectangular badge retain photo");
+  }
   assert.ok(pixel(200, 200)[2] > 120 && pixel(200, 200)[0] < 30, "photo outside badge is retained");
-  let dark = 0;
-  for (let y = 20; y < 80; y++) for (let x = 20; x < 110; x++) {
+  let dark = 0, white = 0;
+  for (let y = 16; y < 63; y++) for (let x = 288; x < 384; x++) {
     if (pixel(x, y).every(v => v < 70)) dark++;
+    if (pixel(x, y).every(v => v > 230)) white++;
   }
   assert.ok(dark > 200, "black logo paths are rendered");
+  assert.ok(white > 200, "white logo paths are rendered");
 });
 
 test("limita mídia grande sem deformar e não amplia imagem pequena", async () => {
