@@ -1,16 +1,17 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { Script as JavaScript } from "node:vm";
 
-const AsyncFunction = Object.getPrototypeOf(async function() {}).constructor;
 const code = readFileSync(new URL("../scriptable/Ultimo-Tweet-TVGlobo.js", import.meta.url), "utf8");
-const execute = new AsyncFunction("args", "Request", "Script", "config", "Pasteboard", "Keychain", "FileManager", "console", code);
+const program = new JavaScript(code);
 const ids = { tvglobo: "2102952373022851247", outro_perfil: "2102952373022851248" };
 const profileHtml = profile => `<article><a href="/${profile}/status/${ids[profile]}">data</a></article>`;
 
 function setup(initial = {}, pages = {}) {
   const keys = new Map(Object.entries({ "tvglobo-beeper-token-v1": "test-token", ...initial }));
   const sends = [];
+  const lifecycle = [];
   let blocked = false;
   let ambiguous = false;
   let requests = 0;
@@ -33,15 +34,39 @@ function setup(initial = {}, pages = {}) {
   }
   async function run(input = null) {
     let output;
-    await execute({ shortcutParameter: input }, Request,
-      { setShortcutOutput: value => { output = value; }, complete() {} }, { runsInApp: false },
-      { copyString() { throw new Error("unexpected clipboard"); } },
-      { contains: key => keys.has(key), get: key => keys.get(key), set: (key, value) => keys.set(key, value) },
-      { iCloud() { throw new Error("token already exists"); } }, { log() {} });
+    await program.runInNewContext({
+      args: { shortcutParameter: input }, Request,
+      Script: {
+        setShortcutOutput(value) { output = value; lifecycle.push({ event: "output", value }); },
+        complete() { lifecycle.push({ event: "complete" }); },
+      },
+      config: { runsInApp: false },
+      Pasteboard: { copyString() { throw new Error("unexpected clipboard"); } },
+      Keychain: { contains: key => keys.has(key), get: key => keys.get(key), set: (key, value) => keys.set(key, value) },
+      FileManager: { iCloud() { throw new Error("token already exists"); } },
+      console: { log() {}, error() { lifecycle.push({ event: "error" }); } },
+    });
     return output;
   }
-  return { run, sends, keys, block: () => { blocked = true; }, makeAmbiguous: () => { ambiguous = true; }, requests: () => requests };
+  return { run, sends, keys, lifecycle, block: () => { blocked = true; }, makeAmbiguous: () => { ambiguous = true; }, requests: () => requests };
 }
+
+test("Atalhos recebe a URL antes da finalização, exatamente uma vez", async () => {
+  const app = setup();
+  const url = await app.run();
+  assert.deepEqual(app.lifecycle, [{ event: "output", value: url }, { event: "complete" }]);
+});
+
+test("Atalhos recebe saída vazia e finalização mesmo com erro, sem esconder a falha", async () => {
+  for (const scenario of ["invalid", "blocked", "ambiguous"]) {
+    const app = setup();
+    if (scenario === "blocked") app.block();
+    if (scenario === "ambiguous") app.makeAmbiguous();
+    await assert.rejects(app.run(scenario === "invalid" ? "@bad-user" : null));
+    assert.deepEqual(app.lifecycle, [{ event: "error" }, { event: "output", value: "" }, { event: "complete" }]);
+    if (scenario !== "ambiguous") assert.equal(app.sends.length, 0);
+  }
+});
 
 test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async () => {
   for (const input of ["@Outro_Perfil", "outro_perfil", " https://x.com/outro_perfil/ ", "https://twitter.com/outro_perfil"]) {

@@ -32,7 +32,11 @@ with its original `tvglobo:<id>:self:v1` duplicate protection. The destination i
 cannot redirect delivery. Existing UOL and BuyTicket tokens/routes are unchanged.
 
 `scriptable/Ultimo-Tweet-TVGlobo.js` runs in a Shortcuts background action. It
-accepts `@username`, `username`, or a profile URL as its text parameter; empty
+is version 13.1: the user-validated async wrapper finalizes in `finally`, clears
+the Shortcut output on errors and rethrows the original failure. Successful
+runs set the post URL before finalizing. The iOS correction was supplied and
+confirmed by the user; local lifecycle tests do not emulate the Shortcuts host.
+It accepts `@username`, `username`, or a profile URL as its text parameter; empty
 input defaults to TV Globo. Raw HTML input preserves the original TV Globo mode.
 In Shortcuts, connect an Ask for Input action to the script's Parameter field.
 Each execution checks only that profile and sends its latest post again; it does

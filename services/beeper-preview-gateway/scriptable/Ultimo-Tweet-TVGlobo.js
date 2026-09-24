@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 13. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 13.1. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
@@ -15,124 +15,135 @@
 // A configuração inicial é importada do iCloud para o Keychain.
 
 var perfil = "tvglobo";
-var entrada = args.shortcutParameter;
-var html = null;
-if (entrada !== null && entrada !== undefined && entrada !== "") {
-  if (typeof entrada !== "string") {
-    throw new Error("Informe um único @ como texto no parâmetro do Atalhos.");
-  }
-  entrada = entrada.trim();
-  if (entrada[0] === "<") html = entrada;
-  else if (entrada) {
-    perfil = entrada.replace(/^https:\/\/(?:www\.)?(?:x\.com|twitter\.com)\//i, "");
-    perfil = perfil.replace(/\/$/, "").replace(/^@/, "");
-  }
-}
-perfil = perfil.toLowerCase();
-if (!/^[a-z0-9_]{1,15}$/.test(perfil)) {
-  throw new Error("@ inválido. Informe só o usuário ou o link do perfil, sem link de post.");
-}
-var gatewayToken = await obterToken();
 
-if (html === null || html === undefined) {
-  var request = new Request("https://x.com/" + perfil);
-  request.timeoutInterval = 20;
-  request.headers = { "User-Agent": "Mozilla/5.0" };
-  html = await request.loadString();
-  if (request.response.statusCode !== 200) {
-    throw new Error("O X bloqueou a consulta. HTTP " + request.response.statusCode);
-  }
-}
-
-if (typeof html !== "string") {
-  throw new Error("Passe o HTML como texto ou deixe o parâmetro vazio.");
-}
-
-// Reaproveita nome e avatar da página já consultada.
-var metaPerfil = lerMetadados(html);
-var fotoPerfil = escolherImagem(metaPerfil, true);
-html = html.replace(/<!--[\s\S]*?-->/g, "");
-html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
-html = html.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
-var artigos = html.match(/<article\b[^>]*>[\s\S]*?<\/article>/gi) || [];
-var ultimo = "";
-
-for (var i = 0; i < artigos.length; i++) {
-  var links = /<a\b[^>]*\shref\s*=\s*(["'])([^"']+)\1[^>]*>/gi;
-  var link;
-  while ((link = links.exec(artigos[i])) !== null) {
-    var post = link[2].match(/^(?:https:\/\/(?:www\.)?(?:x\.com|twitter\.com))?\/([a-z0-9_]+)\/status\/(\d+)(?:\/?(?:[?#].*)?)$/i);
-    if (!post) continue;
-
-    // Só o primeiro permalink identifica o post; os demais podem ser citações.
-    if (post[1].toLowerCase() === perfil) {
-      var id = post[2];
-      if (id.length > ultimo.length) ultimo = id;
-      else if (id.length === ultimo.length && id > ultimo) ultimo = id;
+// Correção validada pelo usuário no Atalhos: finalizar também em caso de erro.
+(async () => {
+  try {
+    var entrada = args.shortcutParameter;
+    var html = null;
+    if (entrada !== null && entrada !== undefined && entrada !== "") {
+      if (typeof entrada !== "string") {
+        throw new Error("Informe um único @ como texto no parâmetro do Atalhos.");
+      }
+      entrada = entrada.trim();
+      if (entrada[0] === "<") html = entrada;
+      else if (entrada) {
+        perfil = entrada.replace(/^https:\/\/(?:www\.)?(?:x\.com|twitter\.com)\//i, "");
+        perfil = perfil.replace(/\/$/, "").replace(/^@/, "");
+      }
     }
-    break;
+    perfil = perfil.toLowerCase();
+    if (!/^[a-z0-9_]{1,15}$/.test(perfil)) {
+      throw new Error("@ inválido. Informe só o usuário ou o link do perfil, sem link de post.");
+    }
+    var gatewayToken = await obterToken();
+
+    if (html === null || html === undefined) {
+      var request = new Request("https://x.com/" + perfil);
+      request.timeoutInterval = 20;
+      request.headers = { "User-Agent": "Mozilla/5.0" };
+      html = await request.loadString();
+      if (request.response.statusCode !== 200) {
+        throw new Error("O X bloqueou a consulta. HTTP " + request.response.statusCode);
+      }
+    }
+
+    if (typeof html !== "string") {
+      throw new Error("Passe o HTML como texto ou deixe o parâmetro vazio.");
+    }
+
+    // Reaproveita nome e avatar da página já consultada.
+    var metaPerfil = lerMetadados(html);
+    var fotoPerfil = escolherImagem(metaPerfil, true);
+    html = html.replace(/<!--[\s\S]*?-->/g, "");
+    html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+    html = html.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
+    var artigos = html.match(/<article\b[^>]*>[\s\S]*?<\/article>/gi) || [];
+    var ultimo = "";
+
+    for (var i = 0; i < artigos.length; i++) {
+      var links = /<a\b[^>]*\shref\s*=\s*(["'])([^"']+)\1[^>]*>/gi;
+      var link;
+      while ((link = links.exec(artigos[i])) !== null) {
+        var post = link[2].match(/^(?:https:\/\/(?:www\.)?(?:x\.com|twitter\.com))?\/([a-z0-9_]+)\/status\/(\d+)(?:\/?(?:[?#].*)?)$/i);
+        if (!post) continue;
+
+        // Só o primeiro permalink identifica o post; os demais podem ser citações.
+        if (post[1].toLowerCase() === perfil) {
+          var id = post[2];
+          if (id.length > ultimo.length) ultimo = id;
+          else if (id.length === ultimo.length && id > ultimo) ultimo = id;
+        }
+        break;
+      }
+    }
+
+    if (ultimo === "") {
+      throw new Error("O X não entregou posts no HTML. Pode exigir login ou ter alterado a página.");
+    }
+
+    var url = "https://x.com/" + perfil + "/status/" + ultimo;
+    var detalhes = await obterDetalhes(url);
+    if (!detalhes.imagem) detalhes.imagem = fotoPerfil;
+    url += "?s=46";
+    var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
+    // Sintaxe nativa: evita as quebras extras da conversão Markdown do Beeper.
+    // O timestamp está codificado no ID Snowflake do próprio post (não é hora do envio).
+    var publicacao = new Date(Math.floor(Number(ultimo) / 4194304) + 1288834974657);
+    var hora = publicacao.toLocaleTimeString("pt-BR", {
+      hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo"
+    });
+    var legendaFormatada = detalhes.legenda.split("\n").filter(function (linha) {
+      return linha.trim() !== "";
+    }).map(function (linha) {
+      return "> ```" + linha + "```";
+    }).join("\n");
+    var mensagem = legendaFormatada + "\n> 𝕏 ```" + titulo + ", " + hora + "```\n> ```" + url + "```";
+    var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
+    envio.method = "POST";
+    envio.timeoutInterval = 45;
+    var cabecalhos = {};
+    cabecalhos["Authorization"] = "Bearer " + gatewayToken;
+    cabecalhos["Content-Type"] = "application/json";
+    envio.headers = cabecalhos;
+    // Nunca encaminhe a credencial a outro endereço por redirecionamento.
+    envio.onRedirect = function () { return null; };
+    var preview = {};
+    preview.title = titulo;
+    preview.summary = "";
+    preview.imageUrl = detalhes.imagem;
+    var corpo = {};
+    corpo.link = url;
+    corpo.text = mensagem;
+    corpo.format = "whatsapp";
+    corpo.preview = preview;
+    envio.body = JSON.stringify(corpo);
+
+    var respostaTexto;
+    try {
+      respostaTexto = await envio.loadString();
+    } catch (_) {
+      throw new Error("Envio sem confirmação. Pode ter chegado; confira seu WhatsApp antes de executar novamente.");
+    }
+    var resultado;
+    try { resultado = JSON.parse(respostaTexto); } catch (_) { resultado = {}; }
+    var status = envio.response.statusCode;
+    if ((status !== 200 && status !== 202) || resultado.deliveryState !== "confirmed_by_whatsapp_bridge") {
+      var codigo = resultado.code || "resposta_invalida";
+      throw new Error("Beeper não confirmou a entrega. HTTP " + status + " / " + codigo);
+    }
+    console.log("Post entregue no seu WhatsApp.");
+    Script.setShortcutOutput(url);
+    console.log(url);
+    if (config.runsInApp) Pasteboard.copyString(url);
+  } catch (erro) {
+    console.error(erro);
+    Script.setShortcutOutput("");
+    throw erro;
+  } finally {
+    Script.complete();
   }
-}
-
-if (ultimo === "") {
-  throw new Error("O X não entregou posts no HTML. Pode exigir login ou ter alterado a página.");
-}
-
-var url = "https://x.com/" + perfil + "/status/" + ultimo;
-var detalhes = await obterDetalhes(url);
-if (!detalhes.imagem) detalhes.imagem = fotoPerfil;
-url += "?s=46";
-var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
-// Sintaxe nativa: evita as quebras extras da conversão Markdown do Beeper.
-// O timestamp está codificado no ID Snowflake do próprio post (não é hora do envio).
-var publicacao = new Date(Math.floor(Number(ultimo) / 4194304) + 1288834974657);
-var hora = publicacao.toLocaleTimeString("pt-BR", {
-  hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo"
-});
-var legendaFormatada = detalhes.legenda.split("\n").filter(function (linha) {
-  return linha.trim() !== "";
-}).map(function (linha) {
-  return "> ```" + linha + "```";
-}).join("\n");
-var mensagem = legendaFormatada + "\n> 𝕏 ```" + titulo + ", " + hora + "```\n> ```" + url + "```";
-var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
-envio.method = "POST";
-envio.timeoutInterval = 45;
-var cabecalhos = {};
-cabecalhos["Authorization"] = "Bearer " + gatewayToken;
-cabecalhos["Content-Type"] = "application/json";
-envio.headers = cabecalhos;
-// Nunca encaminhe a credencial a outro endereço por redirecionamento.
-envio.onRedirect = function () { return null; };
-var preview = {};
-preview.title = titulo;
-preview.summary = "";
-preview.imageUrl = detalhes.imagem;
-var corpo = {};
-corpo.link = url;
-corpo.text = mensagem;
-corpo.format = "whatsapp";
-corpo.preview = preview;
-envio.body = JSON.stringify(corpo);
-
-var respostaTexto;
-try {
-  respostaTexto = await envio.loadString();
-} catch (_) {
-  throw new Error("Envio sem confirmação. Pode ter chegado; confira seu WhatsApp antes de executar novamente.");
-}
-var resultado;
-try { resultado = JSON.parse(respostaTexto); } catch (_) { resultado = {}; }
-var status = envio.response.statusCode;
-if ((status !== 200 && status !== 202) || resultado.deliveryState !== "confirmed_by_whatsapp_bridge") {
-  var codigo = resultado.code || "resposta_invalida";
-  throw new Error("Beeper não confirmou a entrega. HTTP " + status + " / " + codigo);
-}
-console.log("Post entregue no seu WhatsApp.");
-Script.setShortcutOutput(url);
-console.log(url);
-if (config.runsInApp) Pasteboard.copyString(url);
-Script.complete();
+})();
 
 async function obterToken() {
   var chave = "tvglobo-beeper-token-v1";
@@ -204,7 +215,8 @@ function nomeDoPerfil(metaPost, metaPagina) {
 }
 
 function textoDoPost(pagina, linkPost) {
-  var limpa = pagina.replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
+  var limpa = pagina.replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  limpa = limpa.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
   var artigosPost = limpa.match(/<article\b[^>]*>[\s\S]*?<\/article>/gi) || [];
   var relativo = linkPost.replace("https://x.com", "");
   for (var i = 0; i < artigosPost.length; i++) {
