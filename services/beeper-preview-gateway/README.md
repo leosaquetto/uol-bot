@@ -72,9 +72,13 @@ For `/v1/send-x-post` only, Sharp composites the supplied
 `assets/pushpushpushsaquetto.svg` over the image. The supplied artwork and transparency are
 preserved; badge width is 36% of the shorter side, with its original aspect ratio.
 It sits at the top right: right margin is 1.5% of image width and top margin is
-1.5% of image height. Images retain their aspect ratio, are never
-upscaled, and are limited to 1600px on either axis before JPEG export at quality
-92. The original image is not modified. Other routes retain their image bytes.
+1.5% of image height. Images retain their aspect ratio and are limited to 1600px
+on either axis. Sources whose longest side is below 1080px are enlarged to that
+canvas size before applying the vector badge, so small video frames do not make
+the brand blurry. This does not recover missing detail in the original photo.
+The SVG is rasterized at 216 DPI before sizing, then the composite is exported
+as JPEG at quality 92. The original source is not modified. Other routes retain
+their image bytes.
 Banners and generic X images are ignored. Older clients still receive a missing
 URL before the final credit line and the updated signature wording.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from

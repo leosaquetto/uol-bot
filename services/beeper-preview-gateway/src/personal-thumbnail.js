@@ -6,15 +6,23 @@ const badge = readFileSync(new URL("../assets/pushpushpushsaquetto.svg", import.
 // Preserve the supplied artwork, aspect ratio and transparency.
 export async function createPersonalThumbnail(bytes) {
   try {
-    const base = await sharp(bytes, { limitInputPixels: 40_000_000 })
+    let base = await sharp(bytes, { limitInputPixels: 40_000_000 })
       .rotate()
       .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
       .flatten({ background: "#ffffff" })
       .png()
       .toBuffer({ resolveWithObject: true });
+    // Expand a small source before adding the vector badge, never after it.
+    // This keeps the brand sharp even when X only supplies a tiny video frame.
+    if (Math.max(base.info.width, base.info.height) < 1080) {
+      base = await sharp(base.data)
+        .resize({ width: 1080, height: 1080, fit: "inside" })
+        .png()
+        .toBuffer({ resolveWithObject: true });
+    }
     const { width, height } = base.info;
     const size = Math.max(1, Math.round(Math.min(width, height) * 0.36));
-    const overlay = await sharp(badge).resize({ width: size }).png()
+    const overlay = await sharp(badge, { density: 216 }).resize({ width: size }).png()
       .toBuffer({ resolveWithObject: true });
     const left = Math.max(0, width - overlay.info.width - Math.round(width * 0.015));
     const top = Math.min(height - overlay.info.height, Math.round(height * 0.015));
