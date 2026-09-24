@@ -13,8 +13,8 @@ post extraction, simulation, SQLite queue,
 crash-safe ambiguous-send handling, SQLite Baileys credentials, sender and private
 operations API. All gates are false; `dryRun` and `paused` are true by default.
 
-**Not production accepted:** routing a real notification from the three configured
-sources, reply/quote classification across real samples, combined capacity,
+**Still awaiting runtime evidence:** routing a real notification from the three configured
+sources, reply/quote classification across real samples, sustained combined capacity,
 channel publication and downstream cutover. Own-DM visual acceptance and a
 Lover Tour participant delivery receipt have passed their bounded pilot.
 `observerConnected` means the receiver handshake completed, not that every X post
@@ -23,7 +23,15 @@ will produce a notification. Synthetic pushes do not prove X push delivery.
 The browser-based Oracle trial failed capacity and remains stopped. The subsequent
 direct Web Push trial registered successfully with X, received/decrypted real
 notifications, reconnected after restart, and fetched a notified post on Oracle.
-The integrated receiver runs in simulation with WhatsApp paired; its credentials
+The initial automatic flow was activated on 2026-09-24 at 21:16:13 UTC (18:16:13
+São Paulo), at the user's request to start operating. It accepts only new own
+posts/quotes from the three configured sources to Lover Tour; replies/reposts,
+old posts, other sources and unused saved destinations remain excluded. All
+tests stay restricted to self. The first eligible automatic push/send is pending.
+A thread heartbeat checks existing state hourly for the first 72 hours; it never
+polls X or generates test messages. Observation ends on 2026-09-27 at 21:16:13 UTC.
+
+The integrated receiver runs with WhatsApp paired; its credentials
 survived service restarts without another QR. Eleven requested destinations are
 privately mapped and verified, but only Lover Tour is referenced by a rule.
 An explicit self-DM pilot reached the user's phone. Its first preview was rejected
@@ -34,7 +42,10 @@ and clarified the permanent rule: **all tests go only to self**. Group test supp
 has been removed; the explicit self pilot is currently off.
 The first sending sample peaked near 148 MiB (systemd memory.peak), left 397 MiB
 available and kept the existing gateway at HTTP 200. This short sample does not
-establish long-term stability or sustained combined capacity.
+establish long-term stability or sustained combined capacity. Activation accepted
+bounded readiness: zero OOM, more than 300 MiB available, no sustained intense
+swap in normal samples, real pushes recovered across restarts, and a connected
+receiver past its heartbeat interval. Long-term stability remains under observation.
 See [PILOT_STATUS.md](PILOT_STATUS.md) for evidence and limits.
 
 There is no scheduled timeline polling or automatic fallback. Timers renew local

@@ -1,5 +1,32 @@
 # Pilot evidence — 2026-09-24
 
+## Activated initial flow — 21:16:13 UTC / 18:16:13 São Paulo
+
+- The user requested starting operation now. The initial flow is live and unpaused:
+  only new own posts/quotes from `taylorswift13`, `taylorswiftbr`, `updateswiftbr`
+  to Lover Tour. The activation timestamp excludes earlier publications. The
+  other ten saved destinations have no routes. Test mode remains disabled and
+  test destinations are permanently restricted to self in code.
+- Before activation: no queued, dispatching or unknown jobs; Lover Tour permission
+  revalidated; WhatsApp and push connected; browser stopped; 343 MiB available;
+  no OOM/high/max memory events; no sustained intense swap in the final six-second
+  sample; existing gateway HTTP 200. The receiver had remained connected past
+  its four-minute heartbeat interval. Seven real push events and restart recovery
+  had already been recorded.
+- Initial capacity/continuity readiness was accepted on those bounded observations.
+  This does not claim 72-hour stability or complete notification coverage. The
+  first eligible automatic push from the configured sources is still pending.
+- Configuration and previous acceptance state were privately backed up. Runtime
+  status confirmed `mode=live`, `paused=false`, with a persisted activation time
+  of `2026-09-24T21:16:13.734Z`. The file also persists unpaused live operation.
+- Hourly thread monitoring of existing state is scheduled through 2026-09-27
+  21:16:13 UTC. It does not poll X or send tests, and reports only meaningful
+  changes, actionable failures or completion. UOL/BuyTicket cutover and Beeper
+  retirement remain separate pending stages.
+
+The sections below record the earlier pilot evidence and restrictions at the
+time of each trial; the activation above supersedes the former paused status.
+
 ## Direct Web Push alternative supersedes the browser trial
 
 - A dedicated subscription was created with Mozilla Autopush using X's public
@@ -110,6 +137,6 @@ with WhatsApp connected and sustained operation.
 
 Prove sustained direct receiver operation, notifications from configured sources,
 strict post identity/type extraction and sustained combined load with Baileys.
-Both self preview and group delivery passed, but automatic activation remains
-blocked on the remaining gates. Gateway/consumer cutover,
+Both self preview and the historical group delivery passed. Automatic operation
+is now in its first 72-hour observation period. Gateway/consumer cutover,
 channel validation, 72-hour observation and seven-day retirement gate remain open.
