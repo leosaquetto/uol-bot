@@ -2,16 +2,16 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: link;
 
-// Versão 10. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
+// Versão 11. Envia o último post ao WhatsApp próprio pelo Beeper/Oracle.
 // No Atalhos, deixe Run In App desligado.
 // Parâmetro: @usuario, usuario ou https://x.com/usuario.
 // Vazio: usa tvglobo. HTML como parâmetro mantém o modo antigo (tvglobo).
 // Usa cartão com thumbnail, legenda e link. Cada execução envia novamente.
-// Thumbnail: mídia do post; sem mídia, cartão sem imagem.
+// Thumbnail: mídia do post; sem mídia, sem cartão e link entre crases.
 // O WhatsApp decide o layout final do cartão.
 // Texto integral disponível na página; resumo curto só no cartão.
 // Link antes do crédito: o WhatsApp iOS oculta o cartão sem a URL no corpo.
-// Padrão: título em negrito, texto em monoespaçado, link e crédito.
+// Padrão: citação com texto, autor/hora da publicação e link monoespaçados.
 // A configuração inicial é importada do iCloud para o Keychain.
 
 var perfil = "tvglobo";
@@ -80,12 +80,16 @@ if (ultimo === "") {
 var url = "https://x.com/" + perfil + "/status/" + ultimo;
 var detalhes = await obterDetalhes(url);
 var titulo = nomeDoPerfil(detalhes.meta, metaPerfil) + " (@" + perfil + ") no X";
-// O Beeper recebe Markdown: ** vira negrito no WhatsApp.
-// Bloco monoespaçado no texto; código inline destacado só no crédito.
-var cerca = "```";
-while (detalhes.legenda.indexOf(cerca) !== -1) cerca += "`";
-var legendaFormatada = cerca + "\n" + detalhes.legenda + "\n" + cerca;
-var mensagem = "ㅤ\n**" + titulo + "**\n" + legendaFormatada + "\n\n🔗 " + url + "\n\n`push by @leosaquetto`";
+// Sintaxe nativa: evita as quebras extras da conversão Markdown do Beeper.
+// O timestamp está codificado no ID Snowflake do próprio post (não é hora do envio).
+var publicacao = new Date(Math.floor(Number(ultimo) / 4194304) + 1288834974657);
+var hora = publicacao.toLocaleTimeString("pt-BR", {
+  hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo"
+});
+var legendaFormatada = detalhes.legenda.split("\n").map(function (linha) {
+  return linha ? "> ```" + linha + "```" : ">";
+}).join("\n");
+var mensagem = legendaFormatada + "\n> 𝕏 ```" + titulo + ", " + hora + "```\n> ```" + url.replace("https://", "") + "```";
 var envio = new Request("https://163-176-194-58.sslip.io/v1/send-x-post");
 envio.method = "POST";
 envio.timeoutInterval = 45;
@@ -102,6 +106,7 @@ preview.imageUrl = detalhes.imagem;
 var corpo = {};
 corpo.link = url;
 corpo.text = mensagem;
+corpo.format = "whatsapp";
 corpo.preview = preview;
 envio.body = JSON.stringify(corpo);
 

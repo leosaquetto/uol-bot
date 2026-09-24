@@ -54,6 +54,7 @@ export function buildSendMessageRequest({
   chatId,
   text,
   preview,
+  formatText,
   pendingMessageId,
 }) {
   return {
@@ -74,7 +75,7 @@ export function buildSendMessageRequest({
           imgSize: preview.imgSize,
           imgType: preview.imgType,
         }] : [],
-      }, { pendingMessageID: pendingMessageId }],
+      }, { pendingMessageID: pendingMessageId, ...(formatText === false ? { formatText: false } : {}) }],
     },
   };
 }
@@ -210,7 +211,7 @@ export function startHeadlessRenderer({
     isReady() {
       return ready && socket?.readyState === WebSocketImpl.OPEN;
     },
-    async sendMessage({ chatId, text, preview }) {
+    async sendMessage({ chatId, text, preview, formatText }) {
       if (!ready) throw transportError("Beeper headless transport is not ready");
       try {
         await refreshAccountSession();
@@ -230,6 +231,7 @@ export function startHeadlessRenderer({
         chatId,
         text,
         preview,
+        formatText,
         pendingMessageId: pendingMessageID,
       });
       await sendRequest(request, true);

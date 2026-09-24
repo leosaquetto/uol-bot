@@ -22,7 +22,7 @@ function setup(overrides = {}) {
     sendMessageImpl: async message => { sent.push(message); return { pendingMessageID: "pending-tvglobo" }; },
     confirmDeliveryImpl: async delivery => {
       assert.equal(delivery.chatId, "self");
-      assert.equal(delivery.requirePreview, Boolean(sent.at(-1)?.preview.img));
+      assert.equal(delivery.requirePreview, Boolean(sent.at(-1)?.preview?.img));
       return { state: "delivered" };
     },
     logger: { info() {}, warn() {} }, ...overrides,
@@ -149,23 +149,42 @@ test("avatar de cliente antigo é removido; mídia continua com imagem", async (
   const { handler, sent, request } = setup();
   const body = { ...payload, preview: { ...payload.preview, imageUrl: "https://pbs.twimg.com/profile_images/123/avatar_x96.jpg" } };
   assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
-  assert.equal(sent[0].preview.img, undefined);
-  assert.equal(sent[0].preview.imgSize, undefined);
+  assert.equal(sent[0].preview, undefined);
   assert.equal((await handler(request(payload, "tvglobo-token", "/v1/send-x-post"))).status, 202);
   assert.equal(sent[1].preview.imgSize, undefined);
   assert.match(sent[1].preview.img, /^file:/);
 });
 
-test("cartão sem mídia não baixa imagem e conserva título, resumo e link", async () => {
+test("post sem mídia não baixa imagem nem envia cartão", async () => {
   let downloads = 0;
   const { handler, sent, request } = setup({ fetchImpl: async () => { downloads++; throw new Error("unexpected download"); } });
   for (const imageUrl of [undefined, "", "https://pbs.twimg.com/profile_images/123/avatar_400x400.jpg"]) {
     const body = { ...payload, preview: { ...payload.preview, title: "Nome (@tvglobo) no X", imageUrl } };
     assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
-    assert.equal(sent.at(-1).preview.img, undefined);
-    assert.equal(sent.at(-1).preview.title, body.preview.title);
-    assert.equal(sent.at(-1).preview.summary, "Legenda");
-    assert.equal(sent.at(-1).preview.link, link);
+    assert.equal(sent.at(-1).preview, undefined);
+    assert.equal(sent.at(-1).text, body.text);
   }
   assert.equal(downloads, 0);
+});
+
+test("formatação WhatsApp passa intacta apenas na rota pessoal geral", async () => {
+  const { handler, sent, request } = setup();
+  const body = { ...payload, format: "whatsapp", text: "*Título*\n```Texto```\n🔗 `" + link + "`\n`push by @leosaquetto`", preview: { summary: "Texto" } };
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.equal(sent[0].text, body.text);
+  assert.equal(sent[0].formatText, false);
+  assert.equal(sent[0].preview, undefined);
+  assert.equal((await handler(request({ ...payload, format: "whatsapp" }))).status, 202);
+  assert.equal(sent[1].formatText, undefined);
+  assert.ok(sent[1].preview.img);
+});
+
+test("modelo nativo mantém link sem protocolo, sem repetir URL, e associa a mídia ao link exibido", async () => {
+  const { handler, sent, request } = setup();
+  const displayedLink = link.replace("https://", "");
+  const body = { ...payload, format: "whatsapp", text: "> ```Texto```\n> 𝕏 ```Nome (@tvglobo) no X, 23:44```\n> ```" + displayedLink + "```" };
+  assert.equal((await handler(request(body, "tvglobo-token", "/v1/send-x-post"))).status, 202);
+  assert.equal(sent[0].text, body.text);
+  assert.equal(sent[0].preview.link, displayedLink);
+  assert.ok(sent[0].preview.img);
 });

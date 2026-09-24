@@ -52,9 +52,10 @@ test("Scriptable aceita @, nome e URL do perfil, com cartão dinâmico", async (
     assert.equal(sends[0].body.preview.title, "outro_perfil (@outro_perfil) no X");
     assert.equal(sends[0].body.preview.summary, "Legenda & texto");
     assert.match(sends[0].body.preview.imageUrl, /format=jpg&name=large$/);
-    assert.equal(sends[0].body.text, "ㅤ\n**outro_perfil (@outro_perfil) no X**\n```\nLegenda & texto\n```\n\n🔗 " + url + "\n\n`push by @leosaquetto`");
-    assert.equal(sends[0].body.text.split(url).length, 2);
+    assert.equal(sends[0].body.text, "> ```Legenda & texto```\n> 𝕏 ```outro_perfil (@outro_perfil) no X, 23:44```\n> ```" + url.replace("https://", "") + "```");
+    assert.equal(sends[0].body.text.split(url.replace("https://", "")).length, 2);
     assert.equal(sends[0].key, undefined);
+    assert.equal(sends[0].body.format, "whatsapp");
   }
 });
 
@@ -106,7 +107,7 @@ test("thumbnail prioriza imagem do post sobre avatar do perfil", async () => {
   assert.match(sends[0].body.preview.imageUrl, /^https:\/\/pbs\.twimg\.com\/media\//);
 });
 
-test("post sem mídia mantém cartão sem imagem, ignorando avatar do perfil", async () => {
+test("post sem mídia ignora avatar do perfil", async () => {
   const { run, sends, requests } = setup({}, { profileMeta, post: '<meta property="og:description" content="Post só de texto">' });
   await run("@outro_perfil");
   assert.equal(sends[0].body.preview.imageUrl, "");
@@ -143,12 +144,12 @@ test("texto integral longo vence metadado cortado, conserva parágrafos, emojis 
   const { run, sends } = setup({}, { profileMeta: profileMeta + '<meta property="og:title" content="Nome Real (@outro_perfil) on X">', post });
   await run("outro_perfil");
   const body = sends[0].body;
-  assert.ok(body.text.startsWith("ㅤ\n**Nome Real (@outro_perfil) no X**\n```\n" + completo + "\n```\n\n🔗 "));
+  assert.ok(body.text.startsWith("> ```" + texto + "```\n>\n> ```Final & íntegro https://example.com/endereco-inteiro```\n> 𝕏 ```Nome Real (@outro_perfil) no X, 23:44```"));
   assert.ok(body.text.length > 8000);
   assert.equal(body.preview.title, "Nome Real (@outro_perfil) no X");
   assert.equal(Array.from(body.preview.summary).length <= 110, true);
   assert.match(body.preview.summary, /…$/);
-  assert.equal(body.text.split(body.link).length, 2);
+  assert.equal(body.text.split(body.link.replace("https://", "")).length, 2);
 });
 
 test("texto é extraído apenas do artigo do post, incluindo divs aninhadas", async () => {
@@ -157,7 +158,7 @@ test("texto é extraído apenas do artigo do post, incluindo divs aninhadas", as
     `<article><a href="/outro_perfil/status/${ids.outro_perfil}">data</a><div data-testid="tweetText"><div>Primeiro</div>Segundo <img alt="😀" src="emoji.png"></div><div>Comentários</div></article>`;
   const { run, sends } = setup({}, { profileMeta, post });
   await run("outro_perfil");
-  assert.ok(sends[0].body.text.includes("\n```\nPrimeiro\nSegundo 😀\n```\n\n🔗 "));
+  assert.ok(sends[0].body.text.includes("> ```Primeiro```\n> ```Segundo 😀```\n> 𝕏 "));
   assert.equal(sends[0].body.text.includes("Comentários"), false);
 });
 
@@ -167,9 +168,12 @@ test("metadado aparentemente cortado sem texto integral não é enviado como men
   assert.equal(sends.length, 0);
 });
 
-test("crases do post não encerram o bloco monoespaçado e somente o crédito usa código inline", async () => {
+test("post sem mídia mantém texto integral e usa URL entre crases, sem espaçadores extras", async () => {
   const { run, sends } = setup({}, { post: '<meta property="og:description" content="Texto com ``` literal">' });
   await run();
-  assert.ok(sends[0].body.text.includes("\n````\nTexto com ``` literal\n````\n\n🔗 "));
-  assert.ok(sends[0].body.text.endsWith("\n\n`push by @leosaquetto`"));
+  assert.ok(sends[0].body.text.includes("> ```Texto com ``` literal```\n> 𝕏 "));
+  assert.ok(sends[0].body.text.endsWith("> ```x.com/tvglobo/status/" + ids.tvglobo + "```"));
+  assert.equal(sends[0].body.text.includes("push by"), false);
+  assert.equal(sends[0].body.text.includes("\n\n"), false);
+  assert.equal(sends[0].body.text.startsWith("> ```"), true);
 });

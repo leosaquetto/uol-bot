@@ -450,6 +450,7 @@ export function createGateway({
     }
     const link = String(payload?.link || "").trim();
     let text = String(payload?.text || "").trim();
+    const nativeFormatting = generalPost && payload?.format === "whatsapp";
     const normalizedPreview = normalizePreview(payload, link, personalPost ? allowedTVGloboImageUrl : allowedImageUrl);
     const preview = normalizedPreview.preview;
     const buyticket = url.pathname === "/v1/send-buyticket";
@@ -494,7 +495,11 @@ export function createGateway({
     // Keep the URL before the final credit line, including older clients.
     if (generalPost) {
       text = text.replace(/\n`powered by (?:leo saquetto sync|@leosaquetto)`$/, "\n`push by @leosaquetto`");
-      if (!text.includes(link)) {
+      // Native WhatsApp template displays x.com/... without the scheme.
+      const displayedLink = link.replace(/^https:\/\//, "");
+      const usesDisplayedLink = nativeFormatting && !text.includes(link) && text.includes(displayedLink);
+      if (usesDisplayedLink) preview.link = displayedLink;
+      if (!text.includes(link) && !usesDisplayedLink) {
         const footer = text.match(/\n`(?:powered|push) by [^`\n]+`$/);
         text = footer
           ? `${text.slice(0, footer.index)}\n${link}${footer[0]}`
@@ -506,6 +511,7 @@ export function createGateway({
       link,
       text,
       preview,
+      ...(nativeFormatting ? { format: "whatsapp" } : {}),
     };
     const reserved = reserveDelivery(
       database,
@@ -538,7 +544,8 @@ export function createGateway({
       result = await sendMessageImpl({
         chatId: destinationChatId,
         text,
-        preview: {
+        ...(nativeFormatting ? { formatText: false } : {}),
+        preview: generalPost && !image?.img ? undefined : {
           ...preview,
           imageUrl: undefined,
           img: image?.img,

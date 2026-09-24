@@ -47,20 +47,22 @@ limit on `/v1/send-x-post` (the HTTP payload ceiling is 1 MiB; network limits st
 apply). Other routes retain their existing limits.
 The native card title is `Name (@username) no X`, with an editable title and a
 summary capped at 110 Unicode code points to approximate three mobile lines.
-WhatsApp determines the final wrapping. The default body starts with a Hangul
-filler spacer line, then the bold title, the full post in a monospace block, a blank
-line, `🔗` and the post URL, another blank line, and inline-code
-`push by @leosaquetto`. The Beeper payload uses Markdown double asterisks for
-bold and a fenced code block for plain monospace text with paragraphs preserved.
-Only the footer uses inline-code, which WhatsApp displays with a highlighted background.
-No timestamp is appended. A real iPhone test showed that omitting the URL hides the entire card even
-when Beeper and the WhatsApp bridge confirm delivery with preview metadata.
-The gateway inserts a missing URL before the final credit line for older
-Scriptable clients as well, and updates the old signature wording.
-The thumbnail prioritizes the post's photo or video frame. If neither is
-available, the card has no image. Profile avatars are never used; the general
-gateway route also discards avatars supplied by older clients. No image download
-is made for text-only cards. Banners and generic X images are ignored.
+WhatsApp determines the final wrapping. The body follows the user's `embed.txt`
+model: quoted monospace post text, `𝕏 Name (@username) no X, HH:mm`, then a quoted
+monospace `x.com/username/status/id` link. The timestamp is the publication time
+decoded from the post's Snowflake ID, displayed in America/Sao_Paulo. There is no
+top spacer, extra blank line between sections, separate heading, or credit footer.
+Original paragraphs within the post are preserved. Scriptable supplies
+`format: "whatsapp"`; only the general personal route forwards `formatText: false`
+to Beeper, avoiding extra breaks introduced by Markdown-to-HTML conversion.
+Other clients and routes keep their existing formatting behavior. The preview's
+matched URL follows the displayed link without `https://` for this native template.
+Media posts keep their thumbnail. Without post media the production gateway
+omits the preview entirely; profile avatars are not sent automatically. A compact
+avatar is an isolated experiment, not a guaranteed layout or production fallback.
+No image download occurs for posts without media. Banners and generic X images
+are ignored. Older clients still receive a missing URL before the final credit
+line and the updated signature wording.
 On first run it imports `TVGlobo-Beeper-config.json` (`{"token":"..."}`) from
 the user's Scriptable iCloud folder into Keychain and removes that bootstrap
 file. Never commit or log the real configuration. If X blocks the page, fails

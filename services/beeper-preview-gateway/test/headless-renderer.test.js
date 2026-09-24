@@ -61,6 +61,17 @@ test("injeta exatamente o preview antigo no envio interno", () => {
   });
 });
 
+test("formatação nativa é opt-in e sem preview gera lista vazia", () => {
+  const request = buildSendMessageRequest({
+    accountId: "local-whatsapp_ba_example", bridgeId: "local-whatsapp",
+    chatId: "self", text: "*Título*\n```Texto```\n`https://x.com/example/status/1234567890`",
+    formatText: false, pendingMessageId: "~txn:network:NATIVE",
+  });
+  assert.deepEqual(request.routeData.args[1].links, []);
+  assert.equal(request.routeData.args[2].formatText, false);
+  assert.ok(request.routeData.args[1].text.includes("\n```Texto```\n"));
+});
+
 test("renova a conta, envia o card e devolve só o ID pendente", async () => {
   const methods = [];
   const codec = {
