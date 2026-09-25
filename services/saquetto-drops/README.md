@@ -45,7 +45,7 @@ contains three routes; no test messages were sent when adding either new route.
 
 The integrated receiver runs with WhatsApp paired; its credentials
 survived service restarts without another QR. Eleven requested destinations are
-privately mapped and verified, but only Lover Tour is referenced by a rule.
+privately mapped and verified; the three approved groups are referenced by rules.
 An explicit self-DM pilot reached the user's phone. Its first preview was rejected
 for low resolution, small branding and avatar spacing; a corrected revision was
 sent only to self and accepted by the user. A subsequent single Lover Tour test
@@ -142,6 +142,11 @@ access and must stay on loopback/SSH. Chrome keeps its sandbox enabled.
 `DROPS_WHATSAPP=1` starts pairing; QR material is written only to the private
 `pairing-qr.private.txt`, never logs. Enable only for the authorized WhatsApp pilot.
 Known logout/bad-session events stop reconnect attempts without deleting state.
+The sender waits for WhatsApp's pending-notification signal and Baileys' persisted
+sync checkpoint before treating a new socket as ready. Disconnect logs contain only
+the numeric Baileys status code; the credentials and Signal keys remain in the
+private SQLite database. This cannot prevent WhatsApp from revoking a linked
+device, which still requires a new pairing.
 
 Web Push registration contains a dedicated Mozilla UAID/channel, endpoint and
 encryption keys (0600). It is independent of the in-app browser's subscription.

@@ -6,25 +6,45 @@ const silentLogger = { level: 'silent', trace() {}, debug() {}, info() {}, warn(
 export function startWhatsApp({ store, onQr = () => {}, logger = console, socketFactory = makeWASocket }) {
   const auth = sqliteAuth(store);
   let socket, state = 'starting', stopped = false, timer, attempts = 0;
+  let opened = false, pendingReceived = false;
+  const ready = () => opened && pendingReceived && (auth.state.creds.accountSyncCounter || 0) > 0;
   const connect = () => {
+    opened = false;
+    pendingReceived = false;
     socket = socketFactory({
       auth: auth.state, logger: silentLogger, markOnlineOnConnect: false,
-      syncFullHistory: false, shouldSyncHistoryMessage: () => false,
+      // Keep the limited initial sync enabled: Baileys needs LID mappings and
+      // session metadata for a newly paired device. `shouldSyncHistoryMessage`
+      // returning false for every event can leave a fresh session unusable.
+      syncFullHistory: false,
       getMessage: async key => {
         const row = store.db.prepare('SELECT payload FROM jobs WHERE message_id=? AND destination=?').get(key.id,key.remoteJid);
         const message = row && JSON.parse(row.payload).wireMessage;
         return message || undefined;
       },
     });
-    socket.ev.on('creds.update', () => auth.saveCreds());
-    socket.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+    socket.ev.on('creds.update', () => {
+      auth.saveCreds();
+      if (ready()) state = 'connected';
+    });
+    socket.ev.on('connection.update', ({ connection, lastDisconnect, qr, receivedPendingNotifications }) => {
       if (qr) { state = 'pairing_required'; onQr(qr); }
-      if (connection === 'open') { state = 'connected'; attempts = 0; onQr(null); }
+      if (connection === 'open') {
+        opened = true; attempts = 0; onQr(null);
+        state = ready() ? 'connected' : 'synchronizing';
+      }
+      if (receivedPendingNotifications === true) {
+        pendingReceived = true;
+        if (ready()) state = 'connected';
+      }
       if (connection === 'close') {
+        opened = false; pendingReceived = false; onQr(null);
         const code = lastDisconnect?.error?.output?.statusCode;
         const permanent = [DisconnectReason.loggedOut, DisconnectReason.badSession,
           DisconnectReason.connectionReplaced, DisconnectReason.multideviceMismatch].includes(code);
         state = permanent ? 'reconnect_required' : 'disconnected';
+        logger.log(JSON.stringify({ event: 'whatsapp_disconnect', code: Number.isInteger(code) ? code : null,
+          permanent }));
         if (!stopped && !permanent) {
           const delay = Math.min(60000, 2000 * 2 ** Math.min(attempts++, 5));
           timer = setTimeout(connect,delay); timer.unref();

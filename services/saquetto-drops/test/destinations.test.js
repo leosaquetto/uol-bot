@@ -13,9 +13,16 @@ test('destination verification checks exact membership, posting rights and regis
   let group={subject:'Requested group',participants:[{id:'222@s.whatsapp.net'}]};
   const socket={user:{id:'111:3@s.whatsapp.net'},ev:new EventEmitter(),ws:new EventEmitter(),end(){},
     groupMetadata:async()=>group,onWhatsApp:async jid=>[{jid,exists:jid==='333@s.whatsapp.net'}]};
-  const whatsapp=startWhatsApp({store,socketFactory:()=>socket,logger:{log(){}}});
+  let creds;
+  const whatsapp=startWhatsApp({store,socketFactory:({auth})=>{creds=auth.creds;return socket;},logger:{log(){}}});
   try {
     socket.ev.emit('connection.update',{connection:'open'});
+    assert.equal(whatsapp.isReady(),false);
+    socket.ev.emit('connection.update',{receivedPendingNotifications:true});
+    assert.equal(whatsapp.isReady(),false);
+    creds.accountSyncCounter=1;
+    socket.ev.emit('creds.update',{accountSyncCounter:1});
+    assert.equal(whatsapp.isReady(),true);
     const destination={type:'group',jid:'444@g.us'};
     await assert.rejects(whatsapp.verifyDestination(destination),/destination_not_writable/);
     socket.user.lid='999:3@lid';
