@@ -45,7 +45,8 @@ export function createProcessor({ store, getConfig, getContext, readPost = fetch
         } catch (error) {
           const known = new Set(['post_unavailable','post_article_missing','post_record_missing',
             'post_text_incomplete','x_rate_limited','download_failed','unexpected_post_redirect']);
-          store.updateEvent(event.id,'pending_review',known.has(error.message) ? error.message : 'post_processing_failed');
+          const code = known.has(error.message) ? error.message : 'post_processing_failed';
+          store.updateEvent(event.id,code === 'post_unavailable' ? 'ignored' : 'pending_review',code);
         }
       }
     } finally { busy = false; }

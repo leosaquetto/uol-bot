@@ -134,7 +134,7 @@ test('processor simulates without enqueueing, ignores old posts and deduplicates
     assert.equal(f.store.snapshot().jobs[0].count,1);
   }finally{f.close();}
 });
-test('unsupported push types are ignored and post failures keep a safe reason',async()=>{
+test('unsupported push types and unavailable posts are ignored with safe reasons',async()=>{
   const f=fixture();const c=config();c.operation.dryRun=false;c.operation.paused=false;
   try{
     f.store.recordPush(event);
@@ -142,7 +142,7 @@ test('unsupported push types are ignored and post failures keep a safe reason',a
     assert.equal(f.store.db.prepare('SELECT state FROM push_events LIMIT 1').get().state,'ignored');
     f.store.recordPush({...event,timestamp:13});
     await createProcessor({store:f.store,getConfig:()=>c,readPost:async()=>{throw new Error('post_unavailable');}})();
-    assert.equal(f.store.db.prepare("SELECT code FROM push_events WHERE state='pending_review'").get().code,'post_unavailable');
+    assert.equal(f.store.db.prepare("SELECT code FROM push_events WHERE code='post_unavailable' AND state='ignored'").get().code,'post_unavailable');
   }finally{f.close();}
 });
 test('sender requires gates, records ambiguity, never retries an uncertain dispatch and honors receipts',async()=>{
