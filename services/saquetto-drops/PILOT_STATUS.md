@@ -29,6 +29,9 @@
 
 ## Activated initial flow — 21:16:13 UTC / 18:16:13 São Paulo
 
+On 25 September, `taylorswiftbr` was removed from both the global sources and
+the Lover Tour rule at the user's request. The other approved routes remain active.
+
 - The user requested starting operation now. The initial flow is live and unpaused:
   only new own posts/quotes from `taylorswift13`, `taylorswiftbr`, `updateswiftbr`
   to Lover Tour. The activation timestamp excludes earlier publications. The
