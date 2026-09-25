@@ -26,6 +26,9 @@ export function parsePost(html, target) {
   const articles = [...document.querySelectorAll('article')];
   const firstIdentity = article => {
     for (const a of article.querySelectorAll('a[href]')) {
+      // X puts a linked, absolutely positioned overlay before the post byline.
+      // That link can point at a different post (for example, a reply parent).
+      if (a.closest('.pointer-events-none.absolute')) continue;
       try { return canonicalPost(new URL(a.getAttribute('href'),'https://x.com').href); } catch {}
     }
     return null;
@@ -79,7 +82,7 @@ export function formatPost(post) {
 }
 
 export async function readLimited(response, max = 2 * 1024 * 1024) {
-  if (!response.ok) throw new Error(response.status === 429 ? 'x_rate_limited' : 'download_failed');
+  if (!response.ok) throw new Error(response.status === 429 ? 'x_rate_limited' : response.status === 404 ? 'post_unavailable' : 'download_failed');
   if (Number(response.headers.get('content-length') || 0) > max) throw new Error('response_too_large');
   const parts = []; let size = 0;
   const reader = response.body.getReader();
@@ -96,10 +99,21 @@ export async function readLimited(response, max = 2 * 1024 * 1024) {
 }
 
 export async function fetchPost(target, { fetchImpl = fetch, context } = {}) {
-  const {url} = canonicalPost(target);
+  const identity = canonicalPost(target);
+  const {url} = identity;
   let parsed;
   try {
-    const response = await fetchImpl(url, {headers:{'User-Agent':'Mozilla/5.0'},redirect:'error',signal:AbortSignal.timeout(15000)});
+    let response = await fetchImpl(url, {headers:{'User-Agent':'Mozilla/5.0'},redirect:'manual',signal:AbortSignal.timeout(15000)});
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get('location');
+      if (!location) throw new Error('unexpected_post_redirect');
+      const next = new URL(location,url);
+      const redirected = canonicalPost(next.href);
+      if (redirected.id !== identity.id || redirected.author !== identity.author || next.username || next.password || next.port) {
+        throw new Error('unexpected_post_redirect');
+      }
+      response = await fetchImpl(next.href, {headers:{'User-Agent':'Mozilla/5.0'},redirect:'error',signal:AbortSignal.timeout(15000)});
+    }
     parsed = parsePost((await readLimited(response)).toString('utf8'),url);
   } catch (error) {
     if (error.message === 'x_rate_limited' || !context) throw error;

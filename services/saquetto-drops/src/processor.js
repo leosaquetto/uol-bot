@@ -15,7 +15,12 @@ export function createProcessor({ store, getConfig, getContext, readPost = fetch
         const config = getConfig();
         let push;
         try {push = decodeEvent(JSON.parse(event.payload));}
-        catch {store.updateEvent(event.id,'pending_review','push_decode_failed');continue;}
+        catch (error) {
+          const unsupported = error.message === 'unsupported_notification_type';
+          store.updateEvent(event.id,unsupported ? 'ignored' : 'pending_review',
+            unsupported ? 'unsupported_notification_type' : 'push_decode_failed');
+          continue;
+        }
         const post = postFromPush(push);
         if (!post) { store.updateEvent(event.id,'pending_review','post_identity_missing'); continue; }
         if (!config.sources.includes(post.author)) { store.updateEvent(event.id,'ignored','unconfigured_author'); continue; }
@@ -37,8 +42,10 @@ export function createProcessor({ store, getConfig, getContext, readPost = fetch
             if (!store.jobByKey(key)) store.enqueue({ key,destination:d.jid,payload:{...formatPost(full),destinationAlias:alias},priority:10 });
           }
           store.updateEvent(event.id,'processed');
-        } catch {
-          store.updateEvent(event.id,'pending_review','post_processing_failed');
+        } catch (error) {
+          const known = new Set(['post_unavailable','post_article_missing','post_record_missing',
+            'post_text_incomplete','x_rate_limited','download_failed','unexpected_post_redirect']);
+          store.updateEvent(event.id,'pending_review',known.has(error.message) ? error.message : 'post_processing_failed');
         }
       }
     } finally { busy = false; }

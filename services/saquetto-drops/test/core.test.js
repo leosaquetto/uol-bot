@@ -7,7 +7,7 @@ import {validateConfig,loadConfig,matchRules,routedDestinationsVerified} from '.
 import {openStore} from '../src/store.js';
 import {sqliteAuth} from '../src/auth.js';
 import {acceptedPush,postFromPush} from '../src/push.js';
-import {canonicalPost,parsePost,formatPost,allowedImage,readLimited} from '../src/x-post.js';
+import {canonicalPost,parsePost,formatPost,allowedImage,readLimited,fetchPost} from '../src/x-post.js';
 import {createProcessor} from '../src/processor.js';
 import {createSender} from '../src/sender.js';
 import {acquireLock} from '../src/process-lock.js';
@@ -97,12 +97,30 @@ test('extractor preserves body, publication time and identity; excludes quoted t
   assert.match(formatPost(p).text,/\?s=46```$/);assert.equal(formatPost(p).preview.summary,'');
   assert.throws(()=>parsePost(html().replace('Full text','<a data-testid="tweet-text-show-more-link">more</a>'),post.url),/incomplete/);
   assert.throws(()=>parsePost(html(),'https://x.com/other/status/'+post.id),/missing/);
+  const overlay=html().replace('<a href="/taylorswift13/status/',
+    '<div class="pointer-events-none absolute"><a href="/other/status/2102952373022851248">parent</a></div><a href="/taylorswift13/status/');
+  assert.equal(parsePost(overlay,post.url).id,post.id);
   assert.throws(()=>allowedImage('https://pbs.twimg.com.evil.test/media/a'),/not_allowed/);
   assert.throws(()=>canonicalPost('https://x.com@evil.test/user/status/'+post.id),/invalid/);
 });
 test('bounded downloads stop at byte limit and preserve rate-limit errors',async()=>{
   await assert.rejects(readLimited(new Response('large'),2),/too_large/);
   await assert.rejects(readLimited(new Response('',{status:429})),/rate_limited/);
+});
+test('post fetch follows only a redirect to the same identity',async()=>{
+  const redirects=[];
+  const fetchImpl=async (url)=>{
+    redirects.push(url);
+    return redirects.length===1 ? new Response(null,{status:307,headers:{location:post.url+'?s=20'}}) : new Response(html());
+  };
+  assert.equal((await fetchPost(post.url,{fetchImpl})).id,post.id);
+  assert.equal(redirects.length,2);
+  let calls=0;
+  await assert.rejects(fetchPost(post.url,{fetchImpl:async()=>{
+    calls++;
+    return new Response(null,{status:307,headers:{location:'https://x.com/other/status/'+post.id}});
+  }}),/unexpected_post_redirect/);
+  assert.equal(calls,1);
 });
 test('processor simulates without enqueueing, ignores old posts and deduplicates repeated notifications',async()=>{
   const f=fixture();const c=config();const run=createProcessor({store:f.store,getConfig:()=>c,readPost:async()=>post});
@@ -114,6 +132,17 @@ test('processor simulates without enqueueing, ignores old posts and deduplicates
     assert.equal(f.store.snapshot().jobs[0].count,1);
     f.store.setSetting('activated_at','2099-01-01T00:00:00.000Z');f.store.recordPush({...event,timestamp:15});await run();
     assert.equal(f.store.snapshot().jobs[0].count,1);
+  }finally{f.close();}
+});
+test('unsupported push types are ignored and post failures keep a safe reason',async()=>{
+  const f=fixture();const c=config();c.operation.dryRun=false;c.operation.paused=false;
+  try{
+    f.store.recordPush(event);
+    await createProcessor({store:f.store,getConfig:()=>c,decodeEvent:()=>{throw new Error('unsupported_notification_type');}})();
+    assert.equal(f.store.db.prepare('SELECT state FROM push_events LIMIT 1').get().state,'ignored');
+    f.store.recordPush({...event,timestamp:13});
+    await createProcessor({store:f.store,getConfig:()=>c,readPost:async()=>{throw new Error('post_unavailable');}})();
+    assert.equal(f.store.db.prepare("SELECT code FROM push_events WHERE state='pending_review'").get().code,'post_unavailable');
   }finally{f.close();}
 });
 test('sender requires gates, records ambiguity, never retries an uncertain dispatch and honors receipts',async()=>{
