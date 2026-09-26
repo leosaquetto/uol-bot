@@ -45,6 +45,9 @@ export function createSender({store,getConfig,whatsapp,canSend,canPilot=()=>fals
       job = store.claim(now(),{pilotOnly:!automatic,allowPilot:canPilot()});
       if (!job) return;
       const payload = JSON.parse(job.payload);
+      if(payload.manual===true && (!Number.isFinite(payload.expiresAt)||now()>payload.expiresAt)){
+        store.updateJob(job.id,'failed','request_expired');return;
+      }
       const pilot=payload.pilot===true;
       if(pilot && payload.destinationAlias!=='self'){store.updateJob(job.id,'failed','pilot_destination_not_allowed');return;}
       if(pilot && !canPilot(payload.destinationAlias)){store.updateJob(job.id,'queued','pilot_disabled');return;}
@@ -58,6 +61,7 @@ export function createSender({store,getConfig,whatsapp,canSend,canPilot=()=>fals
         store.updateJob(job.id,'queued','paused'); return;
       }
       const currentDestination = resolveDestination();
+      if(payload.manual===true && now()>payload.expiresAt){store.updateJob(job.id,'failed','request_expired');return;}
       if ((!pilot && !currentDestination?.verified) || !currentDestination || currentDestination.jid !== job.destination ||
           currentDestination.type !== destination.type) throw new Error('destination_changed');
       store.setSetting('last_dispatch_at',now());

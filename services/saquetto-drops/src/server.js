@@ -7,7 +7,8 @@ import { openStore } from './store.js';
 import { observeWebPush, decodePushEvent, validateRegistration } from './webpush.js';
 import { createProcessor } from './processor.js';
 import { startWhatsApp } from './whatsapp.js';
-import { createSender } from './sender.js';
+import { createSender, prepareContent } from './sender.js';
+import { createManualApi, manualAuthorized } from './manual.js';
 import { acquireLock } from './process-lock.js';
 import { createPilot } from './pilot.js';
 
@@ -15,6 +16,7 @@ process.umask(0o077);
 const data = process.env.DROPS_DATA || '/var/lib/saquetto-drops';
 const configPath = process.env.DROPS_CONFIG || '/etc/saquetto-drops/config.json';
 const token = process.env.DROPS_TOKEN;
+const manualToken = process.env.DROPS_MANUAL_TOKEN;
 if (!token || !/^[a-f0-9]{64}$/.test(token)) throw new Error('DROPS_TOKEN_required');
 mkdirSync(data,{recursive:true,mode:0o700});
 const releaseLock=acquireLock(join(data,'service.lock'));
@@ -47,7 +49,10 @@ const decodeEvent=event=>registration?decodePushEvent(event,registration):event;
 const pilot=createPilot({store,whatsapp,enabled:canPilot,decodeEvent});
 const processEvents = createProcessor({store,getConfig:()=>config,getContext:()=>observer?.context,
   decodeEvent});
-const sendNext = createSender({store,getConfig:()=>config,whatsapp,canSend,canPilot});
+const manual=createManualApi({store,dataDir:data,getConfig:()=>config,
+  canSend:()=>!closing && canSend() && !config.operation.paused && !config.operation.dryRun});
+const sendNext = createSender({store,getConfig:()=>config,whatsapp,canSend,canPilot,
+  prepare:(payload,socket)=>payload.manual===true?manual.prepare(payload):prepareContent(payload,socket)});
 const connectObserver = async () => {
   if (closing || observerStarting || observer?.handlesReconnect || observer?.isReady()) return;
   observerStarting = true;
@@ -61,7 +66,8 @@ const connectObserver = async () => {
   } catch { observer = null; }
   finally { observerStarting = false; }
 };
-const timers = [setInterval(()=>connectObserver(),10000),setInterval(()=>sendNext().catch(()=>{}),1000)];
+const timers = [setInterval(()=>connectObserver(),10000),setInterval(()=>sendNext().catch(()=>{}),1000),
+  setInterval(()=>{try{manual.cleanup();}catch{}},60000)];
 await connectObserver();
 const equal = value => timingSafeEqual(createHash('sha256').update(value).digest(),createHash('sha256').update(token).digest());
 const safeJob = row => ({id:row.id,state:row.state,attempts:row.attempts,code:row.code,confirmation:row.confirmation});
@@ -74,8 +80,12 @@ const status = () => ({ok:true,mode:config.operation.dryRun?'dry_run':'live',pau
 
 const server = createServer(async (req,res) => {
   const reply = (code,value) => {res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(value));};
-  if (!equal(String(req.headers.authorization || '').replace(/^Bearer\s+/i,''))) return reply(401,{code:'unauthorized'});
   const path = new URL(req.url,'http://localhost').pathname;
+  if(path.startsWith('/v1/whatsapp/')) {
+    if(!manualAuthorized(req.headers.authorization,manualToken))return reply(401,{code:'unauthorized'});
+    const result=await manual.route(req,path);return reply(result.status,result.body);
+  }
+  if (!equal(String(req.headers.authorization || '').replace(/^Bearer\s+/i,''))) return reply(401,{code:'unauthorized'});
   try {
     if (req.method==='GET' && path==='/v1/status') return reply(200,status());
     if (req.method==='GET' && /^\/v1\/messages\/[a-f0-9-]+$/.test(path)) {
@@ -125,7 +135,7 @@ const server = createServer(async (req,res) => {
     return reply(404,{code:'not_found'});
   } catch {return reply(400,{code:'request_failed'});}
 });
-server.requestTimeout=10000;server.headersTimeout=10000;
+server.requestTimeout=45000;server.headersTimeout=10000;
 if (store.getSetting('paused')==='true') config.operation.paused=true;
 server.listen(Number(process.env.DROPS_PORT || 8788),'127.0.0.1');
 const shutdown = async () => {

@@ -137,7 +137,9 @@ DROPS_WHATSAPP=0
 DROPS_PILOT=0
 ```
 
-The API binds to localhost only; do not add it or CDP to Caddy. CDP has full browser
+The administration API binds to localhost only; never expose its routes or CDP.
+Only the separately authenticated `/v1/whatsapp/*` namespace may be routed by
+Caddy for the manual Shortcut (see `MANUAL_API.md`). CDP has full browser
 access and must stay on loopback/SSH. Chrome keeps its sandbox enabled.
 `DROPS_WHATSAPP=1` starts pairing; QR material is written only to the private
 `pairing-qr.private.txt`, never logs. Enable only for the authorized WhatsApp pilot.
