@@ -143,11 +143,18 @@ Caddy for the manual Shortcut (see `MANUAL_API.md`). CDP has full browser
 access and must stay on loopback/SSH. Chrome keeps its sandbox enabled.
 `DROPS_WHATSAPP=1` starts pairing; QR material is written only to the private
 `pairing-qr.private.txt`, never logs. Enable only for the authorized WhatsApp pilot.
-Known logout/bad-session events stop reconnect attempts without deleting state.
+Logout, replaced-connection and multidevice-mismatch events stop reconnect attempts
+without deleting state. Generic errors, including Baileys' ambiguous `500`, retry
+with the same saved credentials: at most eight reconnects, exponential delay with
+jitter capped at 60 seconds, and a budget reset only after five minutes ready.
+Exhaustion reports `reconnect_required`; it does not delete auth or request a QR.
 The sender waits for WhatsApp's pending-notification signal and Baileys' persisted
-sync checkpoint before treating a new socket as ready. Disconnect logs contain only
-the numeric Baileys status code; the credentials and Signal keys remain in the
-private SQLite database. This cannot prevent WhatsApp from revoking a linked
+sync checkpoint before treating a new socket as ready. A socket stuck synchronizing
+for two minutes is closed before a retry, using the same reconnect budget. Only the
+current socket can change connection state, and shutdown waits for socket cleanup.
+Disconnect/retry logs contain only codes, flags, attempt counts and timing; the
+credentials and Signal keys remain in the private SQLite database. This cannot
+prevent WhatsApp from revoking a linked
 device, which still requires a new pairing.
 
 Web Push registration contains a dedicated Mozilla UAID/channel, endpoint and
