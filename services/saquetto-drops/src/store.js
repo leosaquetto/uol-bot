@@ -82,12 +82,18 @@ export function openStore(path, { recover = true } = {}) {
     },
     receipt(messageId, jid, state, level) {
       const rows = db.prepare("SELECT id,destination FROM jobs WHERE message_id=? AND state IN ('dispatching','unknown','accepted','confirmed')").all(messageId);
+      const newlyAccepted = [];
       for (const row of rows) {
         if (row.destination !== jid) continue;
         const old = this.job(row.id);
         if (old.state === 'confirmed' && state !== 'confirmed') continue;
+        if (old.state === state) continue;
+        const firstAcceptance = ['accepted','confirmed'].includes(state) &&
+          !['accepted','confirmed'].includes(old.state);
         this.updateJob(row.id,state,null,level);
+        if (firstAcceptance) newlyAccepted.push({id:old.id,destination:old.destination,payload:old.payload,state});
       }
+      return newlyAccepted;
     },
     snapshot() {
       return {

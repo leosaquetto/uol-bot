@@ -12,6 +12,7 @@ import { createManualApi, manualAuthorized } from './manual.js';
 import { createGatewayApi } from './gateway-api.js';
 import { acquireLock } from './process-lock.js';
 import { createPilot } from './pilot.js';
+import { sendPersonalNtfyNotification } from './personal-ntfy.js';
 
 process.umask(0o077);
 const data = process.env.DROPS_DATA || '/var/lib/saquetto-drops';
@@ -29,7 +30,11 @@ const registration=pushTransport==='webpush' ? validateRegistration(JSON.parse(r
 let {config} = loadConfig(configPath), configError = null, observer = null, observerStarting = false;
 let qrAvailable = false, closing = false;
 const qrPath = join(data,'pairing-qr.private.txt');
-const whatsapp = process.env.DROPS_WHATSAPP === '1' ? startWhatsApp({store,onQr(qr) {
+const whatsapp = process.env.DROPS_WHATSAPP === '1' ? startWhatsApp({
+  store,
+  getPersonalJid:()=>config.destinations['eu-mesmo']?.jid || '',
+  onPersonalMessageAccepted:(text,jid)=>sendPersonalNtfyNotification(text,{jid}),
+  onQr(qr) {
   qrAvailable = Boolean(qr);
   if (qr) writeFileSync(qrPath,qr,{mode:0o600});
   else { try {unlinkSync(qrPath);} catch {} }

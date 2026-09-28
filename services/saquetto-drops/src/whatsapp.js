@@ -6,7 +6,30 @@ const MAX_RECONNECT_ATTEMPTS = 8;
 const SYNC_TIMEOUT_MS = 120000;
 const STABLE_CONNECTION_MS = 300000;
 
-export function startWhatsApp({ store, onQr = () => {}, logger = console, socketFactory = makeWASocket }) {
+function reportPersonalNotificationFailure(logger) {
+  const message = JSON.stringify({event:'personal_ntfy_failed'});
+  if (typeof logger.warn === 'function') logger.warn(message);
+  else logger.log?.(message);
+}
+
+export function applyReceipt({store,messageId,jid,state,level,personalJids=[],onPersonalMessageAccepted=()=>{},logger=console}) {
+  const accepted = store.receipt(messageId,jid,state,level);
+  const normalizedPersonal = new Set(personalJids.filter(Boolean).map(jid => jidNormalizedUser(jid)));
+  if (!normalizedPersonal.has(jidNormalizedUser(jid))) return accepted;
+  for (const job of accepted) {
+    try {
+      const payload = JSON.parse(job.payload);
+      const result = onPersonalMessageAccepted(payload.text || '', job.destination);
+      Promise.resolve(result).catch(() => reportPersonalNotificationFailure(logger));
+    } catch {
+      reportPersonalNotificationFailure(logger);
+    }
+  }
+  return accepted;
+}
+
+export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '',
+  onPersonalMessageAccepted = () => {}, logger = console, socketFactory = makeWASocket }) {
   const auth = sqliteAuth(store);
   let socket, state = 'starting', stopped = false, timer, attempts = 0;
   let syncTimer, stableTimer, detachSocket = () => {};
@@ -36,6 +59,17 @@ export function startWhatsApp({ store, onQr = () => {}, logger = console, socket
     });
     let closed = false, closing = false;
     const active = () => !stopped && !closed && !closing && socket === current;
+    const recordReceipt = (messageId,jid,receiptState,level) => {
+      const personalJids = [current.user?.id || ''];
+      try {
+        const configuredPersonalJid = getPersonalJid();
+        if (configuredPersonalJid) personalJids.push(configuredPersonalJid);
+      } catch {}
+      return applyReceipt({
+        store,messageId,jid:jidNormalizedUser(jid),state:receiptState,level,
+        personalJids,onPersonalMessageAccepted,logger,
+      });
+    };
     const updateReady = () => {
       if (!active() || !ready() || state === 'connected') return;
       state = 'connected';
@@ -108,21 +142,21 @@ export function startWhatsApp({ store, onQr = () => {}, logger = console, socket
       if (socket !== current) return;
       const { id, from, error } = node.attrs || {};
       if (!id || !from || error) return;
-      store.receipt(id,jidNormalizedUser(from),'accepted','server_ack');
+      recordReceipt(id,from,'accepted','server_ack');
     };
     const onMessages = updates => {
       if (socket !== current) return;
       for (const { key, update } of updates) {
         if (key.fromMe !== true || !key.id || !key.remoteJid) continue;
-        if (update.status >= 3) store.receipt(key.id,key.remoteJid,'confirmed','recipient_receipt');
-        else if (update.status === 2) store.receipt(key.id,key.remoteJid,'accepted','server_ack');
+        if (update.status >= 3) recordReceipt(key.id,key.remoteJid,'confirmed','recipient_receipt');
+        else if (update.status === 2) recordReceipt(key.id,key.remoteJid,'accepted','server_ack');
       }
     };
     const onReceipts = updates => {
       if (socket !== current) return;
       for (const { key, receipt } of updates) {
         if (key.fromMe === true && (receipt.receiptTimestamp || receipt.readTimestamp)) {
-          store.receipt(key.id,key.remoteJid,'confirmed','participant_receipt');
+          recordReceipt(key.id,key.remoteJid,'confirmed','participant_receipt');
         }
       }
     };

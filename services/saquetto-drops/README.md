@@ -79,6 +79,12 @@ Copy `config.example.json` to `/etc/saquetto-drops/config.json` (0600, owned by 
 service account). Source handles are lowercase. Destinations are private aliases
 bound to verified WhatsApp identities. Never commit actual JIDs or credentials.
 
+Every outbound path shares the WhatsApp receipt handler. Its first server
+acknowledgement for the configured personal chat sends one best-effort ntfy
+notification to `leo-saquetto-wpp-3054`; the body and “Abrir Conversa” action
+open that WhatsApp chat. Enqueue alone does not notify, and an ntfy failure does
+not change or retry the WhatsApp job.
+
 Rules use literal, case/accent-insensitive `any`, `all`, and `none` terms against
 the author's own text. Matching rules union their destination aliases. Quotes are
 allowed; replies and reposts are excluded by the initial rules. Automatic sends
