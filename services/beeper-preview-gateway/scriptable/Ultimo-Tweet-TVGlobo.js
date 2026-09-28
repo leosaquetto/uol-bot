@@ -131,11 +131,15 @@ var perfil = "tvglobo";
     var resultado;
     try { resultado = JSON.parse(respostaTexto); } catch (_) { resultado = {}; }
     var status = envio.response.statusCode;
-    if ((status !== 200 && status !== 202) || resultado.deliveryState !== "confirmed_by_whatsapp_bridge") {
+    var reciboDrops = resultado.transport === "baileys" && resultado.pendingMessageID &&
+      ((resultado.deliveryState === "accepted_by_whatsapp_server" && resultado.confirmation === "server_ack") ||
+       (resultado.deliveryState === "confirmed_by_whatsapp_receipt" &&
+        ["recipient_receipt", "participant_receipt"].indexOf(resultado.confirmation) !== -1));
+    if ((status !== 200 && status !== 202) || (resultado.deliveryState !== "confirmed_by_whatsapp_bridge" && !reciboDrops)) {
       var codigo = resultado.code || "resposta_invalida";
-      throw new Error("Beeper não confirmou a entrega. HTTP " + status + " / " + codigo);
+      throw new Error("Envio sem confirmação. Confira o WhatsApp antes de repetir. HTTP " + status + " / " + codigo);
     }
-    console.log("Post entregue no seu WhatsApp.");
+    console.log(resultado.deliveryState === "accepted_by_whatsapp_server" ? "Post aceito pelo servidor do WhatsApp." : "Post entregue no seu WhatsApp.");
     Script.setShortcutOutput(url);
     console.log(url);
     if (config.runsInApp) Pasteboard.copyString(url);

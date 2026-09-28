@@ -228,9 +228,9 @@ function reserveDelivery(database, key, hash, now) {
       } else if (["accepted", "sent"].includes(existing.status)) {
         result = { kind: "replay", response: JSON.parse(existing.response_json || "{}") };
       } else if (existing.status === "unknown") {
-        result = { kind: "unknown" };
+        result = { kind: "unknown", response: JSON.parse(existing.response_json || "{}") };
       } else if (existing.status === "pending") {
-        result = { kind: "pending" };
+        result = { kind: "pending", response: JSON.parse(existing.response_json || "{}") };
       } else {
         database.prepare(
           "UPDATE deliveries SET status = 'pending', updated_at = ? WHERE idempotency_key = ?",
@@ -257,7 +257,7 @@ function reserveDelivery(database, key, hash, now) {
 function updateDelivery(database, key, status, response, now) {
   database.prepare(
     `UPDATE deliveries SET status = ?, response_json = ?, updated_at = ?
-     WHERE idempotency_key = ?`,
+     WHERE idempotency_key = ? AND status NOT IN ('accepted','sent')`,
   ).run(status, JSON.stringify(response || {}), now, key);
 }
 
@@ -275,6 +275,8 @@ export function createGateway({
   transformPersonalThumbnail = createPersonalThumbnail,
   sendMessageImpl,
   confirmDeliveryImpl,
+  transport = "beeper",
+  probeTransport,
   isTransportReady = () => true,
   isDeliveryConfirmationReady = () => true,
   now = () => new Date(),
@@ -283,8 +285,10 @@ export function createGateway({
   if (!String(token || "").trim()) throw new Error("GATEWAY_TOKEN is required");
   if (!String(chatId || "").trim()) throw new Error("BEEPER_CHAT_ID is required");
   if (!String(buyticketChatId || "").trim()) throw new Error("BEEPER_BUYTICKET_CHAT_ID is required");
-  if (!String(accountId || "").trim()) throw new Error("BEEPER_ACCOUNT_ID is required");
-  if (!String(beeperAccessToken || "").trim()) throw new Error("BEEPER_ACCESS_TOKEN is required");
+  if (!["beeper", "baileys"].includes(transport)) throw new Error("invalid_delivery_transport");
+  if (transport === "beeper" && !String(accountId || "").trim()) throw new Error("BEEPER_ACCOUNT_ID is required");
+  if (transport === "beeper" && !String(beeperAccessToken || "").trim()) throw new Error("BEEPER_ACCESS_TOKEN is required");
+  if (transport === "baileys" && typeof probeTransport !== "function") throw new Error("probeTransport is required");
   if (!String(databasePath || "").trim()) throw new Error("DATA_PATH is required");
   if (typeof sendMessageImpl !== "function") throw new Error("sendMessageImpl is required");
   if (typeof confirmDeliveryImpl !== "function") {
@@ -307,6 +311,20 @@ export function createGateway({
           components: { transport: false, beeperApi: false, ledger: false },
         },
       };
+    }
+    if (transport === "baileys") {
+      try {
+        const upstream = await probeTransport();
+        const ok = upstream?.ok === true && upstream.transport === "baileys" &&
+          upstream.deliveryConfirmation === "baileys_ack_or_receipt";
+        return { status: ok ? 200 : 503, body: { ok, transport,
+          deliveryConfirmation: "baileys_ack_or_receipt",
+          components: { ...upstream.components, ledger: true },
+          ...(includeLedger ? { ledger } : {}), ...(ok ? {} : { code: "drops_not_ready" }) } };
+      } catch {
+        return { status: 503, body: { ok: false, transport, code: "drops_not_ready",
+          components: { transport: false, ledger: true }, ...(includeLedger ? { ledger } : {}) } };
+      }
     }
     if (!isTransportReady()) {
       return {
@@ -537,13 +555,43 @@ export function createGateway({
       preview,
       ...(nativeFormatting ? { format: "whatsapp" } : {}),
     };
+    const normalizedHash = requestHash(normalized);
+    const completeDrops = async gatewayJobID => {
+      const receipt = { transport: "baileys", gatewayJobID };
+      try {
+        const confirmation = await confirmDeliveryImpl({pendingMessageID:gatewayJobID});
+        if (["accepted", "delivered"].includes(confirmation?.state) && confirmation.messageId &&
+          ["accepted_by_whatsapp_server", "confirmed_by_whatsapp_receipt"].includes(confirmation.deliveryState)) {
+          const accepted = { accepted: true, pendingMessageID: confirmation.messageId,
+            deliveryState: confirmation.deliveryState, confirmation: confirmation.confirmation, ...receipt };
+          updateDelivery(database,idempotencyKey,"accepted",accepted,now().toISOString());
+          return respond(202,accepted,{deliveryState:accepted.deliveryState});
+        }
+        if (confirmation?.state === "pending") {
+          updateDelivery(database,idempotencyKey,"pending",receipt,now().toISOString());
+          return respond(409,{code:"delivery_pending",...receipt});
+        }
+        if (confirmation?.state === "rejected") {
+          // The Drops job is terminal too; querying it again cannot dispatch a second message.
+          updateDelivery(database,idempotencyKey,"unknown",receipt,now().toISOString());
+          return respond(502,{code:"delivery_rejected",...receipt});
+        }
+      } catch {}
+      updateDelivery(database,idempotencyKey,"unknown",receipt,now().toISOString());
+      return respond(503,{code:"delivery_unknown",...receipt});
+    };
     const reserved = reserveDelivery(
       database,
       idempotencyKey,
-      requestHash(normalized),
+      normalizedHash,
       now().toISOString(),
     );
     if (reserved.kind === "conflict") return respond(409, { code: "idempotency_conflict" });
+    // Only reconcile a recorded Drops job. Historical Beeper ambiguity remains locked.
+    if (transport === "baileys" && ["unknown", "pending"].includes(reserved.kind) &&
+      reserved.response?.transport === "baileys" && reserved.response.gatewayJobID) {
+      return completeDrops(reserved.response.gatewayJobID);
+    }
     if (reserved.kind === "unknown") return respond(409, { code: "delivery_unknown" });
     if (reserved.kind === "pending") return respond(409, { code: "delivery_pending" });
     if (reserved.kind === "replay") {
@@ -576,6 +624,8 @@ export function createGateway({
       }
       result = await sendMessageImpl({
         chatId: destinationChatId,
+        ...(transport === "baileys" ? {route:personalPost?"self":buyticket?"buyticket":"uol",
+          idempotencyKey,requestHash:normalizedHash} : {}),
         text,
         ...(nativeFormatting ? { formatText: false } : {}),
         preview: generalPost && !image?.img ? undefined : {
@@ -591,6 +641,10 @@ export function createGateway({
       if (!pendingMessageID) {
         updateDelivery(database, idempotencyKey, "unknown", {}, now().toISOString());
         return respond(503, { code: "delivery_unknown" });
+      }
+      if (transport === "baileys") {
+        updateDelivery(database,idempotencyKey,"pending",{transport,gatewayJobID:pendingMessageID},now().toISOString());
+        return await completeDrops(pendingMessageID);
       }
       const confirmation = await confirmDeliveryImpl({
         pendingMessageID,
@@ -628,7 +682,7 @@ export function createGateway({
         now().toISOString(),
       );
       return respond(ambiguous ? 503 : 502, {
-        code: ambiguous ? "delivery_unknown" : "beeper_rejected",
+        code: ambiguous ? "delivery_unknown" : transport === "baileys" ? "delivery_rejected" : "beeper_rejected",
       });
     } finally {
       if (image?.path) {

@@ -161,12 +161,15 @@ export async function probeBeeperGateway(env, fetchImpl = fetch) {
       signal: AbortSignal.timeout(BEEPER_GATEWAY_HEALTH_TIMEOUT_MS),
     });
     const payload = await readBoundedJson(response);
-    const contractReady = payload?.deliveryConfirmation === "confirmed_by_whatsapp_bridge";
+    const contractReady = payload?.deliveryConfirmation === "confirmed_by_whatsapp_bridge" ||
+      (payload?.transport === "baileys" && payload?.deliveryConfirmation === "baileys_ack_or_receipt");
     const ok = response.status === 200 && payload?.ok === true && contractReady;
     return {
       checkedAt,
       ok,
       status: response.status,
+      ...(payload?.transport === "baileys" && contractReady
+        ? {transport:"baileys",deliveryConfirmation:payload.deliveryConfirmation} : {}),
       code: ok
         ? "ready"
         : response.status === 200 && payload?.ok === true
@@ -290,7 +293,10 @@ export async function sendBeeperOffer(
     payload?.pendingMessageID || payload?.pendingMessageId || "",
   ).trim();
   const deliveryState = String(payload?.deliveryState || "").trim();
-  if (!pendingMessageId || deliveryState !== "confirmed_by_whatsapp_bridge") {
+  const dropsReceipt = payload?.transport === "baileys" &&
+    ((deliveryState === "accepted_by_whatsapp_server" && payload?.confirmation === "server_ack") ||
+     (deliveryState === "confirmed_by_whatsapp_receipt" && ["recipient_receipt","participant_receipt"].includes(payload?.confirmation)));
+  if (!pendingMessageId || (deliveryState !== "confirmed_by_whatsapp_bridge" && !dropsReceipt)) {
     throw createAmbiguousResponseTransportError({
       transport: "beeper",
       operation: "send",
@@ -300,5 +306,6 @@ export async function sendBeeperOffer(
   return {
     pendingMessageId,
     replayed: Boolean(payload?.replayed),
+    ...(dropsReceipt ? {deliveryState,transport:"baileys"} : {}),
   };
 }

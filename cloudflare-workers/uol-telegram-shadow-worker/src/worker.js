@@ -4263,6 +4263,7 @@ export class UolTelegramShadow extends DurableObject {
       this.updateBeeperRuntimeSnapshot({
         gatewayOk: gateway.ok, gatewayStatus: gateway.status,
         gatewayCode: gateway.code, checkedAt: gateway.checkedAt,
+        transport: gateway.transport, deliveryConfirmation: gateway.deliveryConfirmation,
       });
     })();
     try { await this.beeperHealthInFlight; }
@@ -4278,6 +4279,8 @@ export class UolTelegramShadow extends DurableObject {
       gatewayOk: snapshot.gatewayOk === true,
       gatewayStatus: Number(snapshot.gatewayStatus || 0),
       gatewayCode: String(snapshot.gatewayCode || ""),
+      transport: String(snapshot.transport || ""),
+      deliveryConfirmation: String(snapshot.deliveryConfirmation || ""),
       filterActive: snapshot.filterActive === true,
       pending: Number(snapshot.pending || 0),
       exhausted: Number(snapshot.exhausted || 0),
@@ -4555,6 +4558,7 @@ export class UolTelegramShadow extends DurableObject {
         gatewayOk: gateway.ok,
         gatewayStatus: gateway.status,
         gatewayCode: gateway.code,
+        transport: gateway.transport, deliveryConfirmation: gateway.deliveryConfirmation,
         filterActive: configuration.filterActive,
         pending: Math.max(Number(previousGateway.pending || 0), rows.length),
         checkedAt: gateway.checkedAt,
@@ -4620,6 +4624,7 @@ export class UolTelegramShadow extends DurableObject {
           offerId: row.id,
           attempt: attempts,
           replayed: result.replayed,
+          transport: result.transport, deliveryState: result.deliveryState,
         });
         this.recordDeliveryLedgerEvent({
           offerId: row.id,
@@ -7771,7 +7776,8 @@ export class UolTelegramShadow extends DurableObject {
         destinationKey: beeperConfiguration.destinationKey,
         filterActive: beeperConfiguration.filterActive,
         ...currentBeeperGatewayHealth(beeperRuntime),
-        deliveryConfirmation: "confirmed_by_whatsapp_bridge",
+        transport: beeperRuntime.transport || "beeper",
+        deliveryConfirmation: beeperRuntime.deliveryConfirmation || "confirmed_by_whatsapp_bridge",
         queue: {
           pending: beeperQueue.pending,
           exhausted: beeperQueue.exhausted,

@@ -35,7 +35,7 @@ export function createManualApi({store,dataDir,getConfig,canSend,now=Date.now}) 
     CREATE TABLE IF NOT EXISTS manual_jobs(request_id TEXT NOT NULL,job_id TEXT UNIQUE NOT NULL,alias TEXT NOT NULL,media_id TEXT,position INTEGER NOT NULL);`);
   const file = id => {if(!UUID.test(id))fail('invalid_media');return join(directory,id);};
   const destinations=()=>Object.entries(getConfig().destinations)
-    .filter(([,d])=>d.verified && ['group','contact'].includes(d.type))
+    .filter(([,d])=>d.verified && d.gatewayOnly!==true && ['group','contact'].includes(d.type))
     .map(([id,d])=>({id,name:names[id]||id,type:d.type}));
   const status = requestId => {
     if(!UUID.test(requestId)||!db.prepare('SELECT id FROM manual_requests WHERE id=?').get(requestId))fail('request_not_found',404);

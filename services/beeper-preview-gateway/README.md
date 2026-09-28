@@ -1,5 +1,44 @@
 # Beeper preview gateway
 
+## WhatsApp transport: Saquetto Drops
+
+Production can select `GATEWAY_DELIVERY_TRANSPORT=baileys`. Existing routes,
+bearer tokens, fixed destinations, request normalization, thumbnail compositor
+and idempotency ledger stay in this gateway. New messages use the single Drops
+sender through loopback, with a separate `DROPS_GATEWAY_TOKEN`. This mode does
+not start the Beeper transport or read its delivery index. Historical service
+and directory names remain for compatibility.
+
+The internal `/v1/gateway/*` API is never proxied publicly. Configure the same
+gateway token in both services. `DROPS_GATEWAY_UOL`, `DROPS_GATEWAY_BUYTICKET`
+and `DROPS_GATEWAY_SELF` select Drops aliases matched to the old destinations.
+Automatic X rules and the manual `/v1/whatsapp/*` token are independent.
+
+Readiness declares `transport: "baileys"` and
+`deliveryConfirmation: "baileys_ack_or_receipt"`. Send responses distinguish:
+
+- `accepted_by_whatsapp_server` + `server_ack`: accepted by WhatsApp, not a
+  recipient receipt.
+- `confirmed_by_whatsapp_receipt` + `recipient_receipt` or
+  `participant_receipt`: recipient confirmation; a group receipt need not cover
+  every participant.
+
+Responses retain `pendingMessageID` and include the transport and receipt level.
+The gateway stores the Drops job ID before waiting. A retry of that job only
+queries its state; it never replays the message. Old accepted Beeper records
+return their original receipt, and old unknown records stay locked. Drops jobs
+share pacing, pause, destination verification and restart recovery with existing
+sends. Undispatched gateway jobs expire after 30 minutes. Private preview files
+are retained for seven days and never exposed over HTTP.
+
+Deploy receipt-aware clients before switching the gateway, including the legacy
+Scriptable copy in iCloud. Keep retired BuyTicket monitoring/purchases disabled.
+Keep Beeper and its credentials/backups for rollback until all consumers have
+migrated and seven days of stable operation are established. Retain the gateway
+ledger during rollback so accepted/unknown work cannot cross transports twice.
+
+## Legacy Beeper mode (rollback)
+
 Private sidecar for the UOL Worker. It accepts only authenticated Clube UOL offer
 links, pins delivery to the configured Beeper chat, and restores the native
 WhatsApp card by passing Beeper's original `links[]` preview payload through the

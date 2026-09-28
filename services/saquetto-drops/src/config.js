@@ -14,6 +14,7 @@ export function validateConfig(value) {
   for (const [key, d] of Object.entries(c.destinations)) {
     const suffix = { group: '@g.us', contact: '@s.whatsapp.net', channel: '@newsletter' }[d?.type];
     if (!alias.test(key) || !suffix || typeof d.jid !== 'string' || typeof d.verified !== 'boolean') fail('invalid_destination');
+    if(d.gatewayOnly!==undefined&&typeof d.gatewayOnly!=='boolean')fail('invalid_destination');
     if (!d.jid.endsWith(suffix) && !(d.type === 'contact' && d.jid.endsWith('@lid'))) fail('invalid_destination_jid');
     if (d.verified && !/^\d+(?:-\d+)?@(g\.us|s\.whatsapp\.net|lid|newsletter)$/.test(d.jid)) fail('invalid_verified_jid');
   }

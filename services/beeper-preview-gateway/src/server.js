@@ -4,17 +4,21 @@ import { Readable } from "node:stream";
 import { createDeliveryConfirmation } from "./delivery-confirmation.js";
 import { createGateway } from "./gateway.js";
 import { startHeadlessRenderer } from "./headless-renderer.js";
+import { createDropsTransport } from "./drops-transport.js";
 
 const port = Number(process.env.PORT || 8787);
 const host = String(process.env.HOST || "127.0.0.1");
 const logger = console;
-const headlessTransport = startHeadlessRenderer({
+const useDrops = process.env.GATEWAY_DELIVERY_TRANSPORT === "baileys";
+if (process.env.GATEWAY_DELIVERY_TRANSPORT && !["baileys","beeper"].includes(process.env.GATEWAY_DELIVERY_TRANSPORT)) throw new Error("invalid_delivery_transport");
+const drops = useDrops ? createDropsTransport({token:process.env.DROPS_GATEWAY_TOKEN}) : null;
+const headlessTransport = useDrops ? null : startHeadlessRenderer({
   baseUrl: process.env.BEEPER_API_URL || "http://127.0.0.1:23373",
   transportNonce: process.env.BEEPER_TRANSPORT_NONCE,
   accountId: process.env.BEEPER_ACCOUNT_ID,
   logger,
 });
-const deliveryConfirmation = createDeliveryConfirmation({
+const deliveryConfirmation = useDrops ? null : createDeliveryConfirmation({
   databasePath: process.env.BEEPER_INDEX_DB_PATH,
   chatId: process.env.BEEPER_CHAT_ID,
 });
@@ -28,10 +32,12 @@ const handler = createGateway({
   beeperAccessToken: process.env.BEEPER_ACCESS_TOKEN,
   beeperApiUrl: process.env.BEEPER_API_URL,
   databasePath: process.env.DATA_PATH || "/var/lib/beeper-preview-gateway/deliveries.sqlite",
-  sendMessageImpl: (message) => headlessTransport.sendMessage(message),
-  confirmDeliveryImpl: (delivery) => deliveryConfirmation.waitForDelivery(delivery),
-  isTransportReady: () => headlessTransport.isReady(),
-  isDeliveryConfirmationReady: () => deliveryConfirmation.isReady(),
+  transport:useDrops?"baileys":"beeper",
+  probeTransport:useDrops?()=>drops.readiness():undefined,
+  sendMessageImpl: (message) => useDrops?drops.sendMessage(message):headlessTransport.sendMessage(message),
+  confirmDeliveryImpl: (delivery) => useDrops?drops.confirmDelivery(delivery):deliveryConfirmation.waitForDelivery(delivery),
+  isTransportReady: () => useDrops||headlessTransport.isReady(),
+  isDeliveryConfirmationReady: () => useDrops||deliveryConfirmation.isReady(),
   logger,
 });
 

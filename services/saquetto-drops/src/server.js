@@ -9,6 +9,7 @@ import { createProcessor } from './processor.js';
 import { startWhatsApp } from './whatsapp.js';
 import { createSender, prepareContent } from './sender.js';
 import { createManualApi, manualAuthorized } from './manual.js';
+import { createGatewayApi } from './gateway-api.js';
 import { acquireLock } from './process-lock.js';
 import { createPilot } from './pilot.js';
 
@@ -51,8 +52,11 @@ const processEvents = createProcessor({store,getConfig:()=>config,getContext:()=
   decodeEvent});
 const manual=createManualApi({store,dataDir:data,getConfig:()=>config,
   canSend:()=>!closing && canSend() && !config.operation.paused && !config.operation.dryRun});
+const gateway=createGatewayApi({store,dataDir:data,getConfig:()=>config,whatsapp,
+  routes:{uol:process.env.DROPS_GATEWAY_UOL,buyticket:process.env.DROPS_GATEWAY_BUYTICKET,self:process.env.DROPS_GATEWAY_SELF},
+  canSend:()=>!closing && canSend() && !config.operation.paused && !config.operation.dryRun});
 const sendNext = createSender({store,getConfig:()=>config,whatsapp,canSend,canPilot,
-  prepare:(payload,socket)=>payload.manual===true?manual.prepare(payload):prepareContent(payload,socket)});
+  prepare:(payload,socket)=>payload.gateway===true?gateway.prepare(payload,socket):payload.manual===true?manual.prepare(payload):prepareContent(payload,socket)});
 const connectObserver = async () => {
   if (closing || observerStarting || observer?.handlesReconnect || observer?.isReady()) return;
   observerStarting = true;
@@ -67,7 +71,7 @@ const connectObserver = async () => {
   finally { observerStarting = false; }
 };
 const timers = [setInterval(()=>connectObserver(),10000),setInterval(()=>sendNext().catch(()=>{}),1000),
-  setInterval(()=>{try{manual.cleanup();}catch{}},60000)];
+  setInterval(()=>{try{manual.cleanup();gateway.cleanup();}catch{}},60000)];
 await connectObserver();
 const equal = value => timingSafeEqual(createHash('sha256').update(value).digest(),createHash('sha256').update(token).digest());
 const safeJob = row => ({id:row.id,state:row.state,attempts:row.attempts,code:row.code,confirmation:row.confirmation});
@@ -81,6 +85,10 @@ const status = () => ({ok:true,mode:config.operation.dryRun?'dry_run':'live',pau
 const server = createServer(async (req,res) => {
   const reply = (code,value) => {res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(value));};
   const path = new URL(req.url,'http://localhost').pathname;
+  if(path.startsWith('/v1/gateway/')) {
+    if(!manualAuthorized(req.headers.authorization,process.env.DROPS_GATEWAY_TOKEN))return reply(401,{code:'unauthorized'});
+    const result=await gateway.route(req,path);return reply(result.status,result.body);
+  }
   if(path.startsWith('/v1/whatsapp/')) {
     if(!manualAuthorized(req.headers.authorization,manualToken))return reply(401,{code:'unauthorized'});
     const result=await manual.route(req,path);return reply(result.status,result.body);

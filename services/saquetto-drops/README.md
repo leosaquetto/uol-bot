@@ -138,6 +138,12 @@ DROPS_PILOT=0
 ```
 
 The administration API binds to localhost only; never expose its routes or CDP.
+The optional legacy gateway adapter uses a separate `DROPS_GATEWAY_TOKEN` for
+loopback `/v1/gateway/*` routes. `DROPS_GATEWAY_UOL`, `DROPS_GATEWAY_BUYTICKET`
+and `DROPS_GATEWAY_SELF` name verified destinations in the configuration.
+It uses the same queue and receipts; no second WhatsApp session is opened.
+The preview gateway keeps its old ledger, including ambiguous records.
+See `../beeper-preview-gateway/README.md` for the cutover and receipt contract.
 Only the separately authenticated `/v1/whatsapp/*` namespace may be routed by
 Caddy for the manual Shortcut (see `MANUAL_API.md`). CDP has full browser
 access and must stay on loopback/SSH. Chrome keeps its sandbox enabled.

@@ -5,6 +5,10 @@ const EVENT_SCOPE = 'demi-16-no-elderly-under-299-pix-under-100-v5:' + EVENTS.ma
 const MONITOR_INTERVAL = 30_000;
 const DELIVERY_RECONCILE_INTERVAL = 300_000;
 const alertFingerprint = ({ i, idRef }) => `${i}|${idRef}`;
+const gatewayAccepted = result => result?.deliveryState === 'confirmed_by_whatsapp_bridge' ||
+  (result?.transport === 'baileys' && Boolean(result.pendingMessageID) &&
+    ((result.deliveryState === 'accepted_by_whatsapp_server' && result.confirmation === 'server_ack') ||
+     (result.deliveryState === 'confirmed_by_whatsapp_receipt' && ['recipient_receipt','participant_receipt'].includes(result.confirmation))));
 export class Monitor extends DurableObject {
   async scheduleNextAlarm() {
     await this.ctx.storage.setAlarm(Date.now() + MONITOR_INTERVAL);
@@ -77,7 +81,8 @@ export class Monitor extends DurableObject {
     await this.ctx.storage.put('pending', { ...pending, state: 'unknown', lastAttemptAt: new Date().toISOString() });
     const response = await fetch(this.env.BEEPER_GATEWAY_URL, { method: 'POST', headers: { Authorization: `Bearer ${this.env.BEEPER_GATEWAY_TOKEN}`, 'Content-Type': 'application/json', 'Idempotency-Key': item.key }, body: JSON.stringify({ link: item.link || eventUrl(EVENTS[0]), text: item.text, title: 'Demi Lovato • BuyTicket' }), signal: AbortSignal.timeout(55_000) });
     const result = await response.json();
-    if (response.ok && result.deliveryState === 'confirmed_by_whatsapp_bridge') {
+    if (response.ok && gatewayAccepted(result)) {
+      await this.ctx.storage.put('lastDeliveryState', result.deliveryState);
       await this.ctx.storage.put('lastDeliveredAt', new Date().toISOString());
       const remaining = pending.items?.slice(1) || [];
       if (remaining.length) {
@@ -166,7 +171,8 @@ export class Monitor extends DurableObject {
       signal: AbortSignal.timeout(55_000),
     });
     const result = await response.json();
-    if (response.ok && result.deliveryState === 'confirmed_by_whatsapp_bridge') {
+    if (response.ok && gatewayAccepted(result)) {
+      await this.ctx.storage.put('lastDeliveryState', result.deliveryState);
       const state = await this.ctx.storage.get('purchases') || { days: {} };
       const day = state.days[pending.dayIndex] || {};
       day.status = 'delivered';
@@ -215,7 +221,7 @@ export class Monitor extends DurableObject {
       const pending = await this.ctx.storage.get('pending');
       return Response.json({
         broadcast: true,
-        deliveryState: pending?.state || 'confirmed_by_whatsapp_bridge',
+        deliveryState: pending?.state || await this.ctx.storage.get('lastDeliveryState') || 'confirmed_by_whatsapp_bridge',
         snapshotAt: state.checkedAt,
       });
     }
