@@ -10,7 +10,6 @@
     "deploy": "wrangler deploy",
     "admin": "node scripts/manage.mjs"
   },
-  "dependencies": { "@cloudflare/playwright": "1.3.6" },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.20.1",
     "vitest": "^4.1.10",

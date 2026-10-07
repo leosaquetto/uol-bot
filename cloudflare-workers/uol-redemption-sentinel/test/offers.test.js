@@ -22,19 +22,30 @@ test('known detail scope excludes validity dates and neighbouring offers', () =>
   assert.equal(matchOffer(parsed, campaign).ok, true);
 });
 
-test('observed Casa Natura title/description disagreement blocks even with matching artwork', () => {
+test('observed Casa Natura title/description disagreement blocks even with matching artist', () => {
   const parsed = parseOffer(detail({ description: '<p>Zayn. 2 ingressos no Nubank Parque, São Paulo.</p><p>Data: 08 de setembro de 2026.</p>' }), url);
-  const result = matchOffer(parsed, campaign, 'ZAYN 10/10/2026');
+  const result = matchOffer(parsed, campaign);
   assert.equal(result.ok, false);
   assert.ok(result.reasons.includes('EVENT_DATE_CONFLICT'));
 });
 
-test('venue and date alone do not identify performer; written artwork can supply artist', () => {
+test('venue and date alone do not identify performer; external text cannot supply artist', () => {
   const parsed = parseOffer(detail({ description: '<p>1 par de ingressos no Nubank Parque, São Paulo. Data: 10/10/2026.</p>' }), url);
-  assert.ok(matchOffer(parsed, campaign).reasons.includes('ARTIST_MISSING'));
-  assert.equal(matchOffer(parsed, campaign, 'ZAYN THE KONNAKOL TOUR').evidence.artistSource, 'artwork_text');
-  assert.equal(matchOffer(parsed, campaign, 'ZAYN THE KONNAKOL TOUR').ok, true);
-  assert.equal(matchOffer(parsed, campaign, 'ZAYNATION').ok, false);
+  for (const offer of [parsed, { ...parsed, text: `${parsed.text} ZAYN`, artworkText: 'ZAYN THE KONNAKOL TOUR' }]) {
+    const result = matchOffer(offer, campaign, 'ZAYN THE KONNAKOL TOUR');
+    assert.equal(result.ok, false);
+    assert.ok(result.reasons.includes('ARTIST_MISSING'));
+    assert.equal(result.evidence.artistSource, null);
+  }
+});
+
+test('artist must appear literally in the scoped offer title or description', () => {
+  const parsed = parseOffer(detail({ title: 'ZAYN — 2 INGRESSOS 10/10 Nubank Parque SP', description: '<p>1 par de ingressos no Nubank Parque, São Paulo. Data: 10/10/2026.</p>' }), url);
+  const result = matchOffer(parsed, campaign);
+  assert.equal(result.ok, true);
+  assert.equal(result.evidence.artistSource, 'offer_text');
+  const differentArtist = parseOffer(detail({ description: '<p>Zaynation, 1 par de ingressos no Nubank Parque, São Paulo. Data: 10/10/2026.</p>' }), url);
+  assert.ok(matchOffer(differentArtist, campaign).reasons.includes('ARTIST_MISSING'));
 });
 
 test('all explicit event dates must agree, including year and multiple dates', () => {

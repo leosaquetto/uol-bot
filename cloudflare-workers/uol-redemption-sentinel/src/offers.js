@@ -188,18 +188,17 @@ function datesIn(text) {
   return dates;
 }
 
-export function matchOffer(offer, campaign, artworkText = '') {
+export function matchOffer(offer, campaign) {
   const reasons = [];
   const title = normalizeText(offer?.title);
   const description = normalizeText(offer?.description);
   const text = `${title} ${description}`;
-  const artwork = normalizeText(artworkText);
   const identity = offer?.identityEvidence;
   if (!offerUrl(offer?.url) || (campaign.category && campaign.category !== 'campanhasdeingresso')) reasons.push('WRONG_CATEGORY_OR_URL');
   if (!identity?.scoped || identity.titleCount !== 1 || identity.descriptionCount !== 1 || !identity.canonicalMatches || identity.actionCount !== 1 || !identity.actionMatches) reasons.push('IDENTITY_UNVERIFIED');
   if (!title || !description) reasons.push('CONTENT_INCOMPLETE');
   if (!offer?.available || offer?.requiresLogin || offer?.soldOut) reasons.push('NOT_REDEEMABLE');
-  const artistSource = containsAlias(text, campaign.artistAliases) ? 'offer_text' : containsAlias(artwork, campaign.artistAliases) ? 'artwork_text' : null;
+  const artistSource = containsAlias(text, campaign.artistAliases) ? 'offer_text' : null;
   if (!artistSource) reasons.push('ARTIST_MISSING');
   const pair = /\b(?:0?2|dois)\s+ingressos?\b/.test(text) || /\b(?:0?1|um)\s+par\s+de\s+ingressos\b/.test(text);
   const ticketCounts = [...text.matchAll(/\b(\d+)\s+ingressos?\b/g)].map((match) => Number(match[1]));

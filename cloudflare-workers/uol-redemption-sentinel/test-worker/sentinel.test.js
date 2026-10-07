@@ -87,9 +87,6 @@ describe('sentinel safety in the Workers Durable Object runtime', () => {
     expect(await stub.status()).toMatchObject({ mode: 'prepared', matchingCandidates: 1, lastResult: 'qualified_offer_dry_run', monthlyAttempt: null, nextAlarmAt: null });
     expect(redemptions()).toHaveLength(0);
     expect(notifications()).toHaveLength(0);
-    expect(await stub.probeArtwork()).toMatchObject({ ok: false, reason: 'ARTWORK_URL_REJECTED' });
-    expect(redemptions()).toHaveLength(0);
-    expect(notifications()).toHaveLength(0);
     const encrypted = await runInDurableObject(stub, instance => instance.ledger.getState('session'));
     expect(encrypted.v).toBe(1);
     expect(JSON.stringify(encrypted)).not.toContain('synthetic-test-session');
@@ -109,6 +106,20 @@ describe('sentinel safety in the Workers Durable Object runtime', () => {
     expect(error).toBe('HISTORY_INCOMPLETE');
     expect(await stub.status()).toEqual({ ready: false, mode: 'unconfigured' });
     expect(redemptions()).toHaveLength(0);
+  });
+
+  it('an artist missing from offer text never fetches images or reserves a redemption', async () => {
+    const original = network.getMockImplementation();
+    network.mockImplementation(async (...args) => {
+      if (args[0] === OFFER_URL) return new Response(detail.replace('para Zayn em', 'para o show em'), { headers: HEADERS });
+      return original(...args);
+    });
+    const stub = await active('missing-artist-text');
+    await runInDurableObject(stub, instance => instance.alarm());
+    expect(await stub.status()).toMatchObject({ mode: 'active', lastResult: 'watching', monthlyAttempt: null });
+    expect(redemptions()).toHaveLength(0);
+    expect(notifications()).toHaveLength(0);
+    expect(calls.every(call => new URL(call.url).origin === CLUB)).toBe(true);
   });
 
   it('one active alarm reserves once, redeems once and notifies only after a new voucher', async () => {
@@ -205,6 +216,10 @@ describe('sentinel safety in the Workers Durable Object runtime', () => {
     const denied = await exports.default.fetch('https://sentinel.test/admin/accounts/leo/status');
     expect(denied.status).toBe(401);
     expect(await denied.json()).toEqual({ error: 'unauthorized' });
+    const removed = await exports.default.fetch('https://sentinel.test/admin/accounts/leo/probe-artwork', {
+      method: 'POST', headers: { Authorization: `Bearer ${env.ADMIN_TOKEN}` },
+    });
+    expect(removed.status).toBe(404);
     const health = await exports.default.fetch('https://sentinel.test/health');
     expect(await health.json()).toMatchObject({ status: 'Ready' });
     expect(calls).toHaveLength(0);

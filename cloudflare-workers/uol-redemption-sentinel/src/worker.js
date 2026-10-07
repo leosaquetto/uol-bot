@@ -5,7 +5,6 @@ import { UolClient } from './uol-client.js';
 import { parseCatalog, parseOffer, parseHistory, matchOffer, normalizeText } from './offers.js';
 import { buildSuccessMessage, buildBlockedMessage, sendNtfy } from './notify.js';
 import { digest, seal, unseal, normalizeLogin, readAccounts, matchesToken } from './security.js';
-import { recognizeArtwork } from './artwork.js';
 
 const CLOSED = new Set(['paused','blocked','expired','confirmed']);
 const MONTH = now => {
@@ -70,41 +69,6 @@ export class RedemptionAccount extends DurableObject {
     if(current?.mode==='paused' && cfg.mode!=='confirmed')cfg.mode='paused';
     this.ledger.setState('config',cfg);
   }
-  async artworkEvidence(offer,campaign,cached=null) {
-    const key=`artwork:${campaign.id}:${await digest(offer.imageUrl||'')}`;
-    const saved=cached||this.ledger.getState(key);
-    const budgetKey=`ocr-count:${campaign.id}`;
-    const count=this.ledger.getState(budgetKey)||0;
-    if(!saved && count>=3)throw Object.assign(Error('ocr_limit'),{code:'OCR_UNVERIFIED'});
-    if(!saved)this.ledger.setState(budgetKey,count+1);
-    const result=await recognizeArtwork(offer.imageUrl,{browserBinding:this.env.BROWSER,cached:saved});
-    if(!result.ok && result.causeCode==='browser_rate_limited'){
-      if(!saved)this.ledger.setState(budgetKey,count);
-      throw Object.assign(Error('browser_rate_limited'),{code:'REQUEST_FAILED'});
-    }
-    if(!result.ok)throw Object.assign(Error('ocr_unverified'),{code:'OCR_UNVERIFIED'});
-    this.ledger.setState(key,result);
-    return result;
-  }
-  async probeArtwork(sampleIndex=0) {
-    return this.exclusive(async()=>{
-      const cfg=this.ledger.getState('config');if(!cfg)throw Error('not_configured');
-      if(cfg.mode==='active'||cfg.mode==='reconciling')throw Error('pause_before_bootstrap');
-      const client=await this.newClient(cfg);
-      const catalog=await client.getCatalog();
-      if(catalog.status!==200)throw Error('catalog_unavailable');
-      if(!Number.isInteger(sampleIndex)||sampleIndex<0||sampleIndex>8)throw Error('invalid_artwork_sample');
-      const sample=parseCatalog(catalog.html).filter(e=>e.imageUrl)[sampleIndex];
-      if(!sample)throw Error('no_artwork');
-      const result=await recognizeArtwork(sample.imageUrl,{browserBinding:this.env.BROWSER});
-      cfg.ocrReady=result.ok;this.persistConfig(cfg);
-      return {ok:result.ok,reason:result.reason||null,confidentWords:result.words.length,
-        ...(result.stage?{stage:result.stage,causeCode:result.causeCode}:{}),
-        ...(result.assetCode?{assetCode:result.assetCode}:{}),
-        ...(result.totalWords!==undefined?{totalWords:result.totalWords,maxConfidence:result.maxConfidence}:{}),
-        ...(result.httpStatus?{httpStatus:result.httpStatus}:{})};
-    });
-  }
   checkIdentity(history,cfg) {
     if(!history.authenticated || !history.historyScopeFound
       || normalizeText(history.signedInName)!==normalizeText(cfg.expectedName))throw Object.assign(Error('identity_mismatch'),{code:'IDENTITY_MISMATCH'});
@@ -165,7 +129,6 @@ export class RedemptionAccount extends DurableObject {
       lastResult:cfg.lastResult,identityVerified:!!cfg.identityVerifiedAt,
       lastProbeAt:cfg.lastProbeAt||null,lastProbeResult:cfg.lastProbeResult||null,
       catalogCount:cfg.catalogCount??null,matchingCandidates:cfg.matchingCandidates??null,
-      ocrReady:cfg.ocrReady===true,
       quotaMonth:cfg.quotaAttestedMonth,monthlyAttempt:attempt?{status:attempt.status,createdAt:attempt.createdAt}:null,
       nextAlarmAt:await this.ctx.storage.getAlarm(),notificationPending:this.ledger.nextNotificationAt()!==null};
   }
@@ -231,13 +194,8 @@ export class RedemptionAccount extends DurableObject {
           if(authenticatedDetail.status!==200)throw Error('offer_not_verified');
           offer=parseOffer(authenticatedDetail.html,card.url);
         }
-        let decision=matchOffer(offer,campaign);
-        let artwork=null;
-        if(decision.reasons.length===1 && decision.reasons[0]==='ARTIST_MISSING'){
-          artwork=await this.artworkEvidence(offer,campaign);
-          decision=matchOffer(offer,campaign,artwork.text);
-        }
-        if(decision.ok)matches.push({...offer,artwork});
+        const decision=matchOffer(offer,campaign);
+        if(decision.ok)matches.push(offer);
         else if(isExpectedSlot(offer,campaign) && decision.reasons.some(r=>!['ARTIST_MISSING','NOT_REDEEMABLE'].includes(r))){
           if(dryRun){cfg.lastProbeResult='ambiguous_offer';cfg.lastResult='ambiguous_offer';}
           else this.block(cfg,campaign,'ambiguous_offer');
@@ -256,8 +214,7 @@ export class RedemptionAccount extends DurableObject {
       const refreshedDetail=await client.getOffer(candidate.url);
       if(refreshedDetail.status!==200){this.block(cfg,campaign,'ambiguous_offer');return;}
       const fresh=parseOffer(refreshedDetail.html,candidate.url);
-      const refreshedArtwork=candidate.artwork?await this.artworkEvidence(fresh,campaign,candidate.artwork):null;
-      if(!matchOffer(fresh,campaign,refreshedArtwork?.text||'').ok || fresh.title!==candidate.title || fresh.imageUrl!==candidate.imageUrl
+      if(!matchOffer(fresh,campaign).ok || fresh.title!==candidate.title || fresh.imageUrl!==candidate.imageUrl
         || fresh.description!==candidate.description){this.block(cfg,campaign,'ambiguous_offer');return;}
       cfg.consecutiveErrors=0;
       const latest=this.ledger.getState('config');
@@ -345,7 +302,7 @@ export default {
     const u=new URL(req.url);
     if(u.pathname==='/health'&&req.method==='GET')return response({status:'Ready',service:'uol-redemption-sentinel',version:env.WORKER_VERSION?.id||'local'});
     if(!await matchesToken(req.headers.get('Authorization')?.replace(/^Bearer /,''),env.ADMIN_TOKEN))return response({error:'unauthorized'},401);
-    const match=/^\/admin\/accounts\/([a-z][a-z0-9_-]{0,39})\/(status|bootstrap|probe|probe-artwork|activate|pause)$/.exec(u.pathname);
+    const match=/^\/admin\/accounts\/([a-z][a-z0-9_-]{0,39})\/(status|bootstrap|probe|activate|pause)$/.exec(u.pathname);
     if(!match||u.search)return response({error:'not_found'},404);
     const [,accountId,action]=match;
     if(req.method!==(action==='status'?'GET':'POST'))return response({error:'method_not_allowed'},405);
@@ -355,11 +312,6 @@ export default {
       const stub=env.ACCOUNTS.getByName(await digest(normalizeLogin(cred.quotaOwnerKey||cred.login)));
       if(action==='status')return response(await stub.status());
       if(action==='probe')return response(await stub.probe());
-      if(action==='probe-artwork'){
-        if(Number(req.headers.get('content-length')||0)>128)return response({error:'body_too_large'},413);
-        const text=await req.text();if(text.length>128)return response({error:'body_too_large'},413);
-        return response(await stub.probeArtwork(JSON.parse(text||'{}').sampleIndex??0));
-      }
       if(action==='pause')return response(await stub.pause());
       if(Number(req.headers.get('content-length')||0)>64_000)return response({error:'body_too_large'},413);
       const text=await req.text();if(text.length>64_000)return response({error:'body_too_large'},413);

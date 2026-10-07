@@ -7,12 +7,14 @@ A campanha `zayn-sp-2026-10-10` procura **2 ingressos para Zayn, 10/10/2026, Nub
 ## Travas
 
 - Artista, data, quantidade, local e conta precisam corresponder à campanha. Divergência ou informação insuficiente bloqueia a tentativa.
-- A validação usa os detalhes completos. Título e identificador da oferta, isoladamente, não autorizam resgate. Texto reconhecido na arte pode identificar o artista; conflitos com outros dados bloqueiam a oferta.
+- A validação usa título e descrição dentro do benefício. O artista precisa aparecer nesse texto; data e local, sozinhos, não autorizam resgate. Se “Zayn” aparecer apenas na imagem, a oferta será ignorada. Conflitos nos dados bloqueiam a oferta.
 - Identidade e sessão devem estar verificadas, e a disponibilidade da cota mensal precisa ser atestada antes da ativação.
 - A reserva mensal é gravada antes da requisição de resgate. Erro, timeout, reinício, pausa ou troca de campanha nunca liberam essa reserva.
 - O resultado só é confirmado após aparecer no histórico. Uma resposta ambígua não autoriza repetir a requisição.
 - A outbox do ntfy possui retry independente: falha de notificação não provoca novo resgate.
 - `probe` é somente leitura. O CLI não possui comando de resgate.
+
+A sentinela não usa OCR nem Browser Run. A URL da imagem continua sendo comparada ao histórico para confirmar o voucher, sem baixar ou interpretar a arte.
 
 ## Autenticação e novas contas
 
@@ -109,6 +111,6 @@ npm run test:worker
 npm run check:bundle
 ```
 
-Os testes usam credenciais fictícias, SQLite temporário e fetch simulado. O conjunto Worker executa no runtime local com rede externa bloqueada. Não acessam contas reais, publicam mensagens ou acionam resgate. Em produção, `bootstrap`, `probe` e a rota administrativa `probe-artwork` validam somente leitura e OCR; a transação irreversível não é exercitada como validação.
+Os testes usam credenciais fictícias, SQLite temporário e fetch simulado. O conjunto Worker executa no runtime local com rede externa bloqueada. Não acessam contas reais, publicam mensagens ou acionam resgate. Em produção, `bootstrap` e `probe` validam somente leitura; a transação irreversível não é exercitada como validação.
 
-O runtime dos testes usa compatibilidade `2026-08-08`, suportada pelo workerd local instalado; a publicação usa `2026-10-07`. Na verificação de 07/10, passaram 65 testes Node e 10 testes Worker. Dois casos temporizados ficaram sem validação conclusiva no ambiente: um prazo de 40 ms encerrou antes da aquisição do navegador; outro recebeu alarmes automáticos extras porque a data simulada já estava no passado do relógio do runtime. A leitura autenticada do catálogo, a recuperação SSO e o OCR de uma arte pública foram comprovados no Worker publicado, sem resgate nem publicação ntfy de teste.
+O runtime dos testes usa compatibilidade `2026-08-08`, suportada pelo workerd local instalado; a publicação usa `2026-10-07`. O teste de três falhas transitórias pode receber alarmes automáticos extras se a data simulada já estiver no passado do relógio do runtime; nesse caso, a contagem exata de invocações manuais fica sem validação conclusiva. A leitura autenticada do catálogo e a recuperação SSO foram comprovadas no Worker publicado, sem resgate nem publicação ntfy de teste.

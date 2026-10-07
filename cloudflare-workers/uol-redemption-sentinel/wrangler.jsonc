@@ -5,7 +5,6 @@
   "compatibility_date": "2026-10-07",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
-  "browser": { "binding": "BROWSER" },
   "version_metadata": { "binding": "WORKER_VERSION" },
   "observability": {
     "enabled": true,
