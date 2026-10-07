@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "uol-redemption-sentinel-test",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-08-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "REDEMPTION_ENABLED": "true",
+    "POLL_INTERVAL_MS": "30000",
+    "ADMIN_TOKEN": "vitest-admin-token-not-a-secret",
+    "ACCOUNTS_JSON": "{\"leo\":{\"enabled\":true,\"login\":\"leo@example.test\",\"expectedName\":\"LEONARDO\",\"label\":\"Leo test\"}}",
+    "SESSION_KEY": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    "NTFY_TOPIC_URL": "https://ntfy.sh/vitest-sentinel-no-real-delivery"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "ACCOUNTS", "class_name": "RedemptionAccount" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RedemptionAccount"] }]
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "uol-redemption-sentinel",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "browser": { "binding": "BROWSER" },
+  "version_metadata": { "binding": "WORKER_VERSION" },
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "invocation_logs": false, "head_sampling_rate": 1 },
+    // OAuth redirects contain authorization codes. Never capture automatic URL traces.
+    "traces": { "enabled": false }
+  },
+  "vars": { "REDEMPTION_ENABLED": "true", "POLL_INTERVAL_MS": "30000" },
+  "secrets": { "required": ["ADMIN_TOKEN", "ACCOUNTS_JSON", "SESSION_KEY", "NTFY_TOPIC_URL"] },
+  "durable_objects": { "bindings": [{ "name": "ACCOUNTS", "class_name": "RedemptionAccount" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RedemptionAccount"] }]
+}

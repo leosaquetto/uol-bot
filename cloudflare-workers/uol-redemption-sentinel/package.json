@@ -1,0 +1,19 @@
+{
+  "name": "uol-redemption-sentinel",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:worker": "vitest run --config vitest.config.js",
+    "check:bundle": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy",
+    "admin": "node scripts/manage.mjs"
+  },
+  "dependencies": { "@cloudflare/playwright": "1.3.6" },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.20.1",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.118.0"
+  }
+}
