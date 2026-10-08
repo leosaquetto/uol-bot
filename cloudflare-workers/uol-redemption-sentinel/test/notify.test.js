@@ -35,7 +35,7 @@ test('ntfy JSON publication uses configured topic and accepts only valid receipt
       calls += 1;
       assert.equal(url, 'https://ntfy.sh');
       assert.equal(init.method, 'POST');
-      assert.equal(init.redirect, 'error');
+      assert.equal(init.redirect, 'manual');
       assert.equal(init.headers.Authorization, 'Bearer test-access-token');
       const body = JSON.parse(init.body);
       assert.equal(body.topic, 'test-topic-not-real');
@@ -57,11 +57,17 @@ test('wrong topic, malformed receipts, HTTP failure, and network errors do not c
     () => receipt({ time: 0 }),
     () => new Response('OK', { status: 200 }),
     () => new Response('secret-error-body', { status: 429 }),
+    () => new Response('', { status: 302, headers: { Location: 'https://untrusted.invalid/' } }),
     () => { throw new Error('SESS=private-cookie'); },
   ];
   for (const response of responses) {
     const result = await sendNtfy(success(), { topicUrl, fetchImpl: async () => response() });
     assert.equal(result.ok, false);
+    if (result.reason === 'ntfy_http_error') assert.ok([302,429].includes(result.httpStatus));
+    if (result.reason === 'ntfy_delivery_failed') {
+      assert.ok(['network_or_response_error','invalid_json'].includes(result.causeCode));
+      assert.ok(['fetch','receipt'].includes(result.stage));
+    }
     assert.ok(!JSON.stringify(result).includes('secret-error-body'));
     assert.ok(!JSON.stringify(result).includes('private-cookie'));
   }

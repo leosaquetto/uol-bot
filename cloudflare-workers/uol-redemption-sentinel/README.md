@@ -103,6 +103,8 @@ A URL do tópico ntfy fica na configuração privada. O remetente usa JSON em `h
 
 Avisos são deduplicados pela outbox. Erros têm backoff persistente entre 1 e 15 minutos. Se o serviço aceitar a publicação e a resposta se perder, o retry pode duplicar o aviso; a trava de resgate continua intacta. Aceite pelo ntfy não comprova recebimento físico no telefone.
 
+O status privado inclui `notificationLastResult` com data, resultado, código HTTP e causa sanitizada da última entrega. O comando `retry-notifications` antecipa uma tentativa dos avisos já pendentes; não consulta o UOL nem repete resgate. Usa os mesmos parâmetros `--account` e `--token-file` dos demais comandos.
+
 ## Verificação
 
 ```sh

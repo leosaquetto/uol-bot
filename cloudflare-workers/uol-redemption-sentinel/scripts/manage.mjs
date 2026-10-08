@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DEFAULT_BASE_URL = 'https://uol-redemption-sentinel.leosaquetto.workers.dev';
-const COMMANDS = new Set(['status', 'bootstrap', 'probe', 'activate', 'pause']);
+const COMMANDS = new Set(['status', 'bootstrap', 'probe', 'activate', 'pause', 'retry-notifications']);
 const OMIT_KEYS = /password|senha|secret|token|cookie|^session$|sessionjar|sessiondata|login|email|headers|^identity$|^body$|html|voucher|baseline/i;
 
 function privateFile(path) {

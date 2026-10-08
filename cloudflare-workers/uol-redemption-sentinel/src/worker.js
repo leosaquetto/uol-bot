@@ -130,7 +130,8 @@ export class RedemptionAccount extends DurableObject {
       lastProbeAt:cfg.lastProbeAt||null,lastProbeResult:cfg.lastProbeResult||null,
       catalogCount:cfg.catalogCount??null,matchingCandidates:cfg.matchingCandidates??null,
       quotaMonth:cfg.quotaAttestedMonth,monthlyAttempt:attempt?{status:attempt.status,createdAt:attempt.createdAt}:null,
-      nextAlarmAt:await this.ctx.storage.getAlarm(),notificationPending:this.ledger.nextNotificationAt()!==null};
+      nextAlarmAt:await this.ctx.storage.getAlarm(),notificationPending:this.ledger.nextNotificationAt()!==null,
+      notificationLastResult:this.ledger.getState('notification-last-result')};
   }
   block(cfg,campaign,code) {
     if(this.ledger.getState('config')?.mode==='paused')return;
@@ -241,12 +242,25 @@ export class RedemptionAccount extends DurableObject {
       this.persistConfig(cfg);
     }
   }
-  async drainNotifications() {
-    for(const entry of this.ledger.pendingNotifications(Date.now(),5)){
+  async drainNotifications(retryPending=false) {
+    for(const entry of this.ledger.pendingNotifications(Date.now()+(retryPending?15*60_000:0),5)){
       const delivered=await sendNtfy(entry.payload,{topicUrl:this.env.NTFY_TOPIC_URL});
+      this.ledger.setState('notification-last-result',{at:Date.now(),ok:delivered.ok,
+        ...(delivered.reason?{reason:delivered.reason}:{}),
+        ...(delivered.httpStatus?{httpStatus:delivered.httpStatus}:{}),
+        ...(delivered.stage?{stage:delivered.stage}:{}),
+        ...(delivered.causeCode?{causeCode:delivered.causeCode}:{})});
       if(delivered.ok)this.ledger.markNotificationSent(entry.key,Date.now());
       else this.ledger.failNotification(entry.key,Date.now());
     }
+  }
+  async retryNotifications() {
+    return this.exclusive(async()=>{
+      if(!this.ledger.getState('config'))throw Error('not_configured');
+      await this.drainNotifications(true);
+      await this.schedule();
+      return this.status();
+    });
   }
   async alarm() {
     if(this.busy){await this.ctx.storage.setAlarm(Date.now()+30_000);return;}
@@ -302,7 +316,7 @@ export default {
     const u=new URL(req.url);
     if(u.pathname==='/health'&&req.method==='GET')return response({status:'Ready',service:'uol-redemption-sentinel',version:env.WORKER_VERSION?.id||'local'});
     if(!await matchesToken(req.headers.get('Authorization')?.replace(/^Bearer /,''),env.ADMIN_TOKEN))return response({error:'unauthorized'},401);
-    const match=/^\/admin\/accounts\/([a-z][a-z0-9_-]{0,39})\/(status|bootstrap|probe|activate|pause)$/.exec(u.pathname);
+    const match=/^\/admin\/accounts\/([a-z][a-z0-9_-]{0,39})\/(status|bootstrap|probe|activate|pause|retry-notifications)$/.exec(u.pathname);
     if(!match||u.search)return response({error:'not_found'},404);
     const [,accountId,action]=match;
     if(req.method!==(action==='status'?'GET':'POST'))return response({error:'method_not_allowed'},405);
@@ -312,6 +326,7 @@ export default {
       const stub=env.ACCOUNTS.getByName(await digest(normalizeLogin(cred.quotaOwnerKey||cred.login)));
       if(action==='status')return response(await stub.status());
       if(action==='probe')return response(await stub.probe());
+      if(action==='retry-notifications')return response(await stub.retryNotifications());
       if(action==='pause')return response(await stub.pause());
       if(Number(req.headers.get('content-length')||0)>64_000)return response({error:'body_too_large'},413);
       const text=await req.text();if(text.length>64_000)return response({error:'body_too_large'},413);

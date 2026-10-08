@@ -125,7 +125,8 @@ describe('sentinel safety in the Workers Durable Object runtime', () => {
   it('one active alarm reserves once, redeems once and notifies only after a new voucher', async () => {
     const stub = await active('confirmed-redemption');
     expect(await runInDurableObject(stub, instance => instance.alarm())).toBeUndefined();
-    expect(await stub.status()).toMatchObject({ mode: 'confirmed', monthlyAttempt: { status: 'confirmed' }, notificationPending: false, nextAlarmAt: null });
+    expect(await stub.status()).toMatchObject({ mode: 'confirmed', monthlyAttempt: { status: 'confirmed' }, notificationPending: false, nextAlarmAt: null,
+      notificationLastResult: { ok: true } });
     expect(redemptions()).toHaveLength(1);
     expect(redemptions()[0].method).toBe('GET');
     expect(notifications()).toHaveLength(1);
@@ -162,6 +163,26 @@ describe('sentinel safety in the Workers Durable Object runtime', () => {
     expect((await stub.status()).mode).toBe('confirmed');
     expect(redemptions()).toHaveLength(1);
     expect(notifications()).toHaveLength(1);
+  });
+
+  it('notification retry records safe diagnostics and never repeats UOL requests', async () => {
+    const stub = await active('notification-retry');
+    const original = network.getMockImplementation();
+    let failNotification = true;
+    network.mockImplementation(async (...args) => {
+      if (new URL(args[0]).origin === 'https://ntfy.sh' && failNotification) return new Response('private upstream response', { status: 403 });
+      return original(...args);
+    });
+    await runInDurableObject(stub, instance => instance.alarm());
+    expect(await stub.status()).toMatchObject({ mode: 'confirmed', notificationPending: true,
+      notificationLastResult: { ok: false, reason: 'ntfy_http_error', httpStatus: 403 } });
+    const uolRequests = calls.filter(call => new URL(call.url).origin === CLUB).length;
+    failNotification = false;
+    expect(await stub.retryNotifications()).toMatchObject({ mode: 'confirmed', notificationPending: false,
+      notificationLastResult: { ok: true } });
+    expect(calls.filter(call => new URL(call.url).origin === CLUB)).toHaveLength(uolRequests);
+    expect(redemptions()).toHaveLength(1);
+    expect(JSON.stringify(await stub.status())).not.toContain('private upstream response');
   });
 
   it('pause deletes the alarm and prevents further requests', async () => {

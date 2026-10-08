@@ -65,6 +65,8 @@ export function buildBlockedMessage({ accountLabel, campaign, code, reason }) {
 }
 
 export async function sendNtfy(payload, { topicUrl, fetchImpl = globalThis.fetch, token } = {}) {
+  let stage = 'config';
+  let httpStatus;
   try {
     const url = new URL(topicUrl);
     if (url.origin !== 'https://ntfy.sh' || url.username || url.password || url.search || url.hash || !/^\/[A-Za-z0-9_-]{1,64}$/.test(url.pathname)) {
@@ -80,20 +82,26 @@ export async function sendNtfy(payload, { topicUrl, fetchImpl = globalThis.fetch
       tags: Array.isArray(payload.tags) ? payload.tags.filter((tag) => typeof tag === 'string') : [],
       click: HISTORY_URL,
     };
-    const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+    const headers = { 'Content-Type': 'application/json', Accept: 'application/json', 'User-Agent': 'uol-redemption-sentinel/1.0' };
     if (token) headers.Authorization = `Bearer ${token}`;
+    stage = 'fetch';
     const response = await fetchImpl('https://ntfy.sh', {
-      method: 'POST', headers, body: JSON.stringify(body), redirect: 'error', signal: AbortSignal.timeout(10_000),
+      method: 'POST', headers, body: JSON.stringify(body), redirect: 'manual', signal: AbortSignal.timeout(10_000),
     });
-    if (!response.ok) return { ok: false, reason: 'ntfy_http_error' };
+    httpStatus = response.status;
+    if (!response.ok) return { ok: false, reason: 'ntfy_http_error', httpStatus: response.status };
+    stage = 'receipt';
     const receipt = await response.json();
     if (typeof receipt?.id !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(receipt.id)
       || !Number.isSafeInteger(receipt.time) || receipt.time <= 0
       || receipt.topic !== topic || receipt.event !== 'message') {
-      return { ok: false, reason: 'ntfy_invalid_receipt' };
+      return { ok: false, reason: 'ntfy_invalid_receipt', httpStatus: response.status };
     }
     return { ok: true, id: receipt.id, time: receipt.time };
-  } catch {
-    return { ok: false, reason: 'ntfy_delivery_failed' };
+  } catch (error) {
+    return { ok: false, reason: 'ntfy_delivery_failed', stage, ...(httpStatus?{httpStatus}:{}),
+      causeCode: error?.name === 'AbortError' || error?.name === 'TimeoutError' ? 'timeout'
+        : error?.name === 'SyntaxError' ? 'invalid_json'
+        : /illegal invocation/i.test(error?.message || '') ? 'illegal_invocation' : 'network_or_response_error' };
   }
 }
