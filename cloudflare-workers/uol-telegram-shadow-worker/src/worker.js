@@ -48,6 +48,9 @@ import {
   ticketApiConfiguration,
 } from "./uol-api.js";
 import { authorizationExpiresAt } from "./uol-auth.js";
+import { buildTicketCodeCandidates, fetchTicketCodeOffer } from "./ticket-code-discovery.js";
+import { planTicketCodeScan, recordTicketCodeResults, protectedTicketCodeIds,
+  TICKET_CODE_DAILY_REQUEST_LIMIT } from "./ticket-code-policy.js";
 import {
   editMainOfferMedia,
   editSoldOutMessage,
@@ -2331,6 +2334,66 @@ export class UolTelegramShadow extends DurableObject {
 
   async fetchAllApi() {
     return fetchOffersFromApi(this.env, fetch);
+  }
+
+  fetchTicketCode(code) {
+    return fetchTicketCodeOffer(code);
+  }
+
+  scheduleTicketCodeDiscovery() {
+    if (this.env.TICKET_CODE_DISCOVERY_ENABLED !== "true" ||
+        !this.storageUsageSnapshot().maintenanceAllowed || !this.metadataValue("initialized_at")) return;
+    if (this.ticketCodeDiscoveryInFlight) return this.ticketCodeDiscoveryInFlight;
+    const previous = this.runtimeSnapshot("ticket_code_discovery");
+    const anchors = [...(this.runtimeSnapshot("api").codeAnchors || []),
+      ...(this.runtimeSnapshot("ticket_listing").cards || [])];
+    const plan = planTicketCodeScan(previous, buildTicketCodeCandidates(anchors), Date.now());
+    if (!plan) return;
+    const task = this.storageContext.run(undefined, () => this.withStorageCycle("recovery", async () => {
+      // Persist allowance and retry deadline before starting any network I/O.
+      this.setRuntimeSnapshot("ticket_code_discovery", plan.state);
+      const results = await runBounded(plan.selected, 2, async code => {
+        try { return await this.fetchTicketCode(code); }
+        catch { return { status: "unknown", reason: "fetch_failed", requests: 2 }; }
+      });
+      const completedAt = Date.now();
+      const snapshot = recordTicketCodeResults(plan.state, plan.selected, results, completedAt);
+      this.setRuntimeSnapshot("ticket_code_discovery", snapshot);
+      // Keep verified cards durable until existing enrichment/delivery queues
+      // have accepted them, including recovery after a process restart.
+      const cards = Object.values(snapshot.entries).filter(entry => entry.card && entry.status === "found" &&
+        (!entry.resolvedId || (entry.status === "found" && entry.checkedAt === completedAt)))
+        .map(entry => entry.card);
+      let inserted = 0;
+      if (cards.length) {
+        const present = new Set(cards.flatMap(card => offerIdentityKeys(card.link)));
+        const resolution = this.resolveListingCards(cards, new Date().toISOString(), "pending_enrichment", {
+          availabilityIdentityKeys: present, restockIdentityKeys: present,
+        });
+        inserted = resolution.inserted;
+        for (const entry of Object.values(snapshot.entries)) {
+          if (entry.card) entry.resolvedId = resolution.cards.find(card =>
+            card.link === entry.card.link)?.id || entry.resolvedId || "";
+        }
+        this.setRuntimeSnapshot("ticket_code_discovery", snapshot);
+        const cardsById = new Map(resolution.cards.map(card => [card.id, card]));
+        await this.processPending(cardsById, new Date(), { priorityIds: resolution.insertedIds });
+        const delivered = await this.withStorageStage("delivery", () => this.processDeliveryQueue(new Date(), {
+          priorityIds: resolution.insertedIds, waitForMainImage: true, targetNames: ["main", "canal2"],
+        }));
+        this.scheduleDiscordDelivery({ rows: delivered.selectedRows,
+          recoveryRows: delivered.recentSecondaryRows, source: "ticket-code-discovery" });
+        this.scheduleCriticalBeeperDelivery("ticket-code-discovery");
+      }
+      logEvent("info", "uol_ticket_code_discovery", { attempted: snapshot.attempted,
+        found: snapshot.found, newOffers: inserted, requestsUsed: snapshot.requestsUsed,
+        error: snapshot.lastError });
+    })).catch(() => {
+      logEvent("warn", "uol_ticket_code_discovery_failed", { error: "discovery_processing_failed" });
+    }).finally(() => { this.ticketCodeDiscoveryInFlight = null; });
+    this.ticketCodeDiscoveryInFlight = task;
+    this.ctx.waitUntil(task);
+    return task;
   }
 
   scheduleMainSourceRecovery() {
@@ -5916,6 +5979,10 @@ export class UolTelegramShadow extends DurableObject {
       : this.freshTicketListingCards(now, 45);
 
     for (const row of rows) {
+      if (protectedTicketCodeIds(this.runtimeSnapshot("ticket_code_discovery"), now.getTime()).includes(row.id)) {
+        this.clearTicketAbsenceProbe(row.id);
+        continue;
+      }
       if (Number(this.storageUsage.ticketProbeCount || 0) >= dailyLimit) break;
       const rowIdentityKeys = new Set(offerIdentityKeys(row.link));
       const control = activeControlCards.find((card) =>
@@ -5931,6 +5998,10 @@ export class UolTelegramShadow extends DurableObject {
       this.storageUsage.ticketProbeCount = usedBefore + Number(probe.requests || 1);
       result.probed += 1;
       if (probe.controlProbed) result.controlProbed += 1;
+      if (protectedTicketCodeIds(this.runtimeSnapshot("ticket_code_discovery"), Date.now()).includes(row.id)) {
+        this.clearTicketAbsenceProbe(row.id);
+        continue;
+      }
 
       const attempts = Number(row.ticket_probe_attempts || 0) + 1;
       const state = nextTicketProbeState({
@@ -6589,6 +6660,9 @@ export class UolTelegramShadow extends DurableObject {
           discoverySnapshotChanged,
           discoverySnapshotFingerprint,
           healthCards: apiHealthCards,
+          // Unlike the health snapshot, keep publication order for bounded
+          // nearby-code discovery. Never infer recency from title sorting.
+          codeAnchors: apiCards.length ? apiCards.slice(0, 50).map(card => ({ link: card.link })) : [],
           runFailureStreak,
         };
         const ticketListingSnapshot = {
@@ -6974,6 +7048,9 @@ export class UolTelegramShadow extends DurableObject {
                   ))
                   .map((card) => card.id),
               );
+              for (const id of protectedTicketCodeIds(this.runtimeSnapshot("ticket_code_discovery"), now.getTime())) {
+                ticketResolvedIds.add(id);
+              }
               result.soldOutDetected += this.evaluateSoldOut(ticketResolvedIds, now, "ticket");
             }
           }
@@ -7177,6 +7254,7 @@ export class UolTelegramShadow extends DurableObject {
     // WhatsApp é uma entrega crítica, mas permanece fora do tempo de resposta
     // do polling. O waitUntil mantém a tentativa viva sem atrasar a coleta.
     this.scheduleCriticalBeeperDelivery("alarm");
+    this.scheduleTicketCodeDiscovery();
     try {
       // The former coordinator waited for this RPC and doubled billed DO wall time.
       // The method coalesces these checks to the configured 60-second cadence.
@@ -7786,6 +7864,13 @@ export class UolTelegramShadow extends DurableObject {
           nonTicket: beeperQueue.nonTicket,
           truncated: beeperQueue.truncated,
         },
+      },
+      ticketCodeDiscovery: {
+        enabled: this.env.TICKET_CODE_DISCOVERY_ENABLED === "true",
+        lastCheckedAt: this.runtimeSnapshot("ticket_code_discovery").lastCheckedAt || "",
+        lastError: this.runtimeSnapshot("ticket_code_discovery").lastError || "",
+        requestsUsed: Number(this.runtimeSnapshot("ticket_code_discovery").requestsUsed || 0),
+        dailyRequestLimit: TICKET_CODE_DAILY_REQUEST_LIMIT,
       },
       ticketApi: {
         ...ticketApiConfiguration(this.env),

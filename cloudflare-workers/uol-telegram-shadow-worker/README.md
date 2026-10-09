@@ -334,3 +334,34 @@ npm run check:ci
 npx wrangler secret list
 npm run release
 ```
+# Descoberta de ingressos fora da listagem
+
+`TICKET_CODE_DISCOVERY_ENABLED=true` habilita uma fonte pública adicional. Usa
+lacunas e até dois códigos vizinhos dos dois prefixos recentes corroborados por
+links da API/listagem. Preserva maiúsculas/minúsculas; não adivinha pontos ou a
+ordem entre alfabetos. Por exemplo, `pPP` e `pPT` permitem procurar `pPQ`, `pPR`
+e `pPS`. A página curta precisa revelar um alias completo; ambos são verificados
+antes da oferta entrar na deduplicação e nas filas existentes.
+
+Limites: quatro códigos por minuto, duas conexões simultâneas, até dois GETs por
+código, 6.000 GETs/dia UTC, 64 candidatos e 96 registros no estado persistente.
+Respostas negativas ficam elegíveis a nova consulta após dez minutos; páginas
+encontradas, após cinco. A fila e o teto diário podem ampliar esses prazos.
+Falhas/challenges/429 pausam a fonte por cinco minutos. O orçamento é
+reservado antes da rede e sobrevive a reinícios. Também respeita a proteção de
+cota de armazenamento já existente. Não cria Cron, OCR, browser ou sessão UOL.
+
+Só lê páginas públicas; não segue redirects nem visita o botão de resgate.
+Ausência na listagem não marca estas ofertas como esgotadas: exige duas ausências
+na consulta direta, espaçadas. Login/challenge/timeout significam desconhecido.
+A disponibilidade de resgate para uma conta não é comprovada pela página pública.
+
+É uma cobertura adicional limitada, não um índice completo de ofertas ocultas.
+Códigos distantes da janela, prefixos sem duas referências e páginas retiradas
+antes da consulta podem não ser encontrados. `/health` inclui `ticketCodeDiscovery`
+e os logs `uol_ticket_code_discovery` mostram tentativas, descobertas e orçamento.
+O resgate automático continua separado deste monitor.
+
+Validação pública em 09/10/2026: partindo apenas dos links da listagem, o primeiro
+lote gerou `pPQ`, `pPR`, `pPS` e `pPV`; confirmou a oferta `pPS` (13/10 Nubank
+Parque SP) pelas páginas curta e completa. Nenhum botão de resgate foi visitado.

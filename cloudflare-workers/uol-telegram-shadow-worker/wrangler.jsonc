@@ -49,6 +49,7 @@
     "TICKET_SOLD_OUT_PROBE_DAILY_LIMIT": "256",
     "TICKET_SOLD_OUT_PROBES_PER_SCAN": "1",
     "TICKET_SOLD_OUT_PROBE_MAX_ATTEMPTS": "2",
+    "TICKET_CODE_DISCOVERY_ENABLED": "true",
     "PUBLIC_BASE_URL": "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev"
   },
   "secrets": {
