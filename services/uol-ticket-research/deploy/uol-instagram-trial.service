@@ -1,0 +1,26 @@
+[Unit]
+Description=Read-only Clube UOL Instagram stability trial (72 hours)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=uol-instagram-trial
+Group=uol-instagram-trial
+WorkingDirectory=/opt/uol-instagram-trial
+ExecStart=/usr/bin/python3 -B trial.py --data-dir /var/lib/uol-instagram-trial --session-file /var/lib/uol-instagram-trial/session.json
+Restart=on-failure
+RestartSec=120
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/uol-instagram-trial
+MemoryHigh=48M
+MemoryMax=64M
+TasksMax=8
+LimitCORE=0
+
+[Install]
+WantedBy=multi-user.target
