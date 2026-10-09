@@ -2,6 +2,8 @@
 
 Coletor local de páginas e catálogos públicos do Clube UOL. Usa Python 3.9+ e biblioteca padrão. Não faz login, resgate, OCR ou envio de notificações. A sentinel de resgate permanece pausada; este script não altera sua configuração.
 
+O [estudo de Stories do Instagram](INSTAGRAM-STORIES.md) documenta a extração já comprovada e o que falta validar para operação rápida em servidor. O acompanhamento Instagram não está implementado nem ativado.
+
 Na raiz do repositório:
 
 ```sh
