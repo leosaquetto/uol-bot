@@ -1,5 +1,5 @@
 import { telegramCall, forwardToCanal2, telegramConfiguration, sendOperationsAlert } from "./telegram.js";
-import { sendDiscordOffer, getDiscordMessageImageProxy, discordConfiguration } from "./discord.js";
+import { getDiscordMessageImageProxy, discordConfiguration } from "./discord.js";
 import { sendBeeperOffer, beeperGatewayConfiguration, beeperDestinationKey } from "./beeper.js";
 import { deliveryRetryAt } from "./delivery-state.js";
 import { createAmbiguousResponseTransportError } from "./transport-error.js";
@@ -178,7 +178,83 @@ function receipt(row) {
   };
 }
 
-function defaultTransports(env) {
+export async function uploadInstagramDiscordPhoto(env, story, messageId = "", {
+  fetchImpl = fetch, stillLive = () => true,
+} = {}) {
+  const imageUrl = validateInstagramImageUrl(story.image_url);
+  const mediaError = code => Object.assign(new Error(code), { beforeMutation: true, retryable: true });
+  let image;
+  try {
+    image = await fetchImpl(imageUrl, { headers: { Accept: "image/jpeg,image/webp" },
+      redirect: "error", signal: AbortSignal.timeout(10_000) });
+  } catch { throw mediaError("instagram_media_fetch_failed"); }
+  if (!image.ok) throw mediaError("instagram_media_fetch_failed");
+  const mime = String(image.headers.get("Content-Type") || "").split(";")[0].toLowerCase();
+  if (!["image/jpeg", "image/webp"].includes(mime) ||
+      Number(image.headers.get("Content-Length") || 0) > 5 * 1024 * 1024 || !image.body) {
+    throw mediaError("instagram_media_invalid");
+  }
+  const reader = image.body.getReader();
+  const chunks = [];
+  let length = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      length += value.byteLength;
+      if (length > 5 * 1024 * 1024) {
+        await reader.cancel();
+        throw mediaError("instagram_media_limit");
+      }
+      chunks.push(value);
+    }
+  } catch { throw mediaError("instagram_media_read_failed"); }
+  finally { reader.releaseLock(); }
+  const bytes = new Uint8Array(length);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
+  const webp = new TextDecoder().decode(bytes.slice(0, 4)) === "RIFF" &&
+    new TextDecoder().decode(bytes.slice(8, 12)) === "WEBP";
+  if (!length || !(mime === "image/jpeg" ? jpeg : webp)) throw mediaError("instagram_media_invalid");
+  if (!stillLive()) throw mediaError("instagram_bot_not_live");
+  const filename = mime === "image/jpeg" ? "story.jpg" : "story.webp";
+  const form = new FormData();
+  form.set("payload_json", JSON.stringify({
+    ...(!messageId ? { username: "Clube UOL" } : {}), content: `🎟️ Story do @clubeuol\n${story.link}`,
+    embeds: [{ title: "🎟️ Story do @clubeuol", url: story.link,
+      description: "Publicado no Instagram do @clubeuol.", image: { url: `attachment://${filename}` } }],
+    attachments: [{ id: 0, filename }], allowed_mentions: { parse: [] },
+  }));
+  form.set("files[0]", new Blob([bytes], { type: mime }), filename);
+  const url = new URL(String(env.DISCORD_WEBHOOK_URL || ""));
+  if (messageId) {
+    if (!/^\d{10,24}$/.test(String(messageId))) throw new Error("instagram_message_id_invalid");
+    url.pathname = `${url.pathname.replace(/\/$/, "")}/messages/${messageId}`;
+  }
+  url.searchParams.set("wait", "true");
+  let response;
+  try {
+    response = await fetchImpl(url.href, { method: messageId ? "PATCH" : "POST", body: form,
+      signal: AbortSignal.timeout(10_000) });
+  } catch {
+    throw createAmbiguousResponseTransportError({ transport: "discord", operation: "storyPhoto" });
+  }
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw Object.assign(new Error("instagram_discord_upload_rejected"), {
+      httpStatus: response.status, ambiguous: response.status >= 500,
+      retryAfterSeconds: Number(payload?.retry_after || response.headers.get("Retry-After") || 0),
+    });
+  }
+  if (!payload.id || messageId && String(payload.id) !== String(messageId)) {
+    throw createAmbiguousResponseTransportError({ transport: "discord", operation: "storyPhoto" });
+  }
+  return { messageId: String(payload.id), imageProxyUrl: String(payload?.embeds?.[0]?.image?.proxy_url ||
+    payload?.attachments?.[0]?.proxy_url || payload?.attachments?.[0]?.url || "") };
+}
+
+function defaultTransports(env, { stillLive, reserveRepair }) {
   return {
     async main(story) {
       const result = await telegramCall(env, "sendPhoto", {
@@ -200,13 +276,14 @@ function defaultTransports(env) {
       return { messageId: String(result.messageId) };
     },
     async discord(story) {
-      return sendDiscordOffer(env, {
-        title: "🎟️ Story do @clubeuol", link: story.link,
-        imageUrl: story.image_url, category: "Campanhas de ingressos",
-      });
+      return uploadInstagramDiscordPhoto(env, story, "", { stillLive });
     },
     async discordProxy(story, targets) {
-      return getDiscordMessageImageProxy(env, targets.discord.messageId);
+      let proxy = "";
+      try { proxy = await getDiscordMessageImageProxy(env, targets.discord.messageId); } catch { /* Try only a bounded repair of this exact message. */ }
+      if (proxy || !stillLive() || !reserveRepair(story, targets)) return proxy;
+      // Repair an existing message only. Replacing its attachment cannot post a second message.
+      return (await uploadInstagramDiscordPhoto(env, story, targets.discord.messageId, { stillLive })).imageProxyUrl;
     },
     async beeper(story) {
       const frozen = JSON.parse(story.beeper_payload_json);
@@ -220,12 +297,21 @@ export class InstagramStoryInbox {
   constructor(sql, env, { transports, now = () => new Date(), readiness, mode, notifyOperations } = {}) {
     this.sql = sql;
     this.env = env;
-    this.transports = transports || defaultTransports(env);
     this.now = now;
     this.readiness = readiness;
     this.mode = mode || (() => String(env.DELIVERY_MODE || "shadow").trim().toLowerCase());
     this.notifyOperations = notifyOperations || (String(env.OPS_TELEGRAM_CHAT_ID || "").trim()
       ? text => sendOperationsAlert(env, text) : null);
+    this.transports = transports || defaultTransports(env, {
+      stillLive: () => this.mode() === "live",
+      reserveRepair: (row, targets) => {
+        const count = Number(targets.discord.mediaRepairAttempts || 0);
+        if (count >= 2) return false;
+        targets.discord.mediaRepairAttempts = count + 1;
+        this.save(row, targets, this.now());
+        return true;
+      },
+    });
     this.active = new Set();
   }
 
@@ -454,7 +540,7 @@ export class InstagramStoryInbox {
         } catch (error) {
           const status = Number(error?.httpStatus || error?.status || 0);
           // Only an explicit upstream rejection is safe to retry. Network/5xx can hide acceptance.
-          const safe = error?.ambiguous !== true && status >= 400 && status < 500;
+          const safe = error?.beforeMutation === true || error?.ambiguous !== true && status >= 400 && status < 500;
           const retryable = safe && (status === 429 || error?.retryable === true);
           const reconcile = target === "beeper" && row.beeper_payload_json &&
             (status === 0 || status === 503 || status === 429 ||

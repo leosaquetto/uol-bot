@@ -19,6 +19,8 @@ Plano autorizado em 09/10/2026: instalar o coletor no Oracle existente, integrar
 
 Não há novo destino, token de canais no coletor ou conta WhatsApp adicional. O Worker usa seus segredos e destinos existentes. A imagem do Discord fornece o proxy permitido pelo gateway WhatsApp; os bytes da foto são preservados. As ofertas normais continuam usando o formato anterior de cartão.
 
+O Discord recebe a foto por upload de bytes, com tamanho limitado a 5 MiB, em vez de depender de buscar a URL assinada do Instagram. Uma mensagem já publicada sem mídia pode ter sua foto reparada por PATCH no mesmo ID, até duas tentativas, sem criar outra mensagem.
+
 Forwards automáticos de Stories no grupo de comentários do Telegram são separados das ofertas normais. Isso impede que o Story confirme uma oferta ambígua ou receba edição de esgotamento/comentários destinados à oferta original.
 
 ## Limites, sessão e recuperação

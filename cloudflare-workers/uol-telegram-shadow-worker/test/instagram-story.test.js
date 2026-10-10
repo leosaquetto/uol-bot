@@ -9,6 +9,7 @@ import {
   readInstagramStoryJson,
   validateInstagramCampaignLink,
   validateInstagramImageUrl,
+  uploadInstagramDiscordPhoto,
 } from "../src/instagram-story.js";
 
 const NOW = new Date("2026-10-09T20:00:00Z");
@@ -361,4 +362,42 @@ test("operational auth failures and recovery are visible without media or public
   assert.equal(messages.length, 2);
   assert.equal(sample.inbox.monitorStatus().healthy, true);
   assert.equal(sample.calls.length, 0);
+});
+
+test("Discord uploads exact Story bytes and repairs the existing message by PATCH", async () => {
+  const bytes = new Uint8Array([255,216,255,224,0,1]);
+  const calls = [];
+  const send = async (url, init) => {
+    calls.push({ url, init });
+    if (calls.length === 1) return new Response(bytes, { headers: { "Content-Type": "image/jpeg" } });
+    const uploaded = init.body.get("files[0]");
+    assert.deepEqual(new Uint8Array(await uploaded.arrayBuffer()), bytes);
+    const payload = JSON.parse(init.body.get("payload_json"));
+    assert.equal(payload.embeds[0].image.url, "attachment://story.jpg");
+    assert.equal(payload.content, `🎟️ Story do @clubeuol\n${STORY.link}`);
+    assert.deepEqual(payload.attachments, [{ id: 0, filename: "story.jpg" }]);
+    return Response.json({ id: "1558286627955282054", attachments: [{ proxy_url: "https://media.discordapp.net/attachments/story.jpg" }] });
+  };
+  const result = await uploadInstagramDiscordPhoto({ DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/fixture/token" },
+    { image_url: STORY.imageUrl, link: STORY.link }, "1558286627955282054", { fetchImpl: send });
+  assert.equal(calls[0].init.redirect, "error");
+  assert.equal(calls[1].init.method, "PATCH");
+  assert.match(calls[1].url, /\/messages\/1558286627955282054/);
+  assert.equal(result.messageId, "1558286627955282054");
+  assert.equal(result.imageProxyUrl, "https://media.discordapp.net/attachments/story.jpg");
+});
+
+test("media fetch and pause before mutation cannot create an ambiguous Discord post", async () => {
+  const env = { DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/fixture/token" };
+  const story = { image_url: STORY.imageUrl, link: STORY.link };
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls++;
+    return new Response(new Uint8Array([255,216,255,224]), { headers: { "Content-Type": "image/jpeg" } });
+  };
+  await assert.rejects(uploadInstagramDiscordPhoto(env, story, "", { fetchImpl, stillLive: () => false }),
+    error => error.beforeMutation === true);
+  assert.equal(calls, 1);
+  await assert.rejects(uploadInstagramDiscordPhoto(env, story, "", { fetchImpl: async () => { throw new Error("source_unavailable"); } }),
+    error => error.beforeMutation === true && error.retryable === true);
 });
