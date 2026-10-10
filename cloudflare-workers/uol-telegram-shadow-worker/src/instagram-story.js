@@ -5,7 +5,8 @@ import { deliveryRetryAt } from "./delivery-state.js";
 import { createAmbiguousResponseTransportError } from "./transport-error.js";
 
 const TARGETS = ["main", "canal2", "discord", "beeper"];
-const MAX_INPUT_BYTES = 16 * 1024;
+const MAX_INPUT_BYTES = 5 * 1024 * 1024;
+const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
 const DAY_MS = 24 * 60 * 60 * 1_000;
 const MAX_ATTEMPTS = 5;
 const MONITOR_STATUSES = new Set(["starting", "budget_wait", "found", "empty", "auth_required", "rate_limited", "unknown", "stopped"]);
@@ -87,6 +88,16 @@ export function normalizeInstagramStory(payload, now = new Date()) {
       width + height > 10_000 || Math.max(width / height, height / width) > 20) {
     throw inputError("instagram_story_image_dimensions_invalid");
   }
+  let imageBytes;
+  if (payload.imageBase64 !== undefined) {
+    if (typeof payload.imageBase64 !== "string" || payload.imageBase64.length > MAX_PHOTO_BYTES / 3 * 4 ||
+        !/^[A-Za-z0-9+/]+={0,2}$/.test(payload.imageBase64) || !["image/jpeg", "image/webp"].includes(payload.imageMime)) {
+      throw inputError("instagram_image_bytes_invalid");
+    }
+    try { imageBytes = Uint8Array.from(atob(payload.imageBase64), char => char.charCodeAt(0)); }
+    catch { throw inputError("instagram_image_bytes_invalid"); }
+    if (!imageBytes.length || imageBytes.byteLength > MAX_PHOTO_BYTES) throw inputError("instagram_image_bytes_invalid");
+  }
   return {
     storyId,
     link: validateInstagramCampaignLink(payload.link),
@@ -95,6 +106,7 @@ export function normalizeInstagramStory(payload, now = new Date()) {
     imageHeight: height,
     publishedAt: new Date(published).toISOString(),
     expiresAt: new Date(expires).toISOString(),
+    ...(imageBytes ? { imageBytes, imageMime: payload.imageMime } : {}),
   };
 }
 
@@ -183,40 +195,41 @@ export async function uploadInstagramDiscordPhoto(env, story, messageId = "", {
 } = {}) {
   const imageUrl = validateInstagramImageUrl(story.image_url);
   const mediaError = code => Object.assign(new Error(code), { beforeMutation: true, retryable: true });
-  let image;
-  try {
-    image = await fetchImpl(imageUrl, { headers: { Accept: "image/jpeg,image/webp" },
-      redirect: "error", signal: AbortSignal.timeout(10_000) });
-  } catch { throw mediaError("instagram_media_fetch_failed"); }
-  if (!image.ok) throw mediaError("instagram_media_fetch_failed");
-  const mime = String(image.headers.get("Content-Type") || "").split(";")[0].toLowerCase();
-  if (!["image/jpeg", "image/webp"].includes(mime) ||
-      Number(image.headers.get("Content-Length") || 0) > 5 * 1024 * 1024 || !image.body) {
-    throw mediaError("instagram_media_invalid");
-  }
-  const reader = image.body.getReader();
-  const chunks = [];
-  let length = 0;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      length += value.byteLength;
-      if (length > 5 * 1024 * 1024) {
-        await reader.cancel();
-        throw mediaError("instagram_media_limit");
-      }
-      chunks.push(value);
+  let image, mime = story.image_mime, bytes = story.image_bytes;
+  if (!bytes) {
+    try {
+      image = await fetchImpl(imageUrl, { headers: { Accept: "image/jpeg,image/webp" },
+        redirect: "error", signal: AbortSignal.timeout(10_000) });
+    } catch { throw mediaError("instagram_media_fetch_failed"); }
+    if (!image.ok) throw mediaError("instagram_media_fetch_failed");
+    mime = String(image.headers.get("Content-Type") || "").split(";")[0].toLowerCase();
+    if (!["image/jpeg", "image/webp"].includes(mime) ||
+        Number(image.headers.get("Content-Length") || 0) > MAX_PHOTO_BYTES || !image.body) {
+      throw mediaError("instagram_media_invalid");
     }
-  } catch { throw mediaError("instagram_media_read_failed"); }
-  finally { reader.releaseLock(); }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
-  const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
-  const webp = new TextDecoder().decode(bytes.slice(0, 4)) === "RIFF" &&
-    new TextDecoder().decode(bytes.slice(8, 12)) === "WEBP";
-  if (!length || !(mime === "image/jpeg" ? jpeg : webp)) throw mediaError("instagram_media_invalid");
+    const reader = image.body.getReader();
+    const chunks = [];
+    let length = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        length += value.byteLength;
+        if (length > MAX_PHOTO_BYTES) {
+          await reader.cancel();
+          throw mediaError("instagram_media_limit");
+        }
+        chunks.push(value);
+      }
+    } catch { throw mediaError("instagram_media_read_failed"); }
+    finally { reader.releaseLock(); }
+    bytes = new Uint8Array(length);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  }
+  if (!bytes?.length || bytes.byteLength > MAX_PHOTO_BYTES || !["image/jpeg","image/webp"].includes(mime)) throw mediaError("instagram_media_invalid");
+  if (!(mime === "image/jpeg" ? bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255
+    : new TextDecoder().decode(bytes.slice(0,4)) === "RIFF" && new TextDecoder().decode(bytes.slice(8,12)) === "WEBP")) throw mediaError("instagram_media_invalid");
   if (!stillLive()) throw mediaError("instagram_bot_not_live");
   const filename = mime === "image/jpeg" ? "story.jpg" : "story.webp";
   const form = new FormData();
@@ -305,9 +318,10 @@ export class InstagramStoryInbox {
     this.transports = transports || defaultTransports(env, {
       stillLive: () => this.mode() === "live",
       reserveRepair: (row, targets) => {
-        const count = Number(targets.discord.mediaRepairAttempts || 0);
+        const field = row.image_bytes ? "mediaUploadRepairAttempts" : "mediaRepairAttempts";
+        const count = Number(targets.discord[field] || 0);
         if (count >= 2) return false;
-        targets.discord.mediaRepairAttempts = count + 1;
+        targets.discord[field] = count + 1;
         this.save(row, targets, this.now());
         return true;
       },
@@ -446,6 +460,9 @@ export class InstagramStoryInbox {
     row.image_url = story.imageUrl;
     row.image_width = story.imageWidth;
     row.image_height = story.imageHeight;
+    // Binary media is used only for this RPC; it is never put in SQL or returned in receipts.
+    row.image_bytes = story.imageBytes;
+    row.image_mime = story.imageMime;
     this.save(row, targets, now);
     this.active.add(key);
     try {

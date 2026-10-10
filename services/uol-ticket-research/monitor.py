@@ -1,5 +1,6 @@
 """Server-only Instagram complement for the UOL bot; never redeems benefits."""
 import argparse
+import base64
 import datetime as dt
 import fcntl
 import hashlib
@@ -15,13 +16,14 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from instagram import InstagramClient, NoRedirect, SessionError
+from instagram import InstagramClient, NoRedirect, SessionError, safe_media_url
 from trial import atomic_json, timestamp
 
 INGEST_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/ingest-instagram-story'
 HEARTBEAT_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/instagram-monitor-heartbeat'
 MAX_DAILY_REQUESTS = 1440
 PERIOD = 120
+MAX_MEDIA_BYTES = 3 * 1024 * 1024
 
 
 def ticket_link(link):
@@ -58,7 +60,7 @@ def private_config(path):
 def ingest(config, payload):
     """Retry this idempotent intake, never a destination send API."""
     encoded = json.dumps(payload).encode()
-    if len(encoded) > 16384:
+    if len(encoded) > 5 * 1024 * 1024:
         return {'ok': False, 'status': 'held', 'error': 'payload_limit'}
     request = urllib.request.Request(INGEST_URL, data=encoded, method='POST', headers={
         'Authorization': 'Bearer ' + config['ingestToken'], 'Content-Type': 'application/json',
@@ -83,6 +85,27 @@ def ingest(config, payload):
         return {'ok': False, 'status': 'pending', 'error': 'ingest_response_uncertain'}
 
 
+def fetch_media(payload, user_agent):
+    url = safe_media_url(payload.get('imageUrl'))
+    if not url:
+        return None
+    req = urllib.request.Request(url, method='GET', headers={
+        'User-Agent': user_agent, 'Accept': 'image/jpeg,image/webp',
+    })
+    try:
+        with urllib.request.build_opener(NoRedirect()).open(req, timeout=15) as r:
+            mime = r.headers.get('Content-Type', '').split(';')[0].lower()
+            if mime not in ('image/jpeg','image/webp'):
+                return None
+            data = r.read(MAX_MEDIA_BYTES+1)
+            valid = data[:3] == bytes([255,216,255]) if mime == 'image/jpeg' else data[:4] == b'RIFF' and data[8:12] == b'WEBP'
+            if not valid or len(data) > MAX_MEDIA_BYTES:
+                return None
+            return {'imageBase64': base64.b64encode(data).decode('ascii'), 'imageMime': mime}
+    except Exception:
+        return None
+
+
 def heartbeat(config, payload):
     request = urllib.request.Request(HEARTBEAT_URL, data=json.dumps(payload).encode(), method='POST', headers={
         'Authorization': 'Bearer ' + config['ingestToken'], 'Content-Type': 'application/json',
@@ -105,6 +128,7 @@ class Monitor:
             PRAGMA synchronous=FULL;
             CREATE TABLE IF NOT EXISTS state(id INTEGER PRIMARY KEY CHECK(id=1), value TEXT);
             CREATE TABLE IF NOT EXISTS polls(at REAL, reserved INTEGER, result TEXT);
+            CREATE TABLE IF NOT EXISTS media_reads(at REAL);
             CREATE TABLE IF NOT EXISTS outbox(
                 key TEXT PRIMARY KEY, story_id TEXT, expires REAL, payload TEXT,
                 status TEXT, due REAL, attempts INTEGER, receipt TEXT);
@@ -167,6 +191,10 @@ class Monitor:
                                          'pending' if payload['imageUrl'] else 'held', '{}'))
                     elif row[0] not in ('delivered', 'expired'):
                         # Refresh signed URLs without resetting destination receipts.
+                        previous = json.loads(row[1])
+                        for name in ('imageBase64','imageMime'):
+                            if name in previous:
+                                payload[name] = previous[name]
                         self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload), key))
         else:
             s['failures'] += 1
@@ -181,7 +209,7 @@ class Monitor:
         self.db.execute('DELETE FROM outbox WHERE expires<?', (now-30*86400,))
         self.save()
 
-    def flush(self, send=ingest):
+    def flush(self, send=ingest, media_fetch=fetch_media):
         now = self.clock()
         self.db.execute("UPDATE outbox SET status='expired' WHERE expires<=? AND status!='delivered'", (now,))
         self.db.commit()
@@ -191,6 +219,25 @@ class Monitor:
             if not payload.get('imageUrl'):
                 self.db.execute('UPDATE outbox SET status=\'held\',due=? WHERE key=?', (now+PERIOD, key))
                 continue
+            if not payload.get('imageBase64'):
+                reads = self.db.execute('SELECT count(*) FROM media_reads WHERE at>?', (now-86400,)).fetchone()[0]
+                if reads >= 20:
+                    self.db.execute('UPDATE outbox SET due=? WHERE key=?', (now+3600,key))
+                    continue
+                self.db.execute('INSERT INTO media_reads VALUES(?)', (now,))
+                self.db.commit()
+                self.state['mediaRequests'] = self.state.get('mediaRequests', 0)+1
+                # CDN requests carry no Instagram cookies, authorization or password.
+                try:
+                    ua = json.loads((self.directory/'session.json').read_text()).get('user_agent','UOLInstagramMonitor/1.0')
+                except (OSError,ValueError):
+                    ua = 'UOLInstagramMonitor/1.0'
+                media = media_fetch(payload, ua)
+                if not media:
+                    self.db.execute('UPDATE outbox SET due=? WHERE key=?', (now+PERIOD,key))
+                    continue
+                payload.update(media)
+                self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload),key))
             # The Worker intake is idempotent; source crash only repeats intake.
             self.db.execute("UPDATE outbox SET due=?,attempts=attempts+1 WHERE key=?", (now+PERIOD, key))
             self.db.commit()
@@ -204,8 +251,18 @@ class Monitor:
             self.db.execute('UPDATE outbox SET status=?,due=?,receipt=? WHERE key=?',
                             (status, self.clock()+min(3600, PERIOD*2**min(attempts, 5)), json.dumps(receipt), key))
             if status == 'delivered':
+                payload.pop('imageBase64',None)
+                payload.pop('imageMime',None)
+                self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload),key))
                 self.state['lastDelivered'] = {'storyId': payload['storyId'], 'link': payload['link'],
                                                'targets': targets, 'observedAt': timestamp()}
+        self.db.execute('DELETE FROM media_reads WHERE at<?', (now-86400,))
+        # Expired pictures are not kept in the retained metadata history.
+        for key,text in self.db.execute("SELECT key,payload FROM outbox WHERE status='expired'").fetchall():
+            payload = json.loads(text)
+            if 'imageBase64' in payload:
+                payload.pop('imageBase64',None);payload.pop('imageMime',None)
+                self.db.execute('UPDATE outbox SET payload=? WHERE key=?',(json.dumps(payload),key))
         self.save()
 
     def publish_health(self, send=heartbeat):

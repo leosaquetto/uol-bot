@@ -19,7 +19,7 @@ Plano autorizado em 09/10/2026: instalar o coletor no Oracle existente, integrar
 
 Não há novo destino, token de canais no coletor ou conta WhatsApp adicional. O Worker usa seus segredos e destinos existentes. A imagem do Discord fornece o proxy permitido pelo gateway WhatsApp; os bytes da foto são preservados. As ofertas normais continuam usando o formato anterior de cartão.
 
-O Discord recebe a foto por upload de bytes, com tamanho limitado a 5 MiB, em vez de depender de buscar a URL assinada do Instagram. Uma mensagem já publicada sem mídia pode ter sua foto reparada por PATCH no mesmo ID, até duas tentativas, sem criar outra mensagem.
+O Oracle baixa a foto uma vez, sem enviar cookies ao CDN, e encaminha os bytes ao Worker. São até vinte leituras de imagem por janela de 24 horas, com tamanho limitado a 3 MiB. O Discord recebe a foto por upload, sem depender do acesso do Cloudflare ao Instagram. Uma mensagem já publicada sem mídia pode ter sua foto reparada por PATCH no mesmo ID, até duas tentativas por transporte, sem criar outra mensagem. Os bytes não são guardados no SQLite do Worker; no Oracle ficam na fila privada só até entrega ou expiração.
 
 Forwards automáticos de Stories no grupo de comentários do Telegram são separados das ofertas normais. Isso impede que o Story confirme uma oferta ambígua ou receba edição de esgotamento/comentários destinados à oferta original.
 

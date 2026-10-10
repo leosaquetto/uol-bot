@@ -99,7 +99,7 @@ test("rejects future, expired or oversized-duration Stories and invalid image di
 
 test("bounded JSON reader rejects oversized undeclared streams before parsing", async () => {
   const request = new Request("https://worker.test/ingest-instagram-story", {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: "x".repeat(20_000),
+    method: "POST", headers: { "Content-Type": "application/json" }, body: "x".repeat(6 * 1024 * 1024),
   });
   await assert.rejects(readInstagramStoryJson(request), /instagram_payload_too_large/);
   await assert.rejects(readInstagramStoryJson(new Request("https://worker.test/", { method: "POST", body: "{}" })), /instagram_content_type_invalid/);
@@ -427,4 +427,27 @@ test("an unsupported Discord external proxy cannot prevent attachment repair", a
     assert.equal(result.targets.discord.mediaRepairAttempts, 1);
     assert.deepEqual(requests.map(x => x.method), ["GET","GET","PATCH"]);
   } finally { globalThis.fetch = originalFetch; }
+});
+
+test("Oracle supplied media is uploaded directly without a CDN fetch or private SQL body", async () => {
+  const bytes = new Uint8Array([255,216,255,224]);
+  const normalized = normalizeInstagramStory({ ...STORY, imageBase64: Buffer.from(bytes).toString("base64"), imageMime: "image/jpeg" }, NOW);
+  assert.deepEqual(normalized.imageBytes, bytes);
+  const calls=[];
+  const result=await uploadInstagramDiscordPhoto({DISCORD_WEBHOOK_URL:"https://discord.test/api/webhooks/fixture/token"},
+    {image_url:STORY.imageUrl,link:STORY.link,image_bytes:normalized.imageBytes,image_mime:normalized.imageMime},"1558286627955282054",{
+      fetchImpl:async (url,init)=>{
+        calls.push(init.method);
+        assert.deepEqual(new Uint8Array(await init.body.get("files[0]").arrayBuffer()),bytes);
+        return Response.json({id:"1558286627955282054",attachments:[{proxy_url:"https://media.discordapp.net/attachments/photo.jpg"}]});
+      },
+    });
+  assert.deepEqual(calls,["PATCH"]);
+  assert.equal(result.messageId,"1558286627955282054");
+  const sample=fixture();
+  const receipt=await sample.inbox.ingest({...STORY,imageBase64:Buffer.from(bytes).toString("base64"),imageMime:"image/jpeg"});
+  assert.equal(receipt.status,"delivered");
+  assert.equal(JSON.stringify(receipt).includes("/9j/"),false);
+  assert.equal(Object.keys(sample.database.prepare("SELECT * FROM instagram_story_outbox").get()).includes("image_bytes"),false);
+  assert.throws(()=>normalizeInstagramStory({...STORY,imageBase64:"not base64",imageMime:"image/jpeg"},NOW));
 });
