@@ -35,7 +35,8 @@ def private_text(path):
 
 def request_json(url, token, payload):
     request = urllib.request.Request(url, data=json.dumps(payload).encode(),
-        headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'})
+        headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json',
+                 'Accept': 'application/json', 'User-Agent': 'UOLStorageObserver/1.0'})
     # A redirect must never forward an analytics or ingestion credential.
     class NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, *args, **kwargs):
