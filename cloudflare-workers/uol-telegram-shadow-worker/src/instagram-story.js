@@ -280,7 +280,7 @@ function defaultTransports(env, { stillLive, reserveRepair }) {
     },
     async discordProxy(story, targets) {
       let proxy = "";
-      try { proxy = await getDiscordMessageImageProxy(env, targets.discord.messageId); } catch { /* Try only a bounded repair of this exact message. */ }
+      try { proxy = discordProxyUrl(await getDiscordMessageImageProxy(env, targets.discord.messageId)); } catch { /* Try only a bounded repair of this exact message. */ }
       if (proxy || !stillLive() || !reserveRepair(story, targets)) return proxy;
       // Repair an existing message only. Replacing its attachment cannot post a second message.
       return (await uploadInstagramDiscordPhoto(env, story, targets.discord.messageId, { stillLive })).imageProxyUrl;

@@ -401,3 +401,30 @@ test("media fetch and pause before mutation cannot create an ambiguous Discord p
   await assert.rejects(uploadInstagramDiscordPhoto(env, story, "", { fetchImpl: async () => { throw new Error("source_unavailable"); } }),
     error => error.beforeMutation === true && error.retryable === true);
 });
+
+test("an unsupported Discord external proxy cannot prevent attachment repair", async () => {
+  const sample = fixture();
+  await sample.inbox.ingest(STORY);
+  const row = sample.database.prepare("SELECT * FROM instagram_story_outbox").get();
+  const targets = JSON.parse(row.targets_json);
+  targets.discord.imageConfirmed = false;
+  sample.database.prepare("UPDATE instagram_story_outbox SET targets_json=?,discord_image_proxy_url=''").run(JSON.stringify(targets));
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  globalThis.fetch = async (url, init = {}) => {
+    requests.push({ url, method: init.method || "GET" });
+    if (requests.length === 1) return Response.json({ embeds: [{ image: { proxy_url: "https://images-ext-1.discordapp.net/external/image.jpg" } }] });
+    if (requests.length === 2) return new Response(new Uint8Array([255,216,255,224]), { headers: { "Content-Type": "image/jpeg" } });
+    return Response.json({ id: "1558286627955282054", attachments: [{ proxy_url: "https://media.discordapp.net/attachments/image.jpg" }] });
+  };
+  targets.discord.messageId = "1558286627955282054";
+  sample.database.prepare("UPDATE instagram_story_outbox SET targets_json=?").run(JSON.stringify(targets));
+  try {
+    const inbox = new InstagramStoryInbox(sample.sql, { DISCORD_WEBHOOK_URL: "https://discord.test/api/webhooks/fixture/token" },
+      { now: () => NOW, mode: () => "live", readiness: () => ({}) });
+    const result = await inbox.ingest(STORY);
+    assert.equal(result.targets.discord.imageConfirmed, true);
+    assert.equal(result.targets.discord.mediaRepairAttempts, 1);
+    assert.deepEqual(requests.map(x => x.method), ["GET","GET","PATCH"]);
+  } finally { globalThis.fetch = originalFetch; }
+});
