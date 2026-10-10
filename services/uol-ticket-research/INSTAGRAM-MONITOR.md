@@ -2,9 +2,11 @@
 
 Plano autorizado em 09/10/2026: instalar o coletor no Oracle existente, integrar ao Worker atual e enviar o Story de `pQg` aos quatro destinos. O ensaio isolado de 72 horas não é requisito para ativar; estabilidade será observada depois. Esta integração não depende do Mac ou do Codex aberto.
 
+**Estado verificado em 10/10/2026:** monitor ativo e habilitado para reiniciar com o Oracle. O Story `4004391581161830448`, campanha `pQg` de 11/10 no Teatro J. Safra, teve imagem confirmada nos quatro destinos. Os dois canais Telegram e o Discord mantiveram os IDs originais; a foto WhatsApp foi enviada uma vez. A fila local está entregue.
+
 ## Caminho de execução
 
-1. `uol-instagram-monitor.service` lê `@clubeuol` por HTTP no Oracle a cada 120–130 segundos. A sessão dedicada e cookies atualizados ficam privados no servidor. Não há navegador por ciclo nem login UOL.
+1. `uol-instagram-monitor.service` lê `@clubeuol` por HTTP no Oracle aproximadamente a cada dois minutos. Agenda a próxima coleta com intervalo de 120–130 segundos; o ciclo de execução e entregas podem acrescentar atraso. A sessão dedicada e cookies atualizados ficam privados no servidor. Não há navegador por ciclo nem login UOL.
 2. Extrai o sticker e a imagem original do mesmo objeto do Story. Vídeos usam sua imagem de capa. Apenas links canônicos em `https://clube.uol.com.br/campanhasdeingresso/<codigo>-<slug>` entram na fila; outros benefícios são ignorados. Não usa OCR para decidir elegibilidade.
 3. Envia à entrada autenticada do Worker existente. A fila de Stories usa `(Story ID, link)` e recibo independente para Discord, Telegram principal, Canal 2 e WhatsApp. Uma campanha já anunciada pelo bot pode receber este complemento de Story, sem alterar o registro de estoque da oferta.
 
@@ -59,4 +61,16 @@ Interromper apenas este complemento: `sudo systemctl stop uol-instagram-monitor`
 
 Testes locais do parser/mídia, orçamento, fila/reinício, modo do bot, isolamento de forwards, recibos por destino e foto WhatsApp. O Worker passa pela CI/release do projeto; a ativação verifica leitura autenticada no Oracle e envio real do Story autorizado, sem mensagens sintéticas para grupos.
 
-Estado de implantação e recibos reais serão registrados após a publicação. Estabilidade prolongada e renovação real da sessão continuam sendo acompanhamento de operação; não são declaradas comprovadas por fixtures.
+## Prova de operação
+
+- Serviço ativado em 09/10/2026 às 22:15 (São Paulo); confirmação final em 10/10/2026 às 05:45.
+- Até a confirmação final: 200 ciclos e 400 GETs Instagram, sem falha de coleta registrada. Uma leitura de mídia foi reservada pelo monitor para a foto entregue. As provas manuais anteriores foram separadas desse contador.
+- Reinício do serviço preservou início, contador e fila. A sessão continuou aceita após o reinício, com consultas reais posteriores. Isso comprova retomada curta; não comprova validade ilimitada da sessão.
+- Discord, Telegram principal, Canal 2 e WhatsApp retornaram recibos com imagem confirmada. O Discord recebeu o reparo da foto na mesma mensagem, sem novo post. WhatsApp confirmou o formato `story_photo` no transporte compartilhado.
+- O recibo WhatsApp evoluiu para `participant_receipt`. A mídia recebida pelo sender manteve JPEG, 191.264 bytes e 828×1472 pixels, iguais ao arquivo obtido no Oracle.
+- CI da revisão `9040c69a5` passou. Worker publicado: versão `4373a95c-50e6-4030-bfba-b4db64e646db`, em `https://uol-telegram-shadow-pilot.leosaquetto.workers.dev`.
+- O pós-deploy global continuou recusado por incidentes/entregas antigas já presentes antes desta integração (`critical_incidents`, `dead_letters`, `unknown_deliveries`, `maintenance_dead_letters`). Não foi declarado Ready global nem alterado esse ledger antigo. As rotas autenticadas do complemento, coleta e recibos reais foram validados separadamente.
+
+Provas sanitizadas locais em `~/.local/share/uol-ticket-research/proofs/`: `instagram-monitor-activation.json`, `instagram-monitor-restart.json`, `instagram-production-photo-bytes-cycle.json`, `instagram-monitor-final-status.json` e `instagram-whatsapp-photo-confirmation.json`. Esses arquivos não incluem sessão, tokens, IDs de grupos, URLs assinadas ou imagem codificada.
+
+Estabilidade por 72 horas e renovação de login ainda são acompanhamento de operação; o serviço contínuo permanece ativo depois desse prazo e não é suspenso automaticamente pelo ensaio isolado.
