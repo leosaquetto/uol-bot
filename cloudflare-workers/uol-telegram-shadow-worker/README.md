@@ -336,6 +336,8 @@ npm run release
 ```
 # Descoberta de ingressos fora da listagem
 
+O [complemento de Stories do Instagram](../../services/uol-ticket-research/INSTAGRAM-MONITOR.md) usa um coletor no Oracle e entrada autenticada neste Worker. Imagem e link de campanhas têm fila e recibos próprios nos quatro destinos, sem modificar estoque ou a identidade das ofertas normais.
+
 `TICKET_CODE_DISCOVERY_ENABLED=true` habilita uma fonte pública adicional. Usa
 lacunas e até dois códigos vizinhos dos dois prefixos recentes corroborados por
 links da API/listagem. Preserva maiúsculas/minúsculas; não adivinha pontos ou a

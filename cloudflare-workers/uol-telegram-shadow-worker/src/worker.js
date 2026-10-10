@@ -112,6 +112,12 @@ import {
   ticketProbeBudget,
 } from "./ticket-soldout-probe.js";
 import { readinessChecksOk } from "./health-contract.js";
+import {
+  InstagramStoryInbox,
+  initializeInstagramStorySchema,
+  readInstagramStoryJson,
+  isInstagramStoryCaption,
+} from "./instagram-story.js";
 
 const BASE_URL = "https://clube.uol.com.br";
 const LIST_URL = `${BASE_URL}/?order=new`;
@@ -550,6 +556,9 @@ export class UolTelegramShadow extends DurableObject {
     this.readinessCache = null;
     this.storageContext = new AsyncLocalStorage();
     this.storageUsageReady = false;
+    this.instagramStoryInbox = new InstagramStoryInbox(this.sqlExec.bind(this), env, {
+      mode: () => this.currentDeliveryMode(),
+    });
     this.storageUsage = {
       day: new Date().toISOString().slice(0, 10),
       rowsRead: 0,
@@ -572,8 +581,21 @@ export class UolTelegramShadow extends DurableObject {
     };
     ctx.blockConcurrencyWhile(async () => {
       this.migrate();
+      initializeInstagramStorySchema(this.sqlExec.bind(this));
       this.loadStorageUsage();
     });
+  }
+
+  async ingestInstagramStory(payload) {
+    return this.instagramStoryInbox.ingest(payload);
+  }
+
+  getInstagramStoryStatus(storyId = "", limit = 20) {
+    return this.instagramStoryInbox.status(storyId, limit);
+  }
+
+  async recordInstagramMonitorHeartbeat(payload) {
+    return this.instagramStoryInbox.recordMonitorHeartbeat(payload);
   }
 
   sqlExec(query, ...bindings) {
@@ -7321,6 +7343,9 @@ export class UolTelegramShadow extends DurableObject {
     ) {
       return { ok: true, matched: false };
     }
+    if (isInstagramStoryCaption(message?.caption)) {
+      return { ok: true, matched: false, outcome: "ignored_story_forward" };
+    }
     const reconciledOfferId = this.reconcileUnknownMainFromForward(message, origin);
     this.sqlExec(
       `INSERT INTO pending_discussion_forwards(
@@ -8452,6 +8477,35 @@ export default {
         });
       }
       const stub = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
+      if ((request.method === "POST" && url.pathname === "/ingest-instagram-story") ||
+          (request.method === "POST" && url.pathname === "/instagram-monitor-heartbeat") ||
+          (request.method === "GET" && url.pathname === "/instagram-story-status")) {
+        const expected = String(env.INSTAGRAM_STORY_INGEST_TOKEN || "").trim();
+        const authorization = request.headers.get("Authorization") || "";
+        const supplied = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+        if (!expected || !supplied || supplied.length > 4_096 ||
+            !(await constantTimeEqual(expected, supplied))) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        try {
+          return jsonResponse(request.method === "POST"
+            ? url.pathname === "/instagram-monitor-heartbeat"
+              ? await stub.recordInstagramMonitorHeartbeat(await readInstagramStoryJson(request))
+              : await stub.ingestInstagramStory(await readInstagramStoryJson(request))
+            : await stub.getInstagramStoryStatus(url.searchParams.get("storyId") || "", url.searchParams.get("limit") || 20));
+        } catch (error) {
+          if (error?.instagramInput || /^instagram_[a-z_]+$/.test(String(error?.message || ""))) {
+            const code = String(error.message);
+            // RPC preserves Error.message; custom properties need not cross the boundary.
+            const status = ["instagram_story_daily_limit", "instagram_story_capacity_reached"].includes(code)
+              ? 429 : code === "instagram_story_expired" ? 410
+                : code === "instagram_story_identity_conflict" ? 409 : Number(error?.httpStatus || 400);
+            return jsonResponse({ ok: false, error: code }, status);
+          }
+          // Do not log upstream response descriptions or private signed image URLs.
+          return jsonResponse({ ok: false, error: "instagram_ingest_unconfirmed" }, 503);
+        }
+      }
       if (request.method === "GET" && url.pathname === "/offers") {
         const requestedLimit = Number(url.searchParams.get("limit") || 4);
         const limit = Number.isFinite(requestedLimit)

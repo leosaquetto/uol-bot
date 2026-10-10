@@ -22,11 +22,12 @@ export function createDropsTransport({token,baseUrl='http://127.0.0.1:8788',fetc
   };
   return {
     readiness:()=>call('/v1/gateway/readyz'),
-    async sendMessage({route,idempotencyKey,requestHash,text,preview}){
+    async sendMessage({route,idempotencyKey,requestHash,text,preview,deliveryFormat}){
       const image=preview?.img?readFileSync(fileURLToPath(preview.img)):null;
       if(image&&image.length>5*1024*1024)throw new Error('preview_image_too_large');
       const job=await call('/v1/gateway/send',{route,
         keyHash:createHash('sha256').update(idempotencyKey).digest('hex'),requestHash,text,
+        ...(deliveryFormat!==undefined?{deliveryFormat}:{}),
         ...(preview?{preview:{link:preview.link,title:preview.title,summary:preview.summary||'',
           ...(image?{imageBase64:image.toString('base64')}:{})}}:{})});
       if(!/^[a-f0-9-]{36}$/.test(job?.jobId||''))throw Object.assign(new Error('drops_invalid_receipt'),{ambiguous:true});
@@ -37,10 +38,11 @@ export function createDropsTransport({token,baseUrl='http://127.0.0.1:8788',fetc
       const deadline=Date.now()+20000;
       do {
         const job=await call(`/v1/gateway/jobs/${pendingMessageID}`);
+        const format=job.deliveryFormat==='story_photo'?{deliveryFormat:'story_photo'}:{};
         if(job.state==='confirmed'&&['recipient_receipt','participant_receipt'].includes(job.confirmation)&&job.messageId)
-          return {state:'delivered',deliveryState:'confirmed_by_whatsapp_receipt',confirmation:job.confirmation,messageId:job.messageId};
+          return {state:'delivered',deliveryState:'confirmed_by_whatsapp_receipt',confirmation:job.confirmation,messageId:job.messageId,...format};
         if(job.state==='accepted'&&job.confirmation==='server_ack'&&job.messageId)
-          return {state:'accepted',deliveryState:'accepted_by_whatsapp_server',confirmation:job.confirmation,messageId:job.messageId};
+          return {state:'accepted',deliveryState:'accepted_by_whatsapp_server',confirmation:job.confirmation,messageId:job.messageId,...format};
         if(job.state==='failed')return {state:'rejected'};
         // An ack may arrive just after sendMessage returns. Keep observing the same job.
         if(Date.now()>=deadline)return {state:job.state==='unknown'?'unknown':'pending'};

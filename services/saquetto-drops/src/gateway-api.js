@@ -9,6 +9,14 @@ const UUID = /^[a-f0-9-]{36}$/;
 const MAX_IMAGE = 5 * 1024 * 1024, MAX_BODY = 8 * 1024 * 1024;
 const fail = (code, status = 400) => { throw Object.assign(new Error(code), { status }); };
 const hash = value => createHash('sha256').update(value).digest('hex');
+const imageMimeTypes = {jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif'};
+const allowedStoryLink = value => {
+  try {
+    const raw=String(value||''), url=new URL(raw), authority=raw.match(/^https:\/\/([^/?#]+)/)?.[1];
+    return authority==='clube.uol.com.br'&&url.href===raw&&!url.username&&!url.password&&!url.port&&!url.search&&!url.hash&&
+      /^\/campanhasdeingresso\/p[A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(url.pathname);
+  } catch {return false;}
+};
 
 // Private, separately authenticated adapter for the existing preview gateway.
 // All sends share the normal Drops queue, receipts and destination checks.
@@ -22,7 +30,8 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
     if(route==='self'&&d.jid!==whatsapp.ownDestination().jid)fail('self_destination_mismatch',409);
     return {alias,...d};
   };
-  const status=row=>({jobId:row.id,messageId:row.message_id,state:row.state,confirmation:row.confirmation,code:row.code});
+  const status=row=>({jobId:row.id,messageId:row.message_id,state:row.state,confirmation:row.confirmation,code:row.code,
+    ...(['accepted','confirmed'].includes(row.state)&&JSON.parse(row.payload).deliveryFormat==='story_photo'?{deliveryFormat:'story_photo'}:{})});
   const getJob=id=>{
     if(!UUID.test(id))fail('job_not_found',404);
     const row=store.job(id);
@@ -39,24 +48,29 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
   const enqueue=async input=>{
     if(!input||typeof input!=='object'||!HASH.test(input.keyHash)||!HASH.test(input.requestHash)||
       typeof input.text!=='string'||!input.text.trim()||Buffer.byteLength(input.text)>1024*1024)fail('invalid_request');
+    const p=input.preview, storyPhoto=input.deliveryFormat==='story_photo';
+    if(input.deliveryFormat!==undefined&&!storyPhoto)fail('invalid_delivery_format');
+    if(storyPhoto&&(input.route!=='uol'||!allowedStoryLink(p?.link)||!input.text.includes(p.link)||!p?.imageBase64))fail('invalid_story_photo');
     const d=destination(input.route), key=`gateway:${input.route}:${input.keyHash}`;
     const old=store.jobByKey(key);
     if(old){
-      if(JSON.parse(old.payload).gatewayRequestHash!==input.requestHash||old.destination!==d.jid)fail('idempotency_conflict',409);
+      const previous=JSON.parse(old.payload);
+      if(previous.gatewayRequestHash!==input.requestHash||previous.deliveryFormat!==input.deliveryFormat||old.destination!==d.jid)fail('idempotency_conflict',409);
       return status(old);
     }
     if(!canSend()||!whatsapp.isReady())fail('whatsapp_not_ready',503);
     if(store.db.prepare("SELECT count(*) AS n FROM jobs WHERE state IN ('queued','dispatching')").get().n>=200)fail('queue_full',429);
-    const p=input.preview;
     if(p&&(!/^https:\/\//.test(p.link)||typeof p.title!=='string'||p.title.length>500||
       typeof p.summary!=='string'||p.summary.length>2000))fail('invalid_preview');
-    let gatewayImage;
+    let gatewayImage, gatewayImageMimeType;
     if(p?.imageBase64){
       if(typeof p.imageBase64!=='string'||p.imageBase64.length>Math.ceil(MAX_IMAGE/3)*4||
         !/^[A-Za-z0-9+/]+={0,2}$/.test(p.imageBase64))fail('invalid_image');
       const bytes=Buffer.from(p.imageBase64,'base64');
       if(!bytes.length||bytes.length>MAX_IMAGE)fail('invalid_image',413);
-      try { await sharp(bytes,{limitInputPixels:25000000}).metadata(); } catch {fail('invalid_image',415);}
+      let meta;
+      try { meta=await sharp(bytes,{limitInputPixels:25000000}).metadata(); } catch {fail('invalid_image',415);}
+      if(storyPhoto){gatewayImageMimeType=imageMimeTypes[meta.format];if(!gatewayImageMimeType)fail('invalid_image',415);}
       gatewayImage=hash(bytes);
       const used=readdirSync(directory).filter(name=>HASH.test(name)).reduce((n,name)=>n+statSync(imageFile(name)).size,0);
       if(used+bytes.length>128*1024*1024)fail('media_storage_full',507);
@@ -67,18 +81,26 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
     if(destination(input.route).jid!==d.jid)fail('destination_changed',409);
     const concurrent=store.jobByKey(key);
     if(concurrent){
-      if(JSON.parse(concurrent.payload).gatewayRequestHash!==input.requestHash||concurrent.destination!==d.jid)fail('idempotency_conflict',409);
+      const previous=JSON.parse(concurrent.payload);
+      if(previous.gatewayRequestHash!==input.requestHash||previous.deliveryFormat!==input.deliveryFormat||concurrent.destination!==d.jid)fail('idempotency_conflict',409);
       return status(concurrent);
     }
     if(store.db.prepare("SELECT count(*) AS n FROM jobs WHERE state IN ('queued','dispatching')").get().n>=200)fail('queue_full',429);
     const payload={gateway:true,gatewayRequestHash:input.requestHash,destinationAlias:d.alias,text:input.text,
       expiresAt:now()+30*60000,...(p?{preview:{link:p.link,title:p.title,summary:p.summary}}:{}),
+      ...(storyPhoto?{deliveryFormat:'story_photo',gatewayImageMimeType}:{}),
       ...(gatewayImage?{gatewayImage}:{})};
     return status(store.enqueue({key,destination:d.jid,payload,priority:5}));
   };
   return {
     async prepare(payload,socket) {
       const p=payload.preview;
+      if(payload.deliveryFormat!==undefined&&payload.deliveryFormat!=='story_photo')fail('invalid_delivery_format');
+      if(payload.deliveryFormat==='story_photo'){
+        if(!allowedStoryLink(p?.link)||!payload.gatewayImage||!Object.values(imageMimeTypes).includes(payload.gatewayImageMimeType)||
+          !payload.text.includes(p.link))fail('invalid_story_photo');
+        return {image:readFileSync(imageFile(payload.gatewayImage)),caption:payload.text,mimetype:payload.gatewayImageMimeType};
+      }
       if(!p)return {text:payload.text,linkPreview:null};
       const linkPreview={'canonical-url':p.link,'matched-text':p.link,title:p.title,description:p.summary};
       if(payload.gatewayImage){

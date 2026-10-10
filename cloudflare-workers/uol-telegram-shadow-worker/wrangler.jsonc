@@ -65,7 +65,8 @@
       "DISCORD_WEBHOOK_URL",
       "DISCORD_IMAGE_CACHE_WEBHOOK_URL",
       "BEEPER_GATEWAY_URL",
-      "BEEPER_GATEWAY_TOKEN"
+      "BEEPER_GATEWAY_TOKEN",
+      "INSTAGRAM_STORY_INGEST_TOKEN"
     ]
   },
   "durable_objects": {

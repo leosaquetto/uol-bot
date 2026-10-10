@@ -2,6 +2,8 @@
 
 Verificação: 09/10/2026. Horários abaixo em America/Sao_Paulo.
 
+Continuação autorizada: [monitor integrado ao bot no Oracle](INSTAGRAM-MONITOR.md), com envio de imagem e link aos quatro destinos existentes. Este arquivo preserva as provas do estudo inicial; o estado operacional posterior está no documento do monitor.
+
 **Resultado:** a sessão dedicada conseguiu ler os Stories e os destinos dos stickers tanto no navegador quanto por HTTP direto no Oracle, sem Chrome ou Mac na execução remota. A entrada genérica `/stories/clubeuol/` devolveu os dois Stories atuais em 1,06 s, com IDs, horários e links, após um redirecionamento da própria página. Transporte e extração no servidor estão comprovados em uma prova limitada; estabilidade da sessão e operação contínua ainda não. Nenhum monitor de Instagram foi ativado.
 
 O objetivo é um processo de servidor, com detecção em poucos minutos e sem participação do Codex ou do Mac em cada consulta. Acompanhamento manual e heartbeat local não atendem a esse objetivo.

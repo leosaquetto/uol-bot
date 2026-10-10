@@ -5,10 +5,12 @@ Cookie values belong only in the protected session file and request headers.
 """
 
 import datetime
+import email.utils
 import html.parser
 import http.cookiejar
 import http.cookies
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -42,7 +44,9 @@ PRIVATE_QUERY_NAMES = frozenset(("token", "key", "code", "codigo", "coupon", "cu
                                 "authorization", "jwt", "access_token", "signature",
                                 "sig", "ticket"))
 PUBLIC_PATH = re.compile(r"/[a-z][a-z0-9-]*/[A-Za-z0-9]{2,6}-[A-Za-z0-9][A-Za-z0-9-]*")
+MEDIA_PATH = re.compile(r"/v/[A-Za-z0-9_./-]+\.(?:jpe?g|webp)", re.IGNORECASE)
 REDIRECT_CODES = frozenset((301, 302, 303, 307, 308))
+MAX_RETRY_AFTER_SECONDS = 365 * 24 * 60 * 60
 
 
 class SessionError(Exception):
@@ -110,6 +114,63 @@ def normalize_destination(value):
         return None
 
 
+def safe_media_url(value):
+    """Validate a CDN image URL, retaining its signature only for private delivery."""
+    if (not isinstance(value, str) or len(value) > 8192
+            or any(c.isspace() or ord(c) < 32 or ord(c) == 127 for c in value)):
+        return None
+    try:
+        parsed = urllib.parse.urlsplit(value)
+        host = parsed.hostname or ""
+        if (parsed.scheme != "https" or parsed.username or parsed.password
+                or parsed.port is not None or parsed.netloc.lower() != host
+                or parsed.fragment or len(host) > 253
+                or not all(re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", label)
+                           for label in host.split("."))
+                or not host.endswith((".cdninstagram.com", ".fbcdn.net"))
+                or not MEDIA_PATH.fullmatch(parsed.path)
+                or any(part in (".", "..", "") for part in parsed.path[1:].split("/"))):
+            return None
+        return value
+    except ValueError:
+        return None
+
+
+def _image_dimensions(width, height):
+    return (type(width) is int and type(height) is int
+            and 0 < width <= 100000 and 0 < height <= 100000)
+
+
+def _story_image(item):
+    """Select the full Story image (or video cover), avoiding square crop variants."""
+    versions = item.get("image_versions2")
+    candidates = versions.get("candidates") if isinstance(versions, dict) else None
+    if not isinstance(candidates, list):
+        return {"imageUrl": "", "imageWidth": 0, "imageHeight": 0}
+    valid = []
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        width, height = candidate.get("width"), candidate.get("height")
+        url = safe_media_url(candidate.get("url"))
+        if url and _image_dimensions(width, height):
+            valid.append({"imageUrl": url, "imageWidth": width, "imageHeight": height})
+    original_width, original_height = item.get("original_width"), item.get("original_height")
+    if _image_dimensions(original_width, original_height):
+        # Resized candidates round their dimensions; allow that small ratio change.
+        valid = [candidate for candidate in valid
+                 if abs(candidate["imageWidth"] * original_height
+                        - candidate["imageHeight"] * original_width) * 100
+                 <= 2 * candidate["imageHeight"] * original_width]
+    else:
+        portrait = [candidate for candidate in valid
+                    if candidate["imageHeight"] > candidate["imageWidth"]]
+        if portrait:
+            valid = portrait
+    return max(valid, key=lambda candidate: (candidate["imageHeight"], candidate["imageWidth"]),
+               default={"imageUrl": "", "imageWidth": 0, "imageHeight": 0})
+
+
 def _parse_item(item):
     if not isinstance(item, dict):
         return None
@@ -140,7 +201,7 @@ def _parse_item(item):
         if destination:
             destinations.add(destination)
     return {"storyId": code, "publishedAt": published, "expiresAt": expiry,
-            "destinations": sorted(destinations)}
+            "destinations": sorted(destinations), **_story_image(item)}
 
 
 def parse_stories(body):
@@ -267,6 +328,26 @@ def _auth_location(location):
         return False
 
 
+def _retry_after_seconds(value):
+    """Read a bounded server delay without retaining the raw response header."""
+    if not isinstance(value, str) or len(value) > 8192:
+        return 3600
+    value = value.strip()
+    if re.fullmatch(r"[0-9]+", value):
+        digits = value.lstrip("0") or "0"
+        if len(digits) > 8:
+            return MAX_RETRY_AFTER_SECONDS
+        return min(int(digits), MAX_RETRY_AFTER_SECONDS)
+    try:
+        until = email.utils.parsedate_to_datetime(value)
+        if until.tzinfo is None:
+            return 3600
+        now = datetime.datetime.now(datetime.timezone.utc)
+        return min(max(0, math.ceil((until - now).total_seconds())), MAX_RETRY_AFTER_SECONDS)
+    except (TypeError, ValueError, OverflowError):
+        return 3600
+
+
 class InstagramClient:
     def __init__(self, session_path, opener_factory=None, clock=None):
         self.session_path = Path(session_path)
@@ -378,7 +459,8 @@ class InstagramClient:
                     status = getattr(response, "status", getattr(response, "code", None))
                     location = response.headers.get("Location", "")
                     if status == 429:
-                        result.update(status="rate_limited", reason="http_429")
+                        result.update(status="rate_limited", reason="http_429",
+                                      retryAfterSeconds=_retry_after_seconds(response.headers.get("Retry-After")))
                         break
                     if status in (401, 403) or (status in REDIRECT_CODES and _auth_location(location)):
                         result.update(status="auth_required", reason="http_auth_required")

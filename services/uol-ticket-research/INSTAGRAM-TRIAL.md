@@ -1,5 +1,7 @@
 # Ensaio de estabilidade dos Stories — 72 horas
 
+O usuário posteriormente autorizou ativar o [monitor integrado ao bot](INSTAGRAM-MONITOR.md). Este ensaio isolado permanece como instrumento de teste; não bloqueia aquela ativação nem inicia um segundo coletor.
+
 Estado em 09/10/2026: código validado com fixtures; **não instalado nem ativado no Oracle**. A leitura HTTP pontual do estudo anterior permanece comprovada. Nesta etapa, os navegadores controlados pelo app não responderam; a alternativa isolada conseguiu abrir a página de login, mas a tentativa seguinte terminou por timeout e não exportou sessão. Isso é falha de infraestrutura, não prova de CAPTCHA, senha inválida ou revogação da conta. As 72 horas não começaram.
 
 ## Arquivos

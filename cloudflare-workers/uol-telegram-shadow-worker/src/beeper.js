@@ -233,6 +233,7 @@ export async function sendBeeperOffer(
         text: buildBeeperOfferText(offer),
         title,
         preview: { title, summary, imageUrl },
+        ...(offer?.deliveryFormat === "story_photo" ? { deliveryFormat: "story_photo" } : {}),
       }),
       signal: AbortSignal.timeout(BEEPER_GATEWAY_TIMEOUT_MS),
     });
@@ -296,7 +297,8 @@ export async function sendBeeperOffer(
   const dropsReceipt = payload?.transport === "baileys" &&
     ((deliveryState === "accepted_by_whatsapp_server" && payload?.confirmation === "server_ack") ||
      (deliveryState === "confirmed_by_whatsapp_receipt" && ["recipient_receipt","participant_receipt"].includes(payload?.confirmation)));
-  if (!pendingMessageId || (deliveryState !== "confirmed_by_whatsapp_bridge" && !dropsReceipt)) {
+  const storyPhotoConfirmed = offer?.deliveryFormat !== "story_photo" || payload?.deliveryFormat === "story_photo";
+  if (!pendingMessageId || !storyPhotoConfirmed || (deliveryState !== "confirmed_by_whatsapp_bridge" && !dropsReceipt)) {
     throw createAmbiguousResponseTransportError({
       transport: "beeper",
       operation: "send",
@@ -306,6 +308,7 @@ export async function sendBeeperOffer(
   return {
     pendingMessageId,
     replayed: Boolean(payload?.replayed),
+    ...(offer?.deliveryFormat === "story_photo" ? { deliveryFormat: "story_photo" } : {}),
     ...(dropsReceipt ? {deliveryState,transport:"baileys"} : {}),
   };
 }

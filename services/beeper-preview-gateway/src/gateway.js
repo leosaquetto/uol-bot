@@ -63,6 +63,19 @@ function allowedOfferUrl(value) {
   }
 }
 
+function allowedStoryOfferUrl(value) {
+  try {
+    const raw = String(value || "");
+    const url = new URL(raw);
+    const authority = raw.match(/^https:\/\/([^/?#]+)/)?.[1];
+    return authority === "clube.uol.com.br" && url.href === raw &&
+      !url.username && !url.password && !url.port && !url.search && !url.hash &&
+      /^\/campanhasdeingresso\/p[A-Za-z0-9]{2,5}-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(url.pathname);
+  } catch {
+    return false;
+  }
+}
+
 function allowedImageUrl(value) {
   try {
     const url = new URL(String(value || ""));
@@ -487,6 +500,14 @@ export function createGateway({
     const nativeFormatting = generalPost && payload?.format === "whatsapp";
     const normalizedPreview = normalizePreview(payload, link, personalPost ? allowedTVGloboImageUrl : allowedImageUrl);
     const preview = normalizedPreview.preview;
+    const storyPhoto = payload?.deliveryFormat === "story_photo";
+    if (payload?.deliveryFormat !== undefined && !storyPhoto) {
+      return respond(400, { code: "invalid_delivery_format" });
+    }
+    if (storyPhoto && (transport !== "baileys" || url.pathname !== "/v1/send-offer" ||
+      !idempotencyKey.startsWith("uol:instagram:") || !allowedStoryOfferUrl(link) || !preview.imageUrl)) {
+      return respond(400, { code: "invalid_story_photo" });
+    }
     let avatarUrl = "";
     const buyticket = url.pathname === "/v1/send-buyticket";
     const destinationChatId = personalPost ? selfChatId : buyticket ? buyticketChatId : chatId;
@@ -554,6 +575,7 @@ export function createGateway({
       text,
       preview,
       ...(nativeFormatting ? { format: "whatsapp" } : {}),
+      ...(storyPhoto ? { deliveryFormat: "story_photo" } : {}),
     };
     const normalizedHash = requestHash(normalized);
     const completeDrops = async gatewayJobID => {
@@ -561,9 +583,11 @@ export function createGateway({
       try {
         const confirmation = await confirmDeliveryImpl({pendingMessageID:gatewayJobID});
         if (["accepted", "delivered"].includes(confirmation?.state) && confirmation.messageId &&
-          ["accepted_by_whatsapp_server", "confirmed_by_whatsapp_receipt"].includes(confirmation.deliveryState)) {
+          ["accepted_by_whatsapp_server", "confirmed_by_whatsapp_receipt"].includes(confirmation.deliveryState) &&
+          (!storyPhoto || confirmation.deliveryFormat === "story_photo")) {
           const accepted = { accepted: true, pendingMessageID: confirmation.messageId,
-            deliveryState: confirmation.deliveryState, confirmation: confirmation.confirmation, ...receipt };
+            deliveryState: confirmation.deliveryState, confirmation: confirmation.confirmation, ...receipt,
+            ...(storyPhoto ? { deliveryFormat: "story_photo" } : {}) };
           updateDelivery(database,idempotencyKey,"accepted",accepted,now().toISOString());
           return respond(202,accepted,{deliveryState:accepted.deliveryState});
         }
@@ -595,6 +619,12 @@ export function createGateway({
     if (reserved.kind === "unknown") return respond(409, { code: "delivery_unknown" });
     if (reserved.kind === "pending") return respond(409, { code: "delivery_pending" });
     if (reserved.kind === "replay") {
+      if (storyPhoto && reserved.response?.deliveryFormat !== "story_photo") {
+        if (reserved.response?.transport === "baileys" && reserved.response.gatewayJobID) {
+          return completeDrops(reserved.response.gatewayJobID);
+        }
+        return respond(503, { code: "delivery_unknown" });
+      }
       return respond(200, { ...reserved.response, replayed: true }, { replayed: true });
     }
 
@@ -627,6 +657,7 @@ export function createGateway({
         ...(transport === "baileys" ? {route:personalPost?"self":buyticket?"buyticket":"uol",
           idempotencyKey,requestHash:normalizedHash} : {}),
         text,
+        ...(storyPhoto ? { deliveryFormat: "story_photo" } : {}),
         ...(nativeFormatting ? { formatText: false } : {}),
         preview: generalPost && !image?.img ? undefined : {
           ...preview,

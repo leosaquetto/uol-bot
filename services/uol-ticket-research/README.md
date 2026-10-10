@@ -6,6 +6,8 @@ O [estudo de Stories do Instagram](INSTAGRAM-STORIES.md) documenta a extração 
 
 O [ensaio de estabilidade Instagram](INSTAGRAM-TRIAL.md) tem transporte e controle de 72 horas implementados, testados sem rede e ainda inativos. Ele não altera a coleta diária descrita abaixo.
 
+O usuário autorizou o [complemento Instagram no servidor](INSTAGRAM-MONITOR.md), com imagem do Story e link de campanhas nos mesmos quatro destinos do UOL bot. Esse monitor contínuo é independente da coleta diária e do ensaio isolado.
+
 Na raiz do repositório:
 
 ```sh
