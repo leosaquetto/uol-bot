@@ -1,0 +1,22 @@
+[Unit]
+Description=Local operations supervision for Clube UOL and Instagram
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=uol-instagram-monitor
+Group=uol-instagram-monitor
+WorkingDirectory=/opt/uol-instagram-monitor
+ExecStart=/usr/bin/python3 -B supervisor.py --data-dir /var/lib/uol-instagram-monitor --config-file /var/lib/uol-instagram-monitor/supervisor.json
+TimeoutStartSec=45
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/uol-instagram-monitor
+MemoryHigh=32M
+MemoryMax=48M
+TasksMax=8
+LimitCORE=0

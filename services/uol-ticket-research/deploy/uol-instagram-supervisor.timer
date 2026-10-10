@@ -1,0 +1,11 @@
+[Unit]
+Description=Check Clube UOL local health every two minutes
+
+[Timer]
+OnBootSec=120
+OnUnitActiveSec=120
+AccuracySec=5
+Unit=uol-instagram-supervisor.service
+
+[Install]
+WantedBy=timers.target

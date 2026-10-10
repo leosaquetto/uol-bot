@@ -611,7 +611,9 @@ export class UolTelegramShadow extends DurableObject {
       if (next < before || normalized.accountRowsRead < previous.accountRowsRead ||
           normalized.accountRowsWritten < previous.accountRowsWritten ||
           (next === before && (normalized.accountRowsRead !== previous.accountRowsRead ||
-            normalized.accountRowsWritten !== previous.accountRowsWritten))) {
+            normalized.accountRowsWritten !== previous.accountRowsWritten ||
+            (normalized.optionalWorkDeferred === true) !== (previous.optionalWorkDeferred === true) ||
+            (normalized.optionalWorkReason || "none") !== (previous.optionalWorkReason || "none")))) {
         throw new Error("storage_usage_out_of_order");
       }
       if (next === before) return { ok: true, accepted: false, budget: this.storageUsageSnapshot() };
@@ -1026,12 +1028,17 @@ export class UolTelegramShadow extends DurableObject {
       writeBudget.writeMaintenanceAllowed = this.storageUsage.rowsWritten < 80_000;
       writeBudget.writeGuardReason = writeBudget.writeMaintenanceAllowed ? "" : "storage_write_budget_guard";
     }
+    const optionalWorkDeferred = globalGuardEnabled && accountSample.day === this.storageUsage.day &&
+      accountSample.optionalWorkDeferred === true;
     return {
       ...this.storageUsage,
       ...readBudget,
       ...writeBudget,
       localRowsRead: this.storageUsage.rowsRead,
-      maintenanceAllowed: readBudget.maintenanceAllowed && writeBudget.writeMaintenanceAllowed,
+      optionalWorkDeferred,
+      optionalWorkReason: optionalWorkDeferred ? accountSample.optionalWorkReason : "none",
+      maintenanceAllowed: readBudget.maintenanceAllowed && writeBudget.writeMaintenanceAllowed &&
+        !optionalWorkDeferred,
     };
   }
 
@@ -6864,13 +6871,15 @@ export class UolTelegramShadow extends DurableObject {
       const storageContext = this.storageContext.getStore();
       if (storageContext) storageContext.stage = "guard";
       this.storageUsage.maintenanceSkipped += 1;
-      const guardReason = budget.writeGuardReason || "storage_read_budget_guard";
+      const guardReason = budget.writeGuardReason ||
+        (budget.optionalWorkDeferred ? budget.optionalWorkReason : "storage_read_budget_guard");
       const hardReserveActive = Number(budget.rowsRead || 0) >=
         Number(budget.limit || 0) - DURABLE_OBJECT_CRITICAL_READ_RESERVE;
       const result = {
         ok: false,
         outcome: guardReason,
-        error: budget.writeGuardReason || "durable_object_rows_read_reserve_active",
+        error: budget.writeGuardReason ||
+          (budget.optionalWorkDeferred ? budget.optionalWorkReason : "durable_object_rows_read_reserve_active"),
         accountRowsWritten: budget.accountRowsWritten,
         globalFresh: budget.globalFresh,
         rowsRead: budget.rowsRead,

@@ -155,8 +155,19 @@ export function normalizeAccountStorageUsage(payload, now = new Date()) {
       !Number.isSafeInteger(payload.accountRowsWritten) || payload.accountRowsWritten < 0) {
     throw new Error("storage_usage_invalid");
   }
-  return { day, observedAt: new Date(observed).toISOString(),
+  const normalized = { day, observedAt: new Date(observed).toISOString(),
     accountRowsRead: payload.accountRowsRead, accountRowsWritten: payload.accountRowsWritten };
+  if (payload.optionalWorkDeferred !== undefined || payload.optionalWorkReason !== undefined) {
+    if (typeof payload.optionalWorkDeferred !== "boolean" ||
+        !(payload.optionalWorkDeferred
+          ? ["quota_actual", "quota_forecast", "quota_metrics_stale"].includes(payload.optionalWorkReason)
+          : payload.optionalWorkReason === "none")) {
+      throw new Error("storage_usage_invalid");
+    }
+    normalized.optionalWorkDeferred = payload.optionalWorkDeferred;
+    normalized.optionalWorkReason = payload.optionalWorkReason;
+  }
+  return normalized;
 }
 
 export function storageWriteBudget({ localRowsWritten = 0, sample = {}, now = new Date(),

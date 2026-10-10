@@ -206,7 +206,14 @@ def _parse_item(item):
 
 def parse_stories(body):
     """Parse inert JSON scripts, retaining only the exact profile's validated data."""
-    unknown = {"status": "unknown", "reason": "no_validated_story_structure", "stories": []}
+    diagnostics = {"jsonScriptCount": 0, "targetOwnerOccurrences": 0,
+                   "targetItemsListOccurrences": 0, "targetItemsCount": 0,
+                   "authPositiveObserved": False, "authNegativeObserved": False,
+                   "reelsMediaOccurrences": 0, "reelsMediaListOccurrences": 0,
+                   "reelsMediaObjectOccurrences": 0, "reelsMediaNullOccurrences": 0,
+                   "reelsMediaOtherOccurrences": 0, "reelsMediaItemsCount": 0}
+    unknown = {"status": "unknown", "reason": "no_validated_story_structure", "stories": [],
+               "structuralDiagnostics": diagnostics}
     if not isinstance(body, str):
         return {**unknown, "reason": "malformed_html"}
     try:
@@ -223,6 +230,8 @@ def parse_stories(body):
     visited = 0
     reels = []
     auth = parser.login_form
+    diagnostics["jsonScriptCount"] = len(parser.scripts)
+    diagnostics["authNegativeObserved"] = auth
     for script in parser.scripts:
         try:
             value = json.loads(script)
@@ -235,15 +244,30 @@ def parse_stories(body):
             if visited > MAX_NODES or depth > MAX_DEPTH:
                 return {**unknown, "reason": "structure_limit"}
             if isinstance(value, dict):
+                if value.get("username") == "clubeuol":
+                    diagnostics["targetOwnerOccurrences"] += 1
+                if value.get("is_logged_in") is True or value.get("isLoggedIn") is True:
+                    diagnostics["authPositiveObserved"] = True
                 if (value.get("is_logged_in") is False or value.get("isLoggedIn") is False
                         or value.get("login_required") is True or value.get("challenge_required") is True
                         or value.get("message") in ("login_required", "challenge_required")):
                     auth = True
+                    diagnostics["authNegativeObserved"] = True
+                if "reels_media" in value:
+                    diagnostics["reelsMediaOccurrences"] += 1
+                    media = value["reels_media"]
+                    kind = ("List" if isinstance(media, list) else "Object" if isinstance(media, dict)
+                            else "Null" if media is None else "Other")
+                    diagnostics["reelsMedia" + kind + "Occurrences"] += 1
+                    if isinstance(media, list):
+                        diagnostics["reelsMediaItemsCount"] += len(media)
                 user = value.get("user")
                 if isinstance(user, dict) and user.get("username") == "clubeuol":
                     if "items" in value:
                         if not isinstance(value["items"], list):
                             return {**unknown, "reason": "malformed_story_payload"}
+                        diagnostics["targetItemsListOccurrences"] += 1
+                        diagnostics["targetItemsCount"] += len(value["items"])
                         reels.append(value["items"])
                 if visited + len(pending) + len(value) > MAX_NODES:
                     return {**unknown, "reason": "structure_limit"}

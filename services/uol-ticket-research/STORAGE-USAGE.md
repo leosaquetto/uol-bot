@@ -12,6 +12,9 @@ Sua instalação e validação operacional são etapas separadas dos testes loca
   O loop de Stories nunca aguarda essa rede, inclusive em `--once`/encerramento.
 - A consulta cobre o dia UTC corrente e os três dias anteriores, agregando todas
   as namespaces da conta. Ausência do grupo corrente é falha, nunca consumo zero.
+- Até duas consultas por rodada: global independente e detalhamento por projeto,
+  requisições e armazenamento. Erro parcial/truncamento fica desconhecido. Estado
+  local registra limiares de 70/80%, previsão e histerese; ver [CONTINUITY.md](CONTINUITY.md).
 - A publicação usa `POST /ingest-storage-usage` com credencial própria
   `STORAGE_USAGE_INGEST_TOKEN`, separada de administração e de Stories.
 - Falhas de configuração, Analytics ou ingestão ficam isoladas. O último resultado
@@ -49,6 +52,10 @@ mais de **30 minutos**, está ausente ou pertence a outro dia UTC. Descoberta
 principal, probes críticos, entregas e recibos mantêm suas proteções existentes.
 O guard não é um teto absoluto de consumo: outros Workers e trabalho crítico
 continuam podendo gravar.
+
+O resumo pode adicionar `optionalWorkDeferred`/`optionalWorkReason` para pressão
+de outras dimensões ou previsão. O par validado restringe somente manutenção;
+preserva payloads antigos, validação temporal e a reserva de trabalhos críticos.
 
 Às 00h UTC (21h de São Paulo), exige nova amostra do dia. Analytics atrasado ou
 indisponível não libera a manutenção. `globalFresh:false` degrada readiness.

@@ -107,4 +107,33 @@ describe("storage economy preserves durable transitions", () => {
     });
     expect(oversized.status).toBe(400);
   });
+
+  it("optional hint only gates maintenance, persists, deduplicates and rejects same-time changes", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("economy-optional-budget");
+    await runInDurableObject(stub, instance => {
+      instance.env = { ...instance.env, STORAGE_USAGE_GLOBAL_GUARD_ENABLED: "true" };
+      const now = new Date();
+      const sample = { day: now.toISOString().slice(0, 10), observedAt: now.toISOString(),
+        accountRowsRead: 100, accountRowsWritten: 1000,
+        optionalWorkDeferred: true, optionalWorkReason: "quota_forecast" };
+      const first = instance.ingestStorageUsage(sample);
+      expect(first.budget.maintenanceAllowed).toBe(false);
+      expect(first.budget.primaryAllowed).toBe(true);
+      expect(first.budget.writeMaintenanceAllowed).toBe(true);
+      expect(first.budget.optionalWorkReason).toBe("quota_forecast");
+      const written = instance.storageUsage.rowsWritten;
+      expect(instance.ingestStorageUsage(sample).accepted).toBe(false);
+      expect(instance.storageUsage.rowsWritten).toBe(written);
+      expect(() => instance.ingestStorageUsage({ ...sample, optionalWorkDeferred: false, optionalWorkReason: "none" }))
+        .toThrow("storage_usage_out_of_order");
+      instance.runtimeSnapshotCache.clear();
+      expect(instance.storageUsageSnapshot().optionalWorkDeferred).toBe(true);
+      const released = instance.ingestStorageUsage({ ...sample,
+        observedAt: new Date(now.getTime() + 1).toISOString(), optionalWorkDeferred: false, optionalWorkReason: "none" });
+      expect(released.budget.maintenanceAllowed).toBe(true);
+      const stale = instance.storageUsageSnapshot(new Date(now.getTime() + 30 * 60_000 + 2));
+      expect(stale.maintenanceAllowed).toBe(false);
+      expect(stale.writeGuardReason).toBe("storage_global_metrics_stale");
+    });
+  });
 });

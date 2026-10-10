@@ -9,6 +9,7 @@ import threading
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+import monitor as monitor_module
 
 from monitor import Monitor, MAX_DAILY_REQUESTS, SAFETY_PERIOD, StorageUsageWorker, run, ticket_link
 
@@ -37,12 +38,13 @@ class MonitorTests(unittest.TestCase):
     def media(self, p, ua):
         return {'imageBase64':'/9j/4A==','imageMime':'image/jpeg'}
 
-    def push(self, sequence, status='connected'):
+    def push(self, sequence, status='connected', story_id='default'):
         path=self.path/'push.sqlite'
         with closing(sqlite3.connect(path)) as db:
-            db.executescript('''CREATE TABLE IF NOT EXISTS signals(seq INTEGER PRIMARY KEY, profile TEXT,story_id TEXT);
+            db.executescript('''CREATE TABLE IF NOT EXISTS signals(seq INTEGER PRIMARY KEY, profile TEXT,story_id TEXT,received_at INTEGER);
                 CREATE TABLE IF NOT EXISTS receiver_state(id INTEGER PRIMARY KEY,status TEXT,observed_at INTEGER);''')
-            db.execute('INSERT OR IGNORE INTO signals VALUES(?,?,?)',(sequence,'clubeuol',self.story()['storyId']))
+            db.execute('INSERT OR IGNORE INTO signals VALUES(?,?,?,?)',
+                       (sequence,'clubeuol',self.story()['storyId'] if story_id == 'default' else story_id,self.now*1000))
             db.execute('INSERT OR REPLACE INTO receiver_state VALUES(1,?,?)',(status,self.now*1000))
             db.commit()
         os.chmod(path,0o600)
@@ -118,7 +120,7 @@ class MonitorTests(unittest.TestCase):
         failed=self.result();failed.update(status='auth_required',reason='login_payload',stories=[])
         self.m.record(failed);self.m.publish_health(report)
         self.assertEqual(sent[-1]['sourceStatus'],'auth_required')
-        self.assertEqual(set(sent[-1]),{'sourceStatus','observedAt','lastSuccessAt','reason'})
+        self.assertEqual(set(sent[-1]),{'sourceStatus','observedAt','lastSuccessAt','reason','coverage','pushReceiver'})
         self.m.record(self.result());self.m.publish_health(report)
         self.assertEqual(len(sent),3)
 
@@ -209,6 +211,172 @@ class MonitorTests(unittest.TestCase):
         restart=Monitor(self.path,{'pushMode':'pilot'},clock=lambda:self.now)
         self.addCleanup(restart.db.close)
         self.assertFalse(restart.reserve_poll())
+
+    def baseline(self):
+        self.m.config['pushMode'] = 'pilot'
+        self.push(1)
+        empty = self.result();empty.update(status='empty', stories=[])
+        self.m.record(empty)
+
+    def coverage(self, story_id=None):
+        row = self.m.db.execute('SELECT value FROM story_coverage WHERE story_id=?',
+                                (story_id or self.story()['storyId'],)).fetchone()
+        return json.loads(row[0])
+
+    def test_idle_ticks_do_not_commit_state_or_rewrite_status(self):
+        self.m.reserve_poll()
+        before = self.m.db.total_changes
+        with patch('monitor.atomic_json', wraps=monitor_module.atomic_json) as write:
+            for _ in range(10):
+                self.assertFalse(self.m.reserve_poll())
+                self.m.flush()
+            self.assertEqual(write.call_count, 0)
+        self.assertEqual(self.m.db.total_changes, before)
+
+    def test_unchanged_state_still_commits_sql_changes(self):
+        self.m.save()
+        self.m.db.execute('INSERT INTO polls VALUES(?,?,NULL)', (self.now, 2))
+        with patch('monitor.atomic_json') as write:
+            self.m.save()
+            write.assert_not_called()
+        with closing(sqlite3.connect(self.path/'monitor.sqlite')) as reader:
+            self.assertEqual(reader.execute('SELECT count(*) FROM polls').fetchone()[0], 1)
+
+    def test_backoff_keeps_local_liveness_at_sixty_seconds(self):
+        self.m.state.update(sourceStatus='auth_required', retryNotBefore=self.now+21600, nextPoll=self.now+21600)
+        self.m.reserve_poll();self.m.save()
+        before = self.m.db.total_changes
+        with patch('monitor.atomic_json', wraps=monitor_module.atomic_json) as write:
+            self.assertTrue(self.m.loop_checkpoint())
+            for _ in range(10):
+                self.now += 2
+                self.assertFalse(self.m.reserve_poll())
+                self.assertFalse(self.m.loop_checkpoint())
+                self.m.flush()
+            self.now += 40
+            self.assertTrue(self.m.loop_checkpoint())
+            heartbeats = [call for call in write.call_args_list if call.args[0].name == 'loop-heartbeat.json']
+            self.assertEqual(len(heartbeats), 2)
+        self.assertEqual(self.m.db.total_changes, before)
+        saved = json.loads((self.path/'loop-heartbeat.json').read_text())
+        self.assertEqual(saved['loopAliveAt'], dt.datetime.fromtimestamp(self.now,dt.timezone.utc).isoformat())
+
+    def test_media_and_intake_reservations_survive_crash_before_side_effect(self):
+        self.m.record(self.result())
+        def media(payload, ua):
+            with closing(sqlite3.connect(self.path/'monitor.sqlite')) as reader:
+                self.assertEqual(reader.execute('SELECT count(*) FROM media_reads').fetchone()[0], 1)
+            return self.media(payload, ua)
+        def crash(config, payload):
+            with closing(sqlite3.connect(self.path/'monitor.sqlite')) as reader:
+                row = reader.execute('SELECT attempts,payload,due FROM outbox').fetchone()
+                self.assertEqual(row[0], 1)
+                self.assertIn('imageBase64', json.loads(row[1]))
+                self.assertGreater(row[2], self.now)
+            raise RuntimeError('fixture_crash')
+        with self.assertRaises(RuntimeError):
+            self.m.flush(crash,media)
+
+    def test_initial_snapshot_stories_are_excluded_even_with_exact_push(self):
+        self.m.config['pushMode'] = 'pilot';self.push(1)
+        self.m.record(self.result())
+        entry = self.coverage()
+        self.assertTrue(entry['baseline'])
+        self.assertEqual(entry['pushCorrelation'], 'exact_story_id')
+        self.assertEqual(self.m.state['coverage']['successDenominator'], 0)
+        self.assertEqual(entry['firstSeenAt'], dt.datetime.fromtimestamp(self.now,dt.timezone.utc).isoformat())
+
+    def test_missing_push_matures_and_late_exact_signal_repairs_correlation(self):
+        self.baseline()
+        story = self.story();story['storyId'] = '4004391581161830449'
+        self.m.state['lastPollTrigger'] = 'safety'
+        self.m.record(self.result(story))
+        self.assertEqual(self.coverage(story['storyId'])['collectionTrigger'], 'safety')
+        self.assertEqual(self.m.state['coverage']['awaitingPushStories'], 1)
+        self.now += 600
+        self.push(1)  # Receiver heartbeat stayed current during the correlation window.
+        self.m.refresh_coverage(force=True)
+        self.assertEqual(self.coverage(story['storyId'])['pushCorrelation'], 'without_corresponding_push')
+        self.assertEqual(self.m.state['coverage']['withoutCorrespondingPushStories'], 1)
+        self.push(2, story_id=story['storyId'])
+        self.m.reserve_poll()
+        self.assertEqual(self.coverage(story['storyId'])['pushCorrelation'], 'exact_story_id')
+        self.assertEqual(self.m.state['coverage']['correspondingPushStories'], 1)
+        self.assertEqual(self.m.state['coverage']['withoutCorrespondingPushStories'], 0)
+
+    def test_generic_signal_remains_uncertain_and_does_not_become_exact(self):
+        self.baseline()
+        story = self.story();story['storyId'] = '4004391581161830449'
+        self.push(2, story_id=None)
+        self.m.record(self.result(story))
+        entry = self.coverage(story['storyId'])
+        self.assertEqual(entry['pushCorrelation'], 'generic_profile_signal_uncertain')
+        self.assertEqual(entry['genericProfileSignalSequence'], 2)
+        self.now += 600;self.push(2,story_id=None);self.m.refresh_coverage(force=True)
+        self.assertEqual(self.coverage(story['storyId'])['pushCorrelation'], 'without_corresponding_push')
+        self.assertEqual(self.m.state['coverage']['genericProfileSignalStories'], 1)
+        self.assertEqual(self.m.state['coverage']['correspondingPushStories'], 0)
+
+    def test_authentication_and_socket_gap_stories_do_not_enter_denominator(self):
+        self.baseline()
+        failed = self.result();failed.update(status='auth_required', stories=[])
+        self.m.record(failed)
+        self.now += 21601;self.push(2)
+        self.m.record(self.result())
+        self.assertEqual(self.coverage()['excludedReason'], 'coverage_gap')
+        self.push(2,status='disconnected')
+        story = self.story();story['storyId'] = '4004391581161830449'
+        self.m.record(self.result(story))
+        self.assertEqual(self.coverage(story['storyId'])['excludedReason'], 'receiver_disconnected')
+        self.now += 600;self.m.refresh_coverage(force=True)
+        self.assertEqual(self.m.state['coverage']['successDenominator'], 0)
+        self.assertEqual(self.m.state['coverage']['excludedStories'], 2)
+
+    def test_weekend_without_stories_is_healthy_empty_snapshot(self):
+        self.baseline()
+        self.now += 86400
+        empty = self.result();empty.update(status='empty',stories=[])
+        self.m.record(empty)
+        self.assertEqual(self.m.state['sourceStatus'], 'empty')
+        self.assertEqual(self.m.state['failures'], 0)
+        self.assertEqual(self.m.state['coverage']['successDenominator'], 0)
+
+    def test_receiver_outage_during_pending_correlation_excludes_story(self):
+        self.baseline()
+        story = self.story();story['storyId'] = '4004391581161830449'
+        self.m.record(self.result(story))
+        self.now += 601;self.m.refresh_coverage(force=True)
+        self.assertEqual(self.coverage(story['storyId'])['excludedReason'], 'receiver_stale')
+        self.assertEqual(self.m.state['coverage']['successDenominator'], 0)
+        self.assertEqual(self.m.state['coverage']['excludedStories'], 1)
+
+    def test_restart_keeps_generic_correlation_and_existing_verified_proof(self):
+        self.baseline()
+        story = self.story();story['storyId'] = '4004391581161830449'
+        self.push(2,story_id=None)
+        self.m.record(self.result(story))
+        self.m.state['verifiedPushProof'] = 'historic_verified_proof';self.m.save()
+        other = Monitor(self.path,self.m.config,clock=lambda:self.now)
+        self.addCleanup(other.db.close)
+        other.reserve_poll();other.save()
+        self.assertEqual(other.state['coverage']['genericProfileSignalStories'], 1)
+        self.assertEqual(other.state['verifiedPushProof'], 'historic_verified_proof')
+        self.assertEqual(other.db.execute('SELECT count(*) FROM outbox').fetchone()[0], 1)
+
+    def test_receiver_snapshot_exposes_freshness_and_backlog_progress_is_receipt_only(self):
+        self.baseline()
+        self.assertTrue(self.m.state['pushReceiver']['fresh'])
+        self.m.record(self.result())
+        self.m.flush(lambda c,p:{'status':'pending','targets':{'main':{'status':'pending','attempts':1}}}, self.media)
+        progressed = self.m.state['outboxProgress']['lastProgressAt']
+        self.assertEqual(self.m.state['outboxProgress']['oldestPendingEpoch'], self.now)
+        self.now += 121
+        self.m.flush(lambda c,p:{'status':'pending','targets':{'main':{'status':'pending','attempts':2}}}, self.media)
+        self.assertEqual(self.m.state['outboxProgress']['lastProgressAt'], progressed)
+        self.assertEqual(self.coverage()['targets'], {next(iter(self.coverage()['targets'])): {'main':{'status':'pending','imageConfirmed':None}}})
+        self.now += 600;self.m.reserve_poll()
+        self.assertFalse(self.m.state['pushReceiver']['fresh'])
+        self.assertFalse(self.m.state['pushReceiver']['connected'])
 
     def test_storage_network_does_not_block_story_collection_or_once_return(self):
         entered, release, finished = threading.Event(), threading.Event(), threading.Event()

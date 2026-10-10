@@ -25,11 +25,26 @@ class PushSignals:
             with closing(self._connect()) as db:
                 sequence = db.execute("SELECT coalesce(max(seq),0) FROM signals WHERE profile='clubeuol'").fetchone()[0]
                 receiver = db.execute('SELECT status,observed_at FROM receiver_state WHERE id=1').fetchone()
-            return {'sequence': sequence, 'connected': bool(receiver and receiver[0] == 'connected'
-                                                          and 0 <= now-receiver[1]/1000 < 600),
-                    'status': receiver[0] if receiver else 'starting'}
+            fresh = bool(receiver and 0 <= now-receiver[1]/1000 < 600)
+            return {'sequence': sequence, 'connected': bool(receiver and receiver[0] == 'connected' and fresh),
+                    'status': receiver[0] if receiver else 'starting', 'fresh': fresh,
+                    'observedAt': dt.datetime.fromtimestamp(receiver[1]/1000, dt.timezone.utc).isoformat()
+                    if receiver else None}
         except (OSError, ValueError, sqlite3.Error):
-            return {'sequence': 0, 'connected': False, 'status': 'unavailable'}
+            return {'sequence': 0, 'connected': False, 'status': 'unavailable',
+                    'fresh': False, 'observedAt': None}
+
+    def signals(self):
+        """Bounded metadata only; an exact Story ID is distinct from a profile hint."""
+        try:
+            with closing(self._connect()) as db:
+                columns = {row[1] for row in db.execute('PRAGMA table_info(signals)')}
+                received = 'received_at' if 'received_at' in columns else 'NULL'
+                rows = db.execute(f"SELECT seq,story_id,{received} FROM signals WHERE profile='clubeuol' ORDER BY seq DESC LIMIT 5000").fetchall()
+            return [{'sequence': row[0], 'storyId': row[1],
+                     'receivedEpoch': row[2]/1000 if row[2] is not None else None} for row in rows]
+        except (OSError, ValueError, sqlite3.Error):
+            return []
 
     def proves(self, proof):
         if (not isinstance(proof, dict) or proof.get('browserClosed') is not True

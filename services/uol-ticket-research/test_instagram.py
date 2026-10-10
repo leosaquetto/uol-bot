@@ -83,6 +83,35 @@ class ParserTests(unittest.TestCase):
             self.assertEqual(instagram.parse_stories(body)["status"], "unknown")
         self.assertEqual(instagram.parse_stories("<html>App bootstrap only</html>")["status"], "unknown")
 
+    def test_unknown_diagnostics_are_only_counts_and_flags_without_private_values(self):
+        payload = {"is_logged_in": True, "user": {"username": "clubeuol", "private": SECRET},
+                   "reels_media": [], "nested": [{"reels_media": None}, {"reels_media": {}},
+                                                  {"reels_media": SECRET}], "private": SECRET}
+        body = '<script type="application/json">' + json.dumps(payload) + '</script>'
+        result = instagram.parse_stories(body)
+        self.assertEqual((result['status'],result['reason']), ('unknown','no_validated_story_structure'))
+        diagnostics = result['structuralDiagnostics']
+        self.assertEqual(diagnostics['jsonScriptCount'], 1)
+        self.assertEqual(diagnostics['targetOwnerOccurrences'], 1)
+        self.assertEqual(diagnostics['targetItemsListOccurrences'], 0)
+        self.assertEqual(diagnostics['reelsMediaOccurrences'], 4)
+        for kind in ('List','Object','Null','Other'):
+            self.assertEqual(diagnostics['reelsMedia'+kind+'Occurrences'], 1)
+        self.assertTrue(diagnostics['authPositiveObserved'])
+        self.assertFalse(diagnostics['authNegativeObserved'])
+        self.assertTrue(all(type(value) in (int,bool) for value in diagnostics.values()))
+        self.assertNotIn(SECRET,json.dumps(result))
+
+    def test_diagnostics_preserve_found_and_explicit_empty_contract(self):
+        for items, status in ([item()], 'found'), ([], 'empty'):
+            result = instagram.parse_stories(page(items))
+            self.assertEqual(result['status'], status)
+            self.assertNotIn('structuralDiagnostics',result)
+        result = instagram.parse_stories(page([item(), None]))
+        self.assertEqual(result['status'], 'unknown')
+        self.assertEqual(result['structuralDiagnostics']['targetItemsListOccurrences'], 1)
+        self.assertEqual(result['structuralDiagnostics']['targetItemsCount'], 2)
+
     def test_wrong_profile_is_never_used(self):
         self.assertEqual(instagram.parse_stories(page(username="other"))["stories"], [])
         self.assertEqual(instagram.parse_stories(page(username="ClubeUOL"))["status"], "unknown")
@@ -227,6 +256,8 @@ class TransportTests(unittest.TestCase):
         expected = {"checkedAt", "status", "reason", "requests", "duration_ms", "body_bytes", "stories"}
         if result["status"] == "rate_limited":
             expected.add("retryAfterSeconds")
+        if 'structuralDiagnostics' in result:
+            expected.add('structuralDiagnostics')
         self.assertEqual(set(result), expected)
         self.assertNotIn(SECRET, json.dumps(result))
         self.assertNotIn("r=private", json.dumps(result))

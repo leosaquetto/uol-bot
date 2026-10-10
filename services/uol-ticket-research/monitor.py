@@ -28,6 +28,16 @@ MAX_DAILY_REQUESTS = 1440
 PERIOD = 120
 SAFETY_PERIOD = 1800
 MAX_MEDIA_BYTES = 3 * 1024 * 1024
+LOCAL_CHECKPOINT_PERIOD = 60
+PUSH_CORRELATION_WAIT = 600
+
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'))
+
+
+def clock_timestamp(value):
+    return dt.datetime.fromtimestamp(value, dt.timezone.utc).isoformat()
 
 
 def ticket_link(link):
@@ -140,6 +150,7 @@ class Monitor:
             CREATE TABLE IF NOT EXISTS outbox(
                 key TEXT PRIMARY KEY, story_id TEXT, expires REAL, payload TEXT,
                 status TEXT, due REAL, attempts INTEGER, receipt TEXT);
+            CREATE TABLE IF NOT EXISTS story_coverage(story_id TEXT PRIMARY KEY, value TEXT);
         ''')
         row = self.db.execute('SELECT value FROM state WHERE id=1').fetchone()
         self.state = json.loads(row[0]) if row else {
@@ -150,18 +161,150 @@ class Monitor:
         # Upgrade older polling state without letting a pending push bypass its backoff.
         self.state.setdefault('retryNotBefore', 0 if self.state['sourceStatus'] in ('starting','found','empty')
                               else self.state['nextPoll'])
+        self._saved_state = canonical(json.loads(row[0])) if row else None
+        self._committed_changes = self.db.total_changes
+        self._next_checkpoint = 0
+        self._next_coverage_refresh = 0
+        self._signals = None
+        try:
+            self._saved_status = canonical(json.loads((self.directory/'status.json').read_text()))
+        except (OSError, ValueError):
+            self._saved_status = None
+
+    def commit(self):
+        if self.db.total_changes != self._committed_changes:
+            self.db.commit()
+            self._committed_changes = self.db.total_changes
+        elif self.db.in_transaction:
+            self.db.rollback()
 
     def save(self):
         self.state['outbox'] = {row[0]: row[1] for row in
                                self.db.execute('SELECT status,count(*) FROM outbox GROUP BY status')}
-        self.db.execute('INSERT OR REPLACE INTO state VALUES(1,?)', (json.dumps(self.state),))
-        self.db.commit()
-        atomic_json(self.directory / 'status.json', self.state)
+        self.update_outbox_progress()
+        # Liveness uses its small checkpoint file, rather than a SQLite write every tick.
+        persisted = {key: value for key, value in self.state.items() if key != 'loopAliveAt'}
+        value = canonical(persisted)
+        if value != self._saved_state:
+            self.db.execute('INSERT OR REPLACE INTO state VALUES(1,?)', (value,))
+        self.commit()
+        self._saved_state = value
+        status = canonical(self.state)
+        if status != self._saved_status:
+            atomic_json(self.directory / 'status.json', self.state)
+            self._saved_status = status
+
+    def loop_checkpoint(self):
+        now = self.clock()
+        if now < self._next_checkpoint:
+            return False
+        self._next_checkpoint = now + LOCAL_CHECKPOINT_PERIOD
+        self.state['loopAliveAt'] = clock_timestamp(now)
+        self.update_receiver(now)
+        self.update_outbox_progress()
+        # This is main-loop progress: blocked collection cannot keep it falsely alive.
+        atomic_json(self.directory/'loop-heartbeat.json', {
+            'loopAliveAt': self.state['loopAliveAt'],
+            'pushReceiverStatus': self.state.get('pushReceiverStatus', 'disabled'),
+            'pushReceiver': self.state.get('pushReceiver', {}),
+            'outboxProgress': self.state['outboxProgress'],
+        })
+        return True
+
+    def update_outbox_progress(self):
+        rows = self.db.execute("SELECT story_id,payload,due FROM outbox WHERE status NOT IN ('delivered','expired','unknown')").fetchall()
+        oldest = []
+        for story_id, text, due in rows:
+            coverage = self.db.execute('SELECT value FROM story_coverage WHERE story_id=?', (story_id,)).fetchone()
+            if coverage:
+                oldest.append(json.loads(coverage[0])['firstSeenEpoch'])
+            else:
+                try:
+                    oldest.append(epoch(json.loads(text)['publishedAt']))
+                except (KeyError, ValueError, TypeError):
+                    pass
+        self.state['outboxProgress'] = {'pending': len(rows),
+            'oldestPendingEpoch': min(oldest) if oldest else None,
+            'oldestPendingAt': clock_timestamp(min(oldest)) if oldest else None,
+            'lastProgressAt': self.state.get('lastOutboxProgressAt'),
+            'nextRetryAt': clock_timestamp(min(row[2] for row in rows)) if rows else None}
+
+    def update_receiver(self, now):
+        push = self.push.snapshot(now) if self.config.get('pushMode', 'poll') != 'poll' else {
+            'sequence': 0, 'connected': False, 'status': 'disabled', 'fresh': False, 'observedAt': None}
+        self.state['pushReceiverStatus'] = push['status']
+        self.state['pushReceiver'] = {key: push[key] for key in ('status','connected','fresh','observedAt')}
+        if not push['connected']:
+            self.state['coverageWindowHasGap'] = True
+        self.refresh_coverage(push)
+        return push
+
+    def write_coverage(self, story_id, value, previous=None):
+        encoded = canonical(value)
+        if previous != encoded:
+            self.db.execute('INSERT INTO story_coverage VALUES(?,?) ON CONFLICT(story_id) DO UPDATE SET value=excluded.value',
+                            (story_id, encoded))
+
+    def refresh_coverage(self, push=None, force=False):
+        now = self.clock()
+        if push is None:
+            push = self.push.snapshot(now) if self.config.get('pushMode', 'poll') != 'poll' else {
+                'sequence': 0, 'connected': False, 'status': 'disabled', 'fresh': False}
+        sequence = push['sequence']
+        changed = sequence != self.state.get('coverageSignalSequence')
+        if not force and not changed and now < self._next_coverage_refresh:
+            return
+        self._next_coverage_refresh = now + LOCAL_CHECKPOINT_PERIOD
+        if force or changed or self._signals is None:
+            self._signals = self.push.signals() if self.config.get('pushMode', 'poll') != 'poll' else []
+        self.state['coverageSignalSequence'] = sequence
+        counts = {'baselineStories': 0, 'excludedStories': 0, 'eligibleStories': 0,
+                  'correspondingPushStories': 0, 'awaitingPushStories': 0,
+                  'withoutCorrespondingPushStories': 0, 'genericProfileSignalStories': 0}
+        exact = {signal['storyId']: signal for signal in reversed(self._signals) if signal['storyId']}
+        generic = [signal for signal in self._signals if not signal['storyId'] and signal['receivedEpoch'] is not None]
+        for story_id, text in self.db.execute('SELECT story_id,value FROM story_coverage').fetchall():
+            entry = json.loads(text)
+            # An unsettled correlation window cannot be scored across receiver/auth gaps.
+            if (not entry['baseline'] and not entry.get('excludedReason')
+                    and entry.get('pushCorrelation') not in ('exact_story_id','without_corresponding_push')):
+                if not push['connected']:
+                    entry['excludedReason'] = ('receiver_stale' if push['status'] == 'connected'
+                                               else 'receiver_' + push['status'])
+                elif self.state['sourceStatus'] not in ('found','empty'):
+                    entry['excludedReason'] = 'coverage_gap'
+            signal = exact.get(story_id)
+            if signal:
+                entry.update(pushCorrelation='exact_story_id', exactSignalSequence=signal['sequence'],
+                             exactSignalReceivedAt=clock_timestamp(signal['receivedEpoch'])
+                             if signal['receivedEpoch'] is not None else None)
+            hints = [signal for signal in generic
+                     if entry['publishedEpoch']-60 <= signal['receivedEpoch'] <= entry['firstSeenEpoch']+PUSH_CORRELATION_WAIT]
+            if hints:
+                entry['genericProfileSignalSequence'] = hints[0]['sequence']
+            if entry.get('genericProfileSignalSequence'):
+                counts['genericProfileSignalStories'] += 1
+            if entry.get('pushCorrelation') != 'exact_story_id':
+                entry['pushCorrelation'] = ('without_corresponding_push' if now-entry['firstSeenEpoch'] >= PUSH_CORRELATION_WAIT
+                                            else 'generic_profile_signal_uncertain' if entry.get('genericProfileSignalSequence') else 'awaiting_push')
+            self.write_coverage(story_id, entry, text)
+            if entry['baseline']:
+                counts['baselineStories'] += 1
+            elif entry.get('excludedReason'):
+                counts['excludedStories'] += 1
+            else:
+                counts['eligibleStories'] += 1
+                name = {'exact_story_id': 'correspondingPushStories',
+                        'without_corresponding_push': 'withoutCorrespondingPushStories'}.get(entry['pushCorrelation'], 'awaitingPushStories')
+                counts[name] += 1
+        counts['successDenominator'] = counts['correspondingPushStories']+counts['withoutCorrespondingPushStories']
+        counts['pushCoveragePercent'] = (round(100*counts['correspondingPushStories']/counts['successDenominator'], 2)
+                                         if counts['successDenominator'] else None)
+        self.state['coverage'] = counts
 
     def reserve_poll(self):
         now = self.clock()
-        push = self.push.snapshot(now) if self.config.get('pushMode', 'poll') != 'poll' else {'sequence': 0, 'connected': False, 'status': 'disabled'}
-        self.state['pushReceiverStatus'] = push['status']
+        push = self.update_receiver(now)
         pending = push['sequence'] > self.state.get('consumedSignalSequence', 0)
         event_due = pending and now >= self.state.get('pushAttemptNotBefore', 0)
         if now < self.state.get('retryNotBefore', 0):
@@ -201,15 +344,32 @@ class Monitor:
         s['cycles'] += 1
         s['requests'] += result.get('requests', 0)
         s['lastObservationAt'] = result['checkedAt']
-        s['lastResult'] = {k: result.get(k) for k in ('status', 'reason', 'duration_ms', 'requests', 'body_bytes')}
+        s['lastResult'] = {k: result.get(k) for k in ('status', 'reason', 'duration_ms', 'requests', 'body_bytes',
+                                                    'structuralDiagnostics')}
         s['sourceStatus'] = result['status']
         self.db.execute('UPDATE polls SET result=? WHERE rowid=(SELECT max(rowid) FROM polls)', (json.dumps(s['lastResult']),))
         if result['status'] in ('found', 'empty'):
+            receiver = self.update_receiver(now)
+            baseline = 'coverageBaselineAt' not in s
+            if baseline:
+                s['coverageBaselineAt'] = result['checkedAt']
             s.update(failures=0, lastSuccessAt=result['checkedAt'], lastSuccessEpoch=now, retryNotBefore=0)
             s['currentStoryIds'] = [x['storyId'] for x in result['stories']]
             for story in result['stories']:
                 if epoch(story['expiresAt']) <= now:
                     continue
+                if not self.db.execute('SELECT 1 FROM story_coverage WHERE story_id=?', (story['storyId'],)).fetchone():
+                    excluded = 'coverage_gap' if s.get('coverageWindowHasGap') else ''
+                    if not receiver['connected']:
+                        excluded = ('receiver_stale' if receiver['status'] == 'connected'
+                                    else 'receiver_' + receiver['status'])
+                    self.write_coverage(story['storyId'], {
+                        'storyId': story['storyId'], 'publishedAt': story['publishedAt'],
+                        'publishedEpoch': epoch(story['publishedAt']), 'firstSeenAt': clock_timestamp(now),
+                        'firstSeenEpoch': now, 'collectionTrigger': s.get('lastPollTrigger', 'poll'),
+                        'baseline': baseline, 'excludedReason': excluded,
+                        'pushCorrelation': 'awaiting_push', 'targets': {},
+                    })
                 for candidate in story['destinations']:
                     link = ticket_link(candidate)
                     if not link:
@@ -229,13 +389,17 @@ class Monitor:
                         for name in ('imageBase64','imageMime'):
                             if name in previous:
                                 payload[name] = previous[name]
-                        self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload), key))
+                        if canonical(previous) != canonical(payload):
+                            self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload), key))
             # Persist snapshot, outbox and only the pre-fetch high-water mark in one transaction.
             # A push received during collection remains pending for the next collection.
             s['consumedSignalSequence'] = max(s.get('consumedSignalSequence', 0), s.get('reservedSignalSequence', 0))
             interval = SAFETY_PERIOD if self.event_enabled() else PERIOD
             s.update(nextPoll=now+interval+random.uniform(0, 10), activePollPeriodSeconds=interval)
+            s['coverageWindowHasGap'] = not receiver['connected']
+            self.refresh_coverage(receiver, force=True)
         else:
+            s['coverageWindowHasGap'] = True
             s['failures'] += 1
             if result['status'] == 'auth_required' or result.get('reason') == 'session_write_failed':
                 delay = 6*3600
@@ -247,14 +411,17 @@ class Monitor:
             s['retryNotBefore'] = s['nextPoll']
         self.db.execute('DELETE FROM polls WHERE at<?', (now-7*86400,))
         self.db.execute('DELETE FROM outbox WHERE expires<?', (now-30*86400,))
+        self.db.execute("DELETE FROM story_coverage WHERE CAST(json_extract(value, '$.firstSeenEpoch') AS REAL)<?", (now-30*86400,))
         self.save()
 
     def flush(self, send=ingest, media_fetch=fetch_media):
         now = self.clock()
-        self.db.execute("UPDATE outbox SET status='expired' WHERE expires<=? AND status!='delivered'", (now,))
-        self.db.commit()
-        rows = self.db.execute("SELECT key,payload,attempts FROM outbox WHERE due<=? AND expires>? AND status NOT IN ('delivered','expired','unknown') ORDER BY due LIMIT 2", (now, now)).fetchall()
-        for key, text, attempts in rows:
+        expired = self.db.execute("UPDATE outbox SET status='expired' WHERE expires<=? AND status NOT IN ('delivered','expired')", (now,)).rowcount
+        if expired:
+            self.state['lastOutboxProgressAt'] = clock_timestamp(now)
+        self.commit()
+        rows = self.db.execute("SELECT key,payload,attempts,status,receipt FROM outbox WHERE due<=? AND expires>? AND status NOT IN ('delivered','expired','unknown') ORDER BY due LIMIT 2", (now, now)).fetchall()
+        for key, text, attempts, previous_status, previous_receipt in rows:
             payload = json.loads(text)
             if not payload.get('imageUrl'):
                 self.db.execute('UPDATE outbox SET status=\'held\',due=? WHERE key=?', (now+PERIOD, key))
@@ -265,7 +432,7 @@ class Monitor:
                     self.db.execute('UPDATE outbox SET due=? WHERE key=?', (now+3600,key))
                     continue
                 self.db.execute('INSERT INTO media_reads VALUES(?)', (now,))
-                self.db.commit()
+                self.commit()
                 self.state['mediaRequests'] = self.state.get('mediaRequests', 0)+1
                 # CDN requests carry no Instagram cookies, authorization or password.
                 try:
@@ -280,7 +447,7 @@ class Monitor:
                 self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload),key))
             # The Worker intake is idempotent; source crash only repeats intake.
             self.db.execute("UPDATE outbox SET due=?,attempts=attempts+1 WHERE key=?", (now+PERIOD, key))
-            self.db.commit()
+            self.commit()
             receipt = send(self.config, payload)
             status = receipt.get('status', 'pending')
             targets = receipt.get('targets') or {}
@@ -290,6 +457,18 @@ class Monitor:
                 status = 'pending'
             self.db.execute('UPDATE outbox SET status=?,due=?,receipt=? WHERE key=?',
                             (status, self.clock()+min(3600, PERIOD*2**min(attempts, 5)), json.dumps(receipt), key))
+            previous = json.loads(previous_receipt)
+            progress = lambda value: {'status': value.get('status'),
+                'targets': {name: {key: target.get(key) for key in ('status','messageId','imageConfirmed')}
+                            for name, target in (value.get('targets') or {}).items()}}
+            if status != previous_status or progress(previous) != progress(receipt):
+                self.state['lastOutboxProgressAt'] = clock_timestamp(self.clock())
+            coverage = self.db.execute('SELECT value FROM story_coverage WHERE story_id=?', (payload['storyId'],)).fetchone()
+            if coverage:
+                entry = json.loads(coverage[0])
+                entry['targets'][key] = {name: {field: target.get(field) for field in ('status','imageConfirmed')}
+                                         for name, target in targets.items()}
+                self.write_coverage(payload['storyId'], entry, coverage[0])
             if status == 'delivered':
                 payload.pop('imageBase64',None)
                 payload.pop('imageMime',None)
@@ -316,6 +495,8 @@ class Monitor:
         payload = {'sourceStatus': status, 'observedAt': self.state.get('lastObservationAt'),
                    'lastSuccessAt': self.state.get('lastSuccessAt'),
                    'reason': (self.state.get('lastResult') or {}).get('reason', '')}
+        # Current Worker accepts and ignores additive fields; its public contract stays intact.
+        payload.update(coverage=self.state.get('coverage', {}), pushReceiver=self.state.get('pushReceiver', {}))
         if send(self.config, payload):
             self.state.update(lastHeartbeatStatus=status, lastHeartbeatEpoch=now,
                               healthRetryAt=0, remoteHealthPublished=True)
@@ -388,6 +569,7 @@ def run(directory, config_path, once=False):
                 monitor.state['storageUsageObserver'] = 'unavailable'
         try:
             while True:
+                monitor.loop_checkpoint()
                 if storage_observer is not None:
                     try:
                         monitor.state['storageUsageObserver'] = storage_observer.tick()
@@ -402,6 +584,7 @@ def run(directory, config_path, once=False):
                     monitor.record(result)
                 monitor.flush()
                 monitor.publish_health()
+                monitor.loop_checkpoint()
                 if once:
                     return monitor.state
                 time.sleep(2 if config.get('pushMode', 'poll') != 'poll' else 15)

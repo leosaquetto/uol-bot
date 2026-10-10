@@ -31,6 +31,23 @@ test("usage samples are bounded nonnegative integer UTC evidence", () => {
   }
 });
 
+test("optional-work hint preserves old payloads and validates a bounded coherent pair", () => {
+  assert.equal(normalizeAccountStorageUsage(sample, now).optionalWorkDeferred, undefined);
+  for (const optionalWorkReason of ["quota_actual", "quota_forecast", "quota_metrics_stale"]) {
+    const normalized = normalizeAccountStorageUsage({ ...sample, optionalWorkDeferred: true, optionalWorkReason }, now);
+    assert.equal(normalized.optionalWorkDeferred, true);
+    assert.equal(normalized.optionalWorkReason, optionalWorkReason);
+  }
+  assert.equal(normalizeAccountStorageUsage({ ...sample, optionalWorkDeferred: false, optionalWorkReason: "none" }, now).optionalWorkDeferred, false);
+  for (const hint of [{ optionalWorkDeferred: true }, { optionalWorkReason: "none" },
+    { optionalWorkDeferred: "false", optionalWorkReason: "none" },
+    { optionalWorkDeferred: true, optionalWorkReason: "none" },
+    { optionalWorkDeferred: false, optionalWorkReason: "quota_actual" },
+    { optionalWorkDeferred: true, optionalWorkReason: "unbounded" }]) {
+    assert.throws(() => normalizeAccountStorageUsage({ ...sample, ...hint }, now), /storage_usage_invalid/);
+  }
+});
+
 test("hidden-ticket durable result survives restart without repeated enrichment; changed content and restock re-enter", async () => {
   const card = { id: "pPQ", link: "https://clube.uol.com.br/campanhasdeingresso/pPQ-show", previewTitle: "Show", apiDetail: { description: "Zayn" } };
   const fingerprint = await ticketCodeCardFingerprint(card);
