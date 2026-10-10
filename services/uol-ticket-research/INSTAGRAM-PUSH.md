@@ -2,6 +2,8 @@
 
 O receptor é separado do X, do navegador e dos envios. A biblioteca criptográfica genérica de `saquetto-drops/src/webpush-crypto.js` é reutilizada sem importar o adaptador X ou alterar sua inscrição. Node 22.13 ou superior, SQLite nativo e a dependência `http_ece` já usada pelo Drops são necessários. Na instalação, conservar a relação de caminhos `/opt/uol-instagram-monitor/push` e `/opt/saquetto-drops/src`, com leitura somente do código/dependências pelo usuário do monitor.
 
+No Oracle, o runtime compatível é `/usr/local/bin/node` (22.23.2). Usar esse caminho na unidade e nos comandos abaixo: `/usr/bin/node` ainda é 18 e não fornece WebSocket global nem SQLite nativo.
+
 ## Ativação em duas etapas
 
 1. Registrar um canal Mozilla próprio com a chave VAPID **pública efetivamente usada pelo Instagram nesta conta**. Nenhum valor de chave, cookie, endpoint ou nonce aparece no stdout. Criar o arquivo privado `push-bootstrap.json` com o único campo `applicationServerKey` (65 bytes em base64url), dentro do diretório 0700 do monitor, com modo 0600.
