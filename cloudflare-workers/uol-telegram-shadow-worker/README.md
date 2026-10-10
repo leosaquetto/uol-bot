@@ -216,7 +216,7 @@ do usuário e preservado em `~/Library/LaunchAgents.disabled/`. Em rollback:
 
 ## Orçamento no tier gratuito
 
-O polling mantém 5.760 consultas da API e 5.760 consultas da listagem pública de
+O polling mantém 2.880 consultas da API e 2.880 consultas da listagem pública de
 ingressos por dia. API e ingressos são persistidos juntos em um snapshot
 atômico por ciclo. A manutenção roda 1.440 vezes, consulta o HTML geral e
 reutiliza a listagem de ingressos capturada há no máximo 45 segundos; só repete
@@ -228,6 +228,9 @@ de uma linha por campo. Observações e cards conhecidos só tocam `last_seen_at
 cada 15 minutos, salvo mudança real. Ciclos `no_change` entram no histórico
 `runs` somente como amostra a cada 15 minutos; eventos, falhas e recuperações
 continuam imediatos. O handler periódico rearma o alarme antes das leituras.
+Contrato da API estável mantém frescor em memória e checkpoint durável a cada
+15 minutos; alteração real é persistida imediatamente. Reconciliação da fila
+reutiliza a linha carregada e não executa UPDATE quando status e motivos são iguais.
 
 As leituras SQLite reais são medidas por `rowsRead` e acumuladas por dia UTC.
 A manutenção para antes de invadir a reserva do polling principal. Se o custo
@@ -252,22 +255,55 @@ de runtime. Assim, ciclos sem mudança continuam frescos para a reconciliação
 API/HTML sem regravar `source_observations` a cada polling; uma falha ou um
 snapshot antigo ainda cai para o caminho de degradação existente.
 
-Quando a reserva de leitura está ativa, o alarme de manutenção registra o
+Quando a reserva de leitura ou gravação está ativa, o alarme de manutenção registra o
 adiamento e rearma para a próxima janela segura, limitada pelo reset UTC. Isso é
 degradação secundária, não indisponibilidade, enquanto descoberta, entrega e
 alarme críticos continuam saudáveis. Falha ou resposta inválida das fontes
 críticas desperta a reconciliação geral assim que houver orçamento. Os probes
 de ingressos e as edições de esgotado não são reduzidos.
+Alarmes seguintes respeitam `retryAt` sem regravar timestamps ou contadores.
+Uma nova amostra agregada pode liberar a manutenção antes desse prazo.
 
 Imagens já confirmadas, proxies válidos, edições sem alteração e tentativas
 esgotadas ficam fora das filas de enriquecimento. A primeira entrega e o
 upgrade tardio da mesma mensagem permanecem inalterados.
 
 O diagnóstico calcula o orçamento em `usageEstimate.durableObjectRowsWrittenPerDay`.
-Com 48 cards ativos na API e 48 no HTML, a projeção conservadora é 57.920
-linhas/dia, já incluindo reserva de 20.000 para entregas e incidentes: margem de
-42.080 contra o limite gratuito de 100.000. O valor real varia com cards ativos,
-novidades e falhas; `withinFreeTier=false` exige redução de carga antes de deploy.
+Com polling de 30 segundos, 48 cards ativos na API e 48 no HTML, a projeção é
+60.992 linhas/dia, incluindo checkpoints de linha/índice, alarmes e reserva de
+20.000 para entregas e incidentes. É estimativa local; métricas agregadas da
+conta são a evidência de consumo real. Novidades, índices, retries e outros
+Workers podem elevar o custo; o guard não promete margem a partir dessa projeção.
+
+### Métricas da conta e reserva de gravações
+
+`POST /ingest-storage-usage` exige exclusivamente
+`Authorization: Bearer <STORAGE_USAGE_INGEST_TOKEN>`. O token de admin ou de
+Stories não autoriza esta rota. Corpo JSON de até 4 KiB:
+
+```json
+{"day":"2026-10-10","observedAt":"2026-10-10T12:00:00.000Z","accountRowsRead":1000,"accountRowsWritten":60000}
+```
+
+O coletor Oracle envia agregados GraphQL de todas as namespaces da conta a cada
+15 minutos. `observedAt` descreve o instante da coleta, não o cadastro de oferta.
+Só o dia UTC corrente, amostras de até 30 minutos, até 60 segundos no futuro e
+inteiros seguros não negativos são aceitos. Regressão/ordem conflitante retorna
+409, corpo inválido 400, autenticação inválida 401; duplicata retorna 200 com
+`accepted:false` sem nova gravação. Sucesso: `{ok:true,accepted:true,budget:{...}}`.
+
+A amostra fica em `runtime:account_storage_usage`; após recebê-la, o guard soma
+os incrementos locais medidos até a próxima coleta. Aos 80.000 writes/dia ou
+sem evidência fresca, trabalho opcional é adiado. Descoberta principal, probes
+críticos, entregas e recibos continuam pelas proteções existentes. O reset é
+00h UTC (21h de São Paulo), exige nova amostra e nunca presume consumo zero.
+`globalFresh:false` degrada readiness como risco de orçamento de gravação.
+
+`STORAGE_USAGE_GLOBAL_GUARD_ENABLED=false` é rollback explícito para a proteção
+local de 80.000 writes; padrão de produção é global/fail-closed. Fixtures antigas
+de runtime usam esse rollback para isolar testes; testes de economia ativam o guard.
+Rollback não limpa filas, recibos, histórico ou credenciais. Falha do coletor não
+deve ser tratada como consumo zero; sua credencial Cloudflare é somente leitura.
 
 ## Desenvolvimento e CI
 
@@ -363,6 +399,12 @@ Códigos distantes da janela, prefixos sem duas referências e páginas retirada
 antes da consulta podem não ser encontrados. `/health` inclui `ticketCodeDiscovery`
 e os logs `uol_ticket_code_discovery` mostram tentativas, descobertas e orçamento.
 O resgate automático continua separado deste monitor.
+Cards encontrados recebem fingerprint SHA-256 do conteúdo e uma época de
+disponibilidade confirmada. Snapshot igual não repete resolução/enriquecimento;
+mudança real ou retorno após ausência confirmada continua elegível. Reservas
+anteriores ao GET e resultados verificados persistem antes do handoff. Após
+restart, um resultado pendente ainda é resolvido mesmo sem allowance para outro
+GET; filas existentes preservam trabalho aceito antes de um crash.
 
 Validação pública em 09/10/2026: partindo apenas dos links da listagem, o primeiro
 lote gerou `pPQ`, `pPR`, `pPS` e `pPV`; confirmou a oferta `pPS` (13/10 Nubank

@@ -211,9 +211,10 @@ test("cadência rápida mantém orçamento estável abaixo do plano gratuito", (
 
   assert.equal(budget.limit, 100_000);
   assert.equal(budget.withinFreeTier, true);
-  assert.equal(budget.components.polling, 5_760);
-  assert.ok(budget.projected < 75_000);
-  assert.ok(budget.headroom > 25_000);
+  assert.equal(budget.components.polling, 28_800);
+  assert.equal(budget.components.contractCheckpoints, 192);
+  assert.ok(budget.projected < 85_000);
+  assert.ok(budget.headroom > 15_000);
 });
 
 test("reserva leituras críticas e corta manutenção antes do limite diário", () => {

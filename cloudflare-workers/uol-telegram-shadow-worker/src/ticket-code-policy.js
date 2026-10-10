@@ -3,6 +3,22 @@ export const TICKET_CODE_DAILY_REQUEST_LIMIT = 6_000;
 const MINUTE = 60_000;
 const DAY = 86_400_000;
 
+export async function ticketCodeCardFingerprint(card) {
+  const detail = card?.apiDetail || {};
+  const content = JSON.stringify([card?.id || "", card?.link || "", card?.previewTitle || "",
+    card?.category || "", card?.cardImageUrl || "", card?.partnerImageUrl || "",
+    card?.partnerName || "", detail.title || "", detail.description || "",
+    detail.validity || "", detail.imageUrl || "", detail.quality || ""]);
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(content));
+  return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+export function unresolvedTicketCodeEntries(snapshot) {
+  return Object.values(snapshot.entries || {}).filter(entry => entry.card && entry.status === "found" &&
+    (!entry.resolvedId || !entry.fingerprint || entry.resolvedFingerprint !== entry.fingerprint ||
+      Number(entry.resolvedAvailabilityEpoch || 0) !== Number(entry.availabilityEpoch || 0)));
+}
+
 export function planTicketCodeScan(previous, candidates, now) {
   const day = new Date(now).toISOString().slice(0, 10);
   if (Number(previous.nextAt || 0) > now) return null;
@@ -42,8 +58,10 @@ export function recordTicketCodeResults(state, selected, results, now) {
     const misses = result.status === "absent" ? Number(old.misses || 0) + 1 : 0;
     entries[code] = { ...old, checkedAt: now, status: result.status, misses,
       nextAt: now + (found ? 5 : 10) * MINUTE,
-      ...(found ? { card: result.card, foundAt: now } : {}),
-      ...(misses >= 2 ? { card: null, resolvedId: "" } : {}),
+      ...(found ? { card: result.card, foundAt: now, fingerprint: result.fingerprint || "",
+        availabilityEpoch: Number(old.availabilityEpoch || 0) + (old.lastConfirmedStatus === "absent" ? 1 : 0) } : {}),
+      ...(["found", "absent"].includes(result.status) ? { lastConfirmedStatus: result.status } : {}),
+      ...(misses >= 2 ? { card: null, resolvedId: "", resolvedFingerprint: "" } : {}),
     };
   }
   // Hard cap retained found pages as well as unsuccessful candidates.

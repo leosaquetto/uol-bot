@@ -6,6 +6,8 @@ Plano autorizado em 09/10/2026: instalar o coletor no Oracle existente, integrar
 
 ## Caminho de execução
 
+O receptor dedicado e o gate de mudança para push com consulta de segurança estão documentados em [INSTAGRAM-PUSH.md](INSTAGRAM-PUSH.md). A ativação só reduz o intervalo após prova real no servidor; a implementação sozinha não altera a comprovação histórica abaixo.
+
 1. `uol-instagram-monitor.service` lê `@clubeuol` por HTTP no Oracle aproximadamente a cada dois minutos. Agenda a próxima coleta com intervalo de 120–130 segundos; o ciclo de execução e entregas podem acrescentar atraso. A sessão dedicada e cookies atualizados ficam privados no servidor. Não há navegador por ciclo nem login UOL.
 2. Extrai o sticker e a imagem original do mesmo objeto do Story. Vídeos usam sua imagem de capa. Apenas links canônicos em `https://clube.uol.com.br/campanhasdeingresso/<codigo>-<slug>` entram na fila; outros benefícios são ignorados. Não usa OCR para decidir elegibilidade.
 3. Envia à entrada autenticada do Worker existente. A fila de Stories usa `(Story ID, link)` e recibo independente para Discord, Telegram principal, Canal 2 e WhatsApp. Uma campanha já anunciada pelo bot pode receber este complemento de Story, sem alterar o registro de estoque da oferta.

@@ -1,10 +1,16 @@
 import datetime as dt
+from contextlib import closing
 import json
+import os
 from pathlib import Path
 import tempfile
+import sqlite3
+import threading
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
-from monitor import Monitor, MAX_DAILY_REQUESTS, ticket_link
+from monitor import Monitor, MAX_DAILY_REQUESTS, SAFETY_PERIOD, StorageUsageWorker, run, ticket_link
 
 
 class MonitorTests(unittest.TestCase):
@@ -30,6 +36,20 @@ class MonitorTests(unittest.TestCase):
 
     def media(self, p, ua):
         return {'imageBase64':'/9j/4A==','imageMime':'image/jpeg'}
+
+    def push(self, sequence, status='connected'):
+        path=self.path/'push.sqlite'
+        with closing(sqlite3.connect(path)) as db:
+            db.executescript('''CREATE TABLE IF NOT EXISTS signals(seq INTEGER PRIMARY KEY, profile TEXT,story_id TEXT);
+                CREATE TABLE IF NOT EXISTS receiver_state(id INTEGER PRIMARY KEY,status TEXT,observed_at INTEGER);''')
+            db.execute('INSERT OR IGNORE INTO signals VALUES(?,?,?)',(sequence,'clubeuol',self.story()['storyId']))
+            db.execute('INSERT OR REPLACE INTO receiver_state VALUES(1,?,?)',(status,self.now*1000))
+            db.commit()
+        os.chmod(path,0o600)
+
+    def proof(self):
+        return {'signalSequence':1,'storyId':self.story()['storyId'],'browserClosed':True,
+                'observedAt':self.result()['checkedAt']}
 
     def test_only_campaigns_queued_and_current_story_eligible(self):
         self.m.record(self.result(self.story(False)))
@@ -117,6 +137,170 @@ class MonitorTests(unittest.TestCase):
         stored=json.loads(self.m.db.execute('SELECT payload FROM outbox').fetchone()[0])
         self.assertNotIn('imageBase64',stored)
         self.assertEqual(self.m.state['mediaRequests'],1)
+
+    def test_event_mode_requires_server_signal_story_snapshot_and_browser_closed_proof(self):
+        self.m.config.update(pushMode='event',pushProof=self.proof())
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['activePollPeriodSeconds'],120)
+        self.push(1)
+        self.m.config['pushProof']['browserClosed']=False
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['activePollPeriodSeconds'],120)
+        self.m.config['pushProof']['browserClosed']=True
+        self.assertTrue(self.m.reserve_poll())
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['activePollPeriodSeconds'],SAFETY_PERIOD)
+        self.assertEqual(self.m.state['consumedSignalSequence'],1)
+
+    def test_signal_received_during_collection_survives_snapshot_and_restart(self):
+        self.m.config.update(pushMode='pilot')
+        self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        self.push(2)
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['consumedSignalSequence'],1)
+        restart=Monitor(self.path,self.m.config,clock=lambda:self.now)
+        self.addCleanup(restart.db.close)
+        self.now+=16
+        self.assertTrue(restart.reserve_poll())
+        restart.record(self.result())
+        self.assertEqual(restart.state['consumedSignalSequence'],2)
+        self.assertFalse(restart.reserve_poll())
+
+    def test_pending_signal_never_bypasses_authentication_backoff_or_request_budget(self):
+        self.m.config['pushMode']='pilot'
+        self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        failed=self.result();failed.update(status='auth_required',reason='login_payload',stories=[])
+        self.m.record(failed)
+        self.now+=16;self.push(2)
+        self.assertFalse(self.m.reserve_poll())
+        self.assertEqual(self.m.state.get('consumedSignalSequence',0),0)
+        self.now+=6*3600
+        self.m.db.execute('INSERT INTO polls VALUES(?,?,NULL)',(self.now,MAX_DAILY_REQUESTS));self.m.db.commit()
+        self.assertFalse(self.m.reserve_poll())
+        self.assertEqual(self.m.state['sourceStatus'],'budget_wait')
+
+    def test_disconnected_receiver_preserves_thirty_minute_safety_without_erasing_proof(self):
+        self.m.config.update(pushMode='event',pushProof=self.proof())
+        self.push(1);self.m.reserve_poll();self.m.record(self.result())
+        self.assertEqual(self.m.state['activePollPeriodSeconds'],1800)
+        self.now+=121;self.push(1,status='disconnected')
+        self.assertFalse(self.m.reserve_poll())
+        self.now+=1800
+        self.assertTrue(self.m.reserve_poll())
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['activePollPeriodSeconds'],1800)
+        self.assertEqual(self.m.state['consumedSignalSequence'],1)
+
+    def test_signal_reservation_crash_preserves_high_water_and_minimum_interval(self):
+        self.m.config['pushMode']='pilot';self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        restart=Monitor(self.path,self.m.config,clock=lambda:self.now)
+        self.addCleanup(restart.db.close)
+        self.assertFalse(restart.reserve_poll())
+        self.now+=16
+        self.assertTrue(restart.reserve_poll())
+        self.assertEqual(restart.state['reservedSignalSequence'],1)
+
+    def test_upgrading_old_authentication_state_preserves_existing_backoff(self):
+        self.m.state.update(sourceStatus='auth_required',nextPoll=self.now+6*3600)
+        self.m.state.pop('retryNotBefore',None);self.m.save();self.push(1)
+        restart=Monitor(self.path,{'pushMode':'pilot'},clock=lambda:self.now)
+        self.addCleanup(restart.db.close)
+        self.assertFalse(restart.reserve_poll())
+
+    def test_storage_network_does_not_block_story_collection_or_once_return(self):
+        entered, release, finished = threading.Event(), threading.Event(), threading.Event()
+        observer = SimpleNamespace(state={'nextEpoch': 0}, clock=lambda: self.now)
+        def observe():
+            entered.set()
+            release.wait(2)
+            finished.set()
+            return {'outcome': 'published'}
+        observer.run_if_due = observe
+        def collect():
+            self.assertTrue(entered.wait(1))
+            self.assertFalse(finished.is_set())
+            return self.result()
+        (self.path / 'storage-usage.json').write_text('{}')
+        try:
+            with patch('monitor.private_config', return_value={}), \
+                    patch('monitor.Monitor', return_value=self.m), \
+                    patch('storage_usage.StorageUsageObserver', return_value=observer), \
+                    patch('monitor.InstagramClient') as instagram, \
+                    patch.object(self.m, 'flush'), patch.object(self.m, 'publish_health'):
+                instagram.return_value.collect.side_effect = collect
+                state = run(self.path, self.path / 'config.json', once=True)
+            self.assertFalse(finished.is_set())
+            self.assertEqual(state['cycles'], 1)
+        finally:
+            release.set()
+            self.assertTrue(finished.wait(1))
+
+
+class StorageUsageWorkerTests(unittest.TestCase):
+    def setUp(self):
+        self.now = 1000
+        self.observer = SimpleNamespace(
+            state={'nextEpoch': 1001, 'lastOutcome': 'published'}, clock=lambda: self.now)
+
+    def worker(self):
+        worker = StorageUsageWorker(self.observer, 900)
+        self.addCleanup(worker.close)
+        return worker
+
+    def test_due_only_single_worker_and_no_overlapping_collections(self):
+        entered, release = threading.Event(), threading.Event()
+        calls = []
+        def observe():
+            calls.append(threading.get_ident())
+            entered.set()
+            release.wait(2)
+            return {'outcome': 'published'}
+        self.observer.run_if_due = observe
+        worker = self.worker()
+        try:
+            self.assertEqual(worker.tick(), 'published')
+            self.assertIsNone(worker.future)
+            self.now = 1001
+            worker.tick()
+            self.assertTrue(entered.wait(1))
+            original = worker.future
+            self.now += 900
+            for _ in range(3):
+                self.assertEqual(worker.tick(), 'published')
+                self.assertIs(worker.future, original)
+            self.assertEqual(len(calls), 1)
+            release.set()
+            original.result(timeout=1)
+            worker.tick()
+            worker.future.result(timeout=1)
+            worker.tick()
+            self.assertIsNone(worker.future)
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(calls[0], calls[1])
+        finally:
+            release.set()
+
+    def test_failures_keep_cadence_and_health_until_recovery(self):
+        def fail():
+            raise ValueError('private_error_not_exposed')
+        self.observer.run_if_due = fail
+        self.now = 1001
+        worker = self.worker()
+        worker.tick()
+        worker.future.result(timeout=1)
+        self.assertEqual(worker.tick(), 'failed')
+        self.assertIsNone(worker.future)
+        self.now += 899
+        self.assertEqual(worker.tick(), 'failed')
+        self.assertIsNone(worker.future)
+        self.observer.run_if_due = lambda: {'outcome': 'published'}
+        self.now += 1
+        worker.tick()
+        worker.future.result(timeout=1)
+        self.assertEqual(worker.tick(), 'published')
 
 
 if __name__ == '__main__':

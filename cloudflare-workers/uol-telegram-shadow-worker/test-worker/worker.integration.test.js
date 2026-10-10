@@ -2664,10 +2664,12 @@ describe("UOL Worker no runtime Cloudflare", () => {
       });
       const readiness = await instance.getReadiness();
       expect(readiness).toMatchObject({
-        checks: { storageWriteBudgetHealthy: true },
+        // The 10s fixture with 170 cards exceeds the honest row/index/alarm
+        // estimate. Readiness must expose that risk while retaining its cache.
+        checks: { storageWriteBudgetHealthy: false },
         storageWriteBudget: {
           limit: 100_000,
-          withinFreeTier: true,
+          withinFreeTier: false,
           components: {
             sourceObservations: 170 * 96,
             offerTouches: 170 * 96,

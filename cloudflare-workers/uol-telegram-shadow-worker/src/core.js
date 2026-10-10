@@ -55,7 +55,10 @@ export function estimateDailyRowWrites({
     Math.max(0, Number(listingCards) || 0);
   const components = {
     // API and ticket-listing health now share one atomic runtime snapshot.
-    polling: cycles(pollIntervalSeconds),
+    // Critical-source + usage checkpoints (row and metadata key index each),
+    // plus alarm. Delivery mutations remain in the measured safety reserve.
+    polling: cycles(pollIntervalSeconds) * 5,
+    contractCheckpoints: touches(15) * 2,
     sampledRuns: cycles(15 * 60) * 2,
     maintenance: cycles(maintenanceIntervalSeconds) * 3,
     html: cycles(htmlIntervalSeconds) * 2,
@@ -138,6 +141,43 @@ export function rollingReadEstimate(previous, observed) {
   if (!current) return Math.min(512, Math.ceil(sample));
   const weight = sample > current ? 0.5 : 0.1;
   return Math.ceil(current * (1 - weight) + sample * weight);
+}
+
+export function normalizeAccountStorageUsage(payload, now = new Date()) {
+  const instant = now instanceof Date ? now : new Date(now);
+  const observed = Date.parse(String(payload?.observedAt || ""));
+  const day = instant.toISOString().slice(0, 10);
+  if (!payload || Array.isArray(payload) || payload.day !== day ||
+      !Number.isFinite(observed) || !String(payload.observedAt).endsWith("Z") ||
+      new Date(observed).toISOString().slice(0, 10) !== day ||
+      observed > instant.getTime() + 60_000 || instant.getTime() - observed > 30 * 60_000 ||
+      !Number.isSafeInteger(payload.accountRowsRead) || payload.accountRowsRead < 0 ||
+      !Number.isSafeInteger(payload.accountRowsWritten) || payload.accountRowsWritten < 0) {
+    throw new Error("storage_usage_invalid");
+  }
+  return { day, observedAt: new Date(observed).toISOString(),
+    accountRowsRead: payload.accountRowsRead, accountRowsWritten: payload.accountRowsWritten };
+}
+
+export function storageWriteBudget({ localRowsWritten = 0, sample = {}, now = new Date(),
+  limit = FREE_TIER_ROW_WRITES_PER_DAY, ceiling = 80_000 } = {}) {
+  const instant = now instanceof Date ? now : new Date(now);
+  const day = instant.toISOString().slice(0, 10);
+  const age = instant.getTime() - Date.parse(String(sample.observedAt || ""));
+  const globalFresh = sample.day === day && Number.isFinite(age) && age >= -60_000 && age <= 30 * 60_000;
+  // Add all locally measured writes since receipt. This is conservative: the
+  // next account sample may already include part of that increment.
+  const localIncrement = sample.day === day
+    ? Math.max(0, localRowsWritten - Number(sample.localRowsWrittenAtReceipt || 0)) : 0;
+  const accountRowsWritten = Math.max(localRowsWritten,
+    sample.day === day ? Number(sample.accountRowsWritten || 0) + localIncrement : 0);
+  const maintenanceAllowed = globalFresh && accountRowsWritten < ceiling;
+  return { accountRowsWritten, accountRowsRead: sample.day === day ? sample.accountRowsRead : null,
+    globalFresh, observedAt: sample.observedAt || "", writeLimit: limit,
+    writeMaintenanceCeiling: ceiling, writeMaintenanceAllowed: maintenanceAllowed,
+    writeWithinFreeTier: accountRowsWritten < limit,
+    writeGuardReason: !globalFresh ? "storage_global_metrics_stale" :
+      !maintenanceAllowed ? "storage_write_budget_guard" : "" };
 }
 
 export function maintenanceRetryAt({

@@ -1,6 +1,7 @@
 """Server-only Instagram complement for the UOL bot; never redeems benefits."""
 import argparse
 import base64
+from concurrent.futures import Future
 import datetime as dt
 import fcntl
 import hashlib
@@ -11,6 +12,7 @@ import random
 import re
 import sqlite3
 import stat
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -18,11 +20,13 @@ import urllib.request
 
 from instagram import InstagramClient, NoRedirect, SessionError, safe_media_url
 from trial import atomic_json, timestamp
+from push_signals import PushSignals, proof_key
 
 INGEST_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/ingest-instagram-story'
 HEARTBEAT_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/instagram-monitor-heartbeat'
 MAX_DAILY_REQUESTS = 1440
 PERIOD = 120
+SAFETY_PERIOD = 1800
 MAX_MEDIA_BYTES = 3 * 1024 * 1024
 
 
@@ -54,6 +58,8 @@ def private_config(path):
     config = json.loads(text)
     if config.get('ingestUrl') != INGEST_URL or not re.fullmatch(r'[a-f0-9]{64}', config.get('ingestToken', '')):
         raise ValueError('invalid_config')
+    if config.get('pushMode', 'poll') not in ('poll', 'pilot', 'event'):
+        raise ValueError('invalid_push_mode')
     return config
 
 
@@ -123,8 +129,10 @@ class Monitor:
     def __init__(self, directory, config, clock=time.time):
         self.directory = Path(directory)
         self.clock, self.config = clock, config
+        self.push = PushSignals(self.directory)
         self.db = sqlite3.connect(self.directory / 'monitor.sqlite')
         self.db.executescript('''
+            PRAGMA journal_mode=WAL;
             PRAGMA synchronous=FULL;
             CREATE TABLE IF NOT EXISTS state(id INTEGER PRIMARY KEY CHECK(id=1), value TEXT);
             CREATE TABLE IF NOT EXISTS polls(at REAL, reserved INTEGER, result TEXT);
@@ -139,6 +147,9 @@ class Monitor:
             'failures': 0, 'sourceStatus': 'starting', 'lastSuccessAt': None,
             'profile': 'clubeuol', 'redemptionEnabled': False,
         }
+        # Upgrade older polling state without letting a pending push bypass its backoff.
+        self.state.setdefault('retryNotBefore', 0 if self.state['sourceStatus'] in ('starting','found','empty')
+                              else self.state['nextPoll'])
 
     def save(self):
         self.state['outbox'] = {row[0]: row[1] for row in
@@ -149,17 +160,40 @@ class Monitor:
 
     def reserve_poll(self):
         now = self.clock()
-        if now < self.state['nextPoll']:
+        push = self.push.snapshot(now) if self.config.get('pushMode', 'poll') != 'poll' else {'sequence': 0, 'connected': False, 'status': 'disabled'}
+        self.state['pushReceiverStatus'] = push['status']
+        pending = push['sequence'] > self.state.get('consumedSignalSequence', 0)
+        event_due = pending and now >= self.state.get('pushAttemptNotBefore', 0)
+        if now < self.state.get('retryNotBefore', 0):
+            return False
+        # Signals only bypass the normal schedule, never authentication/rate-limit backoff.
+        if now < self.state['nextPoll'] and not event_due:
             return False
         used = self.db.execute('SELECT coalesce(sum(reserved),0) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
         if used + 2 > MAX_DAILY_REQUESTS:
             first = self.db.execute('SELECT min(at) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
-            self.state.update(sourceStatus='budget_wait', nextPoll=first+86401)
+            self.state.update(sourceStatus='budget_wait', nextPoll=first+86401, retryNotBefore=first+86401)
             self.save()
             return False
         self.db.execute('INSERT INTO polls VALUES(?,2,NULL)', (now,))
         self.state['nextPoll'] = now + PERIOD
+        self.state['reservedSignalSequence'] = push['sequence'] if pending else 0
+        self.state['pushAttemptNotBefore'] = now + 15
+        self.state['lastPollTrigger'] = 'push' if event_due else 'safety' if self.event_enabled() else 'poll'
         self.save()
+        return True
+
+    def event_enabled(self):
+        proof = self.config.get('pushProof')
+        if self.config.get('pushMode') != 'event' or not self.push.proves(proof):
+            return False
+        # Activation needs both the durable server signal and a successful Story snapshot.
+        key = proof_key(proof)
+        if self.state.get('verifiedPushProof') != key:
+            if proof['storyId'] not in self.state.get('currentStoryIds', []):
+                return False
+            self.state['verifiedPushProof'] = key
+        # Once proven, a socket outage keeps the independent 30-minute safety sweep.
         return True
 
     def record(self, result):
@@ -171,7 +205,7 @@ class Monitor:
         s['sourceStatus'] = result['status']
         self.db.execute('UPDATE polls SET result=? WHERE rowid=(SELECT max(rowid) FROM polls)', (json.dumps(s['lastResult']),))
         if result['status'] in ('found', 'empty'):
-            s.update(failures=0, lastSuccessAt=result['checkedAt'], nextPoll=now+PERIOD+random.uniform(0, 10))
+            s.update(failures=0, lastSuccessAt=result['checkedAt'], lastSuccessEpoch=now, retryNotBefore=0)
             s['currentStoryIds'] = [x['storyId'] for x in result['stories']]
             for story in result['stories']:
                 if epoch(story['expiresAt']) <= now:
@@ -196,6 +230,11 @@ class Monitor:
                             if name in previous:
                                 payload[name] = previous[name]
                         self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload), key))
+            # Persist snapshot, outbox and only the pre-fetch high-water mark in one transaction.
+            # A push received during collection remains pending for the next collection.
+            s['consumedSignalSequence'] = max(s.get('consumedSignalSequence', 0), s.get('reservedSignalSequence', 0))
+            interval = SAFETY_PERIOD if self.event_enabled() else PERIOD
+            s.update(nextPoll=now+interval+random.uniform(0, 10), activePollPeriodSeconds=interval)
         else:
             s['failures'] += 1
             if result['status'] == 'auth_required' or result.get('reason') == 'session_write_failed':
@@ -205,6 +244,7 @@ class Monitor:
             else:
                 delay = min(3600, PERIOD*2**min(s['failures'], 5))
             s['nextPoll'] = now + delay
+            s['retryNotBefore'] = s['nextPoll']
         self.db.execute('DELETE FROM polls WHERE at<?', (now-7*86400,))
         self.db.execute('DELETE FROM outbox WHERE expires<?', (now-30*86400,))
         self.save()
@@ -284,6 +324,50 @@ class Monitor:
         self.save()
 
 
+class StorageUsageWorker:
+    """One background worker; the Story loop only polls completed results."""
+    def __init__(self, observer, interval):
+        self.observer, self.interval = observer, interval
+        self.future = None
+        self.next_due = 0
+        self.outcome = observer.state.get('lastOutcome', 'not_started')
+        self.wake, self.stopped = threading.Event(), threading.Event()
+        self.thread = threading.Thread(target=self._run, name='storage-usage', daemon=True)
+        self.thread.start()
+
+    def _run(self):
+        while True:
+            self.wake.wait()
+            self.wake.clear()
+            if self.stopped.is_set():
+                return
+            future = self.future
+            future.set_running_or_notify_cancel()
+            try:
+                outcome = self.observer.run_if_due()['outcome']
+            except Exception:
+                outcome = 'failed'
+            future.set_result(outcome)
+
+    def tick(self):
+        if self.future is not None and self.future.done():
+            self.outcome = self.future.result()
+            self.future = None
+        now = self.observer.clock()
+        if (not self.stopped.is_set() and self.future is None
+                and now >= max(self.next_due, self.observer.state['nextEpoch'])):
+            # Even failures before the observer's durable reservation stay bounded.
+            self.next_due = now + self.interval
+            self.future = Future()
+            self.wake.set()
+        return self.outcome
+
+    def close(self):
+        # Do not join a network call on --once, shutdown, or a Story-loop failure.
+        self.stopped.set()
+        self.wake.set()
+
+
 def run(directory, config_path, once=False):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -293,19 +377,37 @@ def run(directory, config_path, once=False):
     with open(directory / 'monitor.lock', 'a') as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         monitor = Monitor(directory, config)
-        while True:
-            if monitor.reserve_poll():
-                try:
-                    result = InstagramClient(directory/'session.json').collect()
-                except SessionError as e:
-                    result = {'checkedAt': timestamp(), 'status': 'auth_required', 'reason': e.reason,
-                              'requests': 0, 'duration_ms': 0, 'body_bytes': 0, 'stories': []}
-                monitor.record(result)
-            monitor.flush()
-            monitor.publish_health()
-            if once:
-                return monitor.state
-            time.sleep(15)
+        storage_observer = None
+        if (directory / 'storage-usage.json').exists():
+            # Optional observer failure must not stop the independent Story pipeline.
+            try:
+                from storage_usage import INTERVAL, StorageUsageObserver
+                storage_observer = StorageUsageWorker(
+                    StorageUsageObserver(directory / 'storage-usage.json'), INTERVAL)
+            except Exception:
+                monitor.state['storageUsageObserver'] = 'unavailable'
+        try:
+            while True:
+                if storage_observer is not None:
+                    try:
+                        monitor.state['storageUsageObserver'] = storage_observer.tick()
+                    except Exception:
+                        monitor.state['storageUsageObserver'] = 'failed'
+                if monitor.reserve_poll():
+                    try:
+                        result = InstagramClient(directory/'session.json').collect()
+                    except SessionError as e:
+                        result = {'checkedAt': timestamp(), 'status': 'auth_required', 'reason': e.reason,
+                                  'requests': 0, 'duration_ms': 0, 'body_bytes': 0, 'stories': []}
+                    monitor.record(result)
+                monitor.flush()
+                monitor.publish_health()
+                if once:
+                    return monitor.state
+                time.sleep(2 if config.get('pushMode', 'poll') != 'poll' else 15)
+        finally:
+            if storage_observer is not None:
+                storage_observer.close()
 
 
 def main():

@@ -9,6 +9,8 @@
   },
   "vars": {
     "DELIVERY_MODE": "shadow",
+    "STORAGE_USAGE_GLOBAL_GUARD_ENABLED": "false",
+    "STORAGE_USAGE_INGEST_TOKEN": "vitest-storage-usage-token-not-a-secret",
     "ALARM_INTERVAL_SECONDS": "10",
     "MAINTENANCE_INTERVAL_SECONDS": "10",
     "DELIVERY_IN_FLIGHT_STALE_SECONDS": "30",

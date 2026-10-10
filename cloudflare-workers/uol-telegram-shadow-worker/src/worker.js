@@ -21,6 +21,8 @@ import {
   parseRuntimeSnapshot,
   rollingReadEstimate,
   storageReadBudget,
+  storageWriteBudget,
+  normalizeAccountStorageUsage,
   shouldPersistRunSummary,
   shouldReconcileHtmlSnapshot,
   shouldTouchObservation,
@@ -50,7 +52,7 @@ import {
 import { authorizationExpiresAt } from "./uol-auth.js";
 import { buildTicketCodeCandidates, fetchTicketCodeOffer } from "./ticket-code-discovery.js";
 import { planTicketCodeScan, recordTicketCodeResults, protectedTicketCodeIds,
-  TICKET_CODE_DAILY_REQUEST_LIMIT } from "./ticket-code-policy.js";
+  TICKET_CODE_DAILY_REQUEST_LIMIT, ticketCodeCardFingerprint, unresolvedTicketCodeEntries } from "./ticket-code-policy.js";
 import {
   editMainOfferMedia,
   editSoldOutMessage,
@@ -598,6 +600,33 @@ export class UolTelegramShadow extends DurableObject {
     return this.instagramStoryInbox.recordMonitorHeartbeat(payload);
   }
 
+  ingestStorageUsage(payload) {
+    const normalized = normalizeAccountStorageUsage(payload);
+    this.rollStorageUsageDay();
+    const startedRowsRead = this.storageUsage.rowsRead;
+    const previous = this.runtimeSnapshot("account_storage_usage");
+    if (previous.day === normalized.day) {
+      const before = Date.parse(previous.observedAt || "");
+      const next = Date.parse(normalized.observedAt);
+      if (next < before || normalized.accountRowsRead < previous.accountRowsRead ||
+          normalized.accountRowsWritten < previous.accountRowsWritten ||
+          (next === before && (normalized.accountRowsRead !== previous.accountRowsRead ||
+            normalized.accountRowsWritten !== previous.accountRowsWritten))) {
+        throw new Error("storage_usage_out_of_order");
+      }
+      if (next === before) return { ok: true, accepted: false, budget: this.storageUsageSnapshot() };
+    }
+    this.setRuntimeSnapshot("account_storage_usage", {
+      ...normalized, localRowsWrittenAtReceipt: this.storageUsage.rowsWritten,
+      localRowsReadAtReceipt: this.storageUsage.rowsRead,
+    });
+    // Keep the local baseline and increments aligned across eviction/restart.
+    this.completeStorageUsageCycle("metrics", startedRowsRead);
+    // New metrics may release an existing deferred maintenance retry early.
+    this.accountUsageRevision = normalized.observedAt;
+    return { ok: true, accepted: true, budget: this.storageUsageSnapshot() };
+  }
+
   sqlExec(query, ...bindings) {
     const cursor = this.ctx.storage.sql.exec(query, ...bindings);
     if (!this.storageUsageReady) return cursor;
@@ -975,23 +1004,42 @@ export class UolTelegramShadow extends DurableObject {
       100_000_000_000,
     );
     const intervalSeconds = envNumber(this.env, "ALARM_INTERVAL_SECONDS", 30, 10, 3_600);
+    const accountSample = this.runtimeSnapshot("account_storage_usage");
+    const globalGuardEnabled = this.env.STORAGE_USAGE_GLOBAL_GUARD_ENABLED !== "false";
+    const accountRowsRead = globalGuardEnabled && accountSample.day === this.storageUsage.day
+      ? Math.max(this.storageUsage.rowsRead, Number(accountSample.accountRowsRead || 0) +
+        Math.max(0, this.storageUsage.rowsRead - Number(accountSample.localRowsReadAtReceipt || 0)))
+      : this.storageUsage.rowsRead;
+    const readBudget = storageReadBudget({
+      rowsRead: accountRowsRead,
+      primaryEstimatedRowsRead: this.storageUsage.primaryEstimatedRowsRead,
+      now, pollIntervalSeconds: intervalSeconds, limit,
+      reserveFloor: DURABLE_OBJECT_CRITICAL_READ_RESERVE,
+    });
+    const writeBudget = storageWriteBudget({
+      localRowsWritten: this.storageUsage.rowsWritten,
+      sample: globalGuardEnabled ? accountSample : {}, now,
+    });
+    // Explicit rollback flag; production defaults to fail closed.
+    if (!globalGuardEnabled) {
+      writeBudget.globalFresh = true;
+      writeBudget.writeMaintenanceAllowed = this.storageUsage.rowsWritten < 80_000;
+      writeBudget.writeGuardReason = writeBudget.writeMaintenanceAllowed ? "" : "storage_write_budget_guard";
+    }
     return {
       ...this.storageUsage,
-      ...storageReadBudget({
-        rowsRead: this.storageUsage.rowsRead,
-        primaryEstimatedRowsRead: this.storageUsage.primaryEstimatedRowsRead,
-        now,
-        pollIntervalSeconds: intervalSeconds,
-        limit,
-        reserveFloor: DURABLE_OBJECT_CRITICAL_READ_RESERVE,
-      }),
+      ...readBudget,
+      ...writeBudget,
+      localRowsRead: this.storageUsage.rowsRead,
+      maintenanceAllowed: readBudget.maintenanceAllowed && writeBudget.writeMaintenanceAllowed,
     };
   }
 
   completeStorageUsageCycle(kind, startedRowsRead, details = {}) {
     this.rollStorageUsageDay();
-    // Reserva conservadora para getAlarm/setAlarm e para o próprio snapshot.
-    this.recordStorageUsage(2, 1);
+    // Metadata checkpoint (row + key index) and an alarm write. Normal
+    // sqlExec already measures affected indexes using cursor.rowsWritten.
+    this.recordStorageUsage(2, 3);
     const context = this.storageContext.getStore();
     const cycleRowsRead = context?.cycle?.kind === kind
       ? Math.max(0, Number(context.cycle.rowsRead || 0))
@@ -1780,6 +1828,23 @@ export class UolTelegramShadow extends DurableObject {
     this.runtimeSnapshotCache.set(name, normalized);
   }
 
+  setStableRuntimeSnapshot(name, snapshot, timestampKey = "lastCheckedAt") {
+    const previous = parseRuntimeSnapshot(this.metadataValue(`runtime:${name}`));
+    const comparable = value => {
+      const { [timestampKey]: ignored, ...content } = value;
+      return JSON.stringify(content);
+    };
+    const changed = comparable(previous) !== comparable(snapshot);
+    if (changed || shouldTouchObservation(previous[timestampKey], snapshot[timestampKey], 15)) {
+      this.setRuntimeSnapshot(name, snapshot);
+      return true;
+    }
+    // Live diagnostics retain current freshness, while restarts use the last
+    // durable checkpoint (at most 15 minutes old).
+    this.runtimeSnapshotCache.set(name, snapshot);
+    return false;
+  }
+
   setCriticalSourceSnapshot({ api = {}, ticketListing = {} } = {}) {
     const normalized = {
       api: api && typeof api === "object" ? api : {},
@@ -2370,22 +2435,27 @@ export class UolTelegramShadow extends DurableObject {
     const anchors = [...(this.runtimeSnapshot("api").codeAnchors || []),
       ...(this.runtimeSnapshot("ticket_listing").cards || [])];
     const plan = planTicketCodeScan(previous, buildTicketCodeCandidates(anchors), Date.now());
-    if (!plan) return;
+    if (!plan && !unresolvedTicketCodeEntries(previous).length) return;
     const task = this.storageContext.run(undefined, () => this.withStorageCycle("recovery", async () => {
-      // Persist allowance and retry deadline before starting any network I/O.
-      this.setRuntimeSnapshot("ticket_code_discovery", plan.state);
-      const results = await runBounded(plan.selected, 2, async code => {
-        try { return await this.fetchTicketCode(code); }
-        catch { return { status: "unknown", reason: "fetch_failed", requests: 2 }; }
-      });
-      const completedAt = Date.now();
-      const snapshot = recordTicketCodeResults(plan.state, plan.selected, results, completedAt);
-      this.setRuntimeSnapshot("ticket_code_discovery", snapshot);
+      let snapshot = previous;
+      if (plan) {
+        // Persist allowance and retry deadline before starting any network I/O.
+        this.setRuntimeSnapshot("ticket_code_discovery", plan.state);
+        const results = await runBounded(plan.selected, 2, async code => {
+          try { return await this.fetchTicketCode(code); }
+          catch { return { status: "unknown", reason: "fetch_failed", requests: 2 }; }
+        });
+        const completedAt = Date.now();
+        for (const result of results) {
+          if (result.status === "found" && result.card) result.fingerprint = await ticketCodeCardFingerprint(result.card);
+        }
+        snapshot = recordTicketCodeResults(plan.state, plan.selected, results, completedAt);
+        this.setRuntimeSnapshot("ticket_code_discovery", snapshot);
+      }
       // Keep verified cards durable until existing enrichment/delivery queues
       // have accepted them, including recovery after a process restart.
-      const cards = Object.values(snapshot.entries).filter(entry => entry.card && entry.status === "found" &&
-        (!entry.resolvedId || (entry.status === "found" && entry.checkedAt === completedAt)))
-        .map(entry => entry.card);
+      const unresolved = unresolvedTicketCodeEntries(snapshot);
+      const cards = unresolved.map(entry => entry.card);
       let inserted = 0;
       if (cards.length) {
         const present = new Set(cards.flatMap(card => offerIdentityKeys(card.link)));
@@ -2393,9 +2463,13 @@ export class UolTelegramShadow extends DurableObject {
           availabilityIdentityKeys: present, restockIdentityKeys: present,
         });
         inserted = resolution.inserted;
-        for (const entry of Object.values(snapshot.entries)) {
-          if (entry.card) entry.resolvedId = resolution.cards.find(card =>
-            card.link === entry.card.link)?.id || entry.resolvedId || "";
+        for (const entry of unresolved) {
+          const resolved = resolution.cards.find(card => card.link === entry.card.link);
+          if (resolved?.id) {
+            entry.resolvedId = resolved.id;
+            entry.resolvedFingerprint = entry.fingerprint;
+            entry.resolvedAvailabilityEpoch = Number(entry.availabilityEpoch || 0);
+          }
         }
         this.setRuntimeSnapshot("ticket_code_discovery", snapshot);
         const cardsById = new Map(resolution.cards.map(card => [card.id, card]));
@@ -3632,7 +3706,7 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   refreshDeliveryStatus(id, now = new Date()) {
-    const row = this.sqlExec(
+    const row = typeof id === "object" ? id : this.sqlExec(
       "SELECT * FROM offers WHERE id = ? LIMIT 1",
       id,
     ).toArray()[0];
@@ -3661,51 +3735,40 @@ export class UolTelegramShadow extends DurableObject {
     ].filter(Boolean).filter(
       (target, index, values) => values.indexOf(target) === index,
     );
-    let reconciledStatus = row.status;
+    const fields = {
+      status: row.status,
+      delivery_dead_letter_at: row.delivery_dead_letter_at || "",
+      delivery_dead_letter_reason: row.delivery_dead_letter_reason || "",
+      delivery_unknown_at: row.delivery_unknown_at || "",
+      delivery_unknown_target: row.delivery_unknown_target || "",
+    };
     if (unknownTargets.length) {
-      reconciledStatus = "delivery_unknown";
-      this.sqlExec(
-        `UPDATE offers SET status = 'delivery_unknown',
-           delivery_unknown_at = CASE
-             WHEN delivery_unknown_at = '' THEN ? ELSE delivery_unknown_at END,
-           delivery_unknown_target = ? WHERE id = ?`,
-        now.toISOString(),
-        unknownTargets.join(","),
-        row.id,
-      );
-    } else if (classification.state === "complete") {
-      reconciledStatus = "delivered";
-      this.sqlExec(
-        `UPDATE offers SET status = 'delivered', delivery_dead_letter_at = '',
-           delivery_dead_letter_reason = '', delivery_unknown_at = '',
-           delivery_unknown_target = '' WHERE id = ?`,
-        row.id,
-      );
+      fields.status = "delivery_unknown";
+      fields.delivery_unknown_at ||= now.toISOString();
+      fields.delivery_unknown_target = unknownTargets.join(",");
     } else if (classification.state === "dead_letter") {
-      reconciledStatus = "delivery_dead_letter";
-      this.sqlExec(
-        `UPDATE offers SET status = 'delivery_dead_letter',
-           delivery_dead_letter_at = CASE
-             WHEN delivery_dead_letter_at = '' THEN ? ELSE delivery_dead_letter_at END,
-           delivery_dead_letter_reason = 'delivery_attempts_exhausted' WHERE id = ?`,
-        now.toISOString(),
-        row.id,
-      );
+      fields.status = "delivery_dead_letter";
+      fields.delivery_dead_letter_at ||= now.toISOString();
+      fields.delivery_dead_letter_reason = "delivery_attempts_exhausted";
     } else if (classification.state === "blocked_configuration") {
-      reconciledStatus = "delivery_blocked_configuration";
-      this.sqlExec(
-        `UPDATE offers SET status = 'delivery_blocked_configuration',
-           delivery_dead_letter_reason = 'delivery_configuration_incomplete' WHERE id = ?`,
-        row.id,
-      );
+      fields.status = "delivery_blocked_configuration";
+      fields.delivery_dead_letter_reason = "delivery_configuration_incomplete";
     } else {
-      reconciledStatus = row.main_sent_at ? "partial_delivery" : "delivery_pending";
+      fields.status = classification.state === "complete" ? "delivered" :
+        row.main_sent_at ? "partial_delivery" : "delivery_pending";
+      fields.delivery_dead_letter_at = "";
+      fields.delivery_dead_letter_reason = "";
+      fields.delivery_unknown_at = "";
+      fields.delivery_unknown_target = "";
+    }
+    const reconciledStatus = fields.status;
+    if (Object.entries(fields).some(([key, value]) => (row[key] || "") !== value)) {
       this.sqlExec(
-        `UPDATE offers SET status = ?, delivery_dead_letter_at = '',
-           delivery_dead_letter_reason = '', delivery_unknown_at = '',
-           delivery_unknown_target = '' WHERE id = ?`,
-        reconciledStatus,
-        row.id,
+        `UPDATE offers SET status = ?, delivery_dead_letter_at = ?,
+           delivery_dead_letter_reason = ?, delivery_unknown_at = ?,
+           delivery_unknown_target = ? WHERE id = ?`,
+        fields.status, fields.delivery_dead_letter_at, fields.delivery_dead_letter_reason,
+        fields.delivery_unknown_at, fields.delivery_unknown_target, row.id,
       );
     }
     if (reconciledStatus !== row.status) {
@@ -3914,7 +3977,7 @@ export class UolTelegramShadow extends DurableObject {
       } else {
         // Aggregate status is always computed against every required target,
         // even when this invocation owns only the critical or maintenance set.
-        this.refreshDeliveryStatus(row.id, now);
+        this.refreshDeliveryStatus(classification.staleUnknownTargets?.length ? row.id : row, now);
       }
     }
 
@@ -6710,7 +6773,7 @@ export class UolTelegramShadow extends DurableObject {
           ticketListing: ticketListingSnapshot,
         });
         if (apiContract) {
-          this.setRuntimeSnapshot("api_contract", {
+          this.setStableRuntimeSnapshot("api_contract", {
             ...apiContract,
             lastCheckedAt: run.finishedAt,
           });
@@ -6781,6 +6844,12 @@ export class UolTelegramShadow extends DurableObject {
     if (this.maintenanceInFlight) {
       return { ok: false, outcome: "maintenance_in_progress" };
     }
+    const deferred = this.runtimeSnapshot("maintenance");
+    if (source === "alarm" && deferred.deferred && Date.parse(deferred.retryAt || "") > Date.now() &&
+        deferred.accountUsageRevision === (this.accountUsageRevision || this.runtimeValue("account_storage_usage", "observedAt"))) {
+      return { ok: true, outcome: "maintenance_deferred", retryAt: deferred.retryAt,
+        retryReason: deferred.deferredReason };
+    }
     const intervalMs = envNumber(this.env, "MAINTENANCE_INTERVAL_SECONDS", 60, 10, 3_600) * 1_000;
     const lastPeriodic = Date.parse(this.metadataValue("maintenance_periodic_started_at") || "");
     if (source === "alarm" && Number.isFinite(lastPeriodic) && Date.now() - lastPeriodic < intervalMs) {
@@ -6795,12 +6864,15 @@ export class UolTelegramShadow extends DurableObject {
       const storageContext = this.storageContext.getStore();
       if (storageContext) storageContext.stage = "guard";
       this.storageUsage.maintenanceSkipped += 1;
+      const guardReason = budget.writeGuardReason || "storage_read_budget_guard";
       const hardReserveActive = Number(budget.rowsRead || 0) >=
         Number(budget.limit || 0) - DURABLE_OBJECT_CRITICAL_READ_RESERVE;
       const result = {
         ok: false,
-        outcome: "storage_read_budget_guard",
-        error: "durable_object_rows_read_reserve_active",
+        outcome: guardReason,
+        error: budget.writeGuardReason || "durable_object_rows_read_reserve_active",
+        accountRowsWritten: budget.accountRowsWritten,
+        globalFresh: budget.globalFresh,
         rowsRead: budget.rowsRead,
         limit: budget.limit,
         criticalReserve: budget.criticalReserve,
@@ -6810,7 +6882,7 @@ export class UolTelegramShadow extends DurableObject {
           skipped: this.storageUsage.maintenanceSkipped,
           deferUntilReset: hardReserveActive,
         }),
-        retryReason: "storage_read_budget_guard",
+        retryReason: guardReason,
       };
       this.maintenanceInFlight = false;
       try {
@@ -6823,6 +6895,7 @@ export class UolTelegramShadow extends DurableObject {
           retryAt: result.retryAt,
           deferred: true,
           deferredReason: result.retryReason,
+          accountUsageRevision: this.accountUsageRevision || this.runtimeValue("account_storage_usage", "observedAt"),
         });
         this.completeStorageUsageCycle("maintenance", storageReadStartedAt);
       } catch (error) {
@@ -8224,7 +8297,8 @@ export class UolTelegramShadow extends DurableObject {
     const storageReadBudgetHealthy = storageReadBudget.withinFreeTier &&
       storageReadBudget.primaryAllowed;
     const storageWriteBudgetHealthy = storageWriteBudget.withinFreeTier &&
-      Number(storageReadBudget.rowsWritten || 0) < storageWriteBudget.limit;
+      Number(storageReadBudget.accountRowsWritten || storageReadBudget.rowsWritten || 0) < storageWriteBudget.limit &&
+      storageReadBudget.globalFresh;
     const queueSlo = this.deliveryQueueSlo(new Date(now));
     const checks = {
       alarmFresh,
@@ -8477,6 +8551,41 @@ export default {
         });
       }
       const stub = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
+      if (request.method === "POST" && url.pathname === "/ingest-storage-usage") {
+        const expected = String(env.STORAGE_USAGE_INGEST_TOKEN || "").trim();
+        const authorization = request.headers.get("Authorization") || "";
+        const supplied = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+        if (!expected || !supplied || supplied.length > 4_096 || !(await constantTimeEqual(expected, supplied))) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        try {
+          if (Number(request.headers.get("content-length") || 0) > 4_096) throw new Error("storage_usage_invalid");
+          const reader = request.body?.getReader();
+          if (!reader) throw new Error("storage_usage_invalid");
+          const chunks = [];
+          let bytes = 0;
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              bytes += value.byteLength;
+              if (bytes > 4_096) { await reader.cancel(); throw new Error("storage_usage_invalid"); }
+              chunks.push(value);
+            }
+          } finally { reader.releaseLock(); }
+          const body = new Uint8Array(bytes);
+          let offset = 0;
+          for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
+          let payload;
+          try { payload = JSON.parse(new TextDecoder().decode(body)); }
+          catch { throw new Error("storage_usage_invalid"); }
+          return jsonResponse(await stub.ingestStorageUsage(payload));
+        } catch (error) {
+          const code = String(error?.message || "");
+          return jsonResponse({ ok: false, error: code.startsWith("storage_usage_") ? code : "storage_usage_unconfirmed" },
+            code === "storage_usage_out_of_order" ? 409 : code === "storage_usage_invalid" ? 400 : 503);
+        }
+      }
       if ((request.method === "POST" && url.pathname === "/ingest-instagram-story") ||
           (request.method === "POST" && url.pathname === "/instagram-monitor-heartbeat") ||
           (request.method === "GET" && url.pathname === "/instagram-story-status")) {

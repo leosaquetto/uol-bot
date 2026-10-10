@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { runInDurableObject } from 'cloudflare:test';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { fetchTicketCodeOffer, parseTicketCodePage } from '../src/ticket-code-discovery.js';
 import { protectedTicketCodeIds } from '../src/ticket-code-policy.js';
 
@@ -61,10 +61,12 @@ describe('public hidden ticket discovery', () => {
       await instance.scheduleTicketCodeDiscovery();
       expect(requests).toBe(0); // Normal baseline must exist first.
       instance.setMetadata('initialized_at', new Date().toISOString());
+      const resolutions = vi.spyOn(instance, 'resolveListingCards');
       await instance.scheduleTicketCodeDiscovery();
       const count = () => instance.sqlExec('SELECT id, status FROM offers WHERE link = ?', link).toArray();
       expect(count()).toHaveLength(1);
       expect(count()[0].status).toBe('shadow_candidate');
+      expect(resolutions).toHaveBeenCalledTimes(1);
       const snapshot = instance.runtimeSnapshot('ticket_code_discovery');
       expect(protectedTicketCodeIds(snapshot)).toContain(count()[0].id);
       const before = requests;
@@ -80,8 +82,31 @@ describe('public hidden ticket discovery', () => {
       instance.setRuntimeSnapshot('ticket_code_discovery', snapshot);
       await instance.scheduleTicketCodeDiscovery();
       expect(requests).toBeGreaterThan(before);
+      expect(resolutions).toHaveBeenCalledTimes(1);
       expect(count()).toHaveLength(1);
       expect(count()[0].status).toBe('shadow_candidate');
+    });
+  });
+
+  it('recovers a durable verified card even when the scan allowance is exhausted', async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName('hidden-ticket-result-recovery');
+    await runInDurableObject(stub, async instance => {
+      instance.env = { ...instance.env, TICKET_CODE_DISCOVERY_ENABLED: 'true' };
+      instance.setMetadata('initialized_at', new Date().toISOString());
+      const parsed = await parseTicketCodePage(response(link), 'pPS', link);
+      instance.setRuntimeSnapshot('ticket_code_discovery', { day: new Date().toISOString().slice(0, 10), requestsUsed: 6_000,
+        entries: { pPS: { status: 'found', card: parsed.card, fingerprint: 'durable-fingerprint', foundAt: Date.now() } } });
+      instance.runtimeSnapshotCache.clear();
+      instance.metadataCache.clear();
+      const fetchCode = vi.spyOn(instance, 'fetchTicketCode');
+      instance.processDeliveryQueue = async () => ({ selectedRows: [], recentSecondaryRows: [] });
+      instance.scheduleDiscordDelivery = () => {};
+      instance.scheduleCriticalBeeperDelivery = () => {};
+      await instance.scheduleTicketCodeDiscovery();
+      expect(fetchCode).not.toHaveBeenCalled();
+      const snapshot = instance.runtimeSnapshot('ticket_code_discovery');
+      expect(snapshot.entries.pPS.resolvedId).toBeTruthy();
+      expect(snapshot.entries.pPS.resolvedFingerprint).toBe('durable-fingerprint');
     });
   });
 });
