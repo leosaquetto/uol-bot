@@ -37,7 +37,9 @@ mínimos de um e cinco minutos e `Retry-After` global durável. Timeout ambíguo
 Limiares: serviço inativo em duas verificações, loop sem vida por cinco minutos,
 push sem conexão/vida por dez minutos, autenticação exigida, três falhas de
 coleta sem sucesso por dez minutos, entrega estagnada por 15 minutos e métricas
-essenciais antigas por 30 minutos. Ausência comprovada de Stories é saudável.
+essenciais antigas por 30 minutos. `lastPublishedAt` é verificado separadamente:
+Analytics fresco não prova ingestão no Worker; publicação antiga por 30 minutos
+gera incidente crítico próprio. Ausência comprovada de Stories é saudável.
 Datas futuras além de 60 segundos não contam como evidência de vida.
 
 O token Analytics tem avisos a sete dias, 48 horas e no vencimento; a configuração
@@ -100,8 +102,15 @@ antes da rede. Estrutura Instagram desconhecida permanece desconhecida; diagnós
 usa somente contagens/flags da próxima coleta já agendada, sem chamadas adicionais.
 
 `pilot` conserva 120 segundos e os limites anteriores. Somente prova de Story
-real no Oracle permite `event`: push imediato mais consulta de segurança de
+real com ID correspondente no Oracle permite `event`: a prova deve ser gravada
+até dez minutos depois do sinal e não pode estar no futuro. Sinal genérico
+continua disparando coleta, mas não libera sozinho a promoção. Prova exata válida
+permanece válida após expiração do Story/reinício. No modo `event`: push imediato mais consulta de segurança de
 30 minutos (até 96 GETs/dia de segurança, mais eventos dentro do orçamento).
+
+Manutenção do Worker libera sua flag de execução inclusive quando preparação ou
+gravação de metadata lança por cota. Isso evita bloqueio permanente após o reset;
+não resolve nem altera incidentes históricos de entregas desconhecidas.
 
 ## Validação, publicação e rollback
 

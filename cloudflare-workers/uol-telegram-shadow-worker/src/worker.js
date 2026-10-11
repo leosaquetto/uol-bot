@@ -6865,6 +6865,8 @@ export class UolTelegramShadow extends DurableObject {
     }
     const storageReadStartedAt = Number(this.storageUsage.rowsRead || 0);
     this.maintenanceInFlight = true;
+    try {
+    // Include quota failures during setup, before the telemetry try/finally.
     const startedAt = new Date();
     const budget = this.storageUsageSnapshot(startedAt);
     if (!budget.maintenanceAllowed) {
@@ -6893,7 +6895,6 @@ export class UolTelegramShadow extends DurableObject {
         }),
         retryReason: guardReason,
       };
-      this.maintenanceInFlight = false;
       try {
         this.setRuntimeSnapshot("maintenance", {
           lastStartedAt: startedAt.toISOString(),
@@ -7282,7 +7283,6 @@ export class UolTelegramShadow extends DurableObject {
       result.error = sanitizeError(error);
     } finally {
       const completedAt = new Date();
-      this.maintenanceInFlight = false;
       try {
         this.setRuntimeSnapshot("maintenance", {
           lastStartedAt: startedAt.toISOString(),
@@ -7313,6 +7313,9 @@ export class UolTelegramShadow extends DurableObject {
     }
     logEvent(result.error ? "error" : "info", "uol_telegram_maintenance", result);
     return result;
+    } finally {
+      this.maintenanceInFlight = false;
+    }
   }
 
   async alarm() {

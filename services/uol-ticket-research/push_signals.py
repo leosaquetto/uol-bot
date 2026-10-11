@@ -2,11 +2,13 @@
 import json
 from contextlib import closing
 import datetime as dt
+import math
 import os
 from pathlib import Path
 import re
 import sqlite3
 import stat
+import time
 
 
 class PushSignals:
@@ -46,22 +48,32 @@ class PushSignals:
         except (OSError, ValueError, sqlite3.Error):
             return []
 
-    def proves(self, proof):
+    def proves(self, proof, now=None):
         if (not isinstance(proof, dict) or proof.get('browserClosed') is not True
-                or not isinstance(proof.get('signalSequence'), int) or proof['signalSequence'] < 1
+                or type(proof.get('signalSequence')) is not int or proof['signalSequence'] < 1
                 or not isinstance(proof.get('storyId'), str)
                 or not re.fullmatch(r'[0-9]{10,25}', proof['storyId'])
-                or not isinstance(proof.get('observedAt'), str)):
+                or not isinstance(proof.get('observedAt'), str)
+                or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}'
+                                    r'(?:\.[0-9]{1,6})?(?:Z|\+00:00)', proof['observedAt'])):
             return False
         try:
             observed = dt.datetime.fromisoformat(proof['observedAt'].replace('Z', '+00:00'))
-            if observed.tzinfo is None:
+            observed_epoch = observed.timestamp()
+            now = time.time() if now is None else now
+            if not math.isfinite(now) or observed_epoch <= 0 or observed_epoch > now + 60:
                 return False
             with closing(self._connect()) as db:
-                row = db.execute("SELECT story_id FROM signals WHERE seq=? AND profile='clubeuol'",
+                row = db.execute("SELECT story_id,received_at FROM signals WHERE seq=? AND profile='clubeuol'",
                                  (proof['signalSequence'],)).fetchone()
-            return bool(row and (row[0] is None or row[0] == proof['storyId']))
-        except (OSError, ValueError, sqlite3.Error):
+            if not row or row[0] != proof['storyId'] or not isinstance(row[1], (int, float)):
+                return False
+            received_epoch = row[1] / 1000
+            # Generic hints remain triggers; promotion requires an exact, timed Story proof.
+            # Historical matching proof stays valid after the Story expires and on restart.
+            return (math.isfinite(received_epoch) and 0 < received_epoch <= now + 60
+                    and 0 <= observed_epoch - received_epoch <= 600)
+        except (OSError, ValueError, TypeError, OverflowError, sqlite3.Error):
             return False
 
 

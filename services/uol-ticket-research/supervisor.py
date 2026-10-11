@@ -204,6 +204,10 @@ class Supervisor:
         if now - started >= 1800 and (sample_at is None or sample_at > now + 60 or now - sample_at > 1800
                 or (usage.get('lastSample') or {}).get('day') != day):
             add('metrics_stale', 'Cloudflare: métricas essenciais ausentes ou antigas; proteção conservadora permanece ativa.', True)
+        published_at = instant(usage.get('lastPublishedAt'))
+        if now - started >= 1800 and (published_at is None or published_at > now + 60
+                or now - published_at > 1800 or iso(published_at)[:10] != day):
+            add('metrics_unpublished', 'Cloudflare: Worker sem ingestão de métricas confirmada há mais de 30 minutos; amostra local não comprova recebimento.', True)
         if usage.get('lastOutcome') == 'failed':
             reason = usage.get('lastError')
             if reason in ('analytics_unavailable', 'ingestion_unavailable', 'configuration_unavailable'):
@@ -256,6 +260,10 @@ class Supervisor:
         metrics_fresh = seen is not None and -60 <= now - seen <= 1800 and sample.get('day') == iso(now)[:10]
         if key == 'metrics_stale':
             return metrics_fresh
+        if key == 'metrics_unpublished':
+            published = instant(usage.get('lastPublishedAt'))
+            return (metrics_fresh and published is not None and -60 <= now - published <= 1800
+                    and iso(published)[:10] == iso(now)[:10])
         if key == 'metrics_failed':
             return usage.get('lastOutcome') == 'published' and metrics_fresh
         if key == 'quota_deferred':

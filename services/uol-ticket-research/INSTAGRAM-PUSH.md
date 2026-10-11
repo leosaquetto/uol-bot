@@ -37,7 +37,7 @@ Para ativar `pushMode: "event"`, adicionar `pushProof` ao arquivo de configuraç
 }
 ```
 
-Os números/dados acima são exemplos de estrutura, não prova de produção. Preencher somente após recepção **real no Oracle com navegador fechado**. O código exige que a sequência exista na tabela de sinais do perfil certo e que o Story esteja num snapshot bem-sucedido; a confirmação é persistida para sobreviver à expiração do Story e reinício. Inscrição HTTP 200, evento simulado ou processo ativo não servem de comprovação.
+Os números/dados acima são exemplos de estrutura, não prova de produção. Preencher somente após recepção **real no Oracle com navegador fechado**. O código exige sequência do perfil certo com ID exato do Story, prova UTC gravada até dez minutos após o sinal, sem data futura, e Story num snapshot bem-sucedido; a confirmação é persistida para sobreviver à expiração do Story e reinício. Sinal genérico pode disparar coleta, mas não promove o modo sozinho. Inscrição HTTP 200, evento simulado ou processo ativo não servem de comprovação.
 
 Após essa prova, a coleta passa a push imediato mais consulta de segurança a cada 1.800 segundos (48 ciclos, até 96 GETs reservados/dia sem eventos). O laço verifica sinais a cada dois segundos; novas rajadas esperam pelo menos quinze segundos entre tentativas. Se o socket cair, permanece a consulta de segurança de trinta minutos; não volta a polling de dois minutos. `pushReceiverStatus`, `activePollPeriodSeconds`, `lastPollTrigger` e sequências constam do status local sem dados privados. O receptor reconecta automaticamente com espera crescente e mesma UAID.
 

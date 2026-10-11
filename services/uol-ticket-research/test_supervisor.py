@@ -30,7 +30,8 @@ class SupervisorTests(unittest.TestCase):
                 'push': {'status': 'connected', 'observedEpoch': self.now,
                          'eventCount': 0, 'pendingCount': 0, 'payloadBytes': 0},
                 'usage': {'lastSample': {'observedAt': iso(self.now),
-                          'day': iso(self.now)[:10]}, 'lastOutcome': 'published'}}
+                          'day': iso(self.now)[:10]}, 'lastPublishedAt': iso(self.now),
+                          'lastOutcome': 'published'}}
 
     def resume(self, sender=None):
         self.supervisor = Supervisor(self.root, self.config, clock=lambda: self.now,
@@ -134,6 +135,19 @@ class SupervisorTests(unittest.TestCase):
         self.assertIn('quota:storageBytes', issues)
         self.assertIn('capacity:payloadBytes', issues)
         self.assertNotIn('capacity:eventCount', issues)
+
+    def test_fresh_analytics_does_not_hide_missing_ingestion(self):
+        self.now += 3601
+        sources = self.healthy()
+        sources['usage'].update(lastPublishedAt=iso(self.now - 3600),
+                                lastOutcome='failed', lastError='ingestion_unavailable')
+        issues = self.supervisor.evaluate(sources, self.now)
+        self.assertNotIn('metrics_stale', issues)
+        self.assertTrue(issues['metrics_unpublished']['critical'])
+        self.assertFalse(self.supervisor.can_recover('metrics_unpublished', sources, self.now))
+        sources['usage']['lastPublishedAt'] = iso(self.now)
+        self.assertNotIn('metrics_unpublished', self.supervisor.evaluate(sources, self.now))
+        self.assertTrue(self.supervisor.can_recover('metrics_unpublished', sources, self.now))
 
     def test_credential_escalation_has_no_false_recovery(self):
         expiry = dt.datetime(2026, 11, 9, tzinfo=dt.timezone.utc).timestamp()

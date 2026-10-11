@@ -51,7 +51,7 @@ class MonitorTests(unittest.TestCase):
 
     def proof(self):
         return {'signalSequence':1,'storyId':self.story()['storyId'],'browserClosed':True,
-                'observedAt':self.result()['checkedAt']}
+                'observedAt':dt.datetime.fromtimestamp(self.now,dt.timezone.utc).isoformat()}
 
     def test_only_campaigns_queued_and_current_story_eligible(self):
         self.m.record(self.result(self.story(False)))
@@ -153,6 +153,69 @@ class MonitorTests(unittest.TestCase):
         self.m.record(self.result())
         self.assertEqual(self.m.state['activePollPeriodSeconds'],SAFETY_PERIOD)
         self.assertEqual(self.m.state['consumedSignalSequence'],1)
+
+    def test_old_generic_signal_and_unrelated_current_story_cannot_promote_even_with_cached_proof(self):
+        self.push(1,story_id=None)
+        self.now += 3600
+        proof = self.proof()
+        self.m.config.update(pushMode='event',pushProof=proof)
+        self.m.state['verifiedPushProof'] = monitor_module.proof_key(proof)
+        self.m.record(self.result())
+        self.assertFalse(self.m.event_enabled())
+        self.assertEqual(self.m.state['activePollPeriodSeconds'],120)
+        # The same generic hint still triggers collection, without changing the proof gate.
+        self.assertTrue(self.m.reserve_poll())
+        self.assertEqual(self.m.state['lastPollTrigger'],'push')
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['activePollPeriodSeconds'],120)
+
+    def test_exact_proof_rejects_stale_future_and_non_utc_times(self):
+        self.push(1);base=self.now
+        self.m.state['currentStoryIds']=[self.story()['storyId']]
+        iso=lambda at:dt.datetime.fromtimestamp(at,dt.timezone.utc).isoformat()
+        cases=[('stale',iso(base+601),base+1000),('before_signal',iso(base-1),base),
+               ('future',iso(base+61),base),('naive',iso(base).removesuffix('+00:00'),base),
+               ('non_utc',dt.datetime.fromtimestamp(base,dt.timezone(dt.timedelta(hours=1))).isoformat(),base),
+               ('invalid','2026-99-99T20:00:00Z',base)]
+        for name,observed,now in cases:
+            with self.subTest(name=name):
+                self.now=now;proof=self.proof();proof['observedAt']=observed
+                self.m.config.update(pushMode='event',pushProof=proof)
+                self.m.state['verifiedPushProof']=monitor_module.proof_key(proof)
+                self.assertFalse(self.m.event_enabled())
+        self.now=base+1000;proof=self.proof();proof['observedAt']=iso(base+600)
+        self.m.config['pushProof']=proof
+        self.assertTrue(self.m.event_enabled())
+
+    def test_exact_proof_rejects_invalid_signal_timestamp_and_wrong_identity(self):
+        self.push(1);proof=self.proof();self.m.config.update(pushMode='event',pushProof=proof)
+        self.m.state['currentStoryIds']=[proof['storyId']]
+        for received in (None,-1,'invalid',float('inf'),(self.now+61)*1000):
+            with self.subTest(received=received):
+                with closing(sqlite3.connect(self.path/'push.sqlite')) as db:
+                    db.execute('UPDATE signals SET received_at=?',(received,));db.commit()
+                self.assertFalse(self.m.event_enabled())
+        with closing(sqlite3.connect(self.path/'push.sqlite')) as db:
+            db.execute('UPDATE signals SET received_at=?,story_id=?',(self.now*1000,'4004391581161830449'));db.commit()
+        self.assertFalse(self.m.event_enabled())
+        with closing(sqlite3.connect(self.path/'push.sqlite')) as db:
+            db.execute('UPDATE signals SET story_id=?',(proof['storyId'],));db.commit()
+        proof['signalSequence']=True
+        self.assertFalse(self.m.event_enabled())
+
+    def test_verified_exact_proof_survives_story_expiration_and_restart(self):
+        proof=self.proof();self.m.config.update(pushMode='event',pushProof=proof)
+        self.push(1);self.m.reserve_poll();self.m.record(self.result())
+        self.assertTrue(self.m.event_enabled())
+        key=self.m.state['verifiedPushProof'];self.now += 2*86400
+        other=Monitor(self.path,self.m.config,clock=lambda:self.now)
+        self.addCleanup(other.db.close)
+        empty=self.result();empty.update(status='empty',stories=[])
+        other.record(empty)
+        self.assertEqual(other.state['currentStoryIds'],[])
+        self.assertEqual(other.state['verifiedPushProof'],key)
+        self.assertTrue(other.event_enabled())
+        self.assertEqual(other.state['activePollPeriodSeconds'],SAFETY_PERIOD)
 
     def test_signal_received_during_collection_survives_snapshot_and_restart(self):
         self.m.config.update(pushMode='pilot')

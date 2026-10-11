@@ -328,7 +328,7 @@ class Monitor:
 
     def event_enabled(self):
         proof = self.config.get('pushProof')
-        if self.config.get('pushMode') != 'event' or not self.push.proves(proof):
+        if self.config.get('pushMode') != 'event' or not self.push.proves(proof, now=self.clock()):
             return False
         # Activation needs both the durable server signal and a successful Story snapshot.
         key = proof_key(proof)

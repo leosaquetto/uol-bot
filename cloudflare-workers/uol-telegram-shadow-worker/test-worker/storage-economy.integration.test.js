@@ -59,6 +59,7 @@ describe("storage economy preserves durable transitions", () => {
     await runInDurableObject(stub, async instance => {
       instance.storageUsageSnapshot = () => ({ maintenanceAllowed: false, rowsRead: 4_500_000, limit: 5_000_000 });
       const first = await instance.runMaintenanceTick("alarm");
+      expect(instance.maintenanceInFlight).toBe(false);
       const snapshot = instance.metadataValue("runtime:maintenance");
       const skipped = instance.storageUsage.maintenanceSkipped;
       const written = instance.storageUsage.rowsWritten;
@@ -134,6 +135,38 @@ describe("storage economy preserves durable transitions", () => {
       const stale = instance.storageUsageSnapshot(new Date(now.getTime() + 30 * 60_000 + 2));
       expect(stale.maintenanceAllowed).toBe(false);
       expect(stale.writeGuardReason).toBe("storage_global_metrics_stale");
+    });
+  });
+
+  it.each(["budget", "start timestamp"])("maintenance releases its in-flight flag after a quota failure in %s", async failurePoint => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName(`economy-maintenance-setup-${failurePoint}`);
+    await runInDurableObject(stub, async instance => {
+      const budget = vi.spyOn(instance, "storageUsageSnapshot").mockReturnValue({ maintenanceAllowed: true });
+      if (failurePoint === "budget") {
+        budget.mockImplementationOnce(() => { throw new Error("fixture_quota_exhausted"); });
+      } else {
+        const original = instance.setMetadata.bind(instance);
+        let failed = false;
+        vi.spyOn(instance, "setMetadata").mockImplementation((key, value) => {
+          if (key === "maintenance_periodic_started_at" && !failed) {
+            failed = true;
+            throw new Error("fixture_quota_exhausted");
+          }
+          return original(key, value);
+        });
+      }
+      // Stop inside the existing error handler, before any external operation.
+      const body = vi.spyOn(instance, "operationalHealthDue").mockImplementation(() => {
+        throw new Error("fixture_maintenance_body_reached");
+      });
+      await expect(instance.runMaintenanceTick("alarm")).rejects.toThrow("fixture_quota_exhausted");
+      expect(instance.maintenanceInFlight).toBe(false);
+      expect(body).not.toHaveBeenCalled();
+      const next = await instance.runMaintenanceTick("alarm");
+      expect(body).toHaveBeenCalledTimes(1);
+      expect(next).toMatchObject({ ok: false, outcome: "failed", error: "fixture_maintenance_body_reached" });
+      expect(instance.runtimeSnapshot("maintenance").lastError).toBe("fixture_maintenance_body_reached");
+      expect(instance.maintenanceInFlight).toBe(false);
     });
   });
 });
