@@ -198,6 +198,10 @@ class DetailTests(unittest.TestCase):
                 self.assertEqual(result['status']['storageBytes'], 'unknown')
                 self.assertNotIn('storageBytes', result['values'])
                 self.assertIsNone(result['storageMetric']['namespaceCount'])
+                self.assertIsNone(result['storageNamespaces'])
+                self.assertEqual(result['status']['storageProjects'], 'unknown')
+                self.assertNotIn('storageBytes', result['projects']['uol-fixture'])
+                self.assertEqual(result['projects']['uol-fixture']['storageStatus'], 'unknown')
                 self.assertEqual(result['values']['workersRequests'], 120)
 
     def test_sql_storage_rejects_invalid_namespace_or_metric_and_accepts_explicit_zero(self):
@@ -220,6 +224,92 @@ class DetailTests(unittest.TestCase):
         result = aggregate_details(raw, '2026-10-10')
         self.assertEqual(result['values']['storageBytes'], 0)
         self.assertEqual(result['status']['storageBytes'], 'known')
+        self.assertEqual(result['projects']['uol-fixture']['storageBytes'], 0)
+        self.assertEqual(result['projects']['uol-fixture']['storageStatus'], 'known')
+
+    def test_sql_storage_maps_peaks_for_namespace_without_periodic_activity(self):
+        raw = details_response()
+        account = raw['data']['viewer']['accounts'][0]
+        account['doUsage'].append({'dimensions': {'date': '2026-10-10',
+            'namespaceId': 'inactive', 'scriptName': 'uol-fixture', 'type': 'alarm'},
+            'sum': {'requests': 0}})
+        account['sqlStorageUsage'] += [
+            {'dimensions': {'date': '2026-10-10', 'namespaceId': 'inactive'},
+             'max': {'storedBytes': value}} for value in (2048, 1900)]
+        result = aggregate_details(raw, '2026-10-10')
+        self.assertEqual(result['values']['storageBytes'], 3072)
+        self.assertEqual(result['projects']['uol-fixture']['storageBytes'], 3072)
+        self.assertEqual(result['projects']['uol-fixture']['storageStatus'], 'known')
+        self.assertEqual(result['projects']['uol-fixture']['namespaces'], ['fixture', 'inactive'])
+        self.assertEqual(result['storageNamespaces']['inactive'], {'storageBytes': 2048,
+            'project': 'uol-fixture', 'mappingStatus': 'known'})
+        self.assertEqual(result['status']['storageProjects'], 'known')
+
+    def test_sql_storage_only_namespace_is_retained_without_inventing_project_or_zero(self):
+        raw = details_response()
+        account = raw['data']['viewer']['accounts'][0]
+        account['projectUsage'] = []
+        account['doUsage'] = []
+        account['workersProjects'] = []
+        result = aggregate_details(raw, '2026-10-10')
+        self.assertEqual(result['values']['storageBytes'], 1024)
+        self.assertEqual(result['storageNamespaces']['fixture'], {'storageBytes': 1024,
+            'project': None, 'mappingStatus': 'unknown'})
+        self.assertEqual(result['projectMapping'], {'fixture': None})
+        self.assertEqual(result['unassignedNamespaces'], ['fixture'])
+        self.assertEqual(result['projects'], {})
+        self.assertEqual(result['status']['storageProjects'], 'unknown')
+
+    def test_sql_storage_partial_mapping_keeps_valid_bytes_and_global_total(self):
+        for script in (None, 'other-fixture'):
+            with self.subTest(script=script):
+                raw = details_response()
+                account = raw['data']['viewer']['accounts'][0]
+                account['doUsage'].append({'dimensions': {'date': '2026-10-10',
+                    'namespaceId': 'broken', 'scriptName': script, 'type': 'alarm'},
+                    'sum': {'requests': 1}})
+                account['sqlStorageUsage'].append({'dimensions': {'date': '2026-10-10',
+                    'namespaceId': 'unmapped' if script else 'broken'}, 'max': {'storedBytes': 500}})
+                result = aggregate_details(raw, '2026-10-10')
+                self.assertEqual(result['values']['storageBytes'], 1524)
+                self.assertEqual(result['status']['storageBytes'], 'known')
+                self.assertEqual(result['projectMapping']['fixture'], 'uol-fixture')
+                self.assertEqual(result['projects']['uol-fixture']['storageBytes'], 1024)
+                self.assertEqual(result['projects']['uol-fixture']['storageStatus'], 'partial')
+                self.assertEqual(result['status']['storageProjects'], 'partial')
+                namespace = 'unmapped' if script else 'broken'
+                self.assertIsNone(result['storageNamespaces'][namespace]['project'])
+                self.assertEqual(result['storageNamespaces'][namespace]['mappingStatus'],
+                                 'unmapped' if script else 'unknown')
+                self.assertEqual(result['unassignedNamespaces'], [namespace])
+
+    def test_sql_storage_missing_mapped_namespace_is_partial_without_assumed_zero(self):
+        raw = details_response()
+        account = raw['data']['viewer']['accounts'][0]
+        row = copy.deepcopy(account['doUsage'][0])
+        row['dimensions']['namespaceId'] = 'missing-storage'
+        account['doUsage'].append(row)
+        result = aggregate_details(raw, '2026-10-10')
+        self.assertEqual(result['projects']['uol-fixture']['storageBytes'], 1024)
+        self.assertEqual(result['projects']['uol-fixture']['storageStatus'], 'partial')
+        self.assertEqual(result['status']['storageProjects'], 'partial')
+        self.assertNotIn('missing-storage', result['storageNamespaces'])
+
+    def test_sql_storage_attribution_is_independent_of_request_metric_or_alias_error(self):
+        raw = details_response()
+        raw['data']['viewer']['accounts'][0]['doUsage'][0]['sum']['requests'] = None
+        result = aggregate_details(raw, '2026-10-10')
+        self.assertEqual(result['status']['doRequests'], 'unknown')
+        self.assertEqual(result['status']['projectMapping'], 'known')
+        self.assertEqual(result['projects']['uol-fixture']['storageBytes'], 1024)
+        raw = details_response()
+        raw['errors'] = [{'path': ['viewer', 'accounts', 0, 'doUsage']}]
+        result = aggregate_details(raw, '2026-10-10')
+        self.assertEqual(result['values']['storageBytes'], 1024)
+        self.assertEqual(result['status']['storageBytes'], 'known')
+        self.assertEqual(result['status']['storageProjects'], 'unknown')
+        self.assertEqual(result['storageNamespaces']['fixture']['storageBytes'], 1024)
+        self.assertIsNone(result['storageNamespaces']['fixture']['project'])
 
     def test_project_mapping_uses_script_evidence_and_collision_never_misattributes_namespace(self):
         raw = details_response()
@@ -228,7 +318,8 @@ class DetailTests(unittest.TestCase):
         self.assertEqual(result['namespaces']['fixture']['project'], 'uol-fixture')
         self.assertEqual(result['projects']['uol-fixture'], {'namespaces': ['fixture'],
             'rowsRead': 2, 'rowsWritten': 3, 'duration': 4, 'activeTime': 5,
-            'inboundWebsocketMsgCount': 0, 'doRequestsRaw': 30, 'doRequests': 30, 'workersRequests': 120})
+            'inboundWebsocketMsgCount': 0, 'doRequestsRaw': 30, 'doRequests': 30,
+            'workersRequests': 120, 'storageBytes': 1024, 'storageStatus': 'known'})
         collision = copy.deepcopy(raw['data']['viewer']['accounts'][0]['doUsage'][0])
         collision['dimensions']['scriptName'] = 'leo-remote-fixture'
         raw['data']['viewer']['accounts'][0]['doUsage'].append(collision)
@@ -237,6 +328,11 @@ class DetailTests(unittest.TestCase):
         self.assertIsNone(result['namespaces']['fixture']['project'])
         self.assertEqual(result['unassignedNamespaces'], ['fixture'])
         self.assertNotIn('rowsRead', result['projects']['uol-fixture'])
+        self.assertNotIn('storageBytes', result['projects']['uol-fixture'])
+        self.assertEqual(result['storageNamespaces']['fixture'], {'storageBytes': 1024,
+            'project': None, 'mappingStatus': 'ambiguous'})
+        self.assertEqual(result['values']['storageBytes'], 1024)
+        self.assertEqual(result['status']['storageProjects'], 'unknown')
         self.assertEqual(result['values']['doRequests'], 40)
         self.assertEqual(result['values']['workersRequests'], 120)
 

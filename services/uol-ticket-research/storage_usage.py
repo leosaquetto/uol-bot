@@ -152,8 +152,10 @@ def detail_rows(payload, alias, day, limit, through_day=None):
 
 def aggregate_details(payload, day, through_day=None):
     result = {'values': {}, 'status': {}, 'namespaces': None, 'doRequestTypes': None,
+              'storageNamespaces': None,
               'storageMetric': {'source': SQL_STORAGE_SOURCE, 'aggregation': SQL_STORAGE_AGGREGATION,
                                 'estimated': True, 'namespaceCount': None}}
+    storage_peaks = None
     for alias, key, limit in [('projectUsage', 'namespaces', DETAIL_LIMIT),
                               ('workersUsage', 'workersRequests', ACCOUNT_LIMIT),
                               ('doUsage', 'doRequests', DETAIL_LIMIT),
@@ -205,22 +207,30 @@ def aggregate_details(payload, day, through_day=None):
                 # conservative daily estimate, not an instantaneous account total.
                 result['values'][key] = sum(peaks.values())
                 result['storageMetric']['namespaceCount'] = len(peaks)
+                storage_peaks = peaks
             result['status'][key] = 'known'
         except (ValueError, TypeError, KeyError, AttributeError):
             result['status'][key] = 'unknown'
-    projects, mapping, do_rows = {}, {}, []
+    projects, mapping, do_rows = {}, {}, None
+    candidates, invalid_mapping = {}, set()
     try:
         do_rows = detail_rows(payload, 'doUsage', day, DETAIL_LIMIT, through_day)
-        candidates = {}
+        mapping_failed = False
         for row in do_rows:
             dimensions = row['dimensions']
             namespace, script = dimensions.get('namespaceId'), dimensions.get('scriptName')
-            if not isinstance(namespace, str) or not namespace or len(namespace) > 128 or not isinstance(script, str) or not script or len(script) > 256:
-                raise ValueError('analytics_project_invalid')
+            if not isinstance(namespace, str) or not namespace or len(namespace) > 128:
+                mapping_failed = True
+                continue
+            if not isinstance(script, str) or not script or len(script) > 256:
+                mapping_failed = True
+                invalid_mapping.add(namespace)
+                continue
             candidates.setdefault(namespace, set()).add(script)
-        mapping = {namespace: next(iter(scripts)) if len(scripts) == 1 else None
+        mapping = {namespace: next(iter(scripts)) if len(scripts) == 1 and namespace not in invalid_mapping else None
                    for namespace, scripts in candidates.items()}
-        result['status']['projectMapping'] = 'known' if all(mapping.values()) else 'ambiguous'
+        mapping.update({namespace: None for namespace in invalid_mapping})
+        result['status']['projectMapping'] = ('partial' if any(mapping.values()) else 'unknown') if mapping_failed else 'known' if all(mapping.values()) else 'ambiguous'
     except (ValueError, TypeError, KeyError, AttributeError):
         result['status']['projectMapping'] = 'unknown'
     unassigned = []
@@ -235,8 +245,6 @@ def aggregate_details(payload, day, through_day=None):
         target['namespaces'].append(namespace)
         for key in ('rowsRead', 'rowsWritten', 'duration', 'activeTime', 'inboundWebsocketMsgCount'):
             target[key] = target.get(key, 0) + usage[key]
-    if unassigned and result['status']['projectMapping'] == 'known':
-        result['status']['projectMapping'] = 'partial'
     try:
         by_script = {}
         for row in do_rows:
@@ -252,8 +260,9 @@ def aggregate_details(payload, day, through_day=None):
             target = projects.setdefault(script, {'namespaces': []})
             target['doRequestsRaw'] = sum(types.values())
             target['doRequests'] = sum(types.values()) if set(types) <= {'http', 'jsrpc', 'alarm'} else None
+        result['status']['doProjects'] = 'known' if result['status']['projectMapping'] == 'known' else 'partial' if by_script else 'unknown'
     except (ValueError, TypeError, KeyError, AttributeError):
-        result['status']['projectMapping'] = 'unknown'
+        result['status']['doProjects'] = 'unknown'
     try:
         rows = detail_rows(payload, 'workersProjects', day, DETAIL_LIMIT, through_day)
         requests = {}
@@ -267,6 +276,39 @@ def aggregate_details(payload, day, through_day=None):
         result['status']['workersProjects'] = 'known'
     except (ValueError, TypeError, KeyError, AttributeError):
         result['status']['workersProjects'] = 'unknown'
+    if storage_peaks is not None:
+        result['storageNamespaces'] = {}
+        for namespace, value in storage_peaks.items():
+            script = mapping.get(namespace)
+            mapping.setdefault(namespace, None)
+            mapping_status = ('known' if script else 'unknown' if namespace in invalid_mapping
+                or result['status']['projectMapping'] == 'unknown' else 'ambiguous'
+                if len(candidates.get(namespace, ())) > 1 else 'unmapped')
+            result['storageNamespaces'][namespace] = {'storageBytes': value,
+                'project': script, 'mappingStatus': mapping_status}
+            if script is None:
+                if namespace not in unassigned:
+                    unassigned.append(namespace)
+                continue
+            target = projects.setdefault(script, {'namespaces': []})
+            if namespace not in target['namespaces']:
+                target['namespaces'].append(namespace)
+            target['storageBytes'] = target.get('storageBytes', 0) + value
+    if unassigned and result['status']['projectMapping'] == 'known':
+        result['status']['projectMapping'] = 'partial'
+    for script, usage in projects.items():
+        if 'storageBytes' not in usage:
+            usage['storageStatus'] = 'unknown'
+        else:
+            # A known namespace subtotal is not a complete project total when
+            # a mapped namespace has no SQL sample or attribution is incomplete.
+            complete = result['status']['projectMapping'] == 'known' and all(
+                namespace in storage_peaks for namespace, project in mapping.items() if project == script)
+            usage['storageStatus'] = 'known' if complete else 'partial'
+    storage_projects = [usage['storageStatus'] for usage in projects.values() if 'storageBytes' in usage]
+    result['status']['storageProjects'] = ('known' if storage_projects and all(
+        status == 'known' for status in storage_projects) and all(namespace in storage_peaks
+        for namespace, project in mapping.items() if project) else 'partial' if storage_projects else 'unknown')
     result.update(projectMapping=mapping, projects=projects, unassignedNamespaces=unassigned)
     result['status']['projects'] = 'known' if (not unassigned and result['status']['namespaces'] == 'known'
         and result['status']['projectMapping'] == 'known' and result['status']['workersProjects'] == 'known') else 'partial' if projects else 'unknown'

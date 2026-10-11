@@ -134,3 +134,19 @@ Aceitação de produção exige três dias UTC completos, métricas suficientes,
 meta de writes, margem nas demais dimensões e ausência de regressão/duplicação.
 Se não houver Story novo, consumo pode ser avaliado, mas push continua pendente.
 Revisão do Codex é complementar; serviços e alertas do Oracle independem do Mac.
+
+Relatório offline, sem rede nem gravações: `python3 usage_report.py --state-dir
+/caminho/privado/do/estado --day YYYY-MM-DD`. Lê somente
+`storage-usage-snapshots/*.json` e imprime JSON com agregados e nomes de scripts;
+nunca namespace/account ID ou payload. `consumption_verified` exige dia UTC
+concluído, amostras até 30 minutos das duas bordas, nenhuma lacuna superior a
+30 minutos, métricas conhecidas e confirmação posterior do total daquele dia.
+Snapshots de outros dias não contam na cobertura; desconhecidos e dados inválidos
+não viram zero. `incomplete` e `coverage_insufficient` mantêm a aceitação pendente.
+Os snapshots são anteriores à ingestão: esse relatório não comprova guard no
+Worker, entrega, push, latência, duplicatas nem a aceitação completa de produção.
+O resultado de cada dimensão é independente: `rowsWritten.consumptionVerified`
+e `writeTargetMet` podem comprovar a meta de writes mesmo com status global
+`coverage_insufficient` por billing DO desconhecido ou outra margem pendente.
+`storageBytes` só fica conhecido com origem SQL comprovada no snapshot; source
+legacy/ausente fica desconhecido no relatório, sem apagar o registro original.

@@ -22,6 +22,26 @@ Sua instalação e validação operacional são etapas separadas dos testes loca
   sanitizados ficam em `storage-usage-state.json`. Nenhuma credencial, corpo HTTP
   ou identificador de conta entra no resumo de saúde.
 
+## Armazenamento SQL por projeto
+
+O mesmo detalhamento já consultado preserva `storageNamespaces`: bytes do maior
+`storedBytes` do dia UTC por namespace, projeto e `mappingStatus`. A atribuição
+usa exclusivamente `doUsage.namespaceId/scriptName`; namespace somente com
+armazenamento permanece visível, mesmo sem atividade. Sem evidência suficiente,
+fica sem projeto (`unmapped`/`unknown`); colisão entre scripts fica `ambiguous`.
+
+`projects[script].storageBytes` soma somente picos de namespaces atribuídos.
+`storageMetric` identifica fonte SQL, `sum_of_daily_namespace_maxima` e
+`estimated:true`: picos podem ocorrer em horários distintos, portanto são uma
+estimativa conservadora. `storageStatus` por projeto e `status.storageProjects`
+distinguem total identificado (`known`), subtotal incompleto (`partial`) e ausência
+de evidência (`unknown`). Namespace mapeado sem sample SQL nunca vira zero.
+
+Falha ou truncamento SQL deixa bytes desconhecidos. Mapping parcial preserva
+atribuições válidas e namespaces sem atribuição; não altera o total global SQL
+em `values.storageBytes`. Campos ficam somente no estado/snapshot privado, sem
+nova consulta, alteração de cadência ou envio de detalhes ao Worker.
+
 ## Credenciais e arquivos privados
 
 O token Cloudflare é somente leitura de Analytics, com expiração em **09/11/2026
