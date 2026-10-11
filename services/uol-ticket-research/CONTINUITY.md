@@ -60,7 +60,13 @@ por `scriptName` comprovado; identidade ambígua fica sem atribuição.
 se o histórico de cada dimensão foi reconfirmado. Requisições adaptive são
 estimativas. Tipos DO não reconhecidos têm `billing_unknown`, com contagem bruta
 preservada, sem converter mensagens WebSocket arbitrariamente em requisições.
-`duration` é GB*s, conforme introspecção real; armazenamento sem grupo é unknown.
+`duration` é GB*s, conforme introspecção real. Armazenamento SQLite usa
+`durableObjectsSqlStorageGroups`, confirmado por introspecção e consulta real
+com o token existente. A soma dos máximos registrados por namespace é uma
+estimativa conservadora dos dados observados, não tamanho instantâneo. Dados
+ausentes/truncados seguem unknown; `durableObjectsStorageGroups` não serve como
+fallback de SQLite. Valores antigos sem origem SQL comprovada são descartados
+somente dessa dimensão, sem alterar as demais reservas de consumo.
 
 Meta: menos de 70 mil writes por dia UTC completo. Atenção aos 70%; trabalho
 opcional adiado aos 80% de qualquer dimensão conhecida. Limites configurados:

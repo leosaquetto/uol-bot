@@ -6895,6 +6895,7 @@ export class UolTelegramShadow extends DurableObject {
         }),
         retryReason: guardReason,
       };
+      this.maintenanceInFlight = false;
       try {
         this.setRuntimeSnapshot("maintenance", {
           lastStartedAt: startedAt.toISOString(),
@@ -7283,6 +7284,7 @@ export class UolTelegramShadow extends DurableObject {
       result.error = sanitizeError(error);
     } finally {
       const completedAt = new Date();
+      this.maintenanceInFlight = false;
       try {
         this.setRuntimeSnapshot("maintenance", {
           lastStartedAt: startedAt.toISOString(),

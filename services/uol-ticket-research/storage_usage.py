@@ -19,6 +19,8 @@ DETAIL_LIMIT = 1000
 LIMITS = {'rowsRead': 5_000_000, 'rowsWritten': 100_000, 'workersRequests': 100_000,
           'doRequests': 100_000, 'duration': 13_000, 'storageBytes': 5_000_000_000}
 WRITE_TARGET = 70_000
+SQL_STORAGE_SOURCE = 'durableObjectsSqlStorageGroups.max.storedBytes'
+SQL_STORAGE_AGGREGATION = 'sum_of_daily_namespace_maxima'
 GRAPHQL_URL = 'https://api.cloudflare.com/client/v4/graphql'
 WORKER_ORIGIN = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev'
 QUERY = '''query($account: String!, $start: DateTime!, $end: DateTime!) {
@@ -48,9 +50,9 @@ DETAIL_QUERY = '''query($account: String!, $start: DateTime!, $end: DateTime!) {
       filter: {datetime_geq: $start, datetime_lt: $end}) {
       dimensions { date namespaceId scriptName type } sum { requests }
     }
-    storageUsage: durableObjectsStorageGroups(limit: 10,
+    sqlStorageUsage: durableObjectsSqlStorageGroups(limit: 1000,
       filter: {datetime_geq: $start, datetime_lt: $end}) {
-      dimensions { date } max { storedBytes }
+      dimensions { date namespaceId } max { storedBytes }
     }
   } }
 }'''
@@ -149,11 +151,13 @@ def detail_rows(payload, alias, day, limit, through_day=None):
 
 
 def aggregate_details(payload, day, through_day=None):
-    result = {'values': {}, 'status': {}, 'namespaces': None, 'doRequestTypes': None}
+    result = {'values': {}, 'status': {}, 'namespaces': None, 'doRequestTypes': None,
+              'storageMetric': {'source': SQL_STORAGE_SOURCE, 'aggregation': SQL_STORAGE_AGGREGATION,
+                                'estimated': True, 'namespaceCount': None}}
     for alias, key, limit in [('projectUsage', 'namespaces', DETAIL_LIMIT),
                               ('workersUsage', 'workersRequests', ACCOUNT_LIMIT),
                               ('doUsage', 'doRequests', DETAIL_LIMIT),
-                              ('storageUsage', 'storageBytes', ACCOUNT_LIMIT)]:
+                              ('sqlStorageUsage', 'storageBytes', DETAIL_LIMIT)]:
         try:
             rows = detail_rows(payload, alias, day, limit, through_day)
             if alias == 'projectUsage':
@@ -190,7 +194,17 @@ def aggregate_details(payload, day, through_day=None):
             elif alias == 'workersUsage':
                 result['values'][key] = sum(metric(row.get('sum', {}).get('requests')) for row in rows)
             else:
-                result['values'][key] = max(metric(row.get('max', {}).get('storedBytes')) for row in rows)
+                peaks = {}
+                for row in rows:
+                    namespace = row['dimensions'].get('namespaceId')
+                    if not isinstance(namespace, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', namespace):
+                        raise ValueError('analytics_namespace_invalid')
+                    value = metric(row.get('max', {}).get('storedBytes'))
+                    peaks[namespace] = max(peaks.get(namespace, 0), value)
+                # Namespace peaks can occur at different times; their sum is a
+                # conservative daily estimate, not an instantaneous account total.
+                result['values'][key] = sum(peaks.values())
+                result['storageMetric']['namespaceCount'] = len(peaks)
             result['status'][key] = 'known'
         except (ValueError, TypeError, KeyError, AttributeError):
             result['status'][key] = 'unknown'
@@ -267,9 +281,14 @@ def budget_state(previous, values, now, statuses=None):
     history = [row for row in previous.get('history', [])
                if now - 4500 <= row['at'] <= now]
     known = dict(previous.get('lastKnown', {}))
+    legacy_storage = known.get('storageBytes', {}).get('source') != SQL_STORAGE_SOURCE
+    if legacy_storage:
+        known.pop('storageBytes', None)
     for key in LIMITS:
         if key in values:
             known[key] = {'value': values[key], 'at': now}
+            if key == 'storageBytes':
+                known[key]['source'] = SQL_STORAGE_SOURCE
     if not history or now > history[-1]['at']:
         history.append({'at': now, 'values': {key: values[key] for key in LIMITS if key in values}})
     elif history[-1]['at'] == now:
@@ -278,6 +297,8 @@ def budget_state(previous, values, now, statuses=None):
     midnight = dt.datetime.fromtimestamp(now, dt.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
     elapsed = now - midnight
     metrics, warnings, actual = {}, [], list(previous.get('actualLatched', []))
+    if legacy_storage:
+        actual = [key for key in actual if key != 'storageBytes']
     forecasts = []
     for key, limit in LIMITS.items():
         last = known.get(key)
@@ -286,6 +307,8 @@ def budget_state(previous, values, now, statuses=None):
         status = 'known' if key in values else statuses.get(key, 'unknown' if not last else 'stale')
         item = {'value': value, 'limit': limit, 'status': status,
                 'observedAt': iso(last['at']) if last else None, 'forecast': None}
+        if key == 'storageBytes':
+            item.update(source=SQL_STORAGE_SOURCE, aggregation=SQL_STORAGE_AGGREGATION, estimated=True)
         if fresh:
             item['ratio'] = value / limit
             if value >= limit * .7:

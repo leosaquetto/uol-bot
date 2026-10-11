@@ -7,7 +7,8 @@ import tempfile
 import unittest
 
 from storage_usage import (StorageUsageObserver, aggregate, aggregate_details, budget_state,
-                           ACCOUNT_LIMIT, DETAIL_LIMIT, DETAIL_QUERY, GRAPHQL_URL)
+                           ACCOUNT_LIMIT, DETAIL_LIMIT, DETAIL_QUERY, GRAPHQL_URL,
+                           SQL_STORAGE_SOURCE, SQL_STORAGE_AGGREGATION)
 
 
 def response(rows=None):
@@ -121,7 +122,8 @@ def details_response():
         'doUsage': [{'dimensions': {'date': '2026-10-10', 'namespaceId': 'fixture',
                                    'scriptName': 'uol-fixture', 'type': kind}, 'sum': {'requests': 10}}
                     for kind in ('http', 'alarm', 'jsrpc')],
-        'storageUsage': [{'dimensions': {'date': '2026-10-10'}, 'max': {'storedBytes': 1024}}],
+        'sqlStorageUsage': [{'dimensions': {'date': '2026-10-10', 'namespaceId': 'fixture'},
+                             'max': {'storedBytes': 1024}}],
     }]}}}
 
 
@@ -129,7 +131,7 @@ class DetailTests(unittest.TestCase):
     def test_partial_alias_error_keeps_other_metrics_and_unknown_is_not_zero(self):
         raw = details_response()
         raw['errors'] = [{'path': ['viewer', 'accounts', 0, 'projectUsage']}]
-        raw['data']['viewer']['accounts'][0]['storageUsage'] = []
+        raw['data']['viewer']['accounts'][0]['sqlStorageUsage'] = []
         result = aggregate_details(raw, '2026-10-10')
         self.assertIsNone(result['namespaces'])
         self.assertEqual(result['values'], {'workersRequests': 120, 'doRequestsRaw': 30, 'doRequests': 30})
@@ -140,7 +142,7 @@ class DetailTests(unittest.TestCase):
         for alias, key, limit in [('projectUsage', 'namespaces', DETAIL_LIMIT),
                                   ('workersUsage', 'workersRequests', ACCOUNT_LIMIT),
                                   ('doUsage', 'doRequests', DETAIL_LIMIT),
-                                  ('storageUsage', 'storageBytes', ACCOUNT_LIMIT)]:
+                                  ('sqlStorageUsage', 'storageBytes', DETAIL_LIMIT)]:
             raw = details_response()
             groups = raw['data']['viewer']['accounts'][0]
             groups[alias] = [groups[alias][0]] * limit
@@ -155,6 +157,69 @@ class DetailTests(unittest.TestCase):
         self.assertEqual(result['values']['doRequestsRaw'], 30)
         self.assertNotIn('doRequests', result['values'])
         self.assertEqual(result['status']['doRequests'], 'billing_unknown')
+
+    def test_sql_storage_sums_namespace_peaks_without_duplicate_or_prior_day_counts(self):
+        raw = details_response()
+        raw['data']['viewer']['accounts'][0]['sqlStorageUsage'] = [
+            {'dimensions': {'date': '2026-10-10', 'namespaceId': namespace}, 'max': {'storedBytes': value}}
+            for namespace, value in [('one', 1200), ('two', 300), ('one', 1500), ('two', 250)]]
+        raw['data']['viewer']['accounts'][0]['sqlStorageUsage'].append(
+            {'dimensions': {'date': '2026-10-09', 'namespaceId': 'one'}, 'max': {'storedBytes': 9000}})
+        result = aggregate_details(raw, '2026-10-10')
+        self.assertEqual(result['values']['storageBytes'], 1800)
+        self.assertEqual(result['status']['storageBytes'], 'known')
+        self.assertEqual(result['storageMetric'], {'source': SQL_STORAGE_SOURCE,
+            'aggregation': SQL_STORAGE_AGGREGATION, 'estimated': True, 'namespaceCount': 2})
+        prior = aggregate_details(raw, '2026-10-09', '2026-10-10')
+        self.assertEqual(prior['values']['storageBytes'], 9000)
+        self.assertIn('sqlStorageUsage: durableObjectsSqlStorageGroups(limit: 1000', DETAIL_QUERY)
+        self.assertNotIn('durableObjectsStorageGroups', DETAIL_QUERY)
+
+    def test_sql_storage_unknown_never_falls_back_to_legacy_storage_zero_or_value(self):
+        cases = ('missing', 'empty', 'prior_day', 'error', 'truncated')
+        for case in cases:
+            with self.subTest(case=case):
+                raw = details_response()
+                account = raw['data']['viewer']['accounts'][0]
+                account['storageUsage'] = [{'dimensions': {'date': '2026-10-10'},
+                                            'max': {'storedBytes': 987654}}]
+                if case == 'missing':
+                    del account['sqlStorageUsage']
+                elif case == 'empty':
+                    account['sqlStorageUsage'] = []
+                    account['storageUsage'][0]['max']['storedBytes'] = 0
+                elif case == 'prior_day':
+                    account['sqlStorageUsage'][0]['dimensions']['date'] = '2026-10-09'
+                elif case == 'error':
+                    raw['errors'] = [{'path': ['viewer','accounts',0,'sqlStorageUsage']}]
+                else:
+                    account['sqlStorageUsage'] *= DETAIL_LIMIT
+                result = aggregate_details(raw, '2026-10-10')
+                self.assertEqual(result['status']['storageBytes'], 'unknown')
+                self.assertNotIn('storageBytes', result['values'])
+                self.assertIsNone(result['storageMetric']['namespaceCount'])
+                self.assertEqual(result['values']['workersRequests'], 120)
+
+    def test_sql_storage_rejects_invalid_namespace_or_metric_and_accepts_explicit_zero(self):
+        for namespace in (None, '', ' ', True, 10, 'x'*129, 'namespace/private'):
+            with self.subTest(namespace=namespace):
+                raw = details_response()
+                raw['data']['viewer']['accounts'][0]['sqlStorageUsage'][0]['dimensions']['namespaceId'] = namespace
+                result = aggregate_details(raw, '2026-10-10')
+                self.assertEqual(result['status']['storageBytes'], 'unknown')
+                self.assertNotIn('storageBytes', result['values'])
+        for value in (None, True, -1, 1.5, '1000', float('inf')):
+            with self.subTest(value=value):
+                raw = details_response()
+                raw['data']['viewer']['accounts'][0]['sqlStorageUsage'][0]['max']['storedBytes'] = value
+                result = aggregate_details(raw, '2026-10-10')
+                self.assertEqual(result['status']['storageBytes'], 'unknown')
+                self.assertNotIn('storageBytes', result['values'])
+        raw = details_response()
+        raw['data']['viewer']['accounts'][0]['sqlStorageUsage'][0]['max']['storedBytes'] = 0
+        result = aggregate_details(raw, '2026-10-10')
+        self.assertEqual(result['values']['storageBytes'], 0)
+        self.assertEqual(result['status']['storageBytes'], 'known')
 
     def test_project_mapping_uses_script_evidence_and_collision_never_misattributes_namespace(self):
         raw = details_response()
@@ -240,6 +305,22 @@ class BudgetTests(unittest.TestCase):
             state = budget_state(state, {'rowsRead': 1, 'rowsWritten': 1}, self.now + step * 900)
         self.assertTrue(state['forecastDeferred'])
 
+    def test_sql_storage_metadata_and_upgrade_do_not_relabel_legacy_known_values(self):
+        legacy = {'day': '2026-10-10', 'lastKnown': {'storageBytes': {'value': 4_000_000_000, 'at': self.now}},
+                  'actualLatched': ['storageBytes']}
+        upgraded = budget_state(legacy, {'rowsRead': 10, 'rowsWritten': 20}, self.now+900)
+        self.assertIsNone(upgraded['metrics']['storageBytes']['value'])
+        self.assertEqual(upgraded['metrics']['storageBytes']['status'], 'unknown')
+        self.assertNotIn('storageBytes', upgraded['actualLatched'])
+        sql = budget_state(upgraded, {'rowsRead': 10, 'rowsWritten': 20, 'storageBytes': 1024}, self.now+1800)
+        missing = budget_state(sql, {'rowsRead': 10, 'rowsWritten': 20}, self.now+2700,
+                               {'storageBytes': 'unknown'})
+        self.assertEqual(missing['metrics']['storageBytes']['value'], 1024)
+        self.assertEqual(missing['metrics']['storageBytes']['status'], 'unknown')
+        self.assertEqual(missing['metrics']['storageBytes']['source'], SQL_STORAGE_SOURCE)
+        self.assertEqual(missing['metrics']['storageBytes']['aggregation'], SQL_STORAGE_AGGREGATION)
+        self.assertTrue(missing['metrics']['storageBytes']['estimated'])
+
 
 class ObserverContractTests(unittest.TestCase):
     def setUp(self):
@@ -282,6 +363,8 @@ class ObserverContractTests(unittest.TestCase):
         self.assertEqual(observer.run_if_due()['outcome'], 'published')
         self.assertEqual(observer.state['lastDetails']['namespaces']['fixture']['rowsRead'], 2)
         self.assertEqual(observer.state['lastSample']['accountRowsRead'], 900)
+        self.assertEqual(observer.state['budgetState']['metrics']['storageBytes']['source'], SQL_STORAGE_SOURCE)
+        self.assertTrue(observer.state['budgetState']['metrics']['storageBytes']['estimated'])
         observer.requester = self.request
         self.now += 901
         self.assertEqual(observer.run_if_due()['outcome'], 'published')
