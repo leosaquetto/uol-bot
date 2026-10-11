@@ -211,7 +211,14 @@ def parse_stories(body):
                    "authPositiveObserved": False, "authNegativeObserved": False,
                    "reelsMediaOccurrences": 0, "reelsMediaListOccurrences": 0,
                    "reelsMediaObjectOccurrences": 0, "reelsMediaNullOccurrences": 0,
-                   "reelsMediaOtherOccurrences": 0, "reelsMediaItemsCount": 0}
+                   "reelsMediaOtherOccurrences": 0, "reelsMediaItemsCount": 0,
+                   "storyResponseOccurrences": 0, "targetOwnerInStoryResponseOccurrences": 0,
+                   "targetOwnerOutsideStoryResponseOccurrences": 0,
+                   "emptyReelsInStoryResponseOccurrences": 0,
+                   "authPositiveInStoryResponseObserved": False,
+                   "authNegativeInStoryResponseObserved": False,
+                   "storyResponsesWithTargetOwnerAndEmptyReels": 0,
+                   "storyResponsesWithTargetOwnerEmptyReelsAndAuthPositive": 0}
     unknown = {"status": "unknown", "reason": "no_validated_story_structure", "stories": [],
                "structuralDiagnostics": diagnostics}
     if not isinstance(body, str):
@@ -237,22 +244,35 @@ def parse_stories(body):
             value = json.loads(script)
         except (ValueError, RecursionError):
             continue
-        pending = [(value, 0)]
+        # Each known response carries only transient association flags. They
+        # distinguish a target profile elsewhere in bootstrap JSON from one
+        # inside the same response, without retaining paths or private values.
+        scopes = []
+        pending = [(value, 0, None)]
         while pending:
-            value, depth = pending.pop()
+            value, depth, scope = pending.pop()
             visited += 1
             if visited > MAX_NODES or depth > MAX_DEPTH:
                 return {**unknown, "reason": "structure_limit"}
             if isinstance(value, dict):
                 if value.get("username") == "clubeuol":
                     diagnostics["targetOwnerOccurrences"] += 1
+                    diagnostics["targetOwnerInStoryResponseOccurrences" if scope is not None
+                                else "targetOwnerOutsideStoryResponseOccurrences"] += 1
+                    if scope is not None:
+                        scope['targetOwner'] = True
                 if value.get("is_logged_in") is True or value.get("isLoggedIn") is True:
                     diagnostics["authPositiveObserved"] = True
+                    if scope is not None:
+                        scope['authPositive'] = True
+                        diagnostics["authPositiveInStoryResponseObserved"] = True
                 if (value.get("is_logged_in") is False or value.get("isLoggedIn") is False
                         or value.get("login_required") is True or value.get("challenge_required") is True
                         or value.get("message") in ("login_required", "challenge_required")):
                     auth = True
                     diagnostics["authNegativeObserved"] = True
+                    if scope is not None:
+                        diagnostics["authNegativeInStoryResponseObserved"] = True
                 if "reels_media" in value:
                     diagnostics["reelsMediaOccurrences"] += 1
                     media = value["reels_media"]
@@ -261,6 +281,9 @@ def parse_stories(body):
                     diagnostics["reelsMedia" + kind + "Occurrences"] += 1
                     if isinstance(media, list):
                         diagnostics["reelsMediaItemsCount"] += len(media)
+                        if not media and scope is not None:
+                            scope['emptyReels'] = True
+                            diagnostics["emptyReelsInStoryResponseOccurrences"] += 1
                 user = value.get("user")
                 if isinstance(user, dict) and user.get("username") == "clubeuol":
                     if "items" in value:
@@ -271,11 +294,21 @@ def parse_stories(body):
                         reels.append(value["items"])
                 if visited + len(pending) + len(value) > MAX_NODES:
                     return {**unknown, "reason": "structure_limit"}
-                pending.extend((child, depth + 1) for child in value.values())
+                for key, child in value.items():
+                    child_scope = scope
+                    if key == "xdt_api__v1__feed__reels_media":
+                        diagnostics["storyResponseOccurrences"] += 1
+                        child_scope = {'targetOwner': False, 'emptyReels': False, 'authPositive': False}
+                        scopes.append(child_scope)
+                    pending.append((child, depth + 1, child_scope))
             elif isinstance(value, list):
                 if visited + len(pending) + len(value) > MAX_NODES:
                     return {**unknown, "reason": "structure_limit"}
-                pending.extend((child, depth + 1) for child in value)
+                pending.extend((child, depth + 1, scope) for child in value)
+        diagnostics["storyResponsesWithTargetOwnerAndEmptyReels"] += sum(
+            scope['targetOwner'] and scope['emptyReels'] for scope in scopes)
+        diagnostics["storyResponsesWithTargetOwnerEmptyReelsAndAuthPositive"] += sum(
+            scope['targetOwner'] and scope['emptyReels'] and scope['authPositive'] for scope in scopes)
     if auth:
         return {"status": "auth_required", "reason": "login_payload", "stories": []}
     if not reels:

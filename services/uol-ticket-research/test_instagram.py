@@ -112,6 +112,50 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(result['structuralDiagnostics']['targetItemsListOccurrences'], 1)
         self.assertEqual(result['structuralDiagnostics']['targetItemsCount'], 2)
 
+    def test_unknown_diagnostics_distinguish_target_outside_and_inside_story_response(self):
+        for inside in (False, True):
+            with self.subTest(inside=inside):
+                response = {'reels_media': [], 'is_logged_in': True, 'private': SECRET}
+                payload = {'xdt_api__v1__feed__reels_media': response, 'unrelated': {'private': SECRET}}
+                (response if inside else payload['unrelated'])['user'] = {'username': 'clubeuol', 'private': SECRET}
+                result = instagram.parse_stories('<script type="application/json">'+json.dumps(payload)+'</script>')
+                self.assertEqual(result['status'], 'unknown')
+                diagnostics = result['structuralDiagnostics']
+                self.assertEqual(diagnostics['storyResponseOccurrences'], 1)
+                self.assertEqual(diagnostics['targetOwnerInStoryResponseOccurrences'], int(inside))
+                self.assertEqual(diagnostics['targetOwnerOutsideStoryResponseOccurrences'], int(not inside))
+                self.assertEqual(diagnostics['emptyReelsInStoryResponseOccurrences'], 1)
+                self.assertTrue(diagnostics['authPositiveInStoryResponseObserved'])
+                self.assertFalse(diagnostics['authNegativeInStoryResponseObserved'])
+                self.assertEqual(diagnostics['storyResponsesWithTargetOwnerAndEmptyReels'], int(inside))
+                self.assertEqual(diagnostics['storyResponsesWithTargetOwnerEmptyReelsAndAuthPositive'], int(inside))
+                self.assertTrue(all(type(value) in (int,bool) for value in diagnostics.values()))
+                self.assertNotIn(SECRET,json.dumps(result))
+
+    def test_unknown_diagnostics_do_not_merge_different_response_or_script_scopes(self):
+        payload = [
+            {'is_logged_in': True, 'xdt_api__v1__feed__reels_media': {'user': {'username': 'clubeuol'}}},
+            {'xdt_api__v1__feed__reels_media': {'reels_media': []}},
+        ]
+        body = '<script type="application/json">'+json.dumps(payload)+'</script>'
+        body += '<script type="application/json">'+json.dumps({'is_logged_in': True, 'reels_media': []})+'</script>'
+        result = instagram.parse_stories(body)
+        self.assertEqual(result['status'], 'unknown')
+        diagnostics = result['structuralDiagnostics']
+        self.assertEqual(diagnostics['storyResponseOccurrences'], 2)
+        self.assertEqual(diagnostics['targetOwnerInStoryResponseOccurrences'], 1)
+        self.assertEqual(diagnostics['emptyReelsInStoryResponseOccurrences'], 1)
+        self.assertTrue(diagnostics['authPositiveObserved'])
+        self.assertFalse(diagnostics['authPositiveInStoryResponseObserved'])
+        self.assertEqual(diagnostics['storyResponsesWithTargetOwnerAndEmptyReels'], 0)
+        self.assertEqual(diagnostics['storyResponsesWithTargetOwnerEmptyReelsAndAuthPositive'], 0)
+
+    def test_scoped_negative_auth_still_requires_authentication(self):
+        payload = {'xdt_api__v1__feed__reels_media': {'reels_media': [],
+                   'user': {'username': 'clubeuol'}, 'is_logged_in': False}}
+        result = instagram.parse_stories('<script type="application/json">'+json.dumps(payload)+'</script>')
+        self.assertEqual(result, {'status': 'auth_required','reason': 'login_payload','stories': []})
+
     def test_wrong_profile_is_never_used(self):
         self.assertEqual(instagram.parse_stories(page(username="other"))["stories"], [])
         self.assertEqual(instagram.parse_stories(page(username="ClubeUOL"))["status"], "unknown")
