@@ -65,6 +65,14 @@ def load_state(data_dir):
     for code in list(config["known_codes"]) + list(state["codes"]):
         if not isinstance(code, str) or not re.fullmatch(r"[A-Za-z0-9]{3}", code):
             raise ValueError("Invalid code: expected three case-sensitive ASCII alphanumeric characters")
+    research_until = config.get("research_until")
+    if research_until is not None:
+        if not isinstance(research_until, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", research_until):
+            raise ValueError("Invalid research_until: expected an ISO calendar date (YYYY-MM-DD) or null")
+        try:
+            datetime.strptime(research_until, "%Y-%m-%d")
+        except ValueError as error:
+            raise ValueError("Invalid research_until: expected an ISO calendar date (YYYY-MM-DD) or null") from error
     return state
 
 
@@ -74,8 +82,11 @@ def ticket_offer(offer, config):
     return url.scheme == "https" and url.netloc == "clube.uol.com.br" and bool(re.fullmatch(r"/campanhasdeingresso/" + re.escape(str(code)) + r"-[^/]+/?", url.path))
 
 
-def make_plan(state, catalogs=None):
+def make_plan(state, catalogs=None, now=None):
     config = state["config"]
+    day = local_day(now or utc_now())
+    research_until = config.get("research_until")
+    window_ended = bool(research_until and day > research_until)
     offers = [offer for offer in (catalogs or {}).get("offers", []) if ticket_offer(offer, config)]
     selected = []
     review = []
@@ -115,6 +126,8 @@ def make_plan(state, catalogs=None):
         else:
             review.append("prefix_requires_review:" + prefix)
     return {
+        "date": day, "research_until": research_until, "research_window_ended": window_ended,
+        "next_step": "review_before_resuming" if window_ended else "continue_daily_research",
         "codes": selected, "code_count": len(selected), "max_codes": MAX_CODES,
         "max_requests": MAX_REQUESTS, "workers": MAX_WORKERS,
         "prefixes": config["prefixes"], "new_prefixes": new_prefixes,
@@ -313,6 +326,19 @@ def export_reports(data_dir, state, summary):
         report.extend(["", "Pendências: " + ", ".join(summary["problems"]) + "."])
     atomic_write(Path(data_dir) / "observations.csv", buffer.getvalue())
     atomic_write(Path(data_dir) / "report.md", "\n".join(report) + "\n")
+    from pattern_report import build_patterns, render_markdown
+    history = None
+    try:
+        history = json.loads((Path(data_dir) / "instagram-history.json").read_text())
+        if not isinstance(history, dict) or not isinstance(history.get("records"), list) or not all(isinstance(item, dict) for item in history["records"]):
+            raise ValueError("Invalid local history shape")
+    except FileNotFoundError:
+        pass
+    except (OSError, ValueError, TypeError):
+        history = {"status": "unavailable", "reason": "local_history_unreadable", "records": []}
+    patterns = build_patterns(state, summary, history)
+    atomic_write(Path(data_dir) / "patterns.json", json_text(patterns))
+    atomic_write(Path(data_dir) / "patterns.md", render_markdown(patterns))
 
 
 def recover_snapshot(data_dir, state, day):
@@ -350,6 +376,15 @@ def run(data_dir=DEFAULT_DIR, backend=None, now=None):
         recovered = recover_snapshot(data_dir, state, day)
         if recovered:
             return recovered
+        research_until = state["config"].get("research_until")
+        if research_until and day > research_until:
+            return {
+                "status": "review_required", "reason": "research_window_ended",
+                "date": day, "research_until": research_until,
+                "requests": 0, "codes_checked": 0,
+                "max_codes": MAX_CODES, "max_requests": MAX_REQUESTS, "workers": MAX_WORKERS,
+                "next_step": "review_before_resuming", "should_notify": False,
+            }
         backend = backend or importlib.import_module("probe")
         backend.configure(max_requests=MAX_REQUESTS, deadline_seconds=480)
         try:
@@ -357,7 +392,7 @@ def run(data_dir=DEFAULT_DIR, backend=None, now=None):
         except Exception as error:
             catalogs = {"checkedAt": started_at, "pages": [], "offers": [], "complete": False, "error": type(error).__name__}
         catalogs.setdefault("checkedAt", started_at)
-        plan = make_plan(state, catalogs)
+        plan = make_plan(state, catalogs, started_at)
 
         def check(code):
             try:

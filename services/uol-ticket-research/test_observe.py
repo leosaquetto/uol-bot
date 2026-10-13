@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import observe
 
@@ -235,6 +236,100 @@ class PersistenceTests(unittest.TestCase):
 
     def tearDown(self):
         self.temp.cleanup()
+
+    def set_research_until(self, value):
+        state = json.loads((self.directory / "state.json").read_text())
+        state["config"]["research_until"] = value
+        (self.directory / "state.json").write_text(json.dumps(state))
+
+    def test_expired_window_stops_before_backend_and_preserves_history(self):
+        self.set_research_until("2026-10-30")
+        before = (self.directory / "state.json").read_bytes()
+        backend = FakeProbe()
+        result = observe.run(self.directory, backend, "2026-10-31T15:00:00Z")
+        self.assertEqual(result["status"], "review_required")
+        self.assertEqual(result["reason"], "research_window_ended")
+        self.assertEqual(result["date"], "2026-10-31")
+        self.assertEqual(result["research_until"], "2026-10-30")
+        self.assertEqual((result["requests"], result["codes_checked"]), (0, 0))
+        self.assertEqual((result["max_codes"], result["max_requests"], result["workers"]), (560, 650, 2))
+        self.assertFalse(result["should_notify"])
+        self.assertEqual(backend.calls, [])
+        with patch.object(observe.importlib, "import_module", side_effect=AssertionError("backend imported")):
+            self.assertEqual(observe.run(self.directory, now="2026-10-31T15:00:00Z"), result)
+        self.assertEqual((self.directory / "state.json").read_bytes(), before)
+        self.assertFalse((self.directory / "snapshots").exists())
+        self.assertFalse((self.directory / "summary.json").exists())
+
+    def test_cutoff_day_is_inclusive(self):
+        self.set_research_until("2026-10-30")
+        at = "2026-10-30T15:00:00Z"
+        backend = FakeProbe(at)
+        result = observe.run(self.directory, backend, at)
+        self.assertEqual(result["status"], "recorded")
+        self.assertEqual(result["date"], "2026-10-30")
+        self.assertEqual(backend.calls[0][0], "configure")
+
+    def test_cutoff_uses_sao_paulo_day(self):
+        self.set_research_until("2026-10-30")
+        before_midnight = "2026-10-31T02:59:59Z"
+        self.assertEqual(observe.run(self.directory, FakeProbe(before_midnight), before_midnight)["status"], "recorded")
+        backend = FakeProbe()
+        result = observe.run(self.directory, backend, "2026-10-31T03:00:00Z")
+        self.assertEqual(result["status"], "review_required")
+        self.assertEqual(result["date"], "2026-10-31")
+        self.assertEqual(backend.calls, [])
+
+    def test_research_until_requires_iso_calendar_date_or_null(self):
+        for value in ("2026-02-30", "2026-13-01", "2026-10-3", "2026-10-30T00:00:00Z", "", False, 123):
+            with self.subTest(value=value):
+                self.set_research_until(value)
+                with self.assertRaisesRegex(ValueError, "Invalid research_until"):
+                    observe.load_state(self.directory)
+        for value in (None, "2028-02-29", "2026-10-30"):
+            with self.subTest(value=value):
+                self.set_research_until(value)
+                self.assertEqual(observe.load_state(self.directory)["config"]["research_until"], value)
+
+    def test_plan_shows_window_without_changing_state(self):
+        self.set_research_until("2026-10-30")
+        before = (self.directory / "state.json").read_bytes()
+        state = observe.load_state(self.directory)
+        active = observe.make_plan(state, now="2026-10-30T15:00:00Z")
+        ended = observe.make_plan(state, now="2026-10-31T15:00:00Z")
+        self.assertEqual(active["research_until"], "2026-10-30")
+        self.assertFalse(active["research_window_ended"])
+        self.assertEqual(active["next_step"], "continue_daily_research")
+        self.assertTrue(ended["research_window_ended"])
+        self.assertEqual(ended["next_step"], "review_before_resuming")
+        self.assertEqual(ended["codes"], active["codes"])
+        self.assertEqual((self.directory / "state.json").read_bytes(), before)
+
+    def test_recorded_day_takes_precedence_over_cutoff(self):
+        observe.run(self.directory, FakeProbe(), T1)
+        snapshot = next((self.directory / "snapshots").glob("*.json"))
+        original = snapshot.read_bytes()
+        self.set_research_until("2026-10-08")
+        backend = FakeProbe()
+        self.assertEqual(observe.run(self.directory, backend, T1)["status"], "already_recorded")
+        self.assertEqual(backend.calls, [])
+        self.assertEqual(snapshot.read_bytes(), original)
+
+    def test_snapshot_recovery_takes_precedence_over_cutoff(self):
+        self.set_research_until("2026-10-30")
+        observe.run(self.directory, FakeProbe(), T1)
+        snapshot = next((self.directory / "snapshots").glob("*.json"))
+        original = snapshot.read_bytes()
+        stale = json.loads((self.directory / "state.json").read_text())
+        stale["runs"] = {}
+        stale["config"]["research_until"] = "2026-10-08"
+        (self.directory / "state.json").write_text(json.dumps(stale))
+        backend = FakeProbe()
+        self.assertEqual(observe.run(self.directory, backend, T1)["status"], "already_recorded")
+        self.assertEqual(backend.calls, [])
+        self.assertEqual(snapshot.read_bytes(), original)
+        recovered = json.loads((self.directory / "state.json").read_text())
+        self.assertEqual(recovered, json.loads(original)["state_after"])
 
     def test_same_local_day_repeats_without_network(self):
         first = observe.run(self.directory, FakeProbe(), T1)

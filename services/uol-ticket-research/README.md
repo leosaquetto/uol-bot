@@ -8,6 +8,29 @@ O [ensaio de estabilidade Instagram](INSTAGRAM-TRIAL.md) tem transporte e contro
 
 O usuário autorizou o [complemento Instagram no servidor](INSTAGRAM-MONITOR.md), com imagem do Story e link de campanhas nos mesmos quatro destinos do UOL bot. Esse monitor contínuo é independente da coleta diária e do ensaio isolado.
 
+## Janela atual de pesquisa
+
+O acompanhamento diário foi mantido até **30/10/2026**, inclusive, no horário de
+São Paulo, priorizando The Pussycat Dolls. `config.research_until` em `state.json`
+define a data de revisão. Depois dela, `--run` retorna `review_required` com zero
+GETs; não altera snapshots, relatórios ou serviços. A data é opcional: ausente ou
+`null` preserva o comportamento anterior para outros acompanhamentos.
+
+Em 31/10, a automação deste chat deve apresentar a avaliação e pausar somente a
+pesquisa diária. Um novo alvo ou nova data de término precisa ser definido antes
+de retomar. O UOL bot, seus quatro destinos e o monitor operacional Instagram
+continuam independentes dessa janela; o fim da pesquisa não os desativa.
+
+Em 13/10, o coletor e o estado local receberam essa trava. A atualização das
+instruções da automação no app não respondeu e permaneceu pendente. Isso também
+deixa pendente o sincronismo diário dos metadados Oracle descrito abaixo; a
+primeira exportação e os relatórios locais já foram gerados. A trava do coletor
+continua impedindo novos GETs após 30/10 mesmo com as instruções anteriores.
+
+O receptor push permanece em piloto até uma prova real no Oracle. Em 13/10, o
+Story `pQ5` foi entregue com imagem e link aos quatro destinos por consulta
+periódica. Essa entrega não autoriza promover o intervalo para 30 minutos.
+
 Na raiz do repositório:
 
 ```sh
@@ -32,6 +55,8 @@ Por padrão, tudo fica em `~/.local/share/uol-ticket-research`. Use `--data-dir 
 | `summary.json` | Resumo da última rodada e pendências. |
 | `observations.csv` | Histórico tabular, incluindo códigos inconclusivos e referências históricas. |
 | `report.md` | Relatório legível de páginas observadas, referências e mudanças. |
+| `patterns.json` / `patterns.md` | Cruzamento offline de páginas, listas, validade e shows identificados. |
+| `instagram-history.json` | Histórico sanitizado de Stories já registrados no Oracle, quando disponível. |
 
 Os relatórios usam `config.metadata[codigo]` de `state.json` para nome/data do evento e fontes históricas:
 
@@ -48,6 +73,50 @@ Os relatórios usam `config.metadata[codigo]` de `state.json` para nome/data do 
 
 `referenceSource` permite mostrar uma referência histórica mesmo sem `first_seen` ou registro em `codes`. O relatório separa essas referências das páginas observadas publicamente; no CSV, `tipo_registro` e `fonte_referencia` explicitam a distinção. Referências não criam observações, datas de publicação ou provas de disponibilidade.
 
+## Cruzamento offline com Stories
+
+`pattern_report.py` lê o histórico público e, quando presente, o arquivo local
+`instagram-history.json`. `export_reports` também regenera `patterns.json` e
+`patterns.md`, sem repetir a coleta. Os shows ficam do futuro para o passado;
+os Stories de outras campanhas permanecem no cruzamento geral.
+
+```sh
+python3 services/uol-ticket-research/pattern_report.py --format markdown
+```
+
+No Oracle, o utilitário instalado lê somente metadados existentes, sob o usuário
+proprietário do banco:
+
+```sh
+sudo -n -u uol-instagram-monitor python3 -B \
+  /opt/uol-instagram-monitor/story_history.py \
+  --database /var/lib/uol-instagram-monitor/monitor.sqlite
+```
+
+A automação usa o SSH de `~/.config/uol-ticket-research/server.json`, captura essa
+saída JSON em memória e chama `merge_story_history(histórico_anterior, exportação)`.
+Grava o resultado com `observe.atomic_write` em `instagram-history.json`, sob o
+mesmo lock local `.lock`, e chama `export_reports` com o estado e resumo atuais.
+Não precisa abrir Instagram, consultar Analytics ou copiar o banco privado.
+Falha de SSH conserva o histórico anterior; não o substitui por uma lista vazia.
+Se a captura estiver até cinco segundos adiante do relógio local, aguarde esse
+intervalo antes da importação; uma divergência maior interrompe a importação.
+Não ajuste os horários das fontes. O merge recusa capturas futuras.
+
+A exportação inclui apenas URL pública canônica, código, horários públicos/de
+observação, gatilho, baseline, correlação e confirmação de imagem por destino.
+Não exporta IDs de Story/mensagem, imagens, cookies, sessão, credenciais ou corpos
+de notificações. O SQLite abre em modo somente leitura. Banco ausente ou sem
+permissão segura é `unavailable`; cobertura legada ausente é `partial`.
+Registros com horários diferentes permanecem distintos; a contagem é de registros
+históricos, sem inferir quantidade de Stories únicos.
+
+Só intervalos delimitados por duas observações conclusivas permitem comparar a
+ordem entre página/catálogo e publicação do Story. Baseline, lacuna, URL divergente
+ou sobreposição permanece `order_uncertain`; os relógios das fontes não foram
+validados independentemente. Confirmação de entrega por `poll` não comprova push.
+O alfabeto candidato dos códigos permanece hipótese, não algoritmo confirmado.
+
 ## Limites da evidência
 
 - `first_seen` significa **primeira observação pelo coletor**, não criação, cadastro ou publicação da campanha. A validade publicada também não prova essas datas.
@@ -59,5 +128,5 @@ Testes locais, sem rede:
 
 ```sh
 cd services/uol-ticket-research
-python3 -m unittest test_observe test_probe
+python3 -m unittest test_observe test_probe test_pattern_report test_story_history
 ```
