@@ -42,6 +42,17 @@ def number(value, key):
     return value
 
 
+def counter_nondecreasing(previous, current, key):
+    if current >= previous:
+        return True
+    if key != 'duration':
+        return False
+    # Analytics group summation order can shift duration by a few float ULPs.
+    # Keep that allowance bounded absolutely; integer counters stay exact.
+    tolerance = min(1e-9, 8 * max(math.ulp(previous), math.ulp(current)))
+    return previous - current <= tolerance
+
+
 def unique_object(pairs):
     result = {}
     for key, value in pairs:
@@ -229,16 +240,18 @@ def build_report(state_dir, day, now=None):
                           and all((b[1] - a[1]).total_seconds() <= MAX_GAP_SECONDS
                                   for a, b in zip(known, known[1:])))
         monotonic = key == 'storageBytes' or all(
-            day_metric(b, day, key)['value'] >= day_metric(a, day, key)['value']
+            counter_nondecreasing(day_metric(a, day, key)['value'],
+                                  day_metric(b, day, key)['value'], key)
             for a, b in zip(known, known[1:]))
         known_confirmations = [row for row in confirmations if day_metric(row, day, key)['status'] == 'known']
         confirmation_monotonic = key == 'storageBytes' or all(
-            day_metric(b, day, key)['value'] >= day_metric(a, day, key)['value']
+            counter_nondecreasing(day_metric(a, day, key)['value'],
+                                  day_metric(b, day, key)['value'], key)
             for a, b in zip(known_confirmations, known_confirmations[1:]))
         final = closed if confirmation else last
         confirmed = bool(confirmation and closed['status'] == 'known' and confirmation_monotonic
                          and (key == 'storageBytes' or last['value'] is None
-                              or closed['value'] >= last['value']))
+                              or counter_nondecreasing(last['value'], closed['value'], key)))
         metric_verified = bool(sufficient and continuous and monotonic and confirmed and now >= end)
         verified = verified and metric_verified
         item = {'status': final['status'], 'value': final['value'], 'observedAt': final['observedAt'],

@@ -232,6 +232,58 @@ class UsageReportTests(unittest.TestCase):
         self.write(rows)
         self.assertEqual(self.report()['status'], 'consumption_verified')
 
+    def test_duration_roundoff_is_tolerated_at_all_counter_checks(self):
+        high, low = 3745.6763066880008, 3745.6763066879994
+        for where in ('in_day', 'post_day', 'last_to_closed'):
+            with self.subTest(where=where):
+                for path in self.snapshots.glob('*.json'):
+                    path.unlink()
+                rows = full_day()
+                for row in rows:
+                    if DAY in row['dailyTotals']:
+                        row['dailyTotals'][DAY]['duration'] = high
+                if where == 'in_day':
+                    rows[40]['dailyTotals'][DAY]['duration'] = low
+                elif where == 'post_day':
+                    later = copy.deepcopy(rows[-1])
+                    later['observedAt'] = iso(START + dt.timedelta(days=1, minutes=30))
+                    later['dailyTotals'][DAY]['duration'] = low
+                    rows.append(later)
+                else:
+                    rows[-1]['dailyTotals'][DAY]['duration'] = low
+                self.write(rows)
+                report = self.report()
+                self.assertTrue(report['metrics']['duration']['consumptionVerified'])
+                self.assertEqual(report['metrics']['duration']['value'], high if where == 'in_day' else low)
+                self.assertEqual(report['status'], 'consumption_verified')
+
+    def test_duration_and_integer_regressions_remain_rejected_at_all_counter_checks(self):
+        for key, high, low in [('duration', 3745.6763066880008, 3745.6753066880008),
+                               ('duration', 1e12, 1e12 - 0.001),
+                               ('rowsRead', 1000, 999), ('rowsWritten', 1000, 999),
+                               ('workersRequests', 1000, 999), ('doRequests', 1000, 999)]:
+            for where in ('in_day', 'post_day', 'last_to_closed'):
+                with self.subTest(key=key, high=high, where=where):
+                    for path in self.snapshots.glob('*.json'):
+                        path.unlink()
+                    rows = full_day()
+                    for row in rows:
+                        if DAY in row['dailyTotals']:
+                            row['dailyTotals'][DAY][key] = high
+                    if where == 'in_day':
+                        rows[40]['dailyTotals'][DAY][key] = low
+                    elif where == 'post_day':
+                        later = copy.deepcopy(rows[-1])
+                        later['observedAt'] = iso(START + dt.timedelta(days=1, minutes=30))
+                        later['dailyTotals'][DAY][key] = low
+                        rows.append(later)
+                    else:
+                        rows[-1]['dailyTotals'][DAY][key] = low
+                    self.write(rows)
+                    report = self.report()
+                    self.assertFalse(report['metrics'][key]['consumptionVerified'])
+                    self.assertEqual(report['status'], 'coverage_insufficient')
+
     def test_post_day_regression_and_legacy_storage_source_are_not_verified(self):
         rows = full_day()
         prior = copy.deepcopy(rows[-1])
