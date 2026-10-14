@@ -2647,6 +2647,56 @@ describe("UOL Worker no runtime Cloudflare", () => {
     expect(missing.status).toBe(404);
   });
 
+  it("preserva horário e canal de entrega desconhecida nos diagnósticos protegidos", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("clube-uol-global-monitor");
+    const unknownAt = "2026-10-14T12:34:56.000Z";
+    await runInDurableObject(stub, (_instance, state) => {
+      state.storage.sql.exec(
+        `INSERT INTO offers(
+          id, link, preview_title, title, first_seen_at, last_seen_at, status,
+          main_sent_at, delivery_unknown_at, delivery_unknown_target
+        ) VALUES (?, ?, ?, ?, ?, ?, 'delivered', ?, ?, 'canal2')`,
+        "unknown-secondary", "https://clube.uol.com.br/beneficios/unknown-secondary",
+        "Oferta de teste", "Oferta de teste", unknownAt, unknownAt, unknownAt, unknownAt,
+      );
+    });
+
+    for (const [path, key] of [["/dashboard.json", "recent"], ["/decisions", "decisions"], ["/inventory", "inventory"]]) {
+      const unauthorized = await exports.default.fetch(`https://worker.test${path}`);
+      expect(unauthorized.status).toBe(401);
+      const response = await exports.default.fetch(`https://worker.test${path}`, {
+        headers: { Authorization: ADMIN_AUTHORIZATION },
+      });
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      const decision = body[key].find((item) => item.id === "unknown-secondary");
+      expect(decision).toMatchObject({
+        id: "unknown-secondary",
+        mainSent: true,
+        deliveryUnknownAt: unknownAt,
+        deliveryUnknownTarget: "canal2",
+      });
+    }
+
+    const offers = await exports.default.fetch("https://worker.test/offers?limit=12");
+    expect(offers.status).toBe(200);
+    const publicPayload = await offers.json();
+    expect(publicPayload.offers).toContainEqual(expect.objectContaining({ id: "unknown-secondary" }));
+    expect(JSON.stringify(publicPayload)).not.toMatch(/deliveryUnknown|delivery_unknown/);
+
+    await runInDurableObject(stub, (_instance, state) => {
+      const row = state.storage.sql.exec(
+        "SELECT main_sent_at, delivery_unknown_at, delivery_unknown_target FROM offers WHERE id = ?",
+        "unknown-secondary",
+      ).toArray()[0];
+      expect(row).toEqual({
+        main_sent_at: unknownAt,
+        delivery_unknown_at: unknownAt,
+        delivery_unknown_target: "canal2",
+      });
+    });
+  });
+
   it("cacheia o diagnóstico de readiness por 15s sem deixar de rearmar o polling", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("readiness-cache-rearm");
 

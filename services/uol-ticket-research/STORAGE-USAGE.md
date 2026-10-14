@@ -82,7 +82,7 @@ indisponível não libera a manutenção. `globalFresh:false` degrada readiness.
 `STORAGE_USAGE_GLOBAL_GUARD_ENABLED=false` é rollback explícito para o guard
 local; não apaga filas, recibos ou histórico.
 
-## Aceitação ainda pendente
+## Resultado da janela de três dias
 
 Meta operacional: **menos de 70.000 writes globais em cada dia UTC completo**, por
 **três dias completos consecutivos após a ativação**, preservando descoberta e
@@ -90,6 +90,21 @@ entregas. O dia parcial da publicação não conta. Usar os snapshots e os totai
 atualizados dos dias anteriores para confirmar consumo real; projeção local,
 aceite da API e processo ativo não comprovam essa meta.
 
-Os três dias completos ainda estão pendentes. Falha ou expiração do token deixa
-o guard sem amostra fresca e mantém trabalho opcional adiado; não suspende o
-monitor de Stories por si só.
+Em 14/10, os snapshots existentes confirmaram a meta de gravações para os três
+dias UTC: **33.186 em 11/10, 33.001 em 12/10 e 33.527 em 13/10**. Cada dia teve
+96 amostras, nenhuma lacuna superior a 30 minutos e confirmação posterior. O
+último total foi reconfirmado pela coleta programada de 14/10 às 00:07:13 UTC;
+não houve consulta Analytics adicional para essa avaliação.
+
+Leituras, requisições Workers estimadas e duração também tiveram cobertura
+suficiente, com picos de 34,55%, 18,67% e 29,72% dos limites configurados na
+janela. Armazenamento SQL atingiu estimativa de 5.292.032 bytes; sua cobertura
+contínua em 11/12 permaneceu insuficiente, embora o valor final fosse conhecido.
+Requisições DO faturáveis continuam `billing_unknown`; não converter contagens
+brutas do tipo `hibernation` nem somar mensagens aos mesmos eventos sem uma
+definição comprovada dos campos.
+
+A meta de writes está comprovada. Aceitação global continua pendente: margem
+conhecida não comprova faturamento DO, entrega, ausência de duplicatas, latência
+ou prova real de push. Falha ou expiração do token deixa o guard sem amostra
+fresca e mantém trabalho opcional adiado; não suspende Stories por si só.

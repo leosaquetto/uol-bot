@@ -22,14 +22,16 @@ de retomar. O UOL bot, seus quatro destinos e o monitor operacional Instagram
 continuam independentes dessa janela; o fim da pesquisa não os desativa.
 
 Em 13/10, o coletor e o estado local receberam essa trava. A atualização das
-instruções da automação no app não respondeu e permaneceu pendente. Isso também
-deixa pendente o sincronismo diário dos metadados Oracle descrito abaixo; a
-primeira exportação e os relatórios locais já foram gerados. A trava do coletor
-continua impedindo novos GETs após 30/10 mesmo com as instruções anteriores.
+instruções da automação não respondeu durante a primeira verificação, mas foi
+concluída depois pelo app. Em 14/10, a configuração persistida confirmou a janela,
+o cruzamento diário Oracle e a avaliação/pausa em 31/10, mantendo a rotina ativa
+às 18h de São Paulo. A trava do coletor também impede novos GETs após 30/10.
 
 O receptor push permanece em piloto até uma prova real no Oracle. Em 13/10, o
 Story `pQ5` foi entregue com imagem e link aos quatro destinos por consulta
-periódica. Essa entrega não autoriza promover o intervalo para 30 minutos.
+periódica. Em 14/10, `pQH` também foi confirmado nos quatro destinos por `poll`,
+sem sinal push correspondente. Essas entregas não autorizam promover o intervalo
+para 30 minutos.
 
 Na raiz do repositório:
 
