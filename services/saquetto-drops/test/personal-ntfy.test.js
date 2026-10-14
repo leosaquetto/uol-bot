@@ -81,9 +81,8 @@ test('personal chat link is derived from the private WhatsApp JID',()=>{
 
 test('ntfy request uses the personal topic, body, click link and open-conversation action',async()=>{
   const calls=[];
-  const ok=await sendPersonalNtfyNotification('**Oi** com `formatação`',{jid:personalJid,fetchImpl:async(url,options)=>{
-    calls.push({url,options});return {ok:true,status:200};
-  }});
+  const fetchImpl=async(url,options)=>{calls.push({url,options});return {ok:true,status:200};};
+  const ok=await sendPersonalNtfyNotification('**Oi** com `formatação`',{jid:personalJid,fetchImpl});
   assert.equal(ok,true);
   assert.equal(calls.length,1);
   const {url,options}=calls[0];
@@ -95,6 +94,12 @@ test('ntfy request uses the personal topic, body, click link and open-conversati
   assert.equal(options.headers.Click,personalWhatsAppLink(personalJid));
   assert.equal(options.headers.Actions,`view, Abrir Conversa, ${options.headers.Click}, clear=true`);
   assert.equal(options.headers.Tags,'speech_balloon,calling');
+  const senderJid='7654321@s.whatsapp.net';
+  assert.equal(await sendPersonalNtfyNotification('**Oi** com `formatação`',{jid:personalJid,senderJid,fetchImpl}),true);
+  assert.equal(calls.length,2);
+  assert.equal(calls[1].url,url);assert.equal(calls[1].options.body,options.body);
+  assert.deepEqual(calls[1].options.headers,{...options.headers,Click:personalWhatsAppLink(senderJid),
+    Actions:`view, Abrir Conversa, ${personalWhatsAppLink(senderJid)}, clear=true`});
 });
 
 test('media-only personal messages still produce a readable ntfy body',async()=>{
@@ -106,7 +111,7 @@ test('media-only personal messages still produce a readable ntfy body',async()=>
   assert.equal(body,'Mensagem com mídia enviada ao WhatsApp.');
 });
 
-test('ntfy failure leaves the accepted WhatsApp job accepted and cannot resend it',async()=>{
+test('ntfy failure or invalid sender leaves the accepted WhatsApp job accepted and cannot resend it',async()=>{
   const f=fixture();let sends=0;const warnings=[];
   const config={destinations:{'eu-mesmo':{type:'contact',jid:personalJid,verified:true}},
     operation:{paused:false,dryRun:false,minDelayMs:0}};
@@ -127,6 +132,11 @@ test('ntfy failure leaves the accepted WhatsApp job accepted and cannot resend i
     await flush();
     assert.equal(f.store.job(job.id).state,'accepted');
     assert.equal(warnings.length,1);
+    let invalidSenderCalls=0;
+    assert.equal(await sendPersonalNtfyNotification('once',{jid:personalJid,senderJid:groupJid,
+      fetchImpl:async()=>{invalidSenderCalls++;return {ok:true,status:200};}}),false);
+    assert.equal(invalidSenderCalls,0);assert.equal(warnings.length,2);
+    assert.equal(f.store.job(job.id).state,'accepted');
     f.store.setSetting('last_dispatch_at','0');
     await sender();
     assert.equal(sends,1);

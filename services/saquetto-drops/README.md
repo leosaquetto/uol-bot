@@ -193,6 +193,9 @@ aliases and idempotency keys unchanged. The legacy gateway route named `self`
 pins a verified **contact recipient** through `DROPS_GATEWAY_SELF`; that recipient
 can differ from the connected sender. Changing the sender must not redirect
 personal messages to the new account. Keep retired BuyTicket consumers disabled.
+The personal ntfy action opens the current sender's number so the original
+recipient reaches the incoming conversation; receipt matching still uses the
+unchanged recipient. No group receipt becomes a personal notification.
 
 On 14/10/2026, the replacement account's membership and publication permission
 were verified for the four existing groups requested by the user and the active

@@ -11,13 +11,14 @@ export function personalWhatsAppLink(jid) {
 
 export async function sendPersonalNtfyNotification(text, {
   jid,
+  senderJid,
   fetchImpl = globalThis.fetch,
 } = {}) {
   const encodedTitle = `=?utf-8?B?${Buffer.from(TITLE,'utf8').toString('base64')}?=`;
   const cleanText = typeof text === 'string' ? text.replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'') : '';
   const message = cleanText || 'Mensagem com mídia enviada ao WhatsApp.';
   try {
-    const chatLink = personalWhatsAppLink(jid);
+    const chatLink = personalWhatsAppLink(senderJid || jid);
     const response = await fetchImpl(`https://ntfy.sh/${DEFAULT_TOPIC}`, {
       method:'POST',
       headers:{

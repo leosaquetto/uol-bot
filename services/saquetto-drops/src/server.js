@@ -33,7 +33,7 @@ const qrPath = join(data,'pairing-qr.private.txt');
 const whatsapp = process.env.DROPS_WHATSAPP === '1' ? startWhatsApp({
   store,
   getPersonalJid:()=>config.destinations['eu-mesmo']?.jid || '',
-  onPersonalMessageAccepted:(text,jid)=>sendPersonalNtfyNotification(text,{jid}),
+  onPersonalMessageAccepted:(text,jid)=>sendPersonalNtfyNotification(text,{jid,senderJid:whatsapp.ownDestination().jid}),
   onQr(qr) {
   qrAvailable = Boolean(qr);
   if (qr) writeFileSync(qrPath,qr,{mode:0o600});
