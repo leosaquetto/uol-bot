@@ -27,7 +27,7 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
   const destination=route=>{
     const alias=routes[route], d=getConfig().destinations[alias];
     if(!['uol','buyticket','self'].includes(route)||!d?.verified||!['group','contact'].includes(d.type))fail('destination_not_allowed',409);
-    if(route==='self'&&d.jid!==whatsapp.ownDestination().jid)fail('self_destination_mismatch',409);
+    if(route==='self'&&d.type!=='contact')fail('personal_destination_not_contact',409);
     return {alias,...d};
   };
   const status=row=>({jobId:row.id,messageId:row.message_id,state:row.state,confirmation:row.confirmation,code:row.code,

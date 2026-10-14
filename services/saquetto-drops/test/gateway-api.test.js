@@ -19,11 +19,64 @@ const send=(api,body)=>{
 };
 const fixture=(overrides={})=>{
   const directory=mkdtempSync(join(tmpdir(),'drops-story-test-'));const store=openStore(join(directory,'state.sqlite'));
-  const config={operation:{paused:false,dryRun:false,minDelayMs:0},destinations:{uol:{type:'group',jid:'12345@g.us',verified:true}}};
-  const whatsapp={isReady:()=>true,ownDestination:()=>({jid:'self@s.whatsapp.net'}),verifyDestination:async()=>{},socket:()=>({}),...overrides};
-  const api=createGatewayApi({store,dataDir:directory,getConfig:()=>config,whatsapp,canSend:()=>true,routes:{uol:'uol'}});
+  const config={operation:{paused:false,dryRun:false,minDelayMs:0},destinations:{
+    uol:{type:'group',jid:'12345@g.us',verified:true},buyticket:{type:'group',jid:'67890@g.us',verified:true},
+    self:{type:'contact',jid:'recipient-b@s.whatsapp.net',verified:true}}};
+  const whatsapp={isReady:()=>true,ownDestination:()=>({jid:'sender-a@s.whatsapp.net'}),verifyDestination:async()=>{},socket:()=>({}),...overrides};
+  const api=createGatewayApi({store,dataDir:directory,getConfig:()=>config,whatsapp,canSend:()=>true,routes:{uol:'uol',buyticket:'buyticket',self:'self'}});
   return {store,config,whatsapp,api,close:()=>{store.close();rmSync(directory,{recursive:true,force:true});}};
 };
+
+test('configured personal contact stays separate from sender and ignores request destinations',async()=>{
+  const f=fixture();let sent;
+  f.whatsapp.socket=()=>({sendMessage:async(jid,content,options)=>{sent={jid,content};f.store.receipt(options.messageId,jid,'accepted','server_ack');}});
+  const run=createSender({store:f.store,getConfig:()=>f.config,whatsapp:f.whatsapp,canSend:()=>true,
+    prepare:payload=>f.api.prepare(payload,{})});
+  try{
+    assert.notEqual(f.whatsapp.ownDestination().jid,f.config.destinations.self.jid);
+    const ready=await f.api.route({method:'GET'},'/v1/gateway/readyz');
+    assert.equal(ready.status,200);assert.equal(ready.body.ok,true);
+    assert.deepEqual(ready.body.components,{transport:true,destinations:true,sender:true});
+    const body={route:'self',keyHash:'a'.repeat(64),requestHash:'b'.repeat(64),text:'Personal delivery',
+      destination:'other@g.us',jid:'other@s.whatsapp.net',destinationAlias:'uol'};
+    const result=await send(f.api,body);assert.equal(result.status,202);
+    const job=f.store.job(result.body.jobId);
+    assert.equal(job.destination,f.config.destinations.self.jid);assert.equal(JSON.parse(job.payload).destinationAlias,'self');
+    const replay=await send(f.api,body);assert.equal(replay.status,202);assert.equal(replay.body.jobId,result.body.jobId);
+    assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM jobs').get().n,1);
+    await run();assert.equal(f.store.job(job.id).state,'accepted');
+    assert.deepEqual(sent,{jid:f.config.destinations.self.jid,content:{text:body.text,linkPreview:null}});
+  }finally{f.close();}
+});
+
+test('personal route rejects groups and unverified contacts before enqueue and fails readiness',async()=>{
+  for(const [destination,code] of [
+    [{type:'group',jid:'12345@g.us',verified:true},'personal_destination_not_contact'],
+    [{type:'contact',jid:'recipient-b@s.whatsapp.net',verified:false},'destination_not_allowed'],
+  ]){
+    const f=fixture();
+    try{
+      f.config.destinations.self=destination;
+      const ready=await f.api.route({method:'GET'},'/v1/gateway/readyz');
+      assert.equal(ready.status,503);assert.equal(ready.body.ok,false);assert.equal(ready.body.components.destinations,false);
+      const result=await send(f.api,{route:'self',keyHash:'a'.repeat(64),requestHash:'b'.repeat(64),text:'Personal delivery'});
+      assert.deepEqual(result,{status:409,body:{code}});
+      assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM jobs').get().n,0);
+    }finally{f.close();}
+  }
+});
+
+test('personal route keeps idempotency conflict when configured contact changes',async()=>{
+  const f=fixture();
+  try{
+    const body={route:'self',keyHash:'a'.repeat(64),requestHash:'b'.repeat(64),text:'Personal delivery'};
+    const result=await send(f.api,body);assert.equal(result.status,202);
+    f.config.destinations.self.jid='recipient-c@s.whatsapp.net';
+    assert.deepEqual(await send(f.api,body),{status:409,body:{code:'idempotency_conflict'}});
+    assert.equal(f.store.job(result.body.jobId).destination,'recipient-b@s.whatsapp.net');
+    assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM jobs').get().n,1);
+  }finally{f.close();}
+});
 
 test('queued Story photo prepares original portrait bytes and caption without preview composition',async()=>{
   const original=await sharp({create:{width:90,height:160,channels:3,background:'#b85544'}}).png().toBuffer();

@@ -169,6 +169,36 @@ credentials and Signal keys remain in the private SQLite database. This cannot
 prevent WhatsApp from revoking a linked
 device, which still requires a new pairing.
 
+### Replacing the WhatsApp sender
+
+Pause dispatch through `/v1/pause`, persist `operation.paused:true` in the private
+configuration, and keep `DROPS_PILOT=0` before a restart. The persisted pause is
+loaded after observer startup; the file pause also protects that startup window.
+Stop the writer and take a consistent private backup before replacing only the
+SQLite `auth` table, including all Signal keys. Preserve jobs, receipts, settings,
+the activation timestamp, Web Push registration and the gateway ledger. Never
+restore an older Signal state over a running session.
+
+For QR pairing, `registered:false` is not proof of failure in Baileys 7.0.0-rc14.
+Use the saved account identity and the application's `connected` state, which
+requires pending-notification and sync checkpoints. A later `401` means that the
+current saved login was rejected; a device still listed on the phone does not
+prove a live server connection. Preserve the rejected session before a new link;
+do not keep restarting it or guess the reason for rejection.
+
+Before resuming, verify every routed group and the configured personal contact
+with `/v1/destinations/verify` without sending a test. Saved `verified` flags and
+old acceptance gates do not establish access for the new sender. Keep group JIDs,
+aliases and idempotency keys unchanged. The legacy gateway route named `self`
+pins a verified **contact recipient** through `DROPS_GATEWAY_SELF`; that recipient
+can differ from the connected sender. Changing the sender must not redirect
+personal messages to the new account. Keep retired BuyTicket consumers disabled.
+
+On 14/10/2026, the replacement account's membership and publication permission
+were verified for the four existing groups requested by the user and the active
+EV Sanctuary route. The original personal recipient was also verified. These
+metadata checks sent no messages; they do not prove a new-account delivery.
+
 Web Push registration contains a dedicated Mozilla UAID/channel, endpoint and
 encryption keys (0600). It is independent of the in-app browser's subscription.
 Only one receiver may use it at once. The Oracle receiver needs no X password or
