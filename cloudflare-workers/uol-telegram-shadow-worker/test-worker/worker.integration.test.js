@@ -2678,7 +2678,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
       });
     }
 
-    const offers = await exports.default.fetch("https://worker.test/offers?limit=12");
+    const offers = await exports.default.fetch("https://unknown-projection.test/offers?limit=12");
     expect(offers.status).toBe(200);
     const publicPayload = await offers.json();
     expect(publicPayload.offers).toContainEqual(expect.objectContaining({ id: "unknown-secondary" }));
@@ -2694,6 +2694,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
         delivery_unknown_at: unknownAt,
         delivery_unknown_target: "canal2",
       });
+      state.storage.sql.exec("DELETE FROM offers WHERE id = ?", "unknown-secondary");
     });
   });
 
