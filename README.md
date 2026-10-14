@@ -4,7 +4,13 @@ O sistema ativo de coleta e envio de ofertas é o Cloudflare Worker
 `uol-telegram-shadow-pilot`, implementado em
 [`cloudflare-workers/uol-telegram-shadow-worker`](cloudflare-workers/uol-telegram-shadow-worker/).
 Ele consulta as fontes do Clube UOL, mantém o estado em um Durable Object com
-SQLite e entrega para Telegram e Discord sem depender deste Mac.
+SQLite e entrega para os dois canais Telegram, Discord e WhatsApp sem depender
+deste Mac. O WhatsApp passa pelo gateway existente e pela sessão Baileys
+compartilhada do Saquetto Drops no Oracle.
+
+A troca da conta remetente em 14/10/2026 manteve destinos, tokens e deduplicação.
+O procedimento está no [runbook do Saquetto Drops](services/saquetto-drops/README.md#replacing-the-whatsapp-sender);
+o registro de publicação está no [histórico operacional](services/uol-ticket-research/ROLLOUT-2026-10-10.md#troca-do-remetente-whatsapp--14102026).
 
 As melhorias API-first presentes no checkout são locais até existir uma
 publicação deliberada com Version ID e verificação pós-deploy. O endpoint de

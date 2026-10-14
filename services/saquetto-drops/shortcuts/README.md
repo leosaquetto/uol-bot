@@ -12,6 +12,12 @@ Toda seleção fica no Atalhos: destinos com seleção múltipla, manter/editar/
 
 As chaves utilizadas são `saquetto-drops.base-url` e `saquetto-drops.token`. Texto do envio e registro de retomada ficam no armazenamento local privado do Scriptable; token não entra no atalho nem nesses registros.
 
+A troca do remetente WhatsApp em 14/10/2026 ocorreu somente no Oracle. Como URL,
+token e aliases de destino foram mantidos, ela não exige reinstalar ou assinar
+novamente o atalho nem alterar o Keychain. O contato “Eu mesmo” continua sendo
+o destinatário pessoal original; a nova conta é o remetente. Isso não substitui
+a validação de execução no iPhone descrita abaixo.
+
 ## Comportamento
 
 - O atalho preserva texto, links e quebras de linha; o servidor remove espaços vazios nas extremidades. A edição usa Pedir Entrada com várias linhas. A legenda original só está disponível quando o aplicativo de origem compartilha também o texto; uma foto sozinha não contém essa legenda.

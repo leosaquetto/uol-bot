@@ -2,8 +2,9 @@
 
 ## WhatsApp transport: Saquetto Drops
 
-Production can select `GATEWAY_DELIVERY_TRANSPORT=baileys`. Existing routes,
-bearer tokens, fixed destinations, request normalization, thumbnail compositor
+Oracle production actively uses `GATEWAY_DELIVERY_TRANSPORT=baileys` as of
+2026-10-14. Existing routes, bearer tokens, fixed destinations, request
+normalization, thumbnail compositor
 and idempotency ledger stay in this gateway. New messages use the single Drops
 sender through loopback, with a separate `DROPS_GATEWAY_TOKEN`. This mode does
 not start the Beeper transport or read its delivery index. Historical service
@@ -13,6 +14,9 @@ The internal `/v1/gateway/*` API is never proxied publicly. Configure the same
 gateway token in both services. `DROPS_GATEWAY_UOL`, `DROPS_GATEWAY_BUYTICKET`
 and `DROPS_GATEWAY_SELF` select Drops aliases matched to the old destinations.
 Automatic X rules and the manual `/v1/whatsapp/*` token are independent.
+The legacy route name `self` means the fixed, verified personal contact recipient;
+that contact may differ from the connected sender. Replacing the sender must
+preserve this recipient, aliases and idempotency keys.
 
 Readiness declares `transport: "baileys"` and
 `deliveryConfirmation: "baileys_ack_or_receipt"`. Send responses distinguish:
@@ -31,11 +35,12 @@ share pacing, pause, destination verification and restart recovery with existing
 sends. Undispatched gateway jobs expire after 30 minutes. Private preview files
 are retained for seven days and never exposed over HTTP.
 
-Deploy receipt-aware clients before switching the gateway, including the legacy
-Scriptable copy in iCloud. Keep retired BuyTicket monitoring/purchases disabled.
+Keep clients receipt-aware, including the legacy Scriptable copy in iCloud.
+Keep retired BuyTicket monitoring/purchases disabled.
 Keep Beeper and its credentials/backups for rollback until all consumers have
 migrated and seven days of stable operation are established. Retain the gateway
 ledger during rollback so accepted/unknown work cannot cross transports twice.
+Keep the legacy credential and service names unchanged for compatibility.
 
 ## Legacy Beeper mode (rollback)
 

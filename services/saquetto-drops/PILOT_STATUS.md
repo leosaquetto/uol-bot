@@ -1,5 +1,10 @@
 # Pilot evidence — 2026-09-24
 
+Historical record: the dated evidence and pending gates below describe the
+September trials. For the active Oracle Baileys gateway and the 2026-10-14 sender
+replacement, see [README.md](README.md#current-oracle-runtime--2026-10-14).
+Current iPhone UI and real ntfy delivery remain unverified.
+
 ## Additional live route — EV SANCTUARY
 
 - Added `ev-sanctuary-posts`: `evawebsite`, `evanescence`, `amyleeev`, `gamesofev`,

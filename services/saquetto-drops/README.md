@@ -1,11 +1,29 @@
-# Saquetto Drops — isolated migration pilot
+# Saquetto Drops
 
 Push-only X ingestion through a lightweight WebSocket receiver and a private
-Baileys delivery foundation. The stable
-`../beeper-preview-gateway` remains the production sender. Its routes, Scriptable,
-UOL and BuyTicket are not switched by installing this service.
+Baileys sender. On Oracle, `../beeper-preview-gateway` is the production facade
+with `GATEWAY_DELIVERY_TRANSPORT=baileys`; new messages use this service's single
+WhatsApp session. Existing gateway routes and consumer contracts remain in place.
 
-## Current release boundary
+## Current Oracle runtime — 2026-10-14
+
+The replacement WhatsApp account is connected, dispatch is unpaused and
+`DROPS_PILOT=0`. Gateway readiness returned HTTP 200. Live membership/publication
+checks passed for five current groups; the original personal contact was verified
+writable.
+Destination aliases, JIDs, idempotency keys and tokens were preserved; the new
+session and all 347 existing job identities survived restart.
+
+One real gateway group delivery reached `confirmed` with a `participant_receipt`
+before the ntfy correction. Seven gateway tests, six ntfy tests and syntax checks
+passed on Oracle Node 22. Current iPhone UI behavior and a real ntfy notification
+remain unverified; that group receipt does not prove either.
+
+## September pilot history
+
+The following rollout notes describe the earlier pilot. For the current transport
+and sender state, use the Oracle snapshot above. Gates without newer evidence
+remain pending; an active transport does not prove them.
 
 The first implementation stage includes configuration/rules, direct Web Push
 receipt/decryption (and an optional CDP adapter), strict post-link resolution,
@@ -13,8 +31,9 @@ post extraction, simulation, SQLite queue,
 crash-safe ambiguous-send handling, SQLite Baileys credentials, sender and private
 operations API. All gates are false; `dryRun` and `paused` are true by default.
 
-**Still awaiting runtime evidence:** routing a real notification from the three configured
-sources, reply/quote classification across real samples, sustained combined capacity,
+**At the initial pilot boundary, runtime evidence was pending for:** routing a
+real notification from the three configured sources, reply/quote classification
+across real samples, sustained combined capacity,
 channel publication and downstream cutover. Own-DM visual acceptance and a
 Lover Tour participant delivery receipt have passed their bounded pilot.
 `observerConnected` means the receiver handshake completed, not that every X post
@@ -82,8 +101,9 @@ bound to verified WhatsApp identities. Never commit actual JIDs or credentials.
 Every outbound path shares the WhatsApp receipt handler. Its first server
 acknowledgement for the configured personal chat sends one best-effort ntfy
 notification to `leo-saquetto-wpp-3054`; the body and “Abrir Conversa” action
-open that WhatsApp chat. Enqueue alone does not notify, and an ntfy failure does
-not change or retry the WhatsApp job.
+open the current sender's conversation on the original recipient's phone.
+Receipt matching keeps the original personal recipient. Enqueue alone does not
+notify, and an ntfy failure does not change or retry the WhatsApp job.
 
 Rules use literal, case/accent-insensitive `any`, `all`, and `none` terms against
 the author's own text. Matching rules union their destination aliases. Quotes are
@@ -130,7 +150,8 @@ Chrome before copying its profile. Backups must remain outside the repository,
 private and encrypted before leaving the host. Never restore an old Signal state
 over a running session.
 
-Environment in `/etc/saquetto-drops/service.env` (0600):
+Environment in `/etc/saquetto-drops/service.env` (0600). The example defaults keep
+WhatsApp disabled; the active Oracle deployment uses `DROPS_WHATSAPP=1`.
 
 ```text
 DROPS_TOKEN=<random 32-byte hex secret>
@@ -144,7 +165,7 @@ DROPS_PILOT=0
 ```
 
 The administration API binds to localhost only; never expose its routes or CDP.
-The optional legacy gateway adapter uses a separate `DROPS_GATEWAY_TOKEN` for
+The active Oracle gateway adapter uses a separate `DROPS_GATEWAY_TOKEN` for
 loopback `/v1/gateway/*` routes. `DROPS_GATEWAY_UOL`, `DROPS_GATEWAY_BUYTICKET`
 and `DROPS_GATEWAY_SELF` name verified destinations in the configuration.
 It uses the same queue and receipts; no second WhatsApp session is opened.
@@ -154,7 +175,7 @@ Only the separately authenticated `/v1/whatsapp/*` namespace may be routed by
 Caddy for the manual Shortcut (see `MANUAL_API.md`). CDP has full browser
 access and must stay on loopback/SSH. Chrome keeps its sandbox enabled.
 `DROPS_WHATSAPP=1` starts pairing; QR material is written only to the private
-`pairing-qr.private.txt`, never logs. Enable only for the authorized WhatsApp pilot.
+`pairing-qr.private.txt`, never logs. Enable only for an authorized WhatsApp session.
 Logout, replaced-connection and multidevice-mismatch events stop reconnect attempts
 without deleting state. Generic errors, including Baileys' ambiguous `500`, retry
 with the same saved credentials: at most eight reconnects, exponential delay with
@@ -201,6 +222,7 @@ On 14/10/2026, the replacement account's membership and publication permission
 were verified for the four existing groups requested by the user and the active
 EV Sanctuary route. The original personal recipient was also verified. These
 metadata checks sent no messages; they do not prove a new-account delivery.
+The later gateway group receipt is recorded in the current runtime snapshot above.
 
 Web Push registration contains a dedicated Mozilla UAID/channel, endpoint and
 encryption keys (0600). It is independent of the in-app browser's subscription.
@@ -266,9 +288,12 @@ return from `sendMessage` never becomes confirmed. Restart during dispatch yield
 `unknown`. Ambiguous sends are never re-enqueued automatically. Only a known
 pre-dispatch failure can retry, at 30/60 seconds and at most three attempts.
 Minimum dispatch interval is five seconds, persisted across restarts. Alerts
-have a lower priority number than Drops jobs when the gateway cutover is added.
+have a lower priority number than Drops jobs.
 
-## Remaining gated migration
+## Remaining gates
+
+The gateway already uses Baileys on Oracle. The following runtime evidence and
+retirement gates remain separate from that active transport selection.
 
 1. Keep the Oracle browser stopped. Observe real notifications from the three
    configured sources and validate their routing and post type/full text.
@@ -280,16 +305,15 @@ have a lower priority number than Drops jobs when the gateway cutover is added.
    through the normal flow using eligible posts after activation. Resolve
    channels using `newsletterMetadata`, verify admin rights and publication with
    real readback. Channels currently fail closed with `channel_pilot_required`.
-5. Complete the private gateway send adapter and consumer compatibility: retain
-   `/v1/send-x-post`, token, payload and personal destination; introduce an honest
-   Baileys confirmation state and update Scriptable/UOL/BuyTicket before switching.
+5. Preserve the active gateway contract: `/v1/send-x-post`, token, payload,
+   original personal recipient and receipt-aware consumer behavior.
    Never label Baileys success `confirmed_by_whatsapp_bridge`.
-6. Activate only after recorded acceptance, then observe 72 hours. Migrate other
-   consumers separately; preserve their idempotency ledgers, alert destinations,
-   and dormant monitor/payment state. Do not test purchases or PIX.
+6. Record evidence for the remaining runtime gates and sustained observation.
+   Migrate other consumers separately; preserve their idempotency ledgers, alert
+   destinations, and dormant monitor/payment state. Do not test purchases or PIX.
 7. Retire the Beeper dependency only after every consumer is migrated and seven
    stable days have elapsed. Cancellation remains pending until then. Rollback
    affects future sends, never resends accepted/unknown jobs.
 
-The current code must not be described as a completed migration until those
-runtime gates pass. Do not set acceptance booleans based solely on unit tests.
+Active Baileys transport does not establish every remaining runtime gate or
+Beeper retirement. Do not set acceptance booleans based solely on unit tests.

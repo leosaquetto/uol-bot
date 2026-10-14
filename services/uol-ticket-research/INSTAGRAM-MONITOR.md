@@ -4,6 +4,20 @@ Plano autorizado em 09/10/2026: instalar o coletor no Oracle existente, integrar
 
 **Estado verificado em 10/10/2026:** monitor ativo e habilitado para reiniciar com o Oracle. O Story `4004391581161830448`, campanha `pQg` de 11/10 no Teatro J. Safra, teve imagem confirmada nos quatro destinos. Os dois canais Telegram e o Discord mantiveram os IDs originais; a foto WhatsApp foi enviada uma vez. A fila local está entregue.
 
+## Conta WhatsApp compartilhada — 14/10/2026
+
+A conta remetente foi trocada no Saquetto Drops, no Oracle. O coletor Instagram
+continua enviando somente para a entrada do Worker; não guarda outra sessão
+WhatsApp. Gateway, tokens, destinos e chaves de deduplicação permanecem iguais.
+Uma entrega normal via gateway teve recibo de participante após a troca; esse
+recibo não é um novo teste de Story nem uma prova de Web Push. A troca não
+autoriza promover o intervalo de coleta de 120 para 1800 segundos.
+
+O [runbook do remetente](../saquetto-drops/README.md#replacing-the-whatsapp-sender)
+separa autenticação, destinatários e histórico. O
+[registro de publicação](ROLLOUT-2026-10-10.md#troca-do-remetente-whatsapp--14102026)
+preserva as validações realizadas e suas limitações.
+
 ## Caminho de execução
 
 O receptor dedicado e o gate de mudança para push com consulta de segurança estão documentados em [INSTAGRAM-PUSH.md](INSTAGRAM-PUSH.md). A ativação só reduz o intervalo após prova real no servidor; a implementação sozinha não altera a comprovação histórica abaixo.

@@ -104,9 +104,16 @@ agenda coleta. Estado de produção exige verificação própria.
   tem 30 segundos para confirmar o envio; sem confirmação, o Worker tenta de
   novo. A prioridade é não perder oferta, aceitando uma duplicata rara. Os
   destinos secundários continuam exigindo reconciliação ou resolução explícita.
-  A fila Beeper aceita somente campanhas de ingresso, confirma URL/token/rota
-  no endpoint autenticado do gateway antes do lote e registra como sucesso a
-  aceitação pelo transporte local; a entrega final é conferida no WhatsApp.
+  A fila WhatsApp, com nome legado Beeper, aceita somente campanhas de ingresso
+  e confirma URL/token/rota no endpoint autenticado do gateway antes do lote.
+  No transporte Baileys do Oracle, `server_ack` indica aceite pelo servidor
+  WhatsApp; `recipient_receipt` ou `participant_receipt` confirma recebimento,
+  sem provar que todos os participantes do grupo receberam. Enfileirar não é
+  entregar. `BEEPER_DESTINATION_KEY` identifica o destino e participa da
+  idempotência; não é a identidade do remetente e deve permanecer na troca de
+  conta. Essa troca usa a sessão compartilhada do
+  [Saquetto Drops](../../services/saquetto-drops/README.md#replacing-the-whatsapp-sender),
+  sem alterar URL/token do gateway nem os destinos do Worker.
   `BEEPER_DELIVERY_OFFER_IDS` é uma allowlist temporária de recuperação e deve
   ficar ausente na operação normal.
 - **Ledger e proteção:** cada tentativa, sucesso, falha, resultado incerto,

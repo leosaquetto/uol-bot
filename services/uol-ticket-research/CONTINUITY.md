@@ -1,8 +1,29 @@
 # Continuidade no Oracle e margem dos planos gratuitos
 
 Esta etapa usa somente o Oracle e o Worker já existentes. Não cria recursos
-Cloudflare, não migra contas e não altera resgates, OCR ou a sentinela pausada.
+Cloudflare, não migra contas Cloudflare e não altera resgates, OCR ou a sentinela pausada.
 Os quatro destinos de ingressos continuam usando a fila e os recibos atuais.
+
+## Conta remetente WhatsApp no Oracle
+
+Em 14/10/2026, a conta remetente foi substituída na sessão Baileys compartilhada
+do Saquetto Drops. UOL, complemento Instagram, posts do X e envios manuais
+compartilham essa sessão; UOL e Instagram chegam pelo gateway existente. O Mac só participou do pareamento;
+a operação permanece no Oracle. URLs, tokens, destinos e chaves de idempotência
+foram preservados; a segunda conta Cloudflare não foi utilizada.
+
+Remetente e destinatário pessoal são identidades distintas. A rota de nome
+legado `self` continua apontando para o contato pessoal original, enquanto o
+botão ntfy abre a conversa com a conta remetente atual. Não trocar esse alias
+para fazer o health passar. Antes de uma próxima troca, seguir o
+[procedimento do remetente](../saquetto-drops/README.md#replacing-the-whatsapp-sender):
+pausa também no arquivo de configuração, piloto desligado, backup consistente,
+substituição somente de `auth` e verificação real dos destinos sem mensagem.
+
+O gateway confirmou Ready/HTTP 200 e houve recibo de participante em uma entrega
+normal após a troca. Isso não resolve os incidentes históricos do Worker, não
+prova entrega a todos os grupos e não comprova Web Push do Instagram. Evidências,
+versões e limites estão no [registro de publicação](ROLLOUT-2026-10-10.md#troca-do-remetente-whatsapp--14102026).
 
 ## Acesso administrativo para diagnóstico
 

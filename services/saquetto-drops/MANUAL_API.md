@@ -33,8 +33,10 @@ user-authorized send generates a new requestId even for identical content.
 When an outbound message to the personal WhatsApp chat first reaches `accepted`
 (or directly reaches `confirmed`), the service sends one best-effort ntfy
 notification to `leo-saquetto-wpp-3054`. The notification opens that chat from
-either its body or the “Abrir Conversa” action. Enqueue responses alone do not
-send the notification; repeated receipt events do not duplicate it. An ntfy
+either its body or the “Abrir Conversa” action: both use the current sender's
+number to open the incoming conversation on the original recipient's phone.
+Receipt matching still uses that unchanged personal recipient. Enqueue responses
+alone do not send the notification; repeated receipt events do not duplicate it. An ntfy
 failure does not change the WhatsApp job state or retry the message.
 
 ## Persistence and limits
