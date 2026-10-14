@@ -4,6 +4,33 @@ Esta etapa usa somente o Oracle e o Worker já existentes. Não cria recursos
 Cloudflare, não migra contas e não altera resgates, OCR ou a sentinela pausada.
 Os quatro destinos de ingressos continuam usando a fila e os recibos atuais.
 
+## Acesso administrativo para diagnóstico
+
+Após autorização explícita em 14/10/2026, somente o `ADMIN_TOKEN` do Worker UOL
+foi substituído. A cópia local recuperável fica em
+`~/.config/uol-ticket-research/shadow-admin-token`, modo **0600**, dentro do
+diretório **0700**. Esse arquivo não entra no Git nem é enviado aos serviços do
+Oracle. Os tokens de ingestão, Analytics e da sentinela permanecem separados.
+
+Use o valor somente em memória no header Bearer das rotas autenticadas de
+diagnóstico. Não coloque o token em argumentos, URLs, stdout ou relatórios;
+recuse redirects. Node `fetch` confirmou `/dashboard.json` e `/inventory` com
+HTTP 200 e acesso sem token com 401. A checagem inicial por Python recebeu 403;
+a diferença entre clientes não teve causa comprovada. Não repetir rotação por
+falha de leitura: testar primeiro o token já salvo sem executar nova mutação.
+
+As respostas contêm dados privados: publique apenas enums, contagens, horários
+e classificações de erro. `sanitizeError` não remove credenciais; erros e
+resumos brutos não são seguros para relatório. A janela de incidentes é de 12,
+inventário de 300 e timeline de 20 eventos por oferta. Um evento `unknown`
+histórico não prova pendência atual, e `last_detected_at` não prova evento novo.
+
+Diagnóstico de 14/10 confirmou o incidente adicional no comentário do grupo
+Telegram: resultado desconhecido em 13/10 às **15:47:01 UTC**, com erro de
+resposta de rede e publicação principal confirmada às **15:45:08 UTC**. Não
+há prova suficiente para marcar o comentário como enviado ou não enviado.
+Preservar estado e exigir recibo independente antes de resolver ou reenviar.
+
 ## Supervisão independente
 
 `uol-instagram-supervisor.timer` executa a unidade oneshot a cada dois minutos,
