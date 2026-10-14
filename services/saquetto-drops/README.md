@@ -19,6 +19,17 @@ before the ntfy correction. Seven gateway tests, six ntfy tests and syntax check
 passed on Oracle Node 22. Current iPhone UI behavior and a real ntfy notification
 remain unverified; that group receipt does not prove either.
 
+### Lover Tour notification audit — 2026-10-14
+
+Read-only Oracle inspection found 60 historical automatic Lover Tour jobs in
+the `confirmed` state, but no push for its current two sources in the last seven
+days. The dedicated X account was no longer following `updateswiftbr`, despite
+a public post on 14 October. With explicit user approval, following and post
+notifications were restored and verified in the profile UI. `taylorswift13` was
+already followed with notifications enabled. The route still accepts only posts
+and quotes from those two sources. No old post was replayed; the next eligible
+real push and its Oracle-to-group receipt remain the recovery proof to collect.
+
 ## September pilot history
 
 The following rollout notes describe the earlier pilot. For the current transport
