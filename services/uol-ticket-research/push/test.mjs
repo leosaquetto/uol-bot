@@ -8,7 +8,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { createRequire } from 'node:module';
 import { spawnSync } from 'node:child_process';
 import { DatabaseSync } from 'node:sqlite';
-import { openPushStore, PUSH_STORE_LIMITS } from './store.mjs';
+import { openPushStore, PUSH_STORE_LIMITS, PUSH_DIAGNOSTIC_KEYS } from './store.mjs';
 import { observeInstagramPush, processPending } from './receiver.mjs';
 import { classifyInstagramPush } from './classify.mjs';
 import { privateWrite } from './private.mjs';
@@ -40,6 +40,7 @@ class Socket extends EventTarget {
 }
 const hello=(socket,r)=>{socket.dispatchEvent(new Event('open'));socket.message({messageType:'hello',status:200,uaid:r.uaid,use_webpush:true});};
 const logger={log(){}};
+const diagnosticCounts=store=>Object.fromEntries(store.db.prepare('SELECT key,count FROM receiver_diagnostics').all().map(row=>[row.key,row.count]));
 function directory(t) { const dir=mkdtempSync(join(tmpdir(),'uol-ig-push-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));return dir; }
 function seed(store,count,{prefix='seed',state='pending',packet='{}',receivedAt=0,completedAt=null,compactedAt=null}={}) {
   const insert=store.db.prepare(`INSERT INTO push_events(id,received_at,packet,packet_hash,state,reason,
@@ -300,6 +301,111 @@ test('outage reconnects the same UAID/channel and resumes reception',async t=>{
   const second=Socket.instances.at(-1);hello(second,registration);second.message(packet);
   assert.equal(second.sent[0].uaid,registration.uaid);assert.deepEqual(second.sent[0].channelIDs,[registration.channelID]);
   assert.equal(observer.isReady(),true);observer.stop();store.close();
+});
+
+test('diagnostics retain closed aggregate enums through reconnect, restart and replay without duplicating signals',async t=>{
+  const {registration,packet}=fixture(),path=join(directory(t),'push.sqlite');let store=openPushStore(path);
+  let observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger,retryMs:5});
+  const first=Socket.instances.at(-1);hello(first,registration);first.message(packet);first.message(packet);
+  first.message({messageType:'future_transport_type',private:'fixture-must-not-be-recorded'});
+  first.close();await delay(20);
+  const second=Socket.instances.at(-1);assert.notEqual(second,first);hello(second,registration);
+  let counts=diagnosticCounts(store);
+  assert.equal(counts.receiver_start,1);assert.equal(counts.connect_attempt,2);
+  assert.equal(counts.connection_open,2);assert.equal(counts.connection_ready,2);
+  assert.equal(counts.frames_received,5);assert.equal(counts.frames_unknown_message_type,1);
+  assert.equal(counts.notifications_persisted,1);assert.equal(counts.notifications_replayed,1);
+  assert.equal(counts.notifications_signalled,1);assert.equal(counts.ack_attempted,2);assert.equal(counts.ack_sent,2);
+  observer.stop();store.close();store=openPushStore(path);
+  observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger});
+  const third=Socket.instances.at(-1);hello(third,registration);third.message(packet);
+  counts=diagnosticCounts(store);
+  assert.equal(counts.receiver_start,2);assert.equal(counts.connect_attempt,3);
+  assert.equal(counts.notifications_persisted,1);assert.equal(counts.notifications_replayed,2);
+  assert.equal(counts.notifications_signalled,1);assert.equal(counts.ack_sent,3);
+  assert.equal(store.db.prepare('SELECT count(*) AS n FROM signals').get().n,1);
+  const rows=store.db.prepare('SELECT * FROM receiver_diagnostics').all();
+  assert.ok(rows.every(row=>Object.keys(row).join(',')==='key,count,first_at,last_at'&&PUSH_DIAGNOSTIC_KEYS.includes(row.key)));
+  assert.equal(JSON.stringify(rows).includes('fixture-must-not-be-recorded'),false);
+  observer.stop();store.close();
+});
+
+test('every pre-persistence rejection has a durable reason without accepting new transport formats',t=>{
+  const {registration,packet}=fixture();
+  const cases=[
+    ['type',null,Buffer.from('fixture')],
+    ['size',null,'x'.repeat(PUSH_STORE_LIMITS.packetBytes+1)],
+    ['json',null,'{'],
+    ['shape',null,'[]'],
+    ['ready',false,JSON.stringify(packet)],
+    ['channel',true,JSON.stringify({...packet,channelID:'other-channel'})],
+    ['version',true,JSON.stringify({...packet,version:123})],
+    ['version',true,JSON.stringify({...packet,version:''})],
+    ['version',true,JSON.stringify({...packet,version:'x'.repeat(513)})],
+    ['data',true,JSON.stringify({...packet,data:123})],
+    ['data',true,JSON.stringify({...packet,data:'x'.repeat(90001)})],
+    ['hello',false,JSON.stringify({messageType:'hello',status:200,uaid:'other-identity',use_webpush:true})],
+  ];
+  for(const [index,[reason,handshake,data]] of cases.entries()) {
+    const path=join(directory(t),`reason-${index}.sqlite`);let store=openPushStore(path);
+    const observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger});
+    const socket=Socket.instances.at(-1);if(handshake)hello(socket,registration);
+    socket.dispatchEvent(new MessageEvent('message',{data}));
+    assert.equal(diagnosticCounts(store)[`frames_rejected_${reason}`],1);
+    assert.equal(store.capacity().eventCount,0);assert.equal(socket.sent.some(value=>value.messageType==='ack'),false);
+    observer.stop();store.close();store=openPushStore(path);
+    assert.equal(diagnosticCounts(store)[`frames_rejected_${reason}`],1);store.close();
+  }
+});
+
+test('completed classification and decryption diagnostics count transitions once and preserve ignored events for review',t=>{
+  const {registration,packet}=fixture(),store=openPushStore(join(directory(t),'push.sqlite'));
+  const observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger});
+  const socket=Socket.instances.at(-1);hello(socket,registration);
+  const unmatched=fixture({data:{type:'story',username:'other'}},'unmatched').packet;
+  socket.message({...unmatched,channelID:registration.channelID}); // Different key is a decryption rejection.
+  const ignored=fixture({data:{type:'story',username:'other'}},'ignored');
+  ignored.packet.channelID=registration.channelID;
+  store.persist(ignored.packet);
+  processPending(store,registration,()=>({data:{type:'story',username:'other'}}));
+  processPending(store,registration,()=>({}));socket.message(packet);
+  const counts=diagnosticCounts(store);
+  assert.equal(counts.notifications_persisted,3);assert.equal(counts.notifications_signalled,1);
+  assert.equal(counts.notifications_ignored_decryption,1);assert.equal(counts.notifications_ignored_classification,1);
+  assert.equal(store.db.prepare("SELECT count(*) AS n FROM push_events WHERE state='ignored' AND packet<>'{}'").get().n,2);
+  observer.stop();store.close();
+});
+
+test('diagnostic validation and write failure cannot acknowledge an uncommitted packet',t=>{
+  const {registration,packet}=fixture(),store=openPushStore(join(directory(t),'push.sqlite'));
+  assert.throws(()=>store.diagnostics(['frames_received','payload-identity']),/invalid_push_diagnostic/);
+  assert.deepEqual(diagnosticCounts(store),{});
+  assert.throws(()=>store.db.prepare('INSERT INTO receiver_diagnostics VALUES(?,1,1,1)').run('unknown-key'),/CHECK/);
+  store.diagnostics(['frames_received'],1000);store.diagnostics(['frames_received'],999);
+  assert.deepEqual({...store.db.prepare("SELECT * FROM receiver_diagnostics WHERE key='frames_received'").get()},
+    {key:'frames_received',count:2,first_at:1000,last_at:1000});
+  const observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger});
+  const socket=Socket.instances.at(-1);hello(socket,registration);
+  store.db.exec(`CREATE TRIGGER reject_diagnostic BEFORE INSERT ON receiver_diagnostics
+    WHEN NEW.key='notifications_persisted' BEGIN SELECT RAISE(ABORT,'fixture_diagnostic_failure'); END`);
+  socket.message(packet);
+  assert.equal(store.capacity().eventCount,0);assert.equal(socket.sent.some(value=>value.messageType==='ack'),false);
+  assert.equal(diagnosticCounts(store).storage_rejected_unavailable,1);
+  observer.stop();store.close();
+});
+
+test('failed local ACK send retains the committed packet for startup recovery and records an uncertain handoff',t=>{
+  const {registration,packet}=fixture(),path=join(directory(t),'push.sqlite');let store=openPushStore(path);
+  const observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger});
+  const socket=Socket.instances.at(-1);hello(socket,registration);
+  const original=socket.send.bind(socket);
+  socket.send=data=>{if(JSON.parse(data).messageType==='ack')throw new Error('fixture_send_failure');original(data);};
+  socket.message(packet);
+  const counts=diagnosticCounts(store);
+  assert.equal(counts.notifications_persisted,1);assert.equal(counts.ack_attempted,1);assert.equal(counts.ack_failed,1);
+  assert.equal(counts.ack_sent,undefined);assert.equal(store.pending().length,1);
+  observer.stop();store.close();store=openPushStore(path);processPending(store,registration);
+  assert.equal(diagnosticCounts(store).notifications_signalled,1);assert.equal(store.pending().length,0);store.close();
 });
 
 test('bootstrap checkpoints a new private identity without replacing an existing registration',async t=>{

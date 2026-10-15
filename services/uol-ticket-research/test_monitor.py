@@ -137,22 +137,79 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(saved['activePollPeriodSeconds'], 0)
         self.assertEqual(saved['sourceStatus'], 'auth_required')
 
-    def test_push_only_generic_signal_triggers_once_without_claiming_event_proof(self):
+    def test_push_only_empty_then_late_exact_story_is_not_consumed_early(self):
         self.m.config['pushMode'] = 'push_only'
         self.assertFalse(self.m.reserve_poll())
-        self.push(1, story_id=None)
+        self.push(1)
         self.assertTrue(self.m.reserve_poll())
-        self.assertEqual(self.m.state['lastPollTrigger'], 'push')
+        with closing(sqlite3.connect(self.path/'monitor.sqlite')) as db:
+            saved = json.loads(db.execute('SELECT value FROM state').fetchone()[0])
+            self.assertEqual(saved['pushBatch']['attempts'], 1)
+            self.assertEqual(saved['pushBatch']['throughSequence'], 1)
+            self.assertEqual(db.execute('SELECT sum(reserved) FROM polls').fetchone()[0], 2)
+        empty = self.result();empty.update(status='empty', stories=[])
+        self.m.record(empty)
+        self.assertEqual(self.m.state.get('consumedSignalSequence', 0), 0)
+        self.assertEqual(self.m.state['pushSettlement']['status'], 'pending')
+        self.now += 29;self.assertFalse(self.m.reserve_poll())
+        self.now += 1;self.assertTrue(self.m.reserve_poll())
         self.m.record(self.result())
         self.assertEqual(self.m.state['consumedSignalSequence'], 1)
+        self.assertEqual(self.m.state['pushSettlement']['status'], 'matched_exact')
         self.assertEqual(self.m.state['activePollPeriodSeconds'], 0)
         self.assertEqual(self.m.state['nextPoll'], 0)
+        self.now += 86400
+        self.assertFalse(self.m.reserve_poll())
+        self.assertEqual(self.m.db.execute('SELECT count(*) FROM polls').fetchone()[0], 2)
+
+    def test_push_only_unrelated_story_can_enqueue_without_resolving_exact_signal(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        unrelated = self.story();unrelated['storyId'] = '4004391581161830449'
+        self.m.record(self.result(unrelated))
+        self.assertEqual(self.m.db.execute('SELECT count(*) FROM outbox').fetchone()[0], 1)
+        self.assertEqual(self.m.state.get('consumedSignalSequence', 0), 0)
+        self.assertEqual(self.m.state['pushSettlement']['exactObserved'], 0)
+
+    def test_push_only_partial_multi_id_snapshot_accumulates_without_requeue(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        other = self.story();other['storyId'] = '4004391581161830449'
+        self.push(2, story_id=other['storyId'])
+        self.assertTrue(self.m.reserve_poll());self.m.record(self.result())
+        self.assertEqual(self.m.state.get('consumedSignalSequence', 0), 0)
+        self.assertEqual(self.m.state['pushSettlement']['exactObserved'], 1)
+        self.now += 30
+        self.assertTrue(self.m.reserve_poll());self.m.record(self.result(other))
+        self.assertEqual(self.m.state['consumedSignalSequence'], 2)
+        self.assertEqual(self.m.state['pushSettlement']['exactObserved'], 2)
+        self.assertEqual(self.m.db.execute('SELECT count(*) FROM outbox').fetchone()[0], 2)
+
+    def test_push_only_generic_needs_second_spaced_snapshot_and_stays_uncertain(self):
+        self.m.record(self.result())
+        self.m.config['pushMode'] = 'push_only';self.push(1, story_id=None)
+        self.assertTrue(self.m.reserve_poll())
+        new = self.story();new['storyId'] = '4004391581161830449'
+        self.m.record(self.result(new))
+        self.assertEqual(self.m.state.get('consumedSignalSequence', 0), 0)
+        self.now += 59;self.assertFalse(self.m.reserve_poll())
+        self.now += 1;self.assertTrue(self.m.reserve_poll())
+        self.m.record(self.result(new))
+        self.assertEqual(self.m.state['consumedSignalSequence'], 1)
+        self.assertEqual(self.m.state['pushSettlement']['status'], 'generic_uncertain')
         self.assertNotIn('verifiedPushProof', self.m.state)
         self.assertFalse(self.m.event_enabled())
-        self.now += 86400
-        self.push(1, status='disconnected', story_id=None)
-        self.assertFalse(self.m.reserve_poll())
-        self.assertEqual(self.m.db.execute('SELECT count(*) FROM polls').fetchone()[0], 1)
+        self.assertEqual(self.m.db.execute('SELECT count(*) FROM outbox').fetchone()[0], 2)
+
+    def test_push_only_generic_old_stories_exhaust_instead_of_claiming_match(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1, story_id=None)
+        old = self.story();old['publishedAt'] = dt.datetime.fromtimestamp(self.now-3600, dt.timezone.utc).isoformat()
+        for delay in (0, 60, 60, 120):
+            self.now += delay
+            self.assertTrue(self.m.reserve_poll());self.m.record(self.result(old))
+        self.assertEqual(self.m.state['consumedSignalSequence'], 1)
+        self.assertEqual(self.m.state['pushSettlement']['status'], 'unresolved')
+        self.assertEqual(self.m.state['pushSettlement']['lastReason'], 'attempt_limit')
+        self.assertNotIn('verifiedPushProof', self.m.state)
 
     def test_push_only_signal_during_collection_remains_pending_after_restart_and_debounce(self):
         self.m.config['pushMode'] = 'push_only';self.push(1)
@@ -170,25 +227,114 @@ class MonitorTests(unittest.TestCase):
         self.now += 3600
         self.assertFalse(restart.reserve_poll())
 
-    def test_push_only_crash_keeps_pending_signal_and_backoff_then_retries(self):
+    def test_push_only_crash_keeps_batch_budget_and_original_deadline(self):
         self.m.config['pushMode'] = 'push_only';self.push(1)
         self.assertTrue(self.m.reserve_poll())
+        deadline = self.m.state['pushBatch']['deadlineEpoch']
         restart = Monitor(self.path, self.m.config, clock=lambda:self.now)
         self.addCleanup(restart.db.close)
         self.assertFalse(restart.reserve_poll())
-        self.now += 16
+        self.now += 30
         self.assertTrue(restart.reserve_poll())
+        self.assertEqual(restart.state['pushBatch']['attempts'], 2)
+        self.assertEqual(restart.state['pushBatch']['deadlineEpoch'], deadline)
         failed = self.result();failed.update(status='auth_required', stories=[])
         restart.record(failed)
-        self.now += 16
+        self.now += 30
         self.assertFalse(restart.reserve_poll())
         self.assertEqual(restart.state.get('consumedSignalSequence', 0), 0)
-        self.now += 21600
-        self.assertTrue(restart.reserve_poll())
-        restart.record(self.result())
+        self.now = deadline
+        self.assertFalse(restart.reserve_poll())
         self.assertEqual(restart.state['consumedSignalSequence'], 1)
+        self.assertEqual(restart.state['pushSettlement']['lastReason'], 'settlement_timeout')
+        self.assertEqual(restart.state['sourceStatus'], 'auth_required')
+        self.assertGreater(restart.state['retryNotBefore'], self.now)
         self.now += 21600
         self.assertFalse(restart.reserve_poll())
+
+    def test_push_only_four_attempts_survive_restart_and_stop_without_periodic_gets(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        empty = self.result();empty.update(status='empty', stories=[])
+        for index, delay in enumerate((0, 30, 60, 120)):
+            self.now += delay
+            restart = Monitor(self.path, self.m.config, clock=lambda:self.now)
+            self.addCleanup(restart.db.close)
+            self.assertTrue(restart.reserve_poll())
+            self.assertEqual(restart.state['pushBatch']['attempts'], index+1)
+            restart.record(empty)
+        self.assertEqual(restart.state['consumedSignalSequence'], 1)
+        self.assertEqual(restart.state['pushSettlementExhaustedBatches'], 1)
+        self.assertEqual(restart.state['pushSettlement']['status'], 'unresolved')
+        for delay in (1, 600, 86400):
+            self.now += delay
+            self.assertFalse(restart.reserve_poll())
+        self.assertEqual(restart.db.execute('SELECT count(*) FROM polls').fetchone()[0], 4)
+
+    def test_push_only_new_signal_does_not_extend_active_batch_or_consume_new_sequence(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        deadline = self.m.state['pushBatch']['deadlineEpoch']
+        self.now += 599;self.push(2, story_id='4004391581161830449')
+        empty = self.result();empty.update(status='empty', stories=[])
+        self.m.record(empty)
+        self.assertEqual(self.m.state['pushBatch']['deadlineEpoch'], deadline)
+        self.assertEqual(self.m.state['pushBatch']['throughSequence'], 1)
+        self.now += 1
+        self.assertTrue(self.m.reserve_poll())
+        self.assertEqual(self.m.state['consumedSignalSequence'], 1)
+        self.assertEqual(self.m.state['pushBatch']['throughSequence'], 2)
+        self.assertEqual(self.m.state['pushBatch']['attempts'], 1)
+        self.assertEqual(self.m.state['pushBatch']['deadlineEpoch'], self.now+600)
+
+    def test_push_only_rate_limit_backoff_outlives_settlement_without_periodic_retry(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        limited = self.result();limited.update(status='rate_limited', stories=[], retryAfterSeconds=7200)
+        self.m.record(limited)
+        self.now += 600
+        self.assertFalse(self.m.reserve_poll())
+        self.assertEqual(self.m.state['sourceStatus'], 'rate_limited')
+        self.assertEqual(self.m.state['consumedSignalSequence'], 1)
+        self.now += 7200
+        self.assertFalse(self.m.reserve_poll())
+
+    def test_push_only_response_past_deadline_can_enqueue_but_is_not_matched(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        self.now += 601
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['pushSettlement']['status'], 'unresolved')
+        self.assertEqual(self.m.state['pushSettlement']['lastReason'], 'settlement_timeout')
+        self.assertEqual(self.m.db.execute('SELECT count(*) FROM outbox').fetchone()[0], 1)
+        self.assertFalse(self.m.reserve_poll())
+
+    def test_push_only_final_attempt_crash_exhausts_without_resetting_after_restart(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        for delay in (0, 30, 60, 120):
+            self.now += delay
+            self.assertTrue(self.m.reserve_poll())
+            # No record(): all four reservations represent crashes before/after HTTP.
+        restart = Monitor(self.path, self.m.config, clock=lambda:self.now)
+        self.addCleanup(restart.db.close)
+        self.assertFalse(restart.reserve_poll())
+        self.assertEqual(restart.state['pushSettlement']['status'], 'unresolved')
+        self.assertEqual(restart.state['pushSettlement']['attempts'], 4)
+        self.assertEqual(restart.db.execute('SELECT count(*) FROM polls').fetchone()[0], 4)
+
+    def test_push_only_generic_baseline_and_expired_exact_story_are_not_matches(self):
+        self.m.record(self.result())
+        self.m.config['pushMode'] = 'push_only';self.push(1, story_id=None)
+        self.assertTrue(self.m.reserve_poll());self.m.record(self.result())
+        self.now += 60
+        self.assertTrue(self.m.reserve_poll());self.m.record(self.result())
+        self.assertEqual(self.m.state['pushSettlement']['status'], 'pending')
+        self.now += 600;self.m.reserve_poll()
+        self.push(2)
+        self.assertTrue(self.m.reserve_poll())
+        expired = self.story();expired['expiresAt'] = dt.datetime.fromtimestamp(self.now-1, dt.timezone.utc).isoformat()
+        self.m.record(self.result(expired))
+        self.assertEqual(self.m.state['pushSettlement']['status'], 'pending')
+        self.assertEqual(self.m.state['pushSettlement']['exactObserved'], 0)
 
     def test_push_only_pending_signal_still_respects_rolling_request_budget(self):
         self.m.config['pushMode'] = 'push_only';self.push(1)

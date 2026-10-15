@@ -9,6 +9,10 @@ escolheu somente push (`pushMode: "push_only"`), sem consultas periódicas ou
 varredura de segurança. Um sinal pendente válido dispara a coleta; sem sinal,
 não há descoberta de Stories. A recepção real de push continua sem comprovação.
 O backoff de autenticação, sessões, inscrição, filas e recibos são preservados.
+Sinais antecipados têm até quatro tentativas em dez minutos, com espera e estado
+durável. Lista vazia/antiga não conclui o sinal exato; esgotamento fica explícito
+e é avisado pelo supervisor. O receptor registra descartes por motivo sem conteúdo
+privado. Isso não reativa polling nem comprova recepção real de push.
 
 ## Conta WhatsApp compartilhada — 14/10/2026
 

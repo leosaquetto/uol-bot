@@ -21,10 +21,11 @@ export function observeInstagramPush({registration,store,WebSocketImpl=WebSocket
   const r=validateRegistration(registration);
   if (r.instagramRegistration?.status !== 'accepted') throw new Error('instagram_registration_not_confirmed');
   let socket,stopped=false,ready=false,waitingForCapacity=false,retry,handshake,heartbeat,pong,maintenance,attempts=0;
+  const diagnostic=(...keys)=>store.diagnostics?.(keys);
   const state = status => { store.health(status); logger.log(JSON.stringify({event:status})); };
   const timers=()=>{clearTimeout(handshake);clearInterval(heartbeat);clearTimeout(pong);};
-  const halt=status=>{stopped=true;ready=false;timers();clearTimeout(retry);clearTimeout(maintenance);if(status)state(status);socket?.close();};
-  processPending(store,r,decrypt);
+  const halt=status=>{if(stopped)return;stopped=true;ready=false;timers();clearTimeout(retry);clearTimeout(maintenance);if(status)state(status);socket?.close();};
+  diagnostic('receiver_start');processPending(store,r,decrypt);
   const sweep=()=>{
     if(stopped)return;
     try {
@@ -47,39 +48,66 @@ export function observeInstagramPush({registration,store,WebSocketImpl=WebSocket
   };
   const connect=()=>{
     if(stopped||waitingForCapacity)return;
+    diagnostic('connect_attempt');
     state('connecting');const ws=new WebSocketImpl('wss://push.services.mozilla.com/');socket=ws;
     handshake=setTimeout(()=>ws.close(),handshakeMs);
-    ws.addEventListener('open',()=>{if(!stopped&&socket===ws)ws.send(JSON.stringify({
-      messageType:'hello',uaid:r.uaid,use_webpush:true,channelIDs:[r.channelID]}));});
+    ws.addEventListener('open',()=>{
+      if(stopped||socket!==ws)return;
+      try {
+        diagnostic('connection_open');
+        ws.send(JSON.stringify({messageType:'hello',uaid:r.uaid,use_webpush:true,channelIDs:[r.channelID]}));
+      } catch { halt('push_storage_unavailable'); }
+    });
     ws.addEventListener('message',({data})=>{
       if(stopped||waitingForCapacity||socket!==ws)return;
       try {
-        if(typeof data!=='string'||Buffer.byteLength(data,'utf8')>PUSH_STORE_LIMITS.packetBytes)throw new Error('invalid_frame');
-        const m=JSON.parse(data);
+        diagnostic('frames_received');
+        const reject=key=>{diagnostic(key);ready=false;state('frame_rejected');ws.close();};
+        if(typeof data!=='string')return reject('frames_rejected_type');
+        if(Buffer.byteLength(data,'utf8')>PUSH_STORE_LIMITS.packetBytes)return reject('frames_rejected_size');
+        let m;
+        try { m=JSON.parse(data); } catch { return reject('frames_rejected_json'); }
+        if(!m||typeof m!=='object'||Array.isArray(m))return reject('frames_rejected_shape');
         if(m.messageType==='hello') {
-          if(ready||m.status!==200||m.uaid!==r.uaid||m.use_webpush!==true)return halt('registration_requires_review');
-          clearTimeout(handshake);attempts=0;ready=true;state('connected');
+          if(ready||m.status!==200||m.uaid!==r.uaid||m.use_webpush!==true) {
+            diagnostic('frames_rejected_hello');return halt('registration_requires_review');
+          }
+          diagnostic('connection_ready');clearTimeout(handshake);attempts=0;ready=true;state('connected');
           processPending(store,r,decrypt);
           heartbeat=setInterval(()=>{ws.send('{}');pong=setTimeout(()=>ws.close(),pongMs);},heartbeatMs);
         } else if(m.messageType==='notification') {
-          if(!ready||m.channelID!==r.channelID||typeof m.version!=='string'||!m.version.length||m.version.length>512||
-             typeof m.data!=='string'||m.data.length>90000)throw new Error('invalid_notification');
+          if(!ready)return reject('frames_rejected_ready');
+          if(m.channelID!==r.channelID)return reject('frames_rejected_channel');
+          if(typeof m.version!=='string'||!m.version.length||m.version.length>512)return reject('frames_rejected_version');
+          if(typeof m.data!=='string'||m.data.length>90000)return reject('frames_rejected_data');
           try { store.persist(m); } catch(error) {
             const reason=['push_pending_limit','push_payload_limit','push_identity_limit','push_packet_limit',
               'push_version_conflict'].includes(error.message)?error.message:'push_storage_unavailable';
+            diagnostic('storage_rejected_'+(reason==='push_storage_unavailable'?'unavailable':reason.slice(5)));
             if(reason==='push_payload_limit')return pauseForCapacity();
             return halt(reason);
           }
           // FULL SQLite commit happens before ACK. A crash after ACK recovers pending packets.
-          ws.send(JSON.stringify({messageType:'ack',updates:[{channelID:m.channelID,version:m.version,code:100}]}));
+          diagnostic('ack_attempted');
+          try { ws.send(JSON.stringify({messageType:'ack',updates:[{channelID:m.channelID,version:m.version,code:100}]})); }
+          catch { diagnostic('ack_failed');ready=false;state('connection_error');ws.close();return; }
+          // send() returning proves a local write only, not a remote ACK receipt.
+          diagnostic('ack_sent');
           processPending(store,r,decrypt);
         } else if(!m.messageType||m.messageType==='ping') { clearTimeout(pong);state('connected'); }
-      } catch { ready=false;state('frame_rejected');ws.close(); }
+        else diagnostic('frames_unknown_message_type');
+      } catch { halt('push_storage_unavailable'); }
     });
-    ws.addEventListener('error',()=>{if(socket===ws&&!stopped&&!waitingForCapacity){ready=false;state('connection_error');}});
+    ws.addEventListener('error',()=>{
+      if(socket===ws&&!stopped&&!waitingForCapacity) {
+        try { diagnostic('connection_error');ready=false;state('connection_error'); }
+        catch { halt('push_storage_unavailable'); }
+      }
+    });
     ws.addEventListener('close',()=>{
       if(socket!==ws)return;
       ready=false;timers();
+      try { diagnostic('connection_closed'); } catch { return halt('push_storage_unavailable'); }
       if(!stopped&&!waitingForCapacity){state('disconnected');retry=setTimeout(connect,Math.min(60000,retryMs*2**Math.min(attempts++,5)));}
     });
   };

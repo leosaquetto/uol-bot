@@ -12,6 +12,21 @@ Um sinal válido continua disparando a coleta HTTP existente, com reserva duráv
 agrupamento, orçamento, backoff e deduplicação. A fila de entrega e os recibos
 permanecem ativos. Sinal recebido durante uma coleta permanece pendente.
 
+Cada lote conserva seu limite de quatro reservas e sua janela de dez minutos,
+inclusive após crash/reinício. Respostas vazias ou com Stories anteriores não
+concluem um sinal exato: os IDs esperados precisam aparecer em snapshots válidos.
+Tentativas adicionais esperam pelo menos 30, 60 e 120 segundos; sinais genéricos
+exigem dois snapshots separados por pelo menos sessenta segundos, com evidência
+de Story novo, e continuam como correlação incerta. Essas tentativas pertencem
+ao sinal recebido; não criam varredura periódica. Autenticação, 429 e orçamento
+continuam impondo seus backoffs, mesmo que o lote expire enquanto aguarda.
+
+Ao terminar sem confirmação, somente o cursor daquele lote avança, com resolução
+`unresolved` explícita. O resumo `pushSettlement` guarda contagens, motivos e
+horários, sem IDs. Sinal recebido depois do lote permanece pendente e não estende
+seus limites. O supervisor avisa o esgotamento no ntfy particular; silêncio ou
+conexão ativa não comprovam recuperação.
+
 Essa escolha não comprova Web Push: a prova real continua pendente e não é
 preenchida artificialmente. Sem push recebido, nenhum Story será descoberto
 por este complemento. Sem descoberta independente, também não é possível medir
@@ -37,7 +52,27 @@ Registrar com sucesso não comprova que o Instagram envie Stories a uma inscriç
 
 Um sinal só nasce de identidade estruturada (`type` de Story com `username=clubeuol`) ou URI autenticada de `instagram.com/stories/clubeuol/`. Título/prosa, URI de outro perfil, mensagens privadas e destinos externos não bastam. Um formato real desconhecido fica registrado como ignorado para revisão privada; não se amplia o classificador a partir de suposição.
 
-O Python consulta somente sequência/identidade e saúde, nunca o corpo da notificação. Reserva o orçamento antes dos GETs; coleta os Stories atuais usando o parser existente. Sinais próximos são agrupados por sequência. Após snapshot reconhecido, persiste fila e sequência consumida na mesma transação. Um sinal recebido durante a coleta fica pendente. Falha de autenticação, 429 ou orçamento impede o gatilho de furar o backoff; crash não perde o sinal.
+O Python consulta somente sequência/identidade e saúde, nunca o corpo da notificação. Reserva o orçamento e a tentativa do lote antes dos GETs; coleta os Stories atuais usando o parser existente. Sinais próximos são agrupados por sequência. Em `push_only`, snapshots reconhecidos preservam a fila, mas o cursor só avança após a resolução do lote descrita acima. Os demais modos conservam seu consumo após snapshot reconhecido. Falha de autenticação, 429 ou orçamento impede o gatilho de furar o backoff; crash não zera o limite nem perde sinais recebidos depois do lote.
+
+## Diagnóstico de recepção
+
+`receiver_diagnostics` registra somente chaves de enum fechado, contagens e os
+horários da primeira/última ocorrência. Há contadores para conexão, frames,
+rejeições por etapa, persistência/replay, classificação/descriptografia e ACK.
+Eles começam na instalação desta versão, sem reconstruir o histórico anterior.
+`frames_received` inclui handshake e pong; não equivale a notificações recebidas.
+`ack_sent` significa que `send()` local retornou, sem comprovar recebimento remoto.
+
+Descartes anteriores à persistência agora deixam contadores duráveis, mesmo após
+reconectar. Persistência/replay/classificação são contados junto à transação do
+evento. Falha de armazenamento não permite ACK de evento não persistido. Não há
+plaintext, IDs, URLs ou conteúdo da notificação nessa tabela. Eventos ignorados
+continuam preservados e não são reenviados/reprocessados automaticamente.
+
+O supervisor lê esses agregados sem consultar Instagram. Novas rejeições recentes
+abrem um único incidente no ntfy particular; ausência de notificações não o fecha.
+Recuperação exige evidência posterior de notificação interpretada, com conexão
+recente. Isso não substitui a prova de um Story real entregue aos quatro destinos.
 
 Até dois GETs por coleta, máximo de 1.440 GETs reservados em qualquer janela de 24 horas, e no máximo vinte buscas de mídia permanecem iguais. Links/imagem e recibos continuam na esteira atual dos quatro destinos; não há novo resgate, OCR ou reenvio de destino confirmado.
 
@@ -64,4 +99,4 @@ A sessão continua sendo atualizada pelo cookie jar do coletor. Um desafio de lo
 
 Testes focados: `python3 -B -m unittest test_monitor.py` e `node --test push/test.mjs`. Cobrem commits antes de ACK, replay/reinício, criptografia, identidade, reconexão, inscrição sem substituição, resposta ambígua, consumo de sequência, backoff, gate e segurança de trinta minutos em perda de socket. Não enviam mensagens reais nem fazem resgates.
 
-Rollback: preservar `push.sqlite`, `monitor.sqlite`, inscrição, sessões e recibos; trocar somente código/configuração compatíveis. Retirar `pushMode` ou restaurar `pilot` reativa polling e exige nova decisão do usuário. Se a versão antiga não suportar `push_only`, manter o monitor parado até uma versão compatível, com o receptor push preservado. Não cancelar a inscrição do X ou substituir cookies/inscrição do navegador.
+Rollback: preservar `push.sqlite`, `monitor.sqlite`, inscrição, sessões e recibos; trocar somente código/configuração compatíveis. Retirar `pushMode` ou restaurar `pilot` reativa polling e exige nova decisão do usuário. Se a versão antiga não suportar `push_only` e os limites do lote durável, manter o monitor parado até uma versão compatível, com o receptor push preservado. Não restaurar banco antigo sobre eventos novos, cancelar a inscrição do X ou substituir cookies/inscrição do navegador.

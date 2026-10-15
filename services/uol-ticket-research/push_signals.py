@@ -48,6 +48,18 @@ class PushSignals:
         except (OSError, ValueError, sqlite3.Error):
             return []
 
+    def pending(self, after, through):
+        """Reserve bounded source metadata; signals arriving later stay outside this batch."""
+        try:
+            with closing(self._connect()) as db:
+                rows = db.execute("SELECT seq,story_id,received_at FROM signals WHERE profile='clubeuol' "
+                                  'AND seq>? AND seq<=? ORDER BY seq LIMIT 5000', (after, through)).fetchall()
+            return [{'sequence': row[0], 'storyId': row[1],
+                     'receivedEpoch': row[2]/1000 if isinstance(row[2], (int, float)) else None}
+                    for row in rows]
+        except (OSError, ValueError, sqlite3.Error):
+            return []
+
     def proves(self, proof, now=None):
         if (not isinstance(proof, dict) or proof.get('browserClosed') is not True
                 or type(proof.get('signalSequence')) is not int or proof['signalSequence'] < 1

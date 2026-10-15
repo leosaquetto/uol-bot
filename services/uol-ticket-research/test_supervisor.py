@@ -63,6 +63,58 @@ class SupervisorTests(unittest.TestCase):
         self.assertEqual(len(self.sent), 1)
         self.assertTrue(self.sent[0]['critical'])
 
+    def test_push_rejection_survives_restart_and_silence_is_not_recovery(self):
+        bad = self.healthy()
+        bad['push'].update(diagnosticsStatus='available', diagnostics={
+            'frames_rejected_channel': {'count': 1, 'lastEpoch': self.now}})
+        self.supervisor.run_once(bad)
+        self.assertEqual(len(self.sent), 1)
+        self.now += 120
+        self.resume()
+        self.supervisor.run_once(bad)
+        self.assertEqual(len(self.sent), 1)
+        self.now += 1801
+        self.supervisor.state['lastRunAt'] = iso(self.now - 120)
+        quiet = self.healthy()
+        quiet['push'].update(diagnosticsStatus='available', diagnostics=bad['push']['diagnostics'])
+        self.supervisor.run_once(quiet)
+        self.assertTrue(self.supervisor.state['incidents']['push_rejections']['active'])
+        quiet['push']['diagnostics']['notifications_signalled'] = {'count': 1, 'lastEpoch': self.now}
+        self.supervisor.run_once(quiet)
+        self.assertEqual(len(self.sent), 2)
+        self.assertFalse(self.supervisor.state['incidents']['push_rejections']['active'])
+
+    def test_push_rejection_requires_known_recent_counter_and_recovery_evidence(self):
+        sources = self.healthy()
+        sources['push'].update(diagnosticsStatus='available', diagnostics={
+            'untrusted_key': {'count': 1, 'lastEpoch': self.now},
+            'frames_rejected_json': {'count': 1, 'lastEpoch': self.now + 3600}})
+        self.assertNotIn('push_rejections', self.supervisor.evaluate(sources, self.now))
+        self.assertFalse(self.supervisor.can_recover('push_rejections', sources, self.now))
+        sources['push']['diagnostics']['frames_rejected_json']['lastEpoch'] = self.now - 10
+        self.assertIn('push_rejections', self.supervisor.evaluate(sources, self.now))
+        sources['push']['diagnostics']['notifications_signalled'] = {'count': 1, 'lastEpoch': self.now}
+        self.assertTrue(self.supervisor.can_recover('push_rejections', sources, self.now))
+        sources['push']['diagnosticsStatus'] = 'legacy_unavailable'
+        self.assertFalse(self.supervisor.can_recover('push_rejections', sources, self.now))
+
+    def test_unresolved_signal_alerts_once_and_requires_exact_settlement_for_recovery(self):
+        sources = self.healthy()
+        sources['status']['pushSettlement'] = {'status': 'unresolved', 'exhaustedBatches': 1}
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 1)
+        self.resume()
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 1)
+        for settlement in ({}, {'status': 'pending'}, {'status': 'generic_uncertain'}):
+            sources['status']['pushSettlement'] = settlement
+            self.supervisor.run_once(sources)
+            self.assertTrue(self.supervisor.state['incidents']['push_settlement']['active'])
+        sources['status']['pushSettlement'] = {'status': 'matched_exact'}
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 2)
+        self.assertFalse(self.supervisor.state['incidents']['push_settlement']['active'])
+
     def test_unknown_collection_is_not_treated_as_empty_story_weekend(self):
         sources = self.healthy()
         sources['status'].update(sourceStatus='unknown', failures=3,
@@ -250,6 +302,27 @@ class SupervisorTests(unittest.TestCase):
         self.assertEqual(result['pendingCount'], 1)
         self.assertEqual(result['payloadBytes'], 21)
         self.assertNotIn('packet', result)
+        self.assertEqual(result['diagnosticsStatus'], 'legacy_unavailable')
+
+    def test_push_summary_exports_only_allowlisted_diagnostic_counts(self):
+        import sqlite3
+        path = self.root / 'push.sqlite'
+        with sqlite3.connect(path) as db:
+            db.executescript('CREATE TABLE receiver_state(id INTEGER,status TEXT,observed_at INTEGER);'
+                             'CREATE TABLE push_events(packet TEXT,state TEXT);'
+                             'CREATE TABLE receiver_diagnostics(key TEXT,count INTEGER,last_at INTEGER);')
+            db.execute('INSERT INTO receiver_state VALUES(1,?,?)', ('connected', self.now * 1000))
+            db.executemany('INSERT INTO receiver_diagnostics VALUES(?,?,?)', [
+                ('frames_received', 3, self.now * 1000),
+                ('frames_rejected_json', 1, self.now * 1000),
+                ('private_fixture_value', 9, self.now * 1000),
+                ('notifications_signalled', -1, self.now * 1000)])
+        os.chmod(path, 0o600)
+        result = push_summary(self.root)
+        self.assertEqual(result['diagnosticsStatus'], 'available')
+        self.assertEqual(set(result['diagnostics']), {'frames_received', 'frames_rejected_json'})
+        self.assertEqual(result['diagnostics']['frames_received'], {'count': 3, 'lastEpoch': self.now})
+        self.assertNotIn('private_fixture_value', json.dumps(result))
 
 
 if __name__ == '__main__':

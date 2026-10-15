@@ -170,6 +170,20 @@ Isso não valida a recepção push nem altera o gate do modo `event`. Sem pollin
 independente não é possível estimar os Stories que deixaram de chegar por push.
 Reativar qualquer polling exige nova decisão do usuário.
 
+Cada lote push tem até quatro reservas em dez minutos, persistidas antes da rede.
+Um snapshot vazio/antigo não conclui sinal exato; um sinal genérico continua incerto
+e exige duas observações separadas por sessenta segundos com Story novo. Limite ou
+prazo encerra só aquele lote como `unresolved`, sem polling posterior. Restart,
+novo sinal e erros não reiniciam o orçamento; os backoffs existentes prevalecem.
+O supervisor alerta esgotamento e só registra recuperação com resolução exata.
+
+Diagnóstico do receptor usa `receiver_diagnostics`, tabela aditiva com enum fechado,
+contagens e horários. Ela distingue rejeição anterior à persistência, decryption,
+classificação, replay e envio local de ACK. Não guarda corpo/IDs/URLs, não apaga
+eventos nem recupera contagens anteriores à instalação. O supervisor alerta falhas
+recentes uma vez; silêncio não comprova recuperação e nenhum teste é enviado aos
+grupos. Contadores de frames incluem handshake/pong, e ACK local não é recibo remoto.
+
 Manutenção do Worker libera sua flag de execução inclusive quando preparação ou
 gravação de metadata lança por cota. Isso evita bloqueio permanente após o reset;
 não resolve nem altera incidentes históricos de entregas desconhecidas.

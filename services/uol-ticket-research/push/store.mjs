@@ -6,6 +6,17 @@ import { privateDirectory } from './private.mjs';
 
 export const PUSH_STORE_LIMITS = Object.freeze({pending:5000, payloadBytes:32*1024*1024,
   events:100000, packetBytes:256*1024, retentionMs:7*24*60*60*1000, batch:50});
+// Only aggregate enums are diagnostic data: never add packet fields or identities here.
+export const PUSH_DIAGNOSTIC_KEYS = Object.freeze([
+  'receiver_start','connect_attempt','connection_open','connection_ready','connection_error','connection_closed',
+  'frames_received','frames_rejected_type','frames_rejected_size','frames_rejected_json','frames_rejected_shape',
+  'frames_rejected_hello','frames_rejected_ready','frames_rejected_channel','frames_rejected_version','frames_rejected_data',
+  'frames_unknown_message_type','notifications_persisted','notifications_replayed','notifications_signalled',
+  'notifications_ignored_decryption','notifications_ignored_classification','ack_attempted','ack_sent','ack_failed',
+  'storage_rejected_pending_limit','storage_rejected_payload_limit','storage_rejected_identity_limit',
+  'storage_rejected_packet_limit','storage_rejected_version_conflict','storage_rejected_unavailable',
+]);
+const diagnosticKeys=new Set(PUSH_DIAGNOSTIC_KEYS);
 const pressureBytes=Math.floor(PUSH_STORE_LIMITS.payloadBytes*0.8);
 
 export function openPushStore(path) {
@@ -22,7 +33,10 @@ export function openPushStore(path) {
     CREATE TABLE IF NOT EXISTS signals(seq INTEGER PRIMARY KEY AUTOINCREMENT, event_id TEXT UNIQUE NOT NULL,
       received_at INTEGER NOT NULL, profile TEXT NOT NULL, story_id TEXT, evidence TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS receiver_state(id INTEGER PRIMARY KEY CHECK(id=1), status TEXT NOT NULL,
-      observed_at INTEGER NOT NULL);`);
+      observed_at INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS receiver_diagnostics(key TEXT PRIMARY KEY CHECK(key IN (${PUSH_DIAGNOSTIC_KEYS.map(key=>`'${key}'`).join(',')})),
+      count INTEGER NOT NULL CHECK(count>=0),
+      first_at INTEGER NOT NULL, last_at INTEGER NOT NULL);`);
   const columns=new Set(db.prepare('PRAGMA table_info(push_events)').all().map(column=>column.name));
   // Nullable metadata keeps legacy packets usable while bounded maintenance resumes.
   for(const column of ['packet_bytes','completed_at','compacted_at'])
@@ -36,6 +50,13 @@ export function openPushStore(path) {
     catch(e) { db.exec('ROLLBACK'); throw e; }
   };
   const lookup=db.prepare('SELECT packet_hash FROM push_events WHERE id=?');
+  const incrementDiagnostic=db.prepare(`INSERT INTO receiver_diagnostics(key,count,first_at,last_at) VALUES(?,1,?,?)
+    ON CONFLICT(key) DO UPDATE SET count=count+1,last_at=MAX(last_at,excluded.last_at)`);
+  const diagnostics=(keys,now)=>{
+    if(!Array.isArray(keys)||!keys.length||!Number.isSafeInteger(now)||now<0||
+       keys.some(key=>!diagnosticKeys.has(key)))throw new Error('invalid_push_diagnostic');
+    for(const key of keys)incrementDiagnostic.run(key,now,now);
+  };
   const totals=db.prepare(`SELECT count(*) AS eventCount,COALESCE(sum(state='pending'),0) AS pendingCount,
     COALESCE(sum(COALESCE(packet_bytes,length(CAST(packet AS BLOB)))),0) AS payloadBytes,
     COALESCE(sum(compacted_at IS NOT NULL),0) AS compactedCount FROM push_events`);
@@ -54,6 +75,7 @@ export function openPushStore(path) {
   const store={
     db,
     capacity,
+    diagnostics(keys,now=Date.now()) { return transaction(()=>diagnostics(keys,now)); },
     maintain(now=Date.now()) {
       return transaction(()=>{
         const counts=capacity(),cutoff=now-PUSH_STORE_LIMITS.retentionMs;
@@ -80,18 +102,23 @@ export function openPushStore(path) {
         packet.channelID,packet.version,packet.data,packet.headers?.encoding,
         packet.headers?.encryption,packet.headers?.crypto_key])).digest('hex');
       // Replay identity remains valid after compaction and even while capacity is exhausted.
-      if(replay(id,hash))return {id,added:false};
+      if(replay(id,hash))return transaction(()=>{
+        replay(id,hash);diagnostics(['notifications_replayed'],now);return {id,added:false};
+      });
       const bytes=Buffer.byteLength(serialized,'utf8');
       if(bytes>PUSH_STORE_LIMITS.packetBytes)throw new Error('push_packet_limit');
       store.maintain(now);
       return transaction(() => {
-        if(replay(id,hash))return {id,added:false};
+        if(replay(id,hash)) {
+          diagnostics(['notifications_replayed'],now);return {id,added:false};
+        }
         const counts=capacity();
         if(counts.pendingCount>=PUSH_STORE_LIMITS.pending)throw new Error('push_pending_limit');
         if(counts.eventCount>=PUSH_STORE_LIMITS.events)throw new Error('push_identity_limit');
         if(counts.payloadBytes+bytes>PUSH_STORE_LIMITS.payloadBytes)throw new Error('push_payload_limit');
         const saved=db.prepare('INSERT INTO push_events(id,received_at,packet,packet_hash,packet_bytes) VALUES(?,?,?,?,?)')
           .run(id,now,serialized,hash,bytes);
+        diagnostics(['notifications_persisted'],now);
         return { id, added: saved.changes === 1 };
       });
     },
@@ -103,6 +130,8 @@ export function openPushStore(path) {
         if(!saved.changes)return false;
         if (signal) db.prepare('INSERT OR IGNORE INTO signals(event_id,received_at,profile,story_id,evidence) VALUES(?,?,?,?,?)')
           .run(event.id,event.received_at,signal.profile,signal.storyId,signal.evidence);
+        diagnostics([signal?'notifications_signalled':reason==='push_decryption_rejected'?
+          'notifications_ignored_decryption':'notifications_ignored_classification'],now);
         return true;
       });
     },

@@ -30,6 +30,9 @@ SAFETY_PERIOD = 1800
 MAX_MEDIA_BYTES = 3 * 1024 * 1024
 LOCAL_CHECKPOINT_PERIOD = 60
 PUSH_CORRELATION_WAIT = 600
+PUSH_SETTLEMENT_SECONDS = 600
+PUSH_SETTLEMENT_DELAYS = (30, 60, 120)
+PUSH_SETTLEMENT_ATTEMPTS = 4
 
 
 def canonical(value):
@@ -167,6 +170,8 @@ class Monitor:
             # This explicit user-selected mode has no timer or safety sweep.
             # Preserve the last source result and any authentication backoff.
             self.state['activePollPeriodSeconds'] = 0
+            self.state.setdefault('pushSettlementExhaustedBatches', 0)
+            self.state.setdefault('pushSettlement', {'status': 'idle', 'exhaustedBatches': 0})
         self._committed_changes = self.db.total_changes
         self._next_checkpoint = 0
         self._next_coverage_refresh = 0
@@ -310,6 +315,8 @@ class Monitor:
     def reserve_poll(self):
         now = self.clock()
         push = self.update_receiver(now)
+        if self.config.get('pushMode') == 'push_only':
+            return self.reserve_push_only(now, push)
         pending = push['sequence'] > self.state.get('consumedSignalSequence', 0)
         event_due = pending and now >= self.state.get('pushAttemptNotBefore', 0)
         if now < self.state.get('retryNotBefore', 0):
@@ -332,6 +339,113 @@ class Monitor:
         self.state['lastPollTrigger'] = 'push' if event_due else 'safety' if self.event_enabled() else 'poll'
         self.save()
         return True
+
+    def update_push_settlement(self, batch, status='pending', reason=''):
+        """Only counts and timing leave the durable batch's private matching state."""
+        self.state['pushSettlement'] = {
+            'status': status, 'lastReason': reason, 'attempts': batch['attempts'],
+            'maxAttempts': PUSH_SETTLEMENT_ATTEMPTS,
+            'startedAt': clock_timestamp(batch['startedEpoch']),
+            'deadlineAt': clock_timestamp(batch['deadlineEpoch']),
+            'nextAttemptAt': clock_timestamp(batch['nextAttemptEpoch']) if status == 'pending' else None,
+            'exactExpected': len(batch['expectedStoryIds']),
+            'exactObserved': len(batch['observedStoryIds']), 'genericSignals': batch['genericSignals'],
+            'exhaustedBatches': self.state.get('pushSettlementExhaustedBatches', 0),
+        }
+
+    def finish_push_batch(self, status, reason, now):
+        batch = self.state.pop('pushBatch')
+        if status == 'unresolved':
+            self.state['pushSettlementExhaustedBatches'] = self.state.get('pushSettlementExhaustedBatches', 0)+1
+        self.state['consumedSignalSequence'] = max(self.state.get('consumedSignalSequence', 0),
+                                                   batch['throughSequence'])
+        self.update_push_settlement(batch, status, reason)
+        self.state['pushSettlement']['finishedAt'] = clock_timestamp(now)
+
+    def reserve_push_only(self, now, push):
+        batch = self.state.get('pushBatch')
+        if batch and (now >= batch['deadlineEpoch'] or batch['attempts'] >= PUSH_SETTLEMENT_ATTEMPTS):
+            reason = 'settlement_timeout' if now >= batch['deadlineEpoch'] else 'attempt_limit'
+            self.finish_push_batch('unresolved', reason, now)
+            self.save()
+            batch = None
+        # Source backoff remains authoritative even if a batch times out while waiting.
+        if now < self.state.get('retryNotBefore', 0):
+            return False
+        if batch:
+            if now < batch['nextAttemptEpoch']:
+                return False
+        elif (push['sequence'] <= self.state.get('consumedSignalSequence', 0)
+              or now < self.state.get('pushAttemptNotBefore', 0)):
+            return False
+        used = self.db.execute('SELECT coalesce(sum(reserved),0) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
+        if used+2 > MAX_DAILY_REQUESTS:
+            first = self.db.execute('SELECT min(at) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
+            self.state.update(sourceStatus='budget_wait', nextPoll=first+86401, retryNotBefore=first+86401)
+            self.save()
+            return False
+        if batch is None:
+            signals = self.push.pending(self.state.get('consumedSignalSequence', 0), push['sequence'])
+            if not signals:
+                return False
+            generic = [signal for signal in signals if not signal['storyId']]
+            received = [signal['receivedEpoch'] for signal in generic
+                        if isinstance(signal['receivedEpoch'], (int, float))
+                        and 0 < signal['receivedEpoch'] <= now+60]
+            batch = {'throughSequence': signals[-1]['sequence'], 'startedEpoch': now,
+                     'deadlineEpoch': now+PUSH_SETTLEMENT_SECONDS, 'attempts': 0,
+                     'expectedStoryIds': sorted({signal['storyId'] for signal in signals if signal['storyId']}),
+                     'observedStoryIds': [], 'genericSignals': len(generic),
+                     'genericReceivedEpoch': min(received) if len(received) == len(generic) and received else None,
+                     'baselineStoryIds': list(self.state.get('currentStoryIds', [])),
+                     'genericNewStoryObserved': False, 'successfulSnapshots': 0}
+            self.state['pushBatch'] = batch
+        batch['attempts'] += 1
+        delay = PUSH_SETTLEMENT_DELAYS[min(batch['attempts']-1, len(PUSH_SETTLEMENT_DELAYS)-1)]
+        if batch['genericSignals'] and batch['attempts'] == 1:
+            delay = max(delay, 60)
+        batch['nextAttemptEpoch'] = now+delay
+        self.db.execute('INSERT INTO polls VALUES(?,2,NULL)', (now,))
+        self.state.update(nextPoll=0, reservedSignalSequence=batch['throughSequence'],
+                          pushAttemptNotBefore=now+15, lastPollTrigger='push')
+        self.update_push_settlement(batch)
+        # Persist attempts, baseline, deadline and request budget before the network call.
+        self.save()
+        return True
+
+    def settle_push_batch(self, result, now):
+        batch = self.state.get('pushBatch')
+        if batch is None:
+            return
+        if result['status'] in ('found', 'empty'):
+            live = [story for story in result['stories'] if epoch(story['expiresAt']) > now]
+            observed = set(batch['observedStoryIds'])
+            observed.update(story['storyId'] for story in live if story['storyId'] in batch['expectedStoryIds'])
+            batch['observedStoryIds'] = sorted(observed)
+            received = batch['genericReceivedEpoch']
+            if batch['genericSignals'] and received is not None:
+                batch['genericNewStoryObserved'] |= any(
+                    story['storyId'] not in batch['baselineStoryIds']
+                    and received-60 <= epoch(story['publishedAt']) <= now+60 for story in live)
+            batch['successfulSnapshots'] += 1
+            batch.setdefault('firstSuccessEpoch', now)
+        if now >= batch['deadlineEpoch']:
+            self.finish_push_batch('unresolved', 'settlement_timeout', now)
+        elif (result['status'] in ('found', 'empty')
+              and len(batch['observedStoryIds']) == len(batch['expectedStoryIds'])
+              and (not batch['genericSignals'] or (batch['genericNewStoryObserved']
+                   and batch['successfulSnapshots'] >= 2 and now-batch['firstSuccessEpoch'] >= 60))):
+            generic = bool(batch['genericSignals'])
+            self.finish_push_batch('generic_uncertain' if generic else 'matched_exact',
+                                   'generic_new_story_uncertain' if generic else 'matched', now)
+        elif batch['attempts'] >= PUSH_SETTLEMENT_ATTEMPTS:
+            self.finish_push_batch('unresolved', 'attempt_limit', now)
+        else:
+            delay = PUSH_SETTLEMENT_DELAYS[min(batch['attempts']-1, len(PUSH_SETTLEMENT_DELAYS)-1)]
+            if batch['genericSignals'] and batch['successfulSnapshots'] < 2:
+                delay = max(delay, 60)
+            batch['nextAttemptEpoch'] = max(batch['nextAttemptEpoch'], now+delay)
+            self.update_push_settlement(batch)
 
     def event_enabled(self):
         proof = self.config.get('pushProof')
@@ -400,7 +514,8 @@ class Monitor:
                             self.db.execute('UPDATE outbox SET payload=? WHERE key=?', (json.dumps(payload), key))
             # Persist snapshot, outbox and only the pre-fetch high-water mark in one transaction.
             # A push received during collection remains pending for the next collection.
-            s['consumedSignalSequence'] = max(s.get('consumedSignalSequence', 0), s.get('reservedSignalSequence', 0))
+            if self.config.get('pushMode') != 'push_only':
+                s['consumedSignalSequence'] = max(s.get('consumedSignalSequence', 0), s.get('reservedSignalSequence', 0))
             interval = (0 if self.config.get('pushMode') == 'push_only'
                         else SAFETY_PERIOD if self.event_enabled() else PERIOD)
             s.update(nextPoll=now+interval+random.uniform(0, 10) if interval else 0,
@@ -418,6 +533,8 @@ class Monitor:
                 delay = min(3600, PERIOD*2**min(s['failures'], 5))
             s['nextPoll'] = now + delay
             s['retryNotBefore'] = s['nextPoll']
+        if self.config.get('pushMode') == 'push_only':
+            self.settle_push_batch(result, now)
         self.db.execute('DELETE FROM polls WHERE at<?', (now-7*86400,))
         self.db.execute('DELETE FROM outbox WHERE expires<?', (now-30*86400,))
         self.db.execute("DELETE FROM story_coverage WHERE CAST(json_extract(value, '$.firstSeenEpoch') AS REAL)<?", (now-30*86400,))

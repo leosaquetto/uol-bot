@@ -20,6 +20,21 @@ SERVICES = ('uol-instagram-monitor', 'uol-instagram-push')
 MAX_ATTEMPTS = 20
 RESERVED_ATTEMPTS = 5
 MAX_OUTBOX = 100
+PUSH_REJECTION_KEYS = frozenset({
+    'frames_rejected_' + reason for reason in
+    ('type', 'size', 'json', 'shape', 'hello', 'ready', 'channel', 'version', 'data')
+} | {'frames_unknown_message_type', 'notifications_ignored_decryption',
+     'notifications_ignored_classification', 'ack_failed'} | {
+    'storage_rejected_' + reason for reason in
+    ('pending_limit', 'payload_limit', 'identity_limit', 'packet_limit',
+     'version_conflict', 'unavailable')
+})
+PUSH_DIAGNOSTIC_KEYS = PUSH_REJECTION_KEYS | frozenset({
+    'receiver_start', 'connect_attempt', 'connection_open', 'connection_ready',
+    'connection_error', 'connection_closed', 'frames_received',
+    'notifications_persisted', 'notifications_replayed', 'notifications_signalled',
+    'ack_attempted', 'ack_sent',
+})
 
 
 def instant(value):
@@ -80,9 +95,19 @@ def push_summary(directory):
             receiver = db.execute('SELECT status,observed_at FROM receiver_state WHERE id=1').fetchone()
             row = db.execute("SELECT count(*),coalesce(sum(state='pending'),0),"
                              "coalesce(sum(length(CAST(packet AS BLOB))),0) FROM push_events").fetchone()
+            has_diagnostics = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' "
+                                         "AND name='receiver_diagnostics'").fetchone() is not None
+            diagnostics = {}
+            if has_diagnostics:
+                for key, count, last_at in db.execute('SELECT key,count,last_at FROM receiver_diagnostics'):
+                    if (key in PUSH_DIAGNOSTIC_KEYS and type(count) is int and count >= 0
+                            and isinstance(last_at, (int, float)) and 0 <= last_at < 1e15):
+                        diagnostics[key] = {'count': count, 'lastEpoch': last_at / 1000}
         return {'status': receiver[0] if receiver else 'starting',
                 'observedEpoch': receiver[1] / 1000 if receiver else None,
-                'eventCount': row[0], 'pendingCount': row[1], 'payloadBytes': row[2]}
+                'eventCount': row[0], 'pendingCount': row[1], 'payloadBytes': row[2],
+                'diagnosticsStatus': 'available' if has_diagnostics else 'legacy_unavailable',
+                'diagnostics': diagnostics}
     except (OSError, ValueError, sqlite3.Error):
         return {'status': 'unavailable'}
 
@@ -174,6 +199,15 @@ class Supervisor:
         if push.get('status') in ('registration_requires_review', 'push_storage_unavailable',
                 'push_pending_limit', 'push_payload_limit', 'push_identity_limit'):
             add('push_blocked', 'Instagram push: recepção interrompida; inscrição ou armazenamento exige revisão.', True)
+        diagnostics = push.get('diagnostics') or {}
+        if any(isinstance(item, dict) and type(item.get('count')) is int and item['count'] > 0
+               and isinstance(item.get('lastEpoch'), (int, float))
+               and -60 <= now - item['lastEpoch'] <= 1800
+               for key, item in diagnostics.items() if key in PUSH_REJECTION_KEYS):
+            add('push_rejections', 'Instagram push: recepção registrou descarte, falha de interpretação ou ACK. Revisar os contadores protegidos.')
+        settlement = status.get('pushSettlement') or {}
+        if settlement.get('status') == 'unresolved':
+            add('push_settlement', 'Instagram push: tentativas do sinal terminaram sem confirmar o Story esperado. Nenhum polling foi reativado.')
         if status.get('sourceStatus') == 'auth_required':
             add('instagram_auth', 'Instagram: sessão exige autenticação. Backoff preservado.', True)
         last_success = instant(status.get('lastSuccessAt'))
@@ -247,6 +281,23 @@ class Supervisor:
         if key in ('push_connection', 'push_blocked'):
             seen = push.get('observedEpoch')
             return push.get('status') == 'connected' and seen is not None and -60 <= now - seen <= 600
+        if key == 'push_rejections':
+            diagnostics = push.get('diagnostics') or {}
+            successful = diagnostics.get('notifications_signalled') or {}
+            last_success = successful.get('lastEpoch')
+            rejected = [item.get('lastEpoch') for name, item in diagnostics.items()
+                        if name in PUSH_REJECTION_KEYS and isinstance(item, dict)
+                        and type(item.get('count')) is int and item['count'] > 0
+                        and isinstance(item.get('lastEpoch'), (int, float))]
+            observed = push.get('observedEpoch')
+            return (push.get('diagnosticsStatus') == 'available'
+                    and push.get('status') == 'connected'
+                    and isinstance(observed, (int, float)) and -60 <= now - observed <= 600
+                    and type(successful.get('count')) is int and successful['count'] > 0
+                    and isinstance(last_success, (int, float)) and -60 <= now - last_success <= 1800
+                    and bool(rejected) and last_success > max(rejected))
+        if key == 'push_settlement':
+            return (status.get('pushSettlement') or {}).get('status') == 'matched_exact'
         if key in ('instagram_auth', 'instagram_collection'):
             return status.get('sourceStatus') in ('found', 'empty')
         if key == 'delivery_backlog':
