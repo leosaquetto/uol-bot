@@ -3976,6 +3976,19 @@ export class UolTelegramShadow extends DurableObject {
       ...recentPriorityArguments,
       candidateLimit,
     ).toArray();
+    // Looking up recent rows is required before deciding whether a quota-only
+    // secondary call can proceed. Preserve the deferred response contract when
+    // neither the request nor any loaded row has an allowed exception.
+    if (
+      budget.deferSecondary && requestedTargets.length &&
+      !requestedTargets.includes("main") && !prioritySecondaryOnly &&
+      !candidates.some(row => budget.reason === "quota_reserve" && isRecentDeliveryDecision(row, now))
+    ) {
+      return {
+        mainSent: 0, canal2Sent: 0, discordSent: 0, failed: 0,
+        deferred: true, deferredReason: budget.reason,
+      };
+    }
     const actionable = [];
 
     for (const row of candidates) {
