@@ -1,6 +1,6 @@
 const DAY_MS = 24 * 60 * 60_000;
 const RETENTION_MS = 7 * DAY_MS;
-const MAX_EVENTS = 128;
+const MAX_PENDING_EVENTS = 128;
 const MAX_ATTEMPTS = 20;
 const MAX_ORDINARY_ATTEMPTS = 15;
 const KINDS = new Set([
@@ -11,6 +11,9 @@ const KINDS = new Set([
 const STATUSES = new Set(["pending", "reserved", "accepted", "uncertain", "permanent", "exhausted"]);
 const TERMINAL = new Set(["accepted", "uncertain", "permanent", "exhausted"]);
 const OUTCOMES = new Set(["accepted", "uncertain", "permanent", "retryable"]);
+const OUTCOME_REASONS = new Set([
+  "timeout", "http_accepted", "rate_limited", "server_error", "http_rejected", "network_error",
+]);
 
 function timestamp(now) {
   const value = now instanceof Date ? now.getTime() : Date.parse(now);
@@ -55,10 +58,16 @@ export function normalizeOperationsOutbox(original, now = new Date(), { recoverR
     };
     if (input.lastAttemptAt) event.lastAttemptAt = validTime(input.lastAttemptAt, nowIso);
     if (OUTCOMES.has(input.lastOutcome)) event.lastOutcome = input.lastOutcome;
+    if (OUTCOME_REASONS.has(input.lastReason)) event.lastReason = input.lastReason;
+    if (Number.isInteger(input.lastHttpStatus) && input.lastHttpStatus >= 100 && input.lastHttpStatus <= 599) {
+      event.lastHttpStatus = input.lastHttpStatus;
+    }
     if (input.finishedAt) event.finishedAt = validTime(input.finishedAt, nowIso);
     if (recoverReserved && event.status === "reserved") {
       event.status = "uncertain";
       event.lastOutcome = "uncertain";
+      delete event.lastReason;
+      delete event.lastHttpStatus;
       event.finishedAt = nowIso;
     }
     if (TERMINAL.has(event.status) && !event.finishedAt) event.finishedAt = nowIso;
@@ -83,7 +92,12 @@ export function enqueueOperationsEvent(original, input, now = new Date()) {
   if (state.events.some((event) => event.id === input.id)) {
     return result(original, state, { enqueued: false, reason: "duplicate" });
   }
-  if (state.events.length >= MAX_EVENTS) return result(original, state, { enqueued: false, reason: "capacity" });
+  // Retained terminal identities are deduplication evidence, not queued work.
+  // The 20-attempt daily budget normally bounds them to 140 over seven days;
+  // capacity pressure must not evict an identity and allow an old alert to replay.
+  if (state.events.filter((event) => !TERMINAL.has(event.status)).length >= MAX_PENDING_EVENTS) {
+    return result(original, state, { enqueued: false, reason: "capacity" });
+  }
   const nowIso = iso(timestamp(now));
   const event = {
     id: input.id,
@@ -131,6 +145,12 @@ export function completeOperationsEvent(original, id, outcome, now = new Date())
   const at = timestamp(now);
   const status = OUTCOMES.has(outcome?.status) ? outcome.status : "uncertain";
   const event = { ...current, lastOutcome: status };
+  delete event.lastReason;
+  delete event.lastHttpStatus;
+  if (OUTCOME_REASONS.has(outcome?.reason)) event.lastReason = outcome.reason;
+  if (Number.isInteger(outcome?.httpStatus) && outcome.httpStatus >= 100 && outcome.httpStatus <= 599) {
+    event.lastHttpStatus = outcome.httpStatus;
+  }
   const retryAfter = Number.isFinite(Number(outcome?.retryAfterMs))
     ? Math.max(0, Number(outcome.retryAfterMs)) : 0;
   if (status === "retryable" && current.attempts < 3) {

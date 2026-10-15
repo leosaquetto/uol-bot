@@ -68,6 +68,12 @@ alerta. Incidentes anteriores ao transporte ntfy permanecem registrados e não
 são migrados/reproduzidos. O heartbeat Instagram não usa mais fallback Telegram;
 o supervisor Oracle mantém a responsabilidade por esses alertas.
 
+O teto de 128 eventos vale somente para pendentes/reservados. Terminais mantêm
+identidade e resultado por sete dias, sem ocupar essa capacidade ou liberar replay.
+`notificationDiagnostics` no dashboard autenticado expõe apenas horários, motivos
+enumerados e códigos HTTP válidos. Falhas antigas sem motivo seguem `unknown`;
+não preencher retrospectivamente nem reenviar com base na ausência do cache ntfy.
+
 A fila principal não libera `unknown` pelo tempo decorrido. É preciso recibo ou
 resolução explícita com evidência. Backlog usado para priorizar o principal
 considera envios elegíveis e sua própria idade, conservando contagens de

@@ -87,7 +87,10 @@ agenda coleta. Estado de produção exige verificação própria.
   operacional tem cadência de cinco minutos. O supervisor Oracle conserva seu
   próprio orçamento de 20. Mensagens têm somente tipo e severidade; HTTP aceito
   não comprova leitura. Incidentes ativos anteriores à publicação não são
-  reenviados para o novo destino; seus registros permanecem visíveis.
+  reenviados para o novo destino; seus registros permanecem visíveis. A capacidade
+  de 128 conta somente pendentes/reservados; terminais preservam a identidade por
+  sete dias sem ocupar essa reserva. Diagnóstico autenticado distingue motivos
+  enumerados e HTTP; registros antigos sem motivo continuam desconhecidos.
 - **Discord:** ingressos no canal original e ofertas comuns no segundo webhook,
   ambos com embed, thumbnail e edição automática de esgotamento/reabertura.
 - **Identidade:** combina slug canônico, variantes históricas e
@@ -113,7 +116,9 @@ agenda coleta. Estado de produção exige verificação própria.
   o envio; sem recibo, exige reconciliação ou resolução explícita. Incidentes
   terminais continuam visíveis, mas não suspendem os secundários de outras
   ofertas. A prioridade principal usa trabalho elegível e sua própria idade,
-  respeitando backoff, configuração, tentativas e geração.
+  respeitando backoff, configuração, tentativas e geração. A ordenação antes do
+  limite usa os destinos admitidos pelo orçamento: principal sob pressão crítica,
+  e exceções explícitas de prioridade/recência sob reserva de quota.
   A fila WhatsApp, com nome legado Beeper, aceita somente campanhas de ingresso
   e confirma URL/token/rota no endpoint autenticado do gateway antes do lote.
   No transporte Baileys do Oracle, `server_ack` indica aceite pelo servidor

@@ -2900,6 +2900,32 @@ export class UolTelegramShadow extends DurableObject {
     return counts;
   }
 
+  operationsNotificationDiagnostics() {
+    const raw = this.metadataValue("ops_ntfy_outbox");
+    const state = raw ? JSON.parse(raw) : {};
+    const reasons = {};
+    const allowedReasons = new Set([
+      "http_accepted", "timeout", "network_error", "rate_limited",
+      "server_error", "http_rejected",
+    ]);
+    const outcomes = (state.events || []).filter(event => event.lastAttemptAt)
+      .sort((left, right) => String(right.lastAttemptAt).localeCompare(String(left.lastAttemptAt)))
+      .slice(0, 20).map(event => {
+        // Earlier records did not retain the reason. Never infer it from status.
+        const reason = allowedReasons.has(event.lastReason) ? event.lastReason : "unknown";
+        reasons[reason] = (reasons[reason] || 0) + 1;
+        const result = {
+          reason,
+          attemptedAt: Number.isFinite(Date.parse(event.lastAttemptAt)) ? event.lastAttemptAt : "",
+        };
+        if (Number.isInteger(event.lastHttpStatus) && event.lastHttpStatus >= 100 && event.lastHttpStatus <= 599) {
+          result.httpStatus = event.lastHttpStatus;
+        }
+        return result;
+      });
+    return { reasons, outcomes, window: 20 };
+  }
+
   loadOperationsOutbox(now = new Date()) {
     const raw = this.metadataValue("ops_ntfy_outbox");
     const parsed = raw ? JSON.parse(raw) : undefined;
@@ -3843,6 +3869,7 @@ export class UolTelegramShadow extends DurableObject {
     const requestedTargets = [...new Set(targetNames)].filter(
       (target) => ["main", "canal2", "discord"].includes(target),
     );
+    const effectiveTargets = requestedTargets.length ? requestedTargets : ["main", "canal2", "discord"];
     const queueSlo = this.deliveryQueueSlo(now);
     const budget = chooseDeliveryBudget({
       storageReadBudget: this.storageUsageSnapshot(now),
@@ -3862,7 +3889,8 @@ export class UolTelegramShadow extends DurableObject {
       budget.deferSecondary &&
       requestedTargets.length &&
       !requestedTargets.includes("main") &&
-      !prioritySecondaryOnly
+      !prioritySecondaryOnly &&
+      budget.reason !== "quota_reserve"
     ) {
       return {
         mainSent: 0,
@@ -3885,8 +3913,13 @@ export class UolTelegramShadow extends DurableObject {
       30,
       600,
     );
+    // Bind the priority set once, even when budget eligibility and ordering both
+    // reference it. A full priority batch must stay below SQLite's binding cap.
+    const priorityCte = priorityList.length
+      ? "WITH queue_priority AS (SELECT value AS id FROM json_each(?))"
+      : "";
     const priorityOrder = priorityList.length
-      ? `CASE WHEN id IN (${priorityList.map(() => "?").join(", ")}) THEN 0 ELSE 1 END,`
+      ? "CASE WHEN id IN (SELECT id FROM queue_priority) THEN 0 ELSE 1 END,"
       : "";
     const recentPriorityOrder = budget.reason === "quota_reserve"
       ? "CASE WHEN decision_at >= ? AND decision_at <= ? THEN 0 ELSE 1 END,"
@@ -3899,14 +3932,25 @@ export class UolTelegramShadow extends DurableObject {
       : [];
     // Rank genuinely eligible targets before applying LIMIT. Aggregate terminal
     // rows remain available for reconciliation but cannot monopolize the batch.
-    const candidateTargets = (requestedTargets.length ? requestedTargets : ["main", "canal2", "discord"])
+    const candidateTargets = effectiveTargets
+      .filter(target => target === "main" || !budget.deferSecondary || budget.reason === "quota_reserve")
       .filter(target => configuration[target]?.ready && configuration[target]?.enabled !== false);
     const eligibleArguments = [];
     const eligibleClauses = candidateTargets.map(target => {
+      let budgetClause = "";
+      if (target !== "main" && budget.deferSecondary) {
+        const exceptions = [];
+        if (budget.allowPrioritySecondary && priorityList.length) {
+          exceptions.push("id IN (SELECT id FROM queue_priority)");
+        }
+        exceptions.push("(decision_at >= ? AND decision_at <= ?)");
+        eligibleArguments.push(...recentPriorityArguments);
+        budgetClause = `(${exceptions.join(" OR ")}) AND `;
+      }
       eligibleArguments.push(maxAttempts, now.toISOString());
       const dependency = target === "canal2" ? "would_send_canal2 = 1 AND main_sent_at <> '' AND "
         : target === "discord" ? "link LIKE '%/campanhasdeingresso/%' AND " : "would_send_main = 1 AND ";
-      return `(${dependency}${target}_sent_at = ''
+      return `(${budgetClause}${dependency}${target}_sent_at = ''
         AND ${target}_delivery_unknown_at = ''
         AND NOT (delivery_unknown_target = '${target}' AND delivery_unknown_at <> '')
         AND ${target}_delivery_in_flight_at = ''
@@ -3918,18 +3962,18 @@ export class UolTelegramShadow extends DurableObject {
       : "";
     const candidateLimit = Math.min(256, Math.max(batchSize * 8, priorityList.length + 32));
     const candidates = rows || this.sqlExec(
-      `SELECT * FROM offers
+      `${priorityCte} SELECT * FROM offers
        WHERE status IN (
          'delivery_pending', 'partial_delivery', 'delivery_blocked_configuration',
          'delivery_dead_letter', 'delivery_unknown'
        )
          AND delivery_generation = ?
-       ORDER BY ${priorityOrder} ${recentPriorityOrder} ${eligibleOrder} first_seen_at ASC
+       ORDER BY ${eligibleOrder} ${priorityOrder} ${recentPriorityOrder} first_seen_at ASC
        LIMIT ?`,
+      ...(priorityList.length ? [JSON.stringify(priorityList)] : []),
       generation,
-      ...priorityList,
-      ...recentPriorityArguments,
       ...eligibleArguments,
+      ...recentPriorityArguments,
       candidateLimit,
     ).toArray();
     const actionable = [];
@@ -3945,8 +3989,8 @@ export class UolTelegramShadow extends DurableObject {
         )
       );
       const rowTargets = budget.deferSecondary && !priorityMayUseSecondary
-        ? requestedTargets.includes("main") ? ["main"] : []
-        : requestedTargets;
+        ? effectiveTargets.includes("main") ? ["main"] : []
+        : effectiveTargets;
       if (!rowTargets.length) continue;
       const classification = classifyDeliveryRow(row, configuration, {
         ticket: isTicketCampaign(rowToOffer(row)),
@@ -8083,6 +8127,7 @@ export class UolTelegramShadow extends DurableObject {
         alertUsesMainFallback: false,
         notificationTransport: "ntfy",
         notificationOutbox: this.operationsNotificationSummary(),
+        notificationDiagnostics: this.operationsNotificationDiagnostics(),
         incidents,
       },
       latency: buildLatencyMetrics(latencyRows),

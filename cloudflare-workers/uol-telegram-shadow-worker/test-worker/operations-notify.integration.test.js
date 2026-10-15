@@ -178,6 +178,53 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
     }
   });
 
+  it("retém terminais sem bloquear incidente novo nem alterar registros incertos", async () => {
+    const requests = [];
+    vi.stubGlobal("fetch", async (url) => {
+      requests.push(String(url));
+      return new Response(null, { status: 202 });
+    });
+    try {
+      const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-terminal-capacity-regression");
+      await runInDurableObject(stub, async instance => {
+        isolateHealth(instance);
+        failApi(instance);
+        const now = new Date(), at = now.toISOString();
+        const events = Array.from({ length: 128 }, (_, index) => ({
+          id: `completed-${index}`, kind: "monitor", severity: "warning", recovered: false,
+          createdAt: at, status: index < 3 ? "uncertain" : "accepted",
+          attempts: 1, lastAttemptAt: at, nextAt: at, finishedAt: at,
+        }));
+        instance.setMetadata("ops_ntfy_outbox", JSON.stringify({ version: 1, attempts: [], events }));
+        expect(await instance.processOperationalHealth(now)).toEqual({ active: 1, alerted: 1, recovered: 0 });
+        const after = instance.loadOperationsOutbox().events;
+        expect(after).toHaveLength(129);
+        expect(after.filter(event => event.status === "uncertain")).toHaveLength(3);
+        expect(after.filter(event => event.lastReason === "http_accepted")).toHaveLength(1);
+        expect(after.slice(0, 3).every(event => !Object.hasOwn(event, "lastReason"))).toBe(true);
+      });
+      expect(requests).toEqual([TOPIC]);
+    } finally { vi.unstubAllGlobals(); }
+  });
+
+  it("diagnóstico não expõe IDs nem infere causa de resultados legados", async () => {
+    const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-sanitized-outcomes");
+    await runInDurableObject(stub, instance => {
+      const at = new Date().toISOString();
+      const raw = JSON.stringify({ version: 1, events: [
+        { id: "private-id", status: "uncertain", kind: "private-kind", lastAttemptAt: at },
+        { id: "private-id-2", status: "pending", lastAttemptAt: at, lastReason: "rate_limited", lastHttpStatus: 429 },
+        { id: "private-id-3", lastAttemptAt: at, lastReason: "private-error", lastHttpStatus: 999 },
+      ], attempts: [] });
+      instance.setMetadata("ops_ntfy_outbox", raw);
+      const summary = instance.operationsNotificationDiagnostics();
+      expect(summary.reasons).toEqual({ unknown: 2, rate_limited: 1 });
+      expect(summary.outcomes.some(outcome => outcome.httpStatus === 429)).toBe(true);
+      expect(JSON.stringify(summary)).not.toMatch(/private-|999/);
+      expect(instance.metadataValue("ops_ntfy_outbox")).toBe(raw);
+    });
+  });
+
   it("carrega os campos SQL que separam principal acionável de falhas terminais antigas", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("queue-actionable-main-sql");
     await runInDurableObject(stub, (instance, state) => {

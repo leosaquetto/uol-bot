@@ -136,3 +136,97 @@ test("capacity preserves pending and seven-day terminal identities", () => {
   assert.equal(after.state.events.length, 128);
   assert.equal(after.state.events.filter((event) => event.status === "pending").length, 128);
 });
+
+test("retained terminals do not consume pending capacity or lose replay protection", () => {
+  let state;
+  for (let index = 0; index < 140; index++) {
+    state = enqueue(state, `terminal_${index}`);
+    state = {
+      ...state,
+      events: state.events.map((event) => event.id === `terminal_${index}` ? {
+        ...event, status: index < 128 ? "accepted" : "uncertain", finishedAt: start.toISOString(),
+      } : event),
+    };
+  }
+  const added = enqueueOperationsEvent(state, input("new_critical", { severity: "critical" }), start);
+  assert.equal(added.enqueued, true);
+  assert.equal(added.state.events.length, 141);
+  assert.equal(added.state.events.filter((event) => event.status === "pending").length, 1);
+  assert.equal(enqueueOperationsEvent(added.state, input("terminal_0"), later(1)).reason, "duplicate");
+  assert.equal(enqueueOperationsEvent(added.state, input("terminal_139"), later(1)).reason, "duplicate");
+  assert.equal(reserveNextOperationsEvent(added.state, start).event.id, "new_critical");
+  assert.equal(normalizeOperationsOutbox(added.state, later(7 * 24 * 60 * 60_000 - 1)).state.events.length, 141);
+});
+
+test("capacity counts pending and reserved independently of retained terminals", () => {
+  let state;
+  for (let index = 0; index < 128; index++) state = enqueue(state, `pending_${index}`);
+  state = reserveNextOperationsEvent(state, start).state;
+  state = {
+    ...state,
+    events: [...state.events, {
+      ...state.events[0], id: "old_terminal", status: "accepted", finishedAt: start.toISOString(),
+    }],
+  };
+  assert.equal(state.events.filter((event) => event.status === "pending").length, 127);
+  assert.equal(state.events.filter((event) => event.status === "reserved").length, 1);
+  assert.equal(enqueueOperationsEvent(state, input("new_critical", { severity: "critical" }), start).reason, "capacity");
+  state = completeOperationsEvent(state, "pending_0", { status: "accepted" }, start).state;
+  const added = enqueueOperationsEvent(state, input("new_critical", { severity: "critical" }), start);
+  assert.equal(added.enqueued, true);
+  assert.equal(added.state.events.length, 130);
+});
+
+test("outcome diagnostics keep only enumerated reasons and HTTP status metadata", () => {
+  for (const [status, reason, httpStatus] of [
+    ["accepted", "http_accepted", 200], ["uncertain", "timeout", undefined],
+    ["uncertain", "network_error", undefined], ["retryable", "rate_limited", 429],
+    ["retryable", "server_error", 503], ["permanent", "http_rejected", 403],
+  ]) {
+    const reserved = reserveNextOperationsEvent(enqueue(undefined, "episode:opened"), start);
+    const completed = completeOperationsEvent(reserved.state, "episode:opened", {
+      status, reason, httpStatus, body: "PRIVATE", error: "PRIVATE",
+    }, start);
+    const event = completed.state.events[0];
+    assert.equal(event.lastReason, reason);
+    assert.equal(event.lastHttpStatus, httpStatus);
+    assert.equal(normalizeOperationsOutbox(completed.state, start).changed, false);
+    assert.equal(JSON.stringify(completed.state).includes("PRIVATE"), false);
+  }
+  for (const httpStatus of [99, 600, 200.5, "200", null]) {
+    const reserved = reserveNextOperationsEvent(enqueue(undefined, "episode:opened"), start);
+    const completed = completeOperationsEvent(reserved.state, "episode:opened", {
+      status: "uncertain", reason: "PRIVATE", httpStatus,
+    }, start);
+    assert.equal(completed.state.events[0].lastReason, undefined);
+    assert.equal(completed.state.events[0].lastHttpStatus, undefined);
+    assert.equal(JSON.stringify(completed.state).includes("PRIVATE"), false);
+    const untrusted = { ...completed.state, events: [{ ...completed.state.events[0], lastReason: "PRIVATE", lastHttpStatus: httpStatus }] };
+    const normalized = normalizeOperationsOutbox(untrusted, start).state.events[0];
+    assert.equal(normalized.lastReason, undefined);
+    assert.equal(normalized.lastHttpStatus, undefined);
+  }
+});
+
+test("legacy uncertainty stays unchanged and new completion never retains stale diagnostics", () => {
+  const reserved = reserveNextOperationsEvent(enqueue(undefined, "episode:opened"), start);
+  const legacy = completeOperationsEvent(reserved.state, "episode:opened", { status: "uncertain" }, start).state;
+  assert.equal(normalizeOperationsOutbox(legacy, later(1)).changed, false);
+  assert.equal(legacy.events[0].lastReason, undefined);
+  assert.equal(legacy.events[0].lastHttpStatus, undefined);
+  assert.equal(reserveNextOperationsEvent(legacy, later(60_000)).event, null);
+
+  const retry = completeOperationsEvent(reserved.state, "episode:opened", {
+    status: "retryable", reason: "rate_limited", httpStatus: 429,
+  }, start).state;
+  const next = reserveNextOperationsEvent(retry, later(60_000));
+  const completed = completeOperationsEvent(next.state, "episode:opened", {
+    status: "uncertain", reason: "network_error",
+  }, later(60_000)).state;
+  assert.equal(completed.events[0].lastReason, "network_error");
+  assert.equal(completed.events[0].lastHttpStatus, undefined);
+  const recovered = normalizeOperationsOutbox(next.state, later(60_001), { recoverReserved: true }).state;
+  assert.equal(recovered.events[0].status, "uncertain");
+  assert.equal(recovered.events[0].lastReason, undefined);
+  assert.equal(recovered.events[0].lastHttpStatus, undefined);
+});
