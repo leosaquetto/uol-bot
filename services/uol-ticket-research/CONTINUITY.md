@@ -52,6 +52,27 @@ resposta de rede e publicação principal confirmada às **15:45:08 UTC**. Não
 há prova suficiente para marcar o comentário como enviado ou não enviado.
 Preservar estado e exigir recibo independente antes de resolver ou reenviar.
 
+## Alertas internos do Worker UOL
+
+O Worker também envia alertas técnicos exclusivamente ao ntfy particular. Uma
+outbox em metadata guarda eventos enumerados e tentativas antes do POST; nunca
+copia títulos, IDs, detalhes ou erros privados para a mensagem. Até 20 tentativas
+por 24 horas, cinco reservadas para críticos/recuperações, três por evento e
+backoff mínimo de um/cinco minutos com `Retry-After`. A verificação interna é a
+cada cinco minutos. É um orçamento separado dos 20 do supervisor Oracle.
+
+Abertura e recuperação têm eventos independentes: uma recuperação rejeitada
+continua pendente mesmo após o incidente ser resolvido. Timeout/crash depois da
+reserva fica incerto, sem reenvio automático. Situação inalterada não repete
+alerta. Incidentes anteriores ao transporte ntfy permanecem registrados e não
+são migrados/reproduzidos. O heartbeat Instagram não usa mais fallback Telegram;
+o supervisor Oracle mantém a responsabilidade por esses alertas.
+
+A fila principal não libera `unknown` pelo tempo decorrido. É preciso recibo ou
+resolução explícita com evidência. Backlog usado para priorizar o principal
+considera envios elegíveis e sua própria idade, conservando contagens de
+incidentes terminais para diagnóstico/readiness.
+
 ## Supervisão independente
 
 `uol-instagram-supervisor.timer` executa a unidade oneshot a cada dois minutos,

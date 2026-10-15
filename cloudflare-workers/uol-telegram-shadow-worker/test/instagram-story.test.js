@@ -451,3 +451,17 @@ test("Oracle supplied media is uploaded directly without a CDN fetch or private 
   assert.equal(Object.keys(sample.database.prepare("SELECT * FROM instagram_story_outbox").get()).includes("image_bytes"),false);
   assert.throws(()=>normalizeInstagramStory({...STORY,imageBase64:"not base64",imageMime:"image/jpeg"},NOW));
 });
+
+
+test("legacy operations secret never enables Telegram heartbeat alerts", async () => {
+  const sample = fixture();
+  const inbox = new InstagramStoryInbox(sample.sql, {
+    OPS_TELEGRAM_CHAT_ID: "fixture-legacy", TELEGRAM_TOKEN: "fixture-no-network",
+  }, { now: () => NOW });
+  const result = await inbox.recordMonitorHeartbeat({
+    sourceStatus: "auth_required", observedAt: NOW.toISOString(),
+    lastSuccessAt: "", reason: "invalid_session_file",
+  });
+  assert.equal(result.operationsAlert, "not_configured");
+  assert.equal(inbox.notifyOperations, null);
+});

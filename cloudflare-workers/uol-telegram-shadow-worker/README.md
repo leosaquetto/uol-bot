@@ -78,8 +78,16 @@ agenda coleta. Estado de produção exige verificação própria.
 - **Discussão:** a publicação principal continua compacta e o texto completo é
   respondido no grupo vinculado `LeoUOL Chat`; chunks confirmados não são
   repetidos em um retry parcial.
-- **Alertas operacionais:** são enviados diretamente ao `LeoUOL Chat`, sem
-  poluir o canal principal de ofertas.
+- **Alertas operacionais:** exclusivamente no ntfy particular
+  `https://ntfy.sh/macXntfy-8130`, sem fallback Telegram/Discord. Abertura e
+  recuperação têm eventos duráveis separados; situação inalterada fica silenciosa.
+  Até 20 tentativas em 24 horas, cinco reservadas para críticos/recuperações,
+  três por evento. Rejeição explícita 429/5xx usa backoff mínimo de um/cinco
+  minutos e `Retry-After`; timeout/crash fica incerto, sem retry cego. A rotina
+  operacional tem cadência de cinco minutos. O supervisor Oracle conserva seu
+  próprio orçamento de 20. Mensagens têm somente tipo e severidade; HTTP aceito
+  não comprova leitura. Incidentes ativos anteriores à publicação não são
+  reenviados para o novo destino; seus registros permanecem visíveis.
 - **Discord:** ingressos no canal original e ofertas comuns no segundo webhook,
   ambos com embed, thumbnail e edição automática de esgotamento/reabertura.
 - **Identidade:** combina slug canônico, variantes históricas e
@@ -100,10 +108,12 @@ agenda coleta. Estado de produção exige verificação própria.
 - **Retries/outbox:** principal, canal 2, Discord e comentários possuem estado
   independente, backoff exponencial com jitter, respeito a `retry_after`,
   in-flight persistido, dead letter e reprocessamento administrativo. Timeout ou
-  resposta aceita sem recibo fica `unknown`. No principal, o forward automático
-  tem 30 segundos para confirmar o envio; sem confirmação, o Worker tenta de
-  novo. A prioridade é não perder oferta, aceitando uma duplicata rara. Os
-  destinos secundários continuam exigindo reconciliação ou resolução explícita.
+  resposta aceita sem recibo fica `unknown`, inclusive no principal: tempo
+  decorrido não libera outra publicação. O forward automático pode confirmar
+  o envio; sem recibo, exige reconciliação ou resolução explícita. Incidentes
+  terminais continuam visíveis, mas não suspendem os secundários de outras
+  ofertas. A prioridade principal usa trabalho elegível e sua própria idade,
+  respeitando backoff, configuração, tentativas e geração.
   A fila WhatsApp, com nome legado Beeper, aceita somente campanhas de ingresso
   e confirma URL/token/rota no endpoint autenticado do gateway antes do lote.
   No transporte Baileys do Oracle, `server_ack` indica aceite pelo servidor
@@ -161,10 +171,11 @@ agenda coleta. Estado de produção exige verificação própria.
   publicada no diagnóstico operacional.
 - Secrets obrigatórios: `ADMIN_TOKEN`, `UOL_API_AUTHORIZATION`, `TELEGRAM_TOKEN`,
   `TELEGRAM_CHAT_ID`, `CANAL2_ID`, `GRUPO_COMENTARIO_ID`,
-  `OPS_TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL` e
+  `TELEGRAM_WEBHOOK_SECRET`, `DISCORD_WEBHOOK_URL` e
   `DISCORD_IMAGE_CACHE_WEBHOOK_URL`, `BEEPER_GATEWAY_URL` e
   `BEEPER_GATEWAY_TOKEN`.
-  `DISCORD_OPS_WEBHOOK_URL` é opcional e cria um segundo transporte para alertas.
+  Secrets legados `OPS_TELEGRAM_CHAT_ID` e `DISCORD_OPS_WEBHOOK_URL` não são
+  usados para alertas operacionais; nenhuma remoção/rotação é necessária.
   O webhook de cache aponta para o segundo canal que recebe as ofertas comuns e
   também fornece suas thumbnails ao Telegram.
   Não há automação ativa de senha ou login pessoal.
@@ -192,7 +203,7 @@ Nenhum valor de secret é armazenado no GitHub ou neste diretório.
   autenticada; corpo JSON `{"mode":"shadow"}`.
 - `POST /requeue-delivery`: reprocessa `offer`, `main`, `canal2`, `discord` ou
   `comment` em dead letter/quarentena. Requeue manual de `unknown` exige
-  `/resolve-delivery`; o principal já possui retry automático após 30 segundos.
+  `/resolve-delivery`; nenhum `unknown` é liberado por prazo.
 - `POST /resolve-delivery`: registra a confirmação humana de um resultado
   `unknown` como `sent` (com o ID externo) ou `not_sent` (retry seguro), sem
   duplicar silenciosamente. Para `beeper`, `sent` exige uma referência de

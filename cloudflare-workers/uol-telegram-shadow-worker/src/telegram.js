@@ -105,7 +105,6 @@ function telegramPhotoIdentity(result) {
 
 export function telegramConfiguration(env) {
   const config = telegramConfig(env);
-  const opsChatId = String(env.OPS_TELEGRAM_CHAT_ID || config.mainChatId).trim();
   const tokenConfigured = Boolean(config.token);
   const mainConfigured = Boolean(config.mainChatId);
   const canal2Configured = Boolean(config.canal2Id);
@@ -117,8 +116,8 @@ export function telegramConfiguration(env) {
     canal2Configured,
     mainReady,
     canal2Ready,
-    operationsConfigured: Boolean(opsChatId),
-    operationsUsesMainFallback: Boolean(opsChatId && !String(env.OPS_TELEGRAM_CHAT_ID || "").trim()),
+    operationsConfigured: false,
+    operationsUsesMainFallback: false,
     // Compatibility field: callers that require both destinations keep the old contract.
     liveReady: mainReady && canal2Ready,
   };

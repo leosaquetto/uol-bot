@@ -1,4 +1,4 @@
-import { telegramCall, forwardToCanal2, telegramConfiguration, sendOperationsAlert } from "./telegram.js";
+import { telegramCall, forwardToCanal2, telegramConfiguration } from "./telegram.js";
 import { getDiscordMessageImageProxy, discordConfiguration } from "./discord.js";
 import { sendBeeperOffer, beeperGatewayConfiguration, beeperDestinationKey } from "./beeper.js";
 import { deliveryRetryAt } from "./delivery-state.js";
@@ -313,8 +313,9 @@ export class InstagramStoryInbox {
     this.now = now;
     this.readiness = readiness;
     this.mode = mode || (() => String(env.DELIVERY_MODE || "shadow").trim().toLowerCase());
-    this.notifyOperations = notifyOperations || (String(env.OPS_TELEGRAM_CHAT_ID || "").trim()
-      ? text => sendOperationsAlert(env, text) : null);
+    // Oracle's independent supervisor owns Instagram technical alerts (ntfy).
+    // Never fall back to a Telegram offer/discussion destination.
+    this.notifyOperations = notifyOperations || null;
     this.transports = transports || defaultTransports(env, {
       stillLive: () => this.mode() === "live",
       reserveRepair: (row, targets) => {
@@ -402,7 +403,7 @@ export class InstagramStoryInbox {
     let operationsAlert = "unchanged";
     if (changed && (failure || recovered)) {
       const event = recovered ? "recovered" : monitor.sourceStatus;
-      // Reserve before awaiting the Telegram mutation, so concurrent/repeated heartbeats stay quiet.
+      // Reserve before notifying, so concurrent/repeated heartbeats stay quiet.
       this.sql(`INSERT INTO metadata(key, value) VALUES ('instagram_monitor_operations_alert', ?)
         ON CONFLICT(key) DO UPDATE SET value = excluded.value`, JSON.stringify({ event, observedAt: monitor.observedAt, state: "reserved" }));
       operationsAlert = "not_configured";

@@ -33,7 +33,6 @@ import {
   editDiscordOffer,
   getDiscordMessageImageProxy,
   sendDiscordOffer,
-  sendDiscordOperationsAlert,
 } from "./discord.js";
 import {
   beeperDeliveryErrorCode,
@@ -60,7 +59,6 @@ import {
   forwardToCanal2,
   sendMainOffer,
   sendDiscussionComment,
-  sendOperationsAlert,
   TELEGRAM_MUTATION_TIMEOUT_SECONDS,
   telegramConfiguration,
   registerTelegramWebhook,
@@ -69,8 +67,10 @@ import {
 import {
   buildIncidentSignals,
   buildLatencyMetrics,
-  buildOperationsAlert,
 } from "./operations.js";
+import { sendOperationalNotification } from "./operations-notify.js";
+import { enqueueOperationsEvent, reserveNextOperationsEvent,
+  completeOperationsEvent, normalizeOperationsOutbox } from "./operations-outbox.js";
 import {
   compareOfferSources,
   sourceSnapshotSignature,
@@ -553,6 +553,8 @@ export class UolTelegramShadow extends DurableObject {
     this.maintenanceInFlight = false;
     this.mainImageUpgradeInFlight = false;
     this.beeperDeliveryInFlight = false;
+    this.operationsDrainInFlight = false;
+    this.operationsOutboxLoaded = false;
     this.metadataCache = new Map();
     this.runtimeSnapshotCache = new Map();
     this.readinessCache = null;
@@ -2885,28 +2887,71 @@ export class UolTelegramShadow extends DurableObject {
       .slice(0, 20);
   }
 
-  async sendOperationalAlert(text) {
-    const transports = [{
-      name: "telegram",
-      promise: sendOperationsAlert(this.env, text),
-    }];
-    if (String(this.env.DISCORD_OPS_WEBHOOK_URL || "").trim()) {
-      transports.push({
-        name: "discord",
-        promise: sendDiscordOperationsAlert(this.env, text),
-      });
+  operationsNotificationSummary() {
+    const raw = this.metadataValue("ops_ntfy_outbox");
+    const state = raw ? JSON.parse(raw) : {};
+    const counts = {};
+    for (const event of state.events || []) {
+      const status = event.status;
+      if (["pending", "reserved", "accepted", "uncertain", "permanent", "exhausted"].includes(status)) {
+        counts[status] = (counts[status] || 0) + 1;
+      }
     }
-    const results = await Promise.allSettled(transports.map((item) => item.promise));
-    const succeeded = results
-      .map((result, index) => result.status === "fulfilled" ? transports[index].name : "")
-      .filter(Boolean);
-    if (succeeded.length) return { succeeded };
-    throw new Error(results
-      .map((result, index) => result.status === "rejected"
-        ? `${transports[index].name}:${sanitizeError(result.reason)}`
-        : "")
-      .filter(Boolean)
-      .join("|") || "operations_alert_no_transport");
+    return counts;
+  }
+
+  loadOperationsOutbox(now = new Date()) {
+    const raw = this.metadataValue("ops_ntfy_outbox");
+    const parsed = raw ? JSON.parse(raw) : undefined;
+    const loaded = normalizeOperationsOutbox(parsed, now, {
+      recoverReserved: !this.operationsOutboxLoaded,
+    });
+    this.operationsOutboxLoaded = true;
+    if (loaded.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(loaded.state));
+    return loaded.state;
+  }
+
+  enqueueOperationalAlert(signal, recovered = false, now = new Date()) {
+    const episodeKey = `ops_ntfy_episode:${signal.key}`;
+    let episode = this.metadataValue(episodeKey);
+    if (!recovered) {
+      episode = crypto.randomUUID();
+    } else if (!episode) {
+      // The previous transport owns historical incidents. Do not replay them.
+      return false;
+    }
+    const kind = String(signal.key || "monitor").split(":")[0];
+    const queued = enqueueOperationsEvent(this.loadOperationsOutbox(now), {
+      id: `${episode}:${recovered ? "recovered" : "opened"}`,
+      kind,
+      severity: signal.severity,
+      recovered,
+    }, now);
+    if (!queued.enqueued && queued.reason !== "duplicate") {
+      throw new Error("operations_outbox_capacity");
+    }
+    if (queued.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(queued.state));
+    if (!recovered) this.setMetadataIfChanged(episodeKey, episode);
+    return true;
+  }
+
+  async drainOperationalAlerts(now = new Date()) {
+    if (this.operationsDrainInFlight) return;
+    this.operationsDrainInFlight = true;
+    try {
+      // One bounded request per operational tick. Reservation is durable before
+      // the external POST. A crash/timeout is uncertain, never a blind retry.
+      const reserved = reserveNextOperationsEvent(this.loadOperationsOutbox(now), now);
+      if (reserved.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(reserved.state));
+      if (!reserved.event) return;
+      const outcome = await sendOperationalNotification(reserved.event);
+      const finished = completeOperationsEvent(
+        this.loadOperationsOutbox(new Date()), reserved.event.id, outcome, new Date(),
+      );
+      if (finished.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(finished.state));
+    } finally {
+      this.operationsDrainInFlight = false;
+    }
   }
 
   resolveIncidentWithoutAlert(key, now = new Date()) {
@@ -3004,93 +3049,55 @@ export class UolTelegramShadow extends DurableObject {
       "SELECT * FROM incidents",
     ).toArray().map((row) => [row.key, row]));
     const nowIso = now.toISOString();
-    const cooldownMinutes = envNumber(this.env, "OPS_ALERT_COOLDOWN_MINUTES", 360, 15, 1_440);
-    const retrySeconds = envNumber(this.env, "OPS_ALERT_RETRY_SECONDS", 60, 15, 900);
     let alerted = 0;
     let recovered = 0;
 
-    for (const signal of signals) {
-      const row = existing.get(signal.key);
-      const lastAttempt = Date.parse(row?.last_attempted_at || "");
-      const lastAlert = Date.parse(row?.last_alerted_at || "");
-      const newlyActive = !row || row.status !== "active";
-      const previousAttemptFailed = Boolean(row?.alert_error);
-      const retryElapsed = !Number.isFinite(lastAttempt) ||
-        now.getTime() - lastAttempt >= retrySeconds * 1_000;
-      const cooldownElapsed = !Number.isFinite(lastAlert) ||
-        now.getTime() - lastAlert >= cooldownMinutes * 60_000;
-      this.sqlExec(
-        `INSERT INTO incidents(
-           key, status, severity, summary, details, first_detected_at, last_detected_at
-         ) VALUES (?, 'active', ?, ?, ?, ?, ?)
-         ON CONFLICT(key) DO UPDATE SET
-           status = 'active', severity = excluded.severity, summary = excluded.summary,
-           details = excluded.details, last_detected_at = excluded.last_detected_at,
-           resolved_at = '', occurrence_count = incidents.occurrence_count + 1`,
-        signal.key, signal.severity, signal.summary, signal.details, nowIso, nowIso,
-      );
-      if (
-        !newlyActive &&
-        !(previousAttemptFailed ? retryElapsed : cooldownElapsed)
-      ) continue;
-      this.sqlExec(
-        "UPDATE incidents SET last_attempted_at = ?, alert_error = '' WHERE key = ?",
-        nowIso,
-        signal.key,
-      );
-      try {
-        await this.sendOperationalAlert(buildOperationsAlert(signal));
+    try {
+      for (const signal of signals) {
+        const row = existing.get(signal.key);
+        const newlyActive = !row || row.status !== "active";
+        // Enqueue first; synchronous SQL updates commit before any external I/O.
+        // Existing active incidents are baseline, not new notifications.
+        if (newlyActive) {
+          this.enqueueOperationalAlert(signal, false, now);
+          alerted += 1;
+        }
         this.sqlExec(
-          "UPDATE incidents SET last_alerted_at = ?, alert_error = '' WHERE key = ?",
-          nowIso,
-          signal.key,
-        );
-        alerted += 1;
-      } catch (error) {
-        this.sqlExec(
-          "UPDATE incidents SET alert_error = ? WHERE key = ?",
-          sanitizeError(error),
-          signal.key,
+          `INSERT INTO incidents(
+             key, status, severity, summary, details, first_detected_at, last_detected_at
+           ) VALUES (?, 'active', ?, ?, ?, ?, ?)
+           ON CONFLICT(key) DO UPDATE SET
+             status = 'active', severity = excluded.severity, summary = excluded.summary,
+             details = excluded.details, last_detected_at = excluded.last_detected_at,
+             resolved_at = '', occurrence_count = incidents.occurrence_count + 1`,
+          signal.key, signal.severity, signal.summary, signal.details, nowIso, nowIso,
         );
       }
-    }
 
-    for (const row of existing.values()) {
-      if (row.status !== "active" || activeKeys.has(row.key)) continue;
-      const signal = {
-        key: row.key,
-        severity: row.severity,
-        summary: row.summary,
-        details: row.details,
-      };
-      this.sqlExec(
-        `UPDATE incidents SET status = 'resolved', resolved_at = ?,
-          last_attempted_at = ?, alert_error = '' WHERE key = ?`,
-        nowIso,
-        nowIso,
-        row.key,
-      );
-      if (row.severity !== "critical") {
-        recovered += 1;
-        continue;
-      }
-      try {
-        await this.sendOperationalAlert(buildOperationsAlert(signal, { recovered: true }));
+      for (const row of existing.values()) {
+        if (row.status !== "active" || activeKeys.has(row.key)) continue;
+        const signal = {
+          key: row.key,
+          severity: row.severity,
+          summary: row.summary,
+          details: row.details,
+        };
+        // Recovery is a separate durable event, so resolving the incident cannot
+        // discard a rejected notification. Historical alerts are not replayed.
+        this.enqueueOperationalAlert(signal, true, now);
         this.sqlExec(
-          "UPDATE incidents SET last_alerted_at = ? WHERE key = ?",
-          nowIso,
-          row.key,
+          `UPDATE incidents SET status = 'resolved', resolved_at = ?,
+            last_attempted_at = ?, alert_error = '' WHERE key = ?`,
+          nowIso, nowIso, row.key,
         );
         recovered += 1;
-      } catch (error) {
-        this.sqlExec(
-          "UPDATE incidents SET alert_error = ? WHERE key = ?",
-          sanitizeError(error),
-          row.key,
-        );
       }
+      this.setMetadata("ops_health_checked_at", nowIso);
+    } finally {
+      // Queue pressure cannot prevent already accepted notification work from
+      // advancing. A new incident is retried once capacity is available.
+      await this.drainOperationalAlerts(now);
     }
-    this.setMetadata("ops_health_checked_at", nowIso);
     return { active: signals.length, alerted, recovered };
   }
 
@@ -3792,47 +3799,13 @@ export class UolTelegramShadow extends DurableObject {
     return { row, classification, unknownTargets };
   }
 
-  releaseExpiredMainUnknowns(now = new Date()) {
-    const retrySeconds = envNumber(
-      this.env,
-      "MAIN_AMBIGUOUS_RETRY_SECONDS",
-      30,
-      15,
-      300,
-    );
-    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
-    const cutoff = new Date(now.getTime() - retrySeconds * 1_000).toISOString();
-    const rows = this.sqlExec(
-      `SELECT id FROM offers
-       WHERE main_sent_at = ''
-         AND main_delivery_unknown_at > ''
-         AND main_delivery_unknown_at <= ?
-         AND main_delivery_attempts < ?
-       ORDER BY main_delivery_unknown_at ASC
-       LIMIT 100`,
-      cutoff,
-      maxAttempts,
-    ).toArray();
-    for (const row of rows) {
-      // Telegram não oferece chave de idempotência. O forward da discussão
-      // tem uma janela curta para reconciliar o primeiro envio. Depois dela,
-      // o principal prefere duplicata rara a perder uma oferta curta.
-      this.sqlExec(
-        `UPDATE offers SET main_delivery_unknown_at = '',
-           main_delivery_in_flight_at = '', main_delivery_next_attempt_at = '',
-           delivery_unknown_at = '', delivery_unknown_target = '',
-           status = 'delivery_pending'
-         WHERE id = ? AND main_sent_at = ''`,
-        row.id,
-      );
-      this.refreshDeliveryStatus(row.id, now);
-    }
-    return rows.length;
-  }
-
   deliveryQueueSlo(now = new Date()) {
     const rows = this.sqlExec(
-      `SELECT status, first_seen_at, decision_at, main_sent_at
+      `SELECT status, first_seen_at, decision_at, main_sent_at,
+              main_delivery_attempts, main_delivery_next_attempt_at,
+              main_delivery_in_flight_at, main_delivery_unknown_at,
+              delivery_unknown_target, delivery_unknown_at,
+              delivery_generation, would_send_main
        FROM offers
        WHERE status IN (
          'delivery_pending', 'partial_delivery', 'delivery_unknown',
@@ -3841,7 +3814,12 @@ export class UolTelegramShadow extends DurableObject {
        ORDER BY first_seen_at ASC
        LIMIT 128`,
     ).toArray();
-    return summarizeQueueSlo(rows, now);
+    return summarizeQueueSlo(rows, now, {
+      mainDeliveryReady: telegramConfiguration(this.env).mainReady,
+      maxAttempts: envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50),
+      inFlightStaleSeconds: envNumber(this.env, "DELIVERY_IN_FLIGHT_STALE_SECONDS", 60, 30, 600),
+      currentGeneration: this.currentDeliveryGeneration(),
+    });
   }
 
   async processDeliveryQueue(
@@ -3919,6 +3897,25 @@ export class UolTelegramShadow extends DurableObject {
           now.toISOString(),
         ]
       : [];
+    // Rank genuinely eligible targets before applying LIMIT. Aggregate terminal
+    // rows remain available for reconciliation but cannot monopolize the batch.
+    const candidateTargets = (requestedTargets.length ? requestedTargets : ["main", "canal2", "discord"])
+      .filter(target => configuration[target]?.ready && configuration[target]?.enabled !== false);
+    const eligibleArguments = [];
+    const eligibleClauses = candidateTargets.map(target => {
+      eligibleArguments.push(maxAttempts, now.toISOString());
+      const dependency = target === "canal2" ? "would_send_canal2 = 1 AND main_sent_at <> '' AND "
+        : target === "discord" ? "link LIKE '%/campanhasdeingresso/%' AND " : "would_send_main = 1 AND ";
+      return `(${dependency}${target}_sent_at = ''
+        AND ${target}_delivery_unknown_at = ''
+        AND NOT (delivery_unknown_target = '${target}' AND delivery_unknown_at <> '')
+        AND ${target}_delivery_in_flight_at = ''
+        AND ${target}_delivery_attempts < ?
+        AND (${target}_delivery_next_attempt_at = '' OR ${target}_delivery_next_attempt_at <= ?))`;
+    });
+    const eligibleOrder = eligibleClauses.length
+      ? `CASE WHEN ${eligibleClauses.join(" OR ")} THEN 0 ELSE 1 END,`
+      : "";
     const candidateLimit = Math.min(256, Math.max(batchSize * 8, priorityList.length + 32));
     const candidates = rows || this.sqlExec(
       `SELECT * FROM offers
@@ -3927,11 +3924,12 @@ export class UolTelegramShadow extends DurableObject {
          'delivery_dead_letter', 'delivery_unknown'
        )
          AND delivery_generation = ?
-       ORDER BY ${priorityOrder} ${recentPriorityOrder} first_seen_at ASC
+       ORDER BY ${priorityOrder} ${recentPriorityOrder} ${eligibleOrder} first_seen_at ASC
        LIMIT ?`,
       generation,
       ...priorityList,
       ...recentPriorityArguments,
+      ...eligibleArguments,
       candidateLimit,
     ).toArray();
     const actionable = [];
@@ -6500,9 +6498,8 @@ export class UolTelegramShadow extends DurableObject {
       if (mode === "live" && !this.metadataValue("live_started_at")) {
         this.setMetadata("live_started_at", startedAt.toISOString());
       }
-      if (mode === "live") {
-        run.mainAmbiguousReleased = this.releaseExpiredMainUnknowns(startedAt);
-      }
+      // Ambiguous Telegram mutations remain quarantined until a receipt or an
+      // explicit, evidence-backed resolution arrives. Elapsed time is no proof.
       const [apiResult, ticketListingResult] = await Promise.all([
         settled(timedCards(() => this.fetchAllApi())),
         settled(timedCards(() => this.fetchTicketListing())),
@@ -8083,7 +8080,9 @@ export class UolTelegramShadow extends DurableObject {
         ),
         failedRunStreak: this.failedRunStreak(),
         activeIncidents: incidents.filter((incident) => incident.status === "active").length,
-        alertUsesMainFallback: telegramConfiguration(this.env).operationsUsesMainFallback,
+        alertUsesMainFallback: false,
+        notificationTransport: "ntfy",
+        notificationOutbox: this.operationsNotificationSummary(),
         incidents,
       },
       latency: buildLatencyMetrics(latencyRows),

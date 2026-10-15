@@ -1920,7 +1920,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     });
   });
 
-  it("reabre envio principal incerto depois da janela de reconciliação", async () => {
+  it("preserva envio principal incerto após a janela sem mutação externa", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("main-unknown-auto-retry");
 
     await runInDurableObject(stub, async (instance, state) => {
@@ -1941,20 +1941,26 @@ describe("UOL Worker no runtime Cloudflare", () => {
         "2026-08-03T12:00:01.000Z",
       );
 
-      expect(instance.releaseExpiredMainUnknowns(
-        new Date("2026-08-03T12:01:00.000Z"),
-      )).toBe(1);
+      instance.setMetadata("delivery_mode_override", "live");
+      instance.env = { ...instance.env, TELEGRAM_TOKEN: "fixture-no-network" };
+      instance.storageUsageSnapshot = () => ({ maintenanceAllowed: true, primaryAllowed: true });
+      const send = vi.fn(() => { throw new Error("unexpected_network_mutation"); });
+      vi.stubGlobal("fetch", send);
+      try {
+        const before = state.storage.sql.exec("SELECT * FROM offers WHERE id = 'oferta-incerta-1'").one();
+        await instance.processDeliveryQueue(new Date("2026-10-15T12:00:00.000Z"), { targetNames: ["main"] });
+        expect(state.storage.sql.exec("SELECT * FROM offers WHERE id = 'oferta-incerta-1'").one()).toEqual(before);
+        expect(send).not.toHaveBeenCalled();
+      } finally { vi.unstubAllGlobals(); }
       const row = state.storage.sql.exec(
         `SELECT status, main_delivery_unknown_at, delivery_unknown_target
          FROM offers WHERE id = ?`,
         "oferta-incerta-1",
       ).one();
       expect(row).toMatchObject({
-        // O ambiente de integração não possui token. O envio é liberado da
-        // janela ambígua e imediatamente classificado como configuração ausente.
-        status: "delivery_blocked_configuration",
-        main_delivery_unknown_at: "",
-        delivery_unknown_target: "",
+        status: "delivery_unknown",
+        main_delivery_unknown_at: "2026-08-03T12:00:01.000Z",
+        delivery_unknown_target: "main",
       });
     });
   });

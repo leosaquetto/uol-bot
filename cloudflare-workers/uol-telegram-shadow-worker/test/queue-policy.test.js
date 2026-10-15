@@ -29,6 +29,132 @@ test("resume idade da fila e separa principal crítico de secundários", () => {
   assert.equal(result.secondaryPending, 1);
   assert.equal(result.oldestAgeMs, 20 * 60_000);
   assert.equal(result.p95AgeMs, 20 * 60_000);
+  assert.equal(result.actionableMainPending, 1);
+  assert.equal(result.oldestActionableMainAgeMs, 10_000);
+});
+
+test("incidentes terminais no principal não bloqueiam nova entrega secundária", () => {
+  for (const terminal of [
+    {
+      status: "delivery_unknown",
+      main_delivery_unknown_at: "2026-08-04T19:00:00.000Z",
+    },
+    { status: "delivery_dead_letter", main_delivery_attempts: 10 },
+    { status: "delivery_blocked_configuration", mainDeliveryReady: false },
+  ]) {
+    const queueSlo = summarizeQueueSlo([
+      {
+        ...terminal,
+        first_seen_at: "2026-08-04T19:00:00.000Z",
+        main_sent_at: "",
+      },
+      {
+        status: "partial_delivery",
+        first_seen_at: "2026-08-04T19:59:55.000Z",
+        main_sent_at: "2026-08-04T19:59:56.000Z",
+      },
+    ], now, { mainDeliveryReady: terminal.mainDeliveryReady ?? true });
+    const budget = chooseDeliveryBudget({ queueSlo });
+
+    // Incidents remain visible; they are excluded only from scheduling pressure.
+    assert.equal(queueSlo.pending, 2);
+    assert.equal(queueSlo.criticalPending, 1);
+    assert.equal(queueSlo.secondaryPending, 1);
+    assert.equal(queueSlo.oldestAgeMs, 60 * 60_000);
+    assert.equal(queueSlo.actionableMainPending, 0);
+    assert.equal(queueSlo.oldestActionableMainAgeMs, 0);
+    assert.equal(budget.deferSecondary, false, terminal.status);
+    assert.equal(budget.reason, "healthy", terminal.status);
+  }
+});
+
+test("principal pendente elegível há 45 segundos mantém prioridade", () => {
+  const queueSlo = summarizeQueueSlo([{
+    status: "delivery_pending",
+    first_seen_at: "2026-08-04T19:59:15.000Z",
+    main_sent_at: "",
+    main_delivery_attempts: 1,
+    main_delivery_next_attempt_at: "2026-08-04T20:00:00.000Z",
+  }], now);
+
+  assert.equal(queueSlo.actionableMainPending, 1);
+  assert.equal(queueSlo.oldestActionableMainAgeMs, 45_000);
+  assert.equal(chooseDeliveryBudget({ queueSlo }).reason, "critical_backlog");
+  assert.equal(chooseDeliveryBudget({ queueSlo }).deferSecondary, true);
+});
+
+test("secundário antigo não empresta sua idade ao principal recente", () => {
+  const queueSlo = summarizeQueueSlo([
+    {
+      status: "delivery_pending",
+      first_seen_at: "2026-08-04T19:59:50.000Z",
+      main_sent_at: "",
+    },
+    {
+      status: "partial_delivery",
+      first_seen_at: "2026-08-04T19:00:00.000Z",
+      main_sent_at: "2026-08-04T19:00:01.000Z",
+    },
+  ], now);
+
+  assert.equal(queueSlo.oldestAgeMs, 60 * 60_000);
+  assert.equal(queueSlo.oldestActionableMainAgeMs, 10_000);
+  assert.equal(chooseDeliveryBudget({ queueSlo }).deferSecondary, false);
+});
+
+test("backoff e envio em voo não pressionam o orçamento secundário", () => {
+  for (const delivery of [
+    { main_delivery_next_attempt_at: "2026-08-04T20:00:01.000Z" },
+    { main_delivery_in_flight_at: "2026-08-04T19:59:59.000Z" },
+    { main_delivery_in_flight_at: "2026-08-04T19:58:00.000Z" },
+    {
+      delivery_unknown_target: "main",
+      delivery_unknown_at: "2026-08-04T19:00:00.000Z",
+    },
+  ]) {
+    const queueSlo = summarizeQueueSlo([{
+      ...delivery,
+      status: "delivery_pending",
+      first_seen_at: "2026-08-04T19:00:00.000Z",
+      main_sent_at: "",
+    }], now);
+
+    assert.equal(queueSlo.criticalPending, 1);
+    assert.equal(queueSlo.actionableMainPending, 0);
+    assert.equal(chooseDeliveryBudget({ queueSlo }).deferSecondary, false);
+  }
+});
+
+test("geração anterior mantém incidente visível sem bloquear a geração atual", () => {
+  const queueSlo = summarizeQueueSlo([{
+    status: "delivery_pending",
+    first_seen_at: "2026-08-04T19:00:00.000Z",
+    main_sent_at: "",
+    delivery_generation: 1,
+  }], now, { currentGeneration: 2 });
+
+  assert.equal(queueSlo.pending, 1);
+  assert.equal(queueSlo.criticalPending, 1);
+  assert.equal(queueSlo.actionableMainPending, 0);
+  assert.equal(chooseDeliveryBudget({ queueSlo }).deferSecondary, false);
+});
+
+test("linha sem intenção ou decisão de envio não pressiona secundários", () => {
+  for (const eligibility of [
+    { would_send_main: 0, decision_at: "2026-08-04T19:00:00.000Z" },
+    { would_send_main: 1, decision_at: "" },
+  ]) {
+    const queueSlo = summarizeQueueSlo([{
+      ...eligibility,
+      status: "delivery_pending",
+      first_seen_at: "2026-08-04T19:00:00.000Z",
+      main_sent_at: "",
+    }], now);
+
+    assert.equal(queueSlo.criticalPending, 1);
+    assert.equal(queueSlo.actionableMainPending, 0);
+    assert.equal(chooseDeliveryBudget({ queueSlo }).deferSecondary, false);
+  }
 });
 
 test("mantém lote e concorrência quando a fila está saudável", () => {

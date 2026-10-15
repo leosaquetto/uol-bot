@@ -51,7 +51,7 @@ test("envia alerta operacional com notificação normal e fallback para o canal 
   assert.equal(payload.chat_id, env.TELEGRAM_CHAT_ID);
   assert.equal(payload.disable_notification, false);
   assert.equal(payload.link_preview_options.is_disabled, true);
-  assert.equal(telegramConfiguration(env).operationsUsesMainFallback, true);
+  assert.equal(telegramConfiguration(env).operationsUsesMainFallback, false);
 });
 
 test("configuração live exige token e os dois canais", () => {
@@ -61,8 +61,8 @@ test("configuração live exige token e os dois canais", () => {
     canal2Configured: true,
     mainReady: true,
     canal2Ready: true,
-    operationsConfigured: true,
-    operationsUsesMainFallback: true,
+    operationsConfigured: false,
+    operationsUsesMainFallback: false,
     liveReady: true,
   });
   assert.deepEqual(
@@ -73,8 +73,8 @@ test("configuração live exige token e os dois canais", () => {
       canal2Configured: false,
       mainReady: true,
       canal2Ready: false,
-      operationsConfigured: true,
-      operationsUsesMainFallback: true,
+      operationsConfigured: false,
+      operationsUsesMainFallback: false,
       liveReady: false,
     },
   );
