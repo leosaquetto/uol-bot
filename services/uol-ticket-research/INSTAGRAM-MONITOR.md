@@ -4,6 +4,12 @@ Plano autorizado em 09/10/2026: instalar o coletor no Oracle existente, integrar
 
 **Estado verificado em 10/10/2026:** monitor ativo e habilitado para reiniciar com o Oracle. O Story `4004391581161830448`, campanha `pQg` de 11/10 no Teatro J. Safra, teve imagem confirmada nos quatro destinos. Os dois canais Telegram e o Discord mantiveram os IDs originais; a foto WhatsApp foi enviada uma vez. A fila local está entregue.
 
+**Decisão de 15/10/2026:** após aviso de comportamento automatizado, o usuário
+escolheu somente push (`pushMode: "push_only"`), sem consultas periódicas ou
+varredura de segurança. Um sinal pendente válido dispara a coleta; sem sinal,
+não há descoberta de Stories. A recepção real de push continua sem comprovação.
+O backoff de autenticação, sessões, inscrição, filas e recibos são preservados.
+
 ## Conta WhatsApp compartilhada — 14/10/2026
 
 A conta remetente foi trocada no Saquetto Drops, no Oracle. O coletor Instagram
@@ -20,9 +26,9 @@ preserva as validações realizadas e suas limitações.
 
 ## Caminho de execução
 
-O receptor dedicado e o gate de mudança para push com consulta de segurança estão documentados em [INSTAGRAM-PUSH.md](INSTAGRAM-PUSH.md). A ativação só reduz o intervalo após prova real no servidor; a implementação sozinha não altera a comprovação histórica abaixo.
+O receptor dedicado, o modo atual `push_only` e o gate do modo alternativo `event` com consulta de segurança estão documentados em [INSTAGRAM-PUSH.md](INSTAGRAM-PUSH.md). A escolha de somente push não representa prova de recebimento real e não altera a comprovação histórica abaixo.
 
-1. `uol-instagram-monitor.service` lê `@clubeuol` por HTTP no Oracle aproximadamente a cada dois minutos. Agenda a próxima coleta com intervalo de 120–130 segundos; o ciclo de execução e entregas podem acrescentar atraso. A sessão dedicada e cookies atualizados ficam privados no servidor. Não há navegador por ciclo nem login UOL.
+1. `uol-instagram-monitor.service` aguarda sinais do receptor dedicado no Oracle. Em `push_only`, só lê `@clubeuol` por HTTP quando existe sinal pendente e o backoff/orçamento permitem; não agenda consultas de segurança. A sessão dedicada e cookies atualizados ficam privados no servidor. Não há navegador por ciclo nem login UOL. O intervalo original de 120–130 segundos pertence ao piloto histórico.
 2. Extrai o sticker e a imagem original do mesmo objeto do Story. Vídeos usam sua imagem de capa. Apenas links canônicos em `https://clube.uol.com.br/campanhasdeingresso/<codigo>-<slug>` entram na fila; outros benefícios são ignorados. Não usa OCR para decidir elegibilidade.
 3. Envia à entrada autenticada do Worker existente. A fila de Stories usa `(Story ID, link)` e recibo independente para Discord, Telegram principal, Canal 2 e WhatsApp. Uma campanha já anunciada pelo bot pode receber este complemento de Story, sem alterar o registro de estoque da oferta.
 

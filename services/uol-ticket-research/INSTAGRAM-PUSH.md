@@ -1,5 +1,22 @@
 # Instagram Web Push no Oracle
 
+## Operação atual — somente push, 15/10/2026
+
+Por decisão explícita do usuário após o aviso de comportamento automatizado,
+o monitor usa `pushMode: "push_only"`. Não há consulta periódica, nem a varredura
+de segurança de trinta minutos. Inicialização, reinício, perda do socket e término
+do backoff não iniciam uma coleta sem sinal pendente do perfil monitorado.
+`activePollPeriodSeconds: 0` identifica essa ausência de polling.
+
+Um sinal válido continua disparando a coleta HTTP existente, com reserva durável,
+agrupamento, orçamento, backoff e deduplicação. A fila de entrega e os recibos
+permanecem ativos. Sinal recebido durante uma coleta permanece pendente.
+
+Essa escolha não comprova Web Push: a prova real continua pendente e não é
+preenchida artificialmente. Sem push recebido, nenhum Story será descoberto
+por este complemento. Sem descoberta independente, também não é possível medir
+os Stories perdidos pelo push. UOL, Drops e os quatro destinos continuam separados.
+
 O receptor é separado do X, do navegador e dos envios. A biblioteca criptográfica genérica de `saquetto-drops/src/webpush-crypto.js` é reutilizada sem importar o adaptador X ou alterar sua inscrição. Node 22.13 ou superior, SQLite nativo e a dependência `http_ece` já usada pelo Drops são necessários. Na instalação, conservar a relação de caminhos `/opt/uol-instagram-monitor/push` e `/opt/saquetto-drops/src`, com leitura somente do código/dependências pelo usuário do monitor.
 
 No Oracle, o runtime compatível é `/usr/local/bin/node` (22.23.2). Usar esse caminho na unidade e nos comandos abaixo: `/usr/bin/node` ainda é 18 e não fornece WebSocket global nem SQLite nativo.
@@ -12,7 +29,7 @@ No Oracle, o runtime compatível é `/usr/local/bin/node` (22.23.2). Usar esse c
 4. Executar `node push/register.mjs /var/lib/uol-instagram-monitor/push-registration.json /var/lib/uol-instagram-monitor/session.json /var/lib/uol-instagram-monitor/push-register-fields.json`. Faz uma única tentativa `POST /api/v1/web/push/register/` com `device_type=web_vapid`, endpoint Mozilla e `subscription_keys={p256dh,auth}`. Registrar `accepted` exige HTTP 200 e resposta JSON reconhecida. Timeout é `uncertain`, sem repetição automática. Apagar o arquivo transitório dos nonces depois da tentativa.
 5. Instalar e iniciar `deploy/uol-instagram-push.service`; manter o monitor Python existente. O serviço não roda navegador ou realiza login. A UAID retornada deve continuar a mesma em toda reconexão; mudança encerra a recepção para revisão, sem criar outra inscrição.
 
-Registrar com sucesso não comprova que o Instagram envie Stories a uma inscrição Mozilla. Enquanto essa prova faltar, `config.json` permanece com `pushMode: "pilot"` ou sem esse campo. O modo padrão é `poll`: comportamento atual de 120–130 segundos. `pilot` adiciona gatilhos de push e conserva esse intervalo.
+Registrar com sucesso não comprova que o Instagram envie Stories a uma inscrição Mozilla. No ensaio original, `pushMode: "pilot"` conservava o polling enquanto faltasse essa prova. O modo padrão `poll` consulta a cada 120–130 segundos; `pilot` acrescenta gatilhos de push. Nenhum deles é a configuração atual `push_only`.
 
 ## Identidade, persistência e coleta
 
@@ -41,10 +58,10 @@ Os números/dados acima são exemplos de estrutura, não prova de produção. Pr
 
 Após essa prova, a coleta passa a push imediato mais consulta de segurança a cada 1.800 segundos (48 ciclos, até 96 GETs reservados/dia sem eventos). O laço verifica sinais a cada dois segundos; novas rajadas esperam pelo menos quinze segundos entre tentativas. Se o socket cair, permanece a consulta de segurança de trinta minutos; não volta a polling de dois minutos. `pushReceiverStatus`, `activePollPeriodSeconds`, `lastPollTrigger` e sequências constam do status local sem dados privados. O receptor reconecta automaticamente com espera crescente e mesma UAID.
 
-A sessão continua sendo atualizada pelo cookie jar do coletor. Um desafio de login interrompe consultas por backoff; o receptor não contorna CAPTCHA, troca contas ou promete renovação ilimitada. A prova de detecção nova e renovação/expiração será acompanhada durante 72 horas, mantendo os serviços ativos. Sem prova real, manter `pilot` e registrar a limitação.
+A sessão continua sendo atualizada pelo cookie jar do coletor. Um desafio de login interrompe consultas por backoff; o receptor não contorna CAPTCHA, troca contas ou promete renovação ilimitada. O ensaio de 72 horas não comprovou Story push real. A automação complementar do Codex foi pausada pelo usuário; os serviços Oracle continuam ativos. A decisão posterior por `push_only` preserva essa limitação e não autoriza promover `event` sem prova.
 
 ## Validação e rollback
 
 Testes focados: `python3 -B -m unittest test_monitor.py` e `node --test push/test.mjs`. Cobrem commits antes de ACK, replay/reinício, criptografia, identidade, reconexão, inscrição sem substituição, resposta ambígua, consumo de sequência, backoff, gate e segurança de trinta minutos em perda de socket. Não enviam mensagens reais nem fazem resgates.
 
-Rollback: parar apenas `uol-instagram-push`, retirar `pushMode`/`pushProof` da configuração e reiniciar o monitor Python. Preservar `push.sqlite`, `monitor.sqlite`, inscrição, sessões e recibos. A fila atual retoma o intervalo normal sem perder deduplicação. Não cancelar a inscrição do X ou substituir cookies/inscrição do navegador.
+Rollback: preservar `push.sqlite`, `monitor.sqlite`, inscrição, sessões e recibos; trocar somente código/configuração compatíveis. Retirar `pushMode` ou restaurar `pilot` reativa polling e exige nova decisão do usuário. Se a versão antiga não suportar `push_only`, manter o monitor parado até uma versão compatível, com o receptor push preservado. Não cancelar a inscrição do X ou substituir cookies/inscrição do navegador.

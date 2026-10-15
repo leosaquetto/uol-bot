@@ -102,6 +102,104 @@ class MonitorTests(unittest.TestCase):
         restart.db.commit()
         self.assertFalse(restart.reserve_poll())
 
+    def test_private_config_accepts_explicit_push_only_mode(self):
+        config = {'ingestUrl': monitor_module.INGEST_URL, 'ingestToken': 'a'*64,
+                  'pushMode': 'push_only'}
+        path = self.path/'config.json'
+        path.write_text(json.dumps(config));os.chmod(path, 0o600)
+        self.assertEqual(monitor_module.private_config(path)['pushMode'], 'push_only')
+        config['pushMode'] = 'unvalidated_mode'
+        path.write_text(json.dumps(config))
+        with self.assertRaisesRegex(ValueError, 'invalid_push_mode'):
+            monitor_module.private_config(path)
+
+    def test_push_only_start_and_expired_legacy_schedule_never_collect_without_signal(self):
+        self.m.state.update(sourceStatus='auth_required', nextPoll=self.now+21600,
+                            retryNotBefore=self.now+21600, activePollPeriodSeconds=120)
+        self.m.save()
+        config = {'pushMode': 'push_only'}
+        restart = Monitor(self.path, config, clock=lambda:self.now)
+        self.addCleanup(restart.db.close)
+        self.assertEqual(restart.state['activePollPeriodSeconds'], 0)
+        self.assertEqual(restart.state['collectionMode'], 'push_only')
+        self.assertEqual(restart.state['sourceStatus'], 'auth_required')
+        self.assertEqual(restart.state['retryNotBefore'], self.now+21600)
+        with patch('monitor.private_config', return_value=config), \
+                patch('monitor.Monitor', return_value=restart), \
+                patch('monitor.InstagramClient') as instagram, \
+                patch.object(restart, 'publish_health'):
+            for elapsed in (0, 21601, 86400):
+                self.now += elapsed
+                run(self.path, self.path/'config.json', once=True)
+            instagram.assert_not_called()
+        self.assertEqual(restart.db.execute('SELECT count(*) FROM polls').fetchone()[0], 0)
+        saved = json.loads((self.path/'status.json').read_text())
+        self.assertEqual(saved['activePollPeriodSeconds'], 0)
+        self.assertEqual(saved['sourceStatus'], 'auth_required')
+
+    def test_push_only_generic_signal_triggers_once_without_claiming_event_proof(self):
+        self.m.config['pushMode'] = 'push_only'
+        self.assertFalse(self.m.reserve_poll())
+        self.push(1, story_id=None)
+        self.assertTrue(self.m.reserve_poll())
+        self.assertEqual(self.m.state['lastPollTrigger'], 'push')
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['consumedSignalSequence'], 1)
+        self.assertEqual(self.m.state['activePollPeriodSeconds'], 0)
+        self.assertEqual(self.m.state['nextPoll'], 0)
+        self.assertNotIn('verifiedPushProof', self.m.state)
+        self.assertFalse(self.m.event_enabled())
+        self.now += 86400
+        self.push(1, status='disconnected', story_id=None)
+        self.assertFalse(self.m.reserve_poll())
+        self.assertEqual(self.m.db.execute('SELECT count(*) FROM polls').fetchone()[0], 1)
+
+    def test_push_only_signal_during_collection_remains_pending_after_restart_and_debounce(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        self.push(2)
+        self.m.record(self.result())
+        self.assertEqual(self.m.state['consumedSignalSequence'], 1)
+        restart = Monitor(self.path, self.m.config, clock=lambda:self.now)
+        self.addCleanup(restart.db.close)
+        self.assertFalse(restart.reserve_poll())
+        self.now += 16
+        self.assertTrue(restart.reserve_poll())
+        restart.record(self.result())
+        self.assertEqual(restart.state['consumedSignalSequence'], 2)
+        self.now += 3600
+        self.assertFalse(restart.reserve_poll())
+
+    def test_push_only_crash_keeps_pending_signal_and_backoff_then_retries(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        self.assertTrue(self.m.reserve_poll())
+        restart = Monitor(self.path, self.m.config, clock=lambda:self.now)
+        self.addCleanup(restart.db.close)
+        self.assertFalse(restart.reserve_poll())
+        self.now += 16
+        self.assertTrue(restart.reserve_poll())
+        failed = self.result();failed.update(status='auth_required', stories=[])
+        restart.record(failed)
+        self.now += 16
+        self.assertFalse(restart.reserve_poll())
+        self.assertEqual(restart.state.get('consumedSignalSequence', 0), 0)
+        self.now += 21600
+        self.assertTrue(restart.reserve_poll())
+        restart.record(self.result())
+        self.assertEqual(restart.state['consumedSignalSequence'], 1)
+        self.now += 21600
+        self.assertFalse(restart.reserve_poll())
+
+    def test_push_only_pending_signal_still_respects_rolling_request_budget(self):
+        self.m.config['pushMode'] = 'push_only';self.push(1)
+        self.m.db.execute('INSERT INTO polls VALUES(?,?,NULL)', (self.now, MAX_DAILY_REQUESTS))
+        self.m.db.commit()
+        self.assertFalse(self.m.reserve_poll())
+        self.assertEqual(self.m.state['sourceStatus'], 'budget_wait')
+        self.assertEqual(self.m.state.get('consumedSignalSequence', 0), 0)
+        self.now += 86402
+        self.assertTrue(self.m.reserve_poll())
+
     def test_non_campaign_and_unsafe_urls_rejected(self):
         for bad in ('https://clube.uol.com.br/campanhasdeingresso/pQg-teatro/utilizar',
                     'https://clube.uol.com.br:443/campanhasdeingresso/pQg-teatro',

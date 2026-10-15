@@ -162,6 +162,14 @@ continua disparando coleta, mas não libera sozinho a promoção. Prova exata v�
 permanece válida após expiração do Story/reinício. No modo `event`: push imediato mais consulta de segurança de
 30 minutos (até 96 GETs/dia de segurança, mais eventos dentro do orçamento).
 
+Desde 15/10/2026, por decisão explícita após aviso do Instagram, a configuração
+operacional é `push_only`: nenhuma coleta periódica, inclusive após reinício,
+backoff vencido ou desconexão. Apenas sinal pendente libera coleta, respeitando
+os mesmos limites e reservas. O estado informa `activePollPeriodSeconds: 0`.
+Isso não valida a recepção push nem altera o gate do modo `event`. Sem polling
+independente não é possível estimar os Stories que deixaram de chegar por push.
+Reativar qualquer polling exige nova decisão do usuário.
+
 Manutenção do Worker libera sua flag de execução inclusive quando preparação ou
 gravação de metadata lança por cota. Isso evita bloqueio permanente após o reset;
 não resolve nem altera incidentes históricos de entregas desconhecidas.

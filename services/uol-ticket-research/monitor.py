@@ -68,7 +68,7 @@ def private_config(path):
     config = json.loads(text)
     if config.get('ingestUrl') != INGEST_URL or not re.fullmatch(r'[a-f0-9]{64}', config.get('ingestToken', '')):
         raise ValueError('invalid_config')
-    if config.get('pushMode', 'poll') not in ('poll', 'pilot', 'event'):
+    if config.get('pushMode', 'poll') not in ('poll', 'pilot', 'event', 'push_only'):
         raise ValueError('invalid_push_mode')
     return config
 
@@ -162,6 +162,11 @@ class Monitor:
         self.state.setdefault('retryNotBefore', 0 if self.state['sourceStatus'] in ('starting','found','empty')
                               else self.state['nextPoll'])
         self._saved_state = canonical(json.loads(row[0])) if row else None
+        self.state['collectionMode'] = config.get('pushMode', 'poll')
+        if config.get('pushMode') == 'push_only':
+            # This explicit user-selected mode has no timer or safety sweep.
+            # Preserve the last source result and any authentication backoff.
+            self.state['activePollPeriodSeconds'] = 0
         self._committed_changes = self.db.total_changes
         self._next_checkpoint = 0
         self._next_coverage_refresh = 0
@@ -309,6 +314,8 @@ class Monitor:
         event_due = pending and now >= self.state.get('pushAttemptNotBefore', 0)
         if now < self.state.get('retryNotBefore', 0):
             return False
+        if self.config.get('pushMode') == 'push_only' and not event_due:
+            return False
         # Signals only bypass the normal schedule, never authentication/rate-limit backoff.
         if now < self.state['nextPoll'] and not event_due:
             return False
@@ -319,7 +326,7 @@ class Monitor:
             self.save()
             return False
         self.db.execute('INSERT INTO polls VALUES(?,2,NULL)', (now,))
-        self.state['nextPoll'] = now + PERIOD
+        self.state['nextPoll'] = 0 if self.config.get('pushMode') == 'push_only' else now + PERIOD
         self.state['reservedSignalSequence'] = push['sequence'] if pending else 0
         self.state['pushAttemptNotBefore'] = now + 15
         self.state['lastPollTrigger'] = 'push' if event_due else 'safety' if self.event_enabled() else 'poll'
@@ -394,8 +401,10 @@ class Monitor:
             # Persist snapshot, outbox and only the pre-fetch high-water mark in one transaction.
             # A push received during collection remains pending for the next collection.
             s['consumedSignalSequence'] = max(s.get('consumedSignalSequence', 0), s.get('reservedSignalSequence', 0))
-            interval = SAFETY_PERIOD if self.event_enabled() else PERIOD
-            s.update(nextPoll=now+interval+random.uniform(0, 10), activePollPeriodSeconds=interval)
+            interval = (0 if self.config.get('pushMode') == 'push_only'
+                        else SAFETY_PERIOD if self.event_enabled() else PERIOD)
+            s.update(nextPoll=now+interval+random.uniform(0, 10) if interval else 0,
+                     activePollPeriodSeconds=interval)
             s['coverageWindowHasGap'] = not receiver['connected']
             self.refresh_coverage(receiver, force=True)
         else:
