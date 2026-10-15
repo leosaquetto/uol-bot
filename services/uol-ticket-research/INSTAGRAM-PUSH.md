@@ -71,8 +71,12 @@ continuam preservados e não são reenviados/reprocessados automaticamente.
 
 O supervisor lê esses agregados sem consultar Instagram. Novas rejeições recentes
 abrem um único incidente no ntfy particular; ausência de notificações não o fecha.
-Recuperação exige evidência posterior de notificação interpretada, com conexão
-recente. Isso não substitui a prova de um Story real entregue aos quatro destinos.
+Um watermark persistido de lotes esgotados evita perder uma falha substituída por
+outro status entre verificações. Recuperação de rejeição exige persistência,
+envio local de ACK e interpretação posteriores à falha, com conexão recente.
+Essa evidência durável não expira entre duas verificações e evita manter um
+incidente já recuperado por causa da janela de aviso. Isso não substitui a prova
+de um Story real entregue aos quatro destinos.
 
 Até dois GETs por coleta, máximo de 1.440 GETs reservados em qualquer janela de 24 horas, e no máximo vinte buscas de mídia permanecem iguais. Links/imagem e recibos continuam na esteira atual dos quatro destinos; não há novo resgate, OCR ou reenvio de destino confirmado.
 

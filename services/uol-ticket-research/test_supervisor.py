@@ -1,4 +1,5 @@
 import datetime as dt
+from contextlib import closing
 import json
 import os
 from pathlib import Path
@@ -79,7 +80,8 @@ class SupervisorTests(unittest.TestCase):
         quiet['push'].update(diagnosticsStatus='available', diagnostics=bad['push']['diagnostics'])
         self.supervisor.run_once(quiet)
         self.assertTrue(self.supervisor.state['incidents']['push_rejections']['active'])
-        quiet['push']['diagnostics']['notifications_signalled'] = {'count': 1, 'lastEpoch': self.now}
+        for name in ('notifications_persisted', 'ack_sent', 'notifications_signalled'):
+            quiet['push']['diagnostics'][name] = {'count': 1, 'lastEpoch': self.now}
         self.supervisor.run_once(quiet)
         self.assertEqual(len(self.sent), 2)
         self.assertFalse(self.supervisor.state['incidents']['push_rejections']['active'])
@@ -93,7 +95,8 @@ class SupervisorTests(unittest.TestCase):
         self.assertFalse(self.supervisor.can_recover('push_rejections', sources, self.now))
         sources['push']['diagnostics']['frames_rejected_json']['lastEpoch'] = self.now - 10
         self.assertIn('push_rejections', self.supervisor.evaluate(sources, self.now))
-        sources['push']['diagnostics']['notifications_signalled'] = {'count': 1, 'lastEpoch': self.now}
+        for name in ('notifications_persisted', 'ack_sent', 'notifications_signalled'):
+            sources['push']['diagnostics'][name] = {'count': 1, 'lastEpoch': self.now}
         self.assertTrue(self.supervisor.can_recover('push_rejections', sources, self.now))
         sources['push']['diagnosticsStatus'] = 'legacy_unavailable'
         self.assertFalse(self.supervisor.can_recover('push_rejections', sources, self.now))
@@ -110,10 +113,73 @@ class SupervisorTests(unittest.TestCase):
             sources['status']['pushSettlement'] = settlement
             self.supervisor.run_once(sources)
             self.assertTrue(self.supervisor.state['incidents']['push_settlement']['active'])
-        sources['status']['pushSettlement'] = {'status': 'matched_exact'}
+        sources['status']['pushSettlement'] = {'status': 'matched_exact', 'exhaustedBatches': 1}
         self.supervisor.run_once(sources)
         self.assertEqual(len(self.sent), 2)
         self.assertFalse(self.supervisor.state['incidents']['push_settlement']['active'])
+
+    def test_exhaustion_counter_catches_failure_overwritten_before_supervisor_run(self):
+        sources = self.healthy()
+        sources['status']['pushSettlement'] = {'status': 'pending', 'exhaustedBatches': 1}
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 1)
+        self.assertEqual(self.supervisor.state['pushSettlementExhaustedSeen'], 1)
+        self.resume()
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 1)
+        self.assertTrue(self.supervisor.state['incidents']['push_settlement']['active'])
+        sources['status']['pushSettlement'] = {'status': 'matched_exact', 'exhaustedBatches': 1}
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 2)
+        # Both failure and later success may happen between two observations.
+        sources['status']['pushSettlement']['exhaustedBatches'] = 2
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 3)
+        self.assertTrue(self.supervisor.state['incidents']['push_settlement']['active'])
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 4)
+        self.assertFalse(self.supervisor.state['incidents']['push_settlement']['active'])
+
+    def test_rejection_recovery_does_not_wait_for_or_expire_with_alert_window(self):
+        failure_at = self.now
+        sources = self.healthy()
+        sources['push'].update(diagnosticsStatus='available', diagnostics={
+            'frames_rejected_json': {'count': 1, 'lastEpoch': failure_at}})
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 1)
+        self.now += 10
+        sources['push']['observedEpoch'] = self.now
+        for name in ('notifications_persisted', 'ack_sent', 'notifications_signalled'):
+            sources['push']['diagnostics'][name] = {'count': 1, 'lastEpoch': self.now}
+        self.assertNotIn('push_rejections', self.supervisor.evaluate(sources, self.now))
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 2)
+        self.now = failure_at + 1920
+        sources['push']['observedEpoch'] = self.now
+        self.resume()
+        self.assertTrue(self.supervisor.can_recover('push_rejections', sources, self.now))
+        self.assertNotIn('push_rejections', self.supervisor.evaluate(sources, self.now))
+
+    def test_ack_failure_requires_later_persist_ack_and_signal_before_recovery(self):
+        failure_at = self.now
+        sources = self.healthy()
+        sources['push'].update(diagnosticsStatus='available', diagnostics={
+            'ack_failed': {'count': 1, 'lastEpoch': failure_at}})
+        self.supervisor.run_once(sources)
+        self.now += 10
+        sources['push']['observedEpoch'] = self.now
+        diagnostics = sources['push']['diagnostics']
+        diagnostics['notifications_signalled'] = {'count': 1, 'lastEpoch': self.now}
+        diagnostics['notifications_persisted'] = {'count': 1, 'lastEpoch': failure_at - 1}
+        diagnostics['ack_sent'] = {'count': 1, 'lastEpoch': failure_at - 1}
+        self.assertFalse(self.supervisor.can_recover('push_rejections', sources, self.now))
+        self.assertIn('push_rejections', self.supervisor.evaluate(sources, self.now))
+        diagnostics['ack_sent']['lastEpoch'] = self.now
+        self.assertFalse(self.supervisor.can_recover('push_rejections', sources, self.now))
+        diagnostics['notifications_persisted']['lastEpoch'] = self.now
+        self.supervisor.run_once(sources)
+        self.assertEqual(len(self.sent), 2)
+        self.assertFalse(self.supervisor.state['incidents']['push_rejections']['active'])
 
     def test_unknown_collection_is_not_treated_as_empty_story_weekend(self):
         sources = self.healthy()
@@ -292,11 +358,12 @@ class SupervisorTests(unittest.TestCase):
     def test_push_summary_reads_legacy_counts_without_payload_exposure(self):
         import sqlite3
         path = self.root / 'push.sqlite'
-        with sqlite3.connect(path) as db:
+        with closing(sqlite3.connect(path)) as db:
             db.executescript('CREATE TABLE receiver_state(id INTEGER,status TEXT,observed_at INTEGER);'
                              'CREATE TABLE push_events(packet TEXT,state TEXT);')
             db.execute('INSERT INTO receiver_state VALUES(1,?,?)', ('connected', self.now * 1000))
             db.execute('INSERT INTO push_events VALUES(?,?)', ('encrypted-test-packet', 'pending'))
+            db.commit()
         os.chmod(path, 0o600)
         result = push_summary(self.root)
         self.assertEqual(result['pendingCount'], 1)
@@ -307,7 +374,7 @@ class SupervisorTests(unittest.TestCase):
     def test_push_summary_exports_only_allowlisted_diagnostic_counts(self):
         import sqlite3
         path = self.root / 'push.sqlite'
-        with sqlite3.connect(path) as db:
+        with closing(sqlite3.connect(path)) as db:
             db.executescript('CREATE TABLE receiver_state(id INTEGER,status TEXT,observed_at INTEGER);'
                              'CREATE TABLE push_events(packet TEXT,state TEXT);'
                              'CREATE TABLE receiver_diagnostics(key TEXT,count INTEGER,last_at INTEGER);')
@@ -317,6 +384,7 @@ class SupervisorTests(unittest.TestCase):
                 ('frames_rejected_json', 1, self.now * 1000),
                 ('private_fixture_value', 9, self.now * 1000),
                 ('notifications_signalled', -1, self.now * 1000)])
+            db.commit()
         os.chmod(path, 0o600)
         result = push_summary(self.root)
         self.assertEqual(result['diagnosticsStatus'], 'available')

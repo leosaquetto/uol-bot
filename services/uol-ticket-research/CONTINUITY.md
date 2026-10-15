@@ -183,6 +183,10 @@ classificação, replay e envio local de ACK. Não guarda corpo/IDs/URLs, não a
 eventos nem recupera contagens anteriores à instalação. O supervisor alerta falhas
 recentes uma vez; silêncio não comprova recuperação e nenhum teste é enviado aos
 grupos. Contadores de frames incluem handshake/pong, e ACK local não é recibo remoto.
+O supervisor guarda o último contador de lotes esgotados observado para capturar
+falhas ocorridas entre verificações. Rejeição só se recupera após nova persistência,
+ACK local e sinal; a evidência posterior não vence enquanto aguarda a próxima
+verificação. Uma conexão SQLite de diagnóstico é fechada ao terminar a leitura.
 
 Manutenção do Worker libera sua flag de execução inclusive quando preparação ou
 gravação de metadata lança por cota. Isso evita bloqueio permanente após o reset;

@@ -1,5 +1,6 @@
 """Bounded Oracle-only supervision; reads existing state, never collects Stories."""
 import argparse
+from contextlib import closing
 import datetime as dt
 import fcntl
 import json
@@ -91,7 +92,7 @@ def push_summary(directory):
         if (not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) != 0o600
                 or info.st_uid != os.getuid()):
             return {'status': 'unavailable'}
-        with sqlite3.connect(path.as_uri() + '?mode=ro', uri=True, timeout=1) as db:
+        with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True, timeout=1)) as db:
             receiver = db.execute('SELECT status,observed_at FROM receiver_state WHERE id=1').fetchone()
             row = db.execute("SELECT count(*),coalesce(sum(state='pending'),0),"
                              "coalesce(sum(length(CAST(packet AS BLOB))),0) FROM push_events").fetchone()
@@ -200,13 +201,21 @@ class Supervisor:
                 'push_pending_limit', 'push_payload_limit', 'push_identity_limit'):
             add('push_blocked', 'Instagram push: recepção interrompida; inscrição ou armazenamento exige revisão.', True)
         diagnostics = push.get('diagnostics') or {}
-        if any(isinstance(item, dict) and type(item.get('count')) is int and item['count'] > 0
+        recent_rejection = any(isinstance(item, dict) and type(item.get('count')) is int and item['count'] > 0
                and isinstance(item.get('lastEpoch'), (int, float))
                and -60 <= now - item['lastEpoch'] <= 1800
-               for key, item in diagnostics.items() if key in PUSH_REJECTION_KEYS):
+               for key, item in diagnostics.items() if key in PUSH_REJECTION_KEYS)
+        if recent_rejection and not self.can_recover('push_rejections', sources, now):
             add('push_rejections', 'Instagram push: recepção registrou descarte, falha de interpretação ou ACK. Revisar os contadores protegidos.')
         settlement = status.get('pushSettlement') or {}
-        if settlement.get('status') == 'unresolved':
+        exhausted = settlement.get('exhaustedBatches')
+        seen_exhausted = self.state.get('pushSettlementExhaustedSeen', 0)
+        if type(seen_exhausted) is not int or seen_exhausted < 0:
+            seen_exhausted = 0
+        new_exhaustion = type(exhausted) is int and exhausted > seen_exhausted
+        if type(exhausted) is int and exhausted >= seen_exhausted:
+            self.state['pushSettlementExhaustedSeen'] = exhausted
+        if settlement.get('status') == 'unresolved' or new_exhaustion:
             add('push_settlement', 'Instagram push: tentativas do sinal terminaram sem confirmar o Story esperado. Nenhum polling foi reativado.')
         if status.get('sourceStatus') == 'auth_required':
             add('instagram_auth', 'Instagram: sessão exige autenticação. Backoff preservado.', True)
@@ -283,21 +292,30 @@ class Supervisor:
             return push.get('status') == 'connected' and seen is not None and -60 <= now - seen <= 600
         if key == 'push_rejections':
             diagnostics = push.get('diagnostics') or {}
-            successful = diagnostics.get('notifications_signalled') or {}
-            last_success = successful.get('lastEpoch')
             rejected = [item.get('lastEpoch') for name, item in diagnostics.items()
                         if name in PUSH_REJECTION_KEYS and isinstance(item, dict)
                         and type(item.get('count')) is int and item['count'] > 0
                         and isinstance(item.get('lastEpoch'), (int, float))]
             observed = push.get('observedEpoch')
+            # Durable success counters do not expire between supervisor runs.
+            # Require a later persisted notification, local ACK send and signal;
+            # processing an old pending packet alone cannot recover an ACK failure.
+            threshold = max(rejected) if rejected else None
+            successful = all(
+                isinstance(diagnostics.get(name), dict)
+                and type(diagnostics[name].get('count')) is int and diagnostics[name]['count'] > 0
+                and isinstance(diagnostics[name].get('lastEpoch'), (int, float))
+                and threshold is not None and threshold < diagnostics[name]['lastEpoch'] <= now + 60
+                for name in ('notifications_persisted', 'ack_sent', 'notifications_signalled'))
             return (push.get('diagnosticsStatus') == 'available'
                     and push.get('status') == 'connected'
                     and isinstance(observed, (int, float)) and -60 <= now - observed <= 600
-                    and type(successful.get('count')) is int and successful['count'] > 0
-                    and isinstance(last_success, (int, float)) and -60 <= now - last_success <= 1800
-                    and bool(rejected) and last_success > max(rejected))
+                    and successful)
         if key == 'push_settlement':
-            return (status.get('pushSettlement') or {}).get('status') == 'matched_exact'
+            settlement = status.get('pushSettlement') or {}
+            count = settlement.get('exhaustedBatches')
+            return (settlement.get('status') == 'matched_exact' and type(count) is int
+                    and count >= self.state.get('pushSettlementExhaustedSeen', 0))
         if key in ('instagram_auth', 'instagram_collection'):
             return status.get('sourceStatus') in ('found', 'empty')
         if key == 'delivery_backlog':
