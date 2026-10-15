@@ -82,6 +82,13 @@ export function isTelegramMessageCaptionMissingError(error) {
     description.includes("there is no caption in the message to edit");
 }
 
+export function isTelegramMessageTextMissingError(error) {
+  return String(error?.transport || "").toLowerCase() === "telegram" &&
+    Number(error?.status || error?.httpStatus || 0) === 400 &&
+    error?.operation === "editMessageText" &&
+    String(error?.description || "").toLowerCase().includes("there is no text in the message to edit");
+}
+
 export function isTelegramMessageNotModifiedError(error) {
   const status = Number(error?.status || error?.httpStatus || 0);
   const transport = String(error?.transport || "").trim().toLowerCase();

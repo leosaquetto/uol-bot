@@ -254,11 +254,24 @@ def build_report(state_dir, day, now=None):
                               or counter_nondecreasing(last['value'], closed['value'], key)))
         metric_verified = bool(sufficient and continuous and monotonic and confirmed and now >= end)
         verified = verified and metric_verified
+        blocking_reasons = []
+        if now < end:
+            blocking_reasons.append('utc_day_incomplete')
+        if not sufficient:
+            blocking_reasons.append('sample_coverage_insufficient')
+        if final['status'] != 'known':
+            blocking_reasons.append('metric_' + final['status'])
+        if not continuous:
+            blocking_reasons.append('metric_coverage_insufficient')
+        if not monotonic or not confirmation_monotonic:
+            blocking_reasons.append('counter_decreased')
+        if not confirmed:
+            blocking_reasons.append('post_day_confirmation_unproven')
         item = {'status': final['status'], 'value': final['value'], 'observedAt': final['observedAt'],
                 'limit': limit, 'percentOfLimit': final['value'] / limit * 100 if final['value'] is not None else None,
                 'latestInDay': last, 'postDayConfirmation': closed,
                 'coverageSufficient': continuous and monotonic and sufficient,
-                'consumptionVerified': metric_verified}
+                'consumptionVerified': metric_verified, 'blockingReasons': blocking_reasons}
         if key == 'storageBytes':
             item.update(source=SQL_STORAGE_SOURCE, aggregation='sum_of_daily_namespace_maxima', estimated=True)
         if key == 'rowsWritten':
@@ -269,6 +282,9 @@ def build_report(state_dir, day, now=None):
     coverage['sufficient'] = bool(sufficient and all(item['coverageSufficient'] for item in metrics.values()))
     status = 'incomplete' if now < end else 'consumption_verified' if verified else 'coverage_insufficient'
     return {'day': day, 'status': status, 'coverage': coverage, 'metrics': metrics,
+            'sampleCoverageSufficient': bool(sufficient and now >= end),
+            'metricInterpretationComplete': all(item['status'] == 'known' for item in metrics.values()),
+            'blockingMetrics': [key for key, item in metrics.items() if not item['consumptionVerified']],
             'projects': project_report(confirmation or latest, day),
             'evidence': {'snapshotStage': 'before_ingestion', 'workerGuardOrDeliveryVerified': False,
                          'totalAcceptanceVerified': False,

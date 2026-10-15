@@ -156,7 +156,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     const delivered = [];
     vi.stubGlobal("fetch", async (input, init = {}) => {
       const url = String(input);
-      if (url === "https://beeper.test/v1/readyz") {
+      if (url === "https://beeper.test/v1/readyz/uol") {
         expect(init.method).toBe("GET");
         expect(init.headers.Authorization).toBe("Bearer vitest-beeper-token");
         return Response.json({
@@ -286,7 +286,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     let sendCalls = 0;
     vi.stubGlobal("fetch", async (input, init = {}) => {
       const url = String(input);
-      if (url === "https://beeper.test/v1/readyz") {
+      if (url === "https://beeper.test/v1/readyz/uol") {
         return Response.json({
           ok: true,
           deliveryConfirmation: "confirmed_by_whatsapp_bridge",
@@ -446,7 +446,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
     vi.stubGlobal("fetch", async (input) => {
       const url = String(input);
       gatewayCalls.push(url);
-      if (url === "https://beeper.test/v1/readyz") {
+      if (url === "https://beeper.test/v1/readyz/uol") {
         return Response.json({
           ok: true,
           deliveryConfirmation: "confirmed_by_whatsapp_bridge",
@@ -515,7 +515,7 @@ describe("UOL Worker no runtime Cloudflare", () => {
           new Date("2026-08-17T21:00:00.000Z"),
         )).resolves.toMatchObject({ sent: 1, failed: 0, blocked: false });
         expect(gatewayCalls).toEqual([
-          "https://beeper.test/v1/readyz",
+          "https://beeper.test/v1/readyz/uol",
           "https://beeper.test/v1/send-offer",
         ]);
 

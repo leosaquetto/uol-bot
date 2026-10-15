@@ -22,7 +22,7 @@ function keyDigest(value) {
 }
 
 function safeRoute(path) {
-  return ["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(path)
+  return ["/livez", "/readyz", "/v1/readyz", "/v1/readyz/uol", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(path)
     ? path
     : "other";
 }
@@ -139,22 +139,50 @@ function imageExtension(contentType) {
   return "jpg";
 }
 
+async function readLimitedBytes(body, declaredSize, maxBytes, code) {
+  const tooLarge = () => Object.assign(new Error(code), { status: 413 });
+  if (Number(declaredSize) > maxBytes) {
+    await body?.cancel().catch(() => {});
+    throw tooLarge();
+  }
+  if (!body) return Buffer.alloc(0);
+  const reader = body.getReader();
+  const chunks = [];
+  let size = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > maxBytes) {
+        await reader.cancel().catch(() => {});
+        throw tooLarge();
+      }
+      chunks.push(Buffer.from(value));
+    }
+    return Buffer.concat(chunks, size);
+  } finally { reader.releaseLock(); }
+}
+
 async function downloadImageBytes(fetchImpl, imageUrl, timeoutMs = 10_000) {
   const response = await fetchImpl(imageUrl, {
     headers: { Accept: "image/*" },
     redirect: "error",
     signal: AbortSignal.timeout(timeoutMs),
   });
-  if (!response.ok) throw new Error("preview_image_download_failed");
+  if (!response.ok) {
+    await response.body?.cancel().catch(() => {});
+    throw new Error("preview_image_download_failed");
+  }
   const contentType = String(response.headers.get("Content-Type") || "")
     .split(";", 1)[0].trim().toLowerCase();
-  if (!contentType.startsWith("image/")) throw new Error("preview_image_invalid_type");
-  const declaredSize = Number(response.headers.get("Content-Length") || 0);
-  if (declaredSize > MAX_IMAGE_BYTES) throw new Error("preview_image_too_large");
-  const bytes = Buffer.from(await response.arrayBuffer());
-  if (!bytes.length || bytes.length > MAX_IMAGE_BYTES) {
-    throw new Error("preview_image_invalid_size");
+  if (!contentType.startsWith("image/")) {
+    await response.body?.cancel().catch(() => {});
+    throw new Error("preview_image_invalid_type");
   }
+  const bytes = await readLimitedBytes(response.body, response.headers.get("Content-Length"),
+    MAX_IMAGE_BYTES, "preview_image_too_large");
+  if (!bytes.length) throw new Error("preview_image_invalid_size");
   return { bytes, contentType };
 }
 
@@ -178,12 +206,9 @@ async function downloadPreviewImage(fetchImpl, imageUrl, directory, transform) {
 }
 
 async function readJsonBody(request, maxBytes = MAX_BODY_BYTES) {
-  const declared = Number(request.headers.get("Content-Length") || 0);
-  if (declared > maxBytes) throw Object.assign(new Error("body_too_large"), { status: 413 });
-  const text = await request.text();
-  if (Buffer.byteLength(text) > maxBytes) {
-    throw Object.assign(new Error("body_too_large"), { status: 413 });
-  }
+  const bytes = await readLimitedBytes(request.body, request.headers.get("Content-Length"),
+    maxBytes, "body_too_large");
+  const text = bytes.toString("utf8");
   try {
     return JSON.parse(text);
   } catch {
@@ -298,7 +323,6 @@ export function createGateway({
 }) {
   if (!String(token || "").trim()) throw new Error("GATEWAY_TOKEN is required");
   if (!String(chatId || "").trim()) throw new Error("BEEPER_CHAT_ID is required");
-  if (!String(buyticketChatId || "").trim()) throw new Error("BEEPER_BUYTICKET_CHAT_ID is required");
   if (!["beeper", "baileys"].includes(transport)) throw new Error("invalid_delivery_transport");
   if (transport === "beeper" && !String(accountId || "").trim()) throw new Error("BEEPER_ACCOUNT_ID is required");
   if (transport === "beeper" && !String(beeperAccessToken || "").trim()) throw new Error("BEEPER_ACCESS_TOKEN is required");
@@ -312,7 +336,7 @@ export function createGateway({
   const baseUrl = String(beeperApiUrl).replace(/\/+$/, "");
   const previewDirectory = join(dirname(databasePath), "previews");
 
-  async function readiness(includeLedger = false) {
+  async function readiness(includeLedger = false, route) {
     let ledger;
     try {
       ledger = ledgerSnapshot(database);
@@ -328,7 +352,7 @@ export function createGateway({
     }
     if (transport === "baileys") {
       try {
-        const upstream = await probeTransport();
+        const upstream = await probeTransport(route);
         const ok = upstream?.ok === true && upstream.transport === "baileys" &&
           upstream.deliveryConfirmation === "baileys_ack_or_receipt";
         return { status: ok ? 200 : 503, body: { ok, transport,
@@ -364,7 +388,7 @@ export function createGateway({
     }
     try {
       const headers = { Authorization: `Bearer ${beeperAccessToken}` };
-      const destinationChatIds = [...new Set([chatId, buyticketChatId])];
+      const destinationChatIds = [...new Set(route === "uol" ? [chatId] : [chatId, buyticketChatId])];
       const [accountsResponse, ...chatResponses] = await Promise.all([
         fetchImpl(`${baseUrl}/v1/accounts`, {
           headers,
@@ -438,7 +462,7 @@ export function createGateway({
     let authenticated = false;
     const respond = (status, body, details = {}) => {
       const shouldLog = authenticated &&
-        ["/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(url.pathname);
+        ["/v1/readyz", "/v1/readyz/uol", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(url.pathname);
       if (shouldLog) {
         auditLog(logger, status >= 400 ? "warn" : "info", "beeper_gateway_request", {
           requestId,
@@ -456,15 +480,15 @@ export function createGateway({
     if (request.method === "GET" && url.pathname === "/livez") {
       return respond(200, { ok: true });
     }
-    if (request.method === "GET" && url.pathname === "/readyz") {
-      const result = await readiness();
+    if (request.method === "GET" && ["/readyz", "/readyz/uol"].includes(url.pathname)) {
+      const result = await readiness(false, url.pathname === "/readyz/uol" ? "uol" : undefined);
       return respond(result.status, result.body);
     }
-    if (request.method === "GET" && url.pathname === "/v1/readyz") {
+    if (request.method === "GET" && ["/v1/readyz", "/v1/readyz/uol"].includes(url.pathname)) {
       const suppliedToken = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") || "";
       if (!secureEqual(suppliedToken, token)) return respond(401, { code: "unauthorized" });
       authenticated = true;
-      const result = await readiness(true);
+      const result = await readiness(true, url.pathname === "/v1/readyz/uol" ? "uol" : undefined);
       return respond(result.status, result.body);
     }
     if (request.method !== "POST" || !["/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(url.pathname)) {
@@ -511,6 +535,7 @@ export function createGateway({
     }
     let avatarUrl = "";
     const buyticket = url.pathname === "/v1/send-buyticket";
+    if (buyticket && !String(buyticketChatId || "").trim()) return respond(503, { code: "beeper_destination_not_ready" });
     const destinationChatId = personalPost ? selfChatId : buyticket ? buyticketChatId : chatId;
     let allowed = allowedOfferUrl(link);
     if (personalPost) {
@@ -667,7 +692,7 @@ export function createGateway({
           idempotencyDigest,
           code: safePreviewError(error),
         });
-        return respond(502, { code: "preview_image_unavailable" });
+        return respond(error.status === 413 ? 413 : 502, { code: error.status === 413 ? "preview_image_too_large" : "preview_image_unavailable" });
       }
       if (transport === "baileys") {
         updateDelivery(database, idempotencyKey, "pending", dropsIdentity, now().toISOString());

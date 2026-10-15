@@ -1,3 +1,6 @@
+import { createHash } from "node:crypto";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { classifyHeadlessHealth } from "../src/headless-health.js";
 import { mergeBeeperGatewayHealth } from "../src/beeper-gateway-health.js";
 
@@ -7,7 +10,7 @@ const readyUrl = String(
   process.env.READY_URL || "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/readyz",
 ).replace(/\/+$/, "");
 const beeperReadyUrl = String(
-  process.env.BEEPER_READY_URL || "https://163-176-194-58.sslip.io/readyz",
+  process.env.BEEPER_READY_URL || "https://163-176-194-58.sslip.io/readyz/uol",
 ).replace(/\/+$/, "");
 const apiUrl = String(process.env.GITHUB_API_URL || "https://api.github.com").replace(/\/+$/, "");
 const token = String(process.env.GITHUB_TOKEN || "").trim();
@@ -65,48 +68,36 @@ async function findIncident() {
   ) || null;
 }
 
+export function incidentSignature(result) {
+  return createHash("sha256").update(JSON.stringify({state:result.state,
+    reasons:[...new Set(result.reasons || [])].sort()})).digest("hex");
+}
+
 function issueBody(result) {
-  return `${marker}\nstate: ${result.state}\n\n` +
-    "O monitor externo detectou uma alteração no Worker ou no gateway Beeper.\n\n" +
+  return `${marker}\nstate: ${result.state}\nsignature: ${incidentSignature(result)}\n\n` +
+    "O monitor externo detectou uma alteração no Worker ou no gateway UOL.\n\n" +
     `Snapshot sanitizado:\n\`\`\`json\n${JSON.stringify(result.snapshot, null, 2)}\n\`\`\`\n` +
     (runUrl ? `\n[Execução](${runUrl})\n` : "");
 }
 
-async function updateIncident(result, existing) {
-  if (!token || !repository) return;
+export async function updateIncident(result, existing, request = githubRequest) {
+  if (request === githubRequest && (!token || !repository)) return;
   const path = `/repos/${repository}/issues`;
   if (result.state === "healthy") {
-    if (!existing) return;
-    await githubRequest(`${path}/${existing.number}/comments`, {
-      method: "POST",
-      body: JSON.stringify({
-        body: `Readiness recuperado; o monitor voltou a healthy em ${new Date().toISOString()}.`,
-      }),
-    });
-    await githubRequest(`${path}/${existing.number}`, {
-      method: "PATCH",
-      body: JSON.stringify({ state: "closed", state_reason: "completed" }),
-    });
+    if (existing) await request(`${path}/${existing.number}`, {method:"PATCH",
+      body:JSON.stringify({body:issueBody(result),state:"closed",state_reason:"completed"})});
     return;
   }
-
-  const currentBody = String(existing?.body || "");
-  const previousState = currentBody.match(/\nstate: (healthy|degraded|outage)\n/)?.[1] || "";
   if (!existing) {
-    await githubRequest(path, {
-      method: "POST",
-      body: JSON.stringify({ title: issueTitle, body: issueBody(result) }),
-    });
-  } else if (previousState !== result.state) {
-    await githubRequest(`${path}/${existing.number}/comments`, {
-      method: "POST",
-      body: JSON.stringify({
-        body: `Estado alterado para **${result.state}**.\n\n${issueBody(result)}`,
-      }),
-    });
+    await request(path, {method:"POST",body:JSON.stringify({title:issueTitle,body:issueBody(result)})});
+  } else if (String(existing.body || "").match(/\nsignature: ([a-f0-9]{64})\n/)?.[1] !== incidentSignature(result)) {
+    // One persisted update carries both state and reason signature. A crash
+    // cannot leave a successful comment paired with the old comparison state.
+    await request(`${path}/${existing.number}`, {method:"PATCH",body:JSON.stringify({body:issueBody(result)})});
   }
 }
 
+async function main() {
 const [liveness, readiness, beeperReadiness] = await Promise.all([
   readEndpoint(`${readyUrl.replace(/\/readyz$/, "")}/livez?verify=${Date.now()}`),
   readEndpoint(`${readyUrl}?verify=${Date.now()}`),
@@ -131,3 +122,6 @@ console.log(JSON.stringify({
   reasons: result.reasons,
   snapshot: result.snapshot,
 }));
+
+}
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) await main();

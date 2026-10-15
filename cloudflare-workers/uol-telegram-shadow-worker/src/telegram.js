@@ -8,6 +8,7 @@ import {
   createHttpTransportError,
   createNetworkTransportError,
   isTelegramMessageCaptionMissingError,
+  isTelegramMessageTextMissingError,
   isTelegramMessageNotModifiedError,
   shouldDeferTransportFallback,
 } from "./transport-error.js";
@@ -15,7 +16,34 @@ import {
 export const TELEGRAM_MUTATION_TIMEOUT_SECONDS = 8;
 const TELEGRAM_TIMEOUT_MS = TELEGRAM_MUTATION_TIMEOUT_SECONDS * 1_000;
 const IMAGE_FETCH_TIMEOUT_MS = 6_000;
-const MAX_UPLOAD_IMAGE_BYTES = 8 * 1024 * 1024;
+const MAX_UPLOAD_IMAGE_BYTES = 5 * 1024 * 1024;
+
+async function readImageBytes(response) {
+  if (Number(response.headers.get("Content-Length")) > MAX_UPLOAD_IMAGE_BYTES) {
+    await response.body?.cancel().catch(() => {});
+    throw new Error("offer_image_too_large");
+  }
+  if (!response.body) throw new Error("offer_image_invalid_size");
+  const reader = response.body.getReader(), chunks = [];
+  let size = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > MAX_UPLOAD_IMAGE_BYTES) {
+        await reader.cancel().catch(() => {});
+        throw new Error("offer_image_too_large");
+      }
+      chunks.push(value);
+    }
+  } finally { reader.releaseLock(); }
+  if (!size) throw new Error("offer_image_invalid_size");
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  return bytes.buffer;
+}
 
 function deadlineTimeoutMs(deadlineAt, maximumMs) {
   const deadlineMs = Date.parse(String(deadlineAt || ""));
@@ -184,12 +212,7 @@ async function uploadTelegramPhoto(
   if (!imageResponse.ok) throw new Error(`offer_image_http_${imageResponse.status}`);
   const contentType = String(imageResponse.headers.get("Content-Type") || "").toLowerCase();
   if (!contentType.startsWith("image/")) throw new Error("offer_image_invalid_content_type");
-  const declaredSize = Number(imageResponse.headers.get("Content-Length") || 0);
-  if (declaredSize > MAX_UPLOAD_IMAGE_BYTES) throw new Error("offer_image_too_large");
-  const bytes = await imageResponse.arrayBuffer();
-  if (!bytes.byteLength || bytes.byteLength > MAX_UPLOAD_IMAGE_BYTES) {
-    throw new Error("offer_image_invalid_size");
-  }
+  const bytes = await readImageBytes(imageResponse);
   const imageFormat = detectedImageFormat(bytes, contentType);
 
   const form = new FormData();
@@ -239,12 +262,7 @@ async function uploadTelegramPhotoEdit(
   if (!imageResponse.ok) throw new Error(`offer_image_http_${imageResponse.status}`);
   const contentType = String(imageResponse.headers.get("Content-Type") || "").toLowerCase();
   if (!contentType.startsWith("image/")) throw new Error("offer_image_invalid_content_type");
-  const declaredSize = Number(imageResponse.headers.get("Content-Length") || 0);
-  if (declaredSize > MAX_UPLOAD_IMAGE_BYTES) throw new Error("offer_image_too_large");
-  const bytes = await imageResponse.arrayBuffer();
-  if (!bytes.byteLength || bytes.byteLength > MAX_UPLOAD_IMAGE_BYTES) {
-    throw new Error("offer_image_invalid_size");
-  }
+  const bytes = await readImageBytes(imageResponse);
   const imageFormat = detectedImageFormat(bytes, contentType);
   const form = new FormData();
   form.set("chat_id", chatId);
@@ -677,7 +695,14 @@ export async function editSoldOutMessage(
       }, fetchImpl);
     } catch (error) {
       if (isTelegramMessageNotModifiedError(error)) return { ok: true, noOp: true };
-      throw error;
+      if (!isTelegramMessageTextMissingError(error)) throw error;
+      try {
+        await telegramCall(env, "editMessageCaption", { ...common, caption }, fetchImpl);
+      } catch (fallbackError) {
+        if (!isTelegramMessageNotModifiedError(fallbackError)) throw fallbackError;
+        return { ok: true, noOp: true, messageKind: "photo" };
+      }
+      return { ok: true, messageKind: "photo" };
     }
   }
   return { ok: true };

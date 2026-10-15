@@ -198,7 +198,7 @@ test('mac-send registration refuses ambiguous groups and atomically preserves ot
 test('manual jobs expire before dispatch and uncertain transport calls are never retried',async()=>{
   const f=fixture();try{
     const r=await f.api.route(request('POST',{requestId:randomUUID(),destinations:['eu-mesmo'],text:'Hi',mediaIds:[]}),'/v1/whatsapp/send');
-    let sends=0;const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>{sends++;throw new Error('timeout');}})};
+    let sends=0;const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>{sends++;throw new Error('timeout');}})};
     const sender=createSender({store:f.store,getConfig:()=>f.config,whatsapp,canSend:()=>true,prepare:f.api.prepare,now:f.now});
     await sender();assert.equal(sends,1);assert.equal(f.store.job(r.body.jobs[0].id).state,'unknown');
     f.advance(6000);await sender();assert.equal(sends,1);
@@ -209,7 +209,7 @@ test('manual jobs expire before dispatch and uncertain transport calls are never
 test('expiry during image preparation prevents a late send',async()=>{
   const f=fixture();try{
     const r=await f.api.route(request('POST',{requestId:randomUUID(),destinations:['eu-mesmo'],text:'Hi'}),'/v1/whatsapp/send');
-    let sends=0;const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>{sends++;}})};
+    let sends=0;const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>{sends++;}})};
     const sender=createSender({store:f.store,getConfig:()=>f.config,whatsapp,canSend:()=>true,now:f.now,
       prepare:async()=>{f.advance(31*60000);return {text:'Hi'};}});
     await sender();assert.equal(sends,0);assert.equal(f.store.job(r.body.jobs[0].id).code,'request_expired');

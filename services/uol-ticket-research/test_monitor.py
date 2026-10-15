@@ -364,9 +364,45 @@ class MonitorTests(unittest.TestCase):
         failed=self.result();failed.update(status='auth_required',reason='login_payload',stories=[])
         self.m.record(failed);self.m.publish_health(report)
         self.assertEqual(sent[-1]['sourceStatus'],'auth_required')
-        self.assertEqual(set(sent[-1]),{'sourceStatus','observedAt','lastSuccessAt','reason','coverage','pushReceiver'})
+        self.assertEqual(set(sent[-1]),{'sourceStatus','observedAt','lastSuccessAt','reason','coverage','pushReceiver','localSessionValidation'})
         self.m.record(self.result());self.m.publish_health(report)
         self.assertEqual(len(sent),3)
+
+    def test_local_session_validation_preserves_old_collection_and_never_requests_instagram(self):
+        self.m.config['pushMode'] = 'push_only'
+        old_result = {'status': 'auth_required', 'reason': 'invalid_session_file', 'requests': 0}
+        self.m.state.update(sourceStatus='auth_required', lastResult=old_result.copy(),
+                            lastSuccessAt='2026-10-01T00:00:00+00:00', failures=2,
+                            retryNotBefore=self.now+21600, nextPoll=0)
+        session = {'user_agent': 'fixture-agent', 'cookie_header': 'sessionid=private-session-fixture'}
+        path = self.path/'session.json'
+        path.write_text(json.dumps(session));os.chmod(path, 0o600)
+        with patch('instagram.urllib.request.build_opener') as opener, \
+                patch.object(monitor_module.InstagramClient, 'collect') as collect:
+            diagnostic = self.m.validate_local_session()
+            self.assertEqual(diagnostic['status'], 'valid')
+            self.assertEqual(diagnostic['scope'], 'local_file_only')
+            self.assertFalse(diagnostic['authenticationVerified'])
+            self.assertEqual(diagnostic['checkedAt'], monitor_module.clock_timestamp(self.now))
+            self.assertEqual(self.m.state['sourceStatus'], 'auth_required')
+            self.assertEqual(self.m.state['lastResult'], old_result)
+            self.assertEqual(self.m.state['lastSuccessAt'], '2026-10-01T00:00:00+00:00')
+            self.assertEqual(self.m.state['failures'], 2)
+            self.assertEqual(self.m.state['retryNotBefore'], self.now+21600)
+            self.assertFalse(self.m.reserve_poll())
+            sent=[]
+            self.m.publish_health(lambda config,payload: sent.append(payload) or True)
+            self.assertEqual(sent[0]['localSessionValidation']['status'], 'valid')
+            self.assertEqual(sent[0]['sourceStatus'], 'auth_required')
+            collect.assert_not_called();opener.assert_not_called()
+        encoded = json.dumps(self.m.state)
+        self.assertNotIn('private-session-fixture', encoded)
+        self.assertEqual(json.loads(path.read_text()), session)
+        os.chmod(path, 0o644)
+        invalid = self.m.validate_local_session()
+        self.assertEqual(invalid['status'], 'invalid')
+        self.assertEqual(invalid['reason'], 'insecure_session_file')
+        self.assertEqual(self.m.state['lastResult'], old_result)
 
     def test_media_is_fetched_once_preserved_during_poll_and_removed_after_delivery(self):
         story=self.story();story.pop('imageBase64');story.pop('imageMime')

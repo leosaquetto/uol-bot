@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { prepareWAMessageMedia } from '@whiskeysockets/baileys';
+import { prepareWAMessageMedia, generateWAMessage, proto } from '@whiskeysockets/baileys';
 import { createPersonalThumbnail } from '../../beeper-preview-gateway/src/personal-thumbnail.js';
 import { allowedImage, readLimited } from './x-post.js';
 
@@ -30,7 +30,10 @@ export async function prepareContent(payload, socket, fetchImpl = fetch) {
   } };
 }
 
-export function createSender({store,getConfig,whatsapp,canSend,canPilot=()=>false,prepare=prepareContent,now=Date.now}) {
+const messageLogger = { level:'silent',trace(){},debug(){},info(){},warn(){},error(){},child(){return this;} };
+
+export function createSender({store,getConfig,whatsapp,canSend,canPilot=()=>false,prepare=prepareContent,
+  generateMessage=generateWAMessage,now=Date.now}) {
   let busy = false;
   return async () => {
     if (busy || !whatsapp.isReady()) return;
@@ -55,7 +58,13 @@ export function createSender({store,getConfig,whatsapp,canSend,canPilot=()=>fals
       const destination = resolveDestination();
       if ((!pilot && !destination?.verified) || !destination || destination.jid !== job.destination) throw new Error('destination_changed');
       await whatsapp.verifyDestination(destination);
-      const content = await prepare(payload,whatsapp.socket());
+      const socket = whatsapp.socket();
+      const content = await prepare(payload,socket);
+      const wire = await generateMessage(destination.jid,content,{messageId:job.message_id,
+        userJid:socket.user?.id || whatsapp.ownDestination?.().jid,upload:socket.waUploadToServer,logger:messageLogger});
+      if (wire?.key?.id !== job.message_id || wire.key.remoteJid !== job.destination || !wire.message) {
+        throw new Error('invalid_generated_message');
+      }
       // Recheck pause/gates after network calls and before any message can leave.
       if (pilot ? !canPilot(payload.destinationAlias) : !canSend() || getConfig().operation.paused || getConfig().operation.dryRun) {
         store.updateJob(job.id,'queued','paused'); return;
@@ -64,16 +73,18 @@ export function createSender({store,getConfig,whatsapp,canSend,canPilot=()=>fals
       if((payload.manual===true||payload.gateway===true) && now()>payload.expiresAt){store.updateJob(job.id,'failed','request_expired');return;}
       if ((!pilot && !currentDestination?.verified) || !currentDestination || currentDestination.jid !== job.destination ||
           currentDestination.type !== destination.type) throw new Error('destination_changed');
+      store.saveWireMessage(job,proto.Message.encode(wire.message).finish());
       store.setSetting('last_dispatch_at',now());
       dispatched = true;
-      await whatsapp.socket().sendMessage(destination.jid,content,{messageId:job.message_id});
+      await socket.relayMessage(destination.jid,wire.message,{messageId:job.message_id});
       if (store.job(job.id).state === 'dispatching') {
         store.updateJob(job.id,'unknown','awaiting_whatsapp_ack');
       }
     } catch {
       if (job) {
         const current = store.job(job.id);
-        if (!['accepted','confirmed'].includes(current.state)) {
+        if (current?.state === 'dispatching' && current.message_id === job.message_id &&
+            current.destination === job.destination && current.attempts === job.attempts) {
           if (dispatched) store.updateJob(job.id,'unknown','dispatch_unconfirmed');
           else if (job.attempts < 3) store.updateJob(job.id,'queued','pre_dispatch_failure',null,now()+30000*2**(job.attempts-1));
           else store.updateJob(job.id,'failed','pre_dispatch_failure');

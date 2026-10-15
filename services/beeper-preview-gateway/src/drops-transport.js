@@ -21,7 +21,7 @@ export function createDropsTransport({token,baseUrl='http://127.0.0.1:8788',fetc
     }
   };
   return {
-    readiness:()=>call('/v1/gateway/readyz'),
+    readiness:route=>call(route==='uol'?'/v1/gateway/readyz/uol':'/v1/gateway/readyz'),
     async lookupDelivery({route,keyHash,requestHash}){
       if(!['uol','buyticket','self'].includes(route)||![keyHash,requestHash].every(value=>/^[a-f0-9]{64}$/.test(value||'')))throw new Error('invalid_drops_lookup');
       const job=await call(`/v1/gateway/jobs/by-key/${route}/${keyHash}/${requestHash}`);

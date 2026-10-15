@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { Readable } from "node:stream";
+import { httpRequestBody } from "./http-body.js";
 
 import { createDeliveryConfirmation } from "./delivery-confirmation.js";
 import { createGateway } from "./gateway.js";
@@ -33,7 +33,7 @@ const handler = createGateway({
   beeperApiUrl: process.env.BEEPER_API_URL,
   databasePath: process.env.DATA_PATH || "/var/lib/beeper-preview-gateway/deliveries.sqlite",
   transport:useDrops?"baileys":"beeper",
-  probeTransport:useDrops?()=>drops.readiness():undefined,
+  probeTransport:useDrops?route=>drops.readiness(route):undefined,
   lookupDeliveryImpl:useDrops?delivery=>drops.lookupDelivery(delivery):undefined,
   sendMessageImpl: (message) => useDrops?drops.sendMessage(message):headlessTransport.sendMessage(message),
   confirmDeliveryImpl: (delivery) => useDrops?drops.confirmDelivery(delivery):deliveryConfirmation.waitForDelivery(delivery),
@@ -46,7 +46,7 @@ createServer(async (request, response) => {
   try {
     const body = ["GET", "HEAD"].includes(request.method || "")
       ? undefined
-      : Readable.toWeb(request);
+      : httpRequestBody(request);
     const upstream = await handler(new Request(
       `http://${request.headers.host || `${host}:${port}`}${request.url || "/"}`,
       {
@@ -56,6 +56,7 @@ createServer(async (request, response) => {
         duplex: body ? "half" : undefined,
       },
     ));
+    if (upstream.status === 413) response.setHeader("Connection", "close");
     response.writeHead(upstream.status, Object.fromEntries(upstream.headers));
     response.end(Buffer.from(await upstream.arrayBuffer()));
   } catch (error) {
@@ -65,7 +66,7 @@ createServer(async (request, response) => {
         request.url || "/",
         `http://${request.headers.host || "localhost"}`,
       ).pathname;
-      if (["/livez", "/readyz", "/v1/readyz", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(candidate)) {
+      if (["/livez", "/readyz", "/v1/readyz", "/v1/readyz/uol", "/v1/send-offer", "/v1/send-buyticket", "/v1/send-tvglobo", "/v1/send-x-post"].includes(candidate)) {
         path = candidate;
       }
     } catch {}

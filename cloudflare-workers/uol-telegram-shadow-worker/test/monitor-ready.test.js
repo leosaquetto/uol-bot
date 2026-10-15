@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { incidentSignature, updateIncident } from '../scripts/monitor-ready.mjs';
+test('monitor persists each meaningful transition once, including return to the prior state', async () => {
+  let issue=null; const changes=[];
+  const request=async (path,init) => { const payload=JSON.parse(init.body); changes.push({path,...init,payload});
+    issue={number:1,body:payload.body}; };
+  const result=(state,reasons)=>({state,reasons,snapshot:{}});
+  await updateIncident(result('degraded',['unknown_deliveries']),issue,request);
+  await updateIncident(result('degraded',['unknown_deliveries']),issue,request);
+  await updateIncident(result('outage',['scan_stale']),issue,request);
+  await updateIncident(result('outage',['scan_stale']),issue,request);
+  await updateIncident(result('degraded',['unknown_deliveries']),issue,request);
+  await updateIncident(result('degraded',['dead_letters']),issue,request);
+  assert.equal(changes.length,4);
+  assert.deepEqual(changes.map(x=>x.method),['POST','PATCH','PATCH','PATCH']);
+  assert.ok(changes.every(x=>!x.path.includes('comments')));
+  await updateIncident(result('healthy',[]),issue,request);
+  assert.equal(changes.at(-1).payload.state,'closed');
+  assert.match(issue.body,/state: healthy/);
+  assert.equal(incidentSignature(result('outage',['b','a','b'])),incidentSignature(result('outage',['a','b'])));
+});

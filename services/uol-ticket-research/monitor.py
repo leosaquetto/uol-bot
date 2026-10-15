@@ -176,10 +176,27 @@ class Monitor:
         self._next_checkpoint = 0
         self._next_coverage_refresh = 0
         self._signals = None
+        self.validate_local_session()
         try:
             self._saved_status = canonical(json.loads((self.directory/'status.json').read_text()))
         except (OSError, ValueError):
             self._saved_status = None
+
+    def validate_local_session(self):
+        # File validity is independent of the last remote collection result.
+        # Constructing with no opener only invokes the bounded local session loader.
+        diagnostic = {'checkedAt': clock_timestamp(self.clock()), 'scope': 'local_file_only',
+                      'authenticationVerified': False}
+        try:
+            InstagramClient(self.directory/'session.json', opener_factory=lambda: None)
+            diagnostic.update(status='valid', reason='')
+        except SessionError as error:
+            reason = error.reason if error.reason in ('insecure_session_file', 'invalid_session_file') else 'invalid_session_file'
+            diagnostic.update(status='invalid', reason=reason)
+        except Exception:
+            diagnostic.update(status='unknown', reason='local_validation_unavailable')
+        self.state['localSessionValidation'] = diagnostic
+        return diagnostic
 
     def commit(self):
         if self.db.total_changes != self._committed_changes:
@@ -618,11 +635,13 @@ class Monitor:
             return
         if now < self.state.get('healthRetryAt', 0):
             return
+        self.validate_local_session()
         payload = {'sourceStatus': status, 'observedAt': self.state.get('lastObservationAt'),
                    'lastSuccessAt': self.state.get('lastSuccessAt'),
                    'reason': (self.state.get('lastResult') or {}).get('reason', '')}
         # Current Worker accepts and ignores additive fields; its public contract stays intact.
-        payload.update(coverage=self.state.get('coverage', {}), pushReceiver=self.state.get('pushReceiver', {}))
+        payload.update(coverage=self.state.get('coverage', {}), pushReceiver=self.state.get('pushReceiver', {}),
+                       localSessionValidation=self.state['localSessionValidation'])
         if send(self.config, payload):
             self.state.update(lastHeartbeatStatus=status, lastHeartbeatEpoch=now,
                               healthRetryAt=0, remoteHealthPublished=True)

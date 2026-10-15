@@ -60,7 +60,7 @@ export function beeperGatewayReadinessUrl(env) {
   ) {
     throw new Error("beeper_gateway_url_invalid");
   }
-  return new URL("/v1/readyz", url.origin).href;
+  return new URL("/v1/readyz/uol", url.origin).href;
 }
 
 export function beeperGatewayConfiguration(env) {

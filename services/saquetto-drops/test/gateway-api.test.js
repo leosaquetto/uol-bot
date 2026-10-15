@@ -29,7 +29,7 @@ const fixture=(overrides={})=>{
 
 test('configured personal contact stays separate from sender and ignores request destinations',async()=>{
   const f=fixture();let sent;
-  f.whatsapp.socket=()=>({sendMessage:async(jid,content,options)=>{sent={jid,content};f.store.receipt(options.messageId,jid,'accepted','server_ack');}});
+  f.whatsapp.socket=()=>({relayMessage:async(jid,content,options)=>{sent={jid,content};f.store.receipt(options.messageId,jid,'accepted','server_ack');}});
   const run=createSender({store:f.store,getConfig:()=>f.config,whatsapp:f.whatsapp,canSend:()=>true,
     prepare:payload=>f.api.prepare(payload,{})});
   try{
@@ -45,7 +45,7 @@ test('configured personal contact stays separate from sender and ignores request
     const replay=await send(f.api,body);assert.equal(replay.status,202);assert.equal(replay.body.jobId,result.body.jobId);
     assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM jobs').get().n,1);
     await run();assert.equal(f.store.job(job.id).state,'accepted');
-    assert.deepEqual(sent,{jid:f.config.destinations.self.jid,content:{text:body.text,linkPreview:null}});
+    assert.equal(sent.jid,f.config.destinations.self.jid);assert.equal(sent.content.extendedTextMessage.text,body.text);
   }finally{f.close();}
 });
 
@@ -150,17 +150,32 @@ test('Story jobs reuse the queue through safe preparation retry and WhatsApp ack
   const original=await sharp({create:{width:90,height:160,channels:3,background:'#112233'}}).png().toBuffer();
   let clock=Date.now(),attempts=0,sends=0,sent;const f=fixture();
   const run=createSender({store:f.store,getConfig:()=>f.config,whatsapp:f.whatsapp,canSend:()=>true,now:()=>clock,
-    prepare:async payload=>{attempts++;if(attempts===1)throw new Error('temporary pre-dispatch failure');return f.api.prepare(payload,{});}});
-  f.whatsapp.socket=()=>({sendMessage:async(jid,content,options)=>{sends++;sent=content;f.store.receipt(options.messageId,jid,'accepted','server_ack');}});
+    prepare:async payload=>{attempts++;if(attempts===1)throw new Error('temporary pre-dispatch failure');return f.api.prepare(payload,{});},
+    generateMessage:async(jid,content,options)=>({key:{remoteJid:jid,id:options.messageId},
+      message:{imageMessage:{caption:content.caption,jpegThumbnail:content.image}}})});
+  f.whatsapp.socket=()=>({relayMessage:async(jid,content,options)=>{sends++;sent=content;f.store.receipt(options.messageId,jid,'accepted','server_ack');}});
   try{
     const result=await send(f.api,input(original));const id=result.body.jobId;
     await run();assert.equal(f.store.job(id).state,'queued');assert.equal(sends,0);
     const replay=await send(f.api,input(original));assert.equal(replay.body.jobId,id);
     clock+=31000;await run();assert.equal(f.store.job(id).state,'accepted');assert.equal(sends,1);
-    assert.deepEqual(sent.image,original);assert.equal(sent.caption,text);
+    assert.deepEqual(sent.imageMessage.jpegThumbnail,original);assert.equal(sent.imageMessage.caption,text);
     const get=await f.api.route({method:'GET'},`/v1/gateway/jobs/${id}`);
     assert.equal(get.body.state,'accepted');assert.equal(get.body.confirmation,'server_ack');assert.ok(get.body.messageId);
     assert.equal(get.body.deliveryFormat,'story_photo');
     await run();assert.equal(sends,1);
   }finally{f.close();}
+});
+
+test('UOL readiness remains healthy when unrelated personal and BuyTicket destinations are absent',async()=>{
+  const f=fixture();
+  try {
+    delete f.config.destinations.self;delete f.config.destinations.buyticket;
+    const uol=await f.api.route({method:'GET'},'/v1/gateway/readyz/uol');
+    assert.equal(uol.status,200);assert.equal(uol.body.ok,true);
+    assert.deepEqual(uol.body.components,{transport:true,destinations:true,sender:true});
+    assert.equal((await f.api.route({method:'GET'},'/v1/gateway/readyz')).status,503);
+    f.config.destinations.uol.verified=false;
+    assert.equal((await f.api.route({method:'GET'},'/v1/gateway/readyz/uol')).status,503);
+  } finally {f.close();}
 });

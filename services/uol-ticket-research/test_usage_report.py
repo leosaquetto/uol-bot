@@ -60,6 +60,9 @@ class UsageReportTests(unittest.TestCase):
         self.write(full_day())
         report = self.report()
         self.assertEqual(report['status'], 'consumption_verified')
+        self.assertTrue(report['sampleCoverageSufficient'])
+        self.assertTrue(report['metricInterpretationComplete'])
+        self.assertEqual(report['blockingMetrics'], [])
         self.assertEqual(report['coverage']['sampleCount'], 96)
         self.assertEqual(report['coverage']['maxGapSeconds'], 900)
         self.assertEqual(report['coverage']['endDistanceSeconds'], 900)
@@ -335,6 +338,46 @@ class UsageReportTests(unittest.TestCase):
         self.assertEqual(report['status'], 'coverage_insufficient')
         self.assertTrue(report['metrics']['rowsWritten']['consumptionVerified'])
         self.assertTrue(report['metrics']['rowsWritten']['writeTargetMet'])
+
+    def test_complete_sampling_reports_billing_unknown_as_interpretation_blocker(self):
+        rows = full_day()
+        for row in rows:
+            if DAY in row['dailyMetricStatus']:
+                row['dailyMetricStatus'][DAY]['doRequests'] = 'billing_unknown'
+                detail = row['dailyDetails'][DAY]
+                detail['status']['doProjects'] = 'known'
+                detail['projects']['uol-fixture'].update(doRequests=None, doRequestsRaw=123,
+                                                       inboundWebsocketMsgCount=80)
+        self.write(rows)
+        report = self.report()
+        self.assertTrue(report['sampleCoverageSufficient'])
+        self.assertFalse(report['metricInterpretationComplete'])
+        self.assertEqual(report['blockingMetrics'], ['doRequests'])
+        requests = report['metrics']['doRequests']
+        self.assertEqual(requests['status'], 'billing_unknown')
+        self.assertIsNone(requests['value'])
+        self.assertIn('metric_billing_unknown', requests['blockingReasons'])
+        self.assertNotIn('sample_coverage_insufficient', requests['blockingReasons'])
+        self.assertTrue(report['metrics']['rowsWritten']['consumptionVerified'])
+        projects = report['projects']['items'][0]['metrics']
+        self.assertEqual(projects['doRequests'], {'status': 'billing_unknown', 'value': None})
+        self.assertEqual(projects['doRequestsRaw'], {'status': 'known', 'value': 123})
+        self.assertEqual(projects['inboundWebsocketMsgCount'], {'status': 'known', 'value': 80})
+
+    def test_sampling_and_confirmation_failures_have_separate_diagnostics(self):
+        self.write(full_day()[:-1])
+        report = self.report()
+        self.assertTrue(report['sampleCoverageSufficient'])
+        self.assertTrue(report['metricInterpretationComplete'])
+        self.assertEqual(set(report['blockingMetrics']), set(LIMITS))
+        self.assertIn('post_day_confirmation_unproven', report['metrics']['rowsWritten']['blockingReasons'])
+        for path in self.snapshots.glob('*.json'):
+            path.unlink()
+        self.write(full_day()[1:60])
+        report = self.report()
+        self.assertFalse(report['sampleCoverageSufficient'])
+        self.assertTrue(report['metricInterpretationComplete'])
+        self.assertIn('sample_coverage_insufficient', report['metrics']['rowsWritten']['blockingReasons'])
 
     def test_cli_is_read_only_and_emits_safe_json(self):
         self.write(full_day())

@@ -76,6 +76,18 @@ export function openStore(path, { recover = true } = {}) {
         return this.job(row.id);
       });
     },
+    saveWireMessage(job, bytes) {
+      if (!(bytes instanceof Uint8Array) || !bytes.length) throw new Error('invalid_wire_message');
+      const result = db.prepare(`UPDATE jobs SET payload=json_set(payload,'$.wireMessage',?),updated_at=?
+        WHERE id=? AND destination=? AND message_id=? AND attempts=? AND state='dispatching'`)
+        .run(Buffer.from(bytes).toString('base64'),Date.now(),job.id,job.destination,job.message_id,job.attempts);
+      if (result.changes !== 1) throw new Error('wire_message_reservation_lost');
+    },
+    wireMessage(messageId, destination) {
+      const row = db.prepare('SELECT payload FROM jobs WHERE message_id=? AND destination=?').get(messageId,destination);
+      const encoded = row && JSON.parse(row.payload).wireMessage;
+      return typeof encoded === 'string' ? Buffer.from(encoded,'base64') : null;
+    },
     updateJob(id, state, code = null, confirmation = null, availableAt = 0) {
       db.prepare('UPDATE jobs SET state=?,code=?,confirmation=?,available_at=?,updated_at=? WHERE id=?')
         .run(state,code,confirmation,availableAt,Date.now(),id);

@@ -116,7 +116,7 @@ test('ntfy failure or invalid sender leaves the accepted WhatsApp job accepted a
   const config={destinations:{'eu-mesmo':{type:'contact',jid:personalJid,verified:true}},
     operation:{paused:false,dryRun:false,minDelayMs:0}};
   const sender=createSender({store:f.store,getConfig:()=>config,whatsapp:{isReady:()=>true,
-    verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>{sends++;}})},canSend:()=>true,
+    verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>{sends++;}})},canSend:()=>true,
     prepare:async payload=>({text:payload.text})});
   const oldWarn=console.warn;console.warn=value=>warnings.push(value);
   try{

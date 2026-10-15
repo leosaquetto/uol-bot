@@ -364,12 +364,18 @@ sobrecarregar o Mac:
 - `npm run deploy`: alias compatível de `npm run release`; usa exatamente o
   mesmo gate completo, deploy estrito e pós-deploy automático, sem caminho
   alternativo mais fraco;
-- `npm run postdeploy:check`: cruza `/livez` e `/readyz`, verificando versão,
+- `npm run postdeploy:check`: cruza `/livez`, `/readyz` e o snapshot autenticado
+  `/release-debt`, verificando versão,
   scan recente, alarme, modo, configuração, fila e incidentes críticos. Para
   exigir versão, use `EXPECTED_VERSION_ID` do deploy recém-publicado. Para modo,
   use também `EXPECTED_DELIVERY_MODE=live` ou `shadow`. A janela padrão de até
   60 segundos tolera somente a propagação da versão entre Worker e Durable Object;
   o gate continua falhando fechado se eles não convergirem.
+  O relatório separa `published`, `runtimeVerified`, `debtVerified` e `ready`.
+  Dívida histórica identificada no baseline privado não impede publicar correções;
+  uma identidade nova bloqueia o próximo lote mesmo se a contagem total cair.
+  O baseline original não é substituído a cada publicação. Veja o
+  [procedimento operacional](../../docs/operations/2026-10-15-uol-reliability.md).
 
 O workflow de CI não possui permissão de escrita, não lê secrets e nunca faz
 deploy. Os testes Cloudflare usam `wrangler.test.jsonc`, isolado da configuração
@@ -377,12 +383,17 @@ de produção e com valores explicitamente fictícios. Um job Python 3.11 separa
 instala `requirements.txt`, testa e compila o fallback legado. Outro job executa
 testes e bundle dry-run do Worker Discord de rollback. Nenhum deles faz parte do
 `check:fast` local do Worker principal.
+Um quarto job testa offline monitor, supervisor, receptor push, gateway e
+transporte compartilhado sob Python 3.11 e Node 22.
 
 O workflow independente `UOL Worker Ready Monitor` consulta liveness e readiness
-públicos do Worker e o `/readyz` do gateway Beeper na Oracle a cada cinco minutos.
+públicos do Worker e o `/readyz/uol` do gateway na Oracle. O cron é agendado a cada
+cinco minutos; o GitHub pode atrasar sua execução.
 Uma mudança para outage abre um único issue de
 incidente; degradação histórica fica registrada sem transformar o job em falha
-recorrente, e a primeira verificação saudável fecha o issue.
+recorrente, e a primeira verificação saudável fecha o issue. Estado e assinatura
+dos motivos são persistidos no mesmo update; oscilar para um estado anterior
+continua sendo uma mudança, sem comentários repetidos.
 Esse dead-man externo não depende do Mac, do Telegram ou de secrets e recebe
 somente a permissão de issues necessária para registrar e encerrar o incidente.
 O agendamento é ativo por padrão e não depende de variável de repositório.

@@ -147,7 +147,7 @@ test('unsupported push types and unavailable posts are ignored with safe reasons
 });
 test('sender requires gates, records ambiguity, never retries an uncertain dispatch and honors receipts',async()=>{
   const f=fixture();const c=config();c.operation={paused:false,dryRun:false,minDelayMs:5000};let enabled=false,sends=0;
-  const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>{sends++;throw new Error('network timeout');}})};
+  const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>{sends++;throw new Error('network timeout');}})};
   const run=createSender({store:f.store,getConfig:()=>c,whatsapp,canSend:()=>enabled,prepare:async()=>({text:'hello'})});
   try{
     const job=f.store.enqueue({key:'a',destination:'12345@g.us',payload:{destinationAlias:'lover-tour',text:'hello'}});
@@ -161,7 +161,7 @@ test('sender requires gates, records ambiguity, never retries an uncertain dispa
 });
 test('pre-dispatch failure is safely retryable and a late pause prevents sending',async()=>{
   const f=fixture();const c=config();c.operation={paused:false,dryRun:false,minDelayMs:5000};let sends=0;
-  const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+  const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>sends++})};
   try{
     const job=f.store.enqueue({key:'b',destination:'12345@g.us',payload:{destinationAlias:'lover-tour',text:'hello'}});
     const failing=createSender({store:f.store,getConfig:()=>c,whatsapp,canSend:()=>true,prepare:async()=>{throw new Error('image failed');}});
@@ -175,7 +175,7 @@ test('pre-dispatch failure is safely retryable and a late pause prevents sending
 test('destination removed, replaced or unverified during preparation prevents dispatch',async()=>{
   for (const change of [c=>delete c.destinations['lover-tour'],c=>c.destinations['lover-tour'].jid='67890@g.us',c=>c.destinations['lover-tour'].verified=false]) {
     const f=fixture();const c=config();c.operation={paused:false,dryRun:false,minDelayMs:5000};let sends=0;
-    const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+    const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>sends++})};
     try {
       const job=f.store.enqueue({key:'changed',destination:'12345@g.us',payload:{destinationAlias:'lover-tour',text:'hello'}});
       const run=createSender({store:f.store,getConfig:()=>c,whatsapp,canSend:()=>true,prepare:async()=>{change(c);return {text:'x'};}});
@@ -186,7 +186,7 @@ test('destination removed, replaced or unverified during preparation prevents di
 
 test('explicit pilot sends only a stored notified post to fixed destinations while automation stays paused',async()=>{
   const f=fixture();const c=config();let sends=0,enabled=true;
-  const whatsapp={isReady:()=>true,ownDestination:()=>({type:'contact',jid:'123@s.whatsapp.net',verified:true}),verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+  const whatsapp={isReady:()=>true,ownDestination:()=>({type:'contact',jid:'123@s.whatsapp.net',verified:true}),verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>sends++})};
   const pilot=createPilot({store:f.store,getConfig:()=>c,whatsapp,enabled:()=>enabled,decodeEvent:e=>e,readPost:async()=>post});
   try{
     const {id:eventId}=f.store.recordPush(event);
@@ -210,7 +210,7 @@ test('explicit pilot sends only a stored notified post to fixed destinations whi
 test('self-only pilot blocks group enqueue and dispatch of an existing group pilot job',async()=>{
   const f=fixture();const c=config();let sends=0;
   const enabled=alias=>!alias||alias==='self';
-  const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+  const whatsapp={isReady:()=>true,verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>sends++})};
   const pilot=createPilot({store:f.store,getConfig:()=>c,whatsapp,enabled,decodeEvent:e=>e,readPost:async()=>post});
   try {
     const {id:eventId}=f.store.recordPush(event);
@@ -225,7 +225,7 @@ test('self-only pilot blocks group enqueue and dispatch of an existing group pil
 test('pilot cannot target groups or other contacts even with permissive gates and matching rules',async()=>{
   const f=fixture();const c=config();let sends=0;
   const whatsapp={isReady:()=>true,ownDestination:()=>({type:'contact',jid:'123@s.whatsapp.net',verified:true}),
-    verifyDestination:async()=>{},socket:()=>({sendMessage:async()=>sends++})};
+    verifyDestination:async()=>{},socket:()=>({relayMessage:async()=>sends++})};
   const makePilot=readPost=>createPilot({store:f.store,getConfig:()=>c,whatsapp,enabled:()=>true,decodeEvent:e=>e,readPost});
   try {
     const eventId=f.store.recordPush(event).id;

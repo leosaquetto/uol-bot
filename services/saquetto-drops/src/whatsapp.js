@@ -1,4 +1,4 @@
-import makeWASocket, { DisconnectReason, jidNormalizedUser } from '@whiskeysockets/baileys';
+import makeWASocket, { DisconnectReason, jidNormalizedUser, proto } from '@whiskeysockets/baileys';
 import { sqliteAuth } from './auth.js';
 
 const silentLogger = { level: 'silent', trace() {}, debug() {}, info() {}, warn() {}, error() {}, fatal() {}, child() { return this; } };
@@ -52,9 +52,10 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
       // returning false for every event can leave a fresh session unusable.
       syncFullHistory: false,
       getMessage: async key => {
-        const row = store.db.prepare('SELECT payload FROM jobs WHERE message_id=? AND destination=?').get(key.id,key.remoteJid);
-        const message = row && JSON.parse(row.payload).wireMessage;
-        return message || undefined;
+        try {
+          const bytes = store.wireMessage(key.id,key.remoteJid);
+          return bytes ? proto.Message.decode(bytes) : undefined;
+        } catch { return undefined; }
       },
     });
     let closed = false, closing = false;

@@ -595,3 +595,26 @@ test("consulta o estado seguro do webhook", async () => {
     allowedUpdates: ["message"],
   });
 });
+
+test('cancels an image exceeding 5 MiB without Content-Length before uploading',async()=>{
+  let cancelled=false,uploads=0;
+  await assert.rejects(()=>editMainOfferMedia(env,{messageId:49,offer},async(url,init={})=>{
+    if(url===offer.imageUrl)return new Response(new ReadableStream({pull(c){c.enqueue(new Uint8Array(1024*1024));},cancel(){cancelled=true;}}),{headers:{'Content-Type':'image/png'}});
+    if(init.body instanceof FormData)uploads++;
+    return new Response(JSON.stringify({ok:false,error_code:400,description:'bad photo URL'}),{status:400});
+  }),/offer_image_too_large/);
+  assert.equal(cancelled,true);assert.equal(uploads,0);
+});
+
+test('sold-out edit repairs a proven text/caption mismatch on the same message',async()=>{
+  for(const noOp of [false,true]){
+    const methods=[];
+    const result=await editSoldOutMessage(env,{chatId:env.TELEGRAM_CHAT_ID,messageId:91,messageKind:'text',offer,soldOutAt:'2026-10-03'},async(url,init)=>{
+      methods.push(url.split('/').at(-1));const payload=JSON.parse(init.body);assert.equal(payload.message_id,91);
+      if(url.endsWith('/editMessageText'))return Response.json({ok:false,error_code:400,description:'Bad Request: there is no text in the message to edit'},{status:400});
+      if(noOp)return Response.json({ok:false,error_code:400,description:'Bad Request: message is not modified'},{status:400});
+      return jsonResponse({message_id:91});
+    });
+    assert.deepEqual(methods,['editMessageText','editMessageCaption']);assert.equal(result.messageKind,'photo');assert.equal(result.ok,true);
+  }
+});

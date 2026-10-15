@@ -45,10 +45,10 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
     if(JSON.parse(row.payload).gatewayRequestHash!==requestHash)fail('idempotency_conflict',409);
     return status(row);
   };
-  const readiness=()=>{
+  const readiness=(route)=>{
     const ready=canSend()&&whatsapp.isReady();
     let mapped=true;
-    try { for(const route of ['uol','buyticket','self'])destination(route); } catch {mapped=false;}
+    try { for(const target of route ? [route] : ['uol','buyticket','self'])destination(target); } catch {mapped=false;}
     return {ok:ready&&mapped,transport:'baileys',deliveryConfirmation:'baileys_ack_or_receipt',
       components:{transport:whatsapp.isReady(),destinations:mapped,sender:canSend()}};
   };
@@ -130,8 +130,8 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
     },
     async route(req,path){
       try {
-        if(req.method==='GET'&&path==='/v1/gateway/readyz'){
-          const body=readiness();return {status:body.ok?200:503,body};
+        if(req.method==='GET'&&['/v1/gateway/readyz','/v1/gateway/readyz/uol'].includes(path)){
+          const body=readiness(path.endsWith('/uol')?'uol':undefined);return {status:body.ok?200:503,body};
         }
         if(req.method==='GET'&&path.startsWith('/v1/gateway/jobs/by-key/')){
           const parts=path.slice('/v1/gateway/jobs/by-key/'.length).split('/');

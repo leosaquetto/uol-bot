@@ -55,7 +55,7 @@ test("valida filtro de recuperação e deriva probe autenticado sem envio", asyn
     BEEPER_GATEWAY_TOKEN: "secret",
   };
   assert.deepEqual(beeperDeliveryOfferIds(env), ["offer-a", "offer-b"]);
-  assert.equal(beeperGatewayReadinessUrl(env), "https://beeper.example/v1/readyz");
+  assert.equal(beeperGatewayReadinessUrl(env), "https://beeper.example/v1/readyz/uol");
   assert.throws(
     () => beeperGatewayReadinessUrl({
       BEEPER_GATEWAY_URL: "https://beeper.example/wrong-path",
@@ -73,7 +73,7 @@ test("valida filtro de recuperação e deriva probe autenticado sem envio", asyn
     /beeper_delivery_offer_ids_invalid/,
   );
   const result = await probeBeeperGateway(env, async (url, init) => {
-    assert.equal(url, "https://beeper.example/v1/readyz");
+    assert.equal(url, "https://beeper.example/v1/readyz/uol");
     assert.equal(init.method, "GET");
     assert.equal(init.headers.Authorization, "Bearer secret");
     return Response.json({
