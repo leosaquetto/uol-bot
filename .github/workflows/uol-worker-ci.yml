@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "cloudflare-workers/uol-telegram-shadow-worker/**"
+      - "services/uol-ticket-research/**"
+      - "services/beeper-preview-gateway/**"
+      - "services/saquetto-drops/**"
       - "bot_leouol.py"
       - "github_scraper.py"
       - "guard_daily_check.py"
@@ -23,6 +26,9 @@ on:
   pull_request:
     paths:
       - "cloudflare-workers/uol-telegram-shadow-worker/**"
+      - "services/uol-ticket-research/**"
+      - "services/beeper-preview-gateway/**"
+      - "services/saquetto-drops/**"
       - "bot_leouol.py"
       - "github_scraper.py"
       - "guard_daily_check.py"
@@ -142,3 +148,34 @@ jobs:
           node --check scriptable_uol_fallback_ingressos_single.js &&
           node --check scriptable_uol_parte1.js &&
           node --check cloudflare-workers/uol-ingressos-discord-worker/src/worker.js
+
+
+  oracle-delivery:
+    name: Testes offline Oracle e entregas
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: cloudflare-workers/uol-telegram-shadow-worker/.node-version
+          cache: npm
+          cache-dependency-path: |
+            services/beeper-preview-gateway/package-lock.json
+            services/saquetto-drops/package-lock.json
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Dependências do gateway
+        run: npm ci --prefix services/beeper-preview-gateway
+      - name: Dependências do transporte compartilhado
+        run: npm ci --prefix services/saquetto-drops
+      - name: Gateway e transporte
+        run: |
+          npm test --prefix services/beeper-preview-gateway
+          npm test --prefix services/saquetto-drops
+      - name: Monitor, supervisor e quota offline
+        working-directory: services/uol-ticket-research
+        run: python -B -m unittest test_monitor test_instagram test_supervisor test_storage_usage test_usage_report
+      - name: Receptor push offline
+        run: node --test services/uol-ticket-research/push/test.mjs

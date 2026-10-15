@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
 import {
   assertSuccessfulCiJobs,
   assertSuccessfulCiRuns,
   parseWranglerOutputNdjson,
+  loadReleaseDebtBaseline,
+  saveInitialReleaseDebtBaseline,
   releaseMessageForCommit,
   releaseTagForSha,
   versionIdFromDeployText,
@@ -102,4 +106,31 @@ test("gate remoto confirma o job do Worker, não apenas o workflow agregado", ()
     () => assertSuccessfulCiJobs(missingWorkerJob, SHA),
     /github_worker_validation_not_successful/,
   );
+});
+
+
+test("baseline privado persiste entre lotes e nunca é substituído automaticamente", () => {
+  const directory = mkdtempSync(join(tmpdir(), "uol-release-debt-test-"));
+  const path = join(directory, "private", "baseline.json");
+  const debt = {
+    worker: "uol-telegram-shadow-pilot", versionId: VERSION_ID, checkedAt: "2026-10-15T12:00:00Z",
+    checks: { criticalIncidents: 0, deadLetters: 0, unknown: 1, maintenanceDeadLetters: 0 },
+    identities: { criticalIncidents: [], deadLetters: [], unknown: ["original"], maintenanceDeadLetters: [] },
+  };
+  try {
+    assert.throws(() => loadReleaseDebtBaseline(path), /baseline_missing_use_explicit_bootstrap/);
+    assert.equal(loadReleaseDebtBaseline(path, { bootstrap: true }), null);
+    saveInitialReleaseDebtBaseline(path, debt);
+    assert.equal(statSync(path).mode & 0o777, 0o600);
+    assert.deepEqual(loadReleaseDebtBaseline(path), debt);
+    assert.throws(() => loadReleaseDebtBaseline(path, { bootstrap: true }), /bootstrap_baseline_already_exists/);
+    const changed = structuredClone(debt);
+    changed.identities.unknown = ["regression"];
+    assert.throws(() => saveInitialReleaseDebtBaseline(path, changed), { code: "EEXIST" });
+    assert.deepEqual(loadReleaseDebtBaseline(path).identities.unknown, ["original"]);
+    writeFileSync(path, "{}");
+    assert.throws(() => loadReleaseDebtBaseline(path), /baseline_invalid/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });

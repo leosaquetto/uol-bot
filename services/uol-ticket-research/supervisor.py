@@ -21,6 +21,8 @@ SERVICES = ('uol-instagram-monitor', 'uol-instagram-push')
 MAX_ATTEMPTS = 20
 RESERVED_ATTEMPTS = 5
 MAX_OUTBOX = 100
+RECOVERY_SECONDS = 300
+RECOVERY_MAX_GAP = 600
 PUSH_REJECTION_KEYS = frozenset({
     'frames_rejected_' + reason for reason in
     ('type', 'size', 'json', 'shape', 'hello', 'ready', 'channel', 'version', 'data')
@@ -165,6 +167,18 @@ class Supervisor:
             'startedAt': iso(clock()), 'lastRunAt': None, 'incidents': {},
             'serviceFailures': {}, 'outbox': [], 'publicationAttempts': [],
         }
+        # A reserved request may already have reached the remote service. Recover
+        # it before any queue compaction, including observe-only executions.
+        self.recover_reservations()
+
+    def recover_reservations(self):
+        changed = False
+        for entry in self.state['outbox']:
+            if entry.get('outcome') == 'in_flight':
+                entry['outcome'] = 'uncertain'
+                changed = True
+        if changed:
+            self.save()
 
     def save(self):
         atomic_json(self.path, self.state)
@@ -356,6 +370,7 @@ class Supervisor:
         return False
 
     def queue(self, changes, now):
+        self.recover_reservations()
         if not changes:
             return
         # One bounded message per run; each line is generated from fixed labels.
@@ -367,16 +382,65 @@ class Supervisor:
             'critical': any(priority for _, priority in changes), 'createdAt': iso(now),
             'due': now, 'attempts': 0, 'outcome': 'pending'})
         if len(self.state['outbox']) > MAX_OUTBOX:
-            completed = [x for x in self.state['outbox'] if x['outcome'] not in ('pending', 'in_flight')]
-            active = [x for x in self.state['outbox'] if x['outcome'] in ('pending', 'in_flight')]
-            # Never erase an undelivered incident to make room; coalesce overflow.
-            if len(active) > MAX_OUTBOX:
-                kept, overflow = active[:MAX_OUTBOX-1], active[MAX_OUTBOX-1:]
+            # MAX_OUTBOX is a soft bound: receipts and reservations are evidence,
+            # not expendable backlog. Only notices never attempted can coalesce.
+            pending = [x for x in self.state['outbox']
+                       if x['outcome'] == 'pending' and x.get('attempts', 0) == 0]
+            protected = [x for x in self.state['outbox']
+                         if x['outcome'] != 'pending' or x.get('attempts', 0) != 0]
+            slots = max(1, MAX_OUTBOX - len(protected))
+            if len(pending) > slots:
+                kept, overflow = pending[:slots-1], pending[slots-1:]
                 last = overflow[-1]
                 last['message'] = 'UOL — supervisão\nDiversos incidentes ocorreram; revisar estado operacional no Oracle.'
                 last['critical'] = any(x['critical'] for x in overflow)
-                active = kept + [last]
-            self.state['outbox'] = completed[-max(0, MAX_OUTBOX-len(active)):] + active if len(active) < MAX_OUTBOX else active
+                pending = kept + [last]
+            self.state['outbox'] = protected + pending
+
+    def recovery_evidence(self, key, sources, now):
+        """Timestamp of an affirmative observation, never the timer invocation alone."""
+        if not self.can_recover(key, sources, now):
+            return None
+        status, usage, push = (sources.get(name, {}) for name in ('status', 'usage', 'push'))
+        if key.startswith('service:') or key == 'oracle_disk':
+            return now  # These are synchronous systemctl/statvfs observations.
+        if key == 'monitor_loop':
+            return instant(sources.get('loop', {}).get('loopAliveAt') or status.get('loopAliveAt'))
+        if key.startswith('push_') and key != 'push_settlement' or key.startswith('capacity:'):
+            seen = push.get('observedEpoch')
+            return seen if isinstance(seen, (int, float)) and -60 <= now - seen <= 600 else None
+        if key in ('instagram_auth', 'instagram_collection'):
+            seen = instant(status.get('lastSuccessAt'))
+            return seen if seen is not None and -60 <= now - seen <= 1800 else None
+        if key in ('delivery_backlog', 'push_settlement'):
+            seen = instant(sources.get('loop', {}).get('loopAliveAt') or status.get('loopAliveAt'))
+            return seen if seen is not None and -60 <= now - seen <= 300 else None
+        if key == 'metrics_unpublished':
+            return instant(usage.get('lastPublishedAt'))
+        if key.startswith('quota:'):
+            item = ((usage.get('budgetState') or {}).get('metrics') or {}).get(key.split(':', 1)[1], {})
+            return instant(item.get('observedAt'))
+        return instant((usage.get('lastSample') or {}).get('observedAt'))
+
+    def stable_recovery(self, old, key, sources, now):
+        evidence = self.recovery_evidence(key, sources, now)
+        failed = instant(old.get('lastFailureAt') or old.get('openedAt'))
+        if (not isinstance(evidence, (int, float)) or evidence > now + 60
+                or failed is None or evidence <= failed):
+            old.pop('recovery', None)
+            return False
+        recovery = old.get('recovery') or {}
+        checked = instant(recovery.get('lastCheckedAt'))
+        since = instant(recovery.get('since'))
+        if checked is None or since is None or not 0 <= now - checked <= RECOVERY_MAX_GAP:
+            recovery = {'since': iso(now), 'lastEvidenceAt': iso(evidence), 'observations': 1}
+            since = now
+        elif evidence > (instant(recovery.get('lastEvidenceAt')) or 0):
+            recovery['lastEvidenceAt'] = iso(evidence)
+            recovery['observations'] = recovery.get('observations', 0) + 1
+        recovery['lastCheckedAt'] = iso(now)
+        old['recovery'] = recovery
+        return now - since >= RECOVERY_SECONDS and recovery['observations'] >= 2
 
     def run_once(self, sources=None, deliver=True):
         now = self.clock()
@@ -388,17 +452,34 @@ class Supervisor:
             changes.append(('Supervisão retomada após intervalo sem execução; causa da interrupção não determinada.', True))
         previous = self.state['incidents']
         for key, issue in issues.items():
-            if not previous.get(key, {}).get('active'):
+            old = previous.get(key, {})
+            if not old.get('active') and key.startswith('credential:'):
+                # A deadline escalation belongs to the same incident episode.
+                prefix = ':'.join(key.split(':')[:2]) + ':'
+                sibling = next((item for name, item in previous.items()
+                                if name.startswith(prefix) and item.get('active')), None)
+                if sibling is not None:
+                    old = dict(sibling)
+                    sibling.update(active=False, recoveredAt=iso(now), supersededBy=key)
+                    previous[key] = old
+            if not old.get('active'):
                 changes.append(('ALERTA: ' + issue['message'], issue['critical']))
-                previous[key] = {**issue, 'active': True, 'openedAt': iso(now)}
+                old = previous[key] = {**issue, 'active': True, 'openedAt': iso(now),
+                                       'criticalQueued': bool(issue['critical'])}
+            else:
+                # Legacy active incidents already produced their initial alert.
+                old.setdefault('criticalQueued', bool(old.get('critical')))
+                if issue['critical'] and not old['criticalQueued']:
+                    changes.append(('ALERTA: ' + issue['message'], True))
+                    old['criticalQueued'] = True
+                old.update(issue)
+            old['lastFailureAt'] = iso(now)
+            old.pop('recovery', None)
         for key, old in previous.items():
             if old.get('active') and key not in issues:
-                # Advancing a credential deadline is escalation, not recovery.
-                escalated = key.startswith('credential:') and any(k.startswith(':'.join(key.split(':')[:2]) + ':') for k in issues)
-                if not escalated and not self.can_recover(key, sources, now):
+                if not self.stable_recovery(old, key, sources, now):
                     continue
-                if not escalated:
-                    changes.append(('RECUPERADO: ' + key.split(':', 1)[0] + ' voltou a apresentar evidência de funcionamento.', True))
+                changes.append(('RECUPERADO: ' + key.split(':', 1)[0] + ' voltou a apresentar evidência de funcionamento.', True))
                 old.update(active=False, recoveredAt=iso(now))
         # Retain only current incidents and recent recoveries; the notification
         # outbox keeps its independent bounded delivery evidence.
@@ -415,14 +496,11 @@ class Supervisor:
                 'attempts24h': len(self.state['publicationAttempts'])}
 
     def flush(self):
+        self.recover_reservations()
         now = self.clock()
         if now < self.state.get('publicationNotBefore', 0):
             return
         for entry in sorted(self.state['outbox'], key=lambda x: (not x['critical'], x['due'])):
-            if entry['outcome'] == 'in_flight':
-                # A crash after network acceptance is ambiguous; never claim sent.
-                entry['outcome'] = 'uncertain'
-                self.save()
             if entry['outcome'] != 'pending' or entry['due'] > now:
                 continue
             count = len(self.state['publicationAttempts'])

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { validateProductionHealth } from "../src/production-verification.js";
+import { validateProductionHealth, productionBaseline, productionDebtRegressions, reportProductionHealth } from "../src/production-verification.js";
 
 const NOW = new Date("2026-08-10T15:00:00.000Z");
 const EXPECTED_VERSION_ID = "version-current";
@@ -61,6 +61,18 @@ function healthySnapshot() {
         withinFreeTier: true,
       },
     },
+  };
+}
+
+function debtSnapshot(snapshot) {
+  const keys = ["criticalIncidents", "deadLetters", "unknown", "maintenanceDeadLetters"];
+  return {
+    worker: WORKER_NAME,
+    versionId: snapshot.readiness.versionId,
+    checkedAt: NOW.toISOString(),
+    checks: Object.fromEntries(keys.map(key => [key, snapshot.readiness.checks[key]])),
+    identities: Object.fromEntries(keys.map(key => [key,
+      Array.from({ length: snapshot.readiness.checks[key] }, (_, index) => `${key}:${index}`)])),
   };
 }
 
@@ -269,4 +281,116 @@ test("exige projeção e uso real de escritas com margem do free tier", () => {
   const missing = healthySnapshot();
   delete missing.readiness.storageWriteBudget;
   assert.throws(() => validate(missing), /write_budget_missing/);
+});
+
+
+test("relatório distingue runtime válido de dívida histórica sem alterar readiness", () => {
+  const snapshot = healthySnapshot();
+  snapshot.readinessStatus = 503;
+  snapshot.readiness.ok = false;
+  snapshot.readiness.checks.criticalIncidents = 3;
+  snapshot.readiness.checks.unknown = 4;
+  const baseline = productionBaseline(debtSnapshot(snapshot));
+  const options = { expectedVersionId: EXPECTED_VERSION_ID, expectedMode: "live", now: NOW };
+  const result = reportProductionHealth(snapshot, options, baseline, debtSnapshot(snapshot));
+  assert.equal(result.published, true);
+  assert.equal(result.runtimeVerified, true);
+  assert.equal(result.ready, false);
+  assert.equal(result.ok, true);
+  assert.equal(result.pending.length, 2);
+  assert.throws(() => validate(snapshot), /not_ready:degraded/);
+  assert.equal(reportProductionHealth(snapshot, options, null, debtSnapshot(snapshot)).ok, false);
+  snapshot.readiness.checks.unknown += 1;
+  assert.deepEqual(reportProductionHealth(snapshot, options, baseline, debtSnapshot(snapshot)).regressions, ["unknown:increased", "unknown:new_identities:1"]);
+});
+
+test("dívida histórica não esconde regressão de versão, ciclo ou orçamento", () => {
+  const snapshot = healthySnapshot();
+  snapshot.readinessStatus = 503;
+  snapshot.readiness.ok = false;
+  snapshot.readiness.checks.deadLetters = 2;
+  const baseline = productionBaseline(debtSnapshot(snapshot));
+  snapshot.readiness.storageReadBudget.primaryLastSuccessfulVersionId = "previous";
+  const result = reportProductionHealth(snapshot, { expectedVersionId: EXPECTED_VERSION_ID, now: NOW }, baseline, debtSnapshot(snapshot));
+  assert.equal(result.published, true);
+  assert.equal(result.runtimeVerified, false);
+  assert.equal(result.ok, false);
+  assert.match(result.runtimeError, /primary_cycle_version_mismatch/);
+});
+
+
+test("baseline rejeita contadores ausentes ou inválidos e identidades inconsistentes", () => {
+  const baseline = debtSnapshot(healthySnapshot());
+  for (const value of [undefined, -1, 0.5, "0", NaN, Number.MAX_SAFE_INTEGER + 1]) {
+    const invalid = structuredClone(baseline);
+    invalid.checks.unknown = value;
+    assert.throws(() => productionBaseline(invalid), /baseline_checks_invalid:unknown/);
+  }
+  for (const values of [["duplicado", "duplicado"], [], [""], ["   "]]) {
+    const invalid = structuredClone(baseline);
+    invalid.checks.unknown = 1;
+    invalid.identities.unknown = values;
+    assert.throws(() => productionBaseline(invalid), /baseline_identities_invalid:unknown/);
+  }
+  const granular = structuredClone(baseline);
+  granular.checks.maintenanceDeadLetters = 1;
+  granular.identities.maintenanceDeadLetters = ["offer:main", "offer:canal2"];
+  assert.equal(productionBaseline(granular).identities.maintenanceDeadLetters.length, 2);
+});
+
+test("nova identidade bloqueia mesmo quando total fica igual ou diminui", () => {
+  const snapshot = healthySnapshot();
+  snapshot.readinessStatus = 503;
+  snapshot.readiness.ok = false;
+  snapshot.readiness.checks.unknown = 2;
+  const baseline = productionBaseline(debtSnapshot(snapshot));
+  const current = debtSnapshot(snapshot);
+  current.identities.unknown = ["unknown:0", "unknown:novo"];
+  const options = { expectedVersionId: EXPECTED_VERSION_ID, now: NOW };
+  const sameTotal = reportProductionHealth(snapshot, options, baseline, current);
+  assert.equal(sameTotal.debtVerified, true);
+  assert.equal(sameTotal.ok, false);
+  assert.deepEqual(sameTotal.regressions, ["unknown:new_identities:1"]);
+  snapshot.readiness.checks.unknown = 1;
+  current.checks.unknown = 1;
+  current.identities.unknown = ["unknown:novo"];
+  assert.equal(reportProductionHealth(snapshot, options, baseline, current).ok, false);
+  assert.deepEqual(baseline.identities.unknown, ["unknown:0", "unknown:1"]);
+});
+
+test("contador de readiness inválido impede o gate mesmo sem dívida", () => {
+  const snapshot = healthySnapshot();
+  const baseline = debtSnapshot(snapshot);
+  snapshot.readiness.checks.deadLetters = "0";
+  const result = reportProductionHealth(snapshot, { expectedVersionId: EXPECTED_VERSION_ID, now: NOW }, baseline, baseline);
+  assert.equal(result.runtimeVerified, false);
+  assert.equal(result.ok, false);
+  assert.match(result.runtimeError, /readiness_checks_invalid:deadLetters/);
+  assert.throws(() => validate(snapshot), /readiness_checks_invalid:deadLetters/);
+});
+
+test("bootstrap exige snapshot pós válido e informa dívida ainda não verificada", () => {
+  const snapshot = healthySnapshot();
+  const options = { expectedVersionId: EXPECTED_VERSION_ID, now: NOW, bootstrapDebt: true };
+  const result = reportProductionHealth(snapshot, options, null, debtSnapshot(snapshot));
+  assert.equal(result.ok, true);
+  assert.equal(result.debtVerified, false);
+  assert.equal(reportProductionHealth(snapshot, options).ok, false);
+  const stale = debtSnapshot(snapshot);
+  stale.versionId = "previous";
+  assert.deepEqual(reportProductionHealth(snapshot, options, null, stale).regressions, ["debt_version_mismatch"]);
+  const mismatch = debtSnapshot(snapshot);
+  mismatch.checks.deadLetters = 1;
+  mismatch.identities.deadLetters = ["new"];
+  assert.deepEqual(reportProductionHealth(snapshot, options, null, mismatch).regressions, ["debt_readiness_mismatch:deadLetters"]);
+});
+
+test("baseline original também impede aumento de contagem com identidades granulares conhecidas", () => {
+  const snapshot = healthySnapshot();
+  snapshot.readiness.checks.maintenanceDeadLetters = 1;
+  const baseline = debtSnapshot(snapshot);
+  baseline.identities.maintenanceDeadLetters.push("maintenance:second");
+  const current = structuredClone(baseline);
+  current.checks.maintenanceDeadLetters = 2;
+  assert.deepEqual(productionDebtRegressions(baseline, current), ["maintenanceDeadLetters:increased"]);
 });

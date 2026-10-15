@@ -294,6 +294,40 @@ test('storage failure sends no ACK; changed UAID stops without creating a subscr
   assert.equal(status,'registration_requires_review');assert.equal(socket.sent.some(x=>x.messageType==='register'),false);observer.stop();
 });
 
+test('terminal storage failure exits child with status one even when health persistence fails; SIGTERM stays normal',t=>{
+  const {registration,packet}=fixture(),file=join(directory(t),'registration.json');
+  privateWrite(file,registration);
+  const moduleURL=new URL('./receiver.mjs',import.meta.url).href;
+  for(const scenario of ['storage','health','startup','sigterm']) {
+    const result=spawnSync(process.execPath,['--input-type=module','-e',`
+      import { main } from ${JSON.stringify(moduleURL)};
+      const scenario=${JSON.stringify(scenario)},packet=${JSON.stringify(packet)},r=${JSON.stringify(registration)};
+      class Socket extends EventTarget {
+        constructor(){super();setImmediate(()=>{
+          if(scenario==='sigterm')return process.emit('SIGTERM');
+          if(scenario==='startup')return;
+          this.dispatchEvent(new Event('open'));
+          this.dispatchEvent(new MessageEvent('message',{data:JSON.stringify({messageType:'hello',status:200,uaid:r.uaid,use_webpush:true})}));
+          this.dispatchEvent(new MessageEvent('message',{data:JSON.stringify(packet)}));
+        });}
+        send(data){if(JSON.parse(data).messageType==='ack')process.stdout.write('unexpected_ack\\n');}
+        close(){process.stdout.write('socket_closed\\n');this.dispatchEvent(new Event('close'));}
+      }
+      const store={pending:()=>[],health(status){
+        if((scenario==='health'&&status==='push_storage_unavailable')||(scenario==='startup'&&status==='connecting'))throw new Error('fixture');
+      },persist(){throw new Error('fixture');},close(){process.stdout.write('store_closed\\n');}};
+      try { main({file:${JSON.stringify(file)},openStore:()=>store,
+        observeOptions:{WebSocketImpl:Socket,logger:{log(){}}}}); }
+      catch {process.exitCode=1;}
+    `],{encoding:'utf8',timeout:3000});
+    assert.equal(result.error,undefined,`${scenario}: child should terminate without remaining timers`);
+    assert.equal(result.status,scenario==='sigterm'?0:1,`${scenario}: ${result.stderr}`);
+    assert.equal(result.stdout.includes('unexpected_ack'),false);
+    assert.equal(result.stdout.split('store_closed').length-1,1);
+    if(scenario!=='startup')assert.equal(result.stdout.split('socket_closed').length-1,1);
+  }
+});
+
 test('outage reconnects the same UAID/channel and resumes reception',async t=>{
   const {registration,packet}=fixture(),store=openPushStore(join(directory(t),'push.sqlite'));
   const observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger,retryMs:5});

@@ -1,7 +1,8 @@
+import { productionBaseline, productionDebtRegressions } from "../src/production-verification.js";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { homedir, tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const UUID_PATTERN = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
@@ -134,6 +135,38 @@ export function assertSuccessfulCiJobs(contents, expectedSha) {
   }
 }
 
+export function loadReleaseDebtBaseline(path, { bootstrap = false } = {}) {
+  let contents;
+  try { contents = readFileSync(path, "utf8"); }
+  catch (error) {
+    if (error.code !== "ENOENT") throw new Error("release_debt_baseline_unreadable");
+    if (bootstrap) return null;
+    throw new Error("release_debt_baseline_missing_use_explicit_bootstrap");
+  }
+  if (bootstrap) throw new Error("release_debt_bootstrap_baseline_already_exists");
+  try { return productionBaseline(JSON.parse(contents)); }
+  catch { throw new Error("release_debt_baseline_invalid"); }
+}
+
+export function saveInitialReleaseDebtBaseline(path, debt) {
+  const snapshot = productionBaseline(debt);
+  mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
+  // Exclusive creation prevents a later release from silently accepting new debt.
+  writeFileSync(path, `${JSON.stringify(snapshot)}\n`, { mode: 0o600, flag: "wx" });
+}
+
+async function readReleaseDebt(baseUrl, token, { bootstrap = false } = {}) {
+  const response = await fetch(`${baseUrl}/release-debt`, {
+    headers: { Accept: "application/json", "Cache-Control": "no-cache", Authorization: `Bearer ${token}` },
+    redirect: "error",
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (bootstrap && [404, 405].includes(response.status)) return null;
+  if (response.status !== 200) throw new Error(`release_debt_http:${response.status}`);
+  try { return productionBaseline(await response.json()); }
+  catch { throw new Error("release_debt_snapshot_invalid"); }
+}
+
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
     cwd: options.cwd,
@@ -221,14 +254,20 @@ function resolveCi(repositoryRoot, workerRoot, headSha) {
 }
 
 function help() {
-  console.log(`Uso: npm run release
+  console.log(`Uso: npm run release [-- --bootstrap-debt]
 
 Publica produção apenas depois de:
   1. validar main, worktree limpo e HEAD idêntico a origin/main;
   2. confirmar UOL Worker CI verde para o SHA exato via gh;
      se gh não estiver instalado, executar check:ci local sob Node 22;
   3. executar wrangler deploy --strict com tag git-<sha> e mensagem do commit;
-  4. obter a Version ID automaticamente e executar postdeploy em modo live.
+  4. obter a Version ID automaticamente e executar postdeploy em modo live;
+  5. comparar identidades da dívida com o baseline privado original.
+
+Somente no primeiro lote, sem baseline e com endpoint ainda não publicado:
+  npm run release -- --bootstrap-debt
+  O pós-deploy salva o primeiro snapshot em ~/.config/uol-ticket-research/release-debt-baseline.json,
+  com debtVerified=false. Lotes seguintes exigem o baseline, sem substituí-lo.
 
 Opção segura para validar somente argumentos/parsers, sem deploy:
   npm run release -- --dry-run
@@ -242,7 +281,7 @@ async function main() {
     help();
     return;
   }
-  const unsupported = [...args].filter((arg) => arg !== "--dry-run");
+  const unsupported = [...args].filter((arg) => arg !== "--dry-run" && arg !== "--bootstrap-debt");
   if (unsupported.length > 0) throw new Error(`release_argument_unsupported:${unsupported.join(",")}`);
 
   const scriptDirectory = fileURLToPath(new URL(".", import.meta.url));
@@ -265,9 +304,22 @@ async function main() {
   }
 
   resolveCi(repositoryRoot, workerRoot, headSha);
+  const bootstrapDebt = args.has("--bootstrap-debt");
+  const baselinePath = join(homedir(), ".config", "uol-ticket-research", "release-debt-baseline.json");
+  const baseline = loadReleaseDebtBaseline(baselinePath, { bootstrap: bootstrapDebt });
+  const token = readFileSync(join(homedir(), ".config", "uol-ticket-research", "shadow-admin-token"), "utf8").trim();
+  if (!token) throw new Error("release_admin_token_missing");
+  const baseUrl = String(process.env.UOL_WORKER_URL || "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev").replace(/\/+$/, "");
+  const predeployDebt = await readReleaseDebt(baseUrl, token, { bootstrap: bootstrapDebt });
+  if (baseline) {
+    const regressions = productionDebtRegressions(baseline, predeployDebt);
+    if (regressions.length) throw new Error(`release_debt_regression:${regressions.join(",")}`);
+  }
 
   const temporaryDirectory = mkdtempSync(join(tmpdir(), "uol-worker-release-"));
   const outputPath = join(temporaryDirectory, "wrangler-output.ndjson");
+  const predeployDebtPath = join(temporaryDirectory, "predeploy-debt.json");
+  if (predeployDebt) writeFileSync(predeployDebtPath, JSON.stringify(predeployDebt), { mode: 0o600, flag: "wx" });
   try {
     const deploy = run(
       join(workerRoot, "node_modules", ".bin", "wrangler"),
@@ -310,11 +362,14 @@ async function main() {
       label: "postdeploy_check",
       env: {
         ...process.env,
+        UOL_RELEASE_BASELINE_PATH: baselinePath,
+        UOL_RELEASE_BOOTSTRAP_DEBT: bootstrapDebt ? "1" : "0",
+        UOL_PREDEPLOY_DEBT_PATH: predeployDebt ? predeployDebtPath : "",
         EXPECTED_VERSION_ID: versionId,
         EXPECTED_DELIVERY_MODE: "live",
       },
     });
-    console.log(`release_ok: ${releaseTag} version=${versionId} mode=live`);
+    console.log(`release_runtime_verified: ${releaseTag} version=${versionId} mode=live`);
   } finally {
     rmSync(temporaryDirectory, { recursive: true, force: true });
   }

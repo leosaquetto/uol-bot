@@ -38,6 +38,13 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
     if(!row||JSON.parse(row.payload).gateway!==true)fail('job_not_found',404);
     return status(row);
   };
+  const getJobByKey=(route,keyHash,requestHash)=>{
+    if(!['uol','buyticket','self'].includes(route)||!HASH.test(keyHash||'')||!HASH.test(requestHash||''))fail('invalid_request');
+    const row=store.jobByKey(`gateway:${route}:${keyHash}`);
+    if(!row||JSON.parse(row.payload).gateway!==true)fail('job_not_found',404);
+    if(JSON.parse(row.payload).gatewayRequestHash!==requestHash)fail('idempotency_conflict',409);
+    return status(row);
+  };
   const readiness=()=>{
     const ready=canSend()&&whatsapp.isReady();
     let mapped=true;
@@ -125,6 +132,11 @@ export function createGatewayApi({store,dataDir,getConfig,whatsapp,canSend,route
       try {
         if(req.method==='GET'&&path==='/v1/gateway/readyz'){
           const body=readiness();return {status:body.ok?200:503,body};
+        }
+        if(req.method==='GET'&&path.startsWith('/v1/gateway/jobs/by-key/')){
+          const parts=path.slice('/v1/gateway/jobs/by-key/'.length).split('/');
+          if(parts.length!==3)fail('invalid_request');
+          return {status:200,body:getJobByKey(...parts)};
         }
         if(req.method==='GET'&&path.startsWith('/v1/gateway/jobs/'))return {status:200,body:getJob(path.slice('/v1/gateway/jobs/'.length))};
         if(req.method==='POST'&&path==='/v1/gateway/send'){

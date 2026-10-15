@@ -34,6 +34,7 @@ const handler = createGateway({
   databasePath: process.env.DATA_PATH || "/var/lib/beeper-preview-gateway/deliveries.sqlite",
   transport:useDrops?"baileys":"beeper",
   probeTransport:useDrops?()=>drops.readiness():undefined,
+  lookupDeliveryImpl:useDrops?delivery=>drops.lookupDelivery(delivery):undefined,
   sendMessageImpl: (message) => useDrops?drops.sendMessage(message):headlessTransport.sendMessage(message),
   confirmDeliveryImpl: (delivery) => useDrops?drops.confirmDelivery(delivery):deliveryConfirmation.waitForDelivery(delivery),
   isTransportReady: () => useDrops||headlessTransport.isReady(),

@@ -12,7 +12,7 @@ function finiteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
 }
 
-export function validateProductionHealth({
+function validateHealth({
   livenessStatus,
   readinessStatus,
   liveness,
@@ -22,7 +22,7 @@ export function validateProductionHealth({
   expectedMode = "",
   maxScanAgeMs = DEFAULT_MAX_SCAN_AGE_MS,
   now = new Date(),
-} = {}) {
+} = {}, allowHistorical = false) {
   const normalizedExpectedVersionId = String(expectedVersionId || "").trim();
   const normalizedExpectedMode = String(expectedMode || "").trim().toLowerCase();
   if (!normalizedExpectedVersionId) throw new Error("expected_version_id_required");
@@ -37,6 +37,7 @@ export function validateProductionHealth({
     throw new Error("max_scan_age_invalid");
   }
 
+  debtCounters(readiness?.checks, "readiness");
   const headless = classifyHeadlessHealth({
     liveness: { status: livenessStatus, body: liveness },
     readiness: { status: readinessStatus, body: readiness },
@@ -91,7 +92,8 @@ export function validateProductionHealth({
   const rejectedDegradedReasons = headless.reasons.filter(
     (reason) => !allowedDegradedReasons.has(reason),
   );
-  if (rejectedDegradedReasons.length > 0) {
+  const historicalReasons = new Set(["critical_incidents", "dead_letters", "unknown_deliveries", "maintenance_dead_letters"]);
+  if (rejectedDegradedReasons.some(reason => !allowHistorical || !historicalReasons.has(reason))) {
     throw new Error(`not_ready:degraded:${rejectedDegradedReasons.join(",")}`);
   }
 
@@ -196,5 +198,100 @@ export function validateProductionHealth({
     headlessReasons: headless.reasons,
     projectedRowsWritten: writeBudget.projected,
     writeHeadroom: writeBudget.headroom,
+  };
+}
+
+// Strict callers retain their original readiness contract.
+export function validateProductionHealth(snapshot, options) {
+  return validateHealth(snapshot, options);
+}
+
+const HISTORICAL_COUNTERS = ["criticalIncidents", "deadLetters", "unknown", "maintenanceDeadLetters"];
+const WORKER_NAME = "uol-telegram-shadow-pilot";
+
+function debtCounters(value, prefix) {
+  const counters = {};
+  for (const key of HISTORICAL_COUNTERS) {
+    if (!Number.isSafeInteger(value?.[key]) || value[key] < 0) {
+      throw new Error(`${prefix}_checks_invalid:${key}`);
+    }
+    counters[key] = value[key];
+  }
+  return counters;
+}
+
+// This snapshot comes from the authenticated, untruncated release-debt endpoint.
+export function productionBaseline(debt) {
+  if (debt?.worker !== WORKER_NAME) throw new Error("baseline_worker_invalid");
+  if (typeof debt.versionId !== "string" || !debt.versionId.trim()) {
+    throw new Error("baseline_version_missing");
+  }
+  if (typeof debt.checkedAt !== "string" || !Number.isFinite(Date.parse(debt.checkedAt))) {
+    throw new Error("baseline_checked_at_invalid");
+  }
+  const checks = debtCounters(debt.checks, "baseline");
+  const identities = {};
+  for (const key of HISTORICAL_COUNTERS) {
+    const values = debt.identities?.[key];
+    if (!Array.isArray(values) || values.some(value => typeof value !== "string" || !value.trim()) ||
+        new Set(values).size !== values.length || values.length < checks[key] ||
+        (values.length === 0) !== (checks[key] === 0)) {
+      throw new Error(`baseline_identities_invalid:${key}`);
+    }
+    identities[key] = [...values].sort();
+  }
+  return { worker: WORKER_NAME, versionId: debt.versionId, checkedAt: debt.checkedAt, checks, identities };
+}
+
+export function productionDebtRegressions(baseline, current) {
+  const original = productionBaseline(baseline);
+  const observed = productionBaseline(current);
+  return HISTORICAL_COUNTERS.flatMap(key => {
+    const known = new Set(original.identities[key]);
+    const added = observed.identities[key].filter(identity => !known.has(identity));
+    return [
+      ...(observed.checks[key] > original.checks[key] ? [`${key}:increased`] : []),
+      ...(added.length ? [`${key}:new_identities:${added.length}`] : []),
+    ];
+  });
+}
+
+export function reportProductionHealth(snapshot, options = {}, baseline = null, debt = null) {
+  const published = Boolean(options.expectedVersionId &&
+    snapshot?.liveness?.worker === WORKER_NAME &&
+    snapshot.liveness.versionId === options.expectedVersionId &&
+    snapshot?.readiness?.worker === WORKER_NAME &&
+    snapshot.readiness.versionId === options.expectedVersionId);
+  let runtime;
+  let runtimeError = "";
+  try {
+    runtime = validateHealth(snapshot, options, true);
+  } catch (error) { runtimeError = String(error.message); }
+  const counts = snapshot?.readiness?.checks || {};
+  const pending = HISTORICAL_COUNTERS.filter(key => Number.isSafeInteger(counts[key]) && counts[key] > 0)
+    .map(key => ({ kind: key, count: counts[key] }));
+  const regressions = [];
+  if (!Number.isSafeInteger(counts.blockedConfiguration) || counts.blockedConfiguration < 0) {
+    regressions.push("blockedConfiguration:invalid");
+  } else if (counts.blockedConfiguration > 0) regressions.push("blockedConfiguration");
+  let debtValidated = false;
+  try {
+    const current = productionBaseline(debt);
+    if (current.versionId !== options.expectedVersionId) throw new Error("debt_version_mismatch");
+    for (const key of HISTORICAL_COUNTERS) {
+      if (current.checks[key] !== counts[key]) throw new Error(`debt_readiness_mismatch:${key}`);
+    }
+    if (baseline) regressions.push(...productionDebtRegressions(baseline, current));
+    else if (options.bootstrapDebt !== true) throw new Error("debt_baseline_missing");
+    debtValidated = true;
+  } catch (error) { regressions.push(String(error.message)); }
+  const debtVerified = debtValidated && options.bootstrapDebt !== true;
+  const ready = Boolean(runtime && snapshot.readinessStatus === 200 && snapshot.readiness.ok === true);
+  return {
+    published, runtimeVerified: Boolean(runtime), debtVerified, ready,
+    ok: Boolean(runtime) && debtValidated && regressions.length === 0,
+    versionId: options.expectedVersionId, pending, regressions,
+    ...(runtimeError ? { runtimeError } : {}),
+    ...(runtime ? { runtime } : {}),
   };
 }

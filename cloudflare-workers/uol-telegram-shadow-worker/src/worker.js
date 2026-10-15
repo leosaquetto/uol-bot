@@ -4156,11 +4156,12 @@ export class UolTelegramShadow extends DurableObject {
         this.sqlExec(
           `UPDATE offers SET ${columns[0]} = '', ${columns[1]} = ?,
              status = 'delivery_unknown', delivery_unknown_at = ?,
-             delivery_unknown_target = ? WHERE id = ?`,
+             delivery_unknown_target = ? WHERE id = ? AND delivery_generation = ?
+               AND ${columns[0]} = ? AND ${target}_delivery_attempts = ?`,
           now.toISOString(),
           now.toISOString(),
           target,
-          row.id,
+          row.id, generation, row[columns[0]], row[`${target}_delivery_attempts`],
         );
       }
       if (classification.state === "actionable") {
@@ -4182,89 +4183,84 @@ export class UolTelegramShadow extends DurableObject {
     let discordSent = 0;
     let failed = 0;
 
-    const beginAttempt = (rowId, target, attempts, attemptedAt) => {
-      const columns = {
-        main: ["main_delivery_attempts", "main_delivery_error", "main_delivery_in_flight_at",
-          "main_delivery_next_attempt_at", "main_delivery_unknown_at"],
-        canal2: ["canal2_delivery_attempts", "canal2_delivery_error",
-          "canal2_delivery_in_flight_at", "canal2_delivery_next_attempt_at",
-          "canal2_delivery_unknown_at"],
-        discord: ["discord_delivery_attempts", "discord_delivery_error",
-          "discord_delivery_in_flight_at", "discord_delivery_next_attempt_at",
-          "discord_delivery_unknown_at"],
-      }[target];
-      this.sqlExec(
-        `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '',
-           ${columns[2]} = ?, ${columns[3]} = '', ${columns[4]} = '' WHERE id = ?`,
-        attempts,
-        attemptedAt,
-        rowId,
+    const deliverableStatuses = new Set([
+      "delivery_pending", "partial_delivery", "delivery_blocked_configuration",
+      "delivery_dead_letter", "delivery_unknown",
+    ]);
+    const eligibleRow = (row) => row && deliverableStatuses.has(row.status) &&
+      row.delivery_mode === "live" && Number(row.delivery_generation) === generation;
+    const claimWhere = (target) => `id = ? AND delivery_generation = ?
+      AND ${target}_delivery_attempts = ? AND ${target}_delivery_in_flight_at = ?`;
+    const claimArgs = (claim) => [claim.id, generation, claim.attempts, claim.attemptedAt];
+    const beginAttempt = (rowId, target, previousAttempts, attemptedAt) => {
+      // Recheck all dispatch eligibility immediately before the synchronous
+      // compare-and-set. A selected snapshot may predate another invocation.
+      if (this.currentDeliveryMode() !== "live" ||
+          this.currentDeliveryGeneration() !== generation) return null;
+      const row = this.sqlExec("SELECT * FROM offers WHERE id = ? LIMIT 1", rowId).toArray()[0];
+      if (!eligibleRow(row) || (target === "main" && !row.would_send_main)) return null;
+      const freshConfiguration = deliveryConfiguration(
+        this.env, telegramConfiguration(this.env), discordConfiguration(this.env),
       );
+      const freshTarget = classifyDeliveryRow(row, freshConfiguration, {
+        ticket: isTicketCampaign(rowToOffer(row)), maxAttempts, inFlightStaleSeconds,
+        targetNames: [target], now: new Date(attemptedAt),
+      }).actionable.find(item => item.target === target);
+      if (!freshTarget || freshTarget.attempts !== previousAttempts ||
+          (target === "canal2" && !Number(row.main_message_id || 0))) return null;
+      const attempts = previousAttempts + 1;
+      // Only this atomic compare-and-set grants permission to call transport.
+      const claimed = this.sqlExec(
+        `UPDATE offers SET ${target}_delivery_attempts = ?, ${target}_delivery_error = '',
+           ${target}_delivery_in_flight_at = ?, ${target}_delivery_next_attempt_at = ''
+         WHERE id = ? AND delivery_generation = ? AND delivery_mode = 'live'
+           AND status IN ('delivery_pending', 'partial_delivery', 'delivery_blocked_configuration',
+             'delivery_dead_letter', 'delivery_unknown')
+           AND ${target}_delivery_attempts = ? AND ${target}_delivery_in_flight_at = ''
+           AND ${target}_sent_at = '' AND ${target}_delivery_unknown_at = ''
+           AND NOT (delivery_unknown_at <> '' AND
+             instr(',' || delivery_unknown_target || ',', ',' || ? || ',') > 0)
+           AND (${target}_delivery_next_attempt_at = '' OR ${target}_delivery_next_attempt_at <= ?)
+         RETURNING id`,
+        attempts, attemptedAt, rowId, generation, previousAttempts, target, attemptedAt,
+      ).toArray()[0];
+      if (!claimed) return null;
       this.recordDeliveryLedgerEvent({
-        offerId: rowId,
-        target,
-        operation: "delivery",
-        state: "attempt_started",
-        attempt: attempts,
-        generation,
-        occurredAt: attemptedAt,
+        offerId: rowId, target, operation: "delivery", state: "attempt_started",
+        attempt: attempts, generation, occurredAt: attemptedAt,
+        dedupeKey: `${rowId}|${target}|delivery|${generation}|${attempts}|${attemptedAt}|started`,
       });
+      return { id: rowId, target, attempts, attemptedAt };
     };
-
-    const recordFailure = (rowId, target, attempts, error) => {
-      const columns = {
-        main: ["main_delivery_error", "main_delivery_in_flight_at",
-          "main_delivery_next_attempt_at", "main_delivery_unknown_at"],
-        canal2: ["canal2_delivery_error", "canal2_delivery_in_flight_at",
-          "canal2_delivery_next_attempt_at", "canal2_delivery_unknown_at"],
-        discord: ["discord_delivery_error", "discord_delivery_in_flight_at",
-          "discord_delivery_next_attempt_at", "discord_delivery_unknown_at"],
-      }[target];
+    const recordOutcome = (claim, state, details = {}) => this.recordDeliveryLedgerEvent({
+      offerId: claim.id, target: claim.target, operation: "delivery", state,
+      attempt: claim.attempts, generation, occurredAt: new Date().toISOString(),
+      dedupeKey: `${claim.id}|${claim.target}|delivery|${generation}|${claim.attempts}|${claim.attemptedAt}|${state}`,
+      ...details,
+    });
+    const recordFailure = (claim, error) => {
+      const { target, attempts } = claim;
       const message = sanitizeError(error);
-      if (isAmbiguousDeliveryError(error)) {
-        const unknownAt = new Date().toISOString();
-        this.sqlExec(
-          `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '',
-             ${columns[2]} = '', ${columns[3]} = ?,
-             status = 'delivery_unknown', delivery_unknown_at = ?,
-             delivery_unknown_target = ? WHERE id = ?`,
-          `ambiguous:${message}`.slice(0, 240),
-          unknownAt,
-          unknownAt,
-          target,
-          rowId,
-        );
-        this.recordDeliveryLedgerEvent({
-          offerId: rowId,
-          target,
-          operation: "delivery",
-          state: "unknown",
-          attempt: attempts,
-          generation,
-          occurredAt: unknownAt,
-          error: `ambiguous:${message}`,
-        });
-        return "unknown";
-      }
-      const failedAt = new Date().toISOString();
-      this.sqlExec(
-        `UPDATE offers SET ${columns[0]} = ?, ${columns[1]} = '', ${columns[2]} = ?
-         WHERE id = ?`,
-        message,
-        deliveryRetryAt(error, attempts),
-        rowId,
-      );
-      this.recordDeliveryLedgerEvent({
-        offerId: rowId,
-        target,
-        operation: "delivery",
-        state: "failed",
-        attempt: attempts,
-        generation,
-        occurredAt: failedAt,
-        error: message,
+      const unknown = isAmbiguousDeliveryError(error);
+      const occurredAt = new Date().toISOString();
+      const updated = unknown
+        ? this.sqlExec(
+          `UPDATE offers SET ${target}_delivery_error = ?, ${target}_delivery_in_flight_at = '',
+             ${target}_delivery_next_attempt_at = '', ${target}_delivery_unknown_at = ?,
+             status = 'delivery_unknown', delivery_unknown_at = ?, delivery_unknown_target = ?
+           WHERE ${claimWhere(target)} RETURNING id`,
+          `ambiguous:${message}`.slice(0, 240), occurredAt, occurredAt, target, ...claimArgs(claim),
+        ).toArray().length
+        : this.sqlExec(
+          `UPDATE offers SET ${target}_delivery_error = ?, ${target}_delivery_in_flight_at = '',
+             ${target}_delivery_next_attempt_at = ?
+           WHERE ${claimWhere(target)} RETURNING id`,
+          message, deliveryRetryAt(error, attempts), ...claimArgs(claim),
+        ).toArray().length;
+      recordOutcome(claim, updated ? (unknown ? "unknown" : "failed") : "late_failure", {
+        occurredAt, error: unknown ? `ambiguous:${message}` : message,
       });
-      return "retry";
+      return updated ? (unknown ? "unknown" : "retry") : "stale";
     };
 
     actionable.sort((left, right) => (
@@ -4302,7 +4298,8 @@ export class UolTelegramShadow extends DurableObject {
       const target = entry.classification.actionable.find((item) => item.target === "main");
       if (!target) return;
       const attempts = target.attempts + 1;
-      beginAttempt(entry.row.id, "main", attempts, new Date().toISOString());
+      const claim = beginAttempt(entry.row.id, "main", target.attempts, new Date().toISOString());
+      if (!claim) return;
       const mainOffer = waitForMainImage
         ? mainImageDeliveryOffer(
             entry.telegramState.offer,
@@ -4315,20 +4312,19 @@ export class UolTelegramShadow extends DurableObject {
       try {
         const result = await sendMainOffer(this.env, mainOffer);
         if (result.deferred) {
-          this.recordImageDelivery(entry.row.id, entry.telegramState.imageKey, result);
           const deferred = deferredMainDeliveryState(
             target.attempts,
             mainOffer.imageDeadlineAt,
             new Date(),
           );
-          this.sqlExec(
+          const updated = this.sqlExec(
             `UPDATE offers SET main_delivery_attempts = ?,
                main_delivery_error = '', main_delivery_in_flight_at = '',
-               main_delivery_next_attempt_at = ? WHERE id = ?`,
-            deferred.attempts,
-            deferred.nextAttemptAt,
-            entry.row.id,
-          );
+               main_delivery_next_attempt_at = ? WHERE ${claimWhere('main')} RETURNING id`,
+            deferred.attempts, deferred.nextAttemptAt, ...claimArgs(claim),
+          ).toArray().length;
+          if (!updated) { recordOutcome(claim, 'late_deferred'); return; }
+          this.recordImageDelivery(entry.row.id, entry.telegramState.imageKey, result);
           this.recordDeliveryLedgerEvent({
             offerId: entry.row.id,
             target: "main",
@@ -4344,13 +4340,12 @@ export class UolTelegramShadow extends DurableObject {
           throw Object.assign(new Error("telegram_main_message_id_missing"), { ambiguous: true });
         }
         const sentAt = new Date().toISOString();
-        this.recordImageDelivery(entry.row.id, entry.telegramState.imageKey, result);
-        this.sqlExec(
+        const updated = this.sqlExec(
           `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
              main_delivery_error = '', main_delivery_in_flight_at = '',
              main_delivery_next_attempt_at = '', main_delivery_unknown_at = '',
              main_image_upgrade_next_attempt_at = ?
-           WHERE id = ?`,
+           WHERE ${claimWhere('main')} RETURNING id`,
           result.messageId,
           result.messageKind,
           sentAt,
@@ -4359,8 +4354,10 @@ export class UolTelegramShadow extends DurableObject {
                 Date.now() + envNumber(this.env, "ALARM_INTERVAL_SECONDS", 30, 10, 3_600) * 1_000,
               ).toISOString()
             : "",
-          entry.row.id,
-        );
+          ...claimArgs(claim),
+        ).toArray().length;
+        if (!updated) { recordOutcome(claim, "late_sent", { externalId: String(result.messageId) }); return; }
+        this.recordImageDelivery(entry.row.id, entry.telegramState.imageKey, result);
         this.recordDeliveryLedgerEvent({
           offerId: entry.row.id,
           target: "main",
@@ -4373,7 +4370,7 @@ export class UolTelegramShadow extends DurableObject {
         });
         mainSent += 1;
       } catch (error) {
-        recordFailure(entry.row.id, "main", attempts, error);
+        recordFailure(claim, error);
         failed += 1;
       }
       });
@@ -4399,7 +4396,8 @@ export class UolTelegramShadow extends DurableObject {
       }).actionable.find((item) => item.target === "canal2");
       if (!target || !Number(row.main_message_id || 0) || !row.main_sent_at) return;
       const attempts = target.attempts + 1;
-      beginAttempt(row.id, "canal2", attempts, new Date().toISOString());
+      const claim = beginAttempt(row.id, "canal2", target.attempts, new Date().toISOString());
+      if (!claim) return;
       try {
         const result = await forwardToCanal2(this.env, Number(row.main_message_id));
         if (!result.messageId) {
@@ -4408,15 +4406,17 @@ export class UolTelegramShadow extends DurableObject {
             { ambiguous: true },
           );
         }
-        this.sqlExec(
+        const updated = this.sqlExec(
           `UPDATE offers SET canal2_message_id = ?, canal2_sent_at = ?,
              canal2_delivery_error = '', canal2_delivery_in_flight_at = '',
              canal2_delivery_next_attempt_at = '', canal2_delivery_unknown_at = ''
-           WHERE id = ?`,
+           WHERE ${claimWhere('canal2')} RETURNING id`,
           result.messageId,
           new Date().toISOString(),
-          row.id,
-        );
+          ...claimArgs(claim),
+        ).toArray().length;
+        if (!updated) { recordOutcome(claim, "late_sent", { externalId: String(result.messageId) }); return; }
+
         this.recordDeliveryLedgerEvent({
           offerId: row.id,
           target: "canal2",
@@ -4429,7 +4429,7 @@ export class UolTelegramShadow extends DurableObject {
         });
         canal2Sent += 1;
       } catch (error) {
-        recordFailure(row.id, "canal2", attempts, error);
+        recordFailure(claim, error);
         failed += 1;
       }
       });
@@ -4453,13 +4453,14 @@ export class UolTelegramShadow extends DurableObject {
       }).actionable.find((item) => item.target === "discord");
       if (!target) return;
       const attempts = target.attempts + 1;
-      beginAttempt(row.id, "discord", attempts, new Date().toISOString());
+      const claim = beginAttempt(row.id, "discord", target.attempts, new Date().toISOString());
+      if (!claim) return;
       try {
         const result = await sendDiscordOffer(this.env, rowToOffer(row));
         if (!result.messageId) {
           throw Object.assign(new Error("discord_message_id_missing"), { ambiguous: true });
         }
-        this.sqlExec(
+        const updated = this.sqlExec(
           `UPDATE offers SET discord_message_id = ?, discord_sent_at = ?,
              discord_image_proxy_url = COALESCE(NULLIF(?, ''), discord_image_proxy_url),
              main_image_upgrade_next_attempt_at = CASE
@@ -4467,12 +4468,14 @@ export class UolTelegramShadow extends DurableObject {
                THEN '' ELSE main_image_upgrade_next_attempt_at END,
              discord_delivery_error = '', discord_delivery_in_flight_at = '',
              discord_delivery_next_attempt_at = '', discord_delivery_unknown_at = ''
-           WHERE id = ?`,
+           WHERE ${claimWhere('discord')} RETURNING id`,
           result.messageId,
           new Date().toISOString(),
           result.imageProxyUrl || "",
-          row.id,
-        );
+          ...claimArgs(claim),
+        ).toArray().length;
+        if (!updated) { recordOutcome(claim, "late_sent", { externalId: String(result.messageId) }); return; }
+
         this.recordDeliveryLedgerEvent({
           offerId: row.id,
           target: "discord",
@@ -4496,7 +4499,7 @@ export class UolTelegramShadow extends DurableObject {
         }
         discordSent += 1;
       } catch (error) {
-        recordFailure(row.id, "discord", attempts, error);
+        recordFailure(claim, error);
         failed += 1;
       }
       });
@@ -4504,7 +4507,8 @@ export class UolTelegramShadow extends DurableObject {
 
     for (const entry of selected) {
       if (!stillCurrent()) break;
-      this.refreshDeliveryStatus(entry.row.id, new Date());
+      const current = this.sqlExec("SELECT * FROM offers WHERE id = ? LIMIT 1", entry.row.id).toArray()[0];
+      if (eligibleRow(current)) this.refreshDeliveryStatus(current, new Date());
     }
 
     const selectedIds = new Set(selected.map((entry) => entry.row.id));
@@ -6484,9 +6488,27 @@ export class UolTelegramShadow extends DurableObject {
     const cutoff = new Date(now.getTime() - retentionDays * 86_400_000).toISOString();
     const active = new Set([...activeIds].filter(Boolean));
     const terminalRows = this.sqlExec(
-      `SELECT id, first_seen_at
-       FROM offers
+      `SELECT id, first_seen_at FROM offers
        WHERE status IN ('baseline', 'discarded', 'delivered', 'shadow_sold_out', 'sold_out')
+         AND delivery_unknown_at = '' AND delivery_dead_letter_at = ''
+         AND main_delivery_unknown_at = '' AND canal2_delivery_unknown_at = ''
+         AND discord_delivery_unknown_at = '' AND comment_delivery_unknown_at = ''
+         AND main_delivery_in_flight_at = '' AND canal2_delivery_in_flight_at = ''
+         AND discord_delivery_in_flight_at = '' AND comment_delivery_in_flight_at = ''
+         AND NOT (comment_sent_at = '' AND (discussion_message_id > 0 OR
+           (main_sent_at <> '' AND lower(link) LIKE '%/campanhasdeingresso/%')))
+         AND NOT (status = 'sold_out' AND (
+           (main_message_id > 0 AND main_sold_out_synced_at = '') OR
+           (would_send_canal2 = 1 AND canal2_message_id > 0 AND canal2_sold_out_synced_at = '')))
+         AND NOT (restocked_at <> '' AND (
+           (main_message_id > 0 AND main_restock_synced_at = '') OR
+           (would_send_canal2 = 1 AND canal2_message_id > 0 AND canal2_restock_synced_at = '')))
+         AND NOT EXISTS (SELECT 1 FROM beeper_delivery_queue q
+           WHERE q.offer_id = offers.id AND (q.sent_at = '' OR q.in_flight_at <> ''))
+         AND NOT EXISTS (SELECT 1 FROM discord_availability_sync d
+           WHERE d.offer_id = offers.id AND (
+             (offers.status = 'sold_out' AND d.sold_out_synced_at = '') OR
+             (offers.restocked_at <> '' AND d.restock_synced_at = '')))
        ORDER BY first_seen_at DESC, id ASC`,
     ).toArray();
     const removable = terminalRows.filter((row) => !active.has(row.id));
@@ -7910,6 +7932,10 @@ export class UolTelegramShadow extends DurableObject {
     ).toArray()[0];
     if (!row) throw new Error("delivery_offer_not_found");
     const normalizedTarget = String(target || "offer").trim().toLowerCase();
+    if (["main", "canal2", "discord", "comment"].some(
+      name => Boolean(row[`${name}_delivery_in_flight_at`]),
+    )) throw new Error("delivery_in_flight_requires_resolution");
+
     if (normalizedTarget === "comment") {
       if (!row.discussion_message_id || row.comment_sent_at) {
         throw new Error("delivery_comment_not_requeueable");
@@ -8346,6 +8372,84 @@ export class UolTelegramShadow extends DurableObject {
       recentRuns,
       recent,
     };
+  }
+
+  getReleaseDebt() {
+    // Complete, read-only identities for release comparisons. Public readiness
+    // aggregates rows; the private snapshot also distinguishes individual targets.
+    const maxAttempts = envNumber(this.env, "DELIVERY_MAX_ATTEMPTS", 10, 1, 50);
+    const identities = { criticalIncidents: [], deadLetters: [], unknown: [], maintenanceDeadLetters: [] };
+    const checks = { criticalIncidents: 0, deadLetters: 0, unknown: 0, maintenanceDeadLetters: 0 };
+    const identity = (...parts) => JSON.stringify(parts);
+    for (const row of this.sqlExec(
+      "SELECT key, first_detected_at FROM incidents WHERE status = 'active' AND severity = 'critical'",
+    ).toArray()) {
+      checks.criticalIncidents++;
+      identities.criticalIncidents.push(identity("incident", row.key,
+        this.metadataValue(`ops_ntfy_episode:${row.key}`) || row.first_detected_at));
+    }
+    const rows = this.sqlExec(
+      `SELECT * FROM offers WHERE status IN ('delivery_dead_letter', 'delivery_unknown')
+        OR comment_delivery_unknown_at <> ''
+        OR main_restock_attempts >= ? OR canal2_restock_attempts >= ?
+        OR main_sold_out_attempts >= ? OR canal2_sold_out_attempts >= ?
+        OR comment_delivery_attempts >= ?`,
+      maxAttempts, maxAttempts, maxAttempts, maxAttempts, maxAttempts,
+    ).toArray();
+    for (const row of rows) {
+      if (row.status === "delivery_dead_letter") {
+        checks.deadLetters++;
+        const targets = ["main", "canal2", "discord"].filter(target =>
+          !row[`${target}_sent_at`] && row[`${target}_delivery_attempts`] >= maxAttempts);
+        for (const target of targets.length ? targets : ["offer"]) {
+          identities.deadLetters.push(identity("delivery", row.id, row.delivery_generation,
+            row.delivery_dead_letter_at, target));
+        }
+      }
+      if (row.status === "delivery_unknown") {
+        checks.unknown++;
+        const targets = ["main", "canal2", "discord"].filter(target => row[`${target}_delivery_unknown_at`]);
+        for (const target of targets.length ? targets : [row.delivery_unknown_target || "offer"]) {
+          identities.unknown.push(identity("delivery", row.id, row.delivery_generation, target,
+            row[`${target}_delivery_unknown_at`] || row.delivery_unknown_at));
+        }
+      }
+      if (row.comment_delivery_unknown_at) {
+        checks.unknown++;
+        identities.unknown.push(identity("comment", row.id, row.comment_delivery_unknown_at));
+      }
+      for (const [operation, status, epoch] of [
+        ["restock", "restocked_pending_sync", row.restocked_at],
+        ["sold_out", "sold_out", row.sold_out_at],
+      ]) {
+        if (row.status !== status) continue;
+        const targets = ["main", "canal2"].filter(target =>
+          (target === "main" || row.would_send_canal2 === 1 && row.canal2_message_id > 0) &&
+          !row[`${target}_${operation}_synced_at`] && row[`${target}_${operation}_attempts`] >= maxAttempts);
+        if (targets.length) checks.maintenanceDeadLetters++;
+        for (const target of targets) identities.maintenanceDeadLetters.push(identity(operation, row.id, epoch, target));
+      }
+      if (!row.comment_sent_at && row.discussion_message_id > 0 &&
+          row.comment_delivery_attempts >= maxAttempts && row.comment_delivery_error !== "historical_unknown_closed") {
+        checks.maintenanceDeadLetters++;
+        identities.maintenanceDeadLetters.push(identity("comment", row.id, row.discussion_message_id));
+      }
+    }
+    for (const row of this.sqlExec(
+      "SELECT offer_id, attempts, last_error FROM beeper_delivery_queue WHERE sent_at = ''",
+    ).toArray()) {
+      if (row.attempts >= maxAttempts) {
+        checks.deadLetters++;
+        identities.deadLetters.push(identity("whatsapp", row.offer_id));
+      }
+      if (String(row.last_error).startsWith("ambiguous:")) {
+        checks.unknown++;
+        identities.unknown.push(identity("whatsapp", row.offer_id));
+      }
+    }
+    for (const values of Object.values(identities)) values.sort();
+    return { worker: "uol-telegram-shadow-pilot", versionId: String(this.env.WORKER_VERSION?.id || ""),
+      checkedAt: new Date().toISOString(), checks, identities };
   }
 
   async getReadiness() {
@@ -8984,6 +9088,12 @@ export default {
           ok: true,
           inventory: await stub.getInventory(url.searchParams.get("limit")),
         });
+      }
+      if (request.method === "GET" && url.pathname === "/release-debt") {
+        if (!(await isAuthorized(request, env))) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        return jsonResponse(await stub.getReleaseDebt());
       }
       if (request.method === "GET" && url.pathname === "/identity-diagnostics") {
         if (!(await isAuthorized(request, env))) {

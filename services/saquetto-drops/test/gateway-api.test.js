@@ -127,6 +127,25 @@ test('normal gateway jobs keep the standard text and link preview payload',async
   }finally{f.close();}
 });
 
+test('key lookup recovers a committed job without enqueue and checks the gateway payload hash',async()=>{
+  const f=fixture();
+  const body={route:'uol',keyHash:'a'.repeat(64),requestHash:'b'.repeat(64),text};
+  const lookup=(route,keyHash,requestHash)=>f.api.route({method:'GET'},`/v1/gateway/jobs/by-key/${route}/${keyHash}/${requestHash}`);
+  try{
+    assert.equal((await lookup('uol',body.keyHash,body.requestHash)).status,404);
+    const committed=await send(f.api,body);assert.equal(committed.status,202);
+    assert.notEqual(f.store.job(committed.body.jobId).request_hash,body.requestHash);
+    assert.deepEqual(await lookup('uol',body.keyHash,body.requestHash),{status:200,body:committed.body});
+    assert.equal((await lookup('uol',body.keyHash,'c'.repeat(64))).status,409);
+    assert.equal((await lookup('buyticket',body.keyHash,body.requestHash)).status,404);
+    f.config.destinations.uol.verified=false;
+    const claimed=f.store.claim();f.store.receipt(claimed.message_id,claimed.destination,'accepted','server_ack');
+    const recovered=await lookup('uol',body.keyHash,body.requestHash);
+    assert.equal(recovered.body.jobId,committed.body.jobId);assert.equal(recovered.body.state,'accepted');
+    assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM jobs').get().n,1);
+  }finally{f.close();}
+});
+
 test('Story jobs reuse the queue through safe preparation retry and WhatsApp acknowledgement',async()=>{
   const original=await sharp({create:{width:90,height:160,channels:3,background:'#112233'}}).png().toBuffer();
   let clock=Date.now(),attempts=0,sends=0,sent;const f=fixture();

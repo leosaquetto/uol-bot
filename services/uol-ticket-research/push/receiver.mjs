@@ -17,14 +17,23 @@ export function processPending(store, registration, decrypt=decryptPush) {
 
 export function observeInstagramPush({registration,store,WebSocketImpl=WebSocket,logger=console,
   handshakeMs=15000,heartbeatMs=240000,pongMs=45000,retryMs=2000,
-  maintenanceMs=1000,retentionMs=60000,decrypt=decryptPush}) {
+  maintenanceMs=1000,retentionMs=60000,decrypt=decryptPush,onTerminal=()=>{}}) {
   const r=validateRegistration(registration);
   if (r.instagramRegistration?.status !== 'accepted') throw new Error('instagram_registration_not_confirmed');
   let socket,stopped=false,ready=false,waitingForCapacity=false,retry,handshake,heartbeat,pong,maintenance,attempts=0;
   const diagnostic=(...keys)=>store.diagnostics?.(keys);
   const state = status => { store.health(status); logger.log(JSON.stringify({event:status})); };
   const timers=()=>{clearTimeout(handshake);clearInterval(heartbeat);clearTimeout(pong);};
-  const halt=status=>{if(stopped)return;stopped=true;ready=false;timers();clearTimeout(retry);clearTimeout(maintenance);if(status)state(status);socket?.close();};
+  const halt=(status,terminal=true)=>{
+    if(stopped)return;
+    stopped=true;ready=false;timers();clearTimeout(retry);clearTimeout(maintenance);
+    try { if(status)state(status); }
+    catch { /* Storage failure must not prevent socket and process cleanup. */ }
+    finally {
+      try { socket?.close(); } catch { /* Already closed or unavailable. */ }
+      finally { if(terminal)onTerminal(status); }
+    }
+  };
   diagnostic('receiver_start');processPending(store,r,decrypt);
   const sweep=()=>{
     if(stopped)return;
@@ -105,24 +114,38 @@ export function observeInstagramPush({registration,store,WebSocketImpl=WebSocket
       }
     });
     ws.addEventListener('close',()=>{
-      if(socket!==ws)return;
+      if(socket!==ws||stopped)return;
       ready=false;timers();
-      try { diagnostic('connection_closed'); } catch { return halt('push_storage_unavailable'); }
-      if(!stopped&&!waitingForCapacity){state('disconnected');retry=setTimeout(connect,Math.min(60000,retryMs*2**Math.min(attempts++,5)));}
+      try {
+        diagnostic('connection_closed');
+        if(!waitingForCapacity){state('disconnected');retry=setTimeout(()=>{
+          try { connect(); } catch { halt('push_storage_unavailable'); }
+        },Math.min(60000,retryMs*2**Math.min(attempts++,5)));}
+      } catch { halt('push_storage_unavailable'); }
     });
   };
-  if(waitingForCapacity)state(capacity.payloadBytes>=capacity.limits.payloadBytes?'push_payload_limit':'push_payload_pressure');
-  else connect();
-  return {isReady:()=>ready&&!stopped,stop(){if(!stopped)halt(waitingForCapacity?null:'stopped');}};
+  try {
+    if(waitingForCapacity)state(capacity.payloadBytes>=capacity.limits.payloadBytes?'push_payload_limit':'push_payload_pressure');
+    else connect();
+  } catch(error) { halt('push_storage_unavailable');throw error; }
+  return {isReady:()=>ready&&!stopped,stop(){if(!stopped)halt(waitingForCapacity?null:'stopped',false);}};
 }
 
-export function main() {
+export function main({file=resolve(process.argv[2] || ''),openStore=openPushStore,observeOptions={}}={}) {
   process.umask(0o077);
-  const file=resolve(process.argv[2] || '');
-  const registration=privateRead(file),store=openPushStore(join(dirname(file),'push.sqlite'));
-  const receiver=observeInstagramPush({registration,store});
-  const stop=()=>{receiver.stop();store.close();};
-  process.once('SIGTERM',stop);process.once('SIGINT',stop);
+  const registration=privateRead(file),store=openStore(join(dirname(file),'push.sqlite'));
+  let closed=false;
+  const close=()=>{
+    if(closed)return;
+    closed=true;
+    try { store.close(); } catch { process.exitCode=1; }
+  };
+  try {
+    const receiver=observeInstagramPush({...observeOptions,registration,store,
+      onTerminal(){process.exitCode=1;close();}});
+    const stop=()=>{try { receiver.stop(); } finally { close(); }};
+    process.once('SIGTERM',stop);process.once('SIGINT',stop);
+  } catch(error) { close();throw error; }
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
   try { main(); } catch { console.error(JSON.stringify({status:'failed',reason:'private_push_start_failed'}));process.exitCode=1; }

@@ -27,7 +27,8 @@ class SupervisorTests(unittest.TestCase):
     def healthy(self):
         return {'units': {x: 'active' for x in SERVICES},
                 'loop': {'loopAliveAt': iso(self.now)},
-                'status': {'sourceStatus': 'empty', 'outboxProgress': {'pending': 0}},
+                'status': {'sourceStatus': 'empty', 'lastSuccessAt': iso(self.now),
+                           'outboxProgress': {'pending': 0}},
                 'push': {'status': 'connected', 'observedEpoch': self.now,
                          'eventCount': 0, 'pendingCount': 0, 'payloadBytes': 0},
                 'usage': {'lastSample': {'observedAt': iso(self.now),
@@ -37,6 +38,18 @@ class SupervisorTests(unittest.TestCase):
     def resume(self, sender=None):
         self.supervisor = Supervisor(self.root, self.config, clock=lambda: self.now,
             sender=sender or (lambda packet: self.sent.append(dict(packet)) or {'outcome': 'accepted'}))
+
+    def recover(self, sources):
+        # Different source observations over five uninterrupted minutes.
+        for seconds in (1, 120, 120, 60):
+            self.now += seconds
+            sources['loop']['loopAliveAt'] = iso(self.now)
+            sources['push']['observedEpoch'] = self.now
+            if sources['status'].get('sourceStatus') in ('found', 'empty'):
+                sources['status']['lastSuccessAt'] = iso(self.now)
+            sources['usage']['lastSample']['observedAt'] = iso(self.now)
+            sources['usage']['lastPublishedAt'] = iso(self.now)
+            self.supervisor.run_once(sources)
 
     def test_no_stories_healthy_is_silent_and_open_recovery_are_once(self):
         self.supervisor.run_once(self.healthy())
@@ -49,7 +62,7 @@ class SupervisorTests(unittest.TestCase):
         self.resume()
         self.supervisor.run_once(bad)
         self.assertEqual(len(self.sent), 1)
-        self.supervisor.run_once(self.healthy())
+        self.recover(self.healthy())
         self.assertEqual(len(self.sent), 2)
         self.assertIn('RECUPERADO', self.sent[-1]['message'])
 
@@ -82,7 +95,7 @@ class SupervisorTests(unittest.TestCase):
         self.assertTrue(self.supervisor.state['incidents']['push_rejections']['active'])
         for name in ('notifications_persisted', 'ack_sent', 'notifications_signalled'):
             quiet['push']['diagnostics'][name] = {'count': 1, 'lastEpoch': self.now}
-        self.supervisor.run_once(quiet)
+        self.recover(quiet)
         self.assertEqual(len(self.sent), 2)
         self.assertFalse(self.supervisor.state['incidents']['push_rejections']['active'])
 
@@ -114,7 +127,7 @@ class SupervisorTests(unittest.TestCase):
             self.supervisor.run_once(sources)
             self.assertTrue(self.supervisor.state['incidents']['push_settlement']['active'])
         sources['status']['pushSettlement'] = {'status': 'matched_exact', 'exhaustedBatches': 1}
-        self.supervisor.run_once(sources)
+        self.recover(sources)
         self.assertEqual(len(self.sent), 2)
         self.assertFalse(self.supervisor.state['incidents']['push_settlement']['active'])
 
@@ -129,14 +142,14 @@ class SupervisorTests(unittest.TestCase):
         self.assertEqual(len(self.sent), 1)
         self.assertTrue(self.supervisor.state['incidents']['push_settlement']['active'])
         sources['status']['pushSettlement'] = {'status': 'matched_exact', 'exhaustedBatches': 1}
-        self.supervisor.run_once(sources)
+        self.recover(sources)
         self.assertEqual(len(self.sent), 2)
         # Both failure and later success may happen between two observations.
         sources['status']['pushSettlement']['exhaustedBatches'] = 2
         self.supervisor.run_once(sources)
         self.assertEqual(len(self.sent), 3)
         self.assertTrue(self.supervisor.state['incidents']['push_settlement']['active'])
-        self.supervisor.run_once(sources)
+        self.recover(sources)
         self.assertEqual(len(self.sent), 4)
         self.assertFalse(self.supervisor.state['incidents']['push_settlement']['active'])
 
@@ -152,7 +165,7 @@ class SupervisorTests(unittest.TestCase):
         for name in ('notifications_persisted', 'ack_sent', 'notifications_signalled'):
             sources['push']['diagnostics'][name] = {'count': 1, 'lastEpoch': self.now}
         self.assertNotIn('push_rejections', self.supervisor.evaluate(sources, self.now))
-        self.supervisor.run_once(sources)
+        self.recover(sources)
         self.assertEqual(len(self.sent), 2)
         self.now = failure_at + 1920
         sources['push']['observedEpoch'] = self.now
@@ -177,7 +190,7 @@ class SupervisorTests(unittest.TestCase):
         diagnostics['ack_sent']['lastEpoch'] = self.now
         self.assertFalse(self.supervisor.can_recover('push_rejections', sources, self.now))
         diagnostics['notifications_persisted']['lastEpoch'] = self.now
-        self.supervisor.run_once(sources)
+        self.recover(sources)
         self.assertEqual(len(self.sent), 2)
         self.assertFalse(self.supervisor.state['incidents']['push_rejections']['active'])
 
@@ -231,7 +244,7 @@ class SupervisorTests(unittest.TestCase):
         self.supervisor.run_once(missing)
         self.assertEqual(len(self.sent), 1)
         self.assertTrue(self.supervisor.state['incidents']['instagram_auth']['active'])
-        self.supervisor.run_once(self.healthy())
+        self.recover(self.healthy())
         self.assertEqual(len(self.sent), 2)
 
     def test_clock_forward_values_are_not_fresh(self):
@@ -269,12 +282,13 @@ class SupervisorTests(unittest.TestCase):
 
     def test_credential_escalation_has_no_false_recovery(self):
         expiry = dt.datetime(2026, 11, 9, tzinfo=dt.timezone.utc).timestamp()
-        for remaining, key in [(7 * 86400, '7d'), (48 * 3600, '48h'), (0, 'expired')]:
+        for remaining, key, notices in [(7 * 86400, '7d', 1), (48 * 3600, '48h', 2), (0, 'expired', 2)]:
             self.now = expiry - remaining
             self.supervisor.state['lastRunAt'] = iso(self.now - 120)
             self.supervisor.run_once(self.healthy())
             self.assertIn('credential:analytics-read:' + key, self.supervisor.state['incidents'])
             self.assertNotIn('RECUPERADO', self.sent[-1]['message'])
+            self.assertEqual(len(self.sent), notices)
 
     def test_notifications_reserve_five_critical_attempts(self):
         self.supervisor.state['publicationAttempts'] = [self.now] * 15
@@ -339,6 +353,114 @@ class SupervisorTests(unittest.TestCase):
         self.now += 120
         self.supervisor.run_once(self.healthy())
         self.assertEqual(len(self.sent), 1)
+
+    def test_ten_flaps_and_restarts_keep_one_episode_until_stable_recovery(self):
+        for _ in range(10):
+            bad = self.healthy()
+            bad['status']['sourceStatus'] = 'auth_required'
+            self.supervisor.run_once(bad)
+            self.now += 120
+            self.resume()
+            self.supervisor.run_once(self.healthy())
+            self.now += 120
+            self.resume()
+        self.assertEqual(len(self.sent), 1)
+        incident = self.supervisor.state['incidents']['instagram_auth']
+        self.assertTrue(incident['active'])
+        self.assertEqual(incident['openedAt'], iso(NOW))
+        self.recover(self.healthy())
+        self.assertEqual(len(self.sent), 2)
+        self.assertFalse(incident['active'])
+
+    def test_recovery_requires_distinct_evidence_but_keeps_regular_checks_between_samples(self):
+        bad = self.healthy()
+        bad['usage'].update(lastOutcome='failed', lastError='analytics_unavailable')
+        self.supervisor.run_once(bad)
+        self.now += 1
+        sources = self.healthy()
+        self.supervisor.run_once(sources)
+        for _ in range(7):
+            self.now += 120
+            fresh = self.healthy()
+            fresh['usage'] = sources['usage']
+            self.resume()
+            self.supervisor.run_once(fresh)
+        incident = self.supervisor.state['incidents']['metrics_failed']
+        self.assertTrue(incident['active'])
+        self.assertEqual(incident['recovery']['observations'], 1)
+        self.assertEqual(incident['recovery']['lastCheckedAt'], iso(self.now))
+        self.now += 60
+        self.supervisor.run_once(self.healthy())
+        self.assertFalse(incident['active'])
+        self.assertEqual(len(self.sent), 2)
+
+    def test_recovery_gap_and_missing_evidence_reset_the_window(self):
+        bad = self.healthy()
+        bad['status']['sourceStatus'] = 'auth_required'
+        self.supervisor.run_once(bad)
+        self.now += 120
+        self.supervisor.run_once(self.healthy())
+        self.now += 601
+        self.resume()
+        self.supervisor.run_once(self.healthy())
+        incident = self.supervisor.state['incidents']['instagram_auth']
+        self.assertTrue(incident['active'])
+        self.assertEqual(incident['recovery']['since'], iso(self.now))
+        self.now += 120
+        missing = self.healthy()
+        missing['status'].pop('lastSuccessAt')
+        self.supervisor.run_once(missing)
+        self.assertNotIn('recovery', incident)
+        self.recover(self.healthy())
+        self.assertFalse(incident['active'])
+
+    def test_legacy_active_incident_does_not_repeat_alert_on_upgrade(self):
+        self.supervisor.state['incidents']['instagram_auth'] = {
+            'active': True, 'critical': True, 'openedAt': iso(self.now - 120)}
+        self.supervisor.save()
+        self.resume()
+        bad = self.healthy()
+        bad['status']['sourceStatus'] = 'auth_required'
+        self.supervisor.run_once(bad)
+        self.assertFalse(self.sent)
+        self.assertTrue(self.supervisor.state['incidents']['instagram_auth']['criticalQueued'])
+
+    def test_stale_capacity_or_delivery_observations_cannot_start_recovery(self):
+        self.now += 2000
+        for key in ('capacity:pendingCount', 'delivery_backlog', 'push_settlement'):
+            with self.subTest(key=key):
+                old = {'active': True, 'openedAt': iso(NOW)}
+                sources = self.healthy()
+                sources['push']['observedEpoch'] = self.now - 601
+                sources['loop']['loopAliveAt'] = iso(self.now - 301)
+                sources['status']['pushSettlement'] = {'status': 'matched_exact', 'exhaustedBatches': 0}
+                self.assertFalse(self.supervisor.stable_recovery(old, key, sources, self.now))
+                self.assertNotIn('recovery', old)
+
+    def test_overflow_preserves_reserved_retry_and_receipt_identities_before_compaction(self):
+        self.supervisor.state['publicationAttempts'] = [self.now] * 20
+        self.supervisor.state['outbox'] = [
+            {'id': str(index), 'message': 'fixture', 'critical': False,
+             'createdAt': iso(self.now), 'due': self.now, 'attempts': 1,
+             'outcome': 'in_flight' if index == 0 else 'pending' if index == 1 else 'accepted',
+             'receipt': 'receipt-' + str(index)} for index in range(101)]
+        self.supervisor.save()
+        self.resume()
+        self.assertEqual(self.supervisor.state['outbox'][0]['outcome'], 'uncertain')
+        for _ in range(10):
+            self.supervisor.queue([('new unattempted notice', False)], self.now)
+        self.supervisor.run_once(self.healthy(), deliver=False)
+        self.resume()
+        entries = {entry['id']: entry for entry in self.supervisor.state['outbox']}
+        for index in range(101):
+            self.assertEqual(entries[str(index)]['attempts'], 1)
+            self.assertEqual(entries[str(index)]['receipt'], 'receipt-' + str(index))
+            self.assertEqual(entries[str(index)]['message'], 'fixture')
+        self.assertEqual(entries['0']['outcome'], 'uncertain')
+        self.assertEqual(entries['1']['outcome'], 'pending')
+        self.assertEqual(len(entries), 102)
+        self.supervisor.flush()
+        self.assertFalse(self.sent)
 
     def test_private_files_and_destination_are_enforced(self):
         with self.assertRaises(ValueError):

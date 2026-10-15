@@ -288,6 +288,7 @@ export function createGateway({
   transformPersonalThumbnail = createPersonalThumbnail,
   sendMessageImpl,
   confirmDeliveryImpl,
+  lookupDeliveryImpl,
   transport = "beeper",
   probeTransport,
   isTransportReady = () => true,
@@ -578,8 +579,13 @@ export function createGateway({
       ...(storyPhoto ? { deliveryFormat: "story_photo" } : {}),
     };
     const normalizedHash = requestHash(normalized);
-    const completeDrops = async gatewayJobID => {
+    const dropsIdentity = transport === "baileys" ? {
+      transport, route: personalPost ? "self" : buyticket ? "buyticket" : "uol",
+      keyHash: createHash("sha256").update(idempotencyKey).digest("hex"), requestHash: normalizedHash,
+    } : {};
+    const completeDrops = async (gatewayJobID, identity = {}) => {
       const receipt = { transport: "baileys", gatewayJobID };
+      const recordedReceipt = { ...identity, ...receipt };
       try {
         const confirmation = await confirmDeliveryImpl({pendingMessageID:gatewayJobID});
         if (["accepted", "delivered"].includes(confirmation?.state) && confirmation.messageId &&
@@ -588,20 +594,20 @@ export function createGateway({
           const accepted = { accepted: true, pendingMessageID: confirmation.messageId,
             deliveryState: confirmation.deliveryState, confirmation: confirmation.confirmation, ...receipt,
             ...(storyPhoto ? { deliveryFormat: "story_photo" } : {}) };
-          updateDelivery(database,idempotencyKey,"accepted",accepted,now().toISOString());
+          updateDelivery(database,idempotencyKey,"accepted",{...identity,...accepted},now().toISOString());
           return respond(202,accepted,{deliveryState:accepted.deliveryState});
         }
         if (confirmation?.state === "pending") {
-          updateDelivery(database,idempotencyKey,"pending",receipt,now().toISOString());
+          updateDelivery(database,idempotencyKey,"pending",recordedReceipt,now().toISOString());
           return respond(409,{code:"delivery_pending",...receipt});
         }
         if (confirmation?.state === "rejected") {
           // The Drops job is terminal too; querying it again cannot dispatch a second message.
-          updateDelivery(database,idempotencyKey,"unknown",receipt,now().toISOString());
+          updateDelivery(database,idempotencyKey,"unknown",recordedReceipt,now().toISOString());
           return respond(502,{code:"delivery_rejected",...receipt});
         }
       } catch {}
-      updateDelivery(database,idempotencyKey,"unknown",receipt,now().toISOString());
+      updateDelivery(database,idempotencyKey,"unknown",recordedReceipt,now().toISOString());
       return respond(503,{code:"delivery_unknown",...receipt});
     };
     const reserved = reserveDelivery(
@@ -611,10 +617,20 @@ export function createGateway({
       now().toISOString(),
     );
     if (reserved.kind === "conflict") return respond(409, { code: "idempotency_conflict" });
-    // Only reconcile a recorded Drops job. Historical Beeper ambiguity remains locked.
+    // Reconcile only durable Drops identity. A missing lookup never permits a resend.
     if (transport === "baileys" && ["unknown", "pending"].includes(reserved.kind) &&
-      reserved.response?.transport === "baileys" && reserved.response.gatewayJobID) {
-      return completeDrops(reserved.response.gatewayJobID);
+      reserved.response?.transport === "baileys") {
+      if (reserved.response.gatewayJobID) return completeDrops(reserved.response.gatewayJobID, reserved.response);
+      if (typeof lookupDeliveryImpl === "function" &&
+        ["route", "keyHash", "requestHash"].every(field => reserved.response[field] === dropsIdentity[field])) {
+        try {
+          const job = await lookupDeliveryImpl(dropsIdentity);
+          if (job?.pendingMessageID) return completeDrops(job.pendingMessageID, dropsIdentity);
+        } catch (error) {
+          if (error?.status === 409) return respond(409, { code: "idempotency_conflict" });
+        }
+        return respond(503, { code: "delivery_unknown" });
+      }
     }
     if (reserved.kind === "unknown") return respond(409, { code: "delivery_unknown" });
     if (reserved.kind === "pending") return respond(409, { code: "delivery_pending" });
@@ -631,6 +647,7 @@ export function createGateway({
     let result;
     let image;
     let dispatched = false;
+    let dropsStarted = false;
     try {
       try {
         let avatarBytes;
@@ -652,6 +669,10 @@ export function createGateway({
         });
         return respond(502, { code: "preview_image_unavailable" });
       }
+      if (transport === "baileys") {
+        updateDelivery(database, idempotencyKey, "pending", dropsIdentity, now().toISOString());
+        dropsStarted = true;
+      }
       result = await sendMessageImpl({
         chatId: destinationChatId,
         ...(transport === "baileys" ? {route:personalPost?"self":buyticket?"buyticket":"uol",
@@ -670,12 +691,12 @@ export function createGateway({
       dispatched = true;
       const pendingMessageID = String(result?.pendingMessageID || "");
       if (!pendingMessageID) {
-        updateDelivery(database, idempotencyKey, "unknown", {}, now().toISOString());
+        updateDelivery(database, idempotencyKey, "unknown", dropsIdentity, now().toISOString());
         return respond(503, { code: "delivery_unknown" });
       }
       if (transport === "baileys") {
-        updateDelivery(database,idempotencyKey,"pending",{transport,gatewayJobID:pendingMessageID},now().toISOString());
-        return await completeDrops(pendingMessageID);
+        updateDelivery(database,idempotencyKey,"pending",{...dropsIdentity,gatewayJobID:pendingMessageID},now().toISOString());
+        return await completeDrops(pendingMessageID, dropsIdentity);
       }
       const confirmation = await confirmDeliveryImpl({
         pendingMessageID,
@@ -704,12 +725,13 @@ export function createGateway({
       );
       return respond(202, accepted, { deliveryState: accepted.deliveryState });
     } catch (error) {
-      const ambiguous = dispatched || Boolean(error?.ambiguous);
+      const ambiguous = dispatched || Boolean(error?.ambiguous) ||
+        (dropsStarted && error?.ambiguous !== false);
       updateDelivery(
         database,
         idempotencyKey,
         ambiguous ? "unknown" : "failed",
-        {},
+        dropsStarted ? dropsIdentity : {},
         now().toISOString(),
       );
       return respond(ambiguous ? 503 : 502, {
