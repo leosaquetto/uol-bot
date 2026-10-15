@@ -20,9 +20,10 @@ function failApi(instance) {
   instance.setMetadata("api_failure_streak", 1);
 }
 
-function recoverApi(instance) {
+function recoverApi(instance, now = new Date()) {
   instance.setMetadata("api_last_error", "");
   instance.setMetadata("api_failure_streak", 0);
+  instance.setMetadata("api_last_success_at", now.toISOString());
 }
 
 describe("avisos operacionais persistentes no runtime Cloudflare", () => {
@@ -69,8 +70,12 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
            VALUES ('ticket-api', 'active', 'critical', 'historical-private-summary', '', ?, ?)`, at, at,
         );
         expect(await instance.processOperationalHealth()).toEqual({ active: 1, alerted: 0, recovered: 0 });
-        recoverApi(instance);
-        expect(await instance.processOperationalHealth()).toEqual({ active: 0, alerted: 0, recovered: 1 });
+        const healthyAt = new Date(Date.parse(at) + 60_000);
+        recoverApi(instance, healthyAt);
+        expect(await instance.processOperationalHealth(healthyAt)).toEqual({ active: 0, alerted: 0, recovered: 0 });
+        const stableAt = new Date(healthyAt.getTime() + 5 * 60_000);
+        recoverApi(instance, stableAt);
+        expect(await instance.processOperationalHealth(stableAt)).toEqual({ active: 0, alerted: 0, recovered: 1 });
         expect(state.storage.sql.exec("SELECT status FROM incidents WHERE key = 'ticket-api'").one().status).toBe("resolved");
         expect(instance.loadOperationsOutbox().events).toHaveLength(0);
       });
@@ -86,12 +91,17 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
       requests.push({ url: String(url), body: init.body });
       return new Response(null, { status: requests.length === 2 ? 503 : 200 });
     });
+    vi.useFakeTimers({ toFake: ["Date"] });
     try {
       const stub = env.UOL_TELEGRAM_SHADOW.getByName("ops-recovery-durable-retry");
       await runInDurableObject(stub, async (instance, state) => {
         isolateHealth(instance);
         failApi(instance);
         await instance.processOperationalHealth();
+        vi.setSystemTime(Date.now() + 60_000);
+        recoverApi(instance);
+        await instance.processOperationalHealth();
+        vi.setSystemTime(Date.now() + 5 * 60_000);
         recoverApi(instance);
         await instance.processOperationalHealth();
         expect(state.storage.sql.exec("SELECT status FROM incidents WHERE key = 'ticket-api'").one().status).toBe("resolved");
@@ -110,6 +120,7 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
       expect(requests[1].body).toContain("incidente recuperado");
       expect(requests[2].body).toBe(requests[1].body);
     } finally {
+      vi.useRealTimers();
       vi.unstubAllGlobals();
     }
   });
@@ -215,10 +226,24 @@ describe("avisos operacionais persistentes no runtime Cloudflare", () => {
         { id: "private-id", status: "uncertain", kind: "private-kind", lastAttemptAt: at },
         { id: "private-id-2", status: "pending", lastAttemptAt: at, lastReason: "rate_limited", lastHttpStatus: 429 },
         { id: "private-id-3", lastAttemptAt: at, lastReason: "private-error", lastHttpStatus: 999 },
-      ], attempts: [] });
+        { id: "private-id-4", lastAttemptAt: at, lastReason: "request_invalid" },
+        { id: "private-id-5", lastAttemptAt: at, lastReason: "fetch_invocation_error" },
+        { id: "private-id-6", lastAttemptAt: at, lastReason: "fetch_rejected" },
+        { id: "private-id-7", lastAttemptAt: at, lastReason: "response_invalid" },
+      ], attempts: [
+        { at, privileged: true }, { at, privileged: false },
+        { at: new Date(Date.parse(at) - 86_400_001).toISOString(), privileged: false },
+      ] });
       instance.setMetadata("ops_ntfy_outbox", raw);
       const summary = instance.operationsNotificationDiagnostics();
-      expect(summary.reasons).toEqual({ unknown: 2, rate_limited: 1 });
+      expect(summary.reasons).toEqual({
+        unknown: 2, rate_limited: 1, request_invalid: 1,
+        fetch_invocation_error: 1, fetch_rejected: 1, response_invalid: 1,
+      });
+      expect(summary.budget).toEqual({
+        attempts24h: 2, ordinaryAttempts24h: 1,
+        oldestAttemptExpiresAt: new Date(Date.parse(at) + 86_400_000).toISOString(),
+      });
       expect(summary.outcomes.some(outcome => outcome.httpStatus === 429)).toBe(true);
       expect(JSON.stringify(summary)).not.toMatch(/private-|999/);
       expect(instance.metadataValue("ops_ntfy_outbox")).toBe(raw);

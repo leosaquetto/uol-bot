@@ -74,6 +74,19 @@ identidade e resultado por sete dias, sem ocupar essa capacidade ou liberar repl
 enumerados e códigos HTTP válidos. Falhas antigas sem motivo seguem `unknown`;
 não preencher retrospectivamente nem reenviar com base na ausência do cache ntfy.
 
+Em 15/10, validação nativa workerd demonstrou a causa local do transporte:
+`redirect: "error"` lança antes da saída. O request corrigido usa `manual` e trata
+3xx como rejeição permanente, sem seguir destinos. Novos resultados distinguem
+`request_invalid`, `fetch_invocation_error`, `fetch_rejected` e `response_invalid`;
+nenhum erro livre é persistido e nenhum registro antigo é reclassificado.
+
+Oscilações permanecem no mesmo incidente até recuperação estável: sucesso
+afirmativo fresco, ao menos duas observações distintas e cinco minutos contínuos.
+Silêncio, amostra antiga ou entrega desconhecida não comprovam recuperação.
+Janela é durável; falha nova a zera e lacuna acima de dez minutos a reinicia.
+Falha crítica nova e escalada para crítico são acionáveis imediatamente, uma vez
+por episódio; resultado incerto da abertura não é reenviado.
+
 A fila principal não libera `unknown` pelo tempo decorrido. É preciso recibo ou
 resolução explícita com evidência. Backlog usado para priorizar o principal
 considera envios elegíveis e sua própria idade, conservando contagens de

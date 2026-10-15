@@ -22,8 +22,10 @@ export function buildOperationalNotification(event = {}) {
     : "warning";
   const recovered = event?.recovered === true;
   return {
+    title: event?.test === true ? "UOL bot - teste tecnico" : "UOL bot - aviso tecnico",
     body: [
-      recovered ? "UOL bot: incidente recuperado." : "UOL bot: atenção necessária.",
+      event?.test === true ? "UOL bot: TESTE técnico autorizado." :
+        recovered ? "UOL bot: incidente recuperado." : "UOL bot: atenção necessária.",
       `Tipo: ${KIND_LABELS[kind]}.`,
       `Nível: ${severity}.`,
     ].join("\n"),
@@ -50,34 +52,49 @@ function retryAfterMs(response) {
 // The caller reserves and persists each attempt. Network ambiguity must not be
 // retried as a confirmed rejection, and HTTP acceptance is not a read receipt.
 export async function sendOperationalNotification(event, fetchImpl = fetch) {
-  const notification = buildOperationalNotification(event);
-  const controller = new AbortController();
   let timedOut = false;
   let timer;
-  const deadline = new Promise((resolve) => {
-    timer = setTimeout(() => {
-      timedOut = true;
-      controller.abort();
-      resolve(null);
-    }, REQUEST_TIMEOUT_MS);
-  });
+  let phase = "request";
   try {
+    const notification = buildOperationalNotification(event);
+    const controller = new AbortController();
+    const init = {
+      method: "POST",
+      // workerd rejects redirect:"error" before egress. Manual also prevents
+      // forwarding the private notification to any redirected destination.
+      redirect: "manual",
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        Title: notification.title,
+        Priority: notification.priority,
+      },
+      body: notification.body,
+      signal: controller.signal,
+    };
+    // Validate in the native runtime before invoking transport. A local request
+    // error is a proven non-send; fetch rejection remains ambiguous.
+    new Request(OPERATIONS_TOPIC, init);
+    const deadline = new Promise((resolve) => {
+      timer = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+        resolve(null);
+      }, REQUEST_TIMEOUT_MS);
+    });
+    phase = "invocation";
+    const request = fetchImpl(OPERATIONS_TOPIC, init);
+    phase = "fetch";
     const response = await Promise.race([
-      Promise.resolve().then(() => fetchImpl(OPERATIONS_TOPIC, {
-        method: "POST",
-        redirect: "error",
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          Title: "UOL bot - aviso tecnico",
-          Priority: notification.priority,
-        },
-        body: notification.body,
-        signal: controller.signal,
-      })),
+      request,
       deadline,
     ]);
-    if (timedOut || !response) return { status: "uncertain", reason: "timeout" };
+    if (timedOut) return { status: "uncertain", reason: "timeout" };
+    phase = "response";
+    if (!response) return { status: "uncertain", reason: "response_invalid" };
     const httpStatus = Number(response.status);
+    if (!Number.isInteger(httpStatus) || httpStatus < 100 || httpStatus > 599) {
+      return { status: "uncertain", reason: "response_invalid" };
+    }
     // Do not parse or expose the notification response, including its ID.
     try {
       response.body?.cancel()?.catch(() => {});
@@ -97,7 +114,12 @@ export async function sendOperationalNotification(event, fetchImpl = fetch) {
     }
     return { status: "permanent", reason: "http_rejected", httpStatus };
   } catch {
-    return { status: "uncertain", reason: timedOut ? "timeout" : "network_error" };
+    // Only fixed stage labels escape this boundary; never persist raw errors,
+    // private URLs, headers or provider response bodies.
+    if (phase === "request") return { status: "permanent", reason: "request_invalid" };
+    const reason = timedOut ? "timeout" : phase === "invocation" ? "fetch_invocation_error"
+      : phase === "response" ? "response_invalid" : "fetch_rejected";
+    return { status: "uncertain", reason };
   } finally {
     clearTimeout(timer);
   }

@@ -91,6 +91,15 @@ agenda coleta. Estado de produção exige verificação própria.
   de 128 conta somente pendentes/reservados; terminais preservam a identidade por
   sete dias sem ocupar essa reserva. Diagnóstico autenticado distingue motivos
   enumerados e HTTP; registros antigos sem motivo continuam desconhecidos.
+  O request usa `redirect: manual`: workerd rejeita `error` antes de qualquer
+  POST. Respostas 3xx são rejeições permanentes, sem encaminhamento do conteúdo.
+  Validação local, invocação, rejeição assíncrona e resposta inválida têm motivos
+  separados; os resultados incertos antigos permanecem preservados.
+  Oscilações próximas mantêm o mesmo episódio. Recuperação exige sucesso
+  afirmativo fresco, duas observações distintas e cinco minutos estáveis;
+  ausência de sinal ou leitura antiga não basta. Estado persiste após reinício,
+  e lacuna superior a dez minutos reinicia a janela. Primeira falha crítica e
+  escalada de warning para critical continuam imediatas, uma vez por episódio.
 - **Discord:** ingressos no canal original e ofertas comuns no segundo webhook,
   ambos com embed, thumbnail e edição automática de esgotamento/reabertura.
 - **Identidade:** combina slug canônico, variantes históricas e

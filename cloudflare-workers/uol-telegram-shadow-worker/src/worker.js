@@ -2907,6 +2907,7 @@ export class UolTelegramShadow extends DurableObject {
     const allowedReasons = new Set([
       "http_accepted", "timeout", "network_error", "rate_limited",
       "server_error", "http_rejected",
+      "request_invalid", "fetch_invocation_error", "fetch_rejected", "response_invalid",
     ]);
     const outcomes = (state.events || []).filter(event => event.lastAttemptAt)
       .sort((left, right) => String(right.lastAttemptAt).localeCompare(String(left.lastAttemptAt)))
@@ -2923,7 +2924,21 @@ export class UolTelegramShadow extends DurableObject {
         }
         return result;
       });
-    return { reasons, outcomes, window: 20 };
+    const now = Date.now();
+    const attempts = (state.attempts || []).filter(attempt => {
+      const at = Date.parse(attempt?.at);
+      return Number.isFinite(at) && at > now - 86_400_000 && at <= now;
+    });
+    const oldestAttempt = Math.min(...attempts.map(attempt => Date.parse(attempt.at)));
+    return {
+      reasons, outcomes, window: 20,
+      budget: {
+        attempts24h: attempts.length,
+        ordinaryAttempts24h: attempts.filter(attempt => !attempt.privileged).length,
+        oldestAttemptExpiresAt: Number.isFinite(oldestAttempt)
+          ? new Date(oldestAttempt + 86_400_000).toISOString() : "",
+      },
+    };
   }
 
   loadOperationsOutbox(now = new Date()) {
@@ -2937,18 +2952,20 @@ export class UolTelegramShadow extends DurableObject {
     return loaded.state;
   }
 
-  enqueueOperationalAlert(signal, recovered = false, now = new Date()) {
+  enqueueOperationalAlert(signal, recovered = false, now = new Date(), escalated = false) {
     const episodeKey = `ops_ntfy_episode:${signal.key}`;
     let episode = this.metadataValue(episodeKey);
-    if (!recovered) {
+    if (!recovered && !escalated) {
       episode = crypto.randomUUID();
     } else if (!episode) {
       // The previous transport owns historical incidents. Do not replay them.
       return false;
     }
+    const criticalKey = `ops_ntfy_critical:${signal.key}`;
+    if (escalated && this.metadataValue(criticalKey) === episode) return false;
     const kind = String(signal.key || "monitor").split(":")[0];
     const queued = enqueueOperationsEvent(this.loadOperationsOutbox(now), {
-      id: `${episode}:${recovered ? "recovered" : "opened"}`,
+      id: `${episode}:${recovered ? "recovered" : escalated ? "critical" : "opened"}`,
       kind,
       severity: signal.severity,
       recovered,
@@ -2958,7 +2975,8 @@ export class UolTelegramShadow extends DurableObject {
     }
     if (queued.changed) this.setMetadataIfChanged("ops_ntfy_outbox", JSON.stringify(queued.state));
     if (!recovered) this.setMetadataIfChanged(episodeKey, episode);
-    return true;
+    if (!recovered && signal.severity === "critical") this.setMetadataIfChanged(criticalKey, episode);
+    return queued.enqueued;
   }
 
   async drainOperationalAlerts(now = new Date()) {
@@ -3002,6 +3020,116 @@ export class UolTelegramShadow extends DurableObject {
     const lastCheckedAt = Date.parse(this.metadataValue("ops_health_checked_at") || "");
     return !Number.isFinite(lastCheckedAt) ||
       now.getTime() - lastCheckedAt >= intervalSeconds * 1_000;
+  }
+
+  operationalRecoveryObservedAt(row, { api, apiContract, sourceHealth, webhook, queueSlo }, now) {
+    const at = now.getTime();
+    const fresh = (value) => {
+      const observedAt = Date.parse(value || "");
+      return Number.isFinite(observedAt) && observedAt > Date.parse(row.last_detected_at) &&
+        observedAt <= at && at - observedAt <= 10 * 60_000 ? observedAt : null;
+    };
+    const apiError = api.lastError ?? this.metadataValue("api_last_error");
+    const apiFailureStreak = Number(api.failureStreak ?? this.metadataValue("api_failure_streak") ?? 0);
+    if (row.key === "ticket-api") {
+      return !apiError && apiFailureStreak === 0
+        ? fresh(api.lastSuccessAt || this.metadataValue("api_last_success_at")) : null;
+    }
+    if (row.key === "ticket-api-contract") {
+      return apiContract.ok === true && apiContract.degraded !== true && !apiError && apiFailureStreak === 0
+        ? fresh(apiContract.lastCheckedAt) : null;
+    }
+    if (row.key === "ticket-api-expiry") {
+      const expiresAt = Date.parse(authorizationExpiresAt(this.env.UOL_API_AUTHORIZATION));
+      return expiresAt > at + 14 * 86_400_000 ? at : null;
+    }
+    if (row.key === "failed-scans") {
+      return api.lastOutcome && api.lastOutcome !== "failed" && !api.lastRunError &&
+        Number(api.runFailureStreak) === 0 ? fresh(api.lastCompletedAt) : null;
+    }
+    if (row.key === "source-health") {
+      return Number(sourceHealth.listingFailureStreak) === 0 &&
+        Number(sourceHealth.listingDropStreak) === 0 && Number(sourceHealth.sourceDivergenceStreak) === 0
+        ? fresh(sourceHealth.fullSourceSuccessAt || this.metadataValue("full_source_success_at")) : null;
+    }
+    if (row.key === "telegram-webhook") {
+      const matches = webhook.urlMatches ?? this.metadataValue("telegram_webhook_url_matches") === "true";
+      const pending = Number(webhook.pendingUpdates ?? this.metadataValue("telegram_webhook_pending_updates"));
+      const error = webhook.lastError ?? this.metadataValue("telegram_webhook_last_error");
+      return matches && pending === 0 && !error && !this.metadataValue("telegram_webhook_check_error")
+        ? fresh(webhook.checkedAt || this.metadataValue("telegram_webhook_checked_at")) : null;
+    }
+    // These values are queried from current durable delivery state. A missing
+    // issue (age cutoff/LIMIT), missing offer, or an uncertain result is not proof.
+    if (row.key === "delivery-slo") {
+      return queueSlo.criticalPending === 0 && queueSlo.secondaryPending === 0 ? at : null;
+    }
+    if (row.key.startsWith("ticket-delivery:")) {
+      const offer = this.sqlExec(
+        `SELECT main_sent_at, main_message_kind, telegram_image_strategy, comment_sent_at
+         FROM offers WHERE id = ?`, row.key.slice("ticket-delivery:".length),
+      ).toArray()[0];
+      return offer?.main_sent_at && offer.comment_sent_at &&
+        (offer.main_message_kind === "photo" || offer.telegram_image_strategy === "text_fast") ? at : null;
+    }
+    if (row.key.startsWith("delivery-queue:")) {
+      const separator = row.key.lastIndexOf(":");
+      const target = row.key.slice(separator + 1);
+      if (target === "delivery") {
+        const offer = this.sqlExec(
+          `SELECT link, category, status, would_send_canal2,
+                  main_sent_at, canal2_sent_at, discord_sent_at,
+                  delivery_unknown_at, delivery_unknown_target,
+                  main_delivery_unknown_at, canal2_delivery_unknown_at,
+                  discord_delivery_unknown_at, comment_delivery_unknown_at
+           FROM offers WHERE id = ?`, row.key.slice("delivery-queue:".length, separator),
+        ).toArray()[0];
+        if (!offer || offer.status === "delivery_unknown" || [
+          "delivery_unknown_at", "delivery_unknown_target", "main_delivery_unknown_at",
+          "canal2_delivery_unknown_at", "discord_delivery_unknown_at", "comment_delivery_unknown_at",
+        ].some(field => offer[field])) return null;
+        const configuration = deliveryConfiguration(
+          this.env, telegramConfiguration(this.env), discordConfiguration(this.env),
+        );
+        return classifyDeliveryRow(offer, configuration, {
+          ticket: isTicketCampaign(offer), now,
+        }).state === "complete" ? at : null;
+      }
+      const receiptColumn = {
+        main: "main_sent_at", canal2: "canal2_sent_at", discord: "discord_sent_at", comment: "comment_sent_at",
+        main_restock: "main_restock_synced_at", canal2_restock: "canal2_restock_synced_at",
+        main_sold_out: "main_sold_out_synced_at", canal2_sold_out: "canal2_sold_out_synced_at",
+      }[target];
+      if (!receiptColumn) return null;
+      const offer = this.sqlExec(
+        `SELECT ${receiptColumn} AS receipt, status, main_delivery_unknown_at, comment_delivery_unknown_at
+         FROM offers WHERE id = ?`, row.key.slice("delivery-queue:".length, separator),
+      ).toArray()[0];
+      return offer?.receipt && offer.status !== "delivery_unknown" &&
+        !offer.main_delivery_unknown_at && !offer.comment_delivery_unknown_at ? at : null;
+    }
+    return null;
+  }
+
+  operationalRecoveryStable(row, snapshots, now) {
+    const key = `ops_ntfy_recovery:${row.key}`;
+    const observedAt = this.operationalRecoveryObservedAt(row, snapshots, now);
+    if (observedAt === null) {
+      this.setMetadataIfChanged(key, "");
+      return false;
+    }
+    const previous = parseRuntimeSnapshot(this.metadataValue(key));
+    const at = now.getTime();
+    // Five minutes and a second, distinct affirmative observation are required.
+    // A gap over ten minutes starts a new window, including after eviction.
+    if (!Number.isFinite(previous.since) || !Number.isFinite(previous.lastCheckedAt) ||
+        at < previous.lastCheckedAt || at - previous.lastCheckedAt > 10 * 60_000) {
+      this.setMetadataIfChanged(key, JSON.stringify({ since: at, observedAt, lastCheckedAt: at }));
+      return false;
+    }
+    if (observedAt <= previous.observedAt) return false;
+    this.setMetadataIfChanged(key, JSON.stringify({ ...previous, observedAt, lastCheckedAt: at }));
+    return at - previous.since >= 5 * 60_000;
   }
 
   async processOperationalHealth(now = new Date()) {
@@ -3085,9 +3213,13 @@ export class UolTelegramShadow extends DurableObject {
         // Enqueue first; synchronous SQL updates commit before any external I/O.
         // Existing active incidents are baseline, not new notifications.
         if (newlyActive) {
-          this.enqueueOperationalAlert(signal, false, now);
-          alerted += 1;
+          if (this.enqueueOperationalAlert(signal, false, now)) alerted += 1;
+        } else if (signal.severity === "critical" && row.severity !== "critical") {
+          // Escalation is a new fact with its own deduplicated identity. Never
+          // replay the opening event, including an uncertain opening result.
+          if (this.enqueueOperationalAlert(signal, false, now, true)) alerted += 1;
         }
+        this.setMetadataIfChanged(`ops_ntfy_recovery:${signal.key}`, "");
         this.sqlExec(
           `INSERT INTO incidents(
              key, status, severity, summary, details, first_detected_at, last_detected_at
@@ -3102,6 +3234,7 @@ export class UolTelegramShadow extends DurableObject {
 
       for (const row of existing.values()) {
         if (row.status !== "active" || activeKeys.has(row.key)) continue;
+        if (!this.operationalRecoveryStable(row, { api, apiContract, sourceHealth, webhook, queueSlo }, now)) continue;
         const signal = {
           key: row.key,
           severity: row.severity,
@@ -3116,6 +3249,7 @@ export class UolTelegramShadow extends DurableObject {
             last_attempted_at = ?, alert_error = '' WHERE key = ?`,
           nowIso, nowIso, row.key,
         );
+        this.setMetadataIfChanged(`ops_ntfy_recovery:${row.key}`, "");
         recovered += 1;
       }
       this.setMetadata("ops_health_checked_at", nowIso);

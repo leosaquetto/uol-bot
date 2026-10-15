@@ -13,6 +13,7 @@ const TERMINAL = new Set(["accepted", "uncertain", "permanent", "exhausted"]);
 const OUTCOMES = new Set(["accepted", "uncertain", "permanent", "retryable"]);
 const OUTCOME_REASONS = new Set([
   "timeout", "http_accepted", "rate_limited", "server_error", "http_rejected", "network_error",
+  "request_invalid", "fetch_invocation_error", "fetch_rejected", "response_invalid",
 ]);
 
 function timestamp(now) {

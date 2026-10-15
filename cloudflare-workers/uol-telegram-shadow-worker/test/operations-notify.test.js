@@ -25,7 +25,7 @@ test("alerta técnico usa somente o tópico fixo e campos enumerados", async () 
   });
   assert.equal(request.url, "https://ntfy.sh/macXntfy-8130");
   assert.equal(request.init.method, "POST");
-  assert.equal(request.init.redirect, "error");
+  assert.equal(request.init.redirect, "manual");
   assert.equal(request.init.headers.Title, "UOL bot - aviso tecnico");
   assert.equal(request.init.headers.Priority, "5");
   assert.equal(request.init.headers["Content-Type"], "text/plain; charset=utf-8");
@@ -60,11 +60,45 @@ test("todos os HTTP 2xx significam aceitação, sem recibo de leitura", async ()
   }
 });
 
-test("erro de rede é incerto e não expõe a mensagem original", async () => {
+test("rejeição de fetch é incerta e não expõe a mensagem original", async () => {
   const result = await sendOperationalNotification({}, async () => {
     throw new Error("secret network URL and token");
   });
-  assert.deepEqual(result, { status: "uncertain", reason: "network_error" });
+  assert.deepEqual(result, { status: "uncertain", reason: "fetch_rejected" });
+});
+
+test("falha síncrona de invocação é separada de rejeição assíncrona", async () => {
+  const result = await sendOperationalNotification({}, () => {
+    throw new TypeError("private transport detail");
+  });
+  assert.deepEqual(result, { status: "uncertain", reason: "fetch_invocation_error" });
+});
+
+test("falha de validação local não chama transporte nem vira erro de rede", async (t) => {
+  const NativeRequest = globalThis.Request;
+  t.mock.method(globalThis, "Request", function () { throw new TypeError("private request detail"); });
+  let calls = 0;
+  const result = await sendOperationalNotification({}, () => { calls += 1; });
+  assert.equal(calls, 0);
+  assert.deepEqual(result, { status: "permanent", reason: "request_invalid" });
+  t.mock.restoreAll();
+  assert.equal(globalThis.Request, NativeRequest);
+});
+
+test("resposta inválida é incerta e não inventa HTTP", async () => {
+  for (const response of [null, {}, { status: NaN }, { status: 600 },
+    { get status() { throw new Error("private response detail"); } }]) {
+    assert.deepEqual(await sendOperationalNotification({}, async () => response), {
+      status: "uncertain", reason: "response_invalid",
+    });
+  }
+});
+
+test("teste autorizado tem identificação fixa, sem aceitar texto livre", () => {
+  const result = buildOperationalNotification({ test: true, title: "private", body: "private" });
+  assert.equal(result.title, "UOL bot - teste tecnico");
+  assert.match(result.body, /TESTE técnico autorizado/);
+  assert.doesNotMatch(JSON.stringify(result), /private/);
 });
 
 test("timeout é limitado, aborta e permanece incerto mesmo se fetch não rejeitar", async (t) => {

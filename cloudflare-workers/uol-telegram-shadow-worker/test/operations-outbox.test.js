@@ -182,6 +182,8 @@ test("outcome diagnostics keep only enumerated reasons and HTTP status metadata"
     ["accepted", "http_accepted", 200], ["uncertain", "timeout", undefined],
     ["uncertain", "network_error", undefined], ["retryable", "rate_limited", 429],
     ["retryable", "server_error", 503], ["permanent", "http_rejected", 403],
+    ["permanent", "request_invalid", undefined], ["uncertain", "fetch_invocation_error", undefined],
+    ["uncertain", "fetch_rejected", undefined], ["uncertain", "response_invalid", undefined],
   ]) {
     const reserved = reserveNextOperationsEvent(enqueue(undefined, "episode:opened"), start);
     const completed = completeOperationsEvent(reserved.state, "episode:opened", {

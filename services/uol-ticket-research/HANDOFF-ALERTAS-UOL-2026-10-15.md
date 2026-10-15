@@ -1,5 +1,9 @@
 # Handoff — corrigir os alertas técnicos do UOL
 
+> Fotografia anterior à continuação. Causa nativa e estabilização corrigidas na
+> sequência; ver seção “Causa nativa ntfy e estabilização” do
+> `ROLLOUT-2026-10-10.md`. Restrições de dados, filas e Instagram seguem válidas.
+
 ## Pedido e entrega esperada
 
 O usuário pediu continuar em uma conversa nova e arquivar a anterior. A prioridade
