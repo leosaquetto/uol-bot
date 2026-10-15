@@ -12,6 +12,8 @@ test('destination verification checks exact membership, posting rights and regis
   const store=openStore(join(dir,'state.sqlite'));
   let group={subject:'Requested group',participants:[{id:'222@s.whatsapp.net'}]};
   const socket={user:{id:'111:3@s.whatsapp.net'},ev:new EventEmitter(),ws:new EventEmitter(),end(){},
+    groupFetchAllParticipating:async()=>({a:{id:'444@g.us',subject:'mac-send 💻'},b:{id:'555@g.us',subject:'Mac-send 💻'},
+      c:{id:'666@g.us',subject:'mac-send 💻'}}),
     groupMetadata:async()=>group,onWhatsApp:async jid=>[{jid,exists:jid==='333@s.whatsapp.net'}]};
   let creds;
   const whatsapp=startWhatsApp({store,socketFactory:({auth})=>{creds=auth.creds;return socket;},logger:{log(){}}});
@@ -23,6 +25,8 @@ test('destination verification checks exact membership, posting rights and regis
     creds.accountSyncCounter=1;
     socket.ev.emit('creds.update',{accountSyncCounter:1});
     assert.equal(whatsapp.isReady(),true);
+    assert.deepEqual(await whatsapp.findGroupsByName('mac-send 💻'),[{jid:'444@g.us'},{jid:'666@g.us'}]);
+    assert.deepEqual(await whatsapp.findGroupsByName('mac-send'),[]);
     const destination={type:'group',jid:'444@g.us'};
     await assert.rejects(whatsapp.verifyDestination(destination),/destination_not_writable/);
     socket.user.lid='999:3@lid';

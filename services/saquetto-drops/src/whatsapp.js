@@ -179,6 +179,11 @@ export function startWhatsApp({ store, onQr = () => {}, getPersonalJid = () => '
     isReady: () => state === 'connected',
     socket: () => socket,
     ownDestination: () => ({type:'contact',jid:jidNormalizedUser(socket?.user?.id || ''),verified:state==='connected'}),
+    async findGroupsByName(name) {
+      if(state!=='connected')throw new Error('whatsapp_not_ready');
+      const groups=await socket.groupFetchAllParticipating();
+      return Object.values(groups).filter(group=>group.subject===name).map(group=>({jid:group.id}));
+    },
     async verifyDestination(destination) {
       if (state !== 'connected') throw new Error('whatsapp_not_ready');
       const me = jidNormalizedUser(socket.user?.id || '');

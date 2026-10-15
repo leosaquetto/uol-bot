@@ -8,7 +8,7 @@ import { observeWebPush, decodePushEvent, validateRegistration } from './webpush
 import { createProcessor } from './processor.js';
 import { startWhatsApp } from './whatsapp.js';
 import { createSender, prepareContent } from './sender.js';
-import { createManualApi, manualAuthorized } from './manual.js';
+import { createManualApi, manualAuthorized, registerMacsendDestination, applySavedMacsendDestination } from './manual.js';
 import { createGatewayApi } from './gateway-api.js';
 import { acquireLock } from './process-lock.js';
 import { createPilot } from './pilot.js';
@@ -28,6 +28,8 @@ if (!['cdp','webpush'].includes(pushTransport)) throw new Error('invalid_push_tr
 const registration=pushTransport==='webpush' ? validateRegistration(JSON.parse(readFileSync(
   process.env.DROPS_PUSH_REGISTRATION || join(data,'webpush.private.json'),'utf8'))) : null;
 let {config} = loadConfig(configPath), configError = null, observer = null, observerStarting = false;
+const macsendDestinationPath=join(data,'macsend-destination.private.json');
+config=applySavedMacsendDestination(config,macsendDestinationPath);
 let qrAvailable = false, closing = false;
 const qrPath = join(data,'pairing-qr.private.txt');
 const whatsapp = process.env.DROPS_WHATSAPP === '1' ? startWhatsApp({
@@ -100,6 +102,16 @@ const server = createServer(async (req,res) => {
   }
   if (!equal(String(req.headers.authorization || '').replace(/^Bearer\s+/i,''))) return reply(401,{code:'unauthorized'});
   try {
+    if(req.method==='POST' && path==='/v1/macsend/register') {
+      if(!['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress))return reply(403,{code:'loopback_required'});
+      if(!String(req.headers['content-type']||'').startsWith('application/json'))return reply(415,{code:'json_required'});
+      const chunks=[];let size=0;
+      for await(const chunk of req){size+=chunk.length;if(size>4096)return reply(413,{code:'body_too_large'});chunks.push(chunk);}
+      const input=JSON.parse(Buffer.concat(chunks).toString());
+      const result=await registerMacsendDestination({input,whatsapp,destinationPath:macsendDestinationPath,getConfig:()=>config,
+        setConfig:next=>{config=next;configError=null;}});
+      return reply(result.status,result.body);
+    }
     if (req.method==='GET' && path==='/v1/status') return reply(200,status());
     if (req.method==='GET' && /^\/v1\/messages\/[a-f0-9-]+$/.test(path)) {
       const row=store.job(path.split('/').at(-1));return reply(row?200:404,row?safeJob(row):{code:'not_found'});
@@ -109,7 +121,7 @@ const server = createServer(async (req,res) => {
       events:store.db.prepare("SELECT id,state,code FROM push_events WHERE state='pending_review' LIMIT 100").all(),
     });
     if (req.method==='POST' && path==='/v1/config/reload') {
-      const loaded = loadConfig(configPath,config);config=loaded.config;configError=loaded.error;
+      const loaded = loadConfig(configPath,config);config=applySavedMacsendDestination(loaded.config,macsendDestinationPath);configError=loaded.error;
       if (store.getSetting('paused')==='true') config.operation.paused=true;
       return reply(configError?400:200,{ok:!configError,code:configError||'reloaded'});
     }
@@ -146,9 +158,9 @@ const server = createServer(async (req,res) => {
       const row=await pilot.enqueue(request);return reply(202,safeJob(row));
     }
     return reply(404,{code:'not_found'});
-  } catch {return reply(400,{code:'request_failed'});}
+  } catch(error) {return reply(error.status||400,{code:error.status?error.message:'request_failed'});}
 });
-server.requestTimeout=45000;server.headersTimeout=10000;
+server.requestTimeout=300000;server.headersTimeout=10000;
 if (store.getSetting('paused')==='true') config.operation.paused=true;
 server.listen(Number(process.env.DROPS_PORT || 8788),'127.0.0.1');
 const shutdown = async () => {

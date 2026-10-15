@@ -2,7 +2,7 @@
 # Only this namespace is public; Drops administration and pairing stay local.
 handle /v1/whatsapp/* {
   request_body {
-    max_size 8MB
+    max_size 104857600
   }
   reverse_proxy 127.0.0.1:8788
 }

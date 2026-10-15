@@ -1,10 +1,13 @@
 import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
-import { mkdirSync, writeFileSync, readFileSync, unlinkSync } from 'node:fs';
-import { join } from 'node:path';
+import { mkdirSync, writeFileSync, readFileSync, unlinkSync, renameSync, readdirSync } from 'node:fs';
+import { open } from 'node:fs/promises';
+import { basename, join } from 'node:path';
 import sharp from 'sharp';
+import { validateConfig } from './config.js';
 
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
-const MAX_UPLOAD = 8 * 1024 * 1024, MAX_STORAGE = 128 * 1024 * 1024;
+const MAX_UPLOAD = 8 * 1024 * 1024, MAX_DOCUMENT = 100 * 1024 * 1024, MAX_STORAGE = 512 * 1024 * 1024;
+const MIME = /^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/i;
 const DAY = 86400000, SEND_TTL = 30 * 60000;
 const names = {
   'eu-mesmo':'Eu mesmo', 'gabfilho':'gabfilho', 'amanda-costa':'Amanda Costa',
@@ -27,6 +30,45 @@ async function body(req, limit) {
   }
   return Buffer.concat(chunks);
 }
+export function applySavedMacsendDestination(config,destinationPath) {
+  let saved;
+  try {saved=JSON.parse(readFileSync(destinationPath,'utf8'));}
+  catch(error) {if(error.code==='ENOENT')return config;}
+  const next={...config,destinations:{...config.destinations}};
+  delete next.destinations['mac-send'];
+  try {
+    if(!saved||saved.name!=='mac-send 💻'||saved.alias!=='mac-send'||saved.destination?.type!=='group'||saved.destination?.verified!==true||
+      Object.keys(saved).some(k=>!['name','alias','destination'].includes(k))||
+      Object.keys(saved.destination).some(k=>!['type','jid','verified'].includes(k)))fail('invalid_destination');
+    next.destinations['mac-send']=saved.destination;
+    return validateConfig(next);
+  } catch {
+    delete next.destinations['mac-send'];
+    // Keep a routed alias closed without invalidating unrelated rules.
+    if(next.rules.some(rule=>rule.destinations.includes('mac-send')))
+      next.destinations['mac-send']={type:'group',jid:'0@g.us',verified:false};
+    return validateConfig(next);
+  }
+}
+export async function registerMacsendDestination({input,whatsapp,destinationPath,getConfig,setConfig}) {
+  if(!input||Object.keys(input).some(k=>!['name','alias'].includes(k))||input.name!=='mac-send 💻'||input.alias!=='mac-send')fail('invalid_destination');
+  if(!whatsapp.isReady())fail('whatsapp_not_ready',409);
+  const groups=await whatsapp.findGroupsByName(input.name);
+  if(groups.length!==1)return {status:409,body:{name:input.name,matches:groups.length,alias:input.alias}};
+  const destination={type:'group',jid:groups[0].jid,verified:true};
+  const verified=await whatsapp.verifyDestination(destination);
+  if(!verified.writable||verified.name!==input.name)fail('destination_not_writable',409);
+  // Read the current configuration after discovery, so unrelated changes survive.
+  const next=validateConfig({...getConfig(),destinations:{...getConfig().destinations,[input.alias]:destination}});
+  const temporary=destinationPath+'.'+randomUUID()+'.tmp';
+  try {
+    writeFileSync(temporary,JSON.stringify({name:input.name,alias:input.alias,destination})+'\n',{flag:'wx',mode:0o600});
+    renameSync(temporary,destinationPath);
+  } finally {try{unlinkSync(temporary);}catch(error){if(error.code!=='ENOENT')throw error;}}
+  setConfig(next);
+  const sender=whatsapp.ownDestination().jid.split('@')[0].replace(/:.*$/,'');
+  return {status:200,body:{name:input.name,matches:1,alias:input.alias,sender:'****'+sender.slice(-4)}};
+}
 export function createManualApi({store,dataDir,getConfig,canSend,now=Date.now}) {
   const {db}=store, directory=join(dataDir,'manual-media');
   mkdirSync(directory,{recursive:true,mode:0o700});
@@ -34,6 +76,12 @@ export function createManualApi({store,dataDir,getConfig,canSend,now=Date.now}) 
     CREATE TABLE IF NOT EXISTS manual_requests(id TEXT PRIMARY KEY,hash TEXT NOT NULL,created_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS manual_jobs(request_id TEXT NOT NULL,job_id TEXT UNIQUE NOT NULL,alias TEXT NOT NULL,media_id TEXT,position INTEGER NOT NULL);`);
   const file = id => {if(!UUID.test(id))fail('invalid_media');return join(directory,id);};
+  const remove=id=>{for(const path of [file(id),file(id)+'.json'])try{unlinkSync(path);}catch(e){if(e.code!=='ENOENT')throw e;}};
+  // The service process lock excludes concurrent uploaders during startup.
+  for(const name of readdirSync(directory)) {
+    const id=name.replace(/\.json$/,'');
+    if(UUID.test(id)&&!db.prepare('SELECT 1 FROM manual_media WHERE id=?').get(id))remove(id);
+  }
   const destinations=()=>Object.entries(getConfig().destinations)
     .filter(([,d])=>d.verified && d.gatewayOnly!==true && ['group','contact'].includes(d.type))
     .map(([id,d])=>({id,name:names[id]||id,type:d.type}));
@@ -53,7 +101,7 @@ export function createManualApi({store,dataDir,getConfig,canSend,now=Date.now}) 
     for(const row of db.prepare(`SELECT id FROM manual_media WHERE created_at<? AND NOT EXISTS
       (SELECT 1 FROM manual_jobs m JOIN jobs j ON j.id=m.job_id
        WHERE m.media_id=manual_media.id AND j.state IN ('queued','dispatching'))`).all(now()-DAY)) {
-      try{unlinkSync(file(row.id));}catch(e){if(e.code!=='ENOENT')continue;}
+      try{remove(row.id);}catch{continue;}
       db.prepare('DELETE FROM manual_media WHERE id=?').run(row.id);
     }
   };
@@ -61,11 +109,39 @@ export function createManualApi({store,dataDir,getConfig,canSend,now=Date.now}) 
     if(!canSend())fail('sending_paused',409);
     if(uploading)fail('upload_busy',429);
     const mime=String(req.headers['content-type']||'').split(';')[0].toLowerCase();
-    if(!['image/jpeg','image/png'].includes(mime))fail('unsupported_image',415);
+    const document=mime==='application/octet-stream';
+    if(!document&&!['image/jpeg','image/png'].includes(mime))fail('unsupported_image',415);
     uploading=true;
     try {
       cleanup();
-      if(db.prepare('SELECT COALESCE(SUM(bytes),0) AS n FROM manual_media').get().n+MAX_UPLOAD>MAX_STORAGE)fail('media_storage_full',507);
+      const available=MAX_STORAGE-db.prepare('SELECT COALESCE(SUM(bytes),0) AS n FROM manual_media').get().n;
+      if(document) {
+        let filename;try{filename=decodeURIComponent(String(req.headers['x-macsend-filename']||''));}catch{fail('invalid_filename');}
+        filename=basename(filename.replace(/\\/g,'/')).replace(/[\x00-\x1f\x7f]/g,'');
+        if(!filename||filename==='.'||filename==='..'||Buffer.byteLength(filename)>255)fail('invalid_filename');
+        const documentMime=String(req.headers['x-macsend-mime']||'').toLowerCase();
+        if(!MIME.test(documentMime)||documentMime.length>127)fail('invalid_mime');
+        const length=req.headers['content-length'];
+        if(length!==undefined&&(!/^\d+$/.test(length)||!Number.isSafeInteger(Number(length))))fail('invalid_length');
+        if(Number(length)>MAX_DOCUMENT)fail('body_too_large',413);
+        if(available<=0||Number(length)>available)fail('media_storage_full',507);
+        const mediaId=randomUUID();let size=0,handle;
+        try {
+          handle=await open(file(mediaId),'wx',0o600);
+          for await(const chunk of req) {
+            size+=chunk.length;
+            if(size>MAX_DOCUMENT)fail('body_too_large',413);
+            if(size>available)fail('media_storage_full',507);
+            await handle.writeFile(chunk);
+          }
+          if(length!==undefined&&size!==Number(length))fail('incomplete_upload');
+          await handle.close();handle=null;
+          writeFileSync(file(mediaId)+'.json',JSON.stringify({filename,mime:documentMime}),{flag:'wx',mode:0o600});
+          db.prepare('INSERT INTO manual_media VALUES(?,?,?,?)').run(mediaId,documentMime,size,now());
+          return {mediaId};
+        } catch(error) {await handle?.close();remove(mediaId);throw error;}
+      }
+      if(available<MAX_UPLOAD)fail('media_storage_full',507);
       const bytes=await body(req,MAX_UPLOAD);
       let output;
       try {
@@ -90,8 +166,9 @@ export function createManualApi({store,dataDir,getConfig,canSend,now=Date.now}) 
     if(typeof input.text!=='string'||input.text.length>8000)fail('text_too_long');
     const mediaIds=input.mediaIds??[];
     if(!Array.isArray(mediaIds)||mediaIds.length>10||mediaIds.some(id=>typeof id!=='string'||!UUID.test(id)))fail('invalid_media');
-    const aliases=[...new Set(input.destinations)].sort(),text=input.text.trim();
-    if(!text&&!mediaIds.length)fail('empty_message');
+    const aliases=[...new Set(input.destinations)].sort();
+    const text=aliases.length===1&&aliases[0]==='mac-send'?input.text:input.text.trim();
+    if(!text.trim()&&!mediaIds.length)fail('empty_message');
     if(mediaIds.length&&text.length>1024)fail('caption_too_long');
     const fingerprint=hash(JSON.stringify({aliases,text,mediaIds}));
     const existing=db.prepare('SELECT hash FROM manual_requests WHERE id=?').get(requestId);
@@ -123,6 +200,9 @@ export function createManualApi({store,dataDir,getConfig,canSend,now=Date.now}) 
       if(!payload.mediaId)return {text:payload.text,linkPreview:null};
       const media=db.prepare('SELECT mime FROM manual_media WHERE id=?').get(payload.mediaId);
       if(!media)fail('media_expired',410);
+      let metadata;
+      try{metadata=JSON.parse(readFileSync(file(payload.mediaId)+'.json','utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+      if(metadata)return {document:{url:file(payload.mediaId)},fileName:metadata.filename,caption:payload.text,mimetype:metadata.mime};
       return {image:readFileSync(file(payload.mediaId)),caption:payload.text,mimetype:media.mime};
     },
     async route(req,path) {
