@@ -4,12 +4,15 @@ import { pathToFileURL } from 'node:url';
 import { decryptPush } from '../../saquetto-drops/src/webpush-crypto.js';
 import { privateRead, validateRegistration } from './private.mjs';
 import { openPushStore, PUSH_STORE_LIMITS } from './store.mjs';
-import { classifyInstagramPush } from './classify.mjs';
+import { classifyInstagramPush, classifyInstagramDiagnosticPush } from './classify.mjs';
 
 export function processPending(store, registration, decrypt=decryptPush) {
   for (const event of store.pending()) {
     let signal=null, reason='unrecognized_instagram_push';
-    try { signal=classifyInstagramPush(decrypt(JSON.parse(event.packet),registration)); }
+    try {
+      const payload=decrypt(JSON.parse(event.packet),registration);
+      signal=classifyInstagramPush(payload) || classifyInstagramDiagnosticPush(payload);
+    }
     catch { reason='push_decryption_rejected'; }
     store.finish(event,signal,signal ? null : reason);
   }

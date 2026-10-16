@@ -10,7 +10,7 @@ import { spawnSync } from 'node:child_process';
 import { DatabaseSync } from 'node:sqlite';
 import { openPushStore, PUSH_STORE_LIMITS, PUSH_DIAGNOSTIC_KEYS } from './store.mjs';
 import { observeInstagramPush, processPending } from './receiver.mjs';
-import { classifyInstagramPush } from './classify.mjs';
+import { classifyInstagramPush, classifyInstagramDiagnosticPush } from './classify.mjs';
 import { privateRead, privateWrite } from './private.mjs';
 import { registerInstagram } from './register.mjs';
 import { bootstrap } from './bootstrap.mjs';
@@ -298,6 +298,57 @@ test('native root envelope uses only structured Story identity; post URL routing
     {type:'story',message:'clubeuol added a story',params:{u:'123',s:'456',a:uri}},
     {type:'story',params:{ig:uri}},
   ])assert.equal(classifyInstagramPush(payload),null);
+});
+
+test('diagnostic Story owner is explicit and remains outside the production classifier',()=>{
+  const uri='https://www.instagram.com/stories/leotheblueblur/4004185955500703427/';
+  const expected={profile:'leotheblueblur',storyId:'4004185955500703427',evidence:'story_uri'};
+  for(const payload of [{type:'post',params:{ig:uri}},{data:{type:'story',uri}},{type:'story',uri}]) {
+    assert.equal(classifyInstagramPush(payload),null);
+    assert.deepEqual(classifyInstagramDiagnosticPush(payload),expected);
+  }
+  assert.deepEqual(classifyInstagramDiagnosticPush({data:{type:'new_story',user:{username:'leotheblueblur'},
+    story_id:'4004185955500703427'}}),{...expected,evidence:'structured_story_owner'});
+  assert.equal(classifyInstagramDiagnosticPush({type:'story',username:'clubeuol',story_id:'4004185955500703427'}),null);
+});
+
+test('diagnostic push rejects DMs, prose, recipient identity, off-origin links and other Story owners',()=>{
+  const uri='https://www.instagram.com/stories/leotheblueblur/4004185955500703427/';
+  for(const payload of [
+    {type:'direct_v2_text',href:uri,params:{ig:uri}},
+    {data:{type:'direct_v2_message',uri,username:'leotheblueblur'}},
+    {data:{type:'dm',uri,username:'leotheblueblur'}},
+    {body:'leotheblueblur added a story'},
+    {type:'story',params:{u:'leotheblueblur',s:'4004185955500703427',a:uri}},
+    {type:'story',username:'recipient',recipient_id:'leotheblueblur'},
+    {type:'story',uri:'https://evil.test/stories/leotheblueblur/4004185955500703427/'},
+    {type:'story',uri:'http://www.instagram.com/stories/leotheblueblur/4004185955500703427/'},
+    {type:'story',uri:'https://www.instagram.com/stories/other/4004185955500703427/'},
+    {type:'story',params:{ig:uri}},
+  ])assert.equal(classifyInstagramDiagnosticPush(payload),null);
+});
+
+test('encrypted diagnostic Story is committed before ACK and remains one signal after replay and restart',t=>{
+  const payload={type:'post',params:{ig:'https://www.instagram.com/stories/leotheblueblur/4004185955500703427/'}};
+  const {registration,packet}=fixture(payload),path=join(directory(t),'push.sqlite');
+  let store=openPushStore(path),observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger});
+  const socket=Socket.instances.at(-1);hello(socket,registration);
+  const send=socket.send.bind(socket);
+  socket.send=data=>{
+    if(JSON.parse(data).messageType==='ack')assert.equal(store.db.prepare('SELECT count(*) AS n FROM push_events').get().n,1);
+    send(data);
+  };
+  socket.message(packet);socket.message(packet);
+  const signal=store.db.prepare('SELECT profile,story_id,evidence FROM signals').get();
+  assert.deepEqual({...signal},{profile:'leotheblueblur',story_id:'4004185955500703427',evidence:'story_uri'});
+  assert.equal(store.db.prepare("SELECT count(*) AS n FROM signals WHERE profile='clubeuol'").get().n,0);
+  assert.equal(socket.sent.filter(message=>message.messageType==='ack').length,2);
+  observer.stop();store.close();store=openPushStore(path);
+  observer=observeInstagramPush({registration,store,WebSocketImpl:Socket,logger});
+  const again=Socket.instances.at(-1);hello(again,registration);again.message(packet);
+  assert.equal(store.db.prepare('SELECT count(*) AS n FROM signals').get().n,1);
+  assert.deepEqual(store.db.prepare('SELECT profile,story_id,evidence FROM signals').get(),signal);
+  observer.stop();store.close();
 });
 
 test('storage failure sends no ACK; changed UAID stops without creating a subscription',()=>{

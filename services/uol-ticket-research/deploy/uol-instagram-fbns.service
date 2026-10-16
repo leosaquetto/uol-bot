@@ -1,0 +1,27 @@
+[Unit]
+Description=Controlled Instagram FBNS Story diagnostic
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=uol-instagram-monitor
+Group=uol-instagram-monitor
+WorkingDirectory=/opt/uol-instagram-monitor
+ExecStart=/usr/bin/python3 -B fbns_probe.py --directory /var/lib/uol-instagram-monitor --serve --registration-probe
+# Protocol/auth/ambiguous-registration failures stop for review. Never auto-login.
+Restart=no
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/uol-instagram-monitor
+MemoryHigh=64M
+MemoryMax=96M
+TasksMax=8
+LimitCORE=0
+TimeoutStopSec=35
+
+[Install]
+WantedBy=multi-user.target

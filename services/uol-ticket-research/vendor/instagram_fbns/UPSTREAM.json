@@ -1,0 +1,26 @@
+{
+  "repository": "https://github.com/subzeroid/instagrapi",
+  "commit": "1076ce2135878434a678ba4ceba2b17c6fe27f1a",
+  "license": "MIT",
+  "changes": [
+    "relative local module import",
+    "optional unused proxy dependency; direct TLS only in our wrapper"
+  ],
+  "files": {
+    "fbns.py": {
+      "url": "https://raw.githubusercontent.com/subzeroid/instagrapi/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/realtime/fbns.py",
+      "upstreamSha256": "16810e9038a6df4478aad5f94dd86e469a06bfa0b173e0a6a1c758779f8b2a9c",
+      "localSha256": "4451d7b448eb4de8fb98d4b952decfd90228a8530b6a34ca10067fdd9579bc66"
+    },
+    "mqttot.py": {
+      "url": "https://raw.githubusercontent.com/subzeroid/instagrapi/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/realtime/mqttot.py",
+      "upstreamSha256": "4c5821650fbf7401d0e9239a7164227b407fa98c88c05151df3334134ebd447c",
+      "localSha256": "595d7f08a43ebbf1392884153d480d337410ae594dd3ab82b530523091a5208b"
+    },
+    "LICENSE": {
+      "url": "https://raw.githubusercontent.com/subzeroid/instagrapi/1076ce2135878434a678ba4ceba2b17c6fe27f1a/LICENSE",
+      "upstreamSha256": "0324209ff1cf0d6e125bfb30e2fff795e5f274ba74022154b7789733e0c74cd4",
+      "localSha256": "0324209ff1cf0d6e125bfb30e2fff795e5f274ba74022154b7789733e0c74cd4"
+    }
+  }
+}

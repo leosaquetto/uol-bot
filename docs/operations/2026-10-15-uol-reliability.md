@@ -4,6 +4,24 @@ Scope: UOL and required shared delivery components. Preserve the free tiers,
 all queues, ledgers and sessions. Instagram stays `push_only`: no manual GET,
 login, polling or synthetic event. No schema migration is required.
 
+## Current Instagram authorization — 16 October
+
+The user corrected the execution target: collection must run on the existing
+Oracle server, without requiring a local Chrome extension. They prioritized
+receiving an actual Story push over five-minute polling and explicitly allowed
+FBNS to become the main push channel of the dedicated account, including possible
+interference with phone notifications. They also required caution about
+checkpoint risk and private-protocol fragility. No automatic login, session
+replacement, IP rotation or invented hardware attestation is authorized.
+
+The collector remains `push_only`; periodic HTTP collection was not activated.
+The controlled FBNS diagnostic waits for the global HTTP 429 backoff before any
+broker/account connection. Its one account-association attempt is durable;
+uncertain/rejected responses and protocol/auth/security failures stop for review.
+`leotheblueblur` is a diagnostic source only, isolated from UOL destinations.
+Current implementation and acceptance details: `services/uol-ticket-research/INSTAGRAM-FBNS.md`.
+The prior extension instructions below are historical and no longer required.
+
 ## Release evidence
 
 P1 commit `0e9ea5cf307f118d35bb32636d5492b27299e472` passed all four jobs in
@@ -508,3 +526,45 @@ actual session use, real Story discovery and destination receipts remain open.
 Only loading `~/Applications/UOL Instagram` in the existing Chrome profile is
 required to start the bounded collector; no new login or session transfer was
 performed by this release.
+
+### Server push correction and controlled FBNS preparation — 16 October
+
+Read-only server inspection confirmed that `push_only` had made no new Story
+GET: the retained `auth_required/invalid_session_file` result was from 15 October,
+while current local session validation was valid. Three delivered local outbox
+rows remain intact. The transport previously used HTML bootstrap JSON; the
+extension-style JSON route was not implemented on the server.
+
+A durably reserved, bounded JSON diagnostic made one authenticated profile
+lookup on Oracle and received HTTP 429 with an empty body. No reels request,
+fallback, login or delivery was issued. The response was recorded and a global
+six-hour backoff persisted through restart until `2026-10-17T00:16:34.449477Z`
+(16 October 21:16 São Paulo). Five Web Push events still correspond to the
+previous DMs; no packet corresponds to the user's new phone Story screenshot.
+The last stored packet was `2026-10-16T17:18:40.847Z`.
+
+Server HTTP controls and JSON parsing are prepared as optional recovery paths,
+with explicit backend selection, durable budgets, cached-owner identity captured
+at reservation, and shared backoff. They do not activate periodic polling.
+Retention no longer deletes incomplete local receipts after 30 days; uncertainty
+is preserved at expiry. Diagnostic Web Push signals for `leotheblueblur` are
+stored with that exact profile; every production consumer filters `clubeuol`.
+
+Primary-source research identified FBNS as a separate mobile notification
+transport with known Story categories. Realtime Direct/MQTT events and Relay
+cache observers do not prove Story publication. The isolated FBNS diagnostic
+uses a pinned MIT transport subset, a stable device identity, TLS verification,
+one durable main-channel association, bounded connections and private journal
+before ACK. It cannot publish to UOL destinations. Authorization to alter the
+account's main push channel came directly from the user. Risk of challenge on
+a datacenter IP remains real and unquantified; success must be an observed
+natural Story, not connection/register/ping. The Worker is unchanged by this
+server correction; its current published SHA remains the private manifest value.
+
+The user subsequently requested bypassing the waiting time without affecting
+other services. The six-hour deadline was our preventive floor, not a confirmed
+Meta Retry-After. They explicitly authorized the narrow FBNS registration probe
+while source polling stays blocked. `--registration-probe` audits that exception
+before connection, requires the original `rate_limited/http_429` state and cannot
+ignore a later longer backoff or an FBNS registration429. Account association
+still has one durable attempt. UOL, X, gateway and Drops are outside the probe.

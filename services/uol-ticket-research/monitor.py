@@ -6,6 +6,7 @@ import datetime as dt
 import fcntl
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import random
@@ -27,6 +28,9 @@ HEARTBEAT_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/insta
 MAX_DAILY_REQUESTS = 1440
 PERIOD = 120
 SAFETY_PERIOD = 1800
+JSON_PERIOD = 300
+JSON_DAILY_REQUESTS = 300
+PROFILE_CACHE_SECONDS = 86400
 MAX_MEDIA_BYTES = 3 * 1024 * 1024
 LOCAL_CHECKPOINT_PERIOD = 60
 PUSH_CORRELATION_WAIT = 600
@@ -73,6 +77,17 @@ def private_config(path):
         raise ValueError('invalid_config')
     if config.get('pushMode', 'poll') not in ('poll', 'pilot', 'event', 'push_only'):
         raise ValueError('invalid_push_mode')
+    if config.get('collectionBackend', 'html') not in ('html', 'json'):
+        raise ValueError('invalid_collection_backend')
+    if 'pollIntervalSeconds' in config:
+        period = config['pollIntervalSeconds']
+        if type(period) is not int or not JSON_PERIOD <= period <= 3600:
+            raise ValueError('invalid_poll_interval')
+    if 'maxDailyRequests' in config:
+        limit = config['maxDailyRequests']
+        maximum = JSON_DAILY_REQUESTS if config.get('collectionBackend') == 'json' else 600
+        if type(limit) is not int or not 2 <= limit <= maximum:
+            raise ValueError('invalid_request_budget')
     return config
 
 
@@ -166,6 +181,12 @@ class Monitor:
                               else self.state['nextPoll'])
         self._saved_state = canonical(json.loads(row[0])) if row else None
         self.state['collectionMode'] = config.get('pushMode', 'poll')
+        self.state['collectionBackend'] = config.get('collectionBackend', 'html')
+        if config.get('collectionBackend') == 'json' or 'pollIntervalSeconds' in config:
+            self.state['configuredPollPeriodSeconds'] = self.poll_period()
+            self.state['maxDailySourceRequests'] = self.daily_limit()
+            if config.get('pushMode') != 'push_only':
+                self.state['activePollPeriodSeconds'] = self.poll_period()
         if config.get('pushMode') == 'push_only':
             # This explicit user-selected mode has no timer or safety sweep.
             # Preserve the last source result and any authentication backoff.
@@ -332,11 +353,36 @@ class Monitor:
     def reserve_poll(self):
         now = self.clock()
         push = self.update_receiver(now)
+        # The isolated FBNS association shares Instagram's global HTTP backoff.
+        # Read only when a source attempt could otherwise become due.
+        if now >= self.state.get('retryNotBefore', 0):
+            path = self.directory / 'fbns-state.json'
+            try:
+                fd = os.open(path, os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0))
+            except FileNotFoundError:
+                fd = None
+            if fd is not None:
+                with os.fdopen(fd, 'rb') as handle:
+                    info = os.fstat(handle.fileno())
+                    if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) != 0o600:
+                        raise ValueError('invalid_fbns_guard')
+                    raw = handle.read(65537)
+                if len(raw) > 65536:
+                    raise ValueError('invalid_fbns_guard')
+                external = json.loads(raw).get('httpRetryNotBefore', 0)
+                if type(external) not in (int, float) or not math.isfinite(external):
+                    raise ValueError('invalid_fbns_guard')
+                if external > now:
+                    self.state.update(retryNotBefore=external, nextPoll=external, sourceStatus='rate_limited')
+                    self.save()
         if self.config.get('pushMode') == 'push_only':
             return self.reserve_push_only(now, push)
         pending = push['sequence'] > self.state.get('consumedSignalSequence', 0)
         event_due = pending and now >= self.state.get('pushAttemptNotBefore', 0)
         if now < self.state.get('retryNotBefore', 0):
+            return False
+        if (self.config.get('collectionBackend') == 'json'
+                and now < self.state.get('lastSourceAttemptEpoch', 0) + self.poll_period()):
             return False
         if self.config.get('pushMode') == 'push_only' and not event_due:
             return False
@@ -344,18 +390,40 @@ class Monitor:
         if now < self.state['nextPoll'] and not event_due:
             return False
         used = self.db.execute('SELECT coalesce(sum(reserved),0) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
-        if used + 2 > MAX_DAILY_REQUESTS:
+        cost = self.collection_cost()
+        if used + cost > self.daily_limit():
             first = self.db.execute('SELECT min(at) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
             self.state.update(sourceStatus='budget_wait', nextPoll=first+86401, retryNotBefore=first+86401)
             self.save()
             return False
-        self.db.execute('INSERT INTO polls VALUES(?,2,NULL)', (now,))
-        self.state['nextPoll'] = 0 if self.config.get('pushMode') == 'push_only' else now + PERIOD
+        self.db.execute('INSERT INTO polls VALUES(?,?,NULL)', (now, cost))
+        self.state['lastSourceAttemptEpoch'] = now
+        self.state['nextPoll'] = 0 if self.config.get('pushMode') == 'push_only' else now + self.poll_period()
         self.state['reservedSignalSequence'] = push['sequence'] if pending else 0
         self.state['pushAttemptNotBefore'] = now + 15
         self.state['lastPollTrigger'] = 'push' if event_due else 'safety' if self.event_enabled() else 'poll'
         self.save()
         return True
+
+    def poll_period(self):
+        return self.config.get('pollIntervalSeconds', JSON_PERIOD if self.config.get('collectionBackend') == 'json' else PERIOD)
+
+    def daily_limit(self):
+        return self.config.get('maxDailyRequests', JSON_DAILY_REQUESTS if self.config.get('collectionBackend') == 'json' else MAX_DAILY_REQUESTS)
+
+    def profile_identity(self):
+        identity = self.state.get('profileIdentity')
+        if (isinstance(identity, dict) and identity.get('username') == 'clubeuol'
+                and isinstance(identity.get('id'), str) and re.fullmatch(r'[0-9]{1,24}', identity['id'])
+                and type(identity.get('verifiedEpoch')) in (int, float)
+                and 0 <= self.clock() - identity['verifiedEpoch'] < PROFILE_CACHE_SECONDS):
+            return identity
+        return None
+
+    def collection_cost(self):
+        # One fixed reels GET with a fresh identity; cold lookup needs one extra GET.
+        self._reserved_profile_identity = self.profile_identity()
+        return (1 if self._reserved_profile_identity else 2) if self.config.get('collectionBackend') == 'json' else 2
 
     def update_push_settlement(self, batch, status='pending', reason=''):
         """Only counts and timing leave the durable batch's private matching state."""
@@ -396,7 +464,8 @@ class Monitor:
               or now < self.state.get('pushAttemptNotBefore', 0)):
             return False
         used = self.db.execute('SELECT coalesce(sum(reserved),0) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
-        if used+2 > MAX_DAILY_REQUESTS:
+        cost = self.collection_cost()
+        if used+cost > self.daily_limit():
             first = self.db.execute('SELECT min(at) FROM polls WHERE at>?', (now-86400,)).fetchone()[0]
             self.state.update(sourceStatus='budget_wait', nextPoll=first+86401, retryNotBefore=first+86401)
             self.save()
@@ -422,7 +491,7 @@ class Monitor:
         if batch['genericSignals'] and batch['attempts'] == 1:
             delay = max(delay, 60)
         batch['nextAttemptEpoch'] = now+delay
-        self.db.execute('INSERT INTO polls VALUES(?,2,NULL)', (now,))
+        self.db.execute('INSERT INTO polls VALUES(?,?,NULL)', (now, cost))
         self.state.update(nextPoll=0, reservedSignalSequence=batch['throughSequence'],
                           pushAttemptNotBefore=now+15, lastPollTrigger='push')
         self.update_push_settlement(batch)
@@ -485,6 +554,11 @@ class Monitor:
         s['lastResult'] = {k: result.get(k) for k in ('status', 'reason', 'duration_ms', 'requests', 'body_bytes',
                                                     'structuralDiagnostics')}
         s['sourceStatus'] = result['status']
+        identity = result.get('profileIdentity')
+        if (self.config.get('collectionBackend') == 'json' and isinstance(identity, dict)
+                and identity.get('username') == 'clubeuol' and isinstance(identity.get('id'), str)
+                and re.fullmatch(r'[0-9]{1,24}', identity['id'])):
+            s['profileIdentity'] = {'username': 'clubeuol', 'id': identity['id'], 'verifiedEpoch': now}
         self.db.execute('UPDATE polls SET result=? WHERE rowid=(SELECT max(rowid) FROM polls)', (json.dumps(s['lastResult']),))
         if result['status'] in ('found', 'empty'):
             receiver = self.update_receiver(now)
@@ -534,7 +608,7 @@ class Monitor:
             if self.config.get('pushMode') != 'push_only':
                 s['consumedSignalSequence'] = max(s.get('consumedSignalSequence', 0), s.get('reservedSignalSequence', 0))
             interval = (0 if self.config.get('pushMode') == 'push_only'
-                        else SAFETY_PERIOD if self.event_enabled() else PERIOD)
+                        else SAFETY_PERIOD if self.event_enabled() else self.poll_period())
             s.update(nextPoll=now+interval+random.uniform(0, 10) if interval else 0,
                      activePollPeriodSeconds=interval)
             s['coverageWindowHasGap'] = not receiver['connected']
@@ -545,21 +619,23 @@ class Monitor:
             if result['status'] == 'auth_required' or result.get('reason') == 'session_write_failed':
                 delay = 6*3600
             elif result['status'] == 'rate_limited':
-                delay = max(3600, result.get('retryAfterSeconds', 0))
+                minimum = 21600 if 'pollIntervalSeconds' in self.config or self.config.get('collectionBackend') == 'json' else 3600
+                delay = max(minimum, result.get('retryAfterSeconds', 0))
             else:
-                delay = min(3600, PERIOD*2**min(s['failures'], 5))
+                delay = min(3600, self.poll_period()*2**min(s['failures'], 5))
             s['nextPoll'] = now + delay
             s['retryNotBefore'] = s['nextPoll']
         if self.config.get('pushMode') == 'push_only':
             self.settle_push_batch(result, now)
         self.db.execute('DELETE FROM polls WHERE at<?', (now-7*86400,))
-        self.db.execute('DELETE FROM outbox WHERE expires<?', (now-30*86400,))
-        self.db.execute("DELETE FROM story_coverage WHERE CAST(json_extract(value, '$.firstSeenEpoch') AS REAL)<?", (now-30*86400,))
+        self.db.execute("DELETE FROM outbox WHERE expires<? AND status='delivered'", (now-30*86400,))
+        self.db.execute("""DELETE FROM story_coverage WHERE CAST(json_extract(value, '$.firstSeenEpoch') AS REAL)<?
+            AND NOT EXISTS (SELECT 1 FROM outbox WHERE outbox.story_id=story_coverage.story_id AND outbox.status!='delivered')""", (now-30*86400,))
         self.save()
 
     def flush(self, send=ingest, media_fetch=fetch_media):
         now = self.clock()
-        expired = self.db.execute("UPDATE outbox SET status='expired' WHERE expires<=? AND status NOT IN ('delivered','expired')", (now,)).rowcount
+        expired = self.db.execute("UPDATE outbox SET status='expired' WHERE expires<=? AND status NOT IN ('delivered','expired','unknown')", (now,)).rowcount
         if expired:
             self.state['lastOutboxProgressAt'] = clock_timestamp(now)
         self.commit()
@@ -639,6 +715,13 @@ class Monitor:
         payload = {'sourceStatus': status, 'observedAt': self.state.get('lastObservationAt'),
                    'lastSuccessAt': self.state.get('lastSuccessAt'),
                    'reason': (self.state.get('lastResult') or {}).get('reason', '')}
+        # Keep the existing remote enum contract; detailed JSON diagnostics stay local.
+        payload['reason'] = {'api_error': 'no_validated_story_structure',
+            'invalid_clock': 'transport_error', 'malformed_json': 'malformed_story_payload',
+            'non_json_response': 'no_validated_story_structure',
+            'unexpected_response_url': 'http_auth_required' if status == 'auth_required' else 'redirect_not_allowed',
+            'profile_identity_mismatch': 'malformed_story_payload',
+            'owner_mismatch': 'malformed_story_payload'}.get(payload['reason'], payload['reason'])
         # Current Worker accepts and ignores additive fields; its public contract stays intact.
         payload.update(coverage=self.state.get('coverage', {}), pushReceiver=self.state.get('pushReceiver', {}),
                        localSessionValidation=self.state['localSessionValidation'])
@@ -722,7 +805,12 @@ def run(directory, config_path, once=False):
                         monitor.state['storageUsageObserver'] = 'failed'
                 if monitor.reserve_poll():
                     try:
-                        result = InstagramClient(directory/'session.json').collect()
+                        if config.get('collectionBackend') == 'json':
+                            from instagram_json import JsonInstagramClient
+                            result = JsonInstagramClient(directory/'session.json',
+                                profile_identity=monitor._reserved_profile_identity).collect()
+                        else:
+                            result = InstagramClient(directory/'session.json').collect()
                     except SessionError as e:
                         result = {'checkedAt': timestamp(), 'status': 'auth_required', 'reason': e.reason,
                                   'requests': 0, 'duration_ms': 0, 'body_bytes': 0, 'stories': []}

@@ -1,5 +1,7 @@
 # Instagram como complemento do UOL bot
 
+**Atualização de 16/10/2026:** a execução deve permanecer no Oracle. O usuário priorizou receber Stories por push e autorizou testar FBNS, inclusive como canal principal da conta dedicada. `leotheblueblur` é perfil diagnóstico, separado da produção. O monitor conserva `push_only` enquanto essa recepção é comprovada; os controles de polling e JSON preparados não foram ativados. Diagnóstico, bloqueio 429 e critérios atuais em [INSTAGRAM-FBNS.md](INSTAGRAM-FBNS.md). A decisão de 15/10 abaixo é histórica.
+
 Plano autorizado em 09/10/2026: instalar o coletor no Oracle existente, integrar ao Worker atual e enviar o Story de `pQg` aos quatro destinos. O ensaio isolado de 72 horas não é requisito para ativar; estabilidade será observada depois. Esta integração não depende do Mac ou do Codex aberto.
 
 **Estado verificado em 10/10/2026:** monitor ativo e habilitado para reiniciar com o Oracle. O Story `4004391581161830448`, campanha `pQg` de 11/10 no Teatro J. Safra, teve imagem confirmada nos quatro destinos. Os dois canais Telegram e o Discord mantiveram os IDs originais; a foto WhatsApp foi enviada uma vez. A fila local está entregue.
