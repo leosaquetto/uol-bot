@@ -168,7 +168,7 @@ Detailed receipts and lookup results remain in the private operator directory
 | Three legacy WhatsApp facade uncertainties | Follow-up recovered the original outgoing Beeper messages and pending echo IDs. Production `normalizeOfferId` matches every preview URL to its exact offer ID; the reconstructed idempotency key, destination and exact `buildBeeperOfferText` body match. Each unique candidate is not deleted, has `SUCCESS`, a preview and distinct matching message/echo IDs. Production `inspectDeliveryRow(row, echoID, true)` returns `delivered`. The two existing Worker queues were resolved with those references; the third offer returns 404. Drops lookups remain 404. | Delivery is confirmed at the WhatsApp bridge level. Full request metadata-hash equality, direct facade-request-to-pending binding and recipient receipt remain unproved. Facade `unknown` locks remain intact; no replay or missing-offer recreation. |
 | Sources and SLO | Current API succeeds with 50 offers, no API error and a fresh success timestamp; listing failure/drop/divergence streaks are zero. Queue uncertainty remains. | Stable current source observations and receipt-backed queue reconciliation. |
 | Technical credential | Expiry remains `2026-10-23T04:04:28Z`. Related implementation commits, eight legacy scripts and their specific history, existing operational notes, available archived chat references and the anonymous official client were consulted. The legacy authentication found belongs to GitHub or the removed personal UOL flow. No technical issuer, renewal procedure or newer credential was found. The current secret was preserved. | A verifiable technical issuance/renewal flow, newer expiry and an authenticated primary cycle using only the replacement secret. The user confirmed they do not know the original procedure; do not ask the same question again. |
-| ntfy | The published Worker preserves 20 uncertain attempts and the rolling budget. Earliest slot release is `2026-10-16T08:29:02.150Z`; no synthetic send or replay was attempted. | A natural accepted HTTP result from this published version. |
+| ntfy | After the rolling budget released capacity, the published version recorded a natural HTTP 200 at `2026-10-16T08:51:44.989Z`. A timeout at 08:29 remains uncertain; a later HTTP 429 remains subject to retry/backoff. No synthetic send or uncertain replay was attempted. | Service acceptance is proved. Device delivery/read receipt remains outside this HTTP contract. |
 
 ### Follow-up WhatsApp reconciliation — 16 October, 03:35 UTC
 
@@ -230,6 +230,51 @@ thread remain required. No access scope was expanded and neither uncertain
 delivery was retried. Existing authenticated destination history is the next
 independent evidence source when available.
 
+### Scheduled observation 1 — 16 October, 06:05 São Paulo
+
+The deployed tag `git-afe50338f6c1` and both version endpoints still match
+`8145d1f4-02f0-4c51-aed5-a05ce783ea36`. At
+`2026-10-16T09:05:32.154Z`, checks report `published=true`,
+`runtimeVerified=true`, `ready=false`, fresh global guard and no release-debt
+identity regression. A natural primary cycle completed at
+`2026-10-16T09:05:14.732Z`: 27 rows read, primary estimate 130 (limit 512).
+Read/write guards are healthy; the write projection remains 63,488 with 36,512
+headroom. These are current guard/projection checks, not complete-day quota
+acceptance.
+
+The ntfy acceptance criterion now has production evidence from this same
+published version:
+
+| Natural attempt (São Paulo) | HTTP/result | Recorded outcome |
+| --- | --- | --- |
+| 16 October 05:29:45.096 | Timeout | `uncertain`; no automatic replay |
+| 16 October 05:51:44.989 | HTTP 200 | `http_accepted`; service acceptance proved |
+| 16 October 06:02:45.039 | HTTP 429 | `rate_limited`; bounded retry/backoff |
+
+Current outbox counts are 21 uncertain, one accepted and 23 pending. The original
+20 uncertain attempts were not manually retried; one new natural timeout added
+the twenty-first. The code selects only pending records, preserves terminal
+uncertainty, and applies the greater of backoff and `Retry-After` for a 429.
+The aggregate diagnostic does not expose the exact received `Retry-After` or a
+device receipt, so neither is asserted here.
+
+Direct inventory readback confirms the same two uncertainties: Telegram alias
+`4147510b` retains zero confirmed chunk IDs, and Discord alias `b0fab0af` has no
+message receipt. Counts remain **two critical incidents, zero dead letters,
+two uncertain deliveries and zero exhausted maintenance operations**. No
+resolution or transport send was issued during this observation.
+
+All five Oracle services/timers are active. The Instagram push receiver is
+connected with zero events and zero signals. The session-file check is valid;
+the older `auth_required` collection result is preserved and remote
+authentication remains unproved. No Instagram collection was triggered.
+The technical UOL credential still expires at `2026-10-23T04:04:28Z`; current
+API success is fresh. The three complete UTC days (17–19 October) have not yet
+elapsed. No quota interpretation, credential, session or tier was changed.
+
+Private evidence: `uol-heartbeat-2026-10-16T0904.json` and
+`uol-oracle-heartbeat-2026-10-16T0904.json` in the operator directory.
+
 ## Observation still required
 
 Recomputed reports for 12–14 October have sufficient temporal samples and
@@ -244,7 +289,9 @@ together with guard ingestion, discovery, latency and duplicate evidence.
 Neither a healthy service nor passing offline crash tests proves a new natural
 Story or receipt recovery in production.
 
-A daily 09:00 São Paulo heartbeat is scheduled for seven runs. It checks only
+A daily heartbeat is scheduled for seven runs. The first observed trigger was
+16 October at 06:04 São Paulo; the earlier 09:00 local-time statement had not
+been verified and is withdrawn. The schedule was not changed. It checks only
 related evidence, keeps the Instagram restrictions above, and remains quiet
 without a meaningful change. Publication details and private evidence paths are
 recorded in `~/.config/uol-ticket-research/uol-publication-2026-10-16.json`.
