@@ -275,6 +275,42 @@ elapsed. No quota interpretation, credential, session or tier was changed.
 Private evidence: `uol-heartbeat-2026-10-16T0904.json` and
 `uol-oracle-heartbeat-2026-10-16T0904.json` in the operator directory.
 
+### User-reported Instagram Story notification — 16 October, 13:29 São Paulo
+
+The user reported a natural Story notification on the phone. The supplied
+Instagram activity-feed screenshot shows verified `clubeuol` sharing a Story
+"3 min" earlier, with the phone clock at 13:27. This corroborates a recent
+mobile notification; it contains no Web Push receipt for the Oracle receiver.
+
+Read-only checks at `2026-10-16T16:25:42.535554Z` and
+`2026-10-16T16:29:56.731293Z` both found **zero persisted push events and zero
+signals**. The final receiver heartbeat is `2026-10-16T16:29:30.075Z` and its
+state is `connected`. Diagnostics include 102 successful handshakes and 506
+frames, with no recorded notification, decryption, classification or storage
+failure. No payload reaching this subscription is evidenced; the cause of
+non-arrival remains unproved.
+
+The only local registration is the one configured in the running service,
+with mode 0600, the correct Instagram origin, `bootstrapStatus=created` and an
+Instagram registration acceptance of HTTP 200 at
+`2026-10-10T20:49:06.955Z`. Its saved acceptance does not identify the account
+or establish the current Instagram-to-endpoint binding. A healthy Mozilla
+handshake proves the push transport connection; a local session-file check
+(`valid`, `authenticationVerified=false`) does not close that separate gap.
+
+The monitor remains `push_only`, with consumed signal sequence zero. Its last
+collection result is still the older 15 October 01:46 UTC
+`auth_required/invalid_session_file` result, not a new validation of this
+Story. The three delivered outbox entries predate this event. Therefore this
+mobile notification proves neither a new bot collection nor intake/destination
+receipts. No Instagram request, login, re-registration, synthetic event,
+collection trigger or transport replay was issued.
+
+Private read-only snapshots: `uol-natural-push-2026-10-16T1625.json`,
+`uol-natural-push-2026-10-16-final.json` and
+`uol-push-registration-diagnostic-2026-10-16.json` in the operator directory.
+The natural Story acceptance criterion remains open.
+
 ## Observation still required
 
 Recomputed reports for 12–14 October have sufficient temporal samples and
