@@ -77,7 +77,7 @@ cost in production, with a fresh global guard, healthy read/write budgets and
 | 16 October 03:19:11.952 | 28 | 1 | 28 |
 | 16 October 03:19:42.115 | 28 | 1 | 28 |
 
-Final immediate checks: **two critical incidents, two dead letters, four
+Immediate post-release checks: **two critical incidents, two dead letters, four
 uncertain deliveries, zero exhausted maintenance operations**. The sold-out
 incident completed its recovery window. The short runtime proof above does not
 replace the three complete UTC-day acceptance below.
@@ -138,6 +138,13 @@ request. [Cloudflare pricing](https://developers.cloudflare.com/durable-objects/
 Three complete UTC days must also prove guard ingestion and delivery behavior;
 raw cumulative counters alone do not satisfy that acceptance.
 
+A follow-up review of the [metrics documentation](https://developers.cloudflare.com/durable-objects/observability/metrics-and-analytics/)
+did not establish the exact mapping from `dimensions.type=hibernation` and
+`sum.requests` to billable units. The pricing discount applies to received
+WebSocket messages, not every invocation. Ordinary WebSocket traffic has a
+separate metrics dataset; its presence or volume in this account is unproven.
+The report therefore keeps `billing_unknown`.
+
 The technical UOL credential expires on 23 October. The repository's previous
 investigation did not find the original acquisition/renewal procedure (see
 `2026-09-08-uol-quota.md`). Do not guess an authentication endpoint or replace a
@@ -158,10 +165,42 @@ Detailed receipts and lookup results remain in the private operator directory
 | Sold-out main edit, alias `10377612` | Direct inventory found ten definitive `editMessageText` 400 responses: the message had no text to edit. The deployed correction retries `editMessageCaption` on that exact structured error. One authorized maintenance requeue was accepted; the natural maintenance cycle recorded `synced` at `2026-10-16T02:51:14.021Z`, with the same message ID and confirmed `photo` kind. Secondary receipt, attempts, error and synchronization timestamp are unchanged; Discord receipt is unchanged. | Edit and incident resolved after the stability window. |
 | Discord uncertainty, alias `b0fab0af` | Direct lookup reaches the September offer outside the recent-300 inventory. Worker state and delivery timeline retain uncertainty; no Discord receipt ID is stored. The original Beeper account has WhatsApp access, not Discord history. | A matching message ID and content in the original Discord destination. No resend or `not_sent` resolution. |
 | Telegram comment uncertainty, alias `4147510b` | Direct lookup confirms the original discussion message, one required chunk, zero confirmed chunk IDs and the preserved ambiguous timeout. No original Telegram history is available through the configured Beeper account. | The existing chunk ID in that exact thread. No extra comment or inferred confirmation. |
-| Three legacy WhatsApp facade uncertainties | Read-only facade ledger, Drops jobs, authenticated route/key/hash lookups and the original Beeper room index were checked. Each facade request has one nearby `SUCCESS` message with a preview, but no retained pending ID/job binding or exact request-hash proof. Drops lookups return 404. Two corresponding offers remain in Worker inventory; the third returns 404. | Proof binding the original content, destination and request hash to a transport receipt. Timestamp proximity and lookup absence do not authorize resolution or replay. |
+| Three legacy WhatsApp facade uncertainties | Follow-up recovered the original outgoing Beeper messages and pending echo IDs. Production `normalizeOfferId` matches every preview URL to its exact offer ID; the reconstructed idempotency key, destination and exact `buildBeeperOfferText` body match. Each unique candidate is not deleted, has `SUCCESS`, a preview and distinct matching message/echo IDs. Production `inspectDeliveryRow(row, echoID, true)` returns `delivered`. The two existing Worker queues were resolved with those references; the third offer returns 404. Drops lookups remain 404. | Delivery is confirmed at the WhatsApp bridge level. Full request metadata-hash equality, direct facade-request-to-pending binding and recipient receipt remain unproved. Facade `unknown` locks remain intact; no replay or missing-offer recreation. |
 | Sources and SLO | Current API succeeds with 50 offers, no API error and a fresh success timestamp; listing failure/drop/divergence streaks are zero. Queue uncertainty remains. | Stable current source observations and receipt-backed queue reconciliation. |
 | Technical credential | Expiry remains `2026-10-23T04:04:28Z`. Related implementation commits, eight legacy scripts and their specific history, existing operational notes, available archived chat references and the anonymous official client were consulted. The legacy authentication found belongs to GitHub or the removed personal UOL flow. No technical issuer, renewal procedure or newer credential was found. The current secret was preserved. | A verifiable technical issuance/renewal flow, newer expiry and an authenticated primary cycle using only the replacement secret. The user confirmed they do not know the original procedure; do not ask the same question again. |
 | ntfy | The published Worker preserves 20 uncertain attempts and the rolling budget. Earliest slot release is `2026-10-16T08:29:02.150Z`; no synthetic send or replay was attempted. | A natural accepted HTTP result from this published version. |
+
+### Follow-up WhatsApp reconciliation — 16 October, 03:35 UTC
+
+The previous substring check was case-sensitive. Applying the Worker's actual
+identity normalization proved the URL/key match instead of relying only on
+timestamp proximity. Exact displayed body, outgoing state, original destination,
+preview and bridge receipt checks also passed for all three messages.
+
+Worker offers corresponding to aliases `8020afaf` and `41c30087` were still
+uncertain and had no active send. Each received one `sent` resolution with a
+stable `beeper-bridge:<receipt-digest>` evidence reference. Readback confirmed
+`sent_at`, cleared ambiguity and a matching `resolved_sent` ledger event.
+No transport send was issued. The missing Worker offer for alias `2adafa0e` was
+not recreated or imported.
+
+The confirmation level is **`confirmed_by_whatsapp_bridge`**. Original request
+hashes and receipt IDs are preserved in the private proof. This does not assert
+full metadata-hash equality, a retained direct binding to the facade request,
+or a recipient receipt. Legacy facade locks are unchanged.
+
+Private evidence: `uol-beeper-bridge-proof-2026-10-16.json` and the two
+`uol-whatsapp-resolution-<alias>-2026-10-16.json` records in the operator
+directory. Current state at `2026-10-16T03:35:06.456Z`: **two critical incidents,
+zero dead letters, two uncertain deliveries, zero exhausted maintenance
+operations**. The remaining uncertainty is Discord and the Telegram comment.
+The same published version passes runtime validation, with a primary estimate
+of 52, a 28-read last cycle, healthy guards and no release-debt regressions.
+
+Credential investigation also checked the existing API's anonymous challenge:
+HTTP 401 advertises Bearer authentication without an issuer or token endpoint.
+No corresponding local technical credential file or available original archive
+provided a renewal flow. The working secret remains unchanged.
 
 ## Observation still required
 
