@@ -661,3 +661,52 @@ current snapshot, preventing long offline intervals from blocking newer signals.
 The exact publication-to-notification delay and iPhone locked execution still
 require device evidence. No synthetic Story, destination send or source GET is
 needed to validate relay transport while the source guard remains active.
+
+
+### Notification bridge rollout diagnostics — 16 October
+
+Oracle notification components were installed from
+`ce2150c9ce9b88bb9ade68bb7aa1b82bec8b3053`; exact source hashes matched,
+loopback health passed, and Caddy configuration was validated before reload.
+Only the Instagram monitor was restarted for its own code update. Drops, gateway,
+Web Push and Caddy retained their process identities/restart counts; session and
+all three delivery receipts remained unchanged. The existing Story source guard
+remained active throughout the controlled HTTP transport checks.
+
+The first Worker publication (`ce2150c9`, version
+`c2b305de-6f18-4bd6-83db-5572ab33e3f0`) and subsequent context/diagnostic update
+(`fa9d0c79`, version `abc3e0da-e84c-4319-89a0-d19555d48517`) initially failed
+version-consistency checks. Each later passed read-only verification after version
+convergence, with the same two historical critical incidents/two uncertainties
+and no regressions. Neither passing runtime gate alone proved notification relay.
+
+Controlled requests with two participant codes were durably accepted by the
+Worker; repeating a UUID was recognized and scoped phone keys could not read
+Story status. Initial relay remained unconfirmed, and those same pending UUIDs
+were preserved. Direct HTTPS to the isolated Oracle ingress succeeded. A
+fetch-receiver-context hypothesis did not resolve production relay; it is not
+a proven cause. The added sanitized diagnostic then identified redirect handling.
+
+A targeted test using native Workers fetch and production redirect options
+reproduced `Invalid redirect value ... follow or manual`: this runtime rejects
+`redirect: error` before network. The correction uses `manual`, refuses 3xx as an
+acknowledgement and never forwards the relay credential to a Location target.
+Eight unit tests and five Workers-runtime tests passed after that correction;
+the native-runtime test now exercises the actual queue request option and a
+matching durable ACK. Final publication and real relay proof are recorded below.
+
+Current Worker source `7cca546916d62b2857a0e5cee314e7598e80f56d`, version
+`d8ea9c10-b215-446f-be26-3775dbfcd674`, passed
+[exact-SHA CI](https://github.com/leosaquetto/uol-bot/actions/runs/38959843153)
+and the read-only post-deploy gate after version convergence. `published`,
+`runtimeVerified` and `debtVerified` are true; `ready` remains false for the same
+two historical critical incidents and two unknown deliveries. No new regression
+was found; the primary read-estimate gate remains 512.
+
+The corrected relay reached Oracle but received HTTP 409 for the first controlled
+UUID. The direct diagnostic had stored `observedAt` with `+00:00`; the Worker
+normalizes the same instant to `Z`. Raw evidence-string comparison rejected that
+replay despite equal identity/source/instant. Original records and both queue
+identities were preserved. The narrow correction compares replay evidence
+semantically, preserving the original stored timestamp and still rejecting a
+different source or instant. It requires no migration, deletion or source GET.

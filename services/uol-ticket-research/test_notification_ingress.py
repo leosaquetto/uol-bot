@@ -93,6 +93,39 @@ class NotificationIngressTests(unittest.TestCase):
                 self.store.enqueue(self.hint())
             self.assertEqual(error.exception.status, 503)
 
+    def test_equivalent_timestamp_replay_preserves_original_evidence_and_identity(self):
+        hint = self.hint(observedAt='2026-10-16T19:47:15.114+00:00')
+        self.now = int(dt.datetime.fromisoformat(hint['observedAt']).timestamp())
+        self.store.enqueue(hint)
+        with closing(sqlite3.connect(self.path)) as db:
+            original = db.execute('SELECT seq,event_id,received_at,evidence FROM signals').fetchone()
+        for equivalent in ('2026-10-16T19:47:15.114Z', '2026-10-16T19:47:15.114000+00:00',
+                           '2026-10-16T16:47:15.114-03:00'):
+            with self.subTest(observedAt=equivalent):
+                status, receipt = self.request({**hint, 'observedAt': equivalent})
+                self.assertEqual(status, 202)
+                self.assertTrue(receipt['persisted'])
+                self.assertTrue(receipt['duplicate'])
+        with closing(sqlite3.connect(self.path)) as db:
+            self.assertEqual(db.execute('SELECT seq,event_id,received_at,evidence FROM signals').fetchall(), [original])
+
+    def test_semantic_replay_rejects_changed_time_source_or_origin(self):
+        hint = self.hint(observedAt='2026-10-16T19:47:15.114+00:00')
+        self.now = int(dt.datetime.fromisoformat(hint['observedAt']).timestamp())
+        self.store.enqueue(hint)
+        for changed in ({'observedAt': '2026-10-16T19:47:15.115Z'}, {'source': 'ios_shortcuts'}):
+            with self.subTest(changed=changed):
+                self.assertEqual(self.request({**hint, **changed})[0], 409)
+        with closing(sqlite3.connect(self.path)) as db:
+            evidence = json.loads(db.execute('SELECT evidence FROM signals').fetchone()[0])
+            evidence['origin'] = 'native_webpush'
+            encoded = json.dumps(evidence)
+            db.execute('UPDATE signals SET evidence=?', (encoded,))
+            db.commit()
+        self.assertEqual(self.request({**hint, 'observedAt': '2026-10-16T19:47:15.114Z'})[0], 409)
+        with closing(sqlite3.connect(self.path)) as db:
+            self.assertEqual(db.execute('SELECT evidence FROM signals').fetchone()[0], encoded)
+
     def test_http_auth_body_limit_json_and_profile_allowlist(self):
         self.assertEqual(self.request(token='wrong')[0], 401)
         self.assertEqual(self.request(raw=b'x' * 4097)[0], 413)

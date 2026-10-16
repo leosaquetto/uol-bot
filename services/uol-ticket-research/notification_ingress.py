@@ -71,6 +71,24 @@ def validate_hint(value):
                                  'observedAt': value['observedAt']}, sort_keys=True, separators=(',', ':')), epoch
 
 
+def equivalent_evidence(saved, current):
+    if saved == current:
+        return True
+    try:
+        previous, requested = json.loads(saved), json.loads(current)
+        if (not isinstance(previous, dict) or not isinstance(requested, dict)
+                or set(previous) != {'origin', 'source', 'observedAt'}
+                or set(requested) != set(previous)
+                or previous['origin'] != requested['origin']
+                or previous['source'] != requested['source']):
+            return False
+        before = dt.datetime.fromisoformat(previous['observedAt'].replace('Z', '+00:00'))
+        after = dt.datetime.fromisoformat(requested['observedAt'].replace('Z', '+00:00'))
+        return before.tzinfo is not None and after.tzinfo is not None and before == after
+    except (ValueError, TypeError, AttributeError, OverflowError):
+        return False
+
+
 class NotificationStore:
     def __init__(self, directory, clock=time.time):
         self.path, self.clock = Path(directory) / 'push.sqlite', clock
@@ -106,7 +124,7 @@ class NotificationStore:
                 db.execute('BEGIN IMMEDIATE')
                 previous = db.execute('SELECT seq,evidence FROM signals WHERE event_id=?', (key,)).fetchone()
                 if previous:
-                    if previous[1] != evidence:
+                    if not equivalent_evidence(previous[1], evidence):
                         raise IngressError('notification_identity_conflict', 409)
                     db.rollback()
                     return {'ok': True, 'accepted': True, 'persisted': True, 'duplicate': True, 'eventId': event_id}
