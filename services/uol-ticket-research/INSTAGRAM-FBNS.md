@@ -21,7 +21,7 @@ FBNS usa TLS persistente em `mqtt-mini.facebook.com:443`, autenticação própri
 
 A sessão Web existente contém os dados para tentar a associação, mas o aceite desse endpoint com essa sessão ainda não está provado. Não usar `login_by_sessionid()`: esse helper dispara consultas adicionais e fallbacks. O instrumento isolado usa somente o cliente HTTP protegido existente, identidade de dispositivo estável e uma intenção durável antes do único POST. Timeout, 5xx ou resposta malformada permanecem incertos; não repetir automaticamente. Reinício não cria dispositivo ou associação novos.
 
-O primeiro GET diagnóstico de `web_profile_info` respondeu HTTP 429. O bloqueio global foi gravado no monitor até **17/10/2026 00:16:34 UTC**, equivalente a **16/10 às 21:16 em São Paulo**. Nenhum backend, push, reinício ou registro de conta pode furar esse bloqueio. A preparação anônima do broker não consulta Instagram nem associa conta.
+O primeiro GET diagnóstico de `web_profile_info` respondeu HTTP 429. O bloqueio global foi gravado no monitor até **17/10/2026 00:16:34 UTC**, equivalente a **16/10 às 21:16 em São Paulo**. Esse prazo é o piso preventivo local de seis horas, sem `Retry-After` comprovado na resposta. A coleta HTTP de Stories continua bloqueada. A exceção pontual para diagnóstico/registro FBNS está documentada abaixo; nenhum backend, reinício ou push libera a coleta durante o recuo.
 
 ## Diagnóstico e aceitação
 
@@ -52,3 +52,16 @@ Uma associação aceita habilita somente observação privada. Ela não encaminh
 ### Exceção pontual autorizada ao recuo
 
 O horário de 21:16 decorreu do piso preventivo de seis horas escolhido por nós, não de um `Retry-After` comprovado na resposta vazia de lookup. O usuário pediu explicitamente avançar sem prejudicar os outros serviços. `--registration-probe` permite somente o ensaio FBNS durante aquele bloqueio de fonte: exige estado `rate_limited/http_429`, grava uma autorização de escopo/prazo antes da conexão e não ignora um bloqueio posterior maior. O limite próprio do registro FBNS permanece obrigatório; 429 recebido nele não é contornado. A coleta HTTP de Stories e os demais serviços mantêm seus limites. A exceção não permite login, troca de IP, novo dispositivo a cada falha nem repetição do POST incerto.
+
+
+### Diagnóstico do HTTP 400 e correção do contrato
+
+O broker entregou credenciais, token e PONG, mas a associação inicial da conta respondeu HTTP 400. O primeiro corpo de erro não foi preservado; a causa continua não comprovada. O pedido inicial usava User-Agent desktop e cookies. O cliente móvel fixado no commit consultado usa também perfil Android e `Bearer IGT:2`, construído localmente a partir da mesma sessão. Isso não exige senha, novo login, SDK de conta ou atestado de hardware.
+
+`--validate-account` permite uma única leitura autenticada de `accounts/current_user/?edit=true`, com intenção gravada antes da rede. Exige HTTP 200, `status=ok` e identidade igual à sessão. O resultado fica vinculado à conta, sessão, token e contrato; dados pessoais do corpo de sucesso não são persistidos. Falha ou interrupção não autoriza repetir o GET.
+
+`--correct-association` é uma ação explícita de diagnóstico. Exige o registro legado `rejected/http_400`, mesmo token/conta e validação positiva de até cinco minutos. Arquiva o registro anterior e reserva a nova tentativa como incerta antes do POST. Não admite uma segunda correção, nem repetição de resultado aceito, incerto, challenge ou 429. Reiniciar o serviço não executa essa ação. O corpo de erro agora é limitado e preservado somente no journal privado; a saída pública contém estados e motivos sanitizados.
+
+O perfil móvel e Android ID são estáveis e associados ao UUID já salvo. O token, autenticação do broker e sessão original não são substituídos. Isso corrige uma divergência concreta de contrato; somente a resposta real poderá comprovar o aceite.
+
+Fontes do contrato: [headers privados](https://github.com/subzeroid/instagrapi/blob/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/mixins/private.py#L256), [Bearer da sessão](https://github.com/subzeroid/instagrapi/blob/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/mixins/auth.py#L1586), [consulta de identidade](https://github.com/subzeroid/instagrapi/blob/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/mixins/account.py#L56).

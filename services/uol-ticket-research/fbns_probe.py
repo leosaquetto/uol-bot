@@ -1,6 +1,7 @@
 """Bounded FBNS diagnostic and optional server listener; no destination delivery.
 
-The optional main-channel account association is attempted at most once.
+Account association is attempted once; an explicit mobile-contract correction
+can follow only a confirmed legacy HTTP 400 and a fresh same-account check.
 Device credentials and received payloads belong only in the protected directory.
 """
 import argparse
@@ -37,8 +38,49 @@ MAX_PAYLOAD = 64 * 1024
 MAX_JOURNAL = 4 * 1024 * 1024
 MAX_RECORDS = 1000
 REGISTER_URL = 'https://i.instagram.com/api/v1/push/register/'
+CURRENT_USER_URL = 'https://i.instagram.com/api/v1/accounts/current_user/?edit=true'
+MOBILE_CONTRACT = 'android_449_igt_v1'
+MAX_HTTP_BODY = 32768
+MOBILE_PROFILE = {
+    'appVersion': '449.0.0.52.84', 'versionCode': '1079242191',
+    'userAgent': 'Instagram 449.0.0.52.84 Android (34/14; 480dpi; 1344x2992; '
+                 'Google/google; Pixel 8 Pro; husky; husky; en_US; 1079242191)',
+    'appId': '567067343352427', 'capabilities': '3brTv10=', 'locale': 'en_US',
+    'bloksVersion': '799db3e387d7a21a19c72918b8698b6cd28a1516ade363792c100ed45a0f9f0b',
+}
 TEST_PROFILE = 'leotheblueblur'
 STORY_TYPES = frozenset(('first_reel_post', 'resurrected_reel_post', 'first_bestie_post'))
+
+
+def mobile_headers(state, values):
+    """Build the pinned native session header without decoding its cookie value."""
+    profile = state['mobileProfile']
+    authorization = {'ds_user_id': values['ds_user_id'], 'sessionid': values['sessionid'],
+                     'should_use_header_over_cookies': True}
+    bearer = base64.b64encode(json.dumps(authorization, separators=(',', ':')).encode()).decode()
+    return {'Authorization': 'Bearer IGT:2:' + bearer, 'User-Agent': profile['userAgent'],
+            'Accept': 'application/json', 'Accept-Encoding': 'identity',
+            'Accept-Language': 'en-US', 'X-IG-App-ID': profile['appId'],
+            'X-IG-Capabilities': profile['capabilities'], 'X-IG-Device-ID': state['uuid'],
+            'X-IG-Family-Device-ID': state['phoneId'], 'X-IG-Android-ID': profile['androidId'],
+            'X-IG-App-Locale': profile['locale'], 'X-IG-Device-Locale': profile['locale'],
+            'X-IG-Mapped-Locale': profile['locale'], 'X-Bloks-Version-Id': profile['bloksVersion'],
+            'X-IG-Connection-Type': 'WIFI', 'IG-INTENDED-USER-ID': values['ds_user_id'],
+            'IG-U-DS-USER-ID': values['ds_user_id'], 'X-CSRFToken': values['csrftoken']}
+
+
+def _response_reason(value):
+    if not isinstance(value, dict):
+        return 'unclassified_response'
+    if isinstance(value.get('challenge'), dict):
+        return 'challenge_required'
+    for field in ('error_type', 'message'):
+        reason = value.get(field)
+        if reason in ('challenge_required', 'checkpoint_required', 'login_required',
+                      'consent_required', 'feedback_required', 'rate_limit_error',
+                      'invalid_credentials', 'invalid_user'):
+            return reason
+    return 'unclassified_response'
 
 
 class ProbeError(Exception):
@@ -319,7 +361,9 @@ class ProbeClient(FbnsClient):
             if packet.payload or raw[0] != 0xd0:
                 raise ProbeError('invalid_broker_pingresp')
         elif packet.packet_type == '4':  # PUBACK
-            if len(packet.payload) != 2 or raw[0] != 0x40:
+            # FBNS returned 0x42 with the same two-byte packet ID on the
+            # authenticated broker diagnostic; token response and PONG followed.
+            if len(packet.payload) != 2 or raw[0] not in (0x40, 0x42):
                 raise ProbeError('invalid_broker_puback')
         elif packet.packet_type == '9':  # SUBACK for our single-topic subscription
             if len(packet.payload) != 3 or raw[0] != 0x90:
@@ -491,13 +535,17 @@ class Probe:
         client.connect(register=False)
 
     @staticmethod
-    def _identity(local):
+    def _identity(local, include_session=False):
         values = {}
-        for name in ('ds_user_id', 'csrftoken'):
+        names = ('ds_user_id', 'csrftoken', 'sessionid') if include_session else ('ds_user_id', 'csrftoken')
+        for name in names:
             candidates = {c.value for c in local.jar if c.name == name and c.value}
             if len(candidates) != 1:
                 raise ProbeError('session_identity_unproven')
             values[name] = candidates.pop()
+            if (not isinstance(values[name], str) or len(values[name]) > 8192
+                    or any(ord(c) < 33 or ord(c) == 127 for c in values[name])):
+                raise ProbeError('session_identity_unproven')
         if not re.fullmatch(r'[0-9]{1,30}', values['ds_user_id']):
             raise ProbeError('session_identity_unproven')
         return values
@@ -507,31 +555,23 @@ class Probe:
         if association and association.get('userId') != self._identity(local)['ds_user_id']:
             raise ProbeError('session_account_changed')
 
-    def associate(self):
-        if self.state.get('association'):
-            raise ProbeError('association_already_attempted')
-        if not self.state.get('token') or not self.state.get('auth'):
-            raise ProbeError('prepare_required')
-        self._cooldown()
-        local = self.instagram_factory(self.session)
-        values = self._identity(local)
-        data = {'device_type': 'android_mqtt', 'is_main_push_channel': 'true',
-                'device_sub_type': '2', 'device_token': self.state['token'],
-                '_csrftoken': values['csrftoken'], 'guid': self.state['uuid'],
-                'uuid': self.state['uuid'], 'users': values['ds_user_id'],
-                'family_device_id': self.state['familyDeviceId'], 'phone_id': self.state['phoneId']}
-        request = urllib.request.Request(REGISTER_URL, urllib.parse.urlencode(data).encode(), method='POST', headers={
-            'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': local.config['user_agent'], 'X-CSRFToken': values['csrftoken']})
-        local.jar.add_cookie_header(request)
-        if not request.has_header('Cookie'):
-            raise ProbeError('session_cookie_scope_invalid')
-        self.state['association'] = {'status': 'uncertain', 'attemptId': str(uuid.uuid4()),
-                                     'startedAt': self.clock(), 'userId': values['ds_user_id'],
-                                     'isMainPushChannel': True,
-                                     'tokenSha256': hashlib.sha256(self.state['token'].encode()).hexdigest()}
-        self.save()  # An interrupted/lost response never authorizes a second POST.
-        status, reason = 'uncertain', 'response_uncertain'
+    def _mobile_profile(self):
+        android_id = 'android-' + hashlib.sha256(self.state['uuid'].encode()).hexdigest()[:16]
+        expected = {**MOBILE_PROFILE, 'androidId': android_id}
+        profile = self.state.get('mobileProfile')
+        if profile is None:
+            self.state['mobileProfile'] = expected
+            self.save()
+        elif profile != expected:
+            raise ProbeError('mobile_profile_changed')
+
+    def _binding(self, values):
+        return {'tokenSha256': hashlib.sha256(self.state['token'].encode()).hexdigest(),
+                'userSha256': hashlib.sha256(values['ds_user_id'].encode()).hexdigest(),
+                'sessionSha256': hashlib.sha256(values['sessionid'].encode()).hexdigest()}
+
+    def _http_exchange(self, local, request):
+        code, raw, truncated, result, transport_reason = None, b'', False, None, ''
         try:
             try:
                 response = local.opener.open(request, timeout=20)
@@ -539,22 +579,166 @@ class Probe:
                 response = error
             with response:
                 code = getattr(response, 'status', getattr(response, 'code', None))
-                if isinstance(code, int) and 400 <= code < 500:
-                    status, reason = 'rejected', 'http_' + str(code)
-                    if code == 429:
-                        self.state['httpRetryNotBefore'] = self.clock() + max(
-                            21600, _retry_after_seconds(response.headers.get('Retry-After')))
-                elif isinstance(code, int) and 200 <= code < 300:
-                    raw = response.read(32769)
-                    if len(raw) <= 32768:
+                if code == 429:
+                    self.state['httpRetryNotBefore'] = self.clock() + max(
+                        21600, _retry_after_seconds(response.headers.get('Retry-After')))
+                    self.save()
+                raw = response.read(MAX_HTTP_BODY + 1)
+                truncated, raw = len(raw) > MAX_HTTP_BODY, raw[:MAX_HTTP_BODY]
+                if not truncated:
+                    try:
                         result = json.loads(raw)
-                        if isinstance(result, dict) and result.get('status') == 'ok':
-                            status, reason = 'accepted', 'register_accepted'
+                    except (ValueError, UnicodeDecodeError, RecursionError):
+                        pass
         except (OSError, ValueError, TypeError, urllib.error.URLError):
-            pass
-        self.state['association'].update(status=status, reason=reason, finishedAt=self.clock())
+            transport_reason = 'transport_error'
+        return code, raw, truncated, result, transport_reason
+
+    def _http_diagnostic(self, stage, exchange, include_error_body=False):
+        code, raw, truncated, result, transport_reason = exchange
+        diagnostic = {'httpStatus': code if type(code) is int else None, 'bytes': len(raw),
+                      'sha256': hashlib.sha256(raw).hexdigest(), 'truncated': truncated,
+                      'reason': transport_reason or _response_reason(result)}
+        if include_error_body:
+            diagnostic['bodyBase64'] = base64.b64encode(raw).decode()
+        Journal(self.directory / 'fbns-http-journal.jsonl', self.clock).append(stage, diagnostic)
+        return diagnostic['reason']
+
+    def validate_account(self):
+        if self.state.get('accountValidation'):
+            raise ProbeError('account_validation_already_attempted')
+        if not self.state.get('token') or not self.state.get('auth'):
+            raise ProbeError('prepare_required')
+        self._cooldown()
+        local = self.instagram_factory(self.session)
+        self._check_account(local)
+        values = self._identity(local, include_session=True)
+        self._legacy_eligibility(values)
+        self._mobile_profile()
+        request = urllib.request.Request(CURRENT_USER_URL, method='GET',
+                                         headers=mobile_headers(self.state, values))
+        self.state['accountValidation'] = {'status': 'uncertain', 'matched': False,
+                                          'startedAt': self.clock(), 'contractVersion': MOBILE_CONTRACT,
+                                          **self._binding(values)}
+        self.save()  # A crash or lost GET response cannot authorize a repeated check.
+        exchange = self._http_exchange(local, request)
+        code, raw, truncated, result, transport_reason = exchange
+        matched = False
+        if (code == 200 and not truncated and isinstance(result, dict)
+                and result.get('status') == 'ok' and isinstance(result.get('user'), dict)):
+            pk = result['user'].get('pk')
+            matched = type(pk) in (str, int) and str(pk) == values['ds_user_id']
+        status = 'accepted' if matched else 'rejected' if (
+            code == 200 or type(code) is int and 400 <= code < 500) else 'uncertain'
+        reason = 'same_account_verified' if matched else (
+            'account_mismatch' if code == 200 and isinstance(result, dict)
+            and result.get('status') == 'ok' and isinstance(result.get('user'), dict)
+            else 'http_' + str(code) if type(code) is int and 400 <= code < 500
+            else 'response_unproven')
+        # A successful account body contains PII and is never persisted.
+        if not matched:
+            self._http_diagnostic('validate_account', exchange)
+        self.state['accountValidation'].update(status=status, matched=matched,
+                                                reason=reason, checkedAt=self.clock())
         self.save()
-        return {'ok': status == 'accepted', 'mode': 'associate', 'status': status, 'reason': reason}
+        return {'ok': matched, 'mode': 'validate_account', 'status': status, 'matched': matched,
+                'reason': reason, 'contractVersion': MOBILE_CONTRACT}
+
+    def _legacy_eligibility(self, values):
+        old = self.state.get('association')
+        history = self.state.get('associationHistory', [])
+        def valid_record(item):
+            if (not isinstance(item, dict) or item.get('status') not in ('accepted', 'rejected', 'uncertain')
+                    or not isinstance(item.get('userId'), str)
+                    or not re.fullmatch(r'[0-9]{1,30}', item['userId'])
+                    or not isinstance(item.get('tokenSha256'), str)
+                    or not re.fullmatch(r'[a-f0-9]{64}', item['tokenSha256'])
+                    or type(item.get('startedAt')) not in (int, float)
+                    or not math.isfinite(item['startedAt'])):
+                return False
+            try:
+                uuid.UUID(item.get('attemptId'))
+                return True
+            except (ValueError, TypeError, AttributeError):
+                return False
+        if (not isinstance(old, dict) or old.get('status') != 'rejected'
+                or old.get('reason') != 'http_400' or old.get('contractVersion') or old.get('corrective')
+                or old.get('errorReason') in ('challenge_required', 'checkpoint_required', 'login_required',
+                                               'consent_required', 'feedback_required')
+                or not valid_record(old) or not isinstance(history, list)
+                or any(not valid_record(item) for item in history)
+                or any(item.get('contractVersion') == MOBILE_CONTRACT or item.get('corrective') for item in history)
+                or old.get('userId') != values['ds_user_id']
+                or old.get('tokenSha256') != self._binding(values)['tokenSha256']):
+            raise ProbeError('corrective_association_ineligible')
+        return old, history
+
+    def _corrective_eligibility(self, values):
+        old, history = self._legacy_eligibility(values)
+        validation = self.state.get('accountValidation')
+        checked = validation.get('checkedAt') if isinstance(validation, dict) else None
+        if (not isinstance(validation, dict) or validation.get('status') != 'accepted'
+                or validation.get('matched') is not True or validation.get('contractVersion') != MOBILE_CONTRACT
+                or type(checked) not in (int, float) or not math.isfinite(checked)
+                or not 0 <= self.clock() - checked <= 300
+                or any(validation.get(key) != value for key, value in self._binding(values).items())):
+            raise ProbeError('fresh_account_validation_required')
+        return old, history
+
+    def associate(self, correct=False):
+        if self.state.get('association') and not correct:
+            raise ProbeError('association_already_attempted')
+        if not self.state.get('token') or not self.state.get('auth'):
+            raise ProbeError('prepare_required')
+        self._cooldown()
+        local = self.instagram_factory(self.session)
+        values = self._identity(local, include_session=correct)
+        prior = self._corrective_eligibility(values) if correct else None
+        if correct:
+            self._mobile_profile()
+        data = {'device_type': 'android_mqtt', 'is_main_push_channel': 'true',
+                'device_sub_type': '2', 'device_token': self.state['token'],
+                '_csrftoken': values['csrftoken'], 'guid': self.state['uuid'],
+                'uuid': self.state['uuid'], 'users': values['ds_user_id'],
+                'family_device_id': self.state['familyDeviceId'], 'phone_id': self.state['phoneId']}
+        headers = mobile_headers(self.state, values) if correct else {
+            'Accept': 'application/json', 'User-Agent': local.config['user_agent'],
+            'X-CSRFToken': values['csrftoken']}
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        request = urllib.request.Request(REGISTER_URL, urllib.parse.urlencode(data).encode(), method='POST', headers=headers)
+        if not correct:
+            local.jar.add_cookie_header(request)
+            if not request.has_header('Cookie'):
+                raise ProbeError('session_cookie_scope_invalid')
+        if correct:
+            old, history = prior
+            self.state['associationHistory'] = [*history, dict(old)]
+        self.state['association'] = {'status': 'uncertain', 'attemptId': str(uuid.uuid4()),
+                                     'startedAt': self.clock(), 'userId': values['ds_user_id'],
+                                     'isMainPushChannel': True,
+                                     'tokenSha256': hashlib.sha256(self.state['token'].encode()).hexdigest()}
+        if correct:
+            self.state['association'].update(contractVersion=MOBILE_CONTRACT, corrective=True)
+        self.save()  # An interrupted/lost response never authorizes a second POST.
+        status, reason = 'uncertain', 'response_uncertain'
+        exchange = self._http_exchange(local, request)
+        code, raw, truncated, result, transport_reason = exchange
+        if type(code) is int and 400 <= code < 500:
+            status, reason = 'rejected', 'http_' + str(code)
+        elif (type(code) is int and 200 <= code < 300 and not truncated
+              and isinstance(result, dict) and result.get('status') == 'ok'):
+            status, reason = 'accepted', 'register_accepted'
+        diagnostic_reason = ''
+        if status != 'accepted':
+            diagnostic_reason = self._http_diagnostic('register', exchange, include_error_body=True)
+        self.state['association'].update(status=status, reason=reason, finishedAt=self.clock(),
+                                         errorReason=diagnostic_reason)
+        self.save()
+        return {'ok': status == 'accepted', 'mode': 'correct_association' if correct else 'associate',
+                'status': status, 'reason': reason}
+
+    def correct_association(self):
+        return self.associate(correct=True)
 
     def observe(self, seconds, internal=False):
         if type(seconds) is not int or not 1 <= seconds <= (3600 if internal else 600):
@@ -661,7 +845,7 @@ class Probe:
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     modes = parser.add_mutually_exclusive_group(required=True)
-    for mode in ('prepare', 'associate', 'observe', 'serve'):
+    for mode in ('prepare', 'associate', 'observe', 'serve', 'validate-account', 'correct-association'):
         modes.add_argument('--' + mode, action='store_true')
     parser.add_argument('--directory', default='/var/lib/uol-instagram-monitor')
     parser.add_argument('--session')
@@ -670,7 +854,8 @@ def main(argv=None):
                         help='Explicitly authorized FBNS exception to the recorded source backoff')
     args = parser.parse_args(argv)
     mode = ('prepare' if args.prepare else 'associate' if args.associate
-            else 'observe' if args.observe else 'serve')
+            else 'observe' if args.observe else 'validate_account' if args.validate_account
+            else 'correct_association' if args.correct_association else 'serve')
     try:
         with locked_directory(args.directory):
             probe = Probe(args.directory, args.session, registration_probe=args.registration_probe)

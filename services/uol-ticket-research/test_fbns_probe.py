@@ -12,7 +12,8 @@ import urllib.parse
 import zlib
 
 from fbns_probe import (BoundedTransport, Journal, MAX_PAYLOAD, Probe, ProbeError,
-                        bounded_payload, diagnostic_story, locked_directory, main)
+                        MAX_HTTP_BODY, MOBILE_CONTRACT, bounded_payload, diagnostic_story,
+                        locked_directory, main)
 from instagram import InstagramClient
 from vendor.instagram_fbns.mqttot import write_publish_packet
 
@@ -112,6 +113,186 @@ class ProbeTests(unittest.TestCase):
         probe = self.probe()
         self.assertTrue(probe.prepare()['ok'])
         return probe
+
+    def legacy_rejected(self):
+        probe = self.prepared()
+        self.opener.response = Response(400, b'')
+        self.assertEqual(probe.associate()['status'], 'rejected')
+        return probe
+
+    def verified_legacy(self):
+        probe = self.legacy_rejected()
+        self.opener.response = Response(200, json.dumps({'status': 'ok', 'user': {
+            'pk': 123, 'username': 'private-user', 'full_name': 'Private Person'}}).encode())
+        self.assertTrue(probe.validate_account()['ok'])
+        return probe
+
+    def test_mobile_headers_preserve_encoded_session_and_stable_identity(self):
+        probe = self.legacy_rejected()
+        identities = {key: probe.state[key] for key in ('uuid', 'phoneId', 'familyDeviceId', 'token', 'auth')}
+        self.opener.response = Response(200, b'{"status":"ok","user":{"pk":"123","full_name":"PII"}}')
+        def inspect(request):
+            state = json.loads((self.root / 'fbns-state.json').read_text())
+            self.assertEqual(state['accountValidation']['status'], 'uncertain')
+        self.opener.callback = inspect
+        self.assertTrue(probe.validate_account()['matched'])
+        request = self.opener.calls[-1]
+        self.assertEqual(request.get_method(), 'GET')
+        self.assertEqual(request.full_url, 'https://i.instagram.com/api/v1/accounts/current_user/?edit=true')
+        import base64
+        auth = json.loads(base64.b64decode(request.get_header('Authorization').split('IGT:2:')[1]))
+        self.assertEqual(auth, {'ds_user_id': '123', 'sessionid': '123%3Aprivate',
+                                'should_use_header_over_cookies': True})
+        self.assertEqual(request.get_header('X-ig-app-id'), '567067343352427')
+        self.assertEqual(request.get_header('X-ig-device-id'), identities['uuid'])
+        self.assertEqual(request.get_header('X-ig-family-device-id'), identities['phoneId'])
+        self.assertRegex(request.get_header('X-ig-android-id'), r'^android-[a-f0-9]{16}$')
+        self.assertIn('Instagram 449.0.0.52.84 Android', request.get_header('User-agent'))
+        self.assertFalse(request.has_header('Cookie'))
+        self.assertEqual({key: probe.state[key] for key in identities}, identities)
+        self.assertNotIn('PII', json.dumps(probe.state))
+        self.assertNotIn('full_name', json.dumps(probe.state))
+        self.assertNotIn('sessionid', json.dumps(probe.state))
+
+    def test_account_validation_durable_intent_blocks_lost_response_repeat(self):
+        probe = self.legacy_rejected()
+        self.opener.response = TimeoutError('private-session-secret')
+        result = probe.validate_account()
+        self.assertEqual(result['status'], 'uncertain')
+        self.assertFalse(result['matched'])
+        with self.assertRaisesRegex(ProbeError, 'account_validation_already_attempted'):
+            self.probe().validate_account()
+        self.assertEqual(len(self.opener.calls), 2)  # one legacy POST, one GET
+        self.assertNotIn('private-session-secret', json.dumps(result))
+
+    def test_mismatched_account_cannot_authorize_corrective_post(self):
+        probe = self.legacy_rejected()
+        self.opener.response = Response(200, b'{"status":"ok","user":{"pk":456,"username":"PII"}}')
+        self.assertEqual(probe.validate_account()['reason'], 'account_mismatch')
+        with self.assertRaisesRegex(ProbeError, 'fresh_account_validation_required'):
+            probe.correct_association()
+        self.assertEqual(len(self.opener.calls), 2)
+        journal = (self.root / 'fbns-http-journal.jsonl').read_text()
+        self.assertNotIn('PII', journal)
+        self.assertNotIn('bodyBase64', json.loads(journal.splitlines()[-1])['payload'])
+
+    def test_validate_account_refuses_nonlegacy_or_malformed_state_before_get(self):
+        probe = self.legacy_rejected()
+        old = dict(probe.state['association'])
+        for update in ({'status': 'accepted'}, {'status': 'uncertain'}, {'reason': 'http_429'},
+                       {'contractVersion': MOBILE_CONTRACT}, {'errorReason': 'challenge_required'},
+                       {'tokenSha256': '0' * 64}, {'attemptId': 'malformed'}):
+            with self.subTest(update=update):
+                probe.state['association'] = {**old, **update}
+                with self.assertRaisesRegex(ProbeError, 'corrective_association_ineligible'):
+                    probe.validate_account()
+                self.assertNotIn('accountValidation', probe.state)
+        probe.state['association'] = old
+        probe.state['associationHistory'] = [{}]
+        with self.assertRaisesRegex(ProbeError, 'corrective_association_ineligible'):
+            probe.validate_account()
+        self.assertEqual(len(self.opener.calls), 1)
+
+    def test_corrective_post_archives_prior400_and_preserves_form_and_token(self):
+        probe = self.verified_legacy()
+        original = dict(probe.state['association'])
+        original_form = self.opener.calls[0].data
+        token = probe.state['token']
+        def inspect(request):
+            state = json.loads((self.root / 'fbns-state.json').read_text())
+            self.assertEqual(state['association']['status'], 'uncertain')
+            self.assertEqual(state['association']['contractVersion'], MOBILE_CONTRACT)
+            self.assertEqual(state['associationHistory'], [original])
+        self.opener.callback = inspect
+        self.opener.response = Response(200)
+        self.assertTrue(probe.correct_association()['ok'])
+        self.assertEqual(self.opener.calls[-1].data, original_form)
+        self.assertTrue(self.opener.calls[-1].get_header('Authorization').startswith('Bearer IGT:2:'))
+        self.assertEqual(probe.state['token'], token)
+        self.assertEqual(probe.state['associationHistory'], [original])
+        with self.assertRaisesRegex(ProbeError, 'corrective_association_ineligible'):
+            self.probe().correct_association()
+        self.assertEqual(len(self.opener.calls), 3)
+
+    def test_corrective_post_crash_preserves_uncertain_and_never_retries(self):
+        probe = self.verified_legacy()
+        original = dict(probe.state['association'])
+        def crash(request):
+            raise SystemExit('simulated crash after possible acceptance')
+        self.opener.callback = crash
+        with self.assertRaises(SystemExit):
+            probe.correct_association()
+        restart = self.probe()
+        self.assertEqual(restart.state['association']['status'], 'uncertain')
+        self.assertEqual(restart.state['associationHistory'], [original])
+        with self.assertRaisesRegex(ProbeError, 'corrective_association_ineligible'):
+            restart.correct_association()
+        self.assertEqual(len(self.opener.calls), 3)
+
+    def test_corrective_requires_recent_binding_and_valid_history(self):
+        probe = self.verified_legacy()
+        original_validation = dict(probe.state['accountValidation'])
+        for update in ({'checkedAt': self.now - 301}, {'checkedAt': self.now + 1},
+                       {'tokenSha256': '0' * 64}, {'sessionSha256': '0' * 64}, {'userSha256': '0' * 64}):
+            with self.subTest(update=update):
+                probe.state['accountValidation'] = {**original_validation, **update}
+                with self.assertRaisesRegex(ProbeError, 'fresh_account_validation_required'):
+                    probe.correct_association()
+        probe.state['accountValidation'] = original_validation
+        probe.state['associationHistory'] = [{}]
+        with self.assertRaisesRegex(ProbeError, 'corrective_association_ineligible'):
+            probe.correct_association()
+        self.assertEqual(len(self.opener.calls), 2)
+
+    def test_corrective_refuses_challenge_accepted_uncertain_and_new_contract(self):
+        probe = self.verified_legacy()
+        original = dict(probe.state['association'])
+        for update in ({'errorReason': 'challenge_required'}, {'status': 'accepted'}, {'status': 'uncertain'},
+                       {'reason': 'http_429'}, {'contractVersion': MOBILE_CONTRACT}, {'corrective': True},
+                       {'tokenSha256': '0' * 64}, {'userId': '456'}):
+            with self.subTest(update=update):
+                probe.state['association'] = {**original, **update}
+                with self.assertRaisesRegex(ProbeError, 'corrective_association_ineligible'):
+                    probe.correct_association()
+        self.assertEqual(len(self.opener.calls), 2)
+
+    def test_corrective429_remains_terminal_and_preserves_fbns_guard(self):
+        probe = self.verified_legacy()
+        self.opener.response = Response(429, b'{"message":"rate_limit_error"}', {'Retry-After': '30000'})
+        self.assertEqual(probe.correct_association()['reason'], 'http_429')
+        self.assertEqual(probe.state['httpRetryNotBefore'], self.now + 30000)
+        with self.assertRaisesRegex(ProbeError, 'source_cooldown_active'):
+            probe.correct_association()
+        self.assertEqual(len(self.opener.calls), 3)
+
+    def test_post_error_body_is_bounded_private_and_public_reason_sanitized(self):
+        probe = self.prepared()
+        body = b'{"message":"PII private person"}' + b'x' * MAX_HTTP_BODY
+        self.opener.response = Response(400, body)
+        result = probe.associate()
+        self.assertEqual(result['reason'], 'http_400')
+        self.assertNotIn('PII', json.dumps(result))
+        record = json.loads((self.root / 'fbns-http-journal.jsonl').read_text().splitlines()[-1])['payload']
+        self.assertTrue(record['truncated'])
+        self.assertEqual(record['bytes'], MAX_HTTP_BODY)
+        import base64
+        self.assertEqual(base64.b64decode(record['bodyBase64']), body[:MAX_HTTP_BODY])
+        self.assertEqual((self.root / 'fbns-http-journal.jsonl').stat().st_mode & 0o777, 0o600)
+
+    def test_account_check_redirect_and_4xx_do_not_verify_or_leak_body(self):
+        probe = self.legacy_rejected()
+        for response in (Response(302, b'PII redirect'),
+                         Response(401, b'{"message":"login_required","full_name":"PII"}')):
+            with self.subTest(status=response.status):
+                probe.state.pop('accountValidation', None)
+                probe.save()
+                self.opener.response = response
+                result = probe.validate_account()
+                self.assertFalse(result['ok'])
+                self.assertFalse(result['matched'])
+                self.assertNotIn('PII', json.dumps(result))
+        journal = (self.root / 'fbns-http-journal.jsonl').read_text()
+        self.assertNotIn('PII', journal)
 
     def test_prepare_persists_auth_and_token_before_next_packet_ack(self):
         def inspect(packet):
@@ -352,6 +533,8 @@ class ProbeTests(unittest.TestCase):
         for raw, reason in ((b'\xe0\x00', 'broker_disconnect'),
                             (b'\xa0\x00', 'unexpected_broker_packet'),
                             (b'\x40\x01\x00', 'invalid_broker_puback'),
+                            (b'\x42\x01\x00', 'invalid_broker_puback'),
+                            (b'\x4a\x02\x00\x01', 'invalid_broker_puback'),
                             (b'\x90\x03\x00\x01\x80', 'broker_subscription_rejected')):
             with self.subTest(reason=reason):
                 probe = self.probe(self.transport([raw]))
@@ -362,9 +545,10 @@ class ProbeTests(unittest.TestCase):
 
     def test_read_once_allows_puback_suback_and_pingresp(self):
         probe = self.probe(self.transport([b'\x40\x02\x00\x01',
+                                          b'\x42\x02\x00\x01',
                                           b'\x90\x03\x00\x01\x01', b'\xd0\x00']))
         client, journal = probe._client()
-        self.assertEqual([client.read_once().packet_type for _ in range(3)], ['4', '9', 'pingresp'])
+        self.assertEqual([client.read_once().packet_type for _ in range(4)], ['4', '4', '9', 'pingresp'])
         self.assertFalse(journal.records)
 
     def test_observe_missing_pong_cannot_report_healthy(self):

@@ -1,8 +1,9 @@
 # UOL delivery reliability — 15 October 2026
 
 Scope: UOL and required shared delivery components. Preserve the free tiers,
-all queues, ledgers and sessions. Instagram stays `push_only`: no manual GET,
-login, polling or synthetic event. No schema migration is required.
+all queues, ledgers and sessions. Instagram stays `push_only`; current diagnostic
+exceptions are recorded below. No automatic login, periodic polling, synthetic
+event or schema migration is required.
 
 ## Current Instagram authorization — 16 October
 
@@ -15,8 +16,9 @@ checkpoint risk and private-protocol fragility. No automatic login, session
 replacement, IP rotation or invented hardware attestation is authorized.
 
 The collector remains `push_only`; periodic HTTP collection was not activated.
-The controlled FBNS diagnostic waits for the global HTTP 429 backoff before any
-broker/account connection. Its one account-association attempt is durable;
+The controlled FBNS diagnostic normally waits for the global HTTP 429 backoff;
+the user subsequently authorized the scoped registration exception recorded below.
+Its account-association attempt is durable;
 uncertain/rejected responses and protocol/auth/security failures stop for review.
 `leotheblueblur` is a diagnostic source only, isolated from UOL destinations.
 Current implementation and acceptance details: `services/uol-ticket-research/INSTAGRAM-FBNS.md`.
@@ -568,3 +570,29 @@ while source polling stays blocked. `--registration-probe` audits that exception
 before connection, requires the original `rate_limited/http_429` state and cannot
 ignore a later longer backoff or an FBNS registration429. Account association
 still has one durable attempt. UOL, X, gateway and Drops are outside the probe.
+
+### Server FBNS publication and first runtime — 16 October, 18:45–18:53 UTC
+
+Server commit `f1ae912f7a156735e68234a188452f019552c452` passed all jobs in
+[exact-SHA CI](https://github.com/leosaquetto/uol-bot/actions/runs/38949624517).
+Installed source hashes matched; the existing session and all three delivered
+outbox receipts were unchanged. Drops and gateway remained active with their
+original PIDs and zero restarts. The source monitor remained `push_only`.
+No Cloudflare publication was performed by this server release.
+
+The FBNS broker accepted the connection and returned durable device credentials.
+Its PUBACK used header `0x42` with the standard two-byte packet ID, which the
+initial strict parser rejected. A bounded diagnostic with the same identity
+observed SUBACK, that PUBACK, a registration token and a successful PONG. The
+token was saved before acknowledging its response. This proves broker/device
+communication, not account association or Story receipt.
+
+The subsequent single account association returned HTTP 400. The service stopped
+with exit 78 and no restart; it did not repeat the POST. The original error body
+was not captured, so the cause is unproved. The request used the existing desktop
+User-Agent and cookies, while the pinned mobile client also supplies an Android
+User-Agent, app headers and a Bearer representation of the same session. A
+contract correction requires one bounded authenticated identity check first,
+then a separately reserved corrective attempt only for the definitive legacy
+400; the original attempt remains in history. Uncertain results never authorize
+another POST. No new login, session replacement or device/token regeneration.
