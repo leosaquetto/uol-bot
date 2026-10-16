@@ -11,7 +11,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { openPushStore, PUSH_STORE_LIMITS, PUSH_DIAGNOSTIC_KEYS } from './store.mjs';
 import { observeInstagramPush, processPending } from './receiver.mjs';
 import { classifyInstagramPush } from './classify.mjs';
-import { privateWrite } from './private.mjs';
+import { privateRead, privateWrite } from './private.mjs';
 import { registerInstagram } from './register.mjs';
 import { bootstrap } from './bootstrap.mjs';
 const ece=createRequire(new URL('../../saquetto-drops/src/webpush-crypto.js',import.meta.url))('http_ece');
@@ -469,4 +469,65 @@ test('registration sends the observed web_vapid shape once; ambiguous responses 
   assert.equal(result.status,'instagram_registration_accepted');assert.equal(result.storyPushProven,false);
   await assert.rejects(registerInstagram({registrationPath,sessionPath,fieldsPath,fetchImpl:()=>{calls++;}}),/requires_review/);
   assert.equal(calls,1);
+});
+
+function refreshFixture(t) {
+  const {registration}=fixture(),dir=directory(t);
+  registration.instagramRegistration={status:'accepted',recordedAt:'2026-10-10T20:49:06.955Z',httpStatus:200};
+  const paths={registrationPath:join(dir,'registration.json'),sessionPath:join(dir,'session.json'),fieldsPath:join(dir,'fields.json'),
+    refreshAcceptedAt:registration.instagramRegistration.recordedAt};
+  privateWrite(paths.registrationPath,registration);
+  privateWrite(paths.sessionPath,{user_agent:'fixture',cookies:['sessionid','csrftoken','mid','ds_user_id'].map(name=>
+    ({name,value:name==='ds_user_id'?'123':'fixture',domain:'.instagram.com',path:'/'}))});
+  privateWrite(paths.fieldsPath,{fb_dtsg:'fixture',jazoest:'12345',accountId:'123'});
+  return {registration,paths};
+}
+
+test('refresh requires the reviewed acceptance and matching authenticated account before any POST',async t=>{
+  const {registration,paths}=refreshFixture(t);let calls=0;
+  const fetchImpl=()=>{calls++;throw new Error('unexpected_post');};
+  await assert.rejects(registerInstagram({...paths,refreshAcceptedAt:'old',fetchImpl}),/requires_review/);
+  privateWrite(paths.fieldsPath,{fb_dtsg:'fixture',jazoest:'12345',accountId:'456'});
+  await assert.rejects(registerInstagram({...paths,fetchImpl}),/account_mismatch/);
+  registration.instagramRegistration.status='uncertain';privateWrite(paths.registrationPath,registration);
+  await assert.rejects(registerInstagram({...paths,fetchImpl}),/requires_review/);
+  assert.equal(calls,0);
+});
+
+test('refresh keeps the accepted transport and identity; durable intent excludes stale concurrent callers',async t=>{
+  const {registration,paths}=refreshFixture(t);let calls=0,release;
+  const first=registerInstagram({...paths,fetchImpl:async(url,options)=>{
+    calls++;
+    const saved=privateRead(paths.registrationPath);
+    assert.equal(saved.instagramRegistrationRefresh.status,'attempted');
+    assert.deepEqual(saved.instagramRegistration,registration.instagramRegistration);
+    assert.equal(new URLSearchParams(options.body).get('device_token'),registration.endpoint);
+    await new Promise(resolve=>{release=resolve;});
+    return new Response('{"status":"ok"}');
+  }});
+  // Model another process which already read the accepted record before reservation.
+  privateWrite(paths.registrationPath,registration);
+  await assert.rejects(registerInstagram({...paths,fetchImpl:()=>{calls++;}}),{code:'EEXIST'});
+  release();assert.equal((await first).status,'instagram_registration_refreshed');
+  const saved=privateRead(paths.registrationPath),{instagramRegistrationRefresh,...unchanged}=saved;
+  assert.deepEqual(unchanged,registration);
+  assert.equal(instagramRegistrationRefresh.status,'accepted');
+  assert.match(instagramRegistrationRefresh.subscriptionHash,/^[a-f0-9]{64}$/);
+  assert.equal(statSync(`${paths.registrationPath}.refresh-intent`).mode&0o777,0o600);
+  await assert.rejects(registerInstagram({...paths,fetchImpl:()=>{calls++;}}),/requires_review/);
+  assert.equal(calls,1);
+});
+
+test('lost or malformed refresh response remains uncertain without disabling the previous receiver acceptance',async t=>{
+  for(const mode of ['lost','malformed','server_error']) {
+    const {registration,paths}=refreshFixture(t);let calls=0;
+    const fetchImpl=async()=>{calls++;if(mode==='lost')throw new Error('response_lost');
+      return mode==='server_error'?new Response('{"status":"fail"}',{status:503}):new Response('invalid-json');};
+    assert.equal((await registerInstagram({...paths,fetchImpl})).status,'instagram_registration_uncertain');
+    const saved=privateRead(paths.registrationPath);
+    assert.equal(saved.instagramRegistrationRefresh.status,'uncertain');
+    assert.deepEqual(saved.instagramRegistration,registration.instagramRegistration);
+    await assert.rejects(registerInstagram({...paths,fetchImpl}),/requires_review/);
+    assert.equal(calls,1);
+  }
 });
