@@ -472,3 +472,39 @@ network topic. No speculative socket hook was added. Real-time acceleration
 requires a naturally observed event with author/Story identity. The existing
 seven-cycle automation was updated to preserve this distinction and the newly
 authorized browser-only polling scope; no extra automation was created.
+
+### Extension release and Worker receipt protection — 16 October, 18:01 UTC
+
+Commit `bc9a3bab6a45dba163b4c5927c72d520619234d0` passed the exact-SHA
+[UOL Worker CI](https://github.com/leosaquetto/uol-bot/actions/runs/38943681890).
+The release published Worker version `5cef9a5d-5c7e-4ac0-9964-075c1be19707`
+with tag `git-bc9a3bab6a45` at the existing workers.dev domain.
+
+The first postdeploy attempt failed `version_metadata_mismatch` and
+`debt_version_mismatch`; it was not accepted as runtime proof. A subsequent
+bounded read found `/livez`, `/readyz` and authenticated `/release-debt` all
+reporting the new version. The unchanged production verifier then passed:
+`published=true`, `runtimeVerified=true`, `debtVerified=true`, `ready=false`,
+no regressions. The natural successful primary cycle at
+`2026-10-16T18:01:18.054Z` recorded 27 reads; guarded observed estimate was 64
+against the unchanged acceptance ceiling of 512. Read/write guards were healthy;
+projected writes were 63,872 with 36,128 headroom. These estimates do not replace
+three complete UTC days or resolve `billing_unknown`.
+
+The same two historical critical incidents and two uncertain deliveries remain;
+zero dead letters, blocked configurations or maintenance dead letters. Their
+identity gate passed against the original private baseline. No ambiguous
+notification or destination delivery was replayed. Initial failure, later
+passing receipt and current publication identity are preserved in private
+`uol-extension-release-2026-10-16.log`,
+`uol-extension-postdeploy-2026-10-16.log` and the publication manifest.
+
+Extension source, private package checksums and 34 focused offline tests are
+complete. A fresh review caught a private-packaging path check that could accept
+an internal `..private` directory; it now rejects repository/ancestor paths and
+symlink escapes before reading the credential, with a regression test. The
+package is directory mode 0700, provisioning mode 0600. Browser installation,
+actual session use, real Story discovery and destination receipts remain open.
+Only loading `~/Applications/UOL Instagram` in the existing Chrome profile is
+required to start the bounded collector; no new login or session transfer was
+performed by this release.
