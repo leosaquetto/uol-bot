@@ -6139,7 +6139,7 @@ export class UolTelegramShadow extends DurableObject {
          AND s.next_at <= ?
          AND s.attempts < ?
          AND (s.last_result = 'listing_absence_pending' OR s.gone_count > 0)
-       ORDER BY s.next_at ASC, o.first_seen_at ASC
+       ORDER BY s.next_at ASC, s.attempts ASC, s.offer_id ASC
        LIMIT ?`,
       now.toISOString(),
       maxAttempts,
