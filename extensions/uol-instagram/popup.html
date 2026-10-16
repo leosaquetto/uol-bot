@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Instagram → UOL</title>
+    <link rel="stylesheet" href="popup.css">
+    <script src="popup.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <img src="icons/icon128.png" width="36" height="36" alt="">
+      <div><h1>Instagram <span aria-hidden="true">→</span> UOL</h1><p>Stories dos perfis que você escolheu</p></div>
+    </header>
+    <main>
+      <section class="card" aria-labelledby="monitor-title">
+        <div class="section-heading"><h2 id="monitor-title">Monitor</h2><span id="source-status" class="badge">Carregando</span></div>
+        <p id="monitor-detail" class="muted"></p>
+        <dl class="metrics">
+          <div><dt>Última consulta</dt><dd id="last-check">—</dd></div>
+          <div><dt>Próxima consulta</dt><dd id="next-check">—</dd></div>
+          <div><dt>Consultas no dia</dt><dd id="budget">— / 300</dd></div>
+        </dl>
+      </section>
+      <section class="card" aria-labelledby="profiles-title">
+        <h2 id="profiles-title">Perfis</h2>
+        <ul id="profiles" class="rows"><li class="muted">Carregando perfis…</li></ul>
+      </section>
+      <section class="card" aria-labelledby="deliveries-title">
+        <h2 id="deliveries-title">Envios recentes</h2>
+        <ul id="deliveries" class="rows"><li class="muted">Nenhum envio registrado.</li></ul>
+      </section>
+      <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+      <div class="actions">
+        <button id="check" class="primary" type="button" disabled>Verificar agora</button>
+        <button id="toggle" type="button" disabled>Pausar</button>
+      </div>
+      <button id="settings" class="text-button" type="button">Configurações</button>
+      <p class="footnote">Mantenha o Chrome aberto e a sessão do Instagram conectada. A consulta manual respeita o intervalo e o limite diário.</p>
+    </main>
+  </body>
+</html>

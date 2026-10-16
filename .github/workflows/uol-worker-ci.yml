@@ -8,6 +8,7 @@ on:
       - "services/uol-ticket-research/**"
       - "services/beeper-preview-gateway/**"
       - "services/saquetto-drops/**"
+      - "extensions/uol-instagram/**"
       - "bot_leouol.py"
       - "github_scraper.py"
       - "guard_daily_check.py"
@@ -29,6 +30,7 @@ on:
       - "services/uol-ticket-research/**"
       - "services/beeper-preview-gateway/**"
       - "services/saquetto-drops/**"
+      - "extensions/uol-instagram/**"
       - "bot_leouol.py"
       - "github_scraper.py"
       - "guard_daily_check.py"
@@ -179,3 +181,5 @@ jobs:
         run: python -B -m unittest test_monitor test_instagram test_supervisor test_storage_usage test_usage_report
       - name: Receptor push offline
         run: node --test services/uol-ticket-research/push/test.mjs
+      - name: Extensão Instagram offline
+        run: npm test --prefix extensions/uol-instagram

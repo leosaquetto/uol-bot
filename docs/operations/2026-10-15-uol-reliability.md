@@ -427,3 +427,48 @@ without a meaningful change. Publication details and private evidence paths are
 recorded in `~/.config/uol-ticket-research/uol-publication-2026-10-16.json`.
 The immutable release-debt baseline remains unchanged. Historical uncertainties
 stay open until the missing receipts are proved.
+
+### Browser extension collection — 16 October, implementation
+
+The user explicitly authorized bounded periodic Story queries by our extension,
+using the existing browser session and configured profiles. This supersedes the
+prior push-only restriction for this extension only. The Oracle collector and
+receiver remain unchanged in `push_only`; no session export, new login or
+synthetic production event is part of this change.
+
+Static inspection of the official public Vivies 1.0.1 and Anonymous Story Viewer
+2.2.4 packages confirmed local `chrome.alarms` polling and batched
+`feed/reels_media` GETs. Neither inspected version requests native notification
+permission. Their behavior is not evidence that Instagram emits Story Web Push.
+Primary links and mechanism limits are in `extensions/uol-instagram/README.md`.
+
+The new MV3 extension uses the browser-owned session, a five-minute minimum
+interval, at most three profiles and 300 Instagram requests/day in São Paulo.
+Only verified `clubeuol` ownership plus a valid campaign sticker and CDN image
+can enter the existing dedicated-token intake. Other profiles stay local.
+Attempts are persisted before POST; lost responses reconcile by exact identity,
+without blind resend. Interrupted or externally resolved receipts are revisited
+by GET. UI state exposes no token or signed image URL. Oracle heartbeat state
+remains separate from the extension's local diagnostics.
+
+The Worker retention change preserves incomplete, uncertain, malformed and
+active Story receipts before age-based removal. Capacity rejection remains
+fail-closed. No migration, paid tier, debt-baseline relaxation or historical
+resend is involved.
+
+Focused validation: 34 extension parser/engine/MV3/package tests and 29 Worker Story tests
+passed offline. Dedicated intake credential was verified by authenticated
+read-only HTTP 200 with `ok=true`; no Story POST was sent by this validation.
+The local install package is `~/Applications/UOL Instagram`, with private
+provisioning excluded from git. The browser tool rejected `chrome://extensions`
+by URL policy; no workaround was attempted. Installation and real authenticated
+Story discovery remain unproved until the user loads that directory in the
+existing Chrome profile. Publication evidence is recorded separately below.
+
+The requested realtime investigation confirmed WebSocket infrastructure in the
+current public Instagram JS, but no observed new-Story event. Story-named Relay
+subscription helpers subscribe to local query snapshots, not a demonstrated
+network topic. No speculative socket hook was added. Real-time acceleration
+requires a naturally observed event with author/Story identity. The existing
+seven-cycle automation was updated to preserve this distinction and the newly
+authorized browser-only polling scope; no extra automation was created.

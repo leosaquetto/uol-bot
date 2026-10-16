@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Instagram → UOL",
+  "version": "1.0.0",
+  "description": "Consulta Stories dos perfis configurados e envia campanhas do @clubeuol ao Worker UOL.",
+  "minimum_chrome_version": "120",
+  "permissions": ["alarms", "storage", "notifications"],
+  "host_permissions": [
+    "https://www.instagram.com/*",
+    "https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/*"
+  ],
+  "background": { "service_worker": "src/background.js", "type": "module" },
+  "action": { "default_title": "Instagram → UOL", "default_popup": "popup.html" },
+  "options_page": "options.html",
+  "icons": { "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'" }
+}

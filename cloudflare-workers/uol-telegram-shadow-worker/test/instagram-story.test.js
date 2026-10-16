@@ -55,6 +55,25 @@ function fixture(overrides = {}) {
   return { database, sql, calls, inbox, transports, options, setNow: value => { instant = value; } };
 }
 
+function seedRetentionRow(database, key, { changeTargets, rawTargets, ...overrides } = {}) {
+  const targets = Object.fromEntries(["main", "canal2", "discord", "beeper"].map(target => [target, {
+    status: "confirmed", attempts: 1, messageId: `${target}-receipt`,
+    nextAttemptAt: "", error: "", imageConfirmed: true,
+  }]));
+  changeTargets?.(targets);
+  const row = {
+    canonical_key: key, story_id: "4004185955500703000", link: STORY.link,
+    published_at: "2026-10-05T19:00:00.000Z", expires_at: "2026-10-06T19:00:00.000Z",
+    first_seen_at: "2026-10-05T20:00:00.000Z", updated_at: "2026-10-05T20:00:00.000Z",
+    image_url: STORY.imageUrl, image_width: 1080, image_height: 1920,
+    discord_image_proxy_url: "https://media.discordapp.net/external/image.jpg",
+    targets_json: rawTargets ?? JSON.stringify(targets), ...overrides,
+  };
+  const columns = Object.keys(row);
+  database.prepare(`INSERT INTO instagram_story_outbox (${columns.join(", ")})
+    VALUES (${columns.map(() => "?").join(", ")})`).run(...Object.values(row));
+}
+
 test("accepts ticket campaign only and preserves the long Story ID as a string", () => {
   assert.equal(normalizeInstagramStory(STORY, NOW).storyId, STORY.storyId);
   assert.equal(normalizeInstagramStory({ ...STORY, publishedAt: 1791556183, expiresAt: 1791642583 }, NOW).storyId, STORY.storyId);
@@ -209,6 +228,74 @@ test("daily budget bounds new Stories and known receipt replay consumes no extra
   await sample.inbox.ingest(STORY);
   await assert.rejects(sample.inbox.ingest({ ...STORY, storyId: "4004185955500703500" }), /instagram_story_daily_limit/);
   assert.equal(sample.calls.length, 80);
+});
+
+test("retention removes only old complete receipts and preserves pending, active and malformed evidence", async () => {
+  const sample = fixture();
+  const protectedKeys = [];
+  const preserve = (key, options) => {
+    protectedKeys.push(key);
+    seedRetentionRow(sample.database, key, options);
+  };
+  for (const status of ["unknown", "pending", "in_flight", "reconciling", "failed_safe", "held", "expired"]) {
+    preserve(status, { changeTargets: targets => { targets.main.status = status; } });
+  }
+  for (const target of ["main", "canal2", "discord", "beeper"]) {
+    preserve(`missing-receipt-${target}`, { changeTargets: targets => { targets[target].messageId = ""; } });
+    preserve(`missing-image-${target}`, { changeTargets: targets => { delete targets[target].imageConfirmed; } });
+  }
+  for (const [label, rawTargets] of Object.entries({
+    invalid: "{", null: "null", array: "[]", missing: "{}",
+  })) preserve(`malformed-${label}`, { rawTargets });
+  preserve("malformed-target", { changeTargets: targets => { targets.beeper = "confirmed"; } });
+  preserve("malformed-receipt", { changeTargets: targets => { targets.main.messageId = 123; } });
+  preserve("blank-receipt", { changeTargets: targets => { targets.canal2.messageId = " \n"; } });
+  preserve("image-not-boolean", { changeTargets: targets => { targets.beeper.imageConfirmed = "true"; } });
+  preserve("invalid-proxy", { discord_image_proxy_url: "https://example.com/image.jpg" });
+  preserve("invalid-expiry", { expires_at: "2020" });
+  preserve("active");
+  sample.inbox.active.add("active");
+  preserve("cutoff", { expires_at: "2026-10-07T20:00:00.000Z" });
+  preserve("recent-complete", { expires_at: "2026-10-08T20:00:00.000Z" });
+  seedRetentionRow(sample.database, "old-complete");
+  const before = sample.database.prepare("SELECT * FROM instagram_story_outbox WHERE canonical_key != 'old-complete' ORDER BY canonical_key").all();
+
+  assert.equal((await sample.inbox.ingest(STORY)).status, "delivered");
+
+  assert.equal(sample.database.prepare("SELECT canonical_key FROM instagram_story_outbox WHERE canonical_key = 'old-complete'").get(), undefined);
+  const after = sample.database.prepare("SELECT * FROM instagram_story_outbox WHERE story_id = '4004185955500703000' ORDER BY canonical_key").all();
+  assert.equal(after.length, protectedKeys.length);
+  assert.deepEqual(after, before);
+  assert.equal(sample.calls.length, 4);
+});
+
+test("capacity remains closed with fifty protected expired receipts and does not consume budget or send", async () => {
+  const sample = fixture();
+  for (let index = 0; index < 50; index++) seedRetentionRow(sample.database, `protected-${index}`, {
+    changeTargets: targets => { targets.beeper.status = index % 2 ? "unknown" : "pending"; },
+  });
+  const before = sample.database.prepare("SELECT * FROM instagram_story_outbox ORDER BY canonical_key").all();
+
+  await assert.rejects(sample.inbox.ingest(STORY), { message: "instagram_story_capacity_reached", httpStatus: 429 });
+
+  assert.deepEqual(sample.database.prepare("SELECT * FROM instagram_story_outbox ORDER BY canonical_key").all(), before);
+  assert.equal(sample.database.prepare("SELECT value FROM metadata WHERE key = 'instagram_story_daily_budget'").get(), undefined);
+  assert.equal(sample.calls.length, 0);
+});
+
+test("old completed receipt frees one capacity slot without discarding protected rows", async () => {
+  const sample = fixture();
+  for (let index = 0; index < 49; index++) seedRetentionRow(sample.database, `protected-${index}`, {
+    changeTargets: targets => { targets.discord.status = "in_flight"; },
+  });
+  seedRetentionRow(sample.database, "old-complete");
+
+  assert.equal((await sample.inbox.ingest(STORY)).status, "delivered");
+
+  assert.equal(sample.database.prepare("SELECT COUNT(*) AS count FROM instagram_story_outbox").get().count, 50);
+  assert.equal(sample.database.prepare("SELECT canonical_key FROM instagram_story_outbox WHERE canonical_key = 'old-complete'").get(), undefined);
+  assert.equal(sample.database.prepare("SELECT COUNT(*) AS count FROM instagram_story_outbox WHERE canonical_key LIKE 'protected-%'").get().count, 49);
+  assert.equal(sample.calls.length, 4);
 });
 
 test("WhatsApp Story photo flag is explicit while normal offer body stays unchanged", async () => {

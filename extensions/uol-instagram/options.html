@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Configurações · Instagram → UOL</title>
+    <link rel="stylesheet" href="options.css">
+    <script src="options.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header><img src="icons/icon128.png" width="44" height="44" alt=""><div><h1>Instagram → UOL</h1><p>Configurações de monitoramento</p></div></header>
+      <form id="settings-form">
+        <section class="card" aria-labelledby="profiles-title">
+          <h2 id="profiles-title">Perfis e frequência</h2>
+          <label for="profiles">Perfis do Instagram</label>
+          <input id="profiles" name="profiles" type="text" placeholder="clubeuol, leotheblueblur" maxlength="100" autocomplete="off" spellcheck="false" required aria-describedby="profiles-help">
+          <p id="profiles-help" class="help">Até 3 perfis, separados por vírgula. Use apenas o nome, com ou sem @.</p>
+          <label for="interval">Intervalo entre consultas</label>
+          <select id="interval" name="interval"><option value="5">5 minutos</option><option value="10">10 minutos</option><option value="15">15 minutos</option><option value="30">30 minutos</option><option value="60">60 minutos</option></select>
+          <p class="help">Mínimo de 5 minutos e até 300 consultas por dia. “Verificar agora” também respeita esses limites.</p>
+          <label class="check-row"><input id="enabled" type="checkbox"><span>Manter o monitoramento ativo</span></label>
+          <label class="check-row"><input id="notifications" type="checkbox"><span>Avisar no Chrome quando houver Story novo</span></label>
+        </section>
+        <section class="card" aria-labelledby="worker-title">
+          <h2 id="worker-title">Envio ao UOL</h2>
+          <p class="endpoint">uol-telegram-shadow-pilot.leosaquetto.workers.dev</p>
+          <label for="token">Chave do Worker</label>
+          <input id="token" name="token" type="password" maxlength="4096" autocomplete="new-password" placeholder="Deixe em branco para manter a chave atual" aria-describedby="token-help">
+          <p id="token-help" class="help">A chave fica nesta extensão e nunca aparece no painel. Deixe em branco para preservar a chave salva.</p>
+          <p class="note">Somente Stories de <strong>@clubeuol</strong> com link de campanha de ingressos seguem para o Worker e os destinos configurados. Outros perfis servem para alertas locais de teste.</p>
+        </section>
+        <div class="form-actions"><button id="save" type="submit">Salvar configurações</button><span id="feedback" role="status" aria-live="polite"></span></div>
+      </form>
+      <section class="card import-card" aria-labelledby="import-title">
+        <h2 id="import-title">Importar configuração local</h2>
+        <p class="help">Selecione seu arquivo JSON de configuração. A chave será enviada diretamente para a extensão, sem aparecer no formulário.</p>
+        <label for="import-file" class="file-label">Arquivo JSON</label>
+        <input id="import-file" type="file" accept=".json,application/json">
+      </section>
+      <p class="footnote">O Chrome precisa estar aberto, com sua sessão existente do Instagram conectada. A extensão não faz login nem marca Stories como vistos.</p>
+    </main>
+  </body>
+</html>

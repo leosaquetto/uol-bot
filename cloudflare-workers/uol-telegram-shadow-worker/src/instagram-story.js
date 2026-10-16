@@ -173,6 +173,18 @@ function discordProxyUrl(value) {
   } catch { return ""; }
 }
 
+function hasCompleteRetentionReceipt(row) {
+  let targets;
+  try { targets = JSON.parse(row.targets_json); } catch { return false; }
+  if (!targets || typeof targets !== "object" || Array.isArray(targets)) return false;
+  return TARGETS.every(target => {
+    const state = targets[target];
+    return state && typeof state === "object" && !Array.isArray(state) &&
+      state.status === "confirmed" && typeof state.messageId === "string" &&
+      state.messageId.trim().length > 0 && state.imageConfirmed === true;
+  }) && Boolean(discordProxyUrl(row.discord_image_proxy_url));
+}
+
 function receipt(row) {
   const targets = JSON.parse(row.targets_json);
   const states = TARGETS.map(target => targets[target].status);
@@ -426,8 +438,17 @@ export class InstagramStoryInbox {
     let row = this.get(key);
     if (!row) {
       if (Date.parse(story.expiresAt) <= now.getTime()) throw inputError("instagram_story_expired", 410);
-      // Expired rows cannot be delivered again. Keep a bounded private receipt history.
-      this.sql("DELETE FROM instagram_story_outbox WHERE expires_at < ?", new Date(now.getTime() - 2 * DAY_MS).toISOString());
+      // Expiry does not settle an interrupted delivery. Preserve incomplete or
+      // malformed evidence even when the bounded outbox must reject new Stories.
+      const retentionCutoff = now.getTime() - 2 * DAY_MS;
+      for (const candidate of this.sql(`SELECT canonical_key, targets_json, expires_at,
+        discord_image_proxy_url FROM instagram_story_outbox`).toArray()) {
+        if (this.active.has(candidate.canonical_key) || !hasCompleteRetentionReceipt(candidate)) continue;
+        const expiry = Date.parse(candidate.expires_at);
+        if (Number.isFinite(expiry) && new Date(expiry).toISOString() === candidate.expires_at && expiry < retentionCutoff) {
+          this.sql("DELETE FROM instagram_story_outbox WHERE canonical_key = ?", candidate.canonical_key);
+        }
+      }
       const size = Number(this.sql("SELECT COUNT(*) AS count FROM instagram_story_outbox").toArray()[0]?.count || 0);
       if (size >= 50) throw inputError("instagram_story_capacity_reached", 429);
       const day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(now);
