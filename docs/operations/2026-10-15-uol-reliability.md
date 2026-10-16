@@ -202,6 +202,34 @@ HTTP 401 advertises Bearer authentication without an issuer or token endpoint.
 No corresponding local technical credential file or available original archive
 provided a renewal flow. The working secret remains unchanged.
 
+### Remaining receipt access — 16 October, 01:20 São Paulo
+
+Fresh verification confirms the same published version, valid runtime, fresh
+global guard and no debt regressions. Counts remain two critical incidents,
+zero dead letters, two uncertain deliveries and zero exhausted maintenance
+operations. All five Oracle services/timers are active. Push is connected with
+zero events/signals; local session validity still does not establish remote
+authentication.
+
+Related source and operational documentation contain no configured Telegram
+history reader, Discord bot reader or documented destination export. The
+available browser inventory has no authenticated Telegram/Discord tab. The
+comment's 13 October timeout is still within the three-day Free Workers Logs
+retention, so a bounded historical query was attempted for that exact offer and
+`2026-10-13T15:44:00Z`–`15:51:00Z`, scoped to this Worker. The
+[Observability query API](https://developers.cloudflare.com/api/resources/workers/subresources/observability/subresources/telemetry/methods/query/)
+was called with `dry=true`, without persisting a query or changing any Worker
+state. Existing Cloudflare authentication returned HTTP 403, code 10000
+(`Authentication error`); no log events were accessible. The query and response
+are preserved privately in `uol-comment-historical-logs-2026-10-16.json`.
+
+This failed lookup proves an access limitation, not absence of the comment.
+Discord's September event is beyond that log-retention window. A matching
+message in the original Discord channel and the chunk in the exact Telegram
+thread remain required. No access scope was expanded and neither uncertain
+delivery was retried. Existing authenticated destination history is the next
+independent evidence source when available.
+
 ## Observation still required
 
 Recomputed reports for 12–14 October have sufficient temporal samples and
