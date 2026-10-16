@@ -710,3 +710,42 @@ replay despite equal identity/source/instant. Original records and both queue
 identities were preserved. The narrow correction compares replay evidence
 semantically, preserving the original stored timestamp and still rejecting a
 different source or instant. It requires no migration, deletion or source GET.
+
+
+### Notification relay verified — 16 October, 20:19 UTC
+
+Oracle ingress replay compatibility was published from
+`8009c7e84c9944bd102f6c4815f6c76b2010887a` after 14 ingress tests,
+independent review and [exact-SHA CI](https://github.com/leosaquetto/uol-bot/actions/runs/38961025198)
+passed. Only `uol-instagram-notification.service` restarted; its installed source
+hash and health passed. Monitor, Drops, gateway, Web Push and Caddy retained their
+process identities/restart counts. Session, outbox and original signal evidence
+were unchanged by installation. No Worker redeployment was needed: its current
+published SHA/version remain `7cca546916d62b2857a0e5cee314e7598e80f56d` /
+`d8ea9c10-b215-446f-be26-3775dbfcd674`.
+
+The same two controlled HTTP identities subsequently completed relay with HTTP
+202 and matching persisted ACKs. Worker pending count is zero. Oracle contains
+each identity exactly once, and repeated UUIDs return the original receipt.
+The first identity had also been inserted by direct route diagnosis; its original
+evidence was preserved during semantic replay. The second was persisted through
+the Worker relay. Participant credentials could not read Story status. The session,
+three pre-existing outbox receipts and protected services remained unchanged;
+no Instagram GET or destination send was performed by these transport checks.
+Private transport receipts and the initial failure remain archived.
+
+Six individual scoped codes (owner plus five friends), a signed ready owner
+Shortcut, a signed code-free import model and an optional Scriptable client are
+prepared in the private local package `Downloads/UOL Instagram - Gatilho`.
+No existing iCloud share was overwritten; importing/executing the new package
+on iPhone remains necessary. Capture/session stay on Oracle, coordinated by the
+principal Worker; all destination deduplication stays central.
+
+Result: Worker publication/runtime/debt verification and notification transport
+are confirmed; iPhone import, execution while locked and a natural notification
+leading to Story media/link/intake/destination receipts are not yet proved.
+The existing source 429 guard remains authoritative until
+`2026-10-17T00:16:34.449477Z` (16 October, 21:16 São Paulo); its expiry alone
+will not prove recovery. No periodic Instagram polling, native-push success,
+mobile login, migration or replay of ambiguous destination delivery is implied.
+Global readiness retains the two historical critical incidents/two unknowns.
