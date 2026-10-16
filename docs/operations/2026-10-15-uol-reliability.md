@@ -749,3 +749,23 @@ The existing source 429 guard remains authoritative until
 will not prove recovery. No periodic Instagram polling, native-push success,
 mobile login, migration or replay of ambiguous destination delivery is implied.
 Global readiness retains the two historical critical incidents/two unknowns.
+
+
+### iPhone trigger observations — 16 October, 21:06 UTC
+
+The user confirmed the first iPhone request was executed manually. Its UUID was
+persisted once as external signal sequence 3 at 20:39:38.848 UTC. A subsequent
+`ios_shortcuts` signal, sequence 4, was persisted at 21:05:10.417 UTC (18:05 São
+Paulo). Its exact identity and original evidence remain in private receipts.
+There are four signals total: two controlled transport tests, the manual iPhone
+request and this one later request. Automatic/locked notification execution is
+not independently proven merely by the `ios_shortcuts` source label.
+
+Read-only checks at 21:06 UTC confirmed the current Worker version remains
+`d8ea9c10-b215-446f-be26-3775dbfcd674`, relay pending is zero and the latest relay
+has a matching persisted HTTP 202 ACK. Oracle has consumed/reserved sequence 0:
+all four hints remain durably pending behind the existing HTTP 429 guard, until
+00:16:34.449477 UTC on 17 October (21:16 on 16 October in São Paulo). Source
+cycles and requests have not increased since the prior 20:40 UTC snapshot.
+The three existing delivered outbox rows remain; no new capture or destination
+delivery is proved. These observations performed no source GET or send.
