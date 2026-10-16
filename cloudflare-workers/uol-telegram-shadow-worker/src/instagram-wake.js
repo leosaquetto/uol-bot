@@ -37,7 +37,10 @@ export async function authenticateWake(request, env) {
 
 export class InstagramWakeQueue {
   constructor(read, write, env, fetchImpl = fetch, clock = Date.now) {
-    this.read = read; this.write = write; this.env = env; this.fetch = fetchImpl; this.clock = clock;
+    this.read = read; this.write = write; this.env = env;
+    // Web-platform globals must not receive this queue instance as their receiver.
+    this.fetch = (...args) => fetchImpl(...args);
+    this.clock = clock;
     this.inFlight = false;
   }
   load() {
@@ -87,7 +90,7 @@ export class InstagramWakeQueue {
         pending.attempts += 1;
         pending.nextAt = now + Math.min(300000, 15000 * 2 ** Math.min(pending.attempts - 1, 5));
         this.save(state); // Persist retry identity before any external request.
-        let accepted = false, httpStatus = null;
+        let accepted = false, httpStatus = null, reason = 'ack_unconfirmed';
         try {
           const response = await this.fetch(url.href, { method: 'POST', redirect: 'error',
             headers: { Authorization: `Bearer ${this.env.INSTAGRAM_WAKE_RELAY_TOKEN}`, 'Content-Type': 'application/json' },
@@ -106,10 +109,20 @@ export class InstagramWakeQueue {
               accepted = response.ok && ack.ok === true && ack.eventId === pending.event.eventId && ack.persisted === true;
             } finally { await reader.cancel().catch(() => {}); }
           }
-        } catch { /* Lost response retries only this idempotent relay event. */ }
+        } catch (error) {
+          // No upstream text, URL or credential is exposed through diagnostics.
+          const message = String(error?.message || '');
+          reason = /abort|timeout/i.test(String(error?.name || '')) ? 'timeout'
+            : /different request|I\/O context|another request/i.test(message) ? 'io_context'
+              : /Illegal invocation/i.test(message) ? 'invocation'
+                : /DNS|resolve|host|1003|1016/i.test(message) ? 'dns'
+                  : /SSL|TLS|certificate/i.test(message) ? 'tls'
+                    : /redirect/i.test(message) ? 'redirect'
+                      : /network|connection|fetch failed/i.test(message) ? 'network' : 'fetch_error';
+        }
         const latest = this.load();
         if (latest.pending[0]?.event.eventId !== pending.event.eventId) throw wakeError('instagram_wake_reservation_changed', 503);
-        latest.last = { at: this.clock(), status: accepted ? 'relay_confirmed' : 'relay_unconfirmed', httpStatus };
+        latest.last = { at: this.clock(), status: accepted ? 'relay_confirmed' : 'relay_unconfirmed', httpStatus, reason: accepted ? 'persisted' : reason };
         if (accepted) latest.pending.shift();
         this.save(latest);
         if (!accepted) return { ok: false, status: 'relay_unconfirmed' };

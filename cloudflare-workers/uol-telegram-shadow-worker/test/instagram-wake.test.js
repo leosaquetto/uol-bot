@@ -81,3 +81,11 @@ test('relay outage over a day does not strand newer events behind an old durable
  online=true;const restarted=s.queue();restarted.enqueue({...event(2),observedAt:new Date(now+2*86400000).toISOString()},'friend');
  await restarted.drain();assert.deepEqual(sent,[event(1).eventId,event(2).eventId]);assert.equal(restarted.status().pending,0);
 });
+test('injected web-platform fetch keeps its global receiver contract', async()=>{
+ const brandedFetch=function(_url,init){
+   if(this!==undefined && this!==globalThis)throw new TypeError('Illegal invocation');
+   return Promise.resolve(ack(JSON.parse(init.body).eventId));
+ };
+ const s=setup(brandedFetch),q=s.queue();q.enqueue(event(),'owner');
+ await q.drain();assert.equal(q.status().pending,0);
+});

@@ -36,3 +36,11 @@ describe('Instagram phone notification ingress', () => {
     });
   });
 });
+
+it('preserves the native Workers fetch receiver without network access', async()=>{
+  const stub=env.UOL_TELEGRAM_SHADOW.getByName('notification-native-fetch-context');
+  await runInDurableObject(stub,async(instance)=>{
+    const response=await instance.instagramWake.fetch('data:application/json,%7B%22ok%22%3Atrue%7D');
+    expect(await response.json()).toEqual({ok:true});
+  });
+});
