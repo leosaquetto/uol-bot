@@ -283,6 +283,23 @@ test('unmatched, text-only, wrong profile and off-origin notifications do not tr
   assert.equal(classifyInstagramPush({data:{type:'story',username:'clubeuol',story_id:'4004185955500703427'}}).profile,'clubeuol');
 });
 
+test('native root envelope uses only structured Story identity; post URL routing cannot turn DMs or feed posts into signals',()=>{
+  const uri='https://www.instagram.com/stories/clubeuol/4004185955500703427/';
+  const expected={profile:'clubeuol',storyId:'4004185955500703427',evidence:'story_uri'};
+  assert.deepEqual(classifyInstagramPush({type:'post',params:{ig:uri}}),expected);
+  assert.deepEqual(classifyInstagramPush({params:{collapse_key:'post',ig:uri}}),expected);
+  assert.deepEqual(classifyInstagramPush({type:'story',uri}),expected);
+  assert.equal(classifyInstagramPush({type:'story',username:'clubeuol',story_id:'4004185955500703427'}).profile,'clubeuol');
+  for(const payload of [
+    {type:'direct_v2_text',href:uri,message:'clubeuol added a story',params:{ig:uri,collapse_key:'direct_v2_message'}},
+    {type:'post',params:{ig:'https://www.instagram.com/p/example/'}},
+    {type:'post',params:{ig:'https://www.instagram.com/stories/leotheblueblur/4004185955500703427/'}},
+    {type:'post',params:{ig:'https://evil.test/stories/clubeuol/4004185955500703427/'}},
+    {type:'story',message:'clubeuol added a story',params:{u:'123',s:'456',a:uri}},
+    {type:'story',params:{ig:uri}},
+  ])assert.equal(classifyInstagramPush(payload),null);
+});
+
 test('storage failure sends no ACK; changed UAID stops without creating a subscription',()=>{
   const {registration,packet}=fixture();let status;
   const store={pending:()=>[],health:value=>status=value,persist(){throw new Error('disk_full');}};

@@ -1,11 +1,18 @@
 // Only structured identity identifies the source. Notification prose is never evidence.
 export function classifyInstagramPush(payload) {
-  const data = payload?.data;
+  // Instagram's native Web Push uses root type/params; retain the wrapped contract.
+  const data = payload?.data ?? payload;
   if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
-  for (const name of ['url', 'uri', 'href', 'click_action']) {
-    if (typeof data[name] !== 'string' || data[name].length > 4096) continue;
+  const native = data === payload;
+  const type = data.type || data.params?.collapse_key;
+  if (native && typeof type === 'string' && type.startsWith('direct_v2')) return null;
+  const urls = ['url', 'uri', 'href', 'click_action'].map(name=>data[name]);
+  // The official service worker interprets params.ig as a URL only for post.
+  if (native && type === 'post') urls.push(data.params?.ig);
+  for (const url of urls) {
+    if (typeof url !== 'string' || url.length > 4096) continue;
     try {
-      const u = new URL(data[name], 'https://www.instagram.com');
+      const u = new URL(url, 'https://www.instagram.com');
       if (u.protocol !== 'https:' || !['www.instagram.com','instagram.com'].includes(u.hostname) ||
           u.username || u.password || u.port) continue;
       const match = /^\/stories\/clubeuol(?:\/([0-9]{10,25}))?\/?$/.exec(u.pathname);
