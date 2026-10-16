@@ -43,9 +43,9 @@ cycle read 248 rows and reduced the estimate to 491. A profile at
 `2026-10-16T02:58:14.101Z` then attributed 564 of 594 reads to ticket-probe query
 `60e9f01`, which is unchanged from the pre-plan commit. The earlier passing
 runtime check is historical evidence; this later failure must not be hidden or
-the threshold relaxed. A single later check also failed at 692. Stable runtime
-acceptance remains under investigation; another passing sample alone would not
-explain these failures.
+the threshold relaxed. A single later check also failed at 692. At that point,
+runtime acceptance had not been restored; another passing sample alone would
+not explain these failures.
 
 The follow-up correction changes only the probe tie-breaker to
 `next_at, attempts, offer_id`, matching the existing `ticket_probe_due_v21`
@@ -54,8 +54,33 @@ then a deterministic ID instead of `first_seen_at`. No schema or gate limit
 changes. Two native tests cover deadline priority, peer advancement after
 rescheduling and real `cursor.rowsRead`: with 282 tied probes, the old query
 reads at least 282 rows and the corrected production query reads at most eight
-(over tenfold reduction). Publication and runtime proof for this correction
-must be recorded separately below when available.
+(over tenfold reduction).
+
+Follow-up commit `afe50338f6c10649d0f0645aad63616d3ace0dfb` passed all four jobs
+in [CI](https://github.com/leosaquetto/uol-bot/actions/runs/38844268888) and was
+published as Worker version `8145d1f4-02f0-4c51-aed5-a05ce783ea36` on 16 October
+UTC. Oracle source files are unchanged from the validated P2 deployment.
+The first postdeploy window, including 36 attempts, still observed version
+skew. Both version endpoints subsequently converged; a read-only recheck passed
+with `published=true`, `runtimeVerified=true`, `debtVerified=true`, `ready=false`
+and no debt regressions. No republish was needed. Worker/Durable Object code
+updates are eventually consistent ([Cloudflare known issues](https://developers.cloudflare.com/durable-objects/platform/known-issues/#code-updates)).
+The 512 estimate and 4,096 single-cycle limits are unchanged.
+
+Three distinct natural primary cycles on the final version confirm the reduced
+cost in production, with a fresh global guard, healthy read/write budgets and
+30-second cadence:
+
+| Cycle completed (UTC) | Entire cycle rows read | Probe query `6a1bfc41` rows read | Primary estimate |
+| --- | ---: | ---: | ---: |
+| 16 October 03:18:41.958 | 25 | 1 | 28 |
+| 16 October 03:19:11.952 | 28 | 1 | 28 |
+| 16 October 03:19:42.115 | 28 | 1 | 28 |
+
+Final immediate checks: **two critical incidents, two dead letters, four
+uncertain deliveries, zero exhausted maintenance operations**. The sold-out
+incident completed its recovery window. The short runtime proof above does not
+replace the three complete UTC-day acceptance below.
 
 ## Operational contracts
 
@@ -130,7 +155,7 @@ Detailed receipts and lookup results remain in the private operator directory
 
 | Record | Sources consulted and result | Remaining evidence |
 | --- | --- | --- |
-| Sold-out main edit, alias `10377612` | Direct inventory found ten definitive `editMessageText` 400 responses: the message had no text to edit. The deployed correction retries `editMessageCaption` on that exact structured error. One authorized maintenance requeue was accepted; the natural maintenance cycle recorded `synced` at `2026-10-16T02:51:14.021Z`, with the same message ID and confirmed `photo` kind. Secondary receipt, attempts, error and synchronization timestamp are unchanged; Discord receipt is unchanged. | Resolved edit. Operational incident recovery still follows the stability window. |
+| Sold-out main edit, alias `10377612` | Direct inventory found ten definitive `editMessageText` 400 responses: the message had no text to edit. The deployed correction retries `editMessageCaption` on that exact structured error. One authorized maintenance requeue was accepted; the natural maintenance cycle recorded `synced` at `2026-10-16T02:51:14.021Z`, with the same message ID and confirmed `photo` kind. Secondary receipt, attempts, error and synchronization timestamp are unchanged; Discord receipt is unchanged. | Edit and incident resolved after the stability window. |
 | Discord uncertainty, alias `b0fab0af` | Direct lookup reaches the September offer outside the recent-300 inventory. Worker state and delivery timeline retain uncertainty; no Discord receipt ID is stored. The original Beeper account has WhatsApp access, not Discord history. | A matching message ID and content in the original Discord destination. No resend or `not_sent` resolution. |
 | Telegram comment uncertainty, alias `4147510b` | Direct lookup confirms the original discussion message, one required chunk, zero confirmed chunk IDs and the preserved ambiguous timeout. No original Telegram history is available through the configured Beeper account. | The existing chunk ID in that exact thread. No extra comment or inferred confirmation. |
 | Three legacy WhatsApp facade uncertainties | Read-only facade ledger, Drops jobs, authenticated route/key/hash lookups and the original Beeper room index were checked. Each facade request has one nearby `SUCCESS` message with a preview, but no retained pending ID/job binding or exact request-hash proof. Drops lookups return 404. Two corresponding offers remain in Worker inventory; the third returns 404. | Proof binding the original content, destination and request hash to a transport receipt. Timestamp proximity and lookup absence do not authorize resolution or replay. |
