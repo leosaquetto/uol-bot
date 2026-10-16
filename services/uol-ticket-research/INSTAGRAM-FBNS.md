@@ -65,3 +65,6 @@ O broker entregou credenciais, token e PONG, mas a associação inicial da conta
 O perfil móvel e Android ID são estáveis e associados ao UUID já salvo. O token, autenticação do broker e sessão original não são substituídos. Isso corrige uma divergência concreta de contrato; somente a resposta real poderá comprovar o aceite.
 
 Fontes do contrato: [headers privados](https://github.com/subzeroid/instagrapi/blob/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/mixins/private.py#L256), [Bearer da sessão](https://github.com/subzeroid/instagrapi/blob/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/mixins/auth.py#L1586), [consulta de identidade](https://github.com/subzeroid/instagrapi/blob/1076ce2135878434a678ba4ceba2b17c6fe27f1a/instagrapi/mixins/account.py#L56).
+
+
+Resultado real em 16/10 às 18:59 UTC: a consulta móvel confirmou a conta (HTTP 200). O único POST corretivo retornou HTTP 400, `Invalid request`/`fail`; os 45 bytes completos do erro foram preservados em privado e o registro anterior arquivado. Portanto a correção de headers não resolveu a associação e sua causa específica continua desconhecida. FBNS ficou parado, sem repetição. Sessão, três recibos e processos dos outros serviços permaneceram intactos. Nenhum Story foi comprovado. Publicação do código não equivale a aceite do registro ou funcionamento ponta a ponta.

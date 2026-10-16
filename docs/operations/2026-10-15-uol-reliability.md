@@ -596,3 +596,36 @@ contract correction requires one bounded authenticated identity check first,
 then a separately reserved corrective attempt only for the definitive legacy
 400; the original attempt remains in history. Uncertain results never authorize
 another POST. No new login, session replacement or device/token regeneration.
+
+
+### Scoped FBNS backoff exception and mobile contract result — 16 October, 18:59–19:01 UTC
+
+Commit `fa90ab9b88fa7eb03dc68d5849fd01c4eaba3321` passed all jobs in
+[exact-SHA CI](https://github.com/leosaquetto/uol-bot/actions/runs/38951379029),
+39 focused FBNS tests and an independent security review. Only `fbns_probe.py`
+was atomically updated on Oracle; its installed hash matched. No service was
+restarted by this correction. The original 21:16 São Paulo source backoff still
+applies to Story collection; the audited exception was limited to FBNS diagnosis.
+
+At `2026-10-16T18:59:43.713499Z`, the single mobile-contract identity GET returned
+HTTP 200/status ok and matched the existing account. It reused the existing
+session and persisted only the verification result/bindings, not the personal
+account response. This proves that authentication worked for that identity
+endpoint; it does not prove push-registration permission.
+
+At `2026-10-16T18:59:51.432186Z`, the separately reserved corrective registration
+returned HTTP 400 with the complete 45-byte JSON response, message
+`Invalid request`, status `fail`. The original legacy 400 remains archived.
+No further POST or GET validation is authorized by restart or timeout. The
+mobile-contract hypothesis did not resolve registration; the response does not
+identify whether rejection concerns token, parameters, account eligibility or
+another server rule. No challenge was reported in that response.
+
+Final read-only comparison at `2026-10-16T19:01:11.615765Z`: Drops, gateway,
+monitor and Web Push receiver were active, with the same PIDs and zero restarts;
+session and all three delivered outbox receipts were unchanged. `push_only`
+remains configured. No Web Story signal or diagnostic FBNS Story was recorded.
+FBNS remains stopped after the rejected association, without a retry loop.
+Server code is published; FBNS account association, natural Story capture and
+end-to-end delivery are **not runtime verified or ready**. The Cloudflare Worker
+publication identity and runtime evidence remain unchanged in the private manifest.
