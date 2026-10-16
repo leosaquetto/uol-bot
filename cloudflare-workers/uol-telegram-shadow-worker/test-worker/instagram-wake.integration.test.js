@@ -37,10 +37,16 @@ describe('Instagram phone notification ingress', () => {
   });
 });
 
-it('preserves the native Workers fetch receiver without network access', async()=>{
-  const stub=env.UOL_TELEGRAM_SHADOW.getByName('notification-native-fetch-context');
+it('uses a redirect mode supported by native Workers fetch and confirms a durable relay', async()=>{
+  const stub=env.UOL_TELEGRAM_SHADOW.getByName('notification-native-relay-options');
+  const p=payload();
   await runInDurableObject(stub,async(instance)=>{
-    const response=await instance.instagramWake.fetch('data:application/json,%7B%22ok%22%3Atrue%7D');
-    expect(await response.json()).toEqual({ok:true});
+    const nativeFetch=instance.instagramWake.fetch;
+    instance.instagramWake.env={INSTAGRAM_WAKE_RELAY_URL:'https://relay.test/instagram-wake',INSTAGRAM_WAKE_RELAY_TOKEN:'a'.repeat(64)};
+    instance.instagramWake.fetch=(_url,init)=>nativeFetch('data:application/json,'+encodeURIComponent(JSON.stringify({ok:true,persisted:true,eventId:p.eventId})),{redirect:init.redirect});
+    instance.instagramWake.enqueue(p,'test');
+    expect((await instance.instagramWake.drain()).ok).toBe(true);
+    expect(instance.instagramWake.status().pending).toBe(0);
+    expect(instance.instagramWake.status().last.status).toBe('relay_confirmed');
   });
 });

@@ -92,10 +92,11 @@ export class InstagramWakeQueue {
         this.save(state); // Persist retry identity before any external request.
         let accepted = false, httpStatus = null, reason = 'ack_unconfirmed';
         try {
-          const response = await this.fetch(url.href, { method: 'POST', redirect: 'error',
+          const response = await this.fetch(url.href, { method: 'POST', redirect: 'manual',
             headers: { Authorization: `Bearer ${this.env.INSTAGRAM_WAKE_RELAY_TOKEN}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(pending.event), signal: AbortSignal.timeout(5000) });
           httpStatus = response.status;
+          if (httpStatus >= 300 && httpStatus < 400) reason = 'redirect';
           // Read a bounded acknowledgement; HTTP 202 alone is not an event receipt.
           const reader = response.body?.getReader();
           if (reader) {

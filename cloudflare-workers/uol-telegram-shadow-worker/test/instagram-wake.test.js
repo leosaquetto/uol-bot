@@ -68,7 +68,7 @@ test('hourly cap is durable and does not reset on restart', () => {
 });
 test('relay never follows a redirect or returns its credential in diagnostics', async () => {
   const s=setup(async (url,init)=>{assert.equal(url,'https://oracle.test/instagram-wake');
-    assert.equal(init.redirect,'error');assert.equal(init.headers.Authorization,`Bearer ${'a'.repeat(64)}`);
+    assert.equal(init.redirect,'manual');assert.equal(init.headers.Authorization,`Bearer ${'a'.repeat(64)}`);
     return new Response('redirect',{status:302});});
   const q=s.queue();q.enqueue(event(),'owner');await q.drain();
   assert.equal(q.status().last.status,'relay_unconfirmed');assert.ok(!JSON.stringify(q.status()).includes('a'.repeat(64)));

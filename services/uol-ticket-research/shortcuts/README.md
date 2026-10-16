@@ -9,6 +9,8 @@ O iPhone envia apenas um aviso autenticado. O Oracle usa a sessão já existente
 3. Deixe a automação habilitada e configure execução imediata, sem confirmação, se essa opção for oferecida pelo iOS.
 4. Cada amigo importa o mesmo arquivo **sem código preenchido** e recebe um código individual. Não compartilhe uma exportação que já contenha seu código.
 
+Todos os participantes devem seguir `@clubeuol` e habilitar os avisos desejados no Instagram, principalmente Stories. O iOS do participante precisa oferecer o gatilho **Receber notificação de app**, documentado pela Apple no [guia de gatilhos](https://support.apple.com/guide/shortcuts/event-triggers-apd932ff833f/ios). Se esse gatilho não existir no aparelho, importar as ações não habilita recepção automática.
+
 O POST usa exclusivamente `/instagram-wake`. Um código só pode produzir avisos desse perfil; ele não permite enviar mensagens, ler inventário ou acessar configurações. Revogar um participante não exige trocar os códigos dos demais.
 
 O arquivo exportado contém o gatilho de notificação `WFNotificationTrigger`, como o original enviado pelo usuário. A assinatura comprova a integridade do pacote. A importação do gatilho, as permissões e a execução com iPhone bloqueado precisam de prova no aparelho e na versão de iOS utilizada. Se o sistema importar somente as ações, crie a automação pessoal Instagram no aparelho e execute este atalho por ela.
