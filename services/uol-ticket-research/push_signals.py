@@ -22,6 +22,24 @@ class PushSignals:
             raise ValueError('private_push_database_required')
         return sqlite3.connect(self.path.as_uri() + '?mode=ro', uri=True, timeout=1)
 
+    @staticmethod
+    def _metadata_columns(db):
+        columns = {row[1] for row in db.execute('PRAGMA table_info(signals)')}
+        return ','.join(name if name in columns else 'NULL' for name in ('event_id', 'evidence'))
+
+    @staticmethod
+    def _origin(event_id, evidence):
+        # The relay has its own identity namespace; it cannot prove native delivery.
+        if isinstance(event_id, str) and event_id.startswith('ios:'):
+            return 'external_notification'
+        try:
+            value = json.loads(evidence) if isinstance(evidence, str) else None
+            if isinstance(value, dict) and value.get('origin') == 'external_notification':
+                return 'external_notification'
+        except (ValueError, TypeError):
+            pass
+        return 'native_webpush'
+
     def snapshot(self, now):
         try:
             with closing(self._connect()) as db:
@@ -42,9 +60,11 @@ class PushSignals:
             with closing(self._connect()) as db:
                 columns = {row[1] for row in db.execute('PRAGMA table_info(signals)')}
                 received = 'received_at' if 'received_at' in columns else 'NULL'
-                rows = db.execute(f"SELECT seq,story_id,{received} FROM signals WHERE profile='clubeuol' ORDER BY seq DESC LIMIT 5000").fetchall()
+                metadata = self._metadata_columns(db)
+                rows = db.execute(f"SELECT seq,story_id,{received},{metadata} FROM signals WHERE profile='clubeuol' ORDER BY seq DESC LIMIT 5000").fetchall()
             return [{'sequence': row[0], 'storyId': row[1],
-                     'receivedEpoch': row[2]/1000 if row[2] is not None else None} for row in rows]
+                     'receivedEpoch': row[2]/1000 if row[2] is not None else None,
+                     'origin': self._origin(row[3], row[4])} for row in rows]
         except (OSError, ValueError, sqlite3.Error):
             return []
 
@@ -52,10 +72,12 @@ class PushSignals:
         """Reserve bounded source metadata; signals arriving later stay outside this batch."""
         try:
             with closing(self._connect()) as db:
-                rows = db.execute("SELECT seq,story_id,received_at FROM signals WHERE profile='clubeuol' "
+                metadata = self._metadata_columns(db)
+                rows = db.execute(f"SELECT seq,story_id,received_at,{metadata} FROM signals WHERE profile='clubeuol' "
                                   'AND seq>? AND seq<=? ORDER BY seq LIMIT 5000', (after, through)).fetchall()
             return [{'sequence': row[0], 'storyId': row[1],
-                     'receivedEpoch': row[2]/1000 if isinstance(row[2], (int, float)) else None}
+                     'receivedEpoch': row[2]/1000 if isinstance(row[2], (int, float)) else None,
+                     'origin': self._origin(row[3], row[4])}
                     for row in rows]
         except (OSError, ValueError, sqlite3.Error):
             return []
@@ -76,9 +98,11 @@ class PushSignals:
             if not math.isfinite(now) or observed_epoch <= 0 or observed_epoch > now + 60:
                 return False
             with closing(self._connect()) as db:
-                row = db.execute("SELECT story_id,received_at FROM signals WHERE seq=? AND profile='clubeuol'",
+                metadata = self._metadata_columns(db)
+                row = db.execute(f"SELECT story_id,received_at,{metadata} FROM signals WHERE seq=? AND profile='clubeuol'",
                                  (proof['signalSequence'],)).fetchone()
-            if not row or row[0] != proof['storyId'] or not isinstance(row[1], (int, float)):
+            if (not row or row[0] != proof['storyId'] or not isinstance(row[1], (int, float))
+                    or self._origin(row[2], row[3]) != 'native_webpush'):
                 return False
             received_epoch = row[1] / 1000
             # Generic hints remain triggers; promotion requires an exact, timed Story proof.

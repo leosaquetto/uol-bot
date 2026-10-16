@@ -1,6 +1,6 @@
 import { productionBaseline, productionDebtRegressions } from "../src/production-verification.js";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +9,21 @@ const UUID_PATTERN = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const RELEASE_TAG_PATTERN = /^git-[0-9a-f]{12}$/;
 const CI_WORKFLOW_NAME = "UOL Worker CI";
 const CI_JOB_NAME = "Testes e bundle";
+
+export function releaseSecretFileArgs(path) {
+  if (!path) return [];
+  const info = lstatSync(path);
+  if (!info.isFile() || (info.mode & 0o777) !== 0o600 || info.uid !== process.getuid() || info.size > 65536) {
+    throw new Error("release_secret_file_not_private");
+  }
+  const values = JSON.parse(readFileSync(path, "utf8"));
+  const allowed = new Set(["INSTAGRAM_WAKE_CLIENTS", "INSTAGRAM_WAKE_RELAY_URL", "INSTAGRAM_WAKE_RELAY_TOKEN"]);
+  if (!values || Array.isArray(values) || typeof values !== "object" ||
+      Object.keys(values).some(key => !allowed.has(key) || typeof values[key] !== "string" || !values[key])) {
+    throw new Error("release_secret_scope_invalid");
+  }
+  return ["--secrets-file", path];
+}
 
 export function releaseTagForSha(sha) {
   const normalized = String(sha || "").trim().toLowerCase();
@@ -323,7 +338,8 @@ async function main() {
   try {
     const deploy = run(
       join(workerRoot, "node_modules", ".bin", "wrangler"),
-      ["deploy", "--strict", "--tag", releaseTag, "--message", releaseMessage],
+      ["deploy", "--strict", "--tag", releaseTag, "--message", releaseMessage,
+        ...releaseSecretFileArgs(process.env.UOL_RELEASE_SECRETS_FILE)],
       {
         cwd: workerRoot,
         capture: true,

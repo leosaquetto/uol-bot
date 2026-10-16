@@ -308,9 +308,13 @@ class Monitor:
         self.state['coverageSignalSequence'] = sequence
         counts = {'baselineStories': 0, 'excludedStories': 0, 'eligibleStories': 0,
                   'correspondingPushStories': 0, 'awaitingPushStories': 0,
-                  'withoutCorrespondingPushStories': 0, 'genericProfileSignalStories': 0}
-        exact = {signal['storyId']: signal for signal in reversed(self._signals) if signal['storyId']}
-        generic = [signal for signal in self._signals if not signal['storyId'] and signal['receivedEpoch'] is not None]
+                  'withoutCorrespondingPushStories': 0, 'genericProfileSignalStories': 0,
+                  'externalNotificationSignalStories': 0}
+        native = [signal for signal in self._signals if signal.get('origin') != 'external_notification']
+        exact = {signal['storyId']: signal for signal in reversed(native) if signal['storyId']}
+        generic = [signal for signal in native if not signal['storyId'] and signal['receivedEpoch'] is not None]
+        external = [signal for signal in self._signals if signal.get('origin') == 'external_notification'
+                    and signal['receivedEpoch'] is not None]
         for story_id, text in self.db.execute('SELECT story_id,value FROM story_coverage').fetchall():
             entry = json.loads(text)
             # An unsettled correlation window cannot be scored across receiver/auth gaps.
@@ -332,9 +336,17 @@ class Monitor:
                 entry['genericProfileSignalSequence'] = hints[0]['sequence']
             if entry.get('genericProfileSignalSequence'):
                 counts['genericProfileSignalStories'] += 1
+            external_hints = [signal for signal in external
+                              if entry['publishedEpoch']-60 <= signal['receivedEpoch'] <= entry['firstSeenEpoch']+PUSH_CORRELATION_WAIT]
+            if external_hints:
+                entry['externalNotificationSignalSequence'] = external_hints[0]['sequence']
+            if entry.get('externalNotificationSignalSequence'):
+                counts['externalNotificationSignalStories'] += 1
             if entry.get('pushCorrelation') != 'exact_story_id':
                 entry['pushCorrelation'] = ('without_corresponding_push' if now-entry['firstSeenEpoch'] >= PUSH_CORRELATION_WAIT
-                                            else 'generic_profile_signal_uncertain' if entry.get('genericProfileSignalSequence') else 'awaiting_push')
+                                            else 'generic_profile_signal_uncertain' if entry.get('genericProfileSignalSequence')
+                                            else 'external_notification_hint_uncertain' if entry.get('externalNotificationSignalSequence')
+                                            else 'awaiting_push')
             self.write_coverage(story_id, entry, text)
             if entry['baseline']:
                 counts['baselineStories'] += 1
@@ -449,6 +461,18 @@ class Monitor:
 
     def reserve_push_only(self, now, push):
         batch = self.state.get('pushBatch')
+        if (batch and batch.get('externalNotificationSignals')
+                and now < self.state.get('retryNotBefore', 0)):
+            # A guarded source failure must not consume the phone's durable wake
+            # before its next permitted attempt. Native-only settlement is unchanged.
+            resume = self.state['retryNotBefore']
+            deadline = max(batch['deadlineEpoch'], resume+PUSH_SETTLEMENT_SECONDS)
+            attempt = max(batch['nextAttemptEpoch'], resume)
+            if deadline != batch['deadlineEpoch'] or attempt != batch['nextAttemptEpoch']:
+                batch.update(deadlineEpoch=deadline, nextAttemptEpoch=attempt)
+                self.update_push_settlement(batch, reason='source_backoff')
+                self.save()
+            return False
         if batch and (now >= batch['deadlineEpoch'] or batch['attempts'] >= PUSH_SETTLEMENT_ATTEMPTS):
             reason = 'settlement_timeout' if now >= batch['deadlineEpoch'] else 'attempt_limit'
             self.finish_push_batch('unresolved', reason, now)
@@ -474,14 +498,17 @@ class Monitor:
             signals = self.push.pending(self.state.get('consumedSignalSequence', 0), push['sequence'])
             if not signals:
                 return False
-            generic = [signal for signal in signals if not signal['storyId']]
+            external = [signal for signal in signals if signal.get('origin') == 'external_notification']
+            native = [signal for signal in signals if signal.get('origin') != 'external_notification']
+            generic = [signal for signal in native if not signal['storyId']]
             received = [signal['receivedEpoch'] for signal in generic
                         if isinstance(signal['receivedEpoch'], (int, float))
                         and 0 < signal['receivedEpoch'] <= now+60]
             batch = {'throughSequence': signals[-1]['sequence'], 'startedEpoch': now,
                      'deadlineEpoch': now+PUSH_SETTLEMENT_SECONDS, 'attempts': 0,
-                     'expectedStoryIds': sorted({signal['storyId'] for signal in signals if signal['storyId']}),
+                     'expectedStoryIds': sorted({signal['storyId'] for signal in native if signal['storyId']}),
                      'observedStoryIds': [], 'genericSignals': len(generic),
+                     'externalNotificationSignals': len(external),
                      'genericReceivedEpoch': min(received) if len(received) == len(generic) and received else None,
                      'baselineStoryIds': list(self.state.get('currentStoryIds', [])),
                      'genericNewStoryObserved': False, 'successfulSnapshots': 0}
@@ -522,8 +549,9 @@ class Monitor:
               and (not batch['genericSignals'] or (batch['genericNewStoryObserved']
                    and batch['successfulSnapshots'] >= 2 and now-batch['firstSuccessEpoch'] >= 60))):
             generic = bool(batch['genericSignals'])
-            self.finish_push_batch('generic_uncertain' if generic else 'matched_exact',
-                                   'generic_new_story_uncertain' if generic else 'matched', now)
+            external_only = bool(batch.get('externalNotificationSignals')) and not batch['expectedStoryIds'] and not generic
+            self.finish_push_batch('external_hint_processed' if external_only else 'generic_uncertain' if generic else 'matched_exact',
+                                   'external_snapshot_completed' if external_only else 'generic_new_story_uncertain' if generic else 'matched', now)
         elif batch['attempts'] >= PUSH_SETTLEMENT_ATTEMPTS:
             self.finish_push_batch('unresolved', 'attempt_limit', now)
         else:

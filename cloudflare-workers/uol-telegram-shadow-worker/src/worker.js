@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { AsyncLocalStorage } from "node:async_hooks";
+import { InstagramWakeQueue, authenticateWake, WAKE_BODY_LIMIT } from "./instagram-wake.js";
 
 import {
   buildDedupeKeys,
@@ -585,6 +586,7 @@ export class UolTelegramShadow extends DurableObject {
     this.operationsDrainInFlight = false;
     this.operationsOutboxLoaded = false;
     this.metadataCache = new Map();
+    this.instagramWake = new InstagramWakeQueue(this.metadataValue.bind(this), this.setMetadata.bind(this), env);
     this.runtimeSnapshotCache = new Map();
     this.readinessCache = null;
     this.storageContext = new AsyncLocalStorage();
@@ -621,6 +623,16 @@ export class UolTelegramShadow extends DurableObject {
 
   async ingestInstagramStory(payload) {
     return this.instagramStoryInbox.ingest(payload);
+  }
+
+  recordInstagramWake(payload, clientId) {
+    const receipt = this.instagramWake.enqueue(payload, clientId);
+    this.ctx.waitUntil(this.instagramWake.drain().catch(() => {}));
+    return receipt;
+  }
+
+  getInstagramWakeStatus() {
+    return this.instagramWake.status();
   }
 
   getInstagramStoryStatus(storyId = "", limit = 20) {
@@ -6945,6 +6957,9 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   async runMaintenanceTickWithStorageCycle(source = "alarm") {
+    // One cached metadata read after eviction; idle notifications add no recurring writes.
+    // Relay retries are idempotent hints, never destination sends or source GETs.
+    this.ctx.waitUntil(this.instagramWake.drain().catch(() => {}));
     if (this.maintenanceInFlight) {
       return { ok: false, outcome: "maintenance_in_progress" };
     }
@@ -8861,6 +8876,31 @@ export default {
           return jsonResponse({ ok: false, error: code.startsWith("storage_usage_") ? code : "storage_usage_unconfirmed" },
             code === "storage_usage_out_of_order" ? 409 : code === "storage_usage_invalid" ? 400 : 503);
         }
+      }
+      if (request.method === "POST" && url.pathname === "/instagram-wake") {
+        const clientId = await authenticateWake(request, env);
+        if (!clientId) return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        try {
+          const payload = await readRequestJson(request, WAKE_BODY_LIMIT);
+          return jsonResponse(await stub.recordInstagramWake(payload, clientId), 202);
+        } catch (error) {
+          const code = String(error?.message || "");
+          const status = Number(error?.httpStatus || error?.inputStatus ||
+            (code === "instagram_wake_identity_conflict" ? 409 :
+              ["instagram_wake_rate_limit", "instagram_wake_capacity"].includes(code) ? 429 :
+                code === "instagram_wake_state_invalid" ? 503 : 400));
+          return jsonResponse({ ok: false, error: /^instagram_wake_[a-z_]+$/.test(error?.message || "")
+            ? error.message : status === 413 ? "body_too_large" : "instagram_wake_invalid" }, status);
+        }
+      }
+      if (request.method === "GET" && url.pathname === "/instagram-wake-status") {
+        const expected = String(env.INSTAGRAM_STORY_INGEST_TOKEN || "");
+        const authorization = request.headers.get("Authorization") || "";
+        const supplied = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+        if (!expected || !supplied || supplied.length > 4096 || !(await constantTimeEqual(expected, supplied))) {
+          return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        }
+        return jsonResponse(await stub.getInstagramWakeStatus());
       }
       if ((request.method === "POST" && url.pathname === "/ingest-instagram-story") ||
           (request.method === "POST" && url.pathname === "/instagram-monitor-heartbeat") ||

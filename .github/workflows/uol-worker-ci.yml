@@ -178,7 +178,12 @@ jobs:
           npm test --prefix services/saquetto-drops
       - name: Monitor, supervisor e quota offline
         working-directory: services/uol-ticket-research
-        run: python -B -m unittest test_monitor test_monitor_json test_instagram test_instagram_json test_fbns_probe test_supervisor test_storage_usage test_usage_report
+        run: python -B -m unittest test_monitor test_monitor_json test_notification_ingress test_instagram test_instagram_json test_fbns_probe test_supervisor test_storage_usage test_usage_report
+      - name: Clientes de gatilho iPhone offline
+        working-directory: services/uol-ticket-research/shortcuts
+        run: |
+          python -B -m unittest test_shortcut
+          node --test test-scriptable.mjs
       - name: Receptor push offline
         run: node --test services/uol-ticket-research/push/test.mjs
       - name: Extensão Instagram offline

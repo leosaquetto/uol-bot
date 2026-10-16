@@ -629,3 +629,35 @@ FBNS remains stopped after the rejected association, without a retry loop.
 Server code is published; FBNS account association, natural Story capture and
 end-to-end delivery are **not runtime verified or ready**. The Cloudflare Worker
 publication identity and runtime evidence remain unchanged in the private manifest.
+
+
+### Redundant iPhone notification triggers — implementation, 16 October
+
+The user supplied a public Shortcut and authorized a shareable multi-phone
+trigger. Inspection found the Instagram notification trigger with Title contains
+`clubeuol` and a single unconfigured POST action. Any matching notification may
+wake collection; no Story-specific text filter is required.
+
+The prepared native Shortcut sends only a UUID, fixed profile, source and observed
+time to `/instagram-wake`. Each participant receives a separately revocable
+scoped code; the Worker stores hashes, not raw participant codes. The optional
+Scriptable client stores its code in Keychain. Neither client receives an
+Instagram session or WhatsApp credential. Capture remains on the Oracle collector
+coordinated by the principal Worker; the existing Story delivery receipts control
+WhatsApp and the other destinations across all phones.
+
+The Worker persists a bounded relay queue in the existing metadata table before
+202. Only never-attempted pending hints coalesce. Lost relay responses reuse the
+same UUID. Oracle's isolated loopback ingress commits the UUID to the existing
+signals table before acknowledging it, with a separate relay credential and
+no schema migration. A signal received during collection stays pending. External
+notification batches finish after one successful snapshot; native push settlement
+remains unchanged. Existing 429, authentication and daily-budget guards stay
+authoritative. A guarded external batch survives through its retry window.
+
+Phone-origin hints are labeled external and cannot prove native Web Push/FBNS
+coverage. Client time is diagnostic; authenticated delayed hints can request a
+current snapshot, preventing long offline intervals from blocking newer signals.
+The exact publication-to-notification delay and iPhone locked execution still
+require device evidence. No synthetic Story, destination send or source GET is
+needed to validate relay transport while the source guard remains active.

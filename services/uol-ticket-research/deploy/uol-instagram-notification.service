@@ -1,0 +1,27 @@
+[Unit]
+Description=Authenticated Instagram phone notification relay
+After=network-online.target uol-instagram-push.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=uol-instagram-monitor
+Group=uol-instagram-monitor
+WorkingDirectory=/opt/uol-instagram-monitor
+ExecStart=/usr/bin/python3 -B notification_ingress.py --directory /var/lib/uol-instagram-monitor --port 8791
+Restart=on-failure
+RestartSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/uol-instagram-monitor
+MemoryHigh=24M
+MemoryMax=32M
+TasksMax=8
+LimitCORE=0
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
