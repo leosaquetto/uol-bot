@@ -311,6 +311,100 @@ Private read-only snapshots: `uol-natural-push-2026-10-16T1625.json`,
 `uol-push-registration-diagnostic-2026-10-16.json` in the operator directory.
 The natural Story acceptance criterion remains open.
 
+### Controlled Instagram test and subscription refresh — 16 October, 14:08 São Paulo
+
+The user followed `leotheblueblur`, enabled its Story notifications and published
+two test Stories. The user confirmed receipt on the phone and supplied an iOS
+notification screenshot with "Novo story". A read-only receiver watch from
+`2026-10-16T16:52:34Z` through `17:03:14Z` found **zero push events and signals**,
+with the receiver connected and no notification rejection diagnostics. This
+proves mobile receipt and absence of an observed server packet in that window;
+it does not identify the upstream cause.
+
+The user explicitly authorized one-off notification-settings diagnostics with
+the existing session. Authenticated settings responses identify the same account
+as the phone. The current Instagram client VAPID key matches the stored key;
+the receiver key pair is consistent. The read-only preferences response has
+`mute_all_notifications=false`; none of its 44 radio groups is set to `off`.
+`first_post=everyone` describes first posts/Stories, not every Story. No setting
+in this response proves per-profile or endpoint delivery.
+
+The current public client re-registers its existing PushManager subscription
+when the service worker starts with notification permission granted. A bounded
+repair now supports one explicit refresh of the previously accepted subscription:
+it requires the exact prior acceptance timestamp and matching authenticated
+account; creates an exclusive, durable intent before POST; preserves the prior
+acceptance and all subscription identity; and records refresh separately. A
+crash, timeout, malformed response or HTTP 5xx remains uncertain and cannot
+automatically repeat. The existing receiver remains allowed to reconnect.
+
+Code `b6e67032ad08d218c490c53cd5bec8a39cf690d9` passed five focused push tests,
+syntax/diff checks and [UOL Worker CI](https://github.com/leosaquetto/uol-bot/actions/runs/38937222586).
+Only `push/register.mjs` was installed on Oracle; its SHA-256 readback is
+`65813b0123f837bec72748b237c7061b563707b519f737eec53420c60a0cf1f9`.
+The Worker version listed above was not republished by this repair.
+
+The single refresh was accepted with **HTTP 200** at
+`2026-10-16T17:08:11.225495Z`. Readback confirms the original registration,
+endpoint, keys and session file are unchanged. This is registration acceptance,
+**not Story delivery**. The receiver was connected with zero events at 17:08:38Z;
+a new user-published test after the refresh produced an in-app activity notice,
+according to the user, without a confirmed new system notification. The receiver
+still had zero events at 17:10:46Z. This comparison remains inconclusive. A DM
+control was requested to distinguish general channel silence from Story routing.
+Test-account
+events remain excluded from production offer intake. Production Story capture,
+intake and destination receipts remain unproved until a qualifying natural push.
+
+For the explicit refresh, `register.mjs` accepts the prior `recordedAt` as its
+fifth CLI argument; the private fields file must include `accountId` from the
+authenticated settings response, matching the session cookie. The original
+three-path invocation remains initial registration only. Do not clear the
+refresh intent or refresh record to repeat an ambiguous operation.
+
+The user sent the requested DM control. Three natural packets arrived at
+`17:11:59.392Z`, `17:12:00.100Z` and `17:12:09.294Z`; all decrypted successfully
+with `type=direct_v2_text` and `params.collapse_key=direct_v2_message`. Persistence
+and transport ACKs are confirmed. These are the first observed packets and prove
+the current subscription can receive and decrypt real Instagram Web Push.
+They remain ignored by production Story intake, as required. No DM content was
+published or copied into this document. The post-refresh Story comparison still
+lacks a corresponding push; the in-app activity entry is a different evidence.
+
+The official Service Worker source confirms root-level `type`/`params` and
+interprets `params.ig` as a URL only for `post`. The old classifier expected a
+`data` wrapper. Code `167957fae5a4e67165f4595a1694c281558cbcc1` now accepts the
+native envelope while retaining exact Instagram HTTPS Story-owner checks and
+rejecting native DMs. Recipient IDs, avatar URLs and notification prose are not
+owner evidence. No numeric owner or new Story enum was inferred. Four focused
+classification/persistence tests, syntax/diff checks and
+[CI](https://github.com/leosaquetto/uol-bot/actions/runs/38938713233) passed.
+
+Only `push/classify.mjs` was then installed on Oracle; SHA-256 readback is
+`c23e810914046cdbe4e682434cf46ebc23d7c85deffd4d30f14b93e6c6bd913e`.
+The first deployment preflight rejected the temporary filename extension;
+explicit module syntax checking passed before installation. At
+`2026-10-16T17:20:08.877248Z`, the receiver was active and had completed a new
+successful handshake after restart. Five stored events remained five, with no
+pending packets or production signals. Final inspection at `17:20:45.207Z`
+confirmed all five were `direct_v2_text`, decrypted and transport-ACKed.
+Thus code publication and natural DM transport are proved; a natural Story
+packet, its owner classification, collection, intake and delivery remain open.
+
+Private evidence: `uol-instagram-test-watch-2026-10-16.jsonl`,
+`uol-instagram-push-preferences-session-2026-10-16.json`,
+`uol-instagram-refresh-2026-10-16.json` and
+`uol-instagram-after-refresh-watch-2026-10-16.jsonl`, plus
+`uol-instagram-natural-push-types-2026-10-16.json`,
+`uol-instagram-native-classifier-2026-10-16.json` and
+`uol-instagram-push-verification-final-2026-10-16.json` in the operator directory.
+The notification-client diagnostic fetched the Service Worker entry once with
+the existing session and its observed static bundle without authentication;
+source SHA-256 `829eee39e7d4e061076e86ef24617229e902ca193da4be0f89a0ca2a3462f93c`
+is preserved privately. The session file was unchanged.
+The remote refresh intent and receipt are retained. No Story GET, polling,
+login, session replacement, synthetic event or delivery replay was performed.
+
 ## Observation still required
 
 Recomputed reports for 12–14 October have sufficient temporal samples and
