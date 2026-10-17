@@ -8627,6 +8627,36 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  getPublicStories(limit = 10) {
+    const requestedLimit = Number(limit || 10);
+    const boundedLimit = Number.isFinite(requestedLimit)
+      ? Math.min(20, Math.max(1, Math.floor(requestedLimit)))
+      : 10;
+    try {
+      const stories = this.sqlExec(
+        `SELECT story_id, link, image_url, published_at, expires_at, first_seen_at
+         FROM instagram_story_outbox
+         ORDER BY first_seen_at DESC
+         LIMIT ?`,
+        boundedLimit,
+      ).toArray().map((row) => ({
+        storyId: row.story_id,
+        link: String(row.link || ""),
+        imageUrl: String(row.image_url || ""),
+        publishedAt: row.published_at,
+        expiresAt: row.expires_at,
+        firstSeenAt: row.first_seen_at,
+      }));
+      return {
+        ok: true,
+        updatedAt: stories[0]?.firstSeenAt || "",
+        stories,
+      };
+    } catch {
+      return { ok: true, updatedAt: "", stories: [] };
+    }
+  }
+
   deliveryTimelineForOffer(offerId, limit = 20) {
     const rows = this.sqlExec(
       `SELECT target, operation, state, attempt, generation,
@@ -8970,6 +9000,16 @@ export default {
         });
         ctx.waitUntil(caches.default.put(cacheKey, response.clone()));
         return response;
+      }
+      if (request.method === "GET" && url.pathname === "/stories") {
+        const payload = await stub.getPublicStories(url.searchParams.get("limit") || 10);
+        return Response.json(payload, {
+          headers: {
+            "Cache-Control": "public, max-age=15, stale-while-revalidate=60",
+            "Access-Control-Allow-Origin": "*",
+            "X-Robots-Tag": "noindex, nofollow",
+          },
+        });
       }
       if (request.method === "POST" && url.pathname === "/telegram-webhook") {
         const expected = String(env.TELEGRAM_WEBHOOK_SECRET || "").trim();

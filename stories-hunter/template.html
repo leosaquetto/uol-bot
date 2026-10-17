@@ -942,26 +942,28 @@
     .micro-date-pill {
       display: inline-flex;
       align-items: center;
-      gap: 2px;
-      background: rgba(0, 0, 0, 0.65);
+      gap: 4px;
+      background: rgba(14, 23, 42, 0.75);
       -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
-      border: 0.5px solid rgba(56, 189, 248, 0.45);
+      border: 0.75px solid rgba(56, 189, 248, 0.5);
       color: #38bdf8;
-      padding: 1px 3.5px;
-      border-radius: 3.5px;
+      padding: 2.5px 7px;
+      margin-left: 6px;
+      margin-right: 2px;
+      border-radius: 5px;
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 7.2px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       white-space: nowrap;
-      vertical-align: 1.5px;
-      line-height: 1.1;
+      vertical-align: 1px;
+      line-height: 1.2;
     }
     .micro-date-pill svg {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       color: #38bdf8;
       flex-shrink: 0;
     }
@@ -1792,25 +1794,68 @@
       text-overflow: ellipsis;
     }
 
-    /* Editor's Choice Badge */
+    /* Editor's Choice Badge (Preenchido em Destaque) */
     .pill-editors-choice {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      background: rgba(255, 179, 0, 0.16);
-      color: #ffc107;
-      border: 1px solid rgba(255, 193, 7, 0.45);
-      box-shadow: 0 0 10px rgba(255, 179, 0, 0.25);
-      font-size: 9.5px;
+      gap: 3.5px;
+      background: linear-gradient(135deg, #ffb300, #ff6f00);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(255, 160, 0, 0.5);
+      font-size: 8.5px;
       font-weight: 800;
       letter-spacing: 0.4px;
       padding: 3px 8px;
       border-radius: 999px;
       text-transform: uppercase;
+      white-space: nowrap;
+      border: none;
+      flex-shrink: 0;
     }
     .card-editors-choice-poster {
       border-color: rgba(255, 179, 0, 0.32) !important;
       box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 179, 0, 0.12) !important;
+    }
+
+    /* Avatar do Amigo que Resgatou (Dentro do Card) */
+    .card-redeemed-friends {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+      padding: 2.5px 7px 2.5px 3px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.55);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border: 0.5px solid rgba(255, 255, 255, 0.14);
+      width: fit-content;
+      max-width: 100%;
+    }
+    .redeemed-avatars-stack {
+      display: inline-flex;
+      align-items: center;
+    }
+    .friend-avatar {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .friend-avatar.overlap {
+      margin-left: -5px;
+      box-shadow: -1px 0 0 1px rgba(0, 0, 0, 0.5);
+    }
+    .friend-redeemed-text {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #38bdf8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1;
     }
 
     /* Year Selector Chips */
@@ -3245,7 +3290,7 @@
         <div style="background: #101217; border: 1px solid #222733; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <div>
-              <div style="font-size: 13px; font-weight: 600; color: #f1f5f9;">Versão: <span id="currentVersionLabel" style="color: #ff9100; font-weight: 700;">v5.3.0</span></div>
+              <div style="font-size: 13px; font-weight: 600; color: #f1f5f9;">Versão: <span id="currentVersionLabel" style="color: #ff9100; font-weight: 700;">v5.4.0</span></div>
               <div style="font-size: 11px; color: #64748b;">Canal Oficial GitHub (leosaquetto/uol-bot)</div>
             </div>
             <button class="btn-check-update" id="btnCheckUpdate" onclick="checkForScriptUpdateManual()">
@@ -3696,7 +3741,12 @@
         return remMins > 0 ? (hours + 'h' + remMins + 'min atrás') : (hours + 'h atrás');
       }
       if (days === 1) return '1 dia atrás';
-      return days + ' dias atrás';
+      if (days <= 7) return days + ' dias atrás';
+      const d = new Date(fromMs);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = String(d.getFullYear()).slice(-2);
+      return `${day}/${month}/${year}`;
     }
 
     function formatStopwatchDuration(start, end) {
@@ -3727,7 +3777,12 @@
       if (hours === 1) return 'Há 1 hora';
       if (hours < 24) return 'Há ' + hours + ' horas';
       if (days === 1) return 'Há 1 dia';
-      return 'Há ' + days + ' dias';
+      if (days <= 7) return 'Há ' + days + ' dias';
+      const d = new Date(fromMs);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = String(d.getFullYear()).slice(-2);
+      return `${day}/${month}/${year}`;
     }
 
     // ===================================================================
@@ -3940,6 +3995,170 @@
       return dateStr.toUpperCase();
     }
 
+    function isStoriesOnlyOffer(item) {
+      if (!item) return false;
+      const str = ((item.rawTitle || item.title || '') + ' ' + (item.eventTitle || '') + ' ' + (item.description || '')).toLowerCase();
+      if (str.includes('zayn') || str.includes('maroon 5') || str.includes('love is like world tour') || str.includes('konnakol')) {
+        return true;
+      }
+      return item.source === 'Stories_Only';
+    }
+
+    function getAllRedemptionsList() {
+      const enrichMap = new Map();
+      const addToList = (items) => {
+        if (!Array.isArray(items)) return;
+        items.forEach(r => {
+          if (!r) return;
+          const k = r.url || r.id || (r.title ? r.title.trim().toLowerCase() : null);
+          if (k) {
+            const ex = enrichMap.get(k) || {};
+            enrichMap.set(k, Object.assign({}, ex, r));
+          }
+        });
+      };
+
+      if (typeof INITIAL !== 'undefined' && INITIAL.realRedemptions && Array.isArray(INITIAL.realRedemptions)) {
+        addToList(INITIAL.realRedemptions);
+      }
+      if (typeof settings !== 'undefined' && settings.realRedemptions && Array.isArray(settings.realRedemptions)) {
+        addToList(settings.realRedemptions);
+      }
+      try {
+        const saved = localStorage.getItem('uol_real_redemptions');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) addToList(parsed);
+        }
+      } catch(e) {}
+
+      let all = Array.from(enrichMap.values());
+      if (all.length === 0 && typeof settings !== 'undefined' && settings.myRedemptions) {
+        all = settings.myRedemptions || [];
+      }
+      return all;
+    }
+
+    function cleanTextForMatch(str) {
+      if (!str) return '';
+      return String(str)
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/\b(?:2\s*ingressos|par\s*de\s*ingressos|ingresso|show|turne|parque|nubank|espetaculo|teatro)\b/gi, '')
+        .replace(/[^a-z0-9]/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function getRedeemedUsersForOffer(offer) {
+      if (!offer) return [];
+      const matchedUsers = new Set();
+      if (offer.user) matchedUsers.add(offer.user);
+
+      const redemptions = getAllRedemptionsList();
+      if (!redemptions || redemptions.length === 0) return Array.from(matchedUsers);
+
+      const offerUrl = offer.link || offer.url || '';
+      const offerId = String(offer.id || '');
+      const offerBenId = offerUrl.match(/\/beneficios\/(\d+)/)?.[1] || offerId.match(/^(\d+)$/)?.[1];
+      const offerSlug = offerUrl.match(/\/campanhasdeingresso\/([^/?#]+)/)?.[1];
+
+      const oTitle1 = cleanTextForMatch(offer.rawTitle || offer.title || '');
+      const oTitle2 = cleanTextForMatch(offer.eventTitle || '');
+      const oFull = ((offer.rawTitle || '') + ' ' + (offer.title || '') + ' ' + (offer.eventTitle || '') + ' ' + (offer.description || '')).toLowerCase();
+
+      for (const r of redemptions) {
+        const rUser = r.user || 'leosaquetto';
+        const rUrl = r.url || r.downloadUrl || '';
+        const rBenId = rUrl.match(/\/beneficios\/(\d+)/)?.[1];
+        const rSlug = rUrl.match(/\/campanhasdeingresso\/([^/?#]+)/)?.[1];
+
+        if (offerBenId && rBenId && offerBenId === rBenId) {
+          matchedUsers.add(rUser);
+          continue;
+        }
+        if (offerSlug && rSlug && offerSlug.toLowerCase() === rSlug.toLowerCase()) {
+          matchedUsers.add(rUser);
+          continue;
+        }
+
+        const rTitle = cleanTextForMatch(r.title);
+        if (rTitle && (oTitle1 === rTitle || (oTitle1 && rTitle.includes(oTitle1)) || (oTitle1 && oTitle1.includes(rTitle)))) {
+          matchedUsers.add(rUser);
+          continue;
+        }
+        if (rTitle && oTitle2 && (rTitle.includes(oTitle2) || oTitle2.includes(rTitle))) {
+          matchedUsers.add(rUser);
+          continue;
+        }
+
+        const rFull = ((r.title || '') + ' ' + (r.description || '')).toLowerCase();
+        const kws = ['zayn', 'maroon 5', 'c6 fest', 'kidzhouse', 'banquete do chef', 'jota.pe', 'arena brasileira', 'luedji', 'cinesystem', 'interlagos', 'porsche cup', 'hoteis.com', 'cacau show', 'marina da gloria', 'emma', 'day limns', 'ivete', 'netshoes', 'pecorino', 'spoleto'];
+        for (const kw of kws) {
+          if (oFull.includes(kw) && rFull.includes(kw)) {
+            matchedUsers.add(rUser);
+            break;
+          }
+        }
+      }
+
+      return Array.from(matchedUsers);
+    }
+
+    function getRedeemedUsersForGroup(group) {
+      if (!group) return [];
+      const allItems = [...(group.activeItems || []), ...(group.soldOutItems || [])];
+      if (group.parent) allItems.push(group.parent);
+      const userSet = new Set();
+      allItems.forEach(item => {
+        const users = getRedeemedUsersForOffer(item);
+        users.forEach(u => userSet.add(u));
+      });
+      if (group.norm && group.norm.eventTitle) {
+        const dummy = { title: group.norm.eventTitle, rawTitle: group.norm.eventTitle };
+        const users = getRedeemedUsersForOffer(dummy);
+        users.forEach(u => userSet.add(u));
+      }
+      return Array.from(userSet);
+    }
+
+    function renderRedeemedFriendsPill(users) {
+      if (!users || users.length === 0) return '';
+      const hasLeo = users.includes('leosaquetto');
+      const hasGabriel = users.includes('gaoriel');
+      if (!hasLeo && !hasGabriel) return '';
+
+      let text = '';
+      let avatarsHtml = '';
+
+      if (hasLeo && hasGabriel) {
+        text = 'Resgatado por Leo e Gabriel';
+        avatarsHtml = `
+          <img class="friend-avatar" src="https://unavatar.io/instagram/leosaquetto" alt="Leo" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+          <img class="friend-avatar overlap" src="https://unavatar.io/instagram/gaoriel" alt="Gabriel" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+        `;
+      } else if (hasLeo) {
+        text = 'Resgatado por Leo';
+        avatarsHtml = `
+          <img class="friend-avatar" src="https://unavatar.io/instagram/leosaquetto" alt="Leo" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+        `;
+      } else {
+        text = 'Resgatado por Gabriel';
+        avatarsHtml = `
+          <img class="friend-avatar" src="https://unavatar.io/instagram/gaoriel" alt="Gabriel" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+        `;
+      }
+
+      return `
+        <div class="card-redeemed-friends">
+          <div class="redeemed-avatars-stack">
+            ${avatarsHtml}
+          </div>
+          <span class="friend-redeemed-text">${text}</span>
+        </div>
+      `;
+    }
+
     function extractSessionDate(item) {
       if (!item) return null;
       const title = item.rawTitle || item.title || '';
@@ -3956,37 +4175,44 @@
         '09': 'SET', '10': 'OUT', '11': 'NOV', '12': 'DEZ'
       };
 
-      // 1. Temporada / Exposição / Período: "de 07/08 a 13/12" ou "até 13/12" ou "a 13 de dezembro"
-      // Captura especificamente o término / limite final da temporada (ex: Miró ATÉ 13 DEZ)
-      const mRange = fullText.match(/(?:at[eé]|v[aá]lido\s+at[eé]|temporada\s+at[eé]|t[eé]rmino\s+em|\ba)\s+(\d{1,2}\/\d{1,2})\b/i);
-      if (mRange) {
-        const parts = mRange[1].split('/');
+      // 1. Data explícita no título primeiro (prioridade para sessões pontuais de shows/eventos)
+      // Ex: "2 INGRESSOS: 10/10 Nubank Parque SP" -> 10/10 -> 10 OUT
+      const mTitleRange = title.match(/(?:at[eé]|v[aá]lido\s+at[eé]|temporada\s+at[eé]|t[eé]rmino\s+em|\ba)\s+(\d{1,2}\/\d{1,2})\b/i);
+      if (mTitleRange) {
+        const parts = mTitleRange[1].split('/');
         const mon = monthNames[parts[1].padStart(2, '0')] || parts[1];
         return 'ATÉ ' + parseInt(parts[0], 10) + ' ' + mon;
       }
-      const mRangeNamed = fullText.match(/(?:at[eé]|v[aá]lido\s+at[eé]|temporada\s+at[eé]|\ba)\s+(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*/i);
-      if (mRangeNamed) {
-        const monNum = monthsMap[mRangeNamed[2].toLowerCase().slice(0, 3)] || '10';
-        const mon = monthNames[monNum] || monNum;
-        return 'ATÉ ' + parseInt(mRangeNamed[1], 10) + ' ' + mon;
-      }
 
-      // 2. Data explícita no título primeiro (prioridade para sessões pontuais)
       const mTitle = title.match(/\b(\d{1,2}\/\d{1,2})\b/);
       if (mTitle) return mTitle[1];
 
-      // 3. Data no formato DD de mês por extenso no título
       const mTitleNamed = title.match(/\b(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*\b/i);
       if (mTitleNamed) {
         const mon = monthsMap[mTitleNamed[2].toLowerCase().slice(0, 3)] || '10';
         return mTitleNamed[1].padStart(2, '0') + '/' + mon;
       }
 
-      // 4. Data na descrição
-      const mDesc = desc.match(/\b(\d{1,2}\/\d{1,2})\b/);
+      // 2. Temporada / Exposição / Período na descrição (limpando avisos de recebimento por email "enviado até...")
+      const cleanDesc = desc.replace(/(?:enviad[oa]s?|resgate|recebimento)\s+at[eé][^.\n]*/gi, '');
+      const mRange = cleanDesc.match(/(?:at[eé]|v[aá]lido\s+at[eé]|temporada\s+at[eé]|t[eé]rmino\s+em|\ba)\s+(\d{1,2}\/\d{1,2})\b/i);
+      if (mRange) {
+        const parts = mRange[1].split('/');
+        const mon = monthNames[parts[1].padStart(2, '0')] || parts[1];
+        return 'ATÉ ' + parseInt(parts[0], 10) + ' ' + mon;
+      }
+      const mRangeNamed = cleanDesc.match(/(?:at[eé]|v[aá]lido\s+at[eé]|temporada\s+at[eé]|\ba)\s+(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*/i);
+      if (mRangeNamed) {
+        const monNum = monthsMap[mRangeNamed[2].toLowerCase().slice(0, 3)] || '10';
+        const mon = monthNames[monNum] || monNum;
+        return 'ATÉ ' + parseInt(mRangeNamed[1], 10) + ' ' + mon;
+      }
+
+      // 3. Data na descrição (se não tiver no título)
+      const mDesc = cleanDesc.match(/\b(\d{1,2}\/\d{1,2})\b/);
       if (mDesc) return mDesc[1];
 
-      const mDescNamed = desc.match(/\b(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*\b/i);
+      const mDescNamed = cleanDesc.match(/\b(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*\b/i);
       if (mDescNamed) {
         const mon = monthsMap[mDescNamed[2].toLowerCase().slice(0, 3)] || '10';
         return mDescNamed[1].padStart(2, '0') + '/' + mon;
@@ -4095,8 +4321,9 @@
         const displayTitle = o.rawTitle || o.title;
 
         // Se estiver no portal E stories, mostra as duas tags juntas!
-        const isStory = Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
-        const isPortal = o.isPortal !== false;
+        const isStoriesOnly = isStoriesOnlyOffer(o);
+        const isStory = isStoriesOnly || Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
+        const isPortal = isStoriesOnly ? false : (o.isPortal !== false);
 
         // Micro ícones de fontes sobrepostos (estilo citação de fontes Codex / Perplexity) ao lado da categoria
         let sourcesBadgeHtml = '';
@@ -4112,6 +4339,10 @@
         const catDef = CATEGORY_MAP[o.category] || CATEGORY_MAP['OUTROS'];
         const catTagHtml = '<span class="card-tag tag-category tag-cat-' + o.category + '">' + catDef.icon + ' ' + catDef.label + '</span>';
 
+        // Amigos que resgataram
+        const redeemedUsers = getRedeemedUsersForOffer(o);
+        const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
+
         card.innerHTML = `
           <div class="thumb-wrap">
             <img src="${imgUrl}" alt="Thumb" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
@@ -4125,6 +4356,7 @@
               ${timeTagHtml}
             </div>
             <div class="card-title">${displayTitle}</div>
+            ${redeemedFriendsHtml}
             <div class="card-actions-row">
               <button class="btn-action-small btn-details" onclick="openDetails('${o.id}')">
                 ${ICONS.notes} Detalhes
@@ -4537,8 +4769,9 @@
           return ((now - (x.firstSeen || now)) < (48 * 60 * 60 * 1000)) && (v <= 2);
         });
         g.isAllSoldOut = (g.activeItems.length === 0 && g.soldOutItems.length > 0);
-        g.hasStory = allItems.some(x => x.source === 'Stories' || x.hasStory || x.badge === 'Stories');
-        g.hasPortal = allItems.some(x => x.isPortal !== false);
+        const isStoriesOnly = allItems.length > 0 && allItems.every(x => isStoriesOnlyOffer(x));
+        g.hasStory = isStoriesOnly || allItems.some(x => x.source === 'Stories' || x.hasStory || x.badge === 'Stories');
+        g.hasPortal = isStoriesOnly ? false : allItems.some(x => x.isPortal !== false && !isStoriesOnlyOffer(x));
         g.norm = normalizeEventInfo(allItems);
       });
 
@@ -4775,6 +5008,10 @@
 
       const imgUrl = parent.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
 
+      // Amigos que resgataram
+      const redeemedUsers = getRedeemedUsersForGroup(group);
+      const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
+
       if (isHeroFullWidth) {
         card.innerHTML = `
           <img class="poster-img" src="${imgUrl}" alt="Poster" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
@@ -4792,6 +5029,7 @@
               <div class="destaque-hero-title">${formatTitleWithInlineDates(norm.eventTitle, microDatePillsHtml)}</div>
               ${actionButtonsHtml}
             </div>
+            ${redeemedFriendsHtml}
           </div>
         `;
       } else {
@@ -4808,6 +5046,7 @@
           <div class="poster-bottom-content">
             <div class="poster-venue">${norm.venue || 'Clube UOL'}</div>
             <div class="poster-title">${formatTitleWithInlineDates(norm.eventTitle, microDatePillsHtml)}</div>
+            ${redeemedFriendsHtml}
           </div>
         `;
       }
@@ -5006,10 +5245,14 @@
         rawTitle: "2 INGRESSOS: 10/10 Nubank Parque SP",
         imageUrl: "https://d310rdc9v8uuq.cloudfront.net/beneficios/cf34f716779818a54510b566c295f4ab.png",
         venue: "Nubank Parque SP",
-        description: "Resgate 1 par de ingressos para curtir Zayn: The Konnakol Tour, o primeiro show solo de Zayn Malik no Brasil. Uma noite especial para cantar os maiores sucessos da carreira do artista e viver uma experiência inesquecível no Nubank Parque, em São Paulo.\n\nHorário: Abertura dos portões às 16h | Show principal às 20h.\n\nLocal: Nubank Parque - Rua Palestra Itália, 200, Água Branca, São Paulo - SP.\n\nRECEBIMENTO DOS INGRESSOS:\nSeu par de ingressos será enviado até 09/10, às 19h, para o e-mail cadastrado no UOL.",
+        description: "Resgate 1 par de ingressos para curtir Zayn: The Konnakol Tour, o primeiro show solo de Zayn Malik no Brasil. Uma noite especial para cantar os maiores sucessos da carreira do artista e viver uma experiência inesquecível no Nubank Parque, em São Paulo.\n\nData do Show: 10 de Outubro de 2026.\nHorário: Abertura dos portões às 16h | Show principal às 20h.\n\nLocal: Nubank Parque - Rua Palestra Itália, 200, Água Branca, São Paulo - SP.\n\nRECEBIMENTO DOS INGRESSOS:\nSeu par de ingressos foi enviado para o e-mail cadastrado no UOL.",
         category: "MUSICA",
         firstSeen: 1791468540000,
         curatedTag: "★ Curadoria",
+        source: "Stories",
+        hasStory: true,
+        isPortal: false,
+        user: "leosaquetto",
         link: "https://clube.uol.com.br/perfil/beneficios/60874"
       },
       {
@@ -5019,10 +5262,14 @@
         rawTitle: "2 INGRESSOS: 08/09 Nubank Parque SP",
         imageUrl: "https://d310rdc9v8uuq.cloudfront.net/beneficios/9109430f6cd5544f424923bd14eed21e.png",
         venue: "Nubank Parque SP",
-        description: "Resgate 1 par de ingressos para curtir o Maroon 5, uma das bandas mais consagradas do pop rock mundial, ao vivo na turnê Love Is Like World Tour, em uma noite repleta de emoção, energia e sucessos que marcaram gerações, no Nubank Parque, em São Paulo.\n\nData: Abertura dos portões às 16h | Show às 20h30.\n\nLocal: Nubank Parque - Rua Palestra Itália, 200, Água Branca, São Paulo - SP.\n\nRECEBIMENTO DOS INGRESSOS:\nSeu par de ingressos será enviado ainda hoje no seu e-mail cadastrado no UOL.",
+        description: "Resgate 1 par de ingressos para curtir o Maroon 5, uma das bandas mais consagradas do pop rock mundial, ao vivo na turnê Love Is Like World Tour, em uma noite repleta de emoção, energia e sucessos que marcaram gerações, no Nubank Parque, em São Paulo.\n\nData: Abertura dos portões às 16h | Show às 20h30.\n\nLocal: Nubank Parque - Rua Palestra Itália, 200, Água Branca, São Paulo - SP.\n\nRECEBIMENTO DOS INGRESSOS:\nSeu par de ingressos foi enviado no seu e-mail cadastrado no UOL.",
         category: "MUSICA",
         firstSeen: 1788549900000,
         curatedTag: "★ Curadoria",
+        source: "Stories",
+        hasStory: true,
+        isPortal: false,
+        user: "leosaquetto",
         link: "https://clube.uol.com.br/perfil/beneficios/60466"
       },
       {
@@ -5417,8 +5664,9 @@
       card.style.setProperty('--delay', index);
 
       // Micro ícones de fontes sobrepostos
-      const isStory = Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
-      const isPortal = o.isPortal !== false;
+      const isStoriesOnly = isStoriesOnlyOffer(o);
+      const isStory = isStoriesOnly || Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
+      const isPortal = isStoriesOnly ? false : (o.isPortal !== false);
       let sourcesBadgeHtml = '';
       if (isPortal && isStory) {
         sourcesBadgeHtml = `
@@ -5469,6 +5717,10 @@
 
       const imgUrl = o.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
 
+      // Amigos que resgataram
+      const redeemedUsers = getRedeemedUsersForOffer(o);
+      const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
+
       card.onclick = () => openDetails(o.id);
 
       card.innerHTML = `
@@ -5484,6 +5736,7 @@
         <div class="poster-bottom-content">
           <div class="poster-venue">${venueText}</div>
           <div class="poster-title">${formattedTitleHtml}</div>
+          ${redeemedFriendsHtml}
         </div>
       `;
 
@@ -5755,9 +6008,9 @@
           <div class="redemptions-status-bar" style="margin-top: 10px;">
             <div class="sync-indicator">
               <span class="sync-dot"></span>
-              <span>${list.length > 0 ? 'Histórico Unificado de Ingressos' : 'Nenhum ingresso encontrado'}</span>
+              <span>${list.length > 0 ? 'Histórico Unificado de Resgates' : 'Nenhum resgate encontrado'}</span>
             </div>
-            <div class="vouchers-count-pill">${list.length} ${list.length === 1 ? 'ingresso' : 'ingressos'}</div>
+            <div class="vouchers-count-pill">${list.length} ${list.length === 1 ? 'resgate' : 'resgates'}</div>
           </div>
         </div>
 
@@ -5766,12 +6019,12 @@
             <div class="empty-icon-circle">
               ${ICONS.ticketCheck}
             </div>
-            <div class="empty-title">Nenhum ingresso neste filtro</div>
+            <div class="empty-title">Nenhum resgate neste filtro</div>
             <div class="empty-desc">
-              Não encontramos ingressos cadastrados para a opção selecionada. Toque em "Todos" para visualizar todos os vouchers resgatados.
+              Não encontramos resgates cadastrados para a opção selecionada. Toque em "Todos" para visualizar todos os vouchers.
             </div>
             <button class="btn-empty-explore" onclick="setRedemptionsFilter('all')">
-              Ver Todos os Ingressos
+              Ver Todos os Resgates
             </button>
           </div>
         `}
@@ -6341,8 +6594,9 @@
       activeOffer = findOffer(id);
       if (!activeOffer) return;
 
-      const isStory = Boolean(activeOffer.source === 'Stories' || activeOffer.hasStory || activeOffer.badge === 'Stories');
-      const isPortal = activeOffer.isPortal !== false;
+      const isStoriesOnly = isStoriesOnlyOffer(activeOffer);
+      const isStory = isStoriesOnly || Boolean(activeOffer.source === 'Stories' || activeOffer.hasStory || activeOffer.badge === 'Stories');
+      const isPortal = isStoriesOnly ? false : (activeOffer.isPortal !== false);
       const catDef = CATEGORY_MAP[activeOffer.category] || CATEGORY_MAP.OUTROS;
       const firstDateStr = activeOffer.firstSeen ? new Date(activeOffer.firstSeen).toLocaleDateString('pt-BR') : 'Hoje';
 
@@ -6361,6 +6615,12 @@
       }
       dtTagsHtml += '<span class="card-tag tag-category tag-cat-' + activeOffer.category + '">' + catDef.icon + ' ' + catDef.label + '</span>';
       dtTagsHtml += '<span class="card-tag tag-age">' + firstDateStr + '</span>';
+
+      const redeemedUsers = getRedeemedUsersForOffer(activeOffer);
+      const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
+      if (redeemedFriendsHtml) {
+        dtTagsHtml += '<div style="margin-top: 6px; width: 100%;">' + redeemedFriendsHtml + '</div>';
+      }
 
       const tagRowEl = document.getElementById('dtTagRow');
       if (tagRowEl) tagRowEl.innerHTML = dtTagsHtml;
@@ -7150,7 +7410,7 @@
     // ===================================================================
     // ATUALIZAÇÃO AUTOMÁTICA & MANUAL VIA GITHUB RAW (OTA)
     // ===================================================================
-    const SCRIPT_VERSION = INITIAL.scriptVersion || "5.3.0";
+    const SCRIPT_VERSION = INITIAL.scriptVersion || "5.4.0";
     const GITHUB_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 
     async function checkForScriptUpdateManual() {
