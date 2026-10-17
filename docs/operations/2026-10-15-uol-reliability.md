@@ -967,3 +967,54 @@ budgets and single-POST Discord acceptance after 12 seconds. No migration, sourc
 polling, destination test send, session replacement or budget-threshold change
 was introduced. Code validation does not close the remaining historical receipt
 gap or establish production behavior before publication.
+
+### Corrective publication verified separately from readiness — 17 October
+
+The original forward integration fixture had no attempt/identity ledger evidence,
+so the stricter handler correctly rejected it in the first CI run. The fixture
+now includes a recorded attempt and identity alias. The corrected exact SHA
+`0755b2bc1a5507713acca8ca05603b3bd4f62ce3` passed all four jobs in
+[CI run 39078926586](https://github.com/leosaquetto/uol-bot/actions/runs/39078926586).
+The two focused native suites passed 24 tests; the corrected legacy case passed
+in isolation. The complete CI then passed all required checks.
+
+The standard release command still failed before deployment against the original
+baseline: two added critical identities and the new main uncertainty remain
+explicit regressions. That failure was retained privately. The requested plan
+expressly permits corrective publication with identified historical incidents,
+so a single corrective publication used a frozen, already investigated debt
+snapshot, the existing clean-main/origin source guard, exact-SHA green CI and
+`wrangler deploy --strict`. Fresh authenticated preflight rejected any additional
+identity or higher counter; unchanged cost, freshness and configuration checks
+also passed. No release-policy code or original baseline was changed.
+
+Published version **`d865ce98-0bf7-4ae5-bc3a-c9c80a5c3dc9`**, created at
+`2026-10-17T23:27:13.213402Z`, is tagged **`git-0755b2bc1a55`**. A separate
+Wrangler version lookup confirms the tag. Liveness, readiness and debt endpoints
+converged to that version. Its natural primary cycle succeeded at
+`2026-10-17T23:27:33.465Z`, with 28 reads, primary estimate 28, conservative
+observed estimate 64, safety allowance 96 and maximum cycle 28. Projected writes
+remain 63,488 with headroom 36,512. The estimate limit stays 512 and existing
+single-cycle/read/write limits are unchanged.
+
+Postflight found **no additional debt relative to the frozen corrective
+preflight**, and the original baseline's bytes retain their original hash. The
+standard report still compares against that original baseline and still fails:
+`runtimeError=critical_queue_pending:1`, four active critical incidents and one
+unknown main delivery. Its explicit original-baseline regressions remain;
+ordinary releases and later batches do not inherit this one-time exception.
+`debtVerified=true` in the standard report means the authenticated debt snapshot
+was validated, not that its regressions disappeared.
+
+Current states: **published=true, runtimeVerified=false, ready=false**. Natural
+cycle, cost guards and the corrective pre/post comparison are separately proved.
+The unresolved identity is `n3a-10-off-no-site`, main generation 1/attempt 1,
+unknown since `2026-10-17T03:10:02.675Z`; no resend or unsupported negative
+resolution was performed. The new catalog is deployed but returns HTTP 503
+`catalog_budget_guard` under the current optional-work budget; that protection
+was preserved, and phone installation remains unverified.
+
+Private receipts: `receipt-fix-corrective-publication-2026-10-17.json`, the
+matching predeploy/deploy/version files, `receipt-fix-final-proof-2026-10-17.json`
+and the unmodified-standard postdeploy report. The private publication manifest
+now records this SHA/version and the remaining gates, superseding `f7e1d54b-...`.
