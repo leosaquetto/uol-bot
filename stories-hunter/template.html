@@ -590,11 +590,12 @@
       border: 1px solid rgba(249, 115, 22, 0.5);
       font-weight: 800;
     }
-    .tag-new {
+    .tag-new,
+    .card-tag.tag-today {
       background: rgba(0, 230, 118, 0.2);
       color: #00e676;
       border: 1px solid rgba(0, 230, 118, 0.45);
-      animation: pulseGreen 1.2s infinite alternate;
+      animation: pulseGreen 1.4s infinite alternate;
     }
     @keyframes pulseGreen {
       from { opacity: 0.6; }
@@ -604,8 +605,9 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #94a3b8;
-      font-size: 8px;
+      font-size: 7.5px;
       font-weight: 500;
+      letter-spacing: 0.35px;
     }
     .card-tag.tag-duration-stopwatch {
       background: rgba(255, 255, 255, 0.05);
@@ -615,6 +617,7 @@
       display: inline-flex;
       align-items: center;
       gap: 3.5px;
+      letter-spacing: 0.3px;
     }
     .card-tag.tag-duration-stopwatch svg {
       width: 9px;
@@ -626,6 +629,7 @@
       border: 1px solid rgba(248, 113, 113, 0.28);
       color: #f87171;
       font-weight: 500;
+      letter-spacing: 0.35px;
       margin-left: auto;
     }
 
@@ -845,11 +849,11 @@
       border: 0.5px solid rgba(255, 255, 255, 0.16);
       color: #f1f5f9;
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       padding: 3px 7px;
       border-radius: 10px;
-      letter-spacing: -0.1px;
+      letter-spacing: 0.35px;
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -980,6 +984,15 @@
       height: 8px;
       color: #38bdf8;
       flex-shrink: 0;
+    }
+    .micro-date-pill.pill-today {
+      background: rgba(0, 230, 118, 0.16) !important;
+      border: 0.75px solid rgba(0, 230, 118, 0.5) !important;
+      color: #00e676 !important;
+      animation: pulseGreen 1.4s ease-in-out infinite alternate !important;
+    }
+    .micro-date-pill.pill-today svg {
+      color: #00e676 !important;
     }
     .micro-date-pill.pill-soldout {
       border-color: rgba(255, 255, 255, 0.12);
@@ -2091,9 +2104,9 @@
       gap: 14px;
     }
     .redemption-thumb {
-      width: 62px;
-      height: 62px;
-      border-radius: 12px;
+      width: 74px;
+      height: 74px;
+      border-radius: 14px;
       object-fit: cover;
       flex-shrink: 0;
       background: #181d28;
@@ -2967,6 +2980,182 @@
     .btn-connect-account:active {
       transform: scale(0.94);
     }
+
+    /* HEADER TIMELINE BELL & BADGE */
+    .header-btn-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+    .timeline-badge-dot {
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ff5500;
+      border: 2px solid #000;
+      box-shadow: 0 0 6px rgba(255, 85, 0, 0.7);
+      animation: pulseGreen 1.4s infinite alternate;
+      pointer-events: none;
+    }
+
+    /* DIVIDER OFERTAS ESGOTADAS 24H */
+    .soldout-24h-divider {
+      margin: 22px 0 10px;
+      padding: 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .soldout-24h-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .soldout-24h-badge {
+      font-size: 10px;
+      font-weight: 800;
+      background: rgba(248, 113, 113, 0.15);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      color: #f87171;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    /* TIMELINE MODAL STYLES */
+    .timeline-filter-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: calc(100vh - 240px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 2px;
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 12px 14px;
+      transition: background 0.15s ease, transform 0.1s ease;
+      cursor: pointer;
+    }
+    .timeline-item:active {
+      transform: scale(0.985);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .timeline-icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .timeline-icon-box svg {
+      width: 17px;
+      height: 17px;
+    }
+    .timeline-icon-box.type-nova {
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid rgba(0, 230, 118, 0.35);
+      color: #00e676;
+    }
+    .timeline-icon-box.type-esgotada {
+      background: rgba(248, 113, 113, 0.15);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      color: #f87171;
+    }
+    .timeline-icon-box.type-resgate {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      color: #c084fc;
+    }
+    .timeline-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .timeline-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+    .timeline-badge {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 5px;
+      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .timeline-badge.badge-nova {
+      background: rgba(0, 230, 118, 0.14);
+      color: #00e676;
+      border: 0.5px solid rgba(0, 230, 118, 0.4);
+    }
+    .timeline-badge.badge-esgotada {
+      background: rgba(248, 113, 113, 0.14);
+      color: #f87171;
+      border: 0.5px solid rgba(248, 113, 113, 0.4);
+    }
+    .timeline-badge.badge-resgate {
+      background: rgba(168, 85, 247, 0.14);
+      color: #c084fc;
+      border: 0.5px solid rgba(168, 85, 247, 0.4);
+    }
+    .timeline-time {
+      font-size: 10px;
+      color: #94a3b8;
+      font-weight: 500;
+      white-space: nowrap;
+      letter-spacing: 0.25px;
+    }
+    .timeline-item-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .timeline-item-desc {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+    .timeline-user-avatar {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      object-fit: cover;
+      vertical-align: middle;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -2981,6 +3170,14 @@
       </div>
     </div>
     <div class="header-actions">
+      <!-- Linha do Tempo / Notificações -->
+      <div class="header-btn-wrap">
+        <button class="btn-circle" id="btnTimelineModal" onclick="openActivityTimelineModal()" title="Linha do Tempo de Atividades" aria-label="Notificações e Linha do Tempo">
+          __ICON_bell__
+        </button>
+        <span class="timeline-badge-dot" id="timelineBadgeDot" style="display: none;"></span>
+      </div>
+
       <!-- Perfil & Configurações: Toque no Avatar abre Ajustes & Alternador de Sessão -->
       <div class="avatar-wrapper" onclick="openSettingsModal()" title="Configurações e Perfil" aria-label="Configurações e Perfil">
         <img id="headerUserAvatar" class="user-avatar" src="" alt="Avatar" onerror="showAvatarFallback(this)" />
@@ -3255,6 +3452,48 @@
     </div>
   </div>
 
+  <!-- 7D. MODAL: LINHA DO TEMPO DE ATIVIDADES -->
+  <div class="modal-backdrop" id="activityTimelineModal" onclick="handleBackdropClick(event)" style="display: none;">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 440px;">
+      <button class="modal-close-icon" onclick="closeActivityTimelineModal(event)" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
+        <div style="width: 20px; height: 20px; color: #ff9100;">__ICON_bell__</div>
+        <div class="modal-title" style="margin: 0;">Linha do Tempo</div>
+      </div>
+      <div style="text-align: center; font-size: 11.5px; color: #94a3b8; margin-bottom: 14px;">
+        Histórico recente de acontecimentos e ofertas do sistema
+      </div>
+
+      <!-- Filtros da Linha do Tempo (Todas, Nova, Esgotada, Resgate) -->
+      <div class="timeline-filter-bar">
+        <div class="redemptions-filter-pills" style="justify-content: center;">
+          <button class="redemptions-filter-pill active" id="tlFilterAll" onclick="setTimelineFilter('all')">
+            Todas (<span id="tlCountAll">0</span>)
+          </button>
+          <button class="redemptions-filter-pill" id="tlFilterNew" onclick="setTimelineFilter('nova')">
+            <span class="filter-dot" style="background: #00e676;"></span> Nova (<span id="tlCountNew">0</span>)
+          </button>
+          <button class="redemptions-filter-pill" id="tlFilterExpired" onclick="setTimelineFilter('esgotada')">
+            <span class="filter-dot" style="background: #f87171;"></span> Esgotada (<span id="tlCountExpired">0</span>)
+          </button>
+          <button class="redemptions-filter-pill" id="tlFilterRedemption" onclick="setTimelineFilter('resgate')">
+            <span class="filter-dot" style="background: #a855f7;"></span> Resgate (<span id="tlCountRedemption">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <div class="timeline-list" id="timelineList" style="margin-top: 14px;">
+        <!-- Itens da linha do tempo renderizados dinamicamente -->
+      </div>
+    </div>
+  </div>
+
   <!-- 8. MODAL DE AJUSTES & FILTROS -->
   <div class="modal-backdrop" id="settingsModal" onclick="handleBackdropClick(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
@@ -3268,11 +3507,11 @@
         <label class="form-label">Perfil de Usuário Ativo</label>
         <div class="user-pill-row">
           <div class="user-pill" id="pillUserLeo" onclick="requestUserSwitch('leosaquetto')">
-            <img src="https://unavatar.io/instagram/leosaquetto" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            <img src="https://files.catbox.moe/a44poo.jpg" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
             leosaquetto
           </div>
           <div class="user-pill" id="pillUserGao" onclick="requestUserSwitch('gaoriel')">
-            <img src="https://unavatar.io/instagram/gaoriel" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            <img src="https://files.catbox.moe/0hj4g2.jpg" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
             gaoriel
           </div>
         </div>
@@ -3475,6 +3714,15 @@
     const ICONS = INITIAL.icons;
     const NTFY_TOPIC = INITIAL.topic;
 
+    const AVATAR_URLS = {
+      leosaquetto: 'https://files.catbox.moe/a44poo.jpg',
+      gaoriel: 'https://files.catbox.moe/0hj4g2.jpg'
+    };
+    function getAvatarUrl(user) {
+      if (user === 'gaoriel' || user === 'gabriel') return AVATAR_URLS.gaoriel;
+      return AVATAR_URLS.leosaquetto;
+    }
+
     const CATEGORY_MAP = {
       'EXPOSICOES': { id: 'EXPOSICOES', label: 'Expo', icon: ICONS.art },
       'MUSEU': { id: 'MUSEU', label: 'Museu', icon: ICONS.library },
@@ -3541,6 +3789,7 @@
 
       updateUserAvatar();
       updateCredsStatusUI();
+      updateTimelineBadgeDot();
 
       // Se temos ofertas ativas em cache no histórico, atualiza badge
       if (historyData.active && historyData.active.length > 0) {
@@ -3629,8 +3878,13 @@
         return 'EXPOSICOES';
       }
 
-      // 2. Total Energies é Teatro
-      if (text.includes('total energies') || text.includes('total-energies')) {
+      // 2. Teatros prioritários (Teatro UOL, Total Energies)
+      if (
+        text.includes('teatro uol') ||
+        text.includes('teatro-uol') ||
+        text.includes('total energies') ||
+        text.includes('total-energies')
+      ) {
         return 'TEATRO';
       }
 
@@ -3740,7 +3994,7 @@
         const remM = mins % 60;
         return hours + 'h ' + (remM > 0 ? remM + 'm' : '');
       }
-      return Math.max(1, mins) + ' min';
+      return Math.max(1, mins) + ' m';
     }
 
     function formatRelativeTime(fromMs, now) {
@@ -3751,13 +4005,13 @@
       const days = Math.floor(hours / 24);
 
       if (mins < 1) return 'Agora';
-      if (mins < 60) return mins + 'min';
+      if (mins < 60) return mins + 'm atrás';
       const remMins = mins % 60;
       if (hours < 24) {
-        return remMins > 0 ? (hours + 'h' + remMins + 'min') : (hours + 'h');
+        return remMins > 0 ? (hours + 'h ' + remMins + 'm atrás') : (hours + 'h atrás');
       }
-      if (days === 1) return '1 dia';
-      if (days <= 7) return days + ' dias';
+      if (days === 1) return '1 dia atrás';
+      if (days <= 7) return days + ' dias atrás';
       const d = new Date(fromMs);
       const day = String(d.getDate()).padStart(2, '0');
       const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -3774,11 +4028,11 @@
       if (diffSec < 3600) {
         const m = Math.floor(diffSec / 60);
         const sec = diffSec % 60;
-        return sec > 0 ? (m + 'm' + sec + 's') : (m + 'm');
+        return sec > 0 ? (m + 'm ' + sec + 's') : (m + 'm');
       }
       const h = Math.floor(diffSec / 3600);
       const m = Math.floor((diffSec % 3600) / 60);
-      return m > 0 ? (h + 'h' + m + 'm') : (h + 'h');
+      return m > 0 ? (h + 'h ' + m + 'm') : (h + 'h');
     }
 
     function formatExpiredAgo(fromMs, now) {
@@ -3788,12 +4042,15 @@
       const hours = Math.floor(mins / 60);
       const days = Math.floor(hours / 24);
 
-      if (mins <= 1) return 'Há 1 min';
-      if (mins < 60) return 'Há ' + mins + ' min';
+      if (mins <= 1) return 'Há 1m';
+      if (mins < 60) return 'Há ' + mins + 'm';
       if (hours === 1) return 'Há 1 hora';
-      if (hours < 24) return 'Há ' + hours + ' horas';
-      if (days === 1) return 'Há 1 dia';
-      if (days <= 7) return 'Há ' + days + ' dias';
+      if (hours < 24) {
+        const remMins = mins % 60;
+        return remMins > 0 ? ('Há ' + hours + 'h ' + remMins + 'm') : ('Há ' + hours + 'h');
+      }
+      if (days === 1) return '1 dia atrás';
+      if (days <= 7) return days + ' dias atrás';
       const d = new Date(fromMs);
       const day = String(d.getDate()).padStart(2, '0');
       const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -3912,6 +4169,7 @@
           document.getElementById('liveStatusText').textContent = 'Ao vivo • ' + liveOffers.length + ' ofertas';
           document.getElementById('liveDot').style.backgroundColor = '#00e676';
           prefetchActiveOfferDescriptions(liveOffers);
+          updateTimelineBadgeDot();
         }
       } catch (e) {
         document.getElementById('liveStatusText').textContent = 'Conectado (Cache)';
@@ -4167,18 +4425,18 @@
       if (hasLeo && hasGabriel) {
         text = 'Resgatado por Leo e Gabriel';
         avatarsHtml = `
-          <img class="friend-avatar" src="https://unavatar.io/instagram/leosaquetto" alt="Leo" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
-          <img class="friend-avatar overlap" src="https://unavatar.io/instagram/gaoriel" alt="Gabriel" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+          <img class="friend-avatar" src="${AVATAR_URLS.leosaquetto}" alt="Leo" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+          <img class="friend-avatar overlap" src="${AVATAR_URLS.gaoriel}" alt="Gabriel" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
         `;
       } else if (hasLeo) {
         text = 'Resgatado por Leo';
         avatarsHtml = `
-          <img class="friend-avatar" src="https://unavatar.io/instagram/leosaquetto" alt="Leo" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+          <img class="friend-avatar" src="${AVATAR_URLS.leosaquetto}" alt="Leo" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
         `;
       } else {
         text = 'Resgatado por Gabriel';
         avatarsHtml = `
-          <img class="friend-avatar" src="https://unavatar.io/instagram/gaoriel" alt="Gabriel" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+          <img class="friend-avatar" src="${AVATAR_URLS.gaoriel}" alt="Gabriel" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
         `;
       }
 
@@ -4403,6 +4661,93 @@
 
         container.appendChild(card);
       });
+
+      // 2. Por padrão, exibe também ofertas esgotadas nas últimas 24 horas (agrupadas ao final)
+      const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+      const activeIds = new Set((list || []).map(x => x.id));
+      const recentSoldOut = (historyData.history || []).filter(o => {
+        if (!o || activeIds.has(o.id)) return false;
+        if (activeFilter && o.category !== activeFilter) return false;
+        const expTime = o.expiredAt || o.lastSeen || o.firstSeen || 0;
+        return expTime > 0 && (now - expTime) <= ONE_DAY_MS;
+      }).sort((a, b) => {
+        const ta = a.expiredAt || a.lastSeen || a.firstSeen || 0;
+        const tb = b.expiredAt || b.lastSeen || b.firstSeen || 0;
+        return tb - ta;
+      });
+
+      if (recentSoldOut.length > 0) {
+        const divEl = document.createElement('div');
+        divEl.className = 'soldout-24h-divider';
+        divEl.innerHTML = `
+          <div class="soldout-24h-title">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Esgotadas nas últimas 24h</span>
+          </div>
+          <span class="soldout-24h-badge">${recentSoldOut.length} ${recentSoldOut.length === 1 ? 'oferta' : 'ofertas'}</span>
+        `;
+        container.appendChild(divEl);
+
+        recentSoldOut.forEach((o, index) => {
+          const card = document.createElement('div');
+          card.className = 'card card-expired';
+          card.style.setProperty('--delay', list.length + index);
+
+          const expTimeStr = formatExpiredAgo(o.expiredAt || o.lastSeen || o.firstSeen, now);
+          const timeTagHtml = '<span class="card-tag tag-expired-age" style="margin-left: auto;">' + expTimeStr + '</span>';
+
+          const imgUrl = o.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
+          const codeBadge = o.code ? '<div class="thumb-code-badge">' + o.code + '</div>' : '';
+          const displayTitle = o.rawTitle || o.title;
+
+          const isStoriesOnly = isStoriesOnlyOffer(o);
+          const isStory = isStoriesOnly || Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
+          const isPortal = isStoriesOnly ? false : (o.isPortal !== false);
+
+          let sourcesBadgeHtml = '';
+          if (isPortal && isStory) {
+            sourcesBadgeHtml = '<div class="source-stack" title="Portal e Stories"><div class="source-mini">' + ICONS.uolColor + '</div><div class="source-mini mini-insta overlap">' + ICONS.instagram + '</div></div>';
+          } else if (isPortal) {
+            sourcesBadgeHtml = '<div class="source-stack" title="Portal"><div class="source-mini">' + ICONS.uolColor + '</div></div>';
+          } else if (isStory) {
+            sourcesBadgeHtml = '<div class="source-stack" title="Stories"><div class="source-mini mini-insta">' + ICONS.instagram + '</div></div>';
+          }
+
+          const catDef = CATEGORY_MAP[o.category] || CATEGORY_MAP['OUTROS'];
+          const catTagHtml = '<span class="card-tag tag-category tag-cat-' + o.category + '">' + catDef.icon + ' ' + catDef.label + '</span>';
+          const expiredTagHtml = '<span class="card-tag" style="background: rgba(248, 113, 113, 0.14); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.35);">Esgotado</span>';
+
+          const redeemedUsers = getRedeemedUsersForOffer(o);
+          const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
+
+          card.innerHTML = `
+            <div class="thumb-wrap">
+              <img src="${imgUrl}" alt="Thumb" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+              ${codeBadge}
+            </div>
+            <div class="card-content">
+              <div class="tag-row">
+                ${catTagHtml}
+                ${sourcesBadgeHtml}
+                ${expiredTagHtml}
+                ${timeTagHtml}
+              </div>
+              <div class="card-title" style="color: #94a3b8;">${displayTitle}</div>
+              ${redeemedFriendsHtml}
+              <div class="card-actions-row">
+                <button class="btn-action-small btn-details" onclick="openDetails('${o.id}')">
+                  ${ICONS.notes} Detalhes
+                </button>
+                <button class="btn-action-small" disabled style="opacity: 0.55; cursor: not-allowed; background: rgba(248, 113, 113, 0.12); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.25);">
+                  ${ICONS.expired || ''} Esgotado
+                </button>
+              </div>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+      }
     }
 
     // ===================================================================
@@ -4611,7 +4956,7 @@
       }
       if (fullItemText.includes('c6 fest') || fullItemText.includes('c6fest')) {
         return {
-          eventTitle: 'C6 Fest',
+          eventTitle: 'C6 Fest 2026',
           venue: 'Parque Ibirapuera SP'
         };
       }
@@ -4982,8 +5327,10 @@
 
       let microDatePillsHtml = '';
       activeDates.forEach(d => {
+        const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
+        const todayClass = isToday ? ' pill-today' : '';
         microDatePillsHtml += `
-          <span class="micro-date-pill">
+          <span class="micro-date-pill${todayClass}">
             ${ICONS.calendar}
             <span>${d}</span>
           </span>
@@ -4991,8 +5338,10 @@
       });
       soldOutDates.forEach(d => {
         if (!activeDates.includes(d)) {
+          const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
+          const todayClass = isToday ? ' pill-today' : '';
           microDatePillsHtml += `
-            <span class="micro-date-pill pill-soldout">
+            <span class="micro-date-pill pill-soldout${todayClass}">
               ${ICONS.calendar}
               <span>${d}</span>
             </span>
@@ -5307,17 +5656,17 @@
       },
       {
         id: "curated-c6fest",
-        title: "2 Ingressos: C6 Fest - Parque Ibirapuera",
-        eventTitle: "C6 Fest",
-        rawTitle: "2 Ingressos: C6 Fest - Parque Ibirapuera",
-        imageUrl: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=800&auto=format&fit=crop",
+        title: "2 Ingressos: C6 Fest 2026 Ibirapuera -SP",
+        eventTitle: "C6 Fest 2026",
+        rawTitle: "2 Ingressos: C6 Fest 2026 Ibirapuera -SP",
+        imageUrl: "https://d310rdc9v8uuq.cloudfront.net/beneficios/52eb676188fed030309f65d94dc4e4a0.png",
         venue: "Parque Ibirapuera SP",
         description: "Festival internacional com grandes nomes do jazz contemporâneo, soul e indie rock.",
         category: "MUSICA",
-        firstSeen: 1715990400000,
+        firstSeen: 1778250000000,
         curatedTag: "★ Curadoria",
         user: "gaoriel",
-        link: "https://clube.uol.com.br/campanhasdeingresso"
+        link: "https://clube.uol.com.br/perfil/beneficios/58135"
       }
     ];
 
@@ -5600,8 +5949,8 @@
       const monthsMap = new Map();
       yearOffers.forEach(o => {
         const m = getOfferYearAndMonth(o).month;
-        if (!monthsMap.has(m)) monthsMap.set(m, 0);
-        monthsMap.set(m, monthsMap.get(m) + 1);
+        if (!monthsMap.has(m)) monthsMap.set(m, []);
+        monthsMap.get(m).push(o);
       });
 
       const sortedMonths = Array.from(monthsMap.keys()).sort((a, b) => b - a);
@@ -5616,13 +5965,24 @@
         selectedHistoryMonth = 'all';
       }
 
+      let totalGroupCount = 0;
+      const monthGroupsCounts = new Map();
+      sortedMonths.forEach(m => {
+        const mOffers = monthsMap.get(m);
+        const mActive = mOffers.filter(o => (historyData.active || []).some(a => a.id === o.id));
+        const mHistory = mOffers.filter(o => !mActive.some(a => a.id === o.id));
+        const mGroups = buildOfferGroups(mActive, mHistory);
+        monthGroupsCounts.set(m, mGroups.length);
+        totalGroupCount += mGroups.length;
+      });
+
       monthSelector.innerHTML = `
         <button class="month-chip ${selectedHistoryMonth === 'all' ? 'active' : ''}" onclick="selectHistoryMonth('all')">
-          Todos (${yearOffers.length})
+          Todos (${totalGroupCount})
         </button>
         ${sortedMonths.map(m => `
           <button class="month-chip ${selectedHistoryMonth === m ? 'active' : ''}" onclick="selectHistoryMonth(${m})">
-            ${MONTH_SHORT_LABELS[m]} (${monthsMap.get(m)})
+            ${MONTH_SHORT_LABELS[m]} (${monthGroupsCounts.get(m)})
           </button>
         `).join('')}
       `;
@@ -5663,6 +6023,12 @@
 
       sortedMonths.forEach(m => {
         const monthOffers = monthsMap.get(m);
+        const monthActive = monthOffers.filter(o => (historyData.active || []).some(a => a.id === o.id));
+        const monthHistory = monthOffers.filter(o => !monthActive.some(a => a.id === o.id));
+        const monthGroups = buildOfferGroups(monthActive, monthHistory);
+
+        monthGroups.forEach(g => currentRenderedGroups.set(g.key, g));
+
         const sec = document.createElement('div');
         sec.className = 'category-carousel-section';
         sec.style.marginBottom = '22px';
@@ -5672,7 +6038,7 @@
         header.innerHTML = `
           <div class="category-carousel-title">
             <span>${MONTH_FULL_NAMES[m]} ${year}</span>
-            <span class="cat-badge">${monthOffers.length} ${monthOffers.length === 1 ? 'evento' : 'eventos'}</span>
+            <span class="cat-badge">${monthGroups.length} ${monthGroups.length === 1 ? 'evento' : 'eventos'}</span>
           </div>
         `;
         sec.appendChild(header);
@@ -5680,8 +6046,8 @@
         const track = document.createElement('div');
         track.className = 'category-carousel-track';
 
-        monthOffers.forEach((o, idx) => {
-          const card = createHistoryPosterCard(o, idx, false);
+        monthGroups.forEach((g, idx) => {
+          const card = createHistoryPosterCard(g, idx, false);
           track.appendChild(card);
         });
 
@@ -5690,71 +6056,135 @@
       });
     }
 
-    function createHistoryPosterCard(o, index, isCuratedSection = false) {
+    function createHistoryPosterCard(target, index, isCuratedSection = false) {
+      const isGroup = Boolean(target && (target.activeItems || target.soldOutItems || target.allItems));
+      const group = isGroup ? target : {
+        key: getGroupKey(target),
+        category: target.category || 'OUTROS',
+        activeItems: (historyData.active || []).some(a => a.id === target.id) ? [target] : [],
+        soldOutItems: !(historyData.active || []).some(a => a.id === target.id) ? [target] : [],
+        allItems: [target],
+        parent: target,
+        isHighlight: checkHighlight(target.title, target.id, target.description),
+        isAllSoldOut: !(historyData.active || []).some(a => a.id === target.id),
+        hasStory: isStoriesOnlyOffer(target) || Boolean(target.hasStory || target.source === 'Stories' || target.badge === 'Stories'),
+        hasPortal: isStoriesOnlyOffer(target) ? false : (target.isPortal !== false),
+        firstSeen: target.firstSeen || Date.now(),
+        norm: normalizeEventInfo([target])
+      };
+      currentRenderedGroups.set(group.key, group);
+
+      const { activeItems, soldOutItems, allItems, norm, isAllSoldOut, hasStory, hasPortal, parent } = group;
+      const activeCount = (activeItems || []).length;
+      const soldOutCount = (soldOutItems || []).length;
+      const totalSessions = activeCount + soldOutCount;
+
       const card = document.createElement('div');
-      const curated = isEditorsChoice(o) || isCuratedSection;
-      card.className = 'poster-card history-clean-card' + (curated ? ' card-editors-choice-poster' : '');
+      const curated = isEditorsChoice(parent) || (allItems || []).some(x => isEditorsChoice(x)) || isCuratedSection;
+      let cardClass = 'poster-card history-clean-card';
+      if (curated) cardClass += ' card-editors-choice-poster';
+      if (isAllSoldOut) cardClass += ' card-sold-out-grouped';
+      card.className = cardClass;
       card.style.setProperty('--delay', index);
 
       // Micro ícones de fontes sobrepostos
-      const isStoriesOnly = isStoriesOnlyOffer(o);
-      const isStory = isStoriesOnly || Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
-      const isPortal = isStoriesOnly ? false : (o.isPortal !== false);
       let sourcesBadgeHtml = '';
-      if (isPortal && isStory) {
+      if (hasPortal && hasStory) {
         sourcesBadgeHtml = `
           <div class="source-circle-combo">
             <div class="source-mini-circle">${ICONS.uolColor}</div>
             <div class="source-mini-circle mini-insta overlap">${ICONS.instagram}</div>
           </div>
         `;
-      } else if (isPortal) {
+      } else if (hasPortal) {
         sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle">${ICONS.uolColor}</div></div>`;
-      } else if (isStory) {
+      } else if (hasStory) {
         sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle mini-insta">${ICONS.instagram}</div></div>`;
       }
 
       // Normalização semântica completa de título e local (idêntica à Home)
-      const norm = normalizeEventInfo([o]);
-      const venueText = norm.venue || o.venue || o.partner || (o.location_summary) || 'Clube UOL';
-      const eventTitle = norm.eventTitle || toSentenceCase((o.rawTitle || o.title || '').replace(/^2\s*ingressos\s*:\s*/i, '').trim());
+      const venueText = norm.venue || (parent && (parent.venue || parent.partner || parent.location_summary)) || 'Clube UOL';
+      const eventTitle = norm.eventTitle || toSentenceCase(((parent && (parent.rawTitle || parent.title)) || '').replace(/^2\s*ingressos\s*:\s*/i, '').trim());
 
-      // Date badge (limpo, sem esgotado)
-      const sessionDate = extractSessionDate(o);
-      const relTime = formatRelativeTime(o.firstSeen || Date.now(), Date.now());
+      const relTime = formatRelativeTime(group.firstSeen || (parent && parent.firstSeen) || Date.now(), Date.now());
       const timePillHtml = `<span class="poster-pill-badge">${relTime}</span>`;
-
-      let microDatePillHtml = '';
-      if (sessionDate) {
-        const dBadge = formatSessionDateBadge(sessionDate);
-        microDatePillHtml = `
-          <span class="micro-date-pill">
-            ${ICONS.calendar}
-            <span>${dBadge}</span>
-          </span>
-        `;
-      }
-
-      const formattedTitleHtml = microDatePillHtml
-        ? formatTitleWithInlineDates(eventTitle, microDatePillHtml)
-        : eventTitle;
 
       // Status pill à direita: ★ Curadoria se for Editor's Choice, senão sigla do estado
       let rightPillHtml = '';
       if (curated) {
         rightPillHtml = `<span class="pill-editors-choice">★ Curadoria</span>`;
       } else {
-        const stateCode = extractStateCode(o, { venue: venueText });
+        const stateCode = extractStateCode(parent, { venue: venueText });
         rightPillHtml = `<span class="poster-status-pill pill-state">${stateCode}</span>`;
       }
 
-      const imgUrl = o.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
+      // Container de datas micro inline [ 📅 DATA ]
+      const activeRawDates = (activeItems || []).map(extractSessionDate).filter(Boolean);
+      const soldOutRawDates = (soldOutItems || []).map(extractSessionDate).filter(Boolean);
+
+      const activeDates = Array.from(new Set(activeRawDates)).map(formatSessionDateBadge);
+      const soldOutDates = Array.from(new Set(soldOutRawDates)).map(formatSessionDateBadge);
+
+      let microDatePillsHtml = '';
+      activeDates.forEach(d => {
+        const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
+        const todayClass = isToday ? ' pill-today' : '';
+        microDatePillsHtml += `
+          <span class="micro-date-pill${todayClass}">
+            ${ICONS.calendar}
+            <span>${d}</span>
+          </span>
+        `;
+      });
+      soldOutDates.forEach(d => {
+        if (!activeDates.includes(d)) {
+          const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
+          const todayClass = isToday ? ' pill-today' : '';
+          microDatePillsHtml += `
+            <span class="micro-date-pill pill-soldout${todayClass}">
+              ${ICONS.calendar}
+              <span>${d}</span>
+            </span>
+          `;
+        }
+      });
+
+      if (!microDatePillsHtml) {
+        if (isAllSoldOut) {
+          microDatePillsHtml = `
+            <span class="micro-date-pill pill-soldout">
+              ${ICONS.calendar}
+              <span>Esgotado</span>
+            </span>
+          `;
+        } else if (activeCount > 0) {
+          microDatePillsHtml = `
+            <span class="micro-date-pill">
+              ${ICONS.calendar}
+              <span>${activeCount} ${activeCount === 1 ? 'sessão' : 'sessões'}</span>
+            </span>
+          `;
+        }
+      }
+
+      const formattedTitleHtml = microDatePillsHtml
+        ? formatTitleWithInlineDates(eventTitle, microDatePillsHtml)
+        : eventTitle;
+
+      const imgUrl = (parent && parent.imageUrl) || 'https://i.imgur.com/UdIgTfI.png';
 
       // Amigos que resgataram
-      const redeemedUsers = getRedeemedUsersForOffer(o);
+      const redeemedUsers = getRedeemedUsersForGroup(group);
       const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
 
-      card.onclick = () => openDetails(o.id);
+      if (totalSessions > 1) {
+        card.onclick = () => openGroupSessionsModal(group.key);
+      } else {
+        const singleItem = (activeItems && activeItems[0]) || (soldOutItems && soldOutItems[0]) || parent;
+        if (singleItem && singleItem.id) {
+          card.onclick = () => openDetails(singleItem.id);
+        }
+      }
 
       card.innerHTML = `
         <img class="poster-img" src="${imgUrl}" alt="Poster" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
@@ -5872,12 +6302,13 @@
       const isLeo = (settings.currentUser !== 'gaoriel');
       const activeDisplayName = isLeo ? 'Leonardo Saquetto' : 'Gabriel';
       const activeHandle = isLeo ? 'leosaquetto' : 'gaoriel';
-      const activeAvatarSrc = 'https://unavatar.io/instagram/' + activeHandle;
+      const activeAvatarSrc = getAvatarUrl(activeHandle);
 
-      // 1. Consolida todos os resgates sem perder nenhum perfil e restaura datas corretas
-      const allList = getAllRedemptionsList();
+      // 1. Consolida todos os resgates sem perder nenhum perfil, filtrando exclusivamente "Campanhas de ingressos"
+      const rawAllList = getAllRedemptionsList();
+      const allList = rawAllList.filter(r => (r.partner || '').trim().toLowerCase() === 'campanhas de ingressos');
       try {
-        localStorage.setItem('uol_real_redemptions', JSON.stringify(allList));
+        localStorage.setItem('uol_real_redemptions', JSON.stringify(rawAllList));
       } catch(e) {}
 
       // 2. Contagens por perfil
@@ -5919,7 +6350,7 @@
 
           const ownerBadgeHtml = `
             <div class="redemption-owner-pill ${isCardLeo ? 'owner-leo' : 'owner-gaoriel'}">
-              <img src="https://unavatar.io/instagram/${cardOwnerHandle}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+              <img src="${getAvatarUrl(cardOwnerHandle)}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
               <span>${cardOwnerName}</span>
             </div>
           `;
@@ -6964,6 +7395,7 @@
           if (currentTab === 'redemptions') {
             renderRedemptionsScreen();
           }
+          updateTimelineBadgeDot();
         }
       } catch(e) {
         console.log('fetchRealRedemptions:', e.message);
@@ -7067,7 +7499,7 @@
       if (preview) {
         preview.innerHTML = `
           <div class="switch-acc-side">
-            <img class="switch-acc-avatar" src="https://unavatar.io/instagram/${currHandle}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            <img class="switch-acc-avatar" src="${getAvatarUrl(currHandle)}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
             <div class="switch-acc-name">${currDisplayName.split(' ')[0]}</div>
             <span class="switch-acc-badge badge-curr">Atual</span>
           </div>
@@ -7075,7 +7507,7 @@
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </div>
           <div class="switch-acc-side">
-            <img class="switch-acc-avatar target" src="https://unavatar.io/instagram/${targetHandle}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            <img class="switch-acc-avatar target" src="${getAvatarUrl(targetHandle)}" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
             <div class="switch-acc-name">${targetDisplayName.split(' ')[0]}</div>
             <span class="switch-acc-badge badge-next">Próxima</span>
           </div>
@@ -7230,7 +7662,7 @@
       const userCreds = accounts[user] || {};
 
       const avatar = document.getElementById('authModalAvatar');
-      if (avatar) avatar.src = 'https://unavatar.io/instagram/' + handle;
+      if (avatar) avatar.src = getAvatarUrl(handle);
       const nameEl = document.getElementById('authModalName');
       if (nameEl) nameEl.textContent = name;
       const handleEl = document.getElementById('authModalHandle');
@@ -7354,7 +7786,7 @@
       const user = settings.currentUser || 'leosaquetto';
       if (avatarEl) {
         avatarEl.style.display = 'block';
-        avatarEl.src = 'https://unavatar.io/instagram/' + user;
+        avatarEl.src = getAvatarUrl(user);
       }
       if (fb) {
         fb.style.display = 'none';
@@ -7417,7 +7849,7 @@
     // ===================================================================
     // ATUALIZAÇÃO AUTOMÁTICA & MANUAL VIA GITHUB RAW (OTA)
     // ===================================================================
-    const SCRIPT_VERSION = INITIAL.scriptVersion || "5.4.1";
+    const SCRIPT_VERSION = INITIAL.scriptVersion || "5.5.0";
     const GITHUB_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 
     function isNewerVersion(remote, local) {
@@ -7502,6 +7934,231 @@
 
     setTimeout(checkBackgroundUpdate, 2000);
 
+    // ===================================================================
+    // LINHA DO TEMPO DE ATIVIDADES / NOTIFICAÇÕES (MODAL HEADER)
+    // ===================================================================
+    let currentTimelineFilter = 'all';
+
+    function getTimelineEvents() {
+      const events = [];
+      const now = Date.now();
+
+      // 1. Ofertas Ativas (Novas)
+      (historyData.active || []).forEach(o => {
+        const isStoriesOnly = isStoriesOnlyOffer(o);
+        const isStory = isStoriesOnly || Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
+        const isPortal = isStoriesOnly ? false : (o.isPortal !== false);
+        let srcLabel = 'Portal';
+        if (isPortal && isStory) srcLabel = 'Portal e Stories';
+        else if (isStory) srcLabel = 'Stories';
+
+        const catDef = CATEGORY_MAP[o.category] || CATEGORY_MAP['OUTROS'];
+        events.push({
+          id: 'nova-' + o.id,
+          offerId: o.id,
+          type: 'nova',
+          title: o.rawTitle || o.title,
+          badgeText: isStory ? 'Nova Stories' : 'Nova Portal',
+          desc: `Descoberta via ${srcLabel} • ${catDef.label}`,
+          timestamp: o.firstSeen || now,
+          source: srcLabel
+        });
+      });
+
+      // 2. Ofertas do Histórico (Esgotadas e Descobertas)
+      (historyData.history || []).forEach(o => {
+        const expTime = o.expiredAt || o.lastSeen;
+        if (expTime) {
+          let durationText = '';
+          if (o.firstSeen && expTime > o.firstSeen) {
+            durationText = ` • Tempo no ar: ${formatStopwatchDuration(o.firstSeen, expTime)}`;
+          }
+          events.push({
+            id: 'esgotada-' + o.id,
+            offerId: o.id,
+            type: 'esgotada',
+            title: o.rawTitle || o.title,
+            badgeText: 'Esgotada',
+            desc: `Ingressos esgotados no Clube UOL${durationText}`,
+            timestamp: expTime
+          });
+        }
+
+        if (o.firstSeen) {
+          const isStoriesOnly = isStoriesOnlyOffer(o);
+          const isStory = isStoriesOnly || Boolean(o.hasStory || o.source === 'Stories' || o.badge === 'Stories');
+          const isPortal = isStoriesOnly ? false : (o.isPortal !== false);
+          let srcLabel = 'Portal';
+          if (isPortal && isStory) srcLabel = 'Portal e Stories';
+          else if (isStory) srcLabel = 'Stories';
+
+          const catDef = CATEGORY_MAP[o.category] || CATEGORY_MAP['OUTROS'];
+          events.push({
+            id: 'hist-nova-' + o.id,
+            offerId: o.id,
+            type: 'nova',
+            title: o.rawTitle || o.title,
+            badgeText: isStory ? 'Nova Stories' : 'Nova Portal',
+            desc: `Descoberta via ${srcLabel} • ${catDef.label}`,
+            timestamp: o.firstSeen,
+            source: srcLabel
+          });
+        }
+      });
+
+      // 3. Resgates Realizados (Filtrados para Campanhas de Ingressos)
+      const rawRedemptions = getAllRedemptionsList();
+      const redList = rawRedemptions.filter(r => (r.partner || '').trim().toLowerCase() === 'campanhas de ingressos');
+      redList.forEach(r => {
+        const isLeo = ((r.user || 'leosaquetto') === 'leosaquetto');
+        const userName = isLeo ? 'Leonardo' : 'Gabriel';
+        const userHandle = isLeo ? 'leosaquetto' : 'gaoriel';
+        const ts = parseRedemptionDate(r.redeemedAt);
+
+        events.push({
+          id: 'resgate-' + (r.id || r.url || r.title),
+          type: 'resgate',
+          title: formatRedemptionTitle(r.title),
+          badgeText: 'Resgate',
+          desc: `<img class="timeline-user-avatar" src="${getAvatarUrl(userHandle)}" alt="${userName}" /> <span style="color: #f1f5f9; font-weight: 600;">${userName}</span> • ${r.partner || 'Campanhas de Ingressos'}`,
+          timestamp: ts || (now - 3600000),
+          redemption: r
+        });
+      });
+
+      // Ordena cronologicamente decrescente
+      events.sort((a, b) => b.timestamp - a.timestamp);
+
+      // Limita aos 40 eventos mais recentes
+      return events.slice(0, 40);
+    }
+
+    function updateTimelineBadgeDot() {
+      const dot = document.getElementById('timelineBadgeDot');
+      if (!dot) return;
+      const events = getTimelineEvents();
+      if (events.length === 0) {
+        dot.style.display = 'none';
+        return;
+      }
+      let lastSeenTs = 0;
+      try {
+        lastSeenTs = parseInt(localStorage.getItem('uol_last_seen_timeline_ts') || '0', 10);
+      } catch(e) {}
+
+      const hasUnseen = events.some(ev => ev.timestamp > lastSeenTs);
+      dot.style.display = hasUnseen ? 'block' : 'none';
+    }
+
+    function openActivityTimelineModal() {
+      const modal = document.getElementById('activityTimelineModal');
+      if (!modal) return;
+      currentTimelineFilter = 'all';
+      renderTimelineList();
+      modal.style.display = 'flex';
+
+      try {
+        localStorage.setItem('uol_last_seen_timeline_ts', String(Date.now()));
+      } catch(e) {}
+      const dot = document.getElementById('timelineBadgeDot');
+      if (dot) dot.style.display = 'none';
+    }
+
+    function closeActivityTimelineModal(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const modal = document.getElementById('activityTimelineModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function setTimelineFilter(filter) {
+      currentTimelineFilter = filter;
+      renderTimelineList();
+    }
+
+    function renderTimelineList() {
+      const listEl = document.getElementById('timelineList');
+      if (!listEl) return;
+
+      const allEvents = getTimelineEvents();
+      const countAll = allEvents.length;
+      const countNew = allEvents.filter(e => e.type === 'nova').length;
+      const countExp = allEvents.filter(e => e.type === 'esgotada').length;
+      const countRed = allEvents.filter(e => e.type === 'resgate').length;
+
+      const elAll = document.getElementById('tlCountAll');
+      const elNew = document.getElementById('tlCountNew');
+      const elExp = document.getElementById('tlCountExpired');
+      const elRed = document.getElementById('tlCountRedemption');
+      if (elAll) elAll.textContent = countAll;
+      if (elNew) elNew.textContent = countNew;
+      if (elExp) elExp.textContent = countExp;
+      if (elRed) elRed.textContent = countRed;
+
+      const btnAll = document.getElementById('tlFilterAll');
+      const btnNew = document.getElementById('tlFilterNew');
+      const btnExp = document.getElementById('tlFilterExpired');
+      const btnRed = document.getElementById('tlFilterRedemption');
+      if (btnAll) btnAll.classList.toggle('active', currentTimelineFilter === 'all');
+      if (btnNew) btnNew.classList.toggle('active', currentTimelineFilter === 'nova');
+      if (btnExp) btnExp.classList.toggle('active', currentTimelineFilter === 'esgotada');
+      if (btnRed) btnRed.classList.toggle('active', currentTimelineFilter === 'resgate');
+
+      let filtered = allEvents;
+      if (currentTimelineFilter !== 'all') {
+        filtered = allEvents.filter(e => e.type === currentTimelineFilter);
+      }
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div style="text-align: center; padding: 32px 16px; color: #64748b; font-size: 13px;">
+            Nenhum evento registrado nesta categoria.
+          </div>
+        `;
+        return;
+      }
+
+      const now = Date.now();
+      let html = '';
+      filtered.forEach(ev => {
+        let iconHtml = '';
+        let badgeClass = '';
+        if (ev.type === 'nova') {
+          iconHtml = `<div class="timeline-icon-box type-nova"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>`;
+          badgeClass = 'badge-nova';
+        } else if (ev.type === 'esgotada') {
+          iconHtml = `<div class="timeline-icon-box type-esgotada"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>`;
+          badgeClass = 'badge-esgotada';
+        } else if (ev.type === 'resgate') {
+          iconHtml = `<div class="timeline-icon-box type-resgate">${ICONS.tickets}</div>`;
+          badgeClass = 'badge-resgate';
+        }
+
+        const timeStr = formatRelativeTime(ev.timestamp, now);
+        let clickHandler = '';
+        if (ev.offerId) {
+          clickHandler = `onclick="closeActivityTimelineModal(); openDetails('${ev.offerId}');"`;
+        } else if (ev.redemption) {
+          clickHandler = `onclick="closeActivityTimelineModal(); switchTab('redemptions');"`;
+        }
+
+        html += `
+          <div class="timeline-item" ${clickHandler}>
+            ${iconHtml}
+            <div class="timeline-content">
+              <div class="timeline-top-row">
+                <span class="timeline-badge ${badgeClass}">${ev.badgeText}</span>
+                <span class="timeline-time">${timeStr}</span>
+              </div>
+              <div class="timeline-item-title">${ev.title}</div>
+              <div class="timeline-item-desc">${ev.desc}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      listEl.innerHTML = html;
+    }
+
     function handleBackdropClick(e) {
       if (!e) return;
       if (e.target && e.target.classList && e.target.classList.contains('modal-backdrop')) {
@@ -7514,6 +8171,7 @@
         closeGroupSessionsModal();
         closeVoucherModal();
         closeRedemptionDetailsModal();
+        closeActivityTimelineModal();
       }
     }
 

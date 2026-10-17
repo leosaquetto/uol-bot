@@ -146,7 +146,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Entrada Card por Card Progressiva com Animação Cascade Stagger
 // - Destaque Automático de Palavras-Chave (ex: "Museu") em tom Laranja e Thumb Ampliada
 // - Logotipo Oficial Clube UOL no Cabeçalho
-// - Perfil de Usuário com Avatar Circular (leosaquetto / gaoriel via unavatar)
+// - Perfil de Usuário com Avatar Circular (leosaquetto / gaoriel via Catbox HD)
 // - Botão "Meus Resgates" com Sincronização Headless Oficial do Perfil UOL
 // - Modal de Ajustes (Priorizar / Despriorizar)
 // - Tag de Contagem (ex: 14 Ativas) e Chips de Categorias (Museu, Teatro, Música, Exposições)
@@ -158,7 +158,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.4.1";
+const SCRIPT_VERSION = "5.5.0";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
