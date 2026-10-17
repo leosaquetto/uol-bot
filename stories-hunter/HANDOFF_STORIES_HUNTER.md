@@ -360,3 +360,18 @@ sequenceDiagram
   - 27 arquivos de vouchers oficiais salvos em `vouchers/` e na pasta de Documentos do iCloud Scriptable.
 - **Sincronização & Compartilhamento**:
   - Script autossuficiente e pronto para ser compartilhado entre amigos, com banco offline embutido e isolamento de resgates por perfil ativo.
+
+## 10. Atualização v5.5.0: Linha do Tempo de Atividades, Agrupamento na Coleção & UI (17/10/2026)
+
+- **Changelog Completo**: Consulte [`stories-hunter/CHANGELOG_v5.5.0.md`](file:///Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/CHANGELOG_v5.5.0.md) para detalhes exaustivos da arquitetura.
+- **Centro de Notificações no Header**: Botão de sino com badge dot dinâmico à esquerda do avatar, abrindo modal bottom-sheet com até 40 eventos cronológicos do sistema (filtros: Todas, Nova, Esgotada, Resgate).
+- **Agrupamento no Catálogo Histórico**: Múltiplas sessões de um mesmo espetáculo agrupadas no mesmo card via `buildOfferGroups`, exibindo as datas inline e modal de sessões ao toque.
+- **Aba Ingressos com Esgotadas Recentes**: Ofertas que saíram do ar nas últimas 24h aparecem agrupadas no final da lista com opacidade suave (`.card-expired`), mantendo ofertas ativas no topo.
+- **Tela de Resgates Filtrada**: Exclusivamente itens de `Campanhas de Ingressos` (21 resgates), thumbnails ampliadas (`74px`) e destaque corrigido para C6 Fest 2026.
+- **Tag HOJE com Pulsação Suave**: Pílulas de sessões de hoje renderizadas em verde esmeralda com `@keyframes pulseGreen`.
+- **Avatares em Alta Resolução (Catbox CDN)**:
+  - Leo: `https://files.catbox.moe/a44poo.jpg`
+  - Gabriel: `https://files.catbox.moe/0hj4g2.jpg`
+- **Categoria Teatro UOL**: Priorizada como `TEATRO` antes de qualquer verificação musical.
+- **Taglines de Tempo**: Redução da fonte, espaçamento entre letras aumentado (`0.35px`) e sufixo `m` (`2h 15m atrás`).
+
