@@ -1018,3 +1018,36 @@ Private receipts: `receipt-fix-corrective-publication-2026-10-17.json`, the
 matching predeploy/deploy/version files, `receipt-fix-final-proof-2026-10-17.json`
 and the unmodified-standard postdeploy report. The private publication manifest
 now records this SHA/version and the remaining gates, superseding `f7e1d54b-...`.
+
+### Bounded receipt lookup prepared; optional budget explained — 17 October
+
+A further read-only check confirmed the same published version and one remaining
+unknown main delivery, without a new debt identity. The unused evidence source is
+`pending_discussion_forwards`: unmatched channel/discussion ID pairs may survive
+for seven days even when they were not associated with an offer. Their arrival
+timestamp alone does not establish campaign identity or original publication time.
+
+An explicit authenticated `GET /inventory?id=<id>&receipts=true` now prepares this
+lookup without changing ordinary inventory responses. For an active/uncertain
+main attempt it returns at most 50 ledger events for that exact generation and
+attempt, the latest eligible attempt start (including deferred counter reuse),
+and at most 32 unmatched forward pairs in an indexed arrival-time window. The
+window starts one second before the attempt and ends ten minutes after the
+uncertainty timestamp. No valid attempt start means no candidate query. The
+endpoint performs SELECTs only, makes no external requests and never reconciles
+or sends automatically. Original Telegram records must still prove any match.
+Eleven focused native-runtime tests and independent read-only review passed.
+
+Oracle's existing observer last published at `2026-10-17T23:29:13.193518Z`.
+Its forecast latch remains `quota_forecast`, with no actual-quota latch. Current
+forecasts for reads, writes, Worker requests and duration are below their limits.
+The previously projected `doRequests` dimension is now `billing_unknown`, with no
+forecast, so it cannot count toward the two complete low forecasts needed to
+release the existing latch. This explains why current local read/write headroom
+does not independently enable optional maintenance or the catalog.
+
+No guard was cleared or lowered. The new UTC day begins at 21:00 São Paulo, but
+release also needs a fresh accepted sample for that day; the normal observer
+cadence is 15 minutes. Operational incident recovery then still needs its
+affirmative five-minute window. The unknown delivery has a separate receipt
+requirement and is not resolved by a quota reset.

@@ -8825,7 +8825,7 @@ export class UolTelegramShadow extends DurableObject {
     }));
   }
 
-  getInventoryById(id) {
+  getInventoryById(id, { receipts = false } = {}) {
     const row = this.sqlExec("SELECT * FROM offers WHERE id = ? LIMIT 1", id).toArray()[0];
     if (!row) return null;
     const deliveries = Object.fromEntries(["main", "canal2", "discord"].map(target => [target, {
@@ -8855,6 +8855,65 @@ export class UolTelegramShadow extends DurableObject {
       whatsapp: this.sqlExec(`SELECT attempts, sent_at, in_flight_at, next_attempt_at,
         last_error, pending_message_id FROM beeper_delivery_queue WHERE offer_id = ?`, row.id).toArray()[0] || null,
       deliveryTimeline: this.deliveryTimelineForOffer(row.id),
+      ...(receipts === true && (row.main_delivery_in_flight_at || row.main_delivery_unknown_at ||
+        (row.delivery_unknown_at && String(row.delivery_unknown_target || "").split(",").includes("main")))
+        ? { receiptDiagnostics: this.mainReceiptDiagnostics(row) } : {}),
+    };
+  }
+
+  mainReceiptDiagnostics(row) {
+    const generation = Number(row.delivery_generation);
+    const attempt = Number(row.main_delivery_attempts);
+    const unknownAt = row.main_delivery_unknown_at ||
+      (String(row.delivery_unknown_target || "").split(",").includes("main") ? row.delivery_unknown_at : "") || "";
+    const timeline = this.sqlExec(
+      `SELECT target, operation, state, attempt, generation,
+              occurred_at, external_id, error, id
+       FROM delivery_events
+       WHERE offer_id = ? AND target = 'main' AND operation = 'delivery'
+         AND generation = ? AND attempt = ?
+       ORDER BY occurred_at DESC, id DESC LIMIT 50`,
+      row.id, generation, attempt,
+    ).toArray();
+    const starts = this.sqlExec(
+      `SELECT MIN(occurred_at) AS earliest_at, MAX(occurred_at) AS latest_at FROM delivery_events
+       WHERE offer_id = ? AND target = 'main' AND operation = 'delivery'
+         AND generation = ? AND attempt = ? AND state = 'attempt_started'
+         AND (? = '' OR occurred_at <= ?)`,
+      row.id, generation, attempt, unknownAt, unknownAt,
+    ).toArray()[0];
+    const attemptStartedAt = row.main_delivery_in_flight_at || starts?.latest_at || "";
+    const isoTimestamp = value => {
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) return NaN;
+      const parsed = Date.parse(value);
+      return Number.isFinite(parsed) && new Date(parsed).toISOString() === value ? parsed : NaN;
+    };
+    const start = isoTimestamp(attemptStartedAt);
+    const end = unknownAt ? isoTimestamp(unknownAt) : start;
+    let window = null;
+    let pendingPairs = [];
+    if (Number.isSafeInteger(generation) && generation > 0 && Number.isSafeInteger(attempt) && attempt > 0 &&
+        Number.isFinite(start) && Number.isFinite(end) && end >= start) {
+      window = {
+        timestamp: "receivedAt", from: new Date(start - 1_000).toISOString(),
+        through: new Date(end + 10 * 60_000).toISOString(), limit: 32,
+      };
+      pendingPairs = this.sqlExec(
+        `SELECT origin_message_id, discussion_message_id, received_at
+         FROM pending_discussion_forwards
+         WHERE received_at >= ? AND received_at <= ?
+         ORDER BY received_at DESC, origin_message_id DESC LIMIT 32`,
+        window.from, window.through,
+      ).toArray().map(pair => ({
+        originMessageId: pair.origin_message_id, discussionMessageId: pair.discussion_message_id,
+        receivedAt: pair.received_at,
+      }));
+    }
+    return {
+      target: "main", operation: "delivery", generation, attempt, attemptStartedAt, unknownAt,
+      earliestAttemptStartedAt: starts?.earliest_at || "",
+      timeline: summarizeDeliveryTimeline(timeline, 50), window, pendingPairs,
+      scope: "Pending pairs are filtered by receipt arrival time (receivedAt). They do not prove original post time or offer identity and are not associated automatically.",
     };
   }
 
@@ -9257,7 +9316,7 @@ export default {
         if (url.searchParams.has("id")) {
           const id = String(url.searchParams.get("id") || "").trim();
           if (!id || id.length > 200) return jsonResponse({ ok: false, error: "invalid_id" }, 400);
-          const offer = await stub.getInventoryById(id);
+          const offer = await stub.getInventoryById(id, { receipts: url.searchParams.get("receipts") === "true" });
           return offer ? jsonResponse({ ok: true, offer }) :
             jsonResponse({ ok: false, error: "delivery_offer_not_found" }, 404);
         }
