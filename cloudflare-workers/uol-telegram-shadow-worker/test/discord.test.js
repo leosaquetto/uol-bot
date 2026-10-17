@@ -224,6 +224,68 @@ test("classifica timeout do webhook Discord como entrega ambígua", async () => 
   );
 });
 
+function mockSignalClock(t) {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  // Node's native AbortSignal timer is not controlled by mock.timers.
+  t.mock.method(AbortSignal, "timeout", (milliseconds) => {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(new DOMException("Timed out", "TimeoutError")), milliseconds);
+    return controller.signal;
+  });
+}
+
+test("preserva recibo Discord que chega depois do antigo limite de 10s", async (t) => {
+  mockSignalClock(t);
+  let calls = 0;
+  let settled = false;
+  const pending = sendDiscordOffer(
+    { DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/123/token" },
+    offer,
+    async (_url, { signal }) => {
+      calls++;
+      return new Promise((resolve, reject) => {
+        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        setTimeout(() => resolve(Response.json({ id: "confirmed-after-12s" })), 12_239);
+      });
+    },
+  ).finally(() => { settled = true; });
+
+  t.mock.timers.tick(10_000);
+  await Promise.resolve();
+  assert.equal(settled, false);
+  t.mock.timers.tick(2_239);
+  assert.equal((await pending).messageId, "confirmed-after-12s");
+  assert.equal(calls, 1);
+});
+
+test("o limite de 20s mantém o webhook Discord ambíguo sem novo POST", async (t) => {
+  mockSignalClock(t);
+  let calls = 0;
+  let signal;
+  const pending = sendDiscordOffer(
+    { DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/123/token" },
+    offer,
+    async (_url, init) => {
+      calls++;
+      signal = init.signal;
+      return new Promise((_resolve, reject) => {
+        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+      });
+    },
+  );
+  const rejected = assert.rejects(pending, (error) => {
+    assert.equal(error.code, "discord_sendWebhook_timeout_ambiguous");
+    assert.equal(error.ambiguous, true);
+    return true;
+  });
+  t.mock.timers.tick(19_999);
+  assert.equal(signal.aborted, false);
+  t.mock.timers.tick(1);
+  assert.equal(signal.aborted, true);
+  await rejected;
+  assert.equal(calls, 1);
+});
+
 test("classifica resposta Discord aceita sem ID como ambígua", async () => {
   const env = { DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/123/token" };
   await assert.rejects(

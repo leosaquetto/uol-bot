@@ -4313,6 +4313,34 @@ export class UolTelegramShadow extends DurableObject {
       });
       return updated ? (unknown ? "unknown" : "retry") : "stale";
     };
+    const preserveAcceptedReceipt = (claim, externalId, error, committed) => {
+      // Once transport returns a receipt, storage errors cannot grant another
+      // transport attempt. Keep the receipt independently of the offer update.
+      try {
+        recordOutcome(claim, "late_sent", {
+          externalId: String(externalId), error: sanitizeError(error),
+        });
+      } catch {}
+      if (!committed) {
+        const occurredAt = new Date().toISOString();
+        try {
+          this.sqlExec(
+            `UPDATE offers SET ${claim.target}_delivery_error = 'ambiguous:receipt_persistence_failed',
+               ${claim.target}_delivery_in_flight_at = '', ${claim.target}_delivery_next_attempt_at = '',
+               ${claim.target}_delivery_unknown_at = ?, status = 'delivery_unknown',
+               delivery_unknown_at = ?, delivery_unknown_target = ?
+             WHERE ${claimWhere(claim.target)} AND ${claim.target}_sent_at = '' RETURNING id`,
+            occurredAt, occurredAt, claim.target, ...claimArgs(claim),
+          ).toArray();
+        } catch {
+          // The original in-flight claim remains the durable replay barrier
+          // when even quarantine storage is unavailable.
+        }
+      }
+      logEvent("warn", "uol_delivery_receipt_persistence_failed", {
+        offerId: claim.id, target: claim.target, committed, error: sanitizeError(error),
+      });
+    };
 
     actionable.sort((left, right) => (
       Number(priority.has(right.row.id)) - Number(priority.has(left.row.id)) ||
@@ -4360,6 +4388,8 @@ export class UolTelegramShadow extends DurableObject {
               TELEGRAM_MUTATION_TIMEOUT_SECONDS,
           )
         : { ...entry.telegramState.offer, deferTextFallback: false };
+      let acceptedMessageId = "";
+      let receiptCommitted = false;
       try {
         const result = await sendMainOffer(this.env, mainOffer);
         if (result.deferred) {
@@ -4390,6 +4420,7 @@ export class UolTelegramShadow extends DurableObject {
         if (!result.messageId) {
           throw Object.assign(new Error("telegram_main_message_id_missing"), { ambiguous: true });
         }
+        acceptedMessageId = result.messageId;
         const sentAt = new Date().toISOString();
         const updated = this.sqlExec(
           `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
@@ -4408,6 +4439,8 @@ export class UolTelegramShadow extends DurableObject {
           ...claimArgs(claim),
         ).toArray().length;
         if (!updated) { recordOutcome(claim, "late_sent", { externalId: String(result.messageId) }); return; }
+        receiptCommitted = true;
+        mainSent += 1;
         this.recordImageDelivery(entry.row.id, entry.telegramState.imageKey, result);
         this.recordDeliveryLedgerEvent({
           offerId: entry.row.id,
@@ -4419,9 +4452,9 @@ export class UolTelegramShadow extends DurableObject {
           occurredAt: sentAt,
           externalId: String(result.messageId),
         });
-        mainSent += 1;
       } catch (error) {
-        recordFailure(claim, error);
+        if (acceptedMessageId) preserveAcceptedReceipt(claim, acceptedMessageId, error, receiptCommitted);
+        else recordFailure(claim, error);
         failed += 1;
       }
       });
@@ -4449,6 +4482,8 @@ export class UolTelegramShadow extends DurableObject {
       const attempts = target.attempts + 1;
       const claim = beginAttempt(row.id, "canal2", target.attempts, new Date().toISOString());
       if (!claim) return;
+      let acceptedMessageId = "";
+      let receiptCommitted = false;
       try {
         const result = await forwardToCanal2(this.env, Number(row.main_message_id));
         if (!result.messageId) {
@@ -4457,6 +4492,7 @@ export class UolTelegramShadow extends DurableObject {
             { ambiguous: true },
           );
         }
+        acceptedMessageId = result.messageId;
         const updated = this.sqlExec(
           `UPDATE offers SET canal2_message_id = ?, canal2_sent_at = ?,
              canal2_delivery_error = '', canal2_delivery_in_flight_at = '',
@@ -4467,6 +4503,8 @@ export class UolTelegramShadow extends DurableObject {
           ...claimArgs(claim),
         ).toArray().length;
         if (!updated) { recordOutcome(claim, "late_sent", { externalId: String(result.messageId) }); return; }
+        receiptCommitted = true;
+        canal2Sent += 1;
 
         this.recordDeliveryLedgerEvent({
           offerId: row.id,
@@ -4478,9 +4516,9 @@ export class UolTelegramShadow extends DurableObject {
           occurredAt: new Date().toISOString(),
           externalId: String(result.messageId),
         });
-        canal2Sent += 1;
       } catch (error) {
-        recordFailure(claim, error);
+        if (acceptedMessageId) preserveAcceptedReceipt(claim, acceptedMessageId, error, receiptCommitted);
+        else recordFailure(claim, error);
         failed += 1;
       }
       });
@@ -4506,11 +4544,14 @@ export class UolTelegramShadow extends DurableObject {
       const attempts = target.attempts + 1;
       const claim = beginAttempt(row.id, "discord", target.attempts, new Date().toISOString());
       if (!claim) return;
+      let acceptedMessageId = "";
+      let receiptCommitted = false;
       try {
         const result = await sendDiscordOffer(this.env, rowToOffer(row));
         if (!result.messageId) {
           throw Object.assign(new Error("discord_message_id_missing"), { ambiguous: true });
         }
+        acceptedMessageId = result.messageId;
         const updated = this.sqlExec(
           `UPDATE offers SET discord_message_id = ?, discord_sent_at = ?,
              discord_image_proxy_url = COALESCE(NULLIF(?, ''), discord_image_proxy_url),
@@ -4526,6 +4567,8 @@ export class UolTelegramShadow extends DurableObject {
           ...claimArgs(claim),
         ).toArray().length;
         if (!updated) { recordOutcome(claim, "late_sent", { externalId: String(result.messageId) }); return; }
+        receiptCommitted = true;
+        discordSent += 1;
 
         this.recordDeliveryLedgerEvent({
           offerId: row.id,
@@ -4548,9 +4591,9 @@ export class UolTelegramShadow extends DurableObject {
             error: sanitizeError(error),
           });
         }
-        discordSent += 1;
       } catch (error) {
-        recordFailure(claim, error);
+        if (acceptedMessageId) preserveAcceptedReceipt(claim, acceptedMessageId, error, receiptCommitted);
+        else recordFailure(claim, error);
         failed += 1;
       }
       });
@@ -7496,37 +7539,87 @@ export class UolTelegramShadow extends DurableObject {
   }
 
   reconcileUnknownMainFromForward(message, origin) {
-    const forwardedUrls = telegramOfferUrls(message);
-    if (!forwardedUrls.length) return "";
+    const forwardedUrls = telegramOfferUrls(message).slice(0, 16);
+    const originSeconds = Number(origin?.date);
+    const messageId = Number(origin?.message_id);
+    if (!forwardedUrls.length || !Number.isSafeInteger(originSeconds) || originSeconds <= 0 ||
+        !Number.isSafeInteger(messageId) || messageId <= 0) return "";
+    const originTimestamp = originSeconds * 1_000;
+    if (!Number.isFinite(new Date(originTimestamp).getTime())) return "";
+    const generation = this.currentDeliveryGeneration();
+    const aliases = [...new Set(forwardedUrls.flatMap(url => this.identityAliases("", url)))];
+    const ids = [...new Set(forwardedUrls.flatMap(url =>
+      offerIdentityKeys(url).filter(key => key.startsWith("slug:"))
+        .map(key => key.slice("slug:".length))))];
+    if (!ids.length || !aliases.length) return "";
     const rows = this.sqlExec(
-      `SELECT id, link FROM offers
+      `SELECT * FROM offers
        WHERE main_sent_at = ''
+         AND delivery_generation = ? AND delivery_mode = 'live'
+         AND would_send_main = 1 AND main_delivery_attempts > 0
+         AND status IN ('delivery_pending', 'partial_delivery', 'delivery_unknown',
+           'delivery_dead_letter', 'delivery_blocked_configuration')
+         AND (id IN (${ids.map(() => "?").join(",")}) OR id IN (
+           SELECT offer_id FROM offer_identity_aliases
+           WHERE alias IN (${aliases.map(() => "?").join(",")})
+         ))
          AND (
+           main_delivery_in_flight_at <> '' OR
            main_delivery_unknown_at <> '' OR
-           delivery_unknown_target = 'main' OR
-           delivery_unknown_target LIKE 'main,%' OR
-           delivery_unknown_target LIKE '%,main' OR
-           delivery_unknown_target LIKE '%,main,%'
-         )
-       ORDER BY first_seen_at DESC LIMIT 32`,
+           (delivery_unknown_at <> '' AND
+             instr(',' || delivery_unknown_target || ',', ',main,') > 0)
+         )`,
+      generation, ...ids, ...aliases,
     ).toArray();
-    const row = rows.find((candidate) => forwardedUrls
-      .some((url) => offerIdentityCompatible(candidate.link, url)));
-    if (!row) return "";
-    const originTimestamp = Number(origin?.date || 0) * 1_000;
-    const sentAt = Number.isFinite(originTimestamp) && originTimestamp > 0
-      ? new Date(originTimestamp).toISOString()
-      : new Date().toISOString();
-    this.sqlExec(
+    const matches = rows.flatMap(row => {
+      if (!forwardedUrls.some(url => offerIdentityCompatible(row.link, url))) return [];
+      const attemptedAt = row.main_delivery_in_flight_at || this.sqlExec(
+        `SELECT occurred_at FROM delivery_events
+         WHERE offer_id = ? AND target = 'main' AND operation = 'delivery'
+           AND state = 'attempt_started' AND generation = ? AND attempt = ?
+         ORDER BY occurred_at DESC, id DESC LIMIT 1`,
+        row.id, generation, row.main_delivery_attempts,
+      ).toArray()[0]?.occurred_at;
+      const attemptTimestamp = Date.parse(attemptedAt || "");
+      // Telegram dates have second precision. Accept the start second, but
+      // never use receipt arrival time to associate an old channel post.
+      if (!Number.isFinite(attemptTimestamp) || attemptTimestamp <= 0 ||
+          originSeconds < Math.floor(attemptTimestamp / 1_000) ||
+          originSeconds > Math.floor(attemptTimestamp / 1_000) +
+            TELEGRAM_MUTATION_TIMEOUT_SECONDS + 30) return [];
+      return [{ row, attemptedAt }];
+    });
+    if (matches.length !== 1) return "";
+    const { row, attemptedAt } = matches[0];
+    const remainingUnknownTargets = String(row.delivery_unknown_target || "")
+      .split(",").map(value => value.trim()).filter(value => value && value !== "main");
+    const sentAt = new Date(originTimestamp).toISOString();
+    const updated = this.sqlExec(
       `UPDATE offers SET main_message_id = ?, main_message_kind = ?, main_sent_at = ?,
          main_delivery_error = '', main_delivery_in_flight_at = '',
-         main_delivery_next_attempt_at = '', main_delivery_unknown_at = ''
-       WHERE id = ?`,
-      Number(origin.message_id),
+         main_delivery_next_attempt_at = '', main_delivery_unknown_at = '',
+         delivery_unknown_target = ?, delivery_unknown_at = ?
+       WHERE id = ? AND delivery_generation = ? AND delivery_mode = 'live'
+         AND status = ? AND main_sent_at = '' AND main_message_id = ?
+         AND main_delivery_attempts = ? AND main_delivery_in_flight_at = ?
+         AND main_delivery_unknown_at = ? AND delivery_unknown_target = ?
+         AND delivery_unknown_at = ? RETURNING id`,
+      messageId,
       Array.isArray(message?.photo) && message.photo.length ? "photo" : "text",
       sentAt,
-      row.id,
-    );
+      remainingUnknownTargets.join(","),
+      remainingUnknownTargets.length ? row.delivery_unknown_at : "",
+      row.id, generation, row.status, row.main_message_id,
+      row.main_delivery_attempts, row.main_delivery_in_flight_at,
+      row.main_delivery_unknown_at, row.delivery_unknown_target, row.delivery_unknown_at,
+    ).toArray()[0];
+    if (!updated) return "";
+    this.recordDeliveryLedgerEvent({
+      offerId: row.id, target: "main", operation: "delivery", state: "resolved_sent",
+      attempt: row.main_delivery_attempts, generation, occurredAt: sentAt,
+      externalId: String(messageId),
+      dedupeKey: `${row.id}|main|delivery|${generation}|${row.main_delivery_attempts}|${attemptedAt}|resolved_sent`,
+    });
     this.refreshDeliveryStatus(row.id, new Date());
     logEvent("info", "uol_telegram_unknown_main_reconciled", {
       offerId: row.id,

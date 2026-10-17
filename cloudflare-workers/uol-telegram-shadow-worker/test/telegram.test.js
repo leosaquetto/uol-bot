@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { mainImageDeliveryOffer } from "../src/image-deadline.js";
 
 import {
   editMainOfferMedia,
@@ -170,16 +171,172 @@ test("envia foto ao canal principal sem expor token no payload", async () => {
   assert.equal(JSON.stringify(payload).includes(env.TELEGRAM_TOKEN), false);
 });
 
-test("limita tentativa de imagem ao prazo absoluto restante", async () => {
-  let requestSignal;
-  const imageDeadlineAt = new Date(Date.now() + 30).toISOString();
-  await sendMainOffer(env, { ...offer, imageDeadlineAt }, async (_url, init) => {
-    requestSignal = init.signal;
-    return jsonResponse({ message_id: 52 });
+for (const strategy of ["remote_url", "file_id", "discord_proxy"]) {
+  for (const remainingMs of [7_999, 8_000]) {
+    test(`${strategy}: exige janela completa de 8 s antes de enviar foto (${remainingMs} ms restantes)`, async (t) => {
+      const now = Date.parse("2026-10-17T12:00:00.000Z");
+      t.mock.method(Date, "now", () => now);
+      const calls = [];
+      const result = await sendMainOffer(env, {
+        ...offer,
+        telegramPhotoFileId: strategy === "file_id" ? "cached-file-id" : "",
+        telegramImageRemoteStrategy: strategy,
+        deferTextFallback: true,
+        imageDeadlineAt: new Date(now + 60_000).toISOString(),
+        imageMutationDeadlineAt: new Date(now + remainingMs).toISOString(),
+      }, async (url) => {
+        calls.push(url.split("/").pop());
+        return jsonResponse({ message_id: 52 });
+      });
+
+      if (remainingMs < 8_000) {
+        assert.deepEqual(calls, []);
+        assert.equal(result.deferred, true);
+        assert.equal(result.messageId, 0);
+        assert.equal(result.messageKind, "");
+        assert.equal(result.imageStrategy, "pending_image");
+        assert.deepEqual(result.imageAttempts, []);
+      } else {
+        assert.deepEqual(calls, ["sendPhoto"]);
+        assert.equal(result.messageId, 52);
+        assert.equal(result.messageKind, "photo");
+        assert.equal(result.imageStrategy, strategy);
+      }
+    });
+  }
+}
+
+for (const downloadMs of [2_001, 10_001]) {
+  test(`upload não inicia POST quando download deixa prazo insuficiente (${downloadMs} ms)`, async (t) => {
+    let now = Date.parse("2026-10-17T12:00:00.000Z");
+    t.mock.method(Date, "now", () => now);
+    const calls = [];
+    const result = await sendMainOffer(env, {
+      ...offer,
+      imageStrategies: { remote_url: false },
+      deferTextFallback: true,
+      imageDeadlineAt: new Date(now + 60_000).toISOString(),
+      imageMutationDeadlineAt: new Date(now + 10_000).toISOString(),
+    }, async (url, init = {}) => {
+      calls.push({ url, method: init.method || "GET" });
+      assert.equal(url, offer.imageUrl);
+      return new Response(new ReadableStream({
+        pull(controller) {
+          now += downloadMs;
+          controller.enqueue(new Uint8Array([1, 2, 3]));
+          controller.close();
+        },
+      }), { headers: { "Content-Type": "image/png" } });
+    });
+
+    assert.deepEqual(calls, [{ url: offer.imageUrl, method: "GET" }]);
+    assert.equal(result.deferred, true);
+    assert.equal(result.messageId, 0);
+    assert.equal(result.messageKind, "");
+    assert.equal(result.imageStrategy, "pending_image");
+    assert.deepEqual(result.imageAttempts, []);
   });
-  await new Promise((resolve) => setTimeout(resolve, 60));
-  assert.equal(requestSignal.aborted, true);
+}
+
+test("upload envia foto quando download preserva 8 s completos", async (t) => {
+  let now = Date.parse("2026-10-17T12:00:00.000Z");
+  t.mock.method(Date, "now", () => now);
+  const calls = [];
+  const result = await sendMainOffer(env, {
+    ...offer,
+    imageStrategies: { remote_url: false },
+    deferTextFallback: true,
+    imageDeadlineAt: new Date(now + 60_000).toISOString(),
+    imageMutationDeadlineAt: new Date(now + 10_000).toISOString(),
+  }, async (url, init = {}) => {
+    calls.push(url.split("/").pop());
+    if (url === offer.imageUrl) {
+      now += 2_000;
+      return new Response(new Uint8Array([1, 2, 3]), {
+        headers: { "Content-Type": "image/png" },
+      });
+    }
+    assert.ok(init.body instanceof FormData);
+    return jsonResponse({ message_id: 54 });
+  });
+
+  assert.deepEqual(calls, ["show.jpg", "sendPhoto"]);
+  assert.equal(result.messageId, 54);
+  assert.equal(result.messageKind, "photo");
+  assert.equal(result.imageStrategy, "upload");
 });
+
+test("timeout após iniciar upload permanece ambíguo sem fallback", async (t) => {
+  const now = Date.parse("2026-10-17T12:00:00.000Z");
+  t.mock.method(Date, "now", () => now);
+  const calls = [];
+  await assert.rejects(sendMainOffer(env, {
+    ...offer,
+    imageStrategies: { remote_url: false },
+    imageDeadlineAt: new Date(now + 30_000).toISOString(),
+  }, async (url) => {
+    calls.push(url.split("/").pop());
+    if (url === offer.imageUrl) {
+      return new Response(new Uint8Array([1, 2, 3]), {
+        headers: { "Content-Type": "image/png" },
+      });
+    }
+    throw new DOMException("The operation timed out", "TimeoutError");
+  }), (error) => {
+    assert.equal(error.code, "telegram_sendPhoto_timeout_ambiguous");
+    assert.equal(error.ambiguous, true);
+    return true;
+  });
+  assert.deepEqual(calls, ["show.jpg", "sendPhoto"]);
+});
+
+test("prazo expirado do caller permite texto sem perpetuar adiamento", async (t) => {
+  const now = Date.parse("2026-10-17T12:01:00.000Z");
+  t.mock.method(Date, "now", () => now);
+  const calls = [];
+  const mainOffer = mainImageDeliveryOffer({
+    ...offer,
+    firstSeenAt: "2026-10-17T12:00:00.000Z",
+  }, new Date(now));
+  assert.equal(mainOffer.deferTextFallback, false);
+  const result = await sendMainOffer(env, mainOffer, async (url) => {
+    calls.push(url.split("/").pop());
+    return jsonResponse({ message_id: 55 });
+  });
+  assert.deepEqual(calls, ["sendMessage"]);
+  assert.equal(result.messageKind, "text");
+  assert.equal(result.messageId, 55);
+});
+
+for (const deferTextFallback of [false, true]) {
+  test(`rejeição definitiva com prazo insuficiente preserva política de texto (${deferTextFallback})`, async (t) => {
+    let now = Date.parse("2026-10-17T12:00:00.000Z");
+    t.mock.method(Date, "now", () => now);
+    const calls = [];
+    const result = await sendMainOffer(env, {
+      ...offer,
+      deferTextFallback,
+      imageDeadlineAt: new Date(now + 60_000).toISOString(),
+      imageMutationDeadlineAt: new Date(now + 10_000).toISOString(),
+    }, async (url) => {
+      const method = url.split("/").pop();
+      calls.push(method);
+      if (method === "sendPhoto") {
+        now += 3_000;
+        return new Response(JSON.stringify({ ok: false, description: "bad photo URL" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      return jsonResponse({ message_id: 56 });
+    });
+    assert.deepEqual(calls, deferTextFallback ? ["sendPhoto"] : ["sendPhoto", "sendMessage"]);
+    assert.equal(result.deferred === true, deferTextFallback);
+    assert.equal(result.messageKind, deferTextFallback ? "" : "text");
+    assert.equal(result.imageAttempts.length, 1);
+    assert.equal(result.imageAttempts[0].ok, false);
+  });
+}
 
 test("adia texto enquanto prazo de imagem ainda está aberto", async () => {
   const calls = [];

@@ -56,6 +56,11 @@ function deadlineOpen(deadlineAt) {
   return !Number.isFinite(deadlineMs) || Date.now() < deadlineMs;
 }
 
+function photoMutationBudgetOpen(deadlineAt) {
+  const deadlineMs = Date.parse(String(deadlineAt || ""));
+  return !Number.isFinite(deadlineMs) || deadlineMs - Date.now() >= TELEGRAM_TIMEOUT_MS;
+}
+
 function detectedImageFormat(bytes, declaredContentType = "") {
   const view = new Uint8Array(bytes);
   if (view.length >= 3 && view[0] === 0xff && view[1] === 0xd8 && view[2] === 0xff) {
@@ -225,10 +230,11 @@ async function uploadTelegramPhoto(
     new Blob([bytes], { type: imageFormat.contentType }),
     `oferta.${imageFormat.extension}`,
   );
+  if (!photoMutationBudgetOpen(imageDeadlineAt)) return { deferred: true };
   const response = await telegramRequest(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
     body: form,
-    signal: AbortSignal.timeout(deadlineTimeoutMs(imageDeadlineAt, TELEGRAM_TIMEOUT_MS)),
+    signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
   }, "sendPhoto", fetchImpl);
   let data = {};
   try {
@@ -331,7 +337,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
     : "remote_url";
   const imageAttempts = [];
 
-  if (cachedPhotoFileId && strategyEnabled.file_id && deadlineOpen(imageMutationDeadlineAt)) {
+  if (cachedPhotoFileId && strategyEnabled.file_id && photoMutationBudgetOpen(imageMutationDeadlineAt)) {
     try {
       const result = await telegramCall(env, "sendPhoto", {
         chat_id: mainChatId,
@@ -339,7 +345,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         caption,
         parse_mode: "HTML",
         disable_notification: disableNotification,
-      }, fetchImpl, deadlineTimeoutMs(imageMutationDeadlineAt, TELEGRAM_TIMEOUT_MS));
+      }, fetchImpl);
       imageAttempts.push({ strategy: "file_id", ok: true, error: "" });
       return {
         messageId: Number(result?.message_id || 0),
@@ -359,8 +365,8 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
   }
 
   let imageError = "";
-  if (imageUrl && deadlineOpen(imageMutationDeadlineAt)) {
-    if (strategyEnabled[remoteStrategy] && deadlineOpen(imageMutationDeadlineAt)) {
+  if (imageUrl && photoMutationBudgetOpen(imageMutationDeadlineAt)) {
+    if (strategyEnabled[remoteStrategy] && photoMutationBudgetOpen(imageMutationDeadlineAt)) {
       try {
         const result = await telegramCall(env, "sendPhoto", {
           chat_id: mainChatId,
@@ -368,7 +374,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           caption,
           parse_mode: "HTML",
           disable_notification: disableNotification,
-        }, fetchImpl, deadlineTimeoutMs(imageMutationDeadlineAt, TELEGRAM_TIMEOUT_MS));
+        }, fetchImpl);
         imageAttempts.push({ strategy: remoteStrategy, ok: true, error: "" });
         return {
           messageId: Number(result?.message_id || 0),
@@ -383,7 +389,7 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
         imageAttempts.push({ strategy: remoteStrategy, ok: false, error: imageError });
       }
     }
-    if (strategyEnabled.upload && deadlineOpen(imageMutationDeadlineAt)) {
+    if (strategyEnabled.upload && photoMutationBudgetOpen(imageMutationDeadlineAt)) {
       try {
         const result = await uploadTelegramPhoto(env, {
           chatId: mainChatId,
@@ -392,14 +398,16 @@ export async function sendMainOffer(env, offer, fetchImpl = fetch) {
           disableNotification,
           imageDeadlineAt: imageMutationDeadlineAt,
         }, fetchImpl);
-        imageAttempts.push({ strategy: "upload", ok: true, error: "" });
-        return {
-          messageId: Number(result?.message_id || 0),
-          messageKind: "photo",
-          imageStrategy: "upload",
-          imageAttempts,
-          ...telegramPhotoIdentity(result),
-        };
+        if (result?.deferred !== true) {
+          imageAttempts.push({ strategy: "upload", ok: true, error: "" });
+          return {
+            messageId: Number(result?.message_id || 0),
+            messageKind: "photo",
+            imageStrategy: "upload",
+            imageAttempts,
+            ...telegramPhotoIdentity(result),
+          };
+        }
       } catch (error) {
         if (shouldDeferTransportFallback(error)) throw error;
         const uploadError = cleanText(error?.message || error).slice(0, 160);

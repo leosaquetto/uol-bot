@@ -11,6 +11,9 @@ import {
 } from "./transport-error.js";
 
 const DISCORD_TIMEOUT_MS = 10_000;
+// A confirmed webhook receipt arrived after 12s; keep this below the default
+// 30s delivery lease while allowing Discord to finish the accepted message.
+const DISCORD_SEND_TIMEOUT_MS = 20_000;
 const DISCORD_TRUNCATION_SUFFIX = "...";
 const DISCORD_EMBED_LIMITS = Object.freeze({
   title: 240,
@@ -179,7 +182,7 @@ export async function sendDiscordOffer(env, offer, fetchImpl = fetch) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(buildDiscordPayload(offer)),
-    signal: AbortSignal.timeout(DISCORD_TIMEOUT_MS),
+    signal: AbortSignal.timeout(DISCORD_SEND_TIMEOUT_MS),
   }, "sendWebhook", true, fetchImpl);
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw discordError("sendWebhook", response, payload);

@@ -896,3 +896,74 @@ Incident recovery remains subject to its natural observation window. Current
 Worker version stays `f7e1d54b-97bd-422d-908c-bd6b185ef52e`; the original debt
 baseline is untouched. The new main uncertainty still blocks catalog publication:
 catalog **published=false, runtimeVerified=false, ready=false**.
+
+### Discord receipt recovered; remaining Telegram gap — 17 October
+
+The existing Discord bot credential configured for the local tooling can read
+the UOL channels. Bounded authenticated history reads found message
+`1549433841536733220` in the original `clube-uol-ingressos` destination. Its
+canonical URL identifies `plh-2-ingressos-18-09-casa-natura-musical-sp`, its author
+is the webhook, and its channel/webhook match an independently stored successful
+UOL receipt. A direct GET reconfirmed the message before reconciliation.
+
+The final transport attempt began on 15 September at `14:56:42.672Z`; the Worker
+timed out at `14:56:52.672Z`. Discord created the message at `14:56:54.911Z`,
+**12.239 seconds after attempt start and 2.239 seconds after the timeout**.
+Earlier attempts had received definitive HTTP 429 responses. This proves that
+the final timeout did not mean rejection by Discord.
+
+Fresh inventory confirmed generation 1, attempt 10 and the original uncertainty.
+Authenticated receipt-backed resolution returned HTTP 200 at
+`2026-10-17T23:03:46.751Z`. Readback records the exact Discord ID, delivered state
+and `resolved_sent` ledger entry, without another destination POST. Existing bot
+configuration and service operation were unchanged. Private evidence is in
+`discord-receipt-confirmed-2026-10-17.json`, `discord-resolution-proof-2026-10-17.json`
+and the matching resolution/readback files.
+
+Only `n3a-10-off-no-site` main delivery remains unknown. In addition to the
+channel, campaign and discussion searches described above, a bounded Telegram
+admin-log query examined 37 edit/delete events without finding the attempted
+publication. This is still absence of evidence, not a definitive transport
+rejection. No `not_sent` resolution or resend was performed.
+
+Post-resolution debt at `2026-10-17T23:05:13.628Z` is four critical incidents,
+**one unknown delivery**, zero dead letters and zero maintenance dead letters.
+Incident counters are separate from receipt resolution. The original release
+baseline and version remain unchanged; the remaining new Telegram identity
+continues to fail the release gate.
+
+### Receipt-loss prevention prepared — 17 October
+
+The main Telegram forward handler now accepts a verified automatic forward while
+the matching send is still in flight, before an HTTP timeout can discard the
+association. It looks up the campaign through indexed canonical identity/aliases
+instead of the latest 32 uncertain rows. Reconciliation checks the original
+Telegram timestamp, current generation and exact attempt start, and updates only
+the same reservation/state. Old posts and missing timestamps cannot resolve a
+new delivery. Accepted forwards record a receipt in the ledger, preserve other
+destinations' uncertainties and cannot be overwritten by a late transport error.
+
+Main, secondary and Discord sends now retain a returned message ID across a
+subsequent storage failure. The receipt is recorded independently; failure to
+persist the normal result leaves the same attempt uncertain or in flight,
+without granting another POST. A previously committed sent result remains sent
+even when later bookkeeping fails. Complete storage failure keeps the existing
+durable reservation as the replay barrier.
+
+Telegram photo strategies require a full eight-second transport window before
+starting a POST. Upload rechecks that budget after downloading and preparing the
+image. Insufficient time defers the image without a POST; final text fallback
+keeps its existing deadline policy. A timeout after a POST remains uncertain.
+Discord's primary webhook wait increases from 10 to 20 seconds, below the main
+delivery queue's minimum 30-second reservation, covering the observed 12.239-second
+acceptance. Other Discord operation timeouts remain unchanged.
+
+Focused Node 22 validation passed 90 transport, deadline, queue, ledger and
+receipt-persistence tests, including a workerd/SQLite storage-failure case.
+Two native Worker suites passed 24 tests for reservation safety and automatic
+forward receipts. Tests cover early/late receipt races, old/missing evidence,
+generation/attempt changes, campaigns beyond 32 pending rows, exhausted photo
+budgets and single-POST Discord acceptance after 12 seconds. No migration, source
+polling, destination test send, session replacement or budget-threshold change
+was introduced. Code validation does not close the remaining historical receipt
+gap or establish production behavior before publication.
