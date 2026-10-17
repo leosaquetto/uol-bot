@@ -1,7 +1,7 @@
 # Handoff: Clube UOL Stories Hunter (Scriptable Hub)
 
 > **Data de Atualização**: 17 de Outubro de 2026  
-> **Status**: Produção / Validado e Sincronizado  
+> **Status**: Base 5.5.0 em produção; integração 5.6.0 e evidências no changelog e documento operacional
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
 > **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
@@ -159,7 +159,24 @@ A API do Clube UOL frequentemente inverte título e local (ex: enviando o teatro
 
 ## 5. Como Compilar e Sincronizar
 
-Para gerar os scripts e atualizar o Scriptable no iPhone/Mac:
+Para preparar a integração 5.6.0 sem instalar nem notificar:
+
+```bash
+node stories-hunter/build.js --prepare --code-only
+node --test stories-hunter/test-*.cjs
+```
+
+Após validar/publicar o Worker, a instalação `node stories-hunter/build.js --code-only`
+preserva o banco de resgates e os vouchers existentes no iCloud. O catálogo vem de
+`GET /catalog`, com cache de 120 segundos e atualização somente ao abrir. Consulte
+`CHANGELOG_v5.6.0.md` para limites, fallback e preservação do histórico.
+
+O artefato público/MacSend contém somente código. O pacote privado do iCloud mantém
+os cookies compartilhados; arquivos de sessão por usuário e banco privado são
+reutilizados nas atualizações públicas. Uma primeira instalação para outra pessoa
+precisa do pacote privado autorizado, não apenas do arquivo público do GitHub.
+
+O comando legado abaixo também sincroniza o banco de resgates e vouchers:
 
 ```bash
 cd /Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter

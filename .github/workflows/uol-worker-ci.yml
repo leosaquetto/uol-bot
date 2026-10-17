@@ -9,6 +9,8 @@ on:
       - "services/beeper-preview-gateway/**"
       - "services/saquetto-drops/**"
       - "extensions/uol-instagram/**"
+      - "stories-hunter/**"
+      - "scriptable_uol_stories_hunter.js"
       - "bot_leouol.py"
       - "github_scraper.py"
       - "guard_daily_check.py"
@@ -31,6 +33,8 @@ on:
       - "services/beeper-preview-gateway/**"
       - "services/saquetto-drops/**"
       - "extensions/uol-instagram/**"
+      - "stories-hunter/**"
+      - "scriptable_uol_stories_hunter.js"
       - "bot_leouol.py"
       - "github_scraper.py"
       - "guard_daily_check.py"
@@ -188,3 +192,5 @@ jobs:
         run: node --test services/uol-ticket-research/push/test.mjs
       - name: Extensão Instagram offline
         run: npm test --prefix extensions/uol-instagram
+      - name: Stories Hunter offline
+        run: node --test stories-hunter/test-*.cjs

@@ -3764,7 +3764,7 @@
         const localHist = localStorage.getItem('uol_offers_history');
         if (localHist) {
           const parsed = JSON.parse(localHist);
-          if (parsed && parsed.active && parsed.active.length > 0) {
+          if (parsed && Array.isArray(parsed.active) && Array.isArray(parsed.history)) {
             historyData = parsed;
           }
         }
@@ -4059,16 +4059,191 @@
     }
 
     // ===================================================================
-    // BUSCA AO VIVO NO PORTAL CLUBE UOL
+    // CATÁLOGO COMPARTILHADO: O WORKER COLETA; O CELULAR REUTILIZA
     // ===================================================================
+    // CATALOG_ADAPTER_START
+    const CATALOG_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/catalog';
+    const CATALOG_CACHE_KEY = 'uol_shared_catalog_v1';
+    const CATALOG_CACHE_MS = 120000;
+    let catalogRefreshStarted = false;
+
+    function catalogCampaign(link) {
+      try {
+        const url = new URL(link, 'https://clube.uol.com.br');
+        if (url.protocol !== 'https:' || url.hostname !== 'clube.uol.com.br' || url.port || url.username || url.password) return null;
+        const match = url.pathname.match(/^\/campanhasdeingresso\/([a-z0-9][a-z0-9-]*)\/?$/i);
+        if (!match) return null;
+        return { key: match[1].toLowerCase(), slug: match[1], link: 'https://clube.uol.com.br/campanhasdeingresso/' + match[1] };
+      } catch (e) { return null; }
+    }
+
+    function catalogTime(value) {
+      const time = typeof value === 'number' ? value : (typeof value === 'string' ? Date.parse(value) : 0);
+      return Number.isFinite(time) && time > 0 ? time : 0;
+    }
+
+    function isCatalogSnapshot(data) {
+      return Boolean(data && data.ok === true && data.schemaVersion === 1 &&
+        Array.isArray(data.offers) && data.offers.length <= 300 &&
+        Array.isArray(data.stories) && data.stories.length <= 30 &&
+        data.coverage && data.coverage.scope === 'recent_tracked' && typeof data.coverage.truncated === 'boolean' &&
+        data.sources && ['api', 'ticketListing'].every(key => data.sources[key] && typeof data.sources[key].healthy === 'boolean') &&
+        data.offers.every(o => o && typeof o.id === 'string' && typeof o.title === 'string' && catalogCampaign(o.link) &&
+          ['observed', 'sold_out'].includes(o.availability) && typeof o.isPortal === 'boolean') &&
+        data.stories.every(s => s && typeof s.storyId === 'string' && catalogCampaign(s.link)));
+    }
+
+    function readCatalogCache() {
+      try {
+        const cache = JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY));
+        if (!cache || !isCatalogSnapshot(cache.snapshot) || !Number.isFinite(cache.fetchedAt) ||
+            cache.fetchedAt <= 0 || cache.fetchedAt > Date.now() + 300000) return null;
+        const etag = typeof cache.etag === 'string' && cache.etag.length <= 200 && !/[\r\n]/.test(cache.etag) ? cache.etag : '';
+        return { snapshot: cache.snapshot, fetchedAt: cache.fetchedAt, etag: etag };
+      } catch (e) { return null; }
+    }
+
+    function saveCatalogCache(snapshot, etag) {
+      // Snapshot, data e validador pertencem à mesma gravação: nunca reutilizar ETag sem seu corpo.
+      try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({ snapshot: snapshot, etag: etag || '', fetchedAt: Date.now() })); } catch (e) {}
+    }
+
+    function mergeCatalogSnapshot(snapshot) {
+      const records = new Map();
+      const identity = o => { const campaign = catalogCampaign(o.link); return campaign ? campaign.key : 'local:' + o.id; };
+      (historyData.history || []).forEach(o => records.set(identity(o), { offer: o, past: true }));
+      (historyData.active || []).forEach(o => records.set(identity(o), { offer: o, past: false }));
+      const nonempty = (value, fallback) => typeof value === 'string' && value.trim() ? value : fallback;
+      const image = value => { try { const u = new URL(value); return u.protocol === 'https:' && !u.username && !u.password ? u.href : ''; } catch (e) { return ''; } };
+
+      function upsert(entry, story) {
+        const campaign = catalogCampaign(entry.link);
+        if (!campaign) return;
+        const previous = records.get(campaign.key);
+        const old = previous ? previous.offer : {};
+        const id = old.id || campaign.slug;
+        const codeMatch = campaign.slug.match(/^(p[A-Za-z0-9]+)-/i);
+        const rawTitle = nonempty(entry.title, old.rawTitle || old.title || campaign.slug.replace(/^p[a-z0-9]+-/i, '').replace(/-/g, ' '));
+        const cachedDesc = old.description || getCachedDescription(id) || '';
+        const description = nonempty(entry.description, cachedDesc);
+        const richerDescription = description.length >= cachedDesc.length ? description : cachedDesc;
+        const isPortal = entry.isPortal === true || old.isPortal === true || old.source === 'Portal';
+        const hasStory = Boolean(story || entry.hasStory || old.hasStory || old.source === 'Stories' || old.source === 'Stories_Only' || old.badge === 'Stories');
+        const offer = {
+          ...old,
+          id: id,
+          code: old.code || (codeMatch ? codeMatch[1] : campaign.slug.slice(0, 3)),
+          link: old.link || campaign.link,
+          rawTitle: rawTitle,
+          title: toSentenceCase(rawTitle),
+          imageUrl: image(entry.imageUrl) || old.imageUrl || '',
+          description: richerDescription,
+          partner: nonempty(entry.partner, old.partner || ''),
+          validity: nonempty(entry.validity, '').length > (old.validity || '').length ? entry.validity : (old.validity || ''),
+          category: classifyCategory(rawTitle, campaign.slug, richerDescription),
+          source: isPortal ? 'Portal' : (hasStory ? 'Stories_Only' : 'Worker'),
+          isPortal: isPortal,
+          hasStory: hasStory,
+          firstSeen: old.firstSeen || catalogTime(entry.firstSeenAt) || catalogTime(entry.publishedAt) || Date.now(),
+          lastSeen: Math.max(old.lastSeen || 0, catalogTime(entry.lastSeenAt) || catalogTime(entry.firstSeenAt) || catalogTime(entry.publishedAt)),
+          viewsCount: old.viewsCount || 0
+        };
+        let past = Boolean(previous && previous.past);
+        if (story) {
+          offer.storyId = entry.storyId;
+          offer.storyExpiresAt = catalogTime(entry.expiresAt);
+          // A validade de um Story não informa se os ingressos esgotaram.
+        } else {
+          const soldOutAt = catalogTime(entry.soldOutAt);
+          const restockedAt = catalogTime(entry.restockedAt);
+          const oldSoldOutAt = catalogTime(old.soldOutAt) || catalogTime(old.expiredAt);
+          if (entry.availability === 'sold_out' && (!old.restockedAt || soldOutAt > catalogTime(old.restockedAt))) {
+            past = true;
+            offer.expiredAt = soldOutAt || oldSoldOutAt || catalogTime(entry.lastSeenAt) || Date.now();
+            offer.soldOutAt = offer.expiredAt;
+            offer.isExpired = true;
+          } else if (entry.availability === 'observed' && past && restockedAt > oldSoldOutAt) {
+            past = false;
+            delete offer.expiredAt;
+            delete offer.soldOutAt;
+            offer.isExpired = false;
+          }
+          if (restockedAt > catalogTime(old.restockedAt)) offer.restockedAt = restockedAt;
+          offer.availability = past ? 'sold_out' : 'observed';
+        }
+        records.set(campaign.key, { offer: offer, past: past });
+      }
+      // Gerações diferentes do Worker podem ter o mesmo link. Vence a observação
+      // mais recente, sem deixar uma geração antiga apagar dados atuais.
+      const latest = new Map();
+      const observedAt = o => Math.max(catalogTime(o.firstSeenAt), catalogTime(o.lastSeenAt), catalogTime(o.soldOutAt), catalogTime(o.restockedAt));
+      snapshot.offers.forEach(o => {
+        const campaign = catalogCampaign(o.link);
+        if (campaign && (!latest.has(campaign.key) || observedAt(o) > observedAt(latest.get(campaign.key)))) latest.set(campaign.key, o);
+      });
+      latest.forEach(o => upsert(o, false));
+      snapshot.stories.forEach(s => upsert(s, true));
+      // O snapshot é limitado. Ausência, truncamento ou resposta vazia nunca apagam ofertas conhecidas.
+      historyData.active = Array.from(records.values()).filter(r => !r.past).map(r => r.offer);
+      historyData.history = Array.from(records.values()).filter(r => r.past).map(r => r.offer);
+      saveHistoryToStorage();
+    }
+
+    function renderCatalogStatus(fresh) {
+      const offers = historyData.active || [];
+      if (currentTab === 'home' || currentTab === 'tickets') renderOffers(offers);
+      else if (currentTab === 'history') renderHistoryScreen();
+      updateCategoryCounts(offers);
+      document.getElementById('activesCountText').textContent = offers.length + ' Ativas';
+      document.getElementById('liveStatusText').textContent = (fresh ? 'Catálogo atualizado • ' : 'Catálogo em cache • ') + offers.length + ' ofertas';
+      document.getElementById('liveDot').style.backgroundColor = fresh ? '#00e676' : '#ffb300';
+      updateTimelineBadgeDot();
+    }
+
     async function streamLiveOffers() {
+      if (catalogRefreshStarted) return;
+      catalogRefreshStarted = true;
+      const cache = readCatalogCache();
+      try {
+        let snapshot = cache && cache.snapshot;
+        if (!cache || Date.now() - cache.fetchedAt >= CATALOG_CACHE_MS) {
+          const headers = cache && cache.etag ? { 'If-None-Match': cache.etag } : {};
+          const response = await fetch(CATALOG_URL, { headers: headers, credentials: 'omit' });
+          if (response.status === 304 && cache) {
+            saveCatalogCache(snapshot, cache.etag);
+          } else {
+            if (!response.ok) throw new Error('Catalog unavailable');
+            snapshot = await response.json();
+            if (!isCatalogSnapshot(snapshot)) throw new Error('Invalid catalog');
+            saveCatalogCache(snapshot, response.headers.get('ETag'));
+          }
+        }
+        mergeCatalogSnapshot(snapshot);
+        renderCatalogStatus(!snapshot.coverage.truncated && ['api', 'ticketListing'].some(key => {
+          const age = Date.now() - catalogTime(snapshot.sources[key].lastSuccessAt);
+          return snapshot.sources[key].healthy && age >= 0 && age <= 600000;
+        }));
+      } catch (e) {
+        if (cache) {
+          mergeCatalogSnapshot(cache.snapshot);
+          renderCatalogStatus(false);
+        } else {
+          await streamPortalOffersFallback();
+        }
+      } finally {
+        const sk = document.getElementById('skeletonList');
+        if (sk) sk.style.display = 'none';
+      }
+    }
+
+    async function streamPortalOffersFallback() {
       try {
         const [portalRes, storiesRes] = await Promise.allSettled([
           fetch('/campanhasdeingresso'),
           fetch('https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/stories')
         ]);
 
-        if (portalRes.status !== 'fulfilled') throw new Error('Portal fetch failed');
+        if (portalRes.status !== 'fulfilled' || !portalRes.value.ok) throw new Error('Portal fetch failed');
         const html = await portalRes.value.text();
 
         const storySlugs = new Set();
@@ -4137,47 +4312,13 @@
           });
         }
 
-        if (liveOffers.length > 0) {
-          // Detecta ofertas que saíram do ar (esgotaram)
-          const liveIds = new Set(liveOffers.map(o => o.id));
-          const pastHistory = deduplicateHistory(historyData.history || []);
-
-          (historyData.active || []).forEach(old => {
-            if (!liveIds.has(old.id)) {
-              const alreadyInPast = pastHistory.some(h => (h.id === old.id) || (h.code && h.code === old.code && (h.rawTitle || h.title) === (old.rawTitle || old.title)));
-              if (!alreadyInPast) {
-                pastHistory.unshift({
-                  ...old,
-                  expiredAt: now
-                });
-              }
-            }
-          });
-
-          historyData.active = liveOffers;
-          historyData.history = deduplicateHistory(pastHistory);
-          saveHistoryToStorage();
-
-          if (currentTab === 'home' || currentTab === 'tickets') {
-            renderOffers(liveOffers);
-          } else if (currentTab === 'history') {
-            renderHistoryScreen();
-          }
-          updateCategoryCounts(liveOffers);
-
-          document.getElementById('activesCountText').textContent = liveOffers.length + ' Ativas';
-          document.getElementById('liveStatusText').textContent = 'Ao vivo • ' + liveOffers.length + ' ofertas';
-          document.getElementById('liveDot').style.backgroundColor = '#00e676';
-          prefetchActiveOfferDescriptions(liveOffers);
-          updateTimelineBadgeDot();
-        }
+        mergeCatalogSnapshot({ offers: liveOffers.map(o => ({ ...o, availability: 'observed', firstSeenAt: o.firstSeen, lastSeenAt: now })), stories: [] });
+        renderCatalogStatus(false);
       } catch (e) {
-        document.getElementById('liveStatusText').textContent = 'Conectado (Cache)';
-      } finally {
-        const sk = document.getElementById('skeletonList');
-        if (sk) sk.style.display = 'none';
+        renderCatalogStatus(false);
       }
     }
+    // CATALOG_ADAPTER_END
 
     // ===================================================================
     // RENDERIZAÇÃO DE CARDS

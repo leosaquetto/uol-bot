@@ -1,6 +1,8 @@
 import { DurableObject } from "cloudflare:workers";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { InstagramWakeQueue, authenticateWake, WAKE_BODY_LIMIT } from "./instagram-wake.js";
+import { buildCatalog, catalogBudgetAllowed, serveCatalog, CATALOG_TTL_SECONDS,
+  CATALOG_OFFER_LIMIT, CATALOG_STORY_LIMIT, CATALOG_OFFERS_SQL, CATALOG_STORIES_SQL } from "./catalog.js";
 
 import {
   buildDedupeKeys,
@@ -589,6 +591,7 @@ export class UolTelegramShadow extends DurableObject {
     this.instagramWake = new InstagramWakeQueue(this.metadataValue.bind(this), this.setMetadata.bind(this), env);
     this.runtimeSnapshotCache = new Map();
     this.readinessCache = null;
+    this.catalogCache = null;
     this.storageContext = new AsyncLocalStorage();
     this.storageUsageReady = false;
     this.instagramStoryInbox = new InstagramStoryInbox(this.sqlExec.bind(this), env, {
@@ -8595,6 +8598,29 @@ export class UolTelegramShadow extends DurableObject {
     return result;
   }
 
+  getPublicCatalog() {
+    const now = new Date();
+    if (this.catalogCache?.expiresAt > now.getTime()) return {
+      payload: this.catalogCache.payload, cached: true, rowsRead: 0,
+      ttlSeconds: Math.floor((this.catalogCache.expiresAt - now.getTime()) / 1000),
+    };
+    this.rollStorageUsageDay(now);
+    const before = this.storageUsage.rowsRead;
+    // Optional reads are charged to the guard stage, never to the primary scan
+    // estimate. This path deliberately has no persistent usage checkpoint.
+    return this.storageContext.run({ stage: "guard" }, () => {
+      if (!catalogBudgetAllowed(this.storageUsageSnapshot(now))) return {
+        error: "catalog_budget_guard", rowsRead: this.storageUsage.rowsRead - before,
+      };
+      const offers = this.sqlExec(CATALOG_OFFERS_SQL, CATALOG_OFFER_LIMIT + 1).toArray();
+      const stories = this.sqlExec(CATALOG_STORIES_SQL, now.toISOString(), CATALOG_STORY_LIMIT + 1).toArray();
+      const payload = buildCatalog(offers, stories, { now: now.getTime(),
+        api: this.runtimeSnapshot("api"), ticketListing: this.runtimeSnapshot("ticket_listing") });
+      this.catalogCache = { payload, expiresAt: now.getTime() + CATALOG_TTL_SECONDS * 1000 };
+      return { payload, cached: false, rowsRead: this.storageUsage.rowsRead - before, ttlSeconds: CATALOG_TTL_SECONDS };
+    });
+  }
+
   getPublicOffers(limit = 4) {
     const requestedLimit = Number(limit || 4);
     const boundedLimit = Number.isFinite(requestedLimit)
@@ -8870,6 +8896,11 @@ export default {
             "X-Robots-Tag": "noindex, nofollow",
           },
         });
+      }
+      if (url.pathname === "/catalog") {
+        return serveCatalog(request, { versionId: env.WORKER_VERSION?.id,
+          getCatalog: () => env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME).getPublicCatalog(),
+          cache: caches.default, waitUntil: task => ctx.waitUntil(task) });
       }
       const stub = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
       if (request.method === "POST" && url.pathname === "/ingest-storage-usage") {

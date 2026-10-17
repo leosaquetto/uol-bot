@@ -769,3 +769,57 @@ all four hints remain durably pending behind the existing HTTP 429 guard, until
 cycles and requests have not increased since the prior 20:40 UTC snapshot.
 The three existing delivered outbox rows remain; no new capture or destination
 delivery is proved. These observations performed no source GET or send.
+
+### Shared Hunter catalog prepared; publication gate blocked — 17 October
+
+The first integration keeps collection and destination delivery on the Worker.
+Hunter 5.6.0 consumes a bounded public `/catalog` with 120-second cache and ETag;
+it does not introduce source polling or automatically fetch each offer's details.
+Known local records survive missing/partial responses, explicit exhaustion and
+restock evidence are reconciled by campaign identity, and Story expiration does
+not imply ticket exhaustion. The catalog uses existing indexed data only, checks
+the optional budget before querying, reserves 700 prospective reads and performs
+no writes. Native SQLite validation measured 333 reads cold and zero warm with
+420 offers, 1,000 expired Stories and 40 active Stories. The primary estimate
+remained unchanged in the test; the production gate stays at 512.
+
+The GitHub repository was confirmed public. The generated public code now omits
+both account cookie arrays and redemption records. The private iCloud package
+retains the authorized shared bootstrap; public updates reuse per-account private
+files. Both session files and the redemption database exist in the current iCloud
+directory. Startup awaits private iCloud downloads; failed database reads cannot
+overwrite the database. The private fallback redemption JSON is retained locally
+and excluded from Git. Existing public Git history is unchanged: removal from the
+new artifact does not revoke previously exposed sessions or vouchers. Their
+revocation/replacement remains a separate unresolved security item. Another
+person's iCloud needs the authorized private bootstrap before code-only updates.
+
+Authenticated preflight observed **current version
+`f7e1d54b-97bd-422d-908c-bd6b185ef52e`**, created at
+`2026-10-17T00:35:54.878336Z`. Wrangler has no Git tag/message for this version;
+its exact source SHA is unproven. The previously recorded
+`7cca546916d62b2857a0e5cee314e7598e80f56d` / `d8ea9c10-...` pair is historical,
+not the current publication. Private receipts preserve both observations.
+
+Before deploying this integration, `/release-debt` reported 4 critical incidents,
+0 dead letters, 3 unknown deliveries and 0 maintenance dead letters. Compared
+with the original private baseline, there are two additional critical identities
+and one additional unknown identity. They include main delivery
+`n3a-10-off-no-site`, attempt 1 at `2026-10-17T03:10:02.675Z`, and the known comment
+case `pqf-r-300-off-em-carro-por-assinatura`. `/readyz` returned 503 with one
+critical pending item; alarms, scans and maintenance were fresh. Primary estimate
+was 77, last successful cycle 32 reads, and optional maintenance was deferred.
+No delivery was retried and no incident or baseline was cleared.
+
+For this integration: **published=false, runtimeVerified=false, ready=false**.
+Source/compiled-package validation is separate from publication. Worker deploy and
+phone OTA are held by the existing regression gate, not by a permission request.
+Focused validation passed under Node 22: 22 Hunter/build tests, 7 catalog unit
+tests and 4 native Workers SQLite integration tests, plus generated-script syntax
+and independent review. The initial native cost assertion incorrectly assumed
+index traversal doubled the billed row count; it was corrected to assert the
+returned-row lower bound while retaining the maximum of 700. No production
+budget or release threshold was changed.
+No Instagram GET, destination send, migration, session replacement or paid tier
+was used. Private evidence is in `hunter-catalog-*-2026-10-17` receipts under
+`~/.config/uol-ticket-research/`.

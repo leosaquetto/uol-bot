@@ -29,3 +29,4 @@ env/
 # Private voucher files and heavy base64 data
 stories-hunter/vouchers/
 stories-hunter/cached_redemptions_details.json
+stories-hunter/bundled_redemptions.json

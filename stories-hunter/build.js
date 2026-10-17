@@ -1,6 +1,15 @@
 const fs = require("fs");
 const path = require("path");
 
+// Prepare validates a release artifact without installing it or notifying phones.
+// Code-only updates preserve the existing iCloud redemption database and vouchers.
+const buildOptions = new Set(process.argv.slice(2));
+for (const option of buildOptions) {
+  if (!["--prepare", "--code-only"].includes(option)) throw new Error("Unknown build option: " + option);
+}
+const prepareOnly = buildOptions.has("--prepare");
+const codeOnly = buildOptions.has("--code-only");
+
 const logoBase64 = fs.readFileSync(path.join(__dirname, "logo_base64.txt"), "utf8").trim();
 const svgIcons = JSON.parse(fs.readFileSync(path.join(__dirname, "svg_icons.json"), "utf8"));
 let htmlTemplate = fs.readFileSync(path.join(__dirname, "template.html"), "utf8");
@@ -158,7 +167,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.5.0";
+const SCRIPT_VERSION = "5.6.0";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -248,6 +257,8 @@ async function performSelfUpdate(isManual = false) {
 
 async function main() {
   console.log("⚡ [Clube UOL Hub] Inicializando...");
+  await preparePrivateFiles();
+  persistPrivateBootstrap();
 
   if (typeof args !== "undefined" && args.queryParameters && args.queryParameters.action === "update") {
     await performSelfUpdate(true);
@@ -290,6 +301,7 @@ function loadRedemptionsDatabase() {
       }
       const raw = fm.readString(dbPath);
       const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) throw new Error("Formato inválido do banco de resgates");
       if (Array.isArray(parsed)) {
         for (const item of parsed) {
           const key = item.url || item.id || item.title;
@@ -308,6 +320,8 @@ function loadRedemptionsDatabase() {
     }
   } catch (e) {
     console.log("Aviso ao ler uol_redemptions_database.json: " + e.message);
+    // A read failure is not an empty database. Preserve the original file.
+    return BUNDLED_REDEMPTIONS;
   }
 
   const all = Array.from(enrichMap.values());
@@ -348,6 +362,33 @@ function getFileManager() {
   }
 }
 
+// Private installs seed local files once. Later public code updates reuse them;
+// existing sessions and the redemption database are never overwritten here.
+async function preparePrivateFiles() {
+  const fm = getFileManager();
+  for (const name of [HISTORY_FILE_NAME, SETTINGS_FILE_NAME, COOKIES_FILE_NAME,
+    "uol_session_cookies_leosaquetto.json", "uol_session_cookies_gaoriel.json", REDEMPTIONS_DB_FILE_NAME]) {
+    const file = fm.joinPath(fm.documentsDirectory(), name);
+    if (fm.fileExists(file) && fm.isFileDownloaded && !fm.isFileDownloaded(file)) {
+      await fm.downloadFileFromiCloud(file);
+      if (!fm.isFileDownloaded(file)) throw new Error("Arquivo privado ainda indisponível no iCloud: " + name);
+    }
+  }
+}
+
+function persistPrivateBootstrap() {
+  const fm = getFileManager();
+  const entries = [
+    ["uol_session_cookies_leosaquetto.json", BUNDLED_COOKIES_LEO],
+    ["uol_session_cookies_gaoriel.json", BUNDLED_COOKIES_GAORIEL],
+    [REDEMPTIONS_DB_FILE_NAME, BUNDLED_REDEMPTIONS]
+  ];
+  for (const [name, value] of entries) {
+    const destination = fm.joinPath(fm.documentsDirectory(), name);
+    if (value.length && !fm.fileExists(destination)) fm.writeString(destination, JSON.stringify(value));
+  }
+}
+
 function loadHistory() {
   try {
     const fm = getFileManager();
@@ -375,8 +416,8 @@ function loadSettings() {
     myRedemptions: [],
     realRedemptions: BUNDLED_REDEMPTIONS,
     userSessions: {
-      leosaquetto: BUNDLED_COOKIES_LEO,
-      gaoriel: BUNDLED_COOKIES_GAORIEL
+      leosaquetto: loadSessionCookies("leosaquetto"),
+      gaoriel: loadSessionCookies("gaoriel")
     }
   };
 
@@ -389,10 +430,10 @@ function loadSettings() {
       const s = Object.assign(defaults, parsed);
       if (!s.userSessions) s.userSessions = defaults.userSessions;
       if (!s.userSessions.gaoriel || s.userSessions.gaoriel.length === 0) {
-        s.userSessions.gaoriel = BUNDLED_COOKIES_GAORIEL;
+        s.userSessions.gaoriel = loadSessionCookies("gaoriel");
       }
       if (!s.userSessions.leosaquetto || s.userSessions.leosaquetto.length === 0) {
-        s.userSessions.leosaquetto = BUNDLED_COOKIES_LEO;
+        s.userSessions.leosaquetto = loadSessionCookies("leosaquetto");
       }
       return s;
     }
@@ -601,8 +642,8 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
     settings: settings,
     credentials: credentials,
     sessionCookies: (sessionCookies && sessionCookies.length > 0) ? sessionCookies : cookiesForActiveUser,
-    sessionCookiesLeo: BUNDLED_COOKIES_LEO,
-    sessionCookiesGaoriel: BUNDLED_COOKIES_GAORIEL,
+    sessionCookiesLeo: settings.userSessions.leosaquetto,
+    sessionCookiesGaoriel: settings.userSessions.gaoriel,
     realRedemptions: (realRedemptions && realRedemptions.length > 0) ? realRedemptions : BUNDLED_REDEMPTIONS,
     icons: ICONS,
     topic: NTFY_TOPIC,
@@ -619,37 +660,51 @@ await main();
 Script.complete();
 `;
 
-fs.writeFileSync(targetScriptPath, scriptHeader, "utf8");
+// PUBLIC_ARTIFACT_START
+// The GitHub/MacSend code artifact must never embed private accounts or vouchers.
+// The private iCloud install below retains the explicitly shared bootstrap.
+const publicScriptHeader = scriptHeader
+  .replace('const BUNDLED_COOKIES_LEO = ' + JSON.stringify(bundledCookiesLeo) + ';', 'const BUNDLED_COOKIES_LEO = [];')
+  .replace('const BUNDLED_COOKIES_GAORIEL = ' + JSON.stringify(bundledCookiesGaoriel) + ';', 'const BUNDLED_COOKIES_GAORIEL = [];')
+  .replace('const BUNDLED_REDEMPTIONS = ' + JSON.stringify(bundledRedemptions, null, 2) + ';', 'const BUNDLED_REDEMPTIONS = [];');
+if (!publicScriptHeader.includes('const BUNDLED_COOKIES_LEO = [];') ||
+    !publicScriptHeader.includes('const BUNDLED_COOKIES_GAORIEL = [];') ||
+    !publicScriptHeader.includes('const BUNDLED_REDEMPTIONS = [];')) throw new Error('Public artifact sanitization failed');
+// PUBLIC_ARTIFACT_END
+
+fs.writeFileSync(targetScriptPath, publicScriptHeader, "utf8");
 console.log("Successfully generated", targetScriptPath);
 console.log("File size:", fs.statSync(targetScriptPath).size, "bytes");
 
-if (fs.existsSync(path.dirname(icloudScriptPath))) {
+if (!prepareOnly && fs.existsSync(path.dirname(icloudScriptPath))) {
   fs.writeFileSync(icloudScriptPath, scriptHeader, "utf8");
   console.log("Successfully synced to iCloud:", icloudScriptPath);
 
-  const icloudDocsDir = path.dirname(icloudScriptPath);
-  const icloudDbPath = path.join(icloudDocsDir, "uol_redemptions_database.json");
-  fs.writeFileSync(icloudDbPath, JSON.stringify(bundledRedemptions, null, 2), "utf8");
-  console.log("Successfully synced database to iCloud:", icloudDbPath);
+  if (!codeOnly) {
+    const icloudDocsDir = path.dirname(icloudScriptPath);
+    const icloudDbPath = path.join(icloudDocsDir, "uol_redemptions_database.json");
+    fs.writeFileSync(icloudDbPath, JSON.stringify(bundledRedemptions, null, 2), "utf8");
+    console.log("Successfully synced database to iCloud:", icloudDbPath);
 
-  const icloudVouchersDir = path.join(icloudDocsDir, "vouchers");
-  if (!fs.existsSync(icloudVouchersDir)) fs.mkdirSync(icloudVouchersDir, { recursive: true });
-  const localVouchersDir = path.join(__dirname, "vouchers");
-  if (fs.existsSync(localVouchersDir)) {
-    const vFiles = fs.readdirSync(localVouchersDir);
-    for (const vf of vFiles) {
-      const src = path.join(localVouchersDir, vf);
-      const dst = path.join(icloudVouchersDir, vf);
-      if (fs.existsSync(src) && !fs.existsSync(dst)) {
-        fs.copyFileSync(src, dst);
+    const icloudVouchersDir = path.join(icloudDocsDir, "vouchers");
+    if (!fs.existsSync(icloudVouchersDir)) fs.mkdirSync(icloudVouchersDir, { recursive: true });
+    const localVouchersDir = path.join(__dirname, "vouchers");
+    if (fs.existsSync(localVouchersDir)) {
+      const vFiles = fs.readdirSync(localVouchersDir);
+      for (const vf of vFiles) {
+        const src = path.join(localVouchersDir, vf);
+        const dst = path.join(icloudVouchersDir, vf);
+        if (fs.existsSync(src) && !fs.existsSync(dst)) {
+          fs.copyFileSync(src, dst);
+        }
       }
+      console.log(`Synced ${vFiles.length} voucher files to iCloud vouchers/ folder`);
     }
-    console.log(`Synced ${vFiles.length} voucher files to iCloud vouchers/ folder`);
   }
 }
 
 // 4. Dispara NTFY para acionar a automação do Atalhos no iPhone (atualização OTA)
-try {
+if (!prepareOnly) try {
   const { execSync } = require("child_process");
   try {
     execSync('curl -s "http://127.0.0.1:53318/scriptable/stage?target=clube-uol"', { timeout: 2000 });
