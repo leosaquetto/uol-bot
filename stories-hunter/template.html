@@ -817,6 +817,18 @@
       justify-content: center;
       flex-shrink: 0;
     }
+    .source-mini-circle.mini-insta {
+      background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+    .source-mini-circle.mini-insta svg {
+      width: 11px;
+      height: 11px;
+      color: #ffffff;
+      fill: #ffffff;
+      display: block;
+      filter: drop-shadow(0 0.5px 1px rgba(0, 0, 0, 0.35));
+    }
     .source-mini-circle.overlap {
       margin-left: -5px;
       box-shadow: -1px 0 0 1px rgba(0, 0, 0, 0.4);
@@ -838,6 +850,8 @@
       padding: 3px 7px;
       border-radius: 10px;
       letter-spacing: -0.1px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .poster-pill-badge.badge-warning {
       color: #f59e0b;
@@ -1822,15 +1836,17 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      margin-top: 5px;
-      padding: 2.5px 7px 2.5px 3px;
+      margin-top: 6px;
+      padding: 3px 8px 3px 3.5px;
       border-radius: 999px;
-      background: rgba(0, 0, 0, 0.55);
-      -webkit-backdrop-filter: blur(6px);
-      backdrop-filter: blur(6px);
-      border: 0.5px solid rgba(255, 255, 255, 0.14);
+      background: rgba(14, 23, 42, 0.75);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(255, 255, 255, 0.16);
       width: fit-content;
       max-width: 100%;
+      min-height: 22px;
+      box-sizing: border-box;
     }
     .redeemed-avatars-stack {
       display: inline-flex;
@@ -1853,9 +1869,9 @@
       font-weight: 700;
       color: #38bdf8;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1;
+      line-height: 1.35;
+      padding-bottom: 2px;
+      display: inline-block;
     }
 
     /* Year Selector Chips */
@@ -3290,7 +3306,7 @@
         <div style="background: #101217; border: 1px solid #222733; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <div>
-              <div style="font-size: 13px; font-weight: 600; color: #f1f5f9;">Versão: <span id="currentVersionLabel" style="color: #ff9100; font-weight: 700;">v5.4.0</span></div>
+              <div style="font-size: 13px; font-weight: 600; color: #f1f5f9;">Versão: <span id="currentVersionLabel" style="color: #ff9100; font-weight: 700;">v5.4.1</span></div>
               <div style="font-size: 11px; color: #64748b;">Canal Oficial GitHub (leosaquetto/uol-bot)</div>
             </div>
             <button class="btn-check-update" id="btnCheckUpdate" onclick="checkForScriptUpdateManual()">
@@ -3728,20 +3744,20 @@
     }
 
     function formatRelativeTime(fromMs, now) {
-      if (!fromMs) return 'Agora mesmo';
+      if (!fromMs) return 'Hoje';
       const diff = Math.max(0, now - fromMs);
       const mins = Math.floor(diff / (1000 * 60));
       const hours = Math.floor(mins / 60);
       const days = Math.floor(hours / 24);
 
-      if (mins < 1) return 'Agora mesmo';
-      if (mins < 60) return mins + 'min atrás';
+      if (mins < 1) return 'Agora';
+      if (mins < 60) return mins + 'min';
       const remMins = mins % 60;
       if (hours < 24) {
-        return remMins > 0 ? (hours + 'h' + remMins + 'min atrás') : (hours + 'h atrás');
+        return remMins > 0 ? (hours + 'h' + remMins + 'min') : (hours + 'h');
       }
-      if (days === 1) return '1 dia atrás';
-      if (days <= 7) return days + ' dias atrás';
+      if (days === 1) return '1 dia';
+      if (days <= 7) return days + ' dias';
       const d = new Date(fromMs);
       const day = String(d.getDate()).padStart(2, '0');
       const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -4006,15 +4022,32 @@
 
     function getAllRedemptionsList() {
       const enrichMap = new Map();
+      const authoritativeMap = new Map();
+
+      if (typeof INITIAL !== 'undefined' && INITIAL.realRedemptions && Array.isArray(INITIAL.realRedemptions)) {
+        INITIAL.realRedemptions.forEach(r => {
+          const k = r.url || r.id || (r.title ? r.title.trim().toLowerCase() : null);
+          if (k) authoritativeMap.set(k, r);
+        });
+      }
+
       const addToList = (items) => {
         if (!Array.isArray(items)) return;
         items.forEach(r => {
           if (!r) return;
           const k = r.url || r.id || (r.title ? r.title.trim().toLowerCase() : null);
-          if (k) {
-            const ex = enrichMap.get(k) || {};
-            enrichMap.set(k, Object.assign({}, ex, r));
+          if (!k) return;
+          const ex = enrichMap.get(k) || {};
+          const auth = authoritativeMap.get(k);
+
+          let merged = Object.assign({}, ex, r);
+          if (auth && auth.redeemedAt) {
+            if (!merged.redeemedAt || (merged.redeemedAt.startsWith('17/10/2026') && !auth.redeemedAt.startsWith('17/10/2026')) || (merged.user === 'gaoriel' && auth.user === 'gaoriel')) {
+              merged.redeemedAt = auth.redeemedAt;
+            }
+            if (auth.user) merged.user = auth.user;
           }
+          enrichMap.set(k, merged);
         });
       };
 
@@ -4328,11 +4361,11 @@
         // Micro ícones de fontes sobrepostos (estilo citação de fontes Codex / Perplexity) ao lado da categoria
         let sourcesBadgeHtml = '';
         if (isPortal && isStory) {
-          sourcesBadgeHtml = '<div class="source-stack" title="Disponível no Portal e Stories"><div class="source-mini" style="z-index: 2;">' + ICONS.uolColor + '</div><div class="source-mini mini-insta overlap" style="z-index: 1;">' + ICONS.instagramColor + '</div></div>';
+          sourcesBadgeHtml = '<div class="source-stack" title="Disponível no Portal e Stories"><div class="source-mini" style="z-index: 2;">' + ICONS.uolColor + '</div><div class="source-mini mini-insta overlap" style="z-index: 1;">' + ICONS.instagram + '</div></div>';
         } else if (isPortal) {
           sourcesBadgeHtml = '<div class="source-stack" title="Disponível no Portal"><div class="source-mini">' + ICONS.uolColor + '</div></div>';
         } else if (isStory) {
-          sourcesBadgeHtml = '<div class="source-stack" title="Disponível nos Stories"><div class="source-mini mini-insta">' + ICONS.instagramColor + '</div></div>';
+          sourcesBadgeHtml = '<div class="source-stack" title="Disponível nos Stories"><div class="source-mini mini-insta">' + ICONS.instagram + '</div></div>';
         }
 
         // Tag de categoria com ícone
@@ -4915,13 +4948,13 @@
         sourcesBadgeHtml = `
           <div class="source-circle-combo">
             <div class="source-mini-circle">${ICONS.uolColor}</div>
-            <div class="source-mini-circle overlap">${ICONS.instagramColor}</div>
+            <div class="source-mini-circle mini-insta overlap">${ICONS.instagram}</div>
           </div>
         `;
       } else if (hasPortal) {
         sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle">${ICONS.uolColor}</div></div>`;
       } else if (hasStory) {
-        sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle">${ICONS.instagramColor}</div></div>`;
+        sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle mini-insta">${ICONS.instagram}</div></div>`;
       }
 
       const relativeTimeStr = formatRelativeTime(group.firstSeen || (parent && parent.firstSeen) || Date.now(), Date.now());
@@ -5672,13 +5705,13 @@
         sourcesBadgeHtml = `
           <div class="source-circle-combo">
             <div class="source-mini-circle">${ICONS.uolColor}</div>
-            <div class="source-mini-circle overlap">${ICONS.instagramColor}</div>
+            <div class="source-mini-circle mini-insta overlap">${ICONS.instagram}</div>
           </div>
         `;
       } else if (isPortal) {
         sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle">${ICONS.uolColor}</div></div>`;
       } else if (isStory) {
-        sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle">${ICONS.instagramColor}</div></div>`;
+        sourcesBadgeHtml = `<div class="source-circle-combo"><div class="source-mini-circle mini-insta">${ICONS.instagram}</div></div>`;
       }
 
       // Normalização semântica completa de título e local (idêntica à Home)
@@ -5819,7 +5852,7 @@
 
     function parseRedemptionDate(str) {
       if (!str) return 0;
-      const m = String(str).match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+      const m = String(str).match(/(\d{2})\/(\d{2})\/(\d{4})(?:(?:\s+|,\s*|\s+às\s+)(\d{2}):(\d{2}))?/i);
       if (!m) return 0;
       const day = parseInt(m[1], 10);
       const month = parseInt(m[2], 10) - 1;
@@ -5841,37 +5874,11 @@
       const activeHandle = isLeo ? 'leosaquetto' : 'gaoriel';
       const activeAvatarSrc = 'https://unavatar.io/instagram/' + activeHandle;
 
-      // 1. Consolida todos os resgates sem perder nenhum perfil
-      const enrichMap = new Map();
-      const addToList = (items) => {
-        if (!Array.isArray(items)) return;
-        items.forEach(r => {
-          const k = r.url || r.id || (r.title ? r.title.trim().toLowerCase() : null);
-          if (k) {
-            const ex = enrichMap.get(k) || {};
-            enrichMap.set(k, Object.assign({}, ex, r));
-          }
-        });
-      };
-
-      if (INITIAL.realRedemptions && Array.isArray(INITIAL.realRedemptions)) {
-        addToList(INITIAL.realRedemptions);
-      }
-      if (settings.realRedemptions && Array.isArray(settings.realRedemptions)) {
-        addToList(settings.realRedemptions);
-      }
+      // 1. Consolida todos os resgates sem perder nenhum perfil e restaura datas corretas
+      const allList = getAllRedemptionsList();
       try {
-        const saved = localStorage.getItem('uol_real_redemptions');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed)) addToList(parsed);
-        }
+        localStorage.setItem('uol_real_redemptions', JSON.stringify(allList));
       } catch(e) {}
-
-      let allList = Array.from(enrichMap.values());
-      if (allList.length === 0) {
-        allList = settings.myRedemptions || [];
-      }
 
       // 2. Contagens por perfil
       const totalCount = allList.length;
@@ -7410,7 +7417,7 @@
     // ===================================================================
     // ATUALIZAÇÃO AUTOMÁTICA & MANUAL VIA GITHUB RAW (OTA)
     // ===================================================================
-    const SCRIPT_VERSION = INITIAL.scriptVersion || "5.4.0";
+    const SCRIPT_VERSION = INITIAL.scriptVersion || "5.4.1";
     const GITHUB_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 
     function isNewerVersion(remote, local) {

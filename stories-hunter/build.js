@@ -158,7 +158,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.4.0";
+const SCRIPT_VERSION = "5.4.1";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -270,10 +270,14 @@ async function main() {
 
 function loadRedemptionsDatabase() {
   const enrichMap = new Map();
+  const authMap = new Map();
   // 1. Base embutida (zero rede, funciona sempre mesmo sem iCloud)
   for (const b of BUNDLED_REDEMPTIONS) {
     const key = b.url || b.id || b.title;
-    if (key) enrichMap.set(key, b);
+    if (key) {
+      enrichMap.set(key, b);
+      authMap.set(key, b);
+    }
   }
 
   // 2. Lê do arquivo permanente no iCloud Drive
@@ -291,7 +295,13 @@ function loadRedemptionsDatabase() {
           const key = item.url || item.id || item.title;
           if (key) {
             const existing = enrichMap.get(key) || {};
-            enrichMap.set(key, Object.assign({}, existing, item));
+            const auth = authMap.get(key);
+            const merged = Object.assign({}, existing, item);
+            if (auth && auth.redeemedAt && (!merged.redeemedAt || (merged.redeemedAt.startsWith('17/10/2026') && !auth.redeemedAt.startsWith('17/10/2026')) || (merged.user === 'gaoriel' && auth.user === 'gaoriel'))) {
+              merged.redeemedAt = auth.redeemedAt;
+            }
+            if (auth && auth.user) merged.user = auth.user;
+            enrichMap.set(key, merged);
           }
         }
       }
@@ -300,7 +310,12 @@ function loadRedemptionsDatabase() {
     console.log("Aviso ao ler uol_redemptions_database.json: " + e.message);
   }
 
-  return Array.from(enrichMap.values());
+  const all = Array.from(enrichMap.values());
+  try {
+    saveRedemptionsDatabase(all);
+  } catch (e) {}
+
+  return all;
 }
 
 function saveRedemptionsDatabase(items) {
