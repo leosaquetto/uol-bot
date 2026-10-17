@@ -7413,6 +7413,19 @@
     const SCRIPT_VERSION = INITIAL.scriptVersion || "5.4.0";
     const GITHUB_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 
+    function isNewerVersion(remote, local) {
+      if (!remote || !local) return false;
+      const rParts = String(remote).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+      const lParts = String(local).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+      for (let i = 0; i < Math.max(rParts.length, lParts.length); i++) {
+        const r = rParts[i] || 0;
+        const l = lParts[i] || 0;
+        if (r > l) return true;
+        if (r < l) return false;
+      }
+      return false;
+    }
+
     async function checkForScriptUpdateManual() {
       const btn = document.getElementById('btnCheckUpdate');
       const msg = document.getElementById('updateStatusMsg');
@@ -7431,7 +7444,7 @@
         const match = remoteText.match(/const SCRIPT_VERSION = "([^"]+)";/);
         const remoteVersion = match ? match[1] : null;
 
-        if (remoteVersion && remoteVersion !== SCRIPT_VERSION) {
+        if (remoteVersion && isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
           if (msg) {
             msg.innerHTML = `
               <div style="color: #38bdf8; font-weight: 700; margin-bottom: 4px;">✨ Nova versão ${remoteVersion} disponível!</div>
@@ -7471,7 +7484,7 @@
         const match = remoteText.match(/const SCRIPT_VERSION = "([^"]+)";/);
         const remoteVersion = match ? match[1] : null;
 
-        if (remoteVersion && remoteVersion !== SCRIPT_VERSION) {
+        if (remoteVersion && isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
           const banner = document.getElementById('otaUpdateBanner');
           const txt = document.getElementById('otaVersionText');
           if (txt) txt.textContent = `Nova versão ${remoteVersion} disponível!`;

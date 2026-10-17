@@ -173,6 +173,19 @@ const BUNDLED_COOKIES_GAORIEL = ${JSON.stringify(bundledCookiesGaoriel)};
 const BUNDLED_COOKIES = BUNDLED_COOKIES_LEO;
 const BUNDLED_REDEMPTIONS = ${JSON.stringify(bundledRedemptions, null, 2)};
 
+function isNewerVersion(remote, local) {
+  if (!remote || !local) return false;
+  const rParts = String(remote).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+  const lParts = String(local).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+  for (let i = 0; i < Math.max(rParts.length, lParts.length); i++) {
+    const r = rParts[i] || 0;
+    const l = lParts[i] || 0;
+    if (r > l) return true;
+    if (r < l) return false;
+  }
+  return false;
+}
+
 async function performSelfUpdate(isManual = false) {
   try {
     const fm = getFileManager();
@@ -198,7 +211,7 @@ async function performSelfUpdate(isManual = false) {
     const versionMatch = remoteCode.match(/const SCRIPT_VERSION = "([^"]+)";/);
     const remoteVersion = versionMatch ? versionMatch[1] : null;
 
-    if (remoteVersion && remoteVersion !== SCRIPT_VERSION) {
+    if (remoteVersion && isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
       fm.writeString(scriptPath, remoteCode);
       console.log("⚡ [OTA] Atualizado com sucesso: v" + SCRIPT_VERSION + " -> v" + remoteVersion);
 
