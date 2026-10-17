@@ -2879,17 +2879,28 @@ describe("UOL Worker no runtime Cloudflare", () => {
         `INSERT INTO offers(
            id, link, preview_title, first_seen_at, last_seen_at, status,
            decision_at, would_send_main, delivery_mode, delivery_generation,
-           delivery_unknown_at, delivery_unknown_target, main_delivery_unknown_at
-        ) VALUES (?, ?, ?, ?, ?, 'delivery_unknown', ?, 1, 'live', 1, ?, 'main', ?)`,
+           delivery_unknown_at, delivery_unknown_target, main_delivery_unknown_at,
+           main_delivery_attempts
+        ) VALUES (?, ?, ?, ?, ?, 'delivery_unknown', ?, 1, 'live', 1, ?, 'main', ?, 1)`,
         "parceiro-p123-oferta-relampago",
         "https://clube.uol.com.br/parceiro/p123-40-off-no-cardpio",
         "Oferta relâmpago",
         "2026-08-02T12:00:00.000Z",
         "2026-08-02T12:00:00.000Z",
         "2026-08-02T12:00:00.000Z",
-        "2026-08-02T12:00:01.000Z",
-        "2026-08-02T12:00:01.000Z",
+        "2026-08-02T12:00:08.000Z",
+        "2026-08-02T12:00:08.000Z",
       );
+      instance.recordIdentityAliases(
+        "parceiro-p123-oferta-relampago", "",
+        "https://clube.uol.com.br/parceiro/p123-40-off-no-cardpio",
+        "2026-08-02T12:00:00.000Z",
+      );
+      instance.recordDeliveryLedgerEvent({
+        offerId: "parceiro-p123-oferta-relampago", target: "main",
+        operation: "delivery", state: "attempt_started", attempt: 1, generation: 1,
+        occurredAt: "2026-08-02T12:00:00.000Z",
+      });
 
       const result = await instance.handleTelegramUpdate({
         message: {
