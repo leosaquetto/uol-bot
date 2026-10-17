@@ -856,3 +856,43 @@ offer is titled `10% OFF no site!`; its 17 October 03:10 UTC timeout remains
 uncertain. The operator was asked for the existing destination message link.
 The read-only evidence is retained in `hunter-resume-*-2026-10-17.json` private
 receipts. The original baseline, sessions, queues and deployment are unchanged.
+
+### Existing Telegram session found; comment receipt recovered — 17 October
+
+The prior access investigation was incomplete: an existing authenticated local
+MTProto session used by the Telegram statistics collector can read the LeoUOL
+channel and its discussion group. A bounded reader copied authorization into
+memory from the existing session database opened read-only. No login, session
+replacement, message send, read acknowledgement or media download was performed.
+The sending Telegram Bridge program was not executed.
+
+Destination history proves channel message 3392 was forwarded as discussion
+message 12107. Bot comment **12108**, replying directly to 12107, was accepted at
+`2026-10-13T15:46:58Z`, between attempt start `15:46:53.217Z` and the observed
+timeout `15:47:01.217Z`. Its title and canonical campaign link match
+`pqf-r-300-off-em-carro-por-assinatura`; the inventory has zero description length
+and requires one chunk. Offline formatter validation confirms the matching
+title/link-only body is a valid complete chunk.
+
+After a fresh generation/attempt/unknown-state check, authenticated
+`POST /resolve-delivery` with target `comment`, outcome `sent` and message ID
+12108 returned HTTP 200 at `2026-10-17T22:43:20.529Z`. Readback confirms one of one
+chunks, cleared comment uncertainty and a `resolved_sent` ledger event retaining
+the original attempt and generation. No destination message was resent. Private
+proof, original message metadata, body hash and resolution response are retained
+in `telegram-comment-*-2026-10-17.json` and the bounded Telegram search receipts.
+
+For `n3a-10-off-no-site`, a bounded channel-history window around the 17 October
+attempt, a campaign search and a discussion-group forwarding search recovered
+only older August publications (channel IDs 2302 and 2822). Those receipts do not
+prove the new attempt and were not reused. The current delivery remains uncertain;
+absence from these searches is not evidence that sending failed. This removes
+the need to ask the operator to locate the already configured Telegram access,
+but does not close the remaining receipt gap.
+
+Immediate post-resolution `/release-debt` reports four critical incidents,
+**two unknown deliveries**, zero dead letters and zero maintenance dead letters.
+Incident recovery remains subject to its natural observation window. Current
+Worker version stays `f7e1d54b-97bd-422d-908c-bd6b185ef52e`; the original debt
+baseline is untouched. The new main uncertainty still blocks catalog publication:
+catalog **published=false, runtimeVerified=false, ready=false**.
