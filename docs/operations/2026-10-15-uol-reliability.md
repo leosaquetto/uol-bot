@@ -838,3 +838,21 @@ and its local API port is unavailable, so destination-side receipt recovery was
 not possible in this bounded check. The uncertainty and original identity remain;
 neither absence of a receipt nor unavailable tooling was converted into a failed
 send or permission to retry.
+
+### Receipt access rechecked — 17 October, continuation
+
+The configured remote Beeper API is reachable: authenticated `/v1/accounts`
+returned HTTP 200 with only Beeper and WhatsApp accounts. This supersedes the
+local-tool unavailability as the reason that route cannot recover Telegram
+receipts: the remote connection has no Telegram account. Current browser
+inventory likewise contains no authenticated Telegram session. No login,
+permission expansion or message send was attempted.
+
+Worker liveness and debt readback retain version `f7e1d54b-...`, four critical
+incidents and three unknown deliveries. Direct inventory confirms that the
+comment for `pqf-r-300-off-em-carro-por-assinatura` requires one chunk, with zero
+confirmed IDs, channel message 3392 and discussion message 12107. The new main
+offer is titled `10% OFF no site!`; its 17 October 03:10 UTC timeout remains
+uncertain. The operator was asked for the existing destination message link.
+The read-only evidence is retained in `hunter-resume-*-2026-10-17.json` private
+receipts. The original baseline, sessions, queues and deployment are unchanged.
