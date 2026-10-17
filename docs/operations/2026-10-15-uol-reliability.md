@@ -823,3 +823,18 @@ budget or release threshold was changed.
 No Instagram GET, destination send, migration, session replacement or paid tier
 was used. Private evidence is in `hunter-catalog-*-2026-10-17` receipts under
 `~/.config/uol-ticket-research/`.
+
+The implementation and sanitized public artifact were pushed as
+`acc099e689677856260a3a2b8879e9ffe66c3256`.
+[Exact-SHA CI](https://github.com/leosaquetto/uol-bot/actions/runs/39072993395)
+passed all four jobs, including Worker types/startup/bundle, Oracle/offline
+delivery checks and Hunter tests. This is source publication, not Worker deploy
+or confirmed iPhone installation.
+
+Direct authenticated inventory for `n3a-10-off-no-site` confirms main attempt 1
+ended as `ambiguous:telegram_sendPhoto_timeout_ambiguous`, with no message ID or
+sent timestamp. The configured Beeper skill wrapper points to an absent binary
+and its local API port is unavailable, so destination-side receipt recovery was
+not possible in this bounded check. The uncertainty and original identity remain;
+neither absence of a receipt nor unavailable tooling was converted into a failed
+send or permission to retry.
