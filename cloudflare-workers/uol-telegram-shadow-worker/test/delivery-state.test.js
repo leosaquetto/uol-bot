@@ -123,6 +123,24 @@ test("resultado incerto de um destino não bloqueia outro destino independente",
   assert.deepEqual(result.unknownTargets, ["main"]);
 });
 
+test("fechamento administrativo exige status e marcador exatos e nunca confirma entrega", () => {
+  const closed = row({
+    status: "delivery_quarantined",
+    delivery_quarantine_reason: "unknown_closed_unverified:main",
+    main_delivery_unknown_at: "2026-08-02T11:59:00.000Z",
+    would_send_canal2: 1,
+  });
+  assert.deepEqual(classifyDeliveryRow(closed, ready, { ticket: true, now }), {
+    state: "closed_unverified", actionable: [],
+  });
+  assert.equal(classifyDeliveryRow({ ...closed, status: "delivery_unknown" }, ready, {
+    ticket: true, now,
+  }).state, "actionable");
+  assert.equal(classifyDeliveryRow({ ...closed, delivery_quarantine_reason: "other" }, ready, {
+    ticket: true, now,
+  }).state, "actionable");
+});
+
 test("dependência impossível vira dead letter em vez de backoff eterno", () => {
   const result = classifyDeliveryRow(row({
     would_send_canal2: 1,

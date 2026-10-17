@@ -1091,3 +1091,21 @@ and `receipt-diagnostic-telegram-direct-2026-10-17.json`. The publication manife
 now names this exact SHA/version. Pending delivery remains the single main
 `n3a` identity; operational incident recovery and optional work await their own
 natural evidence windows.
+
+### Explicit exceptional closure authorized — 17 October
+
+After the available receipt sources were exhausted, the operator explicitly
+authorized resolving this case exceptionally. The authorized disposition is an
+administrative closure of `n3a-10-off-no-site`, main generation 1/attempt 1,
+unknown since `2026-10-17T03:10:02.675Z`. It does not assert delivery or rejection
+and does not authorize another destination POST.
+
+The prepared closure contract requires the administrative reference and exact
+expected generation, attempt and uncertainty timestamp. It preserves original
+receipt fields, errors, attempts and unknown timestamps, and records a mandatory
+`closed_unverified` ledger event. Administrative quarantine is terminal for
+automatic dispatch, status refresh, requeue and retention. Its matching incident
+is acknowledged administratively rather than labeled recovered; aggregate SLO
+acknowledgement is permitted only when no queue item remains. Closure, required
+audit and acknowledgement must commit atomically. Other debt and the original
+release baseline remain independent.

@@ -153,6 +153,10 @@ export function classifyDeliveryRow(
     targetNames = [],
   } = {},
 ) {
+  if (row.status === "delivery_quarantined" &&
+      row.delivery_quarantine_reason === "unknown_closed_unverified:main") {
+    return { state: "closed_unverified", actionable: [] };
+  }
   const allowedTargets = new Set(targetNames || []);
   const targets = deliveryTargets(row, configuration, {
     ticket,

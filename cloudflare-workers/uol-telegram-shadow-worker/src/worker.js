@@ -2819,6 +2819,8 @@ export class UolTelegramShadow extends DurableObject {
             would_send_main = 1 AND main_sent_at = '' AND decision_at <> ''
             AND decision_at <= ?
             AND status NOT IN ('discarded', 'shadow_candidate', 'shadow_sold_out')
+            AND NOT (status = 'delivery_quarantined' AND
+              delivery_quarantine_reason = 'unknown_closed_unverified:main')
           )
        ORDER BY first_seen_at ASC
        LIMIT 20`,
@@ -3475,7 +3477,8 @@ export class UolTelegramShadow extends DurableObject {
     const rows = this.sqlExec(
       `SELECT id, link, status, first_seen_at, main_sent_at, canal2_sent_at
        FROM offers
-       WHERE status <> 'discarded'`,
+       WHERE status <> 'discarded' AND NOT (status = 'delivery_quarantined'
+         AND delivery_quarantine_reason = 'unknown_closed_unverified:main')`,
     ).toArray();
     const groups = new Map();
     for (const row of rows) {
@@ -3950,6 +3953,9 @@ export class UolTelegramShadow extends DurableObject {
       ),
       now,
     });
+    if (classification.state === "closed_unverified") {
+      return { row, classification, unknownTargets: [] };
+    }
     const unknownTargets = [
       // Configuration changes do not resolve a previous ambiguous transport result.
       ...["main", "canal2", "discord"].filter(target => row[`${target}_delivery_unknown_at`]),
@@ -7685,6 +7691,119 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  closeUnknownMain(id, payload, resolvedAt) {
+    const evidenceReference = String(payload?.evidenceReference || "").trim();
+    if (!/^operator:[a-z0-9][a-z0-9:._-]{0,150}$/u.test(evidenceReference)) {
+      throw new Error("delivery_resolution_evidence_required");
+    }
+    const { expectedGeneration, expectedAttempt, expectedUnknownAt } = payload || {};
+    if (!Number.isSafeInteger(expectedGeneration) || expectedGeneration <= 0) {
+      throw new Error("delivery_resolution_expected_generation_invalid");
+    }
+    if (!Number.isSafeInteger(expectedAttempt) || expectedAttempt <= 0) {
+      throw new Error("delivery_resolution_expected_attempt_invalid");
+    }
+    const unknownTimestamp = Date.parse(expectedUnknownAt);
+    if (typeof expectedUnknownAt !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(expectedUnknownAt) ||
+        !Number.isFinite(unknownTimestamp) || new Date(unknownTimestamp).toISOString() !== expectedUnknownAt) {
+      throw new Error("delivery_resolution_expected_unknown_at_invalid");
+    }
+    const dedupeKey = `${id}|main|delivery|${expectedGeneration}|${expectedAttempt}|${expectedUnknownAt}|closed_unverified`;
+    const result = this.ctx.storage.transactionSync(() => {
+      const row = this.sqlExec("SELECT * FROM offers WHERE id = ? LIMIT 1", id).toArray()[0];
+      if (!row) throw new Error("delivery_offer_not_found");
+      const legacyUnknownTargets = String(row.delivery_unknown_target || "")
+        .split(",").map(value => value.trim()).filter(Boolean);
+      const unknownAt = row.main_delivery_unknown_at ||
+        (legacyUnknownTargets.includes("main") ? row.delivery_unknown_at : "");
+      if (!unknownAt) throw new Error("delivery_target_not_unknown");
+      if (row.delivery_generation !== expectedGeneration ||
+          row.main_delivery_attempts !== expectedAttempt || unknownAt !== expectedUnknownAt) {
+        throw new Error("delivery_resolution_conflict");
+      }
+      const closedEvent = () => this.sqlExec(
+        `SELECT offer_id, target, operation, state, generation, attempt, external_id
+         FROM delivery_events WHERE dedupe_key = ? LIMIT 1`, dedupeKey,
+      ).toArray()[0];
+      const eventMatches = event => event?.offer_id === id && event.target === "main" &&
+        event.operation === "delivery" && event.state === "closed_unverified" &&
+        event.generation === expectedGeneration && event.attempt === expectedAttempt &&
+        event.external_id === evidenceReference;
+      const response = idempotent => ({ ok: true, id, target: "main", outcome: "closed",
+        status: "closed_unverified", deliveryConfirmed: false, retryAllowed: false, idempotent });
+      if (row.status === "delivery_quarantined" &&
+          row.delivery_quarantine_reason === "unknown_closed_unverified:main") {
+        if (!eventMatches(closedEvent())) throw new Error("delivery_resolution_conflict");
+        return response(true);
+      }
+      if (row.status !== "delivery_unknown" || row.delivery_quarantine_reason || !row.would_send_main) {
+        throw new Error("delivery_target_not_unknown");
+      }
+      if (["main", "canal2", "discord", "comment"].some(target => row[`${target}_delivery_in_flight_at`])) {
+        throw new Error("delivery_in_flight_requires_resolution");
+      }
+      const receipt = this.sqlExec(
+        `SELECT id FROM delivery_events WHERE offer_id = ? AND target = 'main'
+         AND operation = 'delivery' AND external_id <> ''
+         AND state IN ('sent', 'late_sent', 'resolved_sent') LIMIT 1`, id,
+      ).toArray()[0];
+      if (row.main_sent_at || row.main_message_id || receipt) {
+        throw new Error("delivery_resolution_receipt_exists");
+      }
+      const configuration = deliveryConfiguration(this.env,
+        telegramConfiguration(this.env), discordConfiguration(this.env));
+      const ticket = isTicketCampaign(rowToOffer(row));
+      const beeperDebt = this.sqlExec(
+        "SELECT offer_id FROM beeper_delivery_queue WHERE offer_id = ? AND (sent_at = '' OR in_flight_at <> '') LIMIT 1", id,
+      ).toArray()[0];
+      if (legacyUnknownTargets.some(target => target !== "main") ||
+          ["canal2", "discord", "comment"].some(target => row[`${target}_delivery_unknown_at`]) ||
+          (row.would_send_canal2 && !row.canal2_sent_at) ||
+          (ticket && configuration.discord.enabled && !row.discord_sent_at) ||
+          ["canal2", "discord"].some(target => !row[`${target}_sent_at`] &&
+            (row[`${target}_delivery_attempts`] || row[`${target}_delivery_error`])) ||
+          (!row.comment_sent_at && (row.discussion_message_id || row.comment_chunks_sent ||
+            row.comment_delivery_attempts || row.comment_delivery_error)) || beeperDebt) {
+        throw new Error("delivery_resolution_other_debt");
+      }
+      const existingEvent = closedEvent();
+      if (existingEvent) throw new Error("delivery_resolution_conflict");
+      const updated = this.sqlExec(
+        `UPDATE offers SET status = 'delivery_quarantined',
+           delivery_quarantine_reason = 'unknown_closed_unverified:main'
+         WHERE id = ? AND status = 'delivery_unknown' AND delivery_generation = ?
+           AND main_delivery_attempts = ? AND main_delivery_unknown_at = ?
+           AND delivery_unknown_at = ? AND delivery_unknown_target = ?
+           AND main_sent_at = '' AND main_message_id = 0
+           AND main_delivery_in_flight_at = '' AND canal2_delivery_in_flight_at = ''
+           AND discord_delivery_in_flight_at = '' AND comment_delivery_in_flight_at = ''
+         RETURNING id`, id, expectedGeneration, expectedAttempt, row.main_delivery_unknown_at,
+        row.delivery_unknown_at, row.delivery_unknown_target,
+      ).toArray()[0];
+      if (!updated) throw new Error("delivery_resolution_conflict");
+      // This audit event is mandatory. The normal observability helper deliberately
+      // swallows failures; administrative closure must roll back instead.
+      writeDeliveryEvent(this.sqlExec.bind(this), { dedupeKey, offerId: id, target: "main",
+        operation: "delivery", state: "closed_unverified", generation: expectedGeneration,
+        attempt: expectedAttempt, occurredAt: resolvedAt, externalId: evidenceReference });
+      if (!eventMatches(closedEvent())) throw new Error("delivery_resolution_ledger_required");
+      this.sqlExec(
+        `UPDATE incidents SET status = 'administratively_acknowledged'
+         WHERE key = ? AND status = 'active'`, `delivery-queue:${id}:main`,
+      );
+      if (this.deliveryQueueSlo(new Date(resolvedAt)).pending === 0) {
+        this.sqlExec(
+          `UPDATE incidents SET status = 'administratively_acknowledged'
+           WHERE key = 'delivery-slo' AND status = 'active'`,
+        );
+      }
+      return response(false);
+    });
+    this.readinessCache = null;
+    return result;
+  }
+
   resolveDeliveryUnknown(id, target, outcome, payload = {}) {
     const normalizedTarget = String(target || "").trim().toLowerCase();
     const normalizedOutcome = String(outcome || "").trim().toLowerCase();
@@ -7694,7 +7813,7 @@ export class UolTelegramShadow extends DurableObject {
     if (!["sent", "not_sent", "closed"].includes(normalizedOutcome)) {
       throw new Error("delivery_resolution_outcome_invalid");
     }
-    if (normalizedOutcome === "closed" && normalizedTarget !== "comment") {
+    if (normalizedOutcome === "closed" && !["main", "comment"].includes(normalizedTarget)) {
       throw new Error("delivery_resolution_closed_comment_only");
     }
     const row = this.sqlExec(
@@ -7703,6 +7822,12 @@ export class UolTelegramShadow extends DurableObject {
     ).toArray()[0];
     if (!row) throw new Error("delivery_offer_not_found");
     const resolvedAt = new Date().toISOString();
+    if (normalizedTarget === "main" && normalizedOutcome === "closed") {
+      return this.closeUnknownMain(row.id, payload, resolvedAt);
+    }
+    if (row.delivery_quarantine_reason === "unknown_closed_unverified:main") {
+      throw new Error("delivery_closed_unverified");
+    }
 
     if (normalizedTarget === "beeper") {
       const queue = this.sqlExec(
@@ -7949,6 +8074,9 @@ export class UolTelegramShadow extends DurableObject {
       String(id || "").trim(),
     ).toArray()[0];
     if (!row) throw new Error("delivery_offer_not_found");
+    if (row.delivery_quarantine_reason === "unknown_closed_unverified:main") {
+      throw new Error("delivery_closed_unverified");
+    }
     const normalizedTarget = String(target || "offer").trim().toLowerCase();
     if (["main", "canal2", "discord", "comment"].some(
       name => Boolean(row[`${name}_delivery_in_flight_at`]),
@@ -8842,8 +8970,16 @@ export class UolTelegramShadow extends DurableObject {
       }])));
     let messageIds = [];
     try { messageIds = JSON.parse(row.comment_message_ids || "[]"); } catch {}
+    const deliveryTimeline = this.deliveryTimelineForOffer(row.id);
+    const administrativelyClosed = row.status === "delivery_quarantined" &&
+      row.delivery_quarantine_reason === "unknown_closed_unverified:main";
     return {
       id: row.id, status: row.status, generation: row.delivery_generation, mode: row.delivery_mode,
+      quarantineReason: row.delivery_quarantine_reason,
+      ...(administrativelyClosed ? { disposition: { state: "closed_unverified",
+        deliveryConfirmed: false, retryAllowed: false,
+        evidenceReference: deliveryTimeline.find(event => event.target === "main" &&
+          event.state === "closed_unverified")?.externalId || "" } } : {}),
       firstSeenAt: row.first_seen_at, soldOutAt: row.sold_out_at, restockedAt: row.restocked_at,
       unknownAt: row.delivery_unknown_at, unknownTargets: row.delivery_unknown_target,
       deliveries, maintenance,
@@ -8854,7 +8990,7 @@ export class UolTelegramShadow extends DurableObject {
         unknownAt: row.comment_delivery_unknown_at, nextAttemptAt: row.comment_delivery_next_attempt_at },
       whatsapp: this.sqlExec(`SELECT attempts, sent_at, in_flight_at, next_attempt_at,
         last_error, pending_message_id FROM beeper_delivery_queue WHERE offer_id = ?`, row.id).toArray()[0] || null,
-      deliveryTimeline: this.deliveryTimelineForOffer(row.id),
+      deliveryTimeline,
       ...(receipts === true && (row.main_delivery_in_flight_at || row.main_delivery_unknown_at ||
         (row.delivery_unknown_at && String(row.delivery_unknown_target || "").split(",").includes("main")))
         ? { receiptDiagnostics: this.mainReceiptDiagnostics(row) } : {}),
@@ -9296,6 +9432,9 @@ export default {
               messageKind: body?.messageKind,
               messageIds: body?.messageIds,
               evidenceReference: body?.evidenceReference,
+              expectedGeneration: body?.expectedGeneration,
+              expectedAttempt: body?.expectedAttempt,
+              expectedUnknownAt: body?.expectedUnknownAt,
             },
           );
         });
