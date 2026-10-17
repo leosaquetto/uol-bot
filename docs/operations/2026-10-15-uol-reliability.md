@@ -1051,3 +1051,43 @@ release also needs a fresh accepted sample for that day; the normal observer
 cadence is 15 minutes. Operational incident recovery then still needs its
 affirmative five-minute window. The unknown delivery has a separate receipt
 requirement and is not resolved by a quota reset.
+
+### Receipt diagnostic published; unused evidence source exhausted — 17 October
+
+Diagnostic SHA `4d43a0bdb5a0a96d5c15713117edc72823bfb703` passed all four jobs in
+[CI run 39079806776](https://github.com/leosaquetto/uol-bot/actions/runs/39079806776).
+A fresh, separately recorded diagnostic corrective window preserved the original
+baseline and ordinary release-policy failure. Fresh preflight contained no new
+debt identities or higher counters relative to the frozen investigated snapshot;
+cost, source, configuration and exact-SHA CI checks passed. One strict deployment
+published version **`a9d03c6c-385b-4821-a60d-e9c1d6f7ab8c`** at
+`2026-10-17T23:44:41.385346Z`. Wrangler independently confirms tag
+**`git-4d43a0bdb5a0`**. The previous correction remains in its ancestry.
+
+Authenticated inventory with `receipts=true` returned HTTP 200 for
+`n3a-10-off-no-site`: generation 1, attempt 1, start
+`2026-10-17T03:09:54.675Z`, uncertainty at `03:10:02.675Z`. The exact-attempt ledger
+contains only the start and unknown events, with no external receipt ID. The
+bounded unmatched-forward window `03:09:53.675Z`–`03:20:02.675Z` returned **zero
+pairs**. Consequently there were no exact Telegram IDs to fetch; the prepared
+direct-reader performed no network request. This exhausts the newly identified
+persistent candidate source, not proof of non-delivery. The uncertainty,
+generation, attempt and no-retry barrier remain intact. Repeat searches require
+new evidence rather than another identical lookup.
+
+The new version's natural primary cycle succeeded at
+`2026-10-17T23:45:03.513Z`, with 25 reads, primary estimate 25, conservative
+observed estimate 64 and maximum cycle 25. Projected writes are 63,488 with
+headroom 36,512. Fresh authenticated postflight adds no debt relative to this
+corrective preflight, and the original baseline hash is unchanged. The standard
+report remains **published=true, runtimeVerified=false, ready=false** with
+`critical_queue_pending:1` and the original-baseline regressions preserved.
+The catalog still returns HTTP 503 under the existing optional budget; no phone
+installation or completed-day quota acceptance is claimed.
+
+Private evidence: `receipt-diagnostic-corrective-publication-2026-10-17.json`,
+matching pre/post/deploy/version receipts, `receipt-diagnostic-main-2026-10-17.json`
+and `receipt-diagnostic-telegram-direct-2026-10-17.json`. The publication manifest
+now names this exact SHA/version. Pending delivery remains the single main
+`n3a` identity; operational incident recovery and optional work await their own
+natural evidence windows.
