@@ -1801,6 +1801,104 @@
       transform: scale(1);
     }
 
+    /* The default bar above is preserved in NAVIGATION_BAR_BASELINE.md. */
+    .bottom-nav[data-navigation-theme="purple"] {
+      --nav-surface: rgba(94, 24, 153, 0.58);
+      --nav-border: rgba(222, 190, 255, 0.32);
+      --nav-shadow: 0 12px 36px rgba(31, 5, 52, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.22);
+      --nav-idle: rgba(247, 235, 255, 0.75);
+      --nav-selected: #ffb300;
+    }
+    .bottom-nav[data-navigation-theme="orange"] {
+      --nav-surface: rgba(220, 89, 0, 0.72);
+      --nav-border: rgba(255, 222, 176, 0.42);
+      --nav-shadow: 0 12px 36px rgba(85, 31, 0, 0.4), inset 0 1px 1px rgba(255, 242, 221, 0.3);
+      --nav-idle: rgba(71, 26, 0, 0.8);
+      --nav-selected: #fff3df;
+    }
+    .bottom-nav[data-navigation-theme="white"] {
+      --nav-surface: rgba(255, 255, 255, 0.82);
+      --nav-border: rgba(255, 255, 255, 0.7);
+      --nav-shadow: 0 12px 36px rgba(0, 0, 0, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+      --nav-idle: rgba(53, 38, 65, 0.62);
+      --nav-selected: #7021a8;
+    }
+    .bottom-nav[data-navigation-theme]:not([data-navigation-theme="default"]) {
+      background: var(--nav-surface);
+      border-color: var(--nav-border);
+      box-shadow: var(--nav-shadow);
+    }
+    .bottom-nav[data-navigation-theme]:not([data-navigation-theme="default"]) .bottom-nav-item {
+      color: var(--nav-idle);
+    }
+    .bottom-nav[data-navigation-theme]:not([data-navigation-theme="default"]) .bottom-nav-item.active {
+      color: var(--nav-selected);
+    }
+    .bottom-nav[data-navigation-theme]:not([data-navigation-theme="default"]) .active-dot {
+      background: var(--nav-selected);
+      box-shadow: 0 0 6px var(--nav-selected);
+    }
+    .settings-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 4px;
+      margin-bottom: 22px;
+      background: #101217;
+      border: 1px solid #292e3a;
+      border-radius: 14px;
+    }
+    .settings-tab {
+      flex: 1;
+      min-height: 44px;
+      border: 0;
+      border-radius: 10px;
+      color: #a9b2c2;
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .settings-tab[aria-selected="true"] { background: #30303b; color: #fff; }
+    .settings-panel[hidden] { display: none; }
+    .navigation-theme-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .navigation-theme-option {
+      min-width: 0;
+      padding: 14px 10px;
+      border: 1px solid #363342;
+      border-radius: 18px;
+      background: radial-gradient(ellipse at top right, rgba(112, 33, 168, 0.18), transparent 75%), #101217;
+      color: #f1f5f9;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .navigation-theme-option[aria-pressed="true"] { border-color: #ffb300; box-shadow: inset 0 0 0 1px #ffb300; }
+    .navigation-theme-option:disabled { cursor: wait; opacity: 0.8; }
+    .navigation-theme-option:focus-visible, .settings-tab:focus-visible { outline: 2px solid #ffb300; outline-offset: 3px; }
+    .navigation-theme-label { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; }
+    .navigation-theme-check { color: #ffb300; visibility: hidden; }
+    .navigation-theme-option[aria-pressed="true"] .navigation-theme-check { visibility: visible; }
+    .navigation-theme-description { display: block; margin-top: 6px; font-size: 11px; line-height: 1.5; color: #a9b2c2; }
+    .bottom-nav.navigation-theme-preview {
+      position: relative;
+      bottom: auto;
+      left: auto;
+      transform: none;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      padding: 5px 4px;
+      gap: 0;
+      margin-bottom: 14px;
+      z-index: auto;
+      pointer-events: none;
+    }
+    .navigation-theme-preview .bottom-nav-item { flex: 1; width: auto; height: 34px; min-width: 0; }
+    .navigation-theme-preview .nav-icon-wrap { width: 18px; height: 18px; }
+    .navigation-theme-preview .active-dot { bottom: 2px; width: 3px; height: 3px; }
+    #navigationThemeStatus { min-height: 36px; margin: 16px 0 0; font-size: 12px; line-height: 1.5; color: #a9b2c2; }
+
     /* ===================================================================
        HISTÓRICO & CATÁLOGO PERMANENTE
        =================================================================== */
@@ -3573,9 +3671,14 @@
     <div class="modal-box" onclick="event.stopPropagation()">
       <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px;">
         <div style="width: 20px; height: 20px; color: #38bdf8;">__ICON_settings__</div>
-        <div class="modal-title" style="margin: 0;">Ajustes & Prioridades</div>
+        <div class="modal-title" style="margin: 0;">Ajustes</div>
       </div>
 
+      <div class="settings-tabs" role="tablist" aria-label="Seções dos ajustes">
+        <button class="settings-tab" id="settingsGeneralTab" role="tab" aria-selected="true" aria-controls="settingsGeneralPanel" onclick="selectSettingsTab('general')">Geral</button>
+        <button class="settings-tab" id="settingsPersonalizationTab" role="tab" aria-selected="false" aria-controls="settingsPersonalizationPanel" onclick="selectSettingsTab('personalization')">Personalização</button>
+      </div>
+      <div class="settings-panel" id="settingsGeneralPanel" role="tabpanel" aria-labelledby="settingsGeneralTab">
       <!-- Trocar Perfil -->
       <div class="form-group">
         <label class="form-label">Perfil de Usuário Ativo</label>
@@ -3643,6 +3746,16 @@
       <div class="modal-buttons">
         <button class="btn-modal-primary" onclick="saveSettingsFromModal()">Salvar Ajustes</button>
         <button class="btn-modal-cancel" onclick="closeSettingsModal()">Fechar</button>
+      </div>
+      </div>
+      <div class="settings-panel" id="settingsPersonalizationPanel" role="tabpanel" aria-labelledby="settingsPersonalizationTab" hidden>
+        <h3 style="margin: 0 0 8px; font-size: 18px;">Barra de navegação</h3>
+        <p style="margin: 0 0 20px; color: #a9b2c2; font-size: 12px; line-height: 1.6;">Escolha a aparência do menu. O modelo Padrão mantém a barra original e pode ser restaurado a qualquer momento.</p>
+        <div class="navigation-theme-options" id="navigationThemeOptions" role="group" aria-label="Estilo da barra de navegação"></div>
+        <p id="navigationThemeStatus" role="status" aria-live="polite">A escolha é salva automaticamente neste aparelho.</p>
+        <div class="modal-buttons">
+          <button class="btn-modal-cancel" onclick="closeSettingsModal()">Fechar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3863,6 +3976,9 @@
           }
         }
       } catch(e) {}
+
+      // Native device preference wins over a stale WebView cache after updates.
+      initializeNavigationTheme();
 
       // Reclassifica categorias de ofertas em cache com as regras vigentes (ex: musicais -> MUSICA)
       if (historyData.active && Array.isArray(historyData.active)) {
@@ -5981,7 +6097,7 @@
       if (tab !== 'history' && historyRenderState && historyRenderState.observer) historyRenderState.observer.disconnect();
 
       // Atualiza botões do menu inferior flutuante
-      document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+      document.querySelectorAll('#bottomNav .bottom-nav-item').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tab);
       });
 
@@ -7882,6 +7998,92 @@
       window.location.href = 'hunter-access://manage';
     }
 
+    // NAVIGATION_PERSONALIZATION_START
+    const NAVIGATION_THEMES = [
+      { id: 'default', label: 'Padrão', description: 'Vidro escuro · original' },
+      { id: 'purple', label: 'Roxo', description: 'Vidro roxo · ícone laranja' },
+      { id: 'orange', label: 'Laranja', description: 'Vidro laranja · ícone leitoso' },
+      { id: 'white', label: 'Branco', description: 'Vidro branco · ícone roxo' }
+    ];
+    let savedNavigationTheme = 'default';
+    let pendingNavigationTheme = null;
+
+    function normalizeNavigationTheme(theme) {
+      return NAVIGATION_THEMES.some(item => item.id === theme) ? theme : 'default';
+    }
+
+    function applyNavigationTheme(theme) {
+      const value = normalizeNavigationTheme(theme);
+      settings.navigationBarTheme = value;
+      document.getElementById('bottomNav').setAttribute('data-navigation-theme', value);
+      document.querySelectorAll('[data-theme-option]').forEach(button => {
+        button.setAttribute('aria-pressed', String(button.getAttribute('data-theme-option') === value));
+        button.disabled = pendingNavigationTheme !== null;
+      });
+    }
+
+    function initializeNavigationTheme() {
+      savedNavigationTheme = normalizeNavigationTheme(INITIAL.nativeBrowser
+        ? INITIAL.navigationBarTheme : settings.navigationBarTheme);
+      applyNavigationTheme(savedNavigationTheme);
+    }
+
+    function renderNavigationThemes() {
+      const container = document.getElementById('navigationThemeOptions');
+      if (!container.children.length) {
+        const icons = ['navHome', 'navTickets', 'navHistory', 'navRedemptions'];
+        container.innerHTML = NAVIGATION_THEMES.map(theme => `
+          <button class="navigation-theme-option" data-theme-option="${theme.id}" aria-pressed="false" onclick="chooseNavigationTheme('${theme.id}')">
+            <span class="bottom-nav navigation-theme-preview" data-navigation-theme="${theme.id}" aria-hidden="true">
+              ${icons.map((icon, index) => `<span class="bottom-nav-item${index === 0 ? ' active' : ''}"><span class="nav-icon-wrap">${ICONS[icon] || ''}</span><span class="active-dot"></span></span>`).join('')}
+            </span>
+            <span class="navigation-theme-label">${theme.label}<span class="navigation-theme-check" aria-hidden="true">✓</span></span>
+            <span class="navigation-theme-description">${theme.description}</span>
+          </button>`).join('');
+      }
+      applyNavigationTheme(settings.navigationBarTheme);
+    }
+
+    function chooseNavigationTheme(theme) {
+      if (pendingNavigationTheme !== null || !NAVIGATION_THEMES.some(item => item.id === theme)) return;
+      if (INITIAL.nativeBrowser) pendingNavigationTheme = theme;
+      applyNavigationTheme(theme);
+      const status = document.getElementById('navigationThemeStatus');
+      if (INITIAL.nativeBrowser) {
+        status.textContent = 'Salvando neste iPhone…';
+        window.location.href = 'hunter-theme://set?value=' + theme;
+      } else {
+        try {
+          localStorage.setItem('uol_hub_settings', JSON.stringify(settings));
+          savedNavigationTheme = theme;
+          status.textContent = 'Salvo neste navegador.';
+        } catch (_) {
+          applyNavigationTheme(savedNavigationTheme);
+          status.textContent = 'Não foi possível salvar. A escolha anterior foi mantida.';
+        }
+      }
+    }
+
+    function handleNavigationThemeSaveResult(theme, saved) {
+      if (pendingNavigationTheme !== theme) return;
+      pendingNavigationTheme = null;
+      if (saved) savedNavigationTheme = theme;
+      applyNavigationTheme(savedNavigationTheme);
+      if (saved) saveSettingsToStorage();
+      document.getElementById('navigationThemeStatus').textContent = saved
+        ? 'Salvo neste iPhone.' : 'Não foi possível salvar. A escolha anterior foi mantida.';
+    }
+
+    function selectSettingsTab(tab) {
+      const personalization = tab === 'personalization';
+      document.getElementById('settingsGeneralPanel').hidden = personalization;
+      document.getElementById('settingsPersonalizationPanel').hidden = !personalization;
+      document.getElementById('settingsGeneralTab').setAttribute('aria-selected', String(!personalization));
+      document.getElementById('settingsPersonalizationTab').setAttribute('aria-selected', String(personalization));
+      if (personalization) renderNavigationThemes();
+    }
+    // NAVIGATION_PERSONALIZATION_END
+
     function openSettingsModal() {
       document.getElementById('inputPriorizar').value = (settings.priorizarWords || []).join(', ');
       document.getElementById('inputDespriorizar').value = (settings.despriorizarWords || []).join(', ');
@@ -7889,6 +8091,8 @@
       selectUser(settings.currentUser || 'leosaquetto', false);
       updateCredsStatusUI();
       renderHunterAccessUI();
+      selectSettingsTab('general');
+      renderNavigationThemes();
 
       const verLabel = document.getElementById('currentVersionLabel');
       if (verLabel) verLabel.textContent = 'v' + SCRIPT_VERSION;

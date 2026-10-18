@@ -174,7 +174,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.8";
+const SCRIPT_VERSION = "5.7.9";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -565,6 +565,14 @@ function installHunterBrowser(view) {
   view.shouldAllowRequest = request => {
     const raw = request && request.url;
     if (typeof raw !== "string") return true;
+    const navigationTheme = /^hunter-theme:\/\/set\?value=(default|purple|orange|white)$/.exec(raw);
+    if (navigationTheme && navigationTheme[0] === raw) {
+      const theme = navigationTheme[1];
+      const saved = saveNavigationTheme(theme);
+      Promise.resolve().then(() => view.evaluateJavaScript("handleNavigationThemeSaveResult(" + JSON.stringify(theme) + "," + saved + ");")).catch(() => {});
+      return false;
+    }
+    if (/^hunter-theme:/i.test(raw)) return false;
     if (raw === "hunter-update://check" || raw === "hunter-update://check/") {
       if (!opening) {
         opening = true;
@@ -686,6 +694,30 @@ function getFileManager() {
     return fm;
   } catch (e) {
     return FileManager.local();
+  }
+}
+
+function loadNavigationTheme() {
+  try {
+    const fm = FileManager.local();
+    const file = fm.joinPath(fm.documentsDirectory(), "uol_navigation_theme.json");
+    if (!fm.fileExists(file)) return "default";
+    const theme = JSON.parse(fm.readString(file)).theme;
+    return ["default", "purple", "orange", "white"].includes(theme) ? theme : "default";
+  } catch (_) {
+    return "default";
+  }
+}
+
+function saveNavigationTheme(theme) {
+  if (!["default", "purple", "orange", "white"].includes(theme)) return false;
+  try {
+    const fm = FileManager.local();
+    const file = fm.joinPath(fm.documentsDirectory(), "uol_navigation_theme.json");
+    fm.writeString(file, JSON.stringify({ theme }));
+    return true;
+  } catch (_) {
+    return false;
   }
 }
 
@@ -969,6 +1001,7 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
     hunterCollection: collectionResult || { status: collectionPausedForUpdate ? "updated" : "starting", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} },
     historyData: historyData,
     settings: settings,
+    navigationBarTheme: loadNavigationTheme(),
     credentials: credentials,
     sessionCookies: (sessionCookies && sessionCookies.length > 0) ? sessionCookies : cookiesForActiveUser,
     sessionCookiesLeo: settings.userSessions.leosaquetto,

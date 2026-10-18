@@ -1,14 +1,14 @@
 # Handoff: Clube UOL Stories Hunter (Scriptable Hub)
 
 > **Data de Atualização**: 18 de Outubro de 2026
-> **Status**: Contrato atual em [CHANGELOG_v5.7.8.md](CHANGELOG_v5.7.8.md); publicação e execução real são registradas separadamente no documento operacional.
+> **Status**: Contrato atual em [CHANGELOG_v5.7.9.md](CHANGELOG_v5.7.9.md); publicação e execução real são registradas separadamente no documento operacional.
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
 > **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
 
 ---
 
-## Contrato atual 5.7.8
+## Contrato atual 5.7.9
 
 Consulte [CHANGELOG_v5.7.0.md](CHANGELOG_v5.7.0.md). Esta revisão substitui as regras
 antigas de tags inline nos cards: agora ficam em faixa horizontal rolável, separada
@@ -33,6 +33,16 @@ journal de resgate são preservados. Login comum no navegador não importa sess�
 para o Hunter. Desafios do UOL continuam no formulário oficial, sem automação.
 
 ---
+
+## Personalização da barra
+
+Ajustes → Personalização oferece Padrão, Roxo, Laranja e Branco. O Padrão está
+registrado com CSS e marcação originais em [NAVIGATION_BAR_BASELINE.md](NAVIGATION_BAR_BASELINE.md).
+As variantes mudam somente cores do vidro, borda, sombra, ícones e ponto ativo.
+A preferência é individual por aparelho, salva pelo host Scriptable em
+`FileManager.local()/uol_navigation_theme.json`; não depende de iCloud. A escolha
+nativa prevalece sobre cache antigo da WebView e sobrevive a atualização de código.
+Falha ao salvar restaura o último tema confirmado.
 
 ## 1. Visão Geral da Arquitetura
 

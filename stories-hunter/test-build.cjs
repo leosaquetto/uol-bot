@@ -283,7 +283,7 @@ test('generated HTML embeds exact data safely without replacement-string expansi
   const icons = { tickets: '<svg viewBox="0 0 24 24"></svg>' };
   const credentials = { test: "$& $` $' $$ </script><script>" };
   const context = vm.createContext({ BUNDLED_COOKIES_GAORIEL: [], BUNDLED_COOKIES_LEO: [],
-    BUNDLED_REDEMPTIONS: [], ICONS: icons, NTFY_TOPIC: 'fixture', SCRIPT_VERSION: 'test' });
+    BUNDLED_REDEMPTIONS: [], ICONS: icons, NTFY_TOPIC: 'fixture', SCRIPT_VERSION: 'test', loadNavigationTheme: () => 'white' });
   vm.runInContext(artifact.slice(start, end), context);
   const html = context.buildDashboardHTML({ active: [], history: [] }, { userSessions: {} }, credentials, [], [], false, { status: 'complete' });
   assert.equal((html.match(/<script>/g) || []).length, 1);
@@ -294,6 +294,7 @@ test('generated HTML embeds exact data safely without replacement-string expansi
   assert.deepEqual(JSON.parse(JSON.stringify(context.initial.credentials)), credentials);
   assert.deepEqual(JSON.parse(JSON.stringify(context.initial.icons)), icons);
   assert.equal(context.initial.hunterCollection.status, 'complete');
+  assert.equal(context.initial.navigationBarTheme, 'white');
 });
 
 test('redemption identity never merges accounts, missing accounts, or synthetic row indexes', () => {
