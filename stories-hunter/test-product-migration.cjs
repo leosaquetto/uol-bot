@@ -33,8 +33,10 @@ test('explicit Mac install backs up and removes only the old script; conflict pr
   }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
 test('5.8.0 updater accepts new product artifact using retained compatibility marker',()=>{
-  const {execFileSync}=require('node:child_process');
-  const old=execFileSync('git',['show','34c1d1f12965dee64fcb8390000a876615c6bae4:stories-hunter/native/updater.js'],{cwd:path.join(__dirname,'..'),encoding:'utf8'});
-  const context=vm.createContext({});vm.runInContext(old,context);
+  // Exact historical bytes: 34c1d1f12965dee64fcb8390000a876615c6bae4:stories-hunter/native/updater.js.
+  // Keep this fixture immutable so compatibility also runs in shallow checkouts.
+  const old=fs.readFileSync(path.join(__dirname,'fixtures/updater-5.8.0.js'));
+  assert.equal(require('node:crypto').createHash('sha256').update(old).digest('hex'),'3817a4010b785991bdb063f9a3309720c51b411f684031679196d509dde5fb59');
+  const context=vm.createContext({});vm.runInContext(old.toString('utf8'),context);
   assert.equal(context.hunterUpdateVersion(require('./assemble.cjs').assembleHunter()),'5.8.1');
 });
