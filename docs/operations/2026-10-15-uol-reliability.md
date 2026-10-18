@@ -1109,3 +1109,49 @@ is acknowledged administratively rather than labeled recovered; aggregate SLO
 acknowledgement is permitted only when no queue item remains. Closure, required
 audit and acknowledgement must commit atomically. Other debt and the original
 release baseline remain independent.
+
+
+### Exceptional closure applied and verified — 17 October, 21:15 BRT
+
+Published code SHA `326fa866e5d1697a982b5f5331615c26992332d0`, version
+`368780c0-e7d6-42d5-a071-b06bfe41ce68`, verified against the Cloudflare version
+annotation `git-326fa866e5d1`. CI run
+[39081780894](https://github.com/leosaquetto/uol-bot/actions/runs/39081780894)
+passed all four required jobs. Focused tests passed 48 native closure cases,
+11 state cases and four catalog cases. The earlier CI failure in the catalog
+SQL measurement was an existing wall-clock fixture: shortly after 00:00 UTC,
+the test's 10-second cadence and 512 estimate legitimately reserve all optional
+reads. Fixing only the test Date to noon preserves the real SQL bound and denied
+budget case; production guard limits were not changed.
+
+The ordinary pre-publication gate still rejected identified historical debt.
+One explicitly documented corrective window compared a frozen known-debt
+snapshot with fresh pre/post snapshots and rejected additional debt. The original
+baseline bytes and gate implementation were preserved. Publication waited for
+the natural global metric sample after the UTC date reset; no guard was cleared.
+
+At `2026-10-18T00:15:22.347Z`, one authenticated administrative request returned
+HTTP 200. Readback confirms `n3a-10-off-no-site` is terminally quarantined with
+disposition `closed_unverified`, `deliveryConfirmed=false`, `retryAllowed=false`.
+Exactly one mandatory administrative ledger event references
+`operator:2026-10-17:n3a-timeout-exception`. Generation, original attempt, error,
+uncertainty timestamps, receipt fields and previous timeline were preserved.
+No destination POST was made. Main incident and empty aggregate queue were
+acknowledged administratively; neither was labeled a confirmed delivery or a
+natural recovery.
+
+Postflight: queue pending 0, critical pending 0, secondary pending 0, unknown 0,
+dead letters 0, maintenance dead letters 0. The published version completed a
+natural primary cycle at `2026-10-18T00:15:03.614Z`: 28 rows read, estimate 28,
+observed estimate floor 64, unchanged acceptance maximum 512. Read/write guards
+were healthy; write projection 62,528 and headroom 37,472. Catalog HTTP 200 and
+conditional HTTP 304 were verified. `published=true`, `runtimeVerified=true`,
+`ready=false` at this snapshot: two previously reconciled incidents still awaited
+their natural recovery window. Original-baseline regression report was empty.
+
+Private evidence remains under `~/.config/uol-ticket-research/` in
+`exceptional-closure-application-{before,after,debt,ready}-2026-10-17.json`,
+`exceptional-closure-admin-{request,response}-2026-10-17.json`, the publication
+decision, version metadata and `exceptional-closure-final-proof-2026-10-17.json`.
+The publication manifest names this exact current SHA/version. The administrative
+closure does not turn the original lost Telegram receipt into delivery proof.
