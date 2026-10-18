@@ -1594,3 +1594,32 @@ Validação local: 164/164 testes offline Hunter, sintaxe do artefato ESM e
 achados pendentes. A troca OAuth real no Scriptable e a autenticação renovada do
 Leonardo ainda exigem prova no aparelho; testes sintéticos não fecham esse gate.
 Backend e credencial técnica de coleta permanecem na versão publicada anterior.
+
+A 5.7.7 foi publicada no commit `04a1c5e776a34085117f61ccd8159923d4e8bef6`,
+com os quatro jobs da [CI](https://github.com/leosaquetto/uol-bot/actions/runs/39133960637)
+aprovados. A distribuição code-only recebeu aceite ntfy `aNhxFJ8xVg9K`.
+O arquivo servido pelo MacSend corresponde ao Git, SHA-256
+`d3ee94d7e5007cf3559f535ad9523990b6a06c83b5bca733f03af8b8a895a97f`.
+Os cinco arquivos privados mantiveram seus hashes anteriores à instalação.
+O início real do SSO confirmou redirect 302 ao OAuth oficial, callback esperado,
+estado válido e cookie PHPSESSID; isso isoladamente não comprovava o login.
+Depois, o usuário concluiu o formulário no iPhone e confirmou a conexão UOL bem-sucedida.
+Essa prova é da sessão local do Hunter, sem substituição da sessão compartilhada
+no servidor ou da credencial técnica de coleta.
+
+## Hunter 5.7.8 — rótulo do administrador após OTA, 18 de outubro
+
+O registro autenticado de aparelhos retornou HTTP 200: `leo-iphone` continua
+`approved`, `owner`, com as duas contas pessoais autorizadas. Não havia pedido
+pendente ou aparelho de amigo ativo. Nenhuma permissão foi alterada.
+
+Identificadas duas causas do rótulo “Solicitar acesso”: abertura de atualização
+não incluía o estado de acesso e o menu de administrador retornava cedo quando
+a lista de amigos estava vazia, antes de atualizar a tela. A correção inclui
+estado seguro de acesso na abertura de atualização, sem coletar fontes, e
+atualiza a tela antes de qualquer saída antecipada do menu. Reconexão UOL e
+Keychain permanecem iguais à 5.7.7 confirmada no aparelho.
+
+Validação local desta correção: 16/16 testes dos dois arquivos afetados,
+sintaxe do artefato e `git diff --check` aprovados. Não se repetiu a suíte
+local completa; os 164 testes da etapa anterior já tinham passado.

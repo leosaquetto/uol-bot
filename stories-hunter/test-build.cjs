@@ -99,13 +99,15 @@ test('iCloud download is awaited before any private read and failure does not ov
 });
 
 test('OTA first opening shows UI without collection; next opening and explicit notifications collect', async () => {
-  const files = new Map(); let action = 'open', collects = 0, displayed = 0, updated = 0, lastInitial, lastCollection, closeWindow;
+  const files = new Map(); let action = 'open', collects = 0, displayed = 0, updated = 0, accessReads = 0, lastInitial, lastCollection, closeWindow;
+  const access = { status: 'approved', role: 'owner', accounts: ['leosaquetto', 'gaoriel'] };
   const context = vm.createContext({
     SCRIPT_VERSION: 'test-1', STARTUP_HTML: '__STARTUP_TITLE__ __STARTUP_DESCRIPTION__', console: { log() {} },
     Timer: { schedule: (milliseconds, repeats, callback) => { assert.equal(milliseconds, 800); assert.equal(repeats, false); callback(); } },
     FileManager: { local: () => ({ documentsDirectory: () => '/local', joinPath: path.join, fileExists: p => files.has(p),
       readString: p => files.get(p), writeString: (p, v) => files.set(p, v) }) },
     hunterAction: () => action,
+    createHunterAccess: () => ({ status: async () => { accessReads++; return access; } }),
     runNativeHunterCollector: async () => { collects++; return { status: 'complete' }; },
     performSelfUpdate: async () => { updated++; },
     preparePrivateFiles: async () => { assert.ok(displayed > 0, 'loading is visible before private data waits'); }, persistPrivateBootstrap() {},
@@ -119,6 +121,7 @@ test('OTA first opening shows UI without collection; next opening and explicit n
   vm.runInContext(gate + main, context);
   await context.main(); assert.equal(collects, 0); assert.equal(displayed, 1); assert.equal(lastInitial, true);
   assert.equal(lastCollection.status, 'updated');
+  assert.equal(lastCollection.access, access); assert.equal(accessReads, 1);
   await context.main(); assert.equal(collects, 1); assert.equal(displayed, 2); assert.equal(lastInitial, false);
   assert.equal(lastCollection.status, 'complete');
   context.SCRIPT_VERSION = 'test-2'; action = 'notification'; await context.main();
@@ -126,6 +129,7 @@ test('OTA first opening shows UI without collection; next opening and explicit n
   action = 'update'; context.SCRIPT_VERSION = 'test-3'; await context.main();
   assert.equal(updated, 1); assert.equal(collects, 2);
   action = 'open'; await context.main(); assert.equal(collects, 2); assert.equal(displayed, 3);
+  assert.equal(lastCollection.access, access); assert.equal(accessReads, 2);
 });
 
 test('closing the loading window never reopens it after delayed native data completes', async () => {

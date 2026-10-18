@@ -20,7 +20,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.7";
+const SCRIPT_VERSION = "5.7.8";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -1327,6 +1327,8 @@ async function hunterNotice(title, message) {
 async function manageNativeHunterAccess(view) {
   const manager = createHunterAccess();
   let access = await manager.status({ refresh: true });
+  const freshSafe = JSON.stringify(access).replace(/</g, "\\u003c");
+  await view.evaluateJavaScript("INITIAL.hunterAccess = " + freshSafe + "; renderHunterAccessUI(); setHunterCollectionStatus({status: INITIAL.hunterAccess.status === 'not_configured' ? 'activation_required' : INITIAL.hunterAccess.status});");
   let requested = false;
   if (access.status === "not_configured" || access.status === "access_expired") {
     const prompt = new Alert(); prompt.title = "Ativar coleta neste iPhone";
@@ -1413,7 +1415,7 @@ async function main() {
   // one document replacement. No evaluateJavaScript is used during startup.
   const readable = new Promise(resolve => Timer.schedule(800, false, resolve));
   const collection = collectionPausedForUpdate
-    ? Promise.resolve({ status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} })
+    ? createHunterAccess().status().then(access => ({ status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {}, access }))
     : runNativeHunterCollector();
   try {
     await preparePrivateFiles();

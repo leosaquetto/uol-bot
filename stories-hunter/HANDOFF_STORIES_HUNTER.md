@@ -1,14 +1,14 @@
 # Handoff: Clube UOL Stories Hunter (Scriptable Hub)
 
 > **Data de Atualização**: 18 de Outubro de 2026
-> **Status**: Contrato atual em [CHANGELOG_v5.7.7.md](CHANGELOG_v5.7.7.md); publicação e execução real são registradas separadamente no documento operacional.
+> **Status**: Contrato atual em [CHANGELOG_v5.7.8.md](CHANGELOG_v5.7.8.md); publicação e execução real são registradas separadamente no documento operacional.
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
 > **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
 
 ---
 
-## Contrato atual 5.7.7
+## Contrato atual 5.7.8
 
 Consulte [CHANGELOG_v5.7.0.md](CHANGELOG_v5.7.0.md). Esta revisão substitui as regras
 antigas de tags inline nos cards: agora ficam em faixa horizontal rolável, separada

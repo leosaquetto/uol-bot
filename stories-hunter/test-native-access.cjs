@@ -91,3 +91,27 @@ test('activation route cancels navigation synchronously and shares the offer-she
   view.shouldAllowRequest({ url: 'hunter-browser://external?url=' + encodeURIComponent('https://clube.uol.com.br/oferta') });
   await new Promise(resolve => setImmediate(resolve)); assert.equal(browsers.length, 1, 'a failed activation releases the shared lock');
 });
+
+test('approved owner with no friends refreshes the access UI before the empty-device return', async () => {
+  const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+  const elements = new Map();
+  const get = id => { if (!elements.has(id)) elements.set(id, {}); return elements.get(id); };
+  const ui = vm.createContext({ INITIAL: { nativeBrowser: true, hunterAccess: { status: 'not_configured' } },
+    document: { getElementById: get }, setHunterCollectionStatus() {} });
+  vm.runInContext(template.slice(template.indexOf('    function hunterAccessState()'), template.indexOf('    function manageHunterAccess()')), ui);
+  ui.renderHunterAccessUI(); assert.equal(get('btnHunterAccess').textContent, 'Solicitar acesso');
+  const notices = [], access = { status: 'approved', role: 'owner', accounts: ['leosaquetto', 'gaoriel'] };
+  const manager = {
+    status: async options => { assert.equal(options.refresh, true); return access; },
+    devices: async () => { assert.equal(get('btnHunterAccess').textContent, 'Gerenciar aparelhos'); return { ok: true, devices: [] }; },
+  };
+  const context = vm.createContext({});
+  vm.runInContext(nativeCode, context);
+  context.createHunterAccess = () => manager;
+  context.hunterNotice = async (title, message) => notices.push({ title, message });
+  await context.manageNativeHunterAccess({ evaluateJavaScript: async code => vm.runInContext(code, ui) });
+  assert.equal(get('hunterAccessStatus').textContent, 'Acesso aprovado');
+  assert.equal(get('btnHunterAccess').textContent, 'Gerenciar aparelhos');
+  assert.equal(ui.INITIAL.hunterAccess.role, 'owner');
+  assert.equal(notices.length, 1); assert.match(notices[0].message, /Nenhuma solicitação pendente/);
+});
