@@ -1393,3 +1393,21 @@ não são interceptados. Nenhum cookie ou credencial integra a rota.
 Resgate por fetch e navegação de login/logout preservados. A API não documenta
 compartilhamento de cookies com a WebView; autenticação externa e retorno real
 continuam dependentes de confirmação no iPhone.
+
+5.7.3 publicada do cliente SHA `7bf21f2cb38fc73d9a5fe243682e3a146c6a2833`:
+69/69 testes locais e CI exata aprovada em
+https://github.com/leosaquetto/uol-bot/actions/runs/39094639280. Revisão independente
+identificou links relativos aceitos pelo catálogo; a resolução usa a base oficial
+antes da validação de hostname/protocolo, com teste do caso legado.
+
+Distribuição `--code-only` concluída: ntfy retornou recibo de aceite, MacSend serve
+o artefato público de hash idêntico e o arquivo privado 5.7.3 foi instalado no iCloud.
+Os quatro arquivos de sessões/banco preservaram os hashes. Artefato público com
+bundles privados vazios e sem credencial h1/cookies técnicos. Recibo e comprovações
+em `hunter573-final-proof-2026-10-18.json`, modo 0600. Nenhum novo deploy do Worker;
+seu SHA/versão e prova final de publicação foram preservados no manifesto.
+
+Aceite OTA não comprova execução no aparelho. Aguardam confirmação: loading e
+navegação, retorno da página da oferta, importação privada/coleta autenticada e
+descoberta natural com recibos dos destinos. O último estado observado do iPhone
+continua sendo 5.7.1 aberta com configuração privada pendente.
