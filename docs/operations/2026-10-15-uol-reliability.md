@@ -1155,3 +1155,44 @@ Private evidence remains under `~/.config/uol-ticket-research/` in
 decision, version metadata and `exceptional-closure-final-proof-2026-10-17.json`.
 The publication manifest names this exact current SHA/version. The administrative
 closure does not turn the original lost Telegram receipt into delivery proof.
+
+
+### Retention and historical incident recovery — 17 October, 21:20 BRT
+
+The comment `pqf` incident recovered naturally at `2026-10-18T00:20:10.656Z`.
+The remaining Discord `plh` incident exposed a separate retention race: its
+confirmed, completed offer was older than 30 days and was removed before the
+five-minute incident recovery window could finish. Direct inventory returned
+404; absence alone remains insufficient for recovery. Private pre-retention
+readback had recorded `resolved_sent`, generation 1/attempt 10, receipt
+`1549433841536733220`, at `2026-10-17T23:03:46.751Z`, later than the incident's
+last detection at `2026-10-17T03:39:26.342Z`.
+
+The scoped correction preserves completed offers and orphaned ledger evidence
+while an exact per-offer incident remains active, before both age and count
+cleanup. For an already missing offer, only the latest main/canal2/Discord
+`delivery` event by generation/attempt/time/id may support recovery, and only
+when it is `resolved_sent`, has a nonempty receipt, and its time is after the
+incident's last detection and not in the future. Missing evidence, another
+state, or a newer generation/attempt remains unresolved. This affirmative
+receipt check still requires the normal five-minute/two-observation window.
+No destination request, historical alert replay, migration or baseline reset
+is part of this correction.
+
+The existing cleanup also deleted ledger rows after their offer became orphaned.
+To re-resolve this confirmed case without recreating an offer or importing its
+history, the existing authenticated `/resolve-delivery` contract gains a narrow
+missing-offer/Discord/`sent` branch. It requires the exact active incident's
+last-detection timestamp, a numeric message ID, an operator reference and the
+original generation/attempt asserted by private evidence. The server cannot
+compare deleted generation/attempt fields; the response explicitly labels their
+source `operator_evidence`. A transaction rechecks the absent offer and incident,
+requires empty prior ledger or an exact idempotent proof, and records both a
+new `resolved_sent` receipt observation and a mandatory reconciliation audit.
+It leaves the incident active for the normal recovery window. No historical
+receipt time is fabricated, and no offer or destination message is recreated.
+
+Before applying that resolution, a fresh authenticated Discord GET returned HTTP
+200 for message `1549433841536733220`; original channel, webhook and SHA-256 of
+content plus embeds all matched the preserved receipt. This proof is stored
+privately as `discord-orphan-receipt-reconfirmed-2026-10-17.json`.

@@ -3155,6 +3155,19 @@ export class UolTelegramShadow extends DurableObject {
         `SELECT ${receiptColumn} AS receipt, status, main_delivery_unknown_at, comment_delivery_unknown_at
          FROM offers WHERE id = ?`, row.key.slice("delivery-queue:".length, separator),
       ).toArray()[0];
+      if (!offer && ["main", "canal2", "discord"].includes(target)) {
+        // A completed offer may have been pruned before its recovery window.
+        // Only the latest attempt's explicit resolution can replace that row.
+        const receipt = this.sqlExec(
+          `SELECT state, external_id, occurred_at FROM delivery_events
+           WHERE offer_id = ? AND target = ? AND operation = 'delivery'
+           ORDER BY generation DESC, attempt DESC, occurred_at DESC, id DESC LIMIT 1`,
+          row.key.slice("delivery-queue:".length, separator), target,
+        ).toArray()[0];
+        const receiptAt = Date.parse(receipt?.occurred_at || "");
+        return receipt?.state === "resolved_sent" && String(receipt.external_id || "").trim() &&
+          receiptAt > Date.parse(row.last_detected_at) && receiptAt <= at ? at : null;
+      }
       return offer?.receipt && offer.status !== "delivery_unknown" &&
         !offer.main_delivery_unknown_at && !offer.comment_delivery_unknown_at ? at : null;
     }
@@ -6460,6 +6473,10 @@ export class UolTelegramShadow extends DurableObject {
            WHERE d.offer_id = offers.id AND (
              (offers.status = 'sold_out' AND d.sold_out_synced_at = '') OR
              (offers.restocked_at <> '' AND d.restock_synced_at = '')))
+         AND NOT EXISTS (SELECT 1 FROM incidents i WHERE i.status = 'active' AND (
+           i.key = 'ticket-delivery:' || offers.id OR
+           substr(i.key, 1, length('delivery-queue:' || offers.id || ':')) =
+             'delivery-queue:' || offers.id || ':'))
        ORDER BY first_seen_at DESC, id ASC`,
     ).toArray();
     const removable = terminalRows.filter((row) => !active.has(row.id));
@@ -6473,8 +6490,8 @@ export class UolTelegramShadow extends DurableObject {
       ...overflow.map((row) => row.id),
     ])];
 
-    // Retain every currently visible card and every unfinished delivery. Old
-    // terminal rows are only dedupe/history state and can be safely removed.
+    // Retain visible cards, unfinished deliveries and active incident evidence
+    // through the stable recovery window before age/count cleanup.
     // Delete in bounded chunks because public listings can exceed SQLite's
     // parameter limit; an oversized NOT IN clause used to abort maintenance.
     for (let offset = 0; offset < idsToDelete.length; offset += SQLITE_BOUND_PARAMETER_CHUNK) {
@@ -6507,7 +6524,11 @@ export class UolTelegramShadow extends DurableObject {
     );
     this.sqlExec(
       `DELETE FROM delivery_events
-       WHERE offer_id NOT IN (SELECT id FROM offers)`,
+       WHERE offer_id NOT IN (SELECT id FROM offers)
+         AND NOT EXISTS (SELECT 1 FROM incidents i WHERE i.status = 'active' AND (
+           i.key = 'ticket-delivery:' || delivery_events.offer_id OR
+           substr(i.key, 1, length('delivery-queue:' || delivery_events.offer_id || ':')) =
+             'delivery-queue:' || delivery_events.offer_id || ':'))`,
     );
     this.sqlExec(
       `DELETE FROM ticket_probe_state
@@ -7691,6 +7712,76 @@ export class UolTelegramShadow extends DurableObject {
     };
   }
 
+  recordOrphanDiscordReceipt(id, payload, resolvedAt) {
+    const evidenceReference = String(payload?.evidenceReference || "").trim();
+    if (!/^operator:[a-z0-9][a-z0-9:._-]{0,150}$/u.test(evidenceReference)) {
+      throw new Error("delivery_resolution_evidence_required");
+    }
+    const { expectedGeneration, expectedAttempt, expectedIncidentLastDetectedAt } = payload || {};
+    if (!Number.isSafeInteger(expectedGeneration) || expectedGeneration <= 0) {
+      throw new Error("delivery_resolution_expected_generation_invalid");
+    }
+    if (!Number.isSafeInteger(expectedAttempt) || expectedAttempt <= 0) {
+      throw new Error("delivery_resolution_expected_attempt_invalid");
+    }
+    const incidentAt = Date.parse(expectedIncidentLastDetectedAt);
+    if (typeof expectedIncidentLastDetectedAt !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(expectedIncidentLastDetectedAt) ||
+        !Number.isFinite(incidentAt) || new Date(incidentAt).toISOString() !== expectedIncidentLastDetectedAt) {
+      throw new Error("delivery_resolution_expected_incident_last_detected_at_invalid");
+    }
+    const messageId = String(payload?.messageId || "").trim();
+    if ((typeof payload?.messageId === "number" && !Number.isSafeInteger(payload.messageId)) ||
+        !/^[1-9]\d{0,19}$/u.test(messageId)) {
+      throw new Error("delivery_resolution_message_id_invalid");
+    }
+    const dedupeKey = `${id}|discord|orphan_receipt|${expectedIncidentLastDetectedAt}|${messageId}`;
+    const result = this.ctx.storage.transactionSync(() => {
+      if (this.sqlExec("SELECT id FROM offers WHERE id = ? LIMIT 1", id).toArray()[0]) {
+        throw new Error("delivery_resolution_conflict");
+      }
+      const incident = this.sqlExec(
+        "SELECT status, last_detected_at FROM incidents WHERE key = ? LIMIT 1", `delivery-queue:${id}:discord`,
+      ).toArray()[0];
+      if (!incident || incident.last_detected_at !== expectedIncidentLastDetectedAt) {
+        throw new Error("delivery_resolution_conflict");
+      }
+      const events = () => this.sqlExec(
+        `SELECT dedupe_key, target, operation, state, generation, attempt, external_id, occurred_at
+         FROM delivery_events WHERE offer_id = ? ORDER BY id DESC LIMIT 3`, id,
+      ).toArray();
+      const sameProof = rows => rows.length === 2 && [
+        { key: `${dedupeKey}|delivery`, operation: "delivery", state: "resolved_sent", externalId: messageId },
+        { key: `${dedupeKey}|audit`, operation: "reconciliation", state: "receipt_recorded", externalId: evidenceReference },
+      ].every(expected => rows.some(event => event.dedupe_key === expected.key && event.target === "discord" &&
+        event.operation === expected.operation && event.state === expected.state &&
+        event.generation === expectedGeneration && event.attempt === expectedAttempt &&
+        event.external_id === expected.externalId && Date.parse(event.occurred_at) > incidentAt));
+      const response = idempotent => ({ ok: true, id, target: "discord", outcome: "sent",
+        status: "receipt_recorded", archived: true, generationSource: "operator_evidence",
+        retryAllowed: false, idempotent });
+      const prior = events();
+      if (prior.length) {
+        if (!sameProof(prior)) throw new Error("delivery_resolution_conflict");
+        return response(true);
+      }
+      if (incident.status !== "active" || Date.parse(resolvedAt) <= incidentAt) {
+        throw new Error("delivery_resolution_conflict");
+      }
+      // The offer is gone: generation/attempt identify the operator's verified
+      // evidence, not a surviving offer CAS. Incident CAS anchors this repair.
+      for (const event of [
+        { dedupeKey: `${dedupeKey}|delivery`, operation: "delivery", state: "resolved_sent", externalId: messageId },
+        { dedupeKey: `${dedupeKey}|audit`, operation: "reconciliation", state: "receipt_recorded", externalId: evidenceReference },
+      ]) writeDeliveryEvent(this.sqlExec.bind(this), { ...event, offerId: id, target: "discord",
+        generation: expectedGeneration, attempt: expectedAttempt, occurredAt: resolvedAt });
+      if (!sameProof(events())) throw new Error("delivery_resolution_ledger_required");
+      return response(false);
+    });
+    this.readinessCache = null;
+    return result;
+  }
+
   closeUnknownMain(id, payload, resolvedAt) {
     const evidenceReference = String(payload?.evidenceReference || "").trim();
     if (!/^operator:[a-z0-9][a-z0-9:._-]{0,150}$/u.test(evidenceReference)) {
@@ -7820,8 +7911,13 @@ export class UolTelegramShadow extends DurableObject {
       "SELECT * FROM offers WHERE id = ? LIMIT 1",
       String(id || "").trim(),
     ).toArray()[0];
-    if (!row) throw new Error("delivery_offer_not_found");
     const resolvedAt = new Date().toISOString();
+    if (!row) {
+      if (normalizedTarget === "discord" && normalizedOutcome === "sent") {
+        return this.recordOrphanDiscordReceipt(String(id || "").trim(), payload, resolvedAt);
+      }
+      throw new Error("delivery_offer_not_found");
+    }
     if (normalizedTarget === "main" && normalizedOutcome === "closed") {
       return this.closeUnknownMain(row.id, payload, resolvedAt);
     }
@@ -9435,6 +9531,7 @@ export default {
               expectedGeneration: body?.expectedGeneration,
               expectedAttempt: body?.expectedAttempt,
               expectedUnknownAt: body?.expectedUnknownAt,
+              expectedIncidentLastDetectedAt: body?.expectedIncidentLastDetectedAt,
             },
           );
         });
