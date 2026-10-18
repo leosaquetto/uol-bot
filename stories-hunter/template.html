@@ -592,6 +592,11 @@
       border: 1px solid rgba(16, 185, 129, 0.35);
       color: #6ee7b7;
     }
+    .card-tag.tag-cat-FUTEBOL {
+      background: rgba(34, 197, 94, 0.14);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #86efac;
+    }
     .card-tag.tag-cat-OUTROS {
       background: rgba(148, 163, 184, 0.12);
       border: 1px solid rgba(148, 163, 184, 0.25);
@@ -716,6 +721,9 @@
       margin-bottom: 11px;
       padding: 0 4px;
     }
+    .category-carousel-section > .category-carousel-header {
+      padding: 0;
+    }
     .category-carousel-title {
       font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 17px;
@@ -749,6 +757,7 @@
       margin-left: -16px;
       margin-right: -16px;
       scroll-snap-type: x mandatory;
+      scroll-padding-inline: 16px;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
@@ -3793,6 +3802,7 @@
       'MUSEU': { id: 'MUSEU', label: 'Museu', icon: ICONS.library },
       'MUSICA': { id: 'MUSICA', label: 'Música', icon: ICONS.music },
       'TEATRO': { id: 'TEATRO', label: 'Teatro', icon: ICONS.masksTheater },
+      'FUTEBOL': { id: 'FUTEBOL', label: 'Futebol', icon: '⚽' },
       'OUTROS': { id: 'OUTROS', label: 'Outros', icon: ICONS.ticketText }
     };
 
@@ -3975,6 +3985,9 @@
     // ===================================================================
     function classifyCategory(title, url, description) {
       const text = ((title || '') + ' ' + (url || '') + ' ' + (description || '')).toLowerCase();
+      const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[-_]+/g, ' ');
+      const titleContext = normalize((title || '') + ' ' + (url || ''));
+      const footballContext = normalize(text);
 
       // 1. Exposições (Expo Barra Funda, arte, exposições)
       if (text.includes('expo barra funda') || text.includes('expo-barra-funda') || text.includes('exposi')) {
@@ -3990,6 +4003,16 @@
       ) {
         return 'TEATRO';
       }
+
+      // Stadium names host several kinds of event. Require football evidence,
+      // while keeping an explicit show, theatre or museum title in its category.
+      const otherEventTitle = /\b(?:show|shows|musical|musicais|concerto|festival|teatro|theatro|peca|comedia|stand up|museu|pinacoteca)\b/.test(titleContext);
+      const theatreDescription = /\b(?:peca|espetaculo)\b/.test(footballContext) && /\b(?:teatro|teatral)\b/.test(footballContext);
+      const musicDescription = /\b(?:show|shows|concerto|musical|musicais|festival|orquestra)\b/.test(footballContext) && !/\b(?:partida|jogo|classico)\b/.test(footballContext);
+      const otherSportTitle = /\b(?:basquete|volei|voleibol|tenis|rugby)\b/.test(titleContext);
+      const footballEvidence = /\b(?:futebol|brasileirao|campeonato brasileiro|copa do brasil|libertadores|copa sul americana)\b/.test(footballContext) ||
+        (/\b(?:x|vs|versus|jogo|partida|classico)\b/.test(footballContext) && /\b(?:estadio|arena|corinthians)\b/.test(footballContext));
+      if (!otherEventTitle && !theatreDescription && !musicDescription && !otherSportTitle && footballEvidence) return 'FUTEBOL';
 
       // 3. Música (Theatro Municipal RJ, Vibra São Paulo, Buenos Aires, Shows, Concertos, Musicais)
       if (
@@ -5456,6 +5479,7 @@
             }
             if (desc && desc.length >= 25) {
               o.description = desc;
+              o.category = classifyCategory(o.rawTitle || o.title, o.link || o.id, desc);
               setCachedDescription(o.id, desc);
               anyUpdated = true;
             }
@@ -5466,6 +5490,7 @@
       if (anyUpdated) {
         saveHistoryToStorage();
         renderOffers(historyData.active || []);
+        updateCategoryCounts(historyData.active || []);
       }
     }
 
@@ -5570,6 +5595,7 @@
         { id: 'MUSEU', label: 'Museus', icon: ICONS.library },
         { id: 'TEATRO', label: 'Teatro', icon: ICONS.masksTheater },
         { id: 'MUSICA', label: 'Música & Shows', icon: ICONS.music },
+        { id: 'FUTEBOL', label: 'Futebol', icon: CATEGORY_MAP.FUTEBOL.icon },
         { id: 'EXPOSICOES', label: 'Exposições', icon: ICONS.art },
         { id: 'OUTROS', label: 'Outros Benefícios', icon: ICONS.ticketText }
       ];
@@ -6158,7 +6184,7 @@
       const totalCount = allOffers.length;
 
       // Categoria mais frequente
-      const catCounts = { MUSEU: 0, TEATRO: 0, MUSICA: 0, EXPOSICOES: 0, OUTROS: 0 };
+      const catCounts = { MUSEU: 0, TEATRO: 0, MUSICA: 0, FUTEBOL: 0, EXPOSICOES: 0, OUTROS: 0 };
       allOffers.forEach(o => {
         if (catCounts[o.category] != null) catCounts[o.category]++;
         else catCounts.OUTROS++;
@@ -6175,6 +6201,7 @@
         MUSEU: 'Museus',
         TEATRO: 'Teatro',
         MUSICA: 'Música & Shows',
+        FUTEBOL: 'Futebol',
         EXPOSICOES: 'Exposições',
         OUTROS: 'Benefícios'
       };
@@ -7331,7 +7358,7 @@
     }
 
     function updateCategoryCounts(list) {
-      const counts = { EXPOSICOES: 0, MUSEU: 0, MUSICA: 0, TEATRO: 0, OUTROS: 0 };
+      const counts = { EXPOSICOES: 0, MUSEU: 0, MUSICA: 0, TEATRO: 0, FUTEBOL: 0, OUTROS: 0 };
       const visible = homeOfferSets(list, historyData.history);
       const countItems = isGrouped ? buildOfferGroups(visible.activeItems, visible.soldOutItems) : [...visible.activeItems, ...visible.soldOutItems];
       countItems.forEach(o => {
@@ -7561,6 +7588,20 @@
       document.getElementById('dtDesc').innerHTML = (text || '')
         .replace(/\n/g, '<br/>')
         .replace(/(Assinante UOL[\s\S]*?:)/g, '<strong>$1</strong>');
+      if (activeOffer) {
+        const category = classifyCategory(activeOffer.rawTitle || activeOffer.title, activeOffer.link || activeOffer.id, activeOffer.description || text);
+        if (category !== activeOffer.category) {
+          activeOffer.category = category;
+          const tag = document.querySelector('#dtTagRow .tag-category');
+          const definition = CATEGORY_MAP[category] || CATEGORY_MAP.OUTROS;
+          if (tag) { tag.className = 'card-tag tag-category tag-cat-' + category; tag.innerHTML = definition.icon + ' ' + definition.label; }
+          saveHistoryToStorage();
+          updateCategoryCounts(historyData.active || []);
+          if (currentTab === 'home' || currentTab === 'tickets') renderOffers(historyData.active || []);
+          else if (currentTab === 'history') renderHistoryScreen();
+          updateTimelineBadgeDot();
+        }
+      }
     }
 
     function closeDetailsModal(e) {

@@ -1462,3 +1462,25 @@ corretos — header sem cobrir conteúdo, ícone Atualizar visível e histórico
 no mês atual com cores originais. Prova privada e manifesto receberam esses campos
 de interface separadamente da coleta. Safari externo foi validado nos testes locais;
 execução externa no aparelho e configuração/descoberta natural continuam sem prova.
+
+### 18/10/2026 — Hunter 5.7.5: Futebol e margens dos carrosséis
+
+Pedido de categoria Futebol para a oferta Neo Química/Corinthians x EC Vitória,
+com evidência de partida/Campeonato Brasileiro na descrição. Integração somente
+no cliente; não altera catálogo do servidor nem disponibilidade das ofertas.
+
+Margem diferente entre um/vários cards: o track tinha padding de 16px e margem
+negativa, mas o scroll-snap não reservava esses 16px. Com overflow, o encaixe podia
+levar o primeiro card até a borda; um único card não rolava e preservava a margem.
+Correção mínima: scroll-padding-inline de 16px nos tracks comuns e títulos alinhados
+ao padding do body. Dimensões dos cards e apresentação dos Destaques preservadas.
+
+O usuário comentou que as ofertas inacessíveis das capturas anteriores parecem já
+corrigidas. Nenhuma exclusão ou nova inferência de esgotamento por esse relato;
+janela visual de sessões/estado confirmado e histórico completo são preservados.
+
+Validação local final: 84/84 testes do Hunter passaram, sintaxe do artefato e diff
+aprovados. Casos incluem Futebol por descrição/competição, shows em estádio,
+enriquecimento sem alterar disponibilidade, filtro/seção/timeline/métrica e
+carrosséis com um/dois/cinco cards. A geometria dos insets foi conferida em duas
+larguras; prova do encaixe real no WebKit permanece dependente do iPhone.
