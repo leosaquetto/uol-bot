@@ -1196,3 +1196,33 @@ Before applying that resolution, a fresh authenticated Discord GET returned HTTP
 200 for message `1549433841536733220`; original channel, webhook and SHA-256 of
 content plus embeds all matched the preserved receipt. This proof is stored
 privately as `discord-orphan-receipt-reconfirmed-2026-10-17.json`.
+
+
+Retention correction published with SHA
+`a83bae4ddbe712cea684e27beaac62833693e991`, version
+`37d2ecd5-7a4d-4c16-99a8-22bd1cc502b5`, confirmed by the version annotation
+`git-a83bae4ddbe7`. [CI 39082886052](https://github.com/leosaquetto/uol-bot/actions/runs/39082886052)
+passed all four required jobs; 68 focused native cases passed. The ordinary
+release gate and postdeploy check passed against the unchanged original baseline;
+no corrective gate exception was needed for this publication.
+
+At `2026-10-18T00:30:57.266Z`, the authenticated orphan Discord resolution
+returned HTTP 200, `receipt_recorded`, `archived=true`,
+`generationSource=operator_evidence`, `retryAllowed=false`, `idempotent=false`.
+Both mandatory audit events committed; no offer was recreated, no incident was
+forced resolved, and no destination POST occurred. Its critical incident remained
+active for the unchanged natural recovery window. The main `n3a` closure remained
+intact with attempt 1 and no confirmed Telegram message ID.
+
+The published version's natural cycle at `2026-10-18T00:31:03.646Z` succeeded
+with 17 rows read, estimate 21 and observed floor 64. Guards were healthy;
+projection 62,528 writes/day, headroom 37,472; original-baseline regressions empty.
+At this snapshot `published=true`, `runtimeVerified=true`, `ready=false` with
+one historical critical Discord incident awaiting recovery. Queue pending,
+critical pending, unknown, dead letters and maintenance dead letters were all 0.
+
+Private receipts and publication evidence are retained in
+`discord-orphan-receipt-application-2026-10-17.json`,
+`incident-retention-{publication,predeploy,version-metadata,final-proof}-2026-10-17.json`
+and `incident-retention-release-2026-10-17.log`. The publication manifest now
+identifies this SHA/version as current.
