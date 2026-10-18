@@ -1,6 +1,6 @@
 import { env, exports } from "cloudflare:workers";
 import { runInDurableObject } from "cloudflare:test";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CATALOG_OFFERS_SQL, CATALOG_STORIES_SQL } from "../src/catalog.js";
 
 function insertOffer(state, id, at, fields = {}) {
@@ -18,6 +18,14 @@ function insertStory(state, id, at, expiry) {
 }
 
 describe("bounded public catalog in Workers SQLite", () => {
+  beforeEach(() => {
+    // At 00:00 UTC the primary read reserve can legitimately consume the daily
+    // budget. Exercise catalog SQL at a fixed time with optional budget left.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-10-17T12:00:00.000Z"));
+  });
+  afterEach(() => { vi.useRealTimers(); });
+
   it("reads at most 700 real rows cold and zero warm, with no writes, source calls or primary estimate changes", async () => {
     const stub = env.UOL_TELEGRAM_SHADOW.getByName("catalog-native-bounds");
     await runInDurableObject(stub, async (instance, state) => {
@@ -33,6 +41,7 @@ describe("bounded public catalog in Workers SQLite", () => {
         ticketListing: { lastSuccessAt: at, cards: [{ link: "https://clube.uol.com.br/campanhasdeingresso/pABC-offer-0" }] } });
       instance.metadataCache.clear(); instance.runtimeSnapshotCache.clear();
       instance.storageUsage.primaryEstimatedRowsRead = 512;
+      expect(instance.storageUsageSnapshot().maintenanceAllowed).toBe(true);
       const before = { ...instance.storageUsage }, alarm = await state.storage.getAlarm();
       const sourceFetch = vi.fn(() => { throw new Error("catalog must never fetch sources"); });
       vi.stubGlobal("fetch", sourceFetch);
