@@ -37,3 +37,19 @@ the assertions must remain intact.
 - Full suite: **184/184**. Existing assertions unchanged; source readers and
   one build placeholder changed to address the extracted files.
 - No observable runtime differences and no publication at this checkpoint.
+
+## Phase 3 — asset deduplication
+
+- One embedded logo and one canonical SVG table; placeholders resolve before
+  initial-data injection, using replacement callbacks to preserve literal bytes.
+- Artifact: **782,163 → 642,655 bytes** (−139,508 bytes; −17.84%).
+- SHA-256: `ad43f1fe6b549ebbae3856f47246bf9f2e26577ff492bfb4826ceefea11606f2`.
+- Full suite: **184/184**. Startup, failure and dashboard HTML remain byte-identical
+  across the frozen synthetic fixtures. CSS, callbacks, native domains and parser
+  are unchanged. Artifact bytes differ intentionally because duplicated literals
+  are replaced by one local resolver.
+- Build/theme unit harnesses load the extracted resolver or isolate it when only
+  testing theme persistence. Their data/escaping/privacy assertions remain intact.
+- Whitespace inherited from the reference was intentionally preserved during
+  extraction; diff whitespace warnings are not formatting changes.
+- No publication at this checkpoint.

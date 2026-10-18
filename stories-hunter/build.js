@@ -11,7 +11,7 @@ const prepareOnly = buildOptions.has("--prepare");
 const codeOnly = buildOptions.has("--code-only");
 
 const logoBase64 = fs.readFileSync(path.join(__dirname, "logo_base64.txt"), "utf8").trim();
-const startupTemplate = fs.readFileSync(path.join(__dirname, "startup.html"), "utf8").replace(/__LOGO_BASE64__/g, logoBase64);
+const startupTemplate = fs.readFileSync(path.join(__dirname, "startup.html"), "utf8");
 const formattedSvgs = JSON.parse(fs.readFileSync(path.join(__dirname, "assets/icons.json"), "utf8"));
 let htmlTemplate = require("./assemble-ui.cjs").assembleUI();
 const collectorSource = fs.readFileSync(path.join(__dirname, "collector.js"), "utf8");
@@ -65,13 +65,6 @@ if (!prepareOnly && fs.existsSync(cachedRedemptionsPath)) {
   } catch (e) {}
 }
 
-// Replace logo and icons placeholders in htmlTemplate
-htmlTemplate = htmlTemplate.replace(/__LOGO_BASE64__/g, logoBase64);
-for (const [k, svg] of Object.entries(formattedSvgs)) {
-  const placeholder = new RegExp(`__ICON_${k}__`, "g");
-  htmlTemplate = htmlTemplate.replace(placeholder, svg);
-}
-
 // Target paths
 const targetScriptPath = path.resolve(__dirname, "../scriptable_uol_stories_hunter.js");
 const icloudScriptPath = path.join(
@@ -80,6 +73,7 @@ const icloudScriptPath = path.join(
 );
 const substitutions = {
   __BUILD_STARTUP_HTML__: JSON.stringify(startupTemplate),
+  __BUILD_LOGO__: JSON.stringify(logoBase64),
   __BUILD_ICONS__: JSON.stringify(formattedSvgs, null, 2),
   __BUILD_COOKIES_LEO__: JSON.stringify(bundledCookiesLeo),
   __BUILD_COOKIES_GAORIEL__: JSON.stringify(bundledCookiesGaoriel),

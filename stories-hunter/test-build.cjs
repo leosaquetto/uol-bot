@@ -284,6 +284,9 @@ test('generated HTML embeds exact data safely without replacement-string expansi
   const credentials = { test: "$& $` $' $$ </script><script>" };
   const context = vm.createContext({ BUNDLED_COOKIES_GAORIEL: [], BUNDLED_COOKIES_LEO: [],
     BUNDLED_REDEMPTIONS: [], ICONS: icons, NTFY_TOPIC: 'fixture', SCRIPT_VERSION: 'test', loadNavigationTheme: () => 'white' });
+  context.HUNTER_LOGO_BASE64 = require('./test-support/artifact.cjs').literal(artifact, 'const HUNTER_LOGO_BASE64 = ');
+  const resolverStart = artifact.indexOf('function resolveHunterAssets(');
+  vm.runInContext(artifact.slice(resolverStart, artifact.indexOf('\n}', resolverStart) + 2), context);
   vm.runInContext(artifact.slice(start, end), context);
   const html = context.buildDashboardHTML({ active: [], history: [] }, { userSessions: {} }, credentials, [], [], false, { status: 'complete' });
   assert.equal((html.match(/<script>/g) || []).length, 1);

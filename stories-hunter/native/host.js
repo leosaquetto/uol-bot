@@ -29,6 +29,7 @@ const CREDS_FILE_NAME = "clubeuolscrip.txt";
 const COOKIES_FILE_NAME = "uol_session_cookies.json";
 const REDEMPTIONS_DB_FILE_NAME = "uol_redemptions_database.json";
 const STARTUP_HTML = __BUILD_STARTUP_HTML__;
+const HUNTER_LOGO_BASE64 = __BUILD_LOGO__;
 
 const ICONS = __BUILD_ICONS__;
 const BUNDLED_COOKIES_LEO = __BUILD_COOKIES_LEO__;
@@ -396,8 +397,13 @@ async function main() {
   Script.complete();
 }
 
+function resolveHunterAssets(template) {
+  return template.replace(/__LOGO_BASE64__/g, () => HUNTER_LOGO_BASE64)
+    .replace(/__ICON_([A-Za-z0-9_]+)__/g, (match, key) => ICONS[key] ?? match);
+}
+
 function buildHunterStartupHTML(failed = false) {
-  return STARTUP_HTML.replace("__STARTUP_TITLE__", failed ? "Não foi possível abrir" : "Preparando suas ofertas")
+  return resolveHunterAssets(STARTUP_HTML).replace("__STARTUP_TITLE__", failed ? "Não foi possível abrir" : "Preparando suas ofertas")
     .replace("__STARTUP_DESCRIPTION__", failed
       ? "Seus dados foram preservados. Feche esta janela e tente abrir novamente."
       : "Buscando novidades e carregando seu histórico…")
@@ -864,7 +870,7 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
   const jsonStr = JSON.stringify(initialData).replace(/</g, "\\u003c");
 
   const rawHtml = __BUILD_DASHBOARD_HTML__;
-  return rawHtml.replace("__INITIAL_DATA_JSON__", () => jsonStr);
+  return resolveHunterAssets(rawHtml).replace("__INITIAL_DATA_JSON__", () => jsonStr);
 }
 
 await main();
