@@ -64,6 +64,36 @@ function harness({ active = [], history = [], bundled = [], saved = [], settings
   return { context, elements, requests, storage, advance: ms => { time += ms; } };
 }
 
+test('opening an offer uses the native sheet route while keeping Hunter state and browser previews separate', () => {
+  const opened = [], toasts = [];
+  const location = { href: 'hunter-dashboard' };
+  const state = { tab: 'history', filter: 'teatro', scrollY: 380 };
+  const context = vm.createContext({
+    URL, INITIAL: { nativeBrowser: true }, activeOffer: { link: campaign('new-offer') },
+    window: { location, open: (...args) => opened.push(args), hunterState: state },
+    showToast: message => toasts.push(message),
+  });
+  vm.runInContext(fn('openSafariCurrent'), context);
+  context.openSafariCurrent();
+  assert.equal(location.href, 'hunter-browser://open?url=' + encodeURIComponent(campaign('new-offer')));
+  assert.equal(opened.length, 0);
+  assert.deepEqual(state, { tab: 'history', filter: 'teatro', scrollY: 380 });
+  context.activeOffer = { link: '/campanhasdeingresso/relative-offer' };
+  context.openSafariCurrent();
+  assert.equal(location.href, 'hunter-browser://open?url=' + encodeURIComponent(campaign('relative-offer')));
+  for (const url of ['javascript:alert(1)', 'http://clube.uol.com.br/', 'https://example.test/', '//example.test/offer', 'https://user:pass@clube.uol.com.br/', 'https://clube.uol.com.br:444/']) {
+    context.activeOffer = { link: url }; location.href = 'hunter-dashboard';
+    context.openSafariCurrent();
+    assert.equal(location.href, 'hunter-dashboard'); assert.equal(opened.length, 0);
+  }
+  context.INITIAL.nativeBrowser = false; context.activeOffer = { link: campaign('preview-offer') };
+  context.openSafariCurrent();
+  assert.equal(location.href, 'hunter-dashboard', 'ordinary web preview must not replace its dashboard');
+  assert.deepEqual(opened, [[campaign('preview-offer'), '_blank', 'noopener,noreferrer']]);
+  assert.doesNotMatch(fn('openUolDirectLogin') + fn('openUolLogoutAndLogin'), /hunter-browser:/,
+    'authentication keeps its existing browser context');
+});
+
 test('Home keeps active cache and only explicit exhaustion in the last 24h without deleting history', () => {
   const active = [offer('active'), offer('already-out', { isExpired: true, expiredAt: now - 10 })];
   const history = [offer('boundary', { expiredAt: now - 86400000 }), offer('old', { expiredAt: now - 86400001 }),

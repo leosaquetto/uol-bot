@@ -151,6 +151,59 @@ test('closing the loading window never reopens it after delayed native data comp
   assert.equal(loaded.length, 1);
 });
 
+test('offer browser cancels only its explicit route and keeps one sheet open until dismissal', async () => {
+  const calls = [], view = {}; let dismiss;
+  const context = vm.createContext({
+    Safari: { openInApp: (url, fullscreen) => { calls.push({ url, fullscreen }); return new Promise(resolve => { dismiss = resolve; }); } },
+    console: { warn() {} },
+  });
+  const code = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
+  vm.runInContext(code, context);
+  context.installHunterBrowser(view);
+  const url = 'https://clube.uol.com.br/campanhasdeingresso/show?date=18%2F10';
+  const route = 'hunter-browser://open?url=' + encodeURIComponent(url);
+  assert.equal(view.shouldAllowRequest({ url: route }), false, 'navigation is cancelled synchronously');
+  assert.equal(calls.length, 0, 'native presentation starts after cancellation');
+  await Promise.resolve();
+  assert.deepEqual(calls, [{ url, fullscreen: false }]);
+  for (const resource of ['https://clube.uol.com.br/imagem.png', 'https://fonts.googleapis.com/css2', 'blob:synthetic-voucher', 'scriptable:///run?scriptName=Hunter']) {
+    assert.equal(view.shouldAllowRequest({ url: resource }), true, 'ordinary requests retain their existing path');
+  }
+  assert.equal(view.shouldAllowRequest({ url: route }), false);
+  await Promise.resolve(); assert.equal(calls.length, 1, 'repeated taps cannot stack sheets');
+  dismiss(); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(view.shouldAllowRequest({ url: route }), false);
+  await Promise.resolve(); assert.equal(calls.length, 2, 'dismissal permits the next offer');
+  dismiss(); await new Promise(resolve => setImmediate(resolve));
+});
+
+test('offer browser rejects unsafe destinations and releases its lock after a sanitized failure', async () => {
+  const calls = [], warnings = [], view = {};
+  const context = vm.createContext({
+    Safari: { openInApp: async url => { calls.push(url); throw new Error('synthetic private session detail'); } },
+    console: { warn: message => warnings.push(message) },
+  });
+  const code = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
+  vm.runInContext(code, context);
+  context.installHunterBrowser(view);
+  const prefix = 'hunter-browser://open?url=';
+  for (const target of ['http://clube.uol.com.br/', 'https://example.test/', 'https://clube.uol.com.br.evil.test/',
+    'https://clube.uol.com.br@evil.test/', 'https://clube.uol.com.br:444/', 'https://clube.uol.com.br/with space',
+    'https://clube.uol.com.br/with\nnewline', 'https://clube.uol.com.br/with\\backslash', 'https://clube.uol.com.br/' + 'x'.repeat(4096)]) {
+    assert.equal(view.shouldAllowRequest({ url: prefix + encodeURIComponent(target) }), false);
+  }
+  assert.equal(view.shouldAllowRequest({ url: prefix + '%broken' }), false);
+  await Promise.resolve(); assert.equal(calls.length, 0);
+  const route = prefix + encodeURIComponent('https://clubeuol.uol.com.br/');
+  assert.equal(view.shouldAllowRequest({ url: route }), false);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls.length, 1); assert.equal(warnings.length, 1);
+  assert.doesNotMatch(warnings[0], /synthetic private session detail/);
+  assert.equal(view.shouldAllowRequest({ url: route }), false);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls.length, 2, 'a rejected sheet does not permanently block navigation');
+});
+
 test('native collector imports private local fallback and reports a missing bootstrap without exposing values', async () => {
   const files = new Map(), keys = new Map();
   const manager = root => ({ documentsDirectory: () => root, joinPath: path.join,

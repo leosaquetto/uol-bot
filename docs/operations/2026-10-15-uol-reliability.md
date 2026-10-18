@@ -1372,3 +1372,24 @@ incompatível. Falha no candidato iCloud permite verificar cópia local; credenc
 existentes não são substituídas. Nenhuma regravação do histórico ou banco de vouchers.
 Validação local e publicação desta versão registradas a seguir; apresentação real
 do loading e recebimento no aparelho exigem confirmação no iPhone.
+
+Cliente 5.7.2 validado: 66/66 testes locais e CI exata do SHA
+`ed2f6740178b9c5a3d14a388b431cb864d752697` aprovada em
+https://github.com/leosaquetto/uol-bot/actions/runs/39094253665. Nenhuma OTA emitida
+antes do pedido seguinte de retorno do navegador; melhorias serão distribuídas
+junto da 5.7.3, evitando duas atualizações consecutivas. Backend permanece no SHA
+`9e0a486453db8441b992b7fb7f45f005d5e894eb`, versão
+`2ecea78e-050d-4ab4-be0c-f3d9ff4e5413`.
+
+### 18/10/2026 — Hunter 5.7.3: retorno da página da oferta
+
+O botão de abrir oferta substituía o documento do Hunter com `location.href`.
+Agora uma rota interna explícita é cancelada pelo host, que apresenta o navegador
+interno sobre o painel preservado. Concluir/Fechar deve revelar a mesma aba/posição,
+sem reiniciar o script ou fazer nova coleta. Dois cliques sobrepostos abrem somente
+um navegador. Apenas HTTPS dos hostnames exatos Clube UOL é aceito; recursos comuns
+não são interceptados. Nenhum cookie ou credencial integra a rota.
+
+Resgate por fetch e navegação de login/logout preservados. A API não documenta
+compartilhamento de cookies com a WebView; autenticação externa e retorno real
+continuam dependentes de confirmação no iPhone.

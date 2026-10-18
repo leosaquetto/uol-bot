@@ -3319,8 +3319,9 @@
           __ICON_tickets__ Resgatar Este Benefício
         </button>
         <button class="btn-modal-secondary" onclick="openSafariCurrent()">
-          __ICON_link__ Abrir no Navegador Safari
+          __ICON_link__ Abrir oferta no navegador
         </button>
+        <div style="font-size: 11px; color: #94a3b8; text-align: center;">Concluir/Fechar no navegador volta para esta tela.</div>
       </div>
     </div>
   </div>
@@ -7501,7 +7502,7 @@
       } catch (e) {}
 
       if (!activeOffer.description || activeOffer.description.length < 20) {
-        activeOffer.description = 'Benefício exclusivo para assinantes Clube UOL.\n\nToque em "Abrir no Safari" para visualizar todos os detalhes.';
+        activeOffer.description = 'Benefício exclusivo para assinantes Clube UOL.\n\nToque em "Abrir oferta no navegador" para visualizar todos os detalhes.';
       }
 
       // Salva no cache permanente e no histórico local
@@ -7532,7 +7533,16 @@
     function openSafariCurrent() {
       if (!activeOffer) return;
       const url = activeOffer.link || activeOffer.url || 'https://clubeuol.uol.com.br';
-      window.location.href = url;
+      try {
+        const target = new URL(url, 'https://clube.uol.com.br');
+        if (target.protocol !== 'https:' || target.username || target.password ||
+            !['clube.uol.com.br', 'clubeuol.uol.com.br'].includes(target.hostname) || target.port) return;
+        if (INITIAL.nativeBrowser) {
+          window.location.href = 'hunter-browser://open?url=' + encodeURIComponent(target.href);
+        } else {
+          window.open(target.href, '_blank', 'noopener,noreferrer');
+        }
+      } catch (_) { showToast('Link da oferta indisponível.'); }
     }
 
     // ===================================================================

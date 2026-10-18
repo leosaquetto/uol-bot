@@ -169,7 +169,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.2";
+const SCRIPT_VERSION = "5.7.3";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -340,6 +340,7 @@ async function main() {
     return;
   }
   const uiView = new WebView();
+  installHunterBrowser(uiView);
   await uiView.loadHTML(buildHunterStartupHTML(), "https://clube.uol.com.br");
   let dismissed = false;
   const presentation = uiView.present(true).then(() => { dismissed = true; });
@@ -377,6 +378,27 @@ function buildHunterStartupHTML(failed = false) {
       ? "Seus dados foram preservados. Feche esta janela e tente abrir novamente."
       : "Buscando novidades e carregando seu histórico…")
     .replace('<progress aria-label="Carregando o Stories Hunter"></progress>', failed ? "" : '<progress aria-label="Carregando o Stories Hunter"></progress>');
+}
+
+function installHunterBrowser(view) {
+  const route = "hunter-browser://open?url=";
+  let opening = false;
+  view.shouldAllowRequest = request => {
+    const raw = request && request.url;
+    if (typeof raw !== "string" || !raw.startsWith(route)) return true;
+    let url;
+    try { url = decodeURIComponent(raw.slice(route.length)); } catch (_) { return false; }
+    if (url.length > 4096 || /[\x00-\x20\\]/.test(url) ||
+        !/^https:\/\/(?:clube\.uol\.com\.br|clubeuol\.uol\.com\.br)(?:\/|$)/i.test(url)) return false;
+    if (opening) return false;
+    opening = true;
+    // Cancel this navigation first. The Hunter document remains mounted while
+    // Safari's in-app sheet is presented, so closing it reveals the same screen.
+    Promise.resolve().then(() => Safari.openInApp(url, false))
+      .catch(() => { console.warn("Não foi possível abrir o navegador da oferta."); })
+      .finally(() => { opening = false; });
+    return false;
+  };
 }
 
 function nativeRedemptionKey(item) {
@@ -738,6 +760,7 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
     realRedemptions: (realRedemptions && realRedemptions.length > 0) ? realRedemptions : BUNDLED_REDEMPTIONS,
     icons: ICONS,
     topic: NTFY_TOPIC,
+    nativeBrowser: true,
     scriptVersion: SCRIPT_VERSION,
     scriptName: (typeof Script !== "undefined" && Script.name && Script.name()) ? Script.name() : "Clube UOL - Stories Hunter"
   };
