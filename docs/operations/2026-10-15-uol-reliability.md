@@ -1537,3 +1537,29 @@ Subsequent explicit personal-permission changes passed 4/4 focused runtime tests
 types/bundle and their unit regressions. Exact-SHA CI and publication/device
 proof are recorded separately after release. No UI screenshots or WKWebView
 runtime success are implied by VM tests.
+
+Publication completed for source `091e3fcb77e636be8d0a67c529a46152f8dc1750`.
+All four jobs passed in [CI](https://github.com/leosaquetto/uol-bot/actions/runs/39100122405).
+Worker version `21e1f465-c842-4806-87f6-cfbb88bd4f3f` has the matching
+`git-091e3fcb77e6` publication tag. Strict postdeploy returned published,
+runtimeVerified, debtVerified and ready all true, no regressions/pending debt,
+and zero critical incidents, dead letters, uncertain deliveries or exhausted
+maintenance. The existing primary cost gate remains unchanged.
+
+Hunter 5.7.6 was distributed once through code-only build, MacSend and ntfy.
+ntfy accepted receipt `46PPERz2gYd6`; the served script SHA-256 is
+`90005920677eb1e61c7e7ba2aa8917be179f20b838c201e4a4f66142cea1d707` and matches
+Git exactly. Five existing private files, including credentials, session cookies
+and the voucher database, retained their pre-install hashes. No delivery receipt
+is inferred from ntfy HTTP acceptance.
+
+The recognized previously approved `leo-iphone` identity was verified against
+its private token hash and promoted to owner with the two explicitly authorized
+personal accounts. Authenticated configuration reads returned HTTP 200/no-store
+with exactly one requested account each. No arbitrary pending phone was approved.
+If this iPhone uses a different new identity, its displayed code must be matched
+before owner approval. Actual iPhone activation, shared-session import, internal
+updater reopening and a natural discovery remain separate device proofs.
+The private publication manifest now references this exact Worker SHA/version;
+previous publication/quota history and the incomplete three-day UTC window are
+preserved.
