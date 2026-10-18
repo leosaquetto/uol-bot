@@ -108,7 +108,14 @@ function execute(shortcut, title, filename = 'Another Script.js') {
         outputs.set(p.UUID, 'premium result');
         break;
       case 'is.workflow.actions.gettext':
-        outputs.set(p.UUID, p.WFTextActionText);
+        if (typeof p.WFTextActionText === 'string') outputs.set(p.UUID, p.WFTextActionText);
+        else {
+          const template = p.WFTextActionText;
+          assert.equal(template.WFSerializationType, 'WFTextTokenString');
+          assert.equal(template.Value.string, '\uFFFC');
+          const attachment = template.Value.attachmentsByRange['{0, 1}'];
+          outputs.set(p.UUID, String(resolve({ Value: attachment }) ?? ''));
+        }
         break;
       case 'is.workflow.actions.exit':
         return { events, result: p.WFResult ? resolve(p.WFResult) : undefined, stopped: true };
@@ -126,7 +133,7 @@ test('Premium notification goes directly to native updater without network or fi
   const { generic, premium } = sources();
   const shortcut = unifyShortcut(generic, premium);
   for (const title of ['Clube UOL Premium', 'Scriptable — Clube UOL Premium: atualização']) {
-    assert.deepEqual(execute(shortcut, title), { events: ['premium'], result: undefined, stopped: true });
+    assert.deepEqual(execute(shortcut, title), { events: ['premium'], result: 'premium result', stopped: true });
   }
   assert.equal(shortcut.WFWorkflowName, 'Update Scriptable');
   assert.deepEqual(shortcut.WFWorkflowInputContentItemClasses, ['WFStringContentItem']);
@@ -162,7 +169,7 @@ test('both current and old Premium filenames route to native updater before the 
   const shortcut = unifyShortcut(generic, premium);
   for (const filename of ['Clube UOL Premium.js', 'Clube UOL - Stories Hunter.js']) {
     assert.deepEqual(execute(shortcut, 'Scriptable', filename), {
-      events: ['download', 'premium'], result: undefined, stopped: true,
+      events: ['download', 'premium'], result: 'premium result', stopped: true,
     });
   }
 });
@@ -252,9 +259,20 @@ test('generated input and stop parameters follow their native action schemas', (
     const input = entry.WFWorkflowActionParameters.WFInput;
     assert.equal(input.Type, 'Variable');
     assert.equal(input.Variable.WFSerializationType, 'WFTextTokenAttachment');
+    assert.equal(input.Variable.Value.Type, 'ActionOutput');
+    assert.ok(!JSON.stringify(input).includes('ExtensionInput'), 'condition must consume typed action output');
   }
-  assert.deepEqual(conditionals[0].WFWorkflowActionParameters.WFInput.Variable.Value, { Type: 'ExtensionInput' });
-  assert.deepEqual(conditionals[1].WFWorkflowActionParameters.WFInput.Variable.Value, { Type: 'ExtensionInput' });
+  const title = actions[0];
+  assert.equal(title.WFWorkflowActionIdentifier, 'is.workflow.actions.gettext');
+  assert.deepEqual(title.WFWorkflowActionParameters.WFTextActionText, {
+    Value: { string: '\uFFFC', attachmentsByRange: { '{0, 1}': { Type: 'ExtensionInput' } } },
+    WFSerializationType: 'WFTextTokenString',
+  });
+  for (const conditional of conditionals.slice(0, 2)) {
+    assert.deepEqual(conditional.WFWorkflowActionParameters.WFInput.Variable.Value, {
+      Type: 'ActionOutput', OutputUUID: title.WFWorkflowActionParameters.UUID, OutputName: 'Texto',
+    });
+  }
   const name = actions.find(entry => entry.WFWorkflowActionIdentifier === 'is.workflow.actions.getitemname');
   assert.deepEqual(name.WFWorkflowActionParameters.WFInput, {
     Value: { Type: 'ActionOutput', OutputUUID: generic[0].WFWorkflowActionParameters.UUID, OutputName: 'Conteúdo do URL' },
@@ -263,10 +281,18 @@ test('generated input and stop parameters follow their native action schemas', (
   const stops = actions.filter(entry => entry.WFWorkflowActionIdentifier === 'is.workflow.actions.exit');
   assert.equal(stops.length, 4);
   for (const stop of stops) assert.ok(!Object.hasOwn(stop.WFWorkflowActionParameters, 'WFInput'));
+  const runs = actions.filter(entry => entry.WFWorkflowActionIdentifier === 'dk.simonbs.Scriptable.ParameterizedRunScriptIntent');
+  for (const [index, stop] of stops.slice(0, 3).entries()) {
+    assert.deepEqual(stop.WFWorkflowActionParameters.WFResult, {
+      Value: { Type: 'ActionOutput', OutputUUID: runs[index].WFWorkflowActionParameters.UUID, OutputName: 'Resultado' },
+      WFSerializationType: 'WFTextTokenAttachment',
+    });
+  }
   const diagnosticStop = stops.at(-1).WFWorkflowActionParameters;
   assert.equal(diagnosticStop.WFResult.WFSerializationType, 'WFTextTokenAttachment');
   assert.equal(diagnosticStop.WFResult.Value.Type, 'ActionOutput');
-  const diagnostic = actions.find(entry => entry.WFWorkflowActionIdentifier === 'is.workflow.actions.gettext');
+  const diagnostic = actions.find(entry => entry.WFWorkflowActionIdentifier === 'is.workflow.actions.gettext'
+    && typeof entry.WFWorkflowActionParameters.WFTextActionText === 'string');
   assert.equal(diagnosticStop.WFResult.Value.OutputUUID, diagnostic.WFWorkflowActionParameters.UUID);
 });
 

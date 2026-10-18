@@ -140,10 +140,16 @@ function unifyShortcut(genericActions, premiumShortcut) {
     }
     copies.forEach(remap);
     actions.push(...copies);
-    stop(name);
+    stop(name, outputToken(copies[1].WFWorkflowActionParameters.UUID, 'Resultado'));
   }
 
-  const input = token({ Type: 'ExtensionInput' });
+  const titleId = add('is.workflow.actions.gettext', 'notification-title', {
+    WFTextActionText: {
+      Value: { string: '\uFFFC', attachmentsByRange: { '{0, 1}': { Type: 'ExtensionInput' } } },
+      WFSerializationType: 'WFTextTokenString',
+    },
+  });
+  const input = outputToken(titleId, 'Texto');
   const titlePremium = startIf('title-premium', input, PREMIUM_NAME);
   premium('title-premium');
   control(titlePremium, 1);
