@@ -769,16 +769,27 @@
     .poster-card:active {
       transform: scale(0.97);
     }
-    .poster-img {
+    .poster-img, .thumb-wrap img.poster-img, .card.card-highlight .thumb-wrap img.poster-img {
       position: absolute;
       top: 0;
-      left: 0;
-      width: 100%;
+      left: 50%;
+      width: auto;
+      max-width: none;
       height: 100%;
-      object-fit: cover;
-      transition: transform 0.35s ease, filter 0.35s ease;
+      transform: translateX(-50%);
+      transition: filter 0.35s ease;
       background: #10131a;
     }
+    .poster-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #10131a;
+      color: #667085;
+    }
+    .poster-placeholder svg { width: 40px; height: 40px; }
     .poster-scrim {
       position: absolute;
       inset: 0;
@@ -1004,13 +1015,23 @@
       color: #94a3b8;
     }
     .micro-dates-inline {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 2.5px;
-      margin-left: 4px;
-      vertical-align: middle;
+      gap: 5px;
+      min-width: 0;
+      max-width: 100%;
+      margin-top: 4px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       white-space: nowrap;
     }
+    .micro-dates-inline::-webkit-scrollbar { display: none; }
+    .micro-dates-inline .micro-date-pill { flex: 0 0 auto; margin: 0; }
+    .timeline-icon-box { position: relative; overflow: hidden; }
+    .timeline-thumbnail { position: absolute; height: 100%; width: auto; max-width: none; left: 50%; transform: translateX(-50%); }
     .nowrap-title-tag {
       white-space: nowrap;
       display: inline;
@@ -3168,6 +3189,7 @@
         <span class="status-dot" id="liveDot"></span>
         <span id="liveStatusText">Conectando ao Clube UOL...</span>
       </div>
+      <div id="hunterCollectionStatus" role="status" hidden style="font-size: 11px; color: #94a3b8; margin-top: 5px;"></div>
     </div>
     <div class="header-actions">
       <!-- Linha do Tempo / Notificações -->
@@ -3784,12 +3806,13 @@
 
       // Se temos resgates reais pré-carregados na inicialização nativa
       if (INITIAL.realRedemptions && Array.isArray(INITIAL.realRedemptions) && INITIAL.realRedemptions.length > 0) {
-        settings.realRedemptions = INITIAL.realRedemptions;
+        settings.realRedemptions = getAllRedemptionsList();
       }
 
       updateUserAvatar();
       updateCredsStatusUI();
       updateTimelineBadgeDot();
+      setHunterCollectionStatus(INITIAL.hunterCollection);
 
       // Se temos ofertas ativas em cache no histórico, atualiza badge
       if (historyData.active && historyData.active.length > 0) {
@@ -3803,7 +3826,7 @@
 
       // Dispara streaming ao vivo e sincronização de resgates oficiais
       streamLiveOffers();
-      fetchRealRedemptions();
+      if (!INITIAL.collectionPausedForUpdate) fetchRealRedemptions();
 
       // Listener de scroll para fade da camada clara da header
       window.addEventListener('scroll', handleHeaderScroll, { passive: true });
@@ -4108,13 +4131,76 @@
       try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({ snapshot: snapshot, etag: etag || '', fetchedAt: Date.now() })); } catch (e) {}
     }
 
+    // UI_DATA_HELPERS_START
+    function validOfferImage(value) {
+      try {
+        const u = new URL(value);
+        if (u.protocol !== 'https:' || u.username || u.password || u.port ||
+            u.href === 'https://i.imgur.com/UdIgTfI.png') return '';
+        return u.href;
+      } catch (e) { return ''; }
+    }
+
+    function offerImage(items) {
+      const list = (Array.isArray(items) ? items : [items]).filter(Boolean);
+      const campaign = list.find(o => validOfferImage(o.imageUrl) && o.imageSource !== 'story' &&
+        o.source !== 'Stories_Only' && o.source !== 'Stories');
+      return validOfferImage(campaign && campaign.imageUrl) ||
+        list.map(o => validOfferImage(o.imageUrl) || validOfferImage(o.thumb)).find(Boolean) || '';
+    }
+
+    function availabilityEvidence(value) {
+      if (!value || !['available', 'sold_out'].includes(value.state) ||
+          !['api', 'ticket_listing', 'worker', 'iphone'].includes(value.source)) return null;
+      const observedAt = catalogTime(value.observedAt);
+      if (!observedAt || observedAt > Date.now() + 300000) return null;
+      return { state: value.state, observedAt: observedAt, source: value.source };
+    }
+
+    function confirmedSoldOutTime(item) {
+      const evidence = availabilityEvidence(item && item.availabilityEvidence);
+      const soldOutAt = Math.max(catalogTime(item && item.soldOutAt), catalogTime(item && item.expiredAt),
+        evidence && evidence.state === 'sold_out' ? evidence.observedAt : 0);
+      const availableAt = Math.max(catalogTime(item && item.restockedAt),
+        evidence && evidence.state === 'available' ? evidence.observedAt : 0);
+      return availableAt > soldOutAt ? 0 : soldOutAt;
+    }
+
+    function homeOfferSets(active, history, now = Date.now()) {
+      const activeItems = (active || []).filter(o => o && !o.isExpired && o.availability !== 'sold_out' && !confirmedSoldOutTime(o));
+      const key = o => { const campaign = catalogCampaign(o.link); return campaign ? campaign.key : o.id; };
+      const activeIds = new Set(activeItems.map(key));
+      const soldOutItems = (history || []).filter(o => {
+        const at = confirmedSoldOutTime(o);
+        return o && !activeIds.has(key(o)) && at > 0 && at <= now && now - at <= 86400000;
+      });
+      return { activeItems: activeItems, soldOutItems: soldOutItems };
+    }
+
+    function setHunterCollectionStatus(summary) {
+      const element = document.getElementById('hunterCollectionStatus');
+      if (!element) return;
+      element.hidden = !summary || summary.status === 'disabled';
+      if (element.hidden) { element.textContent = ''; return; }
+      if (summary.status === 'starting') { element.textContent = 'Buscando novidades neste iPhone…'; return; }
+      const count = value => Number.isSafeInteger(value) && value > 0 ? value : 0;
+      const received = count(summary.received), delivered = count(summary.delivered), pending = count(summary.pending);
+      const labels = [];
+      if (received) labels.push(received + ' recebidas pelo servidor');
+      if (delivered) labels.push(delivered + ' entregues');
+      if (pending) labels.push(pending + ' pendentes no iPhone');
+      if (summary.status === 'failed' || summary.status === 'error') labels.push('coleta indisponível');
+      element.textContent = labels.length ? 'iPhone • ' + labels.join(' • ') : 'iPhone • nenhuma novidade pendente';
+    }
+    // UI_DATA_HELPERS_END
+
     function mergeCatalogSnapshot(snapshot) {
       const records = new Map();
       const identity = o => { const campaign = catalogCampaign(o.link); return campaign ? campaign.key : 'local:' + o.id; };
       (historyData.history || []).forEach(o => records.set(identity(o), { offer: o, past: true }));
       (historyData.active || []).forEach(o => records.set(identity(o), { offer: o, past: false }));
       const nonempty = (value, fallback) => typeof value === 'string' && value.trim() ? value : fallback;
-      const image = value => { try { const u = new URL(value); return u.protocol === 'https:' && !u.username && !u.password ? u.href : ''; } catch (e) { return ''; } };
+      const image = validOfferImage;
 
       function upsert(entry, story) {
         const campaign = catalogCampaign(entry.link);
@@ -4136,7 +4222,8 @@
           link: old.link || campaign.link,
           rawTitle: rawTitle,
           title: toSentenceCase(rawTitle),
-          imageUrl: image(entry.imageUrl) || old.imageUrl || '',
+          imageUrl: story ? (offerImage(old) || image(entry.imageUrl)) : (image(entry.imageUrl) || old.imageUrl || ''),
+          imageSource: story && offerImage(old) ? old.imageSource : (story ? 'story' : (image(entry.imageUrl) ? 'campaign' : old.imageSource)),
           description: richerDescription,
           partner: nonempty(entry.partner, old.partner || ''),
           validity: nonempty(entry.validity, '').length > (old.validity || '').length ? entry.validity : (old.validity || ''),
@@ -4154,15 +4241,24 @@
           offer.storyExpiresAt = catalogTime(entry.expiresAt);
           // A validade de um Story não informa se os ingressos esgotaram.
         } else {
-          const soldOutAt = catalogTime(entry.soldOutAt);
+          const incomingEvidence = availabilityEvidence(entry.availabilityEvidence);
+          const oldEvidence = availabilityEvidence(old.availabilityEvidence);
+          const soldOutAt = catalogTime(entry.soldOutAt) ||
+            (incomingEvidence && incomingEvidence.state === 'sold_out' ? incomingEvidence.observedAt : 0);
           const restockedAt = catalogTime(entry.restockedAt);
-          const oldSoldOutAt = catalogTime(old.soldOutAt) || catalogTime(old.expiredAt);
-          if (entry.availability === 'sold_out' && (!old.restockedAt || soldOutAt > catalogTime(old.restockedAt))) {
+          const oldSoldOutAt = confirmedSoldOutTime(old);
+          const oldConfirmedAt = Math.max(oldEvidence ? oldEvidence.observedAt : 0, oldSoldOutAt, catalogTime(old.restockedAt));
+          const availableAt = Math.max(restockedAt, incomingEvidence && incomingEvidence.state === 'available' ? incomingEvidence.observedAt : 0);
+          const incomingAt = Math.max(soldOutAt, availableAt);
+          const stale = oldConfirmedAt > incomingAt;
+          if (incomingEvidence && !stale) offer.availabilityEvidence = incomingEvidence;
+          if (!stale && availableAt <= soldOutAt && (entry.availability === 'sold_out' || (incomingEvidence && incomingEvidence.state === 'sold_out'))) {
             past = true;
-            offer.expiredAt = soldOutAt || oldSoldOutAt || catalogTime(entry.lastSeenAt) || Date.now();
-            offer.soldOutAt = offer.expiredAt;
+            // Unknown exhaustion time remains unknown. Cache refresh is not an event.
+            if (soldOutAt || oldSoldOutAt) offer.expiredAt = offer.soldOutAt = soldOutAt || oldSoldOutAt;
+            else { delete offer.expiredAt; delete offer.soldOutAt; }
             offer.isExpired = true;
-          } else if (entry.availability === 'observed' && past && restockedAt > oldSoldOutAt) {
+          } else if (!stale && past && availableAt > oldSoldOutAt) {
             past = false;
             delete offer.expiredAt;
             delete offer.soldOutAt;
@@ -4176,7 +4272,7 @@
       // Gerações diferentes do Worker podem ter o mesmo link. Vence a observação
       // mais recente, sem deixar uma geração antiga apagar dados atuais.
       const latest = new Map();
-      const observedAt = o => Math.max(catalogTime(o.firstSeenAt), catalogTime(o.lastSeenAt), catalogTime(o.soldOutAt), catalogTime(o.restockedAt));
+      const observedAt = o => Math.max(catalogTime(o.firstSeenAt), catalogTime(o.lastSeenAt), catalogTime(o.soldOutAt), catalogTime(o.restockedAt), catalogTime(o.availabilityEvidence && o.availabilityEvidence.observedAt));
       snapshot.offers.forEach(o => {
         const campaign = catalogCampaign(o.link);
         if (campaign && (!latest.has(campaign.key) || observedAt(o) > observedAt(latest.get(campaign.key)))) latest.set(campaign.key, o);
@@ -4190,12 +4286,14 @@
     }
 
     function renderCatalogStatus(fresh) {
-      const offers = historyData.active || [];
+      const sets = homeOfferSets(historyData.active, historyData.history);
+      const offers = sets.activeItems;
+      const visibleCount = offers.length + sets.soldOutItems.length;
       if (currentTab === 'home' || currentTab === 'tickets') renderOffers(offers);
       else if (currentTab === 'history') renderHistoryScreen();
       updateCategoryCounts(offers);
       document.getElementById('activesCountText').textContent = offers.length + ' Ativas';
-      document.getElementById('liveStatusText').textContent = (fresh ? 'Catálogo atualizado • ' : 'Catálogo em cache • ') + offers.length + ' ofertas';
+      document.getElementById('liveStatusText').textContent = (fresh ? 'Catálogo atualizado • ' : 'Catálogo em cache • ') + visibleCount + ' ofertas';
       document.getElementById('liveDot').style.backgroundColor = fresh ? '#00e676' : '#ffb300';
       updateTimelineBadgeDot();
     }
@@ -4226,6 +4324,9 @@
       } catch (e) {
         if (cache) {
           mergeCatalogSnapshot(cache.snapshot);
+          renderCatalogStatus(false);
+        } else if (typeof INITIAL !== 'undefined' && (INITIAL.hunterCollection || INITIAL.collectionPausedForUpdate)) {
+          // Native collection owns source requests; do not duplicate it from the WebView.
           renderCatalogStatus(false);
         } else {
           await streamPortalOffersFallback();
@@ -4352,19 +4453,18 @@
     }
 
     function renderOffers(list) {
-      recordSessionImpressions(list);
+      const home = homeOfferSets(list, historyData.history);
+      recordSessionImpressions(home.activeItems);
 
       const container = document.getElementById('cardList');
       if (!container) return;
       container.innerHTML = '';
 
-      let filtered = list;
-      if (activeFilter) {
-        filtered = list.filter(o => o.category === activeFilter);
-      }
+      let filtered = home.activeItems;
+      if (activeFilter) filtered = filtered.filter(o => o.category === activeFilter);
 
       if (isGrouped) {
-        renderGroupedOffers(filtered, historyData.history || [], container);
+        renderGroupedOffers(filtered, home.soldOutItems, container);
       } else {
         renderIndividualOffers(filtered, container);
       }
@@ -4419,57 +4519,50 @@
       return item.source === 'Stories_Only';
     }
 
+    // REDEMPTION_IDENTITY_START
+    function redemptionIdentity(record) {
+      if (!record || typeof record !== 'object') return null;
+      const account = String(record.user || record.accountId || '').trim().toLowerCase();
+      if (!account) return null;
+      const voucher = typeof record.url === 'string' && record.url.trim() && !catalogCampaign(record.url) ? 'url:' + record.url.trim() :
+        (record.id != null && String(record.id).trim() && !/^redemption-.+-\d+$/.test(String(record.id)) ? 'id:' + String(record.id).trim() : '');
+      return voucher ? account + '|' + voucher : null;
+    }
+
     function getAllRedemptionsList() {
-      const enrichMap = new Map();
-      const authoritativeMap = new Map();
-
-      if (typeof INITIAL !== 'undefined' && INITIAL.realRedemptions && Array.isArray(INITIAL.realRedemptions)) {
-        INITIAL.realRedemptions.forEach(r => {
-          const k = r.url || r.id || (r.title ? r.title.trim().toLowerCase() : null);
-          if (k) authoritativeMap.set(k, r);
-        });
-      }
-
-      const addToList = (items) => {
+      const records = new Map();
+      const authoritative = new Map();
+      const unidentified = new Set();
+      const bundled = typeof INITIAL !== 'undefined' && Array.isArray(INITIAL.realRedemptions) ? INITIAL.realRedemptions : [];
+      bundled.forEach(record => { const key = redemptionIdentity(record); if (key) authoritative.set(key, record); });
+      const add = (items, origin) => {
         if (!Array.isArray(items)) return;
-        items.forEach(r => {
-          if (!r) return;
-          const k = r.url || r.id || (r.title ? r.title.trim().toLowerCase() : null);
-          if (!k) return;
-          const ex = enrichMap.get(k) || {};
-          const auth = authoritativeMap.get(k);
-
-          let merged = Object.assign({}, ex, r);
-          if (auth && auth.redeemedAt) {
-            if (!merged.redeemedAt || (merged.redeemedAt.startsWith('17/10/2026') && !auth.redeemedAt.startsWith('17/10/2026')) || (merged.user === 'gaoriel' && auth.user === 'gaoriel')) {
-              merged.redeemedAt = auth.redeemedAt;
-            }
-            if (auth.user) merged.user = auth.user;
+        items.forEach((record, index) => {
+          if (!record || typeof record !== 'object') return;
+          const identity = redemptionIdentity(record);
+          if (!identity) {
+            // Cópias idênticas entre bundle e cache não são novos resgates.
+            const fingerprint = JSON.stringify(Object.fromEntries(Object.keys(record).sort().map(key => [key, record[key]])));
+            if (unidentified.has(fingerprint)) return;
+            unidentified.add(fingerprint);
           }
-          enrichMap.set(k, merged);
+          const key = identity || 'unidentified:' + origin + ':' + index;
+          const old = records.get(key) || {};
+          const merged = { ...old, ...record };
+          const auth = identity && authoritative.get(identity);
+          // A data pertence ao resgate da mesma conta, nunca ao título da campanha.
+          const dates = [auth && auth.redeemedAt, record.redeemedAt, old.redeemedAt];
+          merged.redeemedAt = dates.find(value => parseRedemptionMoment(value)) || dates.find(Boolean) || '';
+          records.set(key, merged);
         });
       };
-
-      if (typeof INITIAL !== 'undefined' && INITIAL.realRedemptions && Array.isArray(INITIAL.realRedemptions)) {
-        addToList(INITIAL.realRedemptions);
-      }
-      if (typeof settings !== 'undefined' && settings.realRedemptions && Array.isArray(settings.realRedemptions)) {
-        addToList(settings.realRedemptions);
-      }
-      try {
-        const saved = localStorage.getItem('uol_real_redemptions');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed)) addToList(parsed);
-        }
-      } catch(e) {}
-
-      let all = Array.from(enrichMap.values());
-      if (all.length === 0 && typeof settings !== 'undefined' && settings.myRedemptions) {
-        all = settings.myRedemptions || [];
-      }
-      return all;
+      add(bundled, 'bundle');
+      if (typeof settings !== 'undefined') add(settings.realRedemptions, 'settings');
+      try { add(JSON.parse(localStorage.getItem('uol_real_redemptions') || '[]'), 'storage'); } catch (e) {}
+      const all = Array.from(records.values());
+      return all.length ? all : (typeof settings !== 'undefined' && Array.isArray(settings.myRedemptions) ? settings.myRedemptions : []);
     }
+    // REDEMPTION_IDENTITY_END
 
     function cleanTextForMatch(str) {
       if (!str) return '';
@@ -4485,55 +4578,26 @@
     function getRedeemedUsersForOffer(offer) {
       if (!offer) return [];
       const matchedUsers = new Set();
-      if (offer.user) matchedUsers.add(offer.user);
-
-      const redemptions = getAllRedemptionsList();
-      if (!redemptions || redemptions.length === 0) return Array.from(matchedUsers);
-
-      const offerUrl = offer.link || offer.url || '';
-      const offerId = String(offer.id || '');
-      const offerBenId = offerUrl.match(/\/beneficios\/(\d+)/)?.[1] || offerId.match(/^(\d+)$/)?.[1];
-      const offerSlug = offerUrl.match(/\/campanhasdeingresso\/([^/?#]+)/)?.[1];
-
-      const oTitle1 = cleanTextForMatch(offer.rawTitle || offer.title || '');
-      const oTitle2 = cleanTextForMatch(offer.eventTitle || '');
-      const oFull = ((offer.rawTitle || '') + ' ' + (offer.title || '') + ' ' + (offer.eventTitle || '') + ' ' + (offer.description || '')).toLowerCase();
-
-      for (const r of redemptions) {
-        const rUser = r.user || 'leosaquetto';
-        const rUrl = r.url || r.downloadUrl || '';
-        const rBenId = rUrl.match(/\/beneficios\/(\d+)/)?.[1];
-        const rSlug = rUrl.match(/\/campanhasdeingresso\/([^/?#]+)/)?.[1];
-
-        if (offerBenId && rBenId && offerBenId === rBenId) {
-          matchedUsers.add(rUser);
-          continue;
-        }
-        if (offerSlug && rSlug && offerSlug.toLowerCase() === rSlug.toLowerCase()) {
-          matchedUsers.add(rUser);
-          continue;
-        }
-
-        const rTitle = cleanTextForMatch(r.title);
-        if (rTitle && (oTitle1 === rTitle || (oTitle1 && rTitle.includes(oTitle1)) || (oTitle1 && oTitle1.includes(rTitle)))) {
-          matchedUsers.add(rUser);
-          continue;
-        }
-        if (rTitle && oTitle2 && (rTitle.includes(oTitle2) || oTitle2.includes(rTitle))) {
-          matchedUsers.add(rUser);
-          continue;
-        }
-
-        const rFull = ((r.title || '') + ' ' + (r.description || '')).toLowerCase();
-        const kws = ['zayn', 'maroon 5', 'c6 fest', 'kidzhouse', 'banquete do chef', 'jota.pe', 'arena brasileira', 'luedji', 'cinesystem', 'interlagos', 'porsche cup', 'hoteis.com', 'cacau show', 'marina da gloria', 'emma', 'day limns', 'ivete', 'netshoes', 'pecorino', 'spoleto'];
-        for (const kw of kws) {
-          if (oFull.includes(kw) && rFull.includes(kw)) {
-            matchedUsers.add(rUser);
-            break;
-          }
-        }
-      }
-
+      const offerCampaign = catalogCampaign(offer.link || offer.url);
+      const benefitId = value => {
+        try {
+          const url = new URL(value);
+          if (url.protocol !== 'https:' || url.hostname !== 'clube.uol.com.br' || url.username || url.password || url.port) return '';
+          return (url.pathname.match(/^\/beneficios\/(\d+)(?:\/|$)/) || [])[1] || '';
+        } catch (e) { return ''; }
+      };
+      const offerBenefit = benefitId(offer.link || offer.url);
+      getAllRedemptionsList().forEach(record => {
+        const account = String(record.user || record.accountId || '').trim().toLowerCase();
+        if (!account) return;
+        const links = [record.campaignUrl, record.link, record.url, record.downloadUrl].filter(Boolean);
+        const matched = links.some(link => {
+          const campaign = catalogCampaign(link);
+          return (offerCampaign && campaign && offerCampaign.key === campaign.key) ||
+            (offerBenefit && benefitId(link) === offerBenefit);
+        });
+        if (matched) matchedUsers.add(account);
+      });
       return Array.from(matchedUsers);
     }
 
@@ -4546,11 +4610,6 @@
         const users = getRedeemedUsersForOffer(item);
         users.forEach(u => userSet.add(u));
       });
-      if (group.norm && group.norm.eventTitle) {
-        const dummy = { title: group.norm.eventTitle, rawTitle: group.norm.eventTitle };
-        const users = getRedeemedUsersForOffer(dummy);
-        users.forEach(u => userSet.add(u));
-      }
       return Array.from(userSet);
     }
 
@@ -4694,7 +4753,7 @@
     }
 
     function getGroupKey(o) {
-      if (o.imageUrl) {
+      if (validOfferImage(o.imageUrl)) {
         const baseImg = o.imageUrl.split('?')[0].split('/').pop().split('_').pop();
         if (baseImg && baseImg.length > 8) return 'img:' + baseImg;
       }
@@ -4748,7 +4807,7 @@
         // Tag de tempo alinhada à direita do card
         const timeTagHtml = '<span class="card-tag tag-age" style="margin-left: auto;">' + relativeTimeStr + '</span>';
 
-        const imgUrl = o.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
+        const imageMarkup = posterImageMarkup(o);
         const codeBadge = o.code ? '<div class="thumb-code-badge">' + o.code + '</div>' : '';
         const displayTitle = o.rawTitle || o.title;
 
@@ -4777,7 +4836,7 @@
 
         card.innerHTML = `
           <div class="thumb-wrap">
-            <img src="${imgUrl}" alt="Thumb" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            ${imageMarkup}
             ${codeBadge}
           </div>
           <div class="card-content">
@@ -4804,18 +4863,9 @@
       });
 
       // 2. Por padrão, exibe também ofertas esgotadas nas últimas 24 horas (agrupadas ao final)
-      const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-      const activeIds = new Set((list || []).map(x => x.id));
-      const recentSoldOut = (historyData.history || []).filter(o => {
-        if (!o || activeIds.has(o.id)) return false;
-        if (activeFilter && o.category !== activeFilter) return false;
-        const expTime = o.expiredAt || o.lastSeen || o.firstSeen || 0;
-        return expTime > 0 && (now - expTime) <= ONE_DAY_MS;
-      }).sort((a, b) => {
-        const ta = a.expiredAt || a.lastSeen || a.firstSeen || 0;
-        const tb = b.expiredAt || b.lastSeen || b.firstSeen || 0;
-        return tb - ta;
-      });
+      const recentSoldOut = homeOfferSets(list, historyData.history, now).soldOutItems
+        .filter(o => !activeFilter || o.category === activeFilter)
+        .sort((a, b) => confirmedSoldOutTime(b) - confirmedSoldOutTime(a));
 
       if (recentSoldOut.length > 0) {
         const divEl = document.createElement('div');
@@ -4834,10 +4884,10 @@
           card.className = 'card card-expired';
           card.style.setProperty('--delay', list.length + index);
 
-          const expTimeStr = formatExpiredAgo(o.expiredAt || o.lastSeen || o.firstSeen, now);
+          const expTimeStr = formatExpiredAgo(confirmedSoldOutTime(o), now);
           const timeTagHtml = '<span class="card-tag tag-expired-age" style="margin-left: auto;">' + expTimeStr + '</span>';
 
-          const imgUrl = o.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
+          const imageMarkup = posterImageMarkup(o);
           const codeBadge = o.code ? '<div class="thumb-code-badge">' + o.code + '</div>' : '';
           const displayTitle = o.rawTitle || o.title;
 
@@ -4863,7 +4913,7 @@
 
           card.innerHTML = `
             <div class="thumb-wrap">
-              <img src="${imgUrl}" alt="Thumb" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+              ${imageMarkup}
               ${codeBadge}
             </div>
             <div class="card-content">
@@ -5039,25 +5089,85 @@
       return cased;
     }
 
-    function formatTitleWithInlineDates(title, datesHtml) {
-      if (!title) return '';
-      if (!datesHtml) return title;
-      const words = String(title).trim().split(/\s+/);
-      if (words.length <= 1) {
-        return `${title} <span class="micro-dates-inline">${datesHtml}</span>`;
-      }
-
-      let bindCount = 1;
-      const prevWord = words[words.length - 2];
-      if (prevWord && (prevWord.length <= 2 || prevWord === '–' || prevWord === '-')) {
-        bindCount = 2;
-      }
-
-      const leadWords = words.slice(0, words.length - bindCount).join(' ');
-      const boundWords = words.slice(words.length - bindCount).join(' ');
-
-      return `${leadWords} <span class="nowrap-title-tag">${boundWords} <span class="micro-dates-inline">${datesHtml}</span></span>`;
+    // UI_DATE_HELPERS_START
+    function saoPauloParts(timestamp) {
+      const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo',
+        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+        second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(timestamp));
+      return Object.fromEntries(parts.filter(p => p.type !== 'literal').map(p => [p.type, Number(p.value)]));
     }
+
+    function validCalendarDate(year, month, day) {
+      const value = new Date(Date.UTC(year, month - 1, day));
+      return year >= 1900 && year <= 2200 && value.getUTCFullYear() === year &&
+        value.getUTCMonth() === month - 1 && value.getUTCDate() === day;
+    }
+
+    function sessionDateInfo(item, now = Date.now()) {
+      const extracted = extractSessionDate(item);
+      if (!extracted) return null;
+      const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+      const numeric = extracted.match(/^(\d{1,2})\/(\d{1,2})$/);
+      const named = extracted.match(/^ATÉ (\d{1,2}) ([A-Z]{3})$/);
+      if (!numeric && !named) return null;
+      const day = Number((numeric || named)[1]);
+      const month = numeric ? Number(numeric[2]) : months.indexOf(named[2]) + 1;
+      const anchor = saoPauloParts(catalogTime(item.firstSeen) || catalogTime(item.lastSeen) || now);
+      let year = anchor.year;
+      const text = [item.rawTitle || item.title || '', item.description || ''].join(' ');
+      const explicit = Array.from(text.matchAll(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g))
+        .find(m => Number(m[1]) === day && Number(m[2]) === month);
+      const explicitNamed = Array.from(text.matchAll(/\b(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*\s+(?:de\s+)?(\d{4})\b/gi))
+        .find(m => Number(m[1]) === day && months.indexOf(m[2].toUpperCase()) + 1 === month);
+      if (explicit || explicitNamed) year = Number((explicit || explicitNamed)[3]);
+      else if (anchor.month === 12 && month === 1) year += 1;
+      else if (anchor.month === 1 && month === 12) year -= 1;
+      if (!validCalendarDate(year, month, day)) return null;
+      const timestamp = Date.UTC(year, month - 1, day);
+      const today = saoPauloParts(now);
+      const todayUtc = Date.UTC(today.year, today.month - 1, today.day);
+      let label = day + ' ' + months[month - 1];
+      if (year !== today.year) label += ' ' + year;
+      if (named) label = 'ATÉ ' + label;
+      else if (timestamp === todayUtc) label = 'HOJE';
+      else if (timestamp === todayUtc + 86400000) label = 'AMANHÃ';
+      return { key: year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0'),
+        timestamp: timestamp, label: label, year: year, month: month, day: day };
+    }
+
+    function groupSessionDates(activeItems, soldOutItems, now = Date.now()) {
+      const dates = new Map();
+      const add = (item, soldOut) => {
+        const date = sessionDateInfo(item, now);
+        if (!date) return;
+        const old = dates.get(date.key);
+        if (!old || !soldOut) dates.set(date.key, { ...date, soldOut: soldOut });
+      };
+      (soldOutItems || []).forEach(item => add(item, true));
+      (activeItems || []).forEach(item => add(item, false));
+      return Array.from(dates.values()).sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function renderSessionDatePills(activeItems, soldOutItems) {
+      return groupSessionDates(activeItems, soldOutItems).map(date =>
+        `<span class="micro-date-pill${date.soldOut ? ' pill-soldout' : ''}${date.label === 'HOJE' && !date.soldOut ? ' pill-today' : ''}">${ICONS.calendar}<span>${date.label}</span></span>`
+      ).join('');
+    }
+
+    function dateStrip(datesHtml) {
+      return datesHtml ? `<div class="micro-dates-inline" role="group" aria-label="Datas das sessões" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">${datesHtml}</div>` : '';
+    }
+
+    function htmlAttribute(value) {
+      return String(value || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function posterImageMarkup(items) {
+      const image = offerImage(items);
+      const placeholder = `<div class="poster-placeholder" aria-label="Imagem indisponível">${ICONS.tickets}</div>`;
+      return placeholder + (image ? `<img class="poster-img" src="${htmlAttribute(image)}" alt="Pôster" loading="lazy" onerror="this.remove()" />` : '');
+    }
+    // UI_DATE_HELPERS_END
 
     function normalizeEventInfo(items) {
       let eventTitle = '';
@@ -5460,35 +5570,7 @@
       }
 
       // Container de datas micro inline [ 📅 DATA ]
-      const activeRawDates = activeItems.map(extractSessionDate).filter(Boolean);
-      const soldOutRawDates = soldOutItems.map(extractSessionDate).filter(Boolean);
-
-      const activeDates = Array.from(new Set(activeRawDates)).map(formatSessionDateBadge);
-      const soldOutDates = Array.from(new Set(soldOutRawDates)).map(formatSessionDateBadge);
-
-      let microDatePillsHtml = '';
-      activeDates.forEach(d => {
-        const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
-        const todayClass = isToday ? ' pill-today' : '';
-        microDatePillsHtml += `
-          <span class="micro-date-pill${todayClass}">
-            ${ICONS.calendar}
-            <span>${d}</span>
-          </span>
-        `;
-      });
-      soldOutDates.forEach(d => {
-        if (!activeDates.includes(d)) {
-          const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
-          const todayClass = isToday ? ' pill-today' : '';
-          microDatePillsHtml += `
-            <span class="micro-date-pill pill-soldout${todayClass}">
-              ${ICONS.calendar}
-              <span>${d}</span>
-            </span>
-          `;
-        }
-      });
+      let microDatePillsHtml = renderSessionDatePills(activeItems, soldOutItems);
 
       if (!microDatePillsHtml) {
         if (isAllSoldOut) {
@@ -5508,7 +5590,6 @@
         }
       }
 
-      const microDatesInlineHtml = `<span class="micro-dates-inline">${microDatePillsHtml}</span>`;
 
       // Action buttons: Apenas no Destaque (somente Resgatar alinhado à direita no rodapé).
       let actionButtonsHtml = '';
@@ -5529,7 +5610,7 @@
 
       card.setAttribute('onclick', defaultTapAction);
 
-      const imgUrl = parent.imageUrl || 'https://i.imgur.com/UdIgTfI.png';
+      const imageMarkup = posterImageMarkup([...activeItems, ...soldOutItems]);
 
       // Amigos que resgataram
       const redeemedUsers = getRedeemedUsersForGroup(group);
@@ -5537,7 +5618,7 @@
 
       if (isHeroFullWidth) {
         card.innerHTML = `
-          <img class="poster-img" src="${imgUrl}" alt="Poster" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+          ${imageMarkup}
           <div class="poster-scrim"></div>
           <div class="poster-top-bar">
             <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap;">
@@ -5549,15 +5630,16 @@
           <div class="poster-bottom-content">
             <div class="poster-venue">${norm.venue || 'Clube UOL'}</div>
             <div class="destaque-bottom-row">
-              <div class="destaque-hero-title">${formatTitleWithInlineDates(norm.eventTitle, microDatePillsHtml)}</div>
+              <div class="destaque-hero-title">${norm.eventTitle}</div>
               ${actionButtonsHtml}
             </div>
+            ${dateStrip(microDatePillsHtml)}
             ${redeemedFriendsHtml}
           </div>
         `;
       } else {
         card.innerHTML = `
-          <img class="poster-img" src="${imgUrl}" alt="Poster" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+          ${imageMarkup}
           <div class="poster-scrim"></div>
           <div class="poster-top-bar">
             <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; min-width: 0;">
@@ -5568,7 +5650,8 @@
           </div>
           <div class="poster-bottom-content">
             <div class="poster-venue">${norm.venue || 'Clube UOL'}</div>
-            <div class="poster-title">${formatTitleWithInlineDates(norm.eventTitle, microDatePillsHtml)}</div>
+            <div class="poster-title">${norm.eventTitle}</div>
+            ${dateStrip(microDatePillsHtml)}
             ${redeemedFriendsHtml}
           </div>
         `;
@@ -5907,37 +5990,10 @@
     }
 
     function getOfferYearAndMonth(o) {
-      let d = null;
-      const ts = o.firstSeen || o.expiredAt || o.lastSeen;
-      if (ts && ts > 1577836800000) {
-        d = new Date(ts);
-      }
-      const extracted = extractSessionDate(o);
-      if (extracted) {
-        const m = extracted.match(/(\d{1,2})\/(\d{1,2})/);
-        if (m) {
-          const monIdx = parseInt(m[2], 10) - 1;
-          if (monIdx >= 0 && monIdx <= 11) {
-            let yr = d ? d.getFullYear() : 2026;
-            if (d && d.getMonth() === 11 && monIdx === 0) yr += 1;
-            if (d && d.getMonth() === 0 && monIdx === 11) yr -= 1;
-            return { year: yr, month: monIdx };
-          }
-        }
-        const mNamed = extracted.match(/(?:JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)/i);
-        if (mNamed) {
-          const monthMap = { jan: 0, fev: 1, mar: 2, abr: 3, mai: 4, jun: 5, jul: 6, ago: 7, set: 8, out: 9, nov: 10, dez: 11 };
-          const monIdx = monthMap[mNamed[0].toLowerCase()];
-          if (monIdx !== undefined) {
-            let yr = d ? d.getFullYear() : 2026;
-            if (d && d.getMonth() === 11 && monIdx === 0) yr += 1;
-            if (d && d.getMonth() === 0 && monIdx === 11) yr -= 1;
-            return { year: yr, month: monIdx };
-          }
-        }
-      }
-      if (!d) d = new Date();
-      return { year: d.getFullYear(), month: d.getMonth() };
+      const session = sessionDateInfo(o);
+      if (session) return { year: session.year, month: session.month - 1 };
+      const parts = saoPauloParts(catalogTime(o.firstSeen) || catalogTime(o.expiredAt) || catalogTime(o.lastSeen) || Date.now());
+      return { year: parts.year, month: parts.month - 1 };
     }
 
     function renderHistoryScreen() {
@@ -6260,35 +6316,7 @@
       }
 
       // Container de datas micro inline [ 📅 DATA ]
-      const activeRawDates = (activeItems || []).map(extractSessionDate).filter(Boolean);
-      const soldOutRawDates = (soldOutItems || []).map(extractSessionDate).filter(Boolean);
-
-      const activeDates = Array.from(new Set(activeRawDates)).map(formatSessionDateBadge);
-      const soldOutDates = Array.from(new Set(soldOutRawDates)).map(formatSessionDateBadge);
-
-      let microDatePillsHtml = '';
-      activeDates.forEach(d => {
-        const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
-        const todayClass = isToday ? ' pill-today' : '';
-        microDatePillsHtml += `
-          <span class="micro-date-pill${todayClass}">
-            ${ICONS.calendar}
-            <span>${d}</span>
-          </span>
-        `;
-      });
-      soldOutDates.forEach(d => {
-        if (!activeDates.includes(d)) {
-          const isToday = (d === 'HOJE' || d.toUpperCase() === 'HOJE');
-          const todayClass = isToday ? ' pill-today' : '';
-          microDatePillsHtml += `
-            <span class="micro-date-pill pill-soldout${todayClass}">
-              ${ICONS.calendar}
-              <span>${d}</span>
-            </span>
-          `;
-        }
-      });
+      let microDatePillsHtml = renderSessionDatePills(activeItems, soldOutItems);
 
       if (!microDatePillsHtml) {
         if (isAllSoldOut) {
@@ -6308,11 +6336,7 @@
         }
       }
 
-      const formattedTitleHtml = microDatePillsHtml
-        ? formatTitleWithInlineDates(eventTitle, microDatePillsHtml)
-        : eventTitle;
-
-      const imgUrl = (parent && parent.imageUrl) || 'https://i.imgur.com/UdIgTfI.png';
+      const imageMarkup = posterImageMarkup([...(activeItems || []), ...(soldOutItems || [])]);
 
       // Amigos que resgataram
       const redeemedUsers = getRedeemedUsersForGroup(group);
@@ -6328,7 +6352,7 @@
       }
 
       card.innerHTML = `
-        <img class="poster-img" src="${imgUrl}" alt="Poster" loading="lazy" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+        ${imageMarkup}
         <div class="poster-scrim"></div>
         <div class="poster-top-bar">
           <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; min-width: 0;">
@@ -6339,7 +6363,8 @@
         </div>
         <div class="poster-bottom-content">
           <div class="poster-venue">${venueText}</div>
-          <div class="poster-title">${formattedTitleHtml}</div>
+          <div class="poster-title">${eventTitle}</div>
+          ${dateStrip(microDatePillsHtml)}
           ${redeemedFriendsHtml}
         </div>
       `;
@@ -6421,17 +6446,57 @@
       renderRedemptionsScreen();
     }
 
-    function parseRedemptionDate(str) {
-      if (!str) return 0;
-      const m = String(str).match(/(\d{2})\/(\d{2})\/(\d{4})(?:(?:\s+|,\s*|\s+às\s+)(\d{2}):(\d{2}))?/i);
-      if (!m) return 0;
-      const day = parseInt(m[1], 10);
-      const month = parseInt(m[2], 10) - 1;
-      const year = parseInt(m[3], 10);
-      const hour = m[4] ? parseInt(m[4], 10) : 0;
-      const min = m[5] ? parseInt(m[5], 10) : 0;
-      return new Date(year, month, day, hour, min).getTime();
+    // REDEMPTION_DATE_START
+    function parseRedemptionMoment(value) {
+      if (typeof value !== 'string' || !value.trim()) return null;
+      const text = value.trim();
+      const brazilian = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:(?:\s+às\s+|,\s*|\s+)(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/i);
+      const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2}))?$/i);
+      if (!brazilian && !iso) return null;
+      const year = Number(brazilian ? brazilian[3] : iso[1]);
+      const month = Number(brazilian ? brazilian[2] : iso[2]);
+      const day = Number(brazilian ? brazilian[1] : iso[3]);
+      const hour = Number((brazilian || iso)[4] || 0);
+      const minute = Number((brazilian || iso)[5] || 0);
+      const second = Number((brazilian || iso)[6] || 0);
+      if (!validCalendarDate(year, month, day) || hour > 23 || minute > 59 || second > 59) return null;
+      const precision = (brazilian || iso)[4] == null ? 'day' : 'time';
+      let timestamp;
+      if (iso && precision === 'time') timestamp = Date.parse(text);
+      else {
+        // Resolve a data civil no fuso da fonte, independentemente do fuso do aparelho.
+        const civil = Date.UTC(year, month - 1, day, hour, minute, second);
+        timestamp = civil;
+        for (let i = 0; i < 3; i++) {
+          const parts = saoPauloParts(timestamp);
+          const represented = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+          const adjustment = civil - represented;
+          timestamp += adjustment;
+          if (!adjustment) break;
+        }
+        const roundtrip = saoPauloParts(timestamp);
+        if (roundtrip.year !== year || roundtrip.month !== month || roundtrip.day !== day || roundtrip.hour !== hour) return null;
+      }
+      if (!Number.isFinite(timestamp) || timestamp <= 0 || timestamp > Date.now() + 300000) return null;
+      return { timestamp: timestamp, precision: precision,
+        label: String(day).padStart(2, '0') + '/' + String(month).padStart(2, '0') + '/' + year };
     }
+
+    function parseRedemptionDate(value) {
+      const moment = parseRedemptionMoment(value);
+      return moment ? moment.timestamp : 0;
+    }
+
+    function timelineTimeLabel(event, now = Date.now()) {
+      if (!event.timestamp) return 'Data não informada';
+      if (event.datePrecision === 'day') return event.dateLabel;
+      if (now - event.timestamp > 7 * 86400000) {
+        const parts = saoPauloParts(event.timestamp);
+        return String(parts.day).padStart(2, '0') + '/' + String(parts.month).padStart(2, '0') + '/' + String(parts.year).slice(-2);
+      }
+      return formatRelativeTime(event.timestamp, now);
+    }
+    // REDEMPTION_DATE_END
 
     // ===================================================================
     // TELA NATIVA MEUS RESGATES (HISTÓRICO UNIFICADO)
@@ -7080,7 +7145,9 @@
 
     function updateCategoryCounts(list) {
       const counts = { EXPOSICOES: 0, MUSEU: 0, MUSICA: 0, TEATRO: 0, OUTROS: 0 };
-      (list || []).forEach(o => {
+      const visible = homeOfferSets(list, historyData.history);
+      const countItems = isGrouped ? buildOfferGroups(visible.activeItems, visible.soldOutItems) : [...visible.activeItems, ...visible.soldOutItems];
+      countItems.forEach(o => {
         if (counts[o.category] != null) counts[o.category]++;
         else counts.OUTROS++;
       });
@@ -7497,8 +7564,8 @@
 
         const oldMap = new Map();
         (settings.realRedemptions || []).forEach(o => {
-          if (o.url) oldMap.set(o.url, o);
-          if (o.title) oldMap.set(o.title.trim().toLowerCase(), o);
+          const key = redemptionIdentity(o);
+          if (key) oldMap.set(key, o);
         });
 
         while ((match = blockRegex.exec(html)) !== null) {
@@ -7510,7 +7577,7 @@
           if (titleMatch) {
             const rawTitle = titleMatch[1].trim();
             const fullUrl = linkMatch ? 'https://clube.uol.com.br' + linkMatch[1] : '';
-            const enriched = oldMap.get(fullUrl) || oldMap.get(rawTitle.toLowerCase()) || {};
+            const enriched = oldMap.get(redemptionIdentity({ user: currentHandle, url: fullUrl })) || {};
             items.push({
               id: enriched.id || ('redemption-' + currentHandle + '-' + items.length),
               title: rawTitle,
@@ -7527,9 +7594,11 @@
           }
         }
         if (items.length > 0) {
-          // Preserva os resgates dos outros perfis e atualiza os da conta ativa
-          const otherUsersItems = (settings.realRedemptions || []).filter(r => (r.user || 'leosaquetto') !== currentHandle);
-          settings.realRedemptions = [...otherUsersItems, ...items];
+          // Uma página parcial não apaga vouchers antigos nem registros sem conta identificada.
+          const mergedItems = new Map();
+          (settings.realRedemptions || []).forEach((record, index) => mergedItems.set(redemptionIdentity(record) || 'legacy:' + index, record));
+          items.forEach((record, index) => mergedItems.set(redemptionIdentity(record) || 'page:' + index, record));
+          settings.realRedemptions = Array.from(mergedItems.values());
           try {
             localStorage.setItem('uol_real_redemptions', JSON.stringify(settings.realRedemptions));
           } catch(e) {}
@@ -8083,6 +8152,15 @@
     function getTimelineEvents() {
       const events = [];
       const now = Date.now();
+      const allOffers = [...(historyData.active || []), ...(historyData.history || [])];
+      const imagesByGroup = new Map();
+      allOffers.forEach(offer => {
+        const key = getGroupKey(offer);
+        const records = imagesByGroup.get(key) || [];
+        records.push(offer);
+        imagesByGroup.set(key, records);
+      });
+      const timelineOfferImage = offer => offerImage([offer, ...(imagesByGroup.get(getGroupKey(offer)) || [])]);
 
       // 1. Ofertas Ativas (Novas)
       (historyData.active || []).forEach(o => {
@@ -8101,14 +8179,15 @@
           title: o.rawTitle || o.title,
           badgeText: isStory ? 'Nova Stories' : 'Nova Portal',
           desc: `Descoberta via ${srcLabel} • ${catDef.label}`,
-          timestamp: o.firstSeen || now,
+          timestamp: catalogTime(o.firstSeen) || null,
+          imageUrl: timelineOfferImage(o),
           source: srcLabel
         });
       });
 
       // 2. Ofertas do Histórico (Esgotadas e Descobertas)
       (historyData.history || []).forEach(o => {
-        const expTime = o.expiredAt || o.lastSeen;
+        const expTime = confirmedSoldOutTime(o);
         if (expTime) {
           let durationText = '';
           if (o.firstSeen && expTime > o.firstSeen) {
@@ -8121,7 +8200,8 @@
             title: o.rawTitle || o.title,
             badgeText: 'Esgotada',
             desc: `Ingressos esgotados no Clube UOL${durationText}`,
-            timestamp: expTime
+            timestamp: expTime,
+            imageUrl: timelineOfferImage(o)
           });
         }
 
@@ -8141,7 +8221,8 @@
             title: o.rawTitle || o.title,
             badgeText: isStory ? 'Nova Stories' : 'Nova Portal',
             desc: `Descoberta via ${srcLabel} • ${catDef.label}`,
-            timestamp: o.firstSeen,
+            timestamp: catalogTime(o.firstSeen) || null,
+            imageUrl: timelineOfferImage(o),
             source: srcLabel
           });
         }
@@ -8150,28 +8231,35 @@
       // 3. Resgates Realizados (Filtrados para Campanhas de Ingressos)
       const rawRedemptions = getAllRedemptionsList();
       const redList = rawRedemptions.filter(r => (r.partner || '').trim().toLowerCase() === 'campanhas de ingressos');
-      redList.forEach(r => {
-        const isLeo = ((r.user || 'leosaquetto') === 'leosaquetto');
-        const userName = isLeo ? 'Leonardo' : 'Gabriel';
-        const userHandle = isLeo ? 'leosaquetto' : 'gaoriel';
-        const ts = parseRedemptionDate(r.redeemedAt);
-
+      redList.forEach((r, index) => {
+        const userHandle = String(r.user || r.accountId || '').trim().toLowerCase();
+        const userName = userHandle === 'leosaquetto' ? 'Leonardo' : userHandle === 'gaoriel' ? 'Gabriel' : 'Conta não informada';
+        const moment = parseRedemptionMoment(r.redeemedAt || r.date);
+        const campaign = catalogCampaign(r.campaignUrl || r.link || r.url);
+        const associated = campaign ? allOffers.filter(o => {
+          const candidate = catalogCampaign(o.link);
+          return candidate && candidate.key === campaign.key;
+        }) : [];
+        const avatar = ['leosaquetto', 'gaoriel'].includes(userHandle)
+          ? `<img class="timeline-user-avatar" src="${getAvatarUrl(userHandle)}" alt="${userName}" /> ` : '';
         events.push({
-          id: 'resgate-' + (r.id || r.url || r.title),
+          id: 'resgate-' + (redemptionIdentity(r) || 'unidentified-' + index),
           type: 'resgate',
           title: formatRedemptionTitle(r.title),
           badgeText: 'Resgate',
-          desc: `<img class="timeline-user-avatar" src="${getAvatarUrl(userHandle)}" alt="${userName}" /> <span style="color: #f1f5f9; font-weight: 600;">${userName}</span> • ${r.partner || 'Campanhas de Ingressos'}`,
-          timestamp: ts || (now - 3600000),
+          desc: `${avatar}<span style="color: #f1f5f9; font-weight: 600;">${userName}</span> • ${r.partner || 'Campanhas de Ingressos'}`,
+          timestamp: moment ? moment.timestamp : null,
+          datePrecision: moment ? moment.precision : null,
+          dateLabel: moment ? moment.label : '',
+          imageUrl: validOfferImage(r.thumb) || offerImage(associated),
           redemption: r
         });
       });
 
-      // Ordena cronologicamente decrescente
-      events.sort((a, b) => b.timestamp - a.timestamp);
-
-      // Limita aos 40 eventos mais recentes
-      return events.slice(0, 40);
+      // Datas desconhecidas permanecem visíveis ao final, sem recência inventada.
+      const dated = events.filter(event => event.timestamp).sort((a, b) => b.timestamp - a.timestamp);
+      const undated = events.filter(event => !event.timestamp);
+      return [...dated.slice(0, 40), ...undated];
     }
 
     function updateTimelineBadgeDot() {
@@ -8274,7 +8362,8 @@
           badgeClass = 'badge-resgate';
         }
 
-        const timeStr = formatRelativeTime(ev.timestamp, now);
+        if (validOfferImage(ev.imageUrl)) iconHtml = iconHtml.replace('</div>', `<img class="timeline-thumbnail" src="${htmlAttribute(ev.imageUrl)}" alt="" loading="lazy" onerror="this.remove()" /></div>`);
+        const timeStr = timelineTimeLabel(ev, now);
         let clickHandler = '';
         if (ev.offerId) {
           clickHandler = `onclick="closeActivityTimelineModal(); openDetails('${ev.offerId}');"`;

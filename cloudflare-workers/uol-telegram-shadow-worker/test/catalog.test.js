@@ -19,7 +19,7 @@ test("public projection allowlists fields and bounds UTF-8 descriptions", () => 
   [story({ targets_json: "never", beeper_payload_json: "never", canonical_key: "private" })],
   { now, api: { lastSuccessAt: at, healthCards: [{ link }], cookie: "never" } });
   assert.deepEqual(Object.keys(result.offers[0]), ["id", "link", "title", "category", "imageUrl", "partner",
-    "description", "validity", "firstSeenAt", "lastSeenAt", "soldOutAt", "restockedAt", "availability", "isPortal"]);
+    "description", "validity", "firstSeenAt", "lastSeenAt", "soldOutAt", "restockedAt", "availability", "isPortal", "availabilityEvidence"]);
   assert.equal(result.offers[0].title, "Peça");
   assert.equal(result.offers[0].imageUrl, "https://conteudo.imguol.com.br/image.jpg");
   assert.ok(Buffer.byteLength(result.offers[0].description) <= 8192);
@@ -110,4 +110,33 @@ test("preflight never touches storage; denial is explicit, uncacheable and CORS-
   assert.equal(denied.headers.get("Cache-Control"), "no-store");
   assert.equal(denied.headers.get("Retry-After"), "120");
   assert.equal(denied.headers.get("Access-Control-Allow-Origin"), "*");
+});
+
+
+test("only the exact poster CDN is allowed and credentials stay rejected", () => {
+  const image = "https://d310rdc9v8uuq.cloudfront.net/posters/image.jpg";
+  assert.equal(catalogImageUrl(image), image);
+  assert.equal(buildCatalog([offer({ image_url: image })], [], { now }).offers[0].imageUrl, image);
+  for (const url of ["https://other.cloudfront.net/poster.jpg", "https://d310rdc9v8uuq.cloudfront.net.evil.test/poster.jpg",
+    `${image}?sessionid=secret`, "https://user@d310rdc9v8uuq.cloudfront.net/poster.jpg"])
+    assert.equal(catalogImageUrl(url), "");
+});
+
+test("availability evidence uses the latest explicit observation, never lastSeen or failing history", () => {
+  const sold = "2026-10-17T17:30:00.000Z";
+  const active = buildCatalog([offer({ status: "sold_out", sold_out_at: sold })], [],
+    { now, api: { lastSuccessAt: at, healthCards: [{ link }] } }).offers[0];
+  assert.deepEqual(active.availabilityEvidence, { state: "available", observedAt: at, source: "api" });
+  assert.equal(active.availability, "observed");
+  const stale = buildCatalog([offer({ status: "sold_out", sold_out_at: sold })], [],
+    { now, api: { lastSuccessAt: at, lastError: "failed", healthCards: [{ link }] } }).offers[0];
+  assert.deepEqual(stale.availabilityEvidence, { state: "sold_out", observedAt: sold, source: "worker" });
+  assert.equal(stale.availability, "sold_out");
+  assert.equal(buildCatalog([offer()], [], { now }).offers[0].availabilityEvidence, undefined);
+  const restocked = buildCatalog([offer({ status: "sold_out", sold_out_at: sold, restocked_at: at })], [], { now }).offers[0];
+  assert.deepEqual(restocked.availabilityEvidence, { state: "available", observedAt: at, source: "worker" });
+  assert.equal(restocked.availability, "observed");
+  const newerSold = buildCatalog([offer({ sold_out_at: at })], [],
+    { now, ticketListing: { lastSuccessAt: sold, cards: [{ link }] } }).offers[0];
+  assert.equal(newerSold.availabilityEvidence.state, "sold_out");
 });

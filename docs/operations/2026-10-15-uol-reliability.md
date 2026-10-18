@@ -1271,3 +1271,42 @@ requires the Mac awake and app running; it is not an Oracle renewal daemon.
 Private initial evidence and deduplication state are stored as
 `uol-credential-renewal-initial-evidence-2026-10-17.json` and
 `uol-credential-renewal-state.json` with mode 0600.
+
+### 17/10/2026 — Hunter 5.7.0: coleta complementar e interface
+
+Implementação preparada em `stories-hunter/CHANGELOG_v5.7.0.md`. A entrada autenticada
+`/hunter-intake` persiste observações antes de responder; o próprio aparelho consulta
+`/hunter-intake-status`. Campanha inédita exige confirmação da página pública e entra
+na fila primária existente como `pending_enrichment`. Não há entrega paralela pelo
+celular, novo Cron, migração ou antecipação do ciclo primário. Stories usam a mesma
+identidade/outbox do Oracle, com retomada interna e preservação de resultados incertos.
+
+Home, imagens, faixa de datas e timeline foram corrigidas sem regravar o histórico
+privado. A primeira abertura após instalar nova versão não coleta; execuções explícitas
+`collect`/`notification` continuam sujeitas aos limites e recuos persistidos.
+
+Evidências anteriores à publicação desta revisão:
+
+- Produção consultada em 18/10 02:16 UTC (17/10 23:16 BRT): versão
+  `37d2ecd5-7a4d-4c16-99a8-22bd1cc502b5`, readiness positivo; zero incidentes críticos,
+  dead letters, entregas incertas e manutenção esgotada. Estimativa primária 308,
+  limite 512 preservado. Snapshots privados `hunter-predeploy-*-2026-10-17.json`.
+- Testes unitários do Worker: 404 passaram; Hunter: 53 passaram, mais 21 testes
+  direcionados após ajuste da consulta de reconciliação. A suíte completa de integração
+  foi reiniciada após interrupção do processo local; resultado registrado abaixo quando concluído.
+- Artefato público 5.7.0 gerado por `--prepare --code-only`, sintaxe válida, bundles
+  de contas/vouchers vazios e ausência da credencial h1 e dos cookies técnicos conferida.
+- Bootstrap individual e cópia da sessão técnica preparados somente em diretório
+  privado; configuração do Oracle preservada. Não comprova importação no Keychain.
+- Prévia visual sintética foi bloqueada pela política do navegador integrado para
+  `file://`. Nenhum contorno utilizado. Testes de funções/CSS não são prova visual no iPhone.
+
+Estados desta etapa: código/testes locais; publicação desta revisão, recebimento OTA,
+coleta autenticada no aparelho e descoberta natural com recibos ainda não comprovados.
+
+Validação local final: 20 arquivos de integração passaram na execução completa; o
+arquivo Hunter encontrou código carregado antes da remoção do enriquecimento
+paralelo e falhou na nova expectativa `pending_enrichment`. A execução isolada do
+mesmo arquivo, com o código final estável, passou 5/5. Sem relaxar a expectativa.
+Tipos, startup e bundle dry-run passaram; a publicação continua condicionada à CI
+verde do SHA exato. A inspeção visual no aparelho permanece pendente.

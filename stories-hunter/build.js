@@ -13,6 +13,7 @@ const codeOnly = buildOptions.has("--code-only");
 const logoBase64 = fs.readFileSync(path.join(__dirname, "logo_base64.txt"), "utf8").trim();
 const svgIcons = JSON.parse(fs.readFileSync(path.join(__dirname, "svg_icons.json"), "utf8"));
 let htmlTemplate = fs.readFileSync(path.join(__dirname, "template.html"), "utf8");
+const collectorSource = fs.readFileSync(path.join(__dirname, "collector.js"), "utf8");
 
 // Load bootstrap cookies safely for Leo and Gabriel
 const bootstrapFileLeo = path.join(process.env.HOME, ".config/uol-sentinel/leo-bootstrap.json");
@@ -167,7 +168,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.6.0";
+const SCRIPT_VERSION = "5.7.0";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -181,6 +182,8 @@ const BUNDLED_COOKIES_LEO = ${JSON.stringify(bundledCookiesLeo)};
 const BUNDLED_COOKIES_GAORIEL = ${JSON.stringify(bundledCookiesGaoriel)};
 const BUNDLED_COOKIES = BUNDLED_COOKIES_LEO;
 const BUNDLED_REDEMPTIONS = ${JSON.stringify(bundledRedemptions, null, 2)};
+
+${collectorSource}
 
 function isNewerVersion(remote, local) {
   if (!remote || !local) return false;
@@ -255,81 +258,132 @@ async function performSelfUpdate(isManual = false) {
   }
 }
 
+function hunterAction() {
+  if (typeof args === "undefined") return "open";
+  const shortcut = args.shortcutParameter;
+  return String(args.queryParameters?.action || (typeof shortcut === "string" ? shortcut : shortcut?.action) || "open").toLowerCase();
+}
+
+// The installed OTA shortcut opens the freshly saved script without an action.
+// Record that version locally, show the UI, and leave collection for the next
+// opening. Explicit notification/collection actions remain eligible immediately.
+function hunterCollectionPausedForUpdate(action) {
+  const explicitCollection = action === "collect" || action === "notification";
+  try {
+    const fm = FileManager.local();
+    const file = fm.joinPath(fm.documentsDirectory(), "uol_hunter_loaded_version.json");
+    let version = "";
+    if (fm.fileExists(file)) {
+      try { version = JSON.parse(fm.readString(file)).version || ""; } catch (_) {}
+    }
+    if (version === SCRIPT_VERSION) return false;
+    fm.writeString(file, JSON.stringify({ version: SCRIPT_VERSION }));
+    return !explicitCollection;
+  } catch (_) {
+    // Failed marker persistence must not turn an OTA opening into a source read.
+    return !explicitCollection;
+  }
+}
+
+async function runNativeHunterCollector() {
+  try {
+    const collector = HunterCollector.create({
+      fm: FileManager.local(), keychain: Keychain, now: Date.now,
+      uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
+      pause: milliseconds => new Promise(resolve => Timer.schedule(milliseconds, false, resolve))
+    });
+    // This file is provisioned privately. Never interpolate it into the release
+    // artifact or send its contents through the WebView/observation intake.
+    const fm = getFileManager();
+    const bootstrap = fm.joinPath(fm.documentsDirectory(), "uol_hunter_private_bootstrap.json");
+    if (fm.fileExists(bootstrap)) {
+      if (fm.isFileDownloaded && !fm.isFileDownloaded(bootstrap)) await fm.downloadFileFromiCloud(bootstrap);
+      collector.importBootstrap(JSON.parse(fm.readString(bootstrap)));
+    }
+    return await collector.run();
+  } catch (_) {
+    return { status: "unavailable", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} };
+  }
+}
+
 async function main() {
   console.log("⚡ [Clube UOL Hub] Inicializando...");
-  await preparePrivateFiles();
-  persistPrivateBootstrap();
-
-  if (typeof args !== "undefined" && args.queryParameters && args.queryParameters.action === "update") {
+  const action = hunterAction();
+  if (action === "update") {
     await performSelfUpdate(true);
     Script.complete();
     return;
   }
-
+  const collectionPausedForUpdate = hunterCollectionPausedForUpdate(action);
+  const collection = collectionPausedForUpdate
+    ? Promise.resolve({ status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} })
+    : runNativeHunterCollector();
+  if (action === "collect" || action === "notification") {
+    const result = await collection;
+    if (typeof Script.setShortcutOutput === "function") Script.setShortcutOutput(JSON.stringify(result));
+    Script.complete();
+    return;
+  }
+  await preparePrivateFiles();
+  persistPrivateBootstrap();
   const settings = loadSettings();
   const historyData = loadHistory();
   const credentials = loadCredentials();
   const sessionCookies = loadSessionCookies(settings.currentUser || "leosaquetto");
-  let realRedemptions = loadRedemptionsDatabase();
-  const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions);
-
+  const realRedemptions = loadRedemptionsDatabase();
+  const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate);
   const uiView = new WebView();
   await uiView.loadHTML(html, "https://clube.uol.com.br");
+  const report = collection.then(async result => {
+    const json = JSON.stringify(result).replace(/</g, "\\u003c");
+    try { await uiView.evaluateJavaScript("window.setHunterCollectionStatus && window.setHunterCollectionStatus(" + json + ");"); } catch (_) {}
+    return result;
+  });
   await uiView.present(true);
+  await report;
   Script.complete();
 }
 
-function loadRedemptionsDatabase() {
-  const enrichMap = new Map();
-  const authMap = new Map();
-  // 1. Base embutida (zero rede, funciona sempre mesmo sem iCloud)
-  for (const b of BUNDLED_REDEMPTIONS) {
-    const key = b.url || b.id || b.title;
-    if (key) {
-      enrichMap.set(key, b);
-      authMap.set(key, b);
-    }
-  }
+function nativeRedemptionKey(item) {
+  if (!item || typeof item !== "object") return "";
+  const account = typeof item.user === "string" && item.user.trim() ? item.user.trim().toLowerCase() : "";
+  if (!account) return "";
+  const identity = typeof item.url === "string" && item.url.trim() ? "url:" + item.url.trim()
+    : typeof item.id === "string" && item.id.trim() && !/^redemption-.+-\d+$/.test(item.id.trim()) ? "id:" + item.id.trim()
+      : Number.isSafeInteger(item.id) ? "id:" + item.id : "";
+  return identity ? account + "|" + identity : "";
+}
 
-  // 2. Lê do arquivo permanente no iCloud Drive
+function loadRedemptionsDatabase() {
+  const records = [], byIdentity = new Map();
+  function add(item) {
+    if (!item || typeof item !== "object") return;
+    const key = nativeRedemptionKey(item);
+    if (!key || !byIdentity.has(key)) {
+      if (key) byIdentity.set(key, records.length);
+      records.push({ ...item });
+      return;
+    }
+    const index = byIdentity.get(key), previous = records[index];
+    records[index] = { ...previous, ...item };
+    if (!item.redeemedAt && previous.redeemedAt) records[index].redeemedAt = previous.redeemedAt;
+  }
+  for (const item of BUNDLED_REDEMPTIONS) add(item);
   try {
     const fm = getFileManager();
     const dbPath = fm.joinPath(fm.documentsDirectory(), REDEMPTIONS_DB_FILE_NAME);
     if (fm.fileExists(dbPath)) {
-      if (fm.isFileDownloaded && !fm.isFileDownloaded(dbPath)) {
-        fm.downloadFileFromiCloud(dbPath);
-      }
-      const raw = fm.readString(dbPath);
-      const parsed = JSON.parse(raw);
+      // preparePrivateFiles has awaited the iCloud download before this read.
+      const parsed = JSON.parse(fm.readString(dbPath));
       if (!Array.isArray(parsed)) throw new Error("Formato inválido do banco de resgates");
-      if (Array.isArray(parsed)) {
-        for (const item of parsed) {
-          const key = item.url || item.id || item.title;
-          if (key) {
-            const existing = enrichMap.get(key) || {};
-            const auth = authMap.get(key);
-            const merged = Object.assign({}, existing, item);
-            if (auth && auth.redeemedAt && (!merged.redeemedAt || (merged.redeemedAt.startsWith('17/10/2026') && !auth.redeemedAt.startsWith('17/10/2026')) || (merged.user === 'gaoriel' && auth.user === 'gaoriel'))) {
-              merged.redeemedAt = auth.redeemedAt;
-            }
-            if (auth && auth.user) merged.user = auth.user;
-            enrichMap.set(key, merged);
-          }
-        }
-      }
+      for (const item of parsed) add(item);
     }
-  } catch (e) {
-    console.log("Aviso ao ler uol_redemptions_database.json: " + e.message);
-    // A read failure is not an empty database. Preserve the original file.
+  } catch (_) {
+    console.log("Aviso: banco privado indisponível; arquivo original preservado.");
     return BUNDLED_REDEMPTIONS;
   }
-
-  const all = Array.from(enrichMap.values());
-  try {
-    saveRedemptionsDatabase(all);
-  } catch (e) {}
-
-  return all;
+  // A display load must not rewrite or repair the private redemption database.
+  return records;
 }
 
 function saveRedemptionsDatabase(items) {
@@ -476,8 +530,8 @@ function loadSessionCookies(user = "leosaquetto") {
 async function loadNativeRedemptions(cookies, user = "leosaquetto", existingList = BUNDLED_REDEMPTIONS) {
   const enrichMap = new Map();
   for (const b of (existingList || BUNDLED_REDEMPTIONS)) {
-    if (b.url) enrichMap.set(b.url, b);
-    if (b.title) enrichMap.set(b.title.trim().toLowerCase(), b);
+    const key = nativeRedemptionKey(b);
+    if (key) enrichMap.set(key, b);
   }
 
   if (!cookies || cookies.length === 0) return existingList;
@@ -501,7 +555,7 @@ async function loadNativeRedemptions(cookies, user = "leosaquetto", existingList
       if (titleMatch) {
         const rawTitle = titleMatch[1].trim();
         const fullUrl = linkMatch ? "https://clube.uol.com.br" + linkMatch[1] : "";
-        const enriched = enrichMap.get(fullUrl) || enrichMap.get(rawTitle.toLowerCase()) || {};
+        const enriched = enrichMap.get(nativeRedemptionKey({ url: fullUrl, user })) || {};
         items.push(Object.assign({}, enriched, {
           id: enriched.id || ("redemption-" + user + "-" + items.length),
           title: rawTitle,
@@ -520,7 +574,7 @@ async function loadNativeRedemptions(cookies, user = "leosaquetto", existingList
       }
     }
     if (items.length > 0) {
-      const otherUserItems = (existingList || BUNDLED_REDEMPTIONS).filter(r => (r.user || "leosaquetto") !== user);
+      const otherUserItems = (existingList || BUNDLED_REDEMPTIONS).filter(r => r.user !== user);
       return [...otherUserItems, ...items];
     }
     return existingList;
@@ -634,10 +688,12 @@ function parseCredentialsText(text, target) {
   target.senha = (target.accounts.leosaquetto && target.accounts.leosaquetto.senha) || target.senha || "";
 }
 
-function buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions) {
+function buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate = false) {
   const activeUser = settings.currentUser || "leosaquetto";
   const cookiesForActiveUser = (activeUser === "gaoriel") ? BUNDLED_COOKIES_GAORIEL : BUNDLED_COOKIES_LEO;
   const initialData = {
+    collectionPausedForUpdate,
+    hunterCollection: { status: collectionPausedForUpdate ? "updated" : "starting", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} },
     historyData: historyData,
     settings: settings,
     credentials: credentials,

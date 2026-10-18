@@ -240,3 +240,12 @@ export async function fetchTicketCodeOffer(code, fetchImpl = fetch) {
   const confirmed = await fetchPage(first.card.link, code, fetchImpl);
   return { ...confirmed, requests: 2 };
 }
+
+// A phone supplies an already known public URL. Validate that exact page using
+// the same identity/CTA contract as server discovery; never follow a redemption.
+export async function fetchTicketCampaignOffer(link, fetchImpl = fetch) {
+  const code = String(link || "").match(/\/campanhasdeingresso\/(p[A-Za-z0-9]{2,5})-/)?.[1];
+  const url = code && ticketCodeOfferUrl(link, code, { full: true });
+  if (!url || url !== link) return { ...unknown("invalid_url"), requests: 0 };
+  return { ...await fetchPage(url, code, fetchImpl), requests: 1 };
+}

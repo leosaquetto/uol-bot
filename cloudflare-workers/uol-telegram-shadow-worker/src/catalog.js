@@ -53,7 +53,7 @@ export function catalogImageUrl(value) {
   const host = url.hostname;
   const allowed = ["uol.com.br", "imguol.com.br", "uol.com", "fbcdn.net", "cdninstagram.com"]
     .some(domain => host === domain || host.endsWith(`.${domain}`)) ||
-    ["media.discordapp.net", "cdn.discordapp.com"].includes(host);
+    ["media.discordapp.net", "cdn.discordapp.com", "d310rdc9v8uuq.cloudfront.net"].includes(host);
   if (!allowed || /\/(?:api|webhooks|login|resgatar|resgate)(?:\/|$)/i.test(url.pathname) ||
       [...url.searchParams.keys()].some(key => /^(?:access_token|token|cookie|session|sessionid|authorization|password)$/i.test(key))) return "";
   url.hash = "";
@@ -85,6 +85,18 @@ export function catalogBudgetAllowed(budget) {
 }
 
 export function buildCatalog(offerRows, storyRows, { api = {}, ticketListing = {}, now = Date.now() } = {}) {
+  const sources = { api: sourceStatus(api, now), ticketListing: sourceStatus(ticketListing, now) };
+  const activeEvidence = new Map();
+  for (const [source, cards] of [["api", api.healthCards], ["ticketListing", ticketListing.cards]]) {
+    if (!sources[source].healthy || !Array.isArray(cards)) continue;
+    for (const card of cards) {
+      const link = catalogCampaignUrl(card?.link);
+      const previous = activeEvidence.get(link);
+      if (link && (!previous || sources[source].lastSuccessAt > previous.observedAt)) {
+        activeEvidence.set(link, { state: "available", observedAt: sources[source].lastSuccessAt, source: source === "ticketListing" ? "ticket_listing" : source });
+      }
+    }
+  }
   const portalLinks = new Set([
     ...(Array.isArray(api.healthCards) ? api.healthCards : []),
     ...(Array.isArray(ticketListing.cards) ? ticketListing.cards : []),
@@ -92,16 +104,23 @@ export function buildCatalog(offerRows, storyRows, { api = {}, ticketListing = {
   const offers = offerRows.slice(0, CATALOG_OFFER_LIMIT).flatMap(row => {
     const link = catalogCampaignUrl(row.link);
     if (!link || row.status === "discarded") return [];
-    const soldOutAt = iso(row.sold_out_at);
+    const soldOutAt = iso(row.sold_out_at), restockedAt = iso(row.restocked_at);
+    const evidence = [activeEvidence.get(link),
+      soldOutAt && { state: "sold_out", observedAt: soldOutAt, source: "worker" },
+      restockedAt && { state: "available", observedAt: restockedAt, source: "worker" }]
+      .filter(value => value && Date.parse(value.observedAt) <= now)
+      .sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt) || (a.state === "sold_out" ? -1 : 1))[0];
     return [{
       id: text(row.id, 160), link, title: text(row.title || row.preview_title, 280),
       category: text(row.category, 100),
       imageUrl: [row.image_url, row.card_image_url, row.partner_image_url].map(catalogImageUrl).find(Boolean) || "",
       partner: text(row.partner_name, 120), description: text(row.description, 8192),
       validity: text(row.validity, 500), firstSeenAt: iso(row.first_seen_at),
-      lastSeenAt: iso(row.last_seen_at), soldOutAt, restockedAt: iso(row.restocked_at),
-      availability: row.status === "sold_out" || row.status === "shadow_sold_out" || soldOutAt ? "sold_out" : "observed",
+      lastSeenAt: iso(row.last_seen_at), soldOutAt, restockedAt,
+      availability: evidence ? evidence.state === "sold_out" ? "sold_out" : "observed"
+        : row.status === "sold_out" || row.status === "shadow_sold_out" || soldOutAt ? "sold_out" : "observed",
       isPortal: portalLinks.has(link),
+      ...(evidence ? { availabilityEvidence: evidence } : {}),
     }];
   });
   const stories = storyRows.slice(0, CATALOG_STORY_LIMIT).flatMap(row => {
@@ -115,7 +134,7 @@ export function buildCatalog(offerRows, storyRows, { api = {}, ticketListing = {
     coverage: { offerLimit: CATALOG_OFFER_LIMIT, storyLimit: CATALOG_STORY_LIMIT,
       truncated: offerRows.length > CATALOG_OFFER_LIMIT || storyRows.length > CATALOG_STORY_LIMIT,
       scope: "recent_tracked" },
-    sources: { api: sourceStatus(api, now), ticketListing: sourceStatus(ticketListing, now) },
+    sources,
   };
 }
 

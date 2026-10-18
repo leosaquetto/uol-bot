@@ -97,3 +97,39 @@ test('iCloud download is awaited before any private read and failure does not ov
   await assert.rejects(context.preparePrivateFiles(), /offline/);
   assert.equal(writes, 0);
 });
+
+test('OTA first opening shows UI without collection; next opening and explicit notifications collect', async () => {
+  const files = new Map(); let action = 'open', collects = 0, displayed = 0, updated = 0, lastInitial;
+  const context = vm.createContext({
+    SCRIPT_VERSION: 'test-1', console: { log() {} },
+    FileManager: { local: () => ({ documentsDirectory: () => '/local', joinPath: path.join, fileExists: p => files.has(p),
+      readString: p => files.get(p), writeString: (p, v) => files.set(p, v) }) },
+    hunterAction: () => action,
+    runNativeHunterCollector: async () => { collects++; return { status: 'complete' }; },
+    performSelfUpdate: async () => { updated++; },
+    preparePrivateFiles: async () => {}, persistPrivateBootstrap() {},
+    loadSettings: () => ({}), loadHistory: () => [], loadCredentials: () => ({}), loadSessionCookies: () => [], loadRedemptionsDatabase: () => [],
+    buildDashboardHTML: (...args) => { lastInitial = args.at(-1); return '<html></html>'; },
+    WebView: class { async loadHTML() {} async evaluateJavaScript() {} async present() { displayed++; } },
+    Script: { complete() {}, setShortcutOutput() {} }
+  });
+  const gate = source.slice(source.indexOf('function hunterCollectionPausedForUpdate('), source.indexOf('async function runNativeHunterCollector('));
+  const main = source.slice(source.indexOf('async function main()'), source.indexOf('function nativeRedemptionKey('));
+  vm.runInContext(gate + main, context);
+  await context.main(); assert.equal(collects, 0); assert.equal(displayed, 1); assert.equal(lastInitial, true);
+  await context.main(); assert.equal(collects, 1); assert.equal(displayed, 2); assert.equal(lastInitial, false);
+  context.SCRIPT_VERSION = 'test-2'; action = 'notification'; await context.main();
+  assert.equal(collects, 2); assert.equal(displayed, 2, 'explicit notification is headless and eligible');
+  action = 'update'; context.SCRIPT_VERSION = 'test-3'; await context.main();
+  assert.equal(updated, 1); assert.equal(collects, 2);
+  action = 'open'; await context.main(); assert.equal(collects, 2); assert.equal(displayed, 3);
+});
+
+test('redemption identity never merges accounts, missing accounts, or synthetic row indexes', () => {
+  const context = vm.createContext({});
+  vm.runInContext(source.slice(source.indexOf('function nativeRedemptionKey('), source.indexOf('function loadRedemptionsDatabase(')), context);
+  assert.equal(context.nativeRedemptionKey({ id: 'voucher-1' }), '');
+  assert.equal(context.nativeRedemptionKey({ user: 'leo', id: 'redemption-leo-1' }), '');
+  assert.notEqual(context.nativeRedemptionKey({ user: 'leo', url: '/voucher/1' }), context.nativeRedemptionKey({ user: 'gab', url: '/voucher/1' }));
+  assert.equal(context.nativeRedemptionKey({ user: 'leo', id: 'voucher-1' }), 'leo|id:voucher-1');
+});

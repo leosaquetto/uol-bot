@@ -1,10 +1,25 @@
 # Handoff: Clube UOL Stories Hunter (Scriptable Hub)
 
 > **Data de Atualização**: 17 de Outubro de 2026  
-> **Status**: Base 5.5.0 em produção; integração 5.6.0 e evidências no changelog e documento operacional
+> **Status**: Evolução 5.7.0 descrita no changelog; publicação e execução real são registradas separadamente no documento operacional.
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
 > **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
+
+---
+
+## Contrato atual 5.7.0
+
+Consulte [CHANGELOG_v5.7.0.md](CHANGELOG_v5.7.0.md). Esta revisão substitui as regras
+antigas de tags inline nos cards: agora ficam em faixa horizontal rolável, separada
+do título e em ordem cronológica. Home mostra ativas e esgotadas confirmadas nas
+últimas 24 horas; Coleção preserva o histórico completo.
+
+`collector.js` roda no host Scriptable e encaminha descobertas públicas ao Worker.
+Sessão técnica e credencial do aparelho vêm de bootstrap privado/Keychain e nunca
+entram no artefato público. Atualização usa `--code-only`; a primeira abertura da
+versão não coleta. A documentação histórica abaixo não autoriza sobrescrever
+sessões, vouchers, datas de resgate ou o banco privado numa atualização de código.
 
 ---
 

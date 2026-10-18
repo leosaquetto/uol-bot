@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { DatabaseSync } from "node:sqlite";
 import { sendBeeperOffer } from "../src/beeper.js";
+import { HunterIntakeQueue } from "../src/hunter-intake.js";
 import {
   InstagramStoryInbox,
   initializeInstagramStorySchema,
@@ -191,6 +192,75 @@ test("persisted in-flight reservation without live owner becomes unknown without
   const result = await restarted.ingest(STORY);
   assert.equal(result.targets.main.status, "unknown");
   assert.equal(sample.calls.length, 4);
+});
+
+test("internal resume after expiry preserves ambiguous reservations and expires only unsent targets", async () => {
+  const sample = fixture();
+  seedRetentionRow(sample.database, "expired-recovery", {
+    beeper_payload_json: JSON.stringify({ idempotencyKey: "frozen-original-key" }),
+    changeTargets: targets => {
+      targets.main = { status: "in_flight", attempts: 1, messageId: "", nextAttemptAt: "", error: "" };
+      targets.canal2 = { status: "pending", attempts: 0, messageId: "", nextAttemptAt: "", error: "" };
+      targets.beeper = { status: "in_flight", attempts: 1, messageId: "", nextAttemptAt: "", error: "" };
+    },
+  });
+  const restarted = new InstagramStoryInbox(sample.sql, {}, sample.options);
+  const result = await restarted.resume("expired-recovery");
+  assert.equal(result.targets.main.status, "unknown");
+  assert.equal(result.targets.canal2.status, "expired");
+  assert.equal(result.targets.beeper.status, "reconciling");
+  assert.equal(result.targets.beeper.attempts, 1);
+  assert.equal(sample.calls.length, 0);
+  const stored = sample.database.prepare("SELECT * FROM instagram_story_outbox WHERE canonical_key = ?").get("expired-recovery");
+  assert.match(stored.beeper_payload_json, /frozen-original-key/);
+  assert.equal(stored.story_id, "4004185955500703000");
+  assert.equal(await restarted.resume("absent"), null);
+});
+
+test("two phones and Oracle converge on one durable Story and four destination messages", async () => {
+  const sample = fixture();
+  const oracle = await sample.inbox.ingest(STORY);
+  let raw = "";
+  const queue = new HunterIntakeQueue({ readState: () => raw, writeState: value => { raw = value; },
+    now: () => NOW.getTime(), budgetAllowed: () => true,
+    processStory: payload => sample.inbox.ingest(payload),
+    resumeStory: (key, payload) => sample.inbox.resume(key, payload),
+  });
+  const observation = n => ({ eventId: `00000000-0000-4000-8000-00000000000${n}`, source: "instagram",
+    observedAt: NOW.toISOString(), payload: STORY });
+  await queue.accept("phone-one", { observations: [observation(1)] });
+  await queue.accept("phone-two", { observations: [observation(2)] });
+  await queue.drain();
+  await queue.drain();
+  assert.equal(sample.database.prepare("SELECT COUNT(*) AS count FROM instagram_story_outbox").get().count, 1);
+  assert.equal(sample.calls.length, 4);
+  for (const [client, n] of [["phone-one", 1], ["phone-two", 2]]) {
+    const receipt = queue.status(client, observation(n).eventId);
+    assert.equal(receipt.status, "delivered");
+    assert.deepEqual(Object.keys(receipt.targets), Object.keys(oracle.targets));
+    assert.equal(JSON.stringify(receipt).includes("private_signed_query"), false);
+  }
+  assert.equal((await queue.accept("phone-one", { observations: [observation(1)] })).receipts[0].duplicate, true);
+  assert.equal(sample.calls.length, 4);
+});
+
+test("Hunter cannot resume a canonical Story with incompatible immutable timestamps", async () => {
+  const sample = fixture({ mode: () => "shadow" });
+  await sample.inbox.ingest(STORY);
+  const before = sample.database.prepare("SELECT * FROM instagram_story_outbox").get();
+  let raw = "";
+  const queue = new HunterIntakeQueue({ readState: () => raw, writeState: value => { raw = value; },
+    now: () => NOW.getTime(), budgetAllowed: () => true,
+    processStory: () => { throw new Error("must not ingest"); },
+    resumeStory: (key, payload) => sample.inbox.resume(key, payload),
+  });
+  const event = { eventId: "00000000-0000-4000-8000-000000000001", source: "instagram", observedAt: NOW.toISOString(),
+    payload: { ...STORY, expiresAt: "2026-10-10T14:28:43Z" } };
+  await queue.accept("phone", { observations: [event] });
+  await queue.drain();
+  assert.equal(queue.status("phone", event.eventId).status, "blocked");
+  assert.equal(sample.calls.length, 0);
+  assert.deepEqual(sample.database.prepare("SELECT * FROM instagram_story_outbox").get(), before);
 });
 
 test("concurrent ingestion observes reservation and does not duplicate the active send", async () => {

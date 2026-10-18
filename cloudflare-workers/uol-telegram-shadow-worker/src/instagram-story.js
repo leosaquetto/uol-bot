@@ -160,7 +160,7 @@ export function initializeInstagramStorySchema(sql) {
   CREATE INDEX IF NOT EXISTS instagram_story_expiry_idx ON instagram_story_outbox(expires_at);`);
 }
 
-async function canonicalKey(story) {
+export async function instagramStoryCanonicalKey(story) {
   const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(story.link));
   const hash = Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, "0")).join("");
   return `instagram:${story.storyId}:${hash}`;
@@ -369,7 +369,8 @@ export class InstagramStoryInbox {
 
   holdUnlessLive(row, targets, target) {
     if (this.mode() === "live") return false;
-    Object.assign(targets[target], { status: "held", error: "bot_not_live" });
+    Object.assign(targets[target], { status: "held", error: "bot_not_live",
+      nextAttemptAt: new Date(this.now().getTime() + 15 * 60_000).toISOString() });
     this.save(row, targets, this.now());
     return true;
   }
@@ -434,7 +435,7 @@ export class InstagramStoryInbox {
   async ingest(payload) {
     const now = this.now();
     const story = normalizeInstagramStory(payload, now);
-    const key = await canonicalKey(story);
+    const key = await instagramStoryCanonicalKey(story);
     let row = this.get(key);
     if (!row) {
       if (Date.parse(story.expiresAt) <= now.getTime()) throw inputError("instagram_story_expired", 410);
@@ -469,6 +470,23 @@ export class InstagramStoryInbox {
     } else if (row.published_at !== story.publishedAt || row.expires_at !== story.expiresAt) {
       throw inputError("instagram_story_identity_conflict", 409);
     }
+    return this.advance(row, story);
+  }
+
+  // Internal recovery starts from durable identity, including after input expiry.
+  // It never revalidates a stale phone/Oracle payload or creates a second Story.
+  async resume(key, observedStory = null) {
+    const row = this.get(key);
+    if (!row) return null;
+    if (observedStory && (row.story_id !== observedStory.storyId || row.link !== observedStory.link ||
+        row.published_at !== observedStory.publishedAt || row.expires_at !== observedStory.expiresAt)) {
+      throw inputError("instagram_story_identity_conflict", 409);
+    }
+    return this.advance(row, observedStory);
+  }
+
+  async advance(row, story = null) {
+    const key = row.canonical_key, now = this.now();
     if (this.active.has(key)) return receipt(row);
     const targets = JSON.parse(row.targets_json);
     if (TARGETS.every(target => targets[target].status === "confirmed") &&
@@ -479,12 +497,14 @@ export class InstagramStoryInbox {
       targets[target].error = target === "beeper" && row.beeper_payload_json
         ? "gateway_receipt_pending" : "reservation_without_live_owner";
     }
-    row.image_url = story.imageUrl;
-    row.image_width = story.imageWidth;
-    row.image_height = story.imageHeight;
-    // Binary media is used only for this RPC; it is never put in SQL or returned in receipts.
-    row.image_bytes = story.imageBytes;
-    row.image_mime = story.imageMime;
+    if (story) {
+      row.image_url = story.imageUrl;
+      row.image_width = story.imageWidth;
+      row.image_height = story.imageHeight;
+      // Binary media is used only for this RPC; never persisted or returned.
+      row.image_bytes = story.imageBytes;
+      row.image_mime = story.imageMime;
+    }
     this.save(row, targets, now);
     this.active.add(key);
     try {
@@ -505,17 +525,22 @@ export class InstagramStoryInbox {
       for (const target of ["discord", "main", "canal2", "beeper"]) {
         const state = targets[target];
         if (["confirmed", "unknown"].includes(state.status)) continue;
-        if (state.status === "held" && state.error.startsWith("upstream_http_")) continue;
+        if (state.status === "held" && (state.error.startsWith("upstream_http_") || state.error === "retry_limit_reached")) continue;
         const instant = this.now();
         if (Date.parse(row.expires_at) <= instant.getTime()) {
-          Object.assign(state, { status: "expired", error: "story_expired" });
+          if (state.status === "reconciling") continue;
+          Object.assign(state, { status: "expired", error: "story_expired", nextAttemptAt: "" });
           this.save(row, targets, instant);
           continue;
         }
+        const configurationRecovered = state.status === "held" &&
+          ((state.error === "bot_not_live" && this.mode() === "live") ||
+           (state.error === "destination_not_configured" && ready[target]));
+        if (!configurationRecovered && state.nextAttemptAt && Date.parse(state.nextAttemptAt) > instant.getTime()) continue;
         if (this.holdUnlessLive(row, targets, target)) continue;
-        if (state.nextAttemptAt && Date.parse(state.nextAttemptAt) > instant.getTime()) continue;
         if (!ready[target]) {
-          Object.assign(state, { status: "held", error: "destination_not_configured" });
+          Object.assign(state, { status: "held", error: "destination_not_configured",
+            nextAttemptAt: new Date(instant.getTime() + 15 * 60_000).toISOString() });
           this.save(row, targets, instant);
           continue;
         }

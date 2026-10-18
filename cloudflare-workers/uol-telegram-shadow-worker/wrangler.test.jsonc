@@ -10,6 +10,7 @@
   "vars": {
     "DELIVERY_MODE": "shadow",
     "INSTAGRAM_WAKE_CLIENTS": "{\"test\":\"bf04262df449dc4ddcc2af350a7e008e702f0455fcbf9bf13aecd8d66bfd30aa\"}",
+    "HUNTER_INTAKE_CLIENTS": "{\"test\":\"d03b39910f9f37a87a62e00894659a804e277cdff02c470c6b9396eed5d393b7\"}",
     "STORAGE_USAGE_GLOBAL_GUARD_ENABLED": "false",
     "STORAGE_USAGE_INGEST_TOKEN": "vitest-storage-usage-token-not-a-secret",
     "ALARM_INTERVAL_SECONDS": "10",

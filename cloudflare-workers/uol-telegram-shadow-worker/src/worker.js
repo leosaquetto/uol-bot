@@ -1,6 +1,8 @@
 import { DurableObject } from "cloudflare:workers";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { InstagramWakeQueue, authenticateWake, WAKE_BODY_LIMIT } from "./instagram-wake.js";
+import { HunterIntakeQueue, HUNTER_METADATA_KEY, authenticateHunter,
+  readHunterIntakeJson, publicHunterError } from "./hunter-intake.js";
 import { buildCatalog, catalogBudgetAllowed, serveCatalog, CATALOG_TTL_SECONDS,
   CATALOG_OFFER_LIMIT, CATALOG_STORY_LIMIT, CATALOG_OFFERS_SQL, CATALOG_STORIES_SQL } from "./catalog.js";
 
@@ -52,7 +54,7 @@ import {
   ticketApiConfiguration,
 } from "./uol-api.js";
 import { authorizationExpiresAt } from "./uol-auth.js";
-import { buildTicketCodeCandidates, fetchTicketCodeOffer } from "./ticket-code-discovery.js";
+import { buildTicketCodeCandidates, fetchTicketCodeOffer, fetchTicketCampaignOffer } from "./ticket-code-discovery.js";
 import { planTicketCodeScan, recordTicketCodeResults, protectedTicketCodeIds,
   TICKET_CODE_DAILY_REQUEST_LIMIT, ticketCodeCardFingerprint, unresolvedTicketCodeEntries } from "./ticket-code-policy.js";
 import {
@@ -597,6 +599,14 @@ export class UolTelegramShadow extends DurableObject {
     this.instagramStoryInbox = new InstagramStoryInbox(this.sqlExec.bind(this), env, {
       mode: () => this.currentDeliveryMode(),
     });
+    this.hunterIntake = new HunterIntakeQueue({
+      readState: () => this.metadataValue(HUNTER_METADATA_KEY),
+      writeState: value => this.setMetadata(HUNTER_METADATA_KEY, value),
+      budgetAllowed: () => this.storageUsageSnapshot().maintenanceAllowed === true,
+      processPortal: (payload, event) => this.registerHunterPortal(payload, event),
+      processStory: payload => this.instagramStoryInbox.ingest(payload),
+      resumeStory: (key, payload) => this.instagramStoryInbox.resume(key, payload),
+    });
     this.storageUsage = {
       day: new Date().toISOString().slice(0, 10),
       rowsRead: 0,
@@ -626,6 +636,79 @@ export class UolTelegramShadow extends DurableObject {
 
   async ingestInstagramStory(payload) {
     return this.instagramStoryInbox.ingest(payload);
+  }
+
+  async recordHunterIntake(payload, clientId) {
+    const receipt = await this.storageContext.run({ stage: "guard" },
+      () => this.hunterIntake.accept(clientId, payload));
+    // Receipt means the observation is durable. Delivery belongs to the server.
+    this.ctx.waitUntil(this.drainHunterIntake().catch(() => {
+      logEvent("warn", "uol_hunter_drain_failed", { error: "processing_deferred" });
+    }));
+    return receipt;
+  }
+
+  getHunterIntakeStatus(clientId, eventId) {
+    return this.storageContext.run({ stage: "guard" },
+      () => this.hunterIntake.status(clientId, eventId));
+  }
+
+  drainHunterIntake() {
+    if (this.hunterDrainInFlight) return this.hunterDrainInFlight;
+    return this.storageContext.run({ stage: "guard" }, () => {
+      if (!this.storageUsageSnapshot().maintenanceAllowed) return Promise.resolve({ status: "budget_guard" });
+      if (!this.hunterIntake.load().pending.some(item => item.nextAt <= Date.now())) {
+        return Promise.resolve({ status: "idle" });
+      }
+      const task = this.withDetachedStorageCycle("hunter", "guard", () => this.hunterIntake.drain())
+        .finally(() => { this.hunterDrainInFlight = null; });
+      this.hunterDrainInFlight = task;
+      return task;
+    });
+  }
+
+  async registerHunterPortal(payload, event) {
+    let [card] = dedupeCards([{ title: payload.title || "Campanha Clube UOL",
+      link: payload.link, category: payload.category || "Campanhas de ingressos",
+      cardImageUrl: payload.imageUrl || "", partnerImageUrl: "", partnerName: payload.partner || "" }]);
+    if (!card) throw new Error("hunter_campaign_invalid");
+    const findExisting = () => this.chooseIdentityKeeper(
+      (this.findIdentityRowsForCards([card]).get(this.identityLookupKey(card)) || [])
+        .filter(row => row.status !== "discarded"));
+    let existing = findExisting();
+    if (!existing) {
+      if (!this.storageUsageSnapshot().maintenanceAllowed) return { persisted: false };
+      const confirmed = await this.fetchHunterPortal(payload.link);
+      if (confirmed.status === "absent") throw Object.assign(new Error("hunter_campaign_unavailable"), { httpStatus: 410 });
+      if (confirmed.status !== "found" || confirmed.card?.link !== payload.link) return { persisted: false };
+      if (!this.storageUsageSnapshot().maintenanceAllowed) return { persisted: false };
+      card = confirmed.card;
+      // Primary discovery may have inserted the campaign during the public GET.
+      existing = findExisting();
+    }
+    if (existing) {
+      // A partial phone observation cannot restock a campaign, clear absence or
+      // replace newer/richer metadata. Only fill previously missing public data.
+      this.sqlExec(`UPDATE offers SET
+        card_image_url = CASE WHEN card_image_url = '' THEN ? ELSE card_image_url END,
+        image_url = CASE WHEN image_url = '' THEN ? ELSE image_url END,
+        partner_name = CASE WHEN partner_name = '' THEN ? ELSE partner_name END
+        WHERE id = ? AND ((card_image_url = '' AND ? <> '') OR
+          (image_url = '' AND ? <> '') OR (partner_name = '' AND ? <> ''))`,
+        card.cardImageUrl, card.cardImageUrl, card.partnerName, existing.id,
+        card.cardImageUrl, card.cardImageUrl, card.partnerName);
+    } else {
+      this.resolveListingCards([card], new Date().toISOString(), "pending_enrichment");
+    }
+    this.catalogCache = null;
+    // Registering presence never treats the rest of the source as absent.
+    // The durable primary queue owns enrichment/delivery from here. Do not race
+    // its enrichment or drain unrelated destinations from a phone request.
+    return { persisted: true };
+  }
+
+  fetchHunterPortal(link) {
+    return fetchTicketCampaignOffer(link);
   }
 
   recordInstagramWake(payload, clientId) {
@@ -7140,6 +7223,8 @@ export class UolTelegramShadow extends DurableObject {
 
     try {
       const now = new Date();
+      try { await this.drainHunterIntake(); }
+      catch { logEvent("warn", "uol_hunter_drain_failed", { error: "processing_deferred" }); }
       const operationalHealthDue = this.operationalHealthDue(now);
       if (operationalHealthDue) await this.refreshBeeperGatewayHealth(now);
       const initializedAt = this.metadataValue("initialized_at");
@@ -9287,6 +9372,21 @@ export default {
           cache: caches.default, waitUntil: task => ctx.waitUntil(task) });
       }
       const stub = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
+      if (url.pathname === "/hunter-intake" || url.pathname === "/hunter-intake-status") {
+        const clientId = await authenticateHunter(request, env);
+        if (!clientId) return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        const allowedMethod = url.pathname === "/hunter-intake" ? "POST" : "GET";
+        if (request.method !== allowedMethod) return jsonResponse({ ok: false, error: "method_not_allowed" }, 405);
+        try {
+          return jsonResponse(allowedMethod === "POST"
+            ? await stub.recordHunterIntake(await readHunterIntakeJson(request), clientId)
+            : await stub.getHunterIntakeStatus(clientId, url.searchParams.get("eventId") || ""),
+          allowedMethod === "POST" ? 202 : 200);
+        } catch (error) {
+          const failure = publicHunterError(error);
+          return jsonResponse({ ok: false, error: failure.error }, failure.httpStatus);
+        }
+      }
       if (request.method === "POST" && url.pathname === "/ingest-storage-usage") {
         const expected = String(env.STORAGE_USAGE_INGEST_TOKEN || "").trim();
         const authorization = request.headers.get("Authorization") || "";
