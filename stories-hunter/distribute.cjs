@@ -47,14 +47,14 @@ if (installLocal && fs.existsSync(path.dirname(icloudScriptPath))) {
   }
 }
 
-// Dedicated title never matches the generic "Scriptable" automation.
+// One notification automation routes the product before any generic file write.
 // Do not stage /scriptable: another product may already be awaiting delivery.
 if (!prepareOnly) {
   const { execFileSync } = require("child_process");
   const bytes = fs.statSync(targetScriptPath).size;
   const res = execFileSync('curl', ['--fail', '--silent', '--show-error', '--max-time', '20',
-    '-H', 'Title: Clube UOL Premium', '-H', 'Priority: high', '-H', 'Tags: arrow_up',
-    '-d', `Atualização disponível para Clube UOL Premium (${bytes} bytes). Execute Update Clube UOL Premium.`,
+    '-H', 'Title: Scriptable - Clube UOL Premium', '-H', 'Priority: high', '-H', 'Tags: arrow_up',
+    '-d', `Atualização disponível para Clube UOL Premium (${bytes} bytes). Update Scriptable executa o updater interno.`,
     'https://ntfy.sh/leo-macsend-8130'], {encoding:'utf8',timeout:25000});
   const receipt = JSON.parse(res);
   if (receipt.event !== 'message' || !receipt.id) throw Error('ntfy acceptance unconfirmed; do not retry blindly');

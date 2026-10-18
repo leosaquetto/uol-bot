@@ -65,9 +65,10 @@ Hunter. Uma beta validada pode ser promovida exatamente como foi testada.
 - O updater interno e `action: update` verificam e pedem confirmação antes de
   instalar. A nova ação explícita `update-auto` aplica os mesmos controles sem
   alerta nem reabertura automática; a próxima abertura mantém a pausa de coleta.
-- O Atalho genérico ntfy → endpoint local → salvar continua intacto para outros
-  scripts. Premium usa o título exclusivo `Clube UOL Premium` e um Atalho dedicado
-  que passa `action: update-auto`; detalhes em `PREMIUM_MIGRATION.md`.
+- Uma automação `Update Scriptable` recebe os avisos ntfy. O título
+  `Scriptable - Clube UOL Premium` executa `action: update-auto` antes de consultar
+  o Mac; os outros scripts mantêm as ações existentes. O gerador preserva o gatilho
+  e os parâmetros originais; detalhes e validação no aparelho em `PREMIUM_MIGRATION.md`.
 - `channel` = `beta` no mesmo Dicionário faz adesão explícita; `stable` volta ao
   canal normal. Sem esse campo, preserva a preferência local. Não há downgrade
   automático ao trocar de canal. O retorno ao Atalho contém estado, motivo,

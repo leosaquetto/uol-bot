@@ -207,10 +207,11 @@ node -c "/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptabl
 
 ## 6. Publicação e Atalhos
 
-Fluxo atual em [PREMIUM_MIGRATION.md](PREMIUM_MIGRATION.md). Não enviar mais título
-`Scriptable` para uma publicação UOL: ele pertence à automação genérica dos outros
-scripts. Premium usa título `Clube UOL Premium`, sem stage genérico ou sobrescrita
-do iCloud na publicação normal. O arquivo de Atalho dedicado é assinado pela Apple.
+Fluxo atual em [PREMIUM_MIGRATION.md](PREMIUM_MIGRATION.md). Uma automação
+`Update Scriptable` incorpora todos os scripts. Premium usa título
+`Scriptable - Clube UOL Premium`, sem stage genérico ou sobrescrita do iCloud na
+publicação normal. A primeira notificação com esse título depende da importação
+do atalho unificado; o antigo grava arquivos antes de identificar o produto.
 
 ## 7. Instalação e dados
 

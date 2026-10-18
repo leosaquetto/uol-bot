@@ -32,12 +32,12 @@ test('prepare creates only artifact without iCloud writes or notification', () =
   assert.equal(r.copies.length, 0); assert.equal(r.notifications.length, 0);
   assert.doesNotMatch(r.writes[0][1], /synthetic-leo|synthetic-gab|fixture/);
 });
-test('code-only publication notifies dedicated updater without installation or generic staging', () => {
+test('code-only publication identifies Premium to the unified automation without installation or staging', () => {
   const r = install(['--code-only']);
   assert.deepEqual(r.writes.map(x => x[0]), ['/repo/hunter.js']);
   assert.equal(r.copies.length, 0); assert.equal(r.notifications.length, 1);
-  assert.ok(r.notifications[0].includes('Title: Clube UOL Premium'));
-  assert.doesNotMatch(r.notifications[0].join(' '), /Title: Scriptable|scriptable\/stage/);
+  assert.ok(r.notifications[0].includes('Title: Scriptable - Clube UOL Premium'));
+  assert.doesNotMatch(r.notifications[0].join(' '), /scriptable\/stage/);
 });
 test('explicit code-only installation preserves both private bootstrap accounts and data files', () => {
   const r=install(['--code-only','--install']);

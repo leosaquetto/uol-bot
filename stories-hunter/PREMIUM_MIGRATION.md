@@ -14,8 +14,8 @@ aceitar a versão nova. Isso é compatibilidade técnica, não o nome do produto
 | Updater, reabertura e WebView | Resolvem o nome efetivo da instalação após migração. Journal/backup antigos permanecem disponíveis. |
 | Manifest | Campos adicionais `product=clube-uol-premium`, `scriptName=Clube UOL Premium`; protocolo/URLs preservados. |
 | MacSend | Target `clube-uol`, origem e rotas preservados; apenas filename/display_name mudam. |
-| ntfy | Título exclusivo `Clube UOL Premium`; não contém `Scriptable`. Mesmo tópico existente. |
-| Atalho `Update Scriptable` | Intacto. Nenhuma publicação Premium altera o alvo genérico staged. |
+| ntfy | Título `Scriptable - Clube UOL Premium`, identificado pela única automação. Mesmo tópico existente. |
+| Atalho `Update Scriptable` | Roteia Premium antes do download; preserva as ações originais para outros scripts. Nenhuma publicação Premium altera o alvo genérico staged. |
 | Atalho lançador `Clube UOL Premium` | O existente ainda apontava ao script antigo; novo arquivo fonte aponta ao novo nome. |
 | Web clip | URL de abertura atualizada; perfis já instalados não são alterados remotamente. |
 | Dados, Keychain, temas e vouchers | Nenhuma renomeação, migração de conteúdo ou regravação. |
@@ -73,15 +73,45 @@ Atalho. Permissão inicial do iOS/Scriptable, se solicitada, pertence ao sistema
 O código recebe a entrada em `args.shortcutParameter`, conforme
 [documentação Scriptable](https://docs.scriptable.app/args/).
 
-## Configuração mínima no iPhone
+## Uma automação para todos os scripts
 
-1. Importar **Update Clube UOL Premium**. Não substituir `Update Scriptable`.
-2. Criar **outra Automação Pessoal**: notificação do app **ntfy**, **Título contém
-   `Clube UOL Premium`**, executar imediatamente. Ação **Executar Atalho → Update
-   Clube UOL Premium**. Manter o gatilho antigo `Título contém Scriptable` intacto.
-3. No lançador existente **Clube UOL Premium**, trocar a URL da ação **Abrir URLs**
+O pedido posterior substitui a configuração de duas automações: manter somente
+**Update Scriptable**, com **ntfy → Título contém Scriptable**. O link compartilhado
+pelo proprietário forneceu as 16 ações originais e o `WFNotificationTrigger` real.
+`shortcuts/unify.cjs` preserva todos esses parâmetros, inclusive a pasta Scriptable,
+e acrescenta a decisão antes da gravação:
+
+- Entrada contendo `Clube UOL Premium`: executar diretamente as duas ações nativas
+  do updater, sem consultar o Mac. Não depende do atalho dedicado já importado.
+- Outra entrada contendo `Scriptable`: baixar pelo endpoint existente. Antes de
+  salvar, desviar os nomes Premium atual e antigo para o updater interno. Outros
+  scripts continuam pelas mesmas ações de salvar, avisar e abrir.
+- Entrada ausente/desconhecida: encerrar sem download nem gravação, com diagnóstico.
+
+`unifyWorkflow` preserva todos os metadados e o único gatilho do original. O arquivo
+personalizado contém referência privada à pasta iCloud e não deve ser commitado.
+Gerar a partir do JSON privado compartilhado e assinar com `shortcuts sign`.
+O gerador e os testes sintéticos são públicos; original, backup e resultado ficam
+em `~/.config/uol-ticket-research/premium581/unified/`.
+
+Importar o arquivo **Update Scriptable.shortcut** escolhendo **Substituir** o
+existente. Conferir que há apenas um gatilho ntfy, habilitado para executar
+imediatamente. A Apple pode desabilitar gatilhos na importação; a preservação no
+arquivo não prova que a automação ficou ativada no aparelho.
+
+É necessário validar que a notificação do ntfy chega às ações como entrada
+contendo o título. Se vier vazia, o atalho para com diagnóstico: não escolher o
+último script do Mac como substituto da identidade da notificação. Não enviar
+aviso de teste enquanto o atalho antigo ainda estiver ativo, pois ele grava o
+arquivo antes de identificar o produto. O primeiro teste real depende da importação.
+
+O atalho **Update Clube UOL Premium** pode continuar como ação manual opcional;
+não requer uma segunda automação. Não alterar ou remover os lançadores dos outros
+scripts.
+
+No lançador existente **Clube UOL Premium**, trocar a URL da ação **Abrir URLs**
    por `scriptable:///run/Clube%20UOL%20Premium` (ou importar o lançador atualizado
-   quando seu arquivo assinado estiver disponível). Não alterar o Atalho genérico.
+   quando seu arquivo assinado estiver disponível).
 
 Automações Pessoais e autorização de importação não podem ser criadas pelo CLI
 `shortcuts`. O CLI permite listar/executar/visualizar/assinar, não importar sem UI.
