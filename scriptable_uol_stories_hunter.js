@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.8.3";
+const SCRIPT_VERSION = "5.8.4";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -1162,11 +1162,13 @@ async function manageNativeAccount(view, action, user, url) {
 // FileManager.move replaces an existing destination, but Scriptable does not
 // promise crash-atomicity, durable fsync or a cross-process compare-and-swap.
 const HUNTER_UPDATE_PROTOCOL = 1;
+const HUNTER_UPDATER_BUILD = '5.8.4';
 const HUNTER_UPDATE_MAX_BYTES = 2097152;
 const HUNTER_UPDATE_MANIFEST_MAX_BYTES = 8192;
 let hunterUpdateInFlight = false;
 let hunterLastUpdateResult = { status: "idle" };
 let hunterMigratedScriptName = null;
+let hunterStartupUpdateNotice = null;
 
 function hunterInstalledScriptName() {
   return hunterMigratedScriptName || (typeof Script !== 'undefined' && Script.name && Script.name()) || 'Clube UOL Premium';
@@ -1328,10 +1330,10 @@ function hunterValidateUpdateManifest(value, channel) {
     version: value.version, channel, artifact: value.artifact, size: value.size, sha256: value.sha256, publishedAt: value.publishedAt } };
 }
 
-async function hunterFetchUpdateBytes(url, maxBytes, manifestRequest = false) {
+async function hunterFetchUpdateBytes(url, maxBytes, manifestRequest = false, timeout = 20) {
   let data, request;
   try {
-    request = new Request(url); request.timeoutInterval = 20; request.onRedirect = () => null;
+    request = new Request(url); request.timeoutInterval = timeout; request.onRedirect = () => null;
     request.headers = { Accept: manifestRequest ? 'application/json, text/plain' : 'text/plain, application/javascript', 'Cache-Control': 'no-cache' };
     data = await request.load();
   } catch (_) { return { status: 'network_error' }; }
@@ -1356,9 +1358,9 @@ async function hunterFetchUpdateBytes(url, maxBytes, manifestRequest = false) {
   } catch (_) { return { status: invalid, reason: 'invalid_utf8' }; }
 }
 
-async function checkHunterUpdate() {
+async function checkHunterUpdate(timeout = 20) {
   const channel = hunterUpdateChannel();
-  const response = await hunterFetchUpdateBytes(hunterUpdateManifestURL(channel), HUNTER_UPDATE_MANIFEST_MAX_BYTES, true);
+  const response = await hunterFetchUpdateBytes(hunterUpdateManifestURL(channel), HUNTER_UPDATE_MANIFEST_MAX_BYTES, true, timeout);
   if (response.status !== 'downloaded') return { ...response, channel };
   let value;
   try { value = JSON.parse(response.code); } catch (_) { return { status: 'invalid_manifest', channel }; }
@@ -1500,11 +1502,12 @@ function hunterInstallUpdate(paths, previous, downloaded) {
     return { status: 'installed', version: manifest.version };
   } catch (_) {
     if (!replacing) return { status: 'installation_failed', reason: 'preparation_failed' };
-    return hunterRestoreUpdate(paths, journal);
+    const recovered = hunterRestoreUpdate(paths, journal);
+    return recovered.status === 'preserved' ? { ...recovered, reason: 'replacement_not_written' } : recovered;
   }
 }
 
-async function performSelfUpdate(isManual = false, unattended = false) {
+async function performSelfUpdate(isManual = false, unattended = false, manifestTimeout = 20) {
   async function notice(title, message) {
     if (!isManual) return;
     try { const alert = new Alert(); alert.title = title; alert.message = message; alert.addAction('OK'); await alert.presentAlert(); } catch (_) {}
@@ -1518,7 +1521,7 @@ async function performSelfUpdate(isManual = false, unattended = false) {
       await notice('Atualização não confirmada', 'Existe uma atualização anterior sem conclusão confirmada. A cópia de recuperação foi preservada.');
       return false;
     }
-    const checked = await checkHunterUpdate(); hunterLastUpdateResult = checked;
+    const checked = await checkHunterUpdate(manifestTimeout); hunterLastUpdateResult = checked;
     if (checked.status !== 'available') {
       await notice(checked.status === 'up_to_date' ? 'Versão instalada preservada' : 'Atualização não confirmada',
         checked.status === 'up_to_date' ? 'Nenhuma versão mais recente está disponível neste canal.'
@@ -1560,6 +1563,72 @@ async function performSelfUpdate(isManual = false, unattended = false) {
     await notice('Atualização não confirmada', 'Não foi possível concluir a atualização. Nenhum sucesso foi confirmado; seus dados foram preservados.');
     return false;
   } finally { hunterUpdateInFlight = false; }
+}
+
+function hunterInstalledUpdateReceipt() {
+  try {
+    const paths = hunterUpdatePaths();
+    if (!paths.local.fileExists(paths.journalPath)) return null;
+    const journal = JSON.parse(paths.local.readString(paths.journalPath));
+    if (journal.schema !== 1 || journal.phase !== 'installed' || journal.scriptPath !== paths.scriptPath ||
+        !hunterVersionParts(journal.newVersion) || !/^[a-f0-9]{64}$/.test(journal.newHash)) return null;
+    const current = hunterReadUpdateTarget(paths);
+    if (current.version !== journal.newVersion || current.hash !== journal.newHash) return null;
+    return { paths, journal };
+  } catch (_) { return null; }
+}
+
+function hunterRelaunchInstalledUpdate(receipt) {
+  const { paths, journal } = receipt;
+  if (journal.relaunchAttempted || !hunterOwnUpdateJournal(paths, journal) ||
+      hunterReadUpdateTarget(paths).hash !== journal.newHash) return false;
+  hunterWriteUpdateJournal(paths, { ...journal, relaunchAttempted: true });
+  Safari.open('scriptable:///run?scriptName=' + encodeURIComponent(paths.name));
+  return true;
+}
+
+async function autoUpdateHunterOnOpen() {
+  hunterStartupUpdateNotice = null;
+  try {
+    const receipt = hunterInstalledUpdateReceipt();
+    if (receipt && receipt.journal.newVersion === SCRIPT_VERSION && !receipt.journal.announced) {
+      if (!hunterOwnUpdateJournal(receipt.paths, receipt.journal)) return false;
+      hunterWriteUpdateJournal(receipt.paths, { ...receipt.journal, announced: true });
+      hunterStartupUpdateNotice = { status: 'updated', message: 'Atualizado para a versão ' + SCRIPT_VERSION + '.' };
+      return false;
+    }
+    if (receipt && isNewerVersion(receipt.journal.newVersion, SCRIPT_VERSION)) {
+      if (hunterRelaunchInstalledUpdate(receipt)) return true;
+      hunterStartupUpdateNotice = { status: 'deferred', message: 'A versão ' + receipt.journal.newVersion + ' está salva, mas esta execução ainda é a ' + SCRIPT_VERSION + '. Feche e abra o Scriptable novamente.' };
+      return false;
+    }
+    const updated = await performSelfUpdate(false, true, 3);
+    if (updated) {
+      const installed = hunterInstalledUpdateReceipt();
+      if (installed && hunterRelaunchInstalledUpdate(installed)) return true;
+      hunterStartupUpdateNotice = { status: 'deferred', message: 'A instalação precisa ser conferida na próxima abertura. Seus dados foram preservados.' };
+    } else if (!['up_to_date', 'network_error'].includes(hunterLastUpdateResult.status)) {
+      hunterStartupUpdateNotice = { status: 'deferred', message: ['recovery_required', 'concurrent_change'].includes(hunterLastUpdateResult.status)
+        ? 'A atualização precisa de conferência. O backup foi mantido; nenhum sucesso foi confirmado.'
+        : 'Não foi possível concluir a atualização. Tentaremos novamente na próxima abertura.' };
+    }
+  } catch (_) {
+    hunterStartupUpdateNotice = { status: 'deferred', message: 'Não foi possível concluir a atualização automática. Abra novamente para conferir a versão instalada.' };
+  }
+  return false;
+}
+
+async function showHunterStartupUpdateNotice(view) {
+  if (!hunterStartupUpdateNotice) return;
+  const notice = JSON.stringify(hunterStartupUpdateNotice).replace(/</g, '\\u003c');
+  hunterStartupUpdateNotice = null;
+  try {
+    await view.evaluateJavaScript('(() => { const notice = ' + notice + '; '
+      + 'if (notice.status === "updated" && typeof showToast === "function") { showToast(notice.message); return; } '
+      + 'const banner = document.getElementById("otaUpdateBanner"); if (!banner) return; '
+      + 'const text = banner.querySelector(".ota-banner-text"); const button = banner.querySelector("button"); '
+      + 'if (text) text.textContent = notice.message; if (button) button.style.display = "none"; banner.style.display = "flex"; })();');
+  } catch (_) {}
 }
 
 // Called only after the dashboard has loaded. It never downloads executable
@@ -1738,10 +1807,13 @@ async function main() {
     await performSelfUpdate(action === "update", action === "update-auto");
     if (typeof Script.setShortcutOutput === "function" && typeof hunterLastUpdateResult !== "undefined") {
       const result = hunterLastUpdateResult;
-      Script.setShortcutOutput(JSON.stringify({status: result.status, reason: result.reason, version: result.version, channel: hunterUpdateChannel()}));
+      Script.setShortcutOutput(JSON.stringify({status: result.status, reason: result.reason, version: result.version, channel: hunterUpdateChannel(), updaterVersion: HUNTER_UPDATER_BUILD}));
     }
     Script.complete();
     return;
+  }
+  if (action === "open" && typeof autoUpdateHunterOnOpen === "function" && await autoUpdateHunterOnOpen()) {
+    Script.complete(); return;
   }
   const collectionPausedForUpdate = hunterCollectionPausedForUpdate(action);
   if (action === "collect" || action === "notification") {
@@ -1775,8 +1847,8 @@ async function main() {
     await readable;
     if (!dismissed) {
       await uiView.loadHTML(html, "https://clube.uol.com.br");
-      if (!dismissed && !collectionPausedForUpdate && typeof discoverHunterUpdate === "function")
-        discoverHunterUpdate(uiView).catch(() => {});
+      if (!dismissed && typeof showHunterStartupUpdateNotice === "function")
+        showHunterStartupUpdateNotice(uiView).catch(() => {});
     }
   } catch (_) {
     await readable;
