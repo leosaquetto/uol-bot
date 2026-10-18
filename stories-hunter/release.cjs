@@ -29,7 +29,7 @@ function inspect(bytes) {
 function createManifest({bytes, commit, channel, publishedAt = new Date().toISOString()}) {
   if (!['stable','beta'].includes(channel) || !/^[a-f0-9]{40}$/.test(commit)) throw Error('Invalid release channel/commit');
   if (new Date(publishedAt).toISOString() !== publishedAt) throw Error('Invalid publication timestamp');
-  return {schema:1, updaterProtocol:1, ...inspect(bytes), channel,
+  return {schema:1, updaterProtocol:1, product:'clube-uol-premium', scriptName:'Clube UOL Premium', ...inspect(bytes), channel,
     artifact:PREFIX + commit + '/' + ARTIFACT, publishedAt};
 }
 

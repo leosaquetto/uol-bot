@@ -7,7 +7,7 @@ const { assembleUI, assembleUIFromParts } = require('./assemble-ui.cjs');
 const baseline = require('./baseline/manifest.json');
 
 test('mechanical UI extraction reconstructs the reference template byte for byte', () => {
-  const output = Buffer.from(assembleUI(), 'utf8');
+  const output = Buffer.from(assembleUI().replaceAll('Abra o Clube UOL Premium no Scriptable para atualizar.', 'Abra o Stories Hunter no Scriptable para atualizar.').replaceAll("content=\"Clube UOL Premium\"", "content=\"Clube UOL\"").replaceAll("<title>Clube UOL Premium</title>", "<title>Clube UOL • Hub de Ingressos</title>").replaceAll("Conectar conta ao Clube UOL Premium", "Conectar conta ao Hunter").replaceAll("O Clube UOL Premium só salva a sessão", "O Hunter só salva a sessão").replaceAll("Abra o Clube UOL Premium no Scriptable para gerenciar o acesso.", "Abra o Hunter no Scriptable para gerenciar o acesso."), 'utf8');
   const reference = baseline.files['stories-hunter/template.html'];
   assert.equal(output.byteLength, reference.bytes);
   assert.equal(createHash('sha256').update(output).digest('hex'), reference.sha256);

@@ -10,7 +10,7 @@ const privateHeader = 'const BUNDLED_COOKIES_LEO = [{"value":"synthetic-leo"}];\
 function install(options) {
   const writes = [], copies = [], notifications = [];
   const context = {
-    process: { argv: ['node', 'build.js', ...options] },
+    process: { argv: ['node', 'build.js', ...options], env:{HOME:'/home'} },
     fs: {
       existsSync: p => p !== '/icloud/vouchers/example.pdf',
       writeFileSync: (p, value) => writes.push([p, value]),
@@ -21,7 +21,7 @@ function install(options) {
     icloudScriptPath: '/icloud/Hunter.js', scriptHeader: privateHeader,
     bundledCookiesLeo: [{ value: 'synthetic-leo' }], bundledCookiesGaoriel: [{ value: 'synthetic-gab' }],
     bundledRedemptions: [{ id: 'fixture' }], console: { log() {}, warn() {} },
-    require: name => { assert.equal(name, 'child_process'); return { execSync: command => { notifications.push(command); return ''; } }; }
+    require: name => { if(name === './install-code.cjs') return args => writes.push([args.target,args.code]); assert.equal(name, 'child_process'); return { execFileSync: (command,args) => { notifications.push([command,...args]); return JSON.stringify({event:'message',id:'fixture'}); } }; }
   };
   vm.runInNewContext(optionCode + installCode, context);
   return { writes, copies, notifications };
@@ -32,17 +32,22 @@ test('prepare creates only artifact without iCloud writes or notification', () =
   assert.equal(r.copies.length, 0); assert.equal(r.notifications.length, 0);
   assert.doesNotMatch(r.writes[0][1], /synthetic-leo|synthetic-gab|fixture/);
 });
-test('code-only install preserves redemption database and vouchers', () => {
+test('code-only publication notifies dedicated updater without installation or generic staging', () => {
   const r = install(['--code-only']);
-  assert.deepEqual(r.writes.map(x => x[0]), ['/repo/hunter.js', '/icloud/Hunter.js']);
-  assert.equal(r.copies.length, 0); assert.equal(r.notifications.length, 2);
-  assert.match(r.notifications[0], /stage\?target=clube-uol/);
-  assert.equal(r.writes[1][1], privateHeader, 'private install retains both shared accounts');
+  assert.deepEqual(r.writes.map(x => x[0]), ['/repo/hunter.js']);
+  assert.equal(r.copies.length, 0); assert.equal(r.notifications.length, 1);
+  assert.ok(r.notifications[0].includes('Title: Clube UOL Premium'));
+  assert.doesNotMatch(r.notifications[0].join(' '), /Title: Scriptable|scriptable\/stage/);
+});
+test('explicit code-only installation preserves both private bootstrap accounts and data files', () => {
+  const r=install(['--code-only','--install']);
+  assert.deepEqual(r.writes.map(x=>x[0]),['/repo/hunter.js','/icloud/Hunter.js']);
+  assert.equal(r.writes[1][1],privateHeader);assert.equal(r.copies.length,0);
 });
 test('default build retains existing full sync behavior and rejects unknown options', () => {
   const r = install([]);
   assert.equal(r.writes.length, 3); assert.equal(r.copies.length, 1);
-  assert.equal(r.notifications.length, 2);
+  assert.equal(r.notifications.length, 1);
   assert.throws(() => install(['--typo']), /Unknown build option/);
 });
 

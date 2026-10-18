@@ -4081,7 +4081,7 @@
     }
 
     function manageHunterAccess() {
-      if (!INITIAL.nativeBrowser) { showToast('Abra o Hunter no Scriptable para gerenciar o acesso.'); return; }
+      if (!INITIAL.nativeBrowser) { showToast('Abra o Clube UOL Premium no Scriptable para gerenciar o acesso.'); return; }
       window.location.href = 'hunter-access://manage';
     }
 
@@ -4559,7 +4559,7 @@
       const msg = document.getElementById('updateStatusMsg');
       if (btn && btn.disabled) return;
       if (!INITIAL.nativeBrowser) {
-        if (msg) { msg.style.display = 'block'; msg.textContent = 'Abra o Stories Hunter no Scriptable para atualizar.'; }
+        if (msg) { msg.style.display = 'block'; msg.textContent = 'Abra o Clube UOL Premium no Scriptable para atualizar.'; }
         return;
       }
       if (btn) btn.disabled = true;

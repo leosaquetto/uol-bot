@@ -1,14 +1,14 @@
-# Handoff: Clube UOL Stories Hunter (Scriptable Hub)
+# Handoff: Clube UOL Premium (Scriptable)
 
 > **Data de Atualização**: 18 de Outubro de 2026
-> **Status**: Contrato atual em [CHANGELOG_v5.8.0.md](CHANGELOG_v5.8.0.md) e [ARCHITECTURE.md](ARCHITECTURE.md); publicação e execução real são registradas separadamente no documento operacional.
+> **Status**: Contrato atual em [CHANGELOG_v5.8.1.md](CHANGELOG_v5.8.1.md) e [ARCHITECTURE.md](ARCHITECTURE.md); publicação e execução real são registradas separadamente no documento operacional.
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
-> **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
+> **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL Premium.js`
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
 
 ---
 
-## Contrato atual 5.8.0
+## Contrato atual 5.8.1
 
 Consulte [CHANGELOG_v5.7.0.md](CHANGELOG_v5.7.0.md). Esta revisão substitui as regras
 antigas de tags inline nos cards: agora ficam em faixa horizontal rolável, separada
@@ -54,8 +54,9 @@ coletores, acesso e resgate mantêm seus contratos. Assets utilizados são versi
 O build público `--prepare` não lê dados privados. A distribuição `--code-only`
 exige os bytes promovidos a stable, preserva o bootstrap privado existente e não
 reescreve histórico ou vouchers. GitHub/MacSend recebem o artefato sanitizado.
-O espelho `../scriptable_uol_stories_hunter.js` permanece compatível com o Atalho
-atual. O updater também permite o Atalho `update-auto`, sem depender do Mac.
+O espelho `../scriptable_uol_stories_hunter.js` mantém compatibilidade técnica.
+Publicação normal usa ntfy dedicado → Atalho `update-auto`, sem depender do Mac.
+Migração e instalação inicial: [PREMIUM_MIGRATION.md](PREMIUM_MIGRATION.md).
 
 ## 2. Referência de equivalência
 
@@ -197,72 +198,25 @@ node build.js
 ### Validação de Sintaxe (0 Erros)
 ```bash
 node -c /Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js
-node -c "/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js"
+node -c "/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL Premium.js"
 ```
 
 ---
 
 ---
 
-## 6. Pipeline de Atualização Remota OTA via NTFY + MacSend
+## 6. Publicação e Atalhos
 
-O iPhone possui uma automação configurada no app Atalhos (Shortcuts) para atualizar o script instantaneamente via Wi-Fi/LAN, eliminando a dependência do atraso do iCloud Drive e dispensando cópias manuais.
+Fluxo atual em [PREMIUM_MIGRATION.md](PREMIUM_MIGRATION.md). Não enviar mais título
+`Scriptable` para uma publicação UOL: ele pertence à automação genérica dos outros
+scripts. Premium usa título `Clube UOL Premium`, sem stage genérico ou sobrescrita
+do iCloud na publicação normal. O arquivo de Atalho dedicado é assinado pela Apple.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant DEV as build.js / Antigravity
-    participant MACSEND as MacSend Server (:53318)
-    participant NTFY as ntfy.sh/leo-macsend-8130
-    participant IPHONE as iOS Atalhos (iPhone)
-    participant SCRIPTABLE as App Scriptable (iOS)
+## 7. Instalação e dados
 
-    DEV->>DEV: node build.js compila scriptable_uol_stories_hunter.js
-    DEV->>NTFY: POST com Title: Scriptable & Priority: high
-    NTFY-->>IPHONE: Push Notification (Title: "Scriptable")
-    Note over IPHONE: Automação dispara em background ao receber o Push
-    IPHONE->>MACSEND: GET http://MacBook-Air-de-Leo.local:53318/scriptable
-    MACSEND-->>IPHONE: Retorna .js com Content-Disposition: Clube UOL - Stories Hunter.js
-    IPHONE->>SCRIPTABLE: Sobrescreve "Clube UOL - Stories Hunter.js"
-    IPHONE->>MACSEND: GET http://MacBook-Air-de-Leo.local:53318/scriptable/ack
-    Note over MACSEND: Loga: [iPhone] Script salvo com sucesso!
-```
-
-### 6.1. Componentes do Fluxo OTA
-
-1. **Servidor HTTP Local (MacSend)**:
-   - Porta: `53318` (`http://MacBook-Air-de-Leo.local:53318` ou `http://127.0.0.1:53318`).
-   - Endpoint de Entrega: `/scriptable` (ou `/scriptable/clube-uol` ou `/scriptable.js`).
-     - Lê em tempo real: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`.
-     - Header: `Content-Disposition: attachment; filename="Clube UOL - Stories Hunter.js"`.
-     - Cache: `Cache-Control: no-store`.
-   - Endpoint de Acknowledgment: `/scriptable/ack` (chamado pelo iOS Shortcut ao concluir a gravação).
-
-2. **Gatilho de Notificação (NTFY)**:
-   - Endpoint: `https://ntfy.sh/leo-macsend-8130`.
-   - Headers Mandatórios:
-     - `Title: Scriptable` (o título DEVE conter ou ser exatamente `Scriptable` para acionar a automação do iOS).
-     - `Priority: high`.
-   - Body: Mensagem descritiva do build ou atualização.
-
-3. **Automação no iPhone (Atalhos / Shortcuts)**:
-   - Gatilho: Recebimento de notificação do app NTFY com título correspondente a `Scriptable`.
-   - Ação 1: Obter conteúdo da URL `http://MacBook-Air-de-Leo.local:53318/scriptable`.
-   - Ação 2: Salvar arquivo no diretório `Scriptable` com substituição atômica (`Clube UOL - Stories Hunter.js`).
-   - Ação 3: Requisitar `http://MacBook-Air-de-Leo.local:53318/scriptable/ack` para confirmar sucesso ao Mac.
-
-4. **Regra de Execução Obrigatória**:
-   - O script `build.js` executa esse disparo automaticamente ao final da compilação.
-   - Qualquer agente ou script de manutenção que modifique o código deve obrigatoriamente disparar o NTFY (`Title: Scriptable`) após salvar o arquivo.
-
----
-
-## 7. Notificações e Regras Globais
-
-- **Canal de Notificação NTFY**: `https://ntfy.sh/leo-macsend-8130`
-  - Cabeçalho obrigatório: `Title: Scriptable`
-  - Prioridade: `Priority: high`
-- **Regra de Entrega Sem ZIP**: Arquivos, wallpapers ou entregáveis devem ser sempre disponibilizados diretamente e descompactados, nunca agrupados em arquivos `.zip`.
+`--code-only` publica o aviso para o updater. `--code-only --install` realiza
+instalação/migração local explícita com backup. Não sincronizar dados privados como
+parte de atualização de código. Arquivos são distribuídos diretamente, sem ZIP.
 
 ---
 

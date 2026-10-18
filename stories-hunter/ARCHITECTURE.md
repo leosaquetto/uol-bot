@@ -1,4 +1,4 @@
-# Clube UOL - Stories Hunter: fontes e publicação
+# Clube UOL Premium: fontes e publicação
 
 O aparelho instala **um único script autocontido**. Não usa `importModule`, File
 Bookmarks nem download de código durante a execução normal. As funcionalidades
@@ -22,7 +22,8 @@ que já precisavam de rede continuam precisando; UI, ícones e logo ficam no scr
 
 `scriptable_uol_stories_hunter.js`, na raiz, continua sendo o espelho **stable**
 para instalações antigas e MacSend. Um build candidato não altera esse espelho.
-O nome instalado permanece **Clube UOL - Stories Hunter.js**.
+O nome instalado é **Clube UOL Premium.js**. Migração e Atalho dedicado em
+[PREMIUM_MIGRATION.md](PREMIUM_MIGRATION.md).
 
 Não há novas camadas de eventos, roteamento, armazenamento ou transporte das
 funções do produto. A montagem substitui placeholders localmente. O HTML final,
@@ -44,12 +45,12 @@ Na raiz do repositório:
    beta, sem recompilar, e atualiza stable e o espelho legado juntos.
 6. Commitar manifests e espelho; publicar com Git. Conferir CI do SHA publicado,
    manifest remoto, tamanho e SHA-256 do artefato remoto antes da distribuição.
-7. Para o aparelho do proprietário, executar
-   `node stories-hunter/build.js --code-only` e conferir o conteúdo servido pelo
-   MacSend. Esse modo preserva banco, vouchers, sessões e histórico.
+7. Executar `node stories-hunter/build.js --code-only`: envia somente o aviso
+   dedicado ao updater. Instalação/migração local é explícita, com
+   `--code-only --install`; conferir os bytes e o backup antes de usar o aparelho.
 
 Não usar o modo legado sem flags para uma atualização de código: ele também
-sincroniza dados privados. `--code-only` mantém apenas o bootstrap privado legado
+sincroniza dados privados. `--code-only --install` mantém o bootstrap privado legado
 na instalação iCloud; os artefatos GitHub/MacSend continuam públicos e sanitizados.
 
 Stable/beta são dois pequenos manifests no mesmo repositório. Não exigem novo
@@ -64,15 +65,9 @@ Hunter. Uma beta validada pode ser promovida exatamente como foi testada.
 - O updater interno e `action: update` verificam e pedem confirmação antes de
   instalar. A nova ação explícita `update-auto` aplica os mesmos controles sem
   alerta nem reabertura automática; a próxima abertura mantém a pausa de coleta.
-- A automação atual ntfy → endpoint local do Mac → salvar no Scriptable continua
-  compatível. Ela faz substituição direta: **não** recebe retroativamente os
-  controles de integridade do updater interno.
-- Para unificar futuras atualizações pelo Atalho, após instalar 5.8.0, substituir
-  as ações de baixar/salvar pela ação Scriptable **Executar Script**, selecionando
-  o Hunter e passando um Dicionário com `action` = `update-auto`. Assim o aparelho
-  usa o manifest remoto e deixa de depender do Mac estar na mesma rede. O gatilho
-  ntfy pode continuar igual. A alteração do Atalho no iPhone não é automatizada
-  por este repositório.
+- O Atalho genérico ntfy → endpoint local → salvar continua intacto para outros
+  scripts. Premium usa o título exclusivo `Clube UOL Premium` e um Atalho dedicado
+  que passa `action: update-auto`; detalhes em `PREMIUM_MIGRATION.md`.
 - `channel` = `beta` no mesmo Dicionário faz adesão explícita; `stable` volta ao
   canal normal. Sem esse campo, preserva a preferência local. Não há downgrade
   automático ao trocar de canal. O retorno ao Atalho contém estado, motivo,

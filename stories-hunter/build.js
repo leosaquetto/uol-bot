@@ -2,10 +2,11 @@ const fs = require("node:fs");
 const path = require("node:path");
 const buildOptions = new Set(process.argv.slice(2));
 for (const option of buildOptions) {
-  if (!["--prepare", "--code-only"].includes(option)) throw new Error("Unknown build option: " + option);
+  if (!["--prepare", "--code-only", "--install"].includes(option)) throw new Error("Unknown build option: " + option);
 }
 const prepareOnly = buildOptions.has("--prepare");
 const codeOnly = buildOptions.has("--code-only");
+const installLocal = !prepareOnly && (buildOptions.has("--install") || !codeOnly);
 
 // BUILD_OPTIONS_END
 const { assembleHunter } = require("./assemble.cjs");
@@ -20,10 +21,10 @@ if (!prepareOnly) {
   const legacy = fs.readFileSync(path.join(__dirname, "../scriptable_uol_stories_hunter.js"), "utf8");
   if (legacy !== publicCode) throw new Error("Legacy stable mirror differs from promoted artifact");
 }
-const privateData = prepareOnly ? { bundledCookiesLeo: [], bundledCookiesGaoriel: [], bundledRedemptions: [] }
+const privateData = !installLocal ? { bundledCookiesLeo: [], bundledCookiesGaoriel: [], bundledRedemptions: [] }
   : require("./private-install.cjs")();
-const scriptHeader = prepareOnly ? publicCode : assembleHunter(privateData);
+const scriptHeader = !installLocal ? publicCode : assembleHunter(privateData);
 const icloudScriptPath = path.join(process.env.HOME,
-  "Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js");
+  "Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL Premium.js");
 require("./distribute.cjs")({ fs, path, targetScriptPath, icloudScriptPath, scriptHeader,
-  ...privateData, prepareOnly, codeOnly, sourceDirectory: __dirname });
+  ...privateData, prepareOnly, codeOnly, installLocal, sourceDirectory: __dirname });

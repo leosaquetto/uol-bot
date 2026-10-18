@@ -30,5 +30,10 @@ test('startup, failure and complete dashboard HTML match frozen release for synt
   const fixtures = [ {}, {updated: true}, {user: 'gaoriel', theme: 'white'}, {theme: 'purple'}, {theme: 'orange'},
     {history: {active: [{id:'pSynthetic', title:'A < B & "C"', image:'https://example.invalid/poster.png'}], history: []},
       collection: {status:'offline',pending:1}, receipts:[{id:'fixture',date:'2026-10-18',user:'gaoriel'}]} ];
-  for (const fixture of fixtures) assert.deepEqual(render(current, fixture), render(reference, fixture));
+  // Only explicit product-name labels change; all other bytes stay pinned.
+  for (const fixture of fixtures) {
+    const expected = render(reference, fixture);
+    for (const key of Object.keys(expected)) expected[key] = expected[key].replaceAll('Carregando o Stories Hunter', 'Carregando o Clube UOL Premium').replaceAll('Abra o Stories Hunter no Scriptable para atualizar.', 'Abra o Clube UOL Premium no Scriptable para atualizar.').replaceAll("content=\"Clube UOL\"", "content=\"Clube UOL Premium\"").replaceAll("<title>Clube UOL • Hub de Ingressos</title>", "<title>Clube UOL Premium</title>").replaceAll("<title>Clube UOL</title>", "<title>Clube UOL Premium</title>").replaceAll("Conectar conta ao Hunter", "Conectar conta ao Clube UOL Premium").replaceAll("O Hunter só salva a sessão", "O Clube UOL Premium só salva a sessão").replaceAll("Abra o Hunter no Scriptable para gerenciar o acesso.", "Abra o Clube UOL Premium no Scriptable para gerenciar o acesso.");
+    assert.deepEqual(render(current, fixture), expected);
+  }
 });

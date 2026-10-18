@@ -1,6 +1,6 @@
 // Distribution side effects are isolated from source assembly.
 module.exports = function distribute({ fs, path, targetScriptPath, icloudScriptPath, scriptHeader,
-  bundledCookiesLeo, bundledCookiesGaoriel, bundledRedemptions, prepareOnly, codeOnly, sourceDirectory }) {
+  bundledCookiesLeo, bundledCookiesGaoriel, bundledRedemptions, prepareOnly, codeOnly, installLocal, sourceDirectory }) {
   const __dirname = sourceDirectory;
 // DISTRIBUTION_BODY_START
 // PUBLIC_ARTIFACT_START
@@ -19,8 +19,9 @@ fs.writeFileSync(targetScriptPath, publicScriptHeader, "utf8");
 console.log("Successfully generated", targetScriptPath);
 console.log("File size:", fs.statSync(targetScriptPath).size, "bytes");
 
-if (!prepareOnly && fs.existsSync(path.dirname(icloudScriptPath))) {
-  fs.writeFileSync(icloudScriptPath, scriptHeader, "utf8");
+if (installLocal && fs.existsSync(path.dirname(icloudScriptPath))) {
+  require('./install-code.cjs')({fs, path, target:icloudScriptPath, code:scriptHeader,
+    backupDirectory:path.join(process.env.HOME, '.config/uol-ticket-research/premium-code-backups')});
   console.log("Successfully synced to iCloud:", icloudScriptPath);
 
   if (!codeOnly) {
@@ -46,18 +47,18 @@ if (!prepareOnly && fs.existsSync(path.dirname(icloudScriptPath))) {
   }
 }
 
-// 4. Dispara NTFY para acionar a automação do Atalhos no iPhone (atualização OTA)
-if (!prepareOnly) try {
-  const { execSync } = require("child_process");
-  try {
-    execSync('curl -s "http://127.0.0.1:53318/scriptable/stage?target=clube-uol"', { timeout: 2000 });
-  } catch (e) {}
+// Dedicated title never matches the generic "Scriptable" automation.
+// Do not stage /scriptable: another product may already be awaiting delivery.
+if (!prepareOnly) {
+  const { execFileSync } = require("child_process");
   const bytes = fs.statSync(targetScriptPath).size;
-  const ntfyCmd = `curl -s -H "Title: Scriptable" -H "Priority: high" -d "Clube UOL - Stories Hunter.js compilado (${bytes} bytes). Atualizando no iPhone..." https://ntfy.sh/leo-macsend-8130`;
-  const res = execSync(ntfyCmd, { encoding: "utf8" });
-  console.log("⚡ [NTFY OTA] Notificação enviada para disparar atualização no iPhone:", res.trim());
-} catch (e) {
-  console.warn("Aviso ao enviar notificação NTFY:", e.message);
+  const res = execFileSync('curl', ['--fail', '--silent', '--show-error', '--max-time', '20',
+    '-H', 'Title: Clube UOL Premium', '-H', 'Priority: high', '-H', 'Tags: arrow_up',
+    '-d', `Atualização disponível para Clube UOL Premium (${bytes} bytes). Execute Update Clube UOL Premium.`,
+    'https://ntfy.sh/leo-macsend-8130'], {encoding:'utf8',timeout:25000});
+  const receipt = JSON.parse(res);
+  if (receipt.event !== 'message' || !receipt.id) throw Error('ntfy acceptance unconfirmed; do not retry blindly');
+  console.log('[NTFY OTA] Aceite confirmado:', JSON.stringify({id:receipt.id,time:receipt.time,event:receipt.event}));
 }
 
 // DISTRIBUTION_BODY_END

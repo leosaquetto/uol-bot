@@ -3,6 +3,7 @@
 // icon-color: deep-orange; icon-glyph: ticket-alt;
 // =====================================================================
 // Scriptable: Clube UOL - Hub Central de Ingressos & Stories Hunter
+// Product: Clube UOL Premium (legacy marker above retained for 5.8.0 updater compatibility)
 // =====================================================================
 // - Abertura Instantânea com Cache Local e Histórico no iCloud
 // - Entrada Card por Card Progressiva com Animação Cascade Stagger
@@ -20,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.8.0";
+const SCRIPT_VERSION = "5.8.1";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -256,8 +257,16 @@ async function manageNativeHunterAccess(view) {
 }
 
 async function main() {
-  console.log("⚡ [Clube UOL Hub] Inicializando...");
+  console.log("⚡ [Clube UOL Premium] Inicializando...");
   const action = hunterAction();
+  if (typeof migrateHunterProductName === "function") {
+    const migration = await migrateHunterProductName();
+    if (!["not_needed", "migrated"].includes(migration.status)) {
+      if (typeof Script.setShortcutOutput === "function") Script.setShortcutOutput(JSON.stringify(migration));
+      if (action !== "update-auto") await hunterNotice("Migração não concluída", "O nome antigo foi preservado quando possível. Há conflito ou falha de arquivo; o backup local continua disponível. Nenhum dado pessoal foi alterado.");
+      Script.complete(); return;
+    }
+  }
   if (action === "update" || action === "update-auto") {
     const parameter = typeof args !== "undefined" && typeof args.shortcutParameter === "object" ? args.shortcutParameter : {};
     const requestedChannel = (typeof args !== "undefined" && args.queryParameters?.channel) || parameter?.channel;
@@ -325,7 +334,7 @@ function buildHunterStartupHTML(failed = false) {
     .replace("__STARTUP_DESCRIPTION__", failed
       ? "Seus dados foram preservados. Feche esta janela e tente abrir novamente."
       : "Buscando novidades e carregando seu histórico…")
-    .replace('<progress aria-label="Carregando o Stories Hunter"></progress>', failed ? "" : '<progress aria-label="Carregando o Stories Hunter"></progress>');
+    .replace('<progress aria-label="Carregando o Clube UOL Premium"></progress>', failed ? "" : '<progress aria-label="Carregando o Clube UOL Premium"></progress>');
 }
 
 function installHunterBrowser(view) {
@@ -783,7 +792,7 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
     nativeBrowser: true,
     nativeAccounts: true,
     scriptVersion: SCRIPT_VERSION,
-    scriptName: (typeof Script !== "undefined" && Script.name && Script.name()) ? Script.name() : "Clube UOL - Stories Hunter"
+    scriptName: typeof hunterInstalledScriptName === "function" ? hunterInstalledScriptName() : ((typeof Script !== "undefined" && Script.name && Script.name()) ? Script.name() : "Clube UOL Premium")
   };
   const jsonStr = JSON.stringify(initialData).replace(/</g, "\\u003c");
 

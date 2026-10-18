@@ -6,6 +6,45 @@ const HUNTER_UPDATE_MAX_BYTES = 2097152;
 const HUNTER_UPDATE_MANIFEST_MAX_BYTES = 8192;
 let hunterUpdateInFlight = false;
 let hunterLastUpdateResult = { status: "idle" };
+let hunterMigratedScriptName = null;
+
+function hunterInstalledScriptName() {
+  return hunterMigratedScriptName || (typeof Script !== 'undefined' && Script.name && Script.name()) || 'Clube UOL Premium';
+}
+
+// Rename only the exact legacy product. Data files, Keychain and updater backups
+// have stable technical names and must never move with the display name.
+async function migrateHunterProductName() {
+  const legacy = 'Clube UOL - Stories Hunter', canonical = 'Clube UOL Premium';
+  if (hunterInstalledScriptName() !== legacy) return { status: 'not_needed' };
+  const recovery = await recoverHunterUpdate();
+  if (['recovery_required', 'concurrent_change'].includes(recovery.status)) return recovery;
+  const paths = hunterUpdatePaths(), target = paths.fm.joinPath(paths.fm.documentsDirectory(), canonical + '.js');
+  try {
+    if (paths.fm.isFileDownloaded && !paths.fm.isFileDownloaded(paths.scriptPath)) await paths.fm.downloadFileFromiCloud(paths.scriptPath);
+    const previous = hunterReadUpdateTarget(paths);
+    if (previous.version !== SCRIPT_VERSION) return { status: 'concurrent_change' };
+    const backup = paths.local.joinPath(paths.local.documentsDirectory(), 'uol_hunter_name_backup-' + previous.hash + '.js');
+    paths.local.writeString(backup, previous.code);
+    if (paths.local.readString(backup) !== previous.code) return { status: 'recovery_required' };
+    if (paths.fm.fileExists(target)) {
+      if (paths.fm.isFileDownloaded && !paths.fm.isFileDownloaded(target)) await paths.fm.downloadFileFromiCloud(target);
+      if (paths.fm.readString(target) !== previous.code) return { status: 'name_conflict' };
+    } else {
+      if (hunterReadUpdateTarget(paths).hash !== previous.hash) return { status: 'concurrent_change' };
+      try { paths.fm.move(paths.scriptPath, target); }
+      catch (_) { /* Reconcile a lost move response before another mutation. */ }
+    }
+    if (!paths.fm.fileExists(target) || paths.fm.readString(target) !== previous.code) return { status: 'recovery_required' };
+    if (paths.fm.fileExists(paths.scriptPath)) {
+      if (hunterReadUpdateTarget(paths).hash !== previous.hash) return { status: 'concurrent_change' };
+      paths.fm.remove(paths.scriptPath); // Only an exact, backed-up duplicate.
+    }
+    if (paths.fm.fileExists(paths.scriptPath)) return { status: 'recovery_required' };
+    hunterMigratedScriptName = canonical;
+    return { status: 'migrated', name: canonical };
+  } catch (_) { return { status: 'recovery_required' }; }
+}
 
 function hunterVersionParts(value) {
   if (typeof value !== "string" || !/^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)$/.test(value)) return null;
@@ -184,7 +223,7 @@ async function hunterDownloadUpdate(manifest) {
 
 function hunterUpdatePaths() {
   const fm = getFileManager(), local = FileManager.local();
-  const name = typeof Script !== 'undefined' && Script.name && Script.name() ? Script.name() : 'Clube UOL - Stories Hunter';
+  const name = hunterInstalledScriptName();
   if (!name || /[\/\\\u0000-\u001f]/.test(name)) throw new Error('script_name_invalid');
   const scriptPath = fm.joinPath(fm.documentsDirectory(), name + '.js');
   const key = hunterUpdateHashCode(scriptPath).slice(0, 16);
@@ -344,7 +383,7 @@ async function performSelfUpdate(isManual = false, unattended = false) {
     await notice('Script atualizado', 'Versão ' + checked.manifest.version + ' instalada. Toque em OK para abrir; esta primeira abertura não inicia coleta.');
     if (unattended) return true; // Next user opening keeps the existing first-version collection gate.
     try { Safari.open('scriptable:///run?scriptName=' + encodeURIComponent(paths.name)); }
-    catch (_) { await notice('Atualização salva', 'Abra o Stories Hunter novamente para usar a nova versão.'); }
+    catch (_) { await notice('Atualização salva', 'Abra o Clube UOL Premium novamente para usar a nova versão.'); }
     return true;
   } catch (_) {
     hunterLastUpdateResult = { status: 'installation_failed' };
