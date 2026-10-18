@@ -193,4 +193,7 @@ jobs:
       - name: Extensão Instagram offline
         run: npm test --prefix extensions/uol-instagram
       - name: Stories Hunter offline
-        run: node --test stories-hunter/test-*.cjs
+        run: |
+          node stories-hunter/build.js --prepare
+          git diff --exit-code -- stories-hunter/dist/Hunter.js
+          node --test stories-hunter/test-*.cjs

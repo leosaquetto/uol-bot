@@ -1,14 +1,14 @@
 # Handoff: Clube UOL Stories Hunter (Scriptable Hub)
 
 > **Data de Atualização**: 18 de Outubro de 2026
-> **Status**: Contrato atual em [CHANGELOG_v5.7.9.md](CHANGELOG_v5.7.9.md); publicação e execução real são registradas separadamente no documento operacional.
+> **Status**: Contrato atual em [CHANGELOG_v5.8.0.md](CHANGELOG_v5.8.0.md) e [ARCHITECTURE.md](ARCHITECTURE.md); publicação e execução real são registradas separadamente no documento operacional.
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
 > **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
 
 ---
 
-## Contrato atual 5.7.9
+## Contrato atual 5.8.0
 
 Consulte [CHANGELOG_v5.7.0.md](CHANGELOG_v5.7.0.md). Esta revisão substitui as regras
 antigas de tags inline nos cards: agora ficam em faixa horizontal rolável, separada
@@ -44,53 +44,28 @@ A preferência é individual por aparelho, salva pelo host Scriptable em
 nativa prevalece sobre cache antigo da WebView e sobrevive a atualização de código.
 Falha ao salvar restaura o último tema confirmado.
 
-## 1. Visão Geral da Arquitetura
+## 1. Arquitetura e distribuição atuais
 
-O **Clube UOL Stories Hunter** é uma interface nativa Scriptable (iOS/macOS) que atua como hub completo de acompanhamento e resgate de ingressos do Clube UOL. Ele opera com abertura instantânea via cache local persistido no iCloud, sincronização headless com a conta do usuário e visualização cinematográfica em carrosséis verticais inspirados na interface Vivo Play.
+A fonte de verdade para build, updater, promoção e recuperação é
+[ARCHITECTURE.md](ARCHITECTURE.md). Fontes modulares geram um único
+`dist/Hunter.js` autocontido. HTML, CSS, JS e host continuam em poucos blocos grandes;
+coletores, acesso e resgate mantêm seus contratos. Assets utilizados são versionados.
 
-```mermaid
-flowchart TD
-    subgraph Desenvolvimento ["Pasta de Desenvolvimento (stories-hunter/)"]
-        TPL["template.html (UI, CSS, JS WebView)"]
-        SVGS["svg_icons.json (Majesticons Line)"]
-        LOGO["logo_base64.txt (Logo Oficial)"]
-        BUILD["build.js (Compilador & Empacotador)"]
-    end
+O build público `--prepare` não lê dados privados. A distribuição `--code-only`
+exige os bytes promovidos a stable, preserva o bootstrap privado existente e não
+reescreve histórico ou vouchers. GitHub/MacSend recebem o artefato sanitizado.
+O espelho `../scriptable_uol_stories_hunter.js` permanece compatível com o Atalho
+atual. O updater também permite o Atalho `update-auto`, sem depender do Mac.
 
-    subgraph Fontes_Sistema ["Fontes do Sistema"]
-        COOKIES["~/.config/uol-sentinel/leo-bootstrap.json"]
-        ASSETS["SVGs Vetoriais (Downloads & Locais)"]
-    end
+## 2. Referência de equivalência
 
-    subgraph Destinos ["Destinos Compilados"]
-        REPO["uol-bot/scriptable_uol_stories_hunter.js"]
-        ICLOUD["iCloud Drive Scriptable/Documents/Clube UOL - Stories Hunter.js"]
-    end
+[REFACTOR_CHECKPOINTS.md](REFACTOR_CHECKPOINTS.md) registra tamanhos, hashes e
+validações por etapa. `baseline/` preserva a versão pública 5.7.9. A suíte compara
+os outputs completos e usa somente fixtures sintéticas para fluxos sensíveis.
 
-    TPL --> BUILD
-    SVGS --> BUILD
-    LOGO --> BUILD
-    COOKIES --> BUILD
-    ASSETS --> BUILD
-    BUILD --> REPO
-    BUILD --> ICLOUD
-```
-
----
-
-## 2. Estrutura de Arquivos da Pasta de Desenvolvimento
-
-Todos os componentes fonte residem em `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`:
-
-| Arquivo | Descrição |
-| :--- | :--- |
-| `template.html` | Código-fonte da WebView HTML5/CSS3/ES6 com toda a interface, modais, cards, carrosséis, lógica anti-órfã de tags e fluxos de resgate. |
-| `build.js` | Script Node.js que compila o template, injeta ícones SVG, insere o logo base64, embute cookies bootstrap e gera os arquivos finais para o repositório e para o iCloud do Scriptable. |
-| `svg_icons.json` | Dicionário de SVGs dos ícones da interface (padrão Majesticons Line Interface). |
-| `logo_base64.txt` | String base64 do logotipo oficial "Clube UOL" para o topo. |
-| `uol_official.svg` | SVG vetorial oficial do símbolo UOL para badges de origem. |
-| `user_portal.svg` | SVG vetorial oficial do ícone de portal web UOL. |
-| `HANDOFF_STORIES_HUNTER.md` | Este documento de handoff e especificações técnicas. |
+As seções históricas abaixo preservam decisões anteriores e exemplos com nomes
+antigos como `template.html`; caminhos e publicação devem seguir a arquitetura
+atual. A ordem e as sobrescritas de CSS existentes são a referência visual.
 
 ---
 

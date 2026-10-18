@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const fs = require('node:fs');
 const path = require('node:path');
 const source = require("./test-support/build-source.cjs")();
-const optionCode = source.slice(source.indexOf('const buildOptions'), source.indexOf('const logoBase64'));
+const optionCode = source.slice(source.indexOf('const buildOptions'), source.indexOf('// BUILD_OPTIONS_END'));
 const installCode = source.slice(source.indexOf('// PUBLIC_ARTIFACT_START'));
 const privateHeader = 'const BUNDLED_COOKIES_LEO = [{"value":"synthetic-leo"}];\nconst BUNDLED_COOKIES_GAORIEL = [{"value":"synthetic-gab"}];\nconst BUNDLED_REDEMPTIONS = [\n  {\n    "id": "fixture"\n  }\n];';
 function install(options) {
@@ -277,7 +277,7 @@ test('native collector requires approval and retains the optional private local 
 });
 
 test('generated HTML embeds exact data safely without replacement-string expansion or double escaped SVG', () => {
-  const artifact = fs.readFileSync(path.join(__dirname, '../scriptable_uol_stories_hunter.js'), 'utf8');
+  const artifact = fs.readFileSync(path.join(__dirname, 'dist/Hunter.js'), 'utf8');
   const start = artifact.indexOf('function buildDashboardHTML(');
   const end = artifact.indexOf('\nawait main();', start);
   const icons = { tickets: '<svg viewBox="0 0 24 24"></svg>' };

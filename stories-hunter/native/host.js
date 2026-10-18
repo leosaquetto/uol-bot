@@ -20,7 +20,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.9";
+const SCRIPT_VERSION = "5.8.0";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -113,100 +113,7 @@ async function manageNativeAccount(view, action, user, url) {
   await view.evaluateJavaScript("handleNativeAccountResult(" + JSON.stringify(action) + "," + JSON.stringify(user) + "," + safe + ");");
 }
 
-function hunterVersionParts(value) {
-  if (typeof value !== "string" || !/^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)$/.test(value)) return null;
-  const parts = value.split('.').map(Number);
-  return parts.every(Number.isSafeInteger) ? parts : null;
-}
-
-function isNewerVersion(remote, local) {
-  const remoteParts = hunterVersionParts(remote), localParts = hunterVersionParts(local);
-  if (!remoteParts || !localParts) return false;
-  for (let i = 0; i < 3; i++) {
-    if (remoteParts[i] > localParts[i]) return true;
-    if (remoteParts[i] < localParts[i]) return false;
-  }
-  return false;
-}
-
-function hunterUpdateVersion(code, boundDownload = true) {
-  if (typeof code !== "string" || boundDownload && unescape(encodeURIComponent(code)).length > 2097152 ||
-      !code.startsWith('// Variables used by Scriptable.\n// These must be at the very top of the file.') ||
-      !/\/\/ Scriptable: Clube UOL - Hub Central de Ingressos & Stories Hunter\r?\n/.test(code) ||
-      !/\nawait main\(\);\r?\nScript.complete\(\);\s*$/.test(code) ||
-      !/^async function main\(\) \{/m.test(code) || !/^function buildDashboardHTML\(/m.test(code) ||
-      !/^function hunterCollectionPausedForUpdate\(action\) \{/m.test(code) ||
-      !/^const HunterCollector = \(\(\) => \{/m.test(code)) return null;
-  const matches = [...code.matchAll(/^const SCRIPT_VERSION = "([^"]+)";$/gm)];
-  return matches.length === 1 && hunterVersionParts(matches[0][1]) ? matches[0][1] : null;
-}
-
-async function performSelfUpdate(isManual = false) {
-  async function notice(title, message) {
-    if (!isManual) return;
-    try {
-      const alert = new Alert(); alert.title = title; alert.message = message;
-      alert.addAction("OK"); await alert.presentAlert();
-    } catch (_) { /* A dismissed UI cannot change the verified installation result. */ }
-  }
-  try {
-    const req = new Request(UPDATE_RAW_URL);
-    req.timeoutInterval = 20; req.onRedirect = () => null;
-    req.headers = { Accept: "text/plain, application/javascript", "Cache-Control": "no-cache" };
-    const remoteCode = await req.loadString();
-    const response = req.response || {};
-    const header = name => Object.entries(response.headers || {}).find(([key]) => key.toLowerCase() === name)?.[1] || '';
-    const type = header('content-type') || response.mimeType || '';
-    const remoteVersion = hunterUpdateVersion(remoteCode);
-    if (response.statusCode !== 200 || response.url !== UPDATE_RAW_URL ||
-        !/^(?:text\/(?:plain|javascript)|application\/(?:javascript|x-javascript))(?:;|$)/i.test(type) ||
-        Number(header('content-length')) > 2097152 || !remoteVersion || !hunterVersionParts(SCRIPT_VERSION)) {
-      await notice("Atualização não confirmada", "O arquivo oficial não pôde ser validado. A versão instalada foi preservada.");
-      return false;
-    }
-    const fm = getFileManager(), local = FileManager.local();
-    const scriptName = typeof Script !== "undefined" && Script.name && Script.name() ? Script.name() : "Clube UOL - Stories Hunter";
-    if (/[\/\\\u0000-\u001f]/.test(scriptName)) throw new Error('script_name_invalid');
-    const scriptPath = fm.joinPath(fm.documentsDirectory(), scriptName + ".js");
-    if (!fm.fileExists(scriptPath)) throw new Error('installed_script_missing');
-    if (fm.isFileDownloaded && !fm.isFileDownloaded(scriptPath)) await fm.downloadFileFromiCloud(scriptPath);
-    const previous = fm.readString(scriptPath);
-    if (hunterUpdateVersion(previous, false) !== SCRIPT_VERSION) throw new Error('installed_script_unavailable');
-    if (!isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
-      await notice(remoteVersion === SCRIPT_VERSION ? "Você já está atualizado!" : "Versão instalada preservada",
-        remoteVersion === SCRIPT_VERSION ? "A versão oficial é a mesma instalada (" + SCRIPT_VERSION + ")."
-          : "O GitHub retornou uma versão anterior. Nenhum downgrade foi aplicado.");
-      return false;
-    }
-    const confirm = new Alert(); confirm.title = "Atualização disponível";
-    confirm.message = "Instalar a versão " + remoteVersion + "? Sessões, vouchers e histórico serão preservados.";
-    confirm.addAction("Instalar atualização"); confirm.addCancelAction("Cancelar");
-    if (await confirm.presentAlert() < 0) return false;
-    const backup = local.joinPath(local.documentsDirectory(), "uol_hunter_ota_backup.js");
-    const staging = local.joinPath(local.documentsDirectory(), "uol_hunter_ota_staging.js");
-    local.writeString(backup, previous);
-    if (local.readString(backup) !== previous) throw new Error('backup_unverified');
-    local.writeString(staging, remoteCode);
-    if (local.readString(staging) !== remoteCode) throw new Error('staging_unverified');
-    try {
-      fm.writeString(scriptPath, local.readString(staging));
-      if (fm.readString(scriptPath) !== remoteCode) throw new Error('installed_script_unverified');
-    } catch (_) {
-      let restored = false;
-      try { fm.writeString(scriptPath, local.readString(backup)); restored = fm.readString(scriptPath) === previous; } catch (_) {}
-      await notice("Atualização interrompida", restored ? "A gravação falhou e a versão anterior foi restaurada. Seus dados foram preservados."
-        : "Não foi possível confirmar a restauração. A cópia anterior está preservada no armazenamento local: uol_hunter_ota_backup.js.");
-      return false;
-    }
-    await notice("Script atualizado", "Versão " + remoteVersion + " instalada. Toque em OK para abrir; esta primeira abertura não inicia coleta.");
-    try { Safari.open("scriptable:///run?scriptName=" + encodeURIComponent(scriptName)); }
-    catch (_) { await notice("Atualização salva", "Abra o Stories Hunter novamente para usar a nova versão."); }
-    return true;
-  } catch (_) {
-    await notice("Atualização não confirmada", "Não foi possível concluir a atualização. Nenhum sucesso foi confirmado; a cópia instalada e seus dados foram preservados.");
-    return false;
-  }
-}
+__BUILD_UPDATER__
 
 function hunterAction() {
   if (typeof args === "undefined") return "open";
@@ -351,8 +258,15 @@ async function manageNativeHunterAccess(view) {
 async function main() {
   console.log("⚡ [Clube UOL Hub] Inicializando...");
   const action = hunterAction();
-  if (action === "update") {
-    await performSelfUpdate(true);
+  if (action === "update" || action === "update-auto") {
+    const parameter = typeof args !== "undefined" && typeof args.shortcutParameter === "object" ? args.shortcutParameter : {};
+    const requestedChannel = (typeof args !== "undefined" && args.queryParameters?.channel) || parameter?.channel;
+    if (requestedChannel !== undefined) configureHunterUpdateChannel(requestedChannel);
+    await performSelfUpdate(action === "update", action === "update-auto");
+    if (typeof Script.setShortcutOutput === "function" && typeof hunterLastUpdateResult !== "undefined") {
+      const result = hunterLastUpdateResult;
+      Script.setShortcutOutput(JSON.stringify({status: result.status, reason: result.reason, version: result.version, channel: hunterUpdateChannel()}));
+    }
     Script.complete();
     return;
   }
@@ -386,7 +300,11 @@ async function main() {
     const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions,
       collectionPausedForUpdate, collectionResult);
     await readable;
-    if (!dismissed) await uiView.loadHTML(html, "https://clube.uol.com.br");
+    if (!dismissed) {
+      await uiView.loadHTML(html, "https://clube.uol.com.br");
+      if (!dismissed && !collectionPausedForUpdate && typeof discoverHunterUpdate === "function")
+        discoverHunterUpdate(uiView).catch(() => {});
+    }
   } catch (_) {
     await readable;
     if (!dismissed) await uiView.loadHTML(buildHunterStartupHTML(true), "https://clube.uol.com.br");

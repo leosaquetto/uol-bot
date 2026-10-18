@@ -7,7 +7,7 @@ const {baseline, literal, render} = require('./test-support/artifact.cjs');
 const root = path.join(__dirname, '..');
 const manifest = require('./baseline/manifest.json');
 const reference = baseline();
-const current = fs.readFileSync(path.join(root, 'scriptable_uol_stories_hunter.js'), 'utf8');
+const current = fs.readFileSync(path.join(__dirname, 'dist/Hunter.js'), 'utf8');
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
 
 test('frozen public release has exact original size and hash', () => {

@@ -53,3 +53,27 @@ the assertions must remain intact.
 - Whitespace inherited from the reference was intentionally preserved during
   extraction; diff whitespace warnings are not formatting changes.
 - No publication at this checkpoint.
+
+## Phase 4 — reproducible release and verified updater
+
+- Assembly separated from private installation and delivery. Canonical candidate
+  is `dist/Hunter.js`; the legacy root stays at the distributed 5.7.9 until stable
+  promotion. Large UI/native blocks stay intact; no finer domain fragmentation.
+- Final 5.8.0: **661,663 bytes**, −120,500 bytes / −15.41% from the reference.
+  Updater verification/recovery adds 19,008 bytes to the deduplicated checkpoint.
+- SHA-256: `47c0d133dec0cb5df566cb73446a5870a24dbfaf8ed98d0be8c5fcd05ee48fd1`.
+- Full suite: **218/218**. Generated UI/startup/failure HTML remains exact;
+  collector/access/redemption/parser source hashes remain exact. Repeated assembly
+  matches the committed artifact and only reads repository inputs.
+- Intentional updater changes: manifest discovery after dashboard load, then
+  immutable download only for installation; SHA-256, size, syntax, staging,
+  per-transaction backup/journal, recovery and explicit `update-auto` action.
+  Existing manual confirmation and first-opening collection pause remain.
+- Old updater tests now expect two requests (metadata + artifact), unique backups
+  and replacement through move. Privacy/preservation assertions were retained.
+  Added partial download, invalid syntax without execution, rollback, interrupted
+  replacement, ambiguous response, concurrent changes and channel/promotion tests.
+- FileManager atomicity and cross-process race limitations are explicit in
+  `ARCHITECTURE.md` and covered as limitations, not claimed guarantees.
+- No real redemption, session login, collection or Cloudflare mutation used for
+  validation. Existing operational document edit remains untouched.
