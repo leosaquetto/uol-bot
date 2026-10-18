@@ -1,0 +1,64 @@
+{
+  "version": "5.7.9",
+  "commit": "f6e8f1676e186e866c7e0b4032e6b3f9f0df3bf5",
+  "files": {
+    "scriptable_uol_stories_hunter.js": {
+      "bytes": 782163,
+      "sha256": "08a114ad9e0ffa6753ad6271a4111b38048ee4f2601a85f45c58d84d05d079e8"
+    },
+    "stories-hunter/template.html": {
+      "bytes": 344338,
+      "sha256": "179803485e6272fdc98cbe2ce6c84a5ad491b2fd16dc5ec4b00508d353966358"
+    },
+    "stories-hunter/build.js": {
+      "bytes": 55069,
+      "sha256": "64e4e2b9484cee09737caeb401ba26586e929453ecdaecbe61dbbe7640031c53"
+    },
+    "stories-hunter/startup.html": {
+      "bytes": 1884,
+      "sha256": "9efcff67307bb37cea50ec51832f13996e3a125f9f7aaa329cd37908329d3c7d"
+    },
+    "stories-hunter/collector.js": {
+      "bytes": 25255,
+      "sha256": "eb15a3b25937023eaa0304e6cac216b8167ddde664ecc1ef20455722669f2168"
+    },
+    "stories-hunter/access.js": {
+      "bytes": 15492,
+      "sha256": "89889e9f4116aa024d5d9b739a181e8359ca9cdfdbf5ac7f5df9b4132e06cd36"
+    },
+    "stories-hunter/redemption.js": {
+      "bytes": 32962,
+      "sha256": "7e992858b506fd2c9ed65cd3f770c1f32ba6866b48ad1ba841b7511bafd8a00e"
+    },
+    "cloudflare-workers/uol-redemption-sentinel/src/offers.js": {
+      "bytes": 14404,
+      "sha256": "1361a3fe753c1bad929e6c8e9306e5662df32230017f02c466290864657fb3a8"
+    }
+  },
+  "tests": {
+    "passed": 178
+  },
+  "scope": "Public artifact only; no private sessions, vouchers or credentials. Original sources are preserved by the reference commit.",
+  "outputs": {
+    "startup": {
+      "bytes": 32449,
+      "sha256": "9b02ab388d9da3ac4dbf71a60000bad1f87cba4be07d9e954d2b03f4f7031bce"
+    },
+    "failure": {
+      "bytes": 32411,
+      "sha256": "9c50c81d4d71fbaff1e6fab2dc8526e28ec7c9d05eda42ae2665eb03541f92c2"
+    },
+    "dashboard": {
+      "bytes": 606263,
+      "sha256": "e3108bd654f18de9ea79125580f54e46e699eac0181847a2d567958888e5a1a2"
+    },
+    "icons": {
+      "bytes": 121596,
+      "sha256": "25812b2b61a448a8418fe07fd8bbe7183da96cca0d7031cea22ee364f9e5e12a"
+    },
+    "css": {
+      "bytes": 89566,
+      "sha256": "b434f17e9d25140a0a13c24907ff6b4bf66077fa31006d222d00b0fb6a558d36"
+    }
+  }
+}
