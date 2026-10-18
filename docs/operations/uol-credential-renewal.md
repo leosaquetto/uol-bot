@@ -80,3 +80,13 @@ Automation ID: `renovar-credencial-t-cnica-uol`, active every six hours in the
 current Codex conversation. Initial manual read-only check passed: current
 version matched the manifest, Worker Ready, known expiry unchanged. Issuer
 remains unproven; no candidate was issued and no production secret changed.
+
+## Verification — 18 October 2026, 06:41 UTC
+
+Authenticated health matched Worker version `21e1f465-c842-4806-87f6-cfbb88bd4f3f`
+and source `091e3fcb77e636be8d0a67c529a46152f8dc1750`. Ready HTTP 200;
+API contract valid, no authentication error. Natural primary success at
+`2026-10-18T06:41:36.095Z` used 24 rows; estimate 190, within the unchanged
+512 gate. Projected writes 62,528 and headroom 37,472 remain within the guards.
+Expiry remains `2026-10-23T04:04:28Z`. No concrete new issuer lead or candidate;
+`blocked_issuer_unproven` is unchanged. No production mutation or repeated alert.
