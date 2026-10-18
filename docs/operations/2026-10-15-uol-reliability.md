@@ -1337,3 +1337,21 @@ regressão causada pelo Hunter. Às 03:07:05 UTC, ciclo de 24 leituras levou a e
 a 360. Limite 512 preservado; um ciclo posterior saudável não comprova estabilidade
 nem fecha a janela de três dias. Snapshots privados `hunter-primary-*` preservam os
 picos, e billing_unknown para hibernation permanece.
+
+5.7.1 publicada: SHA `9e0a486453db8441b992b7fb7f45f005d5e894eb`, versão
+`2ecea78e-050d-4ab4-be0c-f3d9ff4e5413`. CI exata aprovada em
+https://github.com/leosaquetto/uol-bot/actions/runs/39092702027. Pós-deploy confirma
+published/runtimeVerified/debtVerified/ready=true, zero regressões/pendências no
+backend e ciclo natural às 03:13:04 UTC. Catálogo: 163 ofertas, 163 imagens do CDN
+comprovado. Amostra da imagem retornou HTTP 200, image/png. Consulta autenticada
+h1 retorna 404 para recibo inexistente sem criar observação.
+
+Hunter 5.7.1: 66 testes locais direcionados passaram; CI completa aprovada.
+Revisão independente: nenhum bloqueador no hotfix, 40 testes do cliente passaram.
+Artefato público sem credencial h1/cookies técnicos/bundles privados. OTA aceita
+por ntfy, código privado instalado no iCloud, hashes dos quatro arquivos de sessões
+/banco preservados. A confirmação visual e a coleta autenticada no iPhone ainda
+aguardam retorno do usuário; não foram substituídas por testes VM. Não há prova de
+descoberta natural/recibos dos destinos nesta etapa. Manifesto privado atualizado
+para a versão publicada, com `hunter571-final-proof-2026-10-18.json` e estado do
+aparelho separado de readiness. Relato de tela preta da 5.7.0 preservado.
