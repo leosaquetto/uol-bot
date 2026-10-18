@@ -91,7 +91,7 @@ test('collection states keep distinct labels, semantics and icons independent of
   const h = headerHarness();
   const cases = [
     ['starting', 'Buscando novidades', 'buscando novidades', 'activity', 'refresh'],
-    ['updated', 'Reabra para coletar', 'atualizado; abra novamente para coletar', 'neutral', 'pause'],
+    ['updated', 'Coleta pausada', 'Nova versão instalada. A coleta retoma na próxima abertura.', 'neutral', 'clock'],
     ['complete', 'Coleta concluída', 'coleta concluída', 'neutral', 'check'],
     ['not_configured', 'Configuração pendente', 'configuração privada pendente', 'attention', 'alert'],
     ['activation_required', 'Ative a coleta', 'ative a coleta em Ajustes', 'attention', 'lock'],
@@ -212,17 +212,21 @@ test('counts remain distinct, unsafe counts are omitted, and disabled collection
 
 test('header structure preserves accessible actions, live status, glass and responsive disclosure', () => {
   const header = template.slice(template.indexOf('  <div class="top-header">'), template.indexOf('  <!-- BANNER FLUTUANTE'));
-  assert.ok(header.indexOf('header-main') < header.indexOf('header-status'));
+  const toolbar = header.slice(0, header.indexOf('id="catalogStatusModal"'));
+  assert.doesNotMatch(toolbar, /id="(?:hunterCollectionStatus|catalogOfferCount|liveStatusText)"/);
+  assert.match(header, /id="catalogStatusModal"[^>]*role="dialog"[^>]*aria-modal="true"/);
   assert.match(header, /id="catalogOfferCount"/);
   assert.match(header, /id="liveStatusText" role="status" aria-live="polite"/);
-  assert.match(header, /<details[^>]*id="hunterCollectionDetails"[^>]*ontoggle="measureHeaderHeight\(\)"/);
+  assert.match(header, /<details[^>]*id="hunterCollectionDetails"/);
   assert.match(header, /<summary class="collection-summary">/);
   assert.match(header, /id="btnRefreshCatalog" onclick="refreshHunterCatalog\(\)"/);
   assert.match(header, /id="btnTimelineModal" onclick="openActivityTimelineModal\(\)"/);
   assert.match(header, /id="timelineBadgeDot"/);
   assert.match(header, /<button[^>]*class="avatar-wrapper"[^>]*onclick="openSettingsModal\(\)"/);
   const glass = template.match(/\.top-header \{([^}]+)\}/)[1];
-  for (const property of ['position: fixed', 'background: rgba(0, 0, 0, 0.68)', 'backdrop-filter: blur(20px) saturate(180%)', 'border-radius: 0 0 24px 24px', 'safe-area-inset-top', 'box-shadow: 0 10px 30px']) assert.ok(glass.includes(property), property);
+  for (const property of ['position: fixed', 'background: rgba(16, 18, 23, 0.72)', 'backdrop-filter: blur(20px) saturate(180%)', 'border-radius: 0 0 24px 24px', 'safe-area-inset-top', 'box-shadow: 0 10px 30px']) assert.ok(glass.includes(property), property);
+  assert.match(template, /\.top-header::before \{[^}]*opacity: 0\.55/);
+  assert.match(template, /id="catalogStatusTrigger"[^>]*onclick="openCatalogStatus\(\)"[^>]*aria-haspopup="dialog"/);
   assert.doesNotMatch(glass, /(?:^|;)\s*(?:height|max-height):/);
   assert.match(template, /\.header-main \{[^}]*grid-template-columns: minmax\(100px, 1fr\) auto/);
   assert.match(template, /\.header-actions \.btn-circle \{[^}]*width: 44px; height: 44px/);

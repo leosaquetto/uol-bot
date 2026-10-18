@@ -461,12 +461,13 @@ test('iPhone status distinguishes update, configuration and suspended sources fr
     return h.elements.get('hunterCollectionDiagnostics').innerHTML.replace(/<[^>]*>/g, '');
   };
   assert.match(statusText({ status: 'starting' }), /buscando novidades/);
-  assert.match(statusText({ status: 'updated' }), /atualizado; abra novamente para coletar/);
+  assert.match(statusText({ status: 'updated' }), /Nova versão instalada\. A coleta retoma na próxima abertura\./);
   assert.match(statusText({ status: 'not_configured' }), /configuração privada pendente/);
   assert.match(statusText({ status: 'not_configured', reason: 'bootstrap_missing' }), /aguardando arquivo privado no iCloud/);
   assert.match(statusText({ status: 'not_configured', reason: 'bootstrap_invalid' }), /arquivo privado inválido/);
   assert.match(statusText({ status: 'not_configured', reason: 'device_mismatch' }), /outro aparelho/);
   assert.match(statusText({ status: 'unavailable' }), /coleta indisponível/);
+  assert.notEqual(h.elements.get('catalogStatusModal')?.style.display, 'flex', 'attention never opens the status sheet automatically');
   const suspended = statusText({ status: 'complete', sources: {
     portal: { status: 'empty', found: 0 }, instagram: { status: 'auth_required', reason: 'authentication_suspended', found: 0 }
   } });

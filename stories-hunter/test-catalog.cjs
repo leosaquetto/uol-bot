@@ -50,7 +50,7 @@ function harness({ cache, history = { active: [], history: [] }, network = () =>
     localStorage: { getItem: k => storage.get(k) || null, setItem: (k, v) => { storage.set(k, v); writes.push(k); } },
     fetch: async (url, options) => { requests.push({ url, options }); return network(url, options); },
     document: { getElementById: id => {
-      if (!elements.has(id)) elements.set(id, { style: {}, textContent: '', setAttribute(name, value) { this[name] = value; } });
+      if (!elements.has(id)) elements.set(id, { style: {}, textContent: '', setAttribute(name, value) { this[name] = value; }, getAttribute(name) { return this[name] ?? null; } });
       return elements.get(id);
     } },
     getCachedDescription: () => '',
@@ -74,14 +74,16 @@ test('catalog state and offer count render separately without losing count durin
   const h = harness({ history: { active: [offer()], history: [] } });
   h.context.renderCatalogStatus(false);
   assert.equal(h.elements.get('catalogOfferCount').textContent, '1 oferta');
-  assert.equal(h.elements.get('liveStatusText').textContent, 'Catálogo em cache');
+  assert.equal(h.elements.get('liveStatusText').textContent, 'Em cache');
+  assert.equal(h.elements.get('liveStatusText')['aria-label'], 'Catálogo em cache');
   assert.equal(h.elements.get('liveDot')['data-state'], 'cache');
   h.context.setCatalogHeaderStatus('Atualizando…', 'loading');
   assert.equal(h.elements.get('catalogOfferCount').textContent, '1 oferta');
   assert.equal(h.elements.get('liveStatusText')['aria-busy'], 'true');
   assert.equal(h.elements.get('liveDot')['data-state'], 'loading');
   h.context.renderCatalogStatus(true);
-  assert.equal(h.elements.get('liveStatusText').textContent, 'Catálogo atualizado');
+  assert.equal(h.elements.get('liveStatusText').textContent, 'Atualizado');
+  assert.equal(h.elements.get('liveStatusText')['aria-label'], 'Catálogo atualizado');
   assert.equal(h.elements.get('liveStatusText')['aria-busy'], 'false');
   assert.equal(h.elements.get('liveDot')['data-state'], 'fresh');
   h.context.setCatalogHeaderStatus('Catálogo em cache', 'cache', 0);
@@ -191,7 +193,7 @@ test('503, network failure, and invalid catalog retain valid stale cache without
     await h.run();
     assert.equal(h.requests.length, 1);
     assert.equal(h.state().active.length, 1);
-    assert.match(h.elements.get('liveStatusText').textContent, /em cache/);
+    assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
     assert.equal(JSON.parse(h.storage.get(key)).fetchedAt, now - 300000);
   }
 });
@@ -207,7 +209,7 @@ test('empty/truncated/unhealthy catalog preserves known offers and never falls b
   assert.deepEqual(h.state().active, [local]);
   assert.equal(h.state().history.length, 0);
   assert.equal(h.requests.length, 1);
-  assert.match(h.elements.get('liveStatusText').textContent, /em cache/);
+  assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
 });
 
 test('truncated catalog stays amber even when its sources are fresh and healthy', async () => {
@@ -215,7 +217,7 @@ test('truncated catalog stays amber even when its sources are fresh and healthy'
   const h = harness({ network: () => response(data) });
   await h.run();
   assert.equal(h.elements.get('liveDot').style.backgroundColor, '#ffb300');
-  assert.match(h.elements.get('liveStatusText').textContent, /em cache/);
+  assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
   assert.equal(h.requests.length, 1);
 });
 
@@ -228,7 +230,7 @@ test('recently cached snapshot rechecks source timestamp rather than trusting hi
   await h.run();
   assert.equal(h.requests.length, 0);
   assert.equal(h.elements.get('liveDot').style.backgroundColor, '#ffb300');
-  assert.match(h.elements.get('liveStatusText').textContent, /em cache/);
+  assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
 });
 
 test('canonical duplicate generations choose latest observed offer regardless of response order', () => {

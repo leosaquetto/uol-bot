@@ -511,7 +511,7 @@
     function hunterStatusPresentation(status, found, reason) {
       const states = {
         starting: ['Buscando novidades', 'buscando novidades…', 'activity', 'refresh'],
-        updated: ['Reabra para coletar', 'atualizado; abra novamente para coletar', 'neutral', 'pause'],
+        updated: ['Coleta pausada', 'Nova versão instalada. A coleta retoma na próxima abertura.', 'neutral', 'clock'],
         complete: ['Coleta concluída', 'coleta concluída', 'neutral', 'check'],
         not_configured: ['Configuração pendente', 'configuração privada pendente', 'attention', 'alert'],
         activation_required: ['Ative a coleta', 'ative a coleta em Ajustes', 'attention', 'lock'],
@@ -575,6 +575,7 @@
         diagnostics.innerHTML = '';
         details.open = false;
         element.setAttribute('data-attention-key', '');
+        if (typeof updateCatalogStatusTrigger === 'function') updateCatalogStatusTrigger();
         return;
       }
       const count = value => Number.isSafeInteger(value) && value > 0 ? value : 0;
@@ -597,11 +598,52 @@
       overview.innerHTML = (showPrimary ? '<span class="collection-state" data-tone="' + primary.tone + '">' + hunterStatusIcon(primary.icon) + '<span>' + primary.label + '</span></span>' : '') +
         metrics.map(metric => '<span class="collection-metric"><strong>' + metric.value + '</strong> ' + metric.label + '</span>').join('') +
         sources.map(source => '<span class="collection-source" data-tone="' + source.tone + '"><span class="collection-source-name">' + source.name + '</span>' + hunterStatusIcon(source.icon) +
-          '<span' + (source.icon === 'check' ? ' class="visually-hidden"' : '') + '>' + source.label + '</span></span>').join('');
-      diagnostics.innerHTML = '<p class="collection-context">Coleta neste iPhone</p>' +
-        (showPrimary ? '<p' + (primary.attention ? ' class="collection-attention"' : '') + '>' + primary.detail + '</p>' : '') +
+          '<span' + (source.icon === 'check' || primary.attention && source.status === primary.status ? ' class="visually-hidden"' : '') + '>' + source.label + '</span></span>').join('');
+      diagnostics.innerHTML = '<p class="collection-context">Neste iPhone</p>' +
+        (showPrimary && (!primary.attention || !sources.some(source => source.detail === primary.detail)) ? '<p' + (primary.attention ? ' class="collection-attention"' : '') + '>' + primary.detail + '</p>' : '') +
         metrics.map(metric => '<p>' + metric.value + ' ' + metric.detail + '</p>').join('') +
         sources.map(source => '<p' + (source.attention ? ' class="collection-attention"' : '') + '><strong>' + source.name + ':</strong> ' + source.detail + '</p>').join('');
+      if (typeof updateCatalogStatusTrigger === 'function') updateCatalogStatusTrigger();
+    }
+
+    function updateCatalogStatusTrigger() {
+      const trigger = document.getElementById('catalogStatusTrigger');
+      if (!trigger) return;
+      const attention = !!document.getElementById('hunterCollectionStatus')?.getAttribute('data-attention-key');
+      const caption = document.getElementById('catalogStatusTriggerText');
+      const status = document.getElementById('liveStatusText');
+      const state = document.getElementById('liveDot')?.getAttribute('data-state') || 'loading';
+      if (caption) caption.textContent = attention ? 'Verificar coleta' : state === 'fresh' ? 'Atualizado' : state === 'cache' ? 'Em cache' : 'Atualizando…';
+      trigger.setAttribute('data-attention', String(attention));
+      trigger.setAttribute('data-state', state);
+      trigger.setAttribute('aria-label', (attention ? 'Coleta precisa de atenção. ' : '') + (status?.getAttribute('aria-label') || 'Catálogo') + '. Abrir detalhes do catálogo e da coleta');
+    }
+
+    function openCatalogStatus() {
+      const modal = document.getElementById('catalogStatusModal');
+      if (!modal) return;
+      modal.hunterReturnFocus = document.activeElement;
+      modal.style.display = 'flex';
+      document.getElementById('catalogStatusTrigger')?.setAttribute('aria-expanded', 'true');
+      const details = document.getElementById('hunterCollectionDetails');
+      if (details) details.open = true;
+      modal.querySelector('.catalog-status-close')?.focus();
+      modal.onkeydown = event => {
+        if (event.key === 'Escape') { event.preventDefault(); closeCatalogStatus(); }
+        if (event.key !== 'Tab') return;
+        const controls = [...modal.querySelectorAll('button, summary')].filter(control => control.offsetParent !== null);
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      };
+    }
+
+    function closeCatalogStatus() {
+      const modal = document.getElementById('catalogStatusModal');
+      if (!modal) return;
+      modal.style.display = 'none';
+      document.getElementById('catalogStatusTrigger')?.setAttribute('aria-expanded', 'false');
+      modal.hunterReturnFocus?.focus?.();
     }
     // UI_DATA_HELPERS_END
 
@@ -700,12 +742,17 @@
       const status = document.getElementById('liveStatusText');
       const dot = document.getElementById('liveDot');
       const count = document.getElementById('catalogOfferCount');
-      if (status) { status.textContent = text; status.setAttribute('aria-busy', String(state === 'loading')); }
+      if (status) {
+        status.textContent = text === 'Catálogo em cache' ? 'Em cache' : text === 'Catálogo atualizado' ? 'Atualizado' : text;
+        status.setAttribute('aria-label', text);
+        status.setAttribute('aria-busy', String(state === 'loading'));
+      }
       if (dot) {
         dot.style.backgroundColor = state === 'fresh' ? '#00e676' : state === 'cache' ? '#ffb300' : '#38bdf8';
         dot.setAttribute('data-state', state);
       }
       if (count && Number.isSafeInteger(visibleCount)) count.textContent = visibleCount + (visibleCount === 1 ? ' oferta' : ' ofertas');
+      if (typeof updateCatalogStatusTrigger === 'function') updateCatalogStatusTrigger();
     }
 
     function renderCatalogStatus(fresh) {

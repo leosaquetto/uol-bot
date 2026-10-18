@@ -132,6 +132,14 @@ o repositório oficial via HTTPS, não uma assinatura independente desse reposit
 
 ## Referência e validação
 
+Desde a 5.8.5, o header de vidro contém somente marca e ações. O resumo discreto
+do catálogo fica junto à contagem de ofertas no conteúdo. Um toque abre a folha
+**Catálogo e coleta**, com quantidade total, validade do catálogo, estados por
+fonte e diagnósticos completos. Alertas sinalizam **Verificar coleta**, mas nunca
+abrem a folha automaticamente nem expandem o header. A folha fecha por botão,
+fundo ou Escape, mantém o foco dentro dela e devolve o foco ao controle de origem.
+O vidro tem reflexão sutil também no topo; a rolagem reforça a camada existente.
+
 Ver [REFACTOR_CHECKPOINTS.md](REFACTOR_CHECKPOINTS.md). Testes usam dados sintéticos,
 incluindo contas, vouchers, falhas de disco/rede e concorrência. A comparação de
 HTML não substitui a confirmação física no Scriptable; publicação, entrega pelo

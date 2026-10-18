@@ -44,6 +44,7 @@ function restoreHeaderPresentation(current, reference) {
   };
   replaceRegion('    /* TOP HEADER FIXO', '    .thumb-code-badge {');
   replaceRegion('  <div class="top-header">', '\n  <!-- BANNER FLUTUANTE');
+  output = output.replace(/\n        <button type="button" id="catalogStatusTrigger"[^\n]+<\/button>/, '');
   replaceRegion('    function hunterStatusPresentation(', '\n    // UI_DATA_HELPERS_END', '    function setHunterCollectionStatus(');
   output = output.replace(region(output, '    function setCatalogHeaderStatus(', '    function renderCatalogStatus('), '');
   output = output.replace(/--hunter-header-height: [^;]+;/, reference.match(/--hunter-header-height: [^;]+;/)[0]);
