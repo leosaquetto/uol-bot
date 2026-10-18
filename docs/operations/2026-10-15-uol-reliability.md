@@ -1253,3 +1253,21 @@ technical UOL API credential expiring `2026-10-23T04:04:28Z`; renewal procedure
 and a newly valid credential remain unproven. The three complete UTC quota days
 17–19 October remain a separate observation criterion; `billing_unknown` for
 hibernation is unchanged. No session, tier or collection policy was changed.
+
+
+### Credential renewal automation prepared — 17 October
+
+Created active Codex thread automation `renovar-credencial-t-cnica-uol`, every six
+hours, following [the dedicated renewal runbook](uol-credential-renewal.md).
+Initial manual authenticated reads confirmed the current manifest version,
+readiness HTTP 200 and unchanged expiry `2026-10-23T04:04:28.000Z`. No production
+secret was read back, issued or replaced. The issuer remains unproven; the
+scheduler performs bounded investigation only on new leads and conditional
+renewal only with a proven technical flow/candidate. It preserves the current
+secret while blocked, deduplicates findings and records the 48-hour, 24-hour
+and actual-expiry milestones. A renewal requires later validity and a natural
+authenticated primary cycle on the exact new version. This local Codex schedule
+requires the Mac awake and app running; it is not an Oracle renewal daemon.
+Private initial evidence and deduplication state are stored as
+`uol-credential-renewal-initial-evidence-2026-10-17.json` and
+`uol-credential-renewal-state.json` with mode 0600.
