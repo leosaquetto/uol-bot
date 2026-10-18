@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const source = fs.readFileSync(path.join(__dirname, 'build.js'), 'utf8');
+const source = require("./test-support/build-source.cjs")();
 const themeFile = '/local/uol_navigation_theme.json';
 const themeCode = source.slice(source.indexOf('function loadNavigationTheme()'), source.indexOf('// Private installs seed local files once.'));
 const bridgeCode = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
@@ -143,7 +143,7 @@ test('dashboard receives the stored device-local theme on each opening', () => {
   Object.assign(h.context, { BUNDLED_COOKIES_LEO: [], BUNDLED_COOKIES_GAORIEL: [], BUNDLED_REDEMPTIONS: [],
     ICONS: {}, NTFY_TOPIC: 'synthetic', SCRIPT_VERSION: '5.7.9' });
   const dashboard = source.slice(source.indexOf('function buildDashboardHTML('), source.indexOf('\nawait main();'))
-    .replace('${JSON.stringify(htmlTemplate)}', JSON.stringify('__INITIAL_DATA_JSON__'));
+    .replace('__BUILD_DASHBOARD_HTML__', JSON.stringify('__INITIAL_DATA_JSON__'));
   vm.runInContext(dashboard, h.context);
   const settings = { userSessions: { leosaquetto: [], gaoriel: [] }, navigationBarTheme: 'purple' };
   const html = h.context.buildDashboardHTML({}, settings, {}, [], []);

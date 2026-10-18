@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
-const html=fs.readFileSync(path.join(__dirname,'template.html'),'utf8');
+const html=require('./assemble-ui.cjs').assembleUI();
 const accountCode=html.slice(html.indexOf('    let nativeRedemptionPending'),html.indexOf('    function openMyRedemptionsModal()'));
 function setup(){
  const elements=new Map();

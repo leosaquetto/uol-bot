@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+const template = require('./assemble-ui.cjs').assembleUI();
 const now = Date.parse('2026-10-18T01:00:00-03:00');
 const clone = value => JSON.parse(JSON.stringify(value));
 function fn(name) {

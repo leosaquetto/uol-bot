@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const fs = require('node:fs');
 const path = require('node:path');
-const source = fs.readFileSync(path.join(__dirname, 'build.js'), 'utf8');
+const source = require("./test-support/build-source.cjs")();
 const optionCode = source.slice(source.indexOf('const buildOptions'), source.indexOf('const logoBase64'));
 const installCode = source.slice(source.indexOf('// PUBLIC_ARTIFACT_START'));
 const privateHeader = 'const BUNDLED_COOKIES_LEO = [{"value":"synthetic-leo"}];\nconst BUNDLED_COOKIES_GAORIEL = [{"value":"synthetic-gab"}];\nconst BUNDLED_REDEMPTIONS = [\n  {\n    "id": "fixture"\n  }\n];';

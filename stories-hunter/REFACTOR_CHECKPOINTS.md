@@ -21,3 +21,19 @@ the public artifact.
 Existing tests extract code from source strings. Moving their source readers to
 assembled UI/native sources is a test plumbing change, not a contract change;
 the assertions must remain intact.
+
+## Phase 2 — mechanical extraction
+
+- Sources: `ui/shell.html`, `ui/styles.css`, `ui/app.js`, `native/host.js`,
+  `assets/icons.json`, `assemble-ui.cjs`, and `distribute.cjs`.
+- `build.js --prepare` reads only repository sources; private bootstrap reads
+  remain available exclusively to the existing installation modes.
+- Canonical SVG strings captured from the frozen artifact eliminate Downloads
+  dependencies without changing a single icon byte.
+- Reassembled template: 344,338 bytes, exact original SHA-256
+  `179803485e6272fdc98cbe2ce6c84a5ad491b2fd16dc5ec4b00508d353966358`.
+- Generated script: **782,163 → 782,163 bytes**, exact original SHA-256
+  `08a114ad9e0ffa6753ad6271a4111b38048ee4f2601a85f45c58d84d05d079e8`.
+- Full suite: **184/184**. Existing assertions unchanged; source readers and
+  one build placeholder changed to address the extracted files.
+- No observable runtime differences and no publication at this checkpoint.

@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+const template = require('./assemble-ui.cjs').assembleUI();
 const code = template.slice(template.indexOf('// NAVIGATION_PERSONALIZATION_START'), template.indexOf('// NAVIGATION_PERSONALIZATION_END'));
 
 function harness({ native = true, saved, cached = 'default' } = {}) {

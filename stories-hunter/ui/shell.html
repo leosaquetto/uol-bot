@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Clube UOL">
+  <meta name="theme-color" content="#000000">
+  <title>Clube UOL • Hub de Ingressos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>__HUNTER_UI_STYLES__</style>
+</head>
+<body>
+
+  <!-- 1. TOP HEADER (CLEAN & MINIMALISTA: AVATAR CENTRALIZA AJUSTES E PERFIL) -->
+  <div class="top-header">
+    <div class="brand-group">
+      <img src="data:image/png;base64,__LOGO_BASE64__" alt="Clube UOL" class="brand-logo-img" />
+      <div class="brand-status-row">
+        <span class="status-dot" id="liveDot"></span>
+        <span id="liveStatusText" role="status" aria-live="polite" aria-busy="true">Conectando ao Clube UOL...</span>
+      </div>
+      <div id="hunterCollectionStatus" role="status" hidden style="font-size: 11px; color: #94a3b8; margin-top: 5px;"></div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-circle" id="btnRefreshCatalog" onclick="refreshHunterCatalog()" title="Atualizar ofertas" aria-label="Atualizar ofertas" aria-busy="false">
+        <svg width="20" height="20" style="flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.6-2L20 8M4 16l2.3 3A7 7 0 0 0 18 17"/></svg>
+      </button>
+      <!-- Linha do Tempo / Notificações -->
+      <div class="header-btn-wrap">
+        <button class="btn-circle" id="btnTimelineModal" onclick="openActivityTimelineModal()" title="Linha do Tempo de Atividades" aria-label="Notificações e Linha do Tempo">
+          __ICON_bell__
+        </button>
+        <span class="timeline-badge-dot" id="timelineBadgeDot" style="display: none;"></span>
+      </div>
+
+      <!-- Perfil & Configurações: Toque no Avatar abre Ajustes & Alternador de Sessão -->
+      <div class="avatar-wrapper" onclick="openSettingsModal()" title="Configurações e Perfil" aria-label="Configurações e Perfil">
+        <img id="headerUserAvatar" class="user-avatar" src="" alt="Avatar" onerror="showAvatarFallback(this)" />
+        <div id="headerUserFallback" class="user-avatar-fallback" style="display: none;">LS</div>
+        <span class="avatar-badge-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNER FLUTUANTE DE ATUALIZAÇÃO DISPONÍVEL (OTA) -->
+  <div id="otaUpdateBanner" class="ota-banner" style="display: none; margin: 10px 14px 0 14px;">
+    <div class="ota-banner-text">
+      🚀 <strong id="otaVersionText">Nova versão disponível!</strong><br/>
+      <span style="font-size: 11px; color: #cbd5e1;">Toque para atualizar o script automaticamente.</span>
+    </div>
+    <button class="ota-banner-btn" onclick="triggerScriptUpdate()">
+      Atualizar
+    </button>
+  </div>
+
+  <!-- ABA 1 & 2: CONTEÚDO PRINCIPAL (Início agrupado & Ingressos individuais) -->
+  <div id="viewMain" class="tab-view active">
+    <!-- CONTROL BAR & CATEGORIES -->
+    <div class="control-bar" id="controlBar">
+      <div class="stats-row">
+        <div class="badge-actives" id="activesBadge">
+          __ICON_ticketText__
+          <span id="activesCountText">Carregando ofertas...</span>
+        </div>
+      </div>
+
+      <!-- Category Filter Chips (Renderizado dinamicamente em ordem alfabética) -->
+      <div class="chips-scroll" id="categoryChips"></div>
+    </div>
+
+    <!-- LISTA DE OFERTAS (Carrosséis no Início / Cards na lista individual) -->
+    <div class="card-list" id="cardList"></div>
+
+    <!-- SKELETONS SHIMMER -->
+    <div class="card-list" id="skeletonList" style="margin-top: 10px;">
+      <div class="skeleton-card">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line mid"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line mid"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line mid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA 3: TELA DE HISTÓRICO & CATÁLOGO PERMANENTE -->
+  <div id="viewHistory" class="tab-view" style="display: none;"></div>
+
+  <!-- ABA 4: TELA NATIVA MEUS RESGATES -->
+  <div id="viewRedemptions" class="tab-view" style="display: none;"></div>
+
+  <!-- 5. MODAL DE DETALHES -->
+  <div class="modal-backdrop" id="detailsModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close-icon" onclick="closeDetailsModal(event)" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="tag-row" id="dtTagRow" style="justify-content: center; margin-bottom: 9px; padding: 0 32px; flex-wrap: wrap; gap: 4px;">
+      </div>
+      <div class="modal-title" id="dtTitle">...</div>
+      <img id="dtImg" class="modal-thumb" src="" alt="Banner" />
+      <div class="modal-desc-box" id="dtDesc">Carregando detalhes oficiais completos...</div>
+      <div id="dtRelatedSessions" style="display: none;"></div>
+      <div class="modal-buttons">
+        <button class="btn-modal-primary" id="dtBtnRedeem" onclick="proceedToRedeemFromDetails()">
+          __ICON_tickets__ Resgatar Este Benefício
+        </button>
+        <button class="btn-modal-secondary" onclick="openSafariCurrent()">
+          __ICON_link__ Abrir no navegador interno
+        </button>
+        <div style="font-size: 11px; color: #94a3b8; text-align: center;">Concluir/Fechar no navegador volta para esta tela.</div>
+        <button class="btn-modal-secondary" onclick="openSafariCurrent(true)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M21 3l-9 9M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/></svg> Abrir no Safari externo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MODAL DE CONFIRMAÇÃO & EXECUÇÃO DO RESGATE -->
+  <div class="modal-backdrop" id="confirmModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()" style="text-align: center;">
+      <div style="font-size: 34px; margin-bottom: 8px;">🎟️</div>
+      <div class="modal-title" style="margin-bottom: 4px;">Confirmar Resgate</div>
+      <div id="cfEventTitle" style="font-size: 14.5px; font-weight: 600; color: #d8b4fe; margin-bottom: 12px; line-height: 1.4;">...</div>
+
+      <!-- Feedback dinâmico da tentativa de resgate -->
+      <div id="cfFeedbackArea" class="feedback-banner feedback-warning">
+        <strong>Atenção à cota mensal:</strong> O Clube UOL permite o resgate de apenas <strong>1 par de ingressos por mês</strong> por CPF. Se você já resgatou este mês, o benefício não será concedido.
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn-modal-primary" id="btnConfirmAction" onclick="executeRedemption()">
+          __ICON_tickets__ Sim, Resgatar Agora
+        </button>
+        <button class="btn-modal-secondary" id="btnConfirmDetails" onclick="openDetails(activeOffer ? activeOffer.id : '')">
+          __ICON_notes__ Ver detalhes
+        </button>
+        <button class="btn-modal-secondary" id="btnConfirmOpenWeb" onclick="openSafariCurrent()" style="display: none;">
+          __ICON_globe__ Abrir e Concluir no Clube UOL
+        </button>
+        <button class="btn-modal-cancel" onclick="closeConfirmModal(event)">
+          __ICON_undo__ Voltar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SELETOR DE SESSÕES (MODO AGRUPADO) -->
+  <div class="modal-backdrop" id="groupSessionsModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close-icon" onclick="closeGroupSessionsModal(event)" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="gsm-header">
+        <img id="gsmThumb" src="" alt="Thumb" class="gsm-thumb" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+        <div class="gsm-header-info">
+          <div id="gsmVenue" class="gsm-venue">...</div>
+          <div class="modal-title gsm-title" id="gsmTitle">...</div>
+          <div id="gsmStatusBadges" class="gsm-badges-row"></div>
+        </div>
+      </div>
+      <div id="gsmSessionsList" class="gsm-sessions-list">
+        <!-- Sessões renderizadas dinamicamente -->
+      </div>
+      <button class="btn-modal-cancel" onclick="closeGroupSessionsModal(event)">
+        __ICON_undo__ Fechar
+      </button>
+    </div>
+  </div>
+
+  <!-- 7. MODAL DE MEUS RESGATES -->
+  <div class="modal-backdrop" id="myRedemptionsModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+        <div style="width: 22px; height: 22px; color: #00e676;">__ICON_ticketCheck__</div>
+        <div class="modal-title" style="margin: 0;">Meus Resgates</div>
+      </div>
+      <div style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 14px;">
+        Histórico de ingressos resgatados na conta de <strong id="redemptionsUserName" style="color: #fff;">...</strong>
+      </div>
+      <div id="myRedemptionsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; margin-bottom: 16px;">
+        <!-- Lista de resgates -->
+      </div>
+      <button class="btn-modal-cancel" onclick="closeMyRedemptionsModal(event)">
+        __ICON_undo__ Fechar
+      </button>
+    </div>
+  </div>
+
+  <!-- 7B. MODAL DIGITAL TICKET VOUCHER (IN-APP) -->
+  <div class="modal-backdrop" id="voucherModal" onclick="handleBackdropClick(event)" style="display: none;">
+    <div class="modal-box voucher-modal-box" onclick="event.stopPropagation()">
+      <button type="button" class="modal-close-icon" onclick="closeVoucherModal(event)" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="ticket-wrapper">
+        <div class="ticket-header">
+          <div class="ticket-badge-row">
+            <span class="ticket-brand-pill">🎟️ CLUBE UOL VOUCHER</span>
+            <span class="ticket-status-pill">✓ Resgate Confirmado</span>
+          </div>
+          <div class="ticket-title" id="vmTitle">...</div>
+          <div class="ticket-meta-row">
+            <div class="ticket-meta-item">
+              <span class="ticket-meta-label">TITULAR</span>
+              <span class="ticket-meta-val" id="vmUser">...</span>
+            </div>
+            <div class="ticket-meta-item">
+              <span class="ticket-meta-label">DATA DO RESGATE</span>
+              <span class="ticket-meta-val" id="vmDate">...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="voucher-body">
+          <!-- Pré-visualização direta in-app (Imagem de alta fidelidade ou Cupom texto) -->
+          <div id="voucherViewerContainer" class="voucher-viewer-box">
+            <!-- Carregado via JS -->
+          </div>
+
+          <button class="btn-share-voucher" id="btnShareVoucher" onclick="shareVoucherAction()" style="display: none;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <span>Salvar / Compartilhar Voucher</span>
+          </button>
+
+          <div class="ticket-alert-box" style="margin-top: 8px;">
+            <div class="ticket-alert-icon">💡</div>
+            <div class="ticket-alert-text">
+              Ingressos vinculados ao Clube UOL e enviados ao seu e-mail cadastrado. Apresente este voucher ou o e-mail na entrada.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 14px;">
+        <button class="btn-modal-secondary" id="vmBtnDetails">
+          __ICON_notes__ Ver Detalhes do Evento
+        </button>
+        <button class="btn-modal-cancel" onclick="closeVoucherModal(event)">
+          __ICON_undo__ Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7C. MODAL DE DETALHES COMPLETOS DO RESGATE -->
+  <div class="modal-backdrop" id="redemptionDetailsModal" onclick="handleBackdropClick(event)" style="display: none;">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close-icon" onclick="closeRedemptionDetailsModal(event)" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="tag-row" id="rdmTagRow" style="justify-content: center; margin-bottom: 9px; padding: 0 32px; flex-wrap: wrap; gap: 4px;">
+      </div>
+      <div class="modal-title" id="rdmTitle">...</div>
+      <img id="rdmImg" class="modal-thumb" src="" alt="Banner" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+
+      <div class="redemption-time-badge" id="rdmTimeBadge">
+        <!-- Resgatado em ... -->
+      </div>
+
+      <div class="modal-desc-box" id="rdmDesc" style="white-space: pre-line; text-align: left;">
+        <!-- Descrição completa -->
+      </div>
+
+      <div id="rdmRulesArea" style="display: none; margin-top: 14px;">
+        <div class="rdm-rules-card">
+          <div class="rdm-rules-title">🛡️ Regras Oficiais de Resgate</div>
+          <div class="rdm-rules-content" id="rdmRulesContent" style="white-space: pre-line;"></div>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 18px;">
+        <button class="btn-modal-primary" id="rdmBtnVoucher">
+          __ICON_tickets__ Ver Voucher do Resgate
+        </button>
+        <button class="btn-modal-cancel" onclick="closeRedemptionDetailsModal(event)">
+          __ICON_undo__ Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7D. MODAL: LINHA DO TEMPO DE ATIVIDADES -->
+  <div class="modal-backdrop" id="activityTimelineModal" onclick="handleBackdropClick(event)" style="display: none;">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 440px;">
+      <button class="modal-close-icon" onclick="closeActivityTimelineModal(event)" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
+        <div style="width: 20px; height: 20px; color: #ff9100;">__ICON_bell__</div>
+        <div class="modal-title" style="margin: 0;">Linha do Tempo</div>
+      </div>
+      <div style="text-align: center; font-size: 11.5px; color: #94a3b8; margin-bottom: 14px;">
+        Histórico recente de acontecimentos e ofertas do sistema
+      </div>
+
+      <!-- Filtros da Linha do Tempo (Todas, Nova, Esgotada, Resgate) -->
+      <div class="timeline-filter-bar">
+        <div class="redemptions-filter-pills" style="justify-content: center;">
+          <button class="redemptions-filter-pill active" id="tlFilterAll" onclick="setTimelineFilter('all')">
+            Todas (<span id="tlCountAll">0</span>)
+          </button>
+          <button class="redemptions-filter-pill" id="tlFilterNew" onclick="setTimelineFilter('nova')">
+            <span class="filter-dot" style="background: #00e676;"></span> Nova (<span id="tlCountNew">0</span>)
+          </button>
+          <button class="redemptions-filter-pill" id="tlFilterExpired" onclick="setTimelineFilter('esgotada')">
+            <span class="filter-dot" style="background: #f87171;"></span> Esgotada (<span id="tlCountExpired">0</span>)
+          </button>
+          <button class="redemptions-filter-pill" id="tlFilterRedemption" onclick="setTimelineFilter('resgate')">
+            <span class="filter-dot" style="background: #a855f7;"></span> Resgate (<span id="tlCountRedemption">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <div class="timeline-list" id="timelineList" style="margin-top: 14px;">
+        <!-- Itens da linha do tempo renderizados dinamicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. MODAL DE AJUSTES & FILTROS -->
+  <div class="modal-backdrop" id="settingsModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px;">
+        <div style="width: 20px; height: 20px; color: #38bdf8;">__ICON_settings__</div>
+        <div class="modal-title" style="margin: 0;">Ajustes</div>
+      </div>
+
+      <div class="settings-tabs" role="tablist" aria-label="Seções dos ajustes">
+        <button class="settings-tab" id="settingsGeneralTab" role="tab" aria-selected="true" aria-controls="settingsGeneralPanel" onclick="selectSettingsTab('general')">Geral</button>
+        <button class="settings-tab" id="settingsPersonalizationTab" role="tab" aria-selected="false" aria-controls="settingsPersonalizationPanel" onclick="selectSettingsTab('personalization')">Personalização</button>
+      </div>
+      <div class="settings-panel" id="settingsGeneralPanel" role="tabpanel" aria-labelledby="settingsGeneralTab">
+      <!-- Trocar Perfil -->
+      <div class="form-group">
+        <label class="form-label">Perfil de Usuário Ativo</label>
+        <div class="user-pill-row">
+          <div class="user-pill" id="pillUserLeo" onclick="requestUserSwitch('leosaquetto')">
+            <img src="https://files.catbox.moe/a44poo.jpg" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            leosaquetto
+          </div>
+          <div class="user-pill" id="pillUserGao" onclick="requestUserSwitch('gaoriel')">
+            <img src="https://files.catbox.moe/0hj4g2.jpg" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />
+            gaoriel
+          </div>
+        </div>
+      </div>
+
+      <!-- Palavras-Chave Priorizar -->
+      <div class="form-group">
+        <label class="form-label">Palavras-Chave para Destacar (Laranja)</label>
+        <input type="text" class="form-input" id="inputPriorizar" placeholder="ex: museu, orquestra, jazz" />
+        <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">Destaca o card com tom laranja e thumbnail ampliada.</span>
+      </div>
+
+      <!-- Palavras-Chave Despriorizar -->
+      <div class="form-group">
+        <label class="form-label">Despriorizar (Ignorar Busca em Corpo)</label>
+        <input type="text" class="form-input" id="inputDespriorizar" placeholder="ex: teatro, comedia" />
+        <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">Se o título ou URL contiver estas palavras, não perde tempo analisando o corpo.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Coleta neste iPhone</label>
+        <div style="background: #101217; border: 1px solid #222733; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <div id="hunterAccessStatus" role="status" style="font-size: 12px; color: #e2e8f0;">Verificando acesso…</div>
+          <div id="hunterAccessDescription" style="font-size: 11px; line-height: 1.5; color: #94a3b8;"></div>
+          <button class="btn-modal-secondary" id="btnHunterAccess" onclick="manageHunterAccess()">Solicitar acesso</button>
+        </div>
+      </div>
+
+      <!-- Status das Credenciais -->
+      <div class="form-group">
+        <label class="form-label">Credenciais Clube UOL</label>
+        <div style="background: #101217; border: 1px solid #222733; border-radius: 10px; padding: 10px; font-size: 12px; color: #94a3b8;" id="credsStatusBox">
+          Carregando status...
+        </div>
+      </div>
+
+      <!-- Atualizações do Script (OTA GitHub) -->
+      <div class="form-group">
+        <label class="form-label">Atualizações do Script (OTA GitHub)</label>
+        <div style="background: #101217; border: 1px solid #222733; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 13px; font-weight: 600; color: #f1f5f9;">Versão: <span id="currentVersionLabel" style="color: #ff9100; font-weight: 700;">v5.4.1</span></div>
+              <div style="font-size: 11px; color: #64748b;">Canal Oficial GitHub (leosaquetto/uol-bot)</div>
+            </div>
+            <button class="btn-check-update" id="btnCheckUpdate" onclick="checkForScriptUpdateManual()">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+              <span>Verificar</span>
+            </button>
+          </div>
+          <div id="updateStatusMsg" style="font-size: 11.5px; color: #94a3b8; display: none;"></div>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn-modal-primary" onclick="saveSettingsFromModal()">Salvar Ajustes</button>
+        <button class="btn-modal-cancel" onclick="closeSettingsModal()">Fechar</button>
+      </div>
+      </div>
+      <div class="settings-panel" id="settingsPersonalizationPanel" role="tabpanel" aria-labelledby="settingsPersonalizationTab" hidden>
+        <h3 style="margin: 0 0 8px; font-size: 18px;">Barra de navegação</h3>
+        <p style="margin: 0 0 20px; color: #a9b2c2; font-size: 12px; line-height: 1.6;">Escolha a aparência do menu. O modelo Padrão mantém a barra original e pode ser restaurado a qualquer momento.</p>
+        <div class="navigation-theme-options" id="navigationThemeOptions" role="group" aria-label="Estilo da barra de navegação"></div>
+        <p id="navigationThemeStatus" role="status" aria-live="polite">A escolha é salva automaticamente neste aparelho.</p>
+        <div class="modal-buttons">
+          <button class="btn-modal-cancel" onclick="closeSettingsModal()">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO: ALTERNAR CONTA & SESSÃO HEADLESS -->
+  <div class="modal-backdrop" id="confirmSwitchUserModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 380px;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+        <div style="width: 22px; height: 22px; color: #ff9100;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        </div>
+        <div class="modal-title" style="margin: 0;">Alternar Conta & Sessão</div>
+      </div>
+
+      <!-- Account Switch Visual Comparison -->
+      <div class="switch-accounts-card" id="switchAccountsPreview"></div>
+
+      <!-- Informational Points -->
+      <div class="switch-notice-box">
+        <div class="switch-notice-item">
+          <span class="switch-notice-icon">🔒</span>
+          <div>
+            <strong>Isolamento de Sessão:</strong>
+            O Scriptable salvará a sessão atual e carregará os cookies exclusivos de <span id="switchTargetDisplayName" style="color: #f1f5f9; font-weight: 600;">Gabriel</span>.
+          </div>
+        </div>
+        <div class="switch-notice-item">
+          <span class="switch-notice-icon">🔑</span>
+          <div id="switchCredsStatusText">
+            Verificando credenciais em <code>clubeuolscrip.txt</code>...
+          </div>
+        </div>
+        <div class="switch-notice-item">
+          <span class="switch-notice-icon">🎟️</span>
+          <div>
+            <strong>Vouchers & Cotas Preservados:</strong>
+            Os ingressos e o histórico de cada perfil permanecem seguros e sincronizados de forma independente.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 18px;">
+        <button class="btn-modal-primary" id="btnConfirmSwitchUser" onclick="executeUserSwitch()" style="background: linear-gradient(135deg, #ff9100, #ff5500); border: none; font-weight: 600;">
+          Confirmar e Alternar
+        </button>
+        <button class="btn-modal-cancel" onclick="closeConfirmSwitchModal()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE ASSISTENTE DE LOGIN & CONEXÃO UOL -->
+  <div class="modal-backdrop" id="authAssistantModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 390px;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+        <div style="width: 22px; height: 22px; color: #ffb300;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="modal-title" style="margin: 0;">Sessão UOL</div>
+      </div>
+
+      <!-- User identifier card -->
+      <div class="switch-accounts-card" style="margin-bottom: 12px; padding: 10px 14px;">
+        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+          <img id="authModalAvatar" class="switch-acc-avatar" src="" style="width: 40px; height: 40px;" />
+          <div style="flex: 1; text-align: left;">
+            <div id="authModalName" style="font-size: 13px; font-weight: 700; color: #fff;">Gabriel</div>
+            <div id="authModalHandle" style="font-size: 11px; color: #94a3b8;">@gaoriel</div>
+          </div>
+          <div id="authModalStatusPill" class="session-status-indicator" style="font-size: 10.5px; padding: 3px 8px;">
+            <span class="session-dot dot-amber"></span>
+            <span>Não verificada</span>
+          </div>
+        </div>
+      </div>
+
+      <p id="authModalSessionDetail" style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin: 0 0 12px;"></p>
+      <button class="btn-direct-login" id="btnVerifyUolSession" onclick="fetchRealRedemptions()" style="margin-bottom: 14px;">
+        Verificar sessão salva
+      </button>
+
+      <!-- Credenciais prontas para copiar -->
+      <div class="auth-assistant-card">
+        <div class="auth-field-row">
+          <label class="auth-field-label">Usuário / CPF / E-mail</label>
+          <div class="auth-field-input-wrap">
+            <span class="auth-field-val" id="authModalLoginVal">•••••••••••</span>
+            <button class="btn-auth-copy" onclick="copyAuthLogin(this)">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+        </div>
+        <div class="auth-field-row">
+          <label class="auth-field-label">Senha</label>
+          <div class="auth-field-input-wrap">
+            <span class="auth-field-val" id="authModalPassVal">••••••••</span>
+            <button class="btn-auth-reveal" onclick="toggleAuthPassVisibility(this)" title="Mostrar / Ocultar">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <button class="btn-auth-copy" onclick="copyAuthPassword(this)">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo a Passo & Solução do Bug de Logout da UOL -->
+      <div class="auth-step-box">
+        <strong>Sessão salva e navegador:</strong>
+        Verificar consulta a sessão salva, sem resgatar. Em “Conectar conta ao Hunter”, faça o login oficial da conta selecionada e feche a janela quando aparecer “Autenticação recebida”. O Hunter só salva a sessão após confirmar a identidade no histórico do UOL.
+      </div>
+
+      <button class="btn-direct-login" id="btnConnectHunterSession" onclick="reconnectUolSession()">
+        Conectar conta ao Hunter
+      </button>
+
+      <button class="btn-clean-logout" onclick="openUolLogoutAndLogin()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout Geral + Abrir Login UOL
+      </button>
+
+      <button class="btn-direct-login" onclick="openUolDirectLogin()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Abrir Tela de Login Direta
+      </button>
+
+      <div class="modal-buttons">
+        <button class="btn-modal-cancel" onclick="closeAuthAssistantModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU INFERIOR FIXO & FLUTUANTE (GLASSMORPHISM) -->
+  <nav class="bottom-nav" id="bottomNav" aria-label="Navegação Principal">
+    <button class="bottom-nav-item active" data-tab="home" onclick="switchTab('home')" title="Início" aria-label="Início">
+      <div class="nav-icon-wrap">__ICON_navHome__</div>
+      <span class="active-dot"></span>
+    </button>
+    <button class="bottom-nav-item" data-tab="tickets" onclick="switchTab('tickets')" title="Ingressos" aria-label="Ingressos">
+      <div class="nav-icon-wrap">__ICON_navTickets__</div>
+      <span class="active-dot"></span>
+    </button>
+    <button class="bottom-nav-item" data-tab="history" onclick="switchTab('history')" title="Histórico" aria-label="Histórico">
+      <div class="nav-icon-wrap">__ICON_navHistory__</div>
+      <span class="active-dot"></span>
+    </button>
+    <button class="bottom-nav-item" data-tab="redemptions" onclick="switchTab('redemptions')" title="Resgates" aria-label="Resgates">
+      <div class="nav-icon-wrap">__ICON_navRedemptions__</div>
+      <span class="active-dot"></span>
+    </button>
+  </nav>
+
+  <script>__HUNTER_UI_SCRIPT__</script>
+</body>
+</html>

@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const source = fs.readFileSync(path.join(__dirname,'build.js'),'utf8');
+const source = require("./test-support/build-source.cjs")();
 const code = source.slice(source.indexOf('function hunterVersionParts('), source.indexOf('function hunterAction('));
 function artifact(version) { return '// Variables used by Scriptable.\n// These must be at the very top of the file.\n// Scriptable: Clube UOL - Hub Central de Ingressos & Stories Hunter\nconst SCRIPT_VERSION = "'+version+'";\nconst HunterCollector = (() => { return {}; })();\nfunction hunterCollectionPausedForUpdate(action) {}\nasync function main() {}\nfunction buildDashboardHTML() {}\nawait main();\nScript.complete();\n'; }
 function harness() {
@@ -36,7 +36,7 @@ test('lost write restores the previous script before reporting failure',async()=
  assert.equal(h.files.get('/cloud/Hunter.js'),artifact('5.7.6'));assert.equal(h.opened.length,0);assert.ok(h.alerts.includes('Atualização interrompida'));
 });
 test('update UI delegates one check without downloading script in the WebView',async()=>{
- const html=fs.readFileSync(path.join(__dirname,'template.html'),'utf8');
+ const html=require("./assemble-ui.cjs").assembleUI();
  const section=html.slice(html.indexOf('    async function checkForScriptUpdateManual()'),html.indexOf('    // LINHA DO TEMPO DE ATIVIDADES'));
  const nodes={btnCheckUpdate:{},updateStatusMsg:{style:{}}}, location={href:'hunter'};
  const c=vm.createContext({INITIAL:{nativeBrowser:true},window:{location},document:{getElementById:id=>nodes[id]},fetch:()=>assert.fail('duplicate download')});

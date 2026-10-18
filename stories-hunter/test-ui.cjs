@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 // Execute only source functions against synthetic data. No personal build, network, or cookies.
-const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+const template = require('./assemble-ui.cjs').assembleUI();
 const now = Date.parse('2026-10-17T22:00:00-03:00');
 const clone = value => JSON.parse(JSON.stringify(value));
 const campaign = slug => 'https://clube.uol.com.br/campanhasdeingresso/' + slug;

@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+const template = require('./assemble-ui.cjs').assembleUI();
 function fn(name) {
   const starts = ['    function ' + name + '(', '    async function ' + name + '('];
   const start = starts.map(value => template.indexOf(value)).find(value => value >= 0);

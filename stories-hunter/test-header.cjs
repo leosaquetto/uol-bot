@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+const template = require('./assemble-ui.cjs').assembleUI();
 const layout = template.slice(template.indexOf('// HEADER_LAYOUT_START'), template.indexOf('// HEADER_LAYOUT_END'));
 function headerHarness({ resizeObserver = true } = {}) {
   let height = 110, resizeCallback, mutationCallback;

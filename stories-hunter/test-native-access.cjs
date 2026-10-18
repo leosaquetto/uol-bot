@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const A = require('./access.js');
 const C = require('./collector.js');
-const source = fs.readFileSync(path.join(__dirname, 'build.js'), 'utf8');
+const source = require("./test-support/build-source.cjs")();
 const nativeCode = source.slice(source.indexOf('async function runNativeHunterCollector('), source.indexOf('async function main()'));
 const browserCode = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
 
@@ -93,7 +93,7 @@ test('activation route cancels navigation synchronously and shares the offer-she
 });
 
 test('approved owner with no friends refreshes the access UI before the empty-device return', async () => {
-  const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+  const template = require("./assemble-ui.cjs").assembleUI();
   const elements = new Map();
   const get = id => { if (!elements.has(id)) elements.set(id, {}); return elements.get(id); };
   const ui = vm.createContext({ INITIAL: { nativeBrowser: true, hunterAccess: { status: 'not_configured' } },

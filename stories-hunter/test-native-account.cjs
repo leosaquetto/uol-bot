@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { webcrypto } = require('node:crypto');
-const source = fs.readFileSync(path.join(__dirname, 'build.js'), 'utf8');
+const source = require("./test-support/build-source.cjs")();
 const hostCode = source.slice(source.indexOf('let nativeAccountManager = null;'), source.indexOf('function isNewerVersion('));
 const routeCode = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
 const parser = fs.readFileSync(path.join(__dirname, '../cloudflare-workers/uol-redemption-sentinel/src/offers.js'), 'utf8').replace(/^export /gm, '');

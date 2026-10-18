@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 // Evaluate only the adapter with synthetic fixtures. Never load the compiled personal package.
-const template = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+const template = require('./assemble-ui.cjs').assembleUI();
 const start = template.indexOf('// CATALOG_ADAPTER_START');
 const end = template.indexOf('// CATALOG_ADAPTER_END');
 assert.ok(start > 0 && end > start);

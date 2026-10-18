@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
-const source = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
+const source = require('./assemble-ui.cjs').assembleUI();
 const functions = source.slice(source.indexOf('    let nativeRedemptionPending'), source.indexOf('    function updateSessionStatusUI()'));
 function harness() {
   const nodes = new Map(), writes = [];
