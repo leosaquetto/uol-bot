@@ -228,13 +228,13 @@ test('hydration preserves valid saved empty active list and history instead of r
   const bundled = { active: [{ id: 'bundled-active' }], history: [] };
   const saved = { active: [], history: [{ id: 'sold-out', expiredAt: now - 1000 }] };
   for (const data of [saved, { active: [], history: [] }]) {
-    const context = vm.createContext({ historyData: clone(bundled), settings: {}, localStorage: {
+    const context = vm.createContext({ historyData: clone(bundled), settings: {}, initializeNavigationTheme() {}, localStorage: {
       getItem: key => key === 'uol_offers_history' ? JSON.stringify(data) : null,
     } });
     vm.runInContext(hydration, context);
     assert.deepEqual(clone(context.historyData), data);
   }
-  const invalid = vm.createContext({ historyData: clone(bundled), settings: {}, localStorage: {
+  const invalid = vm.createContext({ historyData: clone(bundled), settings: {}, initializeNavigationTheme() {}, localStorage: {
     getItem: key => key === 'uol_offers_history' ? '{"active":[],"history":"bad"}' : null,
   } });
   vm.runInContext(hydration, invalid);
