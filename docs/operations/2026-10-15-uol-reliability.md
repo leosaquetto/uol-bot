@@ -1442,3 +1442,23 @@ curadoria; helper textual preserva aliases e sinais de id/link/imagem sem execut
 a normalização completa do arquivo. Teste comprova ausência de semente duplicada.
 Sintaxe do artefato e diff aprovados. Publicação exata e aceite OTA registrados após
 o gate de CI, sem antecipar prova visual no aparelho.
+
+5.7.4 publicada do cliente SHA `494ab3aa696eb9dfc0fadeedc86c85c06d8777bf`, CI exata
+aprovada em https://github.com/leosaquetto/uol-bot/actions/runs/39095461444.
+Distribuição `--code-only`: aceite ntfy registrado; MacSend serve exatamente o
+artefato aprovado/commitado e o arquivo privado 5.7.4 foi instalado no iCloud.
+Os quatro arquivos de sessões/banco mantiveram os hashes capturados antes desta
+atualização. Artefato público sem bundles privados nem credencial/sessão técnica.
+Prova e recibo privados em `hunter574-final-proof-2026-10-18.json`, modo 0600.
+Backend SHA/versão preservados; nenhum deploy adicional do Worker.
+
+Confirmado no aparelho: retorno do navegador interno 5.7.3. Pendente no aparelho:
+Safari externo e apresentação de header/ícone/histórico mensal 5.7.4. A coleta
+complementar continua sem configuração comprovada, com último diagnóstico
+`bootstrap_missing`; aceite OTA não fecha descoberta natural nem recibos dos destinos.
+
+Confirmação posterior do usuário no iPhone 5.7.4: os três critérios visuais estão
+corretos — header sem cobrir conteúdo, ícone Atualizar visível e histórico iniciando
+no mês atual com cores originais. Prova privada e manifesto receberam esses campos
+de interface separadamente da coleta. Safari externo foi validado nos testes locais;
+execução externa no aparelho e configuração/descoberta natural continuam sem prova.
