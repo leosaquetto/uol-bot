@@ -174,7 +174,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.6";
+const SCRIPT_VERSION = "5.7.7";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -206,9 +206,7 @@ function createNativeAccountManager() {
     parser.shouldAllowRequest = () => false;
     const input = JSON.stringify(html).replace(/</g, "\\u003c");
     const expression = kind === "offer" ? "parseOffer(" + input + "," + JSON.stringify(url) + ")" : "parseHistory(" + input + ")";
-    const result = await parser.evaluateJavaScript("(async () => {" + UOL_RECEIPT_PARSER + "; const parsed = " + expression + ";" +
-      (kind === "history" ? "const digest = await crypto.subtle.digest('SHA-256',new TextEncoder().encode(normalizeText(parsed.signedInName))); parsed.identityDigest = Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');" : "") +
-      "completion(JSON.stringify(parsed));})().catch(() => completion(null));", true);
+    const result = await parser.evaluateJavaScript("(() => {" + UOL_RECEIPT_PARSER + "; return JSON.stringify(" + expression + ");})()");
     return JSON.parse(result);
   }
   nativeAccountManager = HunterRedemption.create({ keychain: Keychain, now: Date.now,
@@ -225,7 +223,32 @@ function createNativeAccountManager() {
       if (!config.ok || config.identityDigest !== identityDigests[user]) throw Object.assign(new Error("account_access_required"), { reason: "account_access_required" });
       Keychain.set("uol.hunter.shared-account.v1." + user, config.deviceId);
       return config.cookies;
-    }, verifyIdentity: (user, parsed) => typeof parsed.identityDigest === "string" && parsed.identityDigest === identityDigests[user],
+    }, verifyIdentity: (user, parsed) => HunterRedemption.identityDigest(parsed.signedInName) === identityDigests[user],
+    login: async flow => {
+      const login = new WebView();
+      let callback = null;
+      login.shouldAllowRequest = request => {
+        const raw = request && request.url;
+        if (typeof raw !== "string") return false;
+        if (flow.isCallback(raw)) {
+          if (!callback) {
+            callback = raw;
+            Promise.resolve().then(() => login.loadHTML('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;"><h2>Autenticação recebida</h2><p>Toque em Close/Fechar para voltar ao Hunter e concluir a validação da conta.</p>', "https://clube.uol.com.br")).catch(() => {});
+          }
+          return false;
+        }
+        // The official form performs its own login and security checks. No
+        // password injection, cookie scraping, logout or redemption here.
+        if (raw === "about:blank") return true;
+        if (!raw.startsWith("https://")) return false;
+        const host = raw.slice(8).split('/')[0].split('?')[0].split('#')[0].toLowerCase();
+        return /^[a-z0-9.-]+$/.test(host) && (host === "uol.com.br" || host.endsWith(".uol.com.br")) &&
+          !raw.startsWith("https://clube.uol.com.br/auth/uol?") && !/resgatar|logout/i.test(raw);
+      };
+      try { await login.loadURL(flow.url); } catch (_) { if (!callback) throw Object.assign(new Error("login_unavailable"), { reason: "login_unavailable" }); }
+      await login.present();
+      return callback;
+    },
     parseHistory: html => parse(html, "history"), parseOffer: (html, url) => parse(html, "offer", url) });
   return nativeAccountManager;
 }
@@ -238,7 +261,7 @@ async function manageNativeAccount(view, action, user, url) {
     confirm.message = "Resgatar usando a conta de " + (user === "gaoriel" ? "Gabriel" : "Leonardo") + "? A cota e o voucher pertencem a essa conta.";
     confirm.addAction("Resgatar nesta conta"); confirm.addCancelAction("Cancelar");
     result = await confirm.presentAlert() < 0 ? { status: "cancelled", account: user } : await manager.redeem(user, url);
-  } else result = await manager.history(user);
+  } else result = action === "reconnect" ? await manager.reconnect(user) : await manager.history(user);
   const safe = JSON.stringify(result).replace(/</g, "\\u003c");
   await view.evaluateJavaScript("handleNativeAccountResult(" + JSON.stringify(action) + "," + JSON.stringify(user) + "," + safe + ");");
 }
@@ -549,7 +572,7 @@ function installHunterBrowser(view) {
       } else view.evaluateJavaScript("handleNativeUpdateResult(false);").catch(() => {});
       return false;
     }
-    const accountAction = /^hunter-account:\/\/(history|redeem)\?account=(leosaquetto|gaoriel)(?:&url=([^&]+))?$/.exec(raw);
+    const accountAction = /^hunter-account:\/\/(history|redeem|reconnect)\?account=(leosaquetto|gaoriel)(?:&url=([^&]+))?$/.exec(raw);
     if (accountAction) {
       let url = "";
       try { url = accountAction[3] ? decodeURIComponent(accountAction[3]) : ""; } catch (_) { return false; }

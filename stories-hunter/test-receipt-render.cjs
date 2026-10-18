@@ -15,7 +15,7 @@ function harness(records = []) {
   const context = vm.createContext({
     URL, Blob, atob, Uint8Array,
     settings: { currentUser: 'leosaquetto' }, currentRedemptionsFilter: 'all', currentRedemptionsList: records,
-    currentSessionStatus: 'valid', ICONS: { globe: '<svg/>', tickets: '<svg/>' },
+    uolSessionPresentation: () => ({ label: 'Conectado' }), currentSessionStatus: 'valid', ICONS: { globe: '<svg/>', tickets: '<svg/>' },
     getAllRedemptionsList: () => records, getAvatarUrl: () => 'https://example.test/avatar.jpg', parseRedemptionDate: () => 0,
     localStorage: { setItem() {} }, document: { getElementById(id) {
       if (!nodes.has(id)) nodes.set(id, { style: {}, innerHTML: '', textContent: '' });

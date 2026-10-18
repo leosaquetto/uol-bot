@@ -1,14 +1,14 @@
 # Handoff: Clube UOL Stories Hunter (Scriptable Hub)
 
 > **Data de Atualização**: 18 de Outubro de 2026
-> **Status**: Contrato atual em [CHANGELOG_v5.7.6.md](CHANGELOG_v5.7.6.md); publicação e execução real são registradas separadamente no documento operacional.
+> **Status**: Contrato atual em [CHANGELOG_v5.7.7.md](CHANGELOG_v5.7.7.md); publicação e execução real são registradas separadamente no documento operacional.
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
 > **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
 
 ---
 
-## Contrato atual 5.7.6
+## Contrato atual 5.7.7
 
 Consulte [CHANGELOG_v5.7.0.md](CHANGELOG_v5.7.0.md). Esta revisão substitui as regras
 antigas de tags inline nos cards: agora ficam em faixa horizontal rolável, separada
@@ -23,6 +23,14 @@ da conta e o recibo antes de afirmar sucesso. Sessões, credenciais e vouchers n
 entram no artefato público. Atualização usa `--code-only`; a primeira abertura da
 versão não coleta. A documentação histórica abaixo não autoriza sobrescrever
 sessões, vouchers, datas de resgate ou o banco privado numa atualização de código.
+
+Reconexão pessoal usa “Conectar conta ao Hunter”: login oficial no WebView,
+retorno OAuth interceptado com o estado criado pelo transporte nativo e troca do
+código uma única vez. Cookies candidatos ficam apenas em memória até o histórico
+confirmar a identidade esperada e a permissão continuar válida. Só a sessão da
+conta selecionada no Keychain é substituída; outro perfil, arquivos privados e
+journal de resgate são preservados. Login comum no navegador não importa sessão
+para o Hunter. Desafios do UOL continuam no formulário oficial, sem automação.
 
 ---
 

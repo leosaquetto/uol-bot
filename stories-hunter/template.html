@@ -3702,7 +3702,7 @@
         <div style="width: 22px; height: 22px; color: #ffb300;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
-        <div class="modal-title" style="margin: 0;">Conectar Sessão UOL</div>
+        <div class="modal-title" style="margin: 0;">Sessão UOL</div>
       </div>
 
       <!-- User identifier card -->
@@ -3715,10 +3715,15 @@
           </div>
           <div id="authModalStatusPill" class="session-status-indicator" style="font-size: 10.5px; padding: 3px 8px;">
             <span class="session-dot dot-amber"></span>
-            <span>Não Conectado</span>
+            <span>Não verificada</span>
           </div>
         </div>
       </div>
+
+      <p id="authModalSessionDetail" style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin: 0 0 12px;"></p>
+      <button class="btn-direct-login" id="btnVerifyUolSession" onclick="fetchRealRedemptions()" style="margin-bottom: 14px;">
+        Verificar sessão salva
+      </button>
 
       <!-- Credenciais prontas para copiar -->
       <div class="auth-assistant-card">
@@ -3749,9 +3754,13 @@
 
       <!-- Passo a Passo & Solução do Bug de Logout da UOL -->
       <div class="auth-step-box">
-        <strong>💡 Dica Importante para Troca de Conta:</strong>
-        O UOL mantém a sessão central ativa mesmo após sair do Clube. O botão abaixo faz um <strong>Logout Geral no UOL</strong> e já abre a tela de login limpa para preencher os dados acima sem re-logar na conta anterior!
+        <strong>Sessão salva e navegador:</strong>
+        Verificar consulta a sessão salva, sem resgatar. Em “Conectar conta ao Hunter”, faça o login oficial da conta selecionada e feche a janela quando aparecer “Autenticação recebida”. O Hunter só salva a sessão após confirmar a identidade no histórico do UOL.
       </div>
+
+      <button class="btn-direct-login" id="btnConnectHunterSession" onclick="reconnectUolSession()">
+        Conectar conta ao Hunter
+      </button>
 
       <button class="btn-clean-logout" onclick="openUolLogoutAndLogin()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -6846,13 +6855,13 @@
 
           <!-- Status da Sessão ao Vivo & Botão de Reconectar -->
           <div class="session-status-card">
-            <div class="session-status-indicator">
-              <span class="session-dot ${isSessionValid ? 'dot-green' : (isSessionInvalid ? 'dot-amber' : 'dot-green')}"></span>
-              <span id="redemptionsSessionStatusLabel">${isSessionValid ? ('Sessão Conectada: ' + activeDisplayName) : (isSessionInvalid ? 'Sessão Desconectada' : 'Verificando Conexão...')}</span>
+            <div class="session-status-indicator" id="redemptionsSessionStatusInd">
+              <span class="session-dot ${uolSessionPresentation().dot}"></span>
+              <span id="redemptionsSessionStatusLabel">${uolSessionPresentation().label}</span>
             </div>
             <button class="btn-reconnect-session" onclick="openAuthAssistantModal()">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-              ${isSessionValid ? 'Reconectar' : 'Conectar Conta'}
+              Verificar sessão
             </button>
           </div>
 
@@ -7711,10 +7720,34 @@
     }
 
     let currentSessionStatus = 'unknown';
+    let currentSessionReason = '';
+    function uolSessionPresentation() {
+      const messages = {
+        history_parser_unavailable: 'Não foi possível interpretar a resposta neste aparelho.',
+        network_error: 'Não foi possível consultar o Clube UOL agora.',
+        challenge_required: 'O Clube UOL solicitou uma verificação de acesso.',
+        identity_mismatch: 'A conta confirmada não corresponde ao perfil selecionado. Nenhuma outra conta foi autorizada.',
+        account_access_required: 'Este perfil ainda não foi liberado para este aparelho.',
+        cookies_invalid: 'Não foi possível ler a sessão salva desta conta.',
+        history_incomplete: 'O histórico recebido está incompleto.',
+        redirect_not_controlled: 'Não foi possível confirmar o redirecionamento do Clube UOL.',
+        busy: 'Outra operação está em andamento. Toque em verificar ao terminar.',
+        login_unavailable: 'Não foi possível abrir o login oficial. A sessão salva foi preservada.',
+        login_callback_invalid: 'Não foi possível confirmar o retorno do login. A sessão salva foi preservada.',
+        login_expired: 'O login demorou mais de dez minutos. Abra uma nova conexão.',
+        cancelled: 'Login cancelado. A sessão salva foi preservada.'
+      };
+      if (currentSessionStatus === 'valid') return { label: 'Conectado', detail: 'Conta confirmada pelo histórico oficial.', dot: 'dot-green' };
+      if (currentSessionStatus === 'checking') return { label: 'Verificando…', detail: 'Conferindo a conta sem fazer resgate.', dot: 'dot-amber' };
+      if (currentSessionStatus === 'invalid') return { label: 'Sessão expirada', detail: 'O Clube UOL pediu autenticação para esta sessão.', dot: 'dot-amber' };
+      if (currentSessionStatus === 'unavailable') return { label: 'Verificação indisponível', detail: messages[currentSessionReason] || 'Não foi possível confirmar a sessão. Toque em verificar para consultar novamente.', dot: 'dot-amber' };
+      return { label: 'Não verificada', detail: messages[currentSessionReason] || 'O acesso do aparelho está separado da sessão de cada perfil. Toque em verificar para conferir esta conta.', dot: 'dot-amber' };
+    }
     async function fetchRealRedemptions() {
       const account = settings.currentUser || 'leosaquetto';
       if (!INITIAL.nativeAccounts || nativeHistoryPending.has(account)) return;
       nativeHistoryPending.add(account);
+      currentSessionStatus = 'checking'; currentSessionReason = ''; updateSessionStatusUI();
       window.location.href = 'hunter-account://history?account=' + account;
     }
 
@@ -7742,10 +7775,11 @@
 
     function handleNativeAccountResult(action, account, result) {
       if (!['leosaquetto', 'gaoriel'].includes(account) || result?.account !== account) return;
-      if (action === 'history') {
+      if (action === 'history' || action === 'reconnect') {
         nativeHistoryPending.delete(account);
         if ((settings.currentUser || 'leosaquetto') === account) {
-          currentSessionStatus = result.status === 'authenticated' ? 'valid' : result.status === 'busy' ? 'unknown' : 'invalid';
+          currentSessionStatus = result.status === 'authenticated' ? 'valid' : result.status === 'auth_required' ? 'invalid' : ['busy', 'cancelled'].includes(result.status) ? 'unknown' : 'unavailable';
+          currentSessionReason = result.status === 'busy' ? 'busy' : result.reason || result.status;
           updateSessionStatusUI();
         }
         if (result.status === 'authenticated') mergeNativeAccountRecords(account, result.records);
@@ -7775,19 +7809,22 @@
     }
 
     function updateSessionStatusUI() {
+      const state = uolSessionPresentation();
       const label = document.getElementById('redemptionsSessionStatusLabel');
       const ind = document.getElementById('redemptionsSessionStatusInd');
-      const isSessionValid = (currentSessionStatus === 'valid');
-      const isSessionInvalid = (currentSessionStatus === 'invalid');
       if (ind) {
         const dot = ind.querySelector('.session-dot');
-        if (dot) {
-          dot.className = `session-dot ${isSessionValid ? 'dot-green' : (isSessionInvalid ? 'dot-amber' : 'dot-green')}`;
-        }
-        if (label) {
-          label.textContent = isSessionValid ? 'Sessão Conectada no Clube UOL' : (isSessionInvalid ? 'Sessão Desconectada' : 'Verificando Conexão...');
-        }
+        if (dot) dot.className = 'session-dot ' + state.dot;
       }
+      if (label) label.textContent = state.label;
+      const pill = document.getElementById('authModalStatusPill');
+      if (pill) pill.innerHTML = '<span class="session-dot ' + state.dot + '"></span><span>' + state.label + '</span>';
+      const detail = document.getElementById('authModalSessionDetail');
+      if (detail) detail.textContent = state.detail;
+      const button = document.getElementById('btnVerifyUolSession');
+      if (button) button.disabled = currentSessionStatus === 'checking';
+      const connect = document.getElementById('btnConnectHunterSession');
+      if (connect) connect.disabled = currentSessionStatus === 'checking';
       updateCredsStatusUI();
     }
 
@@ -7958,7 +7995,7 @@
       if (nativeRedemptionPending) { showToast('Aguarde a confirmação da tentativa atual.'); return; }
       // Selection changes presentation only. Native requests keep separate verified cookie jars.
       settings.currentUser = targetUser;
-      currentSessionStatus = 'unknown';
+      currentSessionStatus = 'unknown'; currentSessionReason = '';
       updateSessionStatusUI();
 
       // 5. Salva configurações e atualiza interface
@@ -8048,14 +8085,7 @@
       const handleEl = document.getElementById('authModalHandle');
       if (handleEl) handleEl.textContent = '@' + handle + ' • Perfil Ativo';
 
-      const statusPill = document.getElementById('authModalStatusPill');
-      if (statusPill) {
-        const isSessionValid = (currentSessionStatus === 'valid');
-        statusPill.innerHTML = `
-          <span class="session-dot ${isSessionValid ? 'dot-green' : 'dot-amber'}"></span>
-          <span>${isSessionValid ? 'Conectado' : 'Não Conectado'}</span>
-        `;
-      }
+      updateSessionStatusUI();
 
       const loginVal = document.getElementById('authModalLoginVal');
       if (loginVal) loginVal.textContent = userCreds.login || 'Não configurado';
@@ -8135,6 +8165,14 @@
       }, 700);
     }
 
+    function reconnectUolSession() {
+      const account = settings.currentUser || 'leosaquetto';
+      if (!INITIAL.nativeAccounts || nativeHistoryPending.has(account)) return;
+      nativeHistoryPending.add(account);
+      currentSessionStatus = 'checking'; currentSessionReason = ''; updateSessionStatusUI();
+      window.location.href = 'hunter-account://reconnect?account=' + account;
+    }
+
     function showToast(message) {
       let toast = document.getElementById('hubToast');
       if (!toast) {
@@ -8183,14 +8221,8 @@
       const hasCreds = Boolean(userCreds.login && userCreds.senha);
       const name = (user === 'gaoriel' ? 'Gabriel' : 'Leonardo');
 
-      let statusHtml = '';
-      if (currentSessionStatus === 'valid') {
-        statusHtml = '<span style="color: #10b981; font-weight: 600;">🟢 Conectado</span>';
-      } else if (currentSessionStatus === 'invalid') {
-        statusHtml = '<span style="color: #f59e0b; font-weight: 600;">🟡 Não Conectado</span>';
-      } else {
-        statusHtml = '<span style="color: #94a3b8;">Verificando...</span>';
-      }
+      const state = uolSessionPresentation();
+      const statusHtml = '<span style="color: ' + (currentSessionStatus === 'valid' ? '#10b981' : '#94a3b8') + '; font-weight: 600;">' + state.label + '</span>';
 
       if (hasCreds) {
         const masked = userCreds.login.length > 5 ? (userCreds.login.slice(0, 3) + '••••' + userCreds.login.slice(-2)) : '••••••';

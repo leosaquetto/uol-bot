@@ -19,6 +19,71 @@ const HunterRedemption = (() => {
   const pathMatches = (path, cookiePath) => path === cookiePath || (path.startsWith(cookiePath) && (cookiePath.endsWith('/') || path[cookiePath.length] === '/'));
   const header = (headers, key) => Object.entries(headers || {}).find(([name]) => name.toLowerCase() === key.toLowerCase())?.[1] || '';
 
+  // SHA-256 (FIPS 180-4, section 6.2.2) for the bounded account display name.
+  // Run in Scriptable's JavaScriptCore: no WebView secure context or WebCrypto.
+  function identityDigest(name) {
+    if (typeof name !== 'string' || !name.length || name.length > 100) throw failure('identity_name_invalid');
+    for (let i = 0; i < name.length; i++) {
+      const code = name.charCodeAt(i);
+      if (code >= 0xd800 && code <= 0xdbff) {
+        const next = name.charCodeAt(++i);
+        if (!(next >= 0xdc00 && next <= 0xdfff)) throw failure('identity_name_invalid');
+      } else if (code >= 0xdc00 && code <= 0xdfff) throw failure('identity_name_invalid');
+    }
+    const normalized = norm(name);
+    if (!normalized) throw failure('identity_name_invalid');
+    const bytes = [];
+    for (let i = 0; i < normalized.length; i++) {
+      let code = normalized.charCodeAt(i);
+      if (code >= 0xd800 && code <= 0xdbff) code = 0x10000 + ((code - 0xd800) << 10) + normalized.charCodeAt(++i) - 0xdc00;
+      if (code < 0x80) bytes.push(code);
+      else if (code < 0x800) bytes.push(0xc0 | (code >>> 6), 0x80 | (code & 63));
+      else if (code < 0x10000) bytes.push(0xe0 | (code >>> 12), 0x80 | ((code >>> 6) & 63), 0x80 | (code & 63));
+      else bytes.push(0xf0 | (code >>> 18), 0x80 | ((code >>> 12) & 63), 0x80 | ((code >>> 6) & 63), 0x80 | (code & 63));
+    }
+    const bitLength = bytes.length * 8;
+    bytes.push(0x80);
+    while (bytes.length % 64 !== 56) bytes.push(0);
+    bytes.push(0, 0, 0, 0, (bitLength >>> 24) & 255, (bitLength >>> 16) & 255, (bitLength >>> 8) & 255, bitLength & 255);
+    const constants = [
+      0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+      0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+      0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+      0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+      0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+      0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+      0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+      0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+    ];
+    const hash = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+    const rotate = (value, bits) => (value >>> bits) | (value << (32 - bits));
+    for (let offset = 0; offset < bytes.length; offset += 64) {
+      const words = [];
+      for (let i = 0; i < 16; i++) {
+        const at = offset + i * 4;
+        words.push(((bytes[at] << 24) | (bytes[at + 1] << 16) | (bytes[at + 2] << 8) | bytes[at + 3]) >>> 0);
+      }
+      for (let i = 16; i < 64; i++) {
+        const x = words[i - 15], y = words[i - 2];
+        const s0 = rotate(x, 7) ^ rotate(x, 18) ^ (x >>> 3);
+        const s1 = rotate(y, 17) ^ rotate(y, 19) ^ (y >>> 10);
+        words.push((words[i - 16] + s0 + words[i - 7] + s1) >>> 0);
+      }
+      let [a, b, c, d, e, f, g, h] = hash;
+      for (let i = 0; i < 64; i++) {
+        const sum1 = rotate(e, 6) ^ rotate(e, 11) ^ rotate(e, 25);
+        const choice = (e & f) ^ (~e & g);
+        const t1 = (h + sum1 + choice + constants[i] + words[i]) >>> 0;
+        const sum0 = rotate(a, 2) ^ rotate(a, 13) ^ rotate(a, 22);
+        const majority = (a & b) ^ (a & c) ^ (b & c);
+        const t2 = (sum0 + majority) >>> 0;
+        h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+      }
+      [a, b, c, d, e, f, g, h].forEach((word, i) => { hash[i] = (hash[i] + word) >>> 0; });
+    }
+    return hash.map(word => word.toString(16).padStart(8, '0')).join('');
+  }
+
   // Scriptable runs JavaScriptCore without the browser URL/URLSearchParams
   // globals. This deliberately small parser accepts HTTPS DNS URLs only and
   // leaves encoded query values unchanged until the read allowlist checks them.
@@ -187,21 +252,28 @@ const HunterRedemption = (() => {
     }
     const summary = value => ({ status: value.status, account: value.account, attemptId: value.attemptId, observedAt: value.observedAt, ...(value.reason ? { reason: value.reason } : {}), ...(value.receipt ? { receipt: value.receipt } : {}) });
 
-    async function transport(user) {
+    async function transport(user, candidateCookies) {
       const key = COOKIE_KEY + user;
-      if (!keychain.contains(key)) {
+      const candidate = candidateCookies !== undefined;
+      if (!candidate && !keychain.contains(key)) {
         const supplied = await env.loadCookies(user);
         const imported = new Jar(supplied, now).snapshot();
         if (!keychain.contains(key)) keychain.set(key, JSON.stringify(imported));
       }
       let jar;
-      try { jar = new Jar(JSON.parse(get(key)), now); } catch (_) { throw failure('cookies_invalid'); }
+      try { jar = new Jar(candidate ? candidateCookies : JSON.parse(get(key)), now); } catch (_) { throw failure('cookies_invalid'); }
+      let callbackConsumed = false;
       const persist = async () => {
+        if (candidate) return;
         const cookies = jar.snapshot();
         keychain.set(key, JSON.stringify(cookies));
         if (typeof env.saveCookies === 'function') await env.saveCookies(user, cookies);
       };
       async function request(url) {
+        if (candidate && url.origin === CLUB && url.pathname === '/auth/uol') {
+          if (callbackConsumed) throw failure('login_callback_invalid');
+          callbackConsumed = true;
+        }
         const req = env.request(url.href);
         req.method = 'GET'; req.timeoutInterval = 15; req.onRedirect = () => null;
         // An explicit empty Cookie header prevents accidental ambient account use.
@@ -225,9 +297,15 @@ const HunterRedemption = (() => {
           if (i === 8) throw failure('redirect_limit');
         }
       }
-      return { read, request };
+      return { read, request, snapshot: () => jar.snapshot() };
     }
     const authResponse = result => result.status === 401 || result.status === 403 || parseUrl(result.url).origin === 'https://conta.uol.com.br' || /<input\b[^>]*type=["']password["']|id=["']dynamic-config["']|\bosirisUai\b/i.test(result.html);
+    async function readHistoryData(html) {
+      let parsed;
+      try { parsed = await env.parseHistory(html); } catch (_) { throw failure('history_parser_unavailable'); }
+      if (!object(parsed) || typeof parsed.authenticated !== 'boolean') throw failure('history_parser_unavailable');
+      return parsed;
+    }
     async function verifiedHistory(user, client) {
       const customIdentity = typeof env.verifyIdentity === 'function';
       const name = customIdentity ? null : expected(user);
@@ -239,16 +317,19 @@ const HunterRedemption = (() => {
       }
       let response = await client.read(HISTORY);
       if (response.status !== 200 && !authResponse(response)) throw failure('history_unavailable');
-      let parsed = response.status === 200 && response.url === HISTORY && !authResponse(response) ? await env.parseHistory(response.html) : null;
+      let parsed = response.status === 200 && response.url === HISTORY && !authResponse(response) ? await readHistoryData(response.html) : null;
       await verify(parsed);
       if (!parsed?.authenticated) {
         const restored = await client.read(CLUB + '/auth/uol/login');
-        if (restored.status !== 200 || authResponse(restored) || parseUrl(restored.url).origin !== CLUB || parseUrl(restored.url).pathname.startsWith('/auth/')) throw failure('auth_required');
+        if (authResponse(restored)) throw failure('auth_required');
+        if (restored.status !== 200 || parseUrl(restored.url).origin !== CLUB || parseUrl(restored.url).pathname.startsWith('/auth/')) throw failure('history_unavailable');
         response = await client.read(HISTORY);
-        parsed = response.status === 200 && response.url === HISTORY && !authResponse(response) ? await env.parseHistory(response.html) : null;
+        if (response.status !== 200 && !authResponse(response)) throw failure('history_unavailable');
+        parsed = response.status === 200 && response.url === HISTORY && !authResponse(response) ? await readHistoryData(response.html) : null;
         await verify(parsed);
       }
-      if (!parsed?.authenticated || !parsed.historyScopeFound) throw failure('auth_required');
+      if (authResponse(response)) throw failure('auth_required');
+      if (!parsed?.authenticated || !parsed.historyScopeFound) throw failure('history_incomplete');
       if (parsed.hasPagination !== false || !Array.isArray(parsed.entries) || parsed.entries.length > 1000) throw failure('history_incomplete');
       const records = [];
       for (const value of parsed.entries) {
@@ -277,7 +358,7 @@ const HunterRedemption = (() => {
       return value;
     }
     function safeError(error, user) {
-      const reason = ['auth_required', 'identity_mismatch', 'account_access_required', 'account_identity_unconfigured', 'history_unavailable', 'history_incomplete', 'history_invalid', 'cookies_invalid', 'account_invalid', 'url_blocked', 'offer_url_invalid', 'offer_unverified', 'network_error', 'challenge_required', 'response_too_large', 'redirect_limit', 'redirect_invalid', 'redirect_not_controlled', 'attempt_journal_invalid'].includes(error?.reason) ? error.reason : 'request_unavailable';
+      const reason = ['auth_required', 'identity_mismatch', 'account_access_required', 'account_identity_unconfigured', 'history_unavailable', 'history_parser_unavailable', 'history_incomplete', 'history_invalid', 'cookies_invalid', 'account_invalid', 'url_blocked', 'offer_url_invalid', 'offer_unverified', 'network_error', 'challenge_required', 'response_too_large', 'redirect_limit', 'redirect_invalid', 'redirect_not_controlled', 'attempt_journal_invalid', 'login_unavailable', 'login_callback_invalid', 'login_expired'].includes(error?.reason) ? error.reason : 'request_unavailable';
       return { status: ['auth_required', 'identity_mismatch', 'account_access_required'].includes(reason) ? reason : 'unavailable', account: ACCOUNTS.includes(user) ? user : null, reason };
     }
     async function history(user) {
@@ -287,6 +368,53 @@ const HunterRedemption = (() => {
         const current = reconcile(attempt(user), records);
         return { status: 'authenticated', account: user, records, checkedAt: now(), ...(current ? { attempt: summary(current) } : {}) };
       } catch (error) { return safeError(error, user); }
+    }
+    const reconnecting = new Set();
+    async function reconnect(user) {
+      let claimed = false;
+      try {
+        account(user); await authorize(user);
+        if (reconnecting.has(user)) return { status: 'busy', account: user };
+        reconnecting.add(user); claimed = true;
+        if (typeof env.login !== 'function') throw failure('login_unavailable');
+        // A fresh candidate owns the OAuth state cookie. Neither browser cookies
+        // nor an unverified account can overwrite the saved native session.
+        const client = await transport(user, []);
+        const startedAt = now();
+        const start = await client.request(readUrl(CLUB + '/auth/uol/login'));
+        if (!REDIRECTS.includes(start.status) || !start.location) throw failure('login_unavailable');
+        const oauth = readUrl(start.location, start.url);
+        const state = oauth.searchParams.get('state');
+        if (oauth.origin !== 'https://api.uol.com.br' || oauth.pathname !== '/oauth/auth' ||
+            oauth.searchParams.get('response_type') !== 'code' || oauth.searchParams.get('redirect_uri') !== CLUB + '/auth/uol' ||
+            !/^[A-Za-z0-9_-]{16,128}$/.test(state || '') || !oauth.searchParams.get('client_id')) throw failure('login_unavailable');
+        const isCallback = input => {
+          try {
+            const url = readUrl(input);
+            const code = url.searchParams.get('code');
+            return url.origin === CLUB && url.pathname === '/auth/uol' && url.searchParams.length === 2 &&
+              url.searchParams.get('state') === state && typeof code === 'string' && code.length > 0 && code.length <= 2048;
+          } catch (_) { return false; }
+        };
+        const callback = await env.login({ url: oauth.href, isCallback });
+        if (callback === null) return { status: 'cancelled', account: user };
+        if (!isCallback(callback)) throw failure('login_callback_invalid');
+        if (now() - startedAt > 600000) throw failure('login_expired');
+        // Consume the one-time callback exactly once. A lost response leaves the
+        // previous session intact; no credential or redemption is retried.
+        const exchanged = await client.request(readUrl(callback));
+        if (authResponse(exchanged)) throw failure('auth_required');
+        if (exchanged.status !== 200 && !REDIRECTS.includes(exchanged.status)) throw failure('history_unavailable');
+        if (exchanged.location) {
+          const next = readUrl(exchanged.location, exchanged.url);
+          if (next.origin !== CLUB || next.pathname.startsWith('/auth/')) throw failure('login_callback_invalid');
+        }
+        const records = await verifiedHistory(user, client);
+        await authorize(user);
+        keychain.set(COOKIE_KEY + user, JSON.stringify(client.snapshot()));
+        return { status: 'authenticated', account: user, records, checkedAt: now() };
+      } catch (error) { return safeError(error, user); }
+      finally { if (claimed) reconnecting.delete(user); }
     }
     async function redeem(user, input) {
       let claimed = null;
@@ -335,8 +463,8 @@ const HunterRedemption = (() => {
         return safeError(error, user);
       }
     }
-    return { history, redeem };
+    return { history, redeem, reconnect };
   }
-  return { create, COOKIE_KEY, ATTEMPT_KEY };
+  return { create, identityDigest, COOKIE_KEY, ATTEMPT_KEY };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = HunterRedemption;

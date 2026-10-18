@@ -1563,3 +1563,34 @@ updater reopening and a natural discovery remain separate device proofs.
 The private publication manifest now references this exact Worker SHA/version;
 previous publication/quota history and the incomplete three-day UTC window are
 preserved.
+
+## Hunter 5.7.7 — sessão pessoal e reconexão, 18 de outubro
+
+O usuário confirmou acesso aprovado no aparelho e informou que o perfil
+selecionado era Leonardo. A consulta somente leitura da sessão salva terminou
+no login oficial para Leonardo; Gabriel autenticou e retornou 20 recibos. Não
+houve resgate, logout, troca de secret ou alteração dos arquivos privados.
+Validade futura do cookie não foi tratada como prova de autenticação.
+
+Corrigido o diagnóstico: estado inicial, falha local do parser, indisponibilidade
+HTTP e histórico incompleto não são apresentados como sessão expirada. O modal
+aberto acompanha a resposta assíncrona e o indicador usa o mesmo estado. A
+comparação de identidade usa SHA-256 nativo, com os mesmos identificadores
+opacos, sem depender de WebCrypto num WebView não apresentado.
+
+“Conectar conta ao Hunter” inicia o login oficial no próprio iPhone. O transporte
+nativo mantém o cookie de estado OAuth num candidato isolado e captura somente
+o callback HTTPS esperado, com estado correspondente. O código é consumido uma
+única vez, sem repetição após resposta perdida ou redirect circular. Só depois
+de o histórico confirmar a identidade e de a permissão ser revalidada a sessão
+selecionada é gravada no Keychain. Outra conta, cancelamento, falha e revogação
+preservam a sessão anterior; vouchers e journal de resgate ficam intactos.
+Nenhuma senha é injetada, nenhum cookie HttpOnly é extraído por JavaScript e
+desafios do UOL continuam no formulário oficial. Login comum no navegador não
+importa sessão para o transporte nativo.
+
+Validação local: 164/164 testes offline Hunter, sintaxe do artefato ESM e
+`git diff --check` aprovados. Revisão delimitada da ponte e dos candidatos sem
+achados pendentes. A troca OAuth real no Scriptable e a autenticação renovada do
+Leonardo ainda exigem prova no aparelho; testes sintéticos não fecham esse gate.
+Backend e credencial técnica de coleta permanecem na versão publicada anterior.

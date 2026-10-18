@@ -90,3 +90,32 @@ test('native redeem cancellation never calls transport and result JSON cannot es
   assert.doesNotMatch(evaluations[1], /<\/script>/);
   assert.match(evaluations[1], /\\u003c\/script>/);
 });
+
+test('native login captures only the validated callback and keeps the Hunter window intact', async () => {
+  let options, instance; const loads = [];
+  const callback = 'https://clube.uol.com.br/auth/uol?code=synthetic&state=synthetic-state';
+  const context = vm.createContext({
+    Keychain: {}, Date, UUID: {}, Request: class {},
+    HunterRedemption: { create: value => { options = value; return {}; } },
+    WebView: class {
+      constructor() { instance = this; }
+      async loadURL(url) { loads.push(url); }
+      async loadHTML(html) { loads.push(html); }
+      async present() {
+        for (const url of ['http://conta.uol.com.br/login', 'https://uol.com.br.evil.test/', 'https://conta.uol.com.br@evil.test/',
+          'https://conta.uol.com.br/logout', 'https://clube.uol.com.br/campanhasdeingresso/one/resgatar',
+          'https://clube.uol.com.br/auth/uol?code=wrong&state=wrong']) assert.equal(this.shouldAllowRequest({ url }), false);
+        assert.equal(this.shouldAllowRequest({ url: 'https://conta.uol.com.br/login' }), true);
+        assert.equal(this.shouldAllowRequest({ url: callback }), false);
+        await Promise.resolve();
+      }
+    },
+  });
+  vm.runInContext(hostCode, context); context.createNativeAccountManager();
+  const result = await options.login({ url: 'https://api.uol.com.br/oauth/auth', isCallback: url => url === callback });
+  assert.equal(result, callback);
+  assert.match(loads[1], /Autenticação recebida/);
+  assert.doesNotMatch(loads[1], /synthetic|code=|password|document.cookie/);
+  assert.equal(instance.shouldAllowRequest({ url: callback }), false);
+  assert.equal(loads.length, 2, 'duplicate callback cannot create another success page');
+});

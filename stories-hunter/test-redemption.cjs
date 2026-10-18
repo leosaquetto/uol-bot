@@ -34,6 +34,70 @@ function harness() {
 const mutationCalls = h => h.calls.filter(call => call.url.endsWith('/resgatar'));
 function privateFree(value) { assert.doesNotMatch(JSON.stringify(value), /private-|PHPSESSID|SESS|cookies|Authorization|<html|password/); }
 
+test('a local parser failure cannot masquerade as expired authentication or start SSO', async () => {
+  for (const parse of [() => null, () => { throw Error('local parser failed'); }]) {
+    const h = harness(); h.env.parseHistory = parse;
+    const result = await h.client.history('leosaquetto');
+    assert.equal(result.status, 'unavailable'); assert.equal(result.reason, 'history_parser_unavailable');
+    assert.deepEqual(h.calls.map(call => call.url), [HISTORY]); assert.equal(mutationCalls(h).length, 0);
+  }
+});
+
+test('SSO service failure and authenticated pages without receipt scope never report expired authentication', async () => {
+  for (const stage of ['restoration', 'history', 'scope']) {
+    const h = harness(); let reads = 0;
+    h.setResponder(url => {
+      if (url === HISTORY) {
+        reads++;
+        if (stage === 'scope') return { text: JSON.stringify({ authenticated: true, signedInName: 'Leonardo', historyScopeFound: false }) };
+        if (reads === 1) return { text: JSON.stringify({ authenticated: false }) };
+        return { status: 503, text: 'unavailable' };
+      }
+      if (url === CLUB + '/auth/uol/login') return stage === 'restoration' ? { status: 503, text: 'unavailable' } : { status: 302, headers: { Location: CLUB + '/' } };
+      return null;
+    });
+    const result = await h.client.history('leosaquetto');
+    assert.equal(result.status, 'unavailable');
+    assert.equal(result.reason, stage === 'scope' ? 'history_incomplete' : 'history_unavailable');
+    assert.equal(mutationCalls(h).length, 0);
+  }
+});
+
+test('native identity digest matches SHA-256 after existing name normalization without browser or crypto APIs', () => {
+  const vm = require('node:vm'), fs = require('node:fs'), { createHash } = require('node:crypto');
+  const sandbox = { module: { exports: {} }, crypto: undefined, TextEncoder: undefined, URL: undefined, URLSearchParams: undefined };
+  vm.runInNewContext(fs.readFileSync(require.resolve('./redemption.js'), 'utf8'), sandbox);
+  const digest = sandbox.module.exports.identityDigest;
+  assert.equal(digest('abc'), 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+  const names = ['Leonardo', 'Gabriel', '  LÉONARDO\t da\n Silva  ', 'João Conceição', 'Joa\u0303o', '李明', 'Дмитрий', 'Søren 😀',
+    ...[55, 56, 63, 64, 100].map(length => 'a'.repeat(length)), '😀'.repeat(50)];
+  for (const name of names) {
+    const normalized = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+    assert.equal(digest(name), createHash('sha256').update(normalized, 'utf8').digest('hex'));
+  }
+  assert.equal(digest('João'), digest('  JOAO  '));
+  assert.notEqual(digest('Leonardo'), digest('Gabriel'));
+});
+
+test('identity digest rejects missing, oversized and malformed names instead of hashing ambiguous input', () => {
+  for (const name of ['', ' \t\n', null, undefined, 42, {}, 'a'.repeat(101), '\ud800', '\udc00', 'A\ud800B', '\udc00\ud800']) {
+    assert.throws(() => R.identityDigest(name), error => error.reason === 'identity_name_invalid');
+  }
+});
+
+test('native digests prove each account independently and reject the other account before redemption', async () => {
+  const h = harness(); delete h.env.expectedName;
+  const digests = { leosaquetto: R.identityDigest('Leonardo'), gaoriel: R.identityDigest('Gabriel') };
+  h.env.verifyIdentity = (user, parsed) => R.identityDigest(parsed.signedInName) === digests[user];
+  const client = R.create(h.env);
+  assert.equal((await client.history('leosaquetto')).status, 'authenticated');
+  assert.equal((await client.history('gaoriel')).status, 'authenticated');
+  h.setName(() => 'Gabriel');
+  assert.equal((await client.redeem('leosaquetto', OFFER)).status, 'identity_mismatch');
+  assert.equal(mutationCalls(h).length, 0);
+  assert.equal(h.keys.has(R.ATTEMPT_KEY + 'leosaquetto'), false);
+});
+
 test('history isolates native cookie jars and never invents receipt dates', async () => {
   const h = harness(); h.histories.leosaquetto.push(h.receipt('leo-voucher')); h.histories.gaoriel.push(h.receipt('gab-voucher'));
   const leo = await h.client.history('leosaquetto'), gab = await h.client.history('gaoriel');
