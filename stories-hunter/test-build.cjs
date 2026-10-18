@@ -99,7 +99,7 @@ test('iCloud download is awaited before any private read and failure does not ov
 });
 
 test('OTA first opening shows UI without collection; next opening and explicit notifications collect', async () => {
-  const files = new Map(); let action = 'open', collects = 0, displayed = 0, updated = 0, lastInitial;
+  const files = new Map(); let action = 'open', collects = 0, displayed = 0, updated = 0, lastInitial, lastCollection;
   const context = vm.createContext({
     SCRIPT_VERSION: 'test-1', console: { log() {} },
     FileManager: { local: () => ({ documentsDirectory: () => '/local', joinPath: path.join, fileExists: p => files.has(p),
@@ -109,20 +109,42 @@ test('OTA first opening shows UI without collection; next opening and explicit n
     performSelfUpdate: async () => { updated++; },
     preparePrivateFiles: async () => {}, persistPrivateBootstrap() {},
     loadSettings: () => ({}), loadHistory: () => [], loadCredentials: () => ({}), loadSessionCookies: () => [], loadRedemptionsDatabase: () => [],
-    buildDashboardHTML: (...args) => { lastInitial = args.at(-1); return '<html></html>'; },
-    WebView: class { async loadHTML() {} async evaluateJavaScript() {} async present() { displayed++; } },
+    buildDashboardHTML: (...args) => { lastInitial = args[5]; lastCollection = args[6]; return '<html></html>'; },
+    WebView: class { async loadHTML() {} async evaluateJavaScript() { throw Error('unexpected presentation bridge'); } async present() { displayed++; } },
     Script: { complete() {}, setShortcutOutput() {} }
   });
   const gate = source.slice(source.indexOf('function hunterCollectionPausedForUpdate('), source.indexOf('async function runNativeHunterCollector('));
   const main = source.slice(source.indexOf('async function main()'), source.indexOf('function nativeRedemptionKey('));
   vm.runInContext(gate + main, context);
   await context.main(); assert.equal(collects, 0); assert.equal(displayed, 1); assert.equal(lastInitial, true);
+  assert.equal(lastCollection.status, 'updated');
   await context.main(); assert.equal(collects, 1); assert.equal(displayed, 2); assert.equal(lastInitial, false);
+  assert.equal(lastCollection.status, 'complete');
   context.SCRIPT_VERSION = 'test-2'; action = 'notification'; await context.main();
   assert.equal(collects, 2); assert.equal(displayed, 2, 'explicit notification is headless and eligible');
   action = 'update'; context.SCRIPT_VERSION = 'test-3'; await context.main();
   assert.equal(updated, 1); assert.equal(collects, 2);
   action = 'open'; await context.main(); assert.equal(collects, 2); assert.equal(displayed, 3);
+});
+
+test('generated HTML embeds exact data safely without replacement-string expansion or double escaped SVG', () => {
+  const artifact = fs.readFileSync(path.join(__dirname, '../scriptable_uol_stories_hunter.js'), 'utf8');
+  const start = artifact.indexOf('function buildDashboardHTML(');
+  const end = artifact.indexOf('\nawait main();', start);
+  const icons = { tickets: '<svg viewBox="0 0 24 24"></svg>' };
+  const credentials = { test: "$& $` $' $$ </script><script>" };
+  const context = vm.createContext({ BUNDLED_COOKIES_GAORIEL: [], BUNDLED_COOKIES_LEO: [],
+    BUNDLED_REDEMPTIONS: [], ICONS: icons, NTFY_TOPIC: 'fixture', SCRIPT_VERSION: 'test' });
+  vm.runInContext(artifact.slice(start, end), context);
+  const html = context.buildDashboardHTML({ active: [], history: [] }, { userSessions: {} }, credentials, [], [], false, { status: 'complete' });
+  assert.equal((html.match(/<script>/g) || []).length, 1);
+  const inline = html.slice(html.indexOf('<script>') + 8, html.lastIndexOf('</script>'));
+  new vm.Script(inline);
+  const initialLine = inline.slice(inline.indexOf('const INITIAL ='), inline.indexOf('\n', inline.indexOf('const INITIAL =')));
+  vm.runInContext(initialLine + '; globalThis.initial = INITIAL;', context);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.initial.credentials)), credentials);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.initial.icons)), icons);
+  assert.equal(context.initial.hunterCollection.status, 'complete');
 });
 
 test('redemption identity never merges accounts, missing accounts, or synthetic row indexes', () => {

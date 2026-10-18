@@ -66,6 +66,9 @@ test('Portal extracts campaign metadata only, bounds UTF-8 titles, and rejects u
   assert.throws(() => C.parsePortal('<html>Login</html>'), /no_validated_portal_structure/);
   const title = C.parsePortal(HTML.replace('2 ingressos &amp; show', 'á'.repeat(500)))[0].title;
   assert.equal(Buffer.byteLength(title), 280);
+  assert.equal(C.parsePortal(HTML.replace('d310rdc9v8uuq.cloudfront.net', 'ddrxgn8ucibei.cloudfront.net'))[0].imageUrl,
+    'https://ddrxgn8ucibei.cloudfront.net/banner.jpg');
+  assert.equal(C.media('https://other.cloudfront.net/banner.jpg', false), '');
 });
 test('bootstrap only imports missing credentials and validates narrow device/session scope', () => {
   const h = harness({ instagram: true }); const original = [...h.keys];

@@ -1310,3 +1310,30 @@ paralelo e falhou na nova expectativa `pending_enrichment`. A execução isolada
 mesmo arquivo, com o código final estável, passou 5/5. Sem relaxar a expectativa.
 Tipos, startup e bundle dry-run passaram; a publicação continua condicionada à CI
 verde do SHA exato. A inspeção visual no aparelho permanece pendente.
+
+### 18/10/2026 — publicação Hunter e correções 5.7.1
+
+Backend 5.7.0 publicado do SHA `ae9e699c91e2a338fb0b1036122f9df337ce229d`, versão
+`ba13cc4b-f291-47e4-8b10-6dce48cca547`, CI exata aprovada. Durante propagação, o Worker
+externo já mostrava a versão nova e o Durable Object ainda retornava a antiga; o
+primeiro pós-deploy e a consulta de recibo falharam. Depois do ciclo natural, a
+verificação inalterada passou: published/runtimeVerified/debtVerified/ready=true,
+zero regressões. Recibo ausente respondeu 404 autenticado sem criar evento.
+
+OTA 5.7.0 aceita pelo ntfy, arquivo privado instalado no iCloud e quatro arquivos de
+sessões/banco de resgates mantiveram o mesmo hash. Isso não comprovou instalação.
+O usuário abriu a versão 5.7.0 e relatou janela com Close/compartilhar e conteúdo
+preto. Execução real da interface não foi aceita; nenhuma descoberta natural foi
+comprovada. Correção restrita 5.7.1 descrita no changelog, ainda a confirmar no iPhone.
+
+Catálogo de produção tinha 163 ofertas e todas as imagens vazias. A rota pública
+`/offers` comprovou o hostname atual `ddrxgn8ucibei.cloudfront.net`, diferente do
+hostname histórico liberado inicialmente. A 5.7.1 acrescenta somente esse hostname
+exato no servidor e no coletor; não amplia para wildcard CloudFront.
+
+Custo: às 03:01:35 UTC, ciclo natural de 843 leituras elevou a estimativa primária
+para 638, acima de 512. O snapshot anterior já tinha máximo de 854; não foi provada
+regressão causada pelo Hunter. Às 03:07:05 UTC, ciclo de 24 leituras levou a estimativa
+a 360. Limite 512 preservado; um ciclo posterior saudável não comprova estabilidade
+nem fecha a janela de três dias. Snapshots privados `hunter-primary-*` preservam os
+picos, e billing_unknown para hibernation permanece.

@@ -168,7 +168,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.0";
+const SCRIPT_VERSION = "5.7.1";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -331,16 +331,16 @@ async function main() {
   const credentials = loadCredentials();
   const sessionCookies = loadSessionCookies(settings.currentUser || "leosaquetto");
   const realRedemptions = loadRedemptionsDatabase();
-  const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate);
+  // Keep Scriptable's WebView operations sequential. In 5.7.0 a completed
+  // collector could evaluate JavaScript while present() was creating its view.
+  // Supply the persisted result in the initial document instead of running a
+  // second native WebView command during presentation.
+  const collectionResult = await collection;
+  const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions,
+    collectionPausedForUpdate, collectionResult);
   const uiView = new WebView();
   await uiView.loadHTML(html, "https://clube.uol.com.br");
-  const report = collection.then(async result => {
-    const json = JSON.stringify(result).replace(/</g, "\\u003c");
-    try { await uiView.evaluateJavaScript("window.setHunterCollectionStatus && window.setHunterCollectionStatus(" + json + ");"); } catch (_) {}
-    return result;
-  });
   await uiView.present(true);
-  await report;
   Script.complete();
 }
 
@@ -688,12 +688,12 @@ function parseCredentialsText(text, target) {
   target.senha = (target.accounts.leosaquetto && target.accounts.leosaquetto.senha) || target.senha || "";
 }
 
-function buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate = false) {
+function buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions, collectionPausedForUpdate = false, collectionResult = null) {
   const activeUser = settings.currentUser || "leosaquetto";
   const cookiesForActiveUser = (activeUser === "gaoriel") ? BUNDLED_COOKIES_GAORIEL : BUNDLED_COOKIES_LEO;
   const initialData = {
     collectionPausedForUpdate,
-    hunterCollection: { status: collectionPausedForUpdate ? "updated" : "starting", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} },
+    hunterCollection: collectionResult || { status: collectionPausedForUpdate ? "updated" : "starting", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} },
     historyData: historyData,
     settings: settings,
     credentials: credentials,
@@ -709,7 +709,7 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
   const jsonStr = JSON.stringify(initialData).replace(/</g, "\\u003c");
 
   const rawHtml = ${JSON.stringify(htmlTemplate)};
-  return rawHtml.replace("__INITIAL_DATA_JSON__", jsonStr);
+  return rawHtml.replace("__INITIAL_DATA_JSON__", () => jsonStr);
 }
 
 await main();

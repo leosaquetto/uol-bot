@@ -114,6 +114,9 @@ test("preflight never touches storage; denial is explicit, uncacheable and CORS-
 
 
 test("only the exact poster CDN is allowed and credentials stay rejected", () => {
+  const currentPoster = "https://ddrxgn8ucibei.cloudfront.net/beneficios/poster.jpg";
+  assert.equal(catalogImageUrl(currentPoster), currentPoster);
+  assert.equal(buildCatalog([offer({ image_url: currentPoster })], [], { now }).offers[0].imageUrl, currentPoster);
   const image = "https://d310rdc9v8uuq.cloudfront.net/posters/image.jpg";
   assert.equal(catalogImageUrl(image), image);
   assert.equal(buildCatalog([offer({ image_url: image })], [], { now }).offers[0].imageUrl, image);

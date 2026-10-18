@@ -208,6 +208,29 @@ test('native collector owns source requests on catalog failure, and receipts do 
   assert.doesNotMatch(text, /entregues/);
 });
 
+test('iPhone status distinguishes update, configuration and suspended sources from empty collection', () => {
+  const h = harness({ native: true });
+  const statusText = summary => {
+    h.context.setHunterCollectionStatus(summary);
+    return h.elements.get('hunterCollectionStatus').textContent;
+  };
+  assert.match(statusText({ status: 'starting' }), /buscando novidades/);
+  assert.match(statusText({ status: 'updated' }), /atualizado; abra novamente para coletar/);
+  assert.match(statusText({ status: 'not_configured' }), /configuração privada pendente/);
+  assert.match(statusText({ status: 'unavailable' }), /coleta indisponível/);
+  const suspended = statusText({ status: 'complete', sources: {
+    portal: { status: 'empty', found: 0 }, instagram: { status: 'auth_required', reason: 'authentication_suspended', found: 0 }
+  } });
+  assert.match(suspended, /Portal: sem novidades/);
+  assert.match(suspended, /Instagram: autenticação necessária; coleta suspensa/);
+  assert.doesNotMatch(suspended, /nenhuma novidade pendente/);
+  const limited = statusText({ status: 'complete', sources: {
+    portal: { status: 'cooldown' }, instagram: { status: 'backoff' }
+  } });
+  assert.match(limited, /Portal: aguardando intervalo mínimo/);
+  assert.match(limited, /Instagram: aguardando intervalo de segurança/);
+});
+
 test('poster CSS preserves full vertical source and date strip is outside truncated title with isolated click', () => {
   const imageRule = template.match(/\.poster-img, \.thumb-wrap img\.poster-img[^}]+}/)[0];
   assert.match(imageRule, /height: 100%/);
@@ -250,4 +273,51 @@ test('hydration preserves stored vouchers and identical unidentified copies do n
   assert.equal(h.context.getAllRedemptionsList().length, 3);
   assert.equal(h.context.getTimelineEvents().length, 1);
   assert.match(template, /settings.realRedemptions = getAllRedemptionsList\(\);/);
+});
+
+test('complete embedded script boots every saved tab with an offline catalog', async () => {
+  const scriptStart = template.indexOf('<script>') + '<script>'.length;
+  const scriptEnd = template.lastIndexOf('</script>');
+  assert.ok(scriptStart > '<script>'.length && scriptEnd > scriptStart);
+  const completeScript = template.slice(scriptStart, scriptEnd);
+  assert.doesNotMatch(completeScript, /<\/script\s*>/i, 'embedded content cannot end the HTML script early');
+
+  for (const tab of ['home', 'tickets', 'history', 'redemptions']) {
+    const handlers = new Map();
+    const elements = new Map();
+    const createElement = () => ({
+      ...element(), dataset: {}, classList: { add() {}, remove() {}, toggle() {} },
+      querySelector: () => createElement(), querySelectorAll: () => [],
+    });
+    const initial = {
+      settings: { currentTab: tab }, icons: {}, credentials: { accounts: {} },
+      historyData: { active: [offer('cached', { title: '22/10 Teatro teste' })], history: [] },
+      realRedemptions: [], hunterCollection: { status: 'starting' }, collectionPausedForUpdate: true,
+    };
+    const context = vm.createContext({
+      URL, Date, Intl, console,
+      window: { scrollY: 0, scrollTo() {}, addEventListener(name, callback) {
+        if (!handlers.has(name)) handlers.set(name, []);
+        handlers.get(name).push(callback);
+      } },
+      document: {
+        getElementById(id) {
+          if (!elements.has(id)) elements.set(id, createElement());
+          return elements.get(id);
+        },
+        querySelector: createElement, querySelectorAll: () => [], createElement,
+      },
+      localStorage: { getItem: () => null, setItem() {} },
+      fetch: async () => { throw new Error('offline fixture'); },
+      setTimeout() {}, clearTimeout() {}, setInterval() {}, clearInterval() {},
+    });
+    const script = new vm.Script(completeScript.replace('__INITIAL_DATA_JSON__', JSON.stringify(initial)), { filename: 'hunter-inline.js' });
+    script.runInContext(context);
+    assert.equal(handlers.get('load').length, 1);
+    for (const callback of handlers.get('load')) callback();
+    await new Promise(resolve => setImmediate(resolve));
+    const view = tab === 'history' ? 'viewHistory' : tab === 'redemptions' ? 'viewRedemptions' : 'viewMain';
+    assert.equal(elements.get(view).style.display, 'block', tab + ' must show its saved screen');
+    assert.equal(elements.get('skeletonList').style.display, 'none', tab + ' must finish the offline boot');
+  }
 });

@@ -4182,15 +4182,32 @@
       if (!element) return;
       element.hidden = !summary || summary.status === 'disabled';
       if (element.hidden) { element.textContent = ''; return; }
-      if (summary.status === 'starting') { element.textContent = 'Buscando novidades neste iPhone…'; return; }
+      if (summary.status === 'starting') { element.textContent = 'iPhone • buscando novidades…'; return; }
+      if (summary.status === 'updated') { element.textContent = 'iPhone • atualizado; abra novamente para coletar'; return; }
       const count = value => Number.isSafeInteger(value) && value > 0 ? value : 0;
       const received = count(summary.received), delivered = count(summary.delivered), pending = count(summary.pending);
       const labels = [];
       if (received) labels.push(received + ' recebidas pelo servidor');
       if (delivered) labels.push(delivered + ' entregues');
       if (pending) labels.push(pending + ' pendentes no iPhone');
-      if (summary.status === 'failed' || summary.status === 'error') labels.push('coleta indisponível');
-      element.textContent = labels.length ? 'iPhone • ' + labels.join(' • ') : 'iPhone • nenhuma novidade pendente';
+      const statuses = {
+        not_configured: 'configuração privada pendente',
+        unavailable: 'coleta indisponível', failed: 'coleta indisponível', error: 'coleta indisponível',
+        busy: 'outra execução em andamento',
+        auth_required: 'autenticação necessária; coleta suspensa',
+        rate_limited: 'consulta limitada pelo serviço',
+        backoff: 'aguardando intervalo de segurança', cooldown: 'aguardando intervalo mínimo',
+        daily_budget: 'limite diário atingido', unknown: 'consulta não confirmada', empty: 'sem novidades'
+      };
+      if (statuses[summary.status]) labels.push(statuses[summary.status]);
+      ['portal', 'instagram'].forEach(source => {
+        const result = summary.sources && summary.sources[source];
+        if (!result) return;
+        const name = source === 'portal' ? 'Portal' : 'Instagram';
+        const label = result.status === 'found' ? count(result.found) + ' novidades encontradas' : statuses[result.status] || 'consulta não confirmada';
+        labels.push(name + ': ' + label);
+      });
+      element.textContent = 'iPhone • ' + (labels.length ? labels.join(' • ') : 'coleta concluída');
     }
     // UI_DATA_HELPERS_END
 

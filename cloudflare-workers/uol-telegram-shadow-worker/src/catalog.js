@@ -53,7 +53,7 @@ export function catalogImageUrl(value) {
   const host = url.hostname;
   const allowed = ["uol.com.br", "imguol.com.br", "uol.com", "fbcdn.net", "cdninstagram.com"]
     .some(domain => host === domain || host.endsWith(`.${domain}`)) ||
-    ["media.discordapp.net", "cdn.discordapp.com", "d310rdc9v8uuq.cloudfront.net"].includes(host);
+    ["media.discordapp.net", "cdn.discordapp.com", "d310rdc9v8uuq.cloudfront.net", "ddrxgn8ucibei.cloudfront.net"].includes(host);
   if (!allowed || /\/(?:api|webhooks|login|resgatar|resgate)(?:\/|$)/i.test(url.pathname) ||
       [...url.searchParams.keys()].some(key => /^(?:access_token|token|cookie|session|sessionid|authorization|password)$/i.test(key))) return "";
   url.hash = "";

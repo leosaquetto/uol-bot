@@ -42,7 +42,7 @@ const HunterCollector = (() => {
       if ((value.split('?')[1] || '').split('&').some(part => /^(?:access_token|token|cookie|session|sessionid|authorization|password)$/i.test(decodeURIComponent(part.split('=')[0])))) return '';
     } catch (_) { return ''; }
     if (instagram) return /^[a-z0-9.-]+\.(?:fbcdn\.net|cdninstagram\.com)$/i.test(m[1]) && /\.(?:jpe?g|webp)$/i.test(m[2]) ? value : '';
-    return /^(?:d310rdc9v8uuq\.cloudfront\.net|(?:[a-z0-9-]+\.)*(?:uol\.com\.br|imguol\.com\.br))$/i.test(m[1]) ? value : '';
+    return /^(?:(?:d310rdc9v8uuq|ddrxgn8ucibei)\.cloudfront\.net|(?:[a-z0-9-]+\.)*(?:uol\.com\.br|imguol\.com\.br))$/i.test(m[1]) ? value : '';
   }
 
   // JSON.parse alone rounds Instagram's numeric IDs. Scan outside strings and
