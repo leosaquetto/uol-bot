@@ -1226,3 +1226,30 @@ Private receipts and publication evidence are retained in
 `incident-retention-{publication,predeploy,version-metadata,final-proof}-2026-10-17.json`
 and `incident-retention-release-2026-10-17.log`. The publication manifest now
 identifies this SHA/version as current.
+
+
+### Natural recovery completed — 17 October, 21:39 BRT
+
+The next full natural health evaluation at `2026-10-18T00:38:07.640Z` completed
+the Discord `plh` recovery window. The comment `pqf` incident had recovered at
+`2026-10-18T00:20:10.656Z`. No incident was force-cleared to obtain readiness.
+At `2026-10-18T00:39:00.226Z` the current version returned readiness HTTP 200:
+`published=true`, `runtimeVerified=true`, `ready=true`, with zero critical
+incidents, queue items, active unknown deliveries, dead letters, blocked
+configuration and maintenance dead letters. The original-baseline regression
+report remained empty and its bytes unchanged.
+
+The final natural primary cycle at `2026-10-18T00:38:34.419Z`
+read 24 rows, with estimate
+104 (acceptance maximum 512) and maximum
+single-cycle reads 508 (limit 4,096).
+Read/write guards remained healthy, with 62,528 projected writes/day and 37,472
+headroom. Main `n3a` remains `closed_unverified`, attempt 1, original error and
+uncertainty timestamps retained, without a Telegram receipt or a new send.
+Readiness does not convert that administrative disposition into delivery proof.
+
+The only active operational incident is the previously known warning for the
+technical UOL API credential expiring `2026-10-23T04:04:28Z`; renewal procedure
+and a newly valid credential remain unproven. The three complete UTC quota days
+17–19 October remain a separate observation criterion; `billing_unknown` for
+hibernation is unchanged. No session, tier or collection policy was changed.
