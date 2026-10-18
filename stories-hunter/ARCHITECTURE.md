@@ -1,8 +1,8 @@
 # Clube UOL Premium: fontes e publicação
 
-O aparelho instala **um único script autocontido**. Não usa `importModule`, File
-Bookmarks nem download de código durante a execução normal. As funcionalidades
-que já precisavam de rede continuam precisando; UI, ícones e logo ficam no script.
+O aparelho instala **um único script autocontido**. Não usa `importModule` nem
+File Bookmarks. UI, ícones e logo ficam no script; desde a 5.8.4, a abertura tenta
+atualizar o código com segurança, mas continua funcionando sem esse download.
 
 ## Organização
 
@@ -59,20 +59,30 @@ Hunter. Uma beta validada pode ser promovida exatamente como foi testada.
 
 ## Atualização no aparelho
 
-- Depois de carregar o dashboard, uma consulta não bloqueante verifica apenas o
-  manifest. Uma versão nova usa o banner já existente. Abertura inicial após
-  atualização e ações de coleta headless não fazem essa consulta.
+- Desde a 5.8.4, a abertura normal tenta atualizar antes de criar a WebView,
+  iniciar coleta ou abrir dados privados. O manifest tem timeout de 3 segundos;
+  o artefato mantém 20 segundos. Sem novidade ou sem rede, abre o dashboard
+  existente. Não há instalação em background nem `Promise.race` abandonando
+  uma escrita em andamento, e não se repete a consulta depois do dashboard.
+- Uma instalação verificada permite uma única tentativa de reabertura, registrada
+  no journal; a execução antiga termina sem criar outra WebView. Apenas a versão
+  nova em execução, com arquivo e hash iguais ao recibo, mostra uma vez
+  **Atualizado para a versão X**. A primeira abertura mantém a pausa de coleta.
+  Falha de instalação/reabertura mostra pendência, nunca sucesso presumido.
 - O updater interno e `action: update` verificam e pedem confirmação antes de
   instalar. A nova ação explícita `update-auto` aplica os mesmos controles sem
   alerta nem reabertura automática; a próxima abertura mantém a pausa de coleta.
-- Uma automação `Update Scriptable` recebe os avisos ntfy. O título
+- A configuração normal da automação `Update Scriptable` recebe os avisos ntfy. O título
   `Scriptable - Clube UOL Premium` executa `action: update-auto` antes de consultar
   o Mac; os outros scripts mantêm as ações existentes. O gerador preserva o gatilho
   e os parâmetros originais; detalhes e validação no aparelho em `PREMIUM_MIGRATION.md`.
 - `channel` = `beta` no mesmo Dicionário faz adesão explícita; `stable` volta ao
   canal normal. Sem esse campo, preserva a preferência local. Não há downgrade
   automático ao trocar de canal. O retorno ao Atalho contém estado, motivo,
-  versão quando disponível e canal, nunca credenciais.
+  versão quando disponível, canal e `updaterVersion`, nunca credenciais.
+- Ações `collect` e `notification` continuam headless e não atualizam ao abrir.
+  O bootstrap pontual via MacSend para um updater antigo quebrado está descrito
+  em `PREMIUM_MIGRATION.md`; não é executado automaticamente pelo build.
 
 ## Garantias e limites do updater
 
@@ -110,9 +120,10 @@ Um updater antigo afetado não instala sua própria correção apenas com um nov
 manifest. A recuperação pontual deve preservar a versão instalada e todos os
 bytes fora do bloco do updater, com backup privado 0600 e comparação do arquivo
 inteiro antes/depois. Não usar instalação/migração ampla nem tocar no nome legado.
-Essa recuperação não comprova sincronização no iPhone. A atualização seguinte
-continua pelo `update-auto`; somente seu retorno `installed` e a versão nova
-no aparelho confirmam o resultado, não o aceite da notificação ntfy.
+Essa recuperação não comprova sincronização no iPhone. O bootstrap alternativo
+via MacSend exige origem/arquivo conferidos e autorização para trocar o alvo
+genérico. Nas atualizações pelo updater, somente o retorno `installed` e a versão
+nova no aparelho confirmam o resultado, não o aceite da notificação ntfy.
 
 [Request](https://docs.scriptable.app/request/) não fornece cancelamento incremental
 documentado: limites de 8 KiB (manifest) e 2 MiB (artefato) são validados depois do

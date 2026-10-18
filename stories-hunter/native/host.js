@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.8.3";
+const SCRIPT_VERSION = "5.8.4";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -274,10 +274,13 @@ async function main() {
     await performSelfUpdate(action === "update", action === "update-auto");
     if (typeof Script.setShortcutOutput === "function" && typeof hunterLastUpdateResult !== "undefined") {
       const result = hunterLastUpdateResult;
-      Script.setShortcutOutput(JSON.stringify({status: result.status, reason: result.reason, version: result.version, channel: hunterUpdateChannel()}));
+      Script.setShortcutOutput(JSON.stringify({status: result.status, reason: result.reason, version: result.version, channel: hunterUpdateChannel(), updaterVersion: HUNTER_UPDATER_BUILD}));
     }
     Script.complete();
     return;
+  }
+  if (action === "open" && typeof autoUpdateHunterOnOpen === "function" && await autoUpdateHunterOnOpen()) {
+    Script.complete(); return;
   }
   const collectionPausedForUpdate = hunterCollectionPausedForUpdate(action);
   if (action === "collect" || action === "notification") {
@@ -311,8 +314,8 @@ async function main() {
     await readable;
     if (!dismissed) {
       await uiView.loadHTML(html, "https://clube.uol.com.br");
-      if (!dismissed && !collectionPausedForUpdate && typeof discoverHunterUpdate === "function")
-        discoverHunterUpdate(uiView).catch(() => {});
+      if (!dismissed && typeof showHunterStartupUpdateNotice === "function")
+        showHunterStartupUpdateNotice(uiView).catch(() => {});
     }
   } catch (_) {
     await readable;

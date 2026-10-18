@@ -43,6 +43,28 @@ Esse comando gera o artefato público e publica **somente o aviso dedicado**. N�
 lê bootstrap privado, não grava o script iCloud e não faz stage no MacSend. O
 updater instalado cuida de download, verificação, backup e instalação.
 
+### Recuperação pontual pelo MacSend
+
+Se o updater antigo permanece em `preserved`, uma publicação nova não comprova
+que ele consegue instalar a própria correção. O proprietário pode preparar a
+automação de copiar/substituir o código pelo MacSend como bootstrap explícito.
+Antes do aviso ntfy:
+
+1. Conferir release, CI, hash e tamanho remotos; manter o espelho stable sanitizado.
+2. Ler `/scriptable/status`. O endpoint genérico `/scriptable` usa o alvo staged;
+   se outro produto estiver selecionado, confirmar que sua entrega terminou antes
+   de trocar para `clube-uol`. Não sobrescrever uma entrega concorrente.
+3. Fazer stage explícito por `/scriptable/stage?target=clube-uol`. Conferir no
+   endpoint usado pelo Atalho o filename `Clube UOL Premium.js` e os bytes exatos
+   da publicação, antes de enviar um único aviso com o título dedicado.
+4. Preservar sessões, Keychain, vouchers, arquivos de dados, nome legado e backups.
+   Não usar build legado, instalação/migração ampla ou ACK artificial.
+
+O stage é estado global do MacSend; o GET de código também o atualiza. Não testar
+ou trocar alvos durante a entrega. Aceite ntfy, download e instalação no iPhone
+são gates distintos. Confirmar a versão no aparelho; a partir da 5.8.4, aberturas
+normais tentam atualizar automaticamente e só avisam sucesso com recibo verificado.
+
 Para instalação inicial ou migração explícita do proprietário pelo Mac:
 
 ```
