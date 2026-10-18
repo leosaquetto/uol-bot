@@ -186,6 +186,123 @@ test('partial replacement restores only the verified previous script', async () 
 test('lost successful move response is reconciled by exact installed hash', async () => {
   const h = harness(); h.state.onMove = (from, to) => { h.files.set(to, h.files.get(from)); throw new Error('response lost'); };
   assert.equal(await h.context.performSelfUpdate(true), true); assert.equal(h.files.get('/cloud/Hunter.js'), h.next); assert.equal(h.moves.length, 1);
+  assert.equal(h.writes.filter(target => target === '/cloud/Hunter.js').length, 0);
+});
+
+test('unattended update falls back once when move throws or silently preserves the exact prior script', async () => {
+  for (const mode of ['throws', 'no-op']) {
+    const runtime = harness();
+    runtime.state.onMove = () => { if (mode === 'throws') throw new Error('destination exists'); return false; };
+    assert.equal(await runtime.context.performSelfUpdate(false, true), true, mode);
+    assert.equal(runtime.result().status, 'installed');
+    assert.equal(runtime.files.get('/cloud/Hunter.js'), runtime.next);
+    assert.equal(runtime.moves.length, 1);
+    assert.deepEqual(runtime.writes.filter(target => target === '/cloud/Hunter.js'), ['/cloud/Hunter.js']);
+    assert.equal(JSON.parse(runtime.journal()[1]).phase, 'installed');
+    assert.equal(runtime.alerts.length, 0); assert.equal(runtime.opened.length, 0);
+    assert.equal(runtime.files.get('/cloud/vouchers.json'), 'private-vouchers');
+    assert.equal(runtime.files.get('/local/session.json'), 'private-session');
+    assert.ok(!runtime.writes.some(target => /voucher|session|cookie|database|settings/.test(target)));
+  }
+});
+
+test('lost successful fallback response is reconciled without a second write or recovery move', async () => {
+  const runtime = harness();
+  runtime.state.onMove = () => { throw new Error('destination exists'); };
+  runtime.state.onWrite = (target, code) => {
+    if (target === '/cloud/Hunter.js') { runtime.files.set(target, code); throw new Error('response lost'); }
+  };
+  assert.equal(await runtime.context.performSelfUpdate(false, true), true);
+  assert.equal(runtime.result().status, 'installed'); assert.equal(runtime.files.get('/cloud/Hunter.js'), runtime.next);
+  assert.equal(runtime.moves.length, 1);
+  assert.equal(runtime.writes.filter(target => target === '/cloud/Hunter.js').length, 1);
+  assert.equal(runtime.alerts.length, 0); assert.equal(runtime.opened.length, 0);
+});
+
+test('move refusal never permits fallback after target, journal, backup or stage changes', async () => {
+  for (const changed of ['target', 'owner', 'phase', 'newHash', 'backup', 'stage']) {
+    const runtime = harness(), concurrent = artifact('5.9.0');
+    runtime.state.onMove = (from, target) => {
+      const [journalPath, encoded] = runtime.journal(), journal = JSON.parse(encoded);
+      if (changed === 'target') runtime.files.set(target, concurrent);
+      if (changed === 'owner') journal.operationId = '99999999-abcd-1234-abcd-123456789012';
+      if (changed === 'phase') journal.phase = 'superseded';
+      if (changed === 'newHash') journal.newHash = '0'.repeat(64);
+      if (['owner', 'phase', 'newHash'].includes(changed)) runtime.files.set(journalPath, JSON.stringify(journal));
+      if (changed === 'backup') runtime.files.set(journal.backupPath, 'changed backup');
+      if (changed === 'stage') runtime.files.set(from, 'changed staging file');
+      throw new Error('replacement refused');
+    };
+    assert.equal(await runtime.context.performSelfUpdate(false, true), false, changed);
+    assert.equal(runtime.moves.length, 1, changed);
+    assert.equal(runtime.writes.filter(target => target === '/cloud/Hunter.js').length, 0, changed);
+    assert.equal(runtime.files.get('/cloud/Hunter.js'), changed === 'target' ? concurrent : runtime.previous, changed);
+    if (['target', 'owner', 'phase', 'newHash'].includes(changed)) assert.equal(runtime.result().status, 'concurrent_change', changed);
+    if (['phase', 'newHash'].includes(changed)) {
+      const journal = JSON.parse(runtime.journal()[1]);
+      assert.equal(journal[changed], changed === 'phase' ? 'superseded' : '0'.repeat(64));
+    }
+    assert.equal(runtime.files.get('/cloud/vouchers.json'), 'private-vouchers');
+    assert.equal(runtime.files.get('/local/session.json'), 'private-session');
+    assert.equal(runtime.alerts.length, 0); assert.equal(runtime.opened.length, 0);
+  }
+});
+
+test('failed fallback that leaves the previous script intact is preserved without retrying', async () => {
+  for (const mode of ['throws', 'no-op']) {
+    const runtime = harness();
+    runtime.state.onMove = () => { throw new Error('destination exists'); };
+    runtime.state.onWrite = target => {
+      if (target !== '/cloud/Hunter.js') return;
+      if (mode === 'throws') throw new Error('write refused');
+      return false;
+    };
+    assert.equal(await runtime.context.performSelfUpdate(false, true), false, mode);
+    assert.equal(runtime.result().status, 'preserved'); runtime.unchanged();
+    assert.equal(runtime.moves.length, 1);
+    assert.equal(runtime.writes.filter(target => target === '/cloud/Hunter.js').length, 1);
+    assert.equal(JSON.parse(runtime.journal()[1]).phase, 'rolled_back');
+    assert.equal(runtime.alerts.length, 0); assert.equal(runtime.opened.length, 0);
+  }
+});
+
+test('partial fallback is restored from backup, including when the restore move is refused', async () => {
+  for (const refuseRestore of [false, true]) {
+    const runtime = harness();
+    runtime.state.onMove = from => {
+      if (from.includes('.ota-') || refuseRestore) throw new Error('destination exists');
+    };
+    runtime.state.onWrite = (target, code) => {
+      if (target === '/cloud/Hunter.js' && code === runtime.next) {
+        runtime.files.set(target, 'partial fallback'); throw new Error('partial write');
+      }
+    };
+    assert.equal(await runtime.context.performSelfUpdate(false, true), false);
+    assert.equal(runtime.result().status, 'restored'); runtime.unchanged();
+    assert.equal(runtime.moves.length, 2);
+    assert.equal(runtime.writes.filter(target => target === '/cloud/Hunter.js').length, refuseRestore ? 2 : 1);
+    assert.equal(JSON.parse(runtime.journal()[1]).phase, 'rolled_back');
+    assert.equal(runtime.alerts.length, 0); assert.equal(runtime.opened.length, 0);
+  }
+});
+
+test('failed install and restore fallbacks retain explicit recovery_required and the verified backup', async () => {
+  const runtime = harness();
+  runtime.state.onMove = () => { throw new Error('destination exists'); };
+  runtime.state.onWrite = (target, code) => {
+    if (target !== '/cloud/Hunter.js') return;
+    if (code === runtime.next) runtime.files.set(target, 'partial fallback');
+    throw new Error('write unavailable');
+  };
+  assert.equal(await runtime.context.performSelfUpdate(false, true), false);
+  assert.equal(runtime.result().status, 'recovery_required');
+  assert.equal(runtime.moves.length, 2);
+  assert.equal(runtime.writes.filter(target => target === '/cloud/Hunter.js').length, 2);
+  assert.equal(runtime.files.get(JSON.parse(runtime.journal()[1]).backupPath), runtime.previous);
+  assert.equal(JSON.parse(runtime.journal()[1]).phase, 'replacing');
+  assert.equal(runtime.files.get('/cloud/vouchers.json'), 'private-vouchers');
+  assert.equal(runtime.files.get('/local/session.json'), 'private-session');
+  assert.equal(runtime.alerts.length, 0); assert.equal(runtime.opened.length, 0);
 });
 
 test('readback mismatch restores invalid content but preserves unrelated valid concurrent install', async () => {
@@ -207,6 +324,7 @@ test('damaged backup or failed restore remains explicit recovery_required', asyn
       }
       if (mode === 'restore') throw new Error('restore unavailable');
     };
+    h.state.onWrite = target => { if (target === '/cloud/Hunter.js') throw new Error('restore write unavailable'); };
     assert.equal(await h.context.performSelfUpdate(true), false); assert.equal(h.result().status, 'recovery_required'); assert.equal(h.opened.length, 0);
     assert.equal(h.files.get('/cloud/vouchers.json'), 'private-vouchers');
   }
@@ -214,8 +332,9 @@ test('damaged backup or failed restore remains explicit recovery_required', asyn
 
 test('journal recovery validates identity, backup and target before any restoration', async () => {
   const h = harness(); h.state.onMove = (from, to) => { h.files.set(to, 'truncated'); throw new Error('write unavailable'); };
+  h.state.onWrite = target => { if (target === '/cloud/Hunter.js') throw new Error('restore write unavailable'); };
   await h.context.performSelfUpdate(true); assert.equal(h.result().status, 'recovery_required');
-  h.state.onMove = null; assert.equal((await h.context.recoverHunterUpdate()).status, 'restored'); h.unchanged();
+  h.state.onMove = null; h.state.onWrite = null; assert.equal((await h.context.recoverHunterUpdate()).status, 'restored'); h.unchanged();
   const journalPath = h.journal()[0], journal = JSON.parse(h.journal()[1]);
   journal.phase = 'replacing'; journal.backupPath = '/local/session.json'; h.files.set(journalPath, JSON.stringify(journal));
   const count = h.writes.length; assert.equal((await h.context.recoverHunterUpdate()).status, 'recovery_required'); assert.equal(h.writes.length, count); h.unchanged();

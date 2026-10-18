@@ -89,13 +89,30 @@ o Hunter. Cookies, Keychain, reservas, recibos e vouchers não são escritos pel
 updater. Backups não são apagados automaticamente nesta versão.
 
 [FileManager.move](https://docs.scriptable.app/filemanager/) permite substituir
-o destino, mas não documenta atomicidade contra queda do processo, durabilidade
+o destino, mas uma tentativa no iPhone retornou `preserved`: a substituição não
+foi confirmada e o hash anterior permaneceu intacto. Desde a 5.8.3, após um move
+falho ou sem efeito, o updater relê o destino antes de decidir qualquer escrita.
+Se já contém o candidato exato, não repete a operação. Se continua exatamente
+igual ao alvo anterior, exige journal integral inalterado, backup e staging
+verificados e usa uma única tentativa de `writeString`, seguida de readback.
+Alvo divergente ou journal alterado bloqueia o fallback. A restauração usa as
+mesmas condições; não remove o script instalado nem apaga backups.
+
+Nenhuma dessas APIs documenta atomicidade contra queda do processo, durabilidade
 ou compare-and-swap entre processos. Existe uma janela residual entre a última
-conferência e o move; não executar os dois caminhos de atualização simultaneamente.
+conferência e a substituição; não executar os dois caminhos simultaneamente.
 Se o script ficar ilegível antes de iniciar, ele não consegue executar sua própria
 recuperação: o backup local permanece disponível e a distribuição oficial permite
 reinstalar somente o código. `recoverHunterUpdate()` roda no próximo fluxo de
 atualização quando o script ainda consegue iniciar.
+
+Um updater antigo afetado não instala sua própria correção apenas com um novo
+manifest. A recuperação pontual deve preservar a versão instalada e todos os
+bytes fora do bloco do updater, com backup privado 0600 e comparação do arquivo
+inteiro antes/depois. Não usar instalação/migração ampla nem tocar no nome legado.
+Essa recuperação não comprova sincronização no iPhone. A atualização seguinte
+continua pelo `update-auto`; somente seu retorno `installed` e a versão nova
+no aparelho confirmam o resultado, não o aceite da notificação ntfy.
 
 [Request](https://docs.scriptable.app/request/) não fornece cancelamento incremental
 documentado: limites de 8 KiB (manifest) e 2 MiB (artefato) são validados depois do

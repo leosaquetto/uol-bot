@@ -244,13 +244,29 @@ function hunterWriteUpdateJournal(paths, journal) {
 }
 
 function hunterOwnUpdateJournal(paths, journal) {
-  try { return JSON.parse(paths.local.readString(paths.journalPath)).operationId === journal.operationId; }
+  try { return paths.local.readString(paths.journalPath) === JSON.stringify(journal); }
   catch (_) { return false; }
 }
 
 function hunterFinishUpdateJournal(paths, journal, phase) {
   if (!hunterOwnUpdateJournal(paths, journal)) return false;
   try { hunterWriteUpdateJournal(paths, { ...journal, phase }); return true; } catch (_) { return false; }
+}
+
+function hunterReplaceUpdateFile(paths, journal, stagingPath, code, previous) {
+  const unchanged = target => target.exists === previous.exists && target.hash === previous.hash;
+  if (!unchanged(hunterReadUpdateTarget(paths)) || !hunterOwnUpdateJournal(paths, journal)) throw new Error('update_changed');
+  if (typeof paths.fm.move === 'function') {
+    try { paths.fm.move(stagingPath, paths.scriptPath); } catch (_) {}
+  }
+  const current = hunterReadUpdateTarget(paths);
+  if (!hunterOwnUpdateJournal(paths, journal)) throw new Error('update_changed');
+  if (current.exists && current.hash === hunterUpdateHashCode(code)) return;
+  if (!unchanged(current)) throw new Error('update_changed');
+  if (hunterUpdateHashCode(paths.local.readString(journal.backupPath)) !== journal.oldHash ||
+      paths.fm.readString(stagingPath) !== code) throw new Error('recovery_copy_changed');
+  if (!unchanged(hunterReadUpdateTarget(paths)) || !hunterOwnUpdateJournal(paths, journal)) throw new Error('update_changed');
+  paths.fm.writeString(paths.scriptPath, code);
 }
 
 function hunterRestoreUpdate(paths, journal) {
@@ -273,8 +289,7 @@ function hunterRestoreUpdate(paths, journal) {
     if (paths.fm.readString(restorePath) !== backup || !hunterOwnUpdateJournal(paths, journal)) return { status: 'recovery_required' };
     const latest = hunterReadUpdateTarget(paths);
     if (latest.hash !== current.hash || latest.exists !== current.exists) return { status: 'concurrent_change' };
-    if (typeof paths.fm.move === 'function') paths.fm.move(restorePath, paths.scriptPath);
-    else paths.fm.writeString(paths.scriptPath, backup);
+    hunterReplaceUpdateFile(paths, journal, restorePath, backup, latest);
     if (hunterReadUpdateTarget(paths).hash !== journal.oldHash) return { status: 'recovery_required' };
     hunterFinishUpdateJournal(paths, journal, 'rolled_back');
     return { status: 'restored' };
@@ -318,12 +333,7 @@ function hunterInstallUpdate(paths, previous, downloaded) {
     journal.phase = 'replacing'; hunterWriteUpdateJournal(paths, journal);
     if (hunterReadUpdateTarget(paths).hash !== previous.hash || !hunterOwnUpdateJournal(paths, journal)) return { status: 'concurrent_change' };
     replacing = true;
-    // Same-directory move is the smallest replacement window exposed by the API.
-    // No remove(current) call; neither this check nor move is a cross-process CAS.
-    // A separate process can still replace the target after the final read and
-    // before this move; the API cannot condition replacement on the old hash.
-    if (typeof paths.fm.move === 'function') paths.fm.move(stagingPath, paths.scriptPath);
-    else paths.fm.writeString(paths.scriptPath, downloaded.code);
+    hunterReplaceUpdateFile(paths, journal, stagingPath, downloaded.code, previous);
     const installed = hunterReadUpdateTarget(paths);
     if (installed.hash !== manifest.sha256 || installed.version !== manifest.version) throw new Error('installed_script_unverified');
     hunterFinishUpdateJournal(paths, journal, 'installed');
