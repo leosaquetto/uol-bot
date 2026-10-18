@@ -1,10 +1,12 @@
 {
   "schema": 1,
   "updaterProtocol": 1,
-  "version": "5.8.0",
-  "size": 661663,
-  "sha256": "47c0d133dec0cb5df566cb73446a5870a24dbfaf8ed98d0be8c5fcd05ee48fd1",
+  "product": "clube-uol-premium",
+  "scriptName": "Clube UOL Premium",
+  "version": "5.8.1",
+  "size": 664889,
+  "sha256": "5a8a8ef33870d8231e34cfe208bb570f91cbacc2ea8e2aad0d0a514ff783f35c",
   "channel": "beta",
-  "artifact": "https://raw.githubusercontent.com/leosaquetto/uol-bot/34c1d1f12965dee64fcb8390000a876615c6bae4/stories-hunter/dist/Hunter.js",
-  "publishedAt": "2026-10-18T15:59:17.537Z"
+  "artifact": "https://raw.githubusercontent.com/leosaquetto/uol-bot/350b0a7644f0f6e7fb437d002e570974a65fa6f9/stories-hunter/dist/Hunter.js",
+  "publishedAt": "2026-10-18T16:39:31.779Z"
 }
