@@ -1623,3 +1623,12 @@ Keychain permanecem iguais à 5.7.7 confirmada no aparelho.
 Validação local desta correção: 16/16 testes dos dois arquivos afetados,
 sintaxe do artefato e `git diff --check` aprovados. Não se repetiu a suíte
 local completa; os 164 testes da etapa anterior já tinham passado.
+
+Publicação 5.7.8: código `e2eb37678138da8e33cfb5090f589000e5bf1429`,
+quatro jobs da [CI](https://github.com/leosaquetto/uol-bot/actions/runs/39135414182)
+aprovados. Distribuição code-only aceita pelo ntfy, recibo `B15YpGL5m0Le`.
+GitHub Raw e MacSend servem o mesmo artefato do Git, SHA-256
+`30746bffaffbb1d0c3cba60ba7ee55363e4811f2df92edce2d316ce0ec1a87b7`.
+Os cinco arquivos privados permanecem íntegros; permissões e Worker não foram
+alterados. Conexão UOL tem prova do usuário na 5.7.7; o rótulo da 5.7.8 tem
+testes e distribuição comprovados, ainda sem confirmação visual no aparelho.
