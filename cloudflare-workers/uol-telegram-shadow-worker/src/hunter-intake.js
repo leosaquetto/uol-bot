@@ -180,7 +180,7 @@ export class HunterIntakeQueue {
     if (encoder.encode(value).length + (reserveProgress ? state.pending.length * 1024 : 0) > STATE_LIMIT) throw hunterError("hunter_capacity", 429);
     this.writeState(value);
   }
-  async accept(clientId, input) {
+  async accept(clientId, input, authorize = () => true) {
     if (!CLIENT.test(clientId || "")) throw hunterError("hunter_client_invalid", 401);
     if (!only(input, ["observations"]) || !Array.isArray(input.observations) ||
         input.observations.length < 1 || input.observations.length > 8) throw hunterError("hunter_batch_invalid");
@@ -192,6 +192,10 @@ export class HunterIntakeQueue {
         ...(event.source === "instagram" ? { canonicalKey: await instagramStoryCanonicalKey(event.payload) } : {}) };
     }));
     const operation = this.admission.then(() => {
+      // Preparation hashes and earlier admissions can yield. Recheck the
+      // caller's durable grant at the actual admission, without another await
+      // between authorization and the atomic state replacement.
+      if (authorize() !== true) throw hunterError("hunter_client_invalid", 401);
       const state = this.load(), clock = this.now(), receipts = [];
       state.recent = state.recent.filter(item => item.updatedAt >= clock - DAY);
       let changed = false;

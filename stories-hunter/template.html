@@ -3605,6 +3605,15 @@
         <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">Se o título ou URL contiver estas palavras, não perde tempo analisando o corpo.</span>
       </div>
 
+      <div class="form-group">
+        <label class="form-label">Coleta neste iPhone</label>
+        <div style="background: #101217; border: 1px solid #222733; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <div id="hunterAccessStatus" role="status" style="font-size: 12px; color: #e2e8f0;">Verificando acesso…</div>
+          <div id="hunterAccessDescription" style="font-size: 11px; line-height: 1.5; color: #94a3b8;"></div>
+          <button class="btn-modal-secondary" id="btnHunterAccess" onclick="manageHunterAccess()">Solicitar acesso</button>
+        </div>
+      </div>
+
       <!-- Status das Credenciais -->
       <div class="form-group">
         <label class="form-label">Credenciais Clube UOL</label>
@@ -3831,7 +3840,7 @@
     window.addEventListener('load', () => {
       installHeaderLayout();
       // Injeta cookies de sessão autenticada imediatamente
-      initSessionCookies();
+      if (!INITIAL.nativeAccounts) initSessionCookies();
 
       // Hidratação via localStorage instantâneo
       try {
@@ -4302,6 +4311,11 @@
       if (pending) labels.push(pending + ' pendentes no iPhone');
       const statuses = {
         not_configured: 'configuração privada pendente',
+        activation_required: 'ative a coleta em Ajustes',
+        access_pending: 'acesso aguardando aprovação',
+        access_revoked: 'acesso suspenso; coleta pausada',
+        access_expired: 'acesso expirado; solicite aprovação',
+        setup_unavailable: 'não foi possível verificar o acesso; tente novamente em Ajustes',
         unavailable: 'coleta indisponível', failed: 'coleta indisponível', error: 'coleta indisponível',
         busy: 'outra execução em andamento',
         auth_required: 'autenticação necessária; coleta suspensa',
@@ -4807,8 +4821,7 @@
     function extractSessionDate(item) {
       if (!item) return null;
       const title = item.rawTitle || item.title || '';
-      const desc = item.description || '';
-      const fullText = title + ' ' + desc;
+      const desc = [item.description, item.validity].filter(value => typeof value === 'string').join(' ');
 
       const monthsMap = {
         jan: '01', fev: '02', mar: '03', abr: '04', mai: '05', jun: '06',
@@ -5269,7 +5282,7 @@
       const month = numeric ? Number(numeric[2]) : months.indexOf(named[2]) + 1;
       const anchor = saoPauloParts(catalogTime(item.firstSeen) || catalogTime(item.lastSeen) || now);
       let year = anchor.year;
-      const text = [item.rawTitle || item.title || '', item.description || ''].join(' ');
+      const text = [item.rawTitle || item.title || '', item.description || '', item.validity || ''].join(' ');
       const explicit = Array.from(text.matchAll(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g))
         .find(m => Number(m[1]) === day && Number(m[2]) === month);
       const explicitNamed = Array.from(text.matchAll(/\b(\d{1,2})\s+de\s+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*\s+(?:de\s+)?(\d{4})\b/gi))
@@ -6123,17 +6136,13 @@
         }
       }
 
-      // Seeds already belong to allOffers; never pull another period into this selection.
-      // Se ainda tiver menos de 5, inclui ofertas de destaque do período selecionado.
-      if (matches.length < 5) {
-        for (const o of allOffers) {
-          const key = o.id || (o.rawTitle || o.title);
-          if (seenKeys.has(key)) continue;
-          if (checkHighlight(o.title, o.id, o.description)) {
-            matches.push(o);
-            seenKeys.add(key);
-            if (matches.length >= 6) break;
-          }
+      // Seeds already belong to allOffers. Include every other highlighted offer.
+      for (const o of allOffers) {
+        const key = o.id || (o.rawTitle || o.title);
+        if (seenKeys.has(key)) continue;
+        if (checkHighlight(o.title, o.id, o.description)) {
+          matches.push(o);
+          seenKeys.add(key);
         }
       }
 
@@ -6297,11 +6306,7 @@
     }
 
     function renderHistoryCurated(allOffers) {
-      const selected = allOffers.filter(o => {
-        const period = getOfferYearAndMonth(o);
-        return period.year === selectedHistoryYear && (selectedHistoryMonth === 'all' || period.month === selectedHistoryMonth) && historyMatchesSearch(o);
-      });
-      const editorsChoice = getEditorsChoiceOffers(selected).slice(0, 6);
+      const editorsChoice = getEditorsChoiceOffers(allOffers.filter(historyMatchesSearch));
       const edTrack = document.getElementById('editorsChoiceTrack');
       const section = document.getElementById('sectionEditorsChoice');
       if (section) section.style.display = editorsChoice.length ? 'block' : 'none';
@@ -6715,6 +6720,20 @@
     // ===================================================================
     // TELA NATIVA MEUS RESGATES (HISTÓRICO UNIFICADO)
     // ===================================================================
+    function escapeReceiptHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    }
+
+    function receiptSafeUrl(value, mode = 'image') {
+      if (typeof value !== 'string' || /[\u0000-\u0020\u007f\\<>"']/.test(value)) return '';
+      const inline = /^data:(image\/(?:png|jpe?g|webp|gif)|application\/pdf);base64,[A-Za-z0-9+/=]+$/i.exec(value);
+      if (inline) return mode === 'image' && inline[1].startsWith('image/') || mode === 'pdf' && inline[1] === 'application/pdf' ? value : '';
+      try {
+        const url = new URL(value);
+        return url.protocol === 'https:' && !url.username && !url.password ? url.href : '';
+      } catch (_) { return ''; }
+    }
+
     function renderRedemptionsScreen() {
       const container = document.getElementById('viewRedemptions');
       if (!container) return;
@@ -6760,8 +6779,9 @@
           const cardOwnerName = isCardLeo ? 'Leonardo' : 'Gabriel';
           const cardOwnerHandle = isCardLeo ? 'leosaquetto' : 'gaoriel';
 
-          const thumbHtml = r.thumb
-            ? `<img src="${r.thumb}" class="redemption-thumb" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />`
+          const thumbnail = receiptSafeUrl(r.thumb);
+          const thumbHtml = thumbnail
+            ? `<img src="${escapeReceiptHtml(thumbnail)}" class="redemption-thumb" onerror="this.src='https://i.imgur.com/UdIgTfI.png'" />`
             : `<div class="redemption-thumb" style="display:flex;align-items:center;justify-content:center;color:#00e676;font-size:24px;">🎟️</div>`;
 
           const timeText = r.redeemedAt
@@ -6781,11 +6801,11 @@
                 ${thumbHtml}
                 <div class="redemption-info">
                   ${ownerBadgeHtml}
-                  <div class="redemption-title">${formatRedemptionTitle(r.title)}</div>
-                  <div class="redemption-partner">${r.partner || 'Campanhas de Ingressos'}</div>
+                  <div class="redemption-title">${escapeReceiptHtml(formatRedemptionTitle(r.title))}</div>
+                  <div class="redemption-partner">${escapeReceiptHtml(r.partner || 'Campanhas de Ingressos')}</div>
                   <div class="redemption-time">
                     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>${timeText}</span>
+                    <span>${escapeReceiptHtml(timeText)}</span>
                   </div>
                 </div>
               </div>
@@ -7099,7 +7119,8 @@
       if (btnShare) btnShare.style.display = 'none';
 
       // 0. Prioridade máxima: Imagem de alta resolução vinda direto do Banco de Dados Permanente (Zero rede, Offline)
-      if (r.voucherImageDataUrl) {
+      const storedImage = receiptSafeUrl(r.voucherImageDataUrl);
+      if (storedImage) {
         currentVoucherFileName = r.cupomCode || 'voucher-uol.pdf';
         try {
           const parts = r.voucherImageDataUrl.split(',');
@@ -7112,21 +7133,22 @@
         } catch(e) {}
 
         container.innerHTML = `
-          <img class="voucher-preview-img" src="${r.voucherImageDataUrl}" alt="Voucher Oficial" />
+          <img class="voucher-preview-img" src="${escapeReceiptHtml(storedImage)}" alt="Voucher Oficial" />
         `;
         if (btnShare && currentVoucherBlob) btnShare.style.display = 'flex';
         return;
       }
 
       // 1. Caso seja voucher com arquivo (PDF ou imagem)
-      if (r.downloadUrl) {
+      const downloadUrl = receiptSafeUrl(r.downloadUrl, 'download');
+      if (downloadUrl) {
         // Checagem imediata no Cache (Zero requisições à rede!)
         const cached = getStoredVoucher(r);
-        if (cached) {
+        if (cached && receiptSafeUrl(cached.imgDataUrl)) {
           currentVoucherBlob = cached.blob;
           currentVoucherFileName = cached.fileName;
           container.innerHTML = `
-            <img class="voucher-preview-img" src="${cached.imgDataUrl}" alt="Voucher Oficial" />
+            <img class="voucher-preview-img" src="${escapeReceiptHtml(receiptSafeUrl(cached.imgDataUrl))}" alt="Voucher Oficial" />
           `;
           if (btnShare && currentVoucherBlob) btnShare.style.display = 'flex';
           return;
@@ -7142,7 +7164,7 @@
         container.style.display = 'flex';
 
         try {
-          const res = await fetch(r.downloadUrl);
+          const res = await fetch(downloadUrl);
           if (!res.ok) throw new Error('Status HTTP ' + res.status);
           const arrayBuffer = await res.arrayBuffer();
           const contentType = res.headers.get('content-type') || 'application/pdf';
@@ -7160,7 +7182,7 @@
               const imgDataUrl = reader.result;
               storeVoucherInCache(r, imgDataUrl, blob, currentVoucherFileName, contentType, arrayBuffer);
               container.innerHTML = `
-                <img class="voucher-preview-img" src="${imgDataUrl}" alt="Voucher Oficial" />
+                <img class="voucher-preview-img" src="${escapeReceiptHtml(receiptSafeUrl(imgDataUrl))}" alt="Voucher Oficial" />
               `;
               if (btnShare) btnShare.style.display = 'flex';
             };
@@ -7173,11 +7195,11 @@
               storeVoucherInCache(r, base64Data, blob, currentVoucherFileName, contentType, arrayBuffer);
               if (isPdf) {
                 container.innerHTML = `
-                  <iframe class="voucher-pdf-frame" src="${base64Data}"></iframe>
+                  <iframe class="voucher-pdf-frame" src="${escapeReceiptHtml(receiptSafeUrl(base64Data, 'pdf'))}"></iframe>
                 `;
               } else {
                 container.innerHTML = `
-                  <img class="voucher-preview-img" src="${base64Data}" alt="Voucher Oficial" />
+                  <img class="voucher-preview-img" src="${escapeReceiptHtml(receiptSafeUrl(base64Data))}" alt="Voucher Oficial" />
                 `;
               }
               if (btnShare) btnShare.style.display = 'flex';
@@ -7204,13 +7226,15 @@
         container.innerHTML = `
           <div class="promo-code-card" style="width: 100%;">
             <div class="promo-code-label">CÓDIGO PROMOCIONAL</div>
-            <div class="promo-code-val">${r.cupomCode}</div>
-            <button class="btn-copy-promo" onclick="copyPromoCode('${r.cupomCode}')">
+            <div class="promo-code-val">${escapeReceiptHtml(r.cupomCode)}</div>
+            <button class="btn-copy-promo" id="btnCopyPromo">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               <span id="btnCopyPromoText">Copiar Cupom</span>
             </button>
           </div>
         `;
+        const copyButton = document.getElementById('btnCopyPromo');
+        if (copyButton) copyButton.onclick = () => copyPromoCode(String(r.cupomCode));
         container.style.display = 'block';
       } else {
         // 3. Fallback informativo
@@ -7290,8 +7314,9 @@
 
       const rdmImg = document.getElementById('rdmImg');
       if (rdmImg) {
-        if (r.thumb) {
-          rdmImg.src = r.thumb;
+        const thumbnail = receiptSafeUrl(r.thumb);
+        if (thumbnail) {
+          rdmImg.src = thumbnail;
           rdmImg.style.display = 'block';
         } else {
           rdmImg.style.display = 'none';
@@ -7306,7 +7331,7 @@
           <span class="card-tag tag-portal">${ICONS.globe} Clube UOL</span>
           <span class="card-tag tag-category tag-cat-MUSICA">🎟️ Ingressos</span>
           <span class="card-tag tag-age">👤 ${cardOwnerName}</span>
-          <span class="card-tag tag-partner">${r.partner || 'Campanhas de Ingressos'}</span>
+          <span class="card-tag tag-partner">${escapeReceiptHtml(r.partner || 'Campanhas de Ingressos')}</span>
         `;
       }
 
@@ -7315,7 +7340,7 @@
         if (r.redeemedAt) {
           rdmTimeBadge.innerHTML = `
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Resgatado em ${formatRedemptionDateTime(r.redeemedAt)}</span>
+            <span>Resgatado em ${escapeReceiptHtml(formatRedemptionDateTime(r.redeemedAt))}</span>
           `;
           rdmTimeBadge.style.display = 'inline-flex';
         } else {
@@ -7639,7 +7664,7 @@
       activeOffer = findOffer(id);
       if (!activeOffer) return;
 
-      document.getElementById('cfEventTitle').textContent = activeOffer.title;
+      document.getElementById('cfEventTitle').textContent = activeOffer.title + ' • Conta: ' + ((settings.currentUser || 'leosaquetto') === 'gaoriel' ? 'Gabriel' : 'Leonardo');
       document.getElementById('cfFeedbackArea').className = 'feedback-banner feedback-warning';
 
       const gKey = getGroupKey(activeOffer);
@@ -7667,189 +7692,86 @@
       document.getElementById('confirmModal').style.display = 'none';
     }
 
+    let nativeRedemptionPending = null;
+    const nativeHistoryPending = new Set();
     async function executeRedemption() {
-      if (!activeOffer) return;
-      const offer = activeOffer;
+      if (!activeOffer || nativeRedemptionPending) return;
+      const account = settings.currentUser || 'leosaquetto';
+      if (!INITIAL.nativeAccounts) { showToast('Resgate seguro disponível no Scriptable.'); return; }
+      let url;
+      try {
+        url = new URL(activeOffer.link);
+        if (url.origin !== 'https://clube.uol.com.br' || !/^\/campanhasdeingresso\/[A-Za-z0-9][A-Za-z0-9_-]*$/.test(url.pathname) || url.search || url.hash) return;
+      } catch (_) { return; }
+      nativeRedemptionPending = account;
       const btn = document.getElementById('btnConfirmAction');
-      const fb = document.getElementById('cfFeedbackArea');
-
-      btn.innerHTML = '<span class="status-dot"></span> Processando resgate headless...';
       btn.disabled = true;
-
-      // Dispara webhook ntfy imediatamente avisando da intenção (via endpoint raiz com JSON)
-      try {
-        fetch('https://ntfy.sh', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            topic: NTFY_TOPIC,
-            title: '🎟️ Resgate Acionado: ' + offer.title,
-            message: 'Tentativa de resgate headless para [' + (offer.code || 'ID') + '] por ' + (settings.currentUser || 'leosaquetto') + '.\nLink: ' + offer.link,
-            tags: ['ticket', 'rocket'],
-            actions: [
-              { action: 'view', label: 'Abrir Oferta', url: offer.link }
-            ]
-          })
-        });
-      } catch (e) {}
-
-      // Executa chamada real de resgate ao Clube UOL com cookies da sessão
-      try {
-        const rescueUrl = offer.link + '/resgatar';
-        const res = await fetch(rescueUrl, { redirect: 'follow' });
-        const respUrl = res.url || '';
-        const respText = await res.text();
-
-        // 1. Cota Mensal Excedida
-        if (respUrl.includes('max-redeem') || respText.includes('Limite de resgates excedido') || respText.includes('atingiu o limite de resgates') || respText.includes('já utilizou') || respText.includes('limite mensal')) {
-          fb.className = 'feedback-banner feedback-error';
-          fb.innerHTML = '<strong>⚠️ Cota Mensal Já Utilizada:</strong> Você já atingiu o limite de 1 par de ingressos para o mês vigente. A cota será renovada no próximo mês.';
-          btn.style.display = 'none';
-          return;
-        }
-
-        // 2. Necessidade de Autenticação / Sessão Expirada
-        if (respUrl.includes('/login') || respUrl.includes('conta.uol.com.br') || respText.includes('dynamic-config') || respText.includes('osirisUai')) {
-          fb.className = 'feedback-banner feedback-warning';
-          fb.innerHTML = '<strong>Sessão Expirada:</strong> Seus cookies de autenticação precisam ser renovados.';
-          document.getElementById('btnConfirmOpenWeb').style.display = 'flex';
-          btn.style.display = 'none';
-          return;
-        }
-
-        // 3. Benefício Esgotado
-        if (respText.includes('esgotado') || respText.includes('indisponível') || respText.includes('Esgotado')) {
-          fb.className = 'feedback-banner feedback-error';
-          fb.innerHTML = '<strong>❌ Benefício Esgotado:</strong> Ingressos esgotados para esta sessão no momento.';
-          btn.style.display = 'none';
-          return;
-        }
-
-        // 4. Sucesso!
-        fb.className = 'feedback-banner feedback-success';
-        fb.innerHTML = '<strong>🎉 Benefício Resgatado com Sucesso!</strong> Atualizando seus resgates...';
-
-        if (!settings.myRedemptions) settings.myRedemptions = [];
-        settings.myRedemptions.unshift({
-          title: offer.title,
-          partner: offer.category || 'Campanhas de ingressos',
-          thumb: offer.imageUrl || offer.thumb || '',
-          url: respUrl.includes('/perfil/beneficios') ? respUrl : offer.link,
-          date: new Date().toISOString(),
-          user: settings.currentUser || 'leosaquetto'
-        });
-        saveSettingsToStorage();
-
-        // Dispara ntfy de sucesso
-        try {
-          fetch('https://ntfy.sh', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              topic: NTFY_TOPIC,
-              title: '✅ Resgate Concluído: ' + offer.title,
-              message: 'Voucher liberado com sucesso para ' + (settings.currentUser || 'leosaquetto') + '!\nURL: ' + respUrl,
-              tags: ['white_check_mark', 'tada'],
-              actions: [
-                { action: 'view', label: 'Ver Voucher', url: respUrl }
-              ]
-            })
-          });
-        } catch(e) {}
-
-        // Atualiza lista de resgates reais em segundo plano e muda de aba in-app sem sair do Scriptable
-        await fetchRealRedemptions();
-
-        setTimeout(() => {
-          closeConfirmModal();
-          switchTab('redemptions');
-        }, 1200);
-
-      } catch (e) {
-        console.log('Falha na chamada direta:', e);
-        fb.className = 'feedback-banner feedback-error';
-        fb.innerHTML = '<strong>Instabilidade na conexão:</strong> Não foi possível concluir o resgate headless. Tente novamente ou abra no Clube UOL.';
-        document.getElementById('btnConfirmOpenWeb').style.display = 'flex';
-      } finally {
-        btn.disabled = false;
-      }
+      btn.innerHTML = '<span class="status-dot"></span> Conferindo conta e recibo…';
+      window.location.href = 'hunter-account://redeem?account=' + account + '&url=' + encodeURIComponent(url.href);
     }
 
-    // ===================================================================
-    // MEUS RESGATES MODAL & SINCRONIZAÇÃO NATIVA
-    // ===================================================================
-    let currentSessionStatus = 'unknown'; // 'valid' | 'invalid' | 'unknown'
-
+    let currentSessionStatus = 'unknown';
     async function fetchRealRedemptions() {
-      const currentHandle = settings.currentUser || 'leosaquetto';
-      try {
-        const res = await fetch('https://clube.uol.com.br/perfil/beneficios', { redirect: 'follow' });
-        const html = await res.text();
-        const isLogin = !res.ok || res.url.includes('/login') || res.url.includes('conta.uol.com.br') || html.includes('dynamic-config') || html.includes('osirisUai') || html.includes('ENTRAR');
-        const isSuccess = res.ok && !isLogin && (html.includes('beneficio') || html.includes('beneficios') || html.includes('Meus') || html.includes('sair'));
+      const account = settings.currentUser || 'leosaquetto';
+      if (!INITIAL.nativeAccounts || nativeHistoryPending.has(account)) return;
+      nativeHistoryPending.add(account);
+      window.location.href = 'hunter-account://history?account=' + account;
+    }
 
-        currentSessionStatus = isSuccess ? 'valid' : 'invalid';
-        updateSessionStatusUI();
-
-        if (isLogin) {
-          if (currentTab === 'redemptions') renderRedemptionsScreen();
-          return;
-        }
-
-        const items = [];
-        const blockRegex = /<div[^>]*class="[^"]*beneficio[\s"][^>]*>([\s\S]*?)<\/a>\s*<\/div>/gi;
-        let match;
-
-        const oldMap = new Map();
-        (settings.realRedemptions || []).forEach(o => {
-          const key = redemptionIdentity(o);
-          if (key) oldMap.set(key, o);
-        });
-
-        while ((match = blockRegex.exec(html)) !== null) {
-          const block = match[1];
-          const imgMatch = block.match(/<img[^>]*src="([^"]+)"/i);
-          const partnerMatch = block.match(/<p class="parceiro[^"]*">([^<]+)<\/p>/i);
-          const titleMatch = block.match(/<p class="titulo[^"]*"><strong>([^<]+)<\/strong><\/p>/i);
-          const linkMatch = block.match(/href="([^"]+)"/i);
-          if (titleMatch) {
-            const rawTitle = titleMatch[1].trim();
-            const fullUrl = linkMatch ? 'https://clube.uol.com.br' + linkMatch[1] : '';
-            const enriched = oldMap.get(redemptionIdentity({ user: currentHandle, url: fullUrl })) || {};
-            items.push({
-              id: enriched.id || ('redemption-' + currentHandle + '-' + items.length),
-              title: rawTitle,
-              partner: partnerMatch ? partnerMatch[1].trim() : (enriched.partner || 'Campanhas de Ingressos'),
-              thumb: imgMatch ? imgMatch[1] : (enriched.thumb || ''),
-              url: fullUrl || enriched.url || '',
-              user: currentHandle,
-              redeemedAt: enriched.redeemedAt || '',
-              description: enriched.description || '',
-              rules: enriched.rules || '',
-              downloadUrl: enriched.downloadUrl || '',
-              cupomCode: enriched.cupomCode || ''
-            });
-          }
-        }
-        if (items.length > 0) {
-          // Uma página parcial não apaga vouchers antigos nem registros sem conta identificada.
-          const mergedItems = new Map();
-          (settings.realRedemptions || []).forEach((record, index) => mergedItems.set(redemptionIdentity(record) || 'legacy:' + index, record));
-          items.forEach((record, index) => mergedItems.set(redemptionIdentity(record) || 'page:' + index, record));
-          settings.realRedemptions = Array.from(mergedItems.values());
-          try {
-            localStorage.setItem('uol_real_redemptions', JSON.stringify(settings.realRedemptions));
-          } catch(e) {}
-          if (currentTab === 'redemptions') {
-            renderRedemptionsScreen();
-          }
-          updateTimelineBadgeDot();
-        }
-      } catch(e) {
-        console.log('fetchRealRedemptions:', e.message);
-        currentSessionStatus = 'invalid';
-        updateSessionStatusUI();
+    function mergeNativeAccountRecords(account, records) {
+      if (!Array.isArray(records)) return;
+      const merged = new Map();
+      (settings.realRedemptions || []).forEach((record, index) => merged.set(redemptionIdentity(record) || 'legacy:' + index, record));
+      for (const incoming of records) {
+        if (!incoming || (incoming.user && incoming.user !== account)) continue;
+        const verified = { ...incoming, user: account, thumb: incoming.thumb || incoming.imageUrl || '',
+          partner: incoming.partner || 'Campanhas de Ingressos', redeemedAt: incoming.redeemedAt || incoming.redemptionDate || '' };
+        const key = redemptionIdentity(verified);
+        if (!key) continue;
+        const old = merged.get(key) || {};
+        // Observation time never becomes the redemption date. Preserve original vouchers and dates.
+        const record = { ...old, ...verified, redeemedAt: old.redeemedAt || verified.redeemedAt || '', date: old.date || incoming.date || '' };
+        merged.set(key, record);
       }
+      settings.realRedemptions = Array.from(merged.values());
+      saveSettingsToStorage();
+      try { localStorage.setItem('uol_real_redemptions', JSON.stringify(settings.realRedemptions)); } catch (_) {}
+      updateTimelineBadgeDot();
+      if (currentTab === 'redemptions') renderRedemptionsScreen();
+    }
+
+    function handleNativeAccountResult(action, account, result) {
+      if (!['leosaquetto', 'gaoriel'].includes(account) || result?.account !== account) return;
+      if (action === 'history') {
+        nativeHistoryPending.delete(account);
+        if ((settings.currentUser || 'leosaquetto') === account) {
+          currentSessionStatus = result.status === 'authenticated' ? 'valid' : result.status === 'busy' ? 'unknown' : 'invalid';
+          updateSessionStatusUI();
+        }
+        if (result.status === 'authenticated') mergeNativeAccountRecords(account, result.records);
+        return;
+      }
+      if (action !== 'redeem' || nativeRedemptionPending !== account) return;
+      nativeRedemptionPending = null;
+      const btn = document.getElementById('btnConfirmAction'), fb = document.getElementById('cfFeedbackArea');
+      btn.disabled = false; btn.style.display = 'none';
+      const messages = {
+        confirmed: 'Voucher confirmado no histórico da conta. Resgate concluído.',
+        quota_used: 'A cota mensal desta conta já foi utilizada. Nenhum novo voucher confirmado.',
+        sold_out: 'Benefício indisponível para resgate.',
+        auth_required: 'A sessão desta conta precisa ser renovada. Nenhum resgate confirmado.',
+        identity_mismatch: 'A sessão pertence a outra conta. Resgate bloqueado.',
+        account_access_required: 'Esta conta não está liberada para este aparelho. Peça ao proprietário para revisar as permissões.',
+        uncertain: 'Resultado ainda incerto. A tentativa foi preservada; uma nova execução só confere o histórico, sem repetir o resgate.',
+        busy: 'Outra operação está em andamento. Aguarde antes de tentar.',
+        unavailable: 'Não foi possível validar a conta ou a oferta. Nenhum sucesso confirmado.',
+        cancelled: 'Resgate cancelado.'
+      };
+      fb.className = 'feedback-banner ' + (result.status === 'confirmed' ? 'feedback-success' : 'feedback-warning');
+      fb.textContent = messages[result.status] || messages.unavailable;
+      if (result.status === 'confirmed' && result.receipt) mergeNativeAccountRecords(account, [result.receipt]);
+      if (['cancelled', 'busy'].includes(result.status)) { btn.style.display = 'flex'; btn.innerHTML = ICONS.tickets + ' Sim, Resgatar Agora'; }
+      document.getElementById('btnConfirmOpenWeb').style.display = result.status === 'auth_required' ? 'flex' : 'none';
     }
 
     function updateSessionStatusUI() {
@@ -7882,12 +7804,54 @@
     // ===================================================================
     // AJUSTES & FILTROS MODAL
     // ===================================================================
+    function hunterAccessState() {
+      const collection = INITIAL.hunterCollection || {};
+      const access = INITIAL.hunterAccess || collection.access || {};
+      const aliases = { active: 'approved', approved: 'approved', pending: 'access_pending', access_pending: 'access_pending',
+        revoked: 'access_revoked', access_revoked: 'access_revoked', expired: 'access_expired', access_expired: 'access_expired',
+        activation_required: 'activation_required', not_configured: 'activation_required', setup_unavailable: 'setup_unavailable' };
+      const state = Object.prototype.hasOwnProperty.call(aliases, access.status) ? aliases[access.status]
+        : Object.prototype.hasOwnProperty.call(aliases, collection.status) ? aliases[collection.status] : 'activation_required';
+      return { state: state, role: access.role === 'owner' ? 'owner' : 'member' };
+    }
+
+    function renderHunterAccessUI() {
+      const access = hunterAccessState();
+      const labels = {
+        approved: ['Acesso aprovado', 'Este iPhone pode descobrir novidades e encaminhá-las ao servidor.'],
+        access_pending: ['Aguardando aprovação', 'Compartilhe com o responsável o código mostrado ao solicitar acesso. Depois, verifique a aprovação.'],
+        access_revoked: ['Acesso suspenso', 'A coleta está pausada neste iPhone. Solicite acesso novamente ao responsável.'],
+        access_expired: ['Acesso expirado', 'Solicite uma nova aprovação para retomar a coleta neste iPhone.'],
+        activation_required: ['Ativação necessária', 'Solicite acesso e compartilhe o código de aprovação com o responsável.'],
+        setup_unavailable: ['Verificação indisponível', 'Não foi possível verificar o acesso agora. Tente novamente; seus dados foram preservados.']
+      };
+      const text = labels[access.state];
+      const status = document.getElementById('hunterAccessStatus');
+      const description = document.getElementById('hunterAccessDescription');
+      const button = document.getElementById('btnHunterAccess');
+      if (status) status.textContent = text[0];
+      if (description) description.textContent = access.role === 'owner'
+        ? 'Aprove ou suspenda aparelhos que podem colaborar com a coleta.' : text[1];
+      if (button) {
+        button.textContent = access.role === 'owner' ? 'Gerenciar aparelhos'
+          : access.state === 'access_pending' ? 'Verificar aprovação'
+          : access.state === 'approved' ? 'Verificar acesso' : 'Solicitar acesso';
+        button.disabled = !INITIAL.nativeBrowser;
+      }
+    }
+
+    function manageHunterAccess() {
+      if (!INITIAL.nativeBrowser) { showToast('Abra o Hunter no Scriptable para gerenciar o acesso.'); return; }
+      window.location.href = 'hunter-access://manage';
+    }
+
     function openSettingsModal() {
       document.getElementById('inputPriorizar').value = (settings.priorizarWords || []).join(', ');
       document.getElementById('inputDespriorizar').value = (settings.despriorizarWords || []).join(', ');
 
       selectUser(settings.currentUser || 'leosaquetto', false);
       updateCredsStatusUI();
+      renderHunterAccessUI();
 
       const verLabel = document.getElementById('currentVersionLabel');
       if (verLabel) verLabel.textContent = 'v' + SCRIPT_VERSION;
@@ -7970,7 +7934,7 @@
       if (credsItem) {
         if (hasCreds) {
           const maskedLogin = targetCreds.login.length > 5 ? (targetCreds.login.slice(0, 3) + '••••' + targetCreds.login.slice(-2)) : '••••••';
-          credsItem.innerHTML = `<strong>Credenciais prontas (${maskedLogin}):</strong> Salvas em <code>clubeuolscrip.txt</code>. Prontas para autenticação automática no Clube UOL.`;
+          credsItem.innerHTML = `<strong>Credenciais prontas (${maskedLogin}):</strong> Salvas em <code>clubeuolscrip.txt</code>. A sessão será conferida antes de qualquer resgate.`;
         } else {
           credsItem.innerHTML = `<strong>Aviso de credenciais:</strong> Nenhuma credencial específica de ${targetDisplayName} em <code>clubeuolscrip.txt</code>. A sessão dependerá dos cookies locais.`;
         }
@@ -7991,43 +7955,11 @@
       const targetUser = pendingSwitchUser;
       const prevUser = settings.currentUser || 'leosaquetto';
 
-      // 1. Snapshot dos cookies do usuário anterior
-      if (!settings.userSessions) settings.userSessions = {};
-      try {
-        const rawCookies = document.cookie.split(';').map(c => {
-          const parts = c.trim().split('=');
-          return { name: parts[0], value: parts.slice(1).join('=') };
-        }).filter(c => c.name);
-        if (rawCookies.length > 0) {
-          settings.userSessions[prevUser] = rawCookies;
-        }
-      } catch(e) {}
-
-      // 2. Limpeza dos cookies da sessão anterior no document.cookie
-      try {
-        const cookies = document.cookie.split(';');
-        for (const cookie of cookies) {
-          const eqPos = cookie.indexOf('=');
-          const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-          if (name) {
-            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.uol.com.br`;
-            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=clube.uol.com.br`;
-            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-          }
-        }
-      } catch(e) {}
-
-      // 3. Atualiza o usuário ativo nas configurações
+      if (nativeRedemptionPending) { showToast('Aguarde a confirmação da tentativa atual.'); return; }
+      // Selection changes presentation only. Native requests keep separate verified cookie jars.
       settings.currentUser = targetUser;
-
-      // 4. Injeta os cookies correspondentes ao novo usuário
-      if (settings.userSessions && settings.userSessions[targetUser] && Array.isArray(settings.userSessions[targetUser]) && settings.userSessions[targetUser].length > 0) {
-        initSessionCookies(settings.userSessions[targetUser]);
-      } else if (targetUser === 'gaoriel' && INITIAL.sessionCookiesGaoriel) {
-        initSessionCookies(INITIAL.sessionCookiesGaoriel);
-      } else if (targetUser === 'leosaquetto' && (INITIAL.sessionCookiesLeo || INITIAL.sessionCookies)) {
-        initSessionCookies(INITIAL.sessionCookiesLeo || INITIAL.sessionCookies);
-      }
+      currentSessionStatus = 'unknown';
+      updateSessionStatusUI();
 
       // 5. Salva configurações e atualiza interface
       saveSettingsToStorage();
@@ -8298,89 +8230,38 @@
     // ATUALIZAÇÃO AUTOMÁTICA & MANUAL VIA GITHUB RAW (OTA)
     // ===================================================================
     const SCRIPT_VERSION = INITIAL.scriptVersion || "5.5.0";
-    const GITHUB_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
-
-    function isNewerVersion(remote, local) {
-      if (!remote || !local) return false;
-      const rParts = String(remote).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
-      const lParts = String(local).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
-      for (let i = 0; i < Math.max(rParts.length, lParts.length); i++) {
-        const r = rParts[i] || 0;
-        const l = lParts[i] || 0;
-        if (r > l) return true;
-        if (r < l) return false;
-      }
-      return false;
-    }
 
     async function checkForScriptUpdateManual() {
       const btn = document.getElementById('btnCheckUpdate');
       const msg = document.getElementById('updateStatusMsg');
+      if (btn && btn.disabled) return;
+      if (!INITIAL.nativeBrowser) {
+        if (msg) { msg.style.display = 'block'; msg.textContent = 'Abra o Stories Hunter no Scriptable para atualizar.'; }
+        return;
+      }
       if (btn) btn.disabled = true;
       if (msg) {
         msg.style.display = 'block';
         msg.style.color = '#94a3b8';
         msg.textContent = 'Verificando atualizações no GitHub...';
       }
+      // One native request validates and installs; the WebView never downloads
+      // another copy of the script or opens a competing Scriptable execution.
+      window.location.href = 'hunter-update://check';
+    }
 
-      try {
-        const url = GITHUB_RAW_URL + '?t=' + Date.now();
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Status HTTP ' + res.status);
-        const remoteText = await res.text();
-        const match = remoteText.match(/const SCRIPT_VERSION = "([^"]+)";/);
-        const remoteVersion = match ? match[1] : null;
-
-        if (remoteVersion && isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
-          if (msg) {
-            msg.innerHTML = `
-              <div style="color: #38bdf8; font-weight: 700; margin-bottom: 4px;">✨ Nova versão ${remoteVersion} disponível!</div>
-              <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Toque abaixo para atualizar o script no Scriptable sem precisar de Mac ou atalhos.</div>
-              <button onclick="triggerScriptUpdate()" style="width: 100%; padding: 8px 12px; background: linear-gradient(135deg, #00e676, #00b0ff); color: #000; border: none; border-radius: 8px; font-weight: 800; font-size: 12.5px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 230, 118, 0.35);">
-                ⬇️ Instalar Atualização Agora
-              </button>
-            `;
-          }
-        } else {
-          if (msg) {
-            msg.style.color = '#00e676';
-            msg.textContent = `✓ Você já está com a versão mais recente (${SCRIPT_VERSION})!`;
-          }
-        }
-      } catch (err) {
-        if (msg) {
-          msg.style.color = '#ef4444';
-          msg.textContent = 'Falha ao buscar atualização: ' + err.message;
-        }
-      } finally {
-        if (btn) btn.disabled = false;
+    function handleNativeUpdateResult(updated) {
+      const btn = document.getElementById('btnCheckUpdate');
+      const msg = document.getElementById('updateStatusMsg');
+      if (btn) btn.disabled = false;
+      if (msg) {
+        msg.style.display = 'block'; msg.style.color = updated ? '#00e676' : '#94a3b8';
+        msg.textContent = updated ? 'Atualização instalada. A nova versão está abrindo.'
+          : 'Verificação concluída. O script instalado foi preservado.';
       }
     }
 
-    function triggerScriptUpdate() {
-      const scriptName = INITIAL.scriptName || 'Clube UOL - Stories Hunter';
-      window.location.href = 'scriptable:///run?scriptName=' + encodeURIComponent(scriptName) + '&action=update';
-    }
-
-    async function checkBackgroundUpdate() {
-      try {
-        const url = GITHUB_RAW_URL + '?t=' + Date.now();
-        const res = await fetch(url);
-        if (!res.ok) return;
-        const remoteText = await res.text();
-        const match = remoteText.match(/const SCRIPT_VERSION = "([^"]+)";/);
-        const remoteVersion = match ? match[1] : null;
-
-        if (remoteVersion && isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
-          const banner = document.getElementById('otaUpdateBanner');
-          const txt = document.getElementById('otaVersionText');
-          if (txt) txt.textContent = `Nova versão ${remoteVersion} disponível!`;
-          if (banner) banner.style.display = 'flex';
-        }
-      } catch (e) {}
-    }
-
-    setTimeout(checkBackgroundUpdate, 2000);
+    function triggerScriptUpdate() { return checkForScriptUpdateManual(); }
 
     // ===================================================================
     // LINHA DO TEMPO DE ATIVIDADES / NOTIFICAÇÕES (MODAL HEADER)

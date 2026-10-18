@@ -11,13 +11,15 @@ import { openStore } from '../src/store.js';
 import { postFromPush } from '../src/push.js';
 import ece from 'http_ece';
 
-const makePush = (version, override) => {
-  const receiver=createECDH('prime256v1');receiver.generateKeys();
+const makePush = (version, override, receiverPrivateKey) => {
+  const receiver=createECDH('prime256v1');
+  if (receiverPrivateKey) receiver.setPrivateKey(receiverPrivateKey); else receiver.generateKeys();
   const sender=createECDH('prime256v1');sender.generateKeys();
   const auth=randomBytes(16),salt=randomBytes(16);
   const registration={uaid:randomUUID().replaceAll('-',''),channelID:randomUUID(),
     endpoint:'https://updates.push.services.mozilla.com/wpush/v2/test',applicationServerKey:sender.getPublicKey().toString('base64url'),
-    privateKey:receiver.getPrivateKey().toString('base64url'),
+    // ECDH exports minimal-width scalars; registration requires all 32 bytes.
+    privateKey:Buffer.from(receiver.getPrivateKey().toString('hex').padStart(64,'0'),'hex').toString('base64url'),
     publicKey:receiver.getPublicKey().toString('base64url'),auth:auth.toString('base64url')};
   const payload=override || {title:'New post',body:'Novo álbum ♥',data:{type:'tweet',uri:'/taylorswift13/status/2102952373022851247'}};
   const ciphertext=ece.encrypt(Buffer.from(JSON.stringify(payload)),{
@@ -49,6 +51,14 @@ const hello=(socket,registration)=>{
   socket.dispatchEvent(new Event('open'));
   socket.message({messageType:'hello',status:200,uaid:registration.uaid,use_webpush:true});
 };
+
+test('Web Push fixture preserves leading zero bytes in its private registration key',()=>{
+  const {registration,payload,message}=makePush('aes128gcm',undefined,Buffer.from([1]));
+  assert.equal(Buffer.from(registration.privateKey,'base64url').length,32);
+  assert.deepEqual(decryptPush(message,registration),payload);
+  const observer=observeWebPush({registration,store:{},WebSocketImpl:FakeWebSocket,logger:quiet});
+  return observer.stop();
+});
 
 test('push transport persists before ACK, deduplicates redelivery and recovers after restart',async()=>{
   const {registration,message}=makePush('aesgcm');

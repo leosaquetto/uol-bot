@@ -93,6 +93,36 @@ test("simultaneous admission cannot exceed 32 pending", async () => {
   await assert.rejects(f.queue.accept("phone", batch(portal(40))), { message: "hunter_capacity" }); assert.equal(f.raw, before);
 });
 
+test("revocation during async preparation denies admission before any write", async () => {
+  const f = fixture();
+  let authorized = true, checks = 0;
+  const accepting = f.queue.accept("phone", batch(portal()), () => { checks++; return authorized; });
+  authorized = false;
+  await assert.rejects(accepting, { message: "hunter_client_invalid", httpStatus: 401 });
+  assert.equal(checks, 1);
+  assert.equal(f.writes, 0);
+  assert.equal(f.raw, "");
+  authorized = true;
+  assert.equal((await f.queue.accept("phone", batch(portal()), () => authorized)).persisted, true);
+});
+
+test("authorization is checked after serialized admission wait, including duplicate receipts", async () => {
+  const f = fixture();
+  await f.queue.accept("phone", batch(portal()));
+  const before = f.raw, writes = f.writes;
+  let release, queued, authorized = true;
+  const waiting = new Promise(resolve => { release = resolve; });
+  const admittedToWait = new Promise(resolve => { queued = resolve; });
+  f.queue.admission = { then(callback) { queued(); return waiting.then(callback); } };
+  const accepting = f.queue.accept("phone", batch(portal()), () => authorized);
+  await admittedToWait;
+  authorized = false;
+  release();
+  await assert.rejects(accepting, { message: "hunter_client_invalid", httpStatus: 401 });
+  assert.equal(f.raw, before);
+  assert.equal(f.writes, writes);
+});
+
 test("256KiB aggregate reserves progress bytes; input also respects 64KiB", async () => {
   const f = fixture(), rich = n => portal(n, { description: "a".repeat(8192), validity: "b".repeat(500), title: "c".repeat(280) });
   for (let page = 0; page < 3; page++) await f.queue.accept("phone", batch(...Array.from({ length: 7 }, (_, i) => rich(page * 7 + i))));

@@ -1484,3 +1484,56 @@ aprovados. Casos incluem Futebol por descrição/competição, shows em estádio
 enriquecimento sem alterar disponibilidade, filtro/seção/timeline/métrica e
 carrosséis com um/dois/cinco cards. A geometria dos insets foi conferida em duas
 larguras; prova do encaixe real no WebKit permanece dependente do iPhone.
+
+## Hunter 5.7.6 — activation, shared redemption and self-update, 18 October
+
+The 5.7.5 client was not distributed: its CI stopped on a nondeterministic
+Drops Web Push fixture. ECDH may export a 31-byte minimal scalar; the test now
+pads it to the required 32 bytes. Production transport was not changed.
+
+The 5.7.6 batch adds a bounded device approval registry in existing metadata,
+with per-device hashed credentials, individual owner decisions and explicit
+personal-account permissions. Technical approval grants no personal accounts.
+Instagram configuration and permitted UOL sessions are returned only to approved
+native clients over authenticated no-store routes. No password or personal
+session enters the public script or observation intake. Native Keychain keeps
+imported sessions; shared-account use checks current device permission. Copies
+outside the app still require UOL-side session revocation to invalidate them.
+The first owner requires administrative promotion of a recognized phone/code;
+no first-request auto-approval is allowed.
+
+Personal redemption was explicitly authorized by the user. Existing saved
+sessions matched the two logins in clubeuolscrip.txt, and scoped histories proved
+the respective account identities. One real redemption request per account used
+the new native module through a Node transport adapter. Both returned the
+explicit monthly quota result. Leonardo retained 12 receipts and Gabriel 20;
+no new voucher, history rewrite or success notification was produced. This is
+transport/module evidence, not proof of tapping those buttons in Scriptable.
+Private preflight, mutation journals and receipts remain outside Git.
+
+Unknown responses and HTTP errors no longer create successful redemptions or
+current timestamps. An account reservation is durable before dispatch; restart
+or missing receipt only reconciles, without automatically repeating the action.
+New vouchers require matching identity and content. Native account transport is
+separate from browser cookies; browser login alone is not claimed to renew its
+Keychain session. HTML from history is parsed as data in an unpresented isolated
+WebView and escaped when rendered.
+
+Home and the second tab now consider explicit validity dates when excluding
+past sessions. Today/unknown dates are retained; no stockout is inferred from
+age or missing listing. Editor's Choice includes all highlighted campaigns
+regardless of age/month; ordinary history remains monthly/progressive.
+
+Internal update now performs one native download, validates status/origin,
+size/version and artifact markers, rejects downgrade, verifies local backup,
+staging and final write, and restores the previous script on a failed write.
+It does not overwrite sessions, Keychain, vouchers or the redemption database.
+The first opening of an installed version continues to skip collection.
+
+Local evidence: 146/146 Hunter tests, 39/39 focused access/intake/release tests
+and 9/9 Web Push fixture tests passed. The initial complete Worker gate passed
+424 unit tests and 292 runtime tests, type check, startup and dry bundle.
+Subsequent explicit personal-permission changes passed 4/4 focused runtime tests,
+types/bundle and their unit regressions. Exact-SHA CI and publication/device
+proof are recorded separately after release. No UI screenshots or WKWebView
+runtime success are implied by VM tests.

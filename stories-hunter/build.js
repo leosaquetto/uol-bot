@@ -15,6 +15,11 @@ const startupTemplate = fs.readFileSync(path.join(__dirname, "startup.html"), "u
 const svgIcons = JSON.parse(fs.readFileSync(path.join(__dirname, "svg_icons.json"), "utf8"));
 let htmlTemplate = fs.readFileSync(path.join(__dirname, "template.html"), "utf8");
 const collectorSource = fs.readFileSync(path.join(__dirname, "collector.js"), "utf8");
+const accessSource = fs.readFileSync(path.join(__dirname, "access.js"), "utf8");
+const redemptionSource = fs.readFileSync(path.join(__dirname, "redemption.js"), "utf8");
+// Reuse the scoped receipt/offer parsers already exercised by the sentinel.
+const receiptParserSource = fs.readFileSync(path.join(__dirname, "../cloudflare-workers/uol-redemption-sentinel/src/offers.js"), "utf8")
+  .replace(/^export /gm, "");
 
 // Load bootstrap cookies safely for Leo and Gabriel
 const bootstrapFileLeo = path.join(process.env.HOME, ".config/uol-sentinel/leo-bootstrap.json");
@@ -169,7 +174,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.5";
+const SCRIPT_VERSION = "5.7.6";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -186,76 +191,149 @@ const BUNDLED_COOKIES = BUNDLED_COOKIES_LEO;
 const BUNDLED_REDEMPTIONS = ${JSON.stringify(bundledRedemptions, null, 2)};
 
 ${collectorSource}
+${accessSource}
+${redemptionSource}
+const UOL_RECEIPT_PARSER = ${JSON.stringify(receiptParserSource)};
+
+let nativeAccountManager = null;
+function createNativeAccountManager() {
+  if (nativeAccountManager) return nativeAccountManager;
+  const identityDigests = {"leosaquetto":"37aa92d73c736fe04c4b0cd15a704b3d6883ae51745fff565e74b0e412500cc6","gaoriel":"bfa637efa5334c167f2d2a1cd39f75af599d6e35e071b2d6ee0b8af44973f14d"};
+  async function parse(html, kind, url) {
+    // The server HTML is data, never a loaded document or executable markup.
+    const parser = new WebView();
+    await parser.loadHTML('<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;">', "https://clube.uol.com.br");
+    parser.shouldAllowRequest = () => false;
+    const input = JSON.stringify(html).replace(/</g, "\\u003c");
+    const expression = kind === "offer" ? "parseOffer(" + input + "," + JSON.stringify(url) + ")" : "parseHistory(" + input + ")";
+    const result = await parser.evaluateJavaScript("(async () => {" + UOL_RECEIPT_PARSER + "; const parsed = " + expression + ";" +
+      (kind === "history" ? "const digest = await crypto.subtle.digest('SHA-256',new TextEncoder().encode(normalizeText(parsed.signedInName))); parsed.identityDigest = Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');" : "") +
+      "completion(JSON.stringify(parsed));})().catch(() => completion(null));", true);
+    return JSON.parse(result);
+  }
+  nativeAccountManager = HunterRedemption.create({ keychain: Keychain, now: Date.now,
+    uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
+    authorizeAccount: async user => {
+      if (!Keychain.contains("uol.hunter.shared-account.v1." + user)) return true;
+      const access = await createHunterAccess().status({ refresh: true });
+      return access.status === "approved" && access.accounts.includes(user);
+    },
+    loadCookies: async user => {
+      const existing = loadSessionCookies(user);
+      if (Array.isArray(existing) && existing.length) return existing;
+      const config = await createHunterAccess().accountConfig(user);
+      if (!config.ok || config.identityDigest !== identityDigests[user]) throw Object.assign(new Error("account_access_required"), { reason: "account_access_required" });
+      Keychain.set("uol.hunter.shared-account.v1." + user, config.deviceId);
+      return config.cookies;
+    }, verifyIdentity: (user, parsed) => typeof parsed.identityDigest === "string" && parsed.identityDigest === identityDigests[user],
+    parseHistory: html => parse(html, "history"), parseOffer: (html, url) => parse(html, "offer", url) });
+  return nativeAccountManager;
+}
+
+async function manageNativeAccount(view, action, user, url) {
+  const manager = createNativeAccountManager();
+  let result;
+  if (action === "redeem") {
+    const confirm = new Alert(); confirm.title = "Confirmar conta do resgate";
+    confirm.message = "Resgatar usando a conta de " + (user === "gaoriel" ? "Gabriel" : "Leonardo") + "? A cota e o voucher pertencem a essa conta.";
+    confirm.addAction("Resgatar nesta conta"); confirm.addCancelAction("Cancelar");
+    result = await confirm.presentAlert() < 0 ? { status: "cancelled", account: user } : await manager.redeem(user, url);
+  } else result = await manager.history(user);
+  const safe = JSON.stringify(result).replace(/</g, "\\u003c");
+  await view.evaluateJavaScript("handleNativeAccountResult(" + JSON.stringify(action) + "," + JSON.stringify(user) + "," + safe + ");");
+}
+
+function hunterVersionParts(value) {
+  if (typeof value !== "string" || !/^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)$/.test(value)) return null;
+  const parts = value.split('.').map(Number);
+  return parts.every(Number.isSafeInteger) ? parts : null;
+}
 
 function isNewerVersion(remote, local) {
-  if (!remote || !local) return false;
-  const rParts = String(remote).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
-  const lParts = String(local).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
-  for (let i = 0; i < Math.max(rParts.length, lParts.length); i++) {
-    const r = rParts[i] || 0;
-    const l = lParts[i] || 0;
-    if (r > l) return true;
-    if (r < l) return false;
+  const remoteParts = hunterVersionParts(remote), localParts = hunterVersionParts(local);
+  if (!remoteParts || !localParts) return false;
+  for (let i = 0; i < 3; i++) {
+    if (remoteParts[i] > localParts[i]) return true;
+    if (remoteParts[i] < localParts[i]) return false;
   }
   return false;
 }
 
+function hunterUpdateVersion(code, boundDownload = true) {
+  if (typeof code !== "string" || boundDownload && unescape(encodeURIComponent(code)).length > 2097152 ||
+      !code.startsWith('// Variables used by Scriptable.\n// These must be at the very top of the file.') ||
+      !/\/\/ Scriptable: Clube UOL - Hub Central de Ingressos & Stories Hunter\r?\n/.test(code) ||
+      !/\nawait main\(\);\r?\nScript.complete\(\);\s*$/.test(code) ||
+      !/^async function main\(\) \{/m.test(code) || !/^function buildDashboardHTML\(/m.test(code) ||
+      !/^function hunterCollectionPausedForUpdate\(action\) \{/m.test(code) ||
+      !/^const HunterCollector = \(\(\) => \{/m.test(code)) return null;
+  const matches = [...code.matchAll(/^const SCRIPT_VERSION = "([^"]+)";$/gm)];
+  return matches.length === 1 && hunterVersionParts(matches[0][1]) ? matches[0][1] : null;
+}
+
 async function performSelfUpdate(isManual = false) {
+  async function notice(title, message) {
+    if (!isManual) return;
+    try {
+      const alert = new Alert(); alert.title = title; alert.message = message;
+      alert.addAction("OK"); await alert.presentAlert();
+    } catch (_) { /* A dismissed UI cannot change the verified installation result. */ }
+  }
   try {
-    const fm = getFileManager();
-    const scriptName = (typeof Script !== "undefined" && Script.name && Script.name()) ? Script.name() : "Clube UOL - Stories Hunter";
-    const scriptPath = fm.joinPath(fm.documentsDirectory(), scriptName + ".js");
-
-    console.log("⚡ [OTA] Verificando atualizações em " + UPDATE_RAW_URL);
-    const req = new Request(UPDATE_RAW_URL + "?t=" + Date.now());
-    req.timeoutInterval = 10;
+    const req = new Request(UPDATE_RAW_URL);
+    req.timeoutInterval = 20; req.onRedirect = () => null;
+    req.headers = { Accept: "text/plain, application/javascript", "Cache-Control": "no-cache" };
     const remoteCode = await req.loadString();
-
-    if (!remoteCode || !remoteCode.includes("Clube UOL - Hub Central")) {
-      if (isManual) {
-        const a = new Alert();
-        a.title = "Falha ao Atualizar";
-        a.message = "Não foi possível carregar a versão oficial do GitHub. Verifique sua conexão com a internet.";
-        a.addAction("OK");
-        await a.presentAlert();
-      }
+    const response = req.response || {};
+    const header = name => Object.entries(response.headers || {}).find(([key]) => key.toLowerCase() === name)?.[1] || '';
+    const type = header('content-type') || response.mimeType || '';
+    const remoteVersion = hunterUpdateVersion(remoteCode);
+    if (response.statusCode !== 200 || response.url !== UPDATE_RAW_URL ||
+        !/^(?:text\/(?:plain|javascript)|application\/(?:javascript|x-javascript))(?:;|$)/i.test(type) ||
+        Number(header('content-length')) > 2097152 || !remoteVersion || !hunterVersionParts(SCRIPT_VERSION)) {
+      await notice("Atualização não confirmada", "O arquivo oficial não pôde ser validado. A versão instalada foi preservada.");
       return false;
     }
-
-    const versionMatch = remoteCode.match(/const SCRIPT_VERSION = "([^"]+)";/);
-    const remoteVersion = versionMatch ? versionMatch[1] : null;
-
-    if (remoteVersion && isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
-      fm.writeString(scriptPath, remoteCode);
-      console.log("⚡ [OTA] Atualizado com sucesso: v" + SCRIPT_VERSION + " -> v" + remoteVersion);
-
-      const a = new Alert();
-      a.title = "✨ Script Atualizado!";
-      a.message = "Clube UOL Stories Hunter atualizado para a versão " + remoteVersion + ".\n\nToque em OK para abrir a nova versão.";
-      a.addAction("OK");
-      await a.presentAlert();
-
-      Safari.open("scriptable:///run?scriptName=" + encodeURIComponent(scriptName));
-      return true;
-    } else {
-      if (isManual) {
-        const a = new Alert();
-        a.title = "Você já está atualizado!";
-        a.message = "Você já está usando a versão mais recente (" + SCRIPT_VERSION + ") do GitHub.";
-        a.addAction("OK");
-        await a.presentAlert();
-      }
+    const fm = getFileManager(), local = FileManager.local();
+    const scriptName = typeof Script !== "undefined" && Script.name && Script.name() ? Script.name() : "Clube UOL - Stories Hunter";
+    if (/[\/\\\u0000-\u001f]/.test(scriptName)) throw new Error('script_name_invalid');
+    const scriptPath = fm.joinPath(fm.documentsDirectory(), scriptName + ".js");
+    if (!fm.fileExists(scriptPath)) throw new Error('installed_script_missing');
+    if (fm.isFileDownloaded && !fm.isFileDownloaded(scriptPath)) await fm.downloadFileFromiCloud(scriptPath);
+    const previous = fm.readString(scriptPath);
+    if (hunterUpdateVersion(previous, false) !== SCRIPT_VERSION) throw new Error('installed_script_unavailable');
+    if (!isNewerVersion(remoteVersion, SCRIPT_VERSION)) {
+      await notice(remoteVersion === SCRIPT_VERSION ? "Você já está atualizado!" : "Versão instalada preservada",
+        remoteVersion === SCRIPT_VERSION ? "A versão oficial é a mesma instalada (" + SCRIPT_VERSION + ")."
+          : "O GitHub retornou uma versão anterior. Nenhum downgrade foi aplicado.");
       return false;
     }
-  } catch (err) {
-    console.warn("⚡ [OTA] Erro: " + err.message);
-    if (isManual) {
-      const a = new Alert();
-      a.title = "Erro na Atualização";
-      a.message = err.message;
-      a.addAction("OK");
-      await a.presentAlert();
+    const confirm = new Alert(); confirm.title = "Atualização disponível";
+    confirm.message = "Instalar a versão " + remoteVersion + "? Sessões, vouchers e histórico serão preservados.";
+    confirm.addAction("Instalar atualização"); confirm.addCancelAction("Cancelar");
+    if (await confirm.presentAlert() < 0) return false;
+    const backup = local.joinPath(local.documentsDirectory(), "uol_hunter_ota_backup.js");
+    const staging = local.joinPath(local.documentsDirectory(), "uol_hunter_ota_staging.js");
+    local.writeString(backup, previous);
+    if (local.readString(backup) !== previous) throw new Error('backup_unverified');
+    local.writeString(staging, remoteCode);
+    if (local.readString(staging) !== remoteCode) throw new Error('staging_unverified');
+    try {
+      fm.writeString(scriptPath, local.readString(staging));
+      if (fm.readString(scriptPath) !== remoteCode) throw new Error('installed_script_unverified');
+    } catch (_) {
+      let restored = false;
+      try { fm.writeString(scriptPath, local.readString(backup)); restored = fm.readString(scriptPath) === previous; } catch (_) {}
+      await notice("Atualização interrompida", restored ? "A gravação falhou e a versão anterior foi restaurada. Seus dados foram preservados."
+        : "Não foi possível confirmar a restauração. A cópia anterior está preservada no armazenamento local: uol_hunter_ota_backup.js.");
+      return false;
     }
+    await notice("Script atualizado", "Versão " + remoteVersion + " instalada. Toque em OK para abrir; esta primeira abertura não inicia coleta.");
+    try { Safari.open("scriptable:///run?scriptName=" + encodeURIComponent(scriptName)); }
+    catch (_) { await notice("Atualização salva", "Abra o Stories Hunter novamente para usar a nova versão."); }
+    return true;
+  } catch (_) {
+    await notice("Atualização não confirmada", "Não foi possível concluir a atualização. Nenhum sucesso foi confirmado; a cópia instalada e seus dados foram preservados.");
     return false;
   }
 }
@@ -296,11 +374,9 @@ async function runNativeHunterCollector() {
     });
     // This file is provisioned privately. Never interpolate it into the release
     // artifact or send its contents through the WebView/observation intake.
-    let bootstrapFound = false, bootstrapUnavailable = false;
     for (const fm of [getFileManager(), FileManager.local()]) {
       const bootstrap = fm.joinPath(fm.documentsDirectory(), "uol_hunter_private_bootstrap.json");
       if (!fm.fileExists(bootstrap)) continue;
-      bootstrapFound = true;
       try {
         if (fm.isFileDownloaded && !fm.isFileDownloaded(bootstrap)) await fm.downloadFileFromiCloud(bootstrap);
         const privateConfig = JSON.parse(fm.readString(bootstrap));
@@ -312,16 +388,92 @@ async function runNativeHunterCollector() {
         if (Keychain.contains(HunterCollector.KEYS.token)) break;
       } catch (_) {
         // An unavailable cloud file must not prevent an existing local import.
-        bootstrapUnavailable = true;
       }
     }
+    const access = await createHunterAccess().status();
+    if (access.status !== "approved") return { status: access.status === "not_configured" ? "activation_required" : access.status,
+      reason: access.reason, access, sources: {} };
     const result = await collector.run();
-    if (result.status === "not_configured") result.reason = bootstrapUnavailable ? "bootstrap_unavailable"
-      : bootstrapFound ? "bootstrap_invalid" : "bootstrap_missing";
-    return result;
+    return { ...result, access };
   } catch (_) {
     return { status: "unavailable", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} };
   }
+}
+
+function createHunterAccess() {
+  return HunterAccess.create({ keychain: Keychain, now: Date.now,
+    uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
+    normalizeSession: HunterCollector.normalizeSession });
+}
+
+async function hunterNotice(title, message) {
+  const alert = new Alert(); alert.title = title; alert.message = message;
+  alert.addAction("OK"); await alert.presentAlert();
+}
+
+async function manageNativeHunterAccess(view) {
+  const manager = createHunterAccess();
+  let access = await manager.status({ refresh: true });
+  let requested = false;
+  if (access.status === "not_configured" || access.status === "access_expired") {
+    const prompt = new Alert(); prompt.title = "Ativar coleta neste iPhone";
+    prompt.message = "Escolha um nome para reconhecer este aparelho. A coleta começa após aprovação do proprietário.";
+    prompt.addTextField("Nome do aparelho", typeof Device !== "undefined" ? String(Device.name()).slice(0, 60) : "Meu iPhone");
+    prompt.addAction("Solicitar acesso"); prompt.addCancelAction("Cancelar");
+    if (await prompt.presentAlert() < 0) return;
+    access = await manager.requestAccess(prompt.textFieldValue(0));
+    requested = true;
+  } else if (access.status === "approved" && access.role === "owner") {
+    const result = await manager.devices();
+    if (!result.ok) { await hunterNotice("Aparelhos", "Não foi possível consultar os aparelhos agora."); return; }
+    const devices = result.devices.filter(d => d.role !== "owner" && ["pending", "approved"].includes(d.state));
+    if (!devices.length) { await hunterNotice("Aparelhos", "Nenhuma solicitação pendente ou aparelho de amigo ativo."); return; }
+    const menu = new Alert(); menu.title = "Gerenciar aparelhos";
+    menu.message = "Confira o nome e o código com seu amigo antes de aprovar.";
+    devices.forEach(d => menu.addAction(d.label + " • " + d.code + " • " + (d.state === "pending" ? "pendente" : "ativo")));
+    menu.addCancelAction("Voltar");
+    const index = await menu.presentSheet();
+    if (index < 0) return;
+    const device = devices[index];
+    let approve = device.state === "pending", accounts;
+    if (!approve) {
+      const operation = new Alert(); operation.title = device.label;
+      operation.addAction("Revisar permissões"); operation.addAction("Suspender aparelho"); operation.addCancelAction("Voltar");
+      const chosen = await operation.presentSheet();
+      if (chosen < 0) return;
+      approve = chosen === 0;
+    }
+    if (approve) {
+      const permissions = new Alert(); permissions.title = "Permissões deste aparelho";
+      permissions.message = "A coleta usa somente a conta técnica. Libere as contas pessoais apenas para quem também poderá resgatar por vocês.";
+      const choices = [[]]; permissions.addAction("Somente coleta");
+      for (const account of (access.accounts || [])) {
+        choices.push([account]); permissions.addAction("Coleta + resgates de " + (account === "gaoriel" ? "Gabriel" : "Leonardo"));
+      }
+      if ((access.accounts || []).length === 2) { choices.push(access.accounts); permissions.addAction("Coleta + resgates das duas contas"); }
+      permissions.addCancelAction("Voltar");
+      const choice = await permissions.presentSheet();
+      if (choice < 0) return;
+      accounts = choices[choice];
+    }
+    const confirm = new Alert(); confirm.title = approve ? "Aprovar aparelho?" : "Suspender aparelho?";
+    confirm.message = device.label + "\nCódigo: " + device.code + (approve
+      ? "\nColeta técnica autorizada." + (accounts.length ? " Também receberá a sessão para consultar vouchers e resgatar por: " + accounts.map(account => account === "gaoriel" ? "Gabriel" : "Leonardo").join(", ") + "." : " Acesso somente à coleta de novidades públicas.")
+      : "\nNovas observações desse aparelho serão recusadas pelo servidor.");
+    confirm.addAction(approve ? "Aprovar" : "Suspender"); confirm.addCancelAction("Cancelar");
+    if (await confirm.presentAlert() < 0) return;
+    const decision = await manager.decide(device.deviceId, approve ? "approve" : "revoke", device.code, accounts);
+    await hunterNotice("Aparelhos", decision.ok ? (approve ? "Aparelho aprovado." : "Aparelho suspenso.") : "Decisão não confirmada. Consulte novamente antes de repetir.");
+  } else {
+    await hunterNotice("Coleta neste iPhone", access.status === "approved" ? "Acesso aprovado. A próxima abertura ou notificação pode coletar dentro dos limites."
+      : access.status === "access_pending" ? "Solicitação pendente. Confira este código com o proprietário: " + access.code
+      : access.status === "access_revoked" ? "Acesso suspenso pelo proprietário."
+      : "Não foi possível confirmar o acesso. Tente novamente mais tarde.");
+  }
+  if (requested && access.status === "access_pending") await hunterNotice("Solicitação enviada", "Aguarde aprovação do proprietário. Código deste aparelho: " + access.code);
+  // Only safe state is injected after an explicit user action in the loaded UI.
+  const safe = JSON.stringify(access).replace(/</g, "\\u003c");
+  await view.evaluateJavaScript("INITIAL.hunterAccess = " + safe + "; renderHunterAccessUI(); setHunterCollectionStatus({status: INITIAL.hunterAccess.status === 'not_configured' ? 'activation_required' : INITIAL.hunterAccess.status});");
 }
 
 async function main() {
@@ -369,6 +521,7 @@ async function main() {
   }
   await presentation;
   await collection;
+  if (uiView.hunterActionTask) await uiView.hunterActionTask;
   Script.complete();
 }
 
@@ -387,6 +540,40 @@ function installHunterBrowser(view) {
   view.shouldAllowRequest = request => {
     const raw = request && request.url;
     if (typeof raw !== "string") return true;
+    if (raw === "hunter-update://check" || raw === "hunter-update://check/") {
+      if (!opening) {
+        opening = true;
+        view.hunterActionTask = Promise.resolve().then(() => performSelfUpdate(true))
+          .then(updated => view.evaluateJavaScript("handleNativeUpdateResult(" + (updated ? "true" : "false") + ");").catch(() => {}))
+          .finally(() => { opening = false; });
+      } else view.evaluateJavaScript("handleNativeUpdateResult(false);").catch(() => {});
+      return false;
+    }
+    const accountAction = /^hunter-account:\/\/(history|redeem)\?account=(leosaquetto|gaoriel)(?:&url=([^&]+))?$/.exec(raw);
+    if (accountAction) {
+      let url = "";
+      try { url = accountAction[3] ? decodeURIComponent(accountAction[3]) : ""; } catch (_) { return false; }
+      if (accountAction[1] === "redeem" && !/^https:\/\/clube\.uol\.com\.br\/campanhasdeingresso\/[A-Za-z0-9][A-Za-z0-9_-]*$/.test(url)) return false;
+      if (!opening) {
+        opening = true;
+        view.hunterActionTask = Promise.resolve().then(() => manageNativeAccount(view, accountAction[1], accountAction[2], url))
+          .catch(() => view.evaluateJavaScript("handleNativeAccountResult(" + JSON.stringify(accountAction[1]) + "," + JSON.stringify(accountAction[2]) + ",{status:'unavailable',account:" + JSON.stringify(accountAction[2]) + "});").catch(() => {}))
+          .finally(() => { opening = false; });
+      } else {
+        view.evaluateJavaScript("handleNativeAccountResult(" + JSON.stringify(accountAction[1]) + "," + JSON.stringify(accountAction[2]) + ",{status:'busy',account:" + JSON.stringify(accountAction[2]) + "});").catch(() => {});
+      }
+      return false;
+    }
+    if (raw === "hunter-access://manage" || raw === "hunter-access://manage/") {
+      if (!opening) {
+        opening = true;
+        const task = Promise.resolve().then(() => manageNativeHunterAccess(view)).catch(() => hunterNotice("Coleta neste iPhone", "Não foi possível concluir a configuração agora."))
+          .finally(() => { opening = false; });
+        view.hunterActionTask = task;
+      }
+      return false;
+    }
+    if (/^hunter-(?:account|access|update):/i.test(raw)) return false;
     const external = raw.startsWith(externalRoute);
     const route = external ? externalRoute : internalRoute;
     if (!raw.startsWith(route)) return true;
@@ -764,7 +951,9 @@ function buildDashboardHTML(historyData, settings, credentials, sessionCookies, 
     realRedemptions: (realRedemptions && realRedemptions.length > 0) ? realRedemptions : BUNDLED_REDEMPTIONS,
     icons: ICONS,
     topic: NTFY_TOPIC,
+    hunterAccess: collectionResult?.access || { status: "not_configured", reason: "activation_required" },
     nativeBrowser: true,
+    nativeAccounts: true,
     scriptVersion: SCRIPT_VERSION,
     scriptName: (typeof Script !== "undefined" && Script.name && Script.name()) ? Script.name() : "Clube UOL - Stories Hunter"
   };

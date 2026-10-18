@@ -17,7 +17,7 @@ export function releaseSecretFileArgs(path) {
     throw new Error("release_secret_file_not_private");
   }
   const values = JSON.parse(readFileSync(path, "utf8"));
-  const allowed = new Set(["INSTAGRAM_WAKE_CLIENTS", "INSTAGRAM_WAKE_RELAY_URL", "INSTAGRAM_WAKE_RELAY_TOKEN", "HUNTER_INTAKE_CLIENTS"]);
+  const allowed = new Set(["INSTAGRAM_WAKE_CLIENTS", "INSTAGRAM_WAKE_RELAY_URL", "INSTAGRAM_WAKE_RELAY_TOKEN", "HUNTER_INTAKE_CLIENTS", "HUNTER_INSTAGRAM_SESSION", "HUNTER_UOL_ACCOUNTS"]);
   if (!values || Array.isArray(values) || typeof values !== "object" ||
       Object.keys(values).some(key => !allowed.has(key) || typeof values[key] !== "string" || !values[key])) {
     throw new Error("release_secret_scope_invalid");

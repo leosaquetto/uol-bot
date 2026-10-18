@@ -1,14 +1,14 @@
 # Handoff: Clube UOL Stories Hunter (Scriptable Hub)
 
-> **Data de Atualização**: 17 de Outubro de 2026  
-> **Status**: Evolução 5.7.0 descrita no changelog; publicação e execução real são registradas separadamente no documento operacional.
+> **Data de Atualização**: 18 de Outubro de 2026
+> **Status**: Contrato atual em [CHANGELOG_v5.7.6.md](CHANGELOG_v5.7.6.md); publicação e execução real são registradas separadamente no documento operacional.
 > **Localização do Desenvolvimento**: `/Users/leosaquetto/Developer/GitHub/uol-bot/stories-hunter/`  
 > **Destino iCloud iOS**: `/Users/leosaquetto/Library/Mobile Documents/iCloud~dk~simonbs~Scriptable/Documents/Clube UOL - Stories Hunter.js`  
 > **Destino Repositório**: `/Users/leosaquetto/Developer/GitHub/uol-bot/scriptable_uol_stories_hunter.js`
 
 ---
 
-## Contrato atual 5.7.0
+## Contrato atual 5.7.6
 
 Consulte [CHANGELOG_v5.7.0.md](CHANGELOG_v5.7.0.md). Esta revisão substitui as regras
 antigas de tags inline nos cards: agora ficam em faixa horizontal rolável, separada
@@ -16,7 +16,10 @@ do título e em ordem cronológica. Home mostra ativas e esgotadas confirmadas n
 últimas 24 horas; Coleção preserva o histórico completo.
 
 `collector.js` roda no host Scriptable e encaminha descobertas públicas ao Worker.
-Sessão técnica e credencial do aparelho vêm de bootstrap privado/Keychain e nunca
+`access.js` solicita aprovação individual e importa a configuração técnica para o
+Keychain; bootstrap privado antigo continua compatível. Permissões pessoais são
+concedidas separadamente pelo proprietário. `redemption.js` verifica a identidade
+da conta e o recibo antes de afirmar sucesso. Sessões, credenciais e vouchers não
 entram no artefato público. Atualização usa `--code-only`; a primeira abertura da
 versão não coleta. A documentação histórica abaixo não autoriza sobrescrever
 sessões, vouchers, datas de resgate ou o banco privado numa atualização de código.

@@ -263,7 +263,7 @@ test('history creates twelve groups per batch after year and month filters witho
   assert.match(container.innerHTML, /Nenhuma oferta encontrada/);
 });
 
-test('history starts at the current São Paulo month, keeps explicit selection, and never renders another period implicitly', () => {
+test('history starts at the current São Paulo month and keeps the monthly archive separate from global curation', () => {
   const records = Array.from({ length: 15 }, (_, i) => offer('oct-' + i, { title: '20/10/2026 Evento ' + i }));
   records.push(offer('curated-current', { title: 'Coldplay 21/10/2026' }), offer('curated-september', { title: 'Coldplay 21/09/2026' }),
     offer('last-year', { title: '20/03/2025 Teatro' }));
@@ -286,20 +286,20 @@ test('history starts at the current São Paulo month, keeps explicit selection, 
   assert.equal(h.context.historyRenderState.cursor, 12);
   assert.equal(h.context.historyRenderState.rows.length, 16);
   assert.deepEqual(groupedPeriods.map(periods => [...new Set(periods)]), [[9]], 'month counters cannot group the entire archive');
-  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-current']);
+  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-current', 'curated-september']);
   h.context.selectHistoryMonth(8);
   assert.equal(h.context.historyRenderState.rows.length, 1);
   assert.equal(h.context.historyRenderState.rows[0].group.parent.id, 'curated-september');
   h.context.renderHistoryScreen();
   assert.equal(h.context.selectedHistoryMonth, 8, 'catalog refresh keeps the requested month');
-  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-september']);
+  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-current', 'curated-september']);
   h.context.selectHistoryYear(2025);
   assert.equal(h.context.selectedHistoryMonth, 2, 'requested old year opens its latest available month');
   assert.equal(h.context.historyRenderState.rows[0].group.parent.id, 'last-year');
   assert.deepEqual(clone(h.context.historyData), source);
 });
 
-test('empty current month stays empty and history sold-out cards remain colored without changing Home styling', () => {
+test('empty current month stays empty while global curation and colored history cards remain available', () => {
   const h = harness({ history: [offer('old', { title: '20/09/2026 Coldplay', isExpired: true })] });
   Object.assign(h.context, { selectedHistoryYear: null, selectedHistoryMonth: null, currentTab: 'history',
     CURATED_EDITORS_CHOICE_SEEDS: [], EDITORS_CHOICE_KEYWORDS: ['coldplay'], MONTH_SHORT_LABELS: Array.from({ length: 12 }, (_, i) => 'M' + i) });
@@ -307,8 +307,8 @@ test('empty current month stays empty and history sold-out cards remain colored 
   h.context.renderHistoryScreen();
   assert.equal(h.context.selectedHistoryMonth, 9);
   assert.equal(h.context.historyRenderState, null);
-  assert.equal(h.elements.get('editorsChoiceTrack').children.length, 0);
-  assert.equal(h.elements.get('sectionEditorsChoice').style.display, 'none');
+  assert.equal(h.elements.get('editorsChoiceTrack').children.length, 1);
+  assert.equal(h.elements.get('sectionEditorsChoice').style.display, 'block');
   assert.match(h.elements.get('historyMonthsContainer').innerHTML, /Month 9 de 2026/);
   const historyStyle = template.match(/\.poster-card\.history-clean-card\.card-sold-out-grouped \{[^}]+}/)[0];
   assert.match(historyStyle, /filter: none/);
@@ -336,7 +336,31 @@ test('history curation preserves compact aliases and ID/link/image evidence with
     assert.equal(h.context.getEditorsChoiceOffers([candidate]).length, 1, field + ' retains recognition');
   }
   h.context.renderHistoryCurated(all);
-  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['real-maroon']);
+  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['real-maroon', 'real-c6fest']);
+});
+
+test('history global curation includes every highlight across years without a six-card cap, preserving monthly pagination and search', () => {
+  const records = Array.from({ length: 8 }, (_, i) => offer('highlight-' + i, {
+    title: (i % 2 ? 'Coldplay ' : 'Favorito ') + (i + 1) + '/09/' + (2024 + i % 3),
+  }));
+  records.push(offer('current-month', { title: '20/10/2026 Comum' }));
+  const h = harness({ history: records });
+  Object.assign(h.context, { selectedHistoryYear: 2026, selectedHistoryMonth: 9, currentTab: 'history',
+    EDITORS_CHOICE_KEYWORDS: ['coldplay'], checkHighlight: title => title.startsWith('Favorito') });
+  vm.runInContext(['historyCurationText', 'getEditorsChoiceOffers', 'renderHistoryCurated'].map(fn).join('\n'), h.context);
+  h.context.buildOfferGroups = (active, history) => [...active, ...history].map(item => ({ key: item.id, parent: item }));
+  const source = clone(h.context.historyData);
+  h.context.renderHistoryMonths(h.context.historyData.history, 2026, element());
+  const monthly = h.context.historyRenderState;
+  assert.deepEqual(clone(monthly.rows).map(row => row.group.parent.id), ['current-month']);
+  h.context.renderHistoryCurated(h.context.historyData.history);
+  assert.equal(h.elements.get('editorsChoiceTrack').children.length, 8);
+  assert.equal(h.context.historyRenderState, monthly, 'curation cannot reset or expand the regular archive');
+  assert.equal(h.context.selectedHistoryMonth, 9);
+  assert.deepEqual(clone(h.context.historyData), source);
+  h.context.historySearchQuery = 'coldplay';
+  h.context.renderHistoryCurated(h.context.historyData.history);
+  assert.equal(h.elements.get('editorsChoiceTrack').children.length, 4, 'text search still filters global curation');
 });
 
 test('redemption parser accepts ISO and strict Brazilian dates in source timezone, retains day precision', () => {

@@ -1,8 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { InstagramWakeQueue, authenticateWake, WAKE_BODY_LIMIT } from "./instagram-wake.js";
-import { HunterIntakeQueue, HUNTER_METADATA_KEY, authenticateHunter,
+import { HunterIntakeQueue, HUNTER_METADATA_KEY,
   readHunterIntakeJson, publicHunterError } from "./hunter-intake.js";
+import { HunterAccessRegistry, HUNTER_ACCESS_KEY, hunterAccessProof, hunterAccessFailure } from "./hunter-access.js";
 import { buildCatalog, catalogBudgetAllowed, serveCatalog, CATALOG_TTL_SECONDS,
   CATALOG_OFFER_LIMIT, CATALOG_STORY_LIMIT, CATALOG_OFFERS_SQL, CATALOG_STORIES_SQL } from "./catalog.js";
 
@@ -607,6 +608,12 @@ export class UolTelegramShadow extends DurableObject {
       processStory: payload => this.instagramStoryInbox.ingest(payload),
       resumeStory: (key, payload) => this.instagramStoryInbox.resume(key, payload),
     });
+    this.hunterAccess = new HunterAccessRegistry({
+      readState: () => this.metadataValue(HUNTER_ACCESS_KEY),
+      writeState: value => this.setMetadata(HUNTER_ACCESS_KEY, value),
+      budgetAllowed: () => this.storageUsageSnapshot().maintenanceAllowed === true,
+      env,
+    });
     this.storageUsage = {
       day: new Date().toISOString().slice(0, 10),
       rowsRead: 0,
@@ -638,14 +645,31 @@ export class UolTelegramShadow extends DurableObject {
     return this.instagramStoryInbox.ingest(payload);
   }
 
-  async recordHunterIntake(payload, clientId) {
+  async recordHunterIntake(payload, clientId, proof = null) {
     const receipt = await this.storageContext.run({ stage: "guard" },
-      () => this.hunterIntake.accept(clientId, payload));
+      () => {
+        if (proof && this.hunterAccess.authenticate(proof) !== clientId) throw new Error("hunter_client_invalid");
+        return this.hunterIntake.accept(clientId, payload,
+          () => !proof || this.hunterAccess.authenticate(proof) === clientId);
+      });
     // Receipt means the observation is durable. Delivery belongs to the server.
     this.ctx.waitUntil(this.drainHunterIntake().catch(() => {
       logEvent("warn", "uol_hunter_drain_failed", { error: "processing_deferred" });
     }));
     return receipt;
+  }
+
+  hunterAccessAction(action, proof, body, admin = false) {
+    return this.storageContext.run({ stage: "guard" }, () => {
+      if (action === "authenticate") return this.hunterAccess.authenticate(proof);
+      if (action === "status") return this.hunterAccess.status(proof);
+      if (action === "request") return this.hunterAccess.request(proof, body);
+      if (action === "config") return this.hunterAccess.config(proof);
+      if (action === "account-config") return this.hunterAccess.accountConfig(proof, body);
+      if (action === "devices") return this.hunterAccess.list(proof, admin);
+      if (action === "decision") return this.hunterAccess.decide(proof, body, admin);
+      throw new Error("hunter_access_request_invalid");
+    });
   }
 
   getHunterIntakeStatus(clientId, eventId) {
@@ -9372,14 +9396,43 @@ export default {
           cache: caches.default, waitUntil: task => ctx.waitUntil(task) });
       }
       const stub = env.UOL_TELEGRAM_SHADOW.getByName(INSTANCE_NAME);
+      if (url.pathname.startsWith("/hunter-access/")) {
+        const action = url.pathname.slice("/hunter-access/".length);
+        const admin = action === "admin-devices" || action === "admin-decision";
+        const operation = admin ? action.slice(6) : action;
+        if (!["request", "status", "config", "account-config", "devices", "decision"].includes(operation) ||
+            (admin && !["devices", "decision"].includes(operation))) return jsonResponse({ ok: false, error: "not_found" }, 404);
+        const expected = ["request", "decision"].includes(operation) ? "POST" : "GET";
+        if (request.method !== expected) return jsonResponse({ ok: false, error: "method_not_allowed" }, 405);
+        if (admin && !(await isAuthorized(request, env))) return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        const proof = admin ? null : await hunterAccessProof(request);
+        if (!admin && !proof) return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+        try {
+          if (expected === "POST" && !/^application\/json(?:\s*;|$)/i.test(request.headers.get("Content-Type") || "")) return jsonResponse({ ok: false, error: "content_type_invalid" }, 415);
+          const body = expected === "POST" ? await readRequestJson(request, 2048)
+            : operation === "account-config" ? url.searchParams.get("account") : null;
+          return jsonResponse(await stub.hunterAccessAction(operation, proof, body, admin), operation === "request" ? 202 : 200);
+        } catch (error) {
+          const failure = hunterAccessFailure(error);
+          return jsonResponse({ ok: false, error: failure.error }, failure.status);
+        }
+      }
       if (url.pathname === "/hunter-intake" || url.pathname === "/hunter-intake-status") {
-        const clientId = await authenticateHunter(request, env);
+        let clientId = "";
+        const proof = await hunterAccessProof(request);
+        if (proof) {
+          try { clientId = await stub.hunterAccessAction("authenticate", proof); }
+          catch (error) {
+            const failure = hunterAccessFailure(error);
+            return jsonResponse({ ok: false, error: failure.error }, failure.status);
+          }
+        }
         if (!clientId) return jsonResponse({ ok: false, error: "unauthorized" }, 401);
         const allowedMethod = url.pathname === "/hunter-intake" ? "POST" : "GET";
         if (request.method !== allowedMethod) return jsonResponse({ ok: false, error: "method_not_allowed" }, 405);
         try {
           return jsonResponse(allowedMethod === "POST"
-            ? await stub.recordHunterIntake(await readHunterIntakeJson(request), clientId)
+            ? await stub.recordHunterIntake(await readHunterIntakeJson(request), clientId, proof)
             : await stub.getHunterIntakeStatus(clientId, url.searchParams.get("eventId") || ""),
           allowedMethod === "POST" ? 202 : 200);
         } catch (error) {

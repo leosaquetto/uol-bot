@@ -241,7 +241,7 @@ test('offer browser rejects unsafe destinations and releases its lock after a sa
   }
 });
 
-test('native collector imports private local fallback and reports a missing bootstrap without exposing values', async () => {
+test('native collector requires approval and retains the optional private local fallback without exposing values', async () => {
   const files = new Map(), keys = new Map();
   const manager = root => ({ documentsDirectory: () => root, joinPath: path.join,
     fileExists: p => files.has(p), readString: p => files.get(p) });
@@ -253,11 +253,15 @@ test('native collector imports private local fallback and reports a missing boot
       importBootstrap: value => { keys.set('token', value.token); },
       run: async () => ({ status: keys.has('token') ? 'complete' : 'not_configured', sources: {} })
     }) },
+    HunterAccess: { create: () => ({ status: async () => keys.has('token')
+      ? { status: 'approved', role: 'member' }
+      : { status: 'not_configured', reason: 'activation_required' } }) },
   });
   const code = source.slice(source.indexOf('async function runNativeHunterCollector('), source.indexOf('async function main()'));
   vm.runInContext(code, context);
   let result = await context.runNativeHunterCollector();
-  assert.equal(result.reason, 'bootstrap_missing');
+  assert.equal(result.status, 'activation_required');
+  assert.equal(result.reason, 'activation_required');
   files.set('/local/uol_hunter_private_bootstrap.json', JSON.stringify(privateConfig));
   files.set('/cloud/uol_hunter_private_bootstrap.json', 'unavailable-cloud-copy');
   result = await context.runNativeHunterCollector();
