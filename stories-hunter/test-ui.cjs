@@ -24,8 +24,13 @@ function fn(name) {
   return template.slice(start, end);
 }
 function element() {
-  return { style: { setProperty() {} }, classList: { toggle() {} }, children: [], textContent: '', innerHTML: '',
-    appendChild(node) { this.children.push(node); }, setAttribute(key, value) { this[key] = value; } };
+  let markup = '';
+  return { style: { setProperty() {} }, classList: { toggle() {} }, children: [], textContent: '',
+    get innerHTML() { return markup; }, set innerHTML(value) { markup = value; this.children.forEach(node => { node.parentNode = null; }); this.children = []; },
+    appendChild(node) { this.children.push(node); node.parentNode = this; },
+    insertBefore(node, before) { const index = before ? this.children.indexOf(before) : -1; if (index < 0) this.children.push(node); else this.children.splice(index, 0, node); node.parentNode = this; },
+    remove() { if (this.parentNode) { this.parentNode.children = this.parentNode.children.filter(node => node !== this); this.parentNode = null; } },
+    setAttribute(key, value) { this[key] = value; } };
 }
 function harness({ active = [], history = [], bundled = [], saved = [], settings = {}, native = false, paused = false } = {}) {
   let time = now;
@@ -37,7 +42,9 @@ function harness({ active = [], history = [], bundled = [], saved = [], settings
     URL, Date: Clock, Intl, console,
     INITIAL: { realRedemptions: clone(bundled), collectionPausedForUpdate: paused, ...(native ? { hunterCollection: { status: 'starting' } } : {}) },
     settings: clone(settings), historyData: clone({ active, history }), activeFilter: null, isGrouped: true,
-    currentTab: 'home', currentTimelineFilter: 'all', CATEGORY_MAP: { TEATRO: { label: 'Teatro', icon: '' }, OUTROS: { label: 'Outros', icon: '' } },
+    currentTab: 'home', currentTimelineFilter: 'all', historyRenderState: null, selectedHistoryMonth: 'all', historySearchQuery: '',
+    MONTH_FULL_NAMES: Array.from({ length: 12 }, (_, i) => 'Month ' + i), currentRenderedGroups: new Map(),
+    CATEGORY_MAP: { TEATRO: { label: 'Teatro', icon: '' }, OUTROS: { label: 'Outros', icon: '' } },
     ICONS: { tickets: '<svg></svg>', calendar: '<svg></svg>' },
     document: { getElementById(id) { if (!elements.has(id)) elements.set(id, element()); return elements.get(id); }, createElement: element },
     localStorage: { getItem: key => storage.get(key) || null, setItem: (key, value) => storage.set(key, value) },
@@ -46,11 +53,13 @@ function harness({ active = [], history = [], bundled = [], saved = [], settings
     saveHistoryToStorage() {}, recordSessionImpressions() {}, checkHighlight: () => false,
     normalizeEventInfo: () => ({}), getRedeemedUsersForOffer: () => [], renderRedeemedFriendsPill: () => '',
     getAvatarUrl: () => 'https://example.test/avatar.jpg', renderHistoryScreen() {}, renderGroupedOffers() {},
+    createHistoryPosterCard: group => ({ group, className: 'poster-card' }),
   });
   vm.runInContext([
     block('CATALOG_ADAPTER'), block('UI_DATE_HELPERS'), block('REDEMPTION_IDENTITY'), block('REDEMPTION_DATE'),
     ...['extractSessionDate', 'isStoriesOnlyOffer', 'getGroupKey', 'buildOfferGroups', 'formatRelativeTime', 'formatExpiredAgo',
-      'formatRedemptionTitle', 'getTimelineEvents', 'getRedeemedUsersForOffer', 'updateTimelineBadgeDot', 'renderTimelineList', 'renderOffers', 'renderIndividualOffers', 'updateCategoryCounts'].map(fn),
+      'formatRedemptionTitle', 'getTimelineEvents', 'getRedeemedUsersForOffer', 'updateTimelineBadgeDot', 'renderTimelineList', 'renderOffers', 'renderIndividualOffers', 'updateCategoryCounts',
+      'getOfferYearAndMonth', 'historyMatchesSearch', 'renderHistoryMonths', 'appendHistoryBatch'].map(fn),
   ].join('\n'), context);
   return { context, elements, requests, storage, advance: ms => { time += ms; } };
 }
@@ -66,6 +75,25 @@ test('Home keeps active cache and only explicit exhaustion in the last 24h witho
   assert.deepEqual(clone(result.activeItems).map(o => o.id), ['active']);
   assert.deepEqual(clone(result.soldOutItems).map(o => o.id), ['boundary']);
   assert.deepEqual(clone(h.context.historyData), before);
+});
+
+test('Home excludes past civil session dates in São Paulo before grouping, preserving today, unknown and all history', () => {
+  const active = [offer('past', { title: '16/10/2026 Teatro' }), offer('today', { title: '17/10/2026 Teatro' }),
+    offer('future', { title: '18/10/2026 Teatro' }), offer('unknown', { title: 'Teatro sem data' })];
+  const history = [offer('sold-past', { title: '16/10/2026 Teatro', expiredAt: now - 10 }),
+    offer('sold-today', { title: '17/10/2026 Teatro', expiredAt: now - 10 })];
+  const h = harness({ active, history });
+  const before = clone(h.context.historyData);
+  const sets = h.context.homeOfferSets(h.context.historyData.active, h.context.historyData.history);
+  assert.deepEqual(clone(sets.activeItems).map(o => o.id), ['today', 'future', 'unknown']);
+  assert.deepEqual(clone(sets.soldOutItems).map(o => o.id), ['sold-today']);
+  assert.deepEqual(clone(h.context.historyData), before);
+  const midnight = Date.parse('2026-10-18T03:00:00Z');
+  assert.deepEqual(clone(h.context.homeOfferSets(active, [], midnight).activeItems).map(o => o.id), ['future', 'unknown']);
+  const rollover = Date.parse('2027-01-01T03:00:00Z');
+  assert.deepEqual(clone(h.context.homeOfferSets([
+    offer('previous-year', { title: '31/12/2026 Teatro' }), offer('new-year', { title: '01/01/2027 Teatro' })
+  ], [], rollover).activeItems).map(o => o.id), ['new-year']);
 });
 
 test('freshest availability evidence wins, without inventing an unknown sold-out time', () => {
@@ -143,6 +171,62 @@ test('session tags keep explicit years and São Paulo rollover, reject invalid d
   assert.equal(h.context.sessionDateInfo(offer('until', { title: 'Temporada até 13/12/2027' })).label, 'ATÉ 13 DEZ 2027');
 });
 
+test('date strips divide up to three dates equally and preserve scrolling order beyond three', () => {
+  const h = harness();
+  const items = [1, 2, 3, 4].map(day => offer('day-' + day, { title: (17 + day) + '/10/2026 Teatro' }));
+  for (const count of [1, 2, 3]) {
+    const html = h.context.dateStrip(h.context.renderSessionDatePills(items.slice(0, count), []));
+    assert.doesNotMatch(html, /dates-scroll/);
+    assert.equal((html.match(/class="micro-date-pill/g) || []).length, count);
+  }
+  const html = h.context.dateStrip(h.context.renderSessionDatePills(items, []));
+  assert.match(html, /dates-scroll/);
+  assert.ok(html.indexOf('AMANHÃ') < html.indexOf('19 OUT'));
+  assert.match(template, /\.micro-dates-inline \.micro-date-pill \{[^}]*flex: 1 1 0/);
+  assert.match(template, /\.micro-dates-inline\.dates-scroll \.micro-date-pill \{[^}]*flex: 0 0 calc\(\(100% - 10px\) \/ 3\)/);
+  const hero = h.context.dateStrip(h.context.renderSessionDatePills(items, []), true);
+  assert.match(hero, /dates-compact/);
+  assert.doesNotMatch(hero, /dates-scroll/);
+  assert.match(template, /\.micro-dates-inline\.dates-compact \.micro-date-pill \{[^}]*flex: 0 0 auto/);
+  assert.match(fn('createPosterCard'), /if \(isHeroFullWidth\)[\s\S]*dateStrip\(microDatePillsHtml, true\)/);
+});
+
+test('history creates twelve groups per batch after year and month filters without deleting source records', () => {
+  const records = Array.from({ length: 29 }, (_, i) => offer('archive-' + i, { title: '20/10/2026 Evento ' + i }));
+  records.push(offer('other-month', { title: '20/09/2026 Setembro' }), offer('other-year', { title: '20/10/2025 Antigo' }));
+  const h = harness({ history: records });
+  h.context.currentTab = 'history';
+  h.context.selectedHistoryMonth = 9;
+  h.context.buildOfferGroups = (active, history) => [...active, ...history].map(item => ({ key: item.id, parent: item }));
+  const container = element();
+  const original = clone(h.context.historyData);
+  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  const state = h.context.historyRenderState;
+  assert.equal(state.rows.length, 29);
+  assert.equal(state.cursor, 12);
+  assert.equal(state.tracks.get(9).children.length, 12);
+  assert.match(state.button.textContent, /17 restantes/);
+  state.button.onclick();
+  assert.equal(state.cursor, 24);
+  state.button.onclick();
+  assert.equal(state.cursor, 29);
+  assert.equal(state.button.parentNode, null);
+  assert.deepEqual(clone(h.context.historyData), original);
+  h.context.selectedHistoryMonth = 8;
+  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  assert.equal(h.context.historyRenderState.rows.length, 1);
+  assert.equal(container.children.length, 1, 'filter reset replaces the visible page');
+  h.context.selectedHistoryMonth = 'all';
+  h.context.historySearchQuery = 'SÉTEMBRO';
+  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  assert.equal(h.context.historyRenderState.rows.length, 1, 'accent-insensitive search runs before the page');
+  assert.equal(h.context.historyRenderState.rows[0].group.parent.id, 'other-month');
+  h.context.historySearchQuery = 'not found';
+  h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
+  assert.equal(h.context.historyRenderState, null);
+  assert.match(container.innerHTML, /Nenhuma oferta encontrada/);
+});
+
 test('redemption parser accepts ISO and strict Brazilian dates in source timezone, retains day precision', () => {
   const h = harness();
   assert.equal(h.context.parseRedemptionDate('16/10/2026 às 15:45'), Date.parse('2026-10-16T15:45:00-03:00'));
@@ -196,6 +280,32 @@ test('timeline draws thumbnails for offers and redemptions, with unknown date la
   assert.match(html, /onerror="this.remove\(\)"/);
 });
 
+test('common cards enlarge and separate date pills while compact highlights retain original sizing', () => {
+  assert.match(template, /\.micro-dates-inline:not\(\.dates-compact\) \{ margin-top: 10px; \}/);
+  assert.match(template, /\.micro-dates-inline:not\(\.dates-compact\) \.micro-date-pill \{[^}]*font-size: 10px/);
+  assert.match(template, /\.micro-date-pill \{[^}]*font-size: 8px/);
+  assert.match(template, /\.micro-dates-inline\.dates-compact \.micro-date-pill \{ flex: 0 0 auto/);
+});
+
+test('timeline filters fit a two-column grid with touch targets and full readable titles', () => {
+  const filters = template.match(/\.timeline-filter-bar \.redemptions-filter-pills \{[^}]+}/)[0];
+  assert.match(filters, /display: grid/);
+  assert.match(filters, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(filters, /overflow: visible/);
+  const button = template.match(/\.timeline-filter-bar \.redemptions-filter-pill \{[^}]+}/)[0];
+  assert.match(button, /min-height: 44px/);
+  const title = template.match(/\.timeline-item-title \{[^}]+}/)[0];
+  assert.match(title, /font-size: 14px/);
+  assert.doesNotMatch(title, /ellipsis|line-clamp|overflow: hidden/);
+  const h = harness();
+  h.context.getTimelineEvents = () => [{ type: 'nova', title: 'Teatro <teste> - SP', badgeText: 'Nova', desc: '', timestamp: now - 1000 }];
+  h.context.renderTimelineList();
+  const html = h.elements.get('timelineList').innerHTML;
+  assert.match(html, /Teatro &lt;teste&gt;\u00a0-\u00a0SP/);
+  assert.equal(h.elements.get('tlFilterAll')['aria-pressed'], 'true');
+  assert.equal(h.elements.get('tlFilterExpired')['aria-pressed'], 'false');
+});
+
 test('native collector owns source requests on catalog failure, and receipts do not imply delivery', async () => {
   const h = harness({ native: true, active: [offer('cached')] });
   await h.context.streamLiveOffers();
@@ -217,6 +327,9 @@ test('iPhone status distinguishes update, configuration and suspended sources fr
   assert.match(statusText({ status: 'starting' }), /buscando novidades/);
   assert.match(statusText({ status: 'updated' }), /atualizado; abra novamente para coletar/);
   assert.match(statusText({ status: 'not_configured' }), /configuração privada pendente/);
+  assert.match(statusText({ status: 'not_configured', reason: 'bootstrap_missing' }), /aguardando arquivo privado no iCloud/);
+  assert.match(statusText({ status: 'not_configured', reason: 'bootstrap_invalid' }), /arquivo privado inválido/);
+  assert.match(statusText({ status: 'not_configured', reason: 'device_mismatch' }), /outro aparelho/);
   assert.match(statusText({ status: 'unavailable' }), /coleta indisponível/);
   const suspended = statusText({ status: 'complete', sources: {
     portal: { status: 'empty', found: 0 }, instagram: { status: 'auth_required', reason: 'authentication_suspended', found: 0 }
@@ -281,10 +394,13 @@ test('complete embedded script boots every saved tab with an offline catalog', a
   assert.ok(scriptStart > '<script>'.length && scriptEnd > scriptStart);
   const completeScript = template.slice(scriptStart, scriptEnd);
   assert.doesNotMatch(completeScript, /<\/script\s*>/i, 'embedded content cannot end the HTML script early');
+  assert.doesNotMatch(template.slice(0, template.indexOf('<body')), /<link[^>]*fonts\.googleapis\.com[^>]*rel="stylesheet"/i,
+    'external fonts cannot block the initial document');
 
   for (const tab of ['home', 'tickets', 'history', 'redemptions']) {
     const handlers = new Map();
     const elements = new Map();
+    const timers = [];
     const createElement = () => ({
       ...element(), dataset: {}, classList: { add() {}, remove() {}, toggle() {} },
       querySelector: () => createElement(), querySelectorAll: () => [],
@@ -294,6 +410,7 @@ test('complete embedded script boots every saved tab with an offline catalog', a
       historyData: { active: [offer('cached', { title: '22/10 Teatro teste' })], history: [] },
       realRedemptions: [], hunterCollection: { status: 'starting' }, collectionPausedForUpdate: true,
     };
+    const head = createElement();
     const context = vm.createContext({
       URL, Date, Intl, console,
       window: { scrollY: 0, scrollTo() {}, addEventListener(name, callback) {
@@ -301,6 +418,7 @@ test('complete embedded script boots every saved tab with an offline catalog', a
         handlers.get(name).push(callback);
       } },
       document: {
+        head,
         getElementById(id) {
           if (!elements.has(id)) elements.set(id, createElement());
           return elements.get(id);
@@ -309,7 +427,7 @@ test('complete embedded script boots every saved tab with an offline catalog', a
       },
       localStorage: { getItem: () => null, setItem() {} },
       fetch: async () => { throw new Error('offline fixture'); },
-      setTimeout() {}, clearTimeout() {}, setInterval() {}, clearInterval() {},
+      setTimeout(callback, delay) { timers.push({ callback, delay }); }, clearTimeout() {}, setInterval() {}, clearInterval() {},
     });
     const script = new vm.Script(completeScript.replace('__INITIAL_DATA_JSON__', JSON.stringify(initial)), { filename: 'hunter-inline.js' });
     script.runInContext(context);
@@ -319,5 +437,11 @@ test('complete embedded script boots every saved tab with an offline catalog', a
     const view = tab === 'history' ? 'viewHistory' : tab === 'redemptions' ? 'viewRedemptions' : 'viewMain';
     assert.equal(elements.get(view).style.display, 'block', tab + ' must show its saved screen');
     assert.equal(elements.get('skeletonList').style.display, 'none', tab + ' must finish the offline boot');
+    assert.equal(elements.get('liveStatusText')['aria-busy'], 'false');
+    assert.equal(head.children.length, 0, 'interface boots without waiting for a font request');
+    timers.filter(timer => timer.delay === 0).forEach(timer => timer.callback());
+    assert.equal(head.children.length, 1);
+    assert.equal(head.children[0].rel, 'stylesheet');
+    assert.match(head.children[0].href, /^https:\/\/fonts\.googleapis\.com\/css2\?family=Manrope:/);
   }
 });

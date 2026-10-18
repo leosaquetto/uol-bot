@@ -10,6 +10,11 @@ const start = template.indexOf('// CATALOG_ADAPTER_START');
 const end = template.indexOf('// CATALOG_ADAPTER_END');
 assert.ok(start > 0 && end > start);
 const adapter = template.slice(start, end);
+const dateStart = template.indexOf('// UI_DATE_HELPERS_START');
+const dateEnd = template.indexOf('// UI_DATE_HELPERS_END');
+const extractStart = template.indexOf('    function extractSessionDate(');
+const extractEnd = template.indexOf('\n    }', extractStart) + '\n    }'.length;
+const dateHelpers = template.slice(dateStart, dateEnd) + '\n' + template.slice(extractStart, extractEnd);
 const endpoint = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/catalog';
 const key = 'uol_shared_catalog_v1';
 const now = Date.parse('2026-10-17T18:00:00Z');
@@ -40,12 +45,12 @@ function harness({ cache, history = { active: [], history: [] }, network = () =>
   const rendered = [];
   class Clock extends Date { static now() { return now; } }
   const context = vm.createContext({
-    URL, Date: Clock, console,
+    URL, Date: Clock, Intl, console,
     historyData: clone(history), currentTab: 'home',
     localStorage: { getItem: k => storage.get(k) || null, setItem: (k, v) => { storage.set(k, v); writes.push(k); } },
     fetch: async (url, options) => { requests.push({ url, options }); return network(url, options); },
     document: { getElementById: id => {
-      if (!elements.has(id)) elements.set(id, { style: {}, textContent: '' });
+      if (!elements.has(id)) elements.set(id, { style: {}, textContent: '', setAttribute(name, value) { this[name] = value; } });
       return elements.get(id);
     } },
     getCachedDescription: () => '',
@@ -56,7 +61,7 @@ function harness({ cache, history = { active: [], history: [] }, network = () =>
     renderHistoryScreen: () => {}, updateCategoryCounts: () => {}, updateTimelineBadgeDot: () => {},
     prefetchActiveOfferDescriptions: () => { throw new Error('Unexpected automatic details fetch'); },
   });
-  vm.runInContext(adapter, context);
+  vm.runInContext(adapter + '\n' + dateHelpers, context);
   return {
     context, storage, requests, writes, elements, rendered,
     run: () => context.streamLiveOffers(),
@@ -104,6 +109,48 @@ test('fresh cache avoids even catalog HTTP for 120 seconds', async () => {
   await h.run();
   assert.equal(h.requests.length, 0);
   assert.equal(h.state().active.length, 1);
+});
+
+test('manual refresh bypasses client freshness once, preserves ETag and blocks overlapping clicks', async () => {
+  let finish;
+  const h = harness({ cache: { snapshot: snapshot(), etag: '"previous"', fetchedAt: now - 100 },
+    network: () => new Promise(resolve => { finish = resolve; }) });
+  await h.run();
+  assert.equal(h.requests.length, 0);
+  const refresh = h.context.refreshHunterCatalog();
+  assert.equal(h.requests.length, 1);
+  assert.equal(h.elements.get('btnRefreshCatalog').disabled, true);
+  await h.context.refreshHunterCatalog();
+  assert.equal(h.requests.length, 1);
+  finish(response(null, 304)); await refresh;
+  assert.equal(h.requests[0].options.headers['If-None-Match'], '"previous"');
+  assert.equal(h.elements.get('btnRefreshCatalog').disabled, false);
+  assert.equal(h.state().active.length, 1);
+});
+
+test('refresh deadline covers a stalled response body and releases controls while retaining cache', async () => {
+  let expire, bodyStarted;
+  let cleared = false;
+  const started = new Promise(resolve => { bodyStarted = resolve; });
+  const h = harness({ cache: { snapshot: snapshot(), etag: '"previous"', fetchedAt: now - 100 },
+    network: (_, options) => ({ ok: true, status: 200,
+      json: () => new Promise((_, reject) => {
+        options.signal.addEventListener('abort', () => reject(new Error('Aborted')));
+        bodyStarted();
+      }) }) });
+  h.context.AbortController = AbortController;
+  h.context.setTimeout = callback => { expire = callback; return 1; };
+  h.context.clearTimeout = () => { cleared = true; };
+  const refresh = h.context.refreshHunterCatalog();
+  await started;
+  assert.equal(cleared, false);
+  assert.equal(h.elements.get('btnRefreshCatalog').disabled, true);
+  expire();
+  await refresh;
+  assert.equal(cleared, true);
+  assert.equal(h.elements.get('btnRefreshCatalog').disabled, false);
+  assert.equal(h.state().active.length, 1);
+  assert.match(h.elements.get('liveStatusText').textContent, /cache/);
 });
 
 test('invalid cache cannot send ETag or accept orphan 304; cold fallback runs once', async () => {

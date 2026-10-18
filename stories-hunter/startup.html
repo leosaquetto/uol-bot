@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>Clube UOL</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 32px; background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    main { width: min(100%, 320px); text-align: center; }
+    img { display: block; width: 190px; max-width: 90%; height: auto; margin: 0 auto 42px; }
+    h1 { margin: 0 0 12px; font-size: 22px; line-height: 1.25; font-weight: 650; }
+    p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin: 0; }
+    progress { appearance: none; -webkit-appearance: none; display: block; width: 170px; height: 4px; border: 0; border-radius: 4px; overflow: hidden; background: #232732; margin: 26px auto; }
+    progress::-webkit-progress-bar { background: #232732; }
+    progress::-webkit-progress-value { background: #ffb300; }
+    progress:indeterminate { background: linear-gradient(90deg, #232732 0%, #ffb300 45%, #f97316 55%, #232732 100%); background-size: 250% 100%; animation: loading 1.5s ease-in-out infinite; }
+    progress:indeterminate::-webkit-progress-bar { background: transparent; }
+    @keyframes loading { from { background-position: 100% 0; } to { background-position: 0 0; } }
+    @media (prefers-reduced-motion: reduce) { progress:indeterminate { animation: none; background-position: 50% 0; } }
+  </style>
+</head>
+<body>
+  <main role="status" aria-live="polite">
+    <img src="data:image/png;base64,__LOGO_BASE64__" alt="Clube UOL">
+    <h1>__STARTUP_TITLE__</h1>
+    <p>__STARTUP_DESCRIPTION__</p>
+    <progress aria-label="Carregando o Stories Hunter"></progress>
+  </main>
+</body>
+</html>

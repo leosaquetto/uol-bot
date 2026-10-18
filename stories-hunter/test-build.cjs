@@ -99,18 +99,19 @@ test('iCloud download is awaited before any private read and failure does not ov
 });
 
 test('OTA first opening shows UI without collection; next opening and explicit notifications collect', async () => {
-  const files = new Map(); let action = 'open', collects = 0, displayed = 0, updated = 0, lastInitial, lastCollection;
+  const files = new Map(); let action = 'open', collects = 0, displayed = 0, updated = 0, lastInitial, lastCollection, closeWindow;
   const context = vm.createContext({
-    SCRIPT_VERSION: 'test-1', console: { log() {} },
+    SCRIPT_VERSION: 'test-1', STARTUP_HTML: '__STARTUP_TITLE__ __STARTUP_DESCRIPTION__', console: { log() {} },
+    Timer: { schedule: (milliseconds, repeats, callback) => { assert.equal(milliseconds, 800); assert.equal(repeats, false); callback(); } },
     FileManager: { local: () => ({ documentsDirectory: () => '/local', joinPath: path.join, fileExists: p => files.has(p),
       readString: p => files.get(p), writeString: (p, v) => files.set(p, v) }) },
     hunterAction: () => action,
     runNativeHunterCollector: async () => { collects++; return { status: 'complete' }; },
     performSelfUpdate: async () => { updated++; },
-    preparePrivateFiles: async () => {}, persistPrivateBootstrap() {},
+    preparePrivateFiles: async () => { assert.ok(displayed > 0, 'loading is visible before private data waits'); }, persistPrivateBootstrap() {},
     loadSettings: () => ({}), loadHistory: () => [], loadCredentials: () => ({}), loadSessionCookies: () => [], loadRedemptionsDatabase: () => [],
     buildDashboardHTML: (...args) => { lastInitial = args[5]; lastCollection = args[6]; return '<html></html>'; },
-    WebView: class { async loadHTML() {} async evaluateJavaScript() { throw Error('unexpected presentation bridge'); } async present() { displayed++; } },
+    WebView: class { async loadHTML(html) { if (html === '<html></html>') closeWindow(); } async evaluateJavaScript() { throw Error('unexpected presentation bridge'); } present() { displayed++; return new Promise(resolve => { closeWindow = resolve; }); } },
     Script: { complete() {}, setShortcutOutput() {} }
   });
   const gate = source.slice(source.indexOf('function hunterCollectionPausedForUpdate('), source.indexOf('async function runNativeHunterCollector('));
@@ -125,6 +126,56 @@ test('OTA first opening shows UI without collection; next opening and explicit n
   action = 'update'; context.SCRIPT_VERSION = 'test-3'; await context.main();
   assert.equal(updated, 1); assert.equal(collects, 2);
   action = 'open'; await context.main(); assert.equal(collects, 2); assert.equal(displayed, 3);
+});
+
+test('closing the loading window never reopens it after delayed native data completes', async () => {
+  const loaded = []; let releasePrivate, closeWindow, closed = false;
+  const prepared = new Promise(resolve => { releasePrivate = resolve; });
+  const context = vm.createContext({
+    console: { log() {} }, STARTUP_HTML: '__STARTUP_TITLE__ __STARTUP_DESCRIPTION__',
+    hunterAction: () => 'open', hunterCollectionPausedForUpdate: () => false,
+    runNativeHunterCollector: async () => ({ status: 'complete', received: 1 }),
+    Timer: { schedule: (_, __, callback) => callback() },
+    preparePrivateFiles: async () => prepared, persistPrivateBootstrap() {},
+    loadSettings: () => ({}), loadHistory: () => [], loadCredentials: () => ({}), loadSessionCookies: () => [], loadRedemptionsDatabase: () => [],
+    buildDashboardHTML: () => '<html>dashboard</html>',
+    WebView: class { async loadHTML(html) { assert.equal(closed, false); loaded.push(html); } present() { return new Promise(resolve => { closeWindow = () => { closed = true; resolve(); }; }); } },
+    Script: { complete() {} },
+  });
+  const main = source.slice(source.indexOf('async function main()'), source.indexOf('function nativeRedemptionKey('));
+  vm.runInContext(main, context);
+  const running = context.main();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(loaded.length, 1); assert.match(loaded[0], /Preparando suas ofertas/);
+  closeWindow(); releasePrivate(); await running;
+  assert.equal(loaded.length, 1);
+});
+
+test('native collector imports private local fallback and reports a missing bootstrap without exposing values', async () => {
+  const files = new Map(), keys = new Map();
+  const manager = root => ({ documentsDirectory: () => root, joinPath: path.join,
+    fileExists: p => files.has(p), readString: p => files.get(p) });
+  const privateConfig = { deviceId: 'test-phone', token: 'private-synthetic-token' };
+  const context = vm.createContext({
+    FileManager: { local: () => manager('/local') }, getFileManager: () => manager('/cloud'),
+    Keychain: { contains: k => keys.has(k), get: k => keys.get(k) },
+    HunterCollector: { KEYS: { token: 'token', device: 'device' }, create: () => ({
+      importBootstrap: value => { keys.set('token', value.token); },
+      run: async () => ({ status: keys.has('token') ? 'complete' : 'not_configured', sources: {} })
+    }) },
+  });
+  const code = source.slice(source.indexOf('async function runNativeHunterCollector('), source.indexOf('async function main()'));
+  vm.runInContext(code, context);
+  let result = await context.runNativeHunterCollector();
+  assert.equal(result.reason, 'bootstrap_missing');
+  files.set('/local/uol_hunter_private_bootstrap.json', JSON.stringify(privateConfig));
+  files.set('/cloud/uol_hunter_private_bootstrap.json', 'unavailable-cloud-copy');
+  result = await context.runNativeHunterCollector();
+  assert.equal(result.status, 'complete');
+  assert.equal(JSON.stringify(result).includes(privateConfig.token), false);
+  keys.clear(); keys.set('device', 'previous-phone');
+  result = await context.runNativeHunterCollector();
+  assert.equal(result.reason, 'device_mismatch'); assert.equal(keys.has('token'), false);
 });
 
 test('generated HTML embeds exact data safely without replacement-string expansion or double escaped SVG', () => {

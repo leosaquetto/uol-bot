@@ -1350,8 +1350,25 @@ Hunter 5.7.1: 66 testes locais direcionados passaram; CI completa aprovada.
 Revisão independente: nenhum bloqueador no hotfix, 40 testes do cliente passaram.
 Artefato público sem credencial h1/cookies técnicos/bundles privados. OTA aceita
 por ntfy, código privado instalado no iCloud, hashes dos quatro arquivos de sessões
-/banco preservados. A confirmação visual e a coleta autenticada no iPhone ainda
-aguardam retorno do usuário; não foram substituídas por testes VM. Não há prova de
+/banco preservados. O usuário confirmou que a 5.7.1 abriu, após breve tela preta e
+demora na primeira inicialização. A captura mostra configuração privada pendente;
+a coleta autenticada no iPhone permanece sem comprovação. Não há prova de
 descoberta natural/recibos dos destinos nesta etapa. Manifesto privado atualizado
 para a versão publicada, com `hunter571-final-proof-2026-10-18.json` e estado do
 aparelho separado de readiness. Relato de tela preta da 5.7.0 preservado.
+
+### 18/10/2026 — Hunter 5.7.2: abertura e navegação
+
+Revisão somente do cliente: loading local antes de preparar arquivos/coleta,
+fonte externa após boot, filtro visual das sessões anteriores a hoje em São Paulo,
+datas comuns maiores e distribuídas em uma/duas/três colunas (rolagem acima de três),
+sem alterar Destaques. Histórico em lotes de 12 com busca local, ano/mês aplicados
+antes da paginação. Timeline mostra os quatro filtros em grade e títulos completos.
+Botão Atualizar consulta somente o catálogo, conserva ETag/cache, impede sobreposição
+e interrompe a leitura completa após dez segundos. Nenhum novo Cron ou coleta extra.
+
+Importação privada diferencia arquivo ausente, indisponível, inválido e identidade
+incompatível. Falha no candidato iCloud permite verificar cópia local; credenciais
+existentes não são substituídas. Nenhuma regravação do histórico ou banco de vouchers.
+Validação local e publicação desta versão registradas a seguir; apresentação real
+do loading e recebimento no aparelho exigem confirmação no iPhone.

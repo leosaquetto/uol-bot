@@ -11,6 +11,7 @@ const prepareOnly = buildOptions.has("--prepare");
 const codeOnly = buildOptions.has("--code-only");
 
 const logoBase64 = fs.readFileSync(path.join(__dirname, "logo_base64.txt"), "utf8").trim();
+const startupTemplate = fs.readFileSync(path.join(__dirname, "startup.html"), "utf8").replace(/__LOGO_BASE64__/g, logoBase64);
 const svgIcons = JSON.parse(fs.readFileSync(path.join(__dirname, "svg_icons.json"), "utf8"));
 let htmlTemplate = fs.readFileSync(path.join(__dirname, "template.html"), "utf8");
 const collectorSource = fs.readFileSync(path.join(__dirname, "collector.js"), "utf8");
@@ -168,7 +169,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.1";
+const SCRIPT_VERSION = "5.7.2";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -176,6 +177,7 @@ const SETTINGS_FILE_NAME = "uol_hub_settings.json";
 const CREDS_FILE_NAME = "clubeuolscrip.txt";
 const COOKIES_FILE_NAME = "uol_session_cookies.json";
 const REDEMPTIONS_DB_FILE_NAME = "uol_redemptions_database.json";
+const STARTUP_HTML = ${JSON.stringify(startupTemplate)};
 
 const ICONS = ${JSON.stringify(formattedSvgs, null, 2)};
 const BUNDLED_COOKIES_LEO = ${JSON.stringify(bundledCookiesLeo)};
@@ -294,13 +296,29 @@ async function runNativeHunterCollector() {
     });
     // This file is provisioned privately. Never interpolate it into the release
     // artifact or send its contents through the WebView/observation intake.
-    const fm = getFileManager();
-    const bootstrap = fm.joinPath(fm.documentsDirectory(), "uol_hunter_private_bootstrap.json");
-    if (fm.fileExists(bootstrap)) {
-      if (fm.isFileDownloaded && !fm.isFileDownloaded(bootstrap)) await fm.downloadFileFromiCloud(bootstrap);
-      collector.importBootstrap(JSON.parse(fm.readString(bootstrap)));
+    let bootstrapFound = false, bootstrapUnavailable = false;
+    for (const fm of [getFileManager(), FileManager.local()]) {
+      const bootstrap = fm.joinPath(fm.documentsDirectory(), "uol_hunter_private_bootstrap.json");
+      if (!fm.fileExists(bootstrap)) continue;
+      bootstrapFound = true;
+      try {
+        if (fm.isFileDownloaded && !fm.isFileDownloaded(bootstrap)) await fm.downloadFileFromiCloud(bootstrap);
+        const privateConfig = JSON.parse(fm.readString(bootstrap));
+        if (!Keychain.contains(HunterCollector.KEYS.token) && Keychain.contains(HunterCollector.KEYS.device) &&
+            Keychain.get(HunterCollector.KEYS.device) !== privateConfig.deviceId) {
+          return { status: "not_configured", reason: "device_mismatch", sources: {} };
+        }
+        collector.importBootstrap(privateConfig);
+        if (Keychain.contains(HunterCollector.KEYS.token)) break;
+      } catch (_) {
+        // An unavailable cloud file must not prevent an existing local import.
+        bootstrapUnavailable = true;
+      }
     }
-    return await collector.run();
+    const result = await collector.run();
+    if (result.status === "not_configured") result.reason = bootstrapUnavailable ? "bootstrap_unavailable"
+      : bootstrapFound ? "bootstrap_invalid" : "bootstrap_missing";
+    return result;
   } catch (_) {
     return { status: "unavailable", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} };
   }
@@ -315,33 +333,50 @@ async function main() {
     return;
   }
   const collectionPausedForUpdate = hunterCollectionPausedForUpdate(action);
-  const collection = collectionPausedForUpdate
-    ? Promise.resolve({ status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} })
-    : runNativeHunterCollector();
   if (action === "collect" || action === "notification") {
-    const result = await collection;
+    const result = await runNativeHunterCollector();
     if (typeof Script.setShortcutOutput === "function") Script.setShortcutOutput(JSON.stringify(result));
     Script.complete();
     return;
   }
-  await preparePrivateFiles();
-  persistPrivateBootstrap();
-  const settings = loadSettings();
-  const historyData = loadHistory();
-  const credentials = loadCredentials();
-  const sessionCookies = loadSessionCookies(settings.currentUser || "leosaquetto");
-  const realRedemptions = loadRedemptionsDatabase();
-  // Keep Scriptable's WebView operations sequential. In 5.7.0 a completed
-  // collector could evaluate JavaScript while present() was creating its view.
-  // Supply the persisted result in the initial document instead of running a
-  // second native WebView command during presentation.
-  const collectionResult = await collection;
-  const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions,
-    collectionPausedForUpdate, collectionResult);
   const uiView = new WebView();
-  await uiView.loadHTML(html, "https://clube.uol.com.br");
-  await uiView.present(true);
+  await uiView.loadHTML(buildHunterStartupHTML(), "https://clube.uol.com.br");
+  let dismissed = false;
+  const presentation = uiView.present(true).then(() => { dismissed = true; });
+  // A readable loading state also lets native presentation settle before the
+  // one document replacement. No evaluateJavaScript is used during startup.
+  const readable = new Promise(resolve => Timer.schedule(800, false, resolve));
+  const collection = collectionPausedForUpdate
+    ? Promise.resolve({ status: "updated", discovered: 0, received: 0, delivered: 0, pending: 0, sources: {} })
+    : runNativeHunterCollector();
+  try {
+    await preparePrivateFiles();
+    persistPrivateBootstrap();
+    const settings = loadSettings();
+    const historyData = loadHistory();
+    const credentials = loadCredentials();
+    const sessionCookies = loadSessionCookies(settings.currentUser || "leosaquetto");
+    const realRedemptions = loadRedemptionsDatabase();
+    const collectionResult = await collection;
+    const html = buildDashboardHTML(historyData, settings, credentials, sessionCookies, realRedemptions,
+      collectionPausedForUpdate, collectionResult);
+    await readable;
+    if (!dismissed) await uiView.loadHTML(html, "https://clube.uol.com.br");
+  } catch (_) {
+    await readable;
+    if (!dismissed) await uiView.loadHTML(buildHunterStartupHTML(true), "https://clube.uol.com.br");
+  }
+  await presentation;
+  await collection;
   Script.complete();
+}
+
+function buildHunterStartupHTML(failed = false) {
+  return STARTUP_HTML.replace("__STARTUP_TITLE__", failed ? "Não foi possível abrir" : "Preparando suas ofertas")
+    .replace("__STARTUP_DESCRIPTION__", failed
+      ? "Seus dados foram preservados. Feche esta janela e tente abrir novamente."
+      : "Buscando novidades e carregando seu histórico…")
+    .replace('<progress aria-label="Carregando o Stories Hunter"></progress>', failed ? "" : '<progress aria-label="Carregando o Stories Hunter"></progress>');
 }
 
 function nativeRedemptionKey(item) {

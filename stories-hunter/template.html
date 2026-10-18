@@ -10,7 +10,6 @@
   <title>Clube UOL • Hub de Ingressos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #000000;
@@ -92,11 +91,12 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
+      min-width: 0;
     }
     .brand-logo-img {
       height: 38px;
       width: auto;
-      max-width: 220px;
+      max-width: min(220px, 100%);
       object-fit: contain;
     }
     .brand-status-row {
@@ -145,6 +145,10 @@
       transform: scale(0.92);
       border-color: #38bdf8;
     }
+    .btn-circle[aria-busy="true"] svg { animation: catalogRefreshSpin 1s linear infinite; }
+    .btn-circle:disabled { cursor: wait; opacity: 0.65; }
+    @keyframes catalogRefreshSpin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .btn-circle[aria-busy="true"] svg { animation: none; } }
     .avatar-wrapper {
       position: relative;
       cursor: pointer;
@@ -1020,6 +1024,7 @@
       gap: 5px;
       min-width: 0;
       max-width: 100%;
+      width: 100%;
       margin-top: 4px;
       overflow-x: auto;
       overflow-y: hidden;
@@ -1029,7 +1034,13 @@
       white-space: nowrap;
     }
     .micro-dates-inline::-webkit-scrollbar { display: none; }
-    .micro-dates-inline .micro-date-pill { flex: 0 0 auto; margin: 0; }
+    .micro-dates-inline .micro-date-pill { flex: 1 1 0; justify-content: center; min-width: 0; margin: 0; }
+    .micro-dates-inline.dates-scroll .micro-date-pill { flex: 0 0 calc((100% - 10px) / 3); }
+    .micro-dates-inline.dates-compact .micro-date-pill { flex: 0 0 auto; min-width: auto; }
+    .micro-dates-inline:not(.dates-compact) { margin-top: 10px; }
+    .micro-dates-inline:not(.dates-compact) .micro-date-pill { font-size: 10px; padding: 5px 4px; gap: 3px; letter-spacing: 0.3px; }
+    .micro-dates-inline:not(.dates-compact) .micro-date-pill svg { width: 10px; height: 10px; }
+    .micro-dates-inline:not(.dates-compact) .micro-date-pill span { white-space: normal; text-align: center; }
     .timeline-icon-box { position: relative; overflow: hidden; }
     .timeline-thumbnail { position: absolute; height: 100%; width: auto; max-width: none; left: 50%; transform: translateX(-50%); }
     .nowrap-title-tag {
@@ -3051,9 +3062,25 @@
 
     /* TIMELINE MODAL STYLES */
     .timeline-filter-bar {
-      display: flex;
-      justify-content: center;
+      display: block;
       margin-bottom: 12px;
+    }
+    .timeline-filter-bar .redemptions-filter-pills {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      width: 100%;
+      overflow: visible;
+      padding-bottom: 0;
+    }
+    .timeline-filter-bar .redemptions-filter-pill {
+      min-height: 44px;
+      min-width: 0;
+      width: 100%;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 6px;
+      white-space: normal;
     }
     .timeline-list {
       display: flex;
@@ -3067,11 +3094,11 @@
     .timeline-item {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 10px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 14px;
-      padding: 12px 14px;
+      padding: 12px;
       transition: background 0.15s ease, transform 0.1s ease;
       cursor: pointer;
     }
@@ -3080,8 +3107,8 @@
       background: rgba(255, 255, 255, 0.06);
     }
     .timeline-icon-box {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 10px;
       display: flex;
       align-items: center;
@@ -3153,15 +3180,11 @@
       letter-spacing: 0.25px;
     }
     .timeline-item-title {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: #fff;
       line-height: 1.35;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+      overflow-wrap: break-word;
     }
     .timeline-item-desc {
       font-size: 11px;
@@ -3187,11 +3210,14 @@
       <img src="data:image/png;base64,__LOGO_BASE64__" alt="Clube UOL" class="brand-logo-img" />
       <div class="brand-status-row">
         <span class="status-dot" id="liveDot"></span>
-        <span id="liveStatusText">Conectando ao Clube UOL...</span>
+        <span id="liveStatusText" role="status" aria-live="polite" aria-busy="true">Conectando ao Clube UOL...</span>
       </div>
       <div id="hunterCollectionStatus" role="status" hidden style="font-size: 11px; color: #94a3b8; margin-top: 5px;"></div>
     </div>
     <div class="header-actions">
+      <button class="btn-circle" id="btnRefreshCatalog" onclick="refreshHunterCatalog()" title="Atualizar ofertas" aria-label="Atualizar ofertas" aria-busy="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.6-2L20 8M4 16l2.3 3A7 7 0 0 0 18 17"/></svg>
+      </button>
       <!-- Linha do Tempo / Notificações -->
       <div class="header-btn-wrap">
         <button class="btn-circle" id="btnTimelineModal" onclick="openActivityTimelineModal()" title="Linha do Tempo de Atividades" aria-label="Notificações e Linha do Tempo">
@@ -3816,8 +3842,9 @@
 
       // Se temos ofertas ativas em cache no histórico, atualiza badge
       if (historyData.active && historyData.active.length > 0) {
-        updateCategoryCounts(historyData.active);
-        document.getElementById('activesCountText').textContent = historyData.active.length + ' Ativas';
+        const visible = homeOfferSets(historyData.active, historyData.history);
+        updateCategoryCounts(visible.activeItems);
+        document.getElementById('activesCountText').textContent = visible.activeItems.length + ' Ativas';
         document.getElementById('liveStatusText').textContent = 'Atualizando novidades ao vivo...';
       }
 
@@ -3831,6 +3858,15 @@
       // Listener de scroll para fade da camada clara da header
       window.addEventListener('scroll', handleHeaderScroll, { passive: true });
       handleHeaderScroll();
+
+      // The first screen uses the system font. Fetch Manrope after boot so an
+      // unavailable font service cannot hold the WebView's initial load.
+      setTimeout(() => {
+        const stylesheet = document.createElement('link');
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = 'https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap';
+        document.head.appendChild(stylesheet);
+      }, 0);
     });
 
     function handleHeaderScroll() {
@@ -4089,6 +4125,7 @@
     const CATALOG_CACHE_KEY = 'uol_shared_catalog_v1';
     const CATALOG_CACHE_MS = 120000;
     let catalogRefreshStarted = false;
+    let catalogRefreshInFlight = false;
 
     function catalogCampaign(link) {
       try {
@@ -4167,12 +4204,18 @@
     }
 
     function homeOfferSets(active, history, now = Date.now()) {
-      const activeItems = (active || []).filter(o => o && !o.isExpired && o.availability !== 'sold_out' && !confirmedSoldOutTime(o));
+      const today = saoPauloParts(now);
+      const todayCivil = Date.UTC(today.year, today.month - 1, today.day);
+      const currentSession = o => {
+        const session = o && sessionDateInfo(o, now);
+        return !session || session.timestamp >= todayCivil;
+      };
+      const activeItems = (active || []).filter(o => o && currentSession(o) && !o.isExpired && o.availability !== 'sold_out' && !confirmedSoldOutTime(o));
       const key = o => { const campaign = catalogCampaign(o.link); return campaign ? campaign.key : o.id; };
       const activeIds = new Set(activeItems.map(key));
       const soldOutItems = (history || []).filter(o => {
         const at = confirmedSoldOutTime(o);
-        return o && !activeIds.has(key(o)) && at > 0 && at <= now && now - at <= 86400000;
+        return o && currentSession(o) && !activeIds.has(key(o)) && at > 0 && at <= now && now - at <= 86400000;
       });
       return { activeItems: activeItems, soldOutItems: soldOutItems };
     }
@@ -4199,7 +4242,14 @@
         backoff: 'aguardando intervalo de segurança', cooldown: 'aguardando intervalo mínimo',
         daily_budget: 'limite diário atingido', unknown: 'consulta não confirmada', empty: 'sem novidades'
       };
-      if (statuses[summary.status]) labels.push(statuses[summary.status]);
+      const privateSetupReasons = {
+        bootstrap_missing: 'aguardando arquivo privado no iCloud',
+        bootstrap_unavailable: 'arquivo privado indisponível; tentando novamente na próxima abertura',
+        bootstrap_invalid: 'arquivo privado inválido; configuração pendente',
+        device_mismatch: 'configuração privada pertence a outro aparelho'
+      };
+      if (summary.status === 'not_configured' && privateSetupReasons[summary.reason]) labels.push(privateSetupReasons[summary.reason]);
+      else if (statuses[summary.status]) labels.push(statuses[summary.status]);
       ['portal', 'instagram'].forEach(source => {
         const result = summary.sources && summary.sources[source];
         if (!result) return;
@@ -4315,23 +4365,40 @@
       updateTimelineBadgeDot();
     }
 
-    async function streamLiveOffers() {
-      if (catalogRefreshStarted) return;
+    async function refreshHunterCatalog() {
+      if (catalogRefreshInFlight) return;
+      const button = document.getElementById('btnRefreshCatalog');
+      const status = document.getElementById('liveStatusText');
+      if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
+      if (status) { status.textContent = 'Atualizando ofertas…'; status.setAttribute('aria-busy', 'true'); }
+      try { await streamLiveOffers(true); }
+      finally {
+        if (button) { button.disabled = false; button.setAttribute('aria-busy', 'false'); }
+      }
+    }
+
+    async function streamLiveOffers(force = false) {
+      if (catalogRefreshInFlight || (catalogRefreshStarted && !force)) return;
+      catalogRefreshInFlight = true;
       catalogRefreshStarted = true;
       const cache = readCatalogCache();
       try {
         let snapshot = cache && cache.snapshot;
-        if (!cache || Date.now() - cache.fetchedAt >= CATALOG_CACHE_MS) {
+        if (force || !cache || Date.now() - cache.fetchedAt >= CATALOG_CACHE_MS) {
           const headers = cache && cache.etag ? { 'If-None-Match': cache.etag } : {};
-          const response = await fetch(CATALOG_URL, { headers: headers, credentials: 'omit' });
-          if (response.status === 304 && cache) {
-            saveCatalogCache(snapshot, cache.etag);
-          } else {
-            if (!response.ok) throw new Error('Catalog unavailable');
-            snapshot = await response.json();
-            if (!isCatalogSnapshot(snapshot)) throw new Error('Invalid catalog');
-            saveCatalogCache(snapshot, response.headers.get('ETag'));
-          }
+          const controller = typeof AbortController === 'function' ? new AbortController() : null;
+          const timeout = controller ? setTimeout(() => controller.abort(), 10000) : null;
+          try {
+            const response = await fetch(CATALOG_URL, { headers: headers, credentials: 'omit', ...(controller ? { signal: controller.signal } : {}) });
+            if (response.status === 304 && cache) {
+              saveCatalogCache(snapshot, cache.etag);
+            } else {
+              if (!response.ok) throw new Error('Catalog unavailable');
+              snapshot = await response.json();
+              if (!isCatalogSnapshot(snapshot)) throw new Error('Invalid catalog');
+              saveCatalogCache(snapshot, response.headers.get('ETag'));
+            }
+          } finally { if (timeout) clearTimeout(timeout); }
         }
         mergeCatalogSnapshot(snapshot);
         renderCatalogStatus(!snapshot.coverage.truncated && ['api', 'ticketListing'].some(key => {
@@ -4349,8 +4416,11 @@
           await streamPortalOffersFallback();
         }
       } finally {
+        catalogRefreshInFlight = false;
         const sk = document.getElementById('skeletonList');
         if (sk) sk.style.display = 'none';
+        const status = document.getElementById('liveStatusText');
+        if (status) status.setAttribute('aria-busy', 'false');
       }
     }
 
@@ -5107,10 +5177,11 @@
     }
 
     // UI_DATE_HELPERS_START
+    const SAO_PAULO_DATE_FORMAT = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+      second: '2-digit', hourCycle: 'h23' });
     function saoPauloParts(timestamp) {
-      const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo',
-        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
-        second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(timestamp));
+      const parts = SAO_PAULO_DATE_FORMAT.formatToParts(new Date(timestamp));
       return Object.fromEntries(parts.filter(p => p.type !== 'literal').map(p => [p.type, Number(p.value)]));
     }
 
@@ -5171,8 +5242,9 @@
       ).join('');
     }
 
-    function dateStrip(datesHtml) {
-      return datesHtml ? `<div class="micro-dates-inline" role="group" aria-label="Datas das sessões" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">${datesHtml}</div>` : '';
+    function dateStrip(datesHtml, compact = false) {
+      const count = (datesHtml.match(/class="micro-date-pill(?:\s|")/g) || []).length;
+      return datesHtml ? `<div class="micro-dates-inline${compact ? ' dates-compact' : count > 3 ? ' dates-scroll' : ''}" role="group" aria-label="Datas das sessões" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">${datesHtml}</div>` : '';
     }
 
     function htmlAttribute(value) {
@@ -5650,7 +5722,7 @@
               <div class="destaque-hero-title">${norm.eventTitle}</div>
               ${actionButtonsHtml}
             </div>
-            ${dateStrip(microDatePillsHtml)}
+            ${dateStrip(microDatePillsHtml, true)}
             ${redeemedFriendsHtml}
           </div>
         `;
@@ -5814,6 +5886,7 @@
       }
       currentTab = tab;
       settings.currentTab = tab;
+      if (tab !== 'history' && historyRenderState && historyRenderState.observer) historyRenderState.observer.disconnect();
 
       // Atualiza botões do menu inferior flutuante
       document.querySelectorAll('.bottom-nav-item').forEach(btn => {
@@ -6013,12 +6086,32 @@
       return { year: parts.year, month: parts.month - 1 };
     }
 
+    let historySearchQuery = '';
+    let historySearchTimer = null;
+    function historyMatchesSearch(offer) {
+      const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
+      const query = normalize(historySearchQuery).trim();
+      if (!query) return true;
+      const text = normalize([offer.title, offer.rawTitle, offer.partner, offer.venue, offer.location_summary].filter(Boolean).join(' '));
+      return query.split(/\s+/).every(word => text.includes(word));
+    }
+
+    function setHistorySearch(value) {
+      historySearchQuery = String(value || '').slice(0, 200);
+      clearTimeout(historySearchTimer);
+      historySearchTimer = setTimeout(() => {
+        const allOffers = getAllCatalogOffers();
+        renderHistoryMonthSelector(selectedHistoryYear, allOffers);
+        renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+      }, 180);
+    }
+
     function renderHistoryScreen() {
       const container = document.getElementById('viewHistory');
       if (!container) return;
 
       const allOffers = getAllCatalogOffers();
-      const editorsChoice = getEditorsChoiceOffers(allOffers);
+      const editorsChoice = getEditorsChoiceOffers(allOffers).slice(0, 6);
 
       // 1. Insights & Métricas
       const totalCount = allOffers.length > 0 ? allOffers.length : editorsChoice.length;
@@ -6124,6 +6217,8 @@
             `).join('')}
           </div>
 
+          <input type="search" class="form-input" id="historySearchInput" placeholder="Buscar evento ou local" aria-label="Buscar no histórico" value="${htmlAttribute(historySearchQuery)}" oninput="setHistorySearch(this.value)" style="margin-bottom: 12px;" />
+
           <div class="history-month-selector" id="historyMonthSelector"></div>
 
           <div id="historyMonthsContainer"></div>
@@ -6159,7 +6254,7 @@
       const monthSelector = document.getElementById('historyMonthSelector');
       if (!monthSelector) return;
 
-      const yearOffers = allOffers.filter(o => getOfferYearAndMonth(o).year === year);
+      const yearOffers = allOffers.filter(o => getOfferYearAndMonth(o).year === year && historyMatchesSearch(o));
       const monthsMap = new Map();
       yearOffers.forEach(o => {
         const m = getOfferYearAndMonth(o).month;
@@ -6169,22 +6264,23 @@
 
       const sortedMonths = Array.from(monthsMap.keys()).sort((a, b) => b - a);
 
+      if (selectedHistoryMonth !== 'all' && !monthsMap.has(selectedHistoryMonth)) {
+        selectedHistoryMonth = 'all';
+      }
+
       if (sortedMonths.length <= 1) {
         monthSelector.style.display = 'none';
         return;
       }
       monthSelector.style.display = 'flex';
 
-      if (selectedHistoryMonth !== 'all' && !monthsMap.has(selectedHistoryMonth)) {
-        selectedHistoryMonth = 'all';
-      }
-
       let totalGroupCount = 0;
       const monthGroupsCounts = new Map();
+      const activeIds = new Set((historyData.active || []).map(o => o.id));
       sortedMonths.forEach(m => {
         const mOffers = monthsMap.get(m);
-        const mActive = mOffers.filter(o => (historyData.active || []).some(a => a.id === o.id));
-        const mHistory = mOffers.filter(o => !mActive.some(a => a.id === o.id));
+        const mActive = mOffers.filter(o => activeIds.has(o.id));
+        const mHistory = mOffers.filter(o => !activeIds.has(o.id));
         const mGroups = buildOfferGroups(mActive, mHistory);
         monthGroupsCounts.set(m, mGroups.length);
         totalGroupCount += mGroups.length;
@@ -6211,9 +6307,11 @@
 
     function renderHistoryMonths(allOffers, year, container) {
       if (!container) return;
+      if (historyRenderState && historyRenderState.observer) historyRenderState.observer.disconnect();
       container.innerHTML = '';
+      historyRenderState = null;
 
-      const yearOffers = allOffers.filter(o => getOfferYearAndMonth(o).year === year);
+      const yearOffers = allOffers.filter(o => getOfferYearAndMonth(o).year === year && historyMatchesSearch(o));
 
       if (yearOffers.length === 0) {
         container.innerHTML = '<div style="color: #64748b; font-size: 13px; text-align: center; padding: 32px 0;">Nenhuma oferta encontrada para o ano de ' + year + '.</div>';
@@ -6235,39 +6333,65 @@
         sortedMonths = sortedMonths.filter(m => m === selectedHistoryMonth);
       }
 
+      const activeIds = new Set((historyData.active || []).map(o => o.id));
+      const rows = [];
       sortedMonths.forEach(m => {
         const monthOffers = monthsMap.get(m);
-        const monthActive = monthOffers.filter(o => (historyData.active || []).some(a => a.id === o.id));
-        const monthHistory = monthOffers.filter(o => !monthActive.some(a => a.id === o.id));
+        const monthActive = monthOffers.filter(o => activeIds.has(o.id));
+        const monthHistory = monthOffers.filter(o => !activeIds.has(o.id));
         const monthGroups = buildOfferGroups(monthActive, monthHistory);
-
-        monthGroups.forEach(g => currentRenderedGroups.set(g.key, g));
-
-        const sec = document.createElement('div');
-        sec.className = 'category-carousel-section';
-        sec.style.marginBottom = '22px';
-
-        const header = document.createElement('div');
-        header.className = 'category-carousel-header';
-        header.innerHTML = `
-          <div class="category-carousel-title">
-            <span>${MONTH_FULL_NAMES[m]} ${year}</span>
-            <span class="cat-badge">${monthGroups.length} ${monthGroups.length === 1 ? 'evento' : 'eventos'}</span>
-          </div>
-        `;
-        sec.appendChild(header);
-
-        const track = document.createElement('div');
-        track.className = 'category-carousel-track';
-
-        monthGroups.forEach((g, idx) => {
-          const card = createHistoryPosterCard(g, idx, false);
-          track.appendChild(card);
-        });
-
-        sec.appendChild(track);
-        container.appendChild(sec);
+        monthGroups.forEach((group, index) => rows.push({ month: m, group: group, index: index, total: monthGroups.length }));
       });
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'month-chip';
+      button.onclick = appendHistoryBatch;
+      historyRenderState = { container: container, rows: rows, cursor: 0, year: year, tracks: new Map(), button: button, observer: null };
+      appendHistoryBatch();
+      if (historyRenderState.cursor < rows.length && typeof IntersectionObserver === 'function') {
+        const state = historyRenderState;
+        state.observer = new IntersectionObserver(entries => {
+          if (historyRenderState === state && currentTab === 'history' && entries.some(entry => entry.isIntersecting)) appendHistoryBatch();
+        }, { rootMargin: '160px' });
+        state.observer.observe(button);
+      }
+    }
+
+    let historyRenderState = null;
+    function appendHistoryBatch() {
+      const state = historyRenderState;
+      if (!state) return;
+      const start = state.cursor;
+      const end = Math.min(start + 12, state.rows.length);
+      for (; state.cursor < end; state.cursor++) {
+        const row = state.rows[state.cursor];
+        let track = state.tracks.get(row.month);
+        if (!track) {
+          const sec = document.createElement('div');
+          sec.className = 'category-carousel-section';
+          sec.style.marginBottom = '22px';
+          const header = document.createElement('div');
+          header.className = 'category-carousel-header';
+          header.innerHTML = `<div class="category-carousel-title"><span>${MONTH_FULL_NAMES[row.month]} ${state.year}</span><span class="cat-badge">${row.total} ${row.total === 1 ? 'evento' : 'eventos'}</span></div>`;
+          sec.appendChild(header);
+          track = document.createElement('div');
+          track.className = 'category-carousel-track';
+          sec.appendChild(track);
+          state.container.insertBefore(sec, state.button.parentNode === state.container ? state.button : null);
+          state.tracks.set(row.month, track);
+        }
+        currentRenderedGroups.set(row.group.key, row.group);
+        track.appendChild(createHistoryPosterCard(row.group, state.cursor - start, false));
+      }
+      const remaining = state.rows.length - state.cursor;
+      if (remaining) {
+        state.button.textContent = 'Carregar mais (' + remaining + ' restantes)';
+        if (state.button.parentNode !== state.container) state.container.appendChild(state.button);
+      } else {
+        if (state.button.parentNode === state.container) state.button.remove();
+        if (state.observer) state.observer.disconnect();
+      }
     }
 
     function createHistoryPosterCard(target, index, isCuratedSection = false) {
@@ -8348,6 +8472,9 @@
       if (btnNew) btnNew.classList.toggle('active', currentTimelineFilter === 'nova');
       if (btnExp) btnExp.classList.toggle('active', currentTimelineFilter === 'esgotada');
       if (btnRed) btnRed.classList.toggle('active', currentTimelineFilter === 'resgate');
+      [[btnAll, 'all'], [btnNew, 'nova'], [btnExp, 'esgotada'], [btnRed, 'resgate']].forEach(([button, filter]) => {
+        if (button) button.setAttribute('aria-pressed', String(currentTimelineFilter === filter));
+      });
 
       let filtered = allEvents;
       if (currentTimelineFilter !== 'all') {
@@ -8381,6 +8508,7 @@
 
         if (validOfferImage(ev.imageUrl)) iconHtml = iconHtml.replace('</div>', `<img class="timeline-thumbnail" src="${htmlAttribute(ev.imageUrl)}" alt="" loading="lazy" onerror="this.remove()" /></div>`);
         const timeStr = timelineTimeLabel(ev, now);
+        const title = htmlAttribute(ev.title).replace(/\s+(?:([-–—])\s*)?(SP|RJ|BA|MG|PR|RS|SC|DF|PE|CE|GO|ES|AM|PA|RN|PB|AL|SE|MT|MS|TO|RO|RR|AP|AC|PI|MA)\s*$/, (_, separator, state) => '\u00a0' + (separator ? separator + '\u00a0' : '') + state);
         let clickHandler = '';
         if (ev.offerId) {
           clickHandler = `onclick="closeActivityTimelineModal(); openDetails('${ev.offerId}');"`;
@@ -8396,7 +8524,7 @@
                 <span class="timeline-badge ${badgeClass}">${ev.badgeText}</span>
                 <span class="timeline-time">${timeStr}</span>
               </div>
-              <div class="timeline-item-title">${ev.title}</div>
+              <div class="timeline-item-title">${title}</div>
               <div class="timeline-item-desc">${ev.desc}</div>
             </div>
           </div>
