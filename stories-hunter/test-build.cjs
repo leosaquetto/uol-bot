@@ -177,31 +177,68 @@ test('offer browser cancels only its explicit route and keeps one sheet open unt
   dismiss(); await new Promise(resolve => setImmediate(resolve));
 });
 
+test('external offer route opens Safari without replacing Hunter or bypassing the browser lock', async () => {
+  const externalCalls = [], internalCalls = [], view = {}; let dismiss;
+  const context = vm.createContext({
+    Safari: {
+      open: url => { externalCalls.push(url); },
+      openInApp: url => { internalCalls.push(url); return new Promise(resolve => { dismiss = resolve; }); },
+    },
+    console: { warn() {} },
+  });
+  const code = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
+  vm.runInContext(code, context);
+  context.installHunterBrowser(view);
+  const url = 'https://clube.uol.com.br/campanhasdeingresso/show';
+  const internal = 'hunter-browser://open?url=' + encodeURIComponent(url);
+  const external = 'hunter-browser://external?url=' + encodeURIComponent(url);
+  assert.equal(view.shouldAllowRequest({ url: internal }), false);
+  await Promise.resolve(); assert.deepEqual(internalCalls, [url]);
+  assert.equal(view.shouldAllowRequest({ url: external }), false);
+  await Promise.resolve(); assert.equal(externalCalls.length, 0, 'external button shares the active-sheet lock');
+  dismiss(); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(view.shouldAllowRequest({ url: external }), false, 'external navigation is also cancelled synchronously');
+  assert.equal(externalCalls.length, 0);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(externalCalls, [url]); assert.deepEqual(internalCalls, [url]);
+  assert.equal(view.shouldAllowRequest({ url: external }), false);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(externalCalls.length, 2, 'synchronous Safari.open releases the lock');
+});
+
 test('offer browser rejects unsafe destinations and releases its lock after a sanitized failure', async () => {
   const calls = [], warnings = [], view = {};
   const context = vm.createContext({
-    Safari: { openInApp: async url => { calls.push(url); throw new Error('synthetic private session detail'); } },
+    Safari: {
+      openInApp: async url => { calls.push(url); throw new Error('synthetic private session detail'); },
+      open: url => { calls.push(url); throw new Error('synthetic private session detail'); },
+    },
     console: { warn: message => warnings.push(message) },
   });
   const code = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
   vm.runInContext(code, context);
   context.installHunterBrowser(view);
-  const prefix = 'hunter-browser://open?url=';
-  for (const target of ['http://clube.uol.com.br/', 'https://example.test/', 'https://clube.uol.com.br.evil.test/',
-    'https://clube.uol.com.br@evil.test/', 'https://clube.uol.com.br:444/', 'https://clube.uol.com.br/with space',
-    'https://clube.uol.com.br/with\nnewline', 'https://clube.uol.com.br/with\\backslash', 'https://clube.uol.com.br/' + 'x'.repeat(4096)]) {
-    assert.equal(view.shouldAllowRequest({ url: prefix + encodeURIComponent(target) }), false);
+  const prefixes = ['hunter-browser://open?url=', 'hunter-browser://external?url='];
+  for (const prefix of prefixes) {
+    for (const target of ['http://clube.uol.com.br/', 'https://example.test/', 'https://clube.uol.com.br.evil.test/',
+      'https://clube.uol.com.br@evil.test/', 'https://clube.uol.com.br:444/', 'https://clube.uol.com.br/with space',
+      'https://clube.uol.com.br/with\nnewline', 'https://clube.uol.com.br/with\\backslash', 'https://clube.uol.com.br/' + 'x'.repeat(4096)]) {
+      assert.equal(view.shouldAllowRequest({ url: prefix + encodeURIComponent(target) }), false);
+    }
+    assert.equal(view.shouldAllowRequest({ url: prefix + '%broken' }), false);
   }
-  assert.equal(view.shouldAllowRequest({ url: prefix + '%broken' }), false);
   await Promise.resolve(); assert.equal(calls.length, 0);
-  const route = prefix + encodeURIComponent('https://clubeuol.uol.com.br/');
-  assert.equal(view.shouldAllowRequest({ url: route }), false);
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(calls.length, 1); assert.equal(warnings.length, 1);
-  assert.doesNotMatch(warnings[0], /synthetic private session detail/);
-  assert.equal(view.shouldAllowRequest({ url: route }), false);
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(calls.length, 2, 'a rejected sheet does not permanently block navigation');
+  for (const prefix of prefixes) {
+    const priorCalls = calls.length;
+    const route = prefix + encodeURIComponent('https://clubeuol.uol.com.br/');
+    assert.equal(view.shouldAllowRequest({ url: route }), false);
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(calls.length, priorCalls + 1); assert.equal(warnings.length, calls.length);
+    assert.doesNotMatch(warnings.at(-1), /synthetic private session detail/);
+    assert.equal(view.shouldAllowRequest({ url: route }), false);
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(calls.length, priorCalls + 2, 'a rejected browser does not permanently block navigation');
+  }
 });
 
 test('native collector imports private local fallback and reports a missing bootstrap without exposing values', async () => {

@@ -169,7 +169,7 @@ const scriptHeader = String.raw`// Variables used by Scriptable.
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.7.3";
+const SCRIPT_VERSION = "5.7.4";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -381,20 +381,24 @@ function buildHunterStartupHTML(failed = false) {
 }
 
 function installHunterBrowser(view) {
-  const route = "hunter-browser://open?url=";
+  const internalRoute = "hunter-browser://open?url=";
+  const externalRoute = "hunter-browser://external?url=";
   let opening = false;
   view.shouldAllowRequest = request => {
     const raw = request && request.url;
-    if (typeof raw !== "string" || !raw.startsWith(route)) return true;
+    if (typeof raw !== "string") return true;
+    const external = raw.startsWith(externalRoute);
+    const route = external ? externalRoute : internalRoute;
+    if (!raw.startsWith(route)) return true;
     let url;
     try { url = decodeURIComponent(raw.slice(route.length)); } catch (_) { return false; }
     if (url.length > 4096 || /[\x00-\x20\\]/.test(url) ||
         !/^https:\/\/(?:clube\.uol\.com\.br|clubeuol\.uol\.com\.br)(?:\/|$)/i.test(url)) return false;
     if (opening) return false;
     opening = true;
-    // Cancel this navigation first. The Hunter document remains mounted while
-    // Safari's in-app sheet is presented, so closing it reveals the same screen.
-    Promise.resolve().then(() => Safari.openInApp(url, false))
+    // Neither browser path replaces the Hunter document. Closing the in-app
+    // sheet or returning from Safari reveals the same Hunter screen.
+    Promise.resolve().then(() => external ? Safari.open(url) : Safari.openInApp(url, false))
       .catch(() => { console.warn("Não foi possível abrir o navegador da oferta."); })
       .finally(() => { opening = false; });
     return false;

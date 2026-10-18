@@ -42,7 +42,7 @@ function harness({ active = [], history = [], bundled = [], saved = [], settings
     URL, Date: Clock, Intl, console,
     INITIAL: { realRedemptions: clone(bundled), collectionPausedForUpdate: paused, ...(native ? { hunterCollection: { status: 'starting' } } : {}) },
     settings: clone(settings), historyData: clone({ active, history }), activeFilter: null, isGrouped: true,
-    currentTab: 'home', currentTimelineFilter: 'all', historyRenderState: null, selectedHistoryMonth: 'all', historySearchQuery: '',
+    currentTab: 'home', currentTimelineFilter: 'all', historyRenderState: null, selectedHistoryMonth: 'all', historySearchQuery: '', historyDateCache: new WeakMap(),
     MONTH_FULL_NAMES: Array.from({ length: 12 }, (_, i) => 'Month ' + i), currentRenderedGroups: new Map(),
     CATEGORY_MAP: { TEATRO: { label: 'Teatro', icon: '' }, OUTROS: { label: 'Outros', icon: '' } },
     ICONS: { tickets: '<svg></svg>', calendar: '<svg></svg>' },
@@ -78,13 +78,19 @@ test('opening an offer uses the native sheet route while keeping Hunter state an
   assert.equal(location.href, 'hunter-browser://open?url=' + encodeURIComponent(campaign('new-offer')));
   assert.equal(opened.length, 0);
   assert.deepEqual(state, { tab: 'history', filter: 'teatro', scrollY: 380 });
+  context.openSafariCurrent(true);
+  assert.equal(location.href, 'hunter-browser://external?url=' + encodeURIComponent(campaign('new-offer')));
+  assert.equal(opened.length, 0);
+  assert.deepEqual(state, { tab: 'history', filter: 'teatro', scrollY: 380 });
   context.activeOffer = { link: '/campanhasdeingresso/relative-offer' };
   context.openSafariCurrent();
   assert.equal(location.href, 'hunter-browser://open?url=' + encodeURIComponent(campaign('relative-offer')));
   for (const url of ['javascript:alert(1)', 'http://clube.uol.com.br/', 'https://example.test/', '//example.test/offer', 'https://user:pass@clube.uol.com.br/', 'https://clube.uol.com.br:444/']) {
-    context.activeOffer = { link: url }; location.href = 'hunter-dashboard';
-    context.openSafariCurrent();
-    assert.equal(location.href, 'hunter-dashboard'); assert.equal(opened.length, 0);
+    context.activeOffer = { link: url };
+    for (const external of [false, true]) {
+      location.href = 'hunter-dashboard'; context.openSafariCurrent(external);
+      assert.equal(location.href, 'hunter-dashboard'); assert.equal(opened.length, 0);
+    }
   }
   context.INITIAL.nativeBrowser = false; context.activeOffer = { link: campaign('preview-offer') };
   context.openSafariCurrent();
@@ -255,6 +261,82 @@ test('history creates twelve groups per batch after year and month filters witho
   h.context.renderHistoryMonths(h.context.historyData.history, 2026, container);
   assert.equal(h.context.historyRenderState, null);
   assert.match(container.innerHTML, /Nenhuma oferta encontrada/);
+});
+
+test('history starts at the current São Paulo month, keeps explicit selection, and never renders another period implicitly', () => {
+  const records = Array.from({ length: 15 }, (_, i) => offer('oct-' + i, { title: '20/10/2026 Evento ' + i }));
+  records.push(offer('curated-current', { title: 'Coldplay 21/10/2026' }), offer('curated-september', { title: 'Coldplay 21/09/2026' }),
+    offer('last-year', { title: '20/03/2025 Teatro' }));
+  const h = harness({ history: records });
+  Object.assign(h.context, { selectedHistoryYear: null, selectedHistoryMonth: null, currentTab: 'history',
+    CURATED_EDITORS_CHOICE_SEEDS: [], EDITORS_CHOICE_KEYWORDS: ['coldplay'], MONTH_SHORT_LABELS: Array.from({ length: 12 }, (_, i) => 'M' + i) });
+  h.context.document.querySelectorAll = () => [];
+  vm.runInContext(['historyCurationText', 'getAllCatalogOffers', 'getEditorsChoiceOffers', 'renderHistoryScreen', 'renderHistoryCurated', 'renderHistoryMonthSelector',
+    'selectHistoryYear', 'selectHistoryMonth'].map(fn).join('\n'), h.context);
+  const groupedPeriods = [];
+  h.context.buildOfferGroups = (active, history) => {
+    const items = [...active, ...history];
+    groupedPeriods.push(items.map(o => h.context.getOfferYearAndMonth(o).month));
+    return items.map(item => ({ key: item.id, parent: item }));
+  };
+  const source = clone(h.context.historyData);
+  h.context.renderHistoryScreen();
+  assert.equal(h.context.selectedHistoryYear, 2026);
+  assert.equal(h.context.selectedHistoryMonth, 9);
+  assert.equal(h.context.historyRenderState.cursor, 12);
+  assert.equal(h.context.historyRenderState.rows.length, 16);
+  assert.deepEqual(groupedPeriods.map(periods => [...new Set(periods)]), [[9]], 'month counters cannot group the entire archive');
+  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-current']);
+  h.context.selectHistoryMonth(8);
+  assert.equal(h.context.historyRenderState.rows.length, 1);
+  assert.equal(h.context.historyRenderState.rows[0].group.parent.id, 'curated-september');
+  h.context.renderHistoryScreen();
+  assert.equal(h.context.selectedHistoryMonth, 8, 'catalog refresh keeps the requested month');
+  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['curated-september']);
+  h.context.selectHistoryYear(2025);
+  assert.equal(h.context.selectedHistoryMonth, 2, 'requested old year opens its latest available month');
+  assert.equal(h.context.historyRenderState.rows[0].group.parent.id, 'last-year');
+  assert.deepEqual(clone(h.context.historyData), source);
+});
+
+test('empty current month stays empty and history sold-out cards remain colored without changing Home styling', () => {
+  const h = harness({ history: [offer('old', { title: '20/09/2026 Coldplay', isExpired: true })] });
+  Object.assign(h.context, { selectedHistoryYear: null, selectedHistoryMonth: null, currentTab: 'history',
+    CURATED_EDITORS_CHOICE_SEEDS: [], EDITORS_CHOICE_KEYWORDS: ['coldplay'], MONTH_SHORT_LABELS: Array.from({ length: 12 }, (_, i) => 'M' + i) });
+  vm.runInContext(['historyCurationText', 'getAllCatalogOffers', 'getEditorsChoiceOffers', 'renderHistoryScreen', 'renderHistoryCurated', 'renderHistoryMonthSelector'].map(fn).join('\n'), h.context);
+  h.context.renderHistoryScreen();
+  assert.equal(h.context.selectedHistoryMonth, 9);
+  assert.equal(h.context.historyRenderState, null);
+  assert.equal(h.elements.get('editorsChoiceTrack').children.length, 0);
+  assert.equal(h.elements.get('sectionEditorsChoice').style.display, 'none');
+  assert.match(h.elements.get('historyMonthsContainer').innerHTML, /Month 9 de 2026/);
+  const historyStyle = template.match(/\.poster-card\.history-clean-card\.card-sold-out-grouped \{[^}]+}/)[0];
+  assert.match(historyStyle, /filter: none/);
+  assert.match(historyStyle, /opacity: 1/);
+  assert.match(template, /\.poster-card\.card-sold-out-grouped \{[^}]*filter: grayscale\(100%\)/);
+  assert.match(fn('createHistoryPosterCard'), /if \(isAllSoldOut\) cardClass \+= ' card-sold-out-grouped'/);
+});
+
+test('history curation preserves compact aliases and ID/link/image evidence without adding duplicate seeds', () => {
+  const records = [
+    offer('real-maroon', { title: '2 Ingressos: Maroon5', firstSeen: Date.parse('2026-10-10T12:00:00Z') }),
+    offer('real-c6fest', { title: '2 Ingressos: Festival', link: campaign('c6fest-2026'), firstSeen: Date.parse('2026-09-10T12:00:00Z') }),
+  ];
+  const h = harness({ history: records });
+  Object.assign(h.context, { selectedHistoryYear: 2026, selectedHistoryMonth: 9,
+    CURATED_EDITORS_CHOICE_SEEDS: [offer('curated-maroon5', { title: 'Maroon 5' }), offer('curated-c6fest', { title: 'C6 Fest' })],
+    EDITORS_CHOICE_KEYWORDS: ['zayn', 'maroon 5', 'c6 fest', 'cirque du soleil', 'paul mccartney', 'coldplay', 'bruno mars'] });
+  h.context.normalizeEventInfo = () => { throw new Error('history metadata must not use full normalization'); };
+  vm.runInContext(['historyCurationText', 'getAllCatalogOffers', 'getEditorsChoiceOffers', 'renderHistoryCurated'].map(fn).join('\n'), h.context);
+  const all = h.context.getAllCatalogOffers();
+  assert.deepEqual(clone(all).map(o => o.id), ['real-maroon', 'real-c6fest']);
+  assert.deepEqual(clone(h.context.getEditorsChoiceOffers(all)).map(o => o.id), ['real-maroon', 'real-c6fest']);
+  for (const field of ['id', 'link', 'imageUrl']) {
+    const candidate = offer('generic', { title: 'Ingresso', [field]: 'https://example.test/c6fest.jpg' });
+    assert.equal(h.context.getEditorsChoiceOffers([candidate]).length, 1, field + ' retains recognition');
+  }
+  h.context.renderHistoryCurated(all);
+  assert.deepEqual(h.elements.get('editorsChoiceTrack').children.map(card => card.group.id), ['real-maroon']);
 });
 
 test('redemption parser accepts ISO and strict Brazilian dates in source timezone, retains day precision', () => {

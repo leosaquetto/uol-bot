@@ -1411,3 +1411,34 @@ Aceite OTA não comprova execução no aparelho. Aguardam confirmação: loading
 navegação, retorno da página da oferta, importação privada/coleta autenticada e
 descoberta natural com recibos dos destinos. O último estado observado do iPhone
 continua sendo 5.7.1 aberta com configuração privada pendente.
+
+### 18/10/2026 — Hunter 5.7.4: Safari externo opcional
+
+O usuário confirmou que abrir oferta e fechar o navegador interno da 5.7.3 retorna
+ao Hunter corretamente. A linha de configuração/coleta do iPhone não foi informada;
+essa confirmação não comprova importação privada nem descoberta/entrega natural.
+Evidência do retorno registrada no manifesto privado e na prova 5.7.3.
+
+A 5.7.4 acrescenta opção explícita de Safari externo nos detalhes, mantendo o
+navegador interno. Ambas usam a mesma validação de destinos públicos Clube UOL;
+nenhuma alteração no Worker, coleta, resgate ou navegação de autenticação.
+
+Pedido complementar antes da distribuição 5.7.4: corrigir sobreposição pelo header,
+ícone Atualizar invisível e histórico lento/em preto e branco. Causas identificadas:
+reserva fixa de 98px para um header de altura variável; SVG sem dimensões explícitas;
+histórico reutilizando o estilo de esgotadas da Home e agrupando todos os meses antes
+da seleção. Correção restrita à interface: medir altura real, dar dimensões ao SVG,
+manter pôsteres coloridos só no histórico e iniciar pelo mês vigente de São Paulo.
+
+A captura do usuário comprova a linha “iPhone • aguardando arquivo privado no
+iCloud”. Esse estado corresponde a bootstrap ausente na visão do aparelho; arquivo
+instalado no Mac não comprova visibilidade/importação no iPhone. Configuração privada
+e descoberta natural continuam pendentes, separadas das correções visuais.
+
+Validação local final 5.7.4: 76/76 testes do Hunter passaram, incluindo altura
+variável do header, SVG Atualizar, Safari externo, mês vigente/vazio/seleção
+preservada e lotes de 12. Revisão identificou perda dos aliases Maroon5/c6fest na
+curadoria; helper textual preserva aliases e sinais de id/link/imagem sem executar
+a normalização completa do arquivo. Teste comprova ausência de semente duplicada.
+Sintaxe do artefato e diff aprovados. Publicação exata e aceite OTA registrados após
+o gate de CI, sem antecipar prova visual no aparelho.

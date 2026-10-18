@@ -23,11 +23,12 @@
       --text-primary: #ffffff;
       --text-muted: #94a3b8;
       --code-bg: #1e293b;
+      --hunter-header-height: calc(env(safe-area-inset-top, 0px) + 98px);
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0;
-      padding-top: calc(env(safe-area-inset-top, 0px) + 98px);
+      padding-top: calc(var(--hunter-header-height) + 12px);
       padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
       padding-left: 16px;
       padding-right: 16px;
@@ -56,6 +57,7 @@
       border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       display: flex;
+      gap: 12px;
       justify-content: space-between;
       align-items: center;
       box-sizing: border-box;
@@ -92,6 +94,7 @@
       flex-direction: column;
       gap: 5px;
       min-width: 0;
+      flex: 1;
     }
     .brand-logo-img {
       height: 38px;
@@ -104,8 +107,12 @@
       align-items: center;
       gap: 6px;
       font-size: 11.5px;
+      line-height: 1.4;
       color: var(--text-muted);
     }
+    .brand-status-row .status-dot { flex-shrink: 0; }
+    #liveStatusText { min-width: 0; }
+    #hunterCollectionStatus { line-height: 1.4; overflow-wrap: anywhere; }
     .status-dot {
       width: 7px;
       height: 7px;
@@ -124,10 +131,12 @@
       display: flex;
       align-items: center;
       gap: 9px;
+      flex-shrink: 0;
     }
     .btn-circle {
       width: 36px;
       height: 36px;
+      flex-shrink: 0;
       border-radius: 50%;
       background: rgba(24, 29, 38, 0.65);
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2002,6 +2011,10 @@
     .history-clean-card {
       cursor: pointer;
     }
+    .poster-card.history-clean-card.card-sold-out-grouped {
+      filter: none;
+      opacity: 1;
+    }
     .history-clean-card .poster-scrim {
       background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.88) 80%, #000000 100%);
     }
@@ -3216,7 +3229,7 @@
     </div>
     <div class="header-actions">
       <button class="btn-circle" id="btnRefreshCatalog" onclick="refreshHunterCatalog()" title="Atualizar ofertas" aria-label="Atualizar ofertas" aria-busy="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.6-2L20 8M4 16l2.3 3A7 7 0 0 0 18 17"/></svg>
+        <svg width="20" height="20" style="flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.6-2L20 8M4 16l2.3 3A7 7 0 0 0 18 17"/></svg>
       </button>
       <!-- Linha do Tempo / Notificações -->
       <div class="header-btn-wrap">
@@ -3319,9 +3332,12 @@
           __ICON_tickets__ Resgatar Este Benefício
         </button>
         <button class="btn-modal-secondary" onclick="openSafariCurrent()">
-          __ICON_link__ Abrir oferta no navegador
+          __ICON_link__ Abrir no navegador interno
         </button>
         <div style="font-size: 11px; color: #94a3b8; text-align: center;">Concluir/Fechar no navegador volta para esta tela.</div>
+        <button class="btn-modal-secondary" onclick="openSafariCurrent(true)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M21 3l-9 9M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/></svg> Abrir no Safari externo
+        </button>
       </div>
     </div>
   </div>
@@ -3784,8 +3800,8 @@
     let activeOffer = null;
     let isGrouped = settings.groupedView !== undefined ? settings.groupedView : true;
     let currentTab = settings.currentTab || (isGrouped ? 'home' : 'tickets');
-    let selectedHistoryYear = 2026;
-    let selectedHistoryMonth = 'all';
+    let selectedHistoryYear = null;
+    let selectedHistoryMonth = null;
 
     function initSessionCookies(cookies) {
       const list = cookies || (settings.userSessions && settings.userSessions[settings.currentUser || 'leosaquetto']) || INITIAL.sessionCookies;
@@ -3803,6 +3819,7 @@
 
     // Inicialização da interface
     window.addEventListener('load', () => {
+      installHeaderLayout();
       // Injeta cookies de sessão autenticada imediatamente
       initSessionCookies();
 
@@ -3870,6 +3887,31 @@
       }, 0);
     });
 
+    // HEADER_LAYOUT_START
+    function measureHeaderHeight(header = document.querySelector('.top-header')) {
+      const style = document.documentElement && document.documentElement.style;
+      if (!header || !style || typeof style.setProperty !== 'function') return;
+      const height = Math.ceil(typeof header.getBoundingClientRect === 'function'
+        ? header.getBoundingClientRect().height : header.offsetHeight);
+      if (Number.isFinite(height) && height > 0) style.setProperty('--hunter-header-height', height + 'px');
+    }
+
+    function installHeaderLayout() {
+      const header = document.querySelector('.top-header');
+      measureHeaderHeight(header);
+      if (header && typeof ResizeObserver === 'function') {
+        new ResizeObserver(() => measureHeaderHeight(header)).observe(header);
+      } else if (header && typeof MutationObserver === 'function') {
+        // Older WebViews still reserve the new height when either status wraps.
+        new MutationObserver(() => measureHeaderHeight(header)).observe(header, {
+          childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['hidden']
+        });
+      }
+      window.addEventListener('resize', () => measureHeaderHeight(header), { passive: true });
+      window.addEventListener('orientationchange', () => measureHeaderHeight(header), { passive: true });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => measureHeaderHeight(header)).catch(() => {});
+    }
+
     function handleHeaderScroll() {
       const header = document.querySelector('.top-header');
       if (!header) return;
@@ -3879,6 +3921,7 @@
         header.classList.remove('header-scrolled');
       }
     }
+    // HEADER_LAYOUT_END
 
     function saveSettingsToStorage() {
       try {
@@ -6005,7 +6048,13 @@
       return EDITORS_CHOICE_KEYWORDS.some(k => str.includes(k));
     }
 
+    function historyCurationText(offer) {
+      return [offer.eventTitle, offer.rawTitle, offer.title, offer.description, offer.id, offer.link, offer.imageUrl]
+        .filter(Boolean).join(' ').toLowerCase().replace(/maroon5/g, 'maroon 5').replace(/c6fest/g, 'c6 fest');
+    }
+
     function getAllCatalogOffers() {
+      historyDateCache = new WeakMap();
       const seen = new Map();
       (historyData.active || []).forEach(o => {
         const key = o.id || (o.rawTitle || o.title);
@@ -6018,10 +6067,9 @@
       (CURATED_EDITORS_CHOICE_SEEDS || []).forEach(seed => {
         const key = seed.id || (seed.rawTitle || seed.title);
         if (key && !seen.has(key)) {
-          const seedKw = (seed.title || '').toLowerCase();
+          const seedKw = historyCurationText(seed);
           const covered = Array.from(seen.values()).some(existing => {
-            const norm = normalizeEventInfo([existing]);
-            const s = ((norm.eventTitle || '') + ' ' + (existing.rawTitle || existing.title || '') + ' ' + (existing.description || '')).toLowerCase();
+            const s = historyCurationText(existing);
             return EDITORS_CHOICE_KEYWORDS.some(k => seedKw.includes(k) && s.includes(k));
           });
           if (!covered) {
@@ -6041,8 +6089,7 @@
         for (const o of allOffers) {
           const key = o.id || (o.rawTitle || o.title);
           if (seenKeys.has(key)) continue;
-          const norm = normalizeEventInfo([o]);
-          const str = ((norm.eventTitle || '') + ' ' + (o.rawTitle || o.title || '') + ' ' + (o.description || '')).toLowerCase();
+          const str = historyCurationText(o);
           if (str.includes(kw)) {
             matches.push(o);
             seenKeys.add(key);
@@ -6050,21 +6097,8 @@
         }
       }
 
-      // 2. Complementa com as sementes curadas se ainda não estiverem no histórico
-      for (const seed of CURATED_EDITORS_CHOICE_SEEDS) {
-        const seedKw = seed.title.toLowerCase();
-        const covered = matches.some(m => {
-          const norm = normalizeEventInfo([m]);
-          const s = ((norm.eventTitle || '') + ' ' + (m.rawTitle || m.title || '') + ' ' + (m.description || '')).toLowerCase();
-          return EDITORS_CHOICE_KEYWORDS.some(k => seedKw.includes(k) && s.includes(k));
-        });
-        if (!covered && !seenKeys.has(seed.id)) {
-          matches.push(seed);
-          seenKeys.add(seed.id);
-        }
-      }
-
-      // 3. Se ainda tiver menos de 5, inclui ofertas de destaque (palavras-chave priorizadas)
+      // Seeds already belong to allOffers; never pull another period into this selection.
+      // Se ainda tiver menos de 5, inclui ofertas de destaque do período selecionado.
       if (matches.length < 5) {
         for (const o of allOffers) {
           const key = o.id || (o.rawTitle || o.title);
@@ -6080,11 +6114,14 @@
       return matches;
     }
 
+    let historyDateCache = new WeakMap();
     function getOfferYearAndMonth(o) {
+      if (historyDateCache.has(o)) return historyDateCache.get(o);
       const session = sessionDateInfo(o);
-      if (session) return { year: session.year, month: session.month - 1 };
-      const parts = saoPauloParts(catalogTime(o.firstSeen) || catalogTime(o.expiredAt) || catalogTime(o.lastSeen) || Date.now());
-      return { year: parts.year, month: parts.month - 1 };
+      const parts = session || saoPauloParts(catalogTime(o.firstSeen) || catalogTime(o.expiredAt) || catalogTime(o.lastSeen) || Date.now());
+      const result = { year: parts.year, month: parts.month - 1 };
+      historyDateCache.set(o, result);
+      return result;
     }
 
     let historySearchQuery = '';
@@ -6103,6 +6140,7 @@
       historySearchTimer = setTimeout(() => {
         const allOffers = getAllCatalogOffers();
         renderHistoryMonthSelector(selectedHistoryYear, allOffers);
+        renderHistoryCurated(allOffers);
         renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
       }, 180);
     }
@@ -6112,10 +6150,12 @@
       if (!container) return;
 
       const allOffers = getAllCatalogOffers();
-      const editorsChoice = getEditorsChoiceOffers(allOffers).slice(0, 6);
+      const today = saoPauloParts(Date.now());
+      if (!Number.isInteger(selectedHistoryYear)) selectedHistoryYear = today.year;
+      if (selectedHistoryMonth === null) selectedHistoryMonth = today.month - 1;
 
       // 1. Insights & Métricas
-      const totalCount = allOffers.length > 0 ? allOffers.length : editorsChoice.length;
+      const totalCount = allOffers.length;
 
       // Categoria mais frequente
       const catCounts = { MUSEU: 0, TEATRO: 0, MUSICA: 0, EXPOSICOES: 0, OUTROS: 0 };
@@ -6162,10 +6202,8 @@
 
       // Anos únicos no catálogo
       let years = Array.from(new Set(allOffers.map(o => getOfferYearAndMonth(o).year))).sort((a, b) => b - a);
-      if (years.length === 0) years = [2026];
-      if (!years.includes(selectedHistoryYear)) {
-        selectedHistoryYear = years[0];
-      }
+      if (!years.includes(selectedHistoryYear)) years.push(selectedHistoryYear);
+      years.sort((a, b) => b - a);
 
       // Constrói HTML do topo e Editor's Choice
       container.innerHTML = `
@@ -6226,28 +6264,41 @@
         </div>
       `;
 
-      // Renderiza carrossel do Editor's Choice
+      renderHistoryMonthSelector(selectedHistoryYear, allOffers);
+      renderHistoryCurated(allOffers);
+      renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+    }
+
+    function renderHistoryCurated(allOffers) {
+      const selected = allOffers.filter(o => {
+        const period = getOfferYearAndMonth(o);
+        return period.year === selectedHistoryYear && (selectedHistoryMonth === 'all' || period.month === selectedHistoryMonth) && historyMatchesSearch(o);
+      });
+      const editorsChoice = getEditorsChoiceOffers(selected).slice(0, 6);
       const edTrack = document.getElementById('editorsChoiceTrack');
+      const section = document.getElementById('sectionEditorsChoice');
+      if (section) section.style.display = editorsChoice.length ? 'block' : 'none';
       if (edTrack) {
+        edTrack.innerHTML = '';
         editorsChoice.forEach((item, idx) => {
           const card = createHistoryPosterCard(item, idx, true);
           edTrack.appendChild(card);
         });
       }
 
-      // Renderiza os seletores de mês e os carrosséis
-      renderHistoryMonthSelector(selectedHistoryYear, allOffers);
-      renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
     }
 
     function selectHistoryYear(year) {
       selectedHistoryYear = year;
-      selectedHistoryMonth = 'all';
       document.querySelectorAll('.year-chip').forEach(btn => {
         btn.classList.toggle('active', parseInt(btn.textContent, 10) === year);
       });
       const allOffers = getAllCatalogOffers();
+      const today = saoPauloParts(Date.now());
+      const months = allOffers.filter(o => getOfferYearAndMonth(o).year === year).map(o => getOfferYearAndMonth(o).month);
+      selectedHistoryMonth = year === today.year || !months.length ? today.month - 1 : Math.max(...months);
       renderHistoryMonthSelector(year, allOffers);
+      renderHistoryCurated(allOffers);
       renderHistoryMonths(allOffers, year, document.getElementById('historyMonthsContainer'));
     }
 
@@ -6263,28 +6314,17 @@
         monthsMap.get(m).push(o);
       });
 
+      if (Number.isInteger(selectedHistoryMonth) && !monthsMap.has(selectedHistoryMonth)) monthsMap.set(selectedHistoryMonth, []);
       const sortedMonths = Array.from(monthsMap.keys()).sort((a, b) => b - a);
-
-      if (selectedHistoryMonth !== 'all' && !monthsMap.has(selectedHistoryMonth)) {
-        selectedHistoryMonth = 'all';
-      }
-
-      if (sortedMonths.length <= 1) {
-        monthSelector.style.display = 'none';
-        return;
-      }
       monthSelector.style.display = 'flex';
 
       let totalGroupCount = 0;
       const monthGroupsCounts = new Map();
-      const activeIds = new Set((historyData.active || []).map(o => o.id));
       sortedMonths.forEach(m => {
         const mOffers = monthsMap.get(m);
-        const mActive = mOffers.filter(o => activeIds.has(o.id));
-        const mHistory = mOffers.filter(o => !activeIds.has(o.id));
-        const mGroups = buildOfferGroups(mActive, mHistory);
-        monthGroupsCounts.set(m, mGroups.length);
-        totalGroupCount += mGroups.length;
+        const count = new Set(mOffers.map(getGroupKey)).size;
+        monthGroupsCounts.set(m, count);
+        totalGroupCount += count;
       });
 
       monthSelector.innerHTML = `
@@ -6303,6 +6343,7 @@
       selectedHistoryMonth = m;
       const allOffers = getAllCatalogOffers();
       renderHistoryMonthSelector(selectedHistoryYear, allOffers);
+      renderHistoryCurated(allOffers);
       renderHistoryMonths(allOffers, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
     }
 
@@ -6312,10 +6353,14 @@
       container.innerHTML = '';
       historyRenderState = null;
 
-      const yearOffers = allOffers.filter(o => getOfferYearAndMonth(o).year === year && historyMatchesSearch(o));
+      const yearOffers = allOffers.filter(o => {
+        const period = getOfferYearAndMonth(o);
+        return period.year === year && (selectedHistoryMonth === 'all' || period.month === selectedHistoryMonth) && historyMatchesSearch(o);
+      });
 
       if (yearOffers.length === 0) {
-        container.innerHTML = '<div style="color: #64748b; font-size: 13px; text-align: center; padding: 32px 0;">Nenhuma oferta encontrada para o ano de ' + year + '.</div>';
+        const period = selectedHistoryMonth === 'all' ? String(year) : MONTH_FULL_NAMES[selectedHistoryMonth] + ' de ' + year;
+        container.innerHTML = '<div style="color: #64748b; font-size: 13px; text-align: center; padding: 32px 0;">Nenhuma oferta encontrada para ' + period + '.</div>';
         return;
       }
 
@@ -7530,7 +7575,7 @@
       }
     }
 
-    function openSafariCurrent() {
+    function openSafariCurrent(external = false) {
       if (!activeOffer) return;
       const url = activeOffer.link || activeOffer.url || 'https://clubeuol.uol.com.br';
       try {
@@ -7538,7 +7583,8 @@
         if (target.protocol !== 'https:' || target.username || target.password ||
             !['clube.uol.com.br', 'clubeuol.uol.com.br'].includes(target.hostname) || target.port) return;
         if (INITIAL.nativeBrowser) {
-          window.location.href = 'hunter-browser://open?url=' + encodeURIComponent(target.href);
+          const route = external ? 'hunter-browser://external?url=' : 'hunter-browser://open?url=';
+          window.location.href = route + encodeURIComponent(target.href);
         } else {
           window.open(target.href, '_blank', 'noopener,noreferrer');
         }
