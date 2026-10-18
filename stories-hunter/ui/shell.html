@@ -16,13 +16,9 @@
 
   <!-- 1. TOP HEADER (CLEAN & MINIMALISTA: AVATAR CENTRALIZA AJUSTES E PERFIL) -->
   <div class="top-header">
+    <div class="header-main">
     <div class="brand-group">
       <img src="data:image/png;base64,__LOGO_BASE64__" alt="Clube UOL" class="brand-logo-img" />
-      <div class="brand-status-row">
-        <span class="status-dot" id="liveDot"></span>
-        <span id="liveStatusText" role="status" aria-live="polite" aria-busy="true">Conectando ao Clube UOL...</span>
-      </div>
-      <div id="hunterCollectionStatus" role="status" hidden style="font-size: 11px; color: #94a3b8; margin-top: 5px;"></div>
     </div>
     <div class="header-actions">
       <button class="btn-circle" id="btnRefreshCatalog" onclick="refreshHunterCatalog()" title="Atualizar ofertas" aria-label="Atualizar ofertas" aria-busy="false">
@@ -37,10 +33,30 @@
       </div>
 
       <!-- Perfil & Configurações: Toque no Avatar abre Ajustes & Alternador de Sessão -->
-      <div class="avatar-wrapper" onclick="openSettingsModal()" title="Configurações e Perfil" aria-label="Configurações e Perfil">
-        <img id="headerUserAvatar" class="user-avatar" src="" alt="Avatar" onerror="showAvatarFallback(this)" />
-        <div id="headerUserFallback" class="user-avatar-fallback" style="display: none;">LS</div>
+      <button type="button" class="avatar-wrapper" onclick="openSettingsModal()" title="Configurações e Perfil" aria-label="Configurações e Perfil">
+        <img id="headerUserAvatar" class="user-avatar" alt="Avatar" onerror="showAvatarFallback(this)" />
+        <span id="headerUserFallback" class="user-avatar-fallback" style="display: none;">LS</span>
         <span class="avatar-badge-dot"></span>
+      </button>
+    </div>
+    </div>
+    <div class="header-status">
+      <div class="brand-status-row">
+        <span id="catalogOfferCount" class="catalog-offer-count">Ofertas</span>
+        <span class="catalog-state">
+          <span class="status-dot" id="liveDot" data-state="loading" aria-hidden="true"></span>
+          <span id="liveStatusText" role="status" aria-live="polite" aria-busy="true">Conectando…</span>
+        </span>
+      </div>
+      <div id="hunterCollectionStatus" role="status" aria-live="polite" hidden>
+        <details id="hunterCollectionDetails" class="collection-details" ontoggle="measureHeaderHeight()">
+          <summary class="collection-summary">
+            <span class="visually-hidden">Coleta neste iPhone: </span>
+            <span id="hunterCollectionOverview" class="collection-overview"></span>
+            <svg class="collection-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <div id="hunterCollectionDiagnostics" class="collection-diagnostics"></div>
+        </details>
       </div>
     </div>
   </div>

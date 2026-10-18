@@ -94,7 +94,7 @@
         const visible = homeOfferSets(historyData.active, historyData.history);
         updateCategoryCounts(visible.activeItems);
         document.getElementById('activesCountText').textContent = visible.activeItems.length + ' Ativas';
-        document.getElementById('liveStatusText').textContent = 'Atualizando novidades ao vivo...';
+        setCatalogHeaderStatus('Atualizando…', 'loading', visible.activeItems.length + visible.soldOutItems.length);
       }
 
       // Inicializa na aba ativa
@@ -135,7 +135,7 @@
       } else if (header && typeof MutationObserver === 'function') {
         // Older WebViews still reserve the new height when either status wraps.
         new MutationObserver(() => measureHeaderHeight(header)).observe(header, {
-          childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['hidden']
+          childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'open']
         });
       }
       window.addEventListener('resize', () => measureHeaderHeight(header), { passive: true });
@@ -508,32 +508,28 @@
       return { activeItems: activeItems, soldOutItems: soldOutItems };
     }
 
-    function setHunterCollectionStatus(summary) {
-      const element = document.getElementById('hunterCollectionStatus');
-      if (!element) return;
-      element.hidden = !summary || summary.status === 'disabled';
-      if (element.hidden) { element.textContent = ''; return; }
-      if (summary.status === 'starting') { element.textContent = 'iPhone • buscando novidades…'; return; }
-      if (summary.status === 'updated') { element.textContent = 'iPhone • atualizado; abra novamente para coletar'; return; }
-      const count = value => Number.isSafeInteger(value) && value > 0 ? value : 0;
-      const received = count(summary.received), delivered = count(summary.delivered), pending = count(summary.pending);
-      const labels = [];
-      if (received) labels.push(received + ' recebidas pelo servidor');
-      if (delivered) labels.push(delivered + ' entregues');
-      if (pending) labels.push(pending + ' pendentes no iPhone');
-      const statuses = {
-        not_configured: 'configuração privada pendente',
-        activation_required: 'ative a coleta em Ajustes',
-        access_pending: 'acesso aguardando aprovação',
-        access_revoked: 'acesso suspenso; coleta pausada',
-        access_expired: 'acesso expirado; solicite aprovação',
-        setup_unavailable: 'não foi possível verificar o acesso; tente novamente em Ajustes',
-        unavailable: 'coleta indisponível', failed: 'coleta indisponível', error: 'coleta indisponível',
-        busy: 'outra execução em andamento',
-        auth_required: 'autenticação necessária; coleta suspensa',
-        rate_limited: 'consulta limitada pelo serviço',
-        backoff: 'aguardando intervalo de segurança', cooldown: 'aguardando intervalo mínimo',
-        daily_budget: 'limite diário atingido', unknown: 'consulta não confirmada', empty: 'sem novidades'
+    function hunterStatusPresentation(status, found, reason) {
+      const states = {
+        starting: ['Buscando novidades', 'buscando novidades…', 'activity', 'refresh'],
+        updated: ['Reabra para coletar', 'atualizado; abra novamente para coletar', 'neutral', 'pause'],
+        complete: ['Coleta concluída', 'coleta concluída', 'neutral', 'check'],
+        not_configured: ['Configuração pendente', 'configuração privada pendente', 'attention', 'alert'],
+        activation_required: ['Ative a coleta', 'ative a coleta em Ajustes', 'attention', 'lock'],
+        access_pending: ['Aguardando aprovação', 'acesso aguardando aprovação', 'attention', 'clock'],
+        access_revoked: ['Acesso suspenso', 'acesso suspenso; coleta pausada', 'attention', 'lock'],
+        access_expired: ['Acesso expirado', 'acesso expirado; solicite aprovação', 'attention', 'lock'],
+        setup_unavailable: ['Verifique o acesso', 'não foi possível verificar o acesso; tente novamente em Ajustes', 'attention', 'alert'],
+        unavailable: ['Coleta indisponível', 'coleta indisponível', 'attention', 'alert'],
+        failed: ['Coleta indisponível', 'coleta indisponível', 'attention', 'alert'],
+        error: ['Coleta indisponível', 'coleta indisponível', 'attention', 'alert'],
+        busy: ['Coleta em andamento', 'outra execução em andamento', 'activity', 'refresh'],
+        auth_required: ['Autenticação necessária', 'autenticação necessária; coleta suspensa', 'attention', 'lock'],
+        rate_limited: ['Consulta limitada', 'consulta limitada pelo serviço', 'waiting', 'pause'],
+        backoff: ['Aguardando', 'aguardando intervalo de segurança', 'waiting', 'pause'],
+        cooldown: ['Pausa breve', 'aguardando intervalo mínimo', 'waiting', 'clock'],
+        daily_budget: ['Limite diário', 'limite diário atingido', 'waiting', 'pause'],
+        unknown: ['A confirmar', 'consulta não confirmada', 'neutral', 'alert'],
+        empty: ['Sem novidades', 'sem novidades', 'neutral', 'check']
       };
       const privateSetupReasons = {
         bootstrap_missing: 'aguardando arquivo privado no iCloud',
@@ -541,16 +537,71 @@
         bootstrap_invalid: 'arquivo privado inválido; configuração pendente',
         device_mismatch: 'configuração privada pertence a outro aparelho'
       };
-      if (summary.status === 'not_configured' && privateSetupReasons[summary.reason]) labels.push(privateSetupReasons[summary.reason]);
-      else if (statuses[summary.status]) labels.push(statuses[summary.status]);
-      ['portal', 'instagram'].forEach(source => {
+      const count = Number.isSafeInteger(found) && found > 0 ? found : 0;
+      const known = Object.prototype.hasOwnProperty.call(states, status);
+      const entry = status === 'found'
+        ? [count ? '+' + count : 'Sem novidades', count + ' novidades encontradas', count ? 'positive' : 'neutral', count ? 'plus' : 'check']
+        : states[known ? status : 'unknown'];
+      return {
+        status: status === 'found' || known ? status : 'unknown',
+        label: entry[0],
+        detail: status === 'not_configured' && Object.prototype.hasOwnProperty.call(privateSetupReasons, reason) ? privateSetupReasons[reason] : entry[1],
+        tone: entry[2], icon: entry[3], attention: entry[2] === 'attention'
+      };
+    }
+
+    function hunterStatusIcon(icon) {
+      const paths = {
+        check: '<path d="m5 12 4 4L19 6"/>',
+        plus: '<path d="M12 5v14M5 12h14"/>',
+        pause: '<path d="M8 5v14M16 5v14"/>',
+        clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        lock: '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+        alert: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6m0 3v1"/>',
+        refresh: '<path d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 2M4 16l2 2a7 7 0 0 0 12-1"/>'
+      };
+      return '<svg class="collection-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths[icon] + '</svg>';
+    }
+
+    function setHunterCollectionStatus(summary) {
+      const element = document.getElementById('hunterCollectionStatus');
+      if (!element) return;
+      const details = document.getElementById('hunterCollectionDetails');
+      const overview = document.getElementById('hunterCollectionOverview');
+      const diagnostics = document.getElementById('hunterCollectionDiagnostics');
+      element.hidden = !summary || summary.status === 'disabled';
+      if (element.hidden) {
+        overview.innerHTML = '';
+        diagnostics.innerHTML = '';
+        details.open = false;
+        element.setAttribute('data-attention-key', '');
+        return;
+      }
+      const count = value => Number.isSafeInteger(value) && value > 0 ? value : 0;
+      const primary = hunterStatusPresentation(summary.status || 'complete', summary.found, summary.reason);
+      const initial = summary.status === 'starting' || summary.status === 'updated';
+      const metrics = initial ? [] : [
+        { value: count(summary.received), label: 'recebidas', detail: 'recebidas pelo servidor' },
+        { value: count(summary.delivered), label: 'entregues', detail: 'entregues' },
+        { value: count(summary.pending), label: 'pendentes', detail: 'pendentes no iPhone' }
+      ].filter(metric => metric.value);
+      const sources = initial ? [] : ['portal', 'instagram'].flatMap(source => {
         const result = summary.sources && summary.sources[source];
-        if (!result) return;
-        const name = source === 'portal' ? 'Portal' : 'Instagram';
-        const label = result.status === 'found' ? count(result.found) + ' novidades encontradas' : statuses[result.status] || 'consulta não confirmada';
-        labels.push(name + ': ' + label);
+        return result ? [{ name: source === 'portal' ? 'Portal' : 'Instagram', ...hunterStatusPresentation(result.status, result.found, result.reason) }] : [];
       });
-      element.textContent = 'iPhone • ' + (labels.length ? labels.join(' • ') : 'coleta concluída');
+      const attentionKey = [primary, ...sources].filter(state => state.attention).map(state => (state.name || 'coleta') + ':' + state.status + ':' + state.detail).join('|');
+      if (attentionKey && attentionKey !== element.getAttribute('data-attention-key')) details.open = true;
+      else if (!attentionKey && element.getAttribute('data-attention-key')) details.open = false;
+      element.setAttribute('data-attention-key', attentionKey);
+      const showPrimary = primary.status !== 'complete' || (!metrics.length && !sources.length);
+      overview.innerHTML = (showPrimary ? '<span class="collection-state" data-tone="' + primary.tone + '">' + hunterStatusIcon(primary.icon) + '<span>' + primary.label + '</span></span>' : '') +
+        metrics.map(metric => '<span class="collection-metric"><strong>' + metric.value + '</strong> ' + metric.label + '</span>').join('') +
+        sources.map(source => '<span class="collection-source" data-tone="' + source.tone + '"><span class="collection-source-name">' + source.name + '</span>' + hunterStatusIcon(source.icon) +
+          '<span' + (source.icon === 'check' ? ' class="visually-hidden"' : '') + '>' + source.label + '</span></span>').join('');
+      diagnostics.innerHTML = '<p class="collection-context">Coleta neste iPhone</p>' +
+        (showPrimary ? '<p' + (primary.attention ? ' class="collection-attention"' : '') + '>' + primary.detail + '</p>' : '') +
+        metrics.map(metric => '<p>' + metric.value + ' ' + metric.detail + '</p>').join('') +
+        sources.map(source => '<p' + (source.attention ? ' class="collection-attention"' : '') + '><strong>' + source.name + ':</strong> ' + source.detail + '</p>').join('');
     }
     // UI_DATA_HELPERS_END
 
@@ -645,6 +696,18 @@
       saveHistoryToStorage();
     }
 
+    function setCatalogHeaderStatus(text, state, visibleCount) {
+      const status = document.getElementById('liveStatusText');
+      const dot = document.getElementById('liveDot');
+      const count = document.getElementById('catalogOfferCount');
+      if (status) { status.textContent = text; status.setAttribute('aria-busy', String(state === 'loading')); }
+      if (dot) {
+        dot.style.backgroundColor = state === 'fresh' ? '#00e676' : state === 'cache' ? '#ffb300' : '#38bdf8';
+        dot.setAttribute('data-state', state);
+      }
+      if (count && Number.isSafeInteger(visibleCount)) count.textContent = visibleCount + (visibleCount === 1 ? ' oferta' : ' ofertas');
+    }
+
     function renderCatalogStatus(fresh) {
       const sets = homeOfferSets(historyData.active, historyData.history);
       const offers = sets.activeItems;
@@ -653,17 +716,15 @@
       else if (currentTab === 'history') renderHistoryScreen();
       updateCategoryCounts(offers);
       document.getElementById('activesCountText').textContent = offers.length + ' Ativas';
-      document.getElementById('liveStatusText').textContent = (fresh ? 'Catálogo atualizado • ' : 'Catálogo em cache • ') + visibleCount + ' ofertas';
-      document.getElementById('liveDot').style.backgroundColor = fresh ? '#00e676' : '#ffb300';
+      setCatalogHeaderStatus(fresh ? 'Catálogo atualizado' : 'Catálogo em cache', fresh ? 'fresh' : 'cache', visibleCount);
       updateTimelineBadgeDot();
     }
 
     async function refreshHunterCatalog() {
       if (catalogRefreshInFlight) return;
       const button = document.getElementById('btnRefreshCatalog');
-      const status = document.getElementById('liveStatusText');
       if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
-      if (status) { status.textContent = 'Atualizando ofertas…'; status.setAttribute('aria-busy', 'true'); }
+      setCatalogHeaderStatus('Atualizando…', 'loading');
       try { await streamLiveOffers(true); }
       finally {
         if (button) { button.disabled = false; button.setAttribute('aria-busy', 'false'); }
@@ -4854,4 +4915,4 @@
     window.addEventListener('click', (e) => {
       handleBackdropClick(e);
     });
-  
+

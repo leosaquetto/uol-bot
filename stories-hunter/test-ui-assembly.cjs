@@ -5,12 +5,27 @@ const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
 const { assembleUI, assembleUIFromParts } = require('./assemble-ui.cjs');
 const baseline = require('./baseline/manifest.json');
+const { frozenTemplate, restoreProductLabels, restoreHeaderPresentation } = require('./test-support/header-baseline.cjs');
 
-test('mechanical UI extraction reconstructs the reference template byte for byte', () => {
-  const output = Buffer.from(assembleUI().replaceAll('Abra o Clube UOL Premium no Scriptable para atualizar.', 'Abra o Stories Hunter no Scriptable para atualizar.').replaceAll("content=\"Clube UOL Premium\"", "content=\"Clube UOL\"").replaceAll("<title>Clube UOL Premium</title>", "<title>Clube UOL • Hub de Ingressos</title>").replaceAll("Conectar conta ao Clube UOL Premium", "Conectar conta ao Hunter").replaceAll("O Clube UOL Premium só salva a sessão", "O Hunter só salva a sessão").replaceAll("Abra o Clube UOL Premium no Scriptable para gerenciar o acesso.", "Abra o Hunter no Scriptable para gerenciar o acesso."), 'utf8');
+test('UI outside the header presentation and product labels remains byte-identical to the frozen template', () => {
+  const output = Buffer.from(restoreHeaderPresentation(restoreProductLabels(assembleUI()), frozenTemplate()), 'utf8');
   const reference = baseline.files['stories-hunter/template.html'];
   assert.equal(output.byteLength, reference.bytes);
   assert.equal(createHash('sha256').update(output).digest('hex'), reference.sha256);
+});
+
+test('header normalization retains unrelated markup, catalog logic, scroll and access code', () => {
+  const original = frozenTemplate();
+  const current = restoreProductLabels(assembleUI());
+  for (const [before, after] of [
+    ["if (window.scrollY > 8)", "if (window.scrollY > 80)"],
+    ["const offers = sets.activeItems;", "const offers = [];"],
+    ['id="otaUpdateBanner"', 'id="removedUpdateBanner"'],
+    ['function manageHunterAccess()', 'function changedHunterAccess()']
+  ]) {
+    assert.ok(current.includes(before), before);
+    assert.notEqual(restoreHeaderPresentation(current.replace(before, after), original), original, before);
+  }
 });
 
 test('UI assembly preserves literal replacement sequences and whitespace', () => {

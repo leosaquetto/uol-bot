@@ -14,10 +14,13 @@ function harness(initial) {
   const elements = new Map(), toasts = [];
   const context = vm.createContext({
     INITIAL: initial, window: { location: { href: 'hunter-dashboard' } },
-    document: { getElementById: id => { if (!elements.has(id)) elements.set(id, { textContent: '' }); return elements.get(id); } },
+    document: { getElementById: id => {
+      if (!elements.has(id)) elements.set(id, { textContent: '', innerHTML: '', setAttribute(key, value) { this[key] = value; }, getAttribute(key) { return this[key] ?? null; } });
+      return elements.get(id);
+    } },
     showToast: text => toasts.push(text),
   });
-  vm.runInContext(['hunterAccessState', 'renderHunterAccessUI', 'manageHunterAccess', 'setHunterCollectionStatus'].map(fn).join('\n'), context);
+  vm.runInContext(['hunterAccessState', 'renderHunterAccessUI', 'manageHunterAccess', 'hunterStatusPresentation', 'hunterStatusIcon', 'setHunterCollectionStatus'].map(fn).join('\n'), context);
   return { context, elements, toasts };
 }
 
@@ -68,7 +71,7 @@ test('collection status distinguishes approval, suspension and unavailable verif
   const h = harness({});
   for (const status of ['activation_required', 'access_pending', 'access_revoked', 'access_expired', 'setup_unavailable']) {
     h.context.setHunterCollectionStatus({ status, reason: 'bootstrap_missing' });
-    const text = h.elements.get('hunterCollectionStatus').textContent;
+    const text = h.elements.get('hunterCollectionDiagnostics').innerHTML.replace(/<[^>]*>/g, '');
     assert.doesNotMatch(text, /iCloud|coleta concluída/);
     assert.match(text, /Ajustes|aprovação|suspenso|expirado/);
   }

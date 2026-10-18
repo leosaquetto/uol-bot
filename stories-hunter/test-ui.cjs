@@ -30,7 +30,7 @@ function element() {
     appendChild(node) { this.children.push(node); node.parentNode = this; },
     insertBefore(node, before) { const index = before ? this.children.indexOf(before) : -1; if (index < 0) this.children.push(node); else this.children.splice(index, 0, node); node.parentNode = this; },
     remove() { if (this.parentNode) { this.parentNode.children = this.parentNode.children.filter(node => node !== this); this.parentNode = null; } },
-    setAttribute(key, value) { this[key] = value; } };
+    setAttribute(key, value) { this[key] = value; }, getAttribute(key) { return this[key] ?? null; } };
 }
 function harness({ active = [], history = [], bundled = [], saved = [], settings = {}, native = false, paused = false } = {}) {
   let time = now;
@@ -448,7 +448,7 @@ test('native collector owns source requests on catalog failure, and receipts do 
   assert.deepEqual(h.requests, ['https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/catalog']);
   assert.equal(h.context.historyData.active.length, 1);
   h.context.setHunterCollectionStatus({ received: 2, delivered: 0, pending: 1 });
-  const text = h.elements.get('hunterCollectionStatus').textContent;
+  const text = h.elements.get('hunterCollectionDiagnostics').innerHTML.replace(/<[^>]*>/g, '');
   assert.match(text, /2 recebidas pelo servidor/);
   assert.match(text, /1 pendentes no iPhone/);
   assert.doesNotMatch(text, /entregues/);
@@ -458,7 +458,7 @@ test('iPhone status distinguishes update, configuration and suspended sources fr
   const h = harness({ native: true });
   const statusText = summary => {
     h.context.setHunterCollectionStatus(summary);
-    return h.elements.get('hunterCollectionStatus').textContent;
+    return h.elements.get('hunterCollectionDiagnostics').innerHTML.replace(/<[^>]*>/g, '');
   };
   assert.match(statusText({ status: 'starting' }), /buscando novidades/);
   assert.match(statusText({ status: 'updated' }), /atualizado; abra novamente para coletar/);

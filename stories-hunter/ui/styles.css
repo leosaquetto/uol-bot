@@ -11,7 +11,7 @@
       --text-primary: #ffffff;
       --text-muted: #94a3b8;
       --code-bg: #1e293b;
-      --hunter-header-height: calc(env(safe-area-inset-top, 0px) + 98px);
+      --hunter-header-height: calc(env(safe-area-inset-top, 0px) + 140px);
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
@@ -44,10 +44,8 @@
       border-radius: 0 0 24px 24px;
       border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-      display: flex;
-      gap: 12px;
-      justify-content: space-between;
-      align-items: center;
+      display: grid;
+      gap: 10px;
       box-sizing: border-box;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
@@ -72,35 +70,73 @@
     .top-header.header-scrolled::before {
       opacity: 1;
     }
-    .brand-group,
-    .header-actions {
+    .header-main,
+    .header-status {
       position: relative;
       z-index: 1;
+      min-width: 0;
+    }
+    .header-main {
+      display: grid;
+      grid-template-columns: minmax(100px, 1fr) auto;
+      align-items: center;
+      gap: 12px;
     }
     .brand-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
       min-width: 0;
-      flex: 1;
     }
     .brand-logo-img {
-      height: 38px;
-      width: auto;
-      max-width: min(220px, 100%);
+      display: block;
+      width: 160px;
+      height: auto;
+      max-width: 100%;
+      max-height: 38px;
       object-fit: contain;
+      object-position: left center;
     }
     .brand-status-row {
       display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      font-size: 11.5px;
+      gap: 4px 12px;
+      font-size: 12px;
       line-height: 1.4;
-      color: var(--text-muted);
+      color: #c0c5ce;
     }
+    .catalog-offer-count { font-size: 16px; font-weight: 700; color: #f5f6f8; font-variant-numeric: tabular-nums; }
+    .catalog-state { display: flex; align-items: center; gap: 6px; min-width: 0; }
     .brand-status-row .status-dot { flex-shrink: 0; }
-    #liveStatusText { min-width: 0; }
-    #hunterCollectionStatus { line-height: 1.4; overflow-wrap: anywhere; }
+    #liveStatusText { min-width: 0; overflow-wrap: anywhere; }
+    #liveDot { animation: none; width: 6px; height: 6px; }
+    #liveDot[data-state="loading"] { animation: pulseDot 1.4s infinite alternate; }
+    #hunterCollectionStatus { margin-top: 4px; font-size: 12px; line-height: 1.4; color: #c0c5ce; }
+    #hunterCollectionStatus[hidden] { display: none; }
+    .collection-summary { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 3px 0; cursor: pointer; list-style: none; }
+    .collection-summary::-webkit-details-marker { display: none; }
+    .collection-overview { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; flex: 1; min-width: 0; }
+    .collection-metric, .collection-state, .collection-source { display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+    .collection-metric { padding: 3px 2px 3px 0; font-variant-numeric: tabular-nums; }
+    .collection-metric strong { color: #f1f3f6; font-weight: 600; }
+    .collection-source { background: rgba(255, 255, 255, 0.065); border-radius: 8px; padding: 4px 7px; }
+    .collection-source-name { color: #e1e4e9; }
+    .collection-state { padding: 3px 2px 3px 0; }
+    .collection-icon { flex: 0 0 13px; }
+    .collection-source[data-tone="positive"] .collection-icon, .collection-state[data-tone="positive"] .collection-icon { display: none; }
+    .collection-source[data-tone="positive"] > span:last-child, .collection-state[data-tone="positive"] > span:last-child { color: #80d8b0; }
+    .collection-source[data-tone="attention"], .collection-state[data-tone="attention"] { color: #ffd08a; }
+    .collection-source[data-tone="attention"] { background: rgba(255, 179, 0, 0.09); }
+    .collection-source[data-tone="attention"] .collection-source-name { color: inherit; }
+    .collection-chevron { flex-shrink: 0; opacity: 0.65; transition: transform 0.18s ease; }
+    .collection-details[open] .collection-chevron { transform: rotate(180deg); }
+    .collection-diagnostics { margin-top: 5px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.055); overflow-wrap: anywhere; }
+    .collection-diagnostics p { margin: 0; }
+    .collection-diagnostics p + p { margin-top: 6px; }
+    .collection-diagnostics strong { color: #e5e7eb; font-weight: 600; }
+    .collection-diagnostics .collection-attention { color: #ffd08a; }
+    .collection-context { color: #aeb6c3; font-size: 12px; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .header-actions button:focus-visible, .collection-summary:focus-visible { outline: 2px solid #e2e8f0; outline-offset: 3px; border-radius: 12px; }
     .status-dot {
       width: 7px;
       height: 7px;
@@ -118,9 +154,10 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 6px;
       flex-shrink: 0;
     }
+    .header-actions .btn-circle { width: 44px; height: 44px; }
     .btn-circle {
       width: 36px;
       height: 36px;
@@ -149,6 +186,17 @@
     .avatar-wrapper {
       position: relative;
       cursor: pointer;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
     }
     .user-avatar {
       width: 36px;
@@ -166,8 +214,8 @@
     }
     .avatar-badge-dot {
       position: absolute;
-      bottom: -1px;
-      right: -1px;
+      bottom: 2px;
+      right: 2px;
       width: 10px;
       height: 10px;
       border-radius: 50%;
@@ -189,6 +237,10 @@
       font-weight: 700;
       border: 2px solid #7928ca;
       box-shadow: 0 0 10px rgba(121, 40, 202, 0.4);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .top-header, .top-header::before, .collection-chevron, .header-actions .btn-circle, .header-actions .user-avatar { transition: none; }
+      .top-header .status-dot, #liveDot[data-state="loading"], .top-header .timeline-badge-dot { animation: none; }
     }
     .thumb-code-badge {
       position: absolute;
@@ -3308,4 +3360,4 @@
       vertical-align: middle;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-  
+

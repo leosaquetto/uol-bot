@@ -70,6 +70,27 @@ function harness({ cache, history = { active: [], history: [] }, network = () =>
   };
 }
 
+test('catalog state and offer count render separately without losing count during refresh', () => {
+  const h = harness({ history: { active: [offer()], history: [] } });
+  h.context.renderCatalogStatus(false);
+  assert.equal(h.elements.get('catalogOfferCount').textContent, '1 oferta');
+  assert.equal(h.elements.get('liveStatusText').textContent, 'Catálogo em cache');
+  assert.equal(h.elements.get('liveDot')['data-state'], 'cache');
+  h.context.setCatalogHeaderStatus('Atualizando…', 'loading');
+  assert.equal(h.elements.get('catalogOfferCount').textContent, '1 oferta');
+  assert.equal(h.elements.get('liveStatusText')['aria-busy'], 'true');
+  assert.equal(h.elements.get('liveDot')['data-state'], 'loading');
+  h.context.renderCatalogStatus(true);
+  assert.equal(h.elements.get('liveStatusText').textContent, 'Catálogo atualizado');
+  assert.equal(h.elements.get('liveStatusText')['aria-busy'], 'false');
+  assert.equal(h.elements.get('liveDot')['data-state'], 'fresh');
+  h.context.setCatalogHeaderStatus('Catálogo em cache', 'cache', 0);
+  assert.equal(h.elements.get('catalogOfferCount').textContent, '0 ofertas');
+  h.context.setCatalogHeaderStatus('Catálogo atualizado', 'fresh', 19);
+  assert.equal(h.elements.get('catalogOfferCount').textContent, '19 ofertas');
+  assert.doesNotMatch(h.elements.get('liveStatusText').textContent, /19| • /);
+});
+
 test('healthy 200 uses only catalog, stores ETag with snapshot, preserves local IDs and richer details', async () => {
   const local = { id: 'old-id', link: link('p123-show') + '?origin=portal', title: 'Show', firstSeen: now - 9000,
     viewsCount: 8, description: 'Descrição local completa do evento', validity: 'Até 13/12/2026', location_summary: 'Teatro local' };
