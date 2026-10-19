@@ -31,7 +31,7 @@ function fn(name) {
 function element() {
   let markup = '';
   const listeners = new Map();
-  return { style: { setProperty() {} }, classList: { toggle() {} }, children: [], textContent: '',
+  return { style: { setProperty(key, value) { this[key] = value; } }, classList: { toggle() {} }, children: [], textContent: '',
     get innerHTML() { return markup; }, set innerHTML(value) { markup = value; this.children.forEach(node => { node.parentNode = null; }); this.children = []; },
     appendChild(node) { this.children.push(node); node.parentNode = this; },
     insertBefore(node, before) { const index = before ? this.children.indexOf(before) : -1; if (index < 0) this.children.push(node); else this.children.splice(index, 0, node); node.parentNode = this; },
@@ -46,8 +46,12 @@ function harness({ active = [], history = [], bundled = [], saved = [], settings
   const storage = new Map([['uol_real_redemptions', JSON.stringify(saved)]]);
   const elements = new Map();
   const requests = [];
+  const timers = new Map();
+  let nextTimerId = 0;
   const context = vm.createContext({
     URL, Date: Clock, Intl, console,
+    setTimeout: callback => { const id = ++nextTimerId; timers.set(id, callback); return id; },
+    clearTimeout: id => timers.delete(id),
     INITIAL: { realRedemptions: clone(bundled), collectionPausedForUpdate: paused, ...(native ? { hunterCollection: { status: 'starting' } } : {}) },
     settings: clone(settings), historyData: clone({ active, history }), activeFilter: null, isGrouped: true,
     currentTab: 'home', currentTimelineFilter: 'all', historyRenderState: null, selectedHistoryMonth: 'all', historySearchQuery: '', historyDateCache: new WeakMap(),
@@ -69,7 +73,9 @@ function harness({ active = [], history = [], bundled = [], saved = [], settings
       'formatRedemptionTitle', 'escapeReceiptHtml', 'isVerifiedReceipt', 'getTimelineEvents', 'getRedeemedUsersForOffer', 'updateTimelineBadgeDot', 'renderTimelineList', 'renderOffers', 'renderIndividualOffers', 'updateCategoryCounts',
       'getOfferYearAndMonth', 'buildHistoryGroups', 'historyMatchesSearch', 'renderHistoryMonths', 'appendHistoryBatch'].map(fn),
   ].join('\n'), context);
-  return { context, elements, requests, storage, advance: ms => { time += ms; } };
+  return { context, elements, requests, storage, advance: ms => { time += ms; },
+    flushTimers: () => { const pending = [...timers.values()]; timers.clear(); pending.forEach(callback => callback()); },
+    pendingTimers: () => timers.size };
 }
 
 test('opening an offer uses the native sheet route while keeping Hunter state and browser previews separate', () => {
@@ -376,7 +382,6 @@ test('Home link overlay is per session and unknown checks do not erase confirmed
   const active = [offer('one', { title: '23/10 Teatro Claro SP' }), offer('two', { title: '24/10 Teatro Claro SP' })];
   const h = harness({ active, history: [offer('older-one', { link: campaign('one'), title: '23/10 Teatro Claro SP', soldOutAt: now - 1000 })] });
   h.context.renderCatalogStatus = () => {};
-  const source = clone(h.context.historyData);
   const candidates = clone(h.context.hunterActiveLinkCandidates());
   assert.equal(candidates.length, 2);
   const result = { ...candidates[0], status: 'unavailable', checkedAt: now, unavailableAt: now };
@@ -391,7 +396,54 @@ test('Home link overlay is per session and unknown checks do not erase confirmed
   h.context.hunterApplyLinkCheckResults([{ ...result, status: 'available' }]);
   sets = h.context.homeOfferSets(h.context.historyData.active, []);
   assert.equal(sets.activeItems.length, 2);
-  assert.deepEqual(clone(h.context.historyData), source, 'overlay never persists into offer history');
+  assert.equal(h.context.historyData.active[0].linkUnavailableAt, undefined,
+    'session-only dead-link overlay does not persist into the offer');
+  assert.equal(h.context.historyData.active[0].lastLinkCheckedAt, now);
+  assert.equal(h.context.historyData.active[0].availabilityEvidence.state, 'available',
+    'fresh positive evidence survives a later native snapshot');
+});
+
+test('link-check updates coalesce into one card render and flush on final progress', () => {
+  const h = harness({ active: [offer('one'), offer('two'), offer('three')] });
+  let renders = 0;
+  h.context.renderOffers = () => { renders++; };
+  h.context.updateCategoryCounts = () => {};
+  h.context.updateTimelineBadgeDot = () => {};
+  const candidates = clone(h.context.hunterActiveLinkCandidates());
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[0], status: 'unavailable', checkedAt: now }],
+    { verified: 1, total: 3, pending: 2 });
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[1], status: 'unavailable', checkedAt: now }],
+    { verified: 2, total: 3, pending: 1 });
+  assert.equal(renders, 0);
+  assert.equal(h.pendingTimers(), 1, 'one queued repaint handles the burst');
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[2], status: 'unknown', checkedAt: now }],
+    { verified: 3, total: 3, pending: 0 });
+  assert.equal(renders, 1, 'the final status is painted promptly');
+  assert.equal(h.pendingTimers(), 0);
+  h.flushTimers();
+  assert.equal(renders, 1);
+  assert.equal(h.context.historyData.active[2].lastLinkCheckedAt, now,
+    'an ambiguous page records the check time without changing availability');
+  assert.equal(h.context.historyData.active[2].availabilityEvidence, undefined);
+});
+
+test('native cached sold-out proof survives a stale snapshot but cannot override a newer source', () => {
+  const h = harness({ active: [offer('stale', { lastSourceSeenAt: now - 3000 }),
+    offer('reopened', { lastSourceSeenAt: now, availabilityEvidence: {
+      state: 'available', observedAt: now, source: 'ticket_listing' } })] });
+  h.context.renderCatalogStatus = () => {};
+  const candidates = clone(h.context.hunterActiveLinkCandidates());
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[0], generation: 'other',
+    status: 'sold_out', checkedAt: now - 1000, cached: true }]);
+  assert.equal(h.context.historyData.active.length, 2, 'another generation cannot exhaust this session');
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[0], status: 'sold_out',
+    checkedAt: now - 1000, cached: true }]);
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[1], status: 'sold_out',
+    checkedAt: now - 1000, cached: true }]);
+  assert.deepEqual(clone(h.context.historyData.active).map(item => item.id), ['reopened']);
+  assert.deepEqual(clone(h.context.historyData.history).map(item => item.id), ['stale']);
+  assert.equal(h.context.historyData.history[0].soldOutAt, now - 1000);
+  assert.equal(h.context.historyData.active[0].availabilityEvidence.state, 'available');
 });
 
 test('fresh availability clears a persisted dead-link marker across native and catalog refreshes', () => {
@@ -515,6 +567,7 @@ test('Ingressos renders active offers in small batches before sold-out and unava
   const more = () => container.children.find(node => node.className?.includes('tickets-load-more'));
   h.context.renderIndividualOffers(items, container, [dead]);
   assert.equal(activeCards().length, 12, 'initial render is bounded');
+  assert.equal(activeCards()[0].style['--delay'], 0);
   assert.match(activeCards()[0].innerHTML, /Destaque original/);
   assert.match(activeCards()[1].innerHTML, /Título original 0/);
   assert.ok(more(), 'the remaining offers can be requested');
@@ -524,6 +577,7 @@ test('Ingressos renders active offers in small batches before sold-out and unava
     'terminal sections remain after the active load-more control');
   more().click();
   assert.equal(activeCards().length, 24);
+  assert.equal(activeCards()[12].style['--delay'], 0, 'each lazy batch starts visible');
   more().click();
   assert.equal(activeCards().length, 27);
   assert.equal(more(), undefined);
@@ -531,6 +585,9 @@ test('Ingressos renders active offers in small batches before sold-out and unava
   const lastActiveIndex = container.children.indexOf(activeCards().at(-1));
   assert.ok(container.children.findIndex(node => node.innerHTML.includes('Esgotado')) > lastActiveIndex);
   assert.ok(container.children.findIndex(node => node.innerHTML.includes('Indisponível')) > lastActiveIndex);
+  const terminalCards = container.children.filter(node => node.className === 'card card-expired');
+  assert.ok(terminalCards.every(card => card.style['--delay'] <= 10),
+    'terminal cards cannot inherit a multi-second delay from active indices');
 });
 
 test('Ingressos cancels a stale load-more button after rerender or tab change', () => {
@@ -558,11 +615,36 @@ test('Ingressos cancels a stale load-more button after rerender or tab change', 
   assert.equal(cards().length, 12, 'a pending Tickets batch cannot run in another tab');
 });
 
+test('Home groups share one redemption snapshot across their cards', () => {
+  const h = harness();
+  const records = [{ id: 'voucher', user: 'gaoriel' }];
+  const seen = [];
+  let reads = 0;
+  h.context.getAllRedemptionsList = () => { reads++; return records; };
+  h.context.CATEGORY_MAP.FUTEBOL = { icon: '' };
+  h.context.buildOfferGroups = () => [
+    { key: 'theater', category: 'TEATRO', isHighlight: false, isAllSoldOut: false, hasNew: false, activeItems: [offer('theater')] },
+    { key: 'music', category: 'MUSICA', isHighlight: false, isAllSoldOut: false, hasNew: false, activeItems: [offer('music')] },
+  ];
+  h.context.createCategoryCarousel = (...args) => { seen.push(args.at(-1)); return element(); };
+  vm.runInContext(fn('renderGroupedOffers'), h.context);
+  h.context.renderGroupedOffers([], [], element());
+  assert.equal(reads, 1);
+  assert.deepEqual(seen, [records, records]);
+});
+
 test('history creates twelve groups per batch after year and month filters without deleting source records', () => {
   const records = Array.from({ length: 29 }, (_, i) => offer('archive-' + i, { title: '20/10/2026 Evento ' + i }));
   records.push(offer('other-month', { title: '20/09/2026 Setembro', firstSeen: Date.parse('2026-09-17T12:00:00Z') }),
     offer('other-year', { title: '20/10/2025 Antigo', firstSeen: Date.parse('2025-10-17T12:00:00Z') }));
   const h = harness({ history: records });
+  const redemptionRecords = [{ id: 'voucher', user: 'gaoriel' }];
+  let redemptionReads = 0;
+  h.context.getAllRedemptionsList = () => { redemptionReads++; return redemptionRecords; };
+  h.context.createHistoryPosterCard = (_group, _index, _curated, passedRecords) => {
+    assert.equal(passedRecords, redemptionRecords);
+    return element();
+  };
   h.context.currentTab = 'history';
   h.context.selectedHistoryMonth = 9;
   const container = element();
@@ -578,6 +660,7 @@ test('history creates twelve groups per batch after year and month filters witho
   assert.equal(state.cursor, 24);
   state.button.onclick();
   assert.equal(state.cursor, 29);
+  assert.equal(redemptionReads, 1, 'later History batches reuse the first redemption snapshot');
   assert.equal(state.button.parentNode, null);
   assert.deepEqual(clone(h.context.historyData), original);
   h.context.selectedHistoryMonth = 8;

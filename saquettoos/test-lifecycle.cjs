@@ -86,6 +86,8 @@ function harness(options = {}) {
     async dispatch(action, payload) {
       dispatches.push({ action, payload });
       if (action === 'openApp') {
+        if (options.openGate) await options.openGate.promise;
+        if (payload.id === 'clube-uol') return { status: 'dispatched', appId: payload.id, mode: 'external' };
         runtime.nativeActive = true;
         try { return await nativeAction.promise; }
         finally { runtime.nativeActive = false; }
@@ -98,13 +100,15 @@ function harness(options = {}) {
   const fm = { isFileStoredIniCloud: () => false, documentsDirectory: () => '/local', joinPath: (a, b) => a + '/' + b,
     writeString: (name, value) => files.set(name, value) };
   const context = {
-    SAQUETTO_VERSION: 'test', SAQUETTO_API: 'https://synthetic.example', SAQUETTO_CATALOG: [], SAQUETTO_COMPATIBILITY: {}, SAQUETTO_HTML: '<main id="shell">__SAQUETTO_INITIAL_JSON__</main>',
+    SAQUETTO_VERSION: 'test', SAQUETTO_API: 'https://synthetic.example',
+    SAQUETTO_CATALOG: [{ id: 'pilltracker', mode: 'native' }, { id: 'clube-uol', mode: 'external' }],
+    SAQUETTO_COMPATIBILITY: {}, SAQUETTO_HTML: '<main id="shell">__SAQUETTO_INITIAL_JSON__</main>',
     SaquettoHost: { create: () => host, safeJSON: value => JSON.stringify(value) },
     SaquettoUpdater: { fingerprint: () => '' },
     SaquettoRuntime: { create: value => { runtimeOptions = value; return runtime; } },
     FileManager: { local: () => fm, iCloud: () => fm }, Keychain: {},
     Script: { name: () => 'saquettoOS', complete: () => { complete = true; events.push('complete'); } },
-    args: {}, config: {}, module: { filename: '/local/saquettoOS.js' },
+    args: options.args || {}, config: {}, module: { filename: '/local/saquettoOS.js' },
     WebView, Alert, Device: { isUsingDarkAppearance: () => true },
     UUID: { string: () => 'synthetic-id' }, Safari: { open: async () => {} }, Request: class {},
     Timer: { schedule(milliseconds, repeats, callback) {
@@ -212,11 +216,11 @@ test('six successive sessions finish on dismissal even when native evaluation ne
 });
 
 test('native app pauses central polling until closure then leaves central running', async t => {
-  const h = harness({ queue: [{ id: 'open', action: 'openApp', payload: { id: 'clube-uol' } }] });
+  const h = harness({ queue: [{ id: 'open', action: 'openApp', payload: { id: 'pilltracker' } }] });
   t.after(() => { h.settleNative(); h.dismiss(); });
   await until(() => h.dispatches.length === 1 || h.done, 'native app did not start after access synchronization');
   for (const timer of [...h.timers]) timer.fire();
-  await until(() => h.events.includes('native_wait') || h.done, 'native session did not pause bridge');
+  await new Promise(resolve => setImmediate(resolve));
   const count = h.evaluations.length;
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(h.evaluations.length, count);
@@ -226,6 +230,58 @@ test('native app pauses central polling until closure then leaves central runnin
   assert.equal(h.complete, false, 'child completion must not end saquettoOS');
   assert.ok(h.evaluations.length > count);
   h.dismiss(); await h.finished(); assert.equal(h.complete, true);
+  const stages = JSON.parse(h.files.get('/local/saquettoos.startup.v1.json')).stages.map(item => item.stage);
+  assert.ok(stages.includes('app_open_requested_pilltracker'));
+  assert.ok(stages.includes('app_open_returned_pilltracker'));
+});
+
+test('native app suspends shell polling during slow authorization before presentation', async t => {
+  const openGate = deferred();
+  const h = harness({ queue: [{ id: 'open', action: 'openApp', payload: { id: 'pilltracker' } }], openGate });
+  t.after(() => { openGate.resolve(); h.settleNative(); h.dismiss(); });
+  await until(() => h.dispatches.some(item => item.action === 'openApp') || h.done, 'open request was not dispatched');
+  const count = h.evaluations.length;
+  for (const timer of [...h.timers]) timer.fire();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.evaluations.length, count, 'central must not evaluate while native launch authorization is pending');
+  openGate.resolve();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.evaluations.length, count, 'central must remain paused while the native app is presented');
+  h.settleNative();
+  await until(() => h.resolutions.length === 1 || h.done, 'native result was not acknowledged');
+  h.dismiss(); await h.finished();
+});
+
+test('automatic native opening suspends the bridge before access state synchronization', async t => {
+  const start = deferred();
+  const h = harness({ start, args: { queryParameters: { appId: 'pilltracker' } } });
+  t.after(() => { start.resolve({ preferences: {}, profile: { status: 'approved' } }); h.settleNative(); h.dismiss(); });
+  await until(() => h.evaluations.length >= 1 || h.done, 'initial layout was not evaluated');
+  const count = h.evaluations.length;
+  for (const timer of [...h.timers]) timer.fire();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.evaluations.length, count, 'bridge must wait for access state before auto-open');
+  start.resolve({ preferences: {}, profile: { status: 'approved' } });
+  await until(() => h.dispatches.some(item => item.action === 'openApp'), 'automatic opening was not dispatched');
+  const afterSync = h.evaluations.length;
+  for (const timer of [...h.timers]) timer.fire();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.evaluations.length, afterSync, 'bridge must remain suspended during native presentation');
+  h.settleNative(); h.dismiss(); await h.finished();
+});
+
+test('external Clube handoff ends the central bridge without waiting for its WebView dismissal', async () => {
+  const h = harness({ queue: [{ id: 'open', action: 'openApp', payload: { id: 'clube-uol' } }] });
+  await until(() => h.dispatches.some(item => item.action === 'openApp') || h.done, 'external opening was not dispatched');
+  await h.finished();
+  assert.equal(h.complete, true);
+  assert.equal(h.resolutions.length, 0, 'handoff must not evaluate the covered central');
+  const count = h.evaluations.length;
+  for (const timer of [...h.timers]) timer.fire();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.evaluations.length, count, 'bridge must not resume after handoff');
+  const stages = JSON.parse(h.files.get('/local/saquettoos.startup.v1.json')).stages.map(item => item.stage);
+  assert.ok(stages.includes('app_open_dispatched_clube-uol'));
 });
 
 test('bridge dispatches evaluation results while another native action is waiting', async t => {

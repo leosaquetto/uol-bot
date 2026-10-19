@@ -75,8 +75,8 @@ test('catalog state and offer count render separately without losing count durin
   const h = harness({ history: { active: [offer()], history: [] } });
   h.context.renderCatalogStatus(false);
   assert.equal(h.elements.get('catalogOfferCount').textContent, '1 oferta');
-  assert.equal(h.elements.get('liveStatusText').textContent, 'Em cache');
-  assert.equal(h.elements.get('liveStatusText')['aria-label'], 'Catálogo em cache');
+  assert.equal(h.elements.get('liveStatusText').textContent, 'Dados salvos');
+  assert.equal(h.elements.get('liveStatusText')['aria-label'], 'Dados salvos');
   assert.equal(h.elements.get('liveDot')['data-state'], 'cache');
   h.context.setCatalogHeaderStatus('Atualizando…', 'loading');
   assert.equal(h.elements.get('catalogOfferCount').textContent, '1 oferta');
@@ -87,7 +87,7 @@ test('catalog state and offer count render separately without losing count durin
   assert.equal(h.elements.get('liveStatusText')['aria-label'], 'Catálogo atualizado');
   assert.equal(h.elements.get('liveStatusText')['aria-busy'], 'false');
   assert.equal(h.elements.get('liveDot')['data-state'], 'fresh');
-  h.context.setCatalogHeaderStatus('Catálogo em cache', 'cache', 0);
+  h.context.setCatalogHeaderStatus('Dados salvos', 'cache', 0);
   assert.equal(h.elements.get('catalogOfferCount').textContent, '0 ofertas');
   h.context.setCatalogHeaderStatus('Catálogo atualizado', 'fresh', 19);
   assert.equal(h.elements.get('catalogOfferCount').textContent, '19 ofertas');
@@ -179,7 +179,7 @@ test('refresh deadline covers a stalled response body and releases controls whil
   assert.equal(cleared, true);
   assert.equal(h.elements.get('btnRefreshCatalog').disabled, false);
   assert.equal(h.state().active.length, 1);
-  assert.match(h.elements.get('liveStatusText').textContent, /cache/);
+  assert.match(h.elements.get('liveStatusText').textContent, /Dados salvos/);
 });
 
 test('invalid cache cannot send ETag or accept orphan 304; cold fallback runs once', async () => {
@@ -199,7 +199,7 @@ test('503, network failure, and invalid catalog retain valid stale cache without
     await h.run();
     assert.equal(h.requests.length, 1);
     assert.equal(h.state().active.length, 1);
-    assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
+    assert.match(h.elements.get('liveStatusText').textContent, /Dados salvos/);
     assert.equal(JSON.parse(h.storage.get(key)).fetchedAt, now - 300000);
   }
 });
@@ -215,7 +215,7 @@ test('empty/truncated/unhealthy catalog preserves known offers and never falls b
   assert.deepEqual(h.state().active, [local]);
   assert.equal(h.state().history.length, 0);
   assert.equal(h.requests.length, 1);
-  assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
+  assert.match(h.elements.get('liveStatusText').textContent, /Fonte antiga/);
 });
 
 test('partial catalog shows updated when its sources are fresh and healthy', async () => {
@@ -236,7 +236,7 @@ test('recently cached snapshot rechecks source timestamp rather than trusting hi
   await h.run();
   assert.equal(h.requests.length, 1);
   assert.equal(h.elements.get('liveDot').style.backgroundColor, '#ffb300');
-  assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
+  assert.match(h.elements.get('liveStatusText').textContent, /Fonte antiga/);
 });
 
 test('canonical duplicate generations choose latest observed offer regardless of response order', () => {

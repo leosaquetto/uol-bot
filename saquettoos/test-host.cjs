@@ -8,13 +8,15 @@ const path = require('node:path');
 const catalog = JSON.parse(fs.readFileSync(path.join(__dirname, 'catalog.json')));
 const compatibility = JSON.parse(fs.readFileSync(path.join(__dirname, 'compatibility.json')));
 const fingerprint = source => crypto.createHash('sha256').update(source).digest('hex');
-test('current official UOL release matches published bytes for dynamic integrated verification', () => {
+test('current official UOL release matches reviewed bytes for external launch verification', () => {
   const release = JSON.parse(fs.readFileSync(path.join(__dirname, '../stories-hunter/releases/stable.json')));
   const stableArtifact = fs.readFileSync(path.join(__dirname, '../scriptable_uol_stories_hunter.js'));
   const candidateArtifact = fs.readFileSync(path.join(__dirname, '../stories-hunter/dist/Hunter.js'));
   assert.equal(fingerprint(stableArtifact), release.sha256);
   assert.equal(stableArtifact.length, release.size);
   assert.equal(fingerprint(candidateArtifact), release.sha256);
+  assert.equal(catalog.find(app => app.id === 'clube-uol').mode, 'external');
+  assert.equal(compatibility['clube-uol'].sha256.includes(release.sha256), true);
   assert.match(release.artifact, /^https:\/\/raw\.githubusercontent\.com\/leosaquetto\/uol-bot\/[a-f0-9]{40}\/stories-hunter\/dist\/Hunter\.js$/);
 });
 const identity = { deviceId: '12345678-1234-1234-1234-123456789abc', token: 'a'.repeat(64) };
@@ -68,7 +70,21 @@ test('native launch checks access before passing control to runtime', async () =
   h.host.attachRuntime({ activeId: 'pilltracker' });
   await assert.rejects(h.host.dispatch('installUpdate', { id: 'saquettoos' }), /close_app_before_update/);
 });
-test('integrated UOL accepts only the installed bytes of the validated official release', async () => {
+test('default UOL launch checks current official bytes, then dispatches outside the native runtime', async () => {
+  const source = fs.readFileSync(path.join(__dirname, '../stories-hunter/dist/Hunter.js'), 'utf8');
+  const h = harness(path => ({ data: path === '/v1/me' ? { profile: approved } : { allowed: true } }), {
+    files: { '/cloud/Clube UOL Premium.js': source }
+  });
+  const opened = [];
+  h.host.attachRuntime({ activeId: null, open: async id => { opened.push(id); } });
+  await h.host.start();
+  assert.equal((await h.host.dispatch('openApp', { id: 'clube-uol' })).mode, 'external');
+  assert.deepEqual(h.launched, ['scriptable:///run?scriptName=Clube%20UOL%20Premium']);
+  assert.deepEqual(opened, []);
+  assert.deepEqual(h.checks, [], 'The reviewed current release needs no network check');
+  assert.equal(h.requests.some(item => item.url.endsWith('/v1/access/clube-uol')), true);
+});
+test('default UOL launch accepts only the installed bytes of a validated newer official release', async () => {
   const source = '// official updated UOL fixture';
   const sha256 = fingerprint(source);
   const h = harness(path => ({ data: path === '/v1/me' ? { profile: approved } : { allowed: true } }), {
@@ -76,18 +92,16 @@ test('integrated UOL accepts only the installed bytes of the validated official 
     check: () => ({ status: 'up_to_date', version: '5.9.4', manifest: { version: '5.9.4', sha256 } })
   });
   const opened = [];
-  h.host.attachRuntime({ open: async id => {
-    assert.equal(h.compatibility['clube-uol'].sha256.includes(sha256), true);
-    opened.push(id);
-    return { status: 'returned' };
-  } });
+  h.host.attachRuntime({ open: async id => { opened.push(id); } });
   await h.host.start();
   await h.host.dispatch('openApp', { id: 'clube-uol' });
   await h.host.dispatch('openApp', { id: 'clube-uol' });
-  assert.deepEqual(opened, ['clube-uol', 'clube-uol']);
+  assert.equal(h.compatibility['clube-uol'].sha256.includes(sha256), true);
+  assert.deepEqual(opened, []);
+  assert.deepEqual(h.launched, ['scriptable:///run?scriptName=Clube%20UOL%20Premium', 'scriptable:///run?scriptName=Clube%20UOL%20Premium']);
   assert.deepEqual(h.checks, ['clube-uol']);
 });
-test('integrated UOL rejects changed bytes, stale version and missing verification', async () => {
+test('default UOL launch rejects changed bytes, stale version and missing verification', async () => {
   const original = '// official UOL fixture';
   const cases = [
     { status: 'up_to_date', version: '5.9.4', manifest: { version: '5.9.4', sha256: fingerprint(original) } },
@@ -103,8 +117,22 @@ test('integrated UOL rejects changed bytes, stale version and missing verificati
     await h.host.start();
     await assert.rejects(h.host.dispatch('openApp', { id: 'clube-uol' }), /adapter_source_changed/);
     assert.equal(opened, false);
+    assert.equal(h.launched.length, 0);
     assert.equal(h.compatibility['clube-uol'].sha256.includes(fingerprint(original + ' changed')), false);
   }
+});
+test('default UOL launch denies server-revoked access before inspecting or dispatching', async () => {
+  const source = fs.readFileSync(path.join(__dirname, '../stories-hunter/dist/Hunter.js'), 'utf8');
+  const h = harness(path => path === '/v1/me' ? { data: { profile: approved } } : { status: 403, data: { error: 'access_denied' } }, {
+    files: { '/cloud/Clube UOL Premium.js': source }
+  });
+  const opened = [];
+  h.host.attachRuntime({ open: async id => { opened.push(id); } });
+  await h.host.start();
+  await assert.rejects(h.host.dispatch('openApp', { id: 'clube-uol' }), /access_denied/);
+  assert.deepEqual(h.launched, []);
+  assert.deepEqual(opened, []);
+  assert.deepEqual(h.checks, []);
 });
 test('revocation and unavailable server deny launch despite previously approved UI', async () => {
   const h = harness(path => path === '/v1/me' ? { data: { profile: approved } } : { status: 403, data: { error: 'access_denied' } },

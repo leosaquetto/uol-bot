@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: purple; icon-glyph: layer-group;
 // saquettoOS Scriptable launcher
-const SAQUETTO_VERSION = '1.0.12';
+const SAQUETTO_VERSION = '1.0.13';
 const SAQUETTO_API = 'https://saquettoos-access.leosaquetto.workers.dev';
 const SAQUETTO_CATALOG = __SAQUETTO_CATALOG__;
 const SAQUETTO_HTML = __SAQUETTO_HTML__;
@@ -160,9 +160,9 @@ const SaquettoHost = (() => {
       await authorize(app);
       const file = scriptFile(fm, app);
       if (!file) throw new Error('app_not_installed');
-      if (!standalone) {
+      if (!standalone && id === 'clube-uol') await verifyCurrentUOL(app, file);
+      if (!standalone && app.mode !== 'external') {
         if (!runtime) throw new Error('runtime_unavailable');
-        if (id === 'clube-uol') await verifyCurrentUOL(app, file);
         return runtime.open(id);
       }
       if (runtime?.activeId) await runtime.close();
@@ -367,7 +367,14 @@ async function saquettoMain() {
   });
   trace('presentation_requested');
   const tasks = new Set();
-  let initialized = false, startupFailure = false, synchronized = Promise.resolve();
+  const launchTasks = new Set();
+  const isLaunch = item => ['openApp', 'launchStandalone'].includes(item?.action) &&
+    SAQUETTO_CATALOG.some(app => app.id === (item.payload?.id || item.payload?.appId));
+  function trackLaunch(task) {
+    launchTasks.add(task);
+    task.finally(() => launchTasks.delete(task));
+  }
+  let initialized = false, startupFailure = false, handoff = false, synchronized = Promise.resolve();
   const ready = host.start().then(state => {
     initialized = true; return state;
   }).catch(() => {
@@ -395,10 +402,16 @@ async function saquettoMain() {
           const { assets, ...patch } = state;
           await evaluate('window.saquettoSetState(' + SaquettoHost.safeJSON(patch) + ');');
           if (!dismissed && initialized && allowedApp && action === 'open') {
-            const opening = host.dispatch('openApp', { id: allowedApp.id }).catch(() => {});
+            trace('app_open_requested_' + allowedApp.id);
+            const opening = host.dispatch('openApp', { id: allowedApp.id }).then(data => {
+              if (data?.status === 'dispatched') handoff = true;
+              trace((data?.status === 'dispatched' ? 'app_open_dispatched_' : 'app_open_returned_') + allowedApp.id);
+            }).catch(() => { trace('app_open_failed_' + allowedApp.id); });
+            trackLaunch(opening);
             tasks.add(opening); opening.finally(() => tasks.delete(opening));
           }
         }).catch(() => { if (!dismissed) trace('access_state_failed'); });
+        if (allowedApp && action === 'open') trackLaunch(synchronized);
         tasks.add(synchronized); synchronized.finally(() => tasks.delete(synchronized));
       }
     }
@@ -414,6 +427,9 @@ async function saquettoMain() {
     }
   }
   async function process(item) {
+    const openingApp = ['openApp', 'launchStandalone'].includes(item.action)
+      ? SAQUETTO_CATALOG.find(app => app.id === (item.payload?.id || item.payload?.appId)) : null;
+    if (openingApp) trace('app_open_requested_' + openingApp.id);
     let result;
     try {
       await synchronized;
@@ -422,13 +438,21 @@ async function saquettoMain() {
       const data = await host.dispatch(item.action, item.payload);
       if (data?.state?.preferences) currentPreferences = data.state.preferences;
       result = { ok: true, data };
-    } catch (error) { result = { ok: false, error: /^[a-z_]{1,60}$/.test(error?.message || '') ? error.message : 'operation_failed' }; }
-    if (!dismissed) {
+      if (data?.status === 'dispatched') handoff = true;
+      if (openingApp) trace((item.action === 'launchStandalone' || openingApp.mode === 'external'
+        ? 'app_open_dispatched_' : 'app_open_returned_') + openingApp.id);
+    } catch (error) {
+      if (openingApp) trace('app_open_failed_' + openingApp.id);
+      result = { ok: false, error: /^[a-z_]{1,60}$/.test(error?.message || '') ? error.message : 'operation_failed' };
+    }
+    if (!dismissed && !handoff) {
       try { await evaluate('window.saquettoResolve(' + JSON.stringify(item.id) + ',' + SaquettoHost.safeJSON(result) + ');'); } catch (_) {}
     }
   }
-  while (!dismissed && !startupFailure) {
-    // The child owns native presentation/evaluation until its own UI closes.
+  while (!dismissed && !startupFailure && !handoff) {
+    // Stop shell polling before authorization or a URL handoff reaches an app.
+    // An evaluation already in flight can otherwise overlap its WebView.
+    if (launchTasks.size) { await Promise.allSettled([...launchTasks]); continue; }
     // Do not poll the covered central while a child WebView callback is pending.
     if (runtime.nativeActive) { await runtime.waitForNative(); continue; }
     let items;
@@ -441,13 +465,14 @@ async function saquettoMain() {
       if (!item || typeof item.id !== 'string' || typeof item.action !== 'string') continue;
       // Callback results must drain while an app action is awaiting its WebView evaluation.
       const task = process(item); tasks.add(task); task.finally(() => tasks.delete(task));
+      if (isLaunch(item)) trackLaunch(task);
     }
     if (!items.length) await pause(100);
   }
   await ready;
   try { await runtime.shutdown(); } catch (_) {}
   await Promise.allSettled([...tasks]);
-  await presentation;
+  if (!handoff) await presentation;
   trace('complete');
   if (startupFailure) {
     const alert = new Alert(); alert.title = 'Diagnóstico saquettoOS';

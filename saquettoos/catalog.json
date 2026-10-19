@@ -1,5 +1,5 @@
 [
-  {"id":"clube-uol","name":"Clube UOL Premium","scriptName":"Clube UOL Premium","mode":"native","icon":"uol","color":"violet","manifestBase":"https://raw.githubusercontent.com/leosaquetto/uol-bot/main/stories-hunter/releases/","artifactPath":"stories-hunter/dist/Hunter.js","envelope":"uol"},
+  {"id":"clube-uol","name":"Clube UOL Premium","scriptName":"Clube UOL Premium","mode":"external","icon":"uol","color":"violet","manifestBase":"https://raw.githubusercontent.com/leosaquetto/uol-bot/main/stories-hunter/releases/","artifactPath":"stories-hunter/dist/Hunter.js","envelope":"uol"},
   {"id":"bilhete-unico","name":"Bilhete Único","scriptName":"Bilhete Único","mode":"native","icon":"transit","color":"blue"},
   {"id":"super-calendario","name":"Super Calendário","scriptName":"Super Calendário","mode":"native","icon":"calendar","color":"red"},
   {"id":"media-downloader","name":"media-downloader","scriptName":"media-downloader","mode":"native","icon":"download","color":"cyan"},

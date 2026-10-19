@@ -21,6 +21,7 @@ function harness() {
     console, Date, URL, ICONS: {}, activeFilter: null, isGrouped: false, currentTab: 'home',
     historyData: { active: [], history: [] }, currentRenderedGroups: new Map(),
     homeOfferSets: (active, history) => ({ activeItems: active, soldOutItems: history }),
+    getAllRedemptionsList: () => [],
     document: { getElementById(id) { if (!elements.has(id)) elements.set(id, node()); return elements.get(id); }, createElement: node },
     renderOffers() {}, renderHistoryScreen() {}, updateTimelineBadgeDot() {}, saveHistoryToStorage() {},
     toggleCategoryFilter(id) { context.activeFilter = id; },

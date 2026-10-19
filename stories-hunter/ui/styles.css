@@ -143,6 +143,7 @@
     .catalog-sheet-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
     .catalog-sheet-heading h2 { margin: 0; font-size: 18px; font-weight: 600; }
     .catalog-status-close { width: 44px; height: 44px; }
+    .catalog-source-note { margin: 10px 0 0; color: #aeb6c3; font-size: 12px; line-height: 1.4; }
     .catalog-settings-link { display: block; margin-top: 18px; min-height: 44px; padding: 0; border: 0; background: transparent; color: #d5d9e2; font: inherit; font-size: 14px; cursor: pointer; }
     .catalog-status-trigger { display: inline-flex; align-items: center; justify-content: flex-end; gap: 6px; min-height: 44px; min-width: 44px; max-width: 55%; padding: 6px 0 6px 8px; border: 0; background: transparent; color: #aeb5c0; font: inherit; font-size: 12px; text-align: right; cursor: pointer; }
     .catalog-trigger-dot { width: 5px; height: 5px; flex-shrink: 0; border-radius: 50%; background: #a1a9b6; }

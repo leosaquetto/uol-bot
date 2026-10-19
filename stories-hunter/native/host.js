@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.9.7";
+const SCRIPT_VERSION = "5.9.8";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -807,28 +807,35 @@ async function runNativeLinkChecks(view) {
       cookieHeader
     });
     pending.sort((a, b) => (Date.parse(cache.records[hunterLinkCheckKey(a)]?.checkedAt || "") || 0) - (Date.parse(cache.records[hunterLinkCheckKey(b)]?.checkedAt || "") || 0));
-    let next = 0;
-    const worker = async () => {
-      while (!view.hunterDismissed && next < pending.length) {
-        const item = pending[next++];
-        const key = hunterLinkCheckKey(item);
-        const old = cache.records[key] || null;
-        let outcome;
-        try { outcome = await checker.check(item.link, controls, old); }
-        catch (_) { outcome = { status: "unknown", checkedAt: new Date().toISOString() }; }
-        if (old?.status === "unavailable" && outcome.status === "unknown") {
-          outcome = { ...outcome, status: "unavailable", unavailableAt: old.unavailableAt || old.checkedAt };
+    for (let offset = 0; offset < pending.length && !view.hunterDismissed; offset += 8) {
+      const batch = pending.slice(offset, offset + 8);
+      const results = [];
+      let next = 0;
+      const worker = async () => {
+        while (!view.hunterDismissed && next < batch.length) {
+          const item = batch[next++];
+          const key = hunterLinkCheckKey(item);
+          const old = cache.records[key] || null;
+          let outcome;
+          try { outcome = await checker.check(item.link, controls, old); }
+          catch (_) { outcome = { status: "unknown", checkedAt: new Date().toISOString() }; }
+          if (old?.status === "unavailable" && outcome.status === "unknown") {
+            outcome = { ...outcome, status: "unavailable", unavailableAt: old.unavailableAt || old.checkedAt };
+          }
+          cache.records[key] = { status: outcome.status, checkedAt: outcome.checkedAt,
+            lastLinkCheckedAt: outcome.checkedAt,
+            unavailableAt: outcome.unavailableAt || "", goneCount: outcome.goneCount || 0, firstGoneAt: outcome.firstGoneAt || "" };
+          checkedThisSession.add(key);
+          results.push({ ...item, ...cache.records[key] });
         }
-        cache.records[key] = { status: outcome.status, checkedAt: outcome.checkedAt,
-          lastLinkCheckedAt: outcome.checkedAt,
-          unavailableAt: outcome.unavailableAt || "", goneCount: outcome.goneCount || 0, firstGoneAt: outcome.firstGoneAt || "" };
+      };
+      await Promise.all([worker(), worker()]);
+      if (results.length) {
         writeHunterLinkCheckCache(cache);
-        checkedThisSession.add(key);
-        await hunterLinkCheckNotify(view, [{ ...item, ...cache.records[key] }],
+        await hunterLinkCheckNotify(view, results,
           { verified: checkedThisSession.size, total: all.length, pending: Math.max(0, all.length - checkedThisSession.size) });
       }
-    };
-    await Promise.all([worker(), worker()]);
+    }
   } while (view.hunterLinkRefreshRequested && !view.hunterDismissed);
 }
 

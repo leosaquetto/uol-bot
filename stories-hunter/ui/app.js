@@ -611,8 +611,11 @@
     let catalogRefreshInFlight = false;
     let catalogRefreshSettled = false;
     let catalogStatusFresh = false;
+    let catalogFetchSucceeded = false;
     const linkCheckOverlay = new Map(); // Session-only: the native checker owns durable evidence.
     let linkCheckProgress = null;
+    let linkCheckRenderTimer = null;
+    let lastCatalogRenderAt = 0;
     let lastNativeLinkRequestAt = 0;
     const linkChecksNotBefore = Date.now() + 1500;
     let lastNativeLinkSignature = '';
@@ -702,8 +705,14 @@
         if (newerEvidence && newerEvidence.observedAt > checkedAt) return;
         const key = campaign.key + '|' + result.generation;
         // The native queue replays its last result while a new probe is pending.
-        // An old positive must not reactivate an uncertain local-only record.
-        if (result.cached === true && result.status !== 'unavailable') return;
+        // Cached availability cannot reactivate uncertain records. A cached
+        // sold-out result is useful only if no newer source saw this campaign.
+        if (result.cached === true && !['unavailable', 'sold_out'].includes(result.status)) return;
+        const sourceObservedAt = Math.max(catalogTime(candidate.lastSourceSeenAt),
+          catalogTime(candidate.lastSeen), catalogTime(candidate.restockedAt),
+          newerEvidence?.state === 'available' ? newerEvidence.observedAt : 0);
+        if (result.status === 'sold_out' &&
+            (sourceObservedAt > checkedAt || result.cached === true && sourceObservedAt >= checkedAt)) return;
         if (historyCandidate && result.status === 'available') {
           historyCandidate.availabilityEvidence = { state: 'available', observedAt: checkedAt, source: 'iphone' };
           historyCandidate.restockedAt = checkedAt;
@@ -736,6 +745,16 @@
           delete historyCandidate.cacheUnverified;
           historyChanged = changed = true;
         }
+        if (result.cached !== true && checkedAt > catalogTime(candidate.lastLinkCheckedAt) &&
+            ['available', 'unknown'].includes(result.status)) {
+          candidate.lastLinkCheckedAt = checkedAt;
+          historyChanged = true;
+        }
+        if (activeCandidate && result.status === 'available' && result.cached !== true &&
+            (!newerEvidence || checkedAt > newerEvidence.observedAt)) {
+          activeCandidate.availabilityEvidence = { state: 'available', observedAt: checkedAt, source: 'iphone' };
+          historyChanged = true;
+        }
         if (result.status === 'unavailable') {
           const at = catalogTime(result.unavailableAt) || checkedAt;
           if (at && at <= checkedAt && linkCheckOverlay.get(key) !== at) { linkCheckOverlay.set(key, at); changed = true; }
@@ -756,7 +775,13 @@
           'Verificando links: ' + progress.verified + ' de ' + progress.total);
         updateCatalogStatusTrigger();
       }
-      if (changed) renderCatalogStatus();
+      if (progress && progress.pending === 0 && (changed || linkCheckRenderTimer)) renderCatalogStatus();
+      else if (changed && !linkCheckRenderTimer) {
+        linkCheckRenderTimer = setTimeout(() => {
+          linkCheckRenderTimer = null;
+          renderCatalogStatus();
+        }, Math.max(180, 750 - (Date.now() - lastCatalogRenderAt)));
+      }
     }
 
     function hunterRequestLinkChecks() {
@@ -1088,7 +1113,7 @@
       if (caption) caption.textContent = attention ? 'Verificar coleta' :
         linkCheckProgress && linkCheckProgress.pending > 0 ?
           'Links ' + linkCheckProgress.verified + '/' + linkCheckProgress.total :
-          state === 'fresh' ? 'Atualizado' : state === 'cache' ? 'Em cache' : 'Atualizando…';
+          state === 'fresh' ? 'Atualizado' : state === 'cache' ? (status?.textContent || 'Dados salvos') : 'Atualizando…';
       trigger.setAttribute('data-attention', String(attention));
       trigger.setAttribute('data-state', state);
       trigger.setAttribute('aria-label', (attention ? 'Coleta precisa de atenção. ' : '') + (status?.getAttribute('aria-label') || 'Catálogo') + '. Abrir detalhes do catálogo e da coleta');
@@ -1304,7 +1329,8 @@
       const dot = document.getElementById('liveDot');
       const count = document.getElementById('catalogOfferCount');
       if (status) {
-        status.textContent = text === 'Catálogo em cache' ? 'Em cache' : text === 'Catálogo atualizado' ? 'Atualizado' : text;
+        status.textContent = text === 'Catálogo atualizado' ? 'Atualizado' :
+          text === 'Fonte sem atualização recente' ? 'Fonte antiga' : text;
         status.setAttribute('aria-label', text);
         status.setAttribute('aria-busy', String(state === 'loading'));
       }
@@ -1317,6 +1343,7 @@
     }
 
     function renderCatalogStatus(fresh = catalogStatusFresh) {
+      if (linkCheckRenderTimer) { clearTimeout(linkCheckRenderTimer); linkCheckRenderTimer = null; }
       catalogStatusFresh = fresh;
       const sets = homeOfferSets(historyData.active, historyData.history);
       const offers = sets.activeItems;
@@ -1326,9 +1353,11 @@
       updateCategoryCounts(offers);
       document.getElementById('activesCountText').textContent = offers.length + ' Ativas';
       const loading = catalogRefreshInFlight && !catalogRefreshSettled;
-      setCatalogHeaderStatus(loading ? 'Atualizando…' : fresh ? 'Catálogo atualizado' : 'Catálogo em cache',
+      setCatalogHeaderStatus(loading ? 'Atualizando…' : fresh ? 'Catálogo atualizado' :
+        catalogFetchSucceeded ? 'Fonte sem atualização recente' : 'Dados salvos',
         loading ? 'loading' : fresh ? 'fresh' : 'cache', visibleCount);
       updateTimelineBadgeDot();
+      lastCatalogRenderAt = Date.now();
     }
 
     async function refreshHunterCatalog() {
@@ -1367,6 +1396,7 @@
             saveCatalogCache(snapshot, response.headers.get('ETag'));
           }
         } finally { if (timeout) clearTimeout(timeout); }
+        catalogFetchSucceeded = true;
         catalogRefreshSettled = true;
         mergeCatalogSnapshot(snapshot);
         renderCatalogStatus(['api', 'ticketListing'].some(key => {
@@ -1374,6 +1404,7 @@
           return snapshot.sources[key].healthy && age >= 0 && age <= 600000;
         }));
       } catch (e) {
+        catalogFetchSucceeded = false;
         catalogRefreshSettled = true;
         if (cache) {
           mergeCatalogSnapshot(cache.snapshot);
@@ -1701,13 +1732,13 @@
       return Array.from(matchedUsers);
     }
 
-    function getRedeemedUsersForGroup(group) {
+    function getRedeemedUsersForGroup(group, redemptionRecords = getAllRedemptionsList()) {
       if (!group) return [];
       const allItems = [...(group.activeItems || []), ...(group.soldOutItems || [])];
       if (group.parent) allItems.push(group.parent);
       const userSet = new Set();
       allItems.forEach(item => {
-        const users = getRedeemedUsersForOffer(item);
+        const users = getRedeemedUsersForOffer(item, redemptionRecords);
         users.forEach(u => userSet.add(u));
       });
       return Array.from(userSet);
@@ -1910,7 +1941,7 @@
 
         const card = document.createElement('div');
         card.className = 'card' + (isHighlight ? ' card-highlight' : '');
-        card.style.setProperty('--delay', index);
+        card.style.setProperty('--delay', batchIndex);
 
         let newTagHtml = '';
         if (isNew) {
@@ -2024,7 +2055,7 @@
         recentSoldOut.forEach((o, index) => {
           const card = document.createElement('div');
           card.className = 'card card-expired';
-          card.style.setProperty('--delay', ordered.length + index);
+          card.style.setProperty('--delay', Math.min(index, 10));
 
           const expTimeStr = formatExpiredAgo(confirmedSoldOutTime(o), now);
           const timeTagHtml = '<span class="card-tag tag-expired-age" style="margin-left: auto;">' + expTimeStr + '</span>';
@@ -2092,7 +2123,7 @@
         unavailableItems.forEach((o, index) => {
           const card = document.createElement('div');
           card.className = 'card card-expired';
-          card.style.setProperty('--delay', ordered.length + recentSoldOut.length + index);
+          card.style.setProperty('--delay', Math.min(index, 10));
           card.innerHTML = `<div class="thumb-wrap">${posterImageMarkup(o)}</div><div class="card-content">
             <div class="tag-row"><span class="card-tag tag-expired-age">Link indisponível</span></div>
             <div class="card-title">${htmlAttribute(o.rawTitle || o.title || '')}</div>
@@ -2620,6 +2651,7 @@
     function renderGroupedOffers(activeList, historyList, container) {
       container.innerHTML = '';
       currentRenderedGroups.clear();
+      const redemptionRecords = getAllRedemptionsList();
 
       const allGroups = buildOfferGroups(activeList, historyList);
       allGroups.forEach(g => currentRenderedGroups.set(g.key, g));
@@ -2634,7 +2666,7 @@
       if (highlightGroups.length > 0 && (!activeFilter || highlightGroups.some(g => g.category === activeFilter))) {
         const hlToShow = activeFilter ? highlightGroups.filter(g => g.category === activeFilter) : highlightGroups;
         if (hlToShow.length > 0) {
-          const destSection = createDestaqueHeroSection(hlToShow);
+          const destSection = createDestaqueHeroSection(hlToShow, redemptionRecords);
           container.appendChild(destSection);
         }
       }
@@ -2671,12 +2703,12 @@
           return (b.activeItems.length - a.activeItems.length);
         });
 
-        const section = createCategoryCarousel(cat.id, cat.label, catGroups, false, cat.icon);
+        const section = createCategoryCarousel(cat.id, cat.label, catGroups, false, cat.icon, redemptionRecords);
         container.appendChild(section);
       });
     }
 
-    function createDestaqueHeroSection(groups) {
+    function createDestaqueHeroSection(groups, redemptionRecords) {
       const sec = document.createElement('div');
       sec.className = 'destaque-hero-section';
       sec.id = 'destaque_hero_section';
@@ -2695,7 +2727,7 @@
       listContainer.className = 'destaque-hero-container';
 
       groups.forEach((g, idx) => {
-        const card = createPosterCard(g, idx, true, true);
+        const card = createPosterCard(g, idx, true, true, redemptionRecords);
         listContainer.appendChild(card);
       });
 
@@ -2703,7 +2735,7 @@
       return sec;
     }
 
-    function createCategoryCarousel(catId, catLabel, groups, isDestaque, catIconSvg) {
+    function createCategoryCarousel(catId, catLabel, groups, isDestaque, catIconSvg, redemptionRecords) {
       const sec = document.createElement('div');
       sec.className = 'category-carousel-section';
       sec.id = 'cat_section_' + catId;
@@ -2724,7 +2756,7 @@
       track.className = 'category-carousel-track';
 
       groups.forEach((g, idx) => {
-        const card = createPosterCard(g, idx, isDestaque, false);
+        const card = createPosterCard(g, idx, isDestaque, false, redemptionRecords);
         track.appendChild(card);
       });
 
@@ -2732,7 +2764,7 @@
       return sec;
     }
 
-    function createPosterCard(group, index, isDestaque, isHeroFullWidth) {
+    function createPosterCard(group, index, isDestaque, isHeroFullWidth, redemptionRecords) {
       const { activeItems, soldOutItems, norm, isHighlight, hasNew, isAllSoldOut, hasStory, hasPortal, parent } = group;
       const activeCount = activeItems.length;
       const soldOutCount = soldOutItems.length;
@@ -2744,7 +2776,7 @@
       if (isHighlight || isDestaque) cardClass += ' card-highlight-poster';
       if (isAllSoldOut) cardClass += ' card-sold-out-grouped';
       card.className = cardClass;
-      card.style.setProperty('--delay', index);
+      card.style.setProperty('--delay', Math.min(index, 10));
 
       // Top-left: Micro circular source icons + Relative time tag ("Há X tempo")
       let sourcesBadgeHtml = '';
@@ -2818,7 +2850,7 @@
       const imageMarkup = posterImageMarkup([...activeItems, ...soldOutItems]);
 
       // Amigos que resgataram
-      const redeemedUsers = getRedeemedUsersForGroup(group);
+      const redeemedUsers = getRedeemedUsersForGroup(group, redemptionRecords);
       const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
 
       if (isHeroFullWidth) {
@@ -3244,9 +3276,10 @@
       historySearchTimer = setTimeout(() => {
         const allOffers = getAllCatalogOffers();
         const groups = buildHistoryGroups(allOffers);
+        const redemptionRecords = getAllRedemptionsList();
         renderHistoryMonthSelector(selectedHistoryYear, groups);
-        renderHistoryCurated(allOffers);
-        renderHistoryMonths(groups, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+        renderHistoryCurated(allOffers, redemptionRecords);
+        renderHistoryMonths(groups, selectedHistoryYear, document.getElementById('historyMonthsContainer'), redemptionRecords);
       }, 180);
     }
 
@@ -3373,12 +3406,13 @@
         </div>
       `;
 
+      const redemptionRecords = getAllRedemptionsList();
       renderHistoryMonthSelector(selectedHistoryYear, historyGroups);
-      renderHistoryCurated(allOffers);
-      renderHistoryMonths(historyGroups, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+      renderHistoryCurated(allOffers, redemptionRecords);
+      renderHistoryMonths(historyGroups, selectedHistoryYear, document.getElementById('historyMonthsContainer'), redemptionRecords);
     }
 
-    function renderHistoryCurated(allOffers) {
+    function renderHistoryCurated(allOffers, redemptionRecords = getAllRedemptionsList()) {
       const editorsChoice = getEditorsChoiceOffers(allOffers.filter(historyMatchesSearch));
       const edTrack = document.getElementById('editorsChoiceTrack');
       const section = document.getElementById('sectionEditorsChoice');
@@ -3386,7 +3420,7 @@
       if (edTrack) {
         edTrack.innerHTML = '';
         editorsChoice.forEach((item, idx) => {
-          const card = createHistoryPosterCard(item, idx, true);
+          const card = createHistoryPosterCard(item, idx, true, redemptionRecords);
           edTrack.appendChild(card);
           alignHistoryDateStrips(card);
         });
@@ -3404,9 +3438,10 @@
       const today = saoPauloParts(Date.now());
       const months = groups.filter(o => getOfferYearAndMonth(o).year === year).map(o => getOfferYearAndMonth(o).month);
       selectedHistoryMonth = year === 'unknown' ? 'all' : year === today.year || !months.length ? today.month - 1 : Math.max(...months);
+      const redemptionRecords = getAllRedemptionsList();
       renderHistoryMonthSelector(year, groups);
-      renderHistoryCurated(allOffers);
-      renderHistoryMonths(groups, year, document.getElementById('historyMonthsContainer'));
+      renderHistoryCurated(allOffers, redemptionRecords);
+      renderHistoryMonths(groups, year, document.getElementById('historyMonthsContainer'), redemptionRecords);
     }
 
     function renderHistoryMonthSelector(year, groups) {
@@ -3450,12 +3485,13 @@
       selectedHistoryMonth = m;
       const allOffers = getAllCatalogOffers();
       const groups = buildHistoryGroups(allOffers);
+      const redemptionRecords = getAllRedemptionsList();
       renderHistoryMonthSelector(selectedHistoryYear, groups);
-      renderHistoryCurated(allOffers);
-      renderHistoryMonths(groups, selectedHistoryYear, document.getElementById('historyMonthsContainer'));
+      renderHistoryCurated(allOffers, redemptionRecords);
+      renderHistoryMonths(groups, selectedHistoryYear, document.getElementById('historyMonthsContainer'), redemptionRecords);
     }
 
-    function renderHistoryMonths(groups, year, container) {
+    function renderHistoryMonths(groups, year, container, redemptionRecords = getAllRedemptionsList()) {
       if (!container) return;
       if (historyRenderState && historyRenderState.observer) historyRenderState.observer.disconnect();
       container.innerHTML = '';
@@ -3499,7 +3535,8 @@
       button.type = 'button';
       button.className = 'month-chip';
       button.onclick = appendHistoryBatch;
-      historyRenderState = { container: container, rows: rows, cursor: 0, year: year, tracks: new Map(), button: button, observer: null };
+      historyRenderState = { container: container, rows: rows, cursor: 0, year: year, tracks: new Map(), button: button,
+        observer: null, redemptionRecords: redemptionRecords };
       appendHistoryBatch();
       if (historyRenderState.cursor < rows.length && typeof IntersectionObserver === 'function') {
         const state = historyRenderState;
@@ -3534,7 +3571,7 @@
           state.tracks.set(row.month, track);
         }
         currentRenderedGroups.set(row.group.key, row.group);
-        const card = createHistoryPosterCard(row.group, state.cursor - start, false);
+        const card = createHistoryPosterCard(row.group, state.cursor - start, false, state.redemptionRecords);
         track.appendChild(card);
         alignHistoryDateStrips(card);
       }
@@ -3548,7 +3585,7 @@
       }
     }
 
-    function createHistoryPosterCard(target, index, isCuratedSection = false) {
+    function createHistoryPosterCard(target, index, isCuratedSection = false, redemptionRecords) {
       const isGroup = Boolean(target && (target.activeItems || target.soldOutItems || target.allItems));
       const group = isGroup ? target : {
         key: getGroupKey(target),
@@ -3581,7 +3618,7 @@
       if (curated) cardClass += ' card-editors-choice-poster';
       if (isAllSoldOut && !hasUnverifiedSessions) cardClass += ' card-sold-out-grouped';
       card.className = cardClass;
-      card.style.setProperty('--delay', index);
+      card.style.setProperty('--delay', Math.min(index, 10));
 
       // Micro ícones de fontes sobrepostos
       let sourcesBadgeHtml = '';
@@ -3648,7 +3685,7 @@
       const imageMarkup = posterImageMarkup([...(activeItems || []), ...(soldOutItems || [])]);
 
       // Amigos que resgataram
-      const redeemedUsers = getRedeemedUsersForGroup(group);
+      const redeemedUsers = getRedeemedUsersForGroup(group, redemptionRecords);
       const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
 
       if (totalSessions > 1) {
