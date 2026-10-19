@@ -31,7 +31,6 @@
   };
   const icon = (name) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (paths[name] || paths.solid) + '</svg>';
   const appIcons = { 'clube-uol': 'ticket', 'bilhete-unico': 'transit', 'super-calendario': 'calendar', 'media-downloader': 'media', pilltracker: 'pill', 'lastfm-small': 'music' };
-  const appColors = { 'clube-uol': 'linear-gradient(140deg,#ae31ef,#4d18c3)', 'bilhete-unico': 'radial-gradient(ellipse at 24% 0%,#73dce4 0%,transparent 48%),linear-gradient(145deg,#30b7d7 5%,#287cca 57%,#344ca8)', 'super-calendario': 'radial-gradient(ellipse at 22% 0%,#ebc263 0%,transparent 48%),linear-gradient(145deg,#eb9449 5%,#e45e55 57%,#b73a70)', 'media-downloader': 'radial-gradient(ellipse at 22% 0%,#ac8de2 0%,transparent 48%),linear-gradient(145deg,#8867dd 5%,#625bd5 57%,#3d3fa6)', pilltracker: 'radial-gradient(ellipse at 22% 0%,#79dabe 0%,transparent 48%),linear-gradient(145deg,#30ba94 5%,#229a7f 57%,#28777f)', 'lastfm-small': 'radial-gradient(ellipse at 22% 0%,#e791b9 0%,transparent 48%),linear-gradient(145deg,#e45b91 5%,#cb3d76 57%,#933b71)' };
   const demo = {
     version: 'Prévia', profile: { name: 'Leo', role: 'admin', status: 'approved' },
     apps: [
@@ -140,9 +139,15 @@
   };
   function applyResult(result) { if (result && result.state) window.saquettoSetState(result.state); }
   function safeImage(url) { return typeof url === 'string' && /^(data:image\/(png|jpeg|webp|gif);base64,|https:\/\/)/i.test(url) && !(preview && /^https:/i.test(url)) ? url : ''; }
-  function appImage(app) { return safeImage(app.icon) || (app.id === 'clube-uol' ? safeImage(state.assets.uolIcon) : ''); }
-  function appGraphic(app) { const url = appImage(app); return url ? '<img src="' + escapeHTML(url) + '" alt="">' : icon(appIcons[app.id] || 'solid'); }
-  function appColor(app) { return appColors[app.id] || 'linear-gradient(145deg,#697cce,#6d4bac)'; }
+  function appImage(app) { return safeImage(app.icon); }
+  function appGraphic(app) {
+    const url = appImage(app);
+    if (url) return '<img src="' + escapeHTML(url) + '" alt="">';
+    // Masks tint every built-in symbol consistently without changing the supplied UOL geometry.
+    const supplied = app.id === 'clube-uol' && typeof state.assets.uolGlyph === 'string' && /^data:image\/svg\+xml;base64,[A-Za-z0-9+/]+={0,2}$/.test(state.assets.uolGlyph) ? state.assets.uolGlyph : '';
+    const mask = supplied || 'data:image/svg+xml,' + encodeURIComponent(icon(appIcons[app.id] || 'solid').replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace('currentColor', '#fff').replace('stroke-width="1.8"', 'stroke-width="1.5"'));
+    return '<span class="app-glyph" aria-hidden="true" style="--glyph-mask:url(' + escapeHTML(JSON.stringify(mask)) + ')"></span>';
+  }
   function initials(name) { return String(name || 'S').trim().split(/\s+/).slice(0, 2).map((word) => word.charAt(0)).join('').toUpperCase(); }
   function getApp(id) { return state.apps.find((app) => app.id === id); }
   function approved() { return state.profile.status === 'approved'; }
@@ -188,7 +193,7 @@
     else if (app.updateAvailable) badge = '<span class="app-badge">' + icon('refresh') + '</span>';
     const name = inDock ? ({ 'clube-uol': 'Clube UOL', 'super-calendario': 'Calendário', 'media-downloader': 'Downloads', 'lastfm-small': 'Last.fm' }[app.id] || app.name) : app.name;
     const hint = state.profile.status === 'loading' ? 'Verificando acesso' : !allowed(app) ? 'Acesso restrito' : (!app.installed ? 'Não instalado' : (app.mode === 'native' ? 'Interface original' : app.mode === 'integrated' ? 'Integrado' : 'Abre no Scriptable'));
-    return '<button type="button" class="app-tile"' + (entranceIndex === undefined ? '' : ' data-entrance="' + entranceIndex + '" style="--entrance-index:' + entranceIndex + '"') + ' data-open-app="' + escapeHTML(app.id) + '" data-installed="' + Boolean(app.installed) + '" data-available="' + (state.profile.status === 'loading' ? 'loading' : allowed(app)) + '" aria-label="' + escapeHTML(app.name + '. ' + hint) + '"' + (inDock ? '' : ' role="listitem"') + '><span class="app-icon' + (appImage(app) ? ' app-icon-artwork' : '') + '" style="--app-color:' + appColor(app) + '">' + appGraphic(app) + badge + '</span><span class="app-name">' + escapeHTML(name) + '</span>' + (!app.installed ? '<span class="app-status">Não instalado</span>' : '') + '</button>';
+    return '<button type="button" class="app-tile"' + (entranceIndex === undefined ? '' : ' data-entrance="' + entranceIndex + '" style="--entrance-index:' + entranceIndex + '"') + ' data-open-app="' + escapeHTML(app.id) + '" data-installed="' + Boolean(app.installed) + '" data-available="' + (state.profile.status === 'loading' ? 'loading' : allowed(app)) + '" aria-label="' + escapeHTML(app.name + '. ' + hint) + '"' + (inDock ? '' : ' role="listitem"') + '><span class="app-icon' + (appImage(app) ? ' app-icon-artwork' : '') + '">' + appGraphic(app) + badge + '</span><span class="app-name">' + escapeHTML(name) + '</span>' + (!app.installed ? '<span class="app-status">Não instalado</span>' : '') + '</button>';
   }
   function renderApps() {
     const normalized = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -242,7 +247,7 @@
         const isAvailable = item.available || item.updateAvailable;
         const configured = item.status !== 'not_configured' && item.configured !== false && (item.id === 'saquettoos' || item.id === 'clube-uol' || item.channel);
         const detail = item.error ? errorMessages[item.error] || 'Não foi possível verificar' : !configured ? 'Canal de atualização não configurado' : isAvailable ? String(item.version || 'Instalável') + ' → ' + String(item.latestVersion || item.version || 'Nova versão') : item.status === 'up_to_date' || item.status === 'current' ? 'Versão atualizada' : 'Verifique a disponibilidade';
-        return '<div class="group-row update-row"><span class="mini-icon" style="--app-color:' + appColor(app) + '">' + (item.id === 'saquettoos' ? icon('sparkles') : appGraphic(app)) + '</span><span class="row-text"><strong>' + escapeHTML(item.name || app.name || 'saquettoOS') + '</strong><small>' + escapeHTML(detail) + '</small></span>' + (isAvailable ? '<button type="button" class="secondary-button" data-install="' + escapeHTML(item.id) + '">Atualizar</button>' : '<span class="version-tag">' + escapeHTML(item.version || '—') + '</span>') + '</div>';
+        return '<div class="group-row update-row"><span class="mini-icon">' + (item.id === 'saquettoos' ? icon('sparkles') : appGraphic(app)) + '</span><span class="row-text"><strong>' + escapeHTML(item.name || app.name || 'saquettoOS') + '</strong><small>' + escapeHTML(detail) + '</small></span>' + (isAvailable ? '<button type="button" class="secondary-button" data-install="' + escapeHTML(item.id) + '">Atualizar</button>' : '<span class="version-tag">' + escapeHTML(item.version || '—') + '</span>') + '</div>';
       }).join('') + '</div><p class="fine-print">Instalações e atualizações preservam os dados dos apps. Scripts sem canal configurado continuam abrindo normalmente.</p></div>';
   }
   function notificationsPanel() {

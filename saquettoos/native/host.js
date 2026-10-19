@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: purple; icon-glyph: layer-group;
 // saquettoOS Scriptable launcher
-const SAQUETTO_VERSION = '1.0.6';
+const SAQUETTO_VERSION = '1.0.7';
 const SAQUETTO_API = 'https://saquettoos-access.leosaquetto.workers.dev';
 const SAQUETTO_CATALOG = __SAQUETTO_CATALOG__;
 const SAQUETTO_HTML = __SAQUETTO_HTML__;
@@ -281,10 +281,25 @@ async function saquettoMain() {
   const view = new WebView();
   let dismissed = false;
   let evaluationTail = Promise.resolve();
+  let cancelEvaluation = null;
   const evaluate = code => {
     const next = evaluationTail.then(() => {
       if (dismissed) throw new Error('app_closed');
-      return view.evaluateJavaScript(code);
+      return new Promise((resolve, reject) => {
+        let settled = false;
+        const finish = (error, value) => {
+          if (settled) return;
+          settled = true;
+          if (cancelEvaluation === cancel) cancelEvaluation = null;
+          if (error) reject(error); else resolve(value);
+        };
+        // Scriptable has no WebView evaluation cancellation API. Release only our wait
+        // on dismissal; ignore late native results and refuse all queued evaluations.
+        const cancel = () => finish(new Error('app_closed'));
+        cancelEvaluation = cancel;
+        try { Promise.resolve(view.evaluateJavaScript(code)).then(value => finish(null, value), error => finish(error)); }
+        catch (error) { finish(error); }
+      });
     });
     evaluationTail = next.catch(() => {});
     return next;
@@ -332,6 +347,7 @@ async function saquettoMain() {
   const presentation = view.present(true).finally(() => {
     dismissed = true;
     if (cancelIdle) cancelIdle();
+    if (cancelEvaluation) cancelEvaluation();
     trace('dismissed');
   });
   trace('presentation_requested');
@@ -372,8 +388,8 @@ async function saquettoMain() {
       }
     }
   } catch (_) {
-    startupFailure = true; trace('dashboard_failed');
     if (!dismissed) {
+      startupFailure = true; trace('dashboard_failed');
       // No app has opened on this failure path. Permit only the host's trusted replacement.
       try {
         view.shouldAllowRequest = () => true;
@@ -402,7 +418,7 @@ async function saquettoMain() {
     if (runtime.nativeActive) { await runtime.waitForNative(); continue; }
     let items;
     try {
-      // Every evaluation completes immediately. No native completion callback survives Close.
+      // Return the queue directly; release our wait if the native view closes mid-evaluation.
       items = await evaluate('window.__SAQUETTO_QUEUE.splice(0, 20)');
     } catch (_) { if (!dismissed) trace('bridge_failed'); break; }
     if (dismissed || !Array.isArray(items)) break;
@@ -425,5 +441,5 @@ async function saquettoMain() {
   }
 }
 
-await saquettoMain();
-Script.complete();
+try { await saquettoMain(); }
+finally { Script.complete(); }

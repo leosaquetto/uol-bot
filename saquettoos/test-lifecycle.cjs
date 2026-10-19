@@ -192,6 +192,25 @@ test('idle dismissal cancels native polling and reaches Script.complete without 
   assert.equal(h.evaluations.some(item => item.afterDismiss), false);
 });
 
+test('six successive sessions finish on dismissal even when native evaluation never settles', async t => {
+  for (let session = 1; session <= 6; session++) {
+    const h = harness({ evaluate: () => new Promise(() => {}) });
+    t.after(() => h.dismiss());
+    await until(() => h.evaluations.length === 1 || h.done, 'session ' + session + ' did not begin evaluation');
+    assert.equal(h.done, false);
+    h.dismiss();
+    await h.finished();
+    assert.equal(h.complete, true, 'session ' + session + ' must release the script on Close');
+    assert.equal(h.alerts.length, 0, 'normal dismissal must not show a startup failure');
+    assert.equal(h.requests.length, 1, 'dismissal must not replace the closed document');
+    assert.equal(h.timers.size, 0);
+    assert.equal(h.callbacks.size, 0);
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(h.evaluations.length, 1, 'a closed session must not resume evaluation');
+    assert.equal(h.evaluations.some(item => item.afterDismiss), false);
+  }
+});
+
 test('native app pauses central polling until closure then leaves central running', async t => {
   const h = harness({ queue: [{ id: 'open', action: 'openApp', payload: { id: 'clube-uol' } }] });
   t.after(() => { h.settleNative(); h.dismiss(); });
@@ -240,12 +259,22 @@ test('native WebView evaluations are serialized and queued work is rejected afte
   h.view.evaluateJavaScript = () => { calls++; return pending.promise; };
   const first = h.runtimeOptions.shell('first');
   const second = h.runtimeOptions.shell('second');
-  const secondRejected = assert.rejects(second, /app_closed/);
+  let settled = 0;
+  const firstRejected = assert.rejects(first, /app_closed/).then(() => { settled++; });
+  const secondRejected = assert.rejects(second, /app_closed/).then(() => { settled++; });
   await until(() => calls === 1, 'evaluation did not start');
   assert.equal(calls, 1, 'second native evaluation must wait for the first');
-  h.dismiss(); pending.resolve(true);
-  assert.equal(await first, true); await secondRejected;
+  h.dismiss();
+  await h.finished();
+  await until(() => settled === 2, 'pending and queued evaluations did not reject on dismissal');
+  await firstRejected; await secondRejected;
+  assert.equal(h.complete, true, 'completion must not depend on the native promise settling');
+  assert.equal(h.timers.size, 0);
+  pending.resolve(true);
+  await new Promise(resolve => setImmediate(resolve));
   await h.finished(); assert.equal(calls, 1);
+  assert.equal(h.timers.size, 0);
+  assert.equal(h.callbacks.size, 0);
 });
 
 test('access initialization settling after dismissal never evaluates the closed shell', async t => {

@@ -6,6 +6,7 @@ Launcher Scriptable com seis apps: Clube UOL Premium, Bilhete Único, Super Cale
 
 - Abra `saquettoOS` no Scriptable: a primeira tela já contém os apps, com entrada suave em camadas. Aparência acompanha o sistema; Ajustes permite claro/escuro e material vidro/sólido. Favoritos ficam locais.
 - A tela inicial respeita a área segura do Scriptable e mantém busca/dock fixos. Painéis têm rolagem própria; se o teclado deixa pouco espaço, somente a grade de apps também pode rolar. **Mostrar nomes dos apps**, em Ajustes, vale para grade e dock e começa desativado.
+- Ícones padrão usam vidro neutro com símbolos claros no modo escuro; no claro, superfície translúcida e símbolos no degradê Hedgy. Clube UOL usa o SVG fornecido no mesmo tratamento. Grade e dock têm dimensões iguais; material sólido/redução de transparência mantém fundo opaco.
 - Os seis apps usam suas interfaces originais do Scriptable sobre a central. Fechar a tela do app devolve o controle ao saquettoOS. A central pausa sua ponte enquanto o app está ativo; não encerra por limite de 90 segundos. Temas da central continuam disponíveis; cada app conserva sua própria aparência.
 - O runtime lê a fonte instalada e exige um SHA-256 em `compatibility.json` antes da execução. Conserva `Script.name`, `module.filename` e URLs do app; `Script.complete()` do filho não encerra a central. Calendário e media-downloader recebem apenas ajustes de `await` em memória para aguardar suas telas. Os scripts instalados, seus arquivos, sessões e Keychain não são reescritos pelo launcher.
 - O fluxo padrão não injeta iframe, CSS, localStorage ou fetch nos apps. Eles executam suas próprias rotinas nativas, inclusive permissões, login, coleta, calendário e medicamentos. A opção **Executar fora da central** usa a URL oficial do Scriptable e não promete retorno automático; também serve para uma versão ainda não reconhecida pela central.
@@ -54,6 +55,8 @@ Para passar futuramente ao updater interno sem MacSend, adicionar antes do ramo 
 ## Limites da validação
 
 Testes com mocks verificam controle de acesso, integridade, recuperação e dados preservados. Prévia de navegador verifica a interface; não prova o runtime do Scriptable. Abertura dos seis apps, Rich Notification, permissões iOS, sincronização iCloud e fluidez devem ser confirmadas no iPhone. Nenhum teste deve consumir benefícios UOL, alterar doses/histórico de medicamentos ou gravar calendários reais.
+
+Desde 1.0.7, fechar a central libera a espera por uma avaliação da WebView que não respondeu, recusa avaliações enfileiradas e ignora respostas tardias. Isso não cancela trabalho nativo de um app em execução: seu encerramento continua aguardado. A correção elimina o travamento reproduzido em teste; a recorrência da tela preta no aparelho ainda exige verificação real.
 
 ## Execução e retorno (1.0.3)
 

@@ -1,3 +1,12 @@
+# saquettoOS 1.0.7 — 2026-10-19
+
+- Ícones padronizados: vidro neutro transparente no escuro, vidro tingido e símbolos no degradê Hedgy no claro. SVG UOL fornecido preservado byte a byte e usado como máscara, com a mesma caixa de 68% dos demais símbolos. Customizações com imagem continuam suportadas. Sem blur por ícone; fundos opacos em material sólido/redução de transparência.
+- Bundle passou de 4.698.514 para 2.910.011 bytes (redução de 38,1%) ao substituir o PNG UOL embutido pelo SVG. Isso reduz a carga; não comprova que memória era a causa da tela preta.
+- Reproduzido no host anterior: fechar enquanto `evaluateJavaScript` nunca resolve impedia a conclusão do script; avaliações pendentes e enfileiradas não rejeitavam ao fechar. A ponte agora libera sua própria espera na dispensa da tela, rejeita a fila e ignora resultados tardios. Script.complete fica em finally. Nenhuma API de cancelamento da avaliação nativa é presumida. Operações nativas já iniciadas continuam aguardadas.
+- 37 testes direcionados aprovados: 10 host, 17 UI e 10 ciclo de vida. Novo cenário completa seis sessões consecutivas com avaliação eternamente pendente, sem alertas falsos, timers ou novas avaliações depois de fechar. Ambas as regressões falharam contra HEAD anterior em fixture isolada e passaram com a correção. Build/sintaxe, diff-check e revisão final do encerramento aprovados.
+- Navegador integrado: claro/escuro conferidos com dimensões CSS 390 × 844 e insets sintéticos 91/34 px. Os dez ícones de grade/dock medem aproximadamente 74 × 74 px, máscaras presentes e símbolos 50,3 px; sem overflow do documento e sem erros/avisos capturados. Capturas `/tmp/saquettoos-1.0.7-dark.png` e `/tmp/saquettoos-1.0.7-light.png`, fora do Git.
+- Limite: registro sincronizado da última execução 1.0.6 consultada mostrava dashboard_ready, dismissed e complete; não capturou a falha relatada. Causa exata da tela preta após reaberturas no iPhone permanece não confirmada. Testes de encerramento são sintéticos; validação no Scriptable real continua necessária. Nenhum app ou dado pessoal foi executado pelos testes.
+
 # saquettoOS 1.0.6 — 2026-10-19
 
 - Foto do iPhone confirmou abertura direta da 1.0.5 e regressão de layout: cabeçalho sob a barra nativa. A regra de altura fixa havia sobrescrito o padding com `safe-area-inset-top`. Restaurado em todos os breakpoints, incluindo modo compacto; painéis também respeitam esse limite superior. Sem altura de toolbar fixada no código.
