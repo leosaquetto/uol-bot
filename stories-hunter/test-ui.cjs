@@ -30,11 +30,14 @@ function fn(name) {
 }
 function element() {
   let markup = '';
+  const listeners = new Map();
   return { style: { setProperty() {} }, classList: { toggle() {} }, children: [], textContent: '',
     get innerHTML() { return markup; }, set innerHTML(value) { markup = value; this.children.forEach(node => { node.parentNode = null; }); this.children = []; },
     appendChild(node) { this.children.push(node); node.parentNode = this; },
     insertBefore(node, before) { const index = before ? this.children.indexOf(before) : -1; if (index < 0) this.children.push(node); else this.children.splice(index, 0, node); node.parentNode = this; },
     remove() { if (this.parentNode) { this.parentNode.children = this.parentNode.children.filter(node => node !== this); this.parentNode = null; } },
+    addEventListener(type, listener) { if (!listeners.has(type)) listeners.set(type, []); listeners.get(type).push(listener); },
+    click() { this.onclick?.(); for (const listener of listeners.get('click') || []) listener({ target: this }); },
     setAttribute(key, value) { this[key] = value; }, getAttribute(key) { return this[key] ?? null; } };
 }
 function harness({ active = [], history = [], bundled = [], saved = [], settings = {}, native = false, paused = false } = {}) {
@@ -495,6 +498,64 @@ test('Ingressos pins highlights, sorts by capture and keeps raw external titles 
   assert.doesNotMatch(container.children.map(card => card.innerHTML).join(''), /onclick=/);
   assert.match(container.children.at(-1).innerHTML, /Data não confirmada/);
   assert.doesNotMatch(container.children.at(-1).innerHTML, /tag-new/);
+});
+
+test('Ingressos renders active offers in small batches before sold-out and unavailable sections', () => {
+  const sold = offer('sold', { rawTitle: 'Esgotado', availability: 'sold_out', soldOutAt: now - 1000, expiredAt: now - 1000 });
+  const h = harness({ history: [sold] });
+  h.context.currentTab = 'tickets';
+  h.context.checkHighlight = (_title, id) => id === 'highlight';
+  const items = Array.from({ length: 26 }, (_, i) => offer('ticket-' + i, {
+    firstSeen: now - i * 1000, rawTitle: 'Título original ' + i,
+  }));
+  items.push(offer('highlight', { firstSeen: now - 100000, rawTitle: 'Destaque original' }));
+  const dead = offer('dead', { rawTitle: 'Indisponível' });
+  const container = element();
+  const activeCards = () => container.children.filter(node => node.className?.split(' ').includes('card') && !node.className.includes('card-expired'));
+  const more = () => container.children.find(node => node.className?.includes('tickets-load-more'));
+  h.context.renderIndividualOffers(items, container, [dead]);
+  assert.equal(activeCards().length, 12, 'initial render is bounded');
+  assert.match(activeCards()[0].innerHTML, /Destaque original/);
+  assert.match(activeCards()[1].innerHTML, /Título original 0/);
+  assert.ok(more(), 'the remaining offers can be requested');
+  const moreIndex = container.children.indexOf(more());
+  assert.ok(container.children.findIndex(node => node.innerHTML.includes('Esgotado')) > moreIndex);
+  assert.ok(container.children.findIndex(node => node.innerHTML.includes('Indisponível')) > moreIndex,
+    'terminal sections remain after the active load-more control');
+  more().click();
+  assert.equal(activeCards().length, 24);
+  more().click();
+  assert.equal(activeCards().length, 27);
+  assert.equal(more(), undefined);
+  assert.match(activeCards().at(-1).innerHTML, /Título original 25/);
+  const lastActiveIndex = container.children.indexOf(activeCards().at(-1));
+  assert.ok(container.children.findIndex(node => node.innerHTML.includes('Esgotado')) > lastActiveIndex);
+  assert.ok(container.children.findIndex(node => node.innerHTML.includes('Indisponível')) > lastActiveIndex);
+});
+
+test('Ingressos cancels a stale load-more button after rerender or tab change', () => {
+  const h = harness({ active: Array.from({ length: 16 }, (_, i) => offer('old-' + i, {
+    firstSeen: now - i * 1000, rawTitle: 'Old ' + i,
+  })) });
+  h.context.currentTab = 'tickets';
+  h.context.isGrouped = false;
+  const cards = () => h.elements.get('cardList').children.filter(node => node.className?.split(' ').includes('card'));
+  const more = () => h.elements.get('cardList').children.find(node => node.className?.includes('tickets-load-more'));
+  h.context.renderOffers(h.context.historyData.active);
+  const stale = more();
+  assert.ok(stale);
+  h.context.historyData.active = [offer('new', { rawTitle: 'New live offer' })];
+  h.context.renderOffers(h.context.historyData.active);
+  stale.click();
+  assert.equal(cards().length, 1, 'previous batch cannot append into the new render');
+  assert.match(cards()[0].innerHTML, /New live offer/);
+  h.context.historyData.active = Array.from({ length: 16 }, (_, i) => offer('again-' + i));
+  h.context.renderOffers(h.context.historyData.active);
+  const oldTabButton = more();
+  assert.ok(oldTabButton);
+  h.context.currentTab = 'history';
+  oldTabButton.click();
+  assert.equal(cards().length, 12, 'a pending Tickets batch cannot run in another tab');
 });
 
 test('history creates twelve groups per batch after year and month filters without deleting source records', () => {

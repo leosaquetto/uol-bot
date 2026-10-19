@@ -24,7 +24,7 @@ function harness(active) {
   class Clock extends Date { static now() { return time; } }
   const context = vm.createContext({
     URL, Date: Clock, Intl, console,
-    historyData: { active: clone(active), history: [] }, activeFilter: null, isGrouped: true,
+    historyData: { active: clone(active), history: [] }, activeFilter: null, isGrouped: true, currentTab: 'home',
     linkCheckOverlay: new Map(),
     CATEGORY_MAP: { OUTROS: { label: 'Outros', icon: '' } }, ICONS: {},
     document: { createElement: element, getElementById: id => {
@@ -35,7 +35,8 @@ function harness(active) {
     recordSessionImpressions() {}, checkHighlight: () => false, offerImage: () => '',
     posterImageMarkup: () => '', wirePosterImages() {}, htmlAttribute: String,
     openDetails: id => opened.push(id), openConfirm() {},
-    isStoriesOnlyOffer: () => false, getRedeemedUsersForOffer: () => [], renderRedeemedFriendsPill: () => '',
+    isStoriesOnlyOffer: () => false, getAllRedemptionsList: () => [],
+    getRedeemedUsersForOffer: () => [], renderRedeemedFriendsPill: () => '',
     buildOfferGroups: (current, history) => [...current, ...history],
     renderGroupedOffers: current => grouped.push(current.map(item => item.id)),
   });

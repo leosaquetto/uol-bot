@@ -1520,6 +1520,9 @@
 
       const container = document.getElementById('cardList');
       if (!container) return;
+      container.hunterTicketObserver?.disconnect();
+      container.hunterTicketObserver = null;
+      container.hunterTicketRenderId = (container.hunterTicketRenderId || 0) + 1;
       container.innerHTML = '';
 
       let filtered = home.activeItems;
@@ -1672,7 +1675,7 @@
         .trim();
     }
 
-    function getRedeemedUsersForOffer(offer) {
+    function getRedeemedUsersForOffer(offer, redemptionRecords = getAllRedemptionsList()) {
       if (!offer) return [];
       const matchedUsers = new Set();
       const offerCampaign = catalogCampaign(offer.link || offer.url);
@@ -1684,7 +1687,7 @@
         } catch (e) { return ''; }
       };
       const offerBenefit = benefitId(offer.link || offer.url);
-      getAllRedemptionsList().forEach(record => {
+      redemptionRecords.forEach(record => {
         const account = String(record.user || record.accountId || '').trim().toLowerCase();
         if (!account) return;
         const links = [record.campaignUrl, record.link, record.url, record.downloadUrl].filter(Boolean);
@@ -1880,6 +1883,7 @@
 
     function renderIndividualOffers(list, container, unavailableItems = []) {
       const now = Date.now();
+      const redemptionRecords = getAllRedemptionsList();
       let viewCounts = {};
       try {
         viewCounts = JSON.parse(localStorage.getItem('uol_offer_view_counts') || '{}');
@@ -1889,7 +1893,15 @@
         const highlight = Number(checkHighlight(b.title, b.id, b.description)) - Number(checkHighlight(a.title, a.id, a.description));
         return highlight || (captureTime(b) - captureTime(a)) || String(a.id || '').localeCompare(String(b.id || ''));
       });
-      ordered.forEach((o, index) => {
+      const renderId = container.hunterTicketRenderId || 0;
+      const tabAtRender = currentTab;
+      let nextIndex = 0;
+      let moreButton = null;
+      const renderBatch = () => {
+        if ((container.hunterTicketRenderId || 0) !== renderId || currentTab !== tabAtRender) return;
+        const end = Math.min(nextIndex + 12, ordered.length);
+        ordered.slice(nextIndex, end).forEach((o, batchIndex) => {
+        const index = nextIndex + batchIndex;
         const isHighlight = checkHighlight(o.title, o.id, o.description);
         const views = viewCounts[o.id] != null ? viewCounts[o.id] : (o.viewsCount || 1);
         const capturedAt = captureTime(o);
@@ -1934,7 +1946,7 @@
         const catTagHtml = '<span class="card-tag tag-category tag-cat-' + catKey + '">' + catDef.icon + ' ' + catDef.label + '</span>';
 
         // Amigos que resgataram
-        const redeemedUsers = getRedeemedUsersForOffer(o);
+        const redeemedUsers = getRedeemedUsersForOffer(o, redemptionRecords);
         const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
 
         card.innerHTML = `
@@ -1965,8 +1977,32 @@
         card.querySelector?.('.btn-redeem')?.addEventListener?.('click', () => openConfirm(o.id));
         wirePosterImages(card);
 
-        container.appendChild(card);
-      });
+        if (moreButton) container.insertBefore(card, moreButton);
+        else container.appendChild(card);
+        });
+        nextIndex = end;
+        if (nextIndex >= ordered.length && moreButton) {
+          container.hunterTicketObserver?.disconnect();
+          container.hunterTicketObserver = null;
+          moreButton.remove();
+          moreButton = null;
+        }
+      };
+      renderBatch();
+      if (nextIndex < ordered.length) {
+        moreButton = document.createElement('button');
+        moreButton.type = 'button';
+        moreButton.className = 'tickets-load-more';
+        moreButton.textContent = 'Mostrar mais ingressos';
+        moreButton.addEventListener('click', renderBatch);
+        container.appendChild(moreButton);
+        if (typeof IntersectionObserver === 'function') {
+          container.hunterTicketObserver = new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) renderBatch();
+          }, { rootMargin: '400px' });
+          container.hunterTicketObserver.observe(moreButton);
+        }
+      }
 
       // 2. Por padrão, exibe também ofertas esgotadas nas últimas 24 horas (agrupadas ao final)
       const recentSoldOut = homeOfferSets(list, historyData.history, now).soldOutItems
@@ -2015,7 +2051,7 @@
           const catTagHtml = '<span class="card-tag tag-category tag-cat-' + catKey + '">' + catDef.icon + ' ' + catDef.label + '</span>';
           const expiredTagHtml = '<span class="card-tag" style="background: rgba(248, 113, 113, 0.14); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.35);">Esgotado</span>';
 
-          const redeemedUsers = getRedeemedUsersForOffer(o);
+          const redeemedUsers = getRedeemedUsersForOffer(o, redemptionRecords);
           const redeemedFriendsHtml = renderRedeemedFriendsPill(redeemedUsers);
 
           card.innerHTML = `
@@ -2982,6 +3018,14 @@
       if (!force && currentTab === tab) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
+      }
+      if (currentTab === 'tickets' && tab !== 'tickets') {
+        const tickets = document.getElementById('cardList');
+        if (tickets) {
+          tickets.hunterTicketObserver?.disconnect();
+          tickets.hunterTicketObserver = null;
+          tickets.hunterTicketRenderId = (tickets.hunterTicketRenderId || 0) + 1;
+        }
       }
       currentTab = tab;
       settings.currentTab = tab;
