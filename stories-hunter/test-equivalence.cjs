@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const {baseline, literal, render} = require('./test-support/artifact.cjs');
-const {restoreHeaderPresentation} = require('./test-support/header-baseline.cjs');
+const {restoreHeaderPresentation, restoreInstagramPresentation} = require('./test-support/header-baseline.cjs');
 const root = path.join(__dirname, '..');
 const manifest = require('./baseline/manifest.json');
 const reference = baseline();
@@ -19,15 +19,17 @@ test('frozen public release has exact original size and hash', () => {
     assert.ok(reference.includes('const ' + name + ' = [];'));
 });
 
-test('native domain modules and receipt parser remain byte-identical', () => {
-  for (const name of ['collector', 'access', 'redemption']) {
+test('unchanged redemption module and receipt parser remain byte-identical', () => {
+  // Collector/access now include explicit recovery, covered by their behavioral
+  // suites. Redemption and receipt parsing still have the frozen contract.
+  for (const name of ['redemption']) {
     const file = 'stories-hunter/' + name + '.js';
     assert.equal(sha(fs.readFileSync(path.join(root, file))), manifest.files[file].sha256);
   }
   assert.equal(literal(current, 'const UOL_RECEIPT_PARSER = '), literal(reference, 'const UOL_RECEIPT_PARSER = '));
 });
 
-test('startup, failure and dashboard outside the header presentation match frozen release for synthetic states', () => {
+test('startup, failure and dashboard outside approved presentation changes match frozen release', () => {
   const fixtures = [ {}, {updated: true}, {user: 'gaoriel', theme: 'white'}, {theme: 'purple'}, {theme: 'orange'},
     {history: {active: [{id:'pSynthetic', title:'A < B & "C"', image:'https://example.invalid/poster.png'}], history: []},
       collection: {status:'offline',pending:1}, receipts:[{id:'fixture',date:'2026-10-18',user:'gaoriel'}]} ];
@@ -36,6 +38,7 @@ test('startup, failure and dashboard outside the header presentation match froze
     for (const key of Object.keys(expected)) expected[key] = expected[key].replaceAll('Carregando o Stories Hunter', 'Carregando o Clube UOL Premium').replaceAll('Abra o Stories Hunter no Scriptable para atualizar.', 'Abra o Clube UOL Premium no Scriptable para atualizar.').replaceAll("content=\"Clube UOL\"", "content=\"Clube UOL Premium\"").replaceAll("<title>Clube UOL • Hub de Ingressos</title>", "<title>Clube UOL Premium</title>").replaceAll("<title>Clube UOL</title>", "<title>Clube UOL Premium</title>").replaceAll("Conectar conta ao Hunter", "Conectar conta ao Clube UOL Premium").replaceAll("O Hunter só salva a sessão", "O Clube UOL Premium só salva a sessão").replaceAll("Abra o Hunter no Scriptable para gerenciar o acesso.", "Abra o Clube UOL Premium no Scriptable para gerenciar o acesso.");
     const actual = render(current, fixture);
     actual.dashboard = restoreHeaderPresentation(actual.dashboard, expected.dashboard);
+    actual.dashboard = restoreInstagramPresentation(actual.dashboard, expected.dashboard);
     assert.deepEqual(actual, expected);
   }
 });

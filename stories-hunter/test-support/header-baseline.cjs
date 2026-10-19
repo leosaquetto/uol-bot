@@ -60,4 +60,24 @@ function restoreHeaderPresentation(current, reference) {
   return output;
 }
 
-module.exports = { frozenTemplate, restoreProductLabels, restoreHeaderPresentation };
+// Explicit 5.8.6 additions. Recovery behavior has dedicated access/collector/UI
+// tests; retain the frozen comparison for every unrelated part of the screen.
+function restoreInstagramPresentation(current, reference) {
+  let output = current;
+  const replaceOnce = (before, after) => {
+    assert.equal(output.split(before).length, 2, 'unique Instagram presentation delta');
+    output = output.replace(before, () => after);
+  };
+  replaceOnce('    .source-mini.overlap {', '    .source-mini.mini-insta {\n      border-radius: 2.3px;\n    }\n    .source-mini.overlap {');
+  replaceOnce('    .source-mini.mini-insta,\n    .source-mini-circle.mini-insta {', '    .source-mini-circle.mini-insta {');
+  replaceOnce('    }\n    .source-mini-circle.mini-insta {\n      box-shadow:', '      box-shadow:');
+  replaceOnce('    .source-mini.mini-insta svg,\n', '');
+  replaceOnce('    .source-mini.mini-insta svg {\n      width: 61.111111%;\n      height: 61.111111%;\n    }\n', '');
+  replaceOnce('          <button class="btn-modal-secondary" id="btnReconnectInstagram" onclick="reconnectHunterInstagram()" hidden>Reconectar Instagram</button>\n', '');
+  replaceOnce("      const instagram = document.getElementById('btnReconnectInstagram');\n      if (instagram) {\n        instagram.hidden = access.state !== 'approved';\n        instagram.disabled = !INITIAL.nativeBrowser;\n      }\n", '');
+  assert.ok(!reference.includes('    function reconnectHunterInstagram()'));
+  output = output.replace(region(output, '    function reconnectHunterInstagram()', '    // NAVIGATION_PERSONALIZATION_START'), '');
+  return output;
+}
+
+module.exports = { frozenTemplate, restoreProductLabels, restoreHeaderPresentation, restoreInstagramPresentation };

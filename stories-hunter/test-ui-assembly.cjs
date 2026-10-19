@@ -5,26 +5,29 @@ const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
 const { assembleUI, assembleUIFromParts } = require('./assemble-ui.cjs');
 const baseline = require('./baseline/manifest.json');
-const { frozenTemplate, restoreProductLabels, restoreHeaderPresentation } = require('./test-support/header-baseline.cjs');
+const { frozenTemplate, restoreProductLabels, restoreHeaderPresentation, restoreInstagramPresentation } = require('./test-support/header-baseline.cjs');
+const restorePresentation = (current, reference) => restoreInstagramPresentation(restoreHeaderPresentation(current, reference), reference);
 
-test('UI outside the header presentation and product labels remains byte-identical to the frozen template', () => {
-  const output = Buffer.from(restoreHeaderPresentation(restoreProductLabels(assembleUI()), frozenTemplate()), 'utf8');
+test('UI outside approved presentation changes remains byte-identical to the frozen template', () => {
+  const output = Buffer.from(restorePresentation(restoreProductLabels(assembleUI()), frozenTemplate()), 'utf8');
   const reference = baseline.files['stories-hunter/template.html'];
   assert.equal(output.byteLength, reference.bytes);
   assert.equal(createHash('sha256').update(output).digest('hex'), reference.sha256);
 });
 
-test('header normalization retains unrelated markup, catalog logic, scroll and access code', () => {
+test('presentation normalization retains unrelated markup, catalog logic, scroll and access code', () => {
   const original = frozenTemplate();
   const current = restoreProductLabels(assembleUI());
   for (const [before, after] of [
     ["if (window.scrollY > 8)", "if (window.scrollY > 80)"],
     ["const offers = sets.activeItems;", "const offers = [];"],
     ['id="otaUpdateBanner"', 'id="removedUpdateBanner"'],
-    ['function manageHunterAccess()', 'function changedHunterAccess()']
+    ['function manageHunterAccess()', 'function changedHunterAccess()'],
+    ['margin-left: -2px;', 'margin-left: -20px;'],
+    ['#fd5949 45%', '#000000 45%']
   ]) {
     assert.ok(current.includes(before), before);
-    assert.notEqual(restoreHeaderPresentation(current.replace(before, after), original), original, before);
+    assert.notEqual(restorePresentation(current.replace(before, after), original), original, before);
   }
 });
 
