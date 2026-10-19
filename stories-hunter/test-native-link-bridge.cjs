@@ -43,5 +43,7 @@ test('native link queue pages every candidate, runs at most two requests, and st
   assert.equal(checks, 205);
   assert.equal(maximum, 2);
   assert.equal(Object.keys(JSON.parse(files.get('/private/checks.json')).records).length, 205);
+  assert.ok(view.notifications.some(code => code.includes('"cached":true')),
+    'preflight native cache replay is identified separately from fresh probes');
   assert.ok(view.notifications.some(code => code.includes('"pending":0')));
 });

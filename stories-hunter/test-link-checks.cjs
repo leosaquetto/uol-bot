@@ -5,8 +5,13 @@ const HunterLinkChecks = require('./native/link-checks.js');
 const base = Date.parse('2026-10-19T12:00:00.000Z');
 const link = code => `https://clube.uol.com.br/campanhasdeingresso/${code}`;
 const validOffer = url => ({ url, title: 'Show', description: 'Apresentação confirmada',
+  available: true, soldOut: false, redeemUrl: url + '/resgatar',
   identityEvidence: { scoped: true, titleCount: 1, descriptionCount: 1, canonicalMatches: true,
     actionCount: 1, actionMatches: true } });
+const soldOutOffer = url => ({ url, title: 'Show', description: 'Ingressos esgotados',
+  available: false, soldOut: true, redeemUrl: null,
+  identityEvidence: { scoped: true, titleCount: 1, descriptionCount: 1, canonicalMatches: true,
+    actionCount: 0, actionMatches: false } });
 
 function harness(responses, options = {}) {
   let time = options.time ?? base;
@@ -58,6 +63,28 @@ test('verified campaign 200 clears link-unavailable state and confines cookies t
   assert.equal(h.requests[0].req.headers.Cookie, 'session=private');
 });
 
+test('verified campaign 200 distinguishes sold-out page from redeemable action', async () => {
+  const soldOut = harness([{ code: 200, body: '<main>esgotado</main>' }],
+    { parseOffer: (_, url) => soldOutOffer(url) });
+  assert.deepEqual(await soldOut.checker.check(link('pRs')),
+    { status: 'sold_out', checkedAt: '2026-10-19T12:00:00.000Z' });
+
+  const falsePositive = harness([{ code: 200, body: '<main>login</main>' }],
+    { parseOffer: (_, url) => ({ ...soldOutOffer(url), identityEvidence: {
+      ...soldOutOffer(url).identityEvidence, canonicalMatches: false } }) });
+  assert.equal((await falsePositive.checker.check(link('pRs'))).status, 'unknown');
+
+  const noRedeemAction = harness([{ code: 200, body: '<main>show</main>' }],
+    { parseOffer: (_, url) => ({ ...validOffer(url), redeemUrl: null }) });
+  assert.equal((await noRedeemAction.checker.check(link('pRs'))).status, 'unknown');
+
+  const soldOutWordsWithAction = harness([{ code: 200, body: '<main>Uma data esgotada; outras abertas</main>' }],
+    { parseOffer: (_, url) => ({ ...soldOutOffer(url), redeemUrl: url + '/resgatar',
+      identityEvidence: { ...soldOutOffer(url).identityEvidence,
+        actionCount: 1, actionMatches: true } }) });
+  assert.equal((await soldOutWordsWithAction.checker.check(link('pRs'))).status, 'unknown');
+});
+
 test('two direct gone results five seconds apart and a distinct verified control confirm unavailability', async () => {
   const h = harness([{ code: 404 }, { code: 410 }, { code: 200, body: '<main>control</main>' }]);
   const result = await h.checker.check({ url: link('pRs'), cookieHeader: 'session=private' }, [link('pRc')]);
@@ -67,6 +94,20 @@ test('two direct gone results five seconds apart and a distinct verified control
   assert.deepEqual(h.pauses, [5000]);
   assert.deepEqual(h.requests.map(item => item.url), [link('pRs'), link('pRs'), link('pRc')]);
   assert.equal(h.requests[2].req.headers.Cookie, 'session=private');
+});
+
+test('a parser-confirmed sold-out campaign is a healthy control for a missing page', async () => {
+  const h = harness([{ code: 404 }, { code: 410 }, { code: 200, body: '<main>esgotado</main>' }],
+    { parseOffer: (_, url) => soldOutOffer(url) });
+  assert.equal((await h.checker.check(link('pRs'), [link('pRc')])).status, 'unavailable');
+});
+
+test('a page recovered as sold out after one 404 is reported as sold out', async () => {
+  const h = harness([{ code: 404 }, { code: 200, body: '<main>esgotado</main>' }],
+    { parseOffer: (_, url) => soldOutOffer(url) });
+  assert.deepEqual(await h.checker.check(link('pRs'), [link('pRc')]),
+    { status: 'sold_out', checkedAt: '2026-10-19T12:00:05.000Z' });
+  assert.equal(h.requests.length, 2);
 });
 
 test('redirect to Home counts as gone, but login redirect and ambiguous 200 remain unknown', async () => {

@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.9.5";
+const SCRIPT_VERSION = "5.9.6";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -48,15 +48,30 @@ __BUILD_LINK_CHECKS__
 const UOL_RECEIPT_PARSER = __BUILD_PARSER__;
 
 let nativeAccountManager = null;
-async function parseHunterReceiptHtml(html, kind, url) {
-  // Server HTML is parsed as data in a locked WebView, never displayed.
-  const parser = new WebView();
-  await parser.loadHTML('<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;">', "https://clube.uol.com.br");
-  parser.shouldAllowRequest = () => false;
-  const input = JSON.stringify(html).replace(/</g, "\\u003c");
-  const expression = kind === "offer" ? "parseOffer(" + input + "," + JSON.stringify(url) + ")" : "parseHistory(" + input + ")";
-  const result = await parser.evaluateJavaScript("(() => {" + UOL_RECEIPT_PARSER + "; return JSON.stringify(" + expression + ");})()");
-  return JSON.parse(result);
+let hunterReceiptParser = null;
+let hunterReceiptParserTask = Promise.resolve();
+function parseHunterReceiptHtml(html, kind, url) {
+  // One locked, unpresented WebView parses server HTML as data. Serializing
+  // evaluations avoids keeping a separate WebView for every active offer.
+  const task = hunterReceiptParserTask.then(async () => {
+    try {
+      if (!hunterReceiptParser) {
+        const parser = new WebView();
+        await parser.loadHTML('<!doctype html><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;">', "https://clube.uol.com.br");
+        parser.shouldAllowRequest = () => false;
+        hunterReceiptParser = parser;
+      }
+      const input = JSON.stringify(html).replace(/</g, "\\u003c");
+      const expression = kind === "offer" ? "parseOffer(" + input + "," + JSON.stringify(url) + ")" : "parseHistory(" + input + ")";
+      const result = await hunterReceiptParser.evaluateJavaScript("(() => {" + UOL_RECEIPT_PARSER + "; return JSON.stringify(" + expression + ");})()");
+      return JSON.parse(result);
+    } catch (error) {
+      hunterReceiptParser = null;
+      throw error;
+    }
+  });
+  hunterReceiptParserTask = task.then(() => {}, () => {});
+  return task;
 }
 
 function createNativeAccountManager() {
@@ -777,7 +792,7 @@ async function runNativeLinkChecks(view) {
     const all = await hunterLinkCandidates(view);
     const pending = all.filter(item => !checkedThisSession.has(hunterLinkCheckKey(item)));
     if (!pending.length) break;
-    const previous = all.map(item => ({ ...item, ...(cache.records[hunterLinkCheckKey(item)] || {}) }));
+    const previous = all.map(item => ({ ...item, ...(cache.records[hunterLinkCheckKey(item)] || {}), cached: true }));
     await hunterLinkCheckNotify(view, previous, { verified: checkedThisSession.size, total: all.length, pending: pending.length });
     const controls = all.map(entry => entry.link);
     const account = loadCurrentAccountPreference(view.hunterCurrentUser);

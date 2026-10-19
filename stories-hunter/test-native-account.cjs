@@ -41,6 +41,52 @@ test('native receipt parser treats response HTML as data in an unpresented, netw
   assert.ok(scripts[0].includes('\\u003cscript>'), 'HTML markup stays inside an escaped JSON string');
 });
 
+test('native receipt parser reuses one locked WebView and resets after a failed evaluation', async () => {
+  let created = 0, loads = 0, evaluations = 0, active = 0, mostActive = 0;
+  let releaseFirst, firstStarted, failNext = false;
+  const firstEvaluation = new Promise(resolve => { firstStarted = resolve; });
+  const context = vm.createContext({
+    UOL_RECEIPT_PARSER: 'function parseHistory(html) { return { html }; } function parseOffer(html, url) { return { html, url }; }',
+    WebView: class {
+      constructor() { created++; }
+      async loadHTML(html) { loads++; assert.match(html, /Content-Security-Policy/); }
+      async evaluateJavaScript(code) {
+        assert.equal(this.shouldAllowRequest({ url: 'https://example.test/tracker' }), false);
+        evaluations++; active++; mostActive = Math.max(mostActive, active);
+        try {
+          if (evaluations === 1) {
+            firstStarted();
+            await new Promise(resolve => { releaseFirst = resolve; });
+          }
+          if (failNext) { failNext = false; throw new Error('parser closed'); }
+          return vm.runInNewContext(code);
+        } finally { active--; }
+      }
+      present() { assert.fail('receipt parser must remain hidden'); }
+    },
+  });
+  vm.runInContext(hostCode, context);
+  const first = context.parseHunterReceiptHtml('<h1>One</h1>', 'history');
+  const second = context.parseHunterReceiptHtml('<h1>Two</h1>', 'offer', 'https://clube.uol.com.br/campanhasdeingresso/two');
+  await firstEvaluation;
+  assert.equal(created, 1);
+  assert.equal(evaluations, 1, 'second evaluation waits for the first');
+  releaseFirst();
+  assert.equal((await first).html, '<h1>One</h1>');
+  const offer = await second;
+  assert.equal(offer.html, '<h1>Two</h1>');
+  assert.equal(offer.url, 'https://clube.uol.com.br/campanhasdeingresso/two');
+  assert.equal(created, 1); assert.equal(loads, 1); assert.equal(mostActive, 1);
+
+  failNext = true;
+  const failed = context.parseHunterReceiptHtml('<h1>Failed</h1>', 'history');
+  const recovered = context.parseHunterReceiptHtml('<h1>Recovered</h1>', 'history');
+  await assert.rejects(failed, /parser closed/);
+  assert.equal((await recovered).html, '<h1>Recovered</h1>');
+  assert.equal(created, 2, 'failure discards the previous parser');
+  assert.equal(loads, 2); assert.equal(mostActive, 1);
+});
+
 test('native account bridge captures the account and refuses unsafe redeem destinations before dispatch', async () => {
   const view = { async evaluateJavaScript(code) { results.push(code); } }, calls = [], results = [];
   let release;

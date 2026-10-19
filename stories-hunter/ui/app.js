@@ -606,13 +606,15 @@
     const CATALOG_URL = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev/catalog';
     const AVAILABILITY_EVENTS_URL = CATALOG_URL + '/availability-events';
     const CATALOG_CACHE_KEY = 'uol_shared_catalog_v1';
-    const CATALOG_CACHE_MS = 120000;
     const CATALOG_MAX_BYTES = 2 * 1024 * 1024;
     let catalogRefreshStarted = false;
     let catalogRefreshInFlight = false;
+    let catalogRefreshSettled = false;
+    let catalogStatusFresh = false;
     const linkCheckOverlay = new Map(); // Session-only: the native checker owns durable evidence.
     let linkCheckProgress = null;
     let lastNativeLinkRequestAt = 0;
+    const linkChecksNotBefore = Date.now() + 1500;
     let lastNativeLinkSignature = '';
     let lastAvailabilityEventsFetchAt = 0;
 
@@ -649,15 +651,24 @@
     function linkUnavailableAt(item) {
       const campaign = catalogCampaign(item && item.link);
       if (!campaign) return 0;
-      return catalogTime(linkCheckOverlay.get(campaign.key + '|' + linkCheckGeneration(item)));
+      return Math.max(catalogTime(item && item.linkUnavailableAt),
+        catalogTime(linkCheckOverlay.get(campaign.key + '|' + linkCheckGeneration(item))));
     }
 
     function hunterActiveLinkCandidates(offset = 0, limit = 100) {
       const seen = new Set();
       const candidates = [];
-      (historyData.active || []).forEach(item => {
+      const active = historyData.active || [];
+      const activeKeys = new Set(active.map(item => catalogCampaign(item && item.link)?.key).filter(Boolean));
+      const archived = (historyData.history || []).filter(item =>
+        (item.cacheUnverified === true || item.linkUnavailableAt) &&
+        !activeKeys.has(catalogCampaign(item && item.link)?.key));
+      const queue = [...archived.filter(item => item.cacheUnverified === true), ...active,
+        ...archived.filter(item => item.cacheUnverified !== true)];
+      queue.forEach(item => {
         const campaign = catalogCampaign(item && item.link);
-        if (!campaign || item.isExpired || item.availability === 'sold_out' || confirmedSoldOutTime(item)) return;
+        if (!campaign || !item.cacheUnverified && !item.linkUnavailableAt &&
+          (item.isExpired || item.availability === 'sold_out' || confirmedSoldOutTime(item))) return;
         const session = sessionDateInfo(item);
         const today = saoPauloParts(Date.now());
         if (session && session.timestamp < Date.UTC(today.year, today.month - 1, today.day)) return;
@@ -674,23 +685,70 @@
 
     function hunterApplyLinkCheckResults(results, progress) {
       let changed = false;
+      let historyChanged = false;
       (Array.isArray(results) ? results : []).forEach(result => {
         const campaign = catalogCampaign(result && result.link);
-        if (!campaign || !['available', 'unavailable', 'unknown'].includes(result.status)) return;
-        const candidate = (historyData.active || []).find(item => String(item.id) === String(result.id) &&
-          catalogCampaign(item.link)?.key === campaign.key && linkCheckGeneration(item) === String(result.generation));
+        if (!campaign || !['available', 'sold_out', 'unavailable', 'unknown'].includes(result.status)) return;
+        const matches = item => String(item.id) === String(result.id) &&
+          catalogCampaign(item.link)?.key === campaign.key && linkCheckGeneration(item) === String(result.generation);
+        const activeCandidate = (historyData.active || []).find(matches);
+        const historyCandidate = activeCandidate ? null : (historyData.history || []).find(item =>
+          (item.cacheUnverified || item.linkUnavailableAt) && matches(item));
+        const candidate = activeCandidate || historyCandidate;
         if (!candidate) return;
         const checkedAt = catalogTime(result.checkedAt);
         if (!checkedAt || checkedAt > Date.now() + 300000) return;
+        const newerEvidence = availabilityEvidence(candidate.availabilityEvidence);
+        if (newerEvidence && newerEvidence.observedAt > checkedAt) return;
         const key = campaign.key + '|' + result.generation;
+        // The native queue replays its last result while a new probe is pending.
+        // An old positive must not reactivate an uncertain local-only record.
+        if (result.cached === true && result.status !== 'unavailable') return;
+        if (historyCandidate && result.status === 'available') {
+          historyCandidate.availabilityEvidence = { state: 'available', observedAt: checkedAt, source: 'iphone' };
+          historyCandidate.restockedAt = checkedAt;
+          historyCandidate.lastLinkCheckedAt = checkedAt;
+          historyCandidate.availability = 'observed';
+          historyCandidate.isExpired = false;
+          delete historyCandidate.expiredAt;
+          delete historyCandidate.soldOutAt;
+          delete historyCandidate.linkUnavailableAt;
+          delete historyCandidate.cacheUnverified;
+          historyData.history = historyData.history.filter(item => item !== historyCandidate);
+          historyData.active.push(historyCandidate);
+          historyChanged = changed = true;
+        } else if (result.status === 'sold_out') {
+          candidate.availabilityEvidence = { state: 'sold_out', observedAt: checkedAt, source: 'iphone' };
+          candidate.soldOutAt = candidate.expiredAt = checkedAt;
+          candidate.lastLinkCheckedAt = checkedAt;
+          candidate.availability = 'sold_out';
+          candidate.isExpired = true;
+          delete candidate.cacheUnverified;
+          delete candidate.linkUnavailableAt;
+          if (activeCandidate) {
+            historyData.active = historyData.active.filter(item => item !== activeCandidate);
+            historyData.history.push(activeCandidate);
+          }
+          historyChanged = changed = true;
+        } else if (historyCandidate && result.status === 'unavailable' && result.cached !== true) {
+          historyCandidate.linkUnavailableAt = catalogTime(result.unavailableAt) || checkedAt;
+          historyCandidate.lastLinkCheckedAt = checkedAt;
+          delete historyCandidate.cacheUnverified;
+          historyChanged = changed = true;
+        }
         if (result.status === 'unavailable') {
           const at = catalogTime(result.unavailableAt) || checkedAt;
           if (at && at <= checkedAt && linkCheckOverlay.get(key) !== at) { linkCheckOverlay.set(key, at); changed = true; }
-        } else if (result.status === 'available' && linkCheckOverlay.delete(key)) {
-          changed = true;
+        } else if (result.status === 'available') {
+          if (activeCandidate?.linkUnavailableAt) {
+            delete activeCandidate.linkUnavailableAt;
+            historyChanged = changed = true;
+          }
+          if (linkCheckOverlay.delete(key)) changed = true;
         }
         // Unknown evidence cannot reverse a previously confirmed unavailable link.
       });
+      if (historyChanged) saveHistoryToStorage();
       if (progress && [progress.verified, progress.total, progress.pending].every(Number.isSafeInteger)) {
         linkCheckProgress = { verified: progress.verified, total: progress.total, pending: progress.pending };
         const status = document.getElementById('liveStatusText');
@@ -698,7 +756,7 @@
           'Verificando links: ' + progress.verified + ' de ' + progress.total);
         updateCatalogStatusTrigger();
       }
-      if (changed) renderCatalogStatus(false);
+      if (changed) renderCatalogStatus();
     }
 
     function hunterRequestLinkChecks() {
@@ -715,8 +773,9 @@
       lastNativeLinkSignature = signature;
       lastNativeLinkRequestAt = Date.now();
       const go = () => { window.location.href = 'hunter-links://start'; };
-      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => setTimeout(go, 0));
-      else setTimeout(go, 0);
+      const delay = Math.max(0, linkChecksNotBefore - Date.now());
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => setTimeout(go, delay));
+      else setTimeout(go, delay);
     }
 
     async function refreshAvailabilityEvents() {
@@ -850,16 +909,17 @@
         const session = o && sessionDateInfo(o, now);
         return !session || session.timestamp >= todayCivil;
       };
-      const activeItems = (active || []).filter(o => o && currentSession(o) && !o.isExpired &&
+      const activeItems = (active || []).filter(o => o && !o.cacheUnverified && currentSession(o) && !o.isExpired &&
         o.availability !== 'sold_out' && !confirmedSoldOutTime(o) && !linkUnavailableAt(o));
-      const unavailableItems = (active || []).filter(o => o && currentSession(o) && !o.isExpired &&
+      const unavailableItems = (active || []).filter(o => o && !o.cacheUnverified && currentSession(o) && !o.isExpired &&
         o.availability !== 'sold_out' && !confirmedSoldOutTime(o) && linkUnavailableAt(o))
         .map(o => ({ ...o, linkUnavailableAt: linkUnavailableAt(o) }));
       const key = o => { const campaign = catalogCampaign(o.link); return campaign ? campaign.key : o.id; };
       const activeIds = new Set([...activeItems, ...unavailableItems].map(key));
       const soldOutItems = (history || []).filter(o => {
         const at = confirmedSoldOutTime(o);
-        return o && currentSession(o) && !activeIds.has(key(o)) && at > 0 && at <= now && now - at < 86400000;
+        return o && !o.cacheUnverified && !o.linkUnavailableAt && currentSession(o) &&
+          !activeIds.has(key(o)) && at > 0 && at <= now && now - at < 86400000;
       });
       return { activeItems: activeItems, soldOutItems: soldOutItems, unavailableItems: unavailableItems };
     }
@@ -1140,6 +1200,11 @@
           const incomingAt = Math.max(soldOutAt, availableAt);
           const stale = oldConfirmedAt > incomingAt;
           if (incomingEvidence && !stale) offer.availabilityEvidence = incomingEvidence;
+          if (incomingEvidence && !stale && Date.now() - incomingEvidence.observedAt <= 600000)
+            delete offer.cacheUnverified;
+          if (incomingEvidence?.state === 'available' && !stale &&
+              incomingEvidence.observedAt > catalogTime(old.linkUnavailableAt))
+            delete offer.linkUnavailableAt;
           if (!stale && availableAt <= soldOutAt && (entry.availability === 'sold_out' || (incomingEvidence && incomingEvidence.state === 'sold_out'))) {
             past = true;
             // Unknown exhaustion time remains unknown. Cache refresh is not an event.
@@ -1199,10 +1264,14 @@
             catalogTime(old.availabilityEvidence && old.availabilityEvidence.observedAt));
           const incomingObserved = Math.max(incomingTransition, catalogTime(item.lastSourceSeenAt), catalogTime(item.lastSeen));
           const oldObserved = Math.max(oldTransition, catalogTime(old.lastSourceSeenAt), catalogTime(old.lastSeen));
-          const incomingWins = !previous || incomingTransition > oldTransition ||
+          const incomingWins = !previous || old.cacheUnverified === true || incomingTransition > oldTransition ||
             incomingTransition === oldTransition && (old.cacheUnverified || incomingObserved >= oldObserved);
           const merged = incomingWins ? { ...old, ...item } : { ...item, ...old };
           if (incomingWins) delete merged.cacheUnverified;
+          const incomingEvidence = availabilityEvidence(item.availabilityEvidence);
+          if (incomingWins && incomingEvidence?.state === 'available' &&
+              incomingEvidence.observedAt > catalogTime(old.linkUnavailableAt))
+            delete merged.linkUnavailableAt;
           merged.capturedAt = merged.firstSeen = capturedAt || 0;
           merged.legacyFirstSeen = old.legacyFirstSeen || item.legacyFirstSeen ||
             (!oldCapture && (old.firstSeen || old.capturedAt)) ||
@@ -1224,7 +1293,7 @@
         historyData.active = Array.from(records.values()).filter(record => !record.past).map(record => record.offer);
         historyData.history = Array.from(records.values()).filter(record => record.past).map(record => record.offer);
         saveHistoryToStorage();
-        renderCatalogStatus(false);
+        renderCatalogStatus();
         hunterRequestLinkChecks();
       }
     }
@@ -1247,7 +1316,8 @@
       if (typeof updateCatalogStatusTrigger === 'function') updateCatalogStatusTrigger();
     }
 
-    function renderCatalogStatus(fresh) {
+    function renderCatalogStatus(fresh = catalogStatusFresh) {
+      catalogStatusFresh = fresh;
       const sets = homeOfferSets(historyData.active, historyData.history);
       const offers = sets.activeItems;
       const visibleCount = offers.length + sets.soldOutItems.length;
@@ -1255,7 +1325,9 @@
       else if (currentTab === 'history') renderHistoryScreen();
       updateCategoryCounts(offers);
       document.getElementById('activesCountText').textContent = offers.length + ' Ativas';
-      setCatalogHeaderStatus(fresh ? 'Catálogo atualizado' : 'Catálogo em cache', fresh ? 'fresh' : 'cache', visibleCount);
+      const loading = catalogRefreshInFlight && !catalogRefreshSettled;
+      setCatalogHeaderStatus(loading ? 'Atualizando…' : fresh ? 'Catálogo atualizado' : 'Catálogo em cache',
+        loading ? 'loading' : fresh ? 'fresh' : 'cache', visibleCount);
       updateTimelineBadgeDot();
     }
 
@@ -1273,34 +1345,36 @@
     async function streamLiveOffers(force = false) {
       if (catalogRefreshInFlight || (catalogRefreshStarted && !force)) return;
       catalogRefreshInFlight = true;
+      catalogRefreshSettled = false;
       catalogRefreshStarted = true;
       const cache = readCatalogCache();
       try {
         let snapshot = cache && cache.snapshot;
-        if (force || !cache || Date.now() - cache.fetchedAt >= CATALOG_CACHE_MS) {
-          const headers = cache && cache.etag ? { 'If-None-Match': cache.etag } : {};
-          const controller = typeof AbortController === 'function' ? new AbortController() : null;
-          const timeout = controller ? setTimeout(() => controller.abort(), 10000) : null;
-          try {
-            const response = await fetch(CATALOG_URL, { headers: headers, credentials: 'omit', ...(controller ? { signal: controller.signal } : {}) });
-            if (response.status === 304 && cache) {
-              saveCatalogCache(snapshot, cache.etag);
-            } else {
-              if (!response.ok) throw new Error('Catalog unavailable');
-              const body = await response.text();
-              if (body.length > CATALOG_MAX_BYTES) throw new Error('Catalog too large');
-              snapshot = JSON.parse(body);
-              if (!isCatalogSnapshot(snapshot)) throw new Error('Invalid catalog');
-              saveCatalogCache(snapshot, response.headers.get('ETag'));
-            }
-          } finally { if (timeout) clearTimeout(timeout); }
-        }
+        // Revalidate on each opening; the cache remains the immediate first frame.
+        const headers = cache && cache.etag ? { 'If-None-Match': cache.etag } : {};
+        const controller = typeof AbortController === 'function' ? new AbortController() : null;
+        const timeout = controller ? setTimeout(() => controller.abort(), 10000) : null;
+        try {
+          const response = await fetch(CATALOG_URL, { headers: headers, credentials: 'omit', ...(controller ? { signal: controller.signal } : {}) });
+          if (response.status === 304 && cache) {
+            saveCatalogCache(snapshot, cache.etag);
+          } else {
+            if (!response.ok) throw new Error('Catalog unavailable');
+            const body = await response.text();
+            if (body.length > CATALOG_MAX_BYTES) throw new Error('Catalog too large');
+            snapshot = JSON.parse(body);
+            if (!isCatalogSnapshot(snapshot)) throw new Error('Invalid catalog');
+            saveCatalogCache(snapshot, response.headers.get('ETag'));
+          }
+        } finally { if (timeout) clearTimeout(timeout); }
+        catalogRefreshSettled = true;
         mergeCatalogSnapshot(snapshot);
-        renderCatalogStatus(!snapshot.coverage.truncated && ['api', 'ticketListing'].some(key => {
+        renderCatalogStatus(['api', 'ticketListing'].some(key => {
           const age = Date.now() - catalogTime(snapshot.sources[key].lastSuccessAt);
           return snapshot.sources[key].healthy && age >= 0 && age <= 600000;
         }));
       } catch (e) {
+        catalogRefreshSettled = true;
         if (cache) {
           mergeCatalogSnapshot(cache.snapshot);
           renderCatalogStatus(false);

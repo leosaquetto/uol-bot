@@ -29,14 +29,21 @@ const HunterLinkChecks = (() => {
     return /^\/(?:campanhasdeingresso\/?)?(?:[?#].*)?$/.test(path);
   }
 
-  function parserConfirmsPage(offer, url) {
+  function parserPageState(offer, url) {
     const proof = offer?.identityEvidence;
-    return offer?.url === url && offer?.requiresLogin !== true &&
+    if (!(offer?.url === url && offer?.requiresLogin !== true &&
       typeof offer.title === 'string' && !!offer.title.trim() &&
       typeof offer.description === 'string' && !!offer.description.trim() &&
       proof?.scoped === true && proof.titleCount === 1 &&
-      proof.descriptionCount === 1 && proof.canonicalMatches === true &&
-      ((proof.actionCount === 1 && proof.actionMatches === true) || offer.soldOut === true);
+      proof.descriptionCount === 1 && proof.canonicalMatches === true)) return 'unknown';
+    // Description text can mention an older sold-out date while the current
+    // campaign still offers a redeem action. Only an absent action is decisive.
+    if (offer.soldOut === true && offer.available !== true &&
+        proof.actionCount === 0) return 'sold_out';
+    if (offer.soldOut !== true && offer.available === true &&
+        proof.actionCount === 1 && proof.actionMatches === true &&
+        offer.redeemUrl === url + '/resgatar') return 'available';
+    return 'unknown';
   }
 
   function authOrChallenge(body) {
@@ -79,7 +86,7 @@ const HunterLinkChecks = (() => {
       if ([301, 302, 303, 307, 308].includes(code))
         return homeRedirect(header(response.headers, 'Location')) ? 'gone' : 'unknown';
       if (code !== 200 || typeof parseOffer !== 'function') return 'unknown';
-      try { return parserConfirmsPage(await parseOffer(body, url), url) ? 'reachable' : 'unknown'; }
+      try { return parserPageState(await parseOffer(body, url), url); }
       catch (_) { return 'unknown'; }
     }
 
@@ -89,7 +96,8 @@ const HunterLinkChecks = (() => {
       const cookieHeader = typeof candidate === 'object' && candidate?.cookieHeader !== undefined
         ? candidate.cookieHeader : env.cookieHeader;
       const first = await probe(url, cookieHeader);
-      if (first === 'reachable') return { status: 'available', checkedAt: iso() };
+      if (first === 'available' || first === 'sold_out')
+        return { status: first, checkedAt: iso() };
       if (first !== 'gone') return unknown();
 
       const observedAt = now();
@@ -103,7 +111,8 @@ const HunterLinkChecks = (() => {
         catch (_) { return unknown({ goneCount, firstGoneAt }); }
         if (now() - Date.parse(firstGoneAt) < MIN_GONE_GAP_MS) return unknown({ goneCount, firstGoneAt });
         const second = await probe(url, cookieHeader);
-        if (second === 'reachable') return { status: 'available', checkedAt: iso() };
+        if (second === 'available' || second === 'sold_out')
+          return { status: second, checkedAt: iso() };
         if (second !== 'gone') return unknown({ goneCount, firstGoneAt });
         goneCount = 2;
       }
@@ -111,7 +120,7 @@ const HunterLinkChecks = (() => {
       const controls = [...new Set((Array.isArray(controlCandidates) ? controlCandidates : [])
         .map(canonicalTicketUrl).filter(controlUrl => controlUrl && controlUrl !== url))].slice(0, 3);
       for (const controlUrl of controls) {
-        if (await probe(controlUrl, cookieHeader) === 'reachable') {
+        if (['available', 'sold_out'].includes(await probe(controlUrl, cookieHeader))) {
           const checkedAt = iso();
           return { status: 'unavailable', checkedAt, unavailableAt: checkedAt,
             goneCount, firstGoneAt };

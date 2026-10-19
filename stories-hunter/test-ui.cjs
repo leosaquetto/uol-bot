@@ -121,6 +121,21 @@ test('native history defeats stale local active and local-only cache stays unver
   assert.equal(result.history.find(item => item.id === 'local-old').capturedAt, 0);
 });
 
+test('native collection restores a current session despite a newer local-only cache timestamp', () => {
+  const stale = offer('same', { cacheUnverified: true, availability: 'sold_out',
+    soldOutAt: now - 1000, expiredAt: now - 1000 });
+  const current = offer('same', { availability: 'observed', lastSeen: now - 2000 });
+  const h = harness({ history: [stale] });
+  h.context.updateTimelineBadgeDot = () => {};
+  h.context.renderCatalogStatus(true);
+  h.context.handleNativeCollectionResult(null, { active: [current], history: [] });
+  assert.deepEqual(clone(h.context.historyData.active).map(item => item.id), ['same']);
+  assert.equal(h.context.historyData.active[0].cacheUnverified, undefined);
+  assert.equal(h.context.historyData.history.length, 0);
+  assert.equal(h.elements.get('liveStatusText').textContent, 'Atualizado',
+    'a native rerender does not relabel the already synchronized catalog as cache');
+});
+
 test('legacy private WebView cache is scrubbed only after native archival acknowledgement', () => {
   const values = new Map([
     ['uol_hub_settings', JSON.stringify({ currentUser: 'gaoriel', userSessions: { gaoriel: { cookie: 'private-cookie' } },
@@ -161,6 +176,18 @@ test('Home keeps active cache and only explicit exhaustion in the last 24h witho
   assert.deepEqual(clone(result.activeItems).map(o => o.id), ['active']);
   assert.deepEqual(clone(result.soldOutItems).map(o => o.id), [], 'sold out for 24 hours is no longer shown');
   assert.deepEqual(clone(h.context.historyData), before);
+});
+
+test('Home does not present local-only legacy sessions as available or recently sold out', () => {
+  const active = [offer('confirmed'), offer('cached-active', { cacheUnverified: true })];
+  const history = [offer('confirmed-out', { soldOutAt: now - 1000 }),
+    offer('cached-out', { cacheUnverified: true, soldOutAt: now - 1000 })];
+  const h = harness({ active, history });
+  const sets = h.context.homeOfferSets(h.context.historyData.active, h.context.historyData.history);
+  assert.deepEqual(clone(sets.activeItems).map(item => item.id), ['confirmed']);
+  assert.deepEqual(clone(sets.soldOutItems).map(item => item.id), ['confirmed-out']);
+  assert.equal(h.context.historyData.history.find(item => item.id === 'cached-out').cacheUnverified, true,
+    'the uncertain record remains available in History for later reconciliation');
 });
 
 test('Home excludes past civil session dates in São Paulo before grouping, preserving today, unknown and all history', () => {
@@ -362,6 +389,83 @@ test('Home link overlay is per session and unknown checks do not erase confirmed
   sets = h.context.homeOfferSets(h.context.historyData.active, []);
   assert.equal(sets.activeItems.length, 2);
   assert.deepEqual(clone(h.context.historyData), source, 'overlay never persists into offer history');
+});
+
+test('fresh availability clears a persisted dead-link marker across native and catalog refreshes', () => {
+  const dead = offer('dead', { title: '24/10 Teatro Claro SP', linkUnavailableAt: now - 10000 });
+  const h = harness({ history: [dead] });
+  h.context.renderCatalogStatus = () => {};
+  h.context.handleNativeCollectionResult(null, { active: [offer('dead', {
+    title: '24/10 Teatro Claro SP', availabilityEvidence: {
+      state: 'available', observedAt: now - 1000, source: 'iphone' } })], history: [] });
+  assert.equal(h.context.historyData.active[0].linkUnavailableAt, undefined);
+  assert.deepEqual(clone(h.context.homeOfferSets(h.context.historyData.active, []).activeItems).map(item => item.id), ['dead']);
+
+  const catalog = harness({ history: [dead] });
+  catalog.context.mergeCatalogSnapshot({ stories: [], offers: [{ id: 'dead', link: campaign('dead'),
+    title: '24/10 Teatro Claro SP', availabilityEvidence: {
+      state: 'available', observedAt: now - 1000, source: 'ticket_listing' } }] });
+  assert.equal(catalog.context.historyData.active[0].linkUnavailableAt, undefined);
+});
+
+test('a future unverified ticket in History is checked and returns to active Home only with positive evidence', () => {
+  const cached = offer('cached-ticket', { title: '24/10 Teatro Claro SP', cacheUnverified: true,
+    availability: 'sold_out', isExpired: true, soldOutAt: now - 60000, expiredAt: now - 60000 });
+  const h = harness({ history: [cached] });
+  h.context.renderCatalogStatus = () => {};
+  assert.equal(h.context.homeOfferSets([], h.context.historyData.history).soldOutItems.length, 0);
+  const [candidate] = clone(h.context.hunterActiveLinkCandidates());
+  assert.equal(candidate.id, cached.id, 'unverified future History ticket enters the native check queue');
+
+  h.context.hunterApplyLinkCheckResults([{ ...candidate, status: 'available', checkedAt: now - 10000, cached: true }]);
+  assert.equal(h.context.historyData.active.length, 0, 'old native cache is not fresh availability evidence');
+  assert.equal(h.context.historyData.history[0].cacheUnverified, true);
+
+  h.context.hunterApplyLinkCheckResults([{ ...candidate, status: 'unknown', checkedAt: now }]);
+  assert.equal(h.context.historyData.history[0].cacheUnverified, true);
+  assert.equal(h.context.historyData.active.length, 0, 'ambiguous pages never activate cached tickets');
+
+  h.context.hunterApplyLinkCheckResults([{ ...candidate, status: 'available', checkedAt: now }]);
+  assert.deepEqual(clone(h.context.historyData.active).map(item => item.id), ['cached-ticket']);
+  assert.equal(h.context.historyData.history.length, 0);
+  assert.equal(h.context.historyData.active[0].cacheUnverified, undefined);
+  assert.equal(h.context.historyData.active[0].availabilityEvidence.state, 'available');
+  assert.deepEqual(clone(h.context.homeOfferSets(h.context.historyData.active, []).activeItems).map(item => item.id),
+    ['cached-ticket']);
+});
+
+test('a sold-out native result moves only its session to History, while confirmed dead History links can recover', () => {
+  const active = [offer('first-date', { title: '24/10 Teatro Claro SP' }),
+    offer('second-date', { title: '25/10 Teatro Claro SP' })];
+  const cached = offer('old-date', { title: '26/10 Teatro Claro SP', cacheUnverified: true });
+  const h = harness({ active, history: [cached] });
+  h.context.renderCatalogStatus = () => {};
+  const candidates = clone(h.context.hunterActiveLinkCandidates());
+  assert.deepEqual(candidates.map(item => item.id), ['old-date', 'first-date', 'second-date'],
+    'uncertain History offers are checked before already active ones');
+
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[1], status: 'sold_out', checkedAt: now }]);
+  assert.deepEqual(clone(h.context.historyData.active).map(item => item.id), ['second-date']);
+  assert.deepEqual(clone(h.context.historyData.history).map(item => item.id), ['old-date', 'first-date']);
+  assert.equal(h.context.historyData.history[1].availabilityEvidence.state, 'sold_out');
+  assert.equal(h.context.historyData.history[1].soldOutAt, now);
+  assert.equal(h.context.historyData.history[1].linkUnavailableAt, undefined,
+    'a sold-out campaign is not classified as a dead link');
+
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[0], status: 'unavailable', checkedAt: now,
+    unavailableAt: now }]);
+  assert.equal(h.context.historyData.history[0].cacheUnverified, undefined);
+  assert.equal(h.context.historyData.history[0].linkUnavailableAt, now);
+  assert.equal(h.context.hunterActiveLinkCandidates().some(item => item.id === 'old-date'), true,
+    'a dead link stays in the queue for recovery');
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[0], status: 'unknown', checkedAt: now }]);
+  assert.equal(h.context.historyData.history[0].linkUnavailableAt, now);
+  h.advance(5000);
+  h.context.hunterApplyLinkCheckResults([{ ...candidates[0], status: 'available', checkedAt: now + 5000 }]);
+  assert.deepEqual(clone(h.context.historyData.active).map(item => item.id), ['second-date', 'old-date']);
+  assert.equal(h.context.historyData.history[0].id, 'first-date');
+  assert.equal(h.context.historyData.active[1].linkUnavailableAt, undefined);
+  assert.equal(h.context.homeOfferSets(h.context.historyData.active, h.context.historyData.history).activeItems.length, 2);
 });
 
 test('Worker availability events attach to the local offer identity used by History', async () => {

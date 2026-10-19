@@ -129,26 +129,30 @@ test('stale valid snapshot sends its ETag and 304 reuses same content', async ()
   assert.equal(h.requests.length, 1);
 });
 
-test('fresh cache avoids even catalog HTTP for 120 seconds', async () => {
-  const h = harness({ cache: { snapshot: snapshot(), etag: '"previous"', fetchedAt: now - 119999 }, network: () => { throw new Error('must not fetch'); } });
+test('opening revalidates a recent cached catalog with its ETag', async () => {
+  const h = harness({ cache: { snapshot: snapshot(), etag: '"previous"', fetchedAt: now - 119999 }, network: () => response(null, 304) });
   await h.run();
-  assert.equal(h.requests.length, 0);
+  assert.equal(h.requests.length, 1);
+  assert.equal(h.requests[0].options.headers['If-None-Match'], '"previous"');
   assert.equal(h.state().active.length, 1);
 });
 
 test('manual refresh bypasses client freshness once, preserves ETag and blocks overlapping clicks', async () => {
   let finish;
   const h = harness({ cache: { snapshot: snapshot(), etag: '"previous"', fetchedAt: now - 100 },
-    network: () => new Promise(resolve => { finish = resolve; }) });
+    network: (() => { let count = 0; return () => ++count === 1 ? response(null, 304) : new Promise(resolve => { finish = resolve; }); })() });
   await h.run();
-  assert.equal(h.requests.length, 0);
+  assert.equal(h.requests.length, 1);
   const refresh = h.context.refreshHunterCatalog();
-  assert.equal(h.requests.length, 1);
+  assert.equal(h.requests.length, 2);
   assert.equal(h.elements.get('btnRefreshCatalog').disabled, true);
+  h.context.renderCatalogStatus();
+  assert.equal(h.elements.get('liveStatusText').textContent, 'Atualizando…',
+    'a native or link rerender during a pending fetch does not call the catalog stale');
   await h.context.refreshHunterCatalog();
-  assert.equal(h.requests.length, 1);
+  assert.equal(h.requests.length, 2);
   finish(response(null, 304)); await refresh;
-  assert.equal(h.requests[0].options.headers['If-None-Match'], '"previous"');
+  assert.equal(h.requests[1].options.headers['If-None-Match'], '"previous"');
   assert.equal(h.elements.get('btnRefreshCatalog').disabled, false);
   assert.equal(h.state().active.length, 1);
 });
@@ -214,12 +218,12 @@ test('empty/truncated/unhealthy catalog preserves known offers and never falls b
   assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
 });
 
-test('truncated catalog stays amber even when its sources are fresh and healthy', async () => {
+test('partial catalog shows updated when its sources are fresh and healthy', async () => {
   const data = snapshot([offer()], { coverage: { offerLimit: 300, storyLimit: 30, scope: 'recent_tracked', truncated: true } });
   const h = harness({ network: () => response(data) });
   await h.run();
-  assert.equal(h.elements.get('liveDot').style.backgroundColor, '#ffb300');
-  assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
+  assert.equal(h.elements.get('liveDot').style.backgroundColor, '#00e676');
+  assert.match(h.elements.get('liveStatusText').textContent, /Atualizado/);
   assert.equal(h.requests.length, 1);
 });
 
@@ -228,9 +232,9 @@ test('recently cached snapshot rechecks source timestamp rather than trusting hi
     api: { healthy: true, lastSuccessAt: now - 600001 },
     ticketListing: { healthy: false, lastSuccessAt: null },
   } });
-  const h = harness({ cache: { snapshot: data, fetchedAt: now - 1000, etag: '"old-source"' } });
+  const h = harness({ cache: { snapshot: data, fetchedAt: now - 1000, etag: '"old-source"' }, network: () => response(null, 304) });
   await h.run();
-  assert.equal(h.requests.length, 0);
+  assert.equal(h.requests.length, 1);
   assert.equal(h.elements.get('liveDot').style.backgroundColor, '#ffb300');
   assert.match(h.elements.get('liveStatusText').textContent, /Em cache/);
 });
@@ -246,6 +250,19 @@ test('canonical duplicate generations choose latest observed offer regardless of
     assert.equal(h.state().active[0].firstSeen, newer.firstSeenAt);
     assert.equal(h.state().history.length, 0);
   }
+});
+
+test('current catalog availability evidence clears a legacy cache warning', () => {
+  const cached = { id: 'cached', link: link('p123-show'), title: 'Show', cacheUnverified: true };
+  const h = harness({ history: { active: [cached], history: [] } });
+  h.merge(snapshot([offer('p123-show', { availabilityEvidence: {
+    state: 'available', source: 'ticket_listing', observedAt: now - 1000,
+  } })]));
+  assert.equal(h.state().active[0].cacheUnverified, undefined);
+  const withoutEvidence = harness({ history: { active: [cached], history: [] } });
+  withoutEvidence.merge(snapshot([offer('p123-show')]));
+  assert.equal(withoutEvidence.state().active[0].cacheUnverified, true,
+    'catalog presence alone does not verify availability');
 });
 
 test('hydration keeps native active offers and quarantines local-only history', () => {
