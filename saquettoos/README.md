@@ -46,7 +46,9 @@ O script público não contém token de administrador. UI recebe apenas perfil, 
 
 Entrada nativa Scriptable aceita dicionário `{ action: 'update-auto' }` para atualizar o próprio saquettoOS; `appId: 'clube-uol'` direciona uma atualização autorizada do UOL. `channel: 'beta'` é opt-in; ausência preserva o canal atual. Resultado contém status verificável, sem credenciais. Atualizações automáticas não abrem/coletam/resgatam benefícios.
 
-Os atalhos auxiliares em `shortcuts/` abrem ou atualizam saquettoOS. A automação pessoal **Update Scriptable** existente não é alterada por este projeto. Para rotear um futuro aviso, adicionar antes do ramo genérico a condição **Título da notificação contém saquettoOS**, executar saquettoOS com `action=update-auto` e encerrar o atalho. Preservar o ramo dedicado ao UOL e o uso de `TriggerOutput → Title` já corrigido no aparelho. Nenhum aviso ntfy é enviado pelo build.
+Os atalhos auxiliares em `shortcuts/` abrem ou atualizam saquettoOS. Toda distribuição ntfy usa o título **Scriptable - saquettoOS**. A automação pessoal atual baixa e salva o alvo genérico do MacSend; o registro local `saquettoos` aponta para `dist/saquettoOS.js`. Depois de verificar a release remota, preparar esse alvo e conferir filename, tamanho e SHA-256 no endpoint utilizado pelo Atalho antes de enviar o aviso. O aceite ntfy não comprova instalação no iPhone; não repetir envio ambíguo sem conferir o recibo. O build não envia notificações.
+
+Para passar futuramente ao updater interno sem MacSend, adicionar antes do ramo genérico a condição **Título da notificação contém saquettoOS**, executar saquettoOS com `action=update-auto` e encerrar o atalho. Preservar o ramo dedicado ao UOL e `TriggerOutput → Title`. Não alterar a automação pessoal por escrita direta no banco do Atalhos.
 
 ## Limites da validação
 

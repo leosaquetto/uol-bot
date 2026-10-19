@@ -476,4 +476,5 @@
     }
   });
   render();
+  window.__SAQUETTO_RENDERED = true;
 }());

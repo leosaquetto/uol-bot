@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: purple; icon-glyph: layer-group;
 // saquettoOS Scriptable launcher
-const SAQUETTO_VERSION = '1.0.1';
+const SAQUETTO_VERSION = '1.0.2';
 const SAQUETTO_API = 'https://saquettoos-access.leosaquetto.workers.dev';
 const SAQUETTO_CATALOG = __SAQUETTO_CATALOG__;
 const SAQUETTO_HTML = __SAQUETTO_HTML__;
@@ -279,7 +279,31 @@ async function saquettoMain() {
   }
   const view = new WebView();
   let dismissed = false;
-  const evaluate = code => dismissed ? Promise.reject(new Error('app_closed')) : view.evaluateJavaScript(code);
+  let evaluationTail = Promise.resolve();
+  const evaluate = code => {
+    const next = evaluationTail.then(() => {
+      if (dismissed) throw new Error('app_closed');
+      return view.evaluateJavaScript(code);
+    });
+    evaluationTail = next.catch(() => {});
+    return next;
+  };
+  let cancelIdle = null;
+  const pause = ms => dismissed ? Promise.resolve() : new Promise(resolve => {
+    const timer = Timer.schedule(ms, false, () => { cancelIdle = null; resolve(); });
+    cancelIdle = () => { timer.invalidate(); cancelIdle = null; resolve(); };
+  });
+  // Only fixed stage names and layout measurements; never identity, app data or errors containing URLs.
+  const diagnostic = { version: SAQUETTO_VERSION, stages: [] };
+  function trace(stage, layout) {
+    diagnostic.stages.push({ stage, at: new Date().toISOString(), ...(layout ? { layout } : {}) });
+    try { fm.writeString(fm.joinPath(fm.documentsDirectory(), 'saquettoos.startup.v1.json'), JSON.stringify(diagnostic)); } catch (_) {}
+  }
+  const startupHTML = failed => '<!doctype html><html lang="pt-BR"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>saquettoOS</title></head>' +
+    '<body style="margin:0;background:#101225;color:#f6f7ff;font:17px -apple-system,sans-serif;padding:80px 28px"><h1 style="font-size:30px">saquettoOS</h1>' +
+    '<p>' + (failed ? 'A interface não terminou de carregar. Feche esta janela para ver o diagnóstico.' : 'Preparando seu espaço…') +
+    '</p><p style="color:#afb7d0;font-size:13px">Versão ' + SAQUETTO_VERSION + '</p></body></html>';
+  const baseURL = SAQUETTO_API + '/app/';
   let currentPreferences = (await host.state()).preferences;
   const runtime = SaquettoRuntime.create({ fm, local, catalog: SAQUETTO_CATALOG, compatibility: SAQUETTO_COMPATIBILITY,
     hash: SaquettoUpdater.fingerprint, script: Script, shell: evaluate,
@@ -291,44 +315,72 @@ async function saquettoMain() {
     } });
   host.attachRuntime(runtime);
   const initial = await host.state();
-  initial.profile = { ...initial.profile, status: 'loading' };
+  trace('starting');
   try {
-    // Scriptable does not specify the internal request URL used by loadHTML.
-    // Install the app navigation filter only after this trusted, self-contained document loads.
-    await view.loadHTML(SAQUETTO_HTML.replace('__SAQUETTO_INITIAL_JSON__', () => SaquettoHost.safeJSON(initial)));
-    view.shouldAllowRequest = req => runtime.shouldAllowRequest(req);
-    const loaded = await evaluate("!!(document.getElementById('shell') && typeof window.saquettoSetState === 'function' && typeof window.saquettoNative === 'function' && Array.isArray(window.__SAQUETTO_QUEUE))");
-    if (!loaded) throw new Error('interface_unavailable');
+    // Match UOL's native startup: present a tiny document before evaluating any JavaScript.
+    await view.loadHTML(startupHTML(false), baseURL);
+    trace('startup_loaded');
   } catch (_) {
+    trace('startup_load_failed');
     const alert = new Alert(); alert.title = 'Não foi possível abrir o saquettoOS';
     alert.message = 'A interface não terminou de carregar. Feche e abra o script novamente. Versão ' + SAQUETTO_VERSION + '.';
     alert.addAction('OK'); await alert.presentAlert(); return;
   }
-  let cancelIdle = null;
   const presentation = view.present(true).finally(() => {
     dismissed = true;
     if (cancelIdle) cancelIdle();
+    trace('dismissed');
   });
+  trace('presentation_requested');
   const tasks = new Set();
-  // Show the offline shell before the access request. Native actions wait for verified initialization.
-  const ready = host.start().then(async state => {
-    if (!dismissed) await evaluate('window.saquettoSetState(' + SaquettoHost.safeJSON(state) + ');');
-    if (!dismissed && allowedApp && action === 'open') {
-      // Let the ordinary shell display a friendly failure; never launch another instance.
-      const opening = host.dispatch('openApp', { id: allowedApp.id }).catch(() => {});
-      tasks.add(opening); opening.finally(() => tasks.delete(opening));
-    }
-    return true;
-  }).catch(async () => {
-    if (!dismissed) {
-      try { await evaluate('window.saquettoSetState({profile:{name:"Seu espaço",role:"member",status:"unavailable",appIds:[]}});'); } catch (_) {}
-    }
-    return false;
+  let initialized = false, startupFailure = false;
+  const ready = host.start().then(state => {
+    initialized = true; return state;
+  }).catch(() => {
+    trace('access_initialization_failed');
+    return { ...initial, profile: { name: 'Seu espaço', role: 'member', status: 'unavailable', appIds: [] } };
   });
+  try {
+    // present() resolves on dismissal, not on appearance. Give the native transition a turn.
+    await pause(800);
+    const state = await ready;
+    if (!dismissed) {
+      currentPreferences = state.preferences;
+      trace('dashboard_loading');
+      // Initial state and assets travel with the document, not a concurrent multi-megabyte evaluation.
+      await view.loadHTML(SAQUETTO_HTML.replace('__SAQUETTO_INITIAL_JSON__', () => SaquettoHost.safeJSON(state)), baseURL);
+      view.shouldAllowRequest = req => runtime.shouldAllowRequest(req);
+      await pause(100);
+      if (!dismissed) {
+        const layout = await evaluate(`(() => {
+          const shell = document.getElementById('shell');
+          const rect = shell && shell.getBoundingClientRect();
+          return { ready: !!(window.__SAQUETTO_RENDERED && typeof window.saquettoNative === 'function' && Array.isArray(window.__SAQUETTO_QUEUE)),
+            width: Math.round(rect ? rect.width : 0), height: Math.round(rect ? rect.height : 0) };
+        })()`);
+        if (!layout?.ready || layout.width <= 0 || layout.height <= 0) throw new Error('interface_unavailable');
+        trace('dashboard_ready', { width: layout.width, height: layout.height });
+        if (initialized && allowedApp && action === 'open') {
+          const opening = host.dispatch('openApp', { id: allowedApp.id }).catch(() => {});
+          tasks.add(opening); opening.finally(() => tasks.delete(opening));
+        }
+      }
+    }
+  } catch (_) {
+    startupFailure = true; trace('dashboard_failed');
+    if (!dismissed) {
+      // No app has opened on this failure path. Permit only the host's trusted replacement.
+      try {
+        view.shouldAllowRequest = () => true;
+        await view.loadHTML(startupHTML(true), baseURL);
+      } catch (_) {}
+      view.shouldAllowRequest = req => runtime.shouldAllowRequest(req);
+    }
+  }
   async function process(item) {
     let result;
     try {
-      if (!await ready) throw new Error('initialization_failed');
+      if (!initialized) throw new Error('initialization_failed');
       if (dismissed) throw new Error('app_closed');
       const data = await host.dispatch(item.action, item.payload);
       if (data?.state?.preferences) currentPreferences = data.state.preferences;
@@ -338,27 +390,30 @@ async function saquettoMain() {
       try { await evaluate('window.saquettoResolve(' + JSON.stringify(item.id) + ',' + SaquettoHost.safeJSON(result) + ');'); } catch (_) {}
     }
   }
-  while (!dismissed) {
+  while (!dismissed && !startupFailure) {
     let items;
     try {
       // Every evaluation completes immediately. No native completion callback survives Close.
       items = await evaluate('window.__SAQUETTO_QUEUE.splice(0, 20)');
-    } catch (_) { break; }
+    } catch (_) { if (!dismissed) trace('bridge_failed'); break; }
     if (dismissed || !Array.isArray(items)) break;
     for (const item of items) {
       if (!item || typeof item.id !== 'string' || typeof item.action !== 'string') continue;
       // Callback results must drain while an app action is awaiting its WebView evaluation.
       const task = process(item); tasks.add(task); task.finally(() => tasks.delete(task));
     }
-    if (!items.length) await new Promise(resolve => {
-      const timer = Timer.schedule(100, false, () => { cancelIdle = null; resolve(); });
-      cancelIdle = () => { timer.invalidate(); cancelIdle = null; resolve(); };
-    });
+    if (!items.length) await pause(100);
   }
   await ready;
   try { await runtime.shutdown(); } catch (_) {}
   await Promise.allSettled([...tasks]);
   await presentation;
+  trace('complete');
+  if (startupFailure) {
+    const alert = new Alert(); alert.title = 'Diagnóstico saquettoOS';
+    alert.message = 'Versão ' + SAQUETTO_VERSION + ': dashboard_failed. O registro de abertura foi salvo na pasta Scriptable como saquettoos.startup.v1.json.';
+    alert.addAction('OK'); await alert.presentAlert();
+  }
 }
 
 await saquettoMain();

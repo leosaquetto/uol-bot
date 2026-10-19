@@ -1,4 +1,16 @@
-# saquettoOS 1.0.1 — 2026-10-18
+# saquettoOS 1.0.2 — 2026-10-18
+
+## Nova sequência de apresentação
+
+- O usuário confirmou no editor do iPhone a versão 1.0.1 e informou que a tela preta persistia. Portanto, a hipótese do filtro inicial não explica sozinha a falha observada; a 1.0.1 não foi aceita como correção visual.
+- A 1.0.1 ainda avaliava JavaScript antes e imediatamente depois de `present()`, com chamadas concorrentes para enviar o estado e drenar a fila. O histórico do UOL (`CHANGELOG_v5.7.1.md`) registra o mesmo risco e sua correção por sequência nativa. O launcher agora carrega uma tela leve, apresenta a janela, aguarda 800 ms nativos e carrega a interface completa com o estado embutido. Avaliações começam somente depois dessa carga, são serializadas e recusam trabalho novo após fechar.
+- O marcador de renderização só é definido depois do primeiro `render()`. O host verifica esse marcador e as dimensões reais do shell. Falha recupera a tela leve e apresenta diagnóstico ao fechar.
+- `saquettoos.startup.v1.json`, na pasta Scriptable, registra versão, etapas, horários e dimensões. Não contém identidade, tokens, nomes/perfis de usuários, URLs de requisições ou dados dos apps.
+- 27 testes direcionados aprovados: host, UI e sete cenários do ciclo de vida. Verificam apresentação antes das avaliações, estado no documento, serialização, fechamento, trabalho nativo pendente e recuperação de dashboard vazio. Build e diff-check aprovados.
+- A prévia completa foi carregada por um `WKWebView` nativo do macOS, após a tela leve: marcador de renderização verdadeiro, seis apps, três imagens decodificadas, shell `display:flex`, dimensões 375 × 855 e título presente. Isso verifica o documento no WebKit, não a apresentação pelo bridge do Scriptable no iPhone.
+- A confirmação da abertura no Scriptable do iPhone continua pendente; a sequência usa o padrão do UOL, mas os testes locais não reproduzem o bridge nativo do Scriptable.
+
+## Base 1.0.1
 
 ## Correção de abertura e encerramento
 
