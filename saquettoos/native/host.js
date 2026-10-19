@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: purple; icon-glyph: layer-group;
 // saquettoOS Scriptable launcher
-const SAQUETTO_VERSION = '1.0.3';
+const SAQUETTO_VERSION = '1.0.4';
 const SAQUETTO_API = 'https://saquettoos-access.leosaquetto.workers.dev';
 const SAQUETTO_CATALOG = __SAQUETTO_CATALOG__;
 const SAQUETTO_HTML = __SAQUETTO_HTML__;
@@ -20,12 +20,13 @@ const SaquettoHost = (() => {
   const key = 'saquettoos.identity.v1';
   const stateFile = 'saquettoos.settings.v1.json';
   const bootstrapFile = 'saquettoos-owner-bootstrap.json';
-  const defaults = { appearance: 'system', material: 'glass', channel: 'stable',
+  const defaults = { appearance: 'system', material: 'glass', channel: 'stable', showAppNames: false,
     favorites: ['clube-uol', 'bilhete-unico', 'super-calendario', 'media-downloader'],
     notifications: { enabled: false, updates: true, access: true } };
   function preferences(value = {}) {
     return { appearance: ['system', 'light', 'dark'].includes(value.appearance) ? value.appearance : defaults.appearance,
       material: ['glass', 'solid'].includes(value.material) ? value.material : defaults.material,
+      showAppNames: typeof value.showAppNames === 'boolean' ? value.showAppNames : defaults.showAppNames,
       channel: ['stable', 'beta'].includes(value.channel) ? value.channel : defaults.channel,
       favorites: Array.isArray(value.favorites) ? [...new Set(value.favorites.filter(id => SAQUETTO_CATALOG.some(app => app.id === id)))].slice(0, 4) : defaults.favorites.slice(),
       notifications: Object.fromEntries(['enabled', 'updates', 'access'].map(name => [name,
@@ -299,9 +300,9 @@ async function saquettoMain() {
     diagnostic.stages.push({ stage, at: new Date().toISOString(), ...(layout ? { layout } : {}) });
     try { fm.writeString(fm.joinPath(fm.documentsDirectory(), 'saquettoos.startup.v1.json'), JSON.stringify(diagnostic)); } catch (_) {}
   }
-  const startupHTML = failed => '<!doctype html><html lang="pt-BR"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>saquettoOS</title></head>' +
+  const failureHTML = () => '<!doctype html><html lang="pt-BR"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>saquettoOS</title></head>' +
     '<body style="margin:0;background:#101225;color:#f6f7ff;font:17px -apple-system,sans-serif;padding:80px 28px"><h1 style="font-size:30px">saquettoOS</h1>' +
-    '<p>' + (failed ? 'A interface não terminou de carregar. Feche esta janela para ver o diagnóstico.' : 'Preparando seu espaço…') +
+    '<p>A interface não terminou de carregar. Feche esta janela para ver o diagnóstico.' +
     '</p><p style="color:#afb7d0;font-size:13px">Versão ' + SAQUETTO_VERSION + '</p></body></html>';
   const baseURL = SAQUETTO_API + '/app/';
   let currentPreferences = (await host.state()).preferences;
@@ -315,10 +316,12 @@ async function saquettoMain() {
     } });
   host.attachRuntime(runtime);
   const initial = await host.state();
+  initial.profile = { ...initial.profile, status: 'loading' };
   trace('starting');
   try {
-    // Match UOL's native startup: present a tiny document before evaluating any JavaScript.
-    await view.loadHTML(startupHTML(false), baseURL);
+    // The first document already contains the home screen. No splash or second load.
+    // Keep native presentation before any evaluateJavaScript call.
+    await view.loadHTML(SAQUETTO_HTML.replace('__SAQUETTO_INITIAL_JSON__', () => SaquettoHost.safeJSON(initial)), baseURL);
     trace('startup_loaded');
   } catch (_) {
     trace('startup_load_failed');
@@ -333,7 +336,7 @@ async function saquettoMain() {
   });
   trace('presentation_requested');
   const tasks = new Set();
-  let initialized = false, startupFailure = false;
+  let initialized = false, startupFailure = false, synchronized = Promise.resolve();
   const ready = host.start().then(state => {
     initialized = true; return state;
   }).catch(() => {
@@ -343,14 +346,8 @@ async function saquettoMain() {
   try {
     // present() resolves on dismissal, not on appearance. Give the native transition a turn.
     await pause(800);
-    const state = await ready;
     if (!dismissed) {
-      currentPreferences = state.preferences;
-      trace('dashboard_loading');
-      // Initial state and assets travel with the document, not a concurrent multi-megabyte evaluation.
-      await view.loadHTML(SAQUETTO_HTML.replace('__SAQUETTO_INITIAL_JSON__', () => SaquettoHost.safeJSON(state)), baseURL);
       view.shouldAllowRequest = req => runtime.shouldAllowRequest(req);
-      await pause(100);
       if (!dismissed) {
         const layout = await evaluate(`(() => {
           const shell = document.getElementById('shell');
@@ -360,10 +357,18 @@ async function saquettoMain() {
         })()`);
         if (!layout?.ready || layout.width <= 0 || layout.height <= 0) throw new Error('interface_unavailable');
         trace('dashboard_ready', { width: layout.width, height: layout.height });
-        if (initialized && allowedApp && action === 'open') {
-          const opening = host.dispatch('openApp', { id: allowedApp.id }).catch(() => {});
-          tasks.add(opening); opening.finally(() => tasks.delete(opening));
-        }
+        synchronized = ready.then(async state => {
+          if (dismissed) return;
+          currentPreferences = state.preferences;
+          // Assets are already loaded. Only the small verified access/state patch crosses the bridge.
+          const { assets, ...patch } = state;
+          await evaluate('window.saquettoSetState(' + SaquettoHost.safeJSON(patch) + ');');
+          if (!dismissed && initialized && allowedApp && action === 'open') {
+            const opening = host.dispatch('openApp', { id: allowedApp.id }).catch(() => {});
+            tasks.add(opening); opening.finally(() => tasks.delete(opening));
+          }
+        }).catch(() => { if (!dismissed) trace('access_state_failed'); });
+        tasks.add(synchronized); synchronized.finally(() => tasks.delete(synchronized));
       }
     }
   } catch (_) {
@@ -372,7 +377,7 @@ async function saquettoMain() {
       // No app has opened on this failure path. Permit only the host's trusted replacement.
       try {
         view.shouldAllowRequest = () => true;
-        await view.loadHTML(startupHTML(true), baseURL);
+        await view.loadHTML(failureHTML(), baseURL);
       } catch (_) {}
       view.shouldAllowRequest = req => runtime.shouldAllowRequest(req);
     }
@@ -380,6 +385,7 @@ async function saquettoMain() {
   async function process(item) {
     let result;
     try {
+      await synchronized;
       if (!initialized) throw new Error('initialization_failed');
       if (dismissed) throw new Error('app_closed');
       const data = await host.dispatch(item.action, item.payload);

@@ -70,6 +70,18 @@ test('settings cannot grant admin privileges or app permissions', async () => {
   assert.deepEqual(Array.from(state.preferences.favorites), ['clube-uol']);
   assert.equal(state.apps.some(app => app.allowed), false);
 });
+
+test('app names default hidden, persist as a boolean and preserve other settings', async () => {
+  const h = harness(() => ({ data: { profile: approved } }));
+  assert.equal((await h.host.state()).preferences.showAppNames, false);
+  await h.host.dispatch('setPreferences', { showAppNames: true, appearance: 'light' });
+  assert.equal((await h.host.state()).preferences.showAppNames, true);
+  const saved = JSON.parse(h.files.get('/local/saquettoos.settings.v1.json'));
+  assert.equal(saved.preferences.showAppNames, true);
+  await h.host.dispatch('setPreferences', { material: 'solid' });
+  assert.equal((await h.host.state()).preferences.showAppNames, true);
+  assert.equal(h.Host.preferences({ showAppNames: 'true' }).showAppNames, false);
+});
 test('duplicate Unicode filenames fail closed; no arbitrary script launch', async () => {
   const h = harness(() => ({ data: { allowed: true } }), { files: { '/cloud/Bilhete Único.js': 'a', '/cloud/Bilhete Único.js': 'b' } });
   await h.host.start();

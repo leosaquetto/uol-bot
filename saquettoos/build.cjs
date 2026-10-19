@@ -26,9 +26,9 @@ fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
 const file = path.join(root, 'dist/saquettoOS.js');
 fs.writeFileSync(file, code);
 if (process.argv.includes('--preview')) {
-  const demo = { version: '1.0.3', profile: { name: 'Leo', role: 'admin', status: 'approved', appIds: catalog.map(app => app.id) },
+  const demo = { version: '1.0.4', profile: { name: 'Leo', role: 'admin', status: 'approved', appIds: catalog.map(app => app.id) },
     apps: catalog.map(app => ({ ...app, installed: true, allowed: true })), assets,
-    preferences: { appearance: 'system', material: 'glass', channel: 'stable', favorites: catalog.slice(0, 4).map(app => app.id), notifications: { enabled: false, updates: true, access: true } },
+    preferences: { appearance: 'system', material: 'glass', channel: 'stable', showAppNames: false, favorites: catalog.slice(0, 4).map(app => app.id), notifications: { enabled: false, updates: true, access: true } },
     notifications: [], accessConfigured: true, update: { items: [] } };
   const preview = html.replace('__SAQUETTO_INITIAL_JSON__', () => safe(demo))
     .replace('<head>', '<head><script>window.__SAQUETTO_PREVIEW__=true;</script>');

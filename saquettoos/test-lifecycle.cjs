@@ -27,7 +27,7 @@ function harness(options = {}) {
   const queue = [...(options.queue || [])];
   let view, runtimeOptions, closed = false, complete = false, done = false, error;
   let shellLoaded = false, presentationSettled = false;
-  const state = () => ({ preferences: { appearance: 'dark', material: 'glass' }, profile: { status: 'approved' } });
+  const state = () => ({ preferences: { appearance: 'dark', material: 'glass' }, profile: { status: 'approved' }, assets: { logo: 'synthetic-image-data' } });
   const browser = {
     document: { getElementById: id => shellLoaded && id === 'shell' ? { getBoundingClientRect: () => ({ width: 390, height: 844 }) } : null },
     __SAQUETTO_QUEUE: queue,
@@ -144,23 +144,38 @@ test('initial HTML loads before runtime navigation guard; subsequent requests re
   assert.equal(h.view.shouldAllowRequest({ url: 'about:blank' }), true);
   assert.ok(h.events.indexOf('present') < h.events.indexOf('evaluate'), 'native presentation must precede evaluation');
   assert.equal(h.evaluations.some(item => item.beforePresentationSettled), false);
-  assert.equal(h.requests.length, 2, 'load a tiny startup before the complete shell');
-  assert.ok(h.requests[0].html.length < 2000);
-  assert.ok(h.requests[0].html.includes('Preparando seu espaço'));
-  assert.ok(h.requests[1].html.includes('"status":"approved"'), 'verified state must travel in the document');
-  assert.equal(h.events.includes('state'), false, 'do not inject initial state with a competing evaluation');
+  assert.equal(h.requests.length, 1, 'home screen is the first and only document');
+  assert.ok(h.requests[0].html.includes('id="shell"'));
+  assert.equal(h.requests[0].html.includes('Preparando seu espaço'), false);
+  assert.ok(h.requests[0].html.includes('"status":"loading"'), 'do not grant access before verification');
+  await until(() => h.events.includes('state'), 'verified access state was not applied');
+  assert.equal(h.evaluations.some(item => item.code.includes('synthetic-image-data')), false, 'assets must not cross the evaluation bridge again');
   h.dismiss(); await h.finished(); assert.equal(h.complete, true);
 });
 
 test('an empty dashboard restores the readable startup and reports failure after dismissal', async t => {
   const h = harness({ emptyDocument: true }); t.after(() => h.dismiss());
-  await until(() => h.requests.length === 3 || h.done, 'empty shell was not handled');
-  assert.ok(h.requests[2].html.includes('não terminou de carregar'));
+  await until(() => h.requests.length === 2 || h.done, 'empty shell was not handled');
+  assert.ok(h.requests[1].html.includes('não terminou de carregar'));
   h.dismiss();
   await h.finished(); assert.equal(h.complete, true);
   assert.equal(h.alerts.length, 1);
   assert.match(h.alerts[0].message, /dashboard_failed/);
   assert.ok(JSON.parse(h.files.get('/local/saquettoos.startup.v1.json')).stages.some(item => item.stage === 'dashboard_failed'));
+});
+
+test('slow access verification does not delay the first home screen or replace its document', async t => {
+  const start = deferred(); const h = harness({ start });
+  t.after(() => { start.resolve({ preferences: {}, profile: { status: 'approved' } }); h.dismiss(); });
+  await until(() => h.evaluations.length >= 2 || h.done, 'home did not become ready before access request');
+  assert.equal(h.requests.length, 1);
+  assert.ok(h.requests[0].html.includes('id="shell"'));
+  assert.equal(h.events.includes('state'), false);
+  start.resolve({ preferences: {}, profile: { status: 'approved' } });
+  for (const timer of [...h.timers]) timer.fire();
+  await until(() => h.events.includes('state'), 'approved state missing');
+  assert.equal(h.requests.length, 1);
+  h.dismiss(); await h.finished();
 });
 
 test('idle dismissal cancels native polling and reaches Script.complete without held WebView callbacks', async t => {
@@ -180,6 +195,8 @@ test('idle dismissal cancels native polling and reaches Script.complete without 
 test('native app pauses central polling until closure then leaves central running', async t => {
   const h = harness({ queue: [{ id: 'open', action: 'openApp', payload: { id: 'clube-uol' } }] });
   t.after(() => { h.settleNative(); h.dismiss(); });
+  await until(() => h.dispatches.length === 1 || h.done, 'native app did not start after access synchronization');
+  for (const timer of [...h.timers]) timer.fire();
   await until(() => h.events.includes('native_wait') || h.done, 'native session did not pause bridge');
   const count = h.evaluations.length;
   await new Promise(resolve => setImmediate(resolve));

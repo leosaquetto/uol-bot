@@ -4,7 +4,8 @@ Launcher Scriptable com seis apps: Clube UOL Premium, Bilhete Único, Super Cale
 
 ## Uso
 
-- Abra `saquettoOS` no Scriptable. Aparência acompanha o sistema; Ajustes permite claro/escuro e material vidro/sólido. Favoritos ficam locais.
+- Abra `saquettoOS` no Scriptable: a primeira tela já contém os apps, com entrada suave em camadas. Aparência acompanha o sistema; Ajustes permite claro/escuro e material vidro/sólido. Favoritos ficam locais.
+- A tela inicial e o dock cabem na área visível; apenas os painéis têm rolagem própria. A busca adapta o espaço quando o teclado abre. **Mostrar nomes dos apps**, em Ajustes, vale para grade e dock e começa desativado.
 - Os seis apps usam suas interfaces originais do Scriptable sobre a central. Fechar a tela do app devolve o controle ao saquettoOS. A central pausa sua ponte enquanto o app está ativo; não encerra por limite de 90 segundos. Temas da central continuam disponíveis; cada app conserva sua própria aparência.
 - O runtime lê a fonte instalada e exige um SHA-256 em `compatibility.json` antes da execução. Conserva `Script.name`, `module.filename` e URLs do app; `Script.complete()` do filho não encerra a central. Calendário e media-downloader recebem apenas ajustes de `await` em memória para aguardar suas telas. Os scripts instalados, seus arquivos, sessões e Keychain não são reescritos pelo launcher.
 - O fluxo padrão não injeta iframe, CSS, localStorage ou fetch nos apps. Eles executam suas próprias rotinas nativas, inclusive permissões, login, coleta, calendário e medicamentos. A opção **Executar fora da central** usa a URL oficial do Scriptable e não promete retorno automático; também serve para uma versão ainda não reconhecida pela central.

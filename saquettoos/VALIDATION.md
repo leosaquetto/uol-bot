@@ -1,3 +1,15 @@
+# saquettoOS 1.0.4 — 2026-10-19
+
+## Tela inicial e identidade visual
+
+- Primeiro documento já contém a tela inicial; entrada suave em camadas substitui o texto de preparação. Avaliações da ponte continuam posteriores à apresentação nativa e à espera de 800 ms. Verificação de acesso atualiza apenas o estado, sem reenviar os assets ou recarregar o documento.
+- Home ocupa a área visível sem rolagem; dock permanece na base. Campo de busca usa fonte de 16 px e a interface acompanha a altura do VisualViewport. Altura zero ou inválida antes da apresentação é ignorada. Pinch zoom permanece disponível.
+- Preferência persistente `showAppNames` começa desativada e controla grade e dock. Falha ao salvar restaura o estado confirmado. Nomes acessíveis permanecem nos botões.
+- Logo claro substituído pelo PNG transparente fornecido; recorte CSS remove a margem branca do logo escuro. “OS” claro usa o degradê ciano/azul/violeta/rosa. Gradientes dos apps foram suavizados e símbolos internos usam 68% do bloco. Grade e dock compartilham a mesma dimensão de ícone.
+- 35 testes direcionados aprovados nesta mudança: 10 host, 9 ciclo de vida e 16 UI. Build valida sintaxe do artefato e da interface; diff-check aprovado.
+- Navegador integrado: em 390 × 700 CSS, os dez ícones medem aproximadamente 66 × 66 px, documento sem overflow e dock termina em y=671. Em 390 × 380 CSS, com seis apps e nomes ligados, todos medem 44 × 44 px e dock termina em y=373. Busca por UOL retorna um app, escala permanece 1 e fonte mede 16 px. Console sem erros/avisos capturados. Captura local: `/tmp/saquettoos-1.0.4-light.png` (fora do Git).
+- Limite: a altura reduzida simula o espaço ocupado pelo teclado; não prova comportamento do teclado ou zoom no iOS. A nova abertura direta e entrada animada precisam de confirmação no Scriptable do iPhone. Nenhum app real ou dado pessoal foi executado pelos testes.
+
 # saquettoOS 1.0.3 — 2026-10-18
 
 ## Interfaces originais e retorno à central

@@ -31,7 +31,7 @@
   };
   const icon = (name) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (paths[name] || paths.solid) + '</svg>';
   const appIcons = { 'clube-uol': 'ticket', 'bilhete-unico': 'transit', 'super-calendario': 'calendar', 'media-downloader': 'media', pilltracker: 'pill', 'lastfm-small': 'music' };
-  const appColors = { 'clube-uol': 'linear-gradient(140deg,#ae31ef,#4d18c3)', 'bilhete-unico': 'linear-gradient(145deg,#27afc0,#15778f)', 'super-calendario': 'linear-gradient(145deg,#ffad87,#e96a77)', 'media-downloader': 'linear-gradient(145deg,#7b93f8,#5654c6)', pilltracker: 'linear-gradient(145deg,#5dc7a8,#288f8d)', 'lastfm-small': 'linear-gradient(145deg,#f26887,#c72d64)' };
+  const appColors = { 'clube-uol': 'linear-gradient(140deg,#ae31ef,#4d18c3)', 'bilhete-unico': 'radial-gradient(ellipse at 24% 0%,#73dce4 0%,transparent 48%),linear-gradient(145deg,#30b7d7 5%,#287cca 57%,#344ca8)', 'super-calendario': 'radial-gradient(ellipse at 22% 0%,#ebc263 0%,transparent 48%),linear-gradient(145deg,#eb9449 5%,#e45e55 57%,#b73a70)', 'media-downloader': 'radial-gradient(ellipse at 22% 0%,#ac8de2 0%,transparent 48%),linear-gradient(145deg,#8867dd 5%,#625bd5 57%,#3d3fa6)', pilltracker: 'radial-gradient(ellipse at 22% 0%,#79dabe 0%,transparent 48%),linear-gradient(145deg,#30ba94 5%,#229a7f 57%,#28777f)', 'lastfm-small': 'radial-gradient(ellipse at 22% 0%,#e791b9 0%,transparent 48%),linear-gradient(145deg,#e45b91 5%,#cb3d76 57%,#933b71)' };
   const demo = {
     version: 'Prévia', profile: { name: 'Leo', role: 'admin', status: 'approved' },
     apps: [
@@ -42,7 +42,7 @@
       { id: 'pilltracker', name: 'PillTracker', scriptName: 'PillTracker' },
       { id: 'lastfm-small', name: 'Last.fm Small', scriptName: 'Last.fm Small' }
     ].map((app) => Object.assign(app, { installed: true, allowed: true, mode: 'integrated' })),
-    preferences: { appearance: 'system', material: 'glass', favorites: ['clube-uol', 'bilhete-unico', 'super-calendario', 'pilltracker'], notifications: { enabled: false, updates: true, access: true } },
+    preferences: { appearance: 'system', material: 'glass', showAppNames: false, favorites: ['clube-uol', 'bilhete-unico', 'super-calendario', 'pilltracker'], notifications: { enabled: false, updates: true, access: true } },
     notifications: [], assets: {}, accessConfigured: false, update: {}
   };
   let state;
@@ -68,6 +68,7 @@
   let frameSequence = 0;
   let appClosing = false;
   const frameEvaluations = new Map();
+  let entranceTilesRendered = false;
   let query = '';
   let users = null;
   let usersError = '';
@@ -174,29 +175,31 @@
     const resolved = appearance === 'system' ? (mediaQuery.matches ? 'dark' : 'light') : appearance;
     document.documentElement.dataset.appearance = resolved === 'light' ? 'light' : 'dark';
     document.documentElement.dataset.material = state.preferences.material === 'solid' ? 'solid' : 'glass';
+    document.documentElement.dataset.showAppNames = String(state.preferences.showAppNames === true);
     const logo = safeImage(resolved === 'light' ? state.assets.logoLight : state.assets.logoDark);
     $('#brand-mark').innerHTML = logo ? '<img src="' + escapeHTML(logo) + '" alt="">' : icon('sparkles');
     document.querySelector('meta[name="theme-color"]').content = resolved === 'light' ? '#f0f2f8' : '#0d1020';
   }
   if (mediaQuery.addEventListener) mediaQuery.addEventListener('change', applyAppearance); else mediaQuery.addListener(applyAppearance);
-  function tile(app, inDock) {
+  function tile(app, inDock, entranceIndex) {
     let badge = '';
-    if (!allowed(app)) badge = '<span class="app-badge locked">' + icon('lock') + '</span>';
+    if (!allowed(app) && state.profile.status !== 'loading') badge = '<span class="app-badge locked">' + icon('lock') + '</span>';
     else if (!app.installed) badge = '<span class="app-badge">' + icon('download') + '</span>';
     else if (app.updateAvailable) badge = '<span class="app-badge">' + icon('refresh') + '</span>';
     const name = inDock ? ({ 'clube-uol': 'Clube UOL', 'super-calendario': 'Calendário', 'media-downloader': 'Downloads', 'lastfm-small': 'Last.fm' }[app.id] || app.name) : app.name;
-    const hint = !allowed(app) ? 'Acesso restrito' : (!app.installed ? 'Não instalado' : (app.mode === 'native' ? 'Interface original' : app.mode === 'integrated' ? 'Integrado' : 'Abre no Scriptable'));
-    return '<button type="button" class="app-tile" data-open-app="' + escapeHTML(app.id) + '" data-installed="' + Boolean(app.installed) + '" data-available="' + allowed(app) + '" aria-label="' + escapeHTML(app.name + '. ' + hint) + '"' + (inDock ? '' : ' role="listitem"') + '><span class="app-icon" style="--app-color:' + appColor(app) + '">' + appGraphic(app) + badge + '</span><span class="app-name">' + escapeHTML(name) + '</span>' + (!app.installed ? '<span class="app-status">Não instalado</span>' : '') + '</button>';
+    const hint = state.profile.status === 'loading' ? 'Verificando acesso' : !allowed(app) ? 'Acesso restrito' : (!app.installed ? 'Não instalado' : (app.mode === 'native' ? 'Interface original' : app.mode === 'integrated' ? 'Integrado' : 'Abre no Scriptable'));
+    return '<button type="button" class="app-tile"' + (entranceIndex === undefined ? '' : ' data-entrance="' + entranceIndex + '" style="--entrance-index:' + entranceIndex + '"') + ' data-open-app="' + escapeHTML(app.id) + '" data-installed="' + Boolean(app.installed) + '" data-available="' + (state.profile.status === 'loading' ? 'loading' : allowed(app)) + '" aria-label="' + escapeHTML(app.name + '. ' + hint) + '"' + (inDock ? '' : ' role="listitem"') + '><span class="app-icon' + (appImage(app) ? ' app-icon-artwork' : '') + '" style="--app-color:' + appColor(app) + '">' + appGraphic(app) + badge + '</span><span class="app-name">' + escapeHTML(name) + '</span>' + (!app.installed ? '<span class="app-status">Não instalado</span>' : '') + '</button>';
   }
   function renderApps() {
     const normalized = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     const filtered = state.apps.filter((app) => String(app.name).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(normalized));
-    $('#app-grid').innerHTML = filtered.map((app) => tile(app, false)).join('');
+    $('#app-grid').innerHTML = filtered.map((app, index) => tile(app, false, entranceTilesRendered ? undefined : index)).join('');
     $('#library-count').textContent = query ? filtered.length + ' encontrados' : state.apps.length + ' aplicativos';
     $('#search-empty').hidden = filtered.length > 0;
     const favoriteIds = Array.isArray(state.preferences.favorites) ? state.preferences.favorites : [];
     const favorites = favoriteIds.map(getApp).filter(Boolean).slice(0, 4);
-    $('#dock').innerHTML = favorites.map((app) => tile(app, true)).join('') + Array.from({ length: 4 - favorites.length }, () => '<button type="button" class="dock-placeholder" data-panel="settings" aria-label="Adicionar favorito">' + icon('plus') + '</button>').join('');
+    $('#dock').innerHTML = favorites.map((app, index) => tile(app, true, entranceTilesRendered ? undefined : index + 6)).join('') + Array.from({ length: 4 - favorites.length }, () => '<button type="button" class="dock-placeholder" data-panel="settings" aria-label="Adicionar favorito">' + icon('plus') + '</button>').join('');
+    entranceTilesRendered = true;
   }
   function updateItems() { return state.update && Array.isArray(state.update.items) ? state.update.items : []; }
   function render() {
@@ -208,8 +211,8 @@
     $('#greeting').textContent = state.profile.name ? 'SEU ESPAÇO, ' + state.profile.name.split(' ')[0].toUpperCase() + '.' : 'SEU ESPAÇO. SEUS APPS.';
     $('#home-caption').textContent = 'saquettoOS' + (state.version ? ' · ' + state.version : '');
     $('#notification-dot').hidden = !state.notifications.some((item) => !item.read);
-    const banner = $('#access-banner'); banner.hidden = approved();
-    if (!approved()) {
+    const banner = $('#access-banner'); banner.hidden = approved() || state.profile.status === 'loading';
+    if (!approved() && state.profile.status !== 'loading') {
       const descriptions = { loading: 'Conferindo sua autorização com o saquettoOS.', pending: 'Sua solicitação foi recebida. Leo precisa aprovar seu acesso.', revoked: 'Este dispositivo está sem autorização. Consulte seu administrador.' };
       banner.innerHTML = '<strong>' + statusText(state.profile.status) + '</strong><p>' + (descriptions[state.profile.status] || 'Peça acesso para abrir os aplicativos do seu espaço.') + '</p>' + (state.profile.status === 'loading' ? '' : '<button type="button" class="text-button" data-panel="access">' + (state.profile.status === 'pending' ? 'Ver solicitação' : 'Gerenciar acesso') + '</button>');
     }
@@ -225,6 +228,7 @@
     return '<div class="profile-card"><div class="profile-avatar">' + escapeHTML(initials(state.profile.name)) + '</div><div><h3>' + escapeHTML(state.profile.name || 'Seu perfil') + '</h3><p>' + (admin() ? 'Administrador do saquettoOS' : 'Seu espaço no Scriptable') + '</p>' + statusLabel(state.profile.status) + '</div></div>' +
       '<div class="section-label">APARÊNCIA</div><div class="theme-options">' + [['light', 'Claro'], ['dark', 'Escuro'], ['system', 'Automático']].map(([value, title]) => '<button type="button" class="theme-option" data-preference="appearance" data-value="' + value + '" aria-pressed="' + (prefs.appearance === value) + '"><span class="theme-preview" aria-hidden="true"></span>' + title + '</button>').join('') + '</div>' +
       '<div class="panel-section"><div class="section-label">MATERIAL</div><div class="segmented">' + [['glass', 'Vidro', 'glass'], ['solid', 'Sólido', 'solid']].map(([value, title, glyph]) => '<button type="button" data-preference="material" data-value="' + value + '" aria-pressed="' + (prefs.material === value) + '"><span class="segment-icon">' + icon(glyph) + '</span>' + title + '</button>').join('') + '</div><p class="fine-print">Automático acompanha a aparência do iPhone. Vidro adiciona transparência e profundidade.</p></div>' +
+      '<div class="panel-section"><div class="section-label">TELA INICIAL</div><div class="group"><label class="group-row"><span class="row-text"><strong>Mostrar nomes dos apps</strong><small>Exibir os nomes na tela inicial e no dock</small></span><input type="checkbox" class="toggle" data-preference-toggle="showAppNames" aria-label="Mostrar nomes dos apps"' + (prefs.showAppNames === true ? ' checked' : '') + '></label></div></div>' +
       '<div class="panel-section"><div class="section-label">FAVORITOS NO DOCK · ATÉ 4</div><div class="favorite-list">' + state.apps.map((app) => '<button type="button" class="favorite-chip" data-favorite="' + escapeHTML(app.id) + '" aria-pressed="' + (prefs.favorites || []).includes(app.id) + '">' + icon((prefs.favorites || []).includes(app.id) ? 'check' : 'plus') + escapeHTML(app.name) + '</button>').join('') + '</div></div>' +
       '<div class="panel-section"><div class="section-label">SEU SISTEMA</div><div class="group">' + groupRow('updates', 'Central de atualizações', 'saquettoOS e seus aplicativos', 'download') + groupRow('notifications', 'Notificações', 'Alertas, lembretes e novidades', 'bell') + groupRow('access', 'Meu acesso', statusText(state.profile.status), 'user') + (admin() ? groupRow('users', 'Gerenciar usuários', 'Aprovações e acesso por aplicativo', 'users') : '') + '</div></div><p class="version-footer">saquettoOS ' + escapeHTML(state.version || '') + '</p>';
   }
@@ -295,9 +299,10 @@
   }
   async function savePreferences(patch) {
     if (preview) { state.preferences = Object.assign({}, state.preferences, patch); render(); return; }
-    await nativeAction('setPreferences', patch, (result) => {
+    const saved = await nativeAction('setPreferences', patch, (result) => {
       if (!result.state) { state.preferences = Object.assign({}, state.preferences, result.preferences || patch); render(); }
     });
+    if (saved === false && panel) renderPanel();
   }
   async function runApp(id) {
     const app = getApp(id);
@@ -417,6 +422,9 @@
     }
   });
   document.addEventListener('change', async (event) => {
+    if (event.target.dataset.preferenceToggle === 'showAppNames') {
+      await savePreferences({ showAppNames: event.target.checked === true }); return;
+    }
     const key = event.target.dataset.notificationPreference;
     if (!key) return;
     const next = Object.assign({}, state.preferences.notifications || {}, { [key]: event.target.checked });
@@ -476,6 +484,21 @@
       case 'refreshState': await nativeAction('getState', {}, (result) => { if (!result.state && result.profile) window.saquettoSetState(result); }); break;
       case 'refreshUsers': users = null; renderPanel(); await loadUsers(); break;
     }
+  });
+  // Track the visible WebView when the keyboard opens, without disabling pinch zoom.
+  function fitViewport() {
+    const viewport = window.visualViewport;
+    if (!viewport || viewport.scale > 1.05 || !Number.isFinite(viewport.height) || viewport.height <= 0) return;
+    document.documentElement.style.setProperty('--viewport-height', Math.round(viewport.height) + 'px');
+    document.documentElement.dataset.compactViewport = String(viewport.height < 480);
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', fitViewport);
+    fitViewport();
+  }
+  $('#shell').dataset.enter = 'true';
+  $('.home-bottom').addEventListener('animationend', (event) => {
+    if (event.target === $('.home-bottom') && event.animationName === 'home-layer-in') $('#shell').dataset.enter = 'false';
   });
   render();
   window.__SAQUETTO_RENDERED = true;

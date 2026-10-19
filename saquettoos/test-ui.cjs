@@ -8,7 +8,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, 'ui/app.js'), 'utf8');
 
-function fixture({ preview = false, profile = {}, app = {}, dark = true } = {}) {
+function fixture({ preview = false, profile = {}, app = {}, dark = true, preferences = {}, viewport } = {}) {
   const nodes = new Map();
   const frames = [];
   const windowEvents = {};
@@ -19,7 +19,7 @@ function fixture({ preview = false, profile = {}, app = {}, dark = true } = {}) 
   const state = {
     version: '1.0.0-test', profile: { name: 'Leo', role: 'admin', status: 'approved', ...profile },
     apps: [{ id: 'clube-uol', name: 'Clube UOL Premium', scriptName: 'Clube UOL Premium', installed: true, allowed: true, mode: 'integrated', ...app }],
-    preferences: { appearance: 'system', material: 'glass', favorites: ['clube-uol'] }, assets: {}, notifications: [], update: {}
+    preferences: { appearance: 'system', material: 'glass', favorites: ['clube-uol'], ...preferences }, assets: {}, notifications: [], update: {}
   };
   const element = () => ({
     textContent: '', innerHTML: '', value: '', hidden: false, dataset: {}, style: {}, attributes: {}, events: {}, disabled: false, isConnected: true,
@@ -28,7 +28,7 @@ function fixture({ preview = false, profile = {}, app = {}, dark = true } = {}) 
     addEventListener(name, fn) { this.events[name] = fn; }, replaceChildren(...children) { this.children = children; }
   });
   const document = {
-    documentElement: { dataset: {} }, body: { style: {} }, activeElement: null,
+    documentElement: { dataset: {}, style: { setProperty(name, value) { this[name] = value; } } }, body: { style: {} }, activeElement: null,
     querySelector(selector) { if (!nodes.has(selector)) nodes.set(selector, element()); return nodes.get(selector); },
     querySelectorAll() { return []; }, addEventListener(name, fn) { documentEvents[name] = fn; },
     createElement(tag) {
@@ -39,7 +39,9 @@ function fixture({ preview = false, profile = {}, app = {}, dark = true } = {}) 
   };
   document.querySelector('#saquetto-initial').textContent = JSON.stringify(state);
   const media = { matches: dark, addEventListener(name, fn) { this.listener = fn; } };
+  const visualViewport = viewport && { scale: 1, height: 740, ...viewport, events: {}, addEventListener(name, fn) { this.events[name] = fn; } };
   const window = {
+    visualViewport,
     __SAQUETTO_PREVIEW__: preview, __SAQUETTO_WAKE() { wakeCount++; },
     matchMedia() { return media; }, addEventListener(name, fn) { windowEvents[name] = fn; }
   };
@@ -226,4 +228,69 @@ test('failed installation never displays success while installed results do', as
   const installed = f.click({ install: 'clube-uol' }); f.resolveNext({ status: 'installed', version: '1.2.0' }); await installed;
   assert.match(f.document.querySelector('#toast').textContent, /Atualização instalada/);
   assert.equal(f.document.querySelector('#toast').dataset.error, 'false');
+});
+
+
+test('app names default off, remain accessible, and toggle only after native confirmation', async () => {
+  const f = fixture();
+  assert.equal(f.document.documentElement.dataset.showAppNames, 'false');
+  assert.match(f.document.querySelector('#app-grid').innerHTML, /aria-label="Clube UOL Premium/);
+  await f.click({ panel: 'settings' });
+  assert.match(f.document.querySelector('#sheet-content').innerHTML, /data-preference-toggle="showAppNames"/);
+  assert.doesNotMatch(f.document.querySelector('#sheet-content').innerHTML, /aria-label="Mostrar nomes dos apps" checked/);
+  const changed = f.documentEvents.change({ target: { dataset: { preferenceToggle: 'showAppNames' }, checked: true } });
+  assert.equal(f.queue[0].action, 'setPreferences');
+  assert.equal(f.queue[0].payload.showAppNames, true);
+  assert.equal(f.document.documentElement.dataset.showAppNames, 'false');
+  f.resolveNext({ preferences: { showAppNames: true } }); await changed;
+  assert.equal(f.document.documentElement.dataset.showAppNames, 'true');
+  const rejected = f.documentEvents.change({ target: { dataset: { preferenceToggle: 'showAppNames' }, checked: false } });
+  f.resolveNext(null, 'access_unavailable'); await rejected;
+  assert.equal(f.document.documentElement.dataset.showAppNames, 'true');
+  assert.match(f.document.querySelector('#sheet-content').innerHTML, /aria-label="Mostrar nomes dos apps" checked/);
+});
+
+test('initial access loading shows clean icons without a blocking banner', () => {
+  const f = fixture({ profile: { status: 'loading' }, app: { allowed: false } });
+  assert.equal(f.document.querySelector('#access-banner').hidden, true);
+  assert.match(f.document.querySelector('#app-grid').innerHTML, /data-available="loading"/);
+  assert.doesNotMatch(f.document.querySelector('#app-grid').innerHTML, /app-badge locked/);
+  f.window.saquettoSetState({ profile: { status: 'pending' } });
+  assert.equal(f.document.querySelector('#access-banner').hidden, false);
+  assert.match(f.document.querySelector('#app-grid').innerHTML, /app-badge locked/);
+});
+
+test('entrance markers are emitted once and never replayed by filtering or state refresh', () => {
+  const f = fixture();
+  assert.equal(f.document.querySelector('#shell').dataset.enter, 'true');
+  assert.match(f.document.querySelector('#app-grid').innerHTML, /data-entrance="0"/);
+  f.document.querySelector('#app-search').events.input({ target: { value: 'Clube' } });
+  assert.doesNotMatch(f.document.querySelector('#app-grid').innerHTML, /data-entrance/);
+  f.window.saquettoSetState({ preferences: { showAppNames: true } });
+  assert.doesNotMatch(f.document.querySelector('#dock').innerHTML, /data-entrance/);
+  const bottom = f.document.querySelector('.home-bottom');
+  bottom.events.animationend({ target: bottom, animationName: 'home-layer-in' });
+  assert.equal(f.document.querySelector('#shell').dataset.enter, 'false');
+});
+
+test('keyboard viewport ignores unpresented size and pinch zoom, and compacts the home', () => {
+  const unpresented = fixture({ viewport: { height: 0 } });
+  assert.equal(unpresented.document.documentElement.style['--viewport-height'], undefined);
+  assert.equal(unpresented.document.documentElement.dataset.compactViewport, undefined);
+  const f = fixture({ viewport: { height: 740 } });
+  const viewport = f.window.visualViewport;
+  assert.equal(f.document.documentElement.style['--viewport-height'], '740px');
+  assert.equal(f.document.documentElement.dataset.compactViewport, 'false');
+  for (const height of [0, NaN, Infinity]) {
+    viewport.height = height; viewport.events.resize();
+    assert.equal(f.document.documentElement.style['--viewport-height'], '740px');
+  }
+  viewport.height = 380; viewport.events.resize();
+  assert.equal(f.document.documentElement.style['--viewport-height'], '380px');
+  assert.equal(f.document.documentElement.dataset.compactViewport, 'true');
+  viewport.scale = 2; viewport.height = 190; viewport.events.resize();
+  assert.equal(f.document.documentElement.style['--viewport-height'], '380px');
+  viewport.scale = 1; viewport.height = 740; viewport.events.resize();
+  assert.equal(f.document.documentElement.style['--viewport-height'], '740px');
+  assert.equal(f.document.documentElement.dataset.compactViewport, 'false');
 });
