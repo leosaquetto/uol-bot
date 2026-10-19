@@ -3,10 +3,10 @@
   "updaterProtocol": 1,
   "product": "clube-uol-premium",
   "scriptName": "Clube UOL Premium",
-  "version": "5.9.0",
-  "size": 706137,
-  "sha256": "bbc86386f574c9c85b1c0ce755ec099b0679076b1c0224ea08ef6afec5e76f0e",
+  "version": "5.9.1",
+  "size": 712264,
+  "sha256": "09f6a7ea847682005c8c6e9d0061b5cc15e36995d7bf29f0a139efe7d5ada36c",
   "channel": "stable",
-  "artifact": "https://raw.githubusercontent.com/leosaquetto/uol-bot/a0a44da20b22c3b6a616d58085c4626c536f1c50/stories-hunter/dist/Hunter.js",
-  "publishedAt": "2026-10-19T17:29:59.129Z"
+  "artifact": "https://raw.githubusercontent.com/leosaquetto/uol-bot/712149e936d4b25fa575c6e7f8101f21b9093b1e/stories-hunter/dist/Hunter.js",
+  "publishedAt": "2026-10-19T17:48:47.414Z"
 }
