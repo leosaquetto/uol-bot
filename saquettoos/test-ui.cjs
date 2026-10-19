@@ -24,7 +24,16 @@ function fixture({ preview = false, profile = {}, app = {}, dark = true, prefere
   const element = () => ({
     textContent: '', innerHTML: '', value: '', hidden: false, dataset: {}, style: {}, attributes: {}, events: {}, disabled: false, isConnected: true,
     setAttribute(name, value) { this.attributes[name] = value; }, removeAttribute(name) { delete this.attributes[name]; },
-    focus() { document.activeElement = this; }, querySelectorAll() { return []; }, querySelector() { return null; },
+    focus() { document.activeElement = this; }, querySelectorAll() { return []; },
+    querySelector(selector) {
+      if (selector !== '[data-run-app]') return null;
+      const match = this.innerHTML.match(/data-run-app="([^"]+)"/);
+      if (!match) return null;
+      if (!this.runAppButton || this.runAppButton.dataset.runApp !== match[1]) {
+        this.runAppButton = element(); this.runAppButton.dataset.runApp = match[1];
+      }
+      return this.runAppButton;
+    },
     addEventListener(name, fn) { this.events[name] = fn; }, replaceChildren(...children) { this.children = children; }
   });
   const document = {
@@ -47,13 +56,18 @@ function fixture({ preview = false, profile = {}, app = {}, dark = true, prefere
     matchMedia() { return media; }, addEventListener(name, fn) { windowEvents[name] = fn; }
   };
   const context = vm.createContext({ window, document,
-    setTimeout(fn) { timers.set(++timerSequence, fn); return timerSequence; }, clearTimeout(id) { timers.delete(id); }, console });
+    setTimeout(fn, delay) { timers.set(++timerSequence, { fn, delay }); return timerSequence; }, clearTimeout(id) { timers.delete(id); }, console });
   vm.runInContext(source, context, { filename: 'saquettoos/ui/app.js' });
   return {
     window, document, frames, state, nodes, media, windowEvents, documentEvents, timers,
     get wakeCount() { return wakeCount; },
     get frame() { return frames[frames.length - 1]; },
     get queue() { return window.__SAQUETTO_QUEUE; },
+    runTimers(maxDelay) {
+      for (const [id, timer] of [...timers]) {
+        if (timer.delay <= maxDelay) { timers.delete(id); timer.fn(); }
+      }
+    },
     show(instanceId = 'session-a') { return window.saquettoShowApp({ id: 'clube-uol', name: 'Clube UOL Premium', html: '<p>App</p>', instanceId }); },
     message(frame, data) { return windowEvents.message({ source: frame.contentWindow, data }); },
     resolveNext(data, error) {
@@ -105,6 +119,70 @@ test('native sessions wait for closure without a 90 second timeout or iframe', a
   assert.equal(f.timers.size, 1, 'ordinary requests still have a deadline');
   f.resolveNext({}); await ordinary;
   assert.equal(f.timers.size, 0);
+});
+
+test('app launch feedback expires while a native session still waits for closure', async () => {
+  const f = fixture({ app: { mode: 'native' } });
+  const opening = f.click({ openApp: 'clube-uol' });
+  assert.equal(f.queue[0].action, 'openApp');
+  assert.match(f.document.querySelector('#app-grid').innerHTML, /data-launching="true" aria-busy="true"/);
+  assert.match(f.document.querySelector('#dock').innerHTML, /data-launching="true" aria-busy="true"/);
+  f.runTimers(2200);
+  assert.doesNotMatch(f.document.querySelector('#app-grid').innerHTML, /data-launching/);
+  assert.equal(f.queue.length, 1, 'Visual deadline must not close or cancel the native app');
+  f.resolveNext({ status: 'returned', mode: 'native' }); await opening;
+  assert.doesNotMatch(f.document.querySelector('#dock').innerHTML, /data-launching/);
+});
+
+test('app launch feedback clears on integrated open, failure and WebView suspension', async () => {
+  const f = fixture();
+  const opening = f.click({ openApp: 'clube-uol' });
+  assert.match(f.document.querySelector('#app-grid').innerHTML, /data-launching="true"/);
+  f.show();
+  assert.doesNotMatch(f.document.querySelector('#app-grid').innerHTML, /data-launching/);
+  f.resolveNext({ status: 'opened' }); await opening;
+  assert.equal(f.timers.size, 0, 'No launch timer survives a confirmed open');
+  const closed = f.window.saquettoHome(); f.resolveNext({ status: 'closed' }); await closed;
+  assert.doesNotMatch(f.document.querySelector('#dock').innerHTML, /data-launching/);
+
+  const failed = fixture();
+  const attempt = failed.click({ openApp: 'clube-uol' });
+  failed.resolveNext(null, 'adapter_source_changed'); await attempt;
+  assert.doesNotMatch(failed.document.querySelector('#app-grid').innerHTML, /data-launching/);
+  assert.equal(failed.timers.size, 1, 'Only the error toast timer remains after failure');
+  assert.equal(failed.document.querySelector('#sheet').hidden, false);
+
+  const hidden = fixture();
+  const suspended = hidden.click({ openApp: 'clube-uol' });
+  hidden.document.hidden = true; hidden.documentEvents.visibilitychange();
+  assert.doesNotMatch(hidden.document.querySelector('#app-grid').innerHTML, /data-launching/);
+  assert.equal(hidden.queue.length, 1);
+  hidden.resolveNext({ status: 'opened' }); await suspended;
+});
+
+test('app-detail button shows bounded feedback above the sheet and clears it on completion', async () => {
+  const f = fixture();
+  const first = f.click({ openApp: 'clube-uol' });
+  f.resolveNext(null, 'adapter_source_changed'); await first;
+  const button = f.document.querySelector('#sheet-content').querySelector('[data-run-app]');
+  assert.ok(button, 'Failure opens the app-detail sheet with a visible retry button');
+
+  const retry = f.click({ runApp: 'clube-uol' });
+  assert.equal(button.dataset.launching, 'true');
+  assert.equal(button.attributes['aria-busy'], 'true');
+  f.runTimers(2200);
+  assert.equal(button.dataset.launching, undefined);
+  assert.equal(button.attributes['aria-busy'], undefined);
+  assert.equal(f.queue.length, 1, 'The visual deadline does not cancel the native request');
+  f.resolveNext(null, 'adapter_source_changed'); await retry;
+  assert.equal(button.dataset.launching, undefined);
+
+  const opening = f.click({ runApp: 'clube-uol' });
+  assert.equal(button.dataset.launching, 'true');
+  f.show();
+  assert.equal(button.dataset.launching, undefined);
+  f.resolveNext({ status: 'opened' }); await opening;
+  assert.equal(f.document.querySelector('#sheet').hidden, true);
 });
 
 test('bridge ignores foreign windows, invalid envelopes and unsupported kinds', async () => {

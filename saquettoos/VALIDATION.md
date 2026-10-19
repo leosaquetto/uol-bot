@@ -1,3 +1,11 @@
+# saquettoOS 1.0.11 — 2026-10-19
+
+- No tema claro, a marca pequena tem interior transparente e apenas contorno squircle, Hedgy e brilho em degradê; o tema escuro usa o degradê da referência própria. Os orbs ciano/violeta agora atravessam a área inteira atrás do vidro, maiores, mais difusos e com opacidade reduzida, sem a faixa de recorte da grade. Ambos os temas foram inspecionados na prévia integrada (`/tmp/saquettoos-1.0.11-light.png` e `/tmp/saquettoos-1.0.11-dark.png`).
+- Grade, dock e botão “Abrir aplicativo” mostram resposta breve ao toque. A animação termina e o estado visual expira em 2,2 s mesmo quando a sessão nativa continua aberta.
+- O Clube UOL Premium 5.9.4 oficial foi incluído no catálogo de hashes revisados. Para versões oficiais posteriores que se atualizem sozinhas, a central confere versão e hash da instalação contra o manifesto validado antes de abrir, recusando bytes divergentes ou verificação indisponível.
+- Build/sintaxe: 271.099 bytes, SHA-256 `6a8518a2cbbd6fe9544d33ec92fd3003e71f6f3c5376f704c106729435ef2e29`. 61 testes direcionados aprovados (UI, host, updater e runtime); `git diff --check` limpo.
+- Limite: a prévia e os testes são locais. O toque, o carregamento do UOL atualizado e a apresentação dos orbs no iPhone ainda dependem de verificação no Scriptable do aparelho.
+
 # saquettoOS 1.0.10 — 2026-10-19
 
 - Last.fm Small recebeu margem interna no `viewBox` do SVG e perdeu apenas a camada de relevo deslocada que acentuava a base da marca; o vetor do símbolo foi preservado. A cápsula do PillTracker passou de 62% para 56% do recipiente, sem alterar o media-downloader.

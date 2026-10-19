@@ -73,6 +73,8 @@
   let usersError = '';
   let busy = false;
   let toastTimer;
+  let launchingAppId = null;
+  let launchFeedbackTimer = null;
   let previousFocus;
   let requestSequence = 0;
   const pending = new Map();
@@ -196,7 +198,8 @@
     else if (app.updateAvailable) badge = '<span class="app-badge">' + icon('refresh') + '</span>';
     const name = inDock ? ({ 'clube-uol': 'Clube UOL', 'super-calendario': 'Calendário', 'media-downloader': 'Downloads', 'lastfm-small': 'Last.fm' }[app.id] || app.name) : app.name;
     const hint = state.profile.status === 'loading' ? 'Verificando acesso' : !allowed(app) ? 'Acesso restrito' : (!app.installed ? 'Não instalado' : (app.mode === 'native' ? 'Interface original' : app.mode === 'integrated' ? 'Integrado' : 'Abre no Scriptable'));
-    return '<button type="button" class="app-tile"' + (entranceIndex === undefined ? '' : ' data-entrance="' + entranceIndex + '" style="--entrance-index:' + entranceIndex + '"') + ' data-open-app="' + escapeHTML(app.id) + '" data-installed="' + Boolean(app.installed) + '" data-available="' + (state.profile.status === 'loading' ? 'loading' : allowed(app)) + '" aria-label="' + escapeHTML(app.name + '. ' + hint) + '"' + (inDock ? '' : ' role="listitem"') + '><span class="app-icon' + (appImage(app) ? ' app-icon-artwork' : '') + '">' + appGraphic(app) + badge + '</span><span class="app-name">' + escapeHTML(name) + '</span>' + (!app.installed ? '<span class="app-status">Não instalado</span>' : '') + '</button>';
+    const launching = launchingAppId === app.id;
+    return '<button type="button" class="app-tile"' + (entranceIndex === undefined ? '' : ' data-entrance="' + entranceIndex + '" style="--entrance-index:' + entranceIndex + '"') + ' data-open-app="' + escapeHTML(app.id) + '" data-installed="' + Boolean(app.installed) + '" data-available="' + (state.profile.status === 'loading' ? 'loading' : allowed(app)) + '"' + (launching ? ' data-launching="true" aria-busy="true"' : '') + ' aria-label="' + escapeHTML(app.name + '. ' + hint) + '"' + (inDock ? '' : ' role="listitem"') + '><span class="app-icon' + (appImage(app) ? ' app-icon-artwork' : '') + '">' + appGraphic(app) + badge + '</span><span class="app-name">' + escapeHTML(name) + '</span>' + (!app.installed ? '<span class="app-status">Não instalado</span>' : '') + '</button>';
   }
   function renderApps() {
     const normalized = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -284,6 +287,7 @@
     $('#sheet-eyebrow').textContent = panel === 'users' ? 'ADMINISTRAÇÃO' : 'SAQUETTOOS';
     const renderers = { settings: settingsPanel, updates: updatesPanel, notifications: notificationsPanel, access: accessPanel, users: usersPanel, app: appPanel };
     $('#sheet-content').innerHTML = (renderers[panel] || settingsPanel)();
+    syncSheetLaunchFeedback();
   }
   function openPanel(next, appId) {
     if (!panel) previousFocus = document.activeElement;
@@ -312,11 +316,40 @@
     });
     if (saved === false && panel) renderPanel();
   }
+  function syncSheetLaunchFeedback() {
+    const button = $('#sheet-content').querySelector('[data-run-app]');
+    if (!button) return;
+    if (launchingAppId && button.dataset.runApp === launchingAppId) {
+      button.dataset.launching = 'true';
+      button.setAttribute('aria-busy', 'true');
+    } else {
+      delete button.dataset.launching;
+      button.removeAttribute('aria-busy');
+    }
+  }
+  function stopLaunchFeedback() {
+    clearTimeout(launchFeedbackTimer); launchFeedbackTimer = null;
+    if (!launchingAppId) return;
+    launchingAppId = null;
+    renderApps();
+    syncSheetLaunchFeedback();
+  }
+  function startLaunchFeedback(id) {
+    clearTimeout(launchFeedbackTimer);
+    launchingAppId = id;
+    renderApps();
+    syncSheetLaunchFeedback();
+    // The visual cue has its own short deadline; native sessions may remain open until the user closes them.
+    launchFeedbackTimer = setTimeout(stopLaunchFeedback, 2200);
+  }
   async function runApp(id) {
     const app = getApp(id);
-    if (!app) return;
+    if (!app || busy) return;
     if (!allowed(app) || !app.installed) { openPanel('app', id); return; }
-    const opened = await nativeAction('openApp', { id }, () => { if (panel) closePanel(); });
+    startLaunchFeedback(id);
+    let opened;
+    try { opened = await nativeAction('openApp', { id }, () => { if (panel) closePanel(); }); }
+    finally { stopLaunchFeedback(); }
     if (opened === false && !activeAppId && !preview) openPanel('app', id);
   }
   function validBridgeId(value) { return (typeof value === 'string' && value.length > 0 && value.length <= 160) || (typeof value === 'number' && Number.isSafeInteger(value)); }
@@ -353,6 +386,7 @@
   window.saquettoShowApp = function (app) {
     const registered = getApp(app && app.id);
     if (!registered || registered.mode !== 'integrated' || !allowed(registered) || !registered.installed) return false;
+    stopLaunchFeedback();
     if (panel) closePanel();
     if (currentFrame && activeAppId === app.id && (!app.instanceId || app.instanceId === activeInstanceId)) {
       $('#home-screen').hidden = true; $('#app-stage').hidden = false;
@@ -385,6 +419,7 @@
       if (currentFrame !== frame || activeInstanceId !== instanceId) return false;
       applyResult(result);
       activeAppId = null; activeInstanceId = null; activeInstanceBase = null; currentFrame = null; currentFrameReady = false; frameOutbox = []; frameEvaluations.clear();
+      stopLaunchFeedback();
       $('#app-stage').hidden = true; $('#app-frame-container').replaceChildren(); $('#home-screen').hidden = false;
       return true;
     } catch (error) { notify(errorText(error), true); return false; }
@@ -417,6 +452,7 @@
   });
 
   document.querySelectorAll('[data-icon]').forEach((element) => { element.innerHTML = icon(element.dataset.icon); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopLaunchFeedback(); });
   $('#app-search').addEventListener('input', (event) => { query = event.target.value; renderApps(); });
   $('#close-sheet').addEventListener('click', closePanel);
   $('#sheet-backdrop').addEventListener('click', closePanel);

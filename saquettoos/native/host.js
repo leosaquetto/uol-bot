@@ -2,7 +2,7 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: purple; icon-glyph: layer-group;
 // saquettoOS Scriptable launcher
-const SAQUETTO_VERSION = '1.0.10';
+const SAQUETTO_VERSION = '1.0.11';
 const SAQUETTO_API = 'https://saquettoos-access.leosaquetto.workers.dev';
 const SAQUETTO_CATALOG = __SAQUETTO_CATALOG__;
 const SAQUETTO_HTML = __SAQUETTO_HTML__;
@@ -141,6 +141,20 @@ const SaquettoHost = (() => {
       const result = await api('/v1/access/' + app.id);
       if (result.allowed !== true) throw new Error('approval_required');
     }
+    async function verifyCurrentUOL(app, file) {
+      const reviewed = SAQUETTO_COMPATIBILITY['clube-uol'];
+      if (!reviewed || !Array.isArray(reviewed.sha256)) throw new Error('adapter_source_changed');
+      if (fm.isFileDownloaded && !fm.isFileDownloaded(file.path)) await fm.downloadFileFromiCloud(file.path);
+      const installedHash = SaquettoUpdater.fingerprint(fm.readString(file.path));
+      if (reviewed.sha256.includes(installedHash)) return;
+      // UOL can update itself after this launcher was built. Its updater's check
+      // validates the fixed official manifest URL, immutable artifact path,
+      // installed envelope and version. Only admit those exact installed bytes.
+      const checked = await updater.check(app, prefs.channel);
+      if (checked.status !== 'up_to_date' || !checked.manifest || checked.version !== checked.manifest.version ||
+          checked.manifest.sha256 !== installedHash) throw new Error('adapter_source_changed');
+      reviewed.sha256.push(installedHash);
+    }
     async function openApp(id, standalone = false) {
       const app = appFor(id);
       await authorize(app);
@@ -148,6 +162,7 @@ const SaquettoHost = (() => {
       if (!file) throw new Error('app_not_installed');
       if (!standalone) {
         if (!runtime) throw new Error('runtime_unavailable');
+        if (id === 'clube-uol') await verifyCurrentUOL(app, file);
         return runtime.open(id);
       }
       if (runtime?.activeId) await runtime.close();

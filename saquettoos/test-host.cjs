@@ -2,26 +2,39 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const crypto = require('node:crypto');
 const vm = require('node:vm');
 const path = require('node:path');
 const catalog = JSON.parse(fs.readFileSync(path.join(__dirname, 'catalog.json')));
+const compatibility = JSON.parse(fs.readFileSync(path.join(__dirname, 'compatibility.json')));
+const fingerprint = source => crypto.createHash('sha256').update(source).digest('hex');
+test('current official UOL release is eligible for integrated launch', () => {
+  const release = JSON.parse(fs.readFileSync(path.join(__dirname, '../stories-hunter/releases/stable.json')));
+  const artifact = fs.readFileSync(path.join(__dirname, '../stories-hunter/dist/Hunter.js'));
+  assert.equal(fingerprint(artifact), release.sha256);
+  assert.equal(artifact.length, release.size);
+  assert.equal(compatibility['clube-uol'].sha256.includes(release.sha256), true);
+});
 const identity = { deviceId: '12345678-1234-1234-1234-123456789abc', token: 'a'.repeat(64) };
 function harness(route, options = {}) {
   const files = new Map(Object.entries(options.files || {}));
   const values = new Map(options.identity === false ? [] : [['saquettoos.identity.v1', JSON.stringify(identity)]]);
-  const launched = [], requests = [], notices = [], installations = [];
+  const launched = [], requests = [], notices = [], installations = [], checks = [];
   const fm = { documentsDirectory: () => '/cloud', joinPath: (a, b) => a + '/' + b,
     fileExists: p => files.has(p), readString: p => files.get(p), writeString: (p, v) => files.set(p, v), remove: p => files.delete(p),
     listContents: p => [...files.keys()].filter(name => name.startsWith(p + '/')).map(name => name.slice(p.length + 1)) };
   const local = { ...fm, documentsDirectory: () => '/local' };
   const keychain = { contains: name => values.has(name), get: name => values.get(name), set: (name, value) => values.set(name, value) };
-  const updater = { inspect: async () => ({ status: 'installed' }), check: async app => ({ status: app.manifestBase ? 'up_to_date' : 'not_configured' }),
+  const updater = { inspect: async () => ({ status: 'installed' }), check: async app => {
+    checks.push(app.id);
+    return options.check ? options.check(app) : { status: app.manifestBase ? 'up_to_date' : 'not_configured' };
+  },
     install: async app => { installations.push(app.id); return { status: 'installed', version: '1.0.1' }; }, recover: async () => ({ status: 'no_recovery' }) };
-  const context = { SaquettoUpdater: { create: () => updater }, Map, Date, JSON, Object, String, Array, Error };
+  const context = { SaquettoUpdater: { create: () => updater, fingerprint }, Map, Date, JSON, Object, String, Array, Error };
   const source = fs.readFileSync(path.join(__dirname, 'native/host.js'), 'utf8').split('\nasync function saquettoMain()')[0]
     .replace('__SAQUETTO_CATALOG__', JSON.stringify(catalog)).replace('__SAQUETTO_HTML__', '""').replace('__SAQUETTO_ASSETS__', '{}').replace('__SAQUETTO_UPDATER__', '')
-    .replace('__SAQUETTO_COMPATIBILITY__', '{}').replace('__SAQUETTO_ADAPTERS__', '').replace('__SAQUETTO_RUNTIME__', '');
-  vm.runInNewContext(source + '\nthis.Host = SaquettoHost;', context);
+    .replace('__SAQUETTO_COMPATIBILITY__', JSON.stringify(compatibility)).replace('__SAQUETTO_ADAPTERS__', '').replace('__SAQUETTO_RUNTIME__', '');
+  vm.runInNewContext(source + '\nthis.Host = SaquettoHost; this.compatibility = SAQUETTO_COMPATIBILITY;', context);
   const host = context.Host.create({ fm, local, keychain, request: url => {
     const req = { response: { statusCode: 200 }, loadJSON: async () => {
       requests.push({ url, method: req.method, body: req.body && JSON.parse(req.body) });
@@ -29,7 +42,7 @@ function harness(route, options = {}) {
       req.response.statusCode = result.status || 200; return result.data;
     } }; return req;
   }, uuid: () => identity.deviceId, launch: async url => launched.push(url), notify: async item => notices.push(item), now: () => 1000 });
-  return { host, Host: context.Host, files, values, launched, requests, notices, installations };
+  return { host, Host: context.Host, compatibility: context.compatibility, files, values, launched, requests, notices, installations, checks };
 }
 const approved = { id: identity.deviceId, name: 'Synthetic owner', role: 'admin', status: 'approved', appIds: catalog.map(app => app.id) };
 test('public UI receives no device token, native launch resolves decomposed names', async () => {
@@ -52,6 +65,44 @@ test('native launch checks access before passing control to runtime', async () =
   assert.deepEqual(opened, ['pilltracker']); assert.equal(h.launched.length, 0);
   h.host.attachRuntime({ activeId: 'pilltracker' });
   await assert.rejects(h.host.dispatch('installUpdate', { id: 'saquettoos' }), /close_app_before_update/);
+});
+test('integrated UOL accepts only the installed bytes of the validated official release', async () => {
+  const source = '// official updated UOL fixture';
+  const sha256 = fingerprint(source);
+  const h = harness(path => ({ data: path === '/v1/me' ? { profile: approved } : { allowed: true } }), {
+    files: { '/cloud/Clube UOL Premium.js': source },
+    check: () => ({ status: 'up_to_date', version: '5.9.4', manifest: { version: '5.9.4', sha256 } })
+  });
+  const opened = [];
+  h.host.attachRuntime({ open: async id => {
+    assert.equal(h.compatibility['clube-uol'].sha256.includes(sha256), true);
+    opened.push(id);
+    return { status: 'returned' };
+  } });
+  await h.host.start();
+  await h.host.dispatch('openApp', { id: 'clube-uol' });
+  await h.host.dispatch('openApp', { id: 'clube-uol' });
+  assert.deepEqual(opened, ['clube-uol', 'clube-uol']);
+  assert.deepEqual(h.checks, ['clube-uol']);
+});
+test('integrated UOL rejects changed bytes, stale version and missing verification', async () => {
+  const original = '// official UOL fixture';
+  const cases = [
+    { status: 'up_to_date', version: '5.9.4', manifest: { version: '5.9.4', sha256: fingerprint(original) } },
+    { status: 'up_to_date', version: '5.9.4', manifest: { version: '5.9.5', sha256: fingerprint(original + ' changed') } },
+    { status: 'network_error' }
+  ];
+  for (const result of cases) {
+    const h = harness(path => ({ data: path === '/v1/me' ? { profile: approved } : { allowed: true } }), {
+      files: { '/cloud/Clube UOL Premium.js': original + ' changed' }, check: () => result
+    });
+    let opened = false;
+    h.host.attachRuntime({ open: async () => { opened = true; } });
+    await h.host.start();
+    await assert.rejects(h.host.dispatch('openApp', { id: 'clube-uol' }), /adapter_source_changed/);
+    assert.equal(opened, false);
+    assert.equal(h.compatibility['clube-uol'].sha256.includes(fingerprint(original + ' changed')), false);
+  }
 });
 test('revocation and unavailable server deny launch despite previously approved UI', async () => {
   const h = harness(path => path === '/v1/me' ? { data: { profile: approved } } : { status: 403, data: { error: 'access_denied' } },
