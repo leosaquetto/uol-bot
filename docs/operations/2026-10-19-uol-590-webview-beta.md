@@ -52,3 +52,11 @@ O usuário pediu recebimento pela atualização automática ao abrir. Após expl
 Promovido o mesmo artefato `a0a44da20b22c3b6a616d58085c4626c536f1c50`, sem reconstrução. A versão 5.9.0 chega pelo atualizador normal ao abrir. Integridade, recuperação e pausa da primeira abertura permanecem preservadas.
 
 **Ainda não validado no aparelho:** login escolhido na WebView, captura manual, persistência após fechar/reabrir e captura automática com essa sessão. Não declarar a independência operacional comprovada enquanto esse teste não for concluído.
+
+### Verificação da publicação stable
+
+- Promoção publicada no commit `56d8a548bcd838346d7fadd2f18da00c8b201a71`.
+- CI completo aprovado: https://github.com/leosaquetto/uol-bot/actions/runs/39294715751 . A suíte Stories Hunter contém 289 testes; a beta já havia passado os mesmos 289 testes.
+- Após expirar o cache, o endereço `main/stories-hunter/releases/stable.json` consultado pelo app retornou 5.9.0. O artefato remoto, a beta e o espelho legado têm os mesmos 706137 bytes e SHA-256 registrado acima.
+- Aviso stable enviado por `build.js --code-only`, sem instalação/substituição externa no iCloud: ntfy aceitou ID `MIM00qEcKSHx`, timestamp `1792431220`. Título **Scriptable - Clube UOL Premium**; texto informa versão 5.9.0 e orienta abrir o app ou usar o saquettoOS.
+- Não há confirmação de instalação nem dos testes físicos do iPhone neste registro.
