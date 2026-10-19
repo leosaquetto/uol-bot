@@ -508,7 +508,7 @@
       return { activeItems: activeItems, soldOutItems: soldOutItems };
     }
 
-    function hunterStatusPresentation(status, found, reason) {
+    function hunterStatusPresentation(status, found, reason, context) {
       const states = {
         starting: ['Buscando novidades', 'buscando novidades…', 'activity', 'refresh'],
         updated: ['Coleta pausada', 'Nova versão instalada. A coleta retoma na próxima abertura.', 'neutral', 'clock'],
@@ -542,12 +542,38 @@
       const entry = status === 'found'
         ? [count ? '+' + count : 'Sem novidades', count + ' novidades encontradas', count ? 'positive' : 'neutral', count ? 'plus' : 'check']
         : states[known ? status : 'unknown'];
-      return {
+      const presentation = {
         status: status === 'found' || known ? status : 'unknown',
         label: entry[0],
         detail: status === 'not_configured' && Object.prototype.hasOwnProperty.call(privateSetupReasons, reason) ? privateSetupReasons[reason] : entry[1],
         tone: entry[2], icon: entry[3], attention: entry[2] === 'attention'
       };
+      if (context && context.transport === 'webview') {
+        const details = {
+          auth_required: 'entre no Instagram neste iPhone em Ajustes',
+          rate_limited: 'Instagram limitou as consultas (HTTP 429)',
+          daily_budget: 'limite diário de consultas deste iPhone atingido',
+          backoff: 'aguardando nova tentativa após falha de consulta',
+          unknown: 'consulta ao Instagram não confirmada',
+          ready: 'login aberto; captura ainda não confirmada',
+          cancelled: 'conexão cancelada; captura não confirmada',
+          empty: 'consulta concluída; nenhum Story elegível',
+          found: count + ' Stories encontrados'
+        };
+        const reasons = {
+          network_error: 'falha de rede ao consultar o Instagram',
+          browser_network_error: 'falha de rede ao consultar o Instagram',
+          http_429: 'Instagram limitou as consultas (HTTP 429)',
+          rate_limited: 'Instagram limitou as consultas (HTTP 429)',
+          daily_budget: 'limite diário de consultas deste iPhone atingido'
+        };
+        if (Object.prototype.hasOwnProperty.call(details, status)) presentation.detail = details[status];
+        if (['unknown', 'backoff', 'unavailable', 'failed', 'error'].includes(status) && Object.prototype.hasOwnProperty.call(reasons, reason)) presentation.detail = reasons[reason];
+        if (['rate_limited', 'backoff', 'daily_budget'].includes(status) && typeof context.nextAttemptAt === 'string' && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(context.nextAttemptAt) && Number.isFinite(Date.parse(context.nextAttemptAt))) {
+          presentation.detail += '; próxima tentativa em ' + new Date(context.nextAttemptAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+      }
+      return presentation;
     }
 
     function hunterStatusIcon(icon) {
@@ -588,7 +614,7 @@
       ].filter(metric => metric.value);
       const sources = initial ? [] : ['portal', 'instagram'].flatMap(source => {
         const result = summary.sources && summary.sources[source];
-        return result ? [{ name: source === 'portal' ? 'Portal' : 'Instagram', ...hunterStatusPresentation(result.status, result.found, result.reason) }] : [];
+        return result ? [{ name: source === 'portal' ? 'Portal' : 'Instagram', ...hunterStatusPresentation(result.status, result.found, result.reason, source === 'instagram' ? result : null) }] : [];
       });
       const attentionKey = [primary, ...sources].filter(state => state.attention).map(state => (state.name || 'coleta') + ':' + state.status + ':' + state.detail).join('|');
       if (attentionKey && attentionKey !== element.getAttribute('data-attention-key')) details.open = true;
@@ -4163,6 +4189,8 @@
       return { state: state, role: access.role === 'owner' ? 'owner' : 'member' };
     }
 
+    let hunterInstagramAction = null;
+
     function renderHunterAccessUI() {
       const access = hunterAccessState();
       const labels = {
@@ -4186,11 +4214,15 @@
           : access.state === 'approved' ? 'Verificar acesso' : 'Solicitar acesso';
         button.disabled = !INITIAL.nativeBrowser;
       }
-      const instagram = document.getElementById('btnReconnectInstagram');
-      if (instagram) {
-        instagram.hidden = access.state !== 'approved';
-        instagram.disabled = !INITIAL.nativeBrowser;
-      }
+      ['btnReconnectInstagram', 'btnCollectInstagram'].forEach(id => {
+        const instagram = document.getElementById(id);
+        if (!instagram) return;
+        instagram.hidden = access.state !== 'approved' || !INITIAL.nativeBrowser;
+        instagram.disabled = access.state !== 'approved' || !INITIAL.nativeBrowser || hunterInstagramAction !== null;
+        instagram.textContent = id === 'btnReconnectInstagram'
+          ? hunterInstagramAction === 'connect' ? 'Conectando…' : 'Conectar Instagram neste iPhone'
+          : hunterInstagramAction === 'collect' ? 'Coletando Stories…' : 'Coletar Stories agora';
+      });
     }
 
     function manageHunterAccess() {
@@ -4199,16 +4231,27 @@
     }
 
     function reconnectHunterInstagram() {
-      if (!INITIAL.nativeBrowser || hunterAccessState().state !== 'approved') return;
-      const button = document.getElementById('btnReconnectInstagram');
-      if (button.disabled) return;
-      button.disabled = true; button.textContent = 'Reconectando…';
-      window.location.href = 'hunter-instagram://reconnect';
+      runHunterInstagramAction('connect');
     }
 
-    function handleNativeInstagramReconnect(result) {
-      const button = document.getElementById('btnReconnectInstagram');
-      if (button) { button.disabled = false; button.textContent = 'Reconectar Instagram'; }
+    function collectHunterInstagram() {
+      runHunterInstagramAction('collect');
+    }
+
+    function runHunterInstagramAction(action) {
+      if (!['connect', 'collect'].includes(action) || !INITIAL.nativeBrowser || hunterAccessState().state !== 'approved' || hunterInstagramAction !== null) return;
+      hunterInstagramAction = action;
+      renderHunterAccessUI();
+      window.location.href = 'hunter-instagram://' + action;
+    }
+
+    function handleNativeInstagramResult(action, result) {
+      if (!['connect', 'collect'].includes(action) || !result || typeof result !== 'object') return;
+      hunterInstagramAction = null;
+      if (['access_revoked', 'access_expired', 'access_pending', 'activation_required'].includes(result.status)) {
+        INITIAL.hunterAccess = { ...(INITIAL.hunterAccess || {}), status: result.status };
+      }
+      renderHunterAccessUI();
       const source = result.sources && result.sources.instagram;
       if (source) {
         const previous = INITIAL.hunterCollection || {};
@@ -4216,12 +4259,13 @@
         setHunterCollectionStatus(INITIAL.hunterCollection);
       }
       const verified = source && ['found', 'empty'].includes(source.status);
-      showToast(verified ? 'Instagram reconectado. Coleta concluída.'
-        : result.status === 'session_unchanged' ? 'O servidor ainda tem a mesma sessão. Renove o login Instagram antes de reconectar.'
-        : source && source.status === 'auth_required' ? 'Instagram ainda exige autenticação. A coleta continua suspensa.'
-        : result.sessionUpdated ? 'Sessão atualizada. A próxima coleta respeitará o limite atual.'
+      const detail = source && hunterStatusPresentation(source.status, source.found, source.reason, source).detail;
+      showToast(verified ? 'Consulta ao Instagram concluída neste iPhone.'
+        : source ? 'Instagram: ' + detail + '.'
         : result.status === 'busy' ? 'Outra operação está em andamento. Tente ao concluir.'
-        : 'Reconexão não concluída. Confira o acesso e a sessão técnica.');
+        : result.status === 'cancelled' ? 'Conexão cancelada. Captura não confirmada.'
+        : result.status === 'auth_required' ? 'Entre no Instagram neste iPhone em Ajustes.'
+        : 'Captura não confirmada. Confira o diagnóstico e o acesso deste iPhone.');
       if (verified) streamLiveOffers(true);
     }
 

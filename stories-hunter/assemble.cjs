@@ -23,6 +23,7 @@ const substitutions = {
   __BUILD_COOKIES_GAORIEL__: JSON.stringify(bundledCookiesGaoriel),
   __BUILD_REDEMPTIONS__: JSON.stringify(bundledRedemptions, null, 2),
   __BUILD_COLLECTOR__: collectorSource,
+  __BUILD_INSTAGRAM_BROWSER__: fs.readFileSync(path.join(__dirname, "native/instagram-browser.js"), "utf8"),
   __BUILD_ACCESS__: accessSource,
   __BUILD_REDEMPTION__: redemptionSource,
   __BUILD_PARSER__: JSON.stringify(receiptParserSource),

@@ -13,7 +13,7 @@ function fn(name) {
 function harness(initial) {
   const elements = new Map(), toasts = [];
   const context = vm.createContext({
-    INITIAL: initial, window: { location: { href: 'hunter-dashboard' } },
+    INITIAL: initial, hunterInstagramAction: null, window: { location: { href: 'hunter-dashboard' } },
     document: { getElementById: id => {
       if (!elements.has(id)) elements.set(id, { textContent: '', innerHTML: '', setAttribute(key, value) { this[key] = value; }, getAttribute(key) { return this[key] ?? null; } });
       return elements.get(id);
@@ -79,22 +79,80 @@ test('collection status distinguishes approval, suspension and unavailable verif
   assert.match(fn('openSettingsModal'), /renderHunterAccessUI\(\)/);
 });
 
-test('Instagram recovery requires an explicit approved-device action and reports source proof accurately', () => {
+function instagramHarness() {
   const h = harness({ nativeBrowser: true, hunterAccess: { status: 'approved', role: 'member' }, hunterCollection: { sources: { portal: { status: 'found', found: 3 } } } });
-  let refreshes = 0;
-  h.context.streamLiveOffers = force => { assert.equal(force, true); refreshes++; };
-  vm.runInContext(['reconnectHunterInstagram', 'handleNativeInstagramReconnect'].map(fn).join('\n'), h.context);
+  h.refreshes = 0;
+  h.context.streamLiveOffers = force => { assert.equal(force, true); h.refreshes++; };
+  vm.runInContext(['reconnectHunterInstagram', 'collectHunterInstagram', 'runHunterInstagramAction', 'handleNativeInstagramResult'].map(fn).join('\n'), h.context);
   h.context.renderHunterAccessUI();
+  return h;
+}
+
+test('Instagram connection and manual collection require native approval and serialize both controls', () => {
+  const h = instagramHarness();
   assert.equal(h.context.window.location.href, 'hunter-dashboard');
   assert.equal(h.elements.get('btnReconnectInstagram').hidden, false);
+  assert.equal(h.elements.get('btnCollectInstagram').hidden, false);
+  assert.equal(h.elements.get('btnReconnectInstagram').textContent, 'Conectar Instagram neste iPhone');
   h.context.reconnectHunterInstagram();
-  assert.equal(h.context.window.location.href, 'hunter-instagram://reconnect');
+  assert.equal(h.context.window.location.href, 'hunter-instagram://connect');
   assert.equal(h.elements.get('btnReconnectInstagram').disabled, true);
-  h.context.handleNativeInstagramReconnect({ status: 'complete', sessionUpdated: true, sources: { instagram: { status: 'backoff', found: 0 } } });
-  assert.equal(refreshes, 0); assert.match(h.toasts.at(-1), /limite/); assert.doesNotMatch(h.toasts.at(-1), /reconectado/);
-  h.context.handleNativeInstagramReconnect({ status: 'complete', sessionUpdated: true, sources: { instagram: { status: 'found', found: 1 } } });
-  assert.equal(refreshes, 1); assert.match(h.toasts.at(-1), /reconectado/);
-  assert.equal(h.context.INITIAL.hunterCollection.sources.portal.found, 3);
-  h.context.INITIAL.hunterAccess.status = 'access_revoked'; h.context.renderHunterAccessUI();
+  assert.equal(h.elements.get('btnCollectInstagram').disabled, true);
+  h.context.collectHunterInstagram();
+  assert.equal(h.context.window.location.href, 'hunter-instagram://connect');
+  h.context.renderHunterAccessUI();
+  assert.equal(h.elements.get('btnCollectInstagram').disabled, true, 'rerender cannot unlock an active operation');
+  h.context.handleNativeInstagramResult('connect', { status: 'cancelled' });
+  assert.equal(h.elements.get('btnReconnectInstagram').disabled, false);
+  assert.equal(h.elements.get('btnCollectInstagram').disabled, false);
+  h.context.collectHunterInstagram();
+  assert.equal(h.context.window.location.href, 'hunter-instagram://collect');
+  h.context.handleNativeInstagramResult('collect', { status: 'access_revoked' });
   assert.equal(h.elements.get('btnReconnectInstagram').hidden, true);
+  assert.equal(h.elements.get('btnCollectInstagram').hidden, true);
+  h.context.reconnectHunterInstagram();
+  assert.equal(h.context.window.location.href, 'hunter-instagram://collect');
+  const preview = instagramHarness();
+  preview.context.INITIAL.nativeBrowser = false; preview.context.renderHunterAccessUI();
+  assert.equal(preview.elements.get('btnReconnectInstagram').hidden, true);
+  assert.equal(preview.elements.get('btnCollectInstagram').hidden, true);
+  preview.context.collectHunterInstagram(); assert.equal(preview.context.window.location.href, 'hunter-dashboard');
+  assert.match(template, /id="btnCollectInstagram" onclick="collectHunterInstagram\(\)"/);
+});
+
+test('only a completed Instagram query refreshes the catalog and preserves Portal results', () => {
+  const h = instagramHarness();
+  for (const status of ['ready', 'cancelled', 'unknown', 'auth_required', 'backoff', 'rate_limited', 'daily_budget']) {
+    h.context.handleNativeInstagramResult('connect', { status: 'complete', sources: { instagram: { transport: 'webview', status, found: 0 } } });
+    assert.equal(h.refreshes, 0);
+    assert.doesNotMatch(h.toasts.at(-1), /reconectado|Consulta ao Instagram concluída/);
+    if (['unknown', 'ready', 'cancelled'].includes(status)) assert.doesNotMatch(h.toasts.at(-1), /limite|aguardando intervalo/);
+    if (status === 'auth_required') assert.match(h.toasts.at(-1), /entre no Instagram neste iPhone/);
+  }
+  for (const status of ['found', 'empty']) {
+    h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status, found: status === 'found' ? 1 : 0 } } });
+    assert.match(h.toasts.at(-1), /Consulta ao Instagram concluída neste iPhone/);
+    assert.equal(h.context.INITIAL.hunterCollection.sources.portal.found, 3);
+  }
+  assert.equal(h.refreshes, 2);
+});
+
+test('WebView diagnostics distinguish retry causes, show allowed retry dates, and never render raw reasons', () => {
+  const h = instagramHarness();
+  const nextAttemptAt = '2026-10-20T12:30:00.000Z';
+  for (const [status, reason, expected] of [
+    ['rate_limited', 'http_429', /HTTP 429/],
+    ['daily_budget', 'daily_budget', /limite diário de consultas deste iPhone/],
+    ['backoff', 'network_error', /falha de rede/],
+  ]) {
+    h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status, reason, nextAttemptAt } } });
+    const text = h.elements.get('hunterCollectionDiagnostics').innerHTML;
+    assert.match(text, expected); assert.match(text, /próxima tentativa em/); assert.match(text, /20\/10/);
+  }
+  h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'backoff', reason: '<img src=x onerror=secret()>', nextAttemptAt: 'secret' } } });
+  const text = h.elements.get('hunterCollectionDiagnostics').innerHTML;
+  assert.doesNotMatch(text, /secret|onerror|próxima tentativa/);
+  assert.match(text, /após falha de consulta/);
+  h.context.handleNativeInstagramResult('collect', { status: 'complete', sources: { instagram: { transport: 'webview', status: 'unknown', reason: 'network_error' } } });
+  assert.match(h.toasts.at(-1), /falha de rede/); assert.doesNotMatch(h.toasts.at(-1), /limite/);
 });

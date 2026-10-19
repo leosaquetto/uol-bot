@@ -180,7 +180,6 @@ const HunterCollector = (() => {
       if (typeof deviceId === 'string' && /^[a-z0-9-]{1,32}$/.test(deviceId) && typeof token === 'string' && token.startsWith('h1.' + deviceId + '.') && /^h1\.[a-z0-9-]{1,32}\.[a-f0-9]{64}$/.test(token)) {
         if (!keychain.contains(KEYS.token) && (!keychain.contains(KEYS.device) || keychain.get(KEYS.device) === deviceId)) { keychain.set(KEYS.token, token); if (!keychain.contains(KEYS.device)) keychain.set(KEYS.device, deviceId); }
       }
-      if (value.instagramSession && !keychain.contains(KEYS.instagram)) keychain.set(KEYS.instagram, JSON.stringify(normalizeSession(value.instagramSession)));
     }
     const token = () => keychain.contains(KEYS.token) ? keychain.get(KEYS.token) : '';
     function eligible(source) {
@@ -227,27 +226,70 @@ const HunterCollector = (() => {
       writeNew('event-' + event.eventId + '.json', { fingerprint, event });
       return true;
     }
+    const browserState = 'instagramWebView';
+    const nextDay = () => new Date(new Date(now()).setUTCHours(24, 0, 0, 0)).toISOString();
+    function browserSummary(status, extra = {}) {
+      const s = state(browserState);
+      return { status, found: 0, transport: 'webview',
+        ...(s.lastAttemptAt ? { lastAttemptAt: s.lastAttemptAt } : {}),
+        ...(s.lastSuccessAt ? { lastSuccessAt: s.lastSuccessAt } : {}), ...extra };
+    }
+    function browserBlocked(connect = false) {
+      const s = state(browserState);
+      if (s.retryAt > now()) return browserSummary('rate_limited', { reason: 'http_429', nextAttemptAt: new Date(s.retryAt).toISOString() });
+      if (s.suspended && !connect) return browserSummary('auth_required', { reason: 'login_required' });
+      const day = new Date(now()).toISOString().slice(0, 10);
+      if (records('request-' + browserState + '-').filter(r => new Date(r.value.at).toISOString().slice(0, 10) === day).length >= LIMITS.requests)
+        return browserSummary('daily_budget', { reason: 'daily_budget', nextAttemptAt: nextDay() });
+      return null;
+    }
+    async function browserRequest(path) {
+      reserve(browserState);
+      saveState(browserState, { ...state(browserState), lastAttemptAt: new Date(now()).toISOString() });
+      const response = await env.instagramBrowser.request(path);
+      if (!plain(response) || !Number.isInteger(response.statusCode)) throw error('browser_response_invalid');
+      const retry = String(response.retryAfter || ''), delay = /^\d+$/.test(retry) ? Number(retry) * 1000 : Math.max(0, Date.parse(retry) - now()) || 0;
+      if (response.statusCode === 429) throw error('http_429', 'rate_limited', Math.max(21600000, Math.min(Number.isFinite(delay) ? delay : 21600000, 8640000000000000 - now())));
+      if ([401,403].includes(response.statusCode)) throw error('http_auth_required', 'auth_required');
+      if (response.statusCode !== 200 || response.url !== IG + path) throw error('browser_response_invalid');
+      if (typeof response.body !== 'string' || bytes(response.body) > LIMITS.body) throw error('body_limit');
+      if (!/^application\/(?:json|[\w.-]+\+json)(?:;|$)/i.test(response.contentType || '')) throw error('non_json_response');
+      const value = losslessJSON(response.body);
+      if (authPayload(value)) throw error('login_payload', 'auth_required');
+      return value;
+    }
+    async function collectInstagram(connect = false) {
+      const blocked = browserBlocked(connect); if (blocked) return blocked;
+      if (!env.instagramBrowser || typeof env.instagramBrowser.request !== 'function') return browserSummary('unavailable', { reason: 'browser_unavailable' });
+      try {
+        const current = state(browserState); let profile = current.profile;
+        if (!profile || profile.username !== 'clubeuol' || !id(profile.id) || !Number.isFinite(current.profileAt) || current.profileAt > now() || now() - current.profileAt >= 86400000) {
+          profile = profileIdentity(await browserRequest('/api/v1/users/web_profile_info/?username=clubeuol'));
+          saveState(browserState, { ...state(browserState), profile, profileAt: now() });
+        }
+        const payloads = parseReels(await browserRequest('/api/v1/feed/reels_media/?reel_ids=' + profile.id), profile, now());
+        let found = 0; for (const payload of payloads) if (enqueue('instagram', payload)) found++;
+        const status = payloads.length ? 'found' : 'empty';
+        saveState(browserState, { ...state(browserState), suspended: false, retryAt: 0, reason: '', status, lastSuccessAt: new Date(now()).toISOString() });
+        return browserSummary(status, { found });
+      } catch (e) {
+        const status = ['auth_required','rate_limited','daily_budget'].includes(e.status) ? e.status : 'unknown';
+        const reasons = ['http_429','http_auth_required','login_required','login_payload','daily_budget','non_json_response','body_limit','request_timeout',
+          'browser_timeout','browser_load_failed','browser_network_error','browser_response_invalid','browser_busy','profile_identity_mismatch','owner_mismatch',
+          'no_validated_story_structure','api_error','malformed_story_payload','structure_limit','conflicting_story_payload','local_outbox_full'];
+        const reason = reasons.includes(e.reason) ? e.reason : 'browser_response_invalid';
+        const before = state(browserState), retryAt = status === 'rate_limited' ? now() + Math.max(21600000, e.retryAfter || 0) : before.retryAt || 0;
+        saveState(browserState, { ...before, suspended: status === 'auth_required' || !!before.suspended, retryAt, status, reason });
+        return browserSummary(status, { reason, ...(status === 'rate_limited' ? { nextAttemptAt: new Date(retryAt).toISOString() } :
+          status === 'daily_budget' ? { nextAttemptAt: nextDay() } : {}) });
+      }
+    }
     async function collect(source) {
+      if (source === 'instagram') return collectInstagram();
       const blocked = eligible(source); if (blocked) return { ...blocked, found: 0 };
       try {
-        let payloads;
-        if (source === 'portal') {
-          reserve(source);
-          payloads = parsePortal(await request(PORTAL, { maxBytes: LIMITS.body, headers: { 'Accept': 'text/html' } }));
-        } else {
-          if (!keychain.contains(KEYS.instagram)) return { status: 'not_configured', found: 0 };
-          const session = normalizeSession(JSON.parse(keychain.get(KEYS.instagram)));
-          const headers = { 'Accept': 'application/json', 'X-IG-App-ID': '936619743392459', 'X-ASBD-ID': '359341', 'User-Agent': session.user_agent, 'Cookie': session.cookies.map(c => c.name + '=' + c.value).join('; ') };
-          if (session.headers['accept-language']) headers['Accept-Language'] = session.headers['accept-language'];
-          const current = state(source); let profile = current.profile;
-          if (!profile || profile.username !== 'clubeuol' || !id(profile.id) || !Number.isFinite(current.profileAt) || current.profileAt > now() || now() - current.profileAt >= 86400000) {
-            reserve(source);
-            profile = profileIdentity(await request(IG + '/api/v1/users/web_profile_info/?username=clubeuol', { headers, json: true, instagram: true }));
-            saveState(source, { ...current, profile, profileAt: now() });
-          }
-          reserve(source);
-          payloads = parseReels(await request(IG + '/api/v1/feed/reels_media/?reel_ids=' + profile.id, { headers, json: true, instagram: true }), profile, now());
-        }
+        reserve(source);
+        const payloads = parsePortal(await request(PORTAL, { maxBytes: LIMITS.body, headers: { Accept: 'text/html' } }));
         let found = 0; for (const payload of payloads) if (enqueue(source, payload)) found++;
         saveState(source, { ...state(source), suspended: false, retryAt: 0, status: payloads.length ? 'found' : 'empty' });
         return { status: payloads.length ? 'found' : 'empty', found };
@@ -318,48 +360,27 @@ const HunterCollector = (() => {
         await flush(); return summary('complete', sources);
       });
     }
-    async function reconnectInstagram(value) {
-      const candidate = normalizeSession(value);
-      return withLease(async () => {
-        const previous = keychain.contains(KEYS.instagram) ? keychain.get(KEYS.instagram) : null;
-        let old;
-        try { old = previous ? normalizeSession(JSON.parse(previous)) : null; } catch (_) {}
-        const cookie = (session, name) => session?.cookies.find(c => c.name === name)?.value;
-        if (cookie(old, 'sessionid') === cookie(candidate, 'sessionid')) return { status: 'session_unchanged', reason: 'fresh_session_required' };
-        const oldAccount = cookie(old, 'ds_user_id'), newAccount = cookie(candidate, 'ds_user_id');
-        if (!newAccount || (previous !== null && !oldAccount)) return { status: 'auth_required', reason: 'instagram_account_unverified' };
-        if (oldAccount && oldAccount !== newAccount) return { status: 'auth_required', reason: 'instagram_account_mismatch' };
-        const before = state('instagram'), reconnectId = uuid();
-        const encoded = JSON.stringify(candidate);
-        let installed = false;
+    let connecting = false;
+    async function runInstagram({ connect = false } = {}) {
+      if (!token()) return summary('not_configured');
+      if (connecting) return summary('busy');
+      if (connect) {
+        const blocked = browserBlocked(true);
+        if (blocked) return summary('complete', { instagram: blocked });
+        if (!env.instagramBrowser?.connect) return summary('complete', { instagram: browserSummary('unavailable', { reason: 'browser_unavailable' }) });
+        connecting = true;
         try {
-          // Persist suspension before replacing credentials. Keep request
-          // ledgers, receipts, profile cache and all rate-limit deadlines.
-          saveState('instagram', { ...before, suspended: true, status: 'auth_required', reason: 'reconnection_pending', reconnectId });
-          if (state('instagram').reconnectId !== reconnectId || !state('instagram').suspended) throw error('reconnect_storage_failed');
-          keychain.set(KEYS.instagram, encoded);
-          if (keychain.get(KEYS.instagram) !== encoded) throw error('reconnect_storage_failed');
-          installed = true;
-          saveState('instagram', { ...before, suspended: false, status: 'reconnected', reason: '', reconnectId });
-          const saved = state('instagram');
-          if (saved.reconnectId !== reconnectId || saved.suspended || saved.status !== 'reconnected') throw error('reconnect_storage_failed');
-        } catch (_) {
-          // A failed state write must not strand the new session behind the
-          // old suspension and make every subsequent recovery "unchanged".
-          try {
-            if (previous !== null) keychain.set(KEYS.instagram, previous);
-            else if (keychain.contains(KEYS.instagram)) keychain.remove(KEYS.instagram);
-            const restored = previous === null ? !keychain.contains(KEYS.instagram) : keychain.get(KEYS.instagram) === previous;
-            if (restored) saveState('instagram', before);
-          } catch (_) {}
-          return { status: 'unavailable', reason: 'reconnect_storage_failed' };
-        }
-        const sources = { instagram: await collect('instagram') };
-        await flush();
-        return { ...summary('complete', sources), sessionUpdated: installed };
+          const result = await env.instagramBrowser.connect();
+          if (result?.status !== 'ready') return summary('complete', { instagram: browserSummary(result?.status === 'cancelled' ? 'cancelled' : 'unknown', { reason: 'login_incomplete' }) });
+        } finally { connecting = false; }
+      }
+      return withLease(async () => {
+        const sources = { instagram: await collectInstagram(connect) };
+        await flush(); return summary('complete', sources);
       });
     }
-    return { importBootstrap, run, enqueue, flush, summary, collect, refreshReceipts, reconnectInstagram };
+
+    return { importBootstrap, run, enqueue, flush, summary, collect, refreshReceipts, runInstagram };
   }
   return { create, parsePortal, parseReels, losslessJSON, campaign, media, profileIdentity, normalizeSession, KEYS, LIMITS };
 })();

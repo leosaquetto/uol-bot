@@ -1,7 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const A = require('./access.js');
-const C = require('./collector.js');
 const ORIGIN = 'https://uol-telegram-shadow-pilot.leosaquetto.workers.dev';
 const NOW = Date.parse('2026-10-18T12:00:00Z');
 const TOKEN = 'h1.existing-phone.' + 'a'.repeat(64);
@@ -12,7 +11,7 @@ function harness({ existing = false, instagram = false } = {}) {
   if (existing) { keys.set(A.KEYS.device, 'existing-phone'); keys.set(A.KEYS.token, TOKEN); }
   if (instagram) keys.set(A.KEYS.instagram, JSON.stringify(session));
   const env = { keychain: { contains: key => keys.has(key), get: key => keys.get(key), set: (key, value) => keys.set(key, value) },
-    now: () => time, uuid: () => '00000000-0000-4000-8000-' + String(++counter).padStart(12, '0'), normalizeSession: C.normalizeSession,
+    now: () => time, uuid: () => '00000000-0000-4000-8000-' + String(++counter).padStart(12, '0'),
     request: url => { const req = { async loadString() {
       calls.push({ url, method: req.method, headers: req.headers, body: req.body, timeout: req.timeoutInterval, redirect: req.onRedirect() });
       const result = await responder(url, req);
@@ -70,16 +69,18 @@ test('pending status is cached for at least 120 seconds and never fetches Instag
   assert.equal(h.keys.has(A.KEYS.instagram), false);
 });
 
-test('approval validates and stores private configuration once, returns only a safe summary', async () => {
+test('approval works without an Instagram session and never downloads shared configuration', async () => {
   const h = harness({ existing: true });
-  h.setResponder(url => ({ value: url.endsWith('/config')
-    ? { ok: true, deviceId: 'existing-phone', role: 'member', instagramSession: session }
-    : h.state('approved') }));
+  h.setResponder(url => {
+    assert.equal(url, ORIGIN + '/hunter-access/status');
+    return { value: h.state('approved') };
+  });
   const result = await h.client.status();
-  assert.equal(result.status, 'approved'); assert.equal(h.calls.length, 2);
-  assert.equal(JSON.parse(h.keys.get(A.KEYS.instagram)).cookies[0].value, 'private-test-session');
+  assert.equal(result.status, 'approved'); assert.equal(h.calls.length, 1);
+  assert.equal(h.keys.has(A.KEYS.instagram), false);
   privateFree(result);
-  await A.create(h.env).status(); assert.equal(h.calls.length, 2, 'fresh approved cache survives restart');
+  await A.create(h.env).status(); assert.equal(h.calls.length, 1, 'fresh approved cache survives restart without an Instagram session');
+  assert.equal(h.client.reconnectInstagram, undefined, 'the access client cannot import a shared session');
 });
 
 test('approval never replaces an existing Instagram session', async () => {
@@ -123,27 +124,8 @@ test('expired approval requests can be renewed with the same credentials before 
   assert.deepEqual(JSON.parse(h.calls.at(-1).body), { label: 'iPhone de teste' });
 });
 
-test('approved status retries a lost configuration response without creating a new identity or partial session', async () => {
-  const h = harness({ existing: true }); let statusCalls = 0, configCalls = 0;
-  h.setResponder(url => {
-    if (url.endsWith('/status')) { statusCalls++; return { value: h.state('approved') }; }
-    configCalls++;
-    if (configCalls === 1) throw new Error('private-test-session response lost');
-    return { value: { ok: true, deviceId: 'existing-phone', role: 'member', instagramSession: session } };
-  });
-  const first = await h.client.status();
-  assert.equal(first.status, 'unavailable'); privateFree(first);
-  assert.equal(h.keys.has(A.KEYS.instagram), false);
-  const result = await A.create(h.env).status();
-  assert.equal(result.status, 'approved'); privateFree(result);
-  assert.equal(statusCalls, 1, 'saved approval can resume only the missing configuration');
-  assert.equal(configCalls, 2);
-  assert.equal(h.keys.get(A.KEYS.token), TOKEN);
-  assert.equal(JSON.parse(h.keys.get(A.KEYS.instagram)).cookies[0].value, 'private-test-session');
-});
-
-test('approved cache survives network loss only inside its six-hour lifetime; stale approval fails closed', async () => {
-  const h = harness({ existing: true, instagram: true }); h.setResponder(() => ({ value: h.state('approved') }));
+test('approved cache survives network loss without an Instagram session only inside its six-hour lifetime; stale approval fails closed', async () => {
+  const h = harness({ existing: true }); h.setResponder(() => ({ value: h.state('approved') }));
   await h.client.status(); h.setResponder(() => { throw new Error('network'); });
   h.advance(1000); assert.equal((await h.client.status({ refresh: true })).status, 'approved');
   h.advance(A.TTL.approved); const result = await A.create(h.env).status();
@@ -159,15 +141,17 @@ test('invalid state and device mismatch fail closed even after a fresh approval'
   assert.equal((await h.client.status()).reason, 'device_mismatch'); assert.equal(h.calls.length, calls);
 });
 
-test('malformed or unsafe configuration cannot grant access or persist a session', async () => {
-  for (const config of [{ ok: true, deviceId: 'other', role: 'member', instagramSession: session },
-    { ok: true, deviceId: 'existing-phone', role: 'owner', instagramSession: session },
-    { ok: true, deviceId: 'existing-phone', role: 'member', instagramSession: { user_agent: 'x', cookies: [] } }]) {
-    const h = harness({ existing: true });
-    h.setResponder(url => ({ value: url.endsWith('/config') ? config : h.state('approved') }));
-    const result = await h.client.status(); assert.equal(result.status, 'unavailable');
-    assert.equal(h.keys.has(A.KEYS.instagram), false); privateFree(result);
-  }
+test('approved submission never calls the retired shared Instagram configuration endpoint', async () => {
+  const h = harness();
+  h.setResponder(url => {
+    assert.equal(url, ORIGIN + '/hunter-access/request');
+    return { value: h.state('approved') };
+  });
+  const result = await h.client.requestAccess('iPhone de teste');
+  assert.equal(result.status, 'approved'); privateFree(result);
+  assert.equal(h.calls.length, 1); assert.equal(h.keys.has(A.KEYS.instagram), false);
+  assert.equal((await A.create(h.env).requestAccess('iPhone de teste')).status, 'approved');
+  assert.equal(h.calls.length, 1);
 });
 
 test('HTTP, redirect, content type and size failures return sanitized failures', async () => {
@@ -293,36 +277,4 @@ test('owner decisions send personal grants only when explicitly approving', asyn
     assert.equal((await h.client.decide('friend', decision, 'ABCD1234', accounts)).reason, 'decision_invalid');
   }
   assert.equal(h.calls.length, count);
-});
-
-test('explicit Instagram recovery uses fresh approval and validated native configuration once', async () => {
-  const h = harness({ existing: true, instagram: true });
-  const fresh = { ...session, cookies: [{ ...session.cookies[0], value: 'renewed-private-session' }] };
-  h.setResponder(url => ({ value: url.endsWith('/config')
-    ? { ok: true, deviceId: 'existing-phone', role: 'member', instagramSession: fresh }
-    : h.state('approved') }));
-  await h.client.status(); const start = h.calls.length;
-  let installs = 0;
-  const install = async candidate => { installs++; assert.equal(candidate.cookies[0].value, 'renewed-private-session'); return { status: 'complete', sessionUpdated: true }; };
-  const results = await Promise.all([h.client.reconnectInstagram(install), h.client.reconnectInstagram(install)]);
-  assert.equal(installs, 1);
-  assert.deepEqual(h.calls.slice(start).map(c => c.url.slice(ORIGIN.length)), ['/hunter-access/status', '/hunter-access/config']);
-  results.forEach(privateFree);
-});
-
-test('Instagram recovery rejects revoked, offline and mismatched configuration without changing sessions', async () => {
-  for (const failure of ['revoked', 'offline', 'mismatch', 'invalid']) {
-    const h = harness({ existing: true, instagram: true });
-    const original = h.keys.get(A.KEYS.instagram);
-    h.setResponder(() => ({ value: h.state('approved') })); await h.client.status();
-    h.setResponder(url => {
-      if (failure === 'offline') throw Error('offline');
-      return { value: url.endsWith('/config')
-        ? { ok: true, deviceId: failure === 'mismatch' ? 'different-device' : 'existing-phone', role: 'member', instagramSession: failure === 'invalid' ? {} : session }
-        : h.state(failure === 'revoked' ? 'revoked' : 'approved') };
-    });
-    const result = await h.client.reconnectInstagram(() => assert.fail('must not install'));
-    assert.equal(result.status, failure === 'revoked' ? 'access_revoked' : 'unavailable');
-    assert.equal(h.keys.get(A.KEYS.instagram), original); privateFree(result);
-  }
 });

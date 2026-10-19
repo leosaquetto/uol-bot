@@ -51,10 +51,11 @@ if (installLocal && fs.existsSync(path.dirname(icloudScriptPath))) {
 // Do not stage /scriptable: another product may already be awaiting delivery.
 if (!prepareOnly) {
   const { execFileSync } = require("child_process");
-  const bytes = fs.statSync(targetScriptPath).size;
+  const version = publicScriptHeader.match(/^const SCRIPT_VERSION = "([0-9.]+)";$/m)?.[1];
+  if (!version) throw new Error("Missing notification version");
   const res = execFileSync('curl', ['--fail', '--silent', '--show-error', '--max-time', '20',
     '-H', 'Title: Scriptable - Clube UOL Premium', '-H', 'Priority: high', '-H', 'Tags: arrow_up',
-    '-d', `Atualização disponível para Clube UOL Premium (${bytes} bytes). Update Scriptable executa o updater interno.`,
+    '-d', `Clube UOL Premium ${version} disponível. Abra o app para atualizar automaticamente, ou use a central de atualizações do saquettoOS.`,
     'https://ntfy.sh/leo-macsend-8130'], {encoding:'utf8',timeout:25000});
   const receipt = JSON.parse(res);
   if (receipt.event !== 'message' || !receipt.id) throw Error('ntfy acceptance unconfirmed; do not retry blindly');

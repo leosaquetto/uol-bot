@@ -60,7 +60,7 @@ function restoreHeaderPresentation(current, reference) {
   return output;
 }
 
-// Explicit 5.8.6 additions. Recovery behavior has dedicated access/collector/UI
+// Explicit 5.8.6 and 5.9.0 additions. Recovery behavior has dedicated access/collector/UI
 // tests; retain the frozen comparison for every unrelated part of the screen.
 function restoreInstagramPresentation(current, reference) {
   let output = current;
@@ -73,8 +73,10 @@ function restoreInstagramPresentation(current, reference) {
   replaceOnce('    }\n    .source-mini-circle.mini-insta {\n      box-shadow:', '      box-shadow:');
   replaceOnce('    .source-mini.mini-insta svg,\n', '');
   replaceOnce('    .source-mini.mini-insta svg {\n      width: 61.111111%;\n      height: 61.111111%;\n    }\n', '');
-  replaceOnce('          <button class="btn-modal-secondary" id="btnReconnectInstagram" onclick="reconnectHunterInstagram()" hidden>Reconectar Instagram</button>\n', '');
-  replaceOnce("      const instagram = document.getElementById('btnReconnectInstagram');\n      if (instagram) {\n        instagram.hidden = access.state !== 'approved';\n        instagram.disabled = !INITIAL.nativeBrowser;\n      }\n", '');
+  replaceOnce('          <button class="btn-modal-secondary" id="btnReconnectInstagram" onclick="reconnectHunterInstagram()" hidden>Conectar Instagram neste iPhone</button>\n', '');
+  replaceOnce('          <button class="btn-modal-secondary" id="btnCollectInstagram" onclick="collectHunterInstagram()" hidden>Coletar Stories agora</button>\n', '');
+  replaceOnce('    let hunterInstagramAction = null;\n\n', '');
+  replaceOnce("      ['btnReconnectInstagram', 'btnCollectInstagram'].forEach(id => {\n        const instagram = document.getElementById(id);\n        if (!instagram) return;\n        instagram.hidden = access.state !== 'approved' || !INITIAL.nativeBrowser;\n        instagram.disabled = access.state !== 'approved' || !INITIAL.nativeBrowser || hunterInstagramAction !== null;\n        instagram.textContent = id === 'btnReconnectInstagram'\n          ? hunterInstagramAction === 'connect' ? 'Conectando\u2026' : 'Conectar Instagram neste iPhone'\n          : hunterInstagramAction === 'collect' ? 'Coletando Stories\u2026' : 'Coletar Stories agora';\n      });\n", '');
   assert.ok(!reference.includes('    function reconnectHunterInstagram()'));
   output = output.replace(region(output, '    function reconnectHunterInstagram()', '    // NAVIGATION_PERSONALIZATION_START'), '');
   return output;

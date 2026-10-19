@@ -21,7 +21,7 @@
 // - Histórico Persistido com tempo no ar e tags para ofertas esgotadas em P&B
 // =====================================================================
 
-const SCRIPT_VERSION = "5.8.6";
+const SCRIPT_VERSION = "5.9.0";
 const UPDATE_RAW_URL = "https://raw.githubusercontent.com/leosaquetto/uol-bot/main/scriptable_uol_stories_hunter.js";
 const NTFY_TOPIC = "leo-macsend-8130";
 const HISTORY_FILE_NAME = "uol_offers_history.json";
@@ -39,6 +39,7 @@ const BUNDLED_COOKIES = BUNDLED_COOKIES_LEO;
 const BUNDLED_REDEMPTIONS = __BUILD_REDEMPTIONS__;
 
 __BUILD_COLLECTOR__
+__BUILD_INSTAGRAM_BROWSER__
 __BUILD_ACCESS__
 __BUILD_REDEMPTION__
 const UOL_RECEIPT_PARSER = __BUILD_PARSER__;
@@ -143,10 +144,19 @@ function hunterCollectionPausedForUpdate(action) {
   }
 }
 
+let nativeInstagramBrowser = null;
+function createNativeInstagramBrowser() {
+  if (!nativeInstagramBrowser) nativeInstagramBrowser = HunterInstagramBrowser.create({
+    webView: () => new WebView(), losslessJSON: HunterCollector.losslessJSON,
+    timer: (milliseconds, callback) => Timer.schedule(milliseconds, false, callback)
+  });
+  return nativeInstagramBrowser;
+}
+
 async function runNativeHunterCollector() {
   try {
     const collector = HunterCollector.create({
-      fm: FileManager.local(), keychain: Keychain, now: Date.now,
+      fm: FileManager.local(), keychain: Keychain, now: Date.now, instagramBrowser: createNativeInstagramBrowser(),
       uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
       pause: milliseconds => new Promise(resolve => Timer.schedule(milliseconds, false, resolve))
     });
@@ -180,20 +190,30 @@ async function runNativeHunterCollector() {
 
 function createHunterAccess() {
   return HunterAccess.create({ keychain: Keychain, now: Date.now,
-    uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
-    normalizeSession: HunterCollector.normalizeSession });
+    uuid: () => UUID.string().toLowerCase(), request: url => new Request(url) });
 }
 
-async function runNativeInstagramReconnect() {
+async function runNativeInstagramAction(action) {
+  let access = await createHunterAccess().status({ refresh: true });
+  if (access.status !== 'approved') return { status: access.status, access, sources: {} };
+  const browser = createNativeInstagramBrowser();
   const collector = HunterCollector.create({ fm: FileManager.local(), keychain: Keychain, now: Date.now,
+    instagramBrowser: { request: path => browser.request(path), connect: async () => {
+      const result = await browser.connect();
+      if (result.status !== 'ready') return result;
+      access = await createHunterAccess().status({ refresh: true });
+      return access.status === 'approved' ? result : { status: 'cancelled' };
+    } },
     uuid: () => UUID.string().toLowerCase(), request: url => new Request(url),
     pause: milliseconds => new Promise(resolve => Timer.schedule(milliseconds, false, resolve)) });
-  return createHunterAccess().reconnectInstagram(session => collector.reconnectInstagram(session));
+  const result = await collector.runInstagram({ connect: action === 'connect' });
+  if (access.status !== 'approved') return { status: access.status, access, sources: {} };
+  return { ...result, access };
 }
 
-async function reconnectNativeInstagram(view) {
-  const result = await runNativeInstagramReconnect();
-  await view.evaluateJavaScript("handleNativeInstagramReconnect(" + JSON.stringify(result).replace(/</g, "\\u003c") + ");");
+async function handleNativeInstagramAction(view, action) {
+  const result = await runNativeInstagramAction(action);
+  await view.evaluateJavaScript("handleNativeInstagramResult(" + JSON.stringify(action) + "," + JSON.stringify(result).replace(/</g, "\\u003c") + ");");
 }
 
 async function hunterNotice(title, message) {
@@ -294,8 +314,8 @@ async function main() {
   if (action === "open" && typeof autoUpdateHunterOnOpen === "function" && await autoUpdateHunterOnOpen()) {
     Script.complete(); return;
   }
-  if (action === "reconnect-instagram") {
-    const result = await runNativeInstagramReconnect();
+  if (action === "reconnect-instagram" || action === "collect-instagram") {
+    const result = await runNativeInstagramAction(action === "reconnect-instagram" ? "connect" : "collect");
     if (typeof Script.setShortcutOutput === "function") Script.setShortcutOutput(JSON.stringify(result));
     Script.complete(); return;
   }
@@ -405,13 +425,14 @@ function installHunterBrowser(view) {
       }
       return false;
     }
-    if (raw === "hunter-instagram://reconnect" || raw === "hunter-instagram://reconnect/") {
+    if (/^hunter-instagram:\/\/(?:connect|reconnect|collect)\/?$/.test(raw)) {
+      const action = raw.includes('://collect') ? 'collect' : 'connect';
       if (!opening) {
         opening = true;
-        view.hunterActionTask = Promise.resolve().then(() => reconnectNativeInstagram(view))
-          .catch(() => view.evaluateJavaScript("handleNativeInstagramReconnect({status:'unavailable'});").catch(() => {}))
+        view.hunterActionTask = Promise.resolve().then(() => handleNativeInstagramAction(view, action))
+          .catch(() => view.evaluateJavaScript("handleNativeInstagramResult(" + JSON.stringify(action) + ",{status:'unavailable'});").catch(() => {}))
           .finally(() => { opening = false; });
-      } else view.evaluateJavaScript("handleNativeInstagramReconnect({status:'busy'});").catch(() => {});
+      } else view.evaluateJavaScript("handleNativeInstagramResult(" + JSON.stringify(action) + ",{status:'busy'});").catch(() => {});
       return false;
     }
     if (/^hunter-(?:account|access|update|instagram):/i.test(raw)) return false;

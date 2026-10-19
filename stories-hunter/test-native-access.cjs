@@ -6,10 +6,10 @@ const vm = require('node:vm');
 const A = require('./access.js');
 const C = require('./collector.js');
 const source = require("./test-support/build-source.cjs")();
-const nativeCode = source.slice(source.indexOf('async function runNativeHunterCollector('), source.indexOf('async function main()'));
+const nativeCode = source.slice(source.indexOf('let nativeInstagramBrowser = null;'), source.indexOf('async function main()'));
 const browserCode = source.slice(source.indexOf('function installHunterBrowser('), source.indexOf('function nativeRedemptionKey('));
 
-test('native host activates without an iCloud file and collects only after approval and private Keychain import', async () => {
+test('native host activates without an iCloud file and collects only after approval without a shared Instagram session', async () => {
   const keys = new Map(), requests = [];
   let state = 'pending', time = Date.parse('2026-10-18T12:00:00Z'), random = 0, collections = 0;
   const session = { user_agent: 'test-agent', cookies: [{ name: 'sessionid', value: 'native-private-session', domain: '.instagram.com' }] };
@@ -19,11 +19,12 @@ test('native host activates without an iCloud file and collects only after appro
     Keychain: { contains: key => keys.has(key), get: key => keys.get(key), set: (key, value) => keys.set(key, value) },
     UUID: { string: () => '00000000-0000-4000-8000-' + String(++random).padStart(12, '0') },
     HunterAccess: A,
+    HunterInstagramBrowser: { create: () => ({request: async () => ({})}) },
     HunterCollector: { KEYS: A.KEYS, normalizeSession: C.normalizeSession, create: () => ({
       importBootstrap: () => assert.fail('activation must not require a bootstrap file'),
       run: async () => {
         collections++;
-        assert.equal(JSON.parse(keys.get(A.KEYS.instagram)).cookies[0].value, 'native-private-session');
+        assert.equal(keys.has(A.KEYS.instagram), false);
         return { status: 'complete', discovered: 1, received: 1, delivered: 0, sources: {} };
       },
     }) },
@@ -55,12 +56,12 @@ test('native host activates without an iCloud file and collects only after appro
   const accepted = await context.runNativeHunterCollector();
   assert.equal(accepted.status, 'complete'); assert.equal(accepted.access.status, 'approved');
   assert.equal(collections, 1); assert.equal(keys.get(A.KEYS.token), identity);
-  assert.deepEqual(requests.map(request => new URL(request.url).pathname), ['/hunter-access/request', '/hunter-access/status', '/hunter-access/config']);
+  assert.deepEqual(requests.map(request => new URL(request.url).pathname), ['/hunter-access/request', '/hunter-access/status']);
   assert.doesNotMatch(JSON.stringify(accepted), /native-private-session|h1\.|cookies|instagramSession|user_agent/);
   state = 'revoked'; time += A.TTL.approved;
   const revoked = await context.runNativeHunterCollector();
   assert.equal(revoked.status, 'access_revoked'); assert.equal(collections, 1);
-  assert.equal(JSON.parse(keys.get(A.KEYS.instagram)).cookies[0].value, 'native-private-session', 'revocation preserves the local session');
+  assert.equal(keys.has(A.KEYS.instagram), false);
 });
 
 test('activation route cancels navigation synchronously and shares the offer-sheet lock', async () => {
@@ -119,7 +120,7 @@ test('approved owner with no friends refreshes the access UI before the empty-de
 test('Instagram recovery route is explicit, serialized and never opens an external browser', async () => {
   const view = { evaluateJavaScript: async () => {} }; let finish, calls = 0;
   const context = vm.createContext({
-    reconnectNativeInstagram: async target => { assert.equal(target, view); calls++; await new Promise(resolve => { finish = resolve; }); },
+    handleNativeInstagramAction: async (target, action) => { assert.equal(target, view); assert.equal(action, "connect"); calls++; await new Promise(resolve => { finish = resolve; }); },
     Safari: { open: () => assert.fail('external navigation'), openInApp: () => assert.fail('external navigation') },
     console: { warn() {} },
   });
@@ -132,4 +133,48 @@ test('Instagram recovery route is explicit, serialized and never opens an extern
   assert.equal(view.shouldAllowRequest({ url: 'hunter-instagram://reconnect' }), false);
   assert.equal(calls, 1);
   finish(); await view.hunterActionTask;
+});
+
+test('Instagram login rechecks approval and reports revocation before querying or flushing queued events', async () => {
+  const contents = new Map(), directories = new Set(['/local']);
+  const files = { documentsDirectory: () => '/local', joinPath: path.posix.join,
+    fileExists: name => contents.has(name) || directories.has(name),
+    createDirectory: name => directories.add(name),
+    readString: name => { if (!contents.has(name)) throw new Error('missing'); return contents.get(name); },
+    writeString: (name, value) => contents.set(name, value),
+    move: (from, to) => { assert.equal(contents.has(to), false); contents.set(to, contents.get(from)); contents.delete(from); },
+    remove: name => contents.delete(name),
+    listContents: directory => [...contents.keys()].filter(name => path.posix.dirname(name) === directory).map(name => path.posix.basename(name))
+  };
+  const keys = new Map([[A.KEYS.token, 'h1.review-phone.' + 'a'.repeat(64)]]);
+  let checks = 0, logins = 0, queries = 0, requests = 0, random = 0;
+  const initialAccess = { status: 'approved', state: 'approved', role: 'member', deviceId: 'review-phone', accounts: [] };
+  const revokedAccess = { ...initialAccess, status: 'access_revoked', state: 'revoked' };
+  const context = vm.createContext({
+    FileManager: { local: () => files },
+    Keychain: { contains: key => keys.has(key), get: key => keys.get(key) },
+    UUID: { string: () => 'review-event-' + ++random },
+    Timer: { schedule: (_milliseconds, _repeats, callback) => callback() },
+    HunterInstagramBrowser: { create: () => ({
+      connect: async () => { logins++; return { status: 'ready' }; },
+      request: async () => { queries++; assert.fail('revoked device must not query Instagram'); }
+    }) },
+    HunterCollector: { ...C, create: env => {
+      const collector = C.create(env);
+      collector.enqueue('portal', { link: 'https://clube.uol.com.br/campanhasdeingresso/pRp-test', title: 'Test offer' });
+      return collector;
+    } },
+    Request: class { constructor() { requests++; assert.fail('revoked device must not flush the pending outbox'); } }
+  });
+  vm.runInContext(nativeCode, context);
+  context.createHunterAccess = () => ({ status: async options => {
+    assert.equal(options.refresh, true);
+    return ++checks === 1 ? initialAccess : revokedAccess;
+  } });
+  const result = await context.runNativeInstagramAction('connect');
+  assert.equal(checks, 2); assert.equal(logins, 1); assert.equal(queries, 0); assert.equal(requests, 0);
+  assert.equal(result.status, 'access_revoked'); assert.equal(result.access, revokedAccess);
+  assert.equal(Object.keys(result.sources).length, 0);
+  assert.equal([...contents.keys()].filter(name => path.posix.basename(name).startsWith('event-')).length, 1, 'queued observation is preserved');
+  assert.equal([...contents.keys()].filter(name => /\/(?:request-|receipt-|lease-)/.test(name)).length, 0, 'no collection lease, query reservation or delivery receipt after revocation');
 });

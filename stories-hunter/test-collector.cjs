@@ -28,6 +28,16 @@ function harness({ instagram = false } = {}) {
       req.response = { statusCode: result.code || 200, headers: result.headers || { 'Content-Type': typeof result.value === 'string' ? 'text/html' : 'application/json' }, url: result.url || url };
       return typeof result.value === 'string' ? result.value : JSON.stringify(result.value);
     } }; return req; } };
+  if (instagram) env.instagramBrowser = {
+    connect: async () => ({ status: 'ready' }),
+    request: async route => {
+      const url = 'https://www.instagram.com' + route;
+      calls.push({ url, transport: 'webview' });
+      const result = await responder(url, {}); if (result instanceof Error) throw result;
+      return { statusCode: result.code || 200, url: result.url || url, contentType: result.headers?.['Content-Type'] || 'application/json',
+        retryAfter: result.headers?.['Retry-After'] || '', body: typeof result.value === 'string' ? result.value : JSON.stringify(result.value) };
+    }
+  };
   const collector = C.create(env);
   collector.importBootstrap({ deviceId: 'test-phone', token: 'h1.test-phone.' + 'a'.repeat(64), ...(instagram ? { instagramSession: session() } : {}) });
   const defaultResponder = (url, req) => {
@@ -82,10 +92,10 @@ test('native open collects both sources, persists before intake and caches valid
   h.setResponder((url, req) => { if (req.method === 'POST') for (const e of JSON.parse(req.body).observations) assert([...h.files.keys()].some(k => k.endsWith('/event-' + e.eventId + '.json'))); return h.defaultResponder(url, req); });
   const result = await h.collector.run(); assert.equal(result.discovered, 2); assert.equal(result.received, 2); assert.equal(result.delivered, 0);
   assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 2);
-  await h.collector.run(); assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 2); // cooldown
+  await h.collector.run(); assert.equal(h.calls.filter(c => c.url.includes('instagram.com')).length, 3); // no inherited five-minute cooldown
   h.advance(300000); await C.create(h.env).run();
   assert.equal(h.calls.filter(c => c.url.includes('web_profile_info')).length, 1);
-  assert.equal(h.calls.filter(c => c.url.includes('reels_media')).length, 2);
+  assert.equal(h.calls.filter(c => c.url.includes('reels_media')).length, 3);
   assert.equal(h.calls.filter(c => c.method === 'POST').length, 1, 'unchanged observation never gets a new event');
   assert.equal(h.collector.summary('test').delivered, 2);
   const outbound = h.calls.filter(c => c.method === 'POST').map(c => c.body).join('');
@@ -111,7 +121,7 @@ test('batch stops at 8 and no false successful/unknown receipt removes events', 
 test('Instagram 429 persists minimum 6h/Retry-After and auth suspension across restarts', async () => {
   const h = harness({ instagram: true }); h.setResponder(url => url.includes('instagram.com') ? { code: 429, headers: { 'Retry-After': '25000' }, value: '' } : { value: HTML });
   assert.equal((await h.collector.collect('instagram')).status, 'rate_limited'); h.advance(21600000);
-  assert.equal((await C.create(h.env).collect('instagram')).status, 'backoff'); assert.equal(h.calls.length, 1);
+  assert.equal((await C.create(h.env).collect('instagram')).status, 'rate_limited'); assert.equal(h.calls.length, 1);
   h.advance(4000000); h.setResponder(() => ({ code: 200, value: { message: 'login_required' } }));
   assert.equal((await C.create(h.env).collect('instagram')).status, 'auth_required'); h.advance(86400000);
   assert.equal((await C.create(h.env).collect('instagram')).status, 'auth_required'); assert.equal(h.calls.length, 2);
@@ -171,85 +181,78 @@ test('uncertain receipt remains observable at 15 minute intervals without resend
   assert.equal(h.calls.filter(c => c.method === 'POST').length, 1);
 });
 
-test('explicit Instagram reconnection replaces only a fresh session and preserves evidence', async () => {
+test('WebView capture is independent of legacy session, suspension and budget', async () => {
   const h = harness({ instagram: true });
-  h.setResponder(() => ({ code: 401, value: {} }));
-  await h.collector.collect('instagram');
-  h.advance(C.LIMITS.instagram);
+  assert.equal(h.keys.has(C.KEYS.instagram), false);
+  h.keys.set(C.KEYS.instagram, 'invalid-legacy-private-session');
+  const root = '/docs/uol-hunter-collector-v1/';
+  h.files.set(root + 'state-instagram-old.json', JSON.stringify({ at: NOW, suspended: true, retryAt: NOW + 86400000 }));
+  for (let i = 0; i < 30; i++) h.files.set(root + 'request-instagram-old-' + i + '.json', JSON.stringify({ at: NOW }));
   const before = new Map(h.files);
-  h.setResponder(h.defaultResponder);
-  const fresh = session(); fresh.cookies[0].value = 'renewed-private-session';
-  const result = await h.collector.reconnectInstagram(fresh);
-  assert.equal(result.sessionUpdated, true);
+  const result = await h.collector.runInstagram();
   assert.equal(result.sources.instagram.status, 'found');
-  assert.equal(result.sources.instagram.found, 1);
-  assert.equal(JSON.parse(h.keys.get(C.KEYS.instagram)).cookies[0].value, 'renewed-private-session');
-  for (const [key, value] of before) assert.equal(h.files.get(key), value, 'history changed: ' + key);
-  assert.ok(h.calls.every(c => !c.url.endsWith('/campanhasdeingresso')));
-  assert.doesNotMatch(JSON.stringify(result), /renewed-private-session|synthetic-session|cookies|user_agent|h1\./);
+  assert.equal(result.sources.instagram.transport, 'webview');
+  assert.equal(h.keys.get(C.KEYS.instagram), 'invalid-legacy-private-session');
+  for (const [key,value] of before) assert.equal(h.files.get(key), value);
+  assert.ok([...h.files.keys()].some(k => k.includes('state-instagramWebView-')));
+  assert.equal([...h.files.keys()].filter(k => k.includes('/state-instagram-')).length, 1, '5.8.6 sees only its own state');
+  assert.doesNotMatch(JSON.stringify(result), /private-session|Cookie|sessionid|h1\./);
 });
 
-test('same Instagram session and mismatched account never release authentication suspension', async () => {
+test('login sheet closure does not prove authentication and cancelled login does not query', async () => {
   const h = harness({ instagram: true });
-  h.setResponder(() => ({ code: 401, value: {} })); await h.collector.collect('instagram');
-  const count = h.calls.length, previous = h.keys.get(C.KEYS.instagram);
-  assert.equal((await h.collector.reconnectInstagram(session())).status, 'session_unchanged');
-  assert.equal((await h.collector.collect('instagram')).reason, 'authentication_suspended');
-  assert.equal(h.calls.length, count); assert.equal(h.keys.get(C.KEYS.instagram), previous);
-  const old = session();
-  h.keys.set(C.KEYS.instagram, JSON.stringify(old));
-  const fresh = session(); fresh.cookies[0].value = 'renewed'; fresh.cookies[1].value = '200';
-  assert.equal((await h.collector.reconnectInstagram(fresh)).reason, 'instagram_account_mismatch');
-  fresh.cookies.pop();
-  assert.equal((await h.collector.reconnectInstagram(fresh)).reason, 'instagram_account_unverified');
-  assert.equal(h.calls.length, count);
-});
-
-test('failed suspension write rolls back session so explicit recovery can be retried', async () => {
-  const h = harness({ instagram: true });
-  h.setResponder(() => ({ code: 401, value: {} })); await h.collector.collect('instagram');
-  h.advance(C.LIMITS.instagram);
-  const previous = h.keys.get(C.KEYS.instagram), write = h.env.fm.writeString;
-  let fail = true;
-  h.env.fm.writeString = (p, text) => {
-    if (fail && text.includes('"status":"reconnected"')) { fail = false; throw Error('disk unavailable'); }
-    return write(p, text);
-  };
-  const fresh = session(); fresh.cookies[0].value = 'renewed';
-  assert.equal((await h.collector.reconnectInstagram(fresh)).reason, 'reconnect_storage_failed');
-  assert.equal(h.keys.get(C.KEYS.instagram), previous);
-  assert.equal((await h.collector.collect('instagram')).reason, 'authentication_suspended');
+  h.env.instagramBrowser.connect = async () => ({ status: 'cancelled' });
+  assert.equal((await h.collector.runInstagram({ connect: true })).sources.instagram.status, 'cancelled');
+  assert.equal(h.calls.length, 0);
+  h.env.instagramBrowser.connect = async () => ({ status: 'ready' });
+  h.setResponder(() => ({ code: 401, value: {} }));
+  assert.equal((await h.collector.runInstagram({ connect: true })).sources.instagram.status, 'auth_required');
+  const count = h.calls.length;
+  await C.create(h.env).runInstagram(); assert.equal(h.calls.length, count);
   h.setResponder(h.defaultResponder);
-  assert.equal((await h.collector.reconnectInstagram(fresh)).sources.instagram.status, 'found');
+  assert.equal((await h.collector.runInstagram({ connect: true })).sources.instagram.status, 'found');
 });
 
-test('renewed Instagram session respects rate-limit deadline and existing daily request budget', async () => {
+test('login never clears a real WebView 429 or its daily request budget', async () => {
   for (const limited of ['rate', 'daily']) {
-    const h = harness({ instagram: true });
+    const h = harness({ instagram: true }); let logins = 0;
+    h.env.instagramBrowser.connect = async () => { logins++; return { status: 'ready' }; };
     if (limited === 'rate') {
       h.setResponder(() => ({ code: 429, value: {}, headers: { 'Retry-After': '21600' } }));
       await h.collector.collect('instagram');
     } else {
-      for (let i = 0; i < C.LIMITS.requests; i++) h.files.set('/docs/uol-hunter-collector-v1/request-instagram-budget-' + i + '.json', JSON.stringify({ at: NOW - C.LIMITS.instagram - 1 }));
+      for (let i = 0; i < C.LIMITS.requests; i++) h.files.set('/docs/uol-hunter-collector-v1/request-instagramWebView-budget-' + i + '.json', JSON.stringify({ at: NOW }));
     }
-    const count = h.calls.length, before = new Map(h.files);
-    const fresh = session(); fresh.cookies[0].value = 'renewed';
-    const result = await h.collector.reconnectInstagram(fresh);
-    assert.equal(result.sessionUpdated, true);
-    assert.equal(result.sources.instagram.status, limited === 'rate' ? 'backoff' : 'daily_budget');
-    assert.equal(h.calls.length, count);
-    for (const [key, value] of before) assert.equal(h.files.get(key), value);
+    const count = h.calls.length;
+    const result = await h.collector.runInstagram({ connect: true });
+    assert.equal(result.sources.instagram.status, limited === 'rate' ? 'rate_limited' : 'daily_budget');
+    assert.ok(Date.parse(result.sources.instagram.nextAttemptAt) > NOW);
+    assert.equal(h.calls.length, count); assert.equal(logins, 0);
   }
 });
 
-test('overlapping collection and reconnection use the same lease', async () => {
+test('network errors are sanitized and do not create a five-minute pause', async () => {
+  const h = harness({ instagram: true });
+  h.setResponder(() => new Error('private-page-response'));
+  const first = await h.collector.runInstagram();
+  assert.equal(first.sources.instagram.status, 'unknown');
+  assert.doesNotMatch(JSON.stringify(first), /private-page-response/);
+  h.setResponder(h.defaultResponder);
+  assert.equal((await h.collector.runInstagram()).sources.instagram.status, 'found');
+});
+
+test('overlapping automatic and manual collection use the same lease', async () => {
   const h = harness({ instagram: true }); let release;
   h.setResponder(async () => { await new Promise(resolve => { release = resolve; }); return { value: HTML }; });
   const running = h.collector.run();
   while (!release) await new Promise(resolve => setImmediate(resolve));
-  const fresh = session(); fresh.cookies[0].value = 'renewed';
-  const original = h.keys.get(C.KEYS.instagram);
-  assert.equal((await h.collector.reconnectInstagram(fresh)).status, 'busy');
-  assert.equal(h.keys.get(C.KEYS.instagram), original);
+  assert.equal((await C.create(h.env).runInstagram()).status, 'busy');
   h.setResponder(h.defaultResponder); release(); await running;
+});
+
+test('budget is checked between profile and reels queries', async () => {
+  const h = harness({ instagram: true });
+  for (let i=0; i<29; i++) h.files.set('/docs/uol-hunter-collector-v1/request-instagramWebView-old-' + i + '.json', JSON.stringify({ at: NOW }));
+  const result = await h.collector.runInstagram();
+  assert.equal(result.sources.instagram.status, 'daily_budget'); assert.equal(h.calls.length, 1);
 });

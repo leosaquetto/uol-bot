@@ -6,7 +6,7 @@ const path = require('node:path');
 const source = require("./test-support/build-source.cjs")();
 const optionCode = source.slice(source.indexOf('const buildOptions'), source.indexOf('// BUILD_OPTIONS_END'));
 const installCode = source.slice(source.indexOf('// PUBLIC_ARTIFACT_START'));
-const privateHeader = 'const BUNDLED_COOKIES_LEO = [{"value":"synthetic-leo"}];\nconst BUNDLED_COOKIES_GAORIEL = [{"value":"synthetic-gab"}];\nconst BUNDLED_REDEMPTIONS = [\n  {\n    "id": "fixture"\n  }\n];';
+const privateHeader = 'const SCRIPT_VERSION = "5.9.0";\nconst BUNDLED_COOKIES_LEO = [{"value":"synthetic-leo"}];\nconst BUNDLED_COOKIES_GAORIEL = [{"value":"synthetic-gab"}];\nconst BUNDLED_REDEMPTIONS = [\n  {\n    "id": "fixture"\n  }\n];';
 function install(options) {
   const writes = [], copies = [], notifications = [];
   const context = {
@@ -38,6 +38,7 @@ test('code-only publication identifies Premium to the unified automation without
   assert.equal(r.copies.length, 0); assert.equal(r.notifications.length, 1);
   assert.ok(r.notifications[0].includes('Title: Scriptable - Clube UOL Premium'));
   assert.doesNotMatch(r.notifications[0].join(' '), /scriptable\/stage/);
+  assert.match(r.notifications[0].join(' '), /5\.9\.0 disponível\. Abra o app para atualizar automaticamente/);
 });
 test('explicit code-only installation preserves both private bootstrap accounts and data files', () => {
   const r=install(['--code-only','--install']);
@@ -256,6 +257,7 @@ test('native collector requires approval and retains the optional private local 
     fileExists: p => files.has(p), readString: p => files.get(p) });
   const privateConfig = { deviceId: 'test-phone', token: 'private-synthetic-token' };
   const context = vm.createContext({
+    createNativeInstagramBrowser: () => ({ request: async () => ({}) }),
     FileManager: { local: () => manager('/local') }, getFileManager: () => manager('/cloud'),
     Keychain: { contains: k => keys.has(k), get: k => keys.get(k) },
     HunterCollector: { KEYS: { token: 'token', device: 'device' }, create: () => ({

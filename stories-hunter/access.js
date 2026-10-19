@@ -22,8 +22,7 @@ const HunterAccess = (() => {
 
   function create(env) {
     const keychain = env.keychain, now = env.now || Date.now;
-    const normalizeSession = env.normalizeSession || (typeof HunterCollector !== 'undefined' && HunterCollector.normalizeSession);
-    let statusFlight = null, requestFlight = null, reconnectFlight = null;
+    let statusFlight = null, requestFlight = null;
     const get = key => keychain.contains(key) ? keychain.get(key) : '';
     const unavailable = reason => ({ status: 'unavailable', reason: reason || 'access_unavailable' });
 
@@ -95,29 +94,18 @@ const HunterAccess = (() => {
       catch (_) { throw fail('access_response_invalid'); }
     }
 
-    async function configured(value, auth) {
-      if (value.state === 'approved' && !keychain.contains(KEYS.instagram)) {
-        const config = await request('/hunter-access/config', auth);
-        if (config.ok !== true || config.deviceId !== auth.deviceId || config.role !== value.role || typeof normalizeSession !== 'function') throw fail('access_config_invalid');
-        let session;
-        try { session = normalizeSession(config.instagramSession); } catch (_) { throw fail('access_config_invalid'); }
-        if (!keychain.contains(KEYS.instagram)) keychain.set(KEYS.instagram, JSON.stringify(session));
-      }
-      return summary(value);
-    }
-
     async function loadStatus(refresh) {
       let auth;
       try { auth = credentials(); } catch (error) { return unavailable(error.reason); }
       if (!auth) return { status: 'not_configured', reason: 'activation_required' };
       const old = cached(auth.deviceId);
       try {
-        if (!refresh && old && now() - old.checkedAt < TTL[old.state]) return await configured(old, auth);
+        if (!refresh && old && now() - old.checkedAt < TTL[old.state]) return summary(old);
         const value = safeState(await request('/hunter-access/status', auth), auth.deviceId);
         save(value);
-        return await configured(value, auth);
+        return summary(value);
       } catch (error) {
-        if (error.reason === 'access_network_error' && old && old.state === 'approved' && now() - old.checkedAt < TTL.approved && keychain.contains(KEYS.instagram)) {
+        if (error.reason === 'access_network_error' && old && old.state === 'approved' && now() - old.checkedAt < TTL.approved) {
           return { ...summary(old), cached: true };
         }
         if (['access_response_invalid', 'access_denied', 'activation_required'].includes(error.reason)) keychain.set(KEYS.access, '{}');
@@ -130,33 +118,12 @@ const HunterAccess = (() => {
       return statusFlight;
     }
 
-    function reconnectInstagram(install) {
-      if (!reconnectFlight) reconnectFlight = (async () => {
-        try {
-          const auth = credentials();
-          if (!auth || typeof install !== 'function') throw fail('activation_required');
-          // Explicit recovery requires a fresh authorization; cached/offline
-          // approval must never authorize replacing the technical session.
-          const access = safeState(await request('/hunter-access/status', auth), auth.deviceId);
-          save(access);
-          if (access.state !== 'approved') return summary(access);
-          const config = await request('/hunter-access/config', auth);
-          if (config.ok !== true || config.deviceId !== auth.deviceId || config.role !== access.role || typeof normalizeSession !== 'function') throw fail('access_config_invalid');
-          let session;
-          try { session = normalizeSession(config.instagramSession); } catch (_) { throw fail('access_config_invalid'); }
-          // The callback stays native. No credential enters the WebView result.
-          return await install(session);
-        } catch (error) { return unavailable(error.reason || 'instagram_reconnect_failed'); }
-      })().finally(() => { reconnectFlight = null; });
-      return reconnectFlight;
-    }
-
     async function submit(labelValue) {
       if (!label(labelValue)) return unavailable('device_label_invalid');
       try {
         const auth = createCredentials();
         const previous = cached(auth.deviceId);
-        if (previous && previous.state !== 'expired' && now() - previous.checkedAt < TTL[previous.state]) return await configured(previous, auth);
+        if (previous && previous.state !== 'expired' && now() - previous.checkedAt < TTL[previous.state]) return summary(previous);
         const known = previous ? previous.label : null;
         // Keep the first submitted label too, so retry after lost acceptance is
         // idempotent even when the user edits the field before trying again.
@@ -170,7 +137,7 @@ const HunterAccess = (() => {
         if (response.state) {
           const value = safeState(response, auth.deviceId);
           save(value);
-          return await configured(value, auth);
+          return summary(value);
         }
         return await loadStatus(true);
       } catch (error) { return unavailable(error.reason); }
@@ -242,7 +209,7 @@ const HunterAccess = (() => {
         return { ok: true, deviceId: auth.deviceId, account, identityDigest: response.identityDigest.toLowerCase(), cookies };
       } catch (error) { return { ok: false, reason: error.reason || 'access_unavailable' }; }
     }
-    return { status, requestAccess, devices, decide, accountConfig, reconnectInstagram };
+    return { status, requestAccess, devices, decide, accountConfig };
   }
   return { create, KEYS, TTL };
 })();
