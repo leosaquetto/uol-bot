@@ -19,7 +19,7 @@ O teste do Worker `two phones and Oracle converge on one durable Story and four 
 
 ## Beta e aceite no aparelho
 
-Publicar o artefato imutável via `release.cjs prepare --channel beta --commit <sha>`. Verificar CI e o hash dos bytes remotos antes de avisar por ntfy. Título: **Scriptable - Clube UOL Premium**. Aviso deve identificar 5.9.0 beta; stable permanece 5.8.6 até o aceite abaixo.
+Fluxo usado para preparar a beta: publicar o artefato imutável via `release.cjs prepare --channel beta --commit <sha>`. Verificar CI e o hash dos bytes remotos antes de avisar por ntfy. Título: **Scriptable - Clube UOL Premium**. O primeiro aviso identificou 5.9.0 beta. O plano original mantinha stable em 5.8.6 até o aceite abaixo; o usuário autorizou posteriormente antecipar a promoção, conforme registro no fim deste documento.
 
 Para optar pela beta no aparelho já instalado, executar:
 
@@ -32,7 +32,7 @@ Para optar pela beta no aparelho já instalado, executar:
 
 **Pendente:** login escolhido, captura manual e persistência da sessão entre execuções no iPhone. A API documenta `loadURL`, `present` e `evaluateJavaScript`, mas não garante essa persistência: https://docs.scriptable.app/webview/.
 
-Somente depois desse teste promover com `release.cjs promote`, sem reconstruir o artefato. Se a sessão não persistir, manter beta e registrar o impedimento, sem retornar silenciosamente à sessão compartilhada.
+A promoção usa `release.cjs promote`, sem reconstruir o artefato. A antecipação autorizada não comprova persistência. Se a sessão não persistir, registrar o impedimento e corrigir a via local sem retornar silenciosamente à sessão compartilhada.
 
 O atualizador do próprio script e a central do saquettoOS continuam disponíveis. A substituição externa do arquivo do Clube UOL é dispensável; nenhum ramo das automações de outros scripts foi alterado.
 
@@ -43,4 +43,12 @@ O atualizador do próprio script e a central do saquettoOS continuam disponívei
 - CI completo aprovado: https://github.com/leosaquetto/uol-bot/actions/runs/39294146086 . Os 46 testes finais direcionados e os 32 testes de Stories/deduplicação do Worker passaram localmente.
 - Manifesto stable e espelho legado continuam na 5.8.6, com integridade remota verificada.
 - ntfy aceitou o aviso de beta: ID `zCNYUK7AkNHu`, timestamp `1792430872`, título `Scriptable - Clube UOL Premium`. Link abre o atualizador interno com `channel=beta`. Aceite do serviço não comprova entrega ou instalação no aparelho.
-- Teste real solicitado ao usuário; promoção a stable permanece pendente.
+- Teste real solicitado ao usuário. A promoção estava pendente antes da autorização abaixo.
+
+## Promoção antecipada autorizada
+
+O usuário pediu recebimento pela atualização automática ao abrir. Após explicar que o cliente consulta stable e que a mudança para beta exige ação no próprio iPhone, o usuário autorizou explicitamente: “Publicar stable agora; testar no iPhone depois”. Essa instrução substitui a ordem de aceite do plano inicial.
+
+Promovido o mesmo artefato `a0a44da20b22c3b6a616d58085c4626c536f1c50`, sem reconstrução. A versão 5.9.0 chega pelo atualizador normal ao abrir. Integridade, recuperação e pausa da primeira abertura permanecem preservadas.
+
+**Ainda não validado no aparelho:** login escolhido na WebView, captura manual, persistência após fechar/reabrir e captura automática com essa sessão. Não declarar a independência operacional comprovada enquanto esse teste não for concluído.
