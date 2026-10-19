@@ -8,14 +8,14 @@ const path = require('node:path');
 const catalog = JSON.parse(fs.readFileSync(path.join(__dirname, 'catalog.json')));
 const compatibility = JSON.parse(fs.readFileSync(path.join(__dirname, 'compatibility.json')));
 const fingerprint = source => crypto.createHash('sha256').update(source).digest('hex');
-test('current official UOL release is eligible for integrated launch', () => {
+test('current official UOL release matches published bytes for dynamic integrated verification', () => {
   const release = JSON.parse(fs.readFileSync(path.join(__dirname, '../stories-hunter/releases/stable.json')));
   const stableArtifact = fs.readFileSync(path.join(__dirname, '../scriptable_uol_stories_hunter.js'));
   const candidateArtifact = fs.readFileSync(path.join(__dirname, '../stories-hunter/dist/Hunter.js'));
   assert.equal(fingerprint(stableArtifact), release.sha256);
   assert.equal(stableArtifact.length, release.size);
-  assert.equal(compatibility['clube-uol'].sha256.includes(release.sha256), true);
-  assert.equal(compatibility['clube-uol'].sha256.includes(fingerprint(candidateArtifact)), true);
+  assert.equal(fingerprint(candidateArtifact), release.sha256);
+  assert.match(release.artifact, /^https:\/\/raw\.githubusercontent\.com\/leosaquetto\/uol-bot\/[a-f0-9]{40}\/stories-hunter\/dist\/Hunter\.js$/);
 });
 const identity = { deviceId: '12345678-1234-1234-1234-123456789abc', token: 'a'.repeat(64) };
 function harness(route, options = {}) {
